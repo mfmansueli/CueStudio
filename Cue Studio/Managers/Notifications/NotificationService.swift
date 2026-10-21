@@ -88,30 +88,6 @@ final class NotificationService {
         return authorization
     }
 
-    func setQuietHours(_ hours: QuietHours) {
-        mutate { $0.quietHours = hours }
-        setNeedsReconcile()
-    }
-
-    func setShowsTitles(_ shows: Bool) {
-        mutate { $0.showsTitles = shows }
-        setNeedsReconcile(rewritesTexts: true)
-    }
-
-    /// "Pause for 7 days / 30 days": automatic notifications only; reminders and the routine still ring.
-    func pauseAutomatic(days: Int) {
-        let until = calendar().date(byAdding: .day, value: days, to: now()) ?? now().addingTimeInterval(TimeInterval(days) * 86_400)
-        mutate { $0.pausedUntil = until }
-        setNeedsReconcile()
-    }
-
-    func resumeAutomatic() {
-        mutate { $0.pausedUntil = nil }
-        setNeedsReconcile()
-    }
-
-    var pausedUntil: Date? { state.isPaused(at: now()) ? state.pausedUntil : nil }
-
     // MARK: - Permission
 
     func refreshAuthorization() async {

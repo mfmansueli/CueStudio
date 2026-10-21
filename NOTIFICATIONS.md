@@ -50,19 +50,20 @@ Prioridade 1 é a primeira. "Automática" = o Cue decide a hora, sob os limites 
 
 ## 3. Consentimento e permissão
 
-- **Categorias** (Settings › Notifications): *My reminders*, *Continue my projects* e *My creation routine* começam ligadas; **Discover tools
-  and ideas** e **What’s new in Cue** começam **desligadas** e só ligam com um sim. O consentimento de descoberta vale também para as
-  introduções dentro do app.
+- **Categorias** (Settings › Notifications, redesenho de 22/10/2026): a página mostra **três interruptores** (`NotificationGroup`): *Help me finish
+  what I start* (`projects`), *Tools and news* (`discovery` + `whatsNew`) e *Remind me to create* (`routine`). *My reminders* não é mais escolha: os
+  lembretes que o criador marca **sempre** chegam (`NotificationState.isOn(.reminders)` é sempre verdadeiro). Antes do iOS deixar, *projects* e
+  *routine* começam ligadas e **Tools and news desligada**; o **sim do iOS dado pelo interruptor da página liga tudo**, ferramentas e novidades
+  inclusive, e a rotina nos dias padrão (seg, qua, sex às 18h) se não havia uma (`allowEverything` / `turnEverythingOn`; pedido do dono). O convite e
+  os lembretes pedem a permissão sem ligar ferramentas e novidades. O consentimento de descoberta vale também para as introduções dentro do app.
 - **Permissão do iOS é separada** e nunca é consentimento para promoções. O Cue **não pede no lançamento**: pede ao criar o primeiro lembrete, ao
   ligar uma categoria, ao configurar a rotina, quando o criador liga o interruptor da permissão ou diz sim ao convite (abaixo). Com
   `.notDetermined`, nada é agendado. Recusada: o app segue igual, o lembrete fica em Cue ("Kept in Cue") e o Cue **nunca pergunta de novo**.
   `.provisional` agenda (entrega silenciosa) e a página explica. O estado é relido quando o app fica ativo e ao voltar dos Ajustes.
-- **Interruptor "Allow notifications"** (topo de Settings › Notifications, seção "On this iPhone", `NotificationPermissionSection`, pedido do dono
-  em 9/10/2026): mostra o que o iOS deixa (ligado com `.authorized`, `.provisional` ou `.ephemeral`; a linha de baixo diz On, Delivered quietly,
-  Off in iOS Settings ou Not asked yet). **Quem manda é o iOS:** um app não pode se dar nem se tirar a permissão. Ligar sem nunca ter sido
-  perguntado traz a pergunta do sistema (uma vez) e replaneja; qualquer outra mudança (ligar depois de um não, desligar) abre a página do Cue nos
-  Ajustes (`openNotificationSettingsURLString`). O interruptor volta a mostrar o estado real na hora, e de novo ao voltar dos Ajustes; o rodapé
-  diz o que o toque faz em cada estado. Desligar as notificações sem sair do Cue é desligar as categorias, logo abaixo.
+- **Interruptor do iOS** (topo de Settings › Notifications, `NotificationPermissionRow`): mostra o que o iOS deixa (ligado com `.authorized`,
+  `.provisional` ou `.ephemeral`). **Quem manda é o iOS:** um app não pode se dar nem se tirar a permissão. Ligar sem nunca ter sido perguntado traz a
+  pergunta do sistema (uma vez) e, com o sim, liga tudo (acima); qualquer outra mudança abre a página do Cue nos Ajustes
+  (`openNotificationSettingsURLString`). O estado é relido ao voltar dos Ajustes; voltar liberado depois de um não também liga tudo.
 - **Convite antes da pergunta do sistema** (`NotificationService+Invite`, `NotificationInviteSheet`): o iOS pergunta uma vez só, então o Cue a
   gasta num momento em que ela tem motivo. **Primeira vez:** ao fechar o gravador (ou o editor) com pelo menos uma take, "Want Cue to remind you
   to finish this video?". **Segunda e última:** só depois de um "Not now", 14 dias depois, ao sair de um roteiro pronto que não foi gravado ("Want
@@ -72,8 +73,8 @@ Prioridade 1 é a primeira. "Automática" = o Cue decide a hora, sob os limites 
   Medido como `invite.firstRecording` / `invite.readyScript`: `eligible` (mostrado), `feature_started` (Allow), `feature_completed` (o iOS
   deixou), `snoozed` (Not now). As datas dos convites (`invitesShown`) ficam depois de "Delete my Cue data": apagar os dados não traz o convite
   de volta. Nos testes de UI o convite só existe com `-uiTestNotificationInvite`.
-- **Quiet hours** (21:00–09:00 por padrão, editáveis), **pausa** de 7 ou 30 dias (só automáticas) e **Show titles in previews** (desligado: "your
-  script"). Script, comentário e texto importado **nunca** entram numa notificação; o payload só tem tipos e IDs.
+- **Quiet hours** fixas (21:00–09:00; desde 22/10/2026 não são mais editáveis nem há pausa na página) e **títulos nunca nas notificações** ("your
+  script"; `showsTitles` fica falso). Script, comentário e texto importado **nunca** entram numa notificação; o payload só tem tipos e IDs.
 
 ## 4. Descoberta (`FeatureCatalog`)
 
@@ -196,7 +197,7 @@ adiamento, ordem), `FeatureAdoptionTests` (abrir não é usar), `NotificationTim
 Tomorrow, passado, quiet hours, rotina), `NotificationStorageTests` (ida e volta, estado antigo/parcial, entrada desconhecida, estado danificado,
 payload versionado e estável, What’s new só em atualização, roteador sem duplicata), `NotificationServiceTests` (sem pedido de permissão ao
 planejar, padrões, negado nunca pergunta de novo, lembrete agendado/mantido/falha/passado/edição/cancelamento/capacidade, assunto apagado,
-Post later cancelado ao postar, rotina, descoberta só com sim, categoria desligada cancela, pausa, reenvio só quando muda e com idioma novo,
+Post later cancelado ao postar, rotina, descoberta só com sim, categoria desligada cancela, os três interruptores e o liga-tudo do sim, reenvio só quando muda e com idioma novo,
 exportação só fora da tela, apagar dados), `NotificationServiceOpeningTests` (uma abertura por entrega, payload inválido/alheio, introdução
 antes da ferramenta, lembrete aberto some, crédito em 24 h e expiração, próximo passo concluído, primeiro plano ocupado, objeto apagado,
 introdução no app uma por sessão, Not now/Don’t suggest, Try it ≠ concluído, eventos), `NotificationInviteTests` (só com o iOS sem

@@ -623,6 +623,14 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
 
 **Revisão da take (6.3):** barra de navegação do sistema (`ReviewToolbar`, `NavigationStack` próprio, fundo escondido sobre o vídeo): voltar, "TAKE 2 OF 3 ✦ ⌄"
 como título com menu (takes vizinhas, Suggest best) numa cápsula de vidro, estrela (`star` / `star.fill`) e lixeira numa cápsula à direita.
+Refinamento do dono (22/10/2026, canvas "Revisão da take, refinada"): **Play** fica no meio do espaço livre do vídeo, acima dos controles (nunca sobre a
+linha do tempo, como no 15 Pro), encolhe e some ao tocar (`Haptics.light`); tocar no vídeo tocando pausa e pisca o sinal de pausa (`ReviewPauseFlash`,
+`Haptics.soft`). **Linha do tempo** (`ReviewScrubber`): segurando, a bolinha cresce para 24 pt e um balão branco diz o tempo; um tique a cada segundo
+cruzado e um toque firme no início e no fim. **Trocar de take** deslizando: a outra take aparece num esmaecer (o dono rejeitou o cartão que seguia o
+dedo, 22/10/2026), com um tique e "Take 2 of 3" por 1,4 s. **Estrela**: pula e solta faíscas amarelas (`BestTakeSparkles`, `HapticPatterns.bestTake`).
+**Informações** (`ReviewInfoPanel`): só "● TikTok · 0:10 ›"; o toque abre "1080p · 9:16 · 51s shorter than TikTok’s sweet spot · From script v1".
+**Trilha**: a barra do estágio atual se preenche ao abrir e quando avança (`Haptics.success` ao subir). **Save**: gira enquanto salva e mostra ✓ verde
+"Saved" por 2,2 s quando o vídeo chega às Fotos (depois de fechar "Ready to travel"). Reduzir Movimento: sem pulos, faíscas nem preenchimento.
 
 **Quick edit:** barra do sistema (`EditorTopBar` como `ToolbarContent`, `NavigationStack` próprio): voltar, "● IN EDIT · AUTOSAVED", **Done** em
 `.glassProminent` amarelo com texto `accInk` (`ink2` enquanto carrega). Some em tela cheia. `EditorLayout` usa a altura sob a barra (`EditorHeightClass`:
@@ -737,11 +745,18 @@ opaco e o player para. Grátis e Pro, sem interruptor.
 ## 27. Notificações, lembretes e introdução de ferramentas
 
 Sistema completo em `NOTIFICATIONS.md`. Na interface:
-- **Settings › Notifications** (`NotificationsSettingsView`, ícone `bell.badge.fill` em `Palette.danger`, valor "Off" ou "Reminders: n"): **On this iPhone**
-  (`NotificationPermissionSection`: **Allow notifications** com o estado On / Delivered quietly / Off in iOS Settings / Not asked yet; o toque pede uma vez ou
-  abre os Ajustes), **What Cue sends** (cinco categorias; ferramentas e novidades desligadas), **Days and time** (só com a rotina: chips de dia na ordem da
-  semana do iPhone, `acc`/`accInk` escolhido, `surface3`/`ink` não; `DatePicker`), **My reminders** (toque edita, deslizar remove; Set, Kept in Cue, Due),
-  **Automatic notifications** (quiet hours, pausa de 7/30 dias) e **Show titles in previews**. Em Debug, uma seção DEBUG.
+- **Settings › Notifications** (`NotificationsSettingsView`, redesenho do dono 22/10/2026: curta e direta, a versão B do canvas; valor "Off" ou
+  "Reminders: n"): no topo, **o interruptor do iOS** (`NotificationPermissionRow`): sino em contorno `accText` que balança de leve a cada ~5 s enquanto
+  está desligado; "Notifications are off · Cue can’t remind you yet." / "Notifications are off in iOS · Allow Cue in iOS Settings." / "Notifications
+  arrive quietly · Without a banner or a sound." / "Notifications are on · Cue only reaches out when it helps." (com um ✓ verde no sino). Ligar sem
+  nunca ter sido perguntado traz a pergunta do iOS, e o sim **liga tudo junto** (`NotificationService.allowEverything`): o sino toca, os interruptores
+  de baixo acendem um a um com um tique cada (`HapticPatterns.notificationsOn`, `NotificationsCascade`) e a rotina abre seus dias. Qualquer outra
+  mudança abre o Cue nos Ajustes do iOS; voltar de lá liberado depois de um não também liga tudo. **From Cue**: dois interruptores (`NotificationGroup`):
+  **Help me finish what I start** ("When a script or video is waiting.") e **Tools and news** ("Now and then, something new for you."); rodapé "At most
+  one a day, never at night. Your reminders always arrive." **Creation routine**: **Remind me to create**, que abre os dias (chips `acc`/`accInk` e
+  `surface3`/`ink`, chegando em cascata; tique e mola a cada toque; o último dia não sai) e **Time**. **Your reminders** (toque edita, deslizar remove; Set,
+  Kept in Cue, Due). Sem ícones nas linhas. Não são mais escolhas: os lembretes do criador (sempre chegam), quiet hours (21h–9h fixas), pausa e títulos nas
+  notificações (nunca: "your script"). Em Debug, uma seção DEBUG.
 - **Remind me…** (••• da página e menu de um vídeo): `ReminderSheet` (`fittedSheet`): Tonight (até 19:30), Tomorrow, **Pick a date and time** (`DatePicker` +
   **Set reminder**), nota de quiet hours, lembretes marcados com ✕. Toast "Reminder set · Tomorrow 10:00 AM" só quando o sistema aceitou.
 - **Introdução de uma ferramenta** (`FeatureIntroSheet`): ícone `aiText` em azulejo `surface2`, nome, benefício, o que ela usa ("Free. Nothing changes until

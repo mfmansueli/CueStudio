@@ -87,8 +87,13 @@ final class TakesUITests: XCTestCase {
         XCTAssertTrue(label.label.localizedCaseInsensitiveContains("Take 3"))
         // It opens paused: the play button is there.
         XCTAssertTrue(app.buttons["Play"].waitForExistence(timeout: 5))
-        // Where the video is on its way out, and what the length does against the platform.
+        // Above the controls, never on the playhead (it sat on it on a shorter iPhone, centred on the whole screen).
+        XCTAssertLessThan(app.buttons["Play"].frame.maxY, element(app, "review.scrubber").frame.minY)
+        // Where the video is on its way out, and what the length does against the platform (behind the short line, a tap away).
         XCTAssertTrue(element(app, "review.stageBar").exists)
+        XCTAssertFalse(element(app, "review.lengthFit").exists, "The details wait behind the short line")
+        element(app, "review.summary").tap()
+        XCTAssertTrue(element(app, "review.lengthFit").waitForExistence(timeout: 3))
 
         // The pill is a menu: it steps to the other takes of the video.
         for _ in 0..<2 {

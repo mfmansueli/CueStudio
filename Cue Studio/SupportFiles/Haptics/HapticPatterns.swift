@@ -89,6 +89,29 @@ enum HapticPatterns {
         Beat(time: 0.12, intensity: 0.2, sharpness: 0.15),
     ]
 
+    /// Notifications allowed in Settings › Notifications (`NotificationsSettingsView.cascade`): the bell's ring fading out as it swings,
+    /// then a soft tick as each switch of From Cue lights, in time with it.
+    static let notificationsOn: [Beat] = [
+        Beat(time: 0, intensity: 0.6, sharpness: 0.85),
+        Beat(time: 0.1, intensity: 0.34, sharpness: 0.95),
+        Beat(time: 0.2, intensity: 0.16, sharpness: 1),
+        Beat(time: NotificationsCascade.firstSwitch, intensity: 0.4, sharpness: 0.6),
+        Beat(time: NotificationsCascade.firstSwitch + NotificationsCascade.step, intensity: 0.4, sharpness: 0.6),
+        Beat(time: NotificationsCascade.firstSwitch + NotificationsCascade.step * 2, intensity: 0.4, sharpness: 0.6),
+    ]
+
+    /// One switch of Settings › Notifications turned on: a small chime, a tap and its echo.
+    static let chime: [Beat] = [
+        Beat(time: 0, intensity: 0.45, sharpness: 0.8),
+        Beat(time: 0.08, intensity: 0.18, sharpness: 0.95),
+    ]
+
+    /// A take made the best one: a crisp tap as the star jumps and a lighter one as its sparks fly (`BestTakeSparkles`).
+    static let bestTake: [Beat] = [
+        Beat(time: 0, intensity: 0.55, sharpness: 0.75),
+        Beat(time: 0.09, intensity: 0.3, sharpness: 0.95),
+    ]
+
     // MARK: - Playing
 
     static func playSparkles() { play(sparkles, fallback: Haptics.selection) }
@@ -101,6 +124,9 @@ enum HapticPatterns {
     static func playRemoteWave() { play(remoteWave, fallback: Haptics.selection) }
     static func playRemoteConnect() { play(remoteConnect, fallback: Haptics.success) }
     static func playRemoteDisconnect() { play(remoteDisconnect, fallback: Haptics.medium) }
+    static func playNotificationsOn() { play(notificationsOn, fallback: Haptics.success) }
+    static func playChime() { play(chime, fallback: Haptics.light) }
+    static func playBestTake() { play(bestTake, fallback: Haptics.light) }
 
     private static func play(_ beats: [Beat], fallback: () -> Void) {
         guard Haptics.isEnabled else { return }

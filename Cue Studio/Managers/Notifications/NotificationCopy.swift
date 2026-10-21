@@ -6,8 +6,8 @@
 import Foundation
 
 /// What every notification says (`NOTIFICATIONS.md` §2 lists the keys). Benefit first, one action, a light touch of Cue's sky; never guilt,
-/// "we miss you", urgency that isn't real, a word about how someone looks, or a promise of views. A project's title appears only when
-/// the creator turned on "Show titles in previews"; script text, comments and imported writing never do.
+/// "we miss you", urgency that isn't real, a word about how someone looks, or a promise of views. A project's title appears only with
+/// `showsTitles` (no setting turns it on since 22/10/2026: notifications say "your script"); script text, comments and imported writing never do.
 nonisolated enum NotificationCopy {
     // MARK: - Automatic
 

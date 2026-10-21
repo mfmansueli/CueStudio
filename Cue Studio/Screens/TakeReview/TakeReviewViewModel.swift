@@ -42,6 +42,8 @@ final class TakeReviewViewModel {
     private(set) var prepared: ExportedVideo?
     /// Operations saved to Photos in this review ("Save video" turns into "Saved to Photos").
     private(set) var savedOperations: Set<UUID> = []
+    /// Counts Save's trips to Photos that arrived, for its ✓ on the screen.
+    private(set) var savesToPhotos = 0
     /// "Share to universe" hears how a share sheet ended for a network it sent (true: handled, so no send-off is played here).
     @ObservationIgnored var queueInterceptor: ((ShareDestination, ActivityResult) -> Bool)?
     /// The queue that edits are made for: re-exporting inside it costs no second export.
@@ -504,6 +506,7 @@ final class TakeReviewViewModel {
             phase = .savingToPhotos
             let assetID = try await photos.saveVideo(at: ledger.fileURL(of: operation))
             savedOperations.insert(operation.id)
+            savesToPhotos += 1
             recordDelivery(.photoLibrary(assetID: assetID), operation: operation, take: take)
             let withCover = (try? await saveCoverIfChosen()) ?? false
             showsShareSheet = false

@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// The top of a take's review (6.3), in the system's navigation bar over the video: back, the title "TAKE 2 OF 3 ✦" (a menu: the
-/// other takes of the video and ✦ Suggest best), and the star that makes this the best take with the bin, grouped in one glass
-/// capsule as the system does.
+/// other takes of the video and ✦ Suggest best), and the star that makes this the best take (it jumps and throws sparks,
+/// `BestTakeSparkles`) with the bin, grouped in one glass capsule as the system does.
 struct ReviewToolbar: ToolbarContent {
     let take: Take
     /// "TAKE 2 OF 3", or "TAKE 1" for a video with only this take.
@@ -18,6 +18,8 @@ struct ReviewToolbar: ToolbarContent {
     var onPrevious: (() -> Void)?
     var onNext: (() -> Void)?
     var onSuggest: (() -> Void)?
+    /// Counts the times a take was made the best here: the star's sparks fly at each.
+    var bestBursts = 0
 
     var body: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
@@ -36,6 +38,7 @@ struct ReviewToolbar: ToolbarContent {
                     // Choosing the best take is a small win: the star gives a small bounce as it changes.
                     .symbolEffect(.bounce, value: take.isBest ? 1 : 0)
                     .foregroundStyle(take.isBest ? Palette.acc : Palette.ink)
+                    .overlay { BestTakeSparkles(trigger: bestBursts) }
             }
             .accessibilityLabel(Text("Best take"))
             .accessibilityValue(Text(take.isBest ? "On" : "Off"))

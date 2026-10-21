@@ -22,9 +22,10 @@ nonisolated struct NotificationState: Codable, Hashable, Sendable {
     /// Only the creator's own choices; a category never chosen is `isOnByDefault`.
     var consent: [String: Bool] = [:]
     var quietHours = QuietHours.standard
-    /// Automatic notifications are paused until then (7 or 30 days).
+    /// Automatic notifications are paused until then (no setting offers a pause since 22/10/2026; an old one runs out).
     var pausedUntil: Date?
-    /// The project's title in a notification's text. Off: notifications say "your script", never what it is called.
+    /// The project's title in a notification's text. Off (and no setting turns it on since 22/10/2026): notifications say "your script",
+    /// never what it is called.
     var showsTitles = false
     var reminders: [Reminder] = []
     var routine: CreationRoutine?
@@ -65,8 +66,10 @@ nonisolated struct NotificationState: Codable, Hashable, Sendable {
         self.startedAt = startedAt
     }
 
+    /// The reminders the creator sets always arrive (no switch turns them off since 22/10/2026, even one turned off before).
     func isOn(_ category: NotificationCategory) -> Bool {
-        consent[category.rawValue] ?? category.isOnByDefault
+        if category == .reminders { return true }
+        return consent[category.rawValue] ?? category.isOnByDefault
     }
 
     func isPaused(at now: Date) -> Bool {

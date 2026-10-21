@@ -7893,6 +7893,125 @@
         }
       }
     },
+    "%@ longer than %@’s sweet spot" : {
+      "comment" : "Take review details line: the take is longer than the network's ideal length. The first argument is a short duration (like 51s), the second the network name (like TikTok).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أطول بـ %1$@ من المدة المثالية لـ %2$@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ længere end idealet for %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ länger als ideal für %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ más que lo ideal para %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ de plus que l’idéal pour %2$@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ के आदर्श से %1$@ ज़्यादा"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ lebih panjang dari ideal %2$@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ in più rispetto all’ideale per %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ の目安より%1$@長い"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ 권장보다 %1$@ 김"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ lengre enn idealet for %2$@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ langer dan ideaal voor %2$@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ acima do ideal para %2$@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ längre än idealet för %2$@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ยาวกว่าช่วงที่เหมาะของ %2$@ %1$@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ için idealden %1$@ uzun"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dài hơn mức lý tưởng của %2$@ %1$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比 %2$@ 的理想时长长 %1$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比 %2$@ 的理想長度長 %1$@"
+          }
+        }
+      }
+    },
     "%@ marked as best" : {
       "localizations" : {
         "ar" : {
@@ -10152,6 +10271,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "比 %2$@ 少 %1$@"
+          }
+        }
+      }
+    },
+    "%@ shorter than %@’s sweet spot" : {
+      "comment" : "Take review details line: the take is shorter than the network's ideal length. The first argument is a short duration (like 51s), the second the network name (like TikTok).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أقصر بـ %1$@ من المدة المثالية لـ %2$@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kortere end idealet for %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kürzer als ideal für %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ menos que lo ideal para %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ de moins que l’idéal pour %2$@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ के आदर्श से %1$@ कम"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ lebih pendek dari ideal %2$@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ in meno rispetto all’ideale per %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ の目安より%1$@短い"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ 권장보다 %1$@ 짧음"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kortere enn idealet for %2$@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ korter dan ideaal voor %2$@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ abaixo do ideal para %2$@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ kortare än idealet för %2$@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สั้นกว่าช่วงที่เหมาะของ %2$@ %1$@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%2$@ için idealden %1$@ kısa"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngắn hơn mức lý tưởng của %2$@ %1$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比 %2$@ 的理想时长短 %1$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "比 %2$@ 的理想長度短 %1$@"
           }
         }
       }
@@ -26237,126 +26475,6 @@
         }
       }
     },
-    "✓ FITS" : {
-      "comment" : "Text that appears when a take fits the script.",
-      "isCommentAutoGenerated" : true,
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ مناسب"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ PASSER"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ PASST"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ ENCAJA"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ CONVIENT"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ सही"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ PAS"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ VA BENE"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ ちょうどいい"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ 적합"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ PASSER"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ PAST"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ IDEAL"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ PASSAR"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ พอดี"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ UYGUN"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ PHÙ HỢP"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ 合适"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✓ 合適"
-          }
-        }
-      }
-    },
     "✓ Fits %@" : {
       "localizations" : {
         "ar" : {
@@ -32291,125 +32409,6 @@
         }
       }
     },
-    "7 days" : {
-      "comment" : "Pause duration",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 أيام"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 dage"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 Tage"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 días"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 jours"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 दिन"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 hari"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 giorni"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7日間"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7일"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 dager"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 dagen"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 dias"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 dagar"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 วัน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 gün"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 ngày"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 天"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 天"
-          }
-        }
-      }
-    },
     "7 days free, then %@/year. Cancel anytime." : {
       "localizations" : {
         "ar" : {
@@ -32761,125 +32760,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "25 秒"
-          }
-        }
-      }
-    },
-    "30 days" : {
-      "comment" : "Pause duration",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 يومًا"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 dage"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 Tage"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 días"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 jours"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 दिन"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 hari"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 giorni"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30日間"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30일"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 dager"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 dagen"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 dias"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 dagar"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 วัน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 gün"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 ngày"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 天"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "30 天"
           }
         }
       }
@@ -46640,6 +46520,125 @@
         }
       }
     },
+    "Allow Cue in iOS Settings." : {
+      "comment" : "Settings › Notifications: card text when notifications were refused in iOS (button Settings)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسمح لـ Cue في إعدادات iOS."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillad Cue i Indstillinger på iOS."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erlaube Cue in den iOS-Einstellungen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permite Cue en Ajustes de iOS."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Autorisez Cue dans les Réglages d’iOS."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS सेटिंग्स में Cue को अनुमति दें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Izinkan Cue di Pengaturan iOS."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Consenti Cue nelle Impostazioni di iOS."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOSの設定でCueを許可してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS 설정에서 Cue를 허용하세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillat Cue i Innstillinger på iOS."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sta Cue toe in de iOS-instellingen."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permita o Cue nos Ajustes do iOS."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tillåt Cue i iOS-inställningar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อนุญาต Cue ในการตั้งค่า iOS"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS Ayarları’nda Cue’ya izin ver."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hãy cho phép Cue trong Cài đặt iOS."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请在 iOS 设置中允许 Cue。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請在 iOS 設定中允許 Cue。"
+          }
+        }
+      }
+    },
     "Allow it to save your video." : {
       "localizations" : {
         "ar" : {
@@ -55015,121 +55014,121 @@
         }
       }
     },
-    "At most one a day and two a week. Your reminders and routine aren’t affected." : {
-      "comment" : "Footer of automatic notifications",
+    "At most one a day, never at night. Your reminders always arrive." : {
+      "comment" : "Settings › Notifications: footer under From Cue",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "واحد في اليوم واثنان في الأسبوع على الأكثر. لا يتأثر تذكيراتك وروتينك."
+            "value" : "واحد في اليوم على الأكثر، ولا شيء ليلًا. تذكيراتك تصل دائمًا."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Højst én om dagen og to om ugen. Dine påmindelser og din rutine påvirkes ikke."
+            "value" : "Højst én om dagen, aldrig om natten. Dine påmindelser kommer altid."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Höchstens eine am Tag und zwei pro Woche. Deine Erinnerungen und deine Routine sind davon nicht betroffen."
+            "value" : "Höchstens eine am Tag, nie nachts. Deine Erinnerungen kommen immer an."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Como máximo una al día y dos a la semana. No afecta a tus recordatorios ni a tu rutina."
+            "value" : "Como mucho una al día, nunca de noche. Tus recordatorios siempre llegan."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Au plus une par jour et deux par semaine. Vos rappels et votre routine ne sont pas concernés."
+            "value" : "Une par jour au plus, jamais la nuit. Vos rappels arrivent toujours."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ज़्यादा से ज़्यादा दिन में एक और हफ़्ते में दो। आपके रिमाइंडर और रूटीन पर असर नहीं होता।"
+            "value" : "दिन में ज़्यादा से ज़्यादा एक, रात में कभी नहीं। आपके रिमाइंडर हमेशा आते हैं।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Paling banyak satu sehari dan dua seminggu. Pengingat dan rutinitasmu tidak terpengaruh."
+            "value" : "Paling banyak satu sehari, tidak pernah di malam hari. Pengingatmu selalu datang."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Al massimo una al giorno e due a settimana. I tuoi promemoria e la tua routine non cambiano."
+            "value" : "Al massimo una al giorno, mai di notte. I tuoi promemoria arrivano sempre."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "多くても1日1回、週2回まで。リマインダーとルーティンには影響しません。"
+            "value" : "多くても1日1回、夜は送りません。あなたのリマインダーは必ず届きます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "하루 최대 1개, 주당 최대 2개. 리마인더와 루틴에는 영향이 없습니다."
+            "value" : "하루에 최대 한 번, 밤에는 보내지 않습니다. 직접 설정한 리마인더는 항상 도착합니다."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Høyst én om dagen og to i uken. Påminnelsene og rutinen din påvirkes ikke."
+            "value" : "Høyst én om dagen, aldri om natten. Påminnelsene dine kommer alltid."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hooguit één per dag en twee per week. Je herinneringen en routine blijven gewoon werken."
+            "value" : "Hooguit één per dag, nooit ’s nachts. Je herinneringen komen altijd aan."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No máximo uma por dia e duas por semana. Seus lembretes e sua rotina não mudam."
+            "value" : "No máximo uma por dia, nunca à noite. Seus lembretes sempre chegam."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Högst en om dagen och två i veckan. Dina påminnelser och din rutin påverkas inte."
+            "value" : "Högst en om dagen, aldrig på natten. Dina påminnelser kommer alltid."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ไม่เกินวันละหนึ่งครั้งและสัปดาห์ละสองครั้ง การเตือนและกิจวัตรของคุณไม่ได้รับผลกระทบ"
+            "value" : "ไม่เกินวันละหนึ่งครั้ง และไม่ส่งตอนกลางคืน การเตือนของคุณจะมาถึงเสมอ"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En fazla günde bir, haftada iki. Hatırlatıcıların ve rutinin etkilenmez."
+            "value" : "Günde en fazla bir tane, geceleri asla. Hatırlatıcıların her zaman gelir."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tối đa một thông báo mỗi ngày và hai mỗi tuần. Lời nhắc và lịch của bạn không bị ảnh hưởng."
+            "value" : "Tối đa một lần mỗi ngày, không bao giờ vào ban đêm. Lời nhắc của bạn luôn đến."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每天最多一条，每周最多两条。不影响你的提醒和日程。"
+            "value" : "每天最多一条，夜间从不打扰。你设置的提醒总会准时送达。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每天最多一則，每週最多兩則。不影響你的提醒和行程。"
+            "value" : "每天最多一則，夜間從不打擾。你設定的提醒總會準時送達。"
           }
         }
       }
@@ -56783,125 +56782,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "自動"
-          }
-        }
-      }
-    },
-    "Automatic notifications" : {
-      "comment" : "Section header: quiet hours and pause",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الإشعارات التلقائية"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatiske notifikationer"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatische Mitteilungen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notificaciones automáticas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notifications automatiques"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अपने-आप आने वाली सूचनाएँ"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notifikasi otomatis"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notifiche automatiche"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動通知"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "자동 알림"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatiske varsler"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatische meldingen"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notificações automáticas"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatiska notiser"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "การแจ้งเตือนอัตโนมัติ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Otomatik bildirimler"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thông báo tự động"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自动通知"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動通知"
           }
         }
       }
@@ -78829,125 +78709,6 @@
         }
       }
     },
-    "Change" : {
-      "comment" : "Menu button that changes the pause",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تغيير"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skift"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ändern"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cambiar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Modifier"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "बदलें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ubah"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cambia"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "変更"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "변경"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Endre"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Wijzigen"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alterar"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ändra"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เปลี่ยน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Değiştir"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thay đổi"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更改"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更改"
-          }
-        }
-      }
-    },
     "Change it anytime in Profile › My Cue Voice." : {
       "localizations" : {
         "ar" : {
@@ -91991,125 +91752,6 @@
         }
       }
     },
-    "Continue my projects" : {
-      "comment" : "Notification category",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "متابعة مشاريعي"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fortsæt mine projekter"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meine Projekte fortsetzen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuar mis proyectos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reprendre mes projets"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मेरे प्रोजेक्ट जारी रखें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lanjutkan proyekku"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continua i miei progetti"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "プロジェクトの続き"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "내 프로젝트 이어 하기"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fortsett prosjektene mine"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mijn projecten afmaken"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Continuar meus projetos"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fortsätt mina projekt"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ทำโปรเจกต์ของฉันต่อ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Projelerime devam et"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tiếp tục dự án của tôi"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "继续我的项目"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "繼續我的專案"
-          }
-        }
-      }
-    },
     "CONTINUE POSTING · %lld OF %lld" : {
       "comment" : "A label that shows the current position in a queue and the total number of items in the queue. The first argument is the current position in the queue. The second argument is the total number of items in the queue.",
       "isCommentAutoGenerated" : true,
@@ -98639,6 +98281,125 @@
         }
       }
     },
+    "Creation routine" : {
+      "comment" : "Settings › Notifications: section header above Remind me to create",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "روتين الإنشاء"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skaberrutine"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kreativroutine"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutina de creación"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Routine de création"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "क्रिएशन रूटीन"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rutinitas kreasi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Routine creativa"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "制作ルーティン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제작 루틴"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skaperrutine"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Creatieroutine"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rotina de criação"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skaparrutin"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กิจวัตรการสร้าง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Üretim rutini"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lịch sáng tạo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "创作日程"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "創作行程"
+          }
+        }
+      }
+    },
     "Credit scores" : {
       "comment" : "My Cue Voice: a more specific topic inside a topic",
       "localizations" : {
@@ -99699,6 +99460,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cue 無法連到附近的裝置。請在「設定」中開啟 Cue 的「區域網路」。"
+          }
+        }
+      }
+    },
+    "Cue can’t remind you yet." : {
+      "comment" : "Settings › Notifications: card text while iOS was never asked (button Turn on)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يمكن لـ Cue تذكيرك بعد."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue kan ikke minde dig om noget endnu."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue kann dich noch nicht erinnern."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue aún no puede recordarte nada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue ne peut pas encore vous rappeler quoi que ce soit."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue अभी आपको याद नहीं दिला सकता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue belum bisa mengingatkanmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue non può ancora ricordarti nulla."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "まだCueからリマインドできません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아직 Cue가 알려 줄 수 없습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue kan ikke minne deg på noe ennå."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue kan je nog niet herinneren."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Cue ainda não pode te lembrar."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue kan inte påminna dig än."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue ยังเตือนคุณไม่ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue sana henüz hatırlatamıyor."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue chưa thể nhắc bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 还无法提醒你。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 還無法提醒你。"
           }
         }
       }
@@ -101715,6 +101595,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cue 絕不會寫"
+          }
+        }
+      }
+    },
+    "Cue only reaches out when it helps." : {
+      "comment" : "Settings › Notifications: card text under the title You’re all set",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يتواصل معك Cue إلا عندما يفيدك ذلك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue melder sig kun, når det hjælper."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue meldet sich nur, wenn es hilft."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue solo te avisa cuando te ayuda."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue ne vous écrit que lorsque c’est utile."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue तभी संपर्क करता है जब इससे मदद मिले।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue hanya menghubungimu saat itu membantu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue si fa sentire solo quando serve."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueは役に立つときだけお知らせします。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue는 도움이 될 때만 알림을 보냅니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue tar bare kontakt når det hjelper."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue laat alleen van zich horen als het helpt."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Cue só aparece quando ajuda."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue hör bara av sig när det hjälper."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue จะติดต่อคุณเฉพาะเมื่อเป็นประโยชน์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue yalnızca işine yarayacağı zaman sana ulaşır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue chỉ liên hệ khi điều đó có ích."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 只在有帮助时才联系你。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue 只在有幫助時才聯絡你。"
           }
         }
       }
@@ -104203,125 +104202,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Cue 會讓它在鏡頭下方捲動。你的相機位置不變。"
-          }
-        }
-      }
-    },
-    "Cue’s notifications arrive quietly in Notification Center. Allow them in iOS Settings to see banners." : {
-      "comment" : "Permission card, provisional",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تصل إشعارات Cue بهدوء إلى مركز الإشعارات. اسمح بها في إعدادات iOS لرؤية الشرائط."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notifikationer fra Cue kommer stille i Notifikationscenter. Tillad dem i iOS-indstillinger for at se bannere."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mitteilungen von Cue kommen still in die Mitteilungszentrale. Erlaube sie in den iOS-Einstellungen, um Banner zu sehen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Las notificaciones de Cue llegan en silencio al centro de notificaciones. Permítelas en Ajustes de iOS para ver avisos."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les notifications de Cue arrivent discrètement dans le centre de notifications. Autorisez-les dans Réglages iOS pour voir les bannières."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue की सूचनाएँ चुपचाप नोटिफ़िकेशन सेंटर में आती हैं। बैनर देखने के लिए iOS सेटिंग्स में उन्हें अनुमति दें।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notifikasi Cue tiba diam-diam di Pusat Notifikasi. Izinkan di Pengaturan iOS untuk melihat banner."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Le notifiche di Cue arrivano in silenzio nel Centro Notifiche. Consentile in Impostazioni di iOS per vedere i banner."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cueの通知は通知センターに静かに届きます。バナーを表示するには、iOSの設定で許可してください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 알림이 알림 센터에 조용히 도착합니다. 배너를 보려면 iOS 설정에서 허용하세요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Varsler fra Cue kommer stille i Varslingssenter. Tillat dem i iOS-innstillinger for å se bannere."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meldingen van Cue komen stil binnen in het berichtencentrum. Sta ze toe in iOS-instellingen om banners te zien."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "As notificações do Cue chegam em silêncio na Central de Notificações. Permita-as nos Ajustes do iOS para ver os banners."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Notiser från Cue kommer tyst till notiscentret. Tillåt dem i iOS-inställningar för att se banners."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "การแจ้งเตือนของ Cue จะเข้ามาอย่างเงียบๆ ในศูนย์การแจ้งเตือน อนุญาตในการตั้งค่า iOS เพื่อดูแบนเนอร์"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue bildirimleri Bildirim Merkezi’ne sessizce gelir. Afişleri görmek için iOS Ayarları’nda izin ver."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thông báo của Cue đến yên lặng trong Trung tâm thông báo. Cho phép trong Cài đặt iOS để thấy biểu ngữ."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 的通知会静默出现在通知中心。在 iOS 设置中允许后即可看到横幅。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 的通知會安靜地出現在通知中心。在 iOS 設定中允許後即可看到橫幅。"
           }
         }
       }
@@ -107950,125 +107830,6 @@
         }
       }
     },
-    "Days and time" : {
-      "comment" : "Section header of the routine's days and time",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الأيام والوقت"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dage og tidspunkt"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tage und Uhrzeit"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Días y hora"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jours et heure"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "दिन और समय"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hari dan jam"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Giorni e ora"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "曜日と時間"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "요일과 시간"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dager og tidspunkt"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dagen en tijd"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dias e horário"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dagar och tid"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "วันและเวลา"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Günler ve saat"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ngày và giờ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日期和时间"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "日期和時間"
-          }
-        }
-      }
-    },
     "Decide what to buy" : {
       "comment" : "My Cue Voice (Apple Intelligence plan)",
       "localizations" : {
@@ -110311,125 +110072,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "將從此 iPhone 刪除你的腳本、拍攝、剪輯和 My Cue Voice。此操作無法復原。"
-          }
-        }
-      }
-    },
-    "Delivered quietly" : {
-      "comment" : "Settings › Notifications: iOS delivers Cue's notifications only to Notification Center",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تصل بهدوء"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leveres lydløst"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ohne Ton zugestellt"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entrega silenciosa"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Distribution discrète"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "चुपचाप डिलीवर"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dikirim diam-diam"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Consegna silenziosa"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "目立たない配信"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "조용히 전달"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leveres stille"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stil afgeleverd"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Entrega silenciosa"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Levereras tyst"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ส่งแบบเงียบ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sessizce iletilir"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gửi im lặng"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "静默递送"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "安靜傳送"
           }
         }
       }
@@ -113152,125 +112794,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "中斷連線"
-          }
-        }
-      }
-    },
-    "Discover tools and ideas" : {
-      "comment" : "Notification category (opt-in)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اكتشف الأدوات والأفكار"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Opdag værktøjer og idéer"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Werkzeuge und Ideen entdecken"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Descubrir herramientas e ideas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Découvrir des outils et des idées"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "टूल और आइडिया खोजें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Temukan alat dan ide"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scopri strumenti e idee"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ツールとアイデアを発見"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "도구와 아이디어 발견"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oppdag verktøy og idéer"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tools en ideeën ontdekken"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Descobrir ferramentas e ideias"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Upptäck verktyg och idéer"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ค้นพบเครื่องมือและไอเดีย"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Araçları ve fikirleri keşfet"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Khám phá công cụ và ý tưởng"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "发现工具和点子"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "探索工具與點子"
           }
         }
       }
@@ -141977,6 +141500,125 @@
         }
       }
     },
+    "Fits %@" : {
+      "comment" : "Take review details line: the take's length fits the network's ideal length. The argument is the network name, like TikTok.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مناسب لـ %@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passer til %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passt zu %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Encaja en %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Convient à %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ के लिए सही"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pas untuk %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Va bene per %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ にちょうどいい"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@에 적합"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passer for %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Past bij %@"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideal para %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passar för %@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "พอดีกับ %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ için uygun"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phù hợp với %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "适合 %@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "適合 %@"
+          }
+        }
+      }
+    },
     "Fitted to %@" : {
       "localizations" : {
         "ar" : {
@@ -151117,6 +150759,125 @@
         }
       }
     },
+    "From Cue" : {
+      "comment" : "Settings › Notifications: section header above the switches for what Cue sends (rendered in uppercase)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "من Cue"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fra Cue"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Von Cue"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De Cue"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De Cue"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue से"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dari Cue"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da Cue"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cueから"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue에서"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fra Cue"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Van Cue"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do Cue"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Från Cue"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "จาก Cue"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue’dan"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Từ Cue"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来自 Cue"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "來自 Cue"
+          }
+        }
+      }
+    },
     "From Files. Use only music you own or have the rights to — songs from Apple Music can’t be added." : {
       "localizations" : {
         "ar" : {
@@ -151354,9 +151115,8 @@
         }
       }
     },
-    "FROM SCRIPT %@" : {
-      "comment" : "The text that appears after the fit status in the review info panel.",
-      "isCommentAutoGenerated" : true,
+    "From script %@" : {
+      "comment" : "Take review details line: the script version the take was read from. The argument is the version, like v1.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -151367,25 +151127,25 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FRA MANUSKRIPT %@"
+            "value" : "Fra manuskript %@"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AUS SKRIPT %@"
+            "value" : "Aus Skript %@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DEL GUION %@"
+            "value" : "Del guion %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DU SCRIPT %@"
+            "value" : "Du script %@"
           }
         },
         "hi" : {
@@ -151397,13 +151157,13 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DARI NASKAH %@"
+            "value" : "Dari naskah %@"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DAL COPIONE %@"
+            "value" : "Dal copione %@"
           }
         },
         "ja" : {
@@ -151415,31 +151175,31 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스크립트 %@에서"
+            "value" : "대본 %@에서"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FRA MANUS %@"
+            "value" : "Fra manus %@"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "UIT SCRIPT %@"
+            "value" : "Uit script %@"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DO ROTEIRO %@"
+            "value" : "Do roteiro %@"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FRÅN MANUS %@"
+            "value" : "Från manus %@"
           }
         },
         "th" : {
@@ -151451,13 +151211,13 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "METİN %@’DEN"
+            "value" : "Kaynak senaryo %@"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TỪ KỊCH BẢN %@"
+            "value" : "Từ kịch bản %@"
           }
         },
         "zh-Hans" : {
@@ -160962,6 +160722,125 @@
         }
       }
     },
+    "Help me finish what I start" : {
+      "comment" : "Settings › Notifications: switch title for the reminders the creator sets plus nudges about scripts or videos they started",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ساعدني على إنهاء ما أبدأه"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hjælp mig med at gøre det færdigt, jeg starter på"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hilf mir, zu beenden, was ich anfange"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayúdame a terminar lo que empiezo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "M’aider à finir ce que je commence"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "शुरू किया काम पूरा करने में मदद करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bantu aku menyelesaikan yang kumulai"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aiutami a finire ciò che inizio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "始めたことを最後まで仕上げるサポート"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시작한 일을 끝낼 수 있게 도와주기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hjelp meg å fullføre det jeg begynner på"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Help me afmaken wat ik begin"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Me ajude a terminar o que eu começo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hjälp mig att slutföra det jag påbörjar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ช่วยให้ฉันทำสิ่งที่เริ่มไว้ให้เสร็จ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Başladığımı bitirmeme yardım et"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giúp tôi hoàn thành những gì tôi bắt đầu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "帮我把开始的事做完"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "幫我把開始的事做完"
+          }
+        }
+      }
+    },
     "Here are three things worth thinking twice about before you buy them again." : {
       "comment" : "Find inspiration: a starter idea's opening line, a first sentence the creator could say to camera",
       "localizations" : {
@@ -163216,6 +163095,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隱藏鍵盤"
+          }
+        }
+      }
+    },
+    "Hides the details" : {
+      "comment" : "VoiceOver hint on the take review line that collapses the details.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يخفي التفاصيل"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skjuler detaljerne"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Blendet die Details aus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oculta los detalles"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Masque les détails"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "विवरण छिपाता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menyembunyikan detail"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nasconde i dettagli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細を隠します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세부 정보를 숨겨요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skjuler detaljene"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verbergt de details"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oculta os detalhes"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Döljer detaljerna"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ซ่อนรายละเอียด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayrıntıları gizler"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ẩn chi tiết"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隐藏详情"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "隱藏詳細資訊"
           }
         }
       }
@@ -178856,125 +178854,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "投資入門"
-          }
-        }
-      }
-    },
-    "iOS keeps this setting. Turning it off opens Cue in iOS Settings." : {
-      "comment" : "Settings › Notifications footer, notifications allowed: the switch can only be turned off in iOS Settings",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يحتفظ iOS بهذا الإعداد. إيقافه يفتح Cue في إعدادات iOS."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS styrer denne indstilling. Slår du den fra, åbnes Cue i iOS-indstillinger."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Diese Einstellung liegt bei iOS. Beim Ausschalten öffnet sich Cue in den iOS-Einstellungen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS controla este ajuste. Al desactivarlo se abre Cue en Ajustes de iOS."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ce réglage appartient à iOS. Le désactiver ouvre Cue dans les Réglages d’iOS."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "यह सेटिंग iOS के पास है। इसे बंद करने पर iOS सेटिंग्स में Cue खुलता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pengaturan ini dikelola iOS. Menonaktifkannya membuka Cue di Pengaturan iOS."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Questa impostazione è gestita da iOS. Disattivandola si apre Cue nelle Impostazioni di iOS."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "この設定はiOSが管理します。オフにするとiOSの設定でCueが開きます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 설정은 iOS가 관리합니다. 끄면 iOS 설정에서 Cue가 열립니다."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS styrer denne innstillingen. Slår du den av, åpnes Cue i iOS-innstillinger."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS beheert deze instelling. Uitzetten opent Cue in iOS-instellingen."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esse ajuste é do iOS. Desativar abre o Cue nos Ajustes do iOS."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS styr den här inställningen. Om du stänger av den öppnas Cue i iOS-inställningar."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS เป็นผู้ควบคุมการตั้งค่านี้ การปิดจะเปิด Cue ในการตั้งค่า iOS"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bu ayarı iOS yönetir. Kapatmak, Cue’yu iOS Ayarları’nda açar."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS quản lý cài đặt này. Tắt sẽ mở Cue trong Cài đặt iOS."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此设置由 iOS 管理。关闭时会在 iOS 设置中打开 Cue。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此設定由 iOS 管理。關閉時會在 iOS 設定中打開 Cue。"
           }
         }
       }
@@ -211673,125 +211552,6 @@
         }
       }
     },
-    "My creation routine" : {
-      "comment" : "Notification category",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "روتين الإنشاء الخاص بي"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Min skaberrutine"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meine Kreativroutine"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mi rutina de creación"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ma routine de création"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मेरी क्रिएशन रूटीन"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Rutinitas kreasiku"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La mia routine creativa"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自分の制作ルーティン"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "나의 제작 루틴"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Min skaperrutine"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mijn creatieroutine"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Minha rotina de criação"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Min skaparrutin"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "กิจวัตรการสร้างของฉัน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Üretim rutinim"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lịch sáng tạo của tôi"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我的创作日程"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我的創作行程"
-          }
-        }
-      }
-    },
     "My Cue Voice" : {
       "localizations" : {
         "ar" : {
@@ -213211,125 +212971,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "我的片語"
-          }
-        }
-      }
-    },
-    "My reminders" : {
-      "comment" : "Notification category",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تذكيراتي"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mine påmindelser"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meine Erinnerungen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mis recordatorios"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mes rappels"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मेरे रिमाइंडर"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pengingatku"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I miei promemoria"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自分のリマインダー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "내 리마인더"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mine påminnelser"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mijn herinneringen"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meus lembretes"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mina påminnelser"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "การเตือนของฉัน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hatırlatıcılarım"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lời nhắc của tôi"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我的提醒"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "我的提醒"
           }
         }
       }
@@ -216761,125 +216402,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "新提示"
-          }
-        }
-      }
-    },
-    "New features, and your year in review" : {
-      "comment" : "Detail of What's new in Cue",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ميزات جديدة، ومراجعة عامك"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nye funktioner og dit år i tilbageblik"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neue Funktionen und dein Jahresrückblick"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Funciones nuevas y tu resumen del año"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nouvelles fonctions et votre bilan de l’année"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "नए फ़ीचर और आपका साल भर का सार"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fitur baru, dan kilas balik tahunmu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nuove funzioni e il tuo anno in rassegna"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "新機能と、1年のふり返り"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "새로운 기능과 한 해 돌아보기"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nye funksjoner og året ditt i tilbakeblikk"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nieuwe functies en je jaaroverzicht"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recursos novos e sua retrospectiva do ano"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nya funktioner och ditt år i backspegeln"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ฟีเจอร์ใหม่ และสรุปปีของคุณ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yeni özellikler ve yıllık özetin"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tính năng mới và nhìn lại năm của bạn"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "新功能，以及你的年度回顾"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "新功能，以及你的年度回顧"
           }
         }
       }
@@ -231469,6 +230991,125 @@
         }
       }
     },
+    "Notifications are off" : {
+      "comment" : "Settings › Notifications: card title when iOS was never asked for permission",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإشعارات متوقفة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifikationer er slået fra"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen sind aus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las notificaciones están desactivadas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notifications sont désactivées"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सूचनाएँ बंद हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifikasi mati"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le notifiche sono disattivate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知はオフです"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림이 꺼져 있습니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsler er av"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldingen staan uit"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As notificações estão desligadas"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notiser är av"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การแจ้งเตือนปิดอยู่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirimler kapalı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thông báo đang tắt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知已关闭"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知已關閉"
+          }
+        }
+      }
+    },
     "Notifications are off for Cue in iOS Settings. The reminder is kept here in Cue." : {
       "comment" : "Reminder sheet note when denied",
       "localizations" : {
@@ -231588,121 +231229,478 @@
         }
       }
     },
-    "Now and then, a tool that fits what you’re making" : {
-      "comment" : "Detail of Discover tools and ideas",
+    "Notifications are on" : {
+      "comment" : "Settings › Notifications: title of the switch on top when iOS allows Cue",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "من حين لآخر، أداة تناسب ما تصنعه"
+            "value" : "الإشعارات مفعّلة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nu og da et værktøj, der passer til det, du laver"
+            "value" : "Notifikationer er slået til"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ab und zu ein Werkzeug, das zu deinen Videos passt"
+            "value" : "Mitteilungen sind an"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De vez en cuando, una herramienta que encaja con lo que creas"
+            "value" : "Las notificaciones están activadas"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De temps en temps, un outil adapté à ce que vous créez"
+            "value" : "Les notifications sont activées"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "कभी-कभी, आपके काम के लायक एक टूल"
+            "value" : "सूचनाएँ चालू हैं"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sesekali, alat yang cocok dengan yang kamu buat"
+            "value" : "Notifikasi aktif"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ogni tanto, uno strumento adatto a quello che crei"
+            "value" : "Le notifiche sono attive"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ときどき、制作に合うツールを"
+            "value" : "通知はオンです"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "가끔, 만드는 콘텐츠에 맞는 도구를"
+            "value" : "알림이 켜져 있습니다"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Av og til et verktøy som passer det du lager"
+            "value" : "Varsler er på"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Af en toe een tool die past bij wat je maakt"
+            "value" : "Meldingen staan aan"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De vez em quando, uma ferramenta que combina com o que você cria"
+            "value" : "As notificações estão ligadas"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Då och då ett verktyg som passar det du gör"
+            "value" : "Notiser är på"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เป็นครั้งคราว เครื่องมือที่เหมาะกับสิ่งที่คุณสร้าง"
+            "value" : "การแจ้งเตือนเปิดอยู่"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ara sıra, ürettiklerine uyan bir araç"
+            "value" : "Bildirimler açık"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thỉnh thoảng, một công cụ hợp với nội dung bạn làm"
+            "value" : "Thông báo đang bật"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "偶尔推荐适合你创作的工具"
+            "value" : "通知已开启"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "偶爾推薦適合你創作的工具"
+            "value" : "通知已開啟"
+          }
+        }
+      }
+    },
+    "Notifications arrive quietly" : {
+      "comment" : "Settings › Notifications: card title for provisional authorization (delivered quietly)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تصل الإشعارات بهدوء"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifikationer kommer stille"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen kommen still an"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las notificaciones llegan en silencio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notifications arrivent discrètement"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सूचनाएँ चुपचाप आती हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifikasi tiba diam-diam"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le notifiche arrivano in silenzio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知は静かに届きます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "알림이 조용히 도착합니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsler kommer stille"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldingen komen stil binnen"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As notificações chegam em silêncio"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notiser kommer tyst"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การแจ้งเตือนเข้ามาแบบเงียบๆ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirimler sessizce gelir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thông báo đến yên lặng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知会静默送达"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知會安靜送達"
+          }
+        }
+      }
+    },
+    "Notifications are off in iOS" : {
+      "comment" : "Settings › Notifications: card title when the creator refused notifications in iOS",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإشعارات متوقفة في iOS"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifikationer er slået fra i iOS"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mitteilungen sind in iOS aus"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Las notificaciones están desactivadas en iOS"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Les notifications sont désactivées dans iOS"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS में सूचनाएँ बंद हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notifikasi mati di iOS"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le notifiche sono disattivate in iOS"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOSで通知がオフになっています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iOS에서 알림이 꺼져 있습니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Varsler er av i iOS"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Meldingen staan uit in iOS"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "As notificações estão desligadas no iOS"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Notiser är av i iOS"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การแจ้งเตือนปิดอยู่ใน iOS"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bildirimler iOS’ta kapalı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thông báo đang tắt trong iOS"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知已在 iOS 中关闭"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "通知已在 iOS 中關閉"
+          }
+        }
+      }
+    },
+    "Now and then, something new for you." : {
+      "comment" : "Settings › Notifications: under the switch Tools and news",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "من حين لآخر، شيء جديد لك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En gang imellem noget nyt til dig."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ab und zu etwas Neues für dich."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De vez en cuando, algo nuevo para ti."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De temps en temps, quelque chose de nouveau pour vous."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कभी-कभी, आपके लिए कुछ नया।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesekali, sesuatu yang baru untukmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ogni tanto, qualcosa di nuovo per te."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ときどき、あなたに合う新しいこと。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가끔, 당신을 위한 새로운 소식."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nå og da noe nytt til deg."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Af en toe iets nieuws voor jou."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De vez em quando, algo novo para você."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Då och då något nytt för dig."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บางครั้ง มีสิ่งใหม่สำหรับคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arada bir, senin için yeni bir şey."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thỉnh thoảng, một điều mới dành cho bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "偶尔，为你带来新东西。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "偶爾，為你帶來新東西。"
           }
         }
       }
@@ -232893,244 +232891,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "關閉"
-          }
-        }
-      }
-    },
-    "Off in iOS Settings" : {
-      "comment" : "Settings › Notifications: the creator turned Cue's notifications off in iOS",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "متوقف في إعدادات iOS"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slået fra i iOS-indstillinger"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In den iOS-Einstellungen aus"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desactivadas en Ajustes de iOS"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Désactivées dans les Réglages d’iOS"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS सेटिंग्स में बंद"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nonaktif di Pengaturan iOS"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disattivate nelle Impostazioni di iOS"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOSの設定でオフ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS 설정에서 꺼짐"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Av i iOS-innstillinger"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uit in iOS-instellingen"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desativadas nos Ajustes do iOS"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Av i iOS-inställningar"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ปิดอยู่ในการตั้งค่า iOS"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "iOS Ayarları’nda kapalı"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã tắt trong Cài đặt iOS"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已在 iOS 设置中关闭"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已在 iOS 設定中關閉"
-          }
-        }
-      }
-    },
-    "Off: “your script” instead of its name" : {
-      "comment" : "Detail of Show titles in previews",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "عند الإيقاف: «نصك» بدلًا من اسمه"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fra: „dit manuskript“ i stedet for navnet"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aus: „dein Skript“ statt seines Namens"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desactivado: «tu guion» en lugar de su nombre"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Désactivé : « votre script » au lieu de son nom"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "बंद: नाम की जगह “आपकी स्क्रिप्ट”"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mati: “naskahmu”, bukan namanya"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disattivato: «il tuo copione» invece del nome"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オフ：名前の代わりに「あなたの台本」"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "끔: 이름 대신 ‘대본’으로 표시"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Av: «manuset ditt» i stedet for navnet"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uit: ‘je script’ in plaats van de naam"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Desligado: “seu roteiro” em vez do nome"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Av: ”ditt manus” i stället för namnet"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ปิด: ใช้ “สคริปต์ของคุณ” แทนชื่อ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kapalı: adı yerine “senaryon”"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tắt: “kịch bản của bạn” thay cho tên"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "关闭时：显示“你的脚本”，不显示名称"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "關閉時：顯示「你的腳本」，不顯示名稱"
           }
         }
       }
@@ -234669,125 +234429,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在這台 iPhone 上"
-          }
-        }
-      }
-    },
-    "On those days Cue opens on your next step." : {
-      "comment" : "Footer of the routine",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "في تلك الأيام يفتح Cue على خطوتك التالية."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "På de dage åbner Cue på dit næste trin."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "An diesen Tagen öffnet Cue deinen nächsten Schritt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esos días, Cue se abre en tu siguiente paso."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ces jours-là, Cue s’ouvre sur votre prochaine étape."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "उन दिनों Cue आपके अगले कदम पर खुलता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Di hari-hari itu Cue terbuka di langkah berikutnya."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In quei giorni Cue si apre sul tuo prossimo passo."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "その日は、Cueが次のステップから開きます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "그날에는 Cue가 다음 단계에서 열립니다."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disse dagene åpner Cue på neste steg."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Op die dagen opent Cue bij je volgende stap."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nesses dias, o Cue abre no seu próximo passo."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "De dagarna öppnar Cue på ditt nästa steg."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ในวันเหล่านั้น Cue จะเปิดที่ขั้นตอนถัดไปของคุณ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O günlerde Cue bir sonraki adımında açılır."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vào những ngày đó, Cue mở ngay bước tiếp theo của bạn."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在这些日子里，Cue 会直接打开你的下一步。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在這些日子裡，Cue 會直接打開你的下一步。"
           }
         }
       }
@@ -237042,125 +236683,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "只讀取了主要語言。"
-          }
-        }
-      }
-    },
-    "Only the ones you set" : {
-      "comment" : "Detail of My reminders",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "فقط التي تضبطها أنت"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kun dem, du selv opretter"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nur die, die du festlegst"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo los que tú configuras"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uniquement ceux que vous créez"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "सिर्फ़ वे जो आप सेट करते हैं"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hanya yang kamu atur"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Solo quelli che imposti tu"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自分で設定したものだけ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "직접 설정한 것만"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bare de du lager selv"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Alleen de herinneringen die je zelf instelt"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Só os que você define"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bara de du själv ställer in"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เฉพาะที่คุณตั้งไว้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yalnızca senin kurdukların"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chỉ những lời nhắc bạn đặt"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "仅限你设置的提醒"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "只有你設定的提醒"
           }
         }
       }
@@ -246629,244 +246151,6 @@
         }
       }
     },
-    "Pause automatic notifications" : {
-      "comment" : "Row title",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إيقاف الإشعارات التلقائية مؤقتًا"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sæt automatiske notifikationer på pause"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatische Mitteilungen pausieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausar notificaciones automáticas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suspendre les notifications automatiques"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अपने-आप आने वाली सूचनाएँ रोकें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeda notifikasi otomatis"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Metti in pausa le notifiche automatiche"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "自動通知を一時停止"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "자동 알림 일시 중지"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sett automatiske varsler på pause"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Automatische meldingen pauzeren"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausar notificações automáticas"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausa automatiska notiser"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "หยุดการแจ้งเตือนอัตโนมัติชั่วคราว"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Otomatik bildirimleri duraklat"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tạm dừng thông báo tự động"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暂停自动通知"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暫停自動通知"
-          }
-        }
-      }
-    },
-    "Pause for…" : {
-      "comment" : "Menu button that pauses automatic notifications",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "إيقاف مؤقت لمدة…"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pause i…"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausieren für…"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausar durante…"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suspendre pendant…"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "इतने समय रोकें…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jeda selama…"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausa per…"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "一時停止…"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "일시 중지 기간…"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pause i…"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pauzeren voor…"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausar por…"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausa i…"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "หยุดชั่วคราว…"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Şu süre duraklat…"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tạm dừng trong…"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暂停时长…"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "暫停時長…"
-          }
-        }
-      }
-    },
     "Pause removed" : {
       "localizations" : {
         "ar" : {
@@ -247099,125 +246383,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已暫停"
-          }
-        }
-      }
-    },
-    "Paused until %@" : {
-      "comment" : "Under Pause automatic notifications; the date",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "متوقف حتى %@"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "På pause indtil %@"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausiert bis %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En pausa hasta el %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suspendu jusqu’au %@"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ तक रुका हुआ"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dijeda hingga %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "In pausa fino al %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@まで一時停止中"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@까지 일시 중지됨"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "På pause til %@"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gepauzeerd tot %@"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausado até %@"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pausad till %@"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "หยุดไว้ถึง %@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ tarihine kadar duraklatıldı"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tạm dừng đến %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已暂停至 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已暫停至 %@"
           }
         }
       }
@@ -271142,125 +270307,6 @@
         }
       }
     },
-    "Quiet from" : {
-      "comment" : "Start of the quiet hours",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الهدوء من"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stille fra"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ruhe ab"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Silencio desde"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Silence à partir de"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "शांति शुरू"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tenang mulai"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Silenzio dalle"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "静かな時間の開始"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "조용한 시간 시작"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stille fra"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stil vanaf"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Silêncio a partir de"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tyst från"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ช่วงเงียบเริ่ม"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sessiz başlangıcı"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yên lặng từ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "安静时段开始"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "安靜時段開始"
-          }
-        }
-      }
-    },
     "Quieter while someone speaks" : {
       "localizations" : {
         "ar" : {
@@ -280496,6 +279542,125 @@
         }
       }
     },
+    "Remind me to create" : {
+      "comment" : "Settings › Notifications: switch of the creation routine (days and time)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ذكّرني بالإنشاء"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mind mig om at skabe"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Erinnere mich ans Kreativsein"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Recuérdame crear"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Me rappeler de créer"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "मुझे बनाने की याद दिलाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ingatkan aku untuk berkarya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ricordami di creare"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "制作の時間を知らせる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "제작 시간 알려 주기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minn meg på å skape"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Herinner me eraan te creëren"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Me lembrar de criar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Påminn mig om att skapa"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เตือนให้ฉันสร้างสรรค์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Üretmemi hatırlat"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nhắc tôi sáng tạo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提醒我创作"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "提醒我創作"
+          }
+        }
+      }
+    },
     "Remind me…" : {
       "comment" : "Menu item on a script or take",
       "localizations" : {
@@ -288613,125 +287778,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "成果"
-          }
-        }
-      }
-    },
-    "Resume now" : {
-      "comment" : "End the pause",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "استئناف الآن"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Genoptag nu"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jetzt fortsetzen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reanudar ahora"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Reprendre maintenant"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अभी फिर से शुरू करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lanjutkan sekarang"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Riprendi ora"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "今すぐ再開"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "지금 다시 시작"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fortsett nå"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nu hervatten"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retomar agora"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Återuppta nu"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เริ่มต่อเลย"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Şimdi devam ettir"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tiếp tục ngay"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "立即恢复"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "立即恢復"
           }
         }
       }
@@ -302376,125 +301422,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你認可的腳本"
-          }
-        }
-      }
-    },
-    "Scripts, comments and your imported writing are never in a notification." : {
-      "comment" : "Privacy footer",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا تظهر النصوص والتعليقات وكتاباتك المستوردة في أي إشعار أبدًا."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Manuskripter, kommentarer og din importerede tekst kommer aldrig med i en notifikation."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skripte, Kommentare und deine importierten Texte stehen nie in einer Mitteilung."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Los guiones, los comentarios y tus textos importados nunca aparecen en una notificación."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Les scripts, commentaires et textes importés n’apparaissent jamais dans une notification."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "स्क्रिप्ट, कमेंट और आपकी इंपोर्ट की गई लिखावट कभी किसी सूचना में नहीं आती।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naskah, komentar, dan tulisan yang kamu impor tidak pernah muncul di notifikasi."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Copioni, commenti e i testi che hai importato non compaiono mai in una notifica."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "台本、コメント、読み込んだ文章が通知に含まれることはありません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "대본, 댓글, 가져온 글은 알림에 절대 표시되지 않습니다."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Manus, kommentarer og tekst du har importert, vises aldri i et varsel."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scripts, reacties en je geïmporteerde teksten staan nooit in een melding."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Roteiros, comentários e seus textos importados nunca aparecem em uma notificação."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Manus, kommentarer och din importerade text visas aldrig i en notis."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "สคริปต์ ความคิดเห็น และงานเขียนที่คุณนำเข้า จะไม่ปรากฏในการแจ้งเตือน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Senaryolar, yorumlar ve içe aktardığın yazılar hiçbir zaman bildirimde yer almaz."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kịch bản, bình luận và bài viết bạn đã nhập không bao giờ xuất hiện trong thông báo."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "脚本、评论和你导入的文字绝不会出现在通知中。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "腳本、留言和你匯入的文字絕不會出現在通知中。"
           }
         }
       }
@@ -318139,125 +317066,6 @@
         }
       }
     },
-    "Show titles in previews" : {
-      "comment" : "Switch: project titles in notification text",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "عرض العناوين في المعاينات"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vis titler i forhåndsvisninger"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Titel in Vorschauen zeigen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar títulos en las vistas previas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Afficher les titres dans les aperçus"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "प्रीव्यू में शीर्षक दिखाएँ"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tampilkan judul di pratinjau"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostra i titoli nelle anteprime"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "プレビューにタイトルを表示"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "미리보기에 제목 표시"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vis titler i forhåndsvisninger"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Titels tonen in voorvertoningen"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mostrar títulos nas prévias"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visa titlar i förhandsvisningar"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แสดงชื่อในตัวอย่าง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Önizlemelerde başlıkları göster"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hiện tiêu đề trong bản xem trước"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在预览中显示标题"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "在預覽中顯示標題"
-          }
-        }
-      }
-    },
     "Showing the original" : {
       "localizations" : {
         "ar" : {
@@ -318728,6 +317536,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "顯示所有步驟"
+          }
+        }
+      }
+    },
+    "Shows the details" : {
+      "comment" : "VoiceOver hint on the take review line that expands the details.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعرض التفاصيل"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser detaljerne"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt die Details"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra los detalles"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche les détails"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "विवरण दिखाता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menampilkan detail"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra i dettagli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細を表示します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세부 정보를 보여 줘요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser detaljene"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toont de details"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra os detalhes"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visar detaljerna"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แสดงรายละเอียด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ayrıntıları gösterir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiện chi tiết"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示详情"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示詳細資訊"
           }
         }
       }
@@ -343496,6 +342423,125 @@
         }
       }
     },
+    "Take %lld of %lld" : {
+      "comment" : "Chip shown for a moment after swiping to another take of the same video. The first argument is the take's 1-based position, the second the number of takes (e.g. Take 2 of 3).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اللقطة %1$lld من %2$lld"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optagelse %1$lld af %2$lld"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take %1$lld von %2$lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toma %1$lld de %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prise %1$lld sur %2$lld"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "टेक %1$lld / %2$lld"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take %1$lld dari %2$lld"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripresa %1$lld di %2$lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テイク %1$lld/%2$lld"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "테이크 %1$lld/%2$lld"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opptak %1$lld av %2$lld"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opname %1$lld van %2$lld"
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Take %1$lld de %2$lld"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tagning %1$lld av %2$lld"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เทค %1$lld จาก %2$lld"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çekim %1$lld / %2$lld"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cảnh quay %1$lld / %2$lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第 %1$lld 个镜头，共 %2$lld 个"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "第 %1$lld 個鏡頭，共 %2$lld 個"
+          }
+        }
+      }
+    },
     "TAKE %lld OF %lld" : {
       "comment" : "The label for a take in a list of takes. The first argument is the 1-based index of the take in the list. The second argument is the count of takes in the list.",
       "isCommentAutoGenerated" : true,
@@ -364487,125 +363533,6 @@
         }
       }
     },
-    "This is during your quiet hours. Your routine still rings, since you chose this time." : {
-      "comment" : "Note under a routine time inside quiet hours",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "هذا الوقت ضمن ساعات الهدوء. سيظل روتينك ينبّهك لأنك اخترته."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Det er i dine stille timer. Din rutine giver stadig besked, fordi du har valgt tidspunktet."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Das liegt in deiner Ruhezeit. Deine Routine meldet sich trotzdem, weil du diese Uhrzeit gewählt hast."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Está dentro de tus horas de silencio. Tu rutina sonará igualmente, porque elegiste esta hora."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "C’est pendant vos heures calmes. Votre routine sonnera quand même, puisque vous avez choisi cette heure."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "यह आपके शांत समय में है। आपकी रूटीन फिर भी बजेगी, क्योंकि यह समय आपने चुना है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ini di jam tenangmu. Rutinitasmu tetap berbunyi, karena kamu memilih waktu ini."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "È durante le tue ore di silenzio. La tua routine suonerà comunque, perché hai scelto tu quest’ora."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "静かな時間に入っています。この時間を選んだので、ルーティンの通知は届きます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "조용한 시간에 해당합니다. 직접 고른 시간이므로 루틴 알림은 그대로 울립니다."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dette er i de stille timene dine. Rutinen varsler likevel, siden du valgte tidspunktet."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dit valt in je stille uren. Je routine meldt zich toch, omdat je deze tijd hebt gekozen."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Isso fica dentro do seu horário de silêncio. Sua rotina toca mesmo assim, porque você escolheu esse horário."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Det är under dina tysta timmar. Din rutin hörs ändå, eftersom du valde tiden."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เวลานี้อยู่ในช่วงเงียบของคุณ กิจวัตรจะยังแจ้งเตือนเพราะคุณเลือกเวลานี้เอง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bu, sessiz saatlerinin içinde. Bu saati sen seçtiğin için rutinin yine de çalar."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thời điểm này nằm trong giờ yên lặng của bạn. Lịch của bạn vẫn báo vì bạn đã chọn giờ này."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "这是你的安静时段。由于是你选择的时间，日程提醒仍会响起。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "這是你的安靜時段。由於是你選擇的時間，行程提醒仍會響起。"
-          }
-        }
-      }
-    },
     "This is hard because you skip this. [pause]" : {
       "localizations" : {
         "ar" : {
@@ -372302,121 +371229,121 @@
         }
       }
     },
-    "Tools and news stay off until you turn them on." : {
-      "comment" : "Footer under the notification categories",
+    "Tools and news" : {
+      "comment" : "Settings › Notifications: switch title for occasional tool or idea suggestions and what's new in the app",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تبقى الأدوات والأخبار متوقفة حتى تشغّلها."
+            "value" : "الأدوات والجديد"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Værktøjer og nyheder er slået fra, indtil du slår dem til."
+            "value" : "Værktøjer og nyheder"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Werkzeuge und Neuigkeiten bleiben aus, bis du sie einschaltest."
+            "value" : "Werkzeuge und Neuigkeiten"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Las herramientas y novedades siguen desactivadas hasta que las actives."
+            "value" : "Herramientas y novedades"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les outils et nouveautés restent désactivés tant que vous ne les activez pas."
+            "value" : "Outils et nouveautés"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "टूल और खबरें तब तक बंद रहती हैं जब तक आप उन्हें चालू न करें।"
+            "value" : "टूल और नई चीज़ें"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alat dan kabar terbaru tetap mati sampai kamu menyalakannya."
+            "value" : "Alat dan kabar terbaru"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Strumenti e novità restano disattivati finché non li attivi."
+            "value" : "Strumenti e novità"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ツールとお知らせは、オンにするまでオフのままです。"
+            "value" : "ツールと新機能"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "도구와 소식은 직접 켜기 전까지 꺼져 있습니다."
+            "value" : "도구와 새 소식"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verktøy og nyheter er av til du slår dem på."
+            "value" : "Verktøy og nyheter"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tools en nieuws blijven uit tot je ze aanzet."
+            "value" : "Tools en nieuws"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ferramentas e novidades ficam desligadas até você ativá-las."
+            "value" : "Ferramentas e novidades"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verktyg och nyheter är av tills du slår på dem."
+            "value" : "Verktyg och nyheter"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เครื่องมือและข่าวสารจะปิดอยู่จนกว่าคุณจะเปิด"
+            "value" : "เครื่องมือและสิ่งใหม่"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Araçlar ve haberler sen açana kadar kapalı kalır."
+            "value" : "Araçlar ve yenilikler"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Công cụ và tin mới luôn tắt cho đến khi bạn bật."
+            "value" : "Công cụ và tin mới"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "工具和新消息默认关闭，由你决定是否开启。"
+            "value" : "工具与新功能"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "工具和新消息預設關閉，由你決定是否開啟。"
+            "value" : "工具與新功能"
           }
         }
       }
@@ -378339,125 +377266,6 @@
         }
       }
     },
-    "Turn it on and iOS asks you once. Cue also asks when you set a reminder." : {
-      "comment" : "Settings › Notifications footer, permission never asked",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "شغّله وسيسألك iOS مرة واحدة. يسأل Cue أيضًا عندما تضبط تذكيرًا."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slå det til, så spørger iOS dig én gang. Cue spørger også, når du indstiller en påmindelse."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Schalte es ein, dann fragt iOS dich einmal. Cue fragt auch, wenn du eine Erinnerung stellst."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Actívalo e iOS te preguntará una vez. Cue también pregunta cuando creas un recordatorio."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Activez-le et iOS vous posera la question une fois. Cue la pose aussi quand vous créez un rappel."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "इसे चालू करें, iOS आपसे एक बार पूछेगा। रिमाइंडर सेट करने पर भी Cue पूछता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aktifkan dan iOS akan bertanya sekali. Cue juga bertanya saat kamu membuat pengingat."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Attivala e iOS te lo chiederà una volta. Cue lo chiede anche quando imposti un promemoria."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "オンにするとiOSが一度だけ確認します。リマインダーを設定するときにもCueが確認します。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "켜면 iOS가 한 번 묻습니다. 리마인더를 설정할 때도 Cue가 묻습니다."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slå det på, så spør iOS deg én gang. Cue spør også når du stiller inn en påminnelse."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zet het aan en iOS vraagt het je één keer. Cue vraagt het ook als je een herinnering instelt."
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ative e o iOS pergunta uma vez. O Cue também pergunta quando você cria um lembrete."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Slå på det så frågar iOS dig en gång. Cue frågar också när du ställer in en påminnelse."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เปิดแล้ว iOS จะถามคุณหนึ่งครั้ง Cue จะถามด้วยเมื่อคุณตั้งการเตือน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Açtığında iOS sana bir kez sorar. Cue da bir hatırlatıcı kurduğunda sorar."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bật lên và iOS sẽ hỏi bạn một lần. Cue cũng hỏi khi bạn đặt lời nhắc."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开后 iOS 会询问你一次。你设置提醒时 Cue 也会询问。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開啟後 iOS 會詢問你一次。你設定提醒時 Cue 也會詢問。"
-          }
-        }
-      }
-    },
     "Turn on" : {
       "localizations" : {
         "ar" : {
@@ -383188,125 +381996,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "冷門看法：%@。[停頓]"
-          }
-        }
-      }
-    },
-    "Until" : {
-      "comment" : "End of the quiet hours",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "حتى"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indtil"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bis"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hasta"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Jusqu’à"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "तक"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sampai"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fino alle"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "終了"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "종료"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Til"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tot"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Até"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Till"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ถึง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bitiş"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đến"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "结束"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "結束"
           }
         }
       }
@@ -398939,125 +397628,6 @@
         }
       }
     },
-    "What’s new in Cue" : {
-      "comment" : "Notification category (opt-in)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الجديد في Cue"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nyt i Cue"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Neu in Cue"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Novedades de Cue"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nouveautés de Cue"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue में नया क्या है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yang baru di Cue"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Novità di Cue"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cueの新機能"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue의 새로운 기능"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nytt i Cue"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nieuw in Cue"
-          }
-        },
-        "pt-BR" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Novidades do Cue"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nytt i Cue"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "มีอะไรใหม่ใน Cue"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue’daki yenilikler"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Có gì mới trong Cue"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 新功能"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cue 新功能"
-          }
-        }
-      }
-    },
     "What's one thing you can't film without?" : {
       "localizations" : {
         "ar" : {
@@ -399649,121 +398219,121 @@
         }
       }
     },
-    "When a script or video you started is waiting" : {
-      "comment" : "Detail of Continue my projects",
+    "When a script or video is waiting." : {
+      "comment" : "Settings › Notifications: under the switch Help me finish what I start",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "عندما ينتظرك نص أو فيديو بدأته"
+            "value" : "عندما يكون هناك نص أو فيديو بانتظارك."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Når et manuskript eller en video, du er begyndt på, venter"
+            "value" : "Når et manuskript eller en video venter."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn ein angefangenes Skript oder Video wartet"
+            "value" : "Wenn ein Skript oder Video auf dich wartet."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuando un guion o video que empezaste te espera"
+            "value" : "Cuando un guion o un video te espera."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quand un script ou une vidéo commencés vous attendent"
+            "value" : "Quand un script ou une vidéo vous attend."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "जब आपकी शुरू की गई स्क्रिप्ट या वीडियो इंतज़ार कर रहा हो"
+            "value" : "जब कोई स्क्रिप्ट या वीडियो इंतज़ार कर रहा हो।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saat naskah atau video yang kamu mulai sedang menunggu"
+            "value" : "Saat naskah atau video sedang menunggu."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quando un copione o un video che hai iniziato ti aspetta"
+            "value" : "Quando uno script o un video ti aspetta."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "始めた台本や動画が待っているとき"
+            "value" : "台本や動画が待っているとき。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "시작한 대본이나 영상이 기다릴 때"
+            "value" : "대본이나 영상이 기다리고 있을 때."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Når et manus eller en video du har begynt på, venter"
+            "value" : "Når et manus eller en video venter."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als een script of video waaraan je begon op je wacht"
+            "value" : "Als er een script of video op je wacht."
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quando um roteiro ou vídeo que você começou está esperando"
+            "value" : "Quando um roteiro ou vídeo estiver esperando."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "När ett manus eller en video du har påbörjat väntar"
+            "value" : "När ett manus eller en video väntar."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เมื่อสคริปต์หรือวิดีโอที่คุณเริ่มไว้กำลังรออยู่"
+            "value" : "เมื่อมีสคริปต์หรือวิดีโอรออยู่"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Başladığın bir senaryo ya da video beklerken"
+            "value" : "Bir metin ya da video seni beklerken."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Khi một kịch bản hoặc video bạn đã bắt đầu đang chờ"
+            "value" : "Khi có kịch bản hoặc video đang chờ."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "当你开始的脚本或视频还在等你时"
+            "value" : "有脚本或视频在等你时。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "當你開始的腳本或影片還在等你時"
+            "value" : "有腳本或影片在等你時。"
           }
         }
       }
@@ -405803,6 +404373,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "不使用"
+          }
+        }
+      }
+    },
+    "Without a banner or a sound." : {
+      "comment" : "Settings › Notifications: card text when notifications are delivered quietly",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بدون شريط تنبيه أو صوت."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uden banner eller lyd."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Banner und ohne Ton."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin aviso ni sonido."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans bannière ni son."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बिना बैनर या आवाज़ के।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanpa banner atau suara."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senza banner né suoni."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "バナーもサウンドもなし。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "배너나 소리 없이."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uten banner eller lyd."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zonder banner of geluid."
+          }
+        },
+        "pt-BR" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem banner nem som."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utan banner eller ljud."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่มีแบนเนอร์หรือเสียง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Afiş ya da ses olmadan."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không có biểu ngữ hay âm thanh."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "没有横幅，也没有声音。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "沒有橫幅，也沒有聲音。"
           }
         }
       }
@@ -418507,121 +417196,121 @@
         }
       }
     },
-    "Your reminders stay here in Cue. Turning this on opens Cue in iOS Settings." : {
-      "comment" : "Settings › Notifications footer, notifications off in iOS",
+    "Your reminders" : {
+      "comment" : "Settings › Notifications: section header above the list of reminders the creator set (rendered in uppercase)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تبقى تذكيراتك هنا في Cue. تشغيل هذا يفتح Cue في إعدادات iOS."
+            "value" : "تذكيراتك"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dine påmindelser bliver her i Cue. Slår du dette til, åbnes Cue i iOS-indstillinger."
+            "value" : "Dine påmindelser"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Erinnerungen bleiben hier in Cue. Beim Einschalten öffnet sich Cue in den iOS-Einstellungen."
+            "value" : "Deine Erinnerungen"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus recordatorios se quedan aquí en Cue. Al activarlo se abre Cue en Ajustes de iOS."
+            "value" : "Tus recordatorios"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos rappels restent ici dans Cue. L’activer ouvre Cue dans les Réglages d’iOS."
+            "value" : "Vos rappels"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आपके रिमाइंडर यहीं Cue में रहते हैं। इसे चालू करने पर iOS सेटिंग्स में Cue खुलता है।"
+            "value" : "आपके रिमाइंडर"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pengingatmu tetap ada di Cue. Mengaktifkannya membuka Cue di Pengaturan iOS."
+            "value" : "Pengingatmu"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I tuoi promemoria restano qui in Cue. Attivandola si apre Cue nelle Impostazioni di iOS."
+            "value" : "I tuoi promemoria"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "リマインダーはCueに残ります。オンにするとiOSの設定でCueが開きます。"
+            "value" : "設定したリマインダー"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "리마인더는 Cue에 그대로 있습니다. 켜면 iOS 설정에서 Cue가 열립니다."
+            "value" : "내 리마인더"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Påminnelsene dine blir her i Cue. Slår du dette på, åpnes Cue i iOS-innstillinger."
+            "value" : "Påminnelsene dine"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je herinneringen blijven hier in Cue. Aanzetten opent Cue in iOS-instellingen."
+            "value" : "Je herinneringen"
           }
         },
         "pt-BR" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seus lembretes ficam aqui no Cue. Ativar abre o Cue nos Ajustes do iOS."
+            "value" : "Seus lembretes"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dina påminnelser stannar här i Cue. Om du slår på detta öppnas Cue i iOS-inställningar."
+            "value" : "Dina påminnelser"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "การเตือนของคุณยังอยู่ใน Cue การเปิดจะเปิด Cue ในการตั้งค่า iOS"
+            "value" : "การเตือนของคุณ"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hatırlatıcıların burada, Cue’da kalır. Açmak, Cue’yu iOS Ayarları’nda açar."
+            "value" : "Hatırlatıcıların"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lời nhắc của bạn vẫn ở trong Cue. Bật sẽ mở Cue trong Cài đặt iOS."
+            "value" : "Lời nhắc của bạn"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的提醒会保留在 Cue 中。打开时会在 iOS 设置中打开 Cue。"
+            "value" : "你的提醒"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的提醒會保留在 Cue 中。開啟時會在 iOS 設定中打開 Cue。"
+            "value" : "你的提醒"
           }
         }
       }

@@ -169,16 +169,46 @@ struct NotificationServiceTests {
         #expect(harness.service.state.counters["category.projects.opted_out"] == 1)
     }
 
-    @Test func aPauseKeepsAutomaticOnesAwayUntilItEnds() async {
+    // MARK: - The three switches and Turn on
+
+    /// Every kind of notification but the creator's own reminders falls under exactly one switch; those always arrive.
+    @Test func theSwitchesHoldEveryCategoryOnceAndRemindersAlwaysArrive() async {
+        let held = NotificationGroup.allCases.flatMap(\.categories)
+        #expect(held.count == NotificationCategory.allCases.count - 1)
+        #expect(Set(held) == Set(NotificationCategory.allCases).subtracting([.reminders]))
         let harness = NotificationServiceHarness()
-        harness.addReadyScript()
-        harness.service.pauseAutomatic(days: 7)
-        await harness.service.reconcile()
-        let dates = harness.automatic().compactMap { request -> Date? in
-            guard case .at(let time) = request.trigger else { return nil }
-            return time.date(in: Fixtures.utc)
-        }
-        #expect(!dates.isEmpty && dates.allSatisfy { $0 >= Fixtures.monday + Fixtures.days(7) })
+        await harness.service.setCategory(.reminders, isOn: false)
+        #expect(harness.service.isOn(.reminders))
+    }
+
+    @Test func aSwitchSetsAllItsCategories() async {
+        let harness = NotificationServiceHarness()
+        await harness.service.setGroup(.finish, isOn: false)
+        #expect(!harness.service.isOn(.projects) && !harness.service.isGroupOn(.finish))
+        await harness.service.setGroup(.news, isOn: true)
+        #expect(harness.service.isOn(.discovery) && harness.service.isOn(.whatsNew))
+    }
+
+    @Test func theRoutineSwitchedOnStartsOnItsUsualDays() async {
+        let harness = NotificationServiceHarness()
+        await harness.service.setGroup(.routine, isOn: true)
+        #expect(harness.service.state.routine == CreationRoutine())
+    }
+
+    /// The card names everything Turn on allows, so iOS's yes turns on tools and news too, and the routine on its usual days.
+    @Test func turnOnWithAYesTurnsEverythingOn() async {
+        let harness = NotificationServiceHarness(status: .notDetermined)
+        #expect(await harness.service.allowEverything().canSchedule)
+        #expect(NotificationCategory.allCases.allSatisfy { harness.service.isOn($0) })
+        #expect(harness.service.state.routine != nil)
+    }
+
+    @Test func turnOnWithANoChangesNothing() async {
+        let harness = NotificationServiceHarness(status: .notDetermined)
+        harness.center.allowsWhenAsked = false
+        #expect(await harness.service.allowEverything() == .denied)
+        #expect(!harness.service.isOn(.discovery) && !harness.service.isOn(.whatsNew))
+        #expect(harness.service.state.routine == nil)
     }
 
     @Test func anUnchangedPlanIsNotHandedToTheSystemAgainButANewLanguageIs() async {

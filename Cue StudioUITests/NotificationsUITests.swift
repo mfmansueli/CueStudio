@@ -5,10 +5,11 @@
 
 import XCTest
 
-/// Notifications from the creator's side: the Settings page (tools and news start off, iOS's answer as a switch), a reminder set from a
-/// script, and what a tapped notification opens — the script, a tool's introduction before the tool, a short explanation when the script
-/// is gone, nothing for a payload Cue can't read, and one opening for a tap the system repeats. The permission is an in-memory stand-in
-/// (`-uiTestNotificationAuth`), so no system prompt ever shows; a tap is simulated at launch (`-uiTestNotificationTap`).
+/// Notifications from the creator's side: the Settings page (iOS's answer as a switch, whose first yes lights the three switches below
+/// together), a reminder set from a script, and what a tapped notification opens — the script, a tool's introduction before the tool, a
+/// short explanation when the script is gone, nothing for a payload Cue can't read, and one opening for a tap the system repeats. The
+/// permission is an in-memory stand-in (`-uiTestNotificationAuth`), so no system prompt ever shows; a tap is simulated at launch
+/// (`-uiTestNotificationTap`).
 @MainActor
 final class NotificationsUITests: XCTestCase {
     override func setUp() {
@@ -40,41 +41,51 @@ final class NotificationsUITests: XCTestCase {
 
     // MARK: - Settings
 
-    func testToolsAndNewsStartOffAndCueSaysItWillAskWhenNeeded() {
+    private func cardTitle(_ app: XCUIApplication) -> XCUIElement {
+        app.staticTexts["notifications.permission.title"]
+    }
+
+    /// Never asked: the switch on top says notifications are off; the three below wait, off, and nothing else asks for a choice.
+    func testNotificationsSayTheyAreOffAndTheSwitchesWait() {
         let app = CueApp.launch(seeded: true)
         openNotificationSettings(app)
-        let permission = app.switches["notifications.permission"]
-        XCTAssertTrue(permission.exists)
-        XCTAssertFalse(isOn(permission), "Not asked yet: the switch is off")
-        XCTAssertTrue(isOn(app.switches["notifications.category.reminders"]))
-        XCTAssertTrue(isOn(app.switches["notifications.category.projects"]))
-        XCTAssertFalse(isOn(app.switches["notifications.category.discovery"]))
-        XCTAssertFalse(isOn(app.switches["notifications.category.whatsNew"]))
+        XCTAssertEqual(cardTitle(app).label, "Notifications are off")
+        XCTAssertFalse(isOn(app.switches["notifications.permission"]))
+        for group in ["finish", "routine", "news"] {
+            let toggle = app.switches["notifications.group.\(group)"]
+            XCTAssertTrue(toggle.exists, group)
+            XCTAssertFalse(isOn(toggle), "\(group) waits until iOS allows Cue")
+        }
         XCTAssertTrue(element(app, "notifications.noReminders").exists)
+        XCTAssertFalse(app.switches["Show titles in previews"].exists, "The page is short: no titles, quiet hours or pause")
     }
 
-    func testTheSwitchAsksIOSOnceAndThenShowsWhatItAllows() {
+    /// The switch on top: iOS asks once and its yes turns everything on together; the routine opens its days.
+    func testTheSwitchAsksIOSAndTurnsEverythingOnTogether() {
         let app = CueApp.launch(seeded: true)
         openNotificationSettings(app)
-        let permission = app.switches["notifications.permission"]
-        XCTAssertFalse(isOn(permission))
-        flip(permission)
-        let allowed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == '1'"), object: permission)
-        XCTAssertEqual(XCTWaiter.wait(for: [allowed], timeout: 5), .completed, "The in-memory iOS says yes, and the switch shows it")
-        XCTAssertTrue(permission.label.contains("On"), "The row says it's on")
+        flip(app.switches["notifications.permission"])
+        for group in ["finish", "routine", "news"] {
+            let lit = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == '1'"), object: app.switches["notifications.group.\(group)"])
+            XCTAssertEqual(XCTWaiter.wait(for: [lit], timeout: 5), .completed, "\(group) lights with the yes")
+        }
+        XCTAssertTrue(element(app, "notifications.routine.day.2").waitForExistence(timeout: 3), "The routine opens on its usual days")
+        XCTAssertTrue(isOn(app.switches["notifications.permission"]))
+        XCTAssertEqual(cardTitle(app).label, "Notifications are on")
+        flip(app.switches["notifications.group.news"])
+        XCTAssertFalse(isOn(app.switches["notifications.group.news"]), "Each switch is the creator's after that")
     }
 
-    func testWithNotificationsOffTheSwitchSaysSoAndOpensIOSSettings() {
+    func testWithNotificationsOffInIOSTheSwitchOpensIOSSettings() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestNotificationAuth", "denied"])
         openNotificationSettings(app)
-        let permission = app.switches["notifications.permission"]
-        XCTAssertFalse(isOn(permission))
-        XCTAssertTrue(permission.label.contains("Off in iOS Settings"))
-        flip(permission)
+        XCTAssertEqual(cardTitle(app).label, "Notifications are off in iOS")
+        flip(app.switches["notifications.permission"])
         let settings = XCUIApplication(bundleIdentifier: "com.apple.Preferences")
         XCTAssertTrue(settings.wait(for: .runningForeground, timeout: 10), "Only iOS Settings can allow Cue again")
         app.activate()
-        XCTAssertFalse(isOn(permission), "Nothing changed in iOS, so the switch is still off")
+        XCTAssertEqual(cardTitle(app).label, "Notifications are off in iOS", "Nothing changed in iOS")
+        XCTAssertFalse(isOn(app.switches["notifications.permission"]))
     }
 
     // MARK: - The invitation
@@ -101,6 +112,7 @@ final class NotificationsUITests: XCTestCase {
         app.pageBackButton.tap()
         openNotificationSettings(app)
         XCTAssertTrue(isOn(app.switches["notifications.permission"]), "Allow brought up iOS's question, and the in-memory iOS said yes")
+        XCTAssertTrue(isOn(app.switches["notifications.group.finish"]))
     }
 
     func testNotNowKeepsIOSsQuestionForLater() {
@@ -112,9 +124,8 @@ final class NotificationsUITests: XCTestCase {
         XCTAssertFalse(element(app, "notificationInvite.sheet").waitForExistence(timeout: 2))
         app.pageBackButton.tap()
         openNotificationSettings(app)
-        let permission = app.switches["notifications.permission"]
-        XCTAssertFalse(isOn(permission), "iOS wasn't asked")
-        XCTAssertTrue(permission.label.contains("Not asked yet"))
+        XCTAssertEqual(cardTitle(app).label, "Notifications are off", "iOS wasn't asked")
+        XCTAssertFalse(isOn(app.switches["notifications.permission"]))
     }
 
     // MARK: - Reminders

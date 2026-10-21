@@ -161,7 +161,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .myCueVoice: ["voice", "style", "tone"]
         case .personalize: ["icon", "sky", "haptics"]
         case .languageRegion: ["language", "locale", "translate"]
-        case .notifications: ["reminders", "routine", "alerts", "quiet hours", "pause"]
+        case .notifications: ["reminders", "routine", "alerts", "tools", "news"]
         case .privacy: ["data", "ai", "delete", "permissions"]
         case .cuePro: ["pro", "subscription", "plan", "upgrade", "trial"]
         case .restorePurchases: ["purchase", "subscription"]
