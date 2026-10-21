@@ -844,7 +844,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“%@”"
+            "value" : "”%@”"
           }
         },
         "de" : {
@@ -962,7 +962,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“%@” er tom"
+            "value" : "”%@” er tom"
           }
         },
         "de" : {
@@ -1198,7 +1198,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Fedt. Endnu et livshack.“"
+            "value" : "”Fedt. Endnu et lifehack.”"
           }
         },
         "de" : {
@@ -1552,7 +1552,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Lad os sætte tempoet ned et øjeblik.“"
+            "value" : "”Lad os sætte tempoet lidt ned.”"
           }
         },
         "de" : {
@@ -1670,7 +1670,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Min vækkeur og jeg er ikke venner.“"
+            "value" : "”Mit vækkeur og jeg er ikke venner.”"
           }
         },
         "de" : {
@@ -1788,7 +1788,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Okay, en hurtig en i dag …“"
+            "value" : "”Okay, en hurtig en i dag…”"
           }
         },
         "de" : {
@@ -1906,7 +1906,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "”Så, det er sådan her…”"
+            "value" : "”Sagen er den…”"
           }
         },
         "de" : {
@@ -2142,7 +2142,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Tre trin. Ingen fyld.“"
+            "value" : "”Tre trin. Intet fyld.”"
           }
         },
         "de" : {
@@ -2261,7 +2261,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“Vi” til en virksomhed, et brand eller et team. Gør du flere ting? Vælg det, du filmer mest."
+            "value" : "”Vi” til en virksomhed, et brand eller et team. Gør du flere ting? Vælg det, du filmer mest."
           }
         },
         "de" : {
@@ -2852,7 +2852,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — meddelelse"
+            "value" : "%@ – meddelelse"
           }
         },
         "de" : {
@@ -2970,7 +2970,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — ærlig anmeldelse"
+            "value" : "%@ – ærlig anmeldelse"
           }
         },
         "de" : {
@@ -3088,7 +3088,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — link i min bio. [kig ind i kameraet] Denne video er et betalt samarbejde."
+            "value" : "%@ – link i min bio. [kig ind i kameraet] Denne video er et betalt samarbejde."
           }
         },
         "de" : {
@@ -3206,7 +3206,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — sponsoreret"
+            "value" : "%@ – sponsoreret"
           }
         },
         "de" : {
@@ -4557,7 +4557,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · POSTES SOM SHORT"
+            "value" : "%@ · VISES SOM SHORT"
           }
         },
         "de" : {
@@ -9097,7 +9097,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ SIKKERT OMRÅDE"
+            "value" : "%@ SIKKER ZONE"
           }
         },
         "de" : {
@@ -9452,7 +9452,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ indstilling"
+            "value" : "%@-opsætning"
           }
         },
         "de" : {
@@ -9690,7 +9690,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ under %@"
+            "value" : "Mangler %1$@ til %2$@"
           }
         },
         "de" : {
@@ -11247,7 +11247,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@, klippet"
+            "value" : "%@, klippet ud"
           }
         },
         "de" : {
@@ -13048,7 +13048,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld cues"
+            "value" : "%lld instruktioner"
           }
         },
         "de" : {
@@ -13166,7 +13166,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld cues tilføjet"
+            "value" : "%lld instruktioner tilføjet"
           }
         },
         "de" : {
@@ -15335,13 +15335,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld linje følger stemmen cirka."
+                  "value" : "%lld linje følger stemmen omtrent."
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld linjer følger stemmen cirka."
+                  "value" : "%lld linjer følger stemmen omtrent."
                 }
               }
             }
@@ -16352,7 +16352,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld MERE FOR AT LÅSE OP"
+            "value" : "%lld TIL FOR AT LÅSE OP"
           }
         },
         "de" : {
@@ -16470,7 +16470,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld mere for at låse %@ op"
+            "value" : "%lld til for at låse %@ op"
           }
         },
         "de" : {
@@ -17904,7 +17904,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld AF %lld TILBAGE · EKSPORTÉR MED PRO"
+            "value" : "%lld AF %lld TILBAGE · EKSPORTER MED PRO"
           }
         },
         "de" : {
@@ -20547,7 +20547,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld videoer — %2$lld tilbage"
+            "value" : "%1$lld videoer – %2$lld tilbage"
           }
         },
         "de" : {
@@ -23009,7 +23009,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld ugers stime"
+            "value" : "%lld uger i træk"
           }
         },
         "de" : {
@@ -24089,7 +24089,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ Din egen"
+            "value" : "+ Dit eget"
           }
         },
         "de" : {
@@ -24800,7 +24800,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Undertekster på · Næste: del"
+            "value" : "✓ Undertekster slået til · Næste: del"
           }
         },
         "de" : {
@@ -25036,7 +25036,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Cue-stemmen er komplet"
+            "value" : "✓ Cue Voice er komplet"
           }
         },
         "de" : {
@@ -26458,7 +26458,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ %lld%%"
+            "value" : "✦ %lld %%"
           }
         },
         "de" : {
@@ -26931,7 +26931,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Skriv mit svar"
+            "value" : "✦ Lav udkast til mit svar"
           }
         },
         "de" : {
@@ -27050,7 +27050,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Lav udkast til mit manus"
+            "value" : "✦ Lav udkast til mit manuskript"
           }
         },
         "de" : {
@@ -28237,7 +28237,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Skriv"
+            "value" : "✦ Lav udkast"
           }
         },
         "de" : {
@@ -28591,7 +28591,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 cue"
+            "value" : "1 instruktion"
           }
         },
         "de" : {
@@ -30615,7 +30615,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4 hurtige spørgsmål — cirka 20 sekunder. Ingen skrivning nødvendig."
+            "value" : "4 hurtige spørgsmål, cirka 20 sekunder. Du skal ikke skrive noget."
           }
         },
         "de" : {
@@ -32745,7 +32745,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Et første udkast. Dit at ændre."
+            "value" : "Et første udkast. Ret det, som du vil."
           }
         },
         "de" : {
@@ -32863,7 +32863,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En veninde fik mig til at prøve det her — jeg skylder hende."
+            "value" : "En veninde fik mig til at prøve det her – jeg skylder hende."
           }
         },
         "de" : {
@@ -33336,7 +33336,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En latte art-hældning foran kameraet"
+            "value" : "Latte art foran kameraet"
           }
         },
         "de" : {
@@ -36658,7 +36658,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bekræft"
+            "value" : "Erkendelse"
           }
         },
         "de" : {
@@ -36776,7 +36776,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tak"
+            "value" : "Anerkendelser"
           }
         },
         "de" : {
@@ -37488,7 +37488,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilføj en keyframe, flyt afspilningshovedet, og træk så fotoet eller videoen — Cue flytter det mellem keyframes."
+            "value" : "Tilføj en keyframe, flyt afspilningsmarkøren, og træk så fotoet eller videoen. Cue flytter det mellem keyframes."
           }
         },
         "de" : {
@@ -37606,7 +37606,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilføj en keyframe, flyt afspilningshovedet, og træk så teksten i videoen — Cue flytter den mellem keyframes."
+            "value" : "Tilføj en keyframe, flyt afspilningsmarkøren, og træk så teksten i videoen. Cue flytter den mellem keyframes."
           }
         },
         "de" : {
@@ -37724,7 +37724,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilføj en linje ved afspilningshovedet"
+            "value" : "Tilføj en linje ved afspilningsmarkøren"
           }
         },
         "de" : {
@@ -38198,7 +38198,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilføj en speak"
+            "value" : "Tilføj en voiceover"
           }
         },
         "de" : {
@@ -40568,7 +40568,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilføjes før hver idé, du sender til Cue — manuskripter, hooks og svar, sammen med hvor du poster og det format, du vælger. Bruges aldrig til at træne modeller."
+            "value" : "Tilføjes før hver idé, du sender til Cue (manuskripter, hooks, svar), sammen med hvor du deler, og det format, du vælger. Bruges aldrig til at træne modeller."
           }
         },
         "de" : {
@@ -41042,7 +41042,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilføjer #ad til din billedtekst"
+            "value" : "Tilføjer #ad til din opslagstekst"
           }
         },
         "de" : {
@@ -41160,7 +41160,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Justér"
+            "value" : "Juster"
           }
         },
         "de" : {
@@ -42108,7 +42108,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Når du har slået op, tryk ◀ Cue øverst til venstre. Vi vender tilbage for at afslutte."
+            "value" : "Når du har slået den op, så tryk på ◀ Cue øverst til venstre for at gøre det færdigt."
           }
         },
         "de" : {
@@ -42226,7 +42226,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Når du har slået op, tryk ◀ Cue øverst til venstre. Så åbner vi %@ næste gang."
+            "value" : "Når du har slået den op, så tryk på ◀ Cue øverst til venstre. Derefter åbnes %@."
           }
         },
         "de" : {
@@ -44136,7 +44136,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Du er med"
+            "value" : "Alt er klaret"
           }
         },
         "de" : {
@@ -45082,7 +45082,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tillad Cue i Indstillinger på iOS."
+            "value" : "Tillad Cue i Indstillinger."
           }
         },
         "de" : {
@@ -47222,7 +47222,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En idé venter i din logbog"
+            "value" : "En idé venter i din Logbog"
           }
         },
         "de" : {
@@ -47577,7 +47577,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Og så — %@. [beat]"
+            "value" : "Og så – %@. [kort pause]"
           }
         },
         "de" : {
@@ -47695,7 +47695,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Og så — %@. [smil]"
+            "value" : "Og så – %@. [smil]"
           }
         },
         "de" : {
@@ -53339,7 +53339,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spørger, om videoen er klar til at blive postet"
+            "value" : "Spørger, om videoen er klar til at blive delt"
           }
         },
         "de" : {
@@ -54285,7 +54285,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autojustér"
+            "value" : "Autojuster"
           }
         },
         "de" : {
@@ -54403,7 +54403,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto anvendt · Justér nedenfor"
+            "value" : "Auto anvendt · Juster nedenfor"
           }
         },
         "de" : {
@@ -54875,7 +54875,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Registrér automatisk"
+            "value" : "Registrer automatisk"
           }
         },
         "de" : {
@@ -55347,7 +55347,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bag · Tele"
+            "value" : "Bagside · Tele"
           }
         },
         "de" : {
@@ -55465,7 +55465,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bag · Ultravidvinkel"
+            "value" : "Bagside · Ultravidvinkel"
           }
         },
         "de" : {
@@ -55583,7 +55583,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bag · Vidvinkel"
+            "value" : "Bagside · Vidvinkel"
           }
         },
         "de" : {
@@ -56055,7 +56055,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilbage til min indstilling"
+            "value" : "Tilbage til min opsætning"
           }
         },
         "de" : {
@@ -56528,7 +56528,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilbage til din indstilling"
+            "value" : "Tilbage til din opsætning"
           }
         },
         "de" : {
@@ -57829,7 +57829,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "beat"
+            "value" : "kort pause"
           }
         },
         "de" : {
@@ -58659,7 +58659,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Før alt andet — jeg er ked af det."
+            "value" : "Allerførst: Jeg er ked af det."
           }
         },
         "de" : {
@@ -60792,7 +60792,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stort + fremhæv"
+            "value" : "Stor + fremhævning"
           }
         },
         "de" : {
@@ -61504,7 +61504,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Større, højere tekst"
+            "value" : "Større, mere markant tekst"
           }
         },
         "de" : {
@@ -61979,7 +61979,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mening"
+            "value" : "Standpunkt"
           }
         },
         "de" : {
@@ -63168,7 +63168,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rødmen"
+            "value" : "Pudderrosa"
           }
         },
         "de" : {
@@ -65181,7 +65181,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brand-skaber"
+            "value" : "Brand-creator"
           }
         },
         "de" : {
@@ -65774,7 +65774,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ånd"
+            "value" : "træk vejret"
           }
         },
         "de" : {
@@ -66128,7 +66128,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Før frem"
+            "value" : "Flyt fremad"
           }
         },
         "de" : {
@@ -66247,7 +66247,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Medbring manuskripter, billedtekster eller noter, du har skrevet. Cue lærer af dem, hvordan du skriver, på denne iPhone."
+            "value" : "Hent manuskripter, opslagstekster eller noter, du har skrevet. Cue lærer af dem, hvordan du skriver, på denne iPhone."
           }
         },
         "de" : {
@@ -66722,7 +66722,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Billig skønhed"
+            "value" : "Skønhed på budget"
           }
         },
         "de" : {
@@ -66841,7 +66841,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Billig madlavning"
+            "value" : "Madlavning på budget"
           }
         },
         "de" : {
@@ -68741,7 +68741,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afvis én overbevisning"
+            "value" : "Afliv én overbevisning"
           }
         },
         "de" : {
@@ -70163,7 +70163,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kamera · Mikrofon · Tale"
+            "value" : "Kamera · Mikrofon · Talegenkendelse"
           }
         },
         "de" : {
@@ -70635,7 +70635,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kamera, mikrofon, kvalitet, format og teleprompter går tilbage til Cues standardværdier. Dine manuskripter, optagelser og redigeringer bliver."
+            "value" : "Kamera, mikrofon, kvalitet, format og teleprompter går tilbage til Cues standardværdier. Dine manuskripter, optagelser og redigeringer bevares."
           }
         },
         "de" : {
@@ -71463,7 +71463,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder ikke personer · Brug en grøn eller blå skærm"
+            "value" : "Kan ikke finde personer her · Brug en grøn eller blå skærm"
           }
         },
         "de" : {
@@ -71820,7 +71820,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kan ikke nå App Store"
+            "value" : "Kan ikke få forbindelse til App Store"
           }
         },
         "de" : {
@@ -72058,7 +72058,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kan ikke vende dette klip"
+            "value" : "Klippet kan ikke afspilles baglæns"
           }
         },
         "de" : {
@@ -72294,7 +72294,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Annullér"
+            "value" : "Annuller"
           }
         },
         "de" : {
@@ -72412,7 +72412,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Annullér nedtællingen"
+            "value" : "Annuller nedtællingen"
           }
         },
         "de" : {
@@ -73004,7 +73004,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Billedtekst kopieret · indsæt den i %@"
+            "value" : "Opslagstekst kopieret · indsæt den i %@"
           }
         },
         "de" : {
@@ -76207,7 +76207,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fang den i logbogen nu. Arbejd videre med den senere."
+            "value" : "Fang den i Logbogen nu. Arbejd videre med den senere."
           }
         },
         "de" : {
@@ -76798,7 +76798,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ændr det når som helst i Profil › Min Cue-stemme."
+            "value" : "Ændr det når som helst i Profil › My Cue Voice."
           }
         },
         "de" : {
@@ -77154,7 +77154,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skifte hastighed"
+            "value" : "Skift hastighed"
           }
         },
         "de" : {
@@ -78457,7 +78457,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "KAPITEL 5 · ØV"
+            "value" : "KAPITEL 5 · ØVELSE"
           }
         },
         "de" : {
@@ -78576,7 +78576,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Billige fly"
+            "value" : "Billige flybilletter"
           }
         },
         "de" : {
@@ -79051,7 +79051,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tjek kommentaren, før Cue skriver."
+            "value" : "Tjek kommentaren, før Cue laver et udkast."
           }
         },
         "de" : {
@@ -81065,7 +81065,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cinema"
+            "value" : "Filmisk"
           }
         },
         "de" : {
@@ -81774,7 +81774,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ren"
+            "value" : "Clean"
           }
         },
         "de" : {
@@ -83085,7 +83085,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klip %1$lld af %2$lld, %3$@, afspilningshoved ved %4$@"
+            "value" : "Klip %1$lld af %2$lld, %3$@, afspilningsmarkør ved %4$@"
           }
         },
         "de" : {
@@ -86289,7 +86289,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kommer færdigt: sektioner, cues og timing."
+            "value" : "Klar fra start: sektioner, instruktioner og timing."
           }
         },
         "de" : {
@@ -87236,7 +87236,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fællesskabsskaber"
+            "value" : "Community-creator"
           }
         },
         "de" : {
@@ -88185,7 +88185,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rentes rente, enkelt forklaret"
+            "value" : "Renters rente, enkelt forklaret"
           }
         },
         "de" : {
@@ -89962,7 +89962,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FORTSÆT OPSLAG · %lld AF %lld"
+            "value" : "FORTSÆT DELING · %lld AF %lld"
           }
         },
         "de" : {
@@ -91391,7 +91391,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopierede @%@"
+            "value" : "@%@ er kopieret"
           }
         },
         "de" : {
@@ -91510,7 +91510,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopiér"
+            "value" : "Kopier"
           }
         },
         "de" : {
@@ -91628,7 +91628,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopiér @brugernavn"
+            "value" : "Kopier @brugernavn"
           }
         },
         "de" : {
@@ -91747,7 +91747,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopiér først et klips look"
+            "value" : "Kopier først et klips look"
           }
         },
         "de" : {
@@ -91867,7 +91867,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopiér igen"
+            "value" : "Kopier igen"
           }
         },
         "de" : {
@@ -91986,7 +91986,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopiér look"
+            "value" : "Kopier look"
           }
         },
         "de" : {
@@ -92104,7 +92104,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopiér først kommentaren, og indsæt den så her."
+            "value" : "Kopier først kommentaren, og indsæt den så her."
           }
         },
         "de" : {
@@ -92222,7 +92222,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopiér dit manuskript først"
+            "value" : "Kopier dit manuskript først"
           }
         },
         "de" : {
@@ -92465,7 +92465,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Retter %lld%% af videoen. Blink og blikke væk forbliver som filmet."
+            "value" : "Retter %lld %% af videoen. Blink og blik væk fra kameraet bevares, som de blev filmet."
           }
         },
         "de" : {
@@ -93179,7 +93179,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kunne ikke følge noget der · Placér den på det, den skal følge"
+            "value" : "Kunne ikke følge noget der · Placer den på det, den skal følge"
           }
         },
         "de" : {
@@ -94125,7 +94125,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kunne ikke nå App Store. Tjek din forbindelse, og prøv igen."
+            "value" : "Kunne ikke få forbindelse til App Store. Tjek din forbindelse, og prøv igen."
           }
         },
         "de" : {
@@ -94716,7 +94716,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kunne ikke starte lytning"
+            "value" : "Kunne ikke begynde at lytte"
           }
         },
         "de" : {
@@ -95780,7 +95780,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coverstile, serie-tags, “Tekst bag mig”"
+            "value" : "Coverstile, serietags, ”Tekst bag mig”"
           }
         },
         "de" : {
@@ -96253,7 +96253,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skaberrutine"
+            "value" : "Kreativ rutine"
           }
         },
         "de" : {
@@ -97199,7 +97199,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue kan ikke nå enheder i nærheden. Slå Lokalt netværk til for Cue i Indstillinger."
+            "value" : "Cue kan ikke finde enheder i nærheden. Slå Lokalt netværk til for Cue i Indstillinger."
           }
         },
         "de" : {
@@ -97555,7 +97555,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue lukkede, før den var færdig. Eksportér igen for at få videoen."
+            "value" : "Cue blev lukket, før eksporten var færdig. Eksporter igen for at få videoen."
           }
         },
         "de" : {
@@ -98265,7 +98265,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue kunne ikke skrive idéer om dette emne lige nu. Prøv igen om lidt."
+            "value" : "Cue kunne ikke finde på idéer om dette emne lige nu. Prøv igen om lidt."
           }
         },
         "de" : {
@@ -98384,7 +98384,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue laver udkast til undertekster ud fra din stemme. Ret et hvilket som helst ord."
+            "value" : "Cue laver udkast til undertekster ud fra din stemme. Ret de ord, du vil."
           }
         },
         "de" : {
@@ -98503,7 +98503,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue laver udkast til linjerne. Ret et hvilket som helst ord."
+            "value" : "Cue laver udkast til linjerne. Ret de ord, du vil."
           }
         },
         "de" : {
@@ -98978,7 +98978,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue lærte af det her"
+            "value" : "Cue har lært af det her"
           }
         },
         "de" : {
@@ -99690,7 +99690,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue åbner %@ med din video og billedtekst. Du lægger op."
+            "value" : "Cue åbner %@ med din video og opslagstekst. Du slår den op."
           }
         },
         "de" : {
@@ -99927,7 +99927,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue åbner appen med din video og billedtekst. Du lægger op."
+            "value" : "Cue åbner appen med din video og opslagstekst. Du slår den op."
           }
         },
         "de" : {
@@ -100754,7 +100754,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue indstiller billedet, de sikre zoner, teleprompterens placering og længdemål. Finjustér når som helst."
+            "value" : "Cue indstiller billedformat, sikre zoner, teleprompterens placering og længdemål. Finjuster når som helst."
           }
         },
         "de" : {
@@ -102178,7 +102178,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Signaler som PAUSE eller SMILE i teksten"
+            "value" : "Instruktioner som PAUSE eller SMIL i teksten"
           }
         },
         "de" : {
@@ -102887,7 +102887,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "EGET SIKKERT OMRÅDE"
+            "value" : "EGEN SIKKER ZONE"
           }
         },
         "de" : {
@@ -103361,7 +103361,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skær %@"
+            "value" : "Skær %@ væk"
           }
         },
         "de" : {
@@ -104379,7 +104379,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Udskæring"
+            "value" : "Fritlægning"
           }
         },
         "de" : {
@@ -109469,7 +109469,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mente du “%@”?"
+            "value" : "Mente du ”%@”?"
           }
         },
         "de" : {
@@ -109587,7 +109587,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opfangede ingenting. Prøv igen, eller skriv din idé."
+            "value" : "Hørte ikke noget. Prøv igen, eller skriv din idé."
           }
         },
         "de" : {
@@ -110180,7 +110180,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kassér ændringer"
+            "value" : "Kasser ændringer"
           }
         },
         "de" : {
@@ -110298,7 +110298,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oplysningen er tilføjet forrest"
+            "value" : "Reklamemarkering tilføjet forrest"
           }
         },
         "de" : {
@@ -110416,7 +110416,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oplysningen står allerede først"
+            "value" : "Reklamemarkeringen står allerede først"
           }
         },
         "de" : {
@@ -110888,7 +110888,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Overgang"
+            "value" : "Overtoning"
           }
         },
         "de" : {
@@ -113741,7 +113741,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Udkastet er klart · redigér, hvad du vil"
+            "value" : "Udkastet er klart · Ret hvad som helst"
           }
         },
         "de" : {
@@ -113977,7 +113977,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kladden er gemt"
+            "value" : "Udkastet er gemt"
           }
         },
         "de" : {
@@ -114811,7 +114811,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kladder · %lld — I gang"
+            "value" : "Udkast · %lld – I gang"
           }
         },
         "de" : {
@@ -116590,7 +116590,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Duplikér"
+            "value" : "Dupliker"
           }
         },
         "de" : {
@@ -117064,7 +117064,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "fx Barista-havremælk"
+            "value" : "f.eks. barista-havredrik"
           }
         },
         "de" : {
@@ -117183,7 +117183,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "f.eks. Mærkenavne"
+            "value" : "f.eks. mærkenavne"
           }
         },
         "de" : {
@@ -117301,7 +117301,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "fx sundhedspåstande, konkurrenters navne"
+            "value" : "f.eks. sundhedspåstande, konkurrenters navne"
           }
         },
         "de" : {
@@ -117420,7 +117420,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "f.eks. Sygeplejersker på nattevagt"
+            "value" : "f.eks. sygeplejersker på nattevagt"
           }
         },
         "de" : {
@@ -117538,7 +117538,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "fx Oat & Co."
+            "value" : "f.eks. Oat & Co."
           }
         },
         "de" : {
@@ -118725,7 +118725,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Redigér"
+            "value" : "Rediger"
           }
         },
         "de" : {
@@ -118962,7 +118962,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Redigér via tekst"
+            "value" : "Rediger via tekst"
           }
         },
         "de" : {
@@ -119081,7 +119081,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Redigér via tekst · klip ord fra videoen"
+            "value" : "Rediger via tekst · klip ord fra videoen"
           }
         },
         "de" : {
@@ -119910,7 +119910,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Redigér dem i My Cue Voice"
+            "value" : "Rediger dem i My Cue Voice"
           }
         },
         "de" : {
@@ -120028,7 +120028,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Redigér oversættelser"
+            "value" : "Rediger oversættelser"
           }
         },
         "de" : {
@@ -120146,7 +120146,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Redigér stemme"
+            "value" : "Rediger stemme"
           }
         },
         "de" : {
@@ -121211,7 +121211,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Emojis i tekster"
+            "value" : "Emojis i undertekster"
           }
         },
         "de" : {
@@ -122157,7 +122157,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slut på valget"
+            "value" : "Slutningen af markeringen"
           }
         },
         "de" : {
@@ -123933,7 +123933,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "EP 03, SÅDAN, DEL 2…"
+            "value" : "EP 03, SÅDAN GØR DU, DEL 2…"
           }
         },
         "de" : {
@@ -124289,7 +124289,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grundlæggende · 1 af 4"
+            "value" : "Det vigtigste · 1 af 4"
           }
         },
         "de" : {
@@ -124408,7 +124408,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grundlæggende · 2 af 4 · %lld af %lld"
+            "value" : "Det vigtigste · 2 af 4 · %lld af %lld"
           }
         },
         "de" : {
@@ -124527,7 +124527,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grundlæggende · 3 af 4"
+            "value" : "Det vigtigste · 3 af 4"
           }
         },
         "de" : {
@@ -124646,7 +124646,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grundlæggende · 4 af 4"
+            "value" : "Det vigtigste · 4 af 4"
           }
         },
         "de" : {
@@ -125003,7 +125003,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hver 4."
+            "value" : "Hvert 4."
           }
         },
         "de" : {
@@ -125122,7 +125122,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hver 2."
+            "value" : "Hvert 2."
           }
         },
         "de" : {
@@ -126190,7 +126190,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle milepæls-app-ikoner"
+            "value" : "Alle milepælsikoner"
           }
         },
         "de" : {
@@ -126900,7 +126900,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alt, hvad jeg bruger, koster under 10 dollars."
+            "value" : "Alt, hvad jeg bruger, koster under 10 dollar."
           }
         },
         "de" : {
@@ -129034,7 +129034,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Forklar, hvorfor hvile hjælper fremskridt i stedet for at bremse dem."
+            "value" : "Forklar, hvorfor hvile hjælper på fremskridtet i stedet for at bremse det."
           }
         },
         "de" : {
@@ -132836,7 +132836,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tone"
+            "value" : "Udtoning"
           }
         },
         "de" : {
@@ -133309,7 +133309,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tro, nonprofit, aktivisme, politik"
+            "value" : "Tro, velgørenhed, aktivisme, politik"
           }
         },
         "de" : {
@@ -133428,7 +133428,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Falsk hastværk"
+            "value" : "Falsk tidspres"
           }
         },
         "de" : {
@@ -136631,7 +136631,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder beatsene …"
+            "value" : "Finder beatsene…"
           }
         },
         "de" : {
@@ -136988,7 +136988,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finder dine øjne · %lld%%"
+            "value" : "Finder dine øjne · %lld %%"
           }
         },
         "de" : {
@@ -137226,7 +137226,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finjuster udskæringen"
+            "value" : "Finjuster fritlægningen"
           }
         },
         "de" : {
@@ -137463,7 +137463,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afslut redigeringen"
+            "value" : "Gør redigeringen færdig"
           }
         },
         "de" : {
@@ -138289,7 +138289,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ÅRETS FØRSTE STJERNE %@ · 0 / 1"
+            "value" : "FØRSTE STJERNE I %@ · 0 / 1"
           }
         },
         "de" : {
@@ -138881,7 +138881,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilpas til tid"
+            "value" : "Tilpas længden"
           }
         },
         "de" : {
@@ -140657,7 +140657,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skummer som mejeri, ingen eftersmag"
+            "value" : "Skummer som mælk, ingen eftersmag"
           }
         },
         "de" : {
@@ -141486,7 +141486,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Følg ansigt er slået fra · Du flyttede billedet"
+            "value" : "Følg ansigt er slået fra · Du flyttede udsnittet"
           }
         },
         "de" : {
@@ -143499,7 +143499,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Til beam-splitter-glas"
+            "value" : "Til stråledelerglas"
           }
         },
         "de" : {
@@ -143617,7 +143617,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Til glasopstillinger med stråledeler"
+            "value" : "Til rigs med stråledelerglas"
           }
         },
         "de" : {
@@ -143735,7 +143735,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Til rigs, der reflekterer nedefra"
+            "value" : "Til rigs, der spejler nedefra"
           }
         },
         "de" : {
@@ -146649,7 +146649,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis abonnement"
+            "value" : "Gratisversion"
           }
         },
         "de" : {
@@ -148072,7 +148072,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fra “%1$@” til “%2$@”"
+            "value" : "Fra ”%1$@” til ”%2$@”"
           }
         },
         "de" : {
@@ -148427,7 +148427,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fra Filer. Brug kun musik, du ejer eller har rettighederne til — sange fra Apple Music kan ikke tilføjes."
+            "value" : "Fra Arkiver. Brug kun musik, du ejer eller har rettighederne til. Sange fra Apple Music kan ikke tilføjes."
           }
         },
         "de" : {
@@ -149139,7 +149139,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fra din logbog"
+            "value" : "Fra din Logbog"
           }
         },
         "de" : {
@@ -149257,7 +149257,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Front"
+            "value" : "Forside"
           }
         },
         "de" : {
@@ -149612,7 +149612,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sjovt"
+            "value" : "Sjov"
           }
         },
         "de" : {
@@ -153409,7 +153409,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Giv en klar holdning og grunden bag den."
+            "value" : "Del en klar holdning og grunden til den."
           }
         },
         "de" : {
@@ -156851,7 +156851,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Få sig en latter"
+            "value" : "Få et grin"
           }
         },
         "de" : {
@@ -157445,7 +157445,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hør mig lige."
+            "value" : "Hør lige her."
           }
         },
         "de" : {
@@ -157681,7 +157681,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tungere, end den ser ud, og folder fladt"
+            "value" : "Tungere, end den ser ud, og kan foldes helt sammen"
           }
         },
         "de" : {
@@ -158154,7 +158154,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hjælp mig med at gøre det færdigt, jeg starter på"
+            "value" : "Hjælp mig med at gøre færdigt, hvad jeg starter"
           }
         },
         "de" : {
@@ -158510,7 +158510,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sådan gør jeg %@ — fra start til slut. [pause]"
+            "value" : "Sådan gør jeg %@, fra start til slut. [pause]"
           }
         },
         "de" : {
@@ -158865,7 +158865,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det er, hvad Cue hørte"
+            "value" : "Det her hørte Cue"
           }
         },
         "de" : {
@@ -159458,7 +159458,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "HEVC giver små filer · H.264 passer til ældre redigering"
+            "value" : "HEVC giver små filer · H.264 passer til ældre redigeringsprogrammer"
           }
         },
         "de" : {
@@ -161948,7 +161948,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ærlig dom, ingen sponsor."
+            "value" : "Ærlig vurdering, ingen sponsor."
           }
         },
         "de" : {
@@ -162657,7 +162657,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skarp mening / svar"
+            "value" : "Skarp holdning / svar"
           }
         },
         "de" : {
@@ -162775,7 +162775,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skarp mening: %@"
+            "value" : "Skarp holdning: %@"
           }
         },
         "de" : {
@@ -163484,7 +163484,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hvordan jeg budgetterer uden regneark"
+            "value" : "Sådan budgetterer jeg uden regneark"
           }
         },
         "de" : {
@@ -166091,7 +166091,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Drik vand før koffein — det virker bedre."
+            "value" : "Drik vand før koffein. Det virker bedre."
           }
         },
         "de" : {
@@ -166328,7 +166328,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Myter om væskeindtag afsløret"
+            "value" : "Væskemyter, aflivet"
           }
         },
         "de" : {
@@ -166683,7 +166683,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jeg postede næsten ikke det her. [pause]"
+            "value" : "Jeg var lige ved ikke at lægge det her op. [pause]"
           }
         },
         "de" : {
@@ -166919,7 +166919,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jeg troede på det i årevis — indtil jeg tjekkede det."
+            "value" : "Jeg troede på det i årevis, indtil jeg tjekkede det."
           }
         },
         "de" : {
@@ -167745,7 +167745,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jeg har prøvet alt — det her er det, der holdt."
+            "value" : "Jeg har prøvet alt. Det her er det, der holdt."
           }
         },
         "de" : {
@@ -168337,7 +168337,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jeg får garanteret hadsk for det her. [pause]"
+            "value" : "Jeg kommer garanteret til at få hate for det her. [pause]"
           }
         },
         "de" : {
@@ -168928,7 +168928,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ideal %@"
+            "value" : "ideelt %@"
           }
         },
         "de" : {
@@ -169046,7 +169046,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal %1$@–%2$@"
+            "value" : "Ideelt %1$@–%2$@"
           }
         },
         "de" : {
@@ -169283,7 +169283,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idéer til de emner, du laver videoer om. Intet bliver skrevet, før du vælger en."
+            "value" : "Idéer til de emner, du laver videoer om. Der laves intet udkast, før du vælger en."
           }
         },
         "de" : {
@@ -172134,7 +172134,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importér"
+            "value" : "Importer"
           }
         },
         "de" : {
@@ -172253,7 +172253,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importér et manus"
+            "value" : "Importer et manuskript"
           }
         },
         "de" : {
@@ -172372,7 +172372,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importér mere"
+            "value" : "Importer mere"
           }
         },
         "de" : {
@@ -172491,7 +172491,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importér min skrivning"
+            "value" : "Importer mine tekster"
           }
         },
         "de" : {
@@ -172609,7 +172609,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importerede %1$@ · %2$lld ord"
+            "value" : "Importeret: %1$@ · %2$lld ord"
           }
         },
         "de" : {
@@ -172734,7 +172734,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importeret fra din skrivning"
+            "value" : "Importeret fra dine tekster"
           }
         },
         "de" : {
@@ -173563,7 +173563,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I alle undertekstlinjer. Timingen bliver."
+            "value" : "I alle undertekstlinjer. Timingen bevares."
           }
         },
         "de" : {
@@ -173800,7 +173800,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I min stemme"
+            "value" : "Med min stemme"
           }
         },
         "de" : {
@@ -175692,7 +175692,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grundlæggende investering"
+            "value" : "Investering for begyndere"
           }
         },
         "de" : {
@@ -176285,7 +176285,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Er den klar til at blive postet?"
+            "value" : "Er den klar til at blive delt?"
           }
         },
         "de" : {
@@ -178416,7 +178416,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kom på ventelisten — link i bio"
+            "value" : "Kom på ventelisten. Link i bio."
           }
         },
         "de" : {
@@ -178889,7 +178889,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bare begynd at tale …"
+            "value" : "Bare begynd at tale…"
           }
         },
         "de" : {
@@ -179244,7 +179244,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kun emnet og dine punkter. Cue skriver en nummereret liste med et hook øverst og en kommentaropfordring til sidst."
+            "value" : "Kun emnet og dine punkter. Cue laver et udkast til en nummereret liste med en hook øverst og en opfordring til at kommentere til sidst."
           }
         },
         "de" : {
@@ -179716,7 +179716,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Behold mindst ét afsnit"
+            "value" : "Behold mindst én sektion"
           }
         },
         "de" : {
@@ -179834,7 +179834,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hold begge enheder tæt på hinanden, med wifi slået til."
+            "value" : "Hold begge enheder tæt på hinanden, med Wi-Fi slået til."
           }
         },
         "de" : {
@@ -180663,7 +180663,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Behold min"
+            "value" : "Behold mit eget"
           }
         },
         "de" : {
@@ -181017,7 +181017,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Behold min indstilling"
+            "value" : "Behold min opsætning"
           }
         },
         "de" : {
@@ -181608,7 +181608,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beholder din indstilling"
+            "value" : "Beholder din opsætning"
           }
         },
         "de" : {
@@ -182082,7 +182082,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Påstande, brandet har godkendt"
+            "value" : "Vigtige påstande, brandet har godkendt"
           }
         },
         "de" : {
@@ -182909,7 +182909,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kicker"
+            "value" : "Overrubrik"
           }
         },
         "de" : {
@@ -183382,7 +183382,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Label"
+            "value" : "Etiket"
           }
         },
         "de" : {
@@ -184801,7 +184801,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start med nyheden, ikke baggrunden. Tilføj, hvornår det sker, og én detalje, der får folk til at bekymre sig."
+            "value" : "Start med nyheden, ikke baggrunden. Tilføj, hvornår det sker, og én detalje, der får folk til at interessere sig."
           }
         },
         "de" : {
@@ -185630,7 +185630,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Linse"
+            "value" : "Objektiv"
           }
         },
         "de" : {
@@ -186341,7 +186341,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lad os gå."
+            "value" : "Så kører vi."
           }
         },
         "de" : {
@@ -186935,7 +186935,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lifestyle-skaber"
+            "value" : "Lifestyle-creator"
           }
         },
         "de" : {
@@ -188589,7 +188589,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stiller stjernerne op"
+            "value" : "Sætter stjernerne på plads"
           }
         },
         "de" : {
@@ -189416,7 +189416,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opregn trinene i almindelige ord, adskilt med kommaer. Cue gør det til en nummereret gennemgang med et hook øverst og en gem-denne-afslutning."
+            "value" : "Skriv trinene med almindelige ord, adskilt med kommaer. Cue gør dem til en nummereret gennemgang med en hook øverst og en opfordring til at gemme videoen til sidst."
           }
         },
         "de" : {
@@ -190362,7 +190362,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Liste"
+            "value" : "Listevideo"
           }
         },
         "de" : {
@@ -191545,7 +191545,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Længere videoer tjener: TikTok 1:00+, YouTube 8:00+"
+            "value" : "Længere videoer kan tjene penge: TikTok 1:00+, YouTube 8:00+"
           }
         },
         "de" : {
@@ -191663,7 +191663,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "LÆNGSTE STIME"
+            "value" : "FLEST UGER I TRÆK"
           }
         },
         "de" : {
@@ -192612,7 +192612,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Høje, fede versaler"
+            "value" : "Store, fede versaler"
           }
         },
         "de" : {
@@ -194149,7 +194149,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gør det kortere, eller optag som det er — du kan trimme senere."
+            "value" : "Gør det kortere, eller optag, som det er. Du kan trimme senere."
           }
         },
         "de" : {
@@ -195222,7 +195222,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Markér som bedste"
+            "value" : "Marker som bedste"
           }
         },
         "de" : {
@@ -195341,7 +195341,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Markér som klar alligevel"
+            "value" : "Marker som klar alligevel"
           }
         },
         "de" : {
@@ -195460,7 +195460,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Marker den, du vil poste, med en stjerne"
+            "value" : "Marker den, du vil dele, med en stjerne"
           }
         },
         "de" : {
@@ -196288,7 +196288,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maks. 3 eksempler · tryk ✕ for at bytte"
+            "value" : "Maks. 3 eksempler · tryk på ✕ for at bytte et ud"
           }
         },
         "de" : {
@@ -196524,7 +196524,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kan være bevidst — for at fremhæve"
+            "value" : "Kan være bevidst, for at fremhæve"
           }
         },
         "de" : {
@@ -196643,7 +196643,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Måltidsplanlægning"
+            "value" : "Madplanlægning"
           }
         },
         "de" : {
@@ -197236,7 +197236,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Medie dubleret"
+            "value" : "Mediet er duplikeret"
           }
         },
         "de" : {
@@ -199129,7 +199129,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kan have betydning — lyt først"
+            "value" : "Kan have betydning. Lyt først."
           }
         },
         "de" : {
@@ -201515,7 +201515,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mono kontrast"
+            "value" : "Monokontrast"
           }
         },
         "de" : {
@@ -204717,7 +204717,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flyt afspilningshovedet ind i linjen"
+            "value" : "Flyt afspilningsmarkøren ind i linjen"
           }
         },
         "de" : {
@@ -204835,7 +204835,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flyt afspilningshovedet til det først"
+            "value" : "Flyt afspilningsmarkøren til det først"
           }
         },
         "de" : {
@@ -204953,7 +204953,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Flyt afspilningshovedet til klippet"
+            "value" : "Flyt afspilningsmarkøren til klippet"
           }
         },
         "de" : {
@@ -205072,7 +205072,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Navigere i manuskriptet"
+            "value" : "Naviger i manuskriptet"
           }
         },
         "de" : {
@@ -206375,7 +206375,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Musik og lyden fra fotos eller videoer ovenpå forbliver som de er."
+            "value" : "Musik og lyden fra fotos eller videoer ovenpå forbliver, som de er."
           }
         },
         "de" : {
@@ -207796,7 +207796,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MIN CUE-STEMME"
+            "value" : "MY CUE VOICE"
           }
         },
         "de" : {
@@ -208151,7 +208151,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mit første brandopkald — og mit kamera frøs"
+            "value" : "Mit første brandopkald, og så frøs mit kamera"
           }
         },
         "de" : {
@@ -209335,7 +209335,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Min søndagsnulstilling på 60 sekunder"
+            "value" : "Min søndagsreset på 60 sekunder"
           }
         },
         "de" : {
@@ -209926,7 +209926,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afsløring af myter"
+            "value" : "Myteaflivning"
           }
         },
         "de" : {
@@ -210637,7 +210637,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fortæl hen over din redigering. Cue forklarer det, før du optager."
+            "value" : "Indtal en voiceover over din video. Cue forklarer hvordan, før du optager."
           }
         },
         "de" : {
@@ -213359,7 +213359,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nye i det"
+            "value" : "Helt nye"
           }
         },
         "de" : {
@@ -215979,7 +215979,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Intet kamera fundet · Studietilstand virker stadig"
+            "value" : "Intet kamera fundet · Studio-tilstand virker stadig"
           }
         },
         "de" : {
@@ -216571,7 +216571,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen mikkemus-effekt, når det speedes op"
+            "value" : "Ingen mikkemusstemme, når det speedes op"
           }
         },
         "de" : {
@@ -216808,7 +216808,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen cues"
+            "value" : "Ingen instruktioner"
           }
         },
         "de" : {
@@ -218232,7 +218232,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen linje siger “%@”"
+            "value" : "Ingen linje siger ”%@”"
           }
         },
         "de" : {
@@ -220366,7 +220366,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen resultater for “%@”"
+            "value" : "Ingen resultater for ”%@”"
           }
         },
         "de" : {
@@ -220484,7 +220484,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen plads · Flyt afspilningshovedet"
+            "value" : "Ingen plads · Flyt afspilningsmarkøren"
           }
         },
         "de" : {
@@ -220603,7 +220603,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen manus lige nu"
+            "value" : "Ingen manuskripter lige nu"
           }
         },
         "de" : {
@@ -222261,7 +222261,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "INGEN VANDMÆRKE"
+            "value" : "INTET VANDMÆRKE"
           }
         },
         "de" : {
@@ -223680,7 +223680,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ikke gjort endnu"
+            "value" : "Ikke færdig endnu"
           }
         },
         "de" : {
@@ -225224,7 +225224,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Intet fundet endnu. Tilføj flere tekster og prøv igen."
+            "value" : "Intet fundet endnu. Tilføj flere tekster, og prøv igen."
           }
         },
         "de" : {
@@ -226287,7 +226287,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Intet blev klippet fra her, så %@ vises ikke"
+            "value" : "Intet er klippet væk her, så %@ vises ikke"
           }
         },
         "de" : {
@@ -229019,7 +229019,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Okay, helt ærligt — det her er vigtigt."
+            "value" : "Okay, helt ærligt: det her er vigtigt."
           }
         },
         "de" : {
@@ -231270,7 +231270,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ét hurtigt spørgsmål · stemme %lld%%"
+            "value" : "Ét hurtigt spørgsmål · stemme %lld %%"
           }
         },
         "de" : {
@@ -232338,7 +232338,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kun dette hook ændres"
+            "value" : "Kun denne hook ændres"
           }
         },
         "de" : {
@@ -232456,7 +232456,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kun denne undertekst ændres"
+            "value" : "Kun denne undertitel ændres"
           }
         },
         "de" : {
@@ -233522,7 +233522,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Åbn logbogen ›"
+            "value" : "Åbn Logbogen ›"
           }
         },
         "de" : {
@@ -233994,7 +233994,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Åbn med POV-linjen, sæt scenen med få ord, og slut med en vending. Kort og visuelt."
+            "value" : "Åbn med POV-linjen, beskriv situationen med få ord, og slut med en vending. Kort og visuelt."
           }
         },
         "de" : {
@@ -234113,7 +234113,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Åbning: “%@”"
+            "value" : "Åbning: ”%@”"
           }
         },
         "de" : {
@@ -234231,7 +234231,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Åbnede %@ med din video · Cue kan ikke se, om du poster den"
+            "value" : "%@ er åbnet med din video · Cue kan ikke se, om du slår den op"
           }
         },
         "de" : {
@@ -234468,7 +234468,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Åbningsreplik"
+            "value" : "Åbningslinje"
           }
         },
         "de" : {
@@ -234941,7 +234941,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Åbner en tom kladde med idéen som titel."
+            "value" : "Åbner et tomt udkast med idéen som titel."
           }
         },
         "de" : {
@@ -235649,7 +235649,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mening"
+            "value" : "Holdning"
           }
         },
         "de" : {
@@ -235767,7 +235767,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mening eller svar på en kommentar"
+            "value" : "Holdning eller svar på en kommentar"
           }
         },
         "de" : {
@@ -235885,7 +235885,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Meningsdrevet"
+            "value" : "Holdningspræget"
           }
         },
         "de" : {
@@ -237068,7 +237068,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Original lyd"
+            "value" : "Originallyd"
           }
         },
         "de" : {
@@ -237305,7 +237305,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Outfit-ideer"
+            "value" : "Outfitidéer"
           }
         },
         "de" : {
@@ -237541,7 +237541,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Optegn mig"
+            "value" : "Kontur om mig"
           }
         },
         "de" : {
@@ -238606,7 +238606,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Betalt samarbejde-linje forrest"
+            "value" : "Linje om betalt samarbejde forrest"
           }
         },
         "de" : {
@@ -240501,7 +240501,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Indsæt teksten, vælg omslaget, tryk på Slå op."
+            "value" : "Indsæt teksten, vælg coveret, tryk på Slå op."
           }
         },
         "de" : {
@@ -241802,7 +241802,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Udbytte"
+            "value" : "Forløsning"
           }
         },
         "de" : {
@@ -242276,7 +242276,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Folk, der kender faget"
+            "value" : "Folk, der kender feltet"
           }
         },
         "de" : {
@@ -246543,7 +246543,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vælg et nyt hook"
+            "value" : "Vælg en ny hook"
           }
         },
         "de" : {
@@ -248084,7 +248084,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vælg den nærmeste. Ændr det, når som helst."
+            "value" : "Vælg den nærmeste. Du kan altid ændre det."
           }
         },
         "de" : {
@@ -248795,7 +248795,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fortsæt redigeringen, eller del den, når du er klar."
+            "value" : "Fortsæt redigeringen, eller del videoen, når du er klar."
           }
         },
         "de" : {
@@ -249269,7 +249269,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vælg, hvad der følger med. Ord, lyd og timing bliver."
+            "value" : "Vælg, hvad der skal med. Ord, lyd og timing bevares."
           }
         },
         "de" : {
@@ -250336,7 +250336,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Planlæg hooks, vælg ét outfit, sæt ét lys op, filmen i rækkefølge"
+            "value" : "Planlæg hooks, vælg ét outfit, sæt ét lys op, film i rækkefølge"
           }
         },
         "de" : {
@@ -251048,7 +251048,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afspille og pause"
+            "value" : "Afspil og pause"
           }
         },
         "de" : {
@@ -251522,7 +251522,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afspil, sæt på pause, skift hastighed og bevæg dig gennem manuskriptet fra en anden iPhone eller iPad. Begge skal have Cue og wifi slået til."
+            "value" : "Afspil, sæt på pause, skift hastighed og naviger i manuskriptet fra en anden iPhone eller iPad. Begge skal have Cue og Wi-Fi slået til."
           }
         },
         "de" : {
@@ -251640,7 +251640,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Legesyg"
+            "value" : "Legende"
           }
         },
         "de" : {
@@ -251758,7 +251758,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afspilningshoved"
+            "value" : "Afspilningsmarkør"
           }
         },
         "de" : {
@@ -251994,7 +251994,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afspiller originalen — tryk for at stoppe"
+            "value" : "Afspiller originalen · tryk for at stoppe"
           }
         },
         "de" : {
@@ -252468,7 +252468,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spiller oven på din video (B-roll), mens din stemme fortsætter. Flyt og skalér den i forhåndsvisningen."
+            "value" : "Spiller oven på din video (B-roll), mens din stemme fortsætter. Flyt og skaler den i forhåndsvisningen."
           }
         },
         "de" : {
@@ -254840,7 +254840,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Post det"
+            "value" : "Slå den op"
           }
         },
         "de" : {
@@ -255313,7 +255313,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OPSLAG PÅ %@ SENERE"
+            "value" : "SLÅ OP PÅ %@ SENERE"
           }
         },
         "de" : {
@@ -255669,7 +255669,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opslag til %lld netværk"
+            "value" : "Deler til %lld netværk"
           }
         },
         "de" : {
@@ -256141,7 +256141,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV: Klokken er 7, og ideen lander lige nu."
+            "value" : "POV: klokken er 7, og idéen er lige landet."
           }
         },
         "de" : {
@@ -256732,7 +256732,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV: din første video bliver bedre end planlagt."
+            "value" : "POV: din første video går bedre end planlagt."
           }
         },
         "de" : {
@@ -257442,7 +257442,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Forudindstillinger opdateres, når platforme ændres."
+            "value" : "Presets opdateres, når platformene ændrer sig."
           }
         },
         "de" : {
@@ -258033,7 +258033,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Forhåndsvisning af prompteren"
+            "value" : "Forhåndsvisning af teleprompteren"
           }
         },
         "de" : {
@@ -258151,7 +258151,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Forhåndsvisning af dit univers-kort"
+            "value" : "Forhåndsvisning af dit universkort"
           }
         },
         "de" : {
@@ -259331,7 +259331,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pro · ubegrænsede eksporter"
+            "value" : "Pro · ubegrænset eksport"
           }
         },
         "de" : {
@@ -259449,7 +259449,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PRO · UBEGRÆNSEDE EKSPORTER"
+            "value" : "PRO · UBEGRÆNSET EKSPORT"
           }
         },
         "de" : {
@@ -263948,7 +263948,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Placér den på det, den skal følge, ved afspilningshovedet, og tryk på Følg. Cue laver keyframes, du kan justere."
+            "value" : "Placer den på det, den skal følge, ved afspilningsmarkøren, og tryk på Følg. Cue laver keyframes, du kan justere."
           }
         },
         "de" : {
@@ -265250,7 +265250,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lige en hurtig en — tre vaner, der ændrede alt!"
+            "value" : "Lige en hurtig en: tre vaner, der ændrede alt!"
           }
         },
         "de" : {
@@ -267267,7 +267267,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Læs min skrivning"
+            "value" : "Læs mine tekster"
           }
         },
         "de" : {
@@ -268686,7 +268686,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "KLAR · EKSPORTÉR MED PRO"
+            "value" : "KLAR · EKSPORTER MED PRO"
           }
         },
         "de" : {
@@ -269162,7 +269162,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klar her · finder dine øjne i resten · %lld%%"
+            "value" : "Klar her · finder dine øjne i resten · %lld %%"
           }
         },
         "de" : {
@@ -269398,7 +269398,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klar til at poste"
+            "value" : "Klar til at slå op"
           }
         },
         "de" : {
@@ -269516,7 +269516,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klar til at poste på %@"
+            "value" : "Klar til at slå op på %@"
           }
         },
         "de" : {
@@ -269870,7 +269870,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klar til optagelse · Shape tilføjer cues"
+            "value" : "Klar til optagelse · Shape tilføjer instruktioner"
           }
         },
         "de" : {
@@ -270225,7 +270225,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klar, jeg poster senere"
+            "value" : "Klar, jeg slår den op senere"
           }
         },
         "de" : {
@@ -271410,7 +271410,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Optag en fortælling over din redigering. Intet optages, før du trykker på knappen."
+            "value" : "Indtal en voiceover over din video. Intet optages, før du trykker på knappen."
           }
         },
         "de" : {
@@ -273421,7 +273421,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Optagelsesindstilling"
+            "value" : "Optagelsesopsætning"
           }
         },
         "de" : {
@@ -273539,7 +273539,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Optagelsen stoppede · Optagelsen er gemt"
+            "value" : "Optagelse stoppet · Optagelsen er gemt"
           }
         },
         "de" : {
@@ -273775,7 +273775,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Optager fra afspilningshovedet · videoen afspilles uden lyd"
+            "value" : "Optager fra afspilningsmarkøren · videoen afspilles uden lyd"
           }
         },
         "de" : {
@@ -274130,7 +274130,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tag det om så tit du vil. Du vælger den optagelse, der bliver lagt op."
+            "value" : "Tag det om, så tit du vil. Du vælger den optagelse, der skal deles."
           }
         },
         "de" : {
@@ -274248,7 +274248,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reducér støj"
+            "value" : "Reducer støj"
           }
         },
         "de" : {
@@ -274485,7 +274485,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finjustér din skrivestil ud fra tekster, du har skrevet. Det bliver på denne iPhone."
+            "value" : "Finjuster din skrivestil ud fra tekster, du har skrevet. Det bliver på denne iPhone."
           }
         },
         "de" : {
@@ -275907,7 +275907,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fjernbetjening fra Apple Watch, iPad og Mac-synk"
+            "value" : "Fjernbetjening fra Apple Watch, iPad og Mac-synkronisering"
           }
         },
         "de" : {
@@ -278001,7 +278001,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fjernet %1$lld · %2$@"
+            "value" : "%1$lld fjernet · %2$@"
           }
         },
         "de" : {
@@ -281375,7 +281375,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nulstil skaberindstilling"
+            "value" : "Nulstil creator-opsætning"
           }
         },
         "de" : {
@@ -282912,7 +282912,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vis"
+            "value" : "Afsløring"
           }
         },
         "de" : {
@@ -283031,7 +283031,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Baglæns virker på klip op til 2 minutter · Del det først"
+            "value" : "Baglæns virker på klip op til 2 minutter · Opdel det først"
           }
         },
         "de" : {
@@ -283150,7 +283150,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vendt"
+            "value" : "Baglæns"
           }
         },
         "de" : {
@@ -283269,7 +283269,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vender klippet…"
+            "value" : "Gør klippet baglæns…"
           }
         },
         "de" : {
@@ -285412,7 +285412,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rutiner, stil, meninger, vlogs"
+            "value" : "Rutiner, stil, holdninger, vlogs"
           }
         },
         "de" : {
@@ -289200,7 +289200,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gemt · stemme %lld%%"
+            "value" : "Gemt · stemme %lld %%"
           }
         },
         "de" : {
@@ -289803,7 +289803,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gemt i Optagelser · eksportér med Pro når som helst"
+            "value" : "Gemt i Optagelser · eksporter med Pro når som helst"
           }
         },
         "de" : {
@@ -290040,7 +290040,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gemt i Optagelser. Tilføj undertekster, rediger den eller del den for at tænde dit univers for %@."
+            "value" : "Gemt i Optagelser. Tilføj undertekster, rediger den, eller del den for at tænde dit %@-univers."
           }
         },
         "de" : {
@@ -290631,7 +290631,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gemt i Fotos · Åbn %@ for at poste den"
+            "value" : "Gemt i Fotos · Åbn %@ for at slå den op"
           }
         },
         "de" : {
@@ -290986,7 +290986,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gemmes i Fotos · post hvor som helst"
+            "value" : "Gemmes i Fotos · slå op hvor som helst"
           }
         },
         "de" : {
@@ -291580,7 +291580,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sig eller skriv din idé …"
+            "value" : "Sig eller skriv din idé…"
           }
         },
         "de" : {
@@ -292057,7 +292057,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "siger “jeg”"
+            "value" : "siger ”jeg”"
           }
         },
         "de" : {
@@ -292176,7 +292176,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "siger “vi”"
+            "value" : "siger ”vi”"
           }
         },
         "de" : {
@@ -292294,7 +292294,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skalér tekst"
+            "value" : "Skaler tekst"
           }
         },
         "de" : {
@@ -299517,7 +299517,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Send bagud"
+            "value" : "Flyt bagud"
           }
         },
         "de" : {
@@ -300463,7 +300463,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Serie-tag"
+            "value" : "Serietag"
           }
         },
         "de" : {
@@ -300936,7 +300936,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seriøst — ingen hype"
+            "value" : "Seriøst, ingen hype"
           }
         },
         "de" : {
@@ -301646,7 +301646,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opsæt"
+            "value" : "Konfigurer"
           }
         },
         "de" : {
@@ -301764,7 +301764,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opsæt My Cue Voice"
+            "value" : "Konfigurer My Cue Voice"
           }
         },
         "de" : {
@@ -302356,7 +302356,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Indstilling"
+            "value" : "Optakt"
           }
         },
         "de" : {
@@ -302474,7 +302474,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opsætning, vending, udbytte"
+            "value" : "Optakt, vending, forløsning"
           }
         },
         "de" : {
@@ -309103,7 +309103,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vis og eksportér"
+            "value" : "Vis og eksporter"
           }
         },
         "de" : {
@@ -309460,7 +309460,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vis Cue noget, du har skrevet, så lærer det, hvordan du udtrykker dig."
+            "value" : "Vis Cue noget, du har skrevet, så lærer Cue, hvordan du udtrykker dig."
           }
         },
         "de" : {
@@ -309936,7 +309936,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vis eksempler, mens du taler: læg et billede eller klip oven på din video."
+            "value" : "Vis eksempler, mens du taler: læg et billede eller et klip oven på din video."
           }
         },
         "de" : {
@@ -312426,7 +312426,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Viser, hvad denne optagelse optages med, og hvor det kommer fra"
+            "value" : "Viser, hvad optagelsen bruger, og hvor det kommer fra"
           }
         },
         "de" : {
@@ -312663,7 +312663,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lukker"
+            "value" : "Kameraklik"
           }
         },
         "de" : {
@@ -319533,7 +319533,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nogen spurgte om det her i kommentarerne — lad mig svare."
+            "value" : "Nogen spurgte om det her i kommentarerne, så lad mig svare."
           }
         },
         "de" : {
@@ -320364,7 +320364,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lyden er på sit eget spor · videoen er slået fra"
+            "value" : "Lyden er på sit eget spor · videoens lyd er slået fra"
           }
         },
         "de" : {
@@ -320483,7 +320483,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lyden er på sit eget spor · klippet er slået fra"
+            "value" : "Lyden er på sit eget spor · klippets lyd er slået fra"
           }
         },
         "de" : {
@@ -321430,7 +321430,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spill"
+            "value" : "Farvespild"
           }
         },
         "de" : {
@@ -321548,7 +321548,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Del"
+            "value" : "Opdel"
           }
         },
         "de" : {
@@ -321666,7 +321666,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Del ved %@"
+            "value" : "Opdel ved %@"
           }
         },
         "de" : {
@@ -321784,7 +321784,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Del ved afspilningshovedet for at ændre én del"
+            "value" : "Opdel ved afspilningsmarkøren for at ændre én del"
           }
         },
         "de" : {
@@ -321903,7 +321903,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Del eller tilføj et klip for at omarrangere"
+            "value" : "Opdel eller tilføj et klip for at ændre rækkefølgen"
           }
         },
         "de" : {
@@ -322022,7 +322022,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Del videoen først, eller brug Klip videoen på beatsene"
+            "value" : "Opdel videoen først, eller brug Klip videoen på beatsene"
           }
         },
         "de" : {
@@ -323089,7 +323089,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stabilisér"
+            "value" : "Stabiliser"
           }
         },
         "de" : {
@@ -323918,7 +323918,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start et nyt manus, som det passer dig."
+            "value" : "Start et nyt manuskript, som det passer dig."
           }
         },
         "de" : {
@@ -324272,7 +324272,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start gratis prøve · eksportér nu"
+            "value" : "Start gratis prøveperiode · eksporter nu"
           }
         },
         "de" : {
@@ -324746,7 +324746,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start på valget"
+            "value" : "Starten af markeringen"
           }
         },
         "de" : {
@@ -325336,7 +325336,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start prøven og eksportér den nu."
+            "value" : "Start prøveperioden, og eksporter den nu."
           }
         },
         "de" : {
@@ -326167,7 +326167,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start: “%@”. Tryk nu på det sidste ord i delen."
+            "value" : "Start: ”%@”. Tryk nu på det sidste ord i delen."
           }
         },
         "de" : {
@@ -327114,7 +327114,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sig myten i én linje, forklar hvorfor folk tror på den, og giv så fakta. Kun én overbevisning pr. video."
+            "value" : "Sig myten i én linje, forklar, hvorfor folk tror på den, og giv så fakta. Kun én overbevisning pr. video."
           }
         },
         "de" : {
@@ -327232,7 +327232,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sig din mening i én linje, giv én grund, og slut med et spørgsmål — spørgsmål giver kommentarer."
+            "value" : "Sig din holdning i én linje, giv én grund, og slut med et spørgsmål. Spørgsmål giver kommentarer."
           }
         },
         "de" : {
@@ -327587,7 +327587,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Allerede roligt · intet zoom nødvendigt"
+            "value" : "Allerede roligt · ingen zoom nødvendig"
           }
         },
         "de" : {
@@ -327705,7 +327705,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stjæl mit system — det er enklere, end du tror."
+            "value" : "Stjæl mit system. Det er enklere, end du tror."
           }
         },
         "de" : {
@@ -329958,7 +329958,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lageret er fyldt · Optagelsen er gemt"
+            "value" : "Lagerpladsen er fuld · Optagelsen er gemt"
           }
         },
         "de" : {
@@ -330431,7 +330431,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fortælletid — og ja, det ender godt."
+            "value" : "Storytime, og ja, det ender godt."
           }
         },
         "de" : {
@@ -330667,7 +330667,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fortælling"
+            "value" : "Storytime"
           }
         },
         "de" : {
@@ -330785,7 +330785,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fortælling: %@"
+            "value" : "Storytime: %@"
           }
         },
         "de" : {
@@ -331616,7 +331616,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grove bandeord og skældsord skrives aldrig — Apple Intelligence genererer dem ikke."
+            "value" : "Grove bandeord og skældsord skrives aldrig. Apple Intelligence genererer dem ikke."
           }
         },
         "de" : {
@@ -332444,7 +332444,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studietilstand"
+            "value" : "Studio-tilstand"
           }
         },
         "de" : {
@@ -332562,7 +332562,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studio bruger også disse. Skærmen forbliver tændt, mens prompteren er åben."
+            "value" : "Studio bruger også disse. Skærmen forbliver tændt, mens teleprompteren er åben."
           }
         },
         "de" : {
@@ -333511,7 +333511,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Formatér alle"
+            "value" : "Style alle"
           }
         },
         "de" : {
@@ -334104,7 +334104,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abonnér for %@/måned"
+            "value" : "Abonner for %@/måned"
           }
         },
         "de" : {
@@ -334222,7 +334222,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abonnér for %@/år"
+            "value" : "Abonner for %@/år"
           }
         },
         "de" : {
@@ -335294,7 +335294,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bæredygtigt mode"
+            "value" : "Bæredygtig mode"
           }
         },
         "de" : {
@@ -336004,7 +336004,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tag nye manuskripter automatisk"
+            "value" : "Mærk nye manuskripter automatisk"
           }
         },
         "de" : {
@@ -337433,7 +337433,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Talking head, tutorial, sponsoreret annonce … du skriver det"
+            "value" : "Talking head, tutorial, sponsoreret annonce… du skriver det"
           }
         },
         "de" : {
@@ -337669,7 +337669,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Høje, høje versaler"
+            "value" : "Høje, markante versaler"
           }
         },
         "de" : {
@@ -338260,7 +338260,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tryk på Færdig i editoren, eller vælg en bedste optagelse — den lander her, klar til at blive postet."
+            "value" : "Tryk på Færdig i editoren, eller vælg en bedste optagelse. Den lander her, klar til at blive delt."
           }
         },
         "de" : {
@@ -339092,7 +339092,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tryk på det første ord i den del, du vil klippe, og derefter på det sidste. Fortryd henter det, du klippede."
+            "value" : "Tryk på det første ord i den del, du vil klippe, og derefter på det sidste. Fortryd henter det tilbage, du klippede."
           }
         },
         "de" : {
@@ -340628,7 +340628,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Små bank i takt med det, der bevæger sig"
+            "value" : "Små vibrationer i takt med det, der bevæger sig"
           }
         },
         "de" : {
@@ -341104,7 +341104,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lær et hurtigt hverdagslook væk, trin for trin."
+            "value" : "Vis et hurtigt hverdagslook, trin for trin."
           }
         },
         "de" : {
@@ -341341,7 +341341,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lærer, hvordan du taler — bruges aldrig til historier, meninger eller resultater. Bliver på denne iPhone."
+            "value" : "Lærer, hvordan du taler. Bruges aldrig til historier, holdninger eller resultater. Bliver på denne iPhone."
           }
         },
         "de" : {
@@ -346317,7 +346317,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2-minutters-reglen, forklaret"
+            "value" : "2-minuttersreglen, forklaret"
           }
         },
         "de" : {
@@ -346435,7 +346435,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den 5-minutters vane, der reddede min søvn"
+            "value" : "Vanen på 5 minutter, der reddede min søvn"
           }
         },
         "de" : {
@@ -348212,7 +348212,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det første take var det, du beholdt"
+            "value" : "Den første optagelse var den, du beholdt"
           }
         },
         "de" : {
@@ -350347,7 +350347,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rækkefølgen du skal bruge din hudpleje i"
+            "value" : "Den rigtige rækkefølge for din hudpleje"
           }
         },
         "de" : {
@@ -350584,7 +350584,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afspilningshovedet og kanterne sætter sig fast på dem"
+            "value" : "Afspilningsmarkøren og kanterne sætter sig fast på dem"
           }
         },
         "de" : {
@@ -352840,7 +352840,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videoen ændrede sig imens · frys billedet igen"
+            "value" : "Videoen ændrede sig imens · Frys billedet igen"
           }
         },
         "de" : {
@@ -352959,7 +352959,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videoen ændrede sig imens · Vend den igen"
+            "value" : "Videoen ændrede sig imens · Gør den baglæns igen"
           }
         },
         "de" : {
@@ -353078,7 +353078,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videoen ændrede sig imens · Spor igen"
+            "value" : "Videoen ændrede sig imens · Følg igen"
           }
         },
         "de" : {
@@ -354382,7 +354382,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ting jeg ville ønske, jeg vidste som ny forælder"
+            "value" : "Ting, jeg ville ønske, jeg havde vidst som ny forælder"
           }
         },
         "de" : {
@@ -354618,7 +354618,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dette kamera kan ikke vise effekten under optagelse. Den føjes til optagelsen efter optagelsen."
+            "value" : "Dette kamera kan ikke vise effekten under optagelse. Den tilføjes, når du har optaget."
           }
         },
         "de" : {
@@ -355097,7 +355097,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dette klip · gør kameraets rystelser rolige"
+            "value" : "Dette klip · dæmper kameraets rystelser"
           }
         },
         "de" : {
@@ -355691,7 +355691,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klippet er slået fra · Slå lyden til for at udtrække den"
+            "value" : "Klippets lyd er slået fra · Slå lyden til for at udtrække den"
           }
         },
         "de" : {
@@ -356281,7 +356281,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her er ord, som Apple Intelligence ikke lærer af. Bip dem (f***) eller vælg et andet eksempel."
+            "value" : "Her er ord, som Apple Intelligence ikke lærer af. Bip dem (f***), eller vælg et andet eksempel."
           }
         },
         "de" : {
@@ -356399,7 +356399,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dette hook"
+            "value" : "Denne hook"
           }
         },
         "de" : {
@@ -356518,7 +356518,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idéen erstattede din kladde"
+            "value" : "Idéen erstattede dit udkast"
           }
         },
         "de" : {
@@ -357943,7 +357943,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Denne undertekst"
+            "value" : "Denne undertitel"
           }
         },
         "de" : {
@@ -359363,7 +359363,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videoen er slået fra · Slå lyden til for at udtrække den"
+            "value" : "Videoens lyd er slået fra · Slå lyden til for at udtrække den"
           }
         },
         "de" : {
@@ -359601,7 +359601,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dette videos eksport er allerede talt med"
+            "value" : "Denne videos eksport er allerede talt med"
           }
         },
         "de" : {
@@ -359719,7 +359719,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tre beats er nok: hvad der skete, øjeblikket, hvor det vendte, hvordan det endte. Cue tilføjer et cliffhanger-hook og tempoinstruktioner."
+            "value" : "Tre beats er nok: hvad der skete, øjeblikket, hvor det vendte, hvordan det endte. Cue tilføjer en cliffhanger-hook og tempoinstruktioner."
           }
         },
         "de" : {
@@ -360313,7 +360313,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tre: Jeg skriver den ene ting ned, der betyder noget i dag."
+            "value" : "Tre: jeg skriver den ene ting ned, der betyder noget i dag."
           }
         },
         "de" : {
@@ -360786,7 +360786,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TikTok betaler Creator Rewards over ét minut."
+            "value" : "TikTok betaler Creator Rewards for videoer over ét minut."
           }
         },
         "de" : {
@@ -364220,7 +364220,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "For lang til at passe. Forkort titlen eller gør feltet bredere."
+            "value" : "For lang til at passe. Forkort titlen, eller gør feltet bredere."
           }
         },
         "de" : {
@@ -367178,7 +367178,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oversætte dine rettede linjer igen?"
+            "value" : "Vil du oversætte dine rettede linjer igen?"
           }
         },
         "de" : {
@@ -368360,7 +368360,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prøveperioden er startet — nyd Cue Pro"
+            "value" : "Prøveperioden er startet. God fornøjelse med Cue Pro"
           }
         },
         "de" : {
@@ -368478,7 +368478,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prøve startet · videoen er eksporteret"
+            "value" : "Prøveperiode startet · videoen er eksporteret"
           }
         },
         "de" : {
@@ -368596,7 +368596,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trimmer de overflødige ord"
+            "value" : "Skærer de overflødige ord væk"
           }
         },
         "de" : {
@@ -369069,7 +369069,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prøv en anden ændring, eller annullér og åbn optagelsen igen."
+            "value" : "Prøv en anden ændring, eller annuller og åbn optagelsen igen."
           }
         },
         "de" : {
@@ -369661,7 +369661,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prøv det og fortæl mig"
+            "value" : "Prøv det, og fortæl mig"
           }
         },
         "de" : {
@@ -369780,7 +369780,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prøv én i morgen og fortæl mig, hvordan det føltes."
+            "value" : "Prøv én i morgen, og fortæl mig, hvordan det føltes."
           }
         },
         "de" : {
@@ -370848,7 +370848,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slå Forbedr stemmen eller Reducér støj til for at sammenligne."
+            "value" : "Slå Forbedr stemmen eller Reducer støj til for at sammenligne."
           }
         },
         "de" : {
@@ -371204,7 +371204,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slået fra i Indstillinger › Privatliv og AI-data."
+            "value" : "Slået fra i Indstillinger › Anonymitet og AI-data."
           }
         },
         "de" : {
@@ -371322,7 +371322,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vejledning"
+            "value" : "Tutorial"
           }
         },
         "de" : {
@@ -371440,7 +371440,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tutorial / how-to"
+            "value" : "Tutorial / sådan gør du"
           }
         },
         "de" : {
@@ -371678,7 +371678,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tyve skærmfrie minutter beskytter din fokus."
+            "value" : "Tyve skærmfrie minutter beskytter dit fokus."
           }
         },
         "de" : {
@@ -372390,7 +372390,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skriv eller sig en titel …"
+            "value" : "Skriv eller sig en titel…"
           }
         },
         "de" : {
@@ -372626,7 +372626,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skriv dit hook"
+            "value" : "Skriv din hook"
           }
         },
         "de" : {
@@ -374638,7 +374638,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ubegrænsede eksporter"
+            "value" : "Ubegrænset eksport"
           }
         },
         "de" : {
@@ -375228,7 +375228,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Upopulær mening, men hør mig lige."
+            "value" : "Upopulær holdning, men hør lige her."
           }
         },
         "de" : {
@@ -375346,7 +375346,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Upopulær mening: %@. [pause]"
+            "value" : "Upopulær holdning: %@. [pause]"
           }
         },
         "de" : {
@@ -375464,7 +375464,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unavngivet"
+            "value" : "Uden titel"
           }
         },
         "de" : {
@@ -375582,7 +375582,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unavngivet manuskript"
+            "value" : "Manuskript uden titel"
           }
         },
         "de" : {
@@ -376056,7 +376056,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "op til %lld · former hooket og afslutningen"
+            "value" : "op til %lld · former hooken og forløsningen"
           }
         },
         "de" : {
@@ -376529,7 +376529,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brug „%@“"
+            "value" : "Brug ”%@”"
           }
         },
         "de" : {
@@ -379606,7 +379606,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dom"
+            "value" : "Vurdering"
           }
         },
         "de" : {
@@ -379724,7 +379724,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dommen? %@. [kig ind i kameraet]"
+            "value" : "Vurderingen? %@. [kig ind i kameraet]"
           }
         },
         "de" : {
@@ -380669,7 +380669,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videoen er for kort"
+            "value" : "Videoen er for kort til at blive tilføjet"
           }
         },
         "de" : {
@@ -382805,7 +382805,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "STEMMESTYRKE %lld%%"
+            "value" : "STEMMESTYRKE %lld %%"
           }
         },
         "de" : {
@@ -383632,7 +383632,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Venter på, at iPhone køler ned · %lld %%"
+            "value" : "Venter på, at iPhonen køler af · %lld %%"
           }
         },
         "de" : {
@@ -385413,7 +385413,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Varm editorial"
+            "value" : "Varm Editorial"
           }
         },
         "de" : {
@@ -385649,7 +385649,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Varmere, mindre skriptet"
+            "value" : "Varmere, mindre indstuderet"
           }
         },
         "de" : {
@@ -386359,7 +386359,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Se det her — %@. [demo]"
+            "value" : "Se det her: %@. [demo]"
           }
         },
         "de" : {
@@ -387188,7 +387188,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Velkommen tilbage. Cue tænder sin planet, når den er live."
+            "value" : "Velkommen tilbage. Cue tænder videoens planet, når den er live."
           }
         },
         "de" : {
@@ -389319,7 +389319,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hvad for en skaber er du?"
+            "value" : "Hvilken slags creator er du?"
           }
         },
         "de" : {
@@ -391568,7 +391568,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Når du skaber"
+            "value" : "Når du skaber indhold"
           }
         },
         "de" : {
@@ -391923,7 +391923,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hvor poster du mest?"
+            "value" : "Hvor deler du mest?"
           }
         },
         "de" : {
@@ -392634,7 +392634,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hvor du poster"
+            "value" : "Hvor du deler"
           }
         },
         "de" : {
@@ -394646,7 +394646,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hele videoen · format til der, hvor du poster"
+            "value" : "Hele videoen · format til der, hvor du deler"
           }
         },
         "de" : {
@@ -396777,7 +396777,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aftørring"
+            "value" : "Wipe"
           }
         },
         "de" : {
@@ -398320,7 +398320,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ord der skiller sig ud"
+            "value" : "Ord, der skiller sig ud"
           }
         },
         "de" : {
@@ -398439,7 +398439,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ord tastes"
+            "value" : "Tastede ord"
           }
         },
         "de" : {
@@ -399151,7 +399151,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det værd, hvis du filmer ved et skrivebord"
+            "value" : "Det er det værd, hvis du filmer ved et skrivebord"
           }
         },
         "de" : {
@@ -399269,7 +399269,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skriv"
+            "value" : "Lav udkast"
           }
         },
         "de" : {
@@ -400099,7 +400099,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skriv annoncen"
+            "value" : "Lav udkast til annoncen"
           }
         },
         "de" : {
@@ -401759,7 +401759,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ja — del på sociale medier"
+            "value" : "Ja, del på sociale medier"
           }
         },
         "de" : {
@@ -402706,7 +402706,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Du bad om det — her er det."
+            "value" : "Du bad om det, og her er det."
           }
         },
         "de" : {
@@ -403061,7 +403061,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Du kan ændre det senere i Medie › Avanceret."
+            "value" : "Du kan ændre det senere i Medier › Avanceret."
           }
         },
         "de" : {
@@ -404482,7 +404482,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Du har fået at vide det hele dit liv. Det er forkert. [pause]"
+            "value" : "Det har du fået at vide hele dit liv. Det er forkert. [pause]"
           }
         },
         "de" : {
@@ -405075,7 +405075,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dit %@ i review"
+            "value" : "Dit %@ i tilbageblik"
           }
         },
         "de" : {
@@ -405547,7 +405547,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dine undertekster er i videoen · hold autoundertekster slået fra"
+            "value" : "Dine undertekster er i videoen · lad automatiske undertekster være slået fra"
           }
         },
         "de" : {
@@ -406028,7 +406028,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din skabertid"
+            "value" : "Din kreative tid"
           }
         },
         "de" : {
@@ -407334,7 +407334,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dit hook varer ~%@"
+            "value" : "Din hook varer ~%@"
           }
         },
         "de" : {
@@ -407928,7 +407928,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din iPhone er for varm til at gøre videoen færdig. Lad den køle af, og eksportér igen."
+            "value" : "Din iPhone er for varm til at gøre videoen færdig. Lad den køle af, og eksporter igen."
           }
         },
         "de" : {
@@ -408046,7 +408046,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dit lys. Det vokser med hver video, du deler — intet foto nødvendigt."
+            "value" : "Dit lys. Det vokser med hver video, du deler. Intet foto nødvendigt."
           }
         },
         "de" : {
@@ -408172,7 +408172,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din logbog er tom"
+            "value" : "Din Logbog er tom"
           }
         },
         "de" : {
@@ -408527,7 +408527,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din næste idé kan starte et."
+            "value" : "Din næste idé kan blive det første."
           }
         },
         "de" : {
@@ -410544,7 +410544,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din indstilling"
+            "value" : "Din opsætning"
           }
         },
         "de" : {
@@ -410662,7 +410662,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din indstilling matcher den allerede."
+            "value" : "Din opsætning passer allerede til den."
           }
         },
         "de" : {
@@ -411254,7 +411254,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din teleprompter-øvelse."
+            "value" : "Din teleprompterøvelse."
           }
         },
         "de" : {
@@ -412321,7 +412321,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din sædvanlige indstilling er %@."
+            "value" : "Din sædvanlige opsætning er %@."
           }
         },
         "de" : {
@@ -412558,7 +412558,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din video er allerede indlæst, og teksten er kopieret."
+            "value" : "Din video er allerede indlæst, og opslagsteksten er kopieret."
           }
         },
         "de" : {
@@ -413385,7 +413385,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dit år i review"
+            "value" : "Dit år i tilbageblik"
           }
         },
         "de" : {
