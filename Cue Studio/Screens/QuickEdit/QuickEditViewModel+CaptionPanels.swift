@@ -92,13 +92,14 @@ extension QuickEditViewModel {
     }
 
     /// Captions › the switch: shows or hides every line. Showing them when there are none makes
-    /// them (Auto captions).
+    /// them (Auto captions). Hidden while new lines are being made, they stay hidden when the lines come.
     func toggleCaptions() {
         if edit.captions.isEmpty {
             panel = .autoCaptions
             return
         }
         edit.showsCaptions.toggle()
+        if captionState.isWorking { keepsCaptionsHiddenAfterListening = !edit.showsCaptions }
     }
 
     // MARK: - Language and translation

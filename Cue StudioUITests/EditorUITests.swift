@@ -179,6 +179,23 @@ final class EditorUITests: XCTestCase {
         XCTAssertEqual(time.value as? String, held, "pause didn't hold the playhead")
     }
 
+    /// Edit by text › "Fix caption text": the caption line of the picked words opens with the keyboard up, ready to type.
+    func testFixCaptionTextOpensTheLineReadyToType() {
+        // The demo's words were heard already: the Simulator can't recognize speech.
+        let app = EditorApp.open(demo: true, arguments: ["-uiTestDemoTranscript"])
+        EditorApp.tapTool(app, "smart")
+        app.buttons["edit.smart.editByText"].tap()
+        let first = app.buttons["edit.transcript.word.2"]
+        XCTAssertTrue(first.exists(within: 5), "No words in Edit by text")
+        first.tap()
+        app.buttons["edit.transcript.word.3"].tap()
+        let fix = app.buttons["edit.transcript.fix"]
+        XCTAssertTrue(fix.exists(within: 5), "No Fix caption text")
+        fix.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["edit.panel.captions"].exists(within: 5), "Fix caption text didn't open Captions")
+        XCTAssertTrue(app.keyboards.firstMatch.exists(within: 5), "Fix caption text left the line closed")
+    }
+
     func testFullScreenShowsOnlyTheVideoAndComesBack() {
         let app = EditorApp.open()
         app.buttons["edit.fullScreenButton"].tap()

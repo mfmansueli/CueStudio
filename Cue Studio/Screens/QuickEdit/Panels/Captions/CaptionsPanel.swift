@@ -67,7 +67,8 @@ struct CaptionsPanel: View {
             // Select's actions stay at hand while the lines scroll.
             if viewModel.isPickingCaptions { CaptionPickTools(viewModel: viewModel, part: .actions) }
         })
-        .onChange(of: viewModel.focusesCaptionField) { _, focuses in
+        // Also on opening: "Fix caption text" opens the panel already asking for the keyboard.
+        .onChange(of: viewModel.focusesCaptionField, initial: true) { _, focuses in
             guard focuses else { return }
             viewModel.focusesCaptionField = false
             focusesField = true

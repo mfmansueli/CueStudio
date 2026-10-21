@@ -117,6 +117,25 @@ struct ExportAccountingTests {
         #expect(scenario.ledger.operations.isEmpty)
     }
 
+    /// Each way a render can stop says what happened, and none of them costs an export.
+    @Test(arguments: [
+        (VideoExportError.tooWarm, "Your iPhone is too warm to finish this video. Let it cool down, then export again."),
+        (VideoExportError.interrupted, "iOS stopped the export · Try again"),
+        (VideoExportError.noVideoTrack, "Couldn't export · Try again"),
+        (VideoExportError.exportUnavailable, "Couldn't export · Try again"),
+    ])
+    func aStoppedRenderSaysWhyAndDeductsNothing(error: VideoExportError, message: String) async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.exporter.error = error
+        await scenario.viewModel.save()
+        #expect(scenario.toast.message == message)
+        #expect(scenario.viewModel.phase == .failed)
+        #expect(scenario.used == 0)
+        #expect(scenario.ledger.operations.isEmpty)
+        #expect(scenario.photos.savedURLs.isEmpty)
+    }
+
     @Test func aSubscriberSaveIsNotDeductedButIsRecorded() async {
         let scenario = makeScenario(tier: .subscriber, used: 3)
         defer { scenario.defaults.tearDown() }

@@ -23,18 +23,6 @@ extension QuickEditViewModel {
         edit.captions.contains { $0.isRevised || $0.origin == .manual }
     }
 
-    /// Shows or hides the captions; the first time they show, they are made from the take.
-    func setShowsCaptions(_ shows: Bool) async {
-        edit.showsCaptions = shows
-        if !shows {
-            cancelCaptions() // A late recognition result must not turn captions back on.
-            return
-        }
-        guard edit.captions.isEmpty, !captionState.isWorking else { return }
-        makeCaptions()
-        await captionTask?.value
-    }
-
     /// Listens to the take (and a montage's other recordings) and makes the lines. Asks first when
     /// that would replace lines the creator corrected (`confirmsCaptionReplacement`), unless
     /// `replacingRevised`.

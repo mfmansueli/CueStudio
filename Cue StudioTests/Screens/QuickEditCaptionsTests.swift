@@ -120,7 +120,8 @@ struct QuickEditCaptionsTests {
 
     @Test func aTakeWithoutAScriptIsCaptionedFromItsVoice() async {
         let scenario = await makeScenario(script: nil)
-        await scenario.viewModel.setShowsCaptions(true)
+        scenario.viewModel.makeCaptions()
+        await finish(scenario.viewModel)
         #expect(scenario.editor.captionScript == "")
         #expect(scenario.viewModel.edit.captions.count == 1)
     }
@@ -198,18 +199,27 @@ struct QuickEditCaptionsTests {
         #expect(viewModel.captionState == .cancelled)
     }
 
-    @Test func turningCaptionsOffCancelsGenerationAndNeverReenablesThem() async {
+    /// The switch turned off while new lines are being made: the lines come, and stay hidden.
+    @Test func captionsHiddenWhileTheyAreRemadeStayHidden() async {
         let editor = FakeTakeEditor()
-        editor.captionDelay = .seconds(5)
         let scenario = await makeScenario(editor: editor)
         let viewModel = scenario.viewModel
         viewModel.makeCaptions()
-        #expect(viewModel.captionState.isWorking)
-        await viewModel.setShowsCaptions(false)
         await finish(viewModel)
+        #expect(viewModel.edit.showsCaptions)
+        editor.captionDelay = .milliseconds(300)
+        viewModel.makeCaptions()
+        #expect(viewModel.captionState.isWorking)
+        viewModel.toggleCaptions()
         #expect(!viewModel.edit.showsCaptions)
-        #expect(viewModel.edit.captions.isEmpty)
-        #expect(viewModel.captionState == .cancelled)
+        await finish(viewModel)
+        #expect(!viewModel.edit.captions.isEmpty)
+        #expect(!viewModel.edit.showsCaptions, "the switch the creator turned off stays off")
+        // And turned back on while working, they show.
+        viewModel.makeCaptions()
+        viewModel.toggleCaptions()
+        await finish(viewModel)
+        #expect(viewModel.edit.showsCaptions)
     }
 
     @Test func changingTheLanguageStopsListeningInTheOldOne() async {
