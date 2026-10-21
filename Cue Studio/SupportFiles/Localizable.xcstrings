@@ -1648,7 +1648,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“我们先慢一下。”"
+            "value" : "“我们先放慢一下。”"
           }
         },
         "zh-Hant" : {
@@ -2120,7 +2120,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“这是我信任的方法。”"
+            "value" : "“这是我信赖的方法。”"
           }
         },
         "zh-Hant" : {
@@ -2948,7 +2948,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 官宣"
+            "value" : "%@：官宣"
           }
         },
         "zh-Hant" : {
@@ -3066,7 +3066,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 真实测评"
+            "value" : "%@：真实测评"
           }
         },
         "zh-Hant" : {
@@ -3184,7 +3184,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 链接在我的主页。[看镜头] 本视频为付费合作推广。"
+            "value" : "%@，链接在我的主页简介里。[看镜头] 本视频为付费合作推广。"
           }
         },
         "zh-Hant" : {
@@ -3302,7 +3302,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 推广"
+            "value" : "%@：推广"
           }
         },
         "zh-Hant" : {
@@ -5134,7 +5134,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · 点另一个来切换"
+            "value" : "%@ · 轻点另一个以切换"
           }
         },
         "zh-Hant" : {
@@ -7522,7 +7522,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这部 iPhone 上没有 %@ · 请选择其他 App"
+            "value" : "这台 iPhone 上没有 %@ · 请选择其他 App"
           }
         },
         "zh-Hant" : {
@@ -8128,7 +8128,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ / %@"
+            "value" : "%1$@，共 %2$@"
           }
         },
         "zh-Hant" : {
@@ -8246,7 +8246,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每个剪辑点都用%@"
+            "value" : "所有剪辑点已套用%@"
           }
         },
         "zh-Hant" : {
@@ -8364,7 +8364,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "所有文字已用%@"
+            "value" : "所有文字已套用%@"
           }
         },
         "zh-Hant" : {
@@ -8482,7 +8482,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "字幕已用%@"
+            "value" : "字幕已套用%@"
           }
         },
         "zh-Hant" : {
@@ -8719,7 +8719,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此文字已用%@"
+            "value" : "此文字已套用%@"
           }
         },
         "zh-Hant" : {
@@ -9311,7 +9311,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@安全区"
+            "value" : "%@ 安全区"
           }
         },
         "zh-Hant" : {
@@ -10746,7 +10746,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已保存%@版本"
+            "value" : "已存储%@版本"
           }
         },
         "zh-Hant" : {
@@ -11943,7 +11943,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@. %2$@"
+            "value" : "%1$@。%2$@"
           }
         },
         "zh-Hant" : {
@@ -12061,7 +12061,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@。这是我的责任。[停顿]"
+            "value" : "%@。这是我的错。[停顿]"
           }
         },
         "zh-Hant" : {
@@ -12297,7 +12297,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@s"
+            "value" : "%@ 秒"
           }
         },
         "zh-Hant" : {
@@ -16212,7 +16212,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 处"
+            "value" : "%lld 处匹配"
           }
         },
         "zh-Hant" : {
@@ -16566,7 +16566,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "再 %lld 个解锁%@"
+            "value" : "再 %lld 个即可解锁%@"
           }
         },
         "zh-Hant" : {
@@ -16928,7 +16928,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld / %2$lld · 可继续添加，或点“继续”"
+            "value" : "%1$lld / %2$lld · 可继续添加，或轻点“继续”"
           }
         },
         "zh-Hant" : {
@@ -17046,7 +17046,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld / %2$lld · 再加一个，或点“继续”"
+            "value" : "%1$lld / %2$lld · 再加一个，或轻点“继续”"
           }
         },
         "zh-Hant" : {
@@ -17283,7 +17283,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld / %2$lld · 点一个来替换"
+            "value" : "%1$lld / %2$lld · 轻点一个以替换"
           }
         },
         "zh-Hant" : {
@@ -17528,7 +17528,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "剩余 %1$lld / %2$lld 次导出"
+            "value" : "导出剩余 %1$lld / %2$lld 次"
           }
         },
         "zh-Hant" : {
@@ -17646,7 +17646,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "免费导出剩余 %1$lld/%2$lld 次"
+            "value" : "免费导出剩余 %1$lld / %2$lld 次"
           }
         },
         "zh-Hant" : {
@@ -17764,7 +17764,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "还剩 %lld / %lld 次免费导出"
+            "value" : "免费导出剩余 %1$lld / %2$lld 次"
           }
         },
         "zh-Hant" : {
@@ -18000,7 +18000,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "还剩 %lld / %lld · 用 Pro 导出"
+            "value" : "剩余 %1$lld / %2$lld · 用 Pro 导出"
           }
         },
         "zh-Hant" : {
@@ -18952,7 +18952,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "相机下方 %lld pt · 推荐。"
+            "value" : "相机下方 %lld 磅 · 推荐。"
           }
         },
         "zh-Hant" : {
@@ -19082,7 +19082,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 个就绪"
+            "value" : "%lld 个已就绪"
           }
         },
         "zh-Hant" : {
@@ -20649,7 +20649,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld 条视频 — 还差 %2$lld"
+            "value" : "%1$lld 个视频 · 还差 %2$lld 个"
           }
         },
         "zh-Hant" : {
@@ -21245,7 +21245,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 条视频 ✓"
+            "value" : "%lld 个视频 ✓"
           }
         },
         "zh-Hant" : {
@@ -23593,7 +23593,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ 添加 · 点一下"
+            "value" : "+ 添加 · 轻点一下"
           }
         },
         "zh-Hant" : {
@@ -23949,7 +23949,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ 没找到？添加你的话题"
+            "value" : "+ 没找到？添加你的主题"
           }
         },
         "zh-Hant" : {
@@ -24896,7 +24896,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ 字幕已加 · 下一步：分享"
+            "value" : "✓ 已添加字幕 · 下一步：分享"
           }
         },
         "zh-Hant" : {
@@ -25132,7 +25132,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Cue 声音已完整"
+            "value" : "✓ Cue Voice 已完成"
           }
         },
         "zh-Hant" : {
@@ -25250,7 +25250,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ 合适 %@"
+            "value" : "✓ 适合 %@"
           }
         },
         "zh-Hant" : {
@@ -26079,7 +26079,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ 已保存"
+            "value" : "✓ 已存储"
           }
         },
         "zh-Hant" : {
@@ -26791,7 +26791,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Cue 还从这些学习"
+            "value" : "✦ Cue 还学习了以下内容"
           }
         },
         "zh-Hant" : {
@@ -26909,7 +26909,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ 像你吗？"
+            "value" : "✦ 听起来像你吗？"
           }
         },
         "zh-Hant" : {
@@ -27741,7 +27741,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ 预览我的风格"
+            "value" : "✦ 预览我的口吻"
           }
         },
         "zh-Hant" : {
@@ -27977,7 +27977,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ 智能"
+            "value" : "✦ Smart"
           }
         },
         "zh-Hant" : {
@@ -28097,7 +28097,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ CUE 使用的内容"
+            "value" : "✦ Cue 使用的内容"
           }
         },
         "zh-Hant" : {
@@ -28333,7 +28333,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ 写作"
+            "value" : "✦ 起草"
           }
         },
         "zh-Hant" : {
@@ -29041,7 +29041,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 条"
+            "value" : "1 个镜头"
           }
         },
         "zh-Hant" : {
@@ -29159,7 +29159,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 条 · v%lld"
+            "value" : "1 个镜头 · v%lld"
           }
         },
         "zh-Hant" : {
@@ -29765,7 +29765,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第 1 条视频 ✓"
+            "value" : "第 1 个视频 ✓"
           }
         },
         "zh-Hant" : {
@@ -30711,7 +30711,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4 个简短问题 —— 约 20 秒，无需打字。"
+            "value" : "4 个简短问题，约 20 秒，无需打字。"
           }
         },
         "zh-Hant" : {
@@ -32249,7 +32249,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一张白纸，写你的话。"
+            "value" : "一张白纸，写下你的话。"
           }
         },
         "zh-Hant" : {
@@ -32959,7 +32959,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "朋友让我试了这个 — 真要谢谢她。"
+            "value" : "朋友让我试了这个，真得谢谢她。"
           }
         },
         "zh-Hant" : {
@@ -34623,7 +34623,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "关于%@"
+            "value" : "关于%@的说明"
           }
         },
         "zh-Hant" : {
@@ -36754,7 +36754,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "知道了"
+            "value" : "承认"
           }
         },
         "zh-Hant" : {
@@ -37584,7 +37584,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "添加关键帧，移动播放头，然后拖动照片或视频——Cue 会在关键帧之间移动它。"
+            "value" : "添加关键帧，移动播放头，然后拖动照片或视频，Cue 会在关键帧之间移动它。"
           }
         },
         "zh-Hant" : {
@@ -37702,7 +37702,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "添加关键帧，移动播放头，然后拖动视频中的文字——Cue 会在关键帧之间移动它。"
+            "value" : "添加关键帧，移动播放头，然后拖动视频中的文字，Cue 会在关键帧之间移动它。"
           }
         },
         "zh-Hant" : {
@@ -38175,7 +38175,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "添加声音示例"
+            "value" : "添加口吻示例"
           }
         },
         "zh-Hant" : {
@@ -38294,7 +38294,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "添加画外音"
+            "value" : "添加配音"
           }
         },
         "zh-Hant" : {
@@ -40664,7 +40664,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "会附在你发给 Cue 的每个想法之前——脚本、钩子、回复，以及你发布的平台和所选的形式。绝不会用于训练模型。"
+            "value" : "会附在你发给 Cue 的每个想法之前：脚本、钩子、回复，连同你发布的平台和所选的形式。绝不会用于训练模型。"
           }
         },
         "zh-Hant" : {
@@ -42204,7 +42204,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "发布后，点按左上角的 ◀ Cue。我们会回来收尾。"
+            "value" : "发布后，轻点左上角的 ◀ Cue，回来完成剩下的步骤。"
           }
         },
         "zh-Hant" : {
@@ -42322,7 +42322,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "发布后，点按左上角的 ◀ Cue。接下来我们会打开 %@。"
+            "value" : "发布后，轻点左上角的 ◀ Cue，接下来会打开 %@。"
           }
         },
         "zh-Hant" : {
@@ -42558,7 +42558,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "AI 可能出错 · 录制前请核对"
+            "value" : "AI 可能弄错事实 · 录制前请核对"
           }
         },
         "zh-Hant" : {
@@ -44114,7 +44114,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 个文字会一起更改"
+            "value" : "全部 %lld 段文字一起更改"
           }
         },
         "zh-Hant" : {
@@ -45059,7 +45059,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请在设置中允许使用相机"
+            "value" : "请在“设置”中允许使用相机"
           }
         },
         "zh-Hant" : {
@@ -45178,7 +45178,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请在 iOS 设置中允许 Cue。"
+            "value" : "请在 iOS“设置”中允许 Cue。"
           }
         },
         "zh-Hant" : {
@@ -45296,7 +45296,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请允许以保存你的视频。"
+            "value" : "请允许访问，以便存储你的视频。"
           }
         },
         "zh-Hant" : {
@@ -47673,7 +47673,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "然后 — %@。[顿一下]"
+            "value" : "然后，%@。[短停顿]"
           }
         },
         "zh-Hant" : {
@@ -47791,7 +47791,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "然后——%@。[微笑]"
+            "value" : "然后，%@。[微笑]"
           }
         },
         "zh-Hant" : {
@@ -48973,7 +48973,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "回答平台"
+            "value" : "回复平台"
           }
         },
         "zh-Hant" : {
@@ -52725,7 +52725,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "应用与软件"
+            "value" : "App 与软件"
           }
         },
         "zh-Hant" : {
@@ -54145,7 +54145,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "分享第一个视频即可解锁 Aurora。其他图标会随着你分享更多，搭配 Pro 解锁。"
+            "value" : "分享第一个视频即可解锁 Aurora。分享更多视频后，其他图标也会随之解锁（需 Pro）。"
           }
         },
         "zh-Hant" : {
@@ -55207,7 +55207,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "避开"
+            "value" : "避免"
           }
         },
         "zh-Hant" : {
@@ -57925,7 +57925,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一拍"
+            "value" : "短停顿"
           }
         },
         "zh-Hant" : {
@@ -58755,7 +58755,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "首先 — 对不起。"
+            "value" : "首先，对不起。"
           }
         },
         "zh-Hant" : {
@@ -59468,7 +59468,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "前/后"
+            "value" : "前后对比"
           }
         },
         "zh-Hant" : {
@@ -61007,7 +61007,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "大字幕逐字高亮 · 弹出式开场"
+            "value" : "大字幕逐字高亮 · 弹出式钩子"
           }
         },
         "zh-Hant" : {
@@ -63855,7 +63855,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "醒目开场"
+            "value" : "醒目钩子"
           }
         },
         "zh-Hant" : {
@@ -64685,7 +64685,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "两台设备都需要 Cue，并打开 Wi-Fi 或蓝牙。"
+            "value" : "两台设备都需要安装 Cue，并打开无线局域网或蓝牙。"
           }
         },
         "zh-Hant" : {
@@ -66343,7 +66343,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "带来你写过的脚本、文案或笔记。Cue 会在这台 iPhone 上从中学习你的写作方式。"
+            "value" : "导入你写过的脚本、文案或笔记。Cue 会在这台 iPhone 上从中学习你的写作方式。"
           }
         },
         "zh-Hant" : {
@@ -66462,7 +66462,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "带来你已经写好的内容。"
+            "value" : "导入你已经写好的内容。"
           }
         },
         "zh-Hant" : {
@@ -67055,7 +67055,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "穷游"
+            "value" : "省钱旅行"
           }
         },
         "zh-Hant" : {
@@ -67885,7 +67885,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "烧录字幕"
+            "value" : "嵌入字幕"
           }
         },
         "zh-Hant" : {
@@ -69075,7 +69075,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "越忙的日子越难好好吃饭。我们来把它变简单。"
+            "value" : "越忙的日子越难好好吃饭。我们就简单点。"
           }
         },
         "zh-Hant" : {
@@ -70495,7 +70495,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "相机模糊"
+            "value" : "相机画面模糊"
           }
         },
         "zh-Hant" : {
@@ -71441,7 +71441,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无法提取这段声音"
+            "value" : "无法提取音频"
           }
         },
         "zh-Hant" : {
@@ -73100,7 +73100,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "说明文字已拷贝 · 粘贴到 %@"
+            "value" : "文案已拷贝 · 粘贴到 %@"
           }
         },
         "zh-Hant" : {
@@ -73691,7 +73691,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此 iPhone 上的字幕无法识别%@。请选择所说的语言，或自己写字幕行。"
+            "value" : "在这台 iPhone 上，字幕无法识别%@。请选择视频中所说的语言，或自己写字幕。"
           }
         },
         "zh-Hant" : {
@@ -74998,7 +74998,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "字幕已开"
+            "value" : "字幕已开启"
           }
         },
         "zh-Hant" : {
@@ -75354,7 +75354,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "字幕、标题和动效一起 · 文字保持不变"
+            "value" : "字幕、标题和动效一次到位 · 你的文字不变"
           }
         },
         "zh-Hant" : {
@@ -76894,7 +76894,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "随时可在“我的”› 我的 Cue 声音中修改。"
+            "value" : "随时可在“个人资料 › My Cue Voice”中修改。"
           }
         },
         "zh-Hant" : {
@@ -77486,7 +77486,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "更改仅适用于这条镜头。"
+            "value" : "更改仅适用于这个镜头。"
           }
         },
         "zh-Hant" : {
@@ -77723,7 +77723,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "更改会在预览中显示，并随时保存。✓ 关闭面板。"
+            "value" : "更改会在预览中显示，并即时存储。✓ 关闭面板。"
           }
         },
         "zh-Hant" : {
@@ -79147,7 +79147,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 Cue 写作之前，请先确认评论内容。"
+            "value" : "在 Cue 起草之前，请先核对评论内容。"
           }
         },
         "zh-Hant" : {
@@ -80924,7 +80924,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择你做视频的主题。"
+            "value" : "选择你的视频主题。"
           }
         },
         "zh-Hant" : {
@@ -84134,7 +84134,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "关闭提示"
+            "value" : "关闭小贴士"
           }
         },
         "zh-Hant" : {
@@ -84728,7 +84728,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "为了省电把所有应用都关掉？我们来聊聊。"
+            "value" : "为了省电把所有 App 都关掉？我们来聊聊。"
           }
         },
         "zh-Hant" : {
@@ -85082,7 +85082,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "优惠码 MORNING 立减20%"
+            "value" : "优惠码 MORNING 立减 20%"
           }
         },
         "zh-Hant" : {
@@ -88281,7 +88281,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "复利，讲得简单点"
+            "value" : "简单讲讲复利"
           }
         },
         "zh-Hant" : {
@@ -92200,7 +92200,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请先复制评论，再粘贴到这里。"
+            "value" : "请先拷贝评论，再粘贴到这里。"
           }
         },
         "zh-Hant" : {
@@ -92318,7 +92318,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "请先复制脚本"
+            "value" : "请先拷贝脚本"
           }
         },
         "zh-Hant" : {
@@ -93631,7 +93631,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "部分片段无法收听"
+            "value" : "部分片段无法识别"
           }
         },
         "zh-Hant" : {
@@ -96112,7 +96112,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "发布到"
+            "value" : "创作平台"
           }
         },
         "zh-Hant" : {
@@ -96230,7 +96230,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "发布到 %@"
+            "value" : "为 %@ 创作"
           }
         },
         "zh-Hant" : {
@@ -98837,7 +98837,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 会在这部 iPhone 上逐帧找到你，并更换你周围的一切。"
+            "value" : "Cue 会在这台 iPhone 上逐帧找到你，并更换你周围的一切。"
           }
         },
         "zh-Hant" : {
@@ -99074,7 +99074,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 从这里学到了"
+            "value" : "Cue 已从中学习"
           }
         },
         "zh-Hant" : {
@@ -99667,7 +99667,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "只有你点按“录制”时，Cue 才会录制。"
+            "value" : "只有你轻点“录制”时，Cue 才会录制。"
           }
         },
         "zh-Hant" : {
@@ -100023,7 +100023,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 会带着视频和文案打开应用。由你发布。"
+            "value" : "Cue 会带着视频和文案打开 App。由你发布。"
           }
         },
         "zh-Hant" : {
@@ -100141,7 +100141,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 根据你的创意选择"
+            "value" : "Cue 根据你的想法选择"
           }
         },
         "zh-Hant" : {
@@ -100259,7 +100259,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 在这部 iPhone 上选择主题"
+            "value" : "Cue 在这台 iPhone 上选择主题"
           }
         },
         "zh-Hant" : {
@@ -100613,7 +100613,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 在这部 iPhone 上读取评论"
+            "value" : "Cue 在这台 iPhone 上读取评论"
           }
         },
         "zh-Hant" : {
@@ -102274,7 +102274,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "文字中的 PAUSE、SMILE 等提示"
+            "value" : "文字中的“停顿”“微笑”等提示"
           }
         },
         "zh-Hant" : {
@@ -102392,7 +102392,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "好奇"
+            "value" : "好奇心"
           }
         },
         "zh-Hant" : {
@@ -104593,7 +104593,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "删掉口头禅"
+            "value" : "删掉语气词"
           }
         },
         "zh-Hant" : {
@@ -106962,7 +106962,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "全部删除"
+            "value" : "删除全部内容"
           }
         },
         "zh-Hant" : {
@@ -107908,7 +107908,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "将从此 iPhone 删除你的脚本、拍摄、剪辑和 My Cue Voice。此操作无法撤销。"
+            "value" : "将从此 iPhone 删除你的脚本、镜头、剪辑和 My Cue Voice。此操作无法撤销。"
           }
         },
         "zh-Hant" : {
@@ -110512,7 +110512,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "声明已在最前面"
+            "value" : "推广声明已在开头"
           }
         },
         "zh-Hant" : {
@@ -113837,7 +113837,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "草稿已完成 · 随意修改"
+            "value" : "草稿已就绪 · 可随意修改"
           }
         },
         "zh-Hant" : {
@@ -114073,7 +114073,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "草稿已保存"
+            "value" : "草稿已存储"
           }
         },
         "zh-Hant" : {
@@ -114787,7 +114787,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在用你的声音起草"
+            "value" : "正在用你的口吻起草"
           }
         },
         "zh-Hant" : {
@@ -114907,7 +114907,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "草稿 · %lld — 进行中"
+            "value" : "草稿 · %lld · 进行中"
           }
         },
         "zh-Hant" : {
@@ -115738,7 +115738,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拖动以调整大小。双击以重置。"
+            "value" : "拖动以调整大小。轻点两下以重置。"
           }
         },
         "zh-Hant" : {
@@ -116568,7 +116568,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已到时间"
+            "value" : "已到期"
           }
         },
         "zh-Hant" : {
@@ -117753,7 +117753,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "例如：说实话。"
+            "value" : "例如：好，说实话。"
           }
         },
         "zh-Hant" : {
@@ -118466,7 +118466,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "柔和进入"
+            "value" : "缓入"
           }
         },
         "zh-Hant" : {
@@ -118585,7 +118585,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每顿都在外面吃，花费涨得很快。这样就能省下来。"
+            "value" : "每顿都在外面吃，开销涨得很快。这样吃更省钱。"
           }
         },
         "zh-Hant" : {
@@ -119888,7 +119888,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "编辑已保存 · %@"
+            "value" : "剪辑已存储 · %@"
           }
         },
         "zh-Hant" : {
@@ -120242,7 +120242,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "编辑声音"
+            "value" : "编辑口吻"
           }
         },
         "zh-Hant" : {
@@ -120478,7 +120478,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "杂志"
+            "value" : "杂志风"
           }
         },
         "zh-Hant" : {
@@ -122844,7 +122844,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "活力"
+            "value" : "充满活力"
           }
         },
         "zh-Hant" : {
@@ -122963,7 +122963,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "能量"
+            "value" : "活力"
           }
         },
         "zh-Hant" : {
@@ -123081,7 +123081,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "能量 · 温暖 → 平静"
+            "value" : "活力 · 温暖 → 平静"
           }
         },
         "zh-Hant" : {
@@ -123910,7 +123910,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第%@集"
+            "value" : "第 %@ 集"
           }
         },
         "zh-Hant" : {
@@ -124029,7 +124029,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第03集、教程、第2部分…"
+            "value" : "第 03 集、教程、第 2 部分…"
           }
         },
         "zh-Hant" : {
@@ -125931,7 +125931,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "所有剪切点已应用"
+            "value" : "所有剪辑点都已应用"
           }
         },
         "zh-Hant" : {
@@ -126286,7 +126286,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "所有里程碑应用图标"
+            "value" : "所有里程碑 App 图标"
           }
         },
         "zh-Hant" : {
@@ -126522,7 +126522,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每个视频都有最佳镜头了。"
+            "value" : "每个视频都有一个最佳镜头。"
           }
         },
         "zh-Hant" : {
@@ -127352,7 +127352,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "示例已保存"
+            "value" : "示例已存储"
           }
         },
         "zh-Hant" : {
@@ -127707,7 +127707,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已保存摘录"
+            "value" : "已存储摘录"
           }
         },
         "zh-Hant" : {
@@ -132220,7 +132220,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在提取声音…"
+            "value" : "正在提取音频…"
           }
         },
         "zh-Hant" : {
@@ -135184,7 +135184,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "口头禅"
+            "value" : "语气词"
           }
         },
         "zh-Hant" : {
@@ -135302,7 +135302,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "口头禅和重说"
+            "value" : "语气词和重说"
           }
         },
         "zh-Hant" : {
@@ -136965,7 +136965,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在画面中找你…"
+            "value" : "正在画面中寻找你…"
           }
         },
         "zh-Hant" : {
@@ -137084,7 +137084,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在查找你的眼睛 · %lld%%"
+            "value" : "正在寻找你的眼睛 · %lld%%"
           }
         },
         "zh-Hant" : {
@@ -137559,7 +137559,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完成编辑"
+            "value" : "完成剪辑"
           }
         },
         "zh-Hant" : {
@@ -140753,7 +140753,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打发像牛奶，毫无余味"
+            "value" : "起泡效果媲美牛奶，零余味"
           }
         },
         "zh-Hant" : {
@@ -143358,7 +143358,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用于 %@"
+            "value" : "面向 %@"
           }
         },
         "zh-Hant" : {
@@ -143595,7 +143595,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "适用于分光镜玻璃"
+            "value" : "适用于分光玻璃"
           }
         },
         "zh-Hant" : {
@@ -144425,7 +144425,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "格式，%@"
+            "value" : "形式，%@"
           }
         },
         "zh-Hant" : {
@@ -144899,7 +144899,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在你的 iPhone 上从“文件”添加的音乐中查找。"
+            "value" : "节拍由这台 iPhone 从你在“文件”中添加的音乐里识别。"
           }
         },
         "zh-Hant" : {
@@ -145254,7 +145254,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第 %@ 帧"
+            "value" : "画幅 %@"
           }
         },
         "zh-Hant" : {
@@ -147219,7 +147219,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自由录制"
+            "value" : "自由发挥"
           }
         },
         "zh-Hant" : {
@@ -148523,7 +148523,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "来自“文件”。请仅使用你拥有或有权使用的音乐——无法添加 Apple Music 中的歌曲。"
+            "value" : "来自“文件”。请仅使用你拥有或有权使用的音乐。无法添加 Apple Music 中的歌曲。"
           }
         },
         "zh-Hant" : {
@@ -148998,7 +148998,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用遥控可以"
+            "value" : "通过遥控可以"
           }
         },
         "zh-Hant" : {
@@ -149235,7 +149235,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "来自你的航海日志"
+            "value" : "来自你的航行日志"
           }
         },
         "zh-Hant" : {
@@ -149472,7 +149472,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完整 My Cue Voice + 赞助广告草稿"
+            "value" : "完整 My Cue Voice + 推广广告草稿"
           }
         },
         "zh-Hant" : {
@@ -152198,7 +152198,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在准备识别…"
+            "value" : "正在准备聆听…"
           }
         },
         "zh-Hant" : {
@@ -160975,7 +160975,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "强调显示为"
+            "value" : "高亮显示为"
           }
         },
         "zh-Hant" : {
@@ -162280,7 +162280,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开场"
+            "value" : "钩子"
           }
         },
         "zh-Hant" : {
@@ -162516,7 +162516,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开场白变体、各平台版本、最佳拍摄推荐"
+            "value" : "钩子变体、各平台版本、最佳镜头推荐"
           }
         },
         "zh-Hant" : {
@@ -162871,7 +162871,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我的观点：%@"
+            "value" : "犀利观点：%@"
           }
         },
         "zh-Hant" : {
@@ -163225,7 +163225,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的说话方式是什么？"
+            "value" : "你平时怎么说话？"
           }
         },
         "zh-Hant" : {
@@ -164406,7 +164406,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的视频有多少幽默？"
+            "value" : "你的视频有多幽默？"
           }
         },
         "zh-Hant" : {
@@ -164524,7 +164524,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "让 Cue 怎么搭建？"
+            "value" : "希望 Cue 怎么搭建？"
           }
         },
         "zh-Hant" : {
@@ -167841,7 +167841,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "全都试过了 — 留下来的是这些。"
+            "value" : "全都试过了，留下来的是这些。"
           }
         },
         "zh-Hant" : {
@@ -169379,7 +169379,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "按你的视频主题给出点子。在你选中前不会写任何内容。"
+            "value" : "按你的视频主题给出想法。在你选中之前，不会起草任何内容。"
           }
         },
         "zh-Hant" : {
@@ -169617,7 +169617,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "起步的想法。"
+            "value" : "从这些想法起步。"
           }
         },
         "zh-Hant" : {
@@ -171162,7 +171162,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "如果你的笔记到处都是，这些应用能帮上忙。"
+            "value" : "如果你的笔记到处都是，这些 App 能帮上忙。"
           }
         },
         "zh-Hant" : {
@@ -172112,7 +172112,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "冲击"
+            "value" : "冲击力"
           }
         },
         "zh-Hant" : {
@@ -173540,7 +173540,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "编辑中 · 自动保存"
+            "value" : "编辑中 · 已自动存储"
           }
         },
         "zh-Hant" : {
@@ -174132,7 +174132,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在分享面板中点按 %@"
+            "value" : "在分享面板中轻点 %@"
           }
         },
         "zh-Hant" : {
@@ -174369,7 +174369,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用你的风格"
+            "value" : "用你的口吻"
           }
         },
         "zh-Hant" : {
@@ -174488,7 +174488,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的声音 · %@"
+            "value" : "你的口吻 · %@"
           }
         },
         "zh-Hant" : {
@@ -175314,7 +175314,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已中断 · 镜头已保存"
+            "value" : "已中断 · 镜头已存储"
           }
         },
         "zh-Hant" : {
@@ -176973,7 +176973,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "它会进入输入框。先改成你的样子。"
+            "value" : "它会放进输入框，先改成你自己的。"
           }
         },
         "zh-Hant" : {
@@ -177920,7 +177920,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已存储到照片。打开 Cue 即可分享。"
+            "value" : "已存储到“照片”。打开 Cue 即可分享。"
           }
         },
         "zh-Hant" : {
@@ -178512,7 +178512,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "加入候补名单 — 链接在主页"
+            "value" : "加入候补名单，链接在主页简介里"
           }
         },
         "zh-Hant" : {
@@ -178867,7 +178867,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "只保存我的声音"
+            "value" : "只存储我的口吻"
           }
         },
         "zh-Hant" : {
@@ -179340,7 +179340,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "只需主题和要点。Cue 会写出一份带编号的清单，开头有钩子，结尾引导评论。"
+            "value" : "只需主题和要点。Cue 会起草一份带编号的清单，开头有钩子，结尾引导评论。"
           }
         },
         "zh-Hant" : {
@@ -179812,7 +179812,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "至少保留一个片段"
+            "value" : "至少保留一个分段"
           }
         },
         "zh-Hant" : {
@@ -181822,7 +181822,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "把你的编辑保存为草稿"
+            "value" : "将你的剪辑保留为草稿"
           }
         },
         "zh-Hant" : {
@@ -181941,7 +181941,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保存在 Cue 中"
+            "value" : "保留在 Cue 中"
           }
         },
         "zh-Hant" : {
@@ -183124,7 +183124,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "孩子能帮的忙比我们想的多。这样开始。"
+            "value" : "孩子能帮的忙比我们想的多。可以这样开始。"
           }
         },
         "zh-Hant" : {
@@ -184425,7 +184425,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "发射"
+            "value" : "首发"
           }
         },
         "zh-Hant" : {
@@ -188921,7 +188921,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "链接在主页"
+            "value" : "链接在主页简介里"
           }
         },
         "zh-Hant" : {
@@ -189749,7 +189749,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "听取视频"
+            "value" : "聆听视频"
           }
         },
         "zh-Hant" : {
@@ -191050,7 +191050,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "航海日志 · %lld 条待写"
+            "value" : "航行日志 · %lld 条待写"
           }
         },
         "zh-Hant" : {
@@ -191759,7 +191759,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最长连续"
+            "value" : "最长连续周数"
           }
         },
         "zh-Hant" : {
@@ -192826,7 +192826,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "人声时降低"
+            "value" : "有人声时降低音量"
           }
         },
         "zh-Hant" : {
@@ -194245,7 +194245,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "改短一点，或直接录制，之后还能剪。"
+            "value" : "改短一点，或直接录制，之后还能修剪。"
           }
         },
         "zh-Hant" : {
@@ -194483,7 +194483,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "改成你的样子。你写，Cue 就学。"
+            "value" : "改成你自己的。你写得越多，Cue 越懂你。"
           }
         },
         "zh-Hant" : {
@@ -195556,7 +195556,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "给要发布的那条加上星标"
+            "value" : "给要发布的那个镜头加上星标"
           }
         },
         "zh-Hant" : {
@@ -196148,7 +196148,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最多 %lld 个 · 点按可移除"
+            "value" : "最多 %lld 个 · 轻点可移除"
           }
         },
         "zh-Hant" : {
@@ -196384,7 +196384,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最多 3 个示例 · 点按 ✕ 可替换"
+            "value" : "最多 3 个示例 · 轻点 ✕ 可替换"
           }
         },
         "zh-Hant" : {
@@ -196620,7 +196620,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可能是有意为之 — 用来强调"
+            "value" : "可能是有意为之，用来强调"
           }
         },
         "zh-Hant" : {
@@ -199225,7 +199225,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可能有含义 — 先听一下"
+            "value" : "可能有含义，先听一下"
           }
         },
         "zh-Hant" : {
@@ -202440,7 +202440,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "更多格式"
+            "value" : "更多形式"
           }
         },
         "zh-Hant" : {
@@ -203151,7 +203151,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 里更具体一点"
+            "value" : "在%@方面更具体"
           }
         },
         "zh-Hant" : {
@@ -203982,7 +203982,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "运动"
+            "value" : "动效"
           }
         },
         "zh-Hant" : {
@@ -204101,7 +204101,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "运动和时间只更改这段文字"
+            "value" : "动效和时间只更改这段文字"
           }
         },
         "zh-Hant" : {
@@ -207892,7 +207892,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我的 CUE 声音"
+            "value" : "MY CUE VOICE"
           }
         },
         "zh-Hant" : {
@@ -208247,7 +208247,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第一次和品牌开会 — 相机卡住了"
+            "value" : "第一次和品牌开会，相机就卡住了"
           }
         },
         "zh-Hant" : {
@@ -209668,7 +209668,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我的声音"
+            "value" : "我的口吻"
           }
         },
         "zh-Hant" : {
@@ -211799,7 +211799,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "中性声音"
+            "value" : "中性口吻"
           }
         },
         "zh-Hant" : {
@@ -212035,7 +212035,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "不能说"
+            "value" : "绝不说"
           }
         },
         "zh-Hant" : {
@@ -215359,7 +215359,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "接下来填写品牌简介，#ad 会自动加上。"
+            "value" : "接下来填写品牌简报。#ad 会自动加上。"
           }
         },
         "zh-Hant" : {
@@ -216075,7 +216075,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "未找到相机 · 演播室模式仍可使用"
+            "value" : "未找到相机 · Studio 模式仍可使用"
           }
         },
         "zh-Hant" : {
@@ -217378,7 +217378,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无面孔"
+            "value" : "无人脸"
           }
         },
         "zh-Hant" : {
@@ -217497,7 +217497,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有足够清晰的面孔可供校正"
+            "value" : "没有足够清晰的人脸可供校正"
           }
         },
         "zh-Hant" : {
@@ -219513,7 +219513,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没关系，你仍然可以练习。想录制时，在设置中打开相机即可。"
+            "value" : "没关系，你仍然可以练习。想录制时，在“设置”中打开相机即可。"
           }
         },
         "zh-Hant" : {
@@ -219632,7 +219632,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没关系，你仍然可以练习。文字会匀速滚动。在设置中打开麦克风，文字就能跟着你的声音走。"
+            "value" : "没关系，你仍然可以练习。文字会匀速滚动。在“设置”中打开麦克风，文字就能跟着你的声音走。"
           }
         },
         "zh-Hant" : {
@@ -219751,7 +219751,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没关系，你仍然可以练习。文字会匀速滚动。在设置中打开它们，文字才能跟着你的声音走，你也才能录制。"
+            "value" : "没关系，你仍然可以练习。文字会匀速滚动。在“设置”中打开它们，文字才能跟着你的声音走，你也才能录制。"
           }
         },
         "zh-Hant" : {
@@ -220225,7 +220225,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "未连接遥控"
+            "value" : "未连接遥控设备"
           }
         },
         "zh-Hant" : {
@@ -220344,7 +220344,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "还没有遥控"
+            "value" : "还没有遥控设备"
           }
         },
         "zh-Hant" : {
@@ -220462,7 +220462,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有“%@”的结果"
+            "value" : "没有与“%@”相关的结果"
           }
         },
         "zh-Hant" : {
@@ -226147,7 +226147,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "没有要避开的"
+            "value" : "没有要避免的"
           }
         },
         "zh-Hant" : {
@@ -226265,7 +226265,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "还没有可保存的内容"
+            "value" : "还没有可存储的内容"
           }
         },
         "zh-Hant" : {
@@ -226977,7 +226977,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 的通知在 iOS 设置中已关闭。提醒会保存在 Cue 中。"
+            "value" : "Cue 的通知已在 iOS“设置”中关闭。提醒会保留在 Cue 中。"
           }
         },
         "zh-Hant" : {
@@ -227814,7 +227814,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第%1$@：%2$@。"
+            "value" : "第 %1$@ 点：%2$@。"
           }
         },
         "zh-Hant" : {
@@ -229115,7 +229115,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "说真的 — 这个很重要。"
+            "value" : "说真的，这个很重要。"
           }
         },
         "zh-Hant" : {
@@ -231010,7 +231010,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有内容在等你时发送一条通知，每天最多一条。你可以在设置中更改。"
+            "value" : "有内容在等你时发送一条通知，每天最多一条。你可以在“设置”中更改。"
           }
         },
         "zh-Hant" : {
@@ -231366,7 +231366,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一个小问题 · 声音 %lld%%"
+            "value" : "一个小问题 · 口吻 %lld%%"
           }
         },
         "zh-Hant" : {
@@ -233500,7 +233500,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打开继续。准备好就录制。"
+            "value" : "打开即可继续。准备好就录制。"
           }
         },
         "zh-Hant" : {
@@ -233618,7 +233618,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打开航海日志 ›"
+            "value" : "打开航行日志 ›"
           }
         },
         "zh-Hant" : {
@@ -234918,7 +234918,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开头"
+            "value" : "开场"
           }
         },
         "zh-Hant" : {
@@ -235155,7 +235155,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "以这些分段打开为草稿。"
+            "value" : "将以这些分段作为草稿打开。"
           }
         },
         "zh-Hant" : {
@@ -235509,7 +235509,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开头"
+            "value" : "开场"
           }
         },
         "zh-Hant" : {
@@ -235627,7 +235627,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打开你的声音问题以便修改。"
+            "value" : "打开口吻问题以便修改。"
           }
         },
         "zh-Hant" : {
@@ -237991,7 +237991,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "相机画面之上 · 自拍"
+            "value" : "相机画面之上 · Selfie"
           }
         },
         "zh-Hant" : {
@@ -240006,7 +240006,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "视频片段"
+            "value" : "视频中的一段"
           }
         },
         "zh-Hant" : {
@@ -240597,7 +240597,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "粘贴文字、选择封面，然后点按发布。"
+            "value" : "粘贴文字、选择封面，然后轻点“发布”。"
           }
         },
         "zh-Hant" : {
@@ -241071,7 +241071,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "粘贴的文本"
+            "value" : "粘贴的文字"
           }
         },
         "zh-Hant" : {
@@ -244979,7 +244979,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 的照片权限已关闭"
+            "value" : "Cue 无权访问“照片”"
           }
         },
         "zh-Hant" : {
@@ -247944,7 +247944,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在分享面板里选择应用"
+            "value" : "在分享面板里选择 App"
           }
         },
         "zh-Hant" : {
@@ -248299,7 +248299,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "挑选介绍你视频的封面。"
+            "value" : "选一个能介绍你视频的封面。"
           }
         },
         "zh-Hant" : {
@@ -248772,7 +248772,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "选择背景幕的颜色"
+            "value" : "选择幕布的颜色"
           }
         },
         "zh-Hant" : {
@@ -249127,7 +249127,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最多选 %lld 个 · 再点一次取消"
+            "value" : "最多选 %lld 个 · 再轻点一次可取消"
           }
         },
         "zh-Hant" : {
@@ -251618,7 +251618,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在另一台 iPhone 或 iPad 上播放、暂停、调整速度和翻动脚本。两台设备都需要 Cue，并打开无线局域网。"
+            "value" : "在另一台 iPhone 或 iPad 上播放、暂停、调整速度和翻动脚本。两台设备都需要安装 Cue，并打开无线局域网。"
           }
         },
         "zh-Hant" : {
@@ -252090,7 +252090,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在播放原始声音——轻点即可停止"
+            "value" : "正在播放原声 · 轻点即可停止"
           }
         },
         "zh-Hant" : {
@@ -252564,7 +252564,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在你的声音继续时叠加在视频上播放（B-roll）。可在预览中移动和调整大小。"
+            "value" : "叠加在视频上播放（B-roll），你的人声继续。可在预览中移动和调整大小。"
           }
         },
         "zh-Hant" : {
@@ -254936,7 +254936,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "发布它"
+            "value" : "去发布"
           }
         },
         "zh-Hant" : {
@@ -255765,7 +255765,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "发布到 %lld 个平台"
+            "value" : "将发布到 %lld 个平台"
           }
         },
         "zh-Hant" : {
@@ -256237,7 +256237,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV：早上7点，灵感刚刚降临。"
+            "value" : "POV：早上 7 点，灵感刚刚降临。"
           }
         },
         "zh-Hant" : {
@@ -256828,7 +256828,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV：你的第一条视频比预想的还好。"
+            "value" : "POV：你的第一个视频比预想的还好。"
           }
         },
         "zh-Hant" : {
@@ -256946,7 +256946,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "练习 · 未在录制"
+            "value" : "练习 · 不录制"
           }
         },
         "zh-Hant" : {
@@ -257302,7 +257302,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "高级"
+            "value" : "高端"
           }
         },
         "zh-Hant" : {
@@ -259427,7 +259427,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pro · 导出不限次数"
+            "value" : "Pro · 无限导出"
           }
         },
         "zh-Hant" : {
@@ -261910,7 +261910,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "示例 · %lld/%lld 个"
+            "value" : "证明 · %lld/%lld 个示例"
           }
         },
         "zh-Hant" : {
@@ -262622,7 +262622,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "冲击"
+            "value" : "急推"
           }
         },
         "zh-Hant" : {
@@ -262740,7 +262740,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "突然推近"
+            "value" : "快速推近"
           }
         },
         "zh-Hant" : {
@@ -264281,7 +264281,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "放进输入框，改成你的样子。"
+            "value" : "放进输入框，改成你自己的。"
           }
         },
         "zh-Hant" : {
@@ -266887,7 +266887,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "读脚本"
+            "value" : "照着脚本读"
           }
         },
         "zh-Hant" : {
@@ -267006,7 +267006,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "读一遍；不会录制任何内容"
+            "value" : "读一遍，不会录制"
           }
         },
         "zh-Hant" : {
@@ -271269,7 +271269,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 推荐"
+            "value" : "推荐用于 %@"
           }
         },
         "zh-Hant" : {
@@ -271624,7 +271624,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "录一份脚本，每条拍摄都会出现在这里。"
+            "value" : "录制一份脚本，每个镜头都会出现在这里。"
           }
         },
         "zh-Hant" : {
@@ -271861,7 +271861,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "录制旁白"
+            "value" : "录制配音"
           }
         },
         "zh-Hant" : {
@@ -273635,7 +273635,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "录制已停止 · 镜头已保存"
+            "value" : "录制已停止 · 镜头已存储"
           }
         },
         "zh-Hant" : {
@@ -276003,7 +276003,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "通过 Apple Watch、iPad 遥控与 Mac 同步"
+            "value" : "通过 Apple Watch 遥控、iPad 与 Mac 同步"
           }
         },
         "zh-Hant" : {
@@ -277979,7 +277979,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已删除 %lld 处"
+            "value" : "已移除 %lld 处"
           }
         },
         "zh-Hant" : {
@@ -278420,7 +278420,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已删除 %1$lld 处停顿 · %2$@"
+            "value" : "已移除 %1$lld 处停顿 · %2$@"
           }
         },
         "zh-Hant" : {
@@ -283127,7 +283127,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "倒放适用于 2 分钟以内的片段 · 请先分割"
+            "value" : "倒放适用于 2 分钟以内的片段 · 请先拆分"
           }
         },
         "zh-Hant" : {
@@ -284077,7 +284077,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "随意改写。点“像我”，Cue 就会学。"
+            "value" : "随意改写。轻点“很像我”，Cue 就会学习。"
           }
         },
         "zh-Hant" : {
@@ -287639,7 +287639,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保存品牌"
+            "value" : "存储品牌"
           }
         },
         "zh-Hant" : {
@@ -289178,7 +289178,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已保存 · 用于新封面"
+            "value" : "已存储 · 用于新封面"
           }
         },
         "zh-Hant" : {
@@ -289296,7 +289296,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已保存 · 声音 %lld%%"
+            "value" : "已存储 · 口吻 %lld%%"
           }
         },
         "zh-Hant" : {
@@ -289899,7 +289899,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已保存在拍摄中 · 随时用 Pro 导出"
+            "value" : "已存储到“镜头” · 随时用 Pro 导出"
           }
         },
         "zh-Hant" : {
@@ -290017,7 +290017,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已保存在拍摄中 · 什么都不会丢。你已用完 %lld 次免费导出。"
+            "value" : "已存储到“镜头” · 不会丢失任何内容。你已用完 %lld 次免费导出。"
           }
         },
         "zh-Hant" : {
@@ -290609,7 +290609,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已存储到“照片” · 免费导出剩余 %1$lld/%2$lld 次"
+            "value" : "已存储到“照片” · 免费导出剩余 %1$lld / %2$lld 次"
           }
         },
         "zh-Hant" : {
@@ -291082,7 +291082,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保存到照片 · 随处发布"
+            "value" : "存储到“照片” · 随处发布"
           }
         },
         "zh-Hant" : {
@@ -292626,7 +292626,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "扫描代码"
+            "value" : "扫描二维码"
           }
         },
         "zh-Hant" : {
@@ -292744,7 +292744,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用“相机”App 扫描代码，或输入其下方的字母。"
+            "value" : "用“相机”App 扫描二维码，或输入其下方的字母。"
           }
         },
         "zh-Hant" : {
@@ -292863,7 +292863,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "扫描代码，或输入字母"
+            "value" : "扫描二维码，或输入字母"
           }
         },
         "zh-Hant" : {
@@ -296298,7 +296298,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "脚本、改写、钩子和主题创意都在这台 iPhone 上撰写。不使用其他任何 AI 服务。"
+            "value" : "脚本、改写、钩子和主题创意都在这台 iPhone 上生成。不使用其他任何 AI 服务。"
           }
         },
         "zh-Hant" : {
@@ -297006,7 +297006,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "段落"
+            "value" : "分段"
           }
         },
         "zh-Hant" : {
@@ -297124,7 +297124,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已拷贝片段"
+            "value" : "已拷贝分段"
           }
         },
         "zh-Hant" : {
@@ -297242,7 +297242,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "段落：%@"
+            "value" : "分段：%@"
           }
         },
         "zh-Hant" : {
@@ -297598,7 +297598,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在“拍摄”中查看 ›"
+            "value" : "在“镜头”中查看 ›"
           }
         },
         "zh-Hant" : {
@@ -297954,7 +297954,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "查看 Pro 的内容"
+            "value" : "了解 Pro 包含的功能"
           }
         },
         "zh-Hant" : {
@@ -300086,7 +300086,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "句子 · 长短混合 → 短句"
+            "value" : "句子 · 长短结合 → 短句"
           }
         },
         "zh-Hant" : {
@@ -301032,7 +301032,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "严肃 — 不夸张"
+            "value" : "严肃，不夸张"
           }
         },
         "zh-Hant" : {
@@ -302097,7 +302097,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "决定段落结构和 AI 建议"
+            "value" : "决定分段和 AI 建议"
           }
         },
         "zh-Hant" : {
@@ -309318,7 +309318,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "展示能把笔记、清单和计划放在一起的应用。"
+            "value" : "展示能把笔记、清单和计划放在一起的 App。"
           }
         },
         "zh-Hant" : {
@@ -311453,7 +311453,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在显示你的编辑"
+            "value" : "正在显示你的剪辑"
           }
         },
         "zh-Hant" : {
@@ -319629,7 +319629,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "评论区有人问这个 — 我来回答。"
+            "value" : "评论区有人问这个，我来回答。"
           }
         },
         "zh-Hant" : {
@@ -320697,7 +320697,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "像我"
+            "value" : "很像我"
           }
         },
         "zh-Hant" : {
@@ -322118,7 +322118,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "先分割视频，或使用“按节拍剪切视频”"
+            "value" : "先拆分视频，或使用“按节拍剪切视频”"
           }
         },
         "zh-Hant" : {
@@ -322591,7 +322591,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "推广广告 · 品牌简介"
+            "value" : "推广广告 · 品牌简报"
           }
         },
         "zh-Hant" : {
@@ -323541,7 +323541,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "给最喜欢的加星。其他的留在镜头里。"
+            "value" : "给最喜欢的加星。其他的留在“镜头”里。"
           }
         },
         "zh-Hant" : {
@@ -324486,7 +324486,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "从格式开始"
+            "value" : "从形式开始"
           }
         },
         "zh-Hant" : {
@@ -324605,7 +324605,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "从一个点子、一种格式或一张白纸开始。你的宇宙还容得下一颗星。"
+            "value" : "从一个想法、一种形式或一张白纸开始。你的宇宙还容得下一颗星。"
           }
         },
         "zh-Hant" : {
@@ -326973,7 +326973,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "起始镜头"
+            "value" : "初始相机"
           }
         },
         "zh-Hant" : {
@@ -327328,7 +327328,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一句话说观点，给一个理由，用问题收尾 — 问题能带来评论。"
+            "value" : "一句话说观点，给一个理由，用问题收尾。问题能带来评论。"
           }
         },
         "zh-Hant" : {
@@ -327446,7 +327446,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保持编辑中 · 自动保存"
+            "value" : "保持编辑中 · 已自动存储"
           }
         },
         "zh-Hant" : {
@@ -327801,7 +327801,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "直接抄我的方法 — 比你想的简单。"
+            "value" : "直接抄我的方法，比你想的简单。"
           }
         },
         "zh-Hant" : {
@@ -327925,7 +327925,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第%1$@步：%2$@。"
+            "value" : "第 %1$@ 步：%2$@。"
           }
         },
         "zh-Hant" : {
@@ -330054,7 +330054,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "存储空间已满 · 镜头已保存"
+            "value" : "存储空间已满 · 镜头已存储"
           }
         },
         "zh-Hant" : {
@@ -330527,7 +330527,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "讲个故事 — 放心，结局是好的。"
+            "value" : "讲个故事，放心，结局是好的。"
           }
         },
         "zh-Hant" : {
@@ -330763,7 +330763,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "故事"
+            "value" : "故事时间"
           }
         },
         "zh-Hant" : {
@@ -330881,7 +330881,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "讲个故事：%@"
+            "value" : "故事时间：%@"
           }
         },
         "zh-Hant" : {
@@ -331712,7 +331712,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "严重的脏话和侮辱性词语绝不会被写出——Apple Intelligence 不会生成它们。"
+            "value" : "严重的脏话和侮辱性词语绝不会被写出。Apple Intelligence 不会生成它们。"
           }
         },
         "zh-Hant" : {
@@ -332422,7 +332422,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "工作室"
+            "value" : "STUDIO"
           }
         },
         "zh-Hant" : {
@@ -333607,7 +333607,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "全部样式"
+            "value" : "统一样式"
           }
         },
         "zh-Hant" : {
@@ -334673,7 +334673,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "个子话题"
+            "value" : "个子主题"
           }
         },
         "zh-Hant" : {
@@ -335627,7 +335627,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "上下轻扫来移动"
+            "value" : "上下轻扫以移动"
           }
         },
         "zh-Hant" : {
@@ -336456,7 +336456,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拍摄 %lld"
+            "value" : "镜头 %lld"
           }
         },
         "zh-Hant" : {
@@ -336701,7 +336701,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第 %lld 次，共 %lld 次"
+            "value" : "镜头 %1$lld/%2$lld"
           }
         },
         "zh-Hant" : {
@@ -338001,7 +338001,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点按 ◀ Cue 返回"
+            "value" : "轻点 ◀ Cue 返回"
           }
         },
         "zh-Hant" : {
@@ -338356,7 +338356,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在编辑器里点“完成”，或选出最佳镜头，视频就会出现在这里，随时可以发布。"
+            "value" : "在编辑器里轻点“完成”，或选出最佳镜头，视频就会出现在这里，随时可以发布。"
           }
         },
         "zh-Hant" : {
@@ -338475,7 +338475,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点击播放，等倒数结束。然后开始读：文字会匀速滚动。"
+            "value" : "轻点播放，等倒数结束。然后开始读：文字会匀速滚动。"
           }
         },
         "zh-Hant" : {
@@ -338594,7 +338594,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点击播放，等倒数结束。然后大声读出来：你说话时文字会往前走。"
+            "value" : "轻点播放，等倒数结束。然后大声读出来：你说话时文字会往前走。"
           }
         },
         "zh-Hant" : {
@@ -338713,7 +338713,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点击播放，等倒数结束。然后大声读出来：文字会跟着你的声音走。"
+            "value" : "轻点播放，等倒数结束。然后大声读出来：文字会跟着你的声音走。"
           }
         },
         "zh-Hant" : {
@@ -339543,7 +339543,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点按添加字幕"
+            "value" : "轻点添加字幕"
           }
         },
         "zh-Hant" : {
@@ -339661,7 +339661,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点按添加音乐或配音"
+            "value" : "轻点添加音乐或配音"
           }
         },
         "zh-Hant" : {
@@ -339779,7 +339779,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点按添加文字"
+            "value" : "轻点添加文字"
           }
         },
         "zh-Hant" : {
@@ -340251,7 +340251,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点按开始"
+            "value" : "轻点开始"
           }
         },
         "zh-Hant" : {
@@ -340369,7 +340369,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "点按以停止并编辑。"
+            "value" : "轻点以停止并编辑。"
           }
         },
         "zh-Hant" : {
@@ -340843,7 +340843,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "轻点、步骤"
+            "value" : "敲击、脚步"
           }
         },
         "zh-Hant" : {
@@ -341437,7 +341437,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用来了解你的说话方式——绝不会被挪用到故事、观点或成果上。仅保存在这台 iPhone 上。"
+            "value" : "用来了解你的说话方式，绝不会被挪用到故事、观点或成果上。仅保留在这台 iPhone 上。"
           }
         },
         "zh-Hant" : {
@@ -343928,7 +343928,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "文字在人物后面"
+            "value" : "文字在我身后"
           }
         },
         "zh-Hant" : {
@@ -344872,7 +344872,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "文字窗口 · 自拍"
+            "value" : "文字窗口 · Selfie"
           }
         },
         "zh-Hant" : {
@@ -345345,7 +345345,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "包含它的文本：%lld/%lld"
+            "value" : "包含它的文字：%lld/%lld 篇"
           }
         },
         "zh-Hant" : {
@@ -345464,7 +345464,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "文本：%lld · 字词：%lld"
+            "value" : "文字：%lld 篇 · 字词：%lld"
           }
         },
         "zh-Hant" : {
@@ -345819,7 +345819,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "那个点子已不在 · 点 ↻ 换一个"
+            "value" : "那个想法已不在 · 轻点 ↻ 换一个"
           }
         },
         "zh-Hant" : {
@@ -348308,7 +348308,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第一条竟然就是你留下的那条"
+            "value" : "你留下的正是第一个镜头"
           }
         },
         "zh-Hant" : {
@@ -350561,7 +350561,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "图片在本机读取，绝不保存。"
+            "value" : "图片在本机读取，绝不保留。"
           }
         },
         "zh-Hant" : {
@@ -352817,7 +352817,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "其间视频已更改 · 请重新提取声音"
+            "value" : "视频在此期间已更改 · 请重新提取音频"
           }
         },
         "zh-Hant" : {
@@ -354478,7 +354478,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我希望新手父母时就知道的事"
+            "value" : "刚当父母时希望早知道的事"
           }
         },
         "zh-Hant" : {
@@ -355074,7 +355074,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这个片段 · 播放时的镜头运动"
+            "value" : "这个片段 · 播放时的运镜"
           }
         },
         "zh-Hant" : {
@@ -355193,7 +355193,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此片段 · 稳住镜头抖动"
+            "value" : "此片段 · 减少相机抖动"
           }
         },
         "zh-Hant" : {
@@ -359577,7 +359577,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这条视频早该发了。"
+            "value" : "这个视频早该发了。"
           }
         },
         "zh-Hant" : {
@@ -366447,7 +366447,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最近剪切点的转场"
+            "value" : "最近剪辑点的转场"
           }
         },
         "zh-Hant" : {
@@ -368456,7 +368456,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "试用已开始 — 尽情使用 Cue Pro"
+            "value" : "试用已开始 · 尽情使用 Cue Pro"
           }
         },
         "zh-Hant" : {
@@ -370826,7 +370826,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开启"
+            "value" : "打开"
           }
         },
         "zh-Hant" : {
@@ -371536,7 +371536,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "教程 / 怎么做"
+            "value" : "教程 / 操作指南"
           }
         },
         "zh-Hant" : {
@@ -373195,7 +373195,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "文字 · %@"
+            "value" : "输入 · %@"
           }
         },
         "zh-Hant" : {
@@ -374734,7 +374734,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "导出不限次数"
+            "value" : "无限导出"
           }
         },
         "zh-Hant" : {
@@ -374852,7 +374852,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "无限次导出，最高 4K"
+            "value" : "无限导出，最高 4K"
           }
         },
         "zh-Hant" : {
@@ -375206,7 +375206,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "解锁 %@ 应用图标"
+            "value" : "解锁 %@ App 图标"
           }
         },
         "zh-Hant" : {
@@ -377099,7 +377099,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在草稿中使用我的声音"
+            "value" : "在草稿中使用我的口吻"
           }
         },
         "zh-Hant" : {
@@ -377336,7 +377336,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用于每个剪切点"
+            "value" : "用于所有剪辑点"
           }
         },
         "zh-Hant" : {
@@ -380529,7 +380529,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "视频 · 发布到 %@"
+            "value" : "视频用于 · %@"
           }
         },
         "zh-Hant" : {
@@ -382781,7 +382781,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "声音完成度"
+            "value" : "口吻强度"
           }
         },
         "zh-Hant" : {
@@ -382901,7 +382901,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "声音强度 %lld%%"
+            "value" : "口吻强度 %lld%%"
           }
         },
         "zh-Hant" : {
@@ -385509,7 +385509,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "暖调杂志"
+            "value" : "暖调杂志风"
           }
         },
         "zh-Hant" : {
@@ -386455,7 +386455,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "看这里 — %@。[演示]"
+            "value" : "看这里，%@。[演示]"
           }
         },
         "zh-Hant" : {
@@ -387874,7 +387874,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "改变什么"
+            "value" : "会有什么改变"
           }
         },
         "zh-Hant" : {
@@ -387992,7 +387992,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "现在改变什么"
+            "value" : "现在会有什么改变"
           }
         },
         "zh-Hant" : {
@@ -390598,7 +390598,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你为什么负责"
+            "value" : "你要承担的责任"
           }
         },
         "zh-Hant" : {
@@ -391189,7 +391189,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你在镜头前的能量如何？"
+            "value" : "你在镜头前是什么状态？"
           }
         },
         "zh-Hant" : {
@@ -392137,7 +392137,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "各应用的按钮和字幕会遮挡画面的位置"
+            "value" : "各 App 的按钮和文案遮挡画面的位置"
           }
         },
         "zh-Hant" : {
@@ -394742,7 +394742,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "整个视频 · 按发布平台选择格式"
+            "value" : "整个视频 · 按发布平台选择画幅"
           }
         },
         "zh-Hant" : {
@@ -398060,7 +398060,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "逐词"
+            "value" : "字词"
           }
         },
         "zh-Hant" : {
@@ -398535,7 +398535,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打出文字"
+            "value" : "键入文字"
           }
         },
         "zh-Hant" : {
@@ -398773,7 +398773,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "文字内容、时间和运动仍各自独立。"
+            "value" : "文字内容、时间和动效仍各自独立。"
           }
         },
         "zh-Hant" : {
@@ -399365,7 +399365,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "写"
+            "value" : "起草"
           }
         },
         "zh-Hant" : {
@@ -400195,7 +400195,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "撰写广告"
+            "value" : "起草广告"
           }
         },
         "zh-Hant" : {
@@ -400788,7 +400788,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在这台 iPhone 上由 Apple Intelligence 撰写。任何内容都不会离开你的设备。"
+            "value" : "在这台 iPhone 上由 Apple Intelligence 生成。任何内容都不会离开你的设备。"
           }
         },
         "zh-Hant" : {
@@ -400907,7 +400907,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已写进度"
+            "value" : "起草进度"
           }
         },
         "zh-Hant" : {
@@ -401855,7 +401855,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "是的 — 分享到社交媒体"
+            "value" : "是的，分享到社交媒体"
           }
         },
         "zh-Hant" : {
@@ -403039,7 +403039,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你可以在设置 › 个性化中重新打开。"
+            "value" : "你可以在“设置 › 个性化”中重新打开。"
           }
         },
         "zh-Hant" : {
@@ -404578,7 +404578,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你一辈子都被这么告知。可它是错的。[停顿]"
+            "value" : "这话你听了一辈子，可它是错的。[停顿]"
           }
         },
         "zh-Hant" : {
@@ -405407,7 +405407,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的回答仍会保存，也可以继续编辑。"
+            "value" : "你的回答仍会保留，也可以继续编辑。"
           }
         },
         "zh-Hant" : {
@@ -407667,7 +407667,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的想法 · 用你的声音起草"
+            "value" : "你的想法 · 用你的口吻起草"
           }
         },
         "zh-Hant" : {
@@ -408148,7 +408148,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的光。每分享一条视频它就更亮——不需要照片。"
+            "value" : "你的光。每分享一个视频它就更亮，不需要照片。"
           }
         },
         "zh-Hant" : {
@@ -408268,7 +408268,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的航海日志是空的"
+            "value" : "你的航行日志是空的"
           }
         },
         "zh-Hant" : {
@@ -409218,7 +409218,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自己填写 · 点按更改"
+            "value" : "自己填写 · 轻点更改"
           }
         },
         "zh-Hant" : {
@@ -412654,7 +412654,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "视频已载入，发布文字也已拷贝。"
+            "value" : "视频已载入，文案也已拷贝。"
           }
         },
         "zh-Hant" : {
@@ -413127,7 +413127,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的声音"
+            "value" : "你的人声"
           }
         },
         "zh-Hant" : {

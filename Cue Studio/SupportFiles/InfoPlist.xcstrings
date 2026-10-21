@@ -142,7 +142,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 会用相机录制你的镜头，同时让脚本在镜头下方滚动。"
+            "value" : "Cue 会用相机录制你的镜头，同时让脚本在摄像头下方滚动。"
           }
         },
         "zh-Hant" : {
@@ -394,7 +394,7 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 会录制每个镜头和画外音中的声音，还能跟随你的声音滚动脚本，并在你语音输入想法时聆听。"
+            "value" : "Cue 会在每个镜头和配音中录制你的声音，还能跟随你的声音滚动脚本，并在你语音输入想法时聆听。"
           }
         },
         "zh-Hant" : {
