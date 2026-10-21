@@ -654,7 +654,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "· 스크립트 기준"
+            "value" : "· 대본 기준"
           }
         },
         "nb" : {
@@ -1128,7 +1128,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "‘~한 3가지’"
+            "value" : "“~하는 3가지…”"
           }
         },
         "nb" : {
@@ -1364,7 +1364,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“저는 그렇게 안 말해요”"
+            "value" : "“저는 그렇게 말 안 해요”"
           }
         },
         "nb" : {
@@ -1600,7 +1600,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“잠깐 천천히 가볼게요.”"
+            "value" : "“잠깐 천천히 가 볼게요.”"
           }
         },
         "nb" : {
@@ -1718,7 +1718,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“알람이랑 나는 친구가 아니에요.”"
+            "value" : "“알람이랑 저는 친구가 아니에요.”"
           }
         },
         "nb" : {
@@ -2546,7 +2546,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "@핸들"
+            "value" : "@아이디"
           }
         },
         "nb" : {
@@ -2900,7 +2900,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 공지"
+            "value" : "%@: 공지"
           }
         },
         "nb" : {
@@ -3018,7 +3018,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 솔직 리뷰"
+            "value" : "%@: 솔직 리뷰"
           }
         },
         "nb" : {
@@ -3136,7 +3136,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 링크는 프로필에 있어요. [카메라 보기] 이 영상은 유료 광고를 포함하고 있어요."
+            "value" : "%@. 링크는 프로필에 있어요. [카메라 보기] 이 영상은 유료 광고를 포함하고 있어요."
           }
         },
         "nb" : {
@@ -3254,7 +3254,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 광고"
+            "value" : "%@: 광고"
           }
         },
         "nb" : {
@@ -4487,7 +4487,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ · 이상적 %2$@"
+            "value" : "%1$@ · 권장 %2$@"
           }
         },
         "nb" : {
@@ -4605,7 +4605,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · 쇼츠로 게시"
+            "value" : "%@ · Shorts로 게시"
           }
         },
         "nb" : {
@@ -4724,7 +4724,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · 거꾸로"
+            "value" : "%@ · 역재생"
           }
         },
         "nb" : {
@@ -5086,7 +5086,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · 다른 곳을 눌러 바꾸기"
+            "value" : "%@ · 다른 플랫폼을 탭해 바꾸기"
           }
         },
         "nb" : {
@@ -6045,7 +6045,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ %@ 동영상: %@"
+            "value" : "%@ %@ 영상: %@"
           }
         },
         "nb" : {
@@ -6282,7 +6282,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 추가됨 · 동영상에서 끌어 보세요"
+            "value" : "%@ 추가됨 · 영상 위에서 드래그해 보세요"
           }
         },
         "nb" : {
@@ -6637,7 +6637,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 작업이 이미 시작되었습니다"
+            "value" : "%@ 작업을 이미 시작했어요"
           }
         },
         "nb" : {
@@ -7118,7 +7118,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 준비 완료. 다음 녹화는 탭 한 번이면 됩니다."
+            "value" : "%@ 준비됐어요. 다음 녹화는 탭 한 번이면 돼요."
           }
         },
         "nb" : {
@@ -7237,7 +7237,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@이(가) Cue에 저장되어 있습니다. 열어서 공유를 이어 가세요."
+            "value" : "%@이(가) Cue에 저장되어 있어요. 열어서 공유를 이어 가세요."
           }
         },
         "nb" : {
@@ -7356,7 +7356,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@이(가) 기다리고 있습니다"
+            "value" : "%@이(가) 기다리고 있어요"
           }
         },
         "nb" : {
@@ -8553,7 +8553,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상 전체에 %@"
+            "value" : "영상 전체에 %@"
           }
         },
         "nb" : {
@@ -9145,7 +9145,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 세이프 에어리어"
+            "value" : "%@ 세이프 존"
           }
         },
         "nb" : {
@@ -10816,7 +10816,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상 %@개"
+            "value" : "영상 %@개"
           }
         },
         "nb" : {
@@ -11414,7 +11414,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@, 동영상 전체"
+            "value" : "%@, 영상 전체"
           }
         },
         "nb" : {
@@ -12249,7 +12249,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@s"
+            "value" : "%@초"
           }
         },
         "nb" : {
@@ -12978,7 +12978,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld BPM · 동영상 속 비트 %2$lld개"
+            "value" : "%1$lld BPM · 영상 속 비트 %2$lld개"
           }
         },
         "nb" : {
@@ -14860,7 +14860,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "번역 후 원문에서 %lld줄이 바뀌었습니다."
+            "value" : "번역 후 원문에서 %lld줄이 바뀌었어요."
           }
         },
         "nb" : {
@@ -15165,7 +15165,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld줄을 삭제했습니다"
+            "value" : "%lld줄 삭제됨"
           }
         },
         "nb" : {
@@ -16098,7 +16098,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld개"
+            "value" : "%lld개 일치"
           }
         },
         "nb" : {
@@ -16400,7 +16400,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld개 더 하면 해제"
+            "value" : "해제까지 %lld개 남음"
           }
         },
         "nb" : {
@@ -18071,7 +18071,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld/%lld개 부분은 작성한 그대로 뒀어요"
+            "value" : "%2$lld개 중 %1$lld개 부분은 그대로 두었어요"
           }
         },
         "nb" : {
@@ -18904,7 +18904,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "카메라 아래 %lld pt · 추천."
+            "value" : "카메라 아래 %lld pt · 권장."
           }
         },
         "nb" : {
@@ -20601,7 +20601,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "영상 %1$lld개 — %2$lld개 남음"
+            "value" : "영상 %1$lld개 · %2$lld개 남음"
           }
         },
         "nb" : {
@@ -20837,7 +20837,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "영상 %lld개 · 당신이 돌아오는 세계"
+            "value" : "영상 %lld개 · 자꾸 돌아오는 세계"
           }
         },
         "nb" : {
@@ -20955,7 +20955,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "영상 %lld개 · 가장 많이 도착한 곳"
+            "value" : "영상 %lld개 · 가장 자주 닿는 곳"
           }
         },
         "nb" : {
@@ -21559,7 +21559,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상 %lld개 공유됨"
+            "value" : "영상 %lld개 공유됨"
           }
         },
         "nb" : {
@@ -24019,7 +24019,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ 다른 것"
+            "value" : "+ 기타"
           }
         },
         "nb" : {
@@ -24966,7 +24966,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ 모든 네트워크용 깨끗한 파일 · 워터마크 없음"
+            "value" : "✓ 모든 플랫폼용 깨끗한 파일 · 워터마크 없음"
           }
         },
         "nb" : {
@@ -25084,7 +25084,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Cue 보이스 완성"
+            "value" : "✓ Cue Voice 완성"
           }
         },
         "nb" : {
@@ -25202,7 +25202,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ 적정 %@"
+            "value" : "✓ %@에 적합"
           }
         },
         "nb" : {
@@ -27098,7 +27098,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ 내 대본 초안 만들기"
+            "value" : "✦ 내 대본 초안 쓰기"
           }
         },
         "nb" : {
@@ -27693,7 +27693,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ 내 목소리 미리 보기"
+            "value" : "✦ 내 목소리 미리보기"
           }
         },
         "nb" : {
@@ -27929,7 +27929,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ 스마트"
+            "value" : "✦ Smart"
           }
         },
         "nb" : {
@@ -28285,7 +28285,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ 쓰기"
+            "value" : "✦ 초안 쓰기"
           }
         },
         "nb" : {
@@ -30663,7 +30663,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "간단한 질문 4개 — 약 20초. 입력은 필요 없어요."
+            "value" : "간단한 질문 4개, 약 20초. 입력은 필요 없어요."
           }
         },
         "nb" : {
@@ -31964,7 +31964,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "매주 만드는 10분 저녁"
+            "value" : "매주 해 먹는 10분 저녁 메뉴"
           }
         },
         "nb" : {
@@ -32674,7 +32674,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "조정에서 추가할 수 있는 마무리입니다. 강도는 0부터 직접 고르세요."
+            "value" : "조절에서 더할 수 있는 마무리예요. 강도는 0부터 직접 고르세요."
           }
         },
         "nb" : {
@@ -32911,7 +32911,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "친구 추천으로 써봤는데 — 고마울 따름이에요."
+            "value" : "친구 추천으로 써 봤는데, 정말 고마워요."
           }
         },
         "nb" : {
@@ -34212,7 +34212,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신의 %@년 유니버스에 새 별"
+            "value" : "%@년 유니버스에 새 별"
           }
         },
         "nb" : {
@@ -34338,7 +34338,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신의 %@년 유니버스에 새 별 · %@ %lld"
+            "value" : "%@년 유니버스에 새 별 · %@ %lld"
           }
         },
         "nb" : {
@@ -34457,7 +34457,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이번 버전에 새로운 도구가 추가되었습니다. Cue를 열어 확인하세요."
+            "value" : "이번 버전에 새 도구가 추가됐어요. Cue를 열어 확인해 보세요."
           }
         },
         "nb" : {
@@ -35403,7 +35403,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신의 주제를 위한 출발점이 기다려요."
+            "value" : "내 주제에 맞는 출발점이 기다리고 있어요."
           }
         },
         "nb" : {
@@ -35641,7 +35641,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나의 크리에이티브 우주를 위한 프롬프터."
+            "value" : "나만의 크리에이티브 유니버스를 위한 프롬프터."
           }
         },
         "nb" : {
@@ -36706,7 +36706,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "확인"
+            "value" : "인정"
           }
         },
         "nb" : {
@@ -37536,7 +37536,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "키프레임을 추가하고 재생 헤드를 옮긴 뒤 사진이나 영상을 드래그하세요 — Cue가 키프레임 사이를 움직입니다."
+            "value" : "키프레임을 추가하고 재생 헤드를 옮긴 뒤 사진이나 영상을 드래그하세요. 키프레임 사이는 Cue가 움직여요."
           }
         },
         "nb" : {
@@ -37654,7 +37654,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "키프레임을 추가하고 재생 헤드를 옮긴 뒤 영상 속 텍스트를 드래그하세요 — Cue가 키프레임 사이를 움직입니다."
+            "value" : "키프레임을 추가하고 재생 헤드를 옮긴 뒤 영상 속 텍스트를 드래그하세요. 키프레임 사이는 Cue가 움직여요."
           }
         },
         "nb" : {
@@ -39666,7 +39666,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사진 또는 비디오 추가"
+            "value" : "사진 또는 영상 추가"
           }
         },
         "nb" : {
@@ -40616,7 +40616,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue로 보내는 모든 아이디어 앞에 추가돼요 — 대본, 훅, 답글과 함께 올리는 곳과 고른 포맷도 포함돼요. 모델 학습에는 절대 쓰이지 않아요."
+            "value" : "Cue로 보내는 모든 아이디어(대본, 훅, 답글) 앞에 올리는 곳, 고른 포맷과 함께 추가돼요. 모델 학습에는 절대 쓰이지 않아요."
           }
         },
         "nb" : {
@@ -41090,7 +41090,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "설명에 #ad를 추가해요"
+            "value" : "캡션에 #ad를 추가해요"
           }
         },
         "nb" : {
@@ -42156,7 +42156,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "게시한 후 왼쪽 위의 ◀ Cue를 탭하세요. 마무리하러 돌아올게요."
+            "value" : "게시한 후 왼쪽 위의 ◀ Cue를 탭하세요. 돌아와서 마무리하면 돼요."
           }
         },
         "nb" : {
@@ -42274,7 +42274,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "게시한 후 왼쪽 위의 ◀ Cue를 탭하세요. 다음은 %@을(를) 열게요."
+            "value" : "게시한 후 왼쪽 위의 ◀ Cue를 탭하세요. 다음으로 %@이(가) 열려요."
           }
         },
         "nb" : {
@@ -44006,7 +44006,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "텍스트 %lld개가 모두 함께 바뀝니다"
+            "value" : "텍스트 %lld개가 모두 함께 바뀌어요"
           }
         },
         "nb" : {
@@ -46078,7 +46078,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "선택한 채널에 이미 공유했습니다"
+            "value" : "선택한 플랫폼에 이미 공유했어요"
           }
         },
         "nb" : {
@@ -47032,7 +47032,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아이디어 하나면 충분해요. 완성은 당신이."
+            "value" : "아이디어 하나면 충분해요. 나머지는 직접 다듬으세요."
           }
         },
         "nb" : {
@@ -47270,7 +47270,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "항해 일지에서 아이디어가 기다리고 있습니다"
+            "value" : "항해 일지에서 아이디어가 기다리고 있어요"
           }
         },
         "nb" : {
@@ -47625,7 +47625,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그리고 — %@. [잠깐 멈춤]"
+            "value" : "그리고, %@. [짧은 멈춤]"
           }
         },
         "nb" : {
@@ -47743,7 +47743,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그러다가 — %@. [미소]"
+            "value" : "그리고, %@. [미소]"
           }
         },
         "nb" : {
@@ -48335,7 +48335,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "익명 사용 정보만, 영상이나 스크립트는 절대 아님"
+            "value" : "익명 사용 정보만, 영상과 대본은 절대 보내지 않아요"
           }
         },
         "nb" : {
@@ -51062,7 +51062,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "지금 이 iPhone에서는 Apple Intelligence를 사용할 수 없습니다"
+            "value" : "지금 이 iPhone에서는 Apple Intelligence를 사용할 수 없어요"
           }
         },
         "nb" : {
@@ -52084,7 +52084,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상 전체에 적용됩니다. 실행 취소로 되돌릴 수 있습니다."
+            "value" : "영상 전체에 적용돼요. 실행 취소로 되돌릴 수 있어요."
           }
         },
         "nb" : {
@@ -53506,7 +53506,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "하루에 최대 한 번, 밤에는 보내지 않습니다. 직접 설정한 리마인더는 항상 도착합니다."
+            "value" : "하루에 최대 한 번, 밤에는 보내지 않아요. 직접 설정한 리마인더는 항상 도착해요."
           }
         },
         "nb" : {
@@ -56340,7 +56340,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "추천 설정으로 돌아갔어요"
+            "value" : "권장 설정으로 되돌렸어요"
           }
         },
         "nb" : {
@@ -57877,7 +57877,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "한 박자"
+            "value" : "짧은 멈춤"
           }
         },
         "nb" : {
@@ -58351,7 +58351,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "재생 헤드에 있는 클립 뒤에 별도의 클립으로 들어갑니다. 동영상만 가능."
+            "value" : "재생 헤드에 있는 클립 뒤에 별도 클립으로 들어가요. 영상만 가능해요."
           }
         },
         "nb" : {
@@ -58707,7 +58707,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "무엇보다 먼저 — 죄송합니다."
+            "value" : "무엇보다 먼저, 죄송합니다."
           }
         },
         "nb" : {
@@ -59420,7 +59420,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "전/후"
+            "value" : "비포/애프터"
           }
         },
         "nb" : {
@@ -59539,7 +59539,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "뒤로"
+            "value" : "뒤로 보내기"
           }
         },
         "nb" : {
@@ -65822,7 +65822,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "숨쉬기"
+            "value" : "숨 쉬기"
           }
         },
         "nb" : {
@@ -71156,7 +71156,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 사운드를 추가할 수 없습니다"
+            "value" : "이 사운드를 추가할 수 없어요"
           }
         },
         "nb" : {
@@ -71748,7 +71748,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 프레임을 정지할 수 없습니다"
+            "value" : "이 프레임을 정지할 수 없어요"
           }
         },
         "nb" : {
@@ -72106,7 +72106,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 클립은 거꾸로 만들 수 없어요"
+            "value" : "이 클립은 역재생할 수 없어요"
           }
         },
         "nb" : {
@@ -73525,7 +73525,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자막 포함"
+            "value" : "자막 입힘"
           }
         },
         "nb" : {
@@ -73643,7 +73643,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPhone에서는 자막이 %@을(를) 들을 수 없습니다. 말한 언어를 고르거나 줄을 직접 입력하세요."
+            "value" : "이 iPhone에서는 자막 기능이 %@을(를) 들을 수 없어요. 말한 언어를 고르거나 줄을 직접 입력하세요."
           }
         },
         "nb" : {
@@ -73885,7 +73885,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자막이 듣기를 시작하지 못했습니다. 다시 시도하세요."
+            "value" : "자막 듣기를 시작하지 못했어요. 다시 시도하세요."
           }
         },
         "nb" : {
@@ -74478,7 +74478,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자막에는 음성 인식이 필요해요. 문장은 직접 쓸 수 있어요."
+            "value" : "자막에는 음성 인식이 필요해요. 줄은 직접 입력할 수 있어요."
           }
         },
         "nb" : {
@@ -74596,7 +74596,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자막에 %@ 다운로드가 필요합니다. 인터넷에 연결한 후 다시 시도하세요."
+            "value" : "자막에 %@ 다운로드가 필요해요. 인터넷에 연결한 후 다시 시도하세요."
           }
         },
         "nb" : {
@@ -74714,7 +74714,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자막에 이 언어 다운로드가 필요합니다. 인터넷에 연결한 후 다시 시도하세요."
+            "value" : "자막에 이 언어 다운로드가 필요해요. 인터넷에 연결한 후 다시 시도하세요."
           }
         },
         "nb" : {
@@ -75187,7 +75187,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자막에 이 스타일을 적용함"
+            "value" : "자막에 이 스타일 적용됨"
           }
         },
         "nb" : {
@@ -76846,7 +76846,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프로필 › 내 Cue 보이스에서 언제든 바꿀 수 있어요."
+            "value" : "프로필 › My Cue Voice에서 언제든 바꿀 수 있어요."
           }
         },
         "nb" : {
@@ -77556,7 +77556,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "여기서 바꾼 내용은 이 동영상에만 적용돼요."
+            "value" : "여기서 바꾼 내용은 이 영상에만 적용돼요."
           }
         },
         "nb" : {
@@ -78981,7 +78981,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자막이 채널 버튼에 가리지 않는지 확인하세요."
+            "value" : "자막이 플랫폼 버튼에 가리지 않는지 확인하세요."
           }
         },
         "nb" : {
@@ -79099,7 +79099,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue가 쓰기 전에 댓글을 확인하세요."
+            "value" : "Cue가 초안을 쓰기 전에 댓글을 확인하세요."
           }
         },
         "nb" : {
@@ -83375,7 +83375,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "클립을 복제했습니다"
+            "value" : "클립 복제됨"
           }
         },
         "nb" : {
@@ -84324,7 +84324,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신의 말투에 더 가깝게"
+            "value" : "내 말투에 더 가깝게"
           }
         },
         "nb" : {
@@ -85034,7 +85034,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "코드 MORNING으로 할인 20%"
+            "value" : "코드 MORNING으로 20% 할인"
           }
         },
         "nb" : {
@@ -86337,7 +86337,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "섹션, 큐, 시간까지 완성돼요."
+            "value" : "섹션, 큐, 타이밍까지 갖춰져 있어요."
           }
         },
         "nb" : {
@@ -86927,7 +86927,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "답을 댓글로 남겨요"
+            "value" : "답을 댓글로 남겨 주세요"
           }
         },
         "nb" : {
@@ -87402,7 +87402,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "커뮤니티 또는 대의"
+            "value" : "커뮤니티 또는 공익 활동"
           }
         },
         "nb" : {
@@ -88351,7 +88351,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자신감"
+            "value" : "자신 있게"
           }
         },
         "nb" : {
@@ -90254,7 +90254,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "선택한 채널에 영상 공유를 이어 가세요."
+            "value" : "선택한 플랫폼에 영상 공유를 이어 가세요."
           }
         },
         "nb" : {
@@ -91676,7 +91676,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "@사용자 이름 복사"
+            "value" : "@아이디 복사"
           }
         },
         "nb" : {
@@ -92751,7 +92751,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "초안을 만들 수 없어요 · 다시 시도하세요"
+            "value" : "초안을 만들지 못했어요 · 다시 시도하세요"
           }
         },
         "nb" : {
@@ -92870,7 +92870,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "대본 초안을 만들 수 없어요"
+            "value" : "대본 초안을 만들지 못했어요"
           }
         },
         "nb" : {
@@ -93819,7 +93819,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 테이크를 들을 수 없어 비디오에 자막이 없습니다."
+            "value" : "이 테이크를 들을 수 없어 영상에 자막이 없어요."
           }
         },
         "nb" : {
@@ -93937,7 +93937,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 테이크를 들을 수 없었습니다."
+            "value" : "이 테이크를 들을 수 없었어요."
           }
         },
         "nb" : {
@@ -94410,7 +94410,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "리마인더를 설정하지 못했습니다 · 다시 시도하세요"
+            "value" : "리마인더를 설정하지 못했어요 · 다시 시도하세요"
           }
         },
         "nb" : {
@@ -95000,7 +95000,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자막을 번역하지 못했습니다. 다시 시도하세요."
+            "value" : "자막을 번역하지 못했어요. 다시 시도하세요."
           }
         },
         "nb" : {
@@ -95591,7 +95591,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "커버 저장 · 동영상과 함께 사진에 저장돼요"
+            "value" : "커버 저장됨 · 영상과 함께 사진에 저장돼요"
           }
         },
         "nb" : {
@@ -95710,7 +95710,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "커버를 삭제함"
+            "value" : "커버 삭제됨"
           }
         },
         "nb" : {
@@ -97366,7 +97366,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아직 Cue가 알려 줄 수 없습니다."
+            "value" : "아직 Cue가 알림을 보낼 수 없어요."
           }
         },
         "nb" : {
@@ -97603,7 +97603,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "끝나기 전에 Cue가 닫혔어요. 다시 내보내서 동영상을 받으세요."
+            "value" : "끝나기 전에 Cue가 닫혔어요. 다시 내보내서 영상을 받으세요."
           }
         },
         "nb" : {
@@ -99145,7 +99145,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue가 iPhone에서 동영상을 듣고 모든 단어를 받아 적습니다. 그다음 텍스트로 자르세요."
+            "value" : "Cue가 iPhone에서 영상을 듣고 모든 단어를 받아 적어요. 그다음 텍스트로 잘라 보세요."
           }
         },
         "nb" : {
@@ -99501,7 +99501,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue는 도움이 될 때만 알림을 보냅니다."
+            "value" : "Cue는 도움이 될 때만 알림을 보내요."
           }
         },
         "nb" : {
@@ -99738,7 +99738,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue가 영상과 설명을 담아 %@을(를) 열어요. 게시는 당신이."
+            "value" : "Cue가 영상과 캡션을 담아 %@을(를) 열어요. 게시는 직접 하세요."
           }
         },
         "nb" : {
@@ -99975,7 +99975,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue가 영상과 설명을 담아 앱을 열어요. 게시는 당신이."
+            "value" : "Cue가 영상과 캡션을 담아 앱을 열어요. 게시는 직접 하세요."
           }
         },
         "nb" : {
@@ -101515,7 +101515,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue는 제안하고, 결정은 당신이."
+            "value" : "제안은 Cue가, 결정은 직접 하세요."
           }
         },
         "nb" : {
@@ -102108,7 +102108,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "신호"
+            "value" : "큐"
           }
         },
         "nb" : {
@@ -102935,7 +102935,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사용자 지정 세이프 에어리어"
+            "value" : "사용자 지정 세이프 존"
           }
         },
         "nb" : {
@@ -103172,7 +103172,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "텍스트에서 복사한 사용자 지정 스타일입니다. 바꾸려면 프리셋을 고르세요."
+            "value" : "텍스트에서 복사한 사용자 지정 스타일이에요. 바꾸려면 프리셋을 고르세요."
           }
         },
         "nb" : {
@@ -103290,7 +103290,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "잘라내기"
+            "value" : "오려두기"
           }
         },
         "nb" : {
@@ -103654,7 +103654,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상에서 단어 %lld개 자르기"
+            "value" : "영상에서 단어 %lld개 잘라내기"
           }
         },
         "nb" : {
@@ -103832,7 +103832,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@에서 자르기"
+            "value" : "%@ 지점에서 컷"
           }
         },
         "nb" : {
@@ -103951,7 +103951,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "비트에 맞춰 동영상 자르기"
+            "value" : "비트에 맞춰 영상 컷 편집"
           }
         },
         "nb" : {
@@ -104070,7 +104070,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자르기 간격"
+            "value" : "컷 간격"
           }
         },
         "nb" : {
@@ -104189,7 +104189,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "단어를 자르면 동영상도 함께 잘립니다."
+            "value" : "단어를 잘라내면 영상도 함께 잘려요."
           }
         },
         "nb" : {
@@ -104308,7 +104308,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자르기는 동영상에서 단어를 없앱니다. 자막 수정은 자막 내용만 바꿉니다."
+            "value" : "잘라내기는 영상에서 단어를 없애요. 자막 수정은 자막 내용만 바꿔요."
           }
         },
         "nb" : {
@@ -104545,7 +104545,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "군더더기 말을 줄여요"
+            "value" : "군말을 잘라요"
           }
         },
         "nb" : {
@@ -107860,7 +107860,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPhone에서 스크립트, 테이크, 편집 내용, My Cue Voice를 삭제해요. 되돌릴 수 없어요."
+            "value" : "이 iPhone에서 대본, 테이크, 편집 내용, My Cue Voice를 삭제해요. 되돌릴 수 없어요."
           }
         },
         "nb" : {
@@ -110464,7 +110464,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "고지가 이미 맨 앞에 있어요"
+            "value" : "광고 표시가 이미 맨 앞에 있어요"
           }
         },
         "nb" : {
@@ -112595,7 +112595,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다운로드 중 %@"
+            "value" : "%@ 다운로드 중"
           }
         },
         "nb" : {
@@ -112719,7 +112719,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ 다운로드 중 · %2$@. 말하는 동안 %3$@로 스크롤."
+            "value" : "%1$@ 다운로드 중 · %2$@. 말하는 동안 %3$@로 스크롤돼요."
           }
         },
         "nb" : {
@@ -113079,7 +113079,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 언어 다운로드 중 · %1$@. 말하는 동안 %2$@로 스크롤."
+            "value" : "이 언어 다운로드 중 · %1$@. 말하는 동안 %2$@로 스크롤돼요."
           }
         },
         "nb" : {
@@ -113671,7 +113671,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "초안 완성 · 사실 확인하세요"
+            "value" : "초안 완성 · 사실을 확인하세요"
           }
         },
         "nb" : {
@@ -113907,7 +113907,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "초안을 복원함"
+            "value" : "초안 복원됨"
           }
         },
         "nb" : {
@@ -114739,7 +114739,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신의 목소리로 초안 작성 중"
+            "value" : "내 목소리로 초안 작성 중"
           }
         },
         "nb" : {
@@ -114859,7 +114859,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "초안 · %lld — 진행 중"
+            "value" : "초안 · %lld · 진행 중"
           }
         },
         "nb" : {
@@ -115690,7 +115690,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "드래그하여 크기를 조절하세요. 두 번 탭하면 초기화됩니다."
+            "value" : "드래그해 크기를 조절하세요. 두 번 탭하면 초기화돼요."
           }
         },
         "nb" : {
@@ -116756,7 +116756,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "복제함"
+            "value" : "복제됨"
           }
         },
         "nb" : {
@@ -118181,7 +118181,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "주제마다 대본과 내 우주에서 같은 색을 유지해요."
+            "value" : "주제마다 대본과 내 유니버스에서 같은 색을 유지해요."
           }
         },
         "nb" : {
@@ -119129,7 +119129,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "텍스트로 편집 · 동영상에서 단어 자르기"
+            "value" : "텍스트로 편집 · 영상에서 단어 잘라내기"
           }
         },
         "nb" : {
@@ -120548,7 +120548,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 테이크에 편집 내용을 저장했습니다"
+            "value" : "이 테이크에 편집 내용 저장됨"
           }
         },
         "nb" : {
@@ -120666,7 +120666,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이름과 사용자 이름을 편집합니다"
+            "value" : "이름과 사용자 이름을 편집해요"
           }
         },
         "nb" : {
@@ -122323,7 +122323,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "마무리"
+            "value" : "엔딩"
           }
         },
         "nb" : {
@@ -125407,7 +125407,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "큰 채널은 하나같이 대단한 장비를 보여 준다"
+            "value" : "큰 채널은 하나같이 대단한 장비를 자랑해요"
           }
         },
         "nb" : {
@@ -125764,7 +125764,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "모든 클립이 이미 이 룩입니다"
+            "value" : "모든 클립이 이미 이 룩이에요"
           }
         },
         "nb" : {
@@ -126001,7 +126001,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "모든 컷을 그대로 자름"
+            "value" : "모든 컷에 전환 없음"
           }
         },
         "nb" : {
@@ -126238,7 +126238,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "모든 이정표 앱 아이콘"
+            "value" : "모든 마일스톤 앱 아이콘"
           }
         },
         "nb" : {
@@ -126593,7 +126593,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "공유한 영상 하나하나가 그 안에서 별이 됩니다."
+            "value" : "공유한 영상 하나하나가 그 안에서 별이 돼요."
           }
         },
         "nb" : {
@@ -127659,7 +127659,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "발췌를 저장했어요"
+            "value" : "발췌 저장됨"
           }
         },
         "nb" : {
@@ -128251,7 +128251,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "잘 알아요"
+            "value" : "경험자"
           }
         },
         "nb" : {
@@ -130628,7 +130628,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "더 깨끗한 목소리를 들어 보세요. 단계를 고르기 전에는 아무것도 바뀌지 않습니다."
+            "value" : "더 깨끗한 목소리를 들어 보세요. 단계를 고르기 전에는 아무것도 바뀌지 않아요."
           }
         },
         "nb" : {
@@ -131817,7 +131817,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상 내보내는 중"
+            "value" : "영상 내보내는 중"
           }
         },
         "nb" : {
@@ -133357,7 +133357,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "신앙, 비영리, 활동, 정치"
+            "value" : "신앙, 비영리, 사회 운동, 정치"
           }
         },
         "nb" : {
@@ -133476,7 +133476,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "거짓 긴급성"
+            "value" : "억지 긴박감"
           }
         },
         "nb" : {
@@ -136203,7 +136203,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "멈춤과 반복을 찾아 드립니다. 무엇을 남길지는 직접 고르세요."
+            "value" : "멈춤과 반복을 찾아요. 무엇을 남길지는 직접 고르세요."
           }
         },
         "nb" : {
@@ -139639,7 +139639,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오후 한나절에 동영상 5개"
+            "value" : "오후 한나절에 영상 5개"
           }
         },
         "nb" : {
@@ -142365,7 +142365,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상에서 그 아래에 있는 것을 따라가요"
+            "value" : "영상에서 그 아래에 있는 것을 따라가요"
           }
         },
         "nb" : {
@@ -143547,7 +143547,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "빔스플리터 글라스용"
+            "value" : "빔스플리터 유리용"
           }
         },
         "nb" : {
@@ -143665,7 +143665,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "하프 미러 프롬프터용"
+            "value" : "빔스플리터 장비용"
           }
         },
         "nb" : {
@@ -144377,7 +144377,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "형식, %@"
+            "value" : "포맷, %@"
           }
         },
         "nb" : {
@@ -144495,7 +144495,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "형식"
+            "value" : "포맷"
           }
         },
         "nb" : {
@@ -144970,7 +144970,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "짧은 질문 네 개. Cue의 초안이 당신에게 더 가깝게 시작해요."
+            "value" : "짧은 질문 네 개. Cue의 초안이 처음부터 나에게 더 가까워져요."
           }
         },
         "nb" : {
@@ -146455,7 +146455,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld일 무료, 이후 %2$@/월. 설정에서 언제든 해지할 수 있어요."
+            "value" : "%1$lld일 무료, 이후 %2$@/월. 설정에서 언제든 취소할 수 있어요."
           }
         },
         "nb" : {
@@ -146579,7 +146579,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld일 무료, 이후 %2$@/년. 설정에서 언제든 해지할 수 있어요."
+            "value" : "%1$lld일 무료, 이후 %2$@/년. 설정에서 언제든 취소할 수 있어요."
           }
         },
         "nb" : {
@@ -146934,7 +146934,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "무료. 직접 고르기 전에는 아무것도 바뀌지 않습니다."
+            "value" : "무료. 직접 고르기 전에는 아무것도 바뀌지 않아요."
           }
         },
         "nb" : {
@@ -147289,7 +147289,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프리스타일 · 대본은 언제든 추가"
+            "value" : "자유 녹화 · 대본은 언제든 추가"
           }
         },
         "nb" : {
@@ -148001,7 +148001,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "작성자"
+            "value" : "보낸 사람"
           }
         },
         "nb" : {
@@ -148475,7 +148475,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "파일에서 가져옵니다. 직접 소유했거나 권리가 있는 음악만 사용하세요 — Apple Music 노래는 추가할 수 없습니다."
+            "value" : "파일에서 가져와요. 직접 소유했거나 권리가 있는 음악만 사용하세요. Apple Music 노래는 추가할 수 없어요."
           }
         },
         "nb" : {
@@ -149068,7 +149068,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "테이크 전체 값"
+            "value" : "테이크 전체 값 적용"
           }
         },
         "nb" : {
@@ -149187,7 +149187,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내 로그북에서"
+            "value" : "내 항해 일지에서"
           }
         },
         "nb" : {
@@ -150373,7 +150373,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MZ"
+            "value" : "Z세대"
           }
         },
         "nb" : {
@@ -152032,7 +152032,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "단어를 따라갈 준비 중이에요. 말하는 동안 %@로 스크롤."
+            "value" : "단어를 따라갈 준비 중이에요. 말하는 동안 %@로 스크롤돼요."
           }
         },
         "nb" : {
@@ -153814,7 +153814,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "컨트롤에 공간을 더 줍니다"
+            "value" : "컨트롤에 공간을 더 줘요"
           }
         },
         "nb" : {
@@ -155239,7 +155239,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "문법을 수정함"
+            "value" : "문법 수정됨"
           }
         },
         "nb" : {
@@ -160454,7 +160454,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 알림을 숨겨요"
+            "value" : "이 리마인더를 숨겨요"
           }
         },
         "nb" : {
@@ -162350,7 +162350,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "훅을 교체함 · 약 %@"
+            "value" : "훅 교체됨 · 약 %@"
           }
         },
         "nb" : {
@@ -166967,7 +166967,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "몇 년 동안 믿었어요 — 확인해 보기 전까지는요."
+            "value" : "몇 년 동안 믿었어요. 확인해 보기 전까지는요."
           }
         },
         "nb" : {
@@ -167793,7 +167793,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다 써 봤는데 — 남은 건 이것들이에요."
+            "value" : "다 써 봤는데, 남은 건 이것들이에요."
           }
         },
         "nb" : {
@@ -169094,7 +169094,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이상적 %@–%@"
+            "value" : "권장 %@–%@"
           }
         },
         "nb" : {
@@ -169331,7 +169331,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "영상 주제에 맞는 아이디어. 하나를 고르기 전에는 아무것도 쓰지 않습니다."
+            "value" : "영상 주제에 맞는 아이디어. 하나를 고르기 전에는 아무것도 쓰지 않아요."
           }
         },
         "nb" : {
@@ -170045,7 +170045,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아침이 힘든 건 당신만이 아니에요."
+            "value" : "아침이 힘든 게 여러분만은 아니에요."
           }
         },
         "nb" : {
@@ -170520,7 +170520,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자정까지 침대에서 스크롤한다면, 이 5분 습관은 당신을 위한 거예요."
+            "value" : "자정까지 침대에서 스크롤한다면, 이 5분 습관은 여러분을 위한 거예요."
           }
         },
         "nb" : {
@@ -171590,7 +171590,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 어디서부터 시작할지 고민해 봤다면, 이건 당신을 위한 거예요."
+            "value" : "%@ 어디서부터 시작할지 고민해 봤다면, 이건 여러분을 위한 거예요."
           }
         },
         "nb" : {
@@ -173019,7 +173019,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "개선"
+            "value" : "다듬기"
           }
         },
         "nb" : {
@@ -173730,7 +173730,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앞으로"
+            "value" : "앞으로 가져오기"
           }
         },
         "nb" : {
@@ -174440,7 +174440,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신의 목소리로 · %@"
+            "value" : "내 말투로 · %@"
           }
         },
         "nb" : {
@@ -175384,7 +175384,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "성간"
+            "value" : "인터스텔라"
           }
         },
         "nb" : {
@@ -176806,7 +176806,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "커서 위치에 들어가고 모든 대본의 막대에 남아요."
+            "value" : "커서 위치에 들어가고, 모든 대본의 큐 막대에 계속 남아요."
           }
         },
         "nb" : {
@@ -176925,7 +176925,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "입력란으로 들어가요. 먼저 당신답게 고치세요."
+            "value" : "입력란으로 들어가요. 먼저 나답게 고치세요."
           }
         },
         "nb" : {
@@ -177043,7 +177043,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신의 유니버스에 첫 별이 켜져요"
+            "value" : "내 유니버스에 첫 별이 켜져요"
           }
         },
         "nb" : {
@@ -177872,7 +177872,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사진에 저장되었습니다. Cue를 열어 공유하세요."
+            "value" : "사진에 저장됐어요. Cue를 열어 공유하세요."
           }
         },
         "nb" : {
@@ -177990,7 +177990,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "개 항목"
+            "value" : "항목"
           }
         },
         "nb" : {
@@ -178464,7 +178464,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "대기자 명단에 등록하세요 — 링크는 프로필에"
+            "value" : "대기자 명단에 등록하세요. 링크는 프로필에 있어요."
           }
         },
         "nb" : {
@@ -178582,7 +178582,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다음 줄과 합쳤습니다"
+            "value" : "다음 줄과 합침"
           }
         },
         "nb" : {
@@ -181183,7 +181183,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신의 우주를 계속 공유하세요."
+            "value" : "내 유니버스를 계속 공유하세요."
           }
         },
         "nb" : {
@@ -184259,7 +184259,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "웃기"
+            "value" : "웃음"
           }
         },
         "nb" : {
@@ -186389,7 +186389,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "가볼게요."
+            "value" : "가 볼게요."
           }
         },
         "nb" : {
@@ -187929,7 +187929,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "줄을 삭제했습니다"
+            "value" : "줄 삭제됨"
           }
         },
         "nb" : {
@@ -188283,7 +188283,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "줄을 나눴습니다"
+            "value" : "줄 나눔"
           }
         },
         "nb" : {
@@ -189701,7 +189701,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상 듣기"
+            "value" : "영상 듣기"
           }
         },
         "nb" : {
@@ -190292,7 +190292,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPhone에서 음성을 듣습니다. 일부 언어는 처음에 모델을 다운로드합니다."
+            "value" : "이 iPhone에서 음성을 들어요. 일부 언어는 처음 한 번 모델을 다운로드해요."
           }
         },
         "nb" : {
@@ -192542,7 +192542,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 후 놓쳤어요 · 거기서부터 멈춰요"
+            "value" : "%@ 후 놓쳤어요 · 그 위치에 고정돼요"
           }
         },
         "nb" : {
@@ -192778,7 +192778,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "목소리에서 낮추기"
+            "value" : "목소리 나올 때 낮추기"
           }
         },
         "nb" : {
@@ -193133,7 +193133,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 제작 · 동영상에 자유롭게 사용 가능"
+            "value" : "Cue 제작 · 영상에 자유롭게 사용 가능"
           }
         },
         "nb" : {
@@ -194435,7 +194435,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신답게 고치세요. 쓰는 동안 Cue가 배워요."
+            "value" : "나답게 고치세요. 쓰는 동안 Cue가 배워요."
           }
         },
         "nb" : {
@@ -196218,7 +196218,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "최대 %1$lld개 %2$@"
+            "value" : "%2$@ 최대 %1$lld개"
           }
         },
         "nb" : {
@@ -196454,7 +196454,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사진·비디오는 최대 3개"
+            "value" : "사진·영상은 최대 3개"
           }
         },
         "nb" : {
@@ -197402,7 +197402,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "미디어를 제거함"
+            "value" : "미디어 제거됨"
           }
         },
         "nb" : {
@@ -199177,7 +199177,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "의미가 있을 수 있어요 — 먼저 들어 보세요"
+            "value" : "의미가 있을 수 있어요. 먼저 들어 보세요"
           }
         },
         "nb" : {
@@ -202392,7 +202392,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "더 많은 형식"
+            "value" : "더 많은 포맷"
           }
         },
         "nb" : {
@@ -202510,7 +202510,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "더 자연스럽게"
+            "value" : "더 사람답게"
           }
         },
         "nb" : {
@@ -202865,7 +202865,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다른 안 보기"
+            "value" : "옵션 더 보기"
           }
         },
         "nb" : {
@@ -204053,7 +204053,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "모션과 타이밍은 이 텍스트만 바뀝니다"
+            "value" : "모션과 타이밍은 이 텍스트에만 적용돼요"
           }
         },
         "nb" : {
@@ -204528,7 +204528,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "뒤로"
+            "value" : "더 늦게"
           }
         },
         "nb" : {
@@ -204647,7 +204647,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앞으로"
+            "value" : "더 일찍"
           }
         },
         "nb" : {
@@ -205356,7 +205356,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "‘%@’(으)로 이동함"
+            "value" : "“%@”(으)로 이동함"
           }
         },
         "nb" : {
@@ -206304,7 +206304,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "음악을 40%로 추가함"
+            "value" : "음악 40%로 추가됨"
           }
         },
         "nb" : {
@@ -206423,7 +206423,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "음악과 위에 올린 사진·동영상 소리는 그대로예요."
+            "value" : "음악과 위에 올린 사진·영상 소리는 그대로예요."
           }
         },
         "nb" : {
@@ -206660,7 +206660,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "음악을 대체했습니다"
+            "value" : "음악 교체됨"
           }
         },
         "nb" : {
@@ -207844,7 +207844,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내 CUE 보이스"
+            "value" : "MY CUE VOICE"
           }
         },
         "nb" : {
@@ -208199,7 +208199,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "첫 브랜드 미팅 — 그리고 카메라가 멈췄어요"
+            "value" : "첫 브랜드 미팅, 그런데 카메라가 멈췄어요"
           }
         },
         "nb" : {
@@ -209029,7 +209029,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나의 문구"
+            "value" : "내 말버릇"
           }
         },
         "nb" : {
@@ -210685,7 +210685,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "편집본 위에 내레이션을 입히세요. 녹음 전에 Cue가 설명해 드립니다."
+            "value" : "편집본 위에 내레이션을 입히세요. 녹음 전에 Cue가 방법을 알려 줘요."
           }
         },
         "nb" : {
@@ -211394,7 +211394,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue가 설치된 다른 iPhone이나 iPad가 근처에 있어야 합니다."
+            "value" : "Cue가 설치된 다른 iPhone이나 iPad가 근처에 있어야 해요."
           }
         },
         "nb" : {
@@ -212223,7 +212223,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "목소리로 만든 새 자막이 수정하거나 입력한 줄을 대체합니다."
+            "value" : "목소리로 만든 새 자막이 수정하거나 입력한 줄을 대체해요."
           }
         },
         "nb" : {
@@ -212342,7 +212342,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "새 신호"
+            "value" : "새 큐"
           }
         },
         "nb" : {
@@ -212697,7 +212697,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 새 기능"
+            "value" : "Cue의 새로운 기능"
           }
         },
         "nb" : {
@@ -213289,7 +213289,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "새 스크립트는 이 언어로 시작해요. 스크립트는 번역되지 않아요."
+            "value" : "새 대본은 이 언어로 시작해요. 대본은 번역되지 않아요."
           }
         },
         "nb" : {
@@ -214710,7 +214710,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다음 이정표 · %1$lld / %2$lld"
+            "value" : "다음 마일스톤 · %1$lld / %2$lld"
           }
         },
         "nb" : {
@@ -216027,7 +216027,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "카메라를 찾지 못했어요 · 스튜디오 모드는 사용 가능"
+            "value" : "카메라를 찾지 못했어요 · Studio 모드는 사용 가능"
           }
         },
         "nb" : {
@@ -216264,7 +216264,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 단어에 해당하는 자막 줄이 없습니다"
+            "value" : "이 단어에 해당하는 자막 줄이 없어요"
           }
         },
         "nb" : {
@@ -216383,7 +216383,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아직 자막이 없습니다. 자막을 만들면 템플릿이 자막에도 적용됩니다."
+            "value" : "아직 자막이 없어요. 자막을 만들면 템플릿 스타일이 자막에도 적용돼요."
           }
         },
         "nb" : {
@@ -216619,7 +216619,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "빠르게 해도 목소리가 높아지지 않습니다"
+            "value" : "빠르게 해도 목소리가 높아지지 않아요"
           }
         },
         "nb" : {
@@ -217093,7 +217093,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아직 자른 곳이 없습니다"
+            "value" : "아직 자른 곳이 없어요"
           }
         },
         "nb" : {
@@ -217568,7 +217568,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 동영상에서 얼굴을 찾지 못했어요"
+            "value" : "이 영상에서 얼굴을 찾지 못했어요"
           }
         },
         "nb" : {
@@ -218161,7 +218161,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아직 키프레임이 없습니다"
+            "value" : "아직 키프레임이 없어요"
           }
         },
         "nb" : {
@@ -220059,7 +220059,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "리마인더가 없습니다. 대본, 녹화 영상 또는 나중에 게시에서 설정하세요."
+            "value" : "리마인더가 없어요. 대본, 녹화 영상 또는 나중에 게시에서 설정하세요."
           }
         },
         "nb" : {
@@ -221006,7 +221006,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 테이크에서 말소리를 찾지 못했습니다."
+            "value" : "이 테이크에서 말소리를 찾지 못했어요."
           }
         },
         "nb" : {
@@ -221242,7 +221242,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자막으로 만들 말소리가 없어 비디오에 자막이 없습니다."
+            "value" : "자막으로 만들 말소리가 없어 영상에 자막이 없어요."
           }
         },
         "nb" : {
@@ -223137,7 +223137,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "여기서는 사용할 수 없습니다"
+            "value" : "여기서는 사용할 수 없어요"
           }
         },
         "nb" : {
@@ -223846,7 +223846,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "여기에는 공간이 부족합니다"
+            "value" : "여기에는 공간이 부족해요"
           }
         },
         "nb" : {
@@ -223965,7 +223965,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPhone의 공간이 부족합니다. 약 %lld MB를 확보한 후 다시 시도하세요."
+            "value" : "이 iPhone의 공간이 부족해요. 약 %lld MB를 확보한 후 다시 시도하세요."
           }
         },
         "nb" : {
@@ -224322,7 +224322,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상에 없음"
+            "value" : "영상에 없음"
           }
         },
         "nb" : {
@@ -226810,7 +226810,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "알림이 꺼져 있습니다"
+            "value" : "알림이 꺼져 있어요"
           }
         },
         "nb" : {
@@ -226929,7 +226929,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iOS 설정에서 Cue 알림이 꺼져 있습니다. 리마인더는 Cue 안에 보관됩니다."
+            "value" : "iOS 설정에서 Cue 알림이 꺼져 있어요. 리마인더는 Cue 안에 보관돼요."
           }
         },
         "nb" : {
@@ -227048,7 +227048,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "알림이 켜져 있습니다"
+            "value" : "알림이 켜져 있어요"
           }
         },
         "nb" : {
@@ -227167,7 +227167,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "알림이 조용히 도착합니다"
+            "value" : "알림이 조용히 도착해요"
           }
         },
         "nb" : {
@@ -227286,7 +227286,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iOS에서 알림이 꺼져 있습니다"
+            "value" : "iOS에서 알림이 꺼져 있어요"
           }
         },
         "nb" : {
@@ -227405,7 +227405,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "가끔, 당신을 위한 새로운 소식."
+            "value" : "가끔 전하는 새로운 소식."
           }
         },
         "nb" : {
@@ -229067,7 +229067,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "솔직히 말할게요 — 이건 중요해요."
+            "value" : "솔직히 말할게요. 이건 중요해요."
           }
         },
         "nb" : {
@@ -230962,7 +230962,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "기다리는 작업이 있을 때 알림을 보내며 하루 최대 1개입니다. 설정에서 바꿀 수 있습니다."
+            "value" : "기다리는 작업이 있을 때 알림을 보내요. 하루 최대 1개예요. 설정에서 바꿀 수 있어요."
           }
         },
         "nb" : {
@@ -231081,7 +231081,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아이디어 하나가 영상이 되기를 기다리고 있습니다. 발전시켜 볼까요?"
+            "value" : "아이디어 하나가 영상이 되기를 기다리고 있어요. 발전시켜 볼까요?"
           }
         },
         "nb" : {
@@ -232031,7 +232031,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "여기에는 단어가 하나뿐입니다"
+            "value" : "여기에는 단어가 하나뿐이에요"
           }
         },
         "nb" : {
@@ -232268,7 +232268,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 콜아웃만 바뀝니다"
+            "value" : "이 콜아웃만 바뀌어요"
           }
         },
         "nb" : {
@@ -232386,7 +232386,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 훅만 바뀝니다"
+            "value" : "이 훅만 바뀌어요"
           }
         },
         "nb" : {
@@ -232504,7 +232504,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 부제만 바뀝니다"
+            "value" : "이 부제만 바뀌어요"
           }
         },
         "nb" : {
@@ -232622,7 +232622,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 제목만 바뀝니다"
+            "value" : "이 제목만 바뀌어요"
           }
         },
         "nb" : {
@@ -234870,7 +234870,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "시작"
+            "value" : "오프닝"
           }
         },
         "nb" : {
@@ -235579,7 +235579,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "목소리 질문을 열어 바꿀 수 있습니다."
+            "value" : "목소리 질문을 열어 답을 바꿀 수 있어요."
           }
         },
         "nb" : {
@@ -237943,7 +237943,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "카메라 위 · 셀피"
+            "value" : "카메라 위 · Selfie"
           }
         },
         "nb" : {
@@ -238061,7 +238061,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "인정하기"
+            "value" : "책임지기"
           }
         },
         "nb" : {
@@ -239958,7 +239958,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상 구간"
+            "value" : "영상 구간"
           }
         },
         "nb" : {
@@ -240668,7 +240668,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "여기에 글을 붙여 넣으세요. 글 사이에 --- 줄을 넣어 주세요."
+            "value" : "여기에 글을 붙여넣으세요. 글 사이에 --- 줄을 넣어 주세요."
           }
         },
         "nb" : {
@@ -240905,7 +240905,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "붙여 넣음"
+            "value" : "붙여넣음"
           }
         },
         "nb" : {
@@ -241850,7 +241850,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "반전 결말"
+            "value" : "결말"
           }
         },
         "nb" : {
@@ -242442,7 +242442,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "‘멈춤’이나 ‘미소’ 같은 연기 신호"
+            "value" : "‘멈춤’이나 ‘미소’ 같은 연기 큐"
           }
         },
         "nb" : {
@@ -244220,7 +244220,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사진을 추가함"
+            "value" : "사진 추가됨"
           }
         },
         "nb" : {
@@ -244456,7 +244456,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사진을 교체했어요"
+            "value" : "사진 교체됨"
           }
         },
         "nb" : {
@@ -244813,7 +244813,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사진이 꺼져 있어요 · 영상이 저장되지 않았어요"
+            "value" : "사진 접근이 꺼져 있어요 · 영상이 사진에 저장되지 않았어요"
           }
         },
         "nb" : {
@@ -245049,7 +245049,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "표현"
+            "value" : "말버릇"
           }
         },
         "nb" : {
@@ -246473,7 +246473,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "네트워크 선택"
+            "value" : "플랫폼 선택"
           }
         },
         "nb" : {
@@ -247184,7 +247184,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "먼저 비디오를 고르세요"
+            "value" : "먼저 영상을 고르세요"
           }
         },
         "nb" : {
@@ -248724,7 +248724,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "배경 색상 선택"
+            "value" : "스크린 색상 선택"
           }
         },
         "nb" : {
@@ -249317,7 +249317,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "옮길 항목을 고르세요. 단어, 소리, 타이밍은 그대로입니다."
+            "value" : "옮길 항목을 고르세요. 단어, 소리, 타이밍은 그대로예요."
           }
         },
         "nb" : {
@@ -252042,7 +252042,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "원본 재생 중 — 탭해서 멈추기"
+            "value" : "원본 재생 중 · 탭해서 멈추기"
           }
         },
         "nb" : {
@@ -252516,7 +252516,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "목소리는 계속되고 동영상 위에 재생됩니다(B-roll). 미리보기에서 이동하고 크기를 바꾸세요."
+            "value" : "목소리는 그대로 이어지고, 영상 위에 재생돼요(B-roll). 미리보기에서 옮기고 크기를 바꾸세요."
           }
         },
         "nb" : {
@@ -255717,7 +255717,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld개 네트워크에 게시"
+            "value" : "%lld개 플랫폼에 게시 중"
           }
         },
         "nb" : {
@@ -256071,7 +256071,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV: 드디어 광고처럼 나왔다."
+            "value" : "POV: 드디어 광고처럼 나왔어요."
           }
         },
         "nb" : {
@@ -257017,7 +257017,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "텔레프롬프터로 연습"
+            "value" : "프롬프터로 연습"
           }
         },
         "nb" : {
@@ -261270,7 +261270,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프로필이 업데이트됨"
+            "value" : "프로필 업데이트됨"
           }
         },
         "nb" : {
@@ -263285,7 +263285,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "구매가 완료되지 않았어요"
+            "value" : "구입이 완료되지 않았어요"
           }
         },
         "nb" : {
@@ -263403,7 +263403,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "구입 항목을 복원함"
+            "value" : "구입 항목 복원됨"
           }
         },
         "nb" : {
@@ -264233,7 +264233,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "입력란에 넣어 당신답게 고칠 수 있어요."
+            "value" : "입력란에 넣어 나답게 고칠 수 있어요."
           }
         },
         "nb" : {
@@ -264942,7 +264942,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "빠른 설정"
+            "value" : "빠르게"
           }
         },
         "nb" : {
@@ -265179,7 +265179,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "미리 말씀드려요: 이 영상은 광고를 포함하고 있어요."
+            "value" : "미리 말씀드릴게요. 이 영상은 광고를 포함하고 있어요."
           }
         },
         "nb" : {
@@ -265298,7 +265298,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "짧게 하나만 — 모든 걸 바꾼 습관 세 가지!"
+            "value" : "짧게 하나만, 모든 걸 바꾼 습관 세 가지!"
           }
         },
         "nb" : {
@@ -266721,7 +266721,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나만의 속도로: 말하면 텍스트가 움직이고 멈추면 기다립니다."
+            "value" : "나만의 속도로: 말하면 텍스트가 움직이고 멈추면 기다려요."
           }
         },
         "nb" : {
@@ -269091,7 +269091,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다음 영상을 만들 준비가 되셨나요?"
+            "value" : "다음 영상을 만들 준비가 됐나요?"
           }
         },
         "nb" : {
@@ -269682,7 +269682,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "녹화 준비됨"
+            "value" : "녹화 준비 완료"
           }
         },
         "nb" : {
@@ -271103,7 +271103,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "추천"
+            "value" : "권장"
           }
         },
         "nb" : {
@@ -271221,7 +271221,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 추천"
+            "value" : "%@ 권장"
           }
         },
         "nb" : {
@@ -271458,7 +271458,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "편집본 위에 내레이션을 녹음하세요. 버튼을 누르기 전에는 녹음되지 않습니다."
+            "value" : "편집본 위에 내레이션을 녹음하세요. 버튼을 누르기 전에는 녹음되지 않아요."
           }
         },
         "nb" : {
@@ -273115,7 +273115,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "녹화함 · %lld"
+            "value" : "녹화됨 · %lld"
           }
         },
         "nb" : {
@@ -274178,7 +274178,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "원하는 만큼 다시 찍으세요. 올릴 테이크는 당신이 골라요."
+            "value" : "원하는 만큼 다시 찍으세요. 올릴 테이크는 직접 골라요."
           }
         },
         "nb" : {
@@ -274533,7 +274533,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "직접 쓴 글로 글쓰기 스타일을 다듬으세요. 모든 내용은 이 iPhone에 남습니다."
+            "value" : "직접 쓴 글로 글쓰기 스타일을 다듬으세요. 모든 내용은 이 iPhone에만 남아요."
           }
         },
         "nb" : {
@@ -278055,7 +278055,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld개 삭제 · %2$@"
+            "value" : "%1$lld개 제거 · %2$@"
           }
         },
         "nb" : {
@@ -278844,7 +278844,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPhone에서 스크립트, 테이크, 편집, My Cue Voice를 삭제해요. 사진에 저장한 영상은 그대로 남아요."
+            "value" : "이 iPhone에서 대본, 테이크, 편집, My Cue Voice를 삭제해요. 사진에 저장한 영상은 그대로 남아요."
           }
         },
         "nb" : {
@@ -278962,7 +278962,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "매월 %@에 갱신돼요. 설정에서 언제든 해지할 수 있어요."
+            "value" : "매월 %@에 갱신돼요. 설정에서 언제든 취소할 수 있어요."
           }
         },
         "nb" : {
@@ -279080,7 +279080,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "매년 %@에 갱신돼요. 설정에서 언제든 해지할 수 있어요."
+            "value" : "매년 %@에 갱신돼요. 설정에서 언제든 취소할 수 있어요."
           }
         },
         "nb" : {
@@ -279674,7 +279674,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "대체"
+            "value" : "교체"
           }
         },
         "nb" : {
@@ -281659,7 +281659,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "추천 설정으로 재설정"
+            "value" : "권장 설정으로 재설정"
           }
         },
         "nb" : {
@@ -283079,7 +283079,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "거꾸로는 2분 이하 클립에서 돼요 · 먼저 나누세요"
+            "value" : "역재생은 2분 이하 클립에서만 돼요 · 먼저 분할하세요"
           }
         },
         "nb" : {
@@ -283198,7 +283198,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "거꾸로 바꿨어요"
+            "value" : "역재생으로 바꿨어요"
           }
         },
         "nb" : {
@@ -283317,7 +283317,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "클립을 거꾸로 만드는 중…"
+            "value" : "클립을 역재생으로 만드는 중…"
           }
         },
         "nb" : {
@@ -283436,7 +283436,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "거꾸로"
+            "value" : "역재생"
           }
         },
         "nb" : {
@@ -284029,7 +284029,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자유롭게 고쳐 쓰세요. '나 같아요'를 누르면 Cue가 배워요."
+            "value" : "자유롭게 고쳐 쓰세요. ‘나다워요’를 누르면 Cue가 배워요."
           }
         },
         "nb" : {
@@ -286170,7 +286170,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "안전 영역 꺼짐"
+            "value" : "세이프 존 꺼짐"
           }
         },
         "nb" : {
@@ -286288,7 +286288,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "안전 영역 켜짐"
+            "value" : "세이프 존 켜짐"
           }
         },
         "nb" : {
@@ -286525,7 +286525,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스크립트와 동일"
+            "value" : "대본과 동일"
           }
         },
         "nb" : {
@@ -288418,7 +288418,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "비디오 저장"
+            "value" : "영상 저장"
           }
         },
         "nb" : {
@@ -288892,7 +288892,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "저장됨 · 시간이 가까워지면 Cue가 예약합니다"
+            "value" : "저장됨 · 시간이 가까워지면 Cue가 예약해요"
           }
         },
         "nb" : {
@@ -290088,7 +290088,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "테이크에 저장했어요. 자막을 넣거나 편집하거나 공유해서 %@년의 우주를 밝혀 보세요."
+            "value" : "테이크에 저장했어요. 자막을 넣거나 편집하거나 공유해서 %@년 유니버스를 밝혀 보세요."
           }
         },
         "nb" : {
@@ -290443,7 +290443,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사진에 저장함"
+            "value" : "사진에 저장됨"
           }
         },
         "nb" : {
@@ -290561,7 +290561,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사진에 저장함 · 무료 내보내기 %2$lld회 중 %1$lld회 남음"
+            "value" : "사진에 저장됨 · 무료 내보내기 %2$lld회 중 %1$lld회 남음"
           }
         },
         "nb" : {
@@ -290679,7 +290679,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "사진에 저장함 · %@을(를) 열어 올리세요"
+            "value" : "사진에 저장됨 · %@을(를) 열어 올리세요"
           }
         },
         "nb" : {
@@ -291390,7 +291390,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "쉬는 타이밍을 남겨두는 중"
+            "value" : "멈출 자리를 남겨 두는 중"
           }
         },
         "nb" : {
@@ -294238,7 +294238,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "대본을 추가함"
+            "value" : "대본 추가됨"
           }
         },
         "nb" : {
@@ -294356,7 +294356,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "대본을 삭제함"
+            "value" : "대본 삭제됨"
           }
         },
         "nb" : {
@@ -294592,7 +294592,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스크립트 언어"
+            "value" : "대본 언어"
           }
         },
         "nb" : {
@@ -295539,7 +295539,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스크립트와 My Cue Voice는 이 iPhone에만 있어요"
+            "value" : "대본과 My Cue Voice는 이 iPhone에만 있어요"
           }
         },
         "nb" : {
@@ -296013,7 +296013,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "더 나다운 대본. 질문은 네 개뿐이고 답은 언제든 바꿀 수 있습니다."
+            "value" : "더 나다운 대본. 질문은 네 개뿐이고 답은 언제든 바꿀 수 있어요."
           }
         },
         "nb" : {
@@ -296486,7 +296486,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "말하는 동안 %@로 스크롤"
+            "value" : "말하는 동안 %@로 스크롤돼요"
           }
         },
         "nb" : {
@@ -297076,7 +297076,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "섹션 복사됨"
+            "value" : "구간 복사됨"
           }
         },
         "nb" : {
@@ -297313,7 +297313,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "공유한 영상이 당신의 우주를 어떻게 만드는지 확인하세요."
+            "value" : "공유한 영상이 내 유니버스를 어떻게 만들어 가는지 확인하세요."
           }
         },
         "nb" : {
@@ -297432,7 +297432,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "영상이 당신의 우주를 어떻게 만드는지 보세요"
+            "value" : "영상이 내 유니버스를 어떻게 만들어 가는지 보세요"
           }
         },
         "nb" : {
@@ -297788,7 +297788,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "올해 당신의 우주를 만든 영상을 확인해 보세요."
+            "value" : "올해 내 유니버스를 만든 영상을 확인해 보세요."
           }
         },
         "nb" : {
@@ -297906,7 +297906,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pro에 무엇이 있는지 보기"
+            "value" : "Pro 혜택 보기"
           }
         },
         "nb" : {
@@ -300984,7 +300984,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "진지하게 — 과장 없이"
+            "value" : "진지하게, 과장 없이"
           }
         },
         "nb" : {
@@ -302522,7 +302522,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "발단, 전개, 결말"
+            "value" : "발단, 반전, 결말"
           }
         },
         "nb" : {
@@ -303113,7 +303113,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신 스타일로 다듬는 중"
+            "value" : "나만의 스타일로 다듬는 중"
           }
         },
         "nb" : {
@@ -305484,7 +305484,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld개 네트워크에 공유"
+            "value" : "%lld개 플랫폼에 공유"
           }
         },
         "nb" : {
@@ -305723,7 +305723,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나의 유니버스로 공유"
+            "value" : "내 유니버스로 공유"
           }
         },
         "nb" : {
@@ -306550,7 +306550,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld개 네트워크에 공유됨"
+            "value" : "%lld개 플랫폼에 공유됨"
           }
         },
         "nb" : {
@@ -306786,7 +306786,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "공유를 취소함"
+            "value" : "공유 취소됨"
           }
         },
         "nb" : {
@@ -308320,7 +308320,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "@사용자 이름 표시"
+            "value" : "@아이디 표시"
           }
         },
         "nb" : {
@@ -309508,7 +309508,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "직접 쓴 글을 보여 주면 Cue가 당신의 표현 방식을 배웁니다."
+            "value" : "직접 쓴 글을 보여 주면 Cue가 내 표현 방식을 배워요."
           }
         },
         "nb" : {
@@ -309627,7 +309627,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "신호 표시"
+            "value" : "큐 표시"
           }
         },
         "nb" : {
@@ -310576,7 +310576,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "제품 보여주기"
+            "value" : "제품 보여 주기"
           }
         },
         "nb" : {
@@ -312000,7 +312000,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상을 더 크게 보여 줍니다"
+            "value" : "영상을 더 크게 보여 줘요"
           }
         },
         "nb" : {
@@ -312592,7 +312592,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "앱 버튼과 설명이 화면을 가리는 곳을 보여 줘요"
+            "value" : "앱 버튼과 캡션이 화면을 가리는 곳을 보여 줘요"
           }
         },
         "nb" : {
@@ -318157,7 +318157,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "얼굴 피부를 부드럽게 만듭니다. 눈, 입술, 머리카락, 수염은 선명하게 유지됩니다."
+            "value" : "얼굴 피부를 부드럽게 해요. 눈, 입술, 머리카락, 수염은 선명하게 유지돼요."
           }
         },
         "nb" : {
@@ -318870,7 +318870,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "일부 언어는 첫 번역 전에 다운로드됩니다."
+            "value" : "일부 언어는 첫 번역 전에 다운로드돼요."
           }
         },
         "nb" : {
@@ -319107,7 +319107,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "오해하게 만든 분들이 있었어요"
+            "value" : "일부 분들은 속았다고 느끼셨어요"
           }
         },
         "nb" : {
@@ -319344,7 +319344,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "약간의 속어"
+            "value" : "약간의 은어"
           }
         },
         "nb" : {
@@ -320649,7 +320649,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나 같아요"
+            "value" : "나다워요"
           }
         },
         "nb" : {
@@ -321714,7 +321714,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@에서 분할했습니다"
+            "value" : "%@에서 분할함"
           }
         },
         "nb" : {
@@ -322070,7 +322070,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "먼저 동영상을 나누거나 ‘비트에 맞춰 동영상 자르기’를 쓰세요"
+            "value" : "먼저 영상을 분할하거나 ‘비트에 맞춰 영상 컷 편집’을 쓰세요"
           }
         },
         "nb" : {
@@ -322189,7 +322189,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "말로 · %@ · %@"
+            "value" : "음성 · %@ · %@"
           }
         },
         "nb" : {
@@ -324557,7 +324557,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아이디어, 형식 또는 빈 페이지에서 시작하세요. 당신의 우주에는 별 하나가 더 들어갈 자리가 있습니다."
+            "value" : "아이디어, 포맷 또는 빈 페이지에서 시작하세요. 내 유니버스에 별 하나가 더 들어갈 자리가 있어요."
           }
         },
         "nb" : {
@@ -326096,7 +326096,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다른 iPhone이나 iPad로 프롬프터를 시작, 일시 정지, 스크롤하세요."
+            "value" : "다른 iPhone이나 iPad로 프롬프터를 시작, 일시정지, 스크롤하세요."
           }
         },
         "nb" : {
@@ -327280,7 +327280,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "의견을 한 줄로, 이유를 하나, 마지막엔 질문을 — 질문이 댓글을 불러요."
+            "value" : "의견을 한 줄로, 이유를 하나, 마지막엔 질문을. 질문이 댓글을 불러요."
           }
         },
         "nb" : {
@@ -327753,7 +327753,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "제 방법 그대로 가져가세요 — 생각보다 쉬워요."
+            "value" : "제 방법 그대로 가져가세요. 생각보다 쉬워요."
           }
         },
         "nb" : {
@@ -329888,7 +329888,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "중지했습니다. 자막은 그대로입니다."
+            "value" : "중지했어요. 자막은 그대로예요."
           }
         },
         "nb" : {
@@ -330479,7 +330479,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이야기 하나 할게요 — 네, 결말은 좋아요."
+            "value" : "이야기 하나 할게요. 네, 결말은 좋아요."
           }
         },
         "nb" : {
@@ -331664,7 +331664,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "심한 욕설과 비하 표현은 쓰지 않아요 — Apple Intelligence가 생성하지 않아요."
+            "value" : "심한 욕설과 비하 표현은 쓰지 않아요. Apple Intelligence가 생성하지 않아요."
           }
         },
         "nb" : {
@@ -332374,7 +332374,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스튜디오"
+            "value" : "STUDIO"
           }
         },
         "nb" : {
@@ -332728,7 +332728,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스튜디오 보이스"
+            "value" : "Studio Voice"
           }
         },
         "nb" : {
@@ -332847,7 +332847,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스튜디오 보이스가 녹화 영상을 다듬습니다. 적용 전에 먼저 들어 보세요."
+            "value" : "Studio Voice가 녹화 영상의 목소리를 다듬어요. 적용 전에 먼저 들어 보세요."
           }
         },
         "nb" : {
@@ -336771,7 +336771,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "테이크를 삭제함"
+            "value" : "테이크 삭제됨"
           }
         },
         "nb" : {
@@ -336889,7 +336889,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신의 우주를 더 멀리."
+            "value" : "내 유니버스를 더 멀리."
           }
         },
         "nb" : {
@@ -337599,7 +337599,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "토킹 영상"
+            "value" : "말하는 영상"
           }
         },
         "nb" : {
@@ -338190,7 +338190,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "스타일을 탭하면 현재 줄에서 미리 봅니다."
+            "value" : "스타일을 탭하면 현재 줄에서 미리 볼 수 있어요."
           }
         },
         "nb" : {
@@ -338308,7 +338308,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "편집기에서 완료을(를) 누르거나 베스트 테이크를 고르면 게시할 준비가 된 영상이 여기에 나타나요."
+            "value" : "편집기에서 완료를 누르거나 베스트 테이크를 고르면, 게시할 준비가 된 영상이 여기에 나타나요."
           }
         },
         "nb" : {
@@ -339021,7 +339021,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자를 부분의 첫 단어를 탭한 다음 마지막 단어를 탭하세요. 줄이 그어진 단어는 잘린 것입니다."
+            "value" : "잘라낼 부분의 첫 단어를 탭한 다음 마지막 단어를 탭하세요. 줄이 그어진 단어는 잘라낸 부분이에요."
           }
         },
         "nb" : {
@@ -339140,7 +339140,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자를 부분의 첫 단어를 탭한 다음 마지막 단어를 탭하세요. 실행 취소로 자른 부분을 되돌릴 수 있습니다."
+            "value" : "잘라낼 부분의 첫 단어를 탭한 다음 마지막 단어를 탭하세요. 실행 취소로 잘라낸 부분을 되돌릴 수 있어요."
           }
         },
         "nb" : {
@@ -340203,7 +340203,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "눌러서 시작"
+            "value" : "탭하여 시작"
           }
         },
         "nb" : {
@@ -342456,7 +342456,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "텔레프롬프터"
+            "value" : "프롬프터"
           }
         },
         "nb" : {
@@ -343880,7 +343880,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "글자를 내 뒤로"
+            "value" : "내 뒤의 텍스트"
           }
         },
         "nb" : {
@@ -344116,7 +344116,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "텍스트를 삭제함"
+            "value" : "텍스트 삭제됨"
           }
         },
         "nb" : {
@@ -344234,7 +344234,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "텍스트를 복제했습니다"
+            "value" : "텍스트 복제됨"
           }
         },
         "nb" : {
@@ -344352,7 +344352,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "글자가 위에"
+            "value" : "텍스트를 위에"
           }
         },
         "nb" : {
@@ -344824,7 +344824,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "텍스트 창 · 셀피"
+            "value" : "텍스트 창 · Selfie"
           }
         },
         "nb" : {
@@ -344942,7 +344942,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "텍스트 창이 초기화되었습니다"
+            "value" : "텍스트 창 초기화됨"
           }
         },
         "nb" : {
@@ -345771,7 +345771,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그 아이디어는 더 이상 없습니다 · ↻로 다른 아이디어 보기"
+            "value" : "그 아이디어는 더 이상 없어요 · ↻로 다른 아이디어 보기"
           }
         },
         "nb" : {
@@ -346008,7 +346008,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그 녹화 영상은 더 이상 Cue에 없습니다"
+            "value" : "그 녹화 영상은 더 이상 Cue에 없어요"
           }
         },
         "nb" : {
@@ -346127,7 +346127,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그 대본은 더 이상 Cue에 없습니다"
+            "value" : "그 대본은 더 이상 Cue에 없어요"
           }
         },
         "nb" : {
@@ -348260,7 +348260,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "첫 번째 테이크가 결국 쓰인 것이었다"
+            "value" : "결국 쓴 건 첫 번째 테이크였어요"
           }
         },
         "nb" : {
@@ -348616,7 +348616,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "말하는 단어가 눈에 띄도록 강조 색상이 바뀝니다: %@."
+            "value" : "말하는 단어가 눈에 띄도록 강조 색상이 바뀌어요: %@."
           }
         },
         "nb" : {
@@ -348735,7 +348735,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone이 뜨거워 내보내기가 더 오래 걸립니다. 가능하면 식혀 주세요."
+            "value" : "iPhone이 뜨거워서 내보내기가 더 오래 걸려요. 가능하면 식혀 주세요."
           }
         },
         "nb" : {
@@ -349091,7 +349091,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프로필에 있는 내 우주 한가운데의 빛."
+            "value" : "프로필에 있는 내 유니버스 한가운데의 빛."
           }
         },
         "nb" : {
@@ -351940,7 +351940,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프롬프터가 목소리를 따라갈 수 있습니다."
+            "value" : "프롬프터가 목소리를 따라갈 수 있어요."
           }
         },
         "nb" : {
@@ -352650,7 +352650,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "전개"
+            "value" : "반전"
           }
         },
         "nb" : {
@@ -352888,7 +352888,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그사이 동영상이 바뀌었습니다 · 프레임을 다시 정지하세요"
+            "value" : "그사이 영상이 바뀌었어요 · 프레임을 다시 정지하세요"
           }
         },
         "nb" : {
@@ -353007,7 +353007,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그사이 동영상이 바뀌었어요 · 다시 거꾸로 만드세요"
+            "value" : "그사이 영상이 바뀌었어요 · 다시 역재생하세요"
           }
         },
         "nb" : {
@@ -353126,7 +353126,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그사이 동영상이 바뀌었어요 · 다시 추적하세요"
+            "value" : "그사이 영상이 바뀌었어요 · 다시 추적하세요"
           }
         },
         "nb" : {
@@ -353245,7 +353245,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상은 커버 이미지 없이 내보내져요."
+            "value" : "영상은 커버 이미지 없이 내보내져요."
           }
         },
         "nb" : {
@@ -353363,7 +353363,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상들이 Cue에서 삭제돼요. 사진에 저장한 사본은 그대로 남아요."
+            "value" : "영상이 Cue에서 삭제돼요. 사진에 저장한 사본은 그대로 남아요."
           }
         },
         "nb" : {
@@ -353719,7 +353719,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "비교할 말소리가 없습니다"
+            "value" : "비교할 말소리가 없어요"
           }
         },
         "nb" : {
@@ -354075,7 +354075,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "그들에 맞춰 Cue가 쓰는 말이 정해져요."
+            "value" : "시청자에 맞춰 Cue가 쓰는 말이 정해져요."
           }
         },
         "nb" : {
@@ -354666,7 +354666,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 카메라는 녹화 중에 효과를 보여줄 수 없습니다. 녹화 후 테이크에 추가됩니다."
+            "value" : "이 카메라는 녹화 중에 효과를 보여 줄 수 없어요. 녹화 후 테이크에 추가돼요."
           }
         },
         "nb" : {
@@ -355382,7 +355382,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 클립은 이미 이 룩입니다"
+            "value" : "이 클립은 이미 이 룩이에요"
           }
         },
         "nb" : {
@@ -356684,7 +356684,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPhone은 비디오에서 사람을 찾을 수 없어 여기서는 배경을 바꿀 수 없습니다."
+            "value" : "이 iPhone은 영상에서 사람을 찾을 수 없어 여기서는 배경을 바꿀 수 없어요."
           }
         },
         "nb" : {
@@ -356808,7 +356808,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPhone에서는 %1$@을(를) %2$@(으)로 번역할 수 없습니다. 번역을 직접 입력할 수 있습니다."
+            "value" : "이 iPhone에서는 %1$@을(를) %2$@(으)로 번역할 수 없어요. 번역을 직접 입력할 수 있어요."
           }
         },
         "nb" : {
@@ -357045,7 +357045,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "조용한 시간에 해당합니다. 직접 고른 시간이므로 Cue가 그대로 알려 드립니다."
+            "value" : "조용한 시간에 해당해요. 직접 고른 시간이라 Cue가 그대로 알려 드려요."
           }
         },
         "nb" : {
@@ -357281,7 +357281,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "마지막 줄입니다"
+            "value" : "마지막 줄이에요"
           }
         },
         "nb" : {
@@ -358345,7 +358345,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 테이크에는 자막으로 만들 소리가 없습니다."
+            "value" : "이 테이크에는 자막으로 만들 소리가 없어요."
           }
         },
         "nb" : {
@@ -358463,7 +358463,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 테이크에는 비디오가 없어요."
+            "value" : "이 테이크에는 영상이 없어요."
           }
         },
         "nb" : {
@@ -358700,7 +358700,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 텍스트의 서체, 색상, 배경, 그림자, 글로우가 현재 자막 스타일을 대신합니다."
+            "value" : "이 텍스트의 서체, 색상, 배경, 그림자, 글로우가 현재 자막 스타일을 대신해요."
           }
         },
         "nb" : {
@@ -358936,7 +358936,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 비디오를 열 수 없어요"
+            "value" : "이 영상을 열 수 없어요"
           }
         },
         "nb" : {
@@ -359055,7 +359055,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 동영상을 읽을 수 없어요"
+            "value" : "이 영상을 읽을 수 없어요"
           }
         },
         "nb" : {
@@ -359173,7 +359173,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 비디오에는 자체 소리가 있습니다"
+            "value" : "이 영상에는 자체 소리가 있어요"
           }
         },
         "nb" : {
@@ -359411,7 +359411,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 동영상은 음소거 상태예요 · 추출하려면 소리를 켜세요"
+            "value" : "이 영상은 음소거 상태예요 · 추출하려면 소리를 켜세요"
           }
         },
         "nb" : {
@@ -359767,7 +359767,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "세 가지면 충분해요: 무슨 일이 있었는지, 반전의 순간, 결말. Cue가 궁금증을 부르는 훅과 호흡 신호를 더해요."
+            "value" : "세 가지면 충분해요. 무슨 일이 있었는지, 반전의 순간, 결말. Cue가 궁금증을 부르는 훅과 호흡 큐를 더해요."
           }
         },
         "nb" : {
@@ -360005,7 +360005,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "작은 습관 세 가지가 내 아침의 느낌을 바꿨어요."
+            "value" : "작은 습관 세 가지가 제 아침을 바꿨어요."
           }
         },
         "nb" : {
@@ -361661,7 +361661,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "팁 / 목록"
+            "value" : "팁 / 리스트"
           }
         },
         "nb" : {
@@ -363913,7 +363913,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "너무 격식적"
+            "value" : "너무 딱딱함"
           }
         },
         "nb" : {
@@ -365096,7 +365096,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "화면 왼쪽 위에 있어요. Cue가 다음 네트워크로 안내해요."
+            "value" : "화면 왼쪽 위에 있어요. Cue가 다음 플랫폼으로 안내해요."
           }
         },
         "nb" : {
@@ -367581,7 +367581,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple 번역으로 iPhone에서 번역합니다. 어디에도 전송되지 않습니다."
+            "value" : "Apple 번역으로 iPhone에서 번역해요. 어디에도 전송되지 않아요."
           }
         },
         "nb" : {
@@ -367699,7 +367699,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@(으)로 번역함"
+            "value" : "%@(으)로 번역됨"
           }
         },
         "nb" : {
@@ -368408,7 +368408,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "체험 시작 — Cue Pro를 즐기세요"
+            "value" : "체험 시작 · Cue Pro를 즐기세요"
           }
         },
         "nb" : {
@@ -369709,7 +369709,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "해보고 알려 주세요"
+            "value" : "해 보고 알려 주세요"
           }
         },
         "nb" : {
@@ -370186,7 +370186,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프롬프터로 녹화해 보세요. 첫 번째 별까지 테이크 하나면 됩니다."
+            "value" : "프롬프터로 녹화해 보세요. 첫 번째 별까지 테이크 하나면 돼요."
           }
         },
         "nb" : {
@@ -371252,7 +371252,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "설정 › 개인정보 및 AI 데이터에서 꺼져 있어요."
+            "value" : "설정 › 개인정보 보호 및 AI 데이터에서 꺼져 있어요."
           }
         },
         "nb" : {
@@ -377406,7 +377406,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "추천 설정 사용"
+            "value" : "권장 설정 사용"
           }
         },
         "nb" : {
@@ -378589,7 +378589,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPhone의 Apple Intelligence를 사용합니다."
+            "value" : "이 iPhone의 Apple Intelligence를 사용해요."
           }
         },
         "nb" : {
@@ -378943,7 +378943,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자주 쓰는 형식"
+            "value" : "자주 쓰는 포맷"
           }
         },
         "nb" : {
@@ -380126,7 +380126,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "비디오"
+            "value" : "영상"
           }
         },
         "nb" : {
@@ -380244,7 +380244,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "비디오를 추가함"
+            "value" : "영상 추가됨"
           }
         },
         "nb" : {
@@ -380362,7 +380362,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상과 커버를 사진에 저장함"
+            "value" : "영상과 커버가 사진에 저장됨"
           }
         },
         "nb" : {
@@ -380599,7 +380599,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상을 교체했어요"
+            "value" : "영상 교체됨"
           }
         },
         "nb" : {
@@ -380717,7 +380717,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "비디오가 너무 짧아요"
+            "value" : "영상이 너무 짧아 추가할 수 없어요"
           }
         },
         "nb" : {
@@ -381309,7 +381309,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상은 사진에 저장하거나 공유할 때만 Cue 밖으로 나가요. 카메라와 마이크는 카메라가 열려 있을 때만 사용돼요."
+            "value" : "영상은 사진에 저장하거나 공유할 때만 Cue 밖으로 나가요. 카메라와 마이크는 카메라가 열려 있을 때만 사용돼요."
           }
         },
         "nb" : {
@@ -381427,7 +381427,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "영상 공유됨"
+            "value" : "공유한 영상"
           }
         },
         "nb" : {
@@ -382733,7 +382733,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "목소리 완성도"
+            "value" : "보이스 완성도"
           }
         },
         "nb" : {
@@ -382853,7 +382853,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "보이스 강도 %lld%%"
+            "value" : "보이스 완성도 %lld%%"
           }
         },
         "nb" : {
@@ -383207,7 +383207,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "보이스오버를 삭제함"
+            "value" : "보이스오버 삭제됨"
           }
         },
         "nb" : {
@@ -386407,7 +386407,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "보세요 — %@. [시연]"
+            "value" : "보세요, %@. [시연]"
           }
         },
         "nb" : {
@@ -392089,7 +392089,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "각 앱의 버튼과 자막이 화면을 가리는 위치"
+            "value" : "각 앱의 버튼과 캡션이 화면을 가리는 위치"
           }
         },
         "nb" : {
@@ -394694,7 +394694,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동영상 전체 · 게시할 곳에 맞는 형식"
+            "value" : "영상 전체 · 게시할 곳에 맞는 포맷"
           }
         },
         "nb" : {
@@ -395050,7 +395050,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "왜 당신을 볼까요?"
+            "value" : "시청자는 왜 나를 볼까요?"
           }
         },
         "nb" : {
@@ -397062,7 +397062,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "동작 줄이기가 켜져 있으면 하늘과 축하가 쉬어요."
+            "value" : "동작 줄이기가 켜져 있으면 하늘과 축하 효과가 멈춰요."
           }
         },
         "nb" : {
@@ -397656,7 +397656,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "구간을 일일이 찾지 않아도 됩니다. 무엇을 남길지는 직접 고르세요."
+            "value" : "구간을 일일이 찾지 않아도 돼요. 무엇을 남길지는 직접 고르세요."
           }
         },
         "nb" : {
@@ -398249,7 +398249,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "단어를 되돌렸습니다"
+            "value" : "단어 되돌림"
           }
         },
         "nb" : {
@@ -398606,7 +398606,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "문구, 타이밍, 번역, 위치, 크기, 줄이 나타나는 방식은 그대로입니다. 다른 텍스트는 바뀌지 않습니다."
+            "value" : "문구, 타이밍, 번역, 위치, 크기, 줄이 나타나는 방식은 그대로예요. 다른 텍스트는 바뀌지 않아요."
           }
         },
         "nb" : {
@@ -398725,7 +398725,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "문구, 타이밍, 모션은 텍스트마다 그대로입니다."
+            "value" : "문구, 타이밍, 모션은 텍스트마다 그대로예요."
           }
         },
         "nb" : {
@@ -401807,7 +401807,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "네 — 소셜 미디어에 공유"
+            "value" : "네, 소셜 미디어에 공유"
           }
         },
         "nb" : {
@@ -402872,7 +402872,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "영상에서 자막을 드래그해도 됩니다."
+            "value" : "영상에서 자막을 드래그해도 돼요."
           }
         },
         "nb" : {
@@ -403109,7 +403109,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나중에 미디어 › 고급에서 바꿀 수 있습니다."
+            "value" : "나중에 미디어 › 고급에서 바꿀 수 있어요."
           }
         },
         "nb" : {
@@ -403228,7 +403228,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue를 나가도 내보내기는 계속됩니다."
+            "value" : "Cue를 나가도 내보내기는 계속돼요."
           }
         },
         "nb" : {
@@ -403346,7 +403346,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "뺄지는 직접 정하세요"
+            "value" : "무엇을 뺄지는 직접 정하세요"
           }
         },
         "nb" : {
@@ -403939,7 +403939,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "프로처럼 보이려면 비싼 장비가 필요하다"
+            "value" : "프로처럼 보이려면 비싼 장비가 필요해요"
           }
         },
         "nb" : {
@@ -405833,7 +405833,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "자막에 %@ 프리셋이 적용되어 있습니다. 이 텍스트의 서체, 색상, 배경, 그림자, 글로우로 바뀝니다."
+            "value" : "자막에 %@ 프리셋이 적용되어 있어요. 이 텍스트의 서체, 색상, 배경, 그림자, 글로우로 바뀌어요."
           }
         },
         "nb" : {
@@ -406076,7 +406076,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "제작 시간입니다"
+            "value" : "제작 시간이에요"
           }
         },
         "nb" : {
@@ -406788,7 +406788,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "첫 대본이 준비되었습니다"
+            "value" : "첫 대본이 준비됐어요"
           }
         },
         "nb" : {
@@ -407619,7 +407619,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신의 아이디어 · 당신의 목소리로 초안"
+            "value" : "내 아이디어 · 내 목소리로 쓴 초안"
           }
         },
         "nb" : {
@@ -407738,7 +407738,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아이디어가 이미 시작되었습니다"
+            "value" : "아이디어를 이미 시작했어요"
           }
         },
         "nb" : {
@@ -407857,7 +407857,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아이디어는 당신, 초안은 Cue."
+            "value" : "아이디어는 내가, 초안은 Cue가."
           }
         },
         "nb" : {
@@ -407976,7 +407976,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone이 너무 뜨거워서 이 동영상을 완성할 수 없어요. 식힌 다음 다시 내보내세요."
+            "value" : "iPhone이 너무 뜨거워서 이 영상을 완성할 수 없어요. 식힌 다음 다시 내보내세요."
           }
         },
         "nb" : {
@@ -408100,7 +408100,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나만의 빛. 영상을 공유할 때마다 커져요 — 사진은 필요 없어요."
+            "value" : "나만의 빛. 영상을 공유할 때마다 커져요. 사진은 필요 없어요."
           }
         },
         "nb" : {
@@ -408694,7 +408694,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다음 녹화는 탭 한 번이면 됩니다."
+            "value" : "다음 녹화는 탭 한 번이면 돼요."
           }
         },
         "nb" : {
@@ -408932,7 +408932,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "다음 영상은 여기서 시작됩니다. Cue가 다음 단계를 열어 드립니다."
+            "value" : "다음 영상은 여기서 시작돼요. Cue가 다음 단계를 열어 드려요."
           }
         },
         "nb" : {
@@ -409881,7 +409881,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "녹화 영상이 저장되어 있습니다"
+            "value" : "녹화 영상이 저장되어 있어요"
           }
         },
         "nb" : {
@@ -410000,7 +410000,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "녹화 영상이 기다리고 있습니다"
+            "value" : "녹화 영상이 기다리고 있어요"
           }
         },
         "nb" : {
@@ -410356,7 +410356,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "대본이 기다리고 있습니다"
+            "value" : "대본이 기다리고 있어요"
           }
         },
         "nb" : {
@@ -410474,7 +410474,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 iPhone에서 스크립트, 테이크, 편집, My Cue Voice가 삭제돼요. 되돌릴 수 없어요."
+            "value" : "이 iPhone에서 대본, 테이크, 편집, My Cue Voice가 삭제돼요. 되돌릴 수 없어요."
           }
         },
         "nb" : {
@@ -410946,7 +410946,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "테이크가 매끄럽습니다. 더 짧은 길이로 해 보세요."
+            "value" : "테이크가 매끄러워요. 더 짧은 길이로 해 보세요."
           }
         },
         "nb" : {
@@ -411775,7 +411775,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나의 우주"
+            "value" : "나의 유니버스"
           }
         },
         "nb" : {
@@ -411895,7 +411895,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나의 우주"
+            "value" : "나의 유니버스"
           }
         },
         "nb" : {
@@ -412014,7 +412014,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "나의 우주가 기다리고 있어요"
+            "value" : "나의 유니버스가 기다리고 있어요"
           }
         },
         "nb" : {
@@ -412132,7 +412132,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "당신의 유니버스는 첫 공유로 시작돼요."
+            "value" : "내 유니버스는 첫 공유로 시작돼요."
           }
         },
         "nb" : {
@@ -412251,7 +412251,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내 우주의 빛"
+            "value" : "내 유니버스의 빛"
           }
         },
         "nb" : {
@@ -412961,7 +412961,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "영상이 Cue에 저장되어 있습니다. 열어서 공유를 이어 가세요."
+            "value" : "영상이 Cue에 저장되어 있어요. 열어서 공유를 이어 가세요."
           }
         },
         "nb" : {
@@ -413552,7 +413552,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "한 해 돌아보기가 준비되었습니다"
+            "value" : "한 해 돌아보기가 준비됐어요"
           }
         },
         "nb" : {
@@ -413671,7 +413671,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "내이름"
+            "value" : "yourname"
           }
         },
         "nb" : {
@@ -414144,7 +414144,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "YouTube는 8분 이상인 동영상에서만 중간 광고를 허용해요."
+            "value" : "YouTube는 8분 이상인 영상에서만 중간 광고를 허용해요."
           }
         },
         "nb" : {
