@@ -73,7 +73,7 @@ nonisolated enum DefaultsKey {
     /// How many videos each planet had when "Your universe" was last open (`[String: Int]`, "2026.tiktok"): the planets grow from there.
     static let seenPlanetCounts = "seenPlanetCounts"
     static let celebratedMilestones = "celebratedMilestones"
-    /// "Your stars" in the sky above Scripts (`[StarPoint]`, JSON, up to 50) and how many were ever added.
+    /// "Your stars" (up to 50, and how many were ever added), which earlier versions kept: only "Delete my Cue data" still removes them.
     static let skyMemory = "skyMemory"
     static let skyMemoryAdded = "skyMemoryAdded"
     /// What the My Cue Voice tip remembers (`VoiceQuestionState`, JSON): days opened, tips shown, snoozes, skips.

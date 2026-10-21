@@ -31,11 +31,10 @@ struct DataEraserServiceTests {
         let quota = UsageQuotaService(counter: FakeExportCountStore(count: 3), defaults: defaults.defaults)
         let brands = BrandStore(repository: InMemoryBrandRepository())
         _ = brands.save(BrandBrief(name: "Acme", product: "Soap"))
-        let sky = SkyMemory(defaults: defaults.defaults)
-        _ = sky.addStar()
+        defaults.defaults.set(Data("stars".utf8), forKey: DefaultsKey.skyMemory)
         let eraser = DataEraserService(
             library: library, takes: takes, drafts: FakeDraftStore(), logbook: LogbookService(defaults: defaults.defaults), brands: brands,
-            sky: sky, profile: profile, preferences: preferences, defaults: defaults.defaults
+            profile: profile, preferences: preferences, defaults: defaults.defaults
         )
 
         eraser.eraseEverything()
@@ -43,7 +42,7 @@ struct DataEraserServiceTests {
         #expect(library.scripts.isEmpty)
         #expect(takes.takes.isEmpty)
         #expect(brands.brands.isEmpty)
-        #expect(sky.points.isEmpty)
+        #expect(defaults.defaults.object(forKey: DefaultsKey.skyMemory) == nil, "the stars earlier versions kept")
         #expect(profile.profile == CreatorProfile())
         #expect(profile.profile.excerpts.isEmpty && profile.profile.fingerprint == nil && profile.profile.approvedSamples.isEmpty)
         #expect(preferences.customCues.isEmpty)
@@ -62,7 +61,7 @@ struct DataEraserServiceTests {
         let eraser = DataEraserService(
             library: ScriptLibraryService(repository: FakeScriptRepository(scripts: [])), takes: TakeLibraryService(repository: FakeTakeRepository()),
             drafts: FakeDraftStore(), logbook: LogbookService(defaults: defaults.defaults), brands: BrandStore(repository: InMemoryBrandRepository()),
-            sky: SkyMemory(defaults: defaults.defaults), profile: profile, preferences: PreferencesService(defaults: defaults.defaults),
+            profile: profile, preferences: PreferencesService(defaults: defaults.defaults),
             defaults: defaults.defaults, voiceQuestions: scheduler
         )
 
@@ -111,7 +110,7 @@ struct DataEraserServiceTests {
         let ideas = IdeaSuggestionService(writer: FakeScriptWriter(), profile: profile, interfaceLanguage: { .english }, defaults: defaults.defaults)
         let eraser = DataEraserService(
             library: library, takes: takes, drafts: FakeDraftStore(), logbook: LogbookService(defaults: defaults.defaults),
-            brands: BrandStore(repository: InMemoryBrandRepository()), sky: SkyMemory(defaults: defaults.defaults), profile: profile,
+            brands: BrandStore(repository: InMemoryBrandRepository()), profile: profile,
             preferences: PreferencesService(defaults: defaults.defaults), defaults: defaults.defaults, ledger: ledger, shareQueue: shareQueue,
             ideas: ideas
         )

@@ -24,7 +24,6 @@ final class DataEraserService {
     @ObservationIgnored private let drafts: QuickEditDraftStoring
     @ObservationIgnored private let logbook: LogbookService
     @ObservationIgnored private let brands: BrandStore
-    @ObservationIgnored private let sky: SkyMemory
     @ObservationIgnored private let profile: CreatorProfileService
     @ObservationIgnored private let preferences: PreferencesService
     @ObservationIgnored private let defaults: UserDefaults
@@ -38,7 +37,7 @@ final class DataEraserService {
 
     init(
         library: ScriptLibraryService, takes: TakeLibraryService, drafts: QuickEditDraftStoring, logbook: LogbookService,
-        brands: BrandStore, sky: SkyMemory, profile: CreatorProfileService, preferences: PreferencesService, defaults: UserDefaults = .standard,
+        brands: BrandStore, profile: CreatorProfileService, preferences: PreferencesService, defaults: UserDefaults = .standard,
         notifications: NotificationService? = nil, voyage: FirstVoyageService? = nil, draftLearning: DraftLearningService? = nil,
         voiceQuestions: VoiceQuestionScheduler? = nil, ledger: ExportLedgerService? = nil, shareQueue: ShareQueueService? = nil,
         ideas: IdeaSuggestionService? = nil
@@ -48,7 +47,6 @@ final class DataEraserService {
         self.drafts = drafts
         self.logbook = logbook
         self.brands = brands
-        self.sky = sky
         self.profile = profile
         self.preferences = preferences
         self.defaults = defaults
@@ -74,13 +72,14 @@ final class DataEraserService {
         ideas?.forgetEverything()
         for entry in logbook.entries { logbook.delete(entry.id) }
         for brand in brands.brands { brands.remove(brand.id) }
-        sky.removeAll()
         profile.profile = CreatorProfile()
         preferences.resetCreatorSetup()
         preferences.customCues = []
         preferences.showsCuesOnPage = true
         for key in [
-            DefaultsKey.voiceQuestionState, DefaultsKey.myTextStyle, DefaultsKey.myCoverStyle, DefaultsKey.myCoverStudioStyle,
+            DefaultsKey.voiceQuestionState, DefaultsKey.myTextStyle,
+            // "Your stars", which earlier versions kept and nothing shows any more.
+            DefaultsKey.skyMemory, DefaultsKey.skyMemoryAdded, DefaultsKey.myCoverStyle, DefaultsKey.myCoverStudioStyle,
         ] {
             defaults.removeObject(forKey: key)
         }

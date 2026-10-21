@@ -176,10 +176,32 @@ final class ScriptLibraryService {
         persist()
     }
 
-    func deleteFolder(_ name: String) {
-        folders.removeAll { $0 == name }
+    /// A folder taken away, so "Undo" can put it back where it was, with its scripts.
+    struct RemovedFolder: Equatable {
+        let name: String
+        let position: Int
+        let scriptIDs: Set<UUID>
+    }
+
+    /// Deletes the folder; its scripts stay (out of any folder).
+    @discardableResult
+    func deleteFolder(_ name: String) -> RemovedFolder? {
+        guard let position = folders.firstIndex(of: name) else { return nil }
+        let removed = RemovedFolder(name: name, position: position, scriptIDs: Set(scripts.filter { $0.folder == name }.map(\.id)))
+        folders.remove(at: position)
         for index in scripts.indices where scripts[index].folder == name {
             scripts[index].folder = nil
+        }
+        persist()
+        return removed
+    }
+
+    /// Undo: the folder is back where it was, with the scripts it held (unless one was moved elsewhere since).
+    func restoreFolder(_ removed: RemovedFolder) {
+        guard !folders.contains(removed.name) else { return }
+        folders.insert(removed.name, at: min(removed.position, folders.count))
+        for index in scripts.indices where removed.scriptIDs.contains(scripts[index].id) && scripts[index].folder == nil {
+            scripts[index].folder = removed.name
         }
         persist()
     }

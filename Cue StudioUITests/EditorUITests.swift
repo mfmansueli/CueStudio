@@ -179,6 +179,20 @@ final class EditorUITests: XCTestCase {
         XCTAssertEqual(time.value as? String, held, "pause didn't hold the playhead")
     }
 
+    /// Media › Insert as clip: the creator's other takes come before Photos, and one tapped joins the montage as a clip.
+    func testAnotherTakeJoinsTheMontageFromMedia() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "addMedia")
+        let clipMode = app.descendants(matching: .any)["edit.mediaMode"].buttons["Insert as clip"]
+        XCTAssertTrue(clipMode.exists(within: 5), "No Insert as clip")
+        clipMode.tap()
+        let take = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.addTake.'")).firstMatch
+        XCTAssertTrue(take.exists(within: 5), "No other take to add")
+        let name = take.label
+        take.tap()
+        XCTAssertTrue(EditorApp.toastSays(app, "added", timeout: 10), "No word that \(name) was added")
+    }
+
     /// Edit by text › "Fix caption text": the caption line of the picked words opens with the keyboard up, ready to type.
     func testFixCaptionTextOpensTheLineReadyToType() {
         // The demo's words were heard already: the Simulator can't recognize speech.

@@ -74,7 +74,6 @@ struct AppServices {
     let topicTagging: TopicTaggingService
     let logbook: LogbookService
     let brands: BrandStore
-    let sky: SkyMemory
     let aiStatus: AIStatus
     let voiceQuestions: VoiceQuestionScheduler
     /// Reminders, the routine, project nudges and the tools' introductions (local notifications only).
@@ -157,14 +156,13 @@ struct AppServices {
         prompterSpeech = options.prompterSpeech ?? speech
         dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation))
         ideaDraft = IdeaDraftService()
-        let sky = SkyMemory(defaults: options.defaults)
         let ideaTransition = IdeaTransitionService()
         // UI tests don't wait three seconds for every idea (`-uiTestStarTransition` brings the real timings back).
         if options.isInMemory, !options.keepsStarTransitionTimings { ideaTransition.speed = 0.05 }
         self.ideaTransition = ideaTransition
         starter = ScriptStarter(
             library: library, rules: rules, profile: profile, languages: languages,
-            presentation: presentation, ideaDraft: ideaDraft, transition: ideaTransition, sky: sky,
+            presentation: presentation, ideaDraft: ideaDraft, transition: ideaTransition,
             writer: options.writer, toast: toast
         )
         writer = options.writer
@@ -198,7 +196,6 @@ struct AppServices {
         )
         starter.briefWritten = { [ideaSuggestions] brief in ideaSuggestions.generated(from: brief) }
         brands = BrandStore(repository: options.brandRepository)
-        self.sky = sky
         aiStatus = AIStatus(writer: options.writer)
         privacy = PrivacyPreferencesService(defaults: options.defaults, writer: options.writer)
         draftLearning = DraftLearningService(profile: profile, toast: toast, defaults: options.defaults)
@@ -213,7 +210,7 @@ struct AppServices {
             privacy: privacy, voiceQuestions: voiceQuestions, presentation: presentation, remote: remote, transition: ideaTransition
         ))
         eraser = DataEraserService(
-            library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands, sky: sky,
+            library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands,
             profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications, voyage: voyage,
             draftLearning: draftLearning, voiceQuestions: voiceQuestions, ledger: ledger, shareQueue: shareQueue, ideas: ideaSuggestions
         )
@@ -371,7 +368,6 @@ extension View {
             .environment(services.topicTagging)
             .environment(services.logbook)
             .environment(services.brands)
-            .environment(services.sky)
             .environment(services.aiStatus)
             .environment(services.voiceQuestions)
             .environment(services.notifications)

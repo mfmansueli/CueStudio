@@ -6,11 +6,13 @@
 import SwiftUI
 
 /// The filters of Scripts as a row of chips, platform first ("All 14 · TikTok 7 · Reels 4 · Shorts 3"), then
-/// any folders. The chosen one is the white chip. The row scrolls sideways and runs edge to edge.
+/// any folders. The chosen one is the white chip. The row scrolls sideways and runs edge to edge. A folder's chip, held, deletes
+/// the folder (its scripts stay).
 struct PlatformFilterChips: View {
     let filters: [ScriptFilter]
     @Binding var selection: ScriptFilter
     let count: (ScriptFilter) -> Int
+    let deleteFolder: (String) -> Void
 
     var body: some View {
         ScrollView(.horizontal) {
@@ -28,6 +30,7 @@ struct PlatformFilterChips: View {
                     .accessibilityValue(Text("\(count(filter))"))
                     .accessibilityAddTraits(selection == filter ? [.isButton, .isSelected] : .isButton)
                     .accessibilityIdentifier("scripts.filter.\(filter.identifier)")
+                    .modifier(FolderChipMenu(filter: filter, delete: deleteFolder))
                 }
             }
             .padding(.horizontal, Metrics.gutter)
@@ -61,6 +64,27 @@ struct PlatformFilterChips: View {
         .background(isSelected ? Palette.chipOn : Palette.fill, in: Capsule())
         .frame(minHeight: Metrics.hitTarget)
         .contentShape(Capsule())
+    }
+}
+
+extension PlatformFilterChips {
+    /// Delete folder, on a folder's chip only: held, or among VoiceOver's actions.
+    private struct FolderChipMenu: ViewModifier {
+        let filter: ScriptFilter
+        let delete: (String) -> Void
+
+        func body(content: Content) -> some View {
+            if case .folder(let name) = filter {
+                content
+                    .contextMenu {
+                        Button("Delete folder", systemImage: "trash", role: .destructive) { delete(name) }
+                            .accessibilityIdentifier("scripts.filter.deleteFolder")
+                    }
+                    .accessibilityAction(named: Text("Delete folder")) { delete(name) }
+            } else {
+                content
+            }
+        }
     }
 }
 

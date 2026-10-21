@@ -30,7 +30,7 @@ struct ScriptStarterBriefTests {
         let starter = ScriptStarter(
             library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }), rules: TestData.rulesService(),
             profile: CreatorProfileService(defaults: defaults.defaults), languages: TestData.languages(defaults: defaults.defaults),
-            presentation: presentation, ideaDraft: ideaDraft, transition: transition, sky: SkyMemory(defaults: defaults.defaults),
+            presentation: presentation, ideaDraft: ideaDraft, transition: transition,
             writer: FakeScriptWriter(), toast: ToastService()
         )
         return Scenario(starter: starter, presentation: presentation, ideaDraft: ideaDraft, transition: transition, defaults: defaults)

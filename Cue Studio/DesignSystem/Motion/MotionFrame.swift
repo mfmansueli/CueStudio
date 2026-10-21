@@ -23,7 +23,6 @@ nonisolated struct MotionFrame: Decodable, Sendable {
     var offsetDistancePct: Double?
     /// `[r, g, b, a]` with r, g, b in 0...255 and a in 0...1.
     var color: [Double]?
-    var background: [Double]?
     var brightness: Double?
     /// The first shadow's blur radius, spread and colour (`text-shadow` and `box-shadow`).
     var glowR: Double?
@@ -34,7 +33,6 @@ nonisolated struct MotionFrame: Decodable, Sendable {
     var clipRightPct: Double?
     var clipLeft: Double?
     var topPct: Double?
-    var radius: Double?
     var bgX: Double?
     var tilt: Double?
     var easing: MotionEasing?

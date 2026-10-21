@@ -57,6 +57,46 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(prompt.exists, "the dock stays while searching")
     }
 
+    /// A folder made from Select, then deleted from its chip (held): the chip goes, the script stays in All, and Undo brings the
+    /// folder back.
+    func testAFolderIsDeletedFromItsChipAndItsScriptsStay() {
+        let app = CueApp.launch(seeded: true)
+        XCTAssertTrue(app.buttons["scripts.selectButton"].exists(within: 15))
+        app.buttons["scripts.selectButton"].tap()
+        let rows = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'scripts.row.'"))
+        XCTAssertTrue(rows.firstMatch.exists(within: 5))
+        let rowCount = rows.count
+        rows.element(boundBy: 0).tap()
+        app.buttons["Move to folder"].tap()
+        let newFolder = app.buttons["New folder…"]
+        XCTAssertTrue(newFolder.exists(within: 5))
+        newFolder.tap()
+        let field = app.alerts.textFields.firstMatch
+        XCTAssertTrue(field.exists(within: 5), "No folder name field")
+        field.typeText("Brand deals")
+        app.alerts.buttons["Create"].tap()
+
+        let chip = app.buttons["scripts.filter.folder.Brand deals"]
+        XCTAssertTrue(chip.exists(within: 5), "No chip for the new folder")
+        // The new folder's chip ends the sideways row: brought into the window.
+        let chips = app.descendants(matching: .any)["scripts.filters"]
+        let window = app.windows.firstMatch.frame
+        for _ in 0..<4 where !window.contains(chip.frame) { chips.swipeLeft() }
+        chip.waitUntilStill()
+        chip.press(forDuration: 1)
+        let delete = app.buttons["scripts.filter.deleteFolder"]
+        XCTAssertTrue(delete.exists(within: 5), "No Delete folder on the chip")
+        delete.tap()
+        XCTAssertTrue(chip.isGone(within: 5), "The folder is still there")
+        XCTAssertTrue(app.staticTexts["Folder deleted"].exists(within: 3), "No word that the folder went")
+        XCTAssertEqual(rows.count, rowCount, "Deleting the folder took a script with it")
+
+        let undo = app.buttons["Undo"].firstMatch
+        XCTAssertTrue(undo.exists(within: 3))
+        undo.tap()
+        XCTAssertTrue(chip.exists(within: 5), "Undo didn't bring the folder back")
+    }
+
     /// Select: a tap on a row picks the script (its mark is drawn inside the card) and a second lets it go; no swipe while selecting.
     func testSelectingPicksScriptsWithATapOnTheirRow() throws {
         let app = CueApp.launch(seeded: true)

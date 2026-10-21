@@ -119,6 +119,14 @@ struct QuickEditMontageTests {
 
     // MARK: - Other takes
 
+    /// Add photo or video › Insert as clip offers the creator's other takes, never the one being edited.
+    @Test func theOtherTakesAreOfferedAsClips() async {
+        let scenario = await makeScenario()
+        let offered = scenario.viewModel.addableTakes.map(\.id)
+        #expect(offered.contains(scenario.other.id))
+        #expect(!offered.contains(scenario.viewModel.take.id))
+    }
+
     @Test func anotherTakeJoinsByLinkingItsFileAndLeavesWithoutDeletingIt() async throws {
         let editor = FakeTakeEditor()
         editor.duration = 12

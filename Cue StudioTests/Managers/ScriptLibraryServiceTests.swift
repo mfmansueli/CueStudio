@@ -117,4 +117,19 @@ struct ScriptLibraryServiceTests {
         #expect(service.folders.isEmpty)
         #expect(service.script(id: script.id)?.folder == nil)
     }
+
+    @Test func undoingAFolderDeletePutsItBackWhereItWasWithItsScripts() throws {
+        let kept = TestData.script(title: "Kept", folder: "Ideas")
+        let moved = TestData.script(title: "Moved", folder: "Ideas")
+        let (service, _) = makeService(scripts: [kept, moved], folders: ["Brands", "Ideas", "Travel"])
+        let removed = try #require(service.deleteFolder("Ideas"))
+        #expect(service.folders == ["Brands", "Travel"])
+        // Moved elsewhere before the Undo: it stays where the creator put it.
+        service.move([moved.id], toFolder: "Travel")
+        service.restoreFolder(removed)
+        #expect(service.folders == ["Brands", "Ideas", "Travel"])
+        #expect(service.script(id: kept.id)?.folder == "Ideas")
+        #expect(service.script(id: moved.id)?.folder == "Travel")
+        #expect(service.deleteFolder("Nowhere") == nil)
+    }
 }

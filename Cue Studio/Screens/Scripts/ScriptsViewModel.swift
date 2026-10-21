@@ -158,4 +158,14 @@ final class ScriptsViewModel {
         }
         idsToMoveIntoNewFolder = []
     }
+
+    /// Deletes a folder, with Undo for 4 s: its scripts stay, in All.
+    func deleteFolder(_ name: String) {
+        guard let removed = library.deleteFolder(name) else { return }
+        if filter == .folder(name) { filter = .all }
+        toast.show(
+            String(localized: "Folder deleted"),
+            action: ToastAction(title: String(localized: "Undo")) { [library] in library.restoreFolder(removed) }
+        )
+    }
 }

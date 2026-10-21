@@ -81,6 +81,11 @@ extension QuickEditViewModel {
 
     // MARK: - Adding
 
+    /// The creator's other takes, newest first: Add photo or video › Insert as clip offers them before Photos.
+    var addableTakes: [Take] {
+        takes.takes.filter { $0.id != take.id }
+    }
+
     /// Adds another take from the library at the end of the montage (or after the picked section).
     func addClip(from take: Take) async {
         guard isReady else { return }

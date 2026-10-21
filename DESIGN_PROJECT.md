@@ -45,6 +45,8 @@ reproduz a pílula violeta), o toast e a dica do My Cue Voice (`VoiceTipViewStyl
   teclado e sem palavras (teclado fechado, ✕ ou "Clear search"); com palavras ele fica. O dock fica durante a busca e, com o teclado da busca, fica
   embaixo dele. Por que não `.searchable`: com `.searchToolbarBehavior(.minimize)` o ✕ do iOS 27 só minimizava a busca (a lista ficava filtrada e o
   dock não voltava). Dica do campo em `ink2`.
+- **Filtros** (`PlatformFilterChips`): All, as redes que têm roteiros e as pastas. Segurar o chip de uma pasta (ou a ação do VoiceOver) mostra
+  **Delete folder**: a pasta sai, os roteiros ficam (em All), e "Folder deleted" tem Undo por 4 s (volta no mesmo lugar, com os seus roteiros).
 - **Linhas:** um toque abre a página do roteiro em qualquer estado (rascunho já abre escrevendo); a ponta direita é a ação do estado: **● REC** grava,
   **Continue ›** é só rótulo, **×3 ›** (com takes) é botão para Takes. Deslizar mostra **Record** (vermelho) e **More** (cinza), sem deslize longo; More abre
   `ScriptActionsPopover` na linha (Record, Studio mode, Edit · Duplicate, Move to folder, Script Language, Share · Delete); o que abre outra coisa fecha
@@ -70,7 +72,7 @@ voa até o cursor amarelo onde começa o título deixando um **rastro de cometa*
 decolagem do dock (zumbido que cresce na subida, toque na ignição), um toque leve a cada 25% escrito, o pouso (baque + dois brilhos) quando a estrela
 vira cursor, um toque suave no Cancel. O teclado desce quando a estrela sobe e a página não o pede de volta. **Cancel ou erro:** a estrela
 cai 40 pt e some (0,3 s), nenhum roteiro fica, a ideia continua no campo (erro: toast "Couldn’t draft it · Try again"). Reduzir Movimento: fade de 0,2 s.
-Sem Apple Intelligence não há overlay. Idioma que o modelo não escreve: a estrela nem sai (§8). A estrela vira uma estrela do céu (`SkyMemory`); Scripts
+Sem Apple Intelligence não há overlay. Idioma que o modelo não escreve: a estrela nem sai (§8). Scripts
 mostra só o céu de fundo (`skyBackground()`), nada desenha estrelas por cima.
 
 **Porcentagem escrita** (pedido do dono, não está no quadro): linha mono `ink2` sob a frase (`WritingProgressLabel`), estimada por `WritingProgressEstimate`
@@ -333,7 +335,7 @@ que grava (Recording, Prompter, Remote), **violeta** para a IA (My Cue Voice, Pe
 app, não as do protótipo), Language & Region (idioma do app abre os Ajustes; Voice following e Script language são menus), Notifications (§27), Privacy &
 AI data (**On-device AI** é a chave de todos os recursos de IA: `PrivacyPreferencesService` → `ScriptWriting.isEnabled`; Help improve Cue decide se os eventos
 vão ao Analytics; **Delete my Cue data**, `DataEraserService`, apaga do iPhone roteiros e pastas, tomadas com vídeos e edições, vídeos exportados à espera
-e a fila de compartilhamento, Logbook, marcas, "suas estrelas", My Cue Voice, ideias e o gosto aprendido, meus estilos, o setup, as marcas da
+e a fila de compartilhamento, Logbook, marcas, My Cue Voice, ideias e o gosto aprendido, meus estilos, o setup, as marcas da
 primeira viagem, os rascunhos, as cópias de uma biblioteca danificada e os lembretes; ficam a compra, o contador de exportações grátis e o registro delas
 (só ids), a contagem de vídeos compartilhados do universo, o idioma e o que já está no Fotos), Permissions (`PermissionsService`), Acknowledgements. **Reset Creator Setup fica como está** (decisão pendente, `09` §13).
 **Remote** (`SettingsRemoteView`, redesenho do dono 21/10/2026, conceito "dois aparelhos"): `ScrollView` sobre o céu. No topo a cena
@@ -1026,6 +1028,8 @@ O dono revisou no iPhone, tela a tela, o primeiro voo, a primeira estrela, o Pro
 
 O editor trata cada gravação de uma montagem (o take, outros takes, vídeos do Fotos) como a dona do que foi achado ou escolhido nela. Progresso e
 auditoria: `reports/editor-award-checklist.md`.
+- **Outra take na montagem:** Media › **Insert as clip** mostra "Your takes" (as outras takes do criador, a mais nova primeiro; script, número e
+  duração) antes do Fotos; tocar uma a põe como clipe depois do clipe no cursor (`addableTakes`, `addClip(from:)`, `AddMediaSheet`).
 - **Capa de qualquer gravação** (`CoverSource.clipFrame`, `CoverFrame`: gravação, clipe e segundo da gravação; `TakeEdit+Cover`). O quadro é sempre o
   da gravação onde foi escolhido, desenhado com o look do clipe que o mostra (uma cópia pode ter o seu); trocar a ordem, duplicar, dividir ou mudar a
   velocidade só muda onde ele toca. Capas antigas (`.frame(segundos)`) são quadros do take. **Se o trecho sai da edição**, a capa continua a mesma

@@ -261,7 +261,8 @@ struct ScriptsView: View {
                 blockRow(top: 16, horizontal: 0) {
                     // Platform first: it is how creators think about their day.
                     PlatformFilterChips(
-                        filters: viewModel.filters, selection: $viewModel.filter, count: { viewModel.count(for: $0) }
+                        filters: viewModel.filters, selection: $viewModel.filter, count: { viewModel.count(for: $0) },
+                        deleteFolder: { viewModel.deleteFolder($0) }
                     )
                 }
                 if let empty = viewModel.emptyResult {
