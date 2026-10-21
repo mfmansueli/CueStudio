@@ -1258,7 +1258,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Geweldig. Weer een lifehack.”"
+            "value" : "“Geweldig. Weer een lifehack.”"
           }
         },
         "pt" : {
@@ -1494,7 +1494,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“Laten we uitleggen waarom.”"
+            "value" : "“Ik leg je uit waarom.”"
           }
         },
         "pt" : {
@@ -1612,7 +1612,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Laten we even rustig aan doen.”"
+            "value" : "“Laten we het even rustig aan doen.”"
           }
         },
         "pt" : {
@@ -1730,7 +1730,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Mijn wekker en ik zijn geen vrienden.”"
+            "value" : "“Mijn wekker en ik zijn geen vrienden.”"
           }
         },
         "pt" : {
@@ -1848,7 +1848,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Oké, vandaag een korte…”"
+            "value" : "“Oké, vandaag een korte…”"
           }
         },
         "pt" : {
@@ -1966,7 +1966,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“Dus, het zit zo…”"
+            "value" : "“Het zit zo…”"
           }
         },
         "pt" : {
@@ -2202,7 +2202,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Drie stappen. Geen gezwam.”"
+            "value" : "“Drie stappen. Geen poespas.”"
           }
         },
         "pt" : {
@@ -2912,7 +2912,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — aankondiging"
+            "value" : "%@: aankondiging"
           }
         },
         "pt" : {
@@ -3030,7 +3030,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — eerlijke review"
+            "value" : "%@: eerlijke review"
           }
         },
         "pt" : {
@@ -3148,7 +3148,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — link in mijn bio. [kijk in de camera] Deze video is een betaalde samenwerking."
+            "value" : "%@. Link in mijn bio. [kijk in de camera] Deze video is een betaalde samenwerking."
           }
         },
         "pt" : {
@@ -3266,7 +3266,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — gesponsord"
+            "value" : "%@: gesponsord"
           }
         },
         "pt" : {
@@ -6294,7 +6294,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ toegevoegd · sleep hem op de video"
+            "value" : "%@ toegevoegd · versleep het op de video"
           }
         },
         "pt" : {
@@ -6530,7 +6530,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ nam de video niet aan"
+            "value" : "%@ heeft de video niet overgenomen"
           }
         },
         "pt" : {
@@ -6649,7 +6649,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ is al begonnen"
+            "value" : "Je bent al begonnen aan %@"
           }
         },
         "pt" : {
@@ -7130,7 +7130,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ is klaar. Je volgende opname is één tik verwijderd."
+            "value" : "%@ is klaar. Je volgende opname is maar één tik verwijderd."
           }
         },
         "pt" : {
@@ -7966,7 +7966,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mythes over %@ die ontkracht moeten worden"
+            "value" : "Mythes over %@ om door te prikken"
           }
         },
         "pt" : {
@@ -8210,7 +8210,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ bij elke overgang"
+            "value" : "%@ bij elke knip"
           }
         },
         "pt" : {
@@ -8921,7 +8921,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ boven %2$@"
+            "value" : "%1$@ te lang voor %2$@"
           }
         },
         "pt" : {
@@ -9039,7 +9039,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ boven het ideaal"
+            "value" : "%@ langer dan ideaal"
           }
         },
         "pt" : {
@@ -9157,7 +9157,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ VEILIG GEBIED"
+            "value" : "VEILIGE ZONE %@"
           }
         },
         "pt" : {
@@ -9512,7 +9512,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ instelling"
+            "value" : "Instelling voor %@"
           }
         },
         "pt" : {
@@ -9756,7 +9756,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ tekort op %@"
+            "value" : "nog %1$@ tot %2$@"
           }
         },
         "pt" : {
@@ -10117,7 +10117,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ naar %@"
+            "value" : "%1$@ tot %2$@"
           }
         },
         "pt" : {
@@ -10474,7 +10474,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ onder %2$@"
+            "value" : "%1$@ te kort voor %2$@"
           }
         },
         "pt" : {
@@ -10592,7 +10592,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ onder het ideaal"
+            "value" : "%@ korter dan ideaal"
           }
         },
         "pt" : {
@@ -11307,7 +11307,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@, geknipt"
+            "value" : "%@, weggeknipt"
           }
         },
         "pt" : {
@@ -11781,7 +11781,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@. [lach]"
+            "value" : "%@. [glimlach]"
           }
         },
         "pt" : {
@@ -13108,7 +13108,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld cues"
+            "value" : "%lld aanwijzingen"
           }
         },
         "pt" : {
@@ -13226,7 +13226,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld cues toegevoegd"
+            "value" : "%lld aanwijzingen toegevoegd"
           }
         },
         "pt" : {
@@ -15802,13 +15802,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld regel om te checken"
+                  "value" : "%lld regel om na te kijken"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld regels om te checken"
+                  "value" : "%lld regels om na te kijken"
                 }
               }
             }
@@ -17964,7 +17964,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld VAN %lld OVER · EXPORTEER MET PRO"
+            "value" : "NOG %1$lld VAN %2$lld · EXPORTEER MET PRO"
           }
         },
         "pt" : {
@@ -18083,7 +18083,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld van %lld delen zijn gelaten zoals je ze schreef"
+            "value" : "%1$lld van %2$lld delen ongewijzigd gelaten"
           }
         },
         "pt" : {
@@ -18202,7 +18202,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld van %2$lld opnamen"
+            "value" : "%1$lld van %2$lld opnames"
           }
         },
         "pt" : {
@@ -19519,7 +19519,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld delen zijn nog leeg."
+            "value" : "%lld secties zijn nog leeg."
           }
         },
         "pt" : {
@@ -20613,7 +20613,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld video’s — nog %2$lld"
+            "value" : "%1$lld video’s · nog %2$lld"
           }
         },
         "pt" : {
@@ -23069,7 +23069,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "reeks van %lld weken"
+            "value" : "%lld weken op rij"
           }
         },
         "pt" : {
@@ -24149,7 +24149,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ Jouw eigen"
+            "value" : "+ Eigen onderwerp"
           }
         },
         "pt" : {
@@ -24860,7 +24860,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Ondertitels erop · Nu: delen"
+            "value" : "✓ Ondertitels erop · Hierna: delen"
           }
         },
         "pt" : {
@@ -25096,7 +25096,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Cue-stem compleet"
+            "value" : "✓ Cue Voice compleet"
           }
         },
         "pt" : {
@@ -25214,7 +25214,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Past in %@"
+            "value" : "✓ Past bij %@"
           }
         },
         "pt" : {
@@ -25332,7 +25332,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Past in %1$@ · %2$@"
+            "value" : "✓ Past bij %1$@ · %2$@"
           }
         },
         "pt" : {
@@ -25450,7 +25450,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Verdienbaar"
+            "value" : "✓ Monetiseerbaar"
           }
         },
         "pt" : {
@@ -25687,7 +25687,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Opgenomen · Nu: kies een opname"
+            "value" : "✓ Opgenomen · Hierna: kies een opname"
           }
         },
         "pt" : {
@@ -25806,7 +25806,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Geoefend · Nu: opnemen"
+            "value" : "✓ Geoefend · Hierna: opnemen"
           }
         },
         "pt" : {
@@ -26162,7 +26162,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Je eerste ster staat er"
+            "value" : "✓ Je eerste ster staat aan de hemel"
           }
         },
         "pt" : {
@@ -26991,7 +26991,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Schrijf mijn reactie"
+            "value" : "✦ Mijn reactie opstellen"
           }
         },
         "pt" : {
@@ -27110,7 +27110,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Maak een concept van mijn script"
+            "value" : "✦ Mijn script opstellen"
           }
         },
         "pt" : {
@@ -27705,7 +27705,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Mijn stem voorbeluisteren"
+            "value" : "✦ Voorbeeld van mijn stem"
           }
         },
         "pt" : {
@@ -27941,7 +27941,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Slim"
+            "value" : "✦ Smart"
           }
         },
         "pt" : {
@@ -28297,7 +28297,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Schrijven"
+            "value" : "✦ Opstellen"
           }
         },
         "pt" : {
@@ -28651,7 +28651,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 cue"
+            "value" : "1 aanwijzing"
           }
         },
         "pt" : {
@@ -28887,7 +28887,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 deel is nog leeg."
+            "value" : "1 sectie is nog leeg."
           }
         },
         "pt" : {
@@ -30675,7 +30675,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4 korte vragen — ongeveer 20 seconden. Typen is niet nodig."
+            "value" : "4 korte vragen, ongeveer 20 seconden. Je hoeft niets te typen."
           }
         },
         "pt" : {
@@ -31503,7 +31503,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 sec."
+            "value" : "30–60 s"
           }
         },
         "pt" : {
@@ -32805,7 +32805,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Een eerste concept. Aan jou om te veranderen."
+            "value" : "Een eerste concept. Verander het zoals jij wilt."
           }
         },
         "pt" : {
@@ -32923,7 +32923,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Een vriendin liet me dit proberen — ik ben haar iets verschuldigd."
+            "value" : "Een vriendin liet me dit proberen. Ik sta bij haar in het krijt."
           }
         },
         "pt" : {
@@ -33396,7 +33396,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Een latte-art-schenking voor de camera"
+            "value" : "Latte-art schenken voor de camera"
           }
         },
         "pt" : {
@@ -36718,7 +36718,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bevestigen"
+            "value" : "Erkennen"
           }
         },
         "pt" : {
@@ -37548,7 +37548,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voeg een keyframe toe, verplaats de afspeelkop en sleep dan de foto of video — Cue beweegt hem tussen de keyframes."
+            "value" : "Voeg een keyframe toe, verplaats de afspeelkop en sleep dan de foto of video. Cue beweegt hem tussen de keyframes."
           }
         },
         "pt" : {
@@ -37666,7 +37666,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voeg een keyframe toe, verplaats de afspeelkop en sleep dan de tekst in de video — Cue beweegt hem tussen de keyframes."
+            "value" : "Voeg een keyframe toe, verplaats de afspeelkop en sleep dan de tekst in de video. Cue beweegt hem tussen de keyframes."
           }
         },
         "pt" : {
@@ -40628,7 +40628,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wordt toegevoegd vóór elk idee dat je naar Cue stuurt — scripts, hooks, reacties, met waar je post en het gekozen format. Wordt nooit gebruikt om modellen te trainen."
+            "value" : "Wordt toegevoegd vóór elk idee dat je naar Cue stuurt (scripts, hooks, reacties), samen met waar je post en het format dat je kiest. Wordt nooit gebruikt om modellen te trainen."
           }
         },
         "pt" : {
@@ -43468,7 +43468,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alles"
+            "value" : "Alle"
           }
         },
         "pt" : {
@@ -43728,13 +43728,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Alle %lld opnamen"
+                  "value" : "Alle %lld opnames"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Alle %lld opnamen"
+                  "value" : "Alle %lld opnames"
                 }
               }
             }
@@ -45023,7 +45023,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sta camera toe in Instellingen"
+            "value" : "Sta de camera toe in Instellingen"
           }
         },
         "pt" : {
@@ -45260,7 +45260,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sta het toe om je video te bewaren."
+            "value" : "Sta dit toe om je video te bewaren."
           }
         },
         "pt" : {
@@ -46806,7 +46806,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Een noodfonds is het saaiste geldmiddel, en misschien wel het nuttigste."
+            "value" : "Een noodfonds is het saaiste financiële hulpmiddel, en misschien wel het nuttigste."
           }
         },
         "pt" : {
@@ -47400,7 +47400,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Een schuine notitie"
+            "value" : "Een cursieve notitie"
           }
         },
         "pt" : {
@@ -47637,7 +47637,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En dan — %@. [beat]"
+            "value" : "En dan… %@. [korte pauze]"
           }
         },
         "pt" : {
@@ -47755,7 +47755,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En toen — %@. [lach]"
+            "value" : "En toen… %@. [glimlach]"
           }
         },
         "pt" : {
@@ -48583,7 +48583,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beantwoord"
+            "value" : "Beantwoorden"
           }
         },
         "pt" : {
@@ -51435,7 +51435,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence werkt niet met deze tekst. Probeer het anders te formuleren of gebruik een ander hulpmiddel."
+            "value" : "Apple Intelligence werkt niet met deze tekst. Formuleer het anders of gebruik een andere tool."
           }
         },
         "pt" : {
@@ -54463,7 +54463,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto toegepast · Pas hieronder aan"
+            "value" : "Automatisch toegepast · Pas hieronder aan"
           }
         },
         "pt" : {
@@ -57889,7 +57889,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "beat"
+            "value" : "korte pauze"
           }
         },
         "pt" : {
@@ -58363,7 +58363,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wordt een eigen clip in de reeks, na de clip bij de afspeelkop. Alleen video's."
+            "value" : "Wordt een eigen clip in de reeks, na de clip bij de afspeelkop. Alleen video’s."
           }
         },
         "pt" : {
@@ -59551,7 +59551,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naar achter"
+            "value" : "Naar achteren"
           }
         },
         "pt" : {
@@ -60852,7 +60852,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Groot + accent"
+            "value" : "Groot + markering"
           }
         },
         "pt" : {
@@ -60971,7 +60971,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grote ondertitels die elk woord laten oplichten · een hook die opploept"
+            "value" : "Grote ondertitels die elk woord laten oplichten · een hook die in beeld springt"
           }
         },
         "pt" : {
@@ -61564,7 +61564,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grotere, luidere tekst"
+            "value" : "Grotere, opvallendere tekst"
           }
         },
         "pt" : {
@@ -62281,7 +62281,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Blauwe achtergrond"
+            "value" : "Blauw scherm"
           }
         },
         "pt" : {
@@ -62517,7 +62517,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vervagen"
+            "value" : "Vervaging"
           }
         },
         "pt" : {
@@ -62754,7 +62754,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vervaging op de groene of blauwe achtergrond"
+            "value" : "Vervaging op het groene of blauwe scherm"
           }
         },
         "pt" : {
@@ -65834,7 +65834,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ademen"
+            "value" : "adem in"
           }
         },
         "pt" : {
@@ -66070,7 +66070,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Breng een script binnen"
+            "value" : "Script importeren"
           }
         },
         "pt" : {
@@ -66188,7 +66188,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naar voren halen"
+            "value" : "Naar voren"
           }
         },
         "pt" : {
@@ -67731,7 +67731,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opsommingen zijn genoeg. Begin met je gebruikelijke groet, raak het product met één sterke zin, laat het werken in het midden, en sluit af met de code."
+            "value" : "Steekwoorden zijn genoeg. Begin met je gebruikelijke groet, breng het product met één sterke zin, laat in het midden zien hoe het werkt en sluit af met de code."
           }
         },
         "pt" : {
@@ -71049,7 +71049,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kan bestand niet toevoegen"
+            "value" : "Kan dit bestand niet toevoegen"
           }
         },
         "pt" : {
@@ -71286,7 +71286,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kan opname niet toevoegen"
+            "value" : "Kan deze opname niet toevoegen"
           }
         },
         "pt" : {
@@ -74372,7 +74372,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ondertitels gemaakt voor gesprekken · zachte titels van opzij"
+            "value" : "Ondertitels voor praatvideo’s · zachte titels die van opzij komen"
           }
         },
         "pt" : {
@@ -75554,7 +75554,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autoaudio"
+            "value" : "Audio in de auto"
           }
         },
         "pt" : {
@@ -76385,7 +76385,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leg het nu vast. Schrijf het later."
+            "value" : "Leg het nu vast. Werk het later uit."
           }
         },
         "pt" : {
@@ -76858,7 +76858,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wijzig het altijd in Profiel › Mijn Cue-stem."
+            "value" : "Wijzig het wanneer je wilt in Profiel › My Cue Voice."
           }
         },
         "pt" : {
@@ -77687,7 +77687,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wijzigingen zie je in de voorvertoning en worden meteen bewaard. ✓ sluit het paneel."
+            "value" : "Wijzigingen zie je meteen in de voorvertoning en worden direct bewaard. ✓ sluit het paneel."
           }
         },
         "pt" : {
@@ -77923,7 +77923,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verandert alleen het voorbeeld, nooit de opname."
+            "value" : "Verandert alleen de voorvertoning, nooit de opname."
           }
         },
         "pt" : {
@@ -79111,7 +79111,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Controleer de reactie voordat Cue schrijft."
+            "value" : "Controleer de reactie voordat Cue een concept opstelt."
           }
         },
         "pt" : {
@@ -81840,7 +81840,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schoon"
+            "value" : "Clean"
           }
         },
         "pt" : {
@@ -83980,7 +83980,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote sluiten"
+            "value" : "Afstandsbediening sluiten"
           }
         },
         "pt" : {
@@ -85994,7 +85994,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kleur op de groene of blauwe achtergrond"
+            "value" : "Kleur op het groene of blauwe scherm"
           }
         },
         "pt" : {
@@ -86349,7 +86349,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Komt kant-en-klaar: delen, cues, timing."
+            "value" : "Komt kant-en-klaar: secties, aanwijzingen, timing."
           }
         },
         "pt" : {
@@ -88953,7 +88953,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apparaat koppelen"
+            "value" : "Apparaat verbinden"
           }
         },
         "pt" : {
@@ -92763,7 +92763,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concept mislukt · Probeer opnieuw"
+            "value" : "Concept maken mislukt · Probeer opnieuw"
           }
         },
         "pt" : {
@@ -94303,7 +94303,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kon niet bewaren · Probeer opnieuw"
+            "value" : "Bewaren mislukt · Probeer opnieuw"
           }
         },
         "pt" : {
@@ -94776,7 +94776,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Luisteren kon niet starten"
+            "value" : "Kon niet beginnen met luisteren"
           }
         },
         "pt" : {
@@ -95603,7 +95603,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cover opgeslagen · Gaat met de video naar Foto’s"
+            "value" : "Cover bewaard · Gaat met de video naar Foto’s"
           }
         },
         "pt" : {
@@ -96432,7 +96432,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kredietscore"
+            "value" : "Kredietscores"
           }
         },
         "pt" : {
@@ -97496,7 +97496,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue kan niet opslaan in Foto’s. Sta toegang toe via Instellingen › Privacy › Foto’s."
+            "value" : "Cue kan niet bewaren in Foto’s. Sta toegang toe via Instellingen › Privacy › Foto’s."
           }
         },
         "pt" : {
@@ -97615,7 +97615,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue werd gesloten voordat hij klaar was. Exporteer opnieuw om de video te krijgen."
+            "value" : "Cue werd gesloten voordat de export klaar was. Exporteer opnieuw om de video te krijgen."
           }
         },
         "pt" : {
@@ -98444,7 +98444,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue maakt een concept van ondertitels uit je stem. Verbeter elk woord."
+            "value" : "Cue zet je stem om in conceptondertitels. Verbeter elk woord."
           }
         },
         "pt" : {
@@ -98563,7 +98563,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue maakt een concept van de regels. Verbeter elk woord."
+            "value" : "Cue maakt conceptregels. Verbeter elk woord."
           }
         },
         "pt" : {
@@ -99750,7 +99750,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue opent %@ met je video en tekst. Jij plaatst hem."
+            "value" : "Cue opent %@ met je video en bijschrift. Jij post hem."
           }
         },
         "pt" : {
@@ -99987,7 +99987,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue opent de app met je video en tekst. Jij plaatst hem."
+            "value" : "Cue opent de app met je video en bijschrift. Jij post hem."
           }
         },
         "pt" : {
@@ -101289,7 +101289,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue Studio helpt me het te schrijven, voor te lezen van een teleprompter en meteen hier op te nemen. Ik kan automatische ondertitels toevoegen en mijn opname bewerken voordat ik hem deel."
+            "value" : "Cue Studio helpt me het te schrijven, van een teleprompter te lezen en meteen hier op te nemen. Ik kan automatische ondertitels toevoegen en mijn opname bewerken voordat ik hem deel."
           }
         },
         "pt" : {
@@ -101408,7 +101408,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue Studio helpt me het te schrijven, voor te lezen met een teleprompter die mijn stem volgt en meteen hier op te nemen. Ik kan automatische ondertitels toevoegen en mijn opname bewerken voordat ik hem deel."
+            "value" : "Cue Studio helpt me het te schrijven, te lezen met een teleprompter die mijn stem volgt en meteen hier op te nemen. Ik kan automatische ondertitels toevoegen en mijn opname bewerken voordat ik hem deel."
           }
         },
         "pt" : {
@@ -102238,7 +102238,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aanwijzingen zoals PAUSE of SMILE in de tekst"
+            "value" : "Aanwijzingen zoals PAUZE of GLIMLACH in de tekst"
           }
         },
         "pt" : {
@@ -102947,7 +102947,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "EIGEN VEILIG GEBIED"
+            "value" : "EIGEN VEILIGE ZONE"
           }
         },
         "pt" : {
@@ -103421,7 +103421,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Knip %@"
+            "value" : "Schrap %@"
           }
         },
         "pt" : {
@@ -105626,7 +105626,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beslissen wat te kopen"
+            "value" : "Kiezen wat je koopt"
           }
         },
         "pt" : {
@@ -107872,7 +107872,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verwijdert je scripts, takes, bewerkingen en My Cue Voice van deze iPhone. Dit kan niet ongedaan worden gemaakt."
+            "value" : "Verwijdert je scripts, opnames, bewerkingen en My Cue Voice van deze iPhone. Dit kan niet ongedaan worden gemaakt."
           }
         },
         "pt" : {
@@ -108347,7 +108347,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Niets selecteren"
+            "value" : "Alles deselecteren"
           }
         },
         "pt" : {
@@ -108466,7 +108466,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto detailing"
+            "value" : "Autodetailing"
           }
         },
         "pt" : {
@@ -110476,7 +110476,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Melding staat al vooraan"
+            "value" : "Vermelding staat al vooraan"
           }
         },
         "pt" : {
@@ -112015,7 +112015,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klaar"
+            "value" : "Gereed"
           }
         },
         "pt" : {
@@ -112134,7 +112134,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gedaan op je iPhone. Zet de titel achter je om het te zien."
+            "value" : "Gemaakt op je iPhone. Zet de titel achter je om het effect te zien."
           }
         },
         "pt" : {
@@ -112731,7 +112731,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ downloaden · %@. Scrollt op %@ terwijl je praat."
+            "value" : "%1$@ downloaden · %2$@. Scrolt op %3$@ terwijl je praat."
           }
         },
         "pt" : {
@@ -113091,7 +113091,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deze taal downloaden · %@. Scrollt op %@ terwijl je praat."
+            "value" : "Deze taal downloaden · %1$@. Scrolt op %2$@ terwijl je praat."
           }
         },
         "pt" : {
@@ -113801,7 +113801,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concept klaar · pas alles aan"
+            "value" : "Concept klaar · Pas alles aan"
           }
         },
         "pt" : {
@@ -114156,7 +114156,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concept uit je stem, zodat mensen zonder geluid kunnen volgen."
+            "value" : "Als concept gemaakt uit je stem, zodat mensen ook zonder geluid kunnen volgen."
           }
         },
         "pt" : {
@@ -114275,7 +114275,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concept van de %@-versie…"
+            "value" : "Concept voor %@ opstellen…"
           }
         },
         "pt" : {
@@ -114394,7 +114394,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concepten voor hooks…"
+            "value" : "Hooks opstellen…"
           }
         },
         "pt" : {
@@ -114513,7 +114513,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concept voor een hook…"
+            "value" : "Een hook opstellen…"
           }
         },
         "pt" : {
@@ -114632,7 +114632,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concept maken…"
+            "value" : "Concept opstellen…"
           }
         },
         "pt" : {
@@ -114751,7 +114751,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concept in jouw stem"
+            "value" : "Concept opstellen in jouw stem"
           }
         },
         "pt" : {
@@ -114871,7 +114871,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Concepten · %lld — Bezig"
+            "value" : "Concepten · %lld · Bezig"
           }
         },
         "pt" : {
@@ -114990,7 +114990,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maakt nu een concept. Pas daarna alles aan."
+            "value" : "Stelt nu een concept op. Pas daarna alles aan."
           }
         },
         "pt" : {
@@ -119852,7 +119852,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bewerking opgeslagen · %@"
+            "value" : "Bewerking bewaard · %@"
           }
         },
         "pt" : {
@@ -120560,7 +120560,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bewerkingen opgeslagen in deze opname"
+            "value" : "Bewerkingen bewaard in deze opname"
           }
         },
         "pt" : {
@@ -122335,7 +122335,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "einden"
+            "value" : "afsluiters"
           }
         },
         "pt" : {
@@ -123637,7 +123637,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entertainen"
+            "value" : "Vermaken"
           }
         },
         "pt" : {
@@ -125895,7 +125895,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle knippen hebben hem al"
+            "value" : "Elke knip heeft hem al"
           }
         },
         "pt" : {
@@ -126013,7 +126013,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elke overgang is een harde snede"
+            "value" : "Elke knip is een harde knip"
           }
         },
         "pt" : {
@@ -126250,7 +126250,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elk mijlpaal-app-icoon"
+            "value" : "Elk app-icoon voor mijlpalen"
           }
         },
         "pt" : {
@@ -133014,7 +133014,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Invoelen"
+            "value" : "Fade-in"
           }
         },
         "pt" : {
@@ -133132,7 +133132,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uitfaden"
+            "value" : "Fade-out"
           }
         },
         "pt" : {
@@ -138941,7 +138941,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Op tijd afstemmen"
+            "value" : "Op lengte brengen"
           }
         },
         "pt" : {
@@ -143441,7 +143441,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voor een video opgenomen voor een groene of blauwe achtergrond: alleen die kleur wordt vervangen."
+            "value" : "Voor een video opgenomen voor een groen of blauw scherm: alleen die kleur wordt vervangen."
           }
         },
         "pt" : {
@@ -144389,7 +144389,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Formaat, %@"
+            "value" : "Format, %@"
           }
         },
         "pt" : {
@@ -144507,7 +144507,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "formaten"
+            "value" : "formats"
           }
         },
         "pt" : {
@@ -148132,7 +148132,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Van ‘%1$@’ tot ‘%2$@’"
+            "value" : "Van “%1$@” tot “%2$@”"
           }
         },
         "pt" : {
@@ -148487,7 +148487,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uit Bestanden. Gebruik alleen muziek waarvan je de rechten hebt — nummers uit Apple Music kunnen niet worden toegevoegd."
+            "value" : "Uit Bestanden. Gebruik alleen muziek die van jou is of waarvan je de rechten hebt. Nummers uit Apple Music kunnen niet worden toegevoegd."
           }
         },
         "pt" : {
@@ -148962,7 +148962,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Met de remote kun je"
+            "value" : "Met de afstandsbediening kun je"
           }
         },
         "pt" : {
@@ -150977,7 +150977,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Haal %@ met Pro"
+            "value" : "%@ met Pro"
           }
         },
         "pt" : {
@@ -152044,7 +152044,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voorbereiden om je woorden te volgen. Scrollt op %@ terwijl je praat."
+            "value" : "Voorbereiden om je woorden te volgen. Scrolt op %@ terwijl je praat."
           }
         },
         "pt" : {
@@ -154062,7 +154062,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ga online om %@ te laden"
+            "value" : "Ga online om %@ te downloaden"
           }
         },
         "pt" : {
@@ -154180,7 +154180,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ga online om de taal te laden"
+            "value" : "Ga online om deze taal te downloaden"
           }
         },
         "pt" : {
@@ -154298,7 +154298,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pro nemen"
+            "value" : "Ga voor Pro"
           }
         },
         "pt" : {
@@ -154896,7 +154896,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Goed licht en helder geluid doen veel meer"
+            "value" : "Goed licht en helder geluid zijn veel belangrijker"
           }
         },
         "pt" : {
@@ -155489,7 +155489,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mooi, nog een ochtendroutine. Behalve dat deze werkt."
+            "value" : "Mooi, nog een ochtendroutine. Alleen werkt deze wel."
           }
         },
         "pt" : {
@@ -155726,7 +155726,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Groene of blauwe achtergrond"
+            "value" : "Groen of blauw scherm"
           }
         },
         "pt" : {
@@ -155844,7 +155844,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Groene achtergrond"
+            "value" : "Groen scherm"
           }
         },
         "pt" : {
@@ -158570,7 +158570,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zo doe ik %@ — van begin tot eind. [pauze]"
+            "value" : "Zo doe ik %@, van begin tot eind. [pauze]"
           }
         },
         "pt" : {
@@ -159162,7 +159162,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zo komt het dat mensen het geloven: %@."
+            "value" : "Daarom geloven mensen het: %@."
           }
         },
         "pt" : {
@@ -161296,7 +161296,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Houd de microfoon ingedrukt om een idee vast te leggen. Schrijf het later."
+            "value" : "Houd de microfoon ingedrukt om een idee vast te leggen. Werk het later uit."
           }
         },
         "pt" : {
@@ -162480,7 +162480,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hookvarianten, platformversies, keuze van de beste take"
+            "value" : "Hookvarianten, platformversies, keuze van de beste opname"
           }
         },
         "pt" : {
@@ -163662,7 +163662,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zo bouwde ik een capsule wardrobe"
+            "value" : "Zo bouwde ik een capsulegarderobe"
           }
         },
         "pt" : {
@@ -165438,7 +165438,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zo verschijn je"
+            "value" : "Zo zien anderen je"
           }
         },
         "pt" : {
@@ -166151,7 +166151,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Drink water voor je cafeïne — het werkt beter."
+            "value" : "Drink water voor je cafeïne. Het werkt beter."
           }
         },
         "pt" : {
@@ -166506,7 +166506,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hype-woorden"
+            "value" : "Hypewoorden"
           }
         },
         "pt" : {
@@ -166979,7 +166979,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ik geloofde dit jarenlang — tot ik het nakeek."
+            "value" : "Ik geloofde dit jarenlang, tot ik het nakeek."
           }
         },
         "pt" : {
@@ -167805,7 +167805,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ik heb alles geprobeerd — dit zijn degene die bleven hangen."
+            "value" : "Ik heb alles geprobeerd en dit is wat bleef hangen."
           }
         },
         "pt" : {
@@ -168515,7 +168515,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ik hield een geheim voor me. [pauze]"
+            "value" : "Ik heb een geheim voor me gehouden. [pauze]"
           }
         },
         "pt" : {
@@ -169700,7 +169700,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klinkt meal prep als een hele zondag kwijt? Probeer deze kleinere versie."
+            "value" : "Klinkt mealprep als een hele zondag kwijt? Probeer deze kleinere versie."
           }
         },
         "pt" : {
@@ -171839,7 +171839,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afbeelding op de groene of blauwe achtergrond"
+            "value" : "Afbeelding op het groene of blauwe scherm"
           }
         },
         "pt" : {
@@ -173504,7 +173504,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In bewerking · Automatisch opgeslagen"
+            "value" : "In bewerking · Automatisch bewaard"
           }
         },
         "pt" : {
@@ -176937,7 +176937,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Het gaat naar het invoerveld. Maak het eerst van jou."
+            "value" : "Het gaat naar het ideeënveld. Maak het eerst van jou."
           }
         },
         "pt" : {
@@ -178476,7 +178476,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zet je op de wachtlijst — link in bio"
+            "value" : "Zet je op de wachtlijst, link in bio"
           }
         },
         "pt" : {
@@ -178831,7 +178831,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alleen mijn stem opslaan"
+            "value" : "Alleen mijn stem bewaren"
           }
         },
         "pt" : {
@@ -179658,7 +179658,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Houd minstens één clip"
+            "value" : "Houd minstens één clip over"
           }
         },
         "pt" : {
@@ -179776,7 +179776,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Houd minstens één sectie"
+            "value" : "Houd minstens één sectie over"
           }
         },
         "pt" : {
@@ -180013,7 +180013,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Houd Cue open tot hij klaar is."
+            "value" : "Houd Cue open tot de export klaar is."
           }
         },
         "pt" : {
@@ -182260,7 +182260,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kerndetail"
+            "value" : "Belangrijk detail"
           }
         },
         "pt" : {
@@ -184152,7 +184152,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video van de giveaway van vorige week"
+            "value" : "De giveawayvideo van vorige week"
           }
         },
         "pt" : {
@@ -184271,7 +184271,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "lachen"
+            "value" : "lach"
           }
         },
         "pt" : {
@@ -187468,7 +187468,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Limoen"
+            "value" : "Limoengroen"
           }
         },
         "pt" : {
@@ -188059,7 +188059,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hier staat een regel · Ga naar een gat"
+            "value" : "Hier staat een regel · Ga naar een lege plek"
           }
         },
         "pt" : {
@@ -188649,7 +188649,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De sterren uitlijnen"
+            "value" : "De sterren op een rij zetten"
           }
         },
         "pt" : {
@@ -189476,7 +189476,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Som de stappen op in gewone woorden, gescheiden door komma’s. Cue maakt er een genummerde uitleg van met bovenaan een hook en onderaan een bewaar-dit-einde."
+            "value" : "Som de stappen op in gewone woorden, gescheiden door komma’s. Cue maakt er een genummerde uitleg van, met bovenaan een hook en aan het eind een oproep om het te bewaren."
           }
         },
         "pt" : {
@@ -190540,7 +190540,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Live voorbeeld"
+            "value" : "Live voorvertoning"
           }
         },
         "pt" : {
@@ -191014,7 +191014,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Logboek · %lld wachten"
+            "value" : "Logboek · %lld wachtend"
           }
         },
         "pt" : {
@@ -191960,7 +191960,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Look gekopieerd · kies een clip en Look plakken"
+            "value" : "Look gekopieerd · kies een clip en tik op Look plakken"
           }
         },
         "pt" : {
@@ -192672,7 +192672,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Luide, vette hoofdletters"
+            "value" : "Opvallende, vette hoofdletters"
           }
         },
         "pt" : {
@@ -193145,7 +193145,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gemaakt door Cue · vrij te gebruiken in je video's"
+            "value" : "Gemaakt door Cue · vrij te gebruiken in je video’s"
           }
         },
         "pt" : {
@@ -194209,7 +194209,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maak het korter of neem het zo op — je kunt later bijsnijden."
+            "value" : "Maak het korter of neem het zo op. Je kunt later nog inkorten."
           }
         },
         "pt" : {
@@ -195638,7 +195638,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gemarkeerd als op feiten gecontroleerd"
+            "value" : "Gemarkeerd als gecontroleerd op feiten"
           }
         },
         "pt" : {
@@ -196584,7 +196584,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kan opzettelijk zijn — voor nadruk"
+            "value" : "Kan opzettelijk zijn, voor nadruk"
           }
         },
         "pt" : {
@@ -196822,7 +196822,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Meal prep voor mensen die meal prep haten"
+            "value" : "Mealprep voor mensen die mealprep haten"
           }
         },
         "pt" : {
@@ -198717,7 +198717,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Microfoon uit · Vast tempo"
+            "value" : "Microfoon uit · Constant tempo"
           }
         },
         "pt" : {
@@ -199189,7 +199189,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kan betekenis hebben — luister eerst"
+            "value" : "Kan betekenis hebben, luister eerst"
           }
         },
         "pt" : {
@@ -200032,7 +200032,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Munt"
+            "value" : "Mintgroen"
           }
         },
         "pt" : {
@@ -202404,7 +202404,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Meer formaten"
+            "value" : "Meer formats"
           }
         },
         "pt" : {
@@ -202996,7 +202996,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Meer verwijdert tinten van de achtergrond die verder van de kleur af liggen."
+            "value" : "Meer verwijdert tinten van het scherm die verder van de kleur af liggen."
           }
         },
         "pt" : {
@@ -204065,7 +204065,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beweging en timing veranderen alleen voor deze tekst"
+            "value" : "Beweging en timing gelden alleen voor deze tekst"
           }
         },
         "pt" : {
@@ -207856,7 +207856,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MIJN CUE-STEM"
+            "value" : "MY CUE VOICE"
           }
         },
         "pt" : {
@@ -208211,7 +208211,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mijn eerste merkgesprek — en mijn camera liep vast"
+            "value" : "Mijn eerste call met een merk, en mijn camera liep vast"
           }
         },
         "pt" : {
@@ -209514,7 +209514,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mijn video’s zijn bedoeld om"
+            "value" : "Doel van mijn video’s"
           }
         },
         "pt" : {
@@ -211406,7 +211406,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Werkt met een andere iPhone of iPad met Cue in de buurt."
+            "value" : "Vereist een andere iPhone of iPad met Cue in de buurt."
           }
         },
         "pt" : {
@@ -213419,7 +213419,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nieuw erin"
+            "value" : "Beginner"
           }
         },
         "pt" : {
@@ -215323,7 +215323,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hierna: merkbrief. #ad wordt automatisch toegevoegd."
+            "value" : "Hierna: briefing van het merk. #ad wordt automatisch toegevoegd."
           }
         },
         "pt" : {
@@ -215565,7 +215565,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geen %1$@ · %2$@ gebruikt"
+            "value" : "Geen %1$@ · %2$@ wordt gebruikt"
           }
         },
         "pt" : {
@@ -216395,7 +216395,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nog geen ondertitels. Maak ze en het sjabloon stijlt ze ook."
+            "value" : "Nog geen ondertitels. Maak ze en het sjabloon geeft ze ook stijl."
           }
         },
         "pt" : {
@@ -216868,7 +216868,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geen cues"
+            "value" : "Geen aanwijzingen"
           }
         },
         "pt" : {
@@ -217105,7 +217105,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nog geen overgangen"
+            "value" : "Nog geen knippen"
           }
         },
         "pt" : {
@@ -217223,7 +217223,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geen bewerkingen in afwachting."
+            "value" : "Geen bewerkingen die wachten."
           }
         },
         "pt" : {
@@ -217817,7 +217817,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vandaag geen hoogtepunten. Gewoon een gewone dinsdag."
+            "value" : "Vandaag geen hoogtepunten. Gewoon een doordeweekse dinsdag."
           }
         },
         "pt" : {
@@ -218292,7 +218292,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geen regel bevat ‘%@’"
+            "value" : "Geen regel bevat “%@”"
           }
         },
         "pt" : {
@@ -220189,7 +220189,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geen remote verbonden"
+            "value" : "Geen afstandsbediening verbonden"
           }
         },
         "pt" : {
@@ -220308,7 +220308,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nog geen remote"
+            "value" : "Nog geen afstandsbediening"
           }
         },
         "pt" : {
@@ -220426,7 +220426,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geen resultaten voor ‘%@’"
+            "value" : "Geen resultaten voor “%@”"
           }
         },
         "pt" : {
@@ -225165,7 +225165,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue kon daar niets in lezen. Teksten hebben een dozijn woorden of meer nodig."
+            "value" : "Daar kon Cue niets in lezen. Een tekst heeft minstens een stuk of twaalf woorden nodig."
           }
         },
         "pt" : {
@@ -227654,7 +227654,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Getal"
+            "value" : "Nummer"
           }
         },
         "pt" : {
@@ -229079,7 +229079,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oké, even serieus — dit is belangrijk."
+            "value" : "Oké, even serieus: dit is belangrijk."
           }
         },
         "pt" : {
@@ -232516,7 +232516,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alleen deze ondertitel verandert"
+            "value" : "Alleen deze subtitel verandert"
           }
         },
         "pt" : {
@@ -233700,7 +233700,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote openen"
+            "value" : "Afstandsbediening openen"
           }
         },
         "pt" : {
@@ -234173,7 +234173,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opening: ‘%@’"
+            "value" : "Begin met: “%@”"
           }
         },
         "pt" : {
@@ -234882,7 +234882,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "openingen"
+            "value" : "openers"
           }
         },
         "pt" : {
@@ -235119,7 +235119,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opent als concept met deze delen."
+            "value" : "Opent als concept met deze secties."
           }
         },
         "pt" : {
@@ -238073,7 +238073,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Neem de verantwoordelijkheid"
+            "value" : "Verantwoordelijkheid nemen"
           }
         },
         "pt" : {
@@ -238666,7 +238666,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Betaalde-samenwerkingsregel vooraan"
+            "value" : "Regel over betaalde samenwerking vooraan"
           }
         },
         "pt" : {
@@ -238903,7 +238903,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Koppel-QR-code"
+            "value" : "QR-code om te koppelen"
           }
         },
         "pt" : {
@@ -242454,7 +242454,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uitvoeraanwijzingen zoals PAUZE of LACH"
+            "value" : "Aanwijzingen zoals PAUZE of GLIMLACH"
           }
         },
         "pt" : {
@@ -244943,7 +244943,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Foto's staat uit voor Cue"
+            "value" : "Foto’s staat uit voor Cue"
           }
         },
         "pt" : {
@@ -247908,7 +247908,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kies de app in het deelvenster"
+            "value" : "Kies de app in het deelmenu"
           }
         },
         "pt" : {
@@ -248144,7 +248144,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kies de dichtstbijzijnde. Wijzig het op elk moment."
+            "value" : "Kies wat er het dichtst bij komt. Je kunt het altijd wijzigen."
           }
         },
         "pt" : {
@@ -252054,7 +252054,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Origineel wordt afgespeeld — tik om te stoppen"
+            "value" : "Origineel wordt afgespeeld · tik om te stoppen"
           }
         },
         "pt" : {
@@ -252647,7 +252647,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Speelt"
+            "value" : "Speelduur"
           }
         },
         "pt" : {
@@ -254663,7 +254663,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mogelijke hernieuwde opname"
+            "value" : "Mogelijke herneming"
           }
         },
         "pt" : {
@@ -254782,7 +254782,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bijschrift bij post"
+            "value" : "Bijschrift"
           }
         },
         "pt" : {
@@ -254900,7 +254900,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Post het"
+            "value" : "Posten"
           }
         },
         "pt" : {
@@ -262704,7 +262704,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inzoomen met punch"
+            "value" : "Snel inzoomen"
           }
         },
         "pt" : {
@@ -264245,7 +264245,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zet het in het invoerveld om het van jou te maken."
+            "value" : "Zet het in het ideeënveld om het van jou te maken."
           }
         },
         "pt" : {
@@ -265784,7 +265784,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bewustwording creëren"
+            "value" : "Bewustzijn vergroten"
           }
         },
         "pt" : {
@@ -266851,7 +266851,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voorlezen uit een script"
+            "value" : "Van een script lezen"
           }
         },
         "pt" : {
@@ -269930,7 +269930,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klaar om op te nemen · Shape voegt cues toe"
+            "value" : "Klaar om op te nemen · Shape voegt aanwijzingen toe"
           }
         },
         "pt" : {
@@ -271588,7 +271588,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Neem een script op. Elke take komt hier."
+            "value" : "Neem een script op. Elke opname komt hier terecht."
           }
         },
         "pt" : {
@@ -275020,7 +275020,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Herinner me eraan te creëren"
+            "value" : "Herinner me om video’s te maken"
           }
         },
         "pt" : {
@@ -275495,7 +275495,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote"
+            "value" : "Afstandsbediening"
           }
         },
         "pt" : {
@@ -275613,7 +275613,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote verbonden"
+            "value" : "Afstandsbediening verbonden"
           }
         },
         "pt" : {
@@ -275731,7 +275731,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remote verbonden"
+            "value" : "Afstandsbediening verbonden"
           }
         },
         "pt" : {
@@ -278856,7 +278856,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verwijdert je scripts, opnamen, bewerkingen en My Cue Voice van deze iPhone. Video’s die in Foto’s staan blijven daar."
+            "value" : "Verwijdert je scripts, opnames, bewerkingen en My Cue Voice van deze iPhone. Video’s die in Foto’s zijn bewaard, blijven daar."
           }
         },
         "pt" : {
@@ -280727,7 +280727,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verslaan, analyseren, beoordelen, reageren"
+            "value" : "Verslag doen, analyseren, beoordelen, reageren"
           }
         },
         "pt" : {
@@ -281908,7 +281908,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tekstvenster aanpassen"
+            "value" : "Formaat tekstvenster wijzigen"
           }
         },
         "pt" : {
@@ -283566,7 +283566,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beoordelen"
+            "value" : "Review"
           }
         },
         "pt" : {
@@ -285000,7 +285000,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Roze"
+            "value" : "Oudroze"
           }
         },
         "pt" : {
@@ -285590,7 +285590,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Drieburenregel over de camera"
+            "value" : "Regel van derden over de camera"
           }
         },
         "pt" : {
@@ -286537,7 +286537,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zoals het script"
+            "value" : "Gelijk aan script"
           }
         },
         "pt" : {
@@ -287011,7 +287011,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opslaan"
+            "value" : "Bewaar"
           }
         },
         "pt" : {
@@ -287485,7 +287485,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opslaan als mijn stijl"
+            "value" : "Bewaar als mijn stijl"
           }
         },
         "pt" : {
@@ -288076,7 +288076,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bewaar dit zodat je het hebt wanneer je het nodig hebt. [lach]"
+            "value" : "Bewaar dit zodat je het hebt wanneer je het nodig hebt. [glimlach]"
           }
         },
         "pt" : {
@@ -288430,7 +288430,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video opslaan"
+            "value" : "Bewaar video"
           }
         },
         "pt" : {
@@ -288548,7 +288548,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opgeslagen"
+            "value" : "Bewaard"
           }
         },
         "pt" : {
@@ -289378,7 +289378,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opgeslagen als Mijn stijl"
+            "value" : "Bewaard als Mijn stijl"
           }
         },
         "pt" : {
@@ -289863,7 +289863,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bewaard in Takes · exporteer wanneer je wilt met Pro"
+            "value" : "Bewaard in Opnames · exporteer wanneer je wilt met Pro"
           }
         },
         "pt" : {
@@ -289981,7 +289981,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bewaard in Takes · er gaat niets verloren. Je hebt je %lld gratis exports gebruikt."
+            "value" : "Bewaard in Opnames · er gaat niets verloren. Je hebt je %lld gratis exports gebruikt."
           }
         },
         "pt" : {
@@ -290455,7 +290455,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opgeslagen in Foto’s"
+            "value" : "Bewaard in Foto’s"
           }
         },
         "pt" : {
@@ -290573,7 +290573,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opgeslagen in Foto’s · nog %lld van %lld gratis exports"
+            "value" : "Bewaard in Foto’s · nog %1$lld van %2$lld gratis exports"
           }
         },
         "pt" : {
@@ -290928,7 +290928,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bewaart een idee in je Logboek om later uit te schrijven."
+            "value" : "Bewaart een idee in je Logboek om later uit te werken."
           }
         },
         "pt" : {
@@ -291046,7 +291046,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slaat op in Foto’s · post overal"
+            "value" : "Bewaart in Foto’s · post het overal"
           }
         },
         "pt" : {
@@ -293657,7 +293657,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kleur van de achtergrond"
+            "value" : "Kleur van het scherm"
           }
         },
         "pt" : {
@@ -295787,7 +295787,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scripts houden je op koers en beperken hernieuwde opnames. Kies er een om voor te lezen."
+            "value" : "Scripts houden je op koers en zorgen voor minder hernemingen. Kies er een om van te lezen."
           }
         },
         "pt" : {
@@ -296498,7 +296498,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Scrollt op %@ terwijl je praat"
+            "value" : "Scrolt op %@ terwijl je praat"
           }
         },
         "pt" : {
@@ -297562,7 +297562,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bekijk in Takes ›"
+            "value" : "Bekijk in Opnames ›"
           }
         },
         "pt" : {
@@ -299577,7 +299577,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naar achteren sturen"
+            "value" : "Naar achteren"
           }
         },
         "pt" : {
@@ -300760,7 +300760,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schreefondertitels die elk woord oplichten · redactionele titels"
+            "value" : "Ondertitels met schreef die elk woord laten oplichten · redactionele titels"
           }
         },
         "pt" : {
@@ -300996,7 +300996,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Serieus — geen hype"
+            "value" : "Serieus, geen hype"
           }
         },
         "pt" : {
@@ -302298,7 +302298,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Instellingen › Remote"
+            "value" : "Instellingen › Afstandsbediening"
           }
         },
         "pt" : {
@@ -305496,7 +305496,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delen met %lld netwerken"
+            "value" : "Delen op %lld netwerken"
           }
         },
         "pt" : {
@@ -305616,7 +305616,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Delen naar het universum"
+            "value" : "Delen in universum"
           }
         },
         "pt" : {
@@ -305735,7 +305735,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deel het naar je universum"
+            "value" : "Deel in je universum"
           }
         },
         "pt" : {
@@ -306562,7 +306562,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GEDEELD MET %lld NETWERKEN"
+            "value" : "GEDEELD OP %lld NETWERKEN"
           }
         },
         "pt" : {
@@ -309758,7 +309758,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toon alle video’s"
+            "value" : "Alle video’s tonen"
           }
         },
         "pt" : {
@@ -316631,7 +316631,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kleine veranderingen maken een groot verschil. Laten we een paar veelvoorkomende fixen."
+            "value" : "Kleine veranderingen maken een groot verschil. Laten we een paar veelvoorkomende aanpakken."
           }
         },
         "pt" : {
@@ -316749,7 +316749,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "lach"
+            "value" : "glimlach"
           }
         },
         "pt" : {
@@ -319593,7 +319593,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Iemand vroeg dit in de reacties — laat me antwoorden."
+            "value" : "Iemand vroeg dit in de reacties, dus ik geef antwoord."
           }
         },
         "pt" : {
@@ -322555,7 +322555,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gesponsorde advertentie · Merkbrief"
+            "value" : "Gesponsorde advertentie · Merkbriefing"
           }
         },
         "pt" : {
@@ -323030,7 +323030,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stabiliseren op elke clip"
+            "value" : "Elke clip gestabiliseerd"
           }
         },
         "pt" : {
@@ -323859,7 +323859,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld dagen gratis proefperiode starten"
+            "value" : "Start gratis proefperiode van %lld dagen"
           }
         },
         "pt" : {
@@ -324450,7 +324450,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Begin met een formaat"
+            "value" : "Begin met een format"
           }
         },
         "pt" : {
@@ -326108,7 +326108,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start, pauzeer en scroll de teleprompter vanaf een andere iPhone of iPad."
+            "value" : "Start, pauzeer en scrol de teleprompter vanaf een andere iPhone of iPad."
           }
         },
         "pt" : {
@@ -326227,7 +326227,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Begin: ‘%@’. Tik nu op het laatste woord van het stuk."
+            "value" : "Begin: “%@”. Tik nu op het laatste woord van het stuk."
           }
         },
         "pt" : {
@@ -327292,7 +327292,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeg je mening in één zin, geef één reden, sluit af met een vraag — vragen leiden tot reacties."
+            "value" : "Zeg je mening in één zin, geef één reden en sluit af met een vraag: vragen leveren reacties op."
           }
         },
         "pt" : {
@@ -327410,7 +327410,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Blijft in bewerking · automatisch opgeslagen"
+            "value" : "Blijft in bewerking · automatisch bewaard"
           }
         },
         "pt" : {
@@ -327765,7 +327765,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Steel mijn systeem — het is simpeler dan je denkt."
+            "value" : "Steel mijn systeem. Het is simpeler dan je denkt."
           }
         },
         "pt" : {
@@ -328600,7 +328600,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nog steeds juist"
+            "value" : "Klopt nog"
           }
         },
         "pt" : {
@@ -328954,7 +328954,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stop met dit ene te geloven."
+            "value" : "Geloof dit ene ding niet langer."
           }
         },
         "pt" : {
@@ -329072,7 +329072,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stop met de versie kopen die dit doet. [pauze]"
+            "value" : "Stop met het kopen van de versie die dit doet. [pauze]"
           }
         },
         "pt" : {
@@ -329546,7 +329546,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stop de schermopname of schermsynchronisatie om dit voorbeeld te zien."
+            "value" : "Stop de schermopname of synchrone weergave om deze voorvertoning te zien."
           }
         },
         "pt" : {
@@ -330491,7 +330491,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verhaaltijd — en ja, het loopt goed af."
+            "value" : "Tijd voor een verhaal, en ja, het loopt goed af."
           }
         },
         "pt" : {
@@ -330727,7 +330727,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verhaal"
+            "value" : "Storytime"
           }
         },
         "pt" : {
@@ -330845,7 +330845,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verhaal: %@"
+            "value" : "Storytime: %@"
           }
         },
         "pt" : {
@@ -330963,7 +330963,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recht op het doel af"
+            "value" : "Meteen ter zake"
           }
         },
         "pt" : {
@@ -331676,7 +331676,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zware scheldwoorden en beledigingen worden nooit geschreven — Apple Intelligence genereert ze niet."
+            "value" : "Zware scheldwoorden en beledigingen worden nooit geschreven: Apple Intelligence genereert ze niet."
           }
         },
         "pt" : {
@@ -331795,7 +331795,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sterkere oproep"
+            "value" : "Sterkere oproep tot actie"
           }
         },
         "pt" : {
@@ -334400,7 +334400,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ondertitel"
+            "value" : "Subtitel"
           }
         },
         "pt" : {
@@ -335827,7 +335827,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schakelt naar het volgende kader"
+            "value" : "Schakelt naar het volgende beeldformaat"
           }
         },
         "pt" : {
@@ -336420,7 +336420,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TAKE %lld"
+            "value" : "OPNAME %lld"
           }
         },
         "pt" : {
@@ -336665,7 +336665,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TAKE %lld VAN %lld"
+            "value" : "OPNAME %1$lld VAN %2$lld"
           }
         },
         "pt" : {
@@ -336901,7 +336901,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Neem je universum verder."
+            "value" : "Breid je universum uit."
           }
         },
         "pt" : {
@@ -337138,7 +337138,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Haalt de tint van de achtergrond van je af: het groen of blauw op huid, haar en kleding."
+            "value" : "Haalt de tint van het scherm van je af: het groen of blauw dat het weerkaatst op huid, haar en kleding."
           }
         },
         "pt" : {
@@ -337493,7 +337493,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Talking head, tutorial, gesponsorde advertentie… jij schrijft"
+            "value" : "Talking head, tutorial, gesponsorde advertentie… jij schrijft het"
           }
         },
         "pt" : {
@@ -337729,7 +337729,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hoge, luide hoofdletters"
+            "value" : "Hoge, opvallende hoofdletters"
           }
         },
         "pt" : {
@@ -338320,7 +338320,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tik op Gereed in de editor, of kies een beste opname — het komt hier terecht, klaar om te posten."
+            "value" : "Tik op Gereed in de editor of kies een beste opname. De video komt dan hier terecht, klaar om te posten."
           }
         },
         "pt" : {
@@ -341164,7 +341164,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leer een snelle dagelijkse look aan, stap voor stap."
+            "value" : "Leer kijkers stap voor stap een snelle dagelijkse look."
           }
         },
         "pt" : {
@@ -341401,7 +341401,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leert hoe je praat — wordt nooit hergebruikt voor verhalen, meningen of resultaten. Blijft op deze iPhone."
+            "value" : "Leert Cue hoe je praat. Wordt nooit hergebruikt voor verhalen, meningen of resultaten. Blijft op deze iPhone."
           }
         },
         "pt" : {
@@ -348272,7 +348272,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De eerste take was degene die je hield"
+            "value" : "De eerste opname was degene die je hield"
           }
         },
         "pt" : {
@@ -350880,7 +350880,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Het voorbeeld kon niet worden opgebouwd"
+            "value" : "De voorvertoning kon niet worden gemaakt"
           }
         },
         "pt" : {
@@ -351833,7 +351833,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De opname kon niet worden opgeslagen"
+            "value" : "De opname kon niet worden bewaard"
           }
         },
         "pt" : {
@@ -352900,7 +352900,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De video is intussen veranderd · bevries het beeld opnieuw"
+            "value" : "De video is intussen gewijzigd · Bevries het beeld opnieuw"
           }
         },
         "pt" : {
@@ -353019,7 +353019,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De video is intussen veranderd · Keer hem opnieuw om"
+            "value" : "De video is intussen gewijzigd · Keer hem opnieuw om"
           }
         },
         "pt" : {
@@ -353138,7 +353138,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De video is intussen veranderd · Volg opnieuw"
+            "value" : "De video is intussen gewijzigd · Volg het opnieuw"
           }
         },
         "pt" : {
@@ -353375,7 +353375,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De video’s worden uit Cue verwijderd. Kopieën die je in Foto’s hebt opgeslagen blijven daar staan."
+            "value" : "De video’s worden uit Cue verwijderd. Kopieën die je in Foto’s hebt bewaard, blijven daar staan."
           }
         },
         "pt" : {
@@ -353494,7 +353494,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De hele regel in de markeerkleur"
+            "value" : "De hele regel in de markeringskleur"
           }
         },
         "pt" : {
@@ -354324,7 +354324,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ze kijken om"
+            "value" : "Waarom ze kijken"
           }
         },
         "pt" : {
@@ -355038,7 +355038,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deze clip · cameraverplaatsing tijdens het afspelen"
+            "value" : "Deze clip · camerabeweging tijdens het afspelen"
           }
         },
         "pt" : {
@@ -355275,7 +355275,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dit clipje · de rest blijft zoals het is"
+            "value" : "Deze clip · de rest blijft zoals het is"
           }
         },
         "pt" : {
@@ -355987,7 +355987,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dit apparaat is nu een remote."
+            "value" : "Dit apparaat is nu een afstandsbediening."
           }
         },
         "pt" : {
@@ -356341,7 +356341,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hierin staan woorden waar Apple Intelligence niet van leert. Bliep ze (f***) of kies een ander voorbeeld."
+            "value" : "Hierin staan woorden waar Apple Intelligence niet van leert. Piep ze weg (f***) of kies een ander voorbeeld."
           }
         },
         "pt" : {
@@ -358003,7 +358003,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deze ondertitel"
+            "value" : "Deze subtitel"
           }
         },
         "pt" : {
@@ -359541,7 +359541,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deze video is te laat."
+            "value" : "Deze video had er al lang moeten zijn."
           }
         },
         "pt" : {
@@ -359779,7 +359779,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Drie beats zijn genoeg: wat er gebeurde, het moment dat het omsloeg, hoe het afliep. Cue voegt een cliffhanger-hook en tempoaanwijzingen toe."
+            "value" : "Drie momenten zijn genoeg: wat er gebeurde, het moment dat het omsloeg, hoe het afliep. Cue voegt een cliffhanger-hook en tempoaanwijzingen toe."
           }
         },
         "pt" : {
@@ -360846,7 +360846,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TikTok betaalt Creator Rewards boven één minuut."
+            "value" : "TikTok betaalt Creator Rewards voor video’s langer dan een minuut."
           }
         },
         "pt" : {
@@ -366411,7 +366411,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Overgang bij de dichtstbijzijnde snede"
+            "value" : "Overgang bij de dichtstbijzijnde knip"
           }
         },
         "pt" : {
@@ -367593,7 +367593,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vertaald op je iPhone met Apple Vertalen. Er wordt niets verstuurd."
+            "value" : "Vertaald op je iPhone met de vertaalfunctie van Apple. Er wordt niets verstuurd."
           }
         },
         "pt" : {
@@ -368420,7 +368420,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Proefperiode gestart — geniet van Cue Pro"
+            "value" : "Proefperiode gestart · Veel plezier met Cue Pro"
           }
         },
         "pt" : {
@@ -371382,7 +371382,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Handleiding"
+            "value" : "Tutorial"
           }
         },
         "pt" : {
@@ -372094,7 +372094,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Twee: een glas water voor de koffie. [lach] Klinkt gek. Het werkt."
+            "value" : "Twee: een glas water voor de koffie. [glimlach] Klinkt gek. Het werkt."
           }
         },
         "pt" : {
@@ -372213,7 +372213,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Letter"
+            "value" : "Typografie"
           }
         },
         "pt" : {
@@ -372804,7 +372804,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Typ je ondertitel"
+            "value" : "Typ je subtitel"
           }
         },
         "pt" : {
@@ -373040,7 +373040,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Typ je eigen"
+            "value" : "Typ je eigen antwoord"
           }
         },
         "pt" : {
@@ -373988,7 +373988,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Onder 30 sec."
+            "value" : "Onder 30 s"
           }
         },
         "pt" : {
@@ -376589,7 +376589,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gebruik „%@”"
+            "value" : "Gebruik “%@”"
           }
         },
         "pt" : {
@@ -377300,7 +377300,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bij elke snede gebruiken"
+            "value" : "Bij elke knip gebruiken"
           }
         },
         "pt" : {
@@ -378837,7 +378837,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ gebruikt"
+            "value" : "%@ wordt gebruikt"
           }
         },
         "pt" : {
@@ -378955,7 +378955,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gebruikelijke formaten"
+            "value" : "Gebruikelijke formats"
           }
         },
         "pt" : {
@@ -380374,7 +380374,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video en cover opgeslagen in Foto’s"
+            "value" : "Video en cover bewaard in Foto’s"
           }
         },
         "pt" : {
@@ -381203,7 +381203,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video’s zijn bedoeld om"
+            "value" : "Doel van de video’s"
           }
         },
         "pt" : {
@@ -381321,7 +381321,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video’s verlaten Cue alleen wanneer je ze in Foto’s opslaat of deelt. Camera en microfoon worden alleen gebruikt zolang de camera open is."
+            "value" : "Video’s verlaten Cue alleen wanneer je ze in Foto’s bewaart of deelt. Camera en microfoon worden alleen gebruikt zolang de camera open is."
           }
         },
         "pt" : {
@@ -384048,7 +384048,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wakker-wordgewoontes"
+            "value" : "Gewoontes bij het opstaan"
           }
         },
         "pt" : {
@@ -386183,7 +386183,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bekijk"
+            "value" : "Bekijken"
           }
         },
         "pt" : {
@@ -386419,7 +386419,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kijk dit — %@. [demo]"
+            "value" : "Kijk hier: %@. [demo]"
           }
         },
         "pt" : {
@@ -387838,7 +387838,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wat verandert"
+            "value" : "Wat er verandert"
           }
         },
         "pt" : {
@@ -387956,7 +387956,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wat nu verandert"
+            "value" : "Wat er nu verandert"
           }
         },
         "pt" : {
@@ -388310,7 +388310,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wat Cue tegen Apple Intelligence zegt · op het toestel"
+            "value" : "Wat Cue tegen Apple Intelligence zegt · op het apparaat"
           }
         },
         "pt" : {
@@ -390680,7 +390680,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wat je onderwijst"
+            "value" : "Wat je uitlegt"
           }
         },
         "pt" : {
@@ -391747,7 +391747,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als je achtergrond geen standaard groen of blauw is"
+            "value" : "Als je scherm niet standaard groen of blauw is"
           }
         },
         "pt" : {
@@ -392575,7 +392575,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Waar ga je je video's delen?"
+            "value" : "Waar ga je je video’s delen?"
           }
         },
         "pt" : {
@@ -394468,7 +394468,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hele video · op je iPhone"
+            "value" : "Hele video · gemaakt op je iPhone"
           }
         },
         "pt" : {
@@ -399329,7 +399329,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schrijf"
+            "value" : "Opstellen"
           }
         },
         "pt" : {
@@ -400159,7 +400159,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schrijf de advertentie"
+            "value" : "Stel de advertentie op"
           }
         },
         "pt" : {
@@ -401819,7 +401819,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ja — delen op social media"
+            "value" : "Ja, delen op social media"
           }
         },
         "pt" : {
@@ -402766,7 +402766,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je vroeg erom — hier is het."
+            "value" : "Je vroeg erom, en hier is het."
           }
         },
         "pt" : {
@@ -405135,7 +405135,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jouw %@ in review"
+            "value" : "Jaaroverzicht %@"
           }
         },
         "pt" : {
@@ -405253,7 +405253,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je universum van %@ begint met je eerste deling."
+            "value" : "Je universum van %@ begint met de eerste video die je deelt."
           }
         },
         "pt" : {
@@ -407750,7 +407750,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je idee is al begonnen"
+            "value" : "Je bent al aan je idee begonnen"
           }
         },
         "pt" : {
@@ -408112,7 +408112,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jouw licht. Het groeit met elke video die je deelt — geen foto nodig."
+            "value" : "Jouw licht. Het groeit met elke video die je deelt, zonder foto."
           }
         },
         "pt" : {
@@ -408706,7 +408706,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je volgende opname is één tik verwijderd."
+            "value" : "Je volgende opname is maar één tik verwijderd."
           }
         },
         "pt" : {
@@ -410486,7 +410486,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je scripts, opnamen, bewerkingen en My Cue Voice worden van deze iPhone verwijderd. Dit kan niet ongedaan worden gemaakt."
+            "value" : "Je scripts, opnames, bewerkingen en My Cue Voice worden van deze iPhone verwijderd. Dit kan niet ongedaan worden gemaakt."
           }
         },
         "pt" : {
@@ -412144,7 +412144,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je universum begint met je eerste deling."
+            "value" : "Je universum begint met de eerste video die je deelt."
           }
         },
         "pt" : {
@@ -412500,7 +412500,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je video zoals je hem opnam. Kies Vervagen, Kleur of Afbeelding om te veranderen wat achter je is."
+            "value" : "Je video zoals je hem opnam. Kies Vervaging, Kleur of Afbeelding om te veranderen wat er achter je is."
           }
         },
         "pt" : {
@@ -413445,7 +413445,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je jaar in review"
+            "value" : "Je jaaroverzicht"
           }
         },
         "pt" : {
