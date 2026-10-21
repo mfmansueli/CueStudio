@@ -850,7 +850,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“%@”"
+            "value" : "„%@“"
           }
         },
         "es" : {
@@ -1440,7 +1440,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Schauen wir, warum.“"
+            "value" : "„Schauen wir uns an, warum.“"
           }
         },
         "es" : {
@@ -1558,7 +1558,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "„Lass uns kurz langsamer machen.“"
+            "value" : "„Machen wir kurz mal langsam.“"
           }
         },
         "es" : {
@@ -5044,7 +5044,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · ANDERES TIPPEN ZUM WECHSELN"
+            "value" : "%@ · ZUM WECHSELN ANDERE ANTIPPEN"
           }
         },
         "es" : {
@@ -6240,7 +6240,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ hinzugefügt · zieh es im Video"
+            "value" : "%@ hinzugefügt · auf dem Video verschieben"
           }
         },
         "es" : {
@@ -6595,7 +6595,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ ist schon angefangen"
+            "value" : "Du hast %@ schon angefangen"
           }
         },
         "es" : {
@@ -6951,7 +6951,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ statt deinem üblichen %2$@."
+            "value" : "%1$@ statt deines üblichen %2$@."
           }
         },
         "en" : {
@@ -7793,7 +7793,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ als bester markiert"
+            "value" : "%@ als bester Take markiert"
           }
         },
         "es" : {
@@ -8985,7 +8985,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ über ideal"
+            "value" : "%@ zu lang"
           }
         },
         "es" : {
@@ -10538,7 +10538,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ unter ideal"
+            "value" : "%@ zu kurz"
           }
         },
         "es" : {
@@ -11253,7 +11253,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@, geschnitten"
+            "value" : "%@, herausgeschnitten"
           }
         },
         "es" : {
@@ -11971,7 +11971,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@. Das geht auf mich. [Pause]"
+            "value" : "%@. Das geht auf meine Kappe. [Pause]"
           }
         },
         "es" : {
@@ -13054,7 +13054,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld Cues"
+            "value" : "%lld Hinweise"
           }
         },
         "es" : {
@@ -13172,7 +13172,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld Cues hinzugefügt"
+            "value" : "%lld Hinweise hinzugefügt"
           }
         },
         "es" : {
@@ -14438,13 +14438,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Zeile · tippe darauf, um hinzuspringen"
+                  "value" : "%lld Zeile · tippe darauf, um dorthin zu springen"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Zeilen · tippe auf eine, um hinzuspringen"
+                  "value" : "%lld Zeilen · tippe auf eine, um dorthin zu springen"
                 }
               }
             }
@@ -16476,7 +16476,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noch %lld bis %@"
+            "value" : "Noch %lld für %@"
           }
         },
         "es" : {
@@ -16956,7 +16956,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld VON %2$lld · EINS MEHR ODER WEITER"
+            "value" : "%1$lld VON %2$lld · NOCH EINS ODER WEITER"
           }
         },
         "es" : {
@@ -18029,7 +18029,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld von %lld Teilen so gelassen, wie du sie geschrieben hast"
+            "value" : "%lld von %lld Teilen unverändert"
           }
         },
         "es" : {
@@ -20553,7 +20553,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld Videos — noch %2$lld"
+            "value" : "%1$lld Videos · noch %2$lld"
           }
         },
         "en" : {
@@ -21393,7 +21393,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld Videos in %@ · %@-Symbol freigeschaltet"
+            "value" : "%1$lld Videos in %2$@ · Symbol „%3$@“ freigeschaltet"
           }
         },
         "en" : {
@@ -24806,7 +24806,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Untertitel drin · Weiter: teilen"
+            "value" : "✓ Untertitel fertig · Weiter: teilen"
           }
         },
         "es" : {
@@ -25042,7 +25042,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Cue-Stimme komplett"
+            "value" : "✓ Cue Voice komplett"
           }
         },
         "es" : {
@@ -25160,7 +25160,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Passt %@"
+            "value" : "✓ Passt zu %@"
           }
         },
         "es" : {
@@ -26108,7 +26108,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Dein erster Stern ist draußen"
+            "value" : "✓ Dein erster Stern leuchtet"
           }
         },
         "es" : {
@@ -26346,7 +26346,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ %1$@ · CUE WÄHLTE %2$@"
+            "value" : "✦ %1$@ · CUE HAT %2$@ GEWÄHLT"
           }
         },
         "es" : {
@@ -28243,7 +28243,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Schreiben"
+            "value" : "✦ Entwerfen"
           }
         },
         "es" : {
@@ -28597,7 +28597,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 Cue"
+            "value" : "1 Hinweis"
           }
         },
         "es" : {
@@ -29309,7 +29309,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 Video in %@ · %@-Symbol freigeschaltet"
+            "value" : "1 Video in %1$@ · Symbol „%2$@“ freigeschaltet"
           }
         },
         "en" : {
@@ -30621,7 +30621,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4 kurze Fragen — etwa 20 Sekunden. Kein Tippen nötig."
+            "value" : "4 kurze Fragen, etwa 20 Sekunden. Kein Tippen nötig."
           }
         },
         "es" : {
@@ -30976,7 +30976,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "6-s-Video"
+            "value" : "6-Sekunden-Video"
           }
         },
         "es" : {
@@ -31094,7 +31094,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "7 Tage gratis, danach %@/Jahr. Jederzeit kündbar."
+            "value" : "7 Tage kostenlos, danach %@/Jahr. Jederzeit kündbar."
           }
         },
         "es" : {
@@ -31449,7 +31449,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 Sek."
+            "value" : "30–60 s"
           }
         },
         "es" : {
@@ -32751,7 +32751,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ein erster Entwurf. Deiner zum Ändern."
+            "value" : "Ein erster Entwurf. Du kannst alles ändern."
           }
         },
         "es" : {
@@ -32869,7 +32869,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eine Freundin hat mich das probieren lassen – ich schulde ihr was."
+            "value" : "Eine Freundin hat mich das ausprobieren lassen. Ich schulde ihr was."
           }
         },
         "es" : {
@@ -33461,7 +33461,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eine Zeile bleibt auf ihrem Clip"
+            "value" : "Eine Zeile bleibt bei ihrem Clip"
           }
         },
         "es" : {
@@ -34170,7 +34170,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ein neuer Stern in deinem %@-Universum"
+            "value" : "Ein neuer Stern in deinem Universum %@"
           }
         },
         "es" : {
@@ -34290,7 +34290,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ein neuer Stern in deinem %@-Universum · %@ %lld"
+            "value" : "Ein neuer Stern in deinem Universum %1$@ · %2$@ %3$lld"
           }
         },
         "en" : {
@@ -36664,7 +36664,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verstanden"
+            "value" : "Eingestehen"
           }
         },
         "es" : {
@@ -37494,7 +37494,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Füge ein Keyframe hinzu, bewege den Abspielposition und zieh dann das Foto oder Video – Cue bewegt es zwischen den Keyframes."
+            "value" : "Füge einen Keyframe hinzu, bewege die Abspielposition und zieh dann das Foto oder Video. Cue bewegt es zwischen den Keyframes."
           }
         },
         "es" : {
@@ -37612,7 +37612,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Füge ein Keyframe hinzu, bewege den Abspielposition und zieh dann den Text im Video – Cue bewegt ihn zwischen den Keyframes."
+            "value" : "Füge einen Keyframe hinzu, bewege die Abspielposition und zieh dann den Text im Video. Cue bewegt ihn zwischen den Keyframes."
           }
         },
         "es" : {
@@ -37730,7 +37730,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeile am Abspielposition hinzufügen"
+            "value" : "Zeile an der Abspielposition hinzufügen"
           }
         },
         "es" : {
@@ -38914,7 +38914,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hinweis hinzufügen"
+            "value" : "Werbekennzeichnung hinzufügen"
           }
         },
         "es" : {
@@ -40574,7 +40574,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wird jeder Idee vorangestellt, die du an Cue schickst — Skripte, Hooks, Antworten, dazu wo du postest und das gewählte Format. Wird nie zum Trainieren von Modellen verwendet."
+            "value" : "Wird jeder Idee vorangestellt, die du an Cue schickst (Skripte, Hooks, Antworten), zusammen mit deiner Plattform und dem gewählten Format. Wird nie zum Trainieren von Modellen verwendet."
           }
         },
         "es" : {
@@ -41048,7 +41048,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fügt #ad zu deiner Caption hinzu"
+            "value" : "Fügt #ad zu deinem Beitragstext hinzu"
           }
         },
         "es" : {
@@ -42114,7 +42114,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe nach dem Posten oben links auf ◀ Cue. Wir kommen zurück, um abzuschließen."
+            "value" : "Tippe nach dem Posten oben links auf ◀ Cue. Danach geht es hier weiter."
           }
         },
         "es" : {
@@ -42232,7 +42232,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe nach dem Posten oben links auf ◀ Cue. Als Nächstes öffnen wir %@."
+            "value" : "Tippe nach dem Posten oben links auf ◀ Cue. Als Nächstes öffnet sich %@."
           }
         },
         "es" : {
@@ -44851,7 +44851,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erlaube Kamera und Mikrofon in den Einstellungen zum Aufnehmen."
+            "value" : "Erlaube in den Einstellungen Kamera und Mikrofon, um aufzunehmen."
           }
         },
         "es" : {
@@ -45206,7 +45206,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erlaube es, um dein Video zu sichern."
+            "value" : "Erlaube den Zugriff, um dein Video zu sichern."
           }
         },
         "es" : {
@@ -54055,7 +54055,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora wird mit deinem ersten geteilten Video frei. Die anderen, je mehr du teilst, mit Pro."
+            "value" : "Aurora wird mit deinem ersten geteilten Video freigeschaltet. Die anderen folgen mit Pro, je mehr du teilst."
           }
         },
         "es" : {
@@ -57835,7 +57835,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beat"
+            "value" : "kurze Pause"
           }
         },
         "es" : {
@@ -58309,7 +58309,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wird ein eigener Clip in der Abfolge, nach dem Clip am Abspielkopf. Nur Videos."
+            "value" : "Wird ein eigener Clip in der Abfolge, nach dem Clip an der Abspielposition. Nur Videos."
           }
         },
         "es" : {
@@ -59022,7 +59022,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bevor du upgradest, stell dir eine einfache Frage."
+            "value" : "Bevor du aufrüstest, stell dir eine einfache Frage."
           }
         },
         "es" : {
@@ -61510,7 +61510,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Größerer, lauterer Text"
+            "value" : "Größerer, auffälligerer Text"
           }
         },
         "es" : {
@@ -62463,7 +62463,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Weichzeichnen"
+            "value" : "Unschärfe"
           }
         },
         "es" : {
@@ -62700,7 +62700,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Weichzeichnen statt Green- oder Bluescreen"
+            "value" : "Unschärfe statt Green- oder Bluescreen"
           }
         },
         "es" : {
@@ -62819,7 +62819,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Weichzeichnen hinter dir"
+            "value" : "Unschärfe hinter dir"
           }
         },
         "es" : {
@@ -63410,7 +63410,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MITTELTEIL"
+            "value" : "HAUPTTEIL"
           }
         },
         "es" : {
@@ -66016,7 +66016,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skript hereinholen"
+            "value" : "Skript importieren"
           }
         },
         "es" : {
@@ -66253,7 +66253,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bring Skripte, Bildunterschriften oder Notizen mit, die du geschrieben hast. Cue lernt daraus, wie du schreibst, auf diesem iPhone."
+            "value" : "Bring Skripte, Beitragstexte oder Notizen mit, die du geschrieben hast. Cue lernt daraus auf diesem iPhone, wie du schreibst."
           }
         },
         "es" : {
@@ -66609,7 +66609,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In Dateien suchen"
+            "value" : "Dateien durchsuchen"
           }
         },
         "es" : {
@@ -68866,7 +68866,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entkräfte zwei gängige Trink-Mythen mit einfachen, sorgfältigen Fakten."
+            "value" : "Entkräfte zwei gängige Trinkmythen mit einfachen, sorgfältigen Fakten."
           }
         },
         "es" : {
@@ -69104,7 +69104,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entkräfte die Hautpflege-Mythen, die immer noch weitererzählt werden."
+            "value" : "Entkräfte die Hautpflegemythen, die immer noch weitererzählt werden."
           }
         },
         "es" : {
@@ -70405,7 +70405,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kamera-Unschärfe"
+            "value" : "Kameraunschärfe"
           }
         },
         "es" : {
@@ -71469,7 +71469,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keine Personen erkannt · Grün- oder Blauschirm nutzen"
+            "value" : "Keine Personen erkannt · Green- oder Bluescreen nutzen"
           }
         },
         "es" : {
@@ -73010,7 +73010,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beschreibung kopiert · in %@ einfügen"
+            "value" : "Beitragstext kopiert · in %@ einfügen"
           }
         },
         "es" : {
@@ -73601,7 +73601,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Untertitel können auf diesem iPhone nicht auf %@ zuhören. Wähle die gesprochene Sprache oder schreib die Zeilen selbst."
+            "value" : "Dieses iPhone kann für Untertitel kein %@ erkennen. Wähle die gesprochene Sprache oder schreib die Zeilen selbst."
           }
         },
         "es" : {
@@ -73719,7 +73719,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Untertitel konnten in diesem Take %@ nicht anhören, daher können diese Stellen fehlen. Prüfe die Zeilen oder schreib sie selbst."
+            "value" : "Für die Untertitel ließ sich %@ in diesem Take nicht erkennen, daher können dort Stellen fehlen. Prüfe die Zeilen oder schreib sie selbst."
           }
         },
         "en" : {
@@ -73843,7 +73843,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Untertitel konnten nicht mit dem Zuhören beginnen. Versuch es noch einmal."
+            "value" : "Die Spracherkennung für Untertitel ließ sich nicht starten. Versuch es noch einmal."
           }
         },
         "es" : {
@@ -74554,7 +74554,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Untertitel müssen %@ laden. Stell eine Internetverbindung her und versuch es erneut."
+            "value" : "Für Untertitel muss %@ geladen werden. Stell eine Internetverbindung her und versuch es erneut."
           }
         },
         "es" : {
@@ -74672,7 +74672,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Die Untertitel müssen diese Sprache laden. Stell eine Internetverbindung her und versuch es erneut."
+            "value" : "Für Untertitel muss diese Sprache geladen werden. Stell eine Internetverbindung her und versuch es erneut."
           }
         },
         "es" : {
@@ -75500,7 +75500,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autoradio"
+            "value" : "Car-HiFi"
           }
         },
         "es" : {
@@ -76804,7 +76804,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ändere es jederzeit unter Profil › Meine Cue-Stimme."
+            "value" : "Ändere es jederzeit unter Profil › My Cue Voice."
           }
         },
         "es" : {
@@ -77633,7 +77633,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Änderungen erscheinen in der Vorschau und werden sofort gesichert. ✓ schließt das Feld."
+            "value" : "Änderungen erscheinen in der Vorschau und werden sofort gesichert. ✓ schließt den Bereich."
           }
         },
         "es" : {
@@ -78939,7 +78939,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prüfe, ob deine Untertitel frei von den Buttons des Netzwerks bleiben."
+            "value" : "Prüfe, ob deine Untertitel nicht unter den Tasten des Netzwerks liegen."
           }
         },
         "es" : {
@@ -79057,7 +79057,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prüfe den Kommentar, bevor Cue schreibt."
+            "value" : "Prüfe den Kommentar, bevor Cue eine Antwort entwirft."
           }
         },
         "es" : {
@@ -79411,7 +79411,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prüfe, ob dieses iPhone übersetzen kann …"
+            "value" : "Wird geprüft, ob dieses iPhone übersetzen kann …"
           }
         },
         "es" : {
@@ -84992,7 +84992,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Code MORNING: Rabatt von 20%"
+            "value" : "20 % Rabatt mit dem Code MORNING"
           }
         },
         "es" : {
@@ -86295,7 +86295,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kommt fertig: Abschnitte, Cues, Timing."
+            "value" : "Fertig vorbereitet: Abschnitte, Hinweise, Timing."
           }
         },
         "es" : {
@@ -87598,7 +87598,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vergleich günstige Alternativen mit den teuren, die alle kaufen."
+            "value" : "Vergleiche günstige Alternativen mit den teuren, die alle kaufen."
           }
         },
         "es" : {
@@ -87717,7 +87717,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vergleich beide Reihenfolgen und für wen welche passt."
+            "value" : "Vergleiche beide Reihenfolgen und für wen welche passt."
           }
         },
         "es" : {
@@ -87836,7 +87836,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vergleich, wo Qualität zählt und wo günstig völlig reicht."
+            "value" : "Vergleiche, wo Qualität zählt und wo günstig völlig reicht."
           }
         },
         "es" : {
@@ -89848,7 +89848,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bearbeite weiter, wann immer du so weit bist."
+            "value" : "Mach mit dem Bearbeiten weiter, wann immer du so weit bist."
           }
         },
         "es" : {
@@ -90212,7 +90212,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teile dein Video weiter in den Netzwerken, die du ausgewählt hast."
+            "value" : "Teile dein Video in den gewählten Netzwerken weiter."
           }
         },
         "es" : {
@@ -92709,7 +92709,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entwurf ging nicht · Versuch es noch mal"
+            "value" : "Entwurf fehlgeschlagen · Noch mal versuchen"
           }
         },
         "es" : {
@@ -93066,7 +93066,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export fehlgeschlagen · Nochmal"
+            "value" : "Export fehlgeschlagen · Noch mal versuchen"
           }
         },
         "es" : {
@@ -94249,7 +94249,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Konnte nicht gesichert werden · Noch mal versuchen"
+            "value" : "Sichern fehlgeschlagen · Noch mal versuchen"
           }
         },
         "es" : {
@@ -94368,7 +94368,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erinnerung konnte nicht festgelegt werden · Versuch es noch mal"
+            "value" : "Erinnerung konnte nicht festgelegt werden · Noch mal versuchen"
           }
         },
         "es" : {
@@ -94486,7 +94486,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teilen fehlgeschlagen · Nochmal"
+            "value" : "Teilen fehlgeschlagen · Noch mal versuchen"
           }
         },
         "es" : {
@@ -94604,7 +94604,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anmeldung fehlgeschlagen · Nochmal versuchen"
+            "value" : "Anmeldung fehlgeschlagen · Noch mal versuchen"
           }
         },
         "es" : {
@@ -94722,7 +94722,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zuhören konnte nicht starten"
+            "value" : "Zuhören ließ sich nicht starten"
           }
         },
         "es" : {
@@ -94840,7 +94840,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aufnahme konnte nicht starten"
+            "value" : "Aufnahme ließ sich nicht starten"
           }
         },
         "es" : {
@@ -96378,7 +96378,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bonität & Schufa-Score"
+            "value" : "Bonität"
           }
         },
         "es" : {
@@ -97561,7 +97561,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue wurde geschlossen, bevor er fertig war. Exportiere erneut, um das Video zu bekommen."
+            "value" : "Cue wurde vor dem Ende des Exports geschlossen. Exportiere erneut, um das Video zu bekommen."
           }
         },
         "es" : {
@@ -98271,7 +98271,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue konnte gerade keine Ideen zu diesem Thema schreiben. Versuch es gleich noch mal."
+            "value" : "Cue konnte gerade keine Ideen zu diesem Thema entwickeln. Versuch es gleich noch mal."
           }
         },
         "es" : {
@@ -98390,7 +98390,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue entwirft Untertitel aus deiner Stimme. Korrigier jedes Wort."
+            "value" : "Cue entwirft Untertitel aus deiner Stimme. Du kannst jedes Wort korrigieren."
           }
         },
         "es" : {
@@ -98509,7 +98509,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue entwirft die Zeilen. Korrigier jedes Wort."
+            "value" : "Cue entwirft die Zeilen. Du kannst jedes Wort korrigieren."
           }
         },
         "es" : {
@@ -99696,7 +99696,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue öffnet %@ mit Video und Beschreibung. Posten tust du."
+            "value" : "Cue öffnet %@ mit Video und Beitragstext. Du postest selbst."
           }
         },
         "es" : {
@@ -99933,7 +99933,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue öffnet die App mit Video und Beschreibung. Posten tust du."
+            "value" : "Cue öffnet die App mit Video und Beitragstext. Du postest selbst."
           }
         },
         "es" : {
@@ -100760,7 +100760,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue stellt Bildausschnitt, sichere Bereiche, Teleprompter-Position und Längenziele ein. Feinschliff jederzeit."
+            "value" : "Cue stellt Bildausschnitt, sichere Bereiche, Teleprompter-Position und Längenziele ein. Jederzeit anpassbar."
           }
         },
         "es" : {
@@ -100879,7 +100879,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue stellt Format, ideale Länge und sichere Bereiche für die Plattform ein."
+            "value" : "Cue stellt Bildausschnitt, ideale Länge und sichere Bereiche für diese Plattform ein."
           }
         },
         "es" : {
@@ -102184,7 +102184,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hinweise wie PAUSE oder SMILE im Text"
+            "value" : "Hinweise wie PAUSE oder LÄCHELN im Text"
           }
         },
         "es" : {
@@ -103130,7 +103130,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eigener Stil, aus einem Text übernommen. Wähle eine Vorlage, um ihn zu ersetzen."
+            "value" : "Eigener Stil, aus einem Text übernommen. Wähle ein Preset, um ihn zu ersetzen."
           }
         },
         "es" : {
@@ -104147,7 +104147,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schneide Wörter, und das Video geht mit."
+            "value" : "Schneide Wörter heraus, und das Video folgt."
           }
         },
         "es" : {
@@ -109003,7 +109003,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das Diktat konnte nicht mit dem Zuhören beginnen. Du kannst deine Idee stattdessen tippen."
+            "value" : "Das Diktieren ließ sich nicht starten. Du kannst deine Idee stattdessen tippen."
           }
         },
         "es" : {
@@ -109593,7 +109593,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ich habe nichts verstanden. Versuch es noch einmal oder tippe deine Idee."
+            "value" : "Nichts verstanden. Versuch es noch einmal oder tippe deine Idee."
           }
         },
         "es" : {
@@ -110304,7 +110304,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hinweis am Anfang hinzugefügt"
+            "value" : "Werbekennzeichnung am Anfang hinzugefügt"
           }
         },
         "es" : {
@@ -110422,7 +110422,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hinweis steht schon vorn"
+            "value" : "Werbekennzeichnung steht schon am Anfang"
           }
         },
         "es" : {
@@ -113747,7 +113747,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entwurf fertig · bearbeite, was du willst"
+            "value" : "Entwurf fertig · Alles bearbeitbar"
           }
         },
         "es" : {
@@ -114221,7 +114221,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entwirft die %@-Version…"
+            "value" : "Die %@-Version wird entworfen …"
           }
         },
         "es" : {
@@ -114340,7 +114340,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entwirft Hooks…"
+            "value" : "Hooks werden entworfen …"
           }
         },
         "es" : {
@@ -114459,7 +114459,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entwirft einen Hook…"
+            "value" : "Ein Hook wird entworfen …"
           }
         },
         "es" : {
@@ -114578,7 +114578,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entwirft…"
+            "value" : "Wird entworfen …"
           }
         },
         "es" : {
@@ -114697,7 +114697,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entwirft in deiner Stimme"
+            "value" : "Wird in deinem Ton entworfen"
           }
         },
         "es" : {
@@ -114817,7 +114817,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entwürfe · %lld — In Arbeit"
+            "value" : "Entwürfe · %lld · In Arbeit"
           }
         },
         "es" : {
@@ -115293,7 +115293,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zieh am Cover, um das Bild zu verschieben, zieh es zusammen zum Zoomen."
+            "value" : "Zieh am Cover, um das Bild zu verschieben, und zoome mit zwei Fingern."
           }
         },
         "es" : {
@@ -120980,7 +120980,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lehrer:in"
+            "value" : "Lehrkraft"
           }
         },
         "es" : {
@@ -121454,7 +121454,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hervorhebung"
+            "value" : "Betonung"
           }
         },
         "es" : {
@@ -122281,7 +122281,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enden"
+            "value" : "Schlüsse"
           }
         },
         "es" : {
@@ -123939,7 +123939,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "EP 03, SO GEHT’S, TEIL 2…"
+            "value" : "EP 03, SO GEHT’S, TEIL 2 …"
           }
         },
         "es" : {
@@ -126669,7 +126669,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alle im Alltag"
+            "value" : "Ganz normale Leute"
           }
         },
         "es" : {
@@ -127617,7 +127617,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auszüge gespeichert"
+            "value" : "Auszüge gesichert"
           }
         },
         "es" : {
@@ -136994,7 +136994,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suche deine Augen · %lld%%"
+            "value" : "Deine Augen werden gesucht · %lld %%"
           }
         },
         "es" : {
@@ -138887,7 +138887,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auf Länge kürzen"
+            "value" : "Auf Länge bringen"
           }
         },
         "es" : {
@@ -143505,7 +143505,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Für Strahlteiler-Glas"
+            "value" : "Für Strahlteilerglas"
           }
         },
         "es" : {
@@ -144928,7 +144928,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vier kurze Fragen. Cues Entwürfe starten näher an dir."
+            "value" : "Vier kurze Fragen. So klingen Cues Entwürfe von Anfang an mehr nach dir."
           }
         },
         "es" : {
@@ -146059,7 +146059,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis · %lld übrig"
+            "value" : "Kostenlos · noch %lld"
           }
         },
         "es" : {
@@ -146655,7 +146655,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis-Plan"
+            "value" : "Kostenloser Plan"
           }
         },
         "es" : {
@@ -146773,7 +146773,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis testen · %lld Exporte inklusive. Danach 7 Tage gratis."
+            "value" : "Kostenlos testen · %lld Exporte inklusive. Danach 7 Tage kostenlos."
           }
         },
         "es" : {
@@ -147603,7 +147603,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bild wird eingefroren…"
+            "value" : "Bild wird eingefroren …"
           }
         },
         "es" : {
@@ -151161,7 +151161,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inspiration finden"
+            "value" : "Sich inspirieren lassen"
           }
         },
         "es" : {
@@ -151872,7 +151872,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bereitet sich vor, deiner Stimme zu folgen"
+            "value" : "Folgen deiner Stimme wird vorbereitet"
           }
         },
         "es" : {
@@ -151990,7 +151990,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bereitet das Folgen deiner Worte vor. Scrollt mit %@, während du sprichst."
+            "value" : "Folgen deiner Worte wird vorbereitet. Scrollt mit %@, während du sprichst."
           }
         },
         "es" : {
@@ -152939,7 +152939,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gib den Zuschauern einen schnellen Test für vor dem nächsten Kauf."
+            "value" : "Gib den Zuschauern einen schnellen Test an die Hand, bevor sie etwas kaufen."
           }
         },
         "es" : {
@@ -153058,7 +153058,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gib einfache Schritte, um herauszufinden, was man gern trägt."
+            "value" : "Zeig einfache Schritte, um herauszufinden, was man gern trägt."
           }
         },
         "es" : {
@@ -153415,7 +153415,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gib eine klare Meinung und den Grund dafür."
+            "value" : "Vertritt eine klare Meinung und nenn den Grund dafür."
           }
         },
         "es" : {
@@ -157451,7 +157451,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hör mir zu."
+            "value" : "Hör mir kurz zu."
           }
         },
         "es" : {
@@ -158160,7 +158160,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hilf mir, zu beenden, was ich anfange"
+            "value" : "Hilf mir, Angefangenes abzuschließen"
           }
         },
         "es" : {
@@ -160648,7 +160648,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Markierung"
+            "value" : "Hervorhebung"
           }
         },
         "es" : {
@@ -161242,7 +161242,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Halte das Mikrofon, um eine Idee festzuhalten. Schreib sie später."
+            "value" : "Halte die Mikrofontaste gedrückt, um eine Idee festzuhalten. Schreib sie später."
           }
         },
         "es" : {
@@ -162426,7 +162426,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hook-Varianten, Plattform-Versionen, Auswahl der besten Takes"
+            "value" : "Hook-Varianten, Plattformversionen, Auswahl der besten Takes"
           }
         },
         "es" : {
@@ -166097,7 +166097,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trink vor dem Koffein Wasser — es wirkt besser."
+            "value" : "Trink vor dem Koffein Wasser. Es wirkt besser."
           }
         },
         "es" : {
@@ -167161,7 +167161,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ich hab den Einzigen gefunden, der wirklich funktioniert."
+            "value" : "Ich hab das Einzige gefunden, das wirklich funktioniert."
           }
         },
         "es" : {
@@ -169289,7 +169289,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideen zu den Themen deiner Videos. Nichts wird geschrieben, bis du eine auswählst."
+            "value" : "Ideen zu den Themen deiner Videos. Nichts wird entworfen, bis du eine auswählst."
           }
         },
         "es" : {
@@ -170003,7 +170003,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn dir die Morgen auch schwerfallen, bist du nicht allein."
+            "value" : "Wenn dir das Aufstehen auch schwerfällt, bist du nicht allein."
           }
         },
         "es" : {
@@ -174279,7 +174279,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "in deiner Stimme"
+            "value" : "in deinem Ton"
           }
         },
         "es" : {
@@ -174398,7 +174398,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In deiner Stimme · %@"
+            "value" : "In deinem Ton · %@"
           }
         },
         "es" : {
@@ -175817,7 +175817,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iOS hat den Export gestoppt · Versuch es noch mal"
+            "value" : "iOS hat den Export gestoppt · Noch mal versuchen"
           }
         },
         "es" : {
@@ -177001,7 +177001,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sie entzündet den ersten Stern deines Universums"
+            "value" : "Damit leuchtet der erste Stern deines Universums"
           }
         },
         "es" : {
@@ -177237,7 +177237,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Es beginnt das Universum dieses Jahres"
+            "value" : "Damit beginnt das Universum dieses Jahres"
           }
         },
         "es" : {
@@ -178304,7 +178304,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mit nächster verbinden"
+            "value" : "Mit nächster Zeile verbinden"
           }
         },
         "es" : {
@@ -178777,7 +178777,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nur meine Stimme speichern"
+            "value" : "Nur meine Stimme sichern"
           }
         },
         "es" : {
@@ -179250,7 +179250,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nur das Thema und deine Punkte. Cue schreibt eine nummerierte Liste mit Hook am Anfang und einer Frage für die Kommentare am Ende."
+            "value" : "Nur das Thema und deine Punkte. Cue entwirft eine nummerierte Liste mit Hook am Anfang und einer Frage für die Kommentare am Ende."
           }
         },
         "es" : {
@@ -179959,7 +179959,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lass Cue geöffnet, bis er fertig ist."
+            "value" : "Lass Cue geöffnet, bis der Export fertig ist."
           }
         },
         "es" : {
@@ -180433,7 +180433,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Halte es unter 40 Zeichen."
+            "value" : "Bleib unter 40 Zeichen."
           }
         },
         "es" : {
@@ -181496,7 +181496,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Halte deine Worte frei von den Buttons"
+            "value" : "Halte deine Worte frei von den Tasten"
           }
         },
         "es" : {
@@ -184807,7 +184807,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fang mit der Neuigkeit an, nicht mit der Vorgeschichte. Sag, wann es passiert, und ein Detail, das neugierig macht."
+            "value" : "Fang mit der Neuigkeit an, nicht mit der Vorgeschichte. Sag, wann es passiert, und nenn ein Detail, das neugierig macht."
           }
         },
         "es" : {
@@ -186466,7 +186466,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Machen wir die Morgen ein bisschen sanfter, okay?"
+            "value" : "Machen wir den Morgen ein bisschen sanfter, okay?"
           }
         },
         "es" : {
@@ -188595,7 +188595,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ordne die Sterne"
+            "value" : "Die Sterne werden ausgerichtet"
           }
         },
         "es" : {
@@ -189422,7 +189422,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nenn die Schritte in einfachen Worten, durch Kommas getrennt. Cue macht daraus eine nummerierte Anleitung mit Hook am Anfang und „Speicher dir das“ am Ende."
+            "value" : "Nenn die Schritte in einfachen Worten, durch Kommas getrennt. Cue macht daraus eine nummerierte Anleitung mit Hook am Anfang und „Speicher dir das ab“ am Ende."
           }
         },
         "es" : {
@@ -189895,7 +189895,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suche nach Pausen …"
+            "value" : "Pausen werden gesucht …"
           }
         },
         "es" : {
@@ -190368,7 +190368,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Liste"
+            "value" : "Listenvideo"
           }
         },
         "es" : {
@@ -190960,7 +190960,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Logbuch · %lld warten"
+            "value" : "Logbuch · %lld offen"
           }
         },
         "es" : {
@@ -191906,7 +191906,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Look kopiert · wähle einen Clip und Look einsetzen"
+            "value" : "Look kopiert · Clip wählen und „Look einsetzen“"
           }
         },
         "es" : {
@@ -192381,7 +192381,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suche nach dem Teleprompter …"
+            "value" : "Teleprompter wird gesucht …"
           }
         },
         "es" : {
@@ -192618,7 +192618,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Laute, fette Großbuchstaben"
+            "value" : "Auffällige, fette Großbuchstaben"
           }
         },
         "es" : {
@@ -192736,7 +192736,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unter Stimme absenken"
+            "value" : "Unter der Stimme absenken"
           }
         },
         "es" : {
@@ -194155,7 +194155,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kürze es oder nimm es so auf – du kannst später schneiden."
+            "value" : "Kürze den Text oder nimm ihn so auf. Kürzen kannst du auch später."
           }
         },
         "es" : {
@@ -194274,7 +194274,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mach es stumm verständlich"
+            "value" : "Auch ohne Ton verständlich"
           }
         },
         "es" : {
@@ -195228,7 +195228,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als beste markieren"
+            "value" : "Als besten Take markieren"
           }
         },
         "es" : {
@@ -197005,7 +197005,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Messen …"
+            "value" : "Wird gemessen …"
           }
         },
         "es" : {
@@ -203536,7 +203536,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Morgen können schwierig sein, aber es gibt gute Gewohnheiten, die dir beim Start in den Tag helfen."
+            "value" : "Die Morgenstunden können schwierig sein, aber es gibt gute Gewohnheiten, die dir beim Start in den Tag helfen."
           }
         },
         "es" : {
@@ -204486,7 +204486,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nach hinten"
+            "value" : "Später"
           }
         },
         "es" : {
@@ -204605,7 +204605,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nach vorne"
+            "value" : "Früher"
           }
         },
         "es" : {
@@ -205196,7 +205196,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In Ordner bewegen"
+            "value" : "In Ordner verschieben"
           }
         },
         "es" : {
@@ -205314,7 +205314,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nach „%@“ bewegt"
+            "value" : "Nach „%@“ verschoben"
           }
         },
         "es" : {
@@ -207208,7 +207208,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MEIN %@-UNIVERSUM"
+            "value" : "MEIN UNIVERSUM %@"
           }
         },
         "es" : {
@@ -207802,7 +207802,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MEINE CUE-STIMME"
+            "value" : "MY CUE VOICE"
           }
         },
         "es" : {
@@ -208869,7 +208869,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mein eigenes Geschäft"
+            "value" : "Mein eigenes Unternehmen"
           }
         },
         "es" : {
@@ -213247,7 +213247,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Neue Skripte beginnen darin. Skripte werden nie übersetzt."
+            "value" : "Neue Skripte werden in dieser Sprache angelegt. Skripte werden nie übersetzt."
           }
         },
         "es" : {
@@ -214195,7 +214195,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als Nächstes"
+            "value" : "Weiter"
           }
         },
         "es" : {
@@ -215025,7 +215025,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als Nächstes: %@"
+            "value" : "Weiter: %@"
           }
         },
         "es" : {
@@ -215985,7 +215985,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keine Kamera gefunden · Studio-Modus funktioniert"
+            "value" : "Keine Kamera gefunden · Studio-Modus geht trotzdem"
           }
         },
         "es" : {
@@ -216814,7 +216814,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keine Cues"
+            "value" : "Keine Hinweise"
           }
         },
         "es" : {
@@ -222504,7 +222504,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Niemand redet darüber, also mach ich es."
+            "value" : "Niemand redet darüber, also tu ich es."
           }
         },
         "es" : {
@@ -227125,7 +227125,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mitteilungen kommen still an"
+            "value" : "Mitteilungen kommen ohne Ton"
           }
         },
         "es" : {
@@ -229262,7 +229262,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Okay, mal ehrlich. [Pause] Drei kleine Gewohnheiten haben meine Morgen komplett verändert."
+            "value" : "Okay, mal ehrlich. [Pause] Drei kleine Gewohnheiten haben meine Morgenstunden komplett verändert."
           }
         },
         "es" : {
@@ -232462,7 +232462,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nur dieser Untertitel ändert sich"
+            "value" : "Nur diese Unterzeile ändert sich"
           }
         },
         "es" : {
@@ -233173,7 +233173,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tag der offenen Tür für Häuser"
+            "value" : "Besichtigungstermine"
           }
         },
         "es" : {
@@ -235065,7 +235065,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öffnet als Entwurf mit diesen Abschnitten."
+            "value" : "Wird als Entwurf mit diesen Abschnitten geöffnet."
           }
         },
         "es" : {
@@ -235537,7 +235537,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öffnet deine Stimm-Fragen, um sie zu ändern."
+            "value" : "Öffnet die Fragen zu deiner Stimme, um sie zu ändern."
           }
         },
         "es" : {
@@ -236483,7 +236483,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oder tipp eine Idee…"
+            "value" : "Oder tipp eine Idee ein …"
           }
         },
         "es" : {
@@ -238019,7 +238019,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Steh dazu"
+            "value" : "Verantwortung übernehmen"
           }
         },
         "es" : {
@@ -238612,7 +238612,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hinweis auf bezahlte Partnerschaft am Anfang"
+            "value" : "Kennzeichnung als bezahlte Partnerschaft am Anfang"
           }
         },
         "es" : {
@@ -240744,7 +240744,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Füge ein Skript ein, scanne oder wähle es aus. Du kannst es vor dem Verwenden korrigieren."
+            "value" : "Füge ein Skript ein, scanne es oder wähle es aus. Du kannst es vor dem Verwenden korrigieren."
           }
         },
         "es" : {
@@ -245007,7 +245007,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phrasen"
+            "value" : "Redewendungen"
           }
         },
         "es" : {
@@ -245125,7 +245125,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Floskeln · Entfernt"
+            "value" : "Redewendungen · Entfernt"
           }
         },
         "es" : {
@@ -246194,7 +246194,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Datum und Uhrzeit wählen…"
+            "value" : "Datum und Uhrzeit wählen …"
           }
         },
         "es" : {
@@ -247617,7 +247617,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beste wählen"
+            "value" : "Besten wählen"
           }
         },
         "es" : {
@@ -248090,7 +248090,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wähle das Naheliegendste. Du kannst es jederzeit ändern."
+            "value" : "Wähle, was am besten passt. Du kannst es jederzeit ändern."
           }
         },
         "es" : {
@@ -248446,7 +248446,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wähle zuerst die gesprochene Sprache unter Untertitel."
+            "value" : "Wähle zuerst die gesprochene Sprache unter „Untertitel“."
           }
         },
         "es" : {
@@ -248682,7 +248682,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Farbe des Hintergrunds wählen"
+            "value" : "Farbe des Screens wählen"
           }
         },
         "es" : {
@@ -248801,7 +248801,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bearbeite weiter oder teile es, wenn du so weit bist."
+            "value" : "Mach mit dem Schnitt weiter oder teile ihn, wenn du so weit bist."
           }
         },
         "es" : {
@@ -249749,7 +249749,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pille"
+            "value" : "Kapsel"
           }
         },
         "es" : {
@@ -252829,7 +252829,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schließ ein Mikro an oder koppel es, dann erscheint es hier."
+            "value" : "Schließ ein Mikro an oder kopple es, dann erscheint es hier."
           }
         },
         "es" : {
@@ -252948,7 +252948,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Podcaster, Koch, Gamer…"
+            "value" : "Podcaster, Koch, Gamer …"
           }
         },
         "es" : {
@@ -256502,7 +256502,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV: Du hörst endlich auf, deine Morgen zu verlieren."
+            "value" : "POV: Du verschwendest endlich nicht mehr deine Morgenstunden."
           }
         },
         "es" : {
@@ -257330,7 +257330,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vorlagen"
+            "value" : "Presets"
           }
         },
         "es" : {
@@ -257448,7 +257448,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vorgaben aktualisieren sich mit den Plattformen."
+            "value" : "Presets werden mit den Plattformen aktualisiert."
           }
         },
         "es" : {
@@ -257567,7 +257567,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe auf %@ auf Abspielen – der Text startet hier."
+            "value" : "Tippe auf %@ auf Abspielen: Der Text startet hier."
           }
         },
         "es" : {
@@ -258157,7 +258157,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vorschau deiner Universum-Karte"
+            "value" : "Vorschau deiner Universumskarte"
           }
         },
         "es" : {
@@ -260283,7 +260283,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Produktive Morgen"
+            "value" : "Produktive Morgenstunden"
           }
         },
         "es" : {
@@ -263835,7 +263835,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zurücklegen"
+            "value" : "Wiederherstellen"
           }
         },
         "es" : {
@@ -263954,7 +263954,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Leg es am Abspielkopf auf das, dem es folgen soll, und tippe auf Verfolgen. Cue erstellt Keyframes, die du anpassen kannst."
+            "value" : "Leg es an der Abspielposition auf das, dem es folgen soll, und tippe auf „Verfolgen“. Cue erstellt Keyframes, die du anpassen kannst."
           }
         },
         "es" : {
@@ -268219,7 +268219,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kommentar wird gelesen…"
+            "value" : "Kommentar wird gelesen …"
           }
         },
         "es" : {
@@ -269168,7 +269168,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hier fertig · suche deine Augen im Rest · %lld%%"
+            "value" : "Hier fertig · Augen im Rest werden gesucht · %lld %%"
           }
         },
         "es" : {
@@ -269876,7 +269876,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bereit zur Aufnahme · Shape ergänzt Cues"
+            "value" : "Bereit zur Aufnahme · Shape ergänzt Hinweise"
           }
         },
         "es" : {
@@ -271416,7 +271416,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nimm einen Kommentar über deinen Schnitt auf. Aufgenommen wird erst, wenn du die Taste drückst."
+            "value" : "Nimm ein Voice-over zu deinem Schnitt auf. Aufgenommen wird erst, wenn du die Taste drückst."
           }
         },
         "es" : {
@@ -271889,7 +271889,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nochmal aufnehmen"
+            "value" : "Noch mal aufnehmen"
           }
         },
         "es" : {
@@ -273663,7 +273663,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aufnahme …"
+            "value" : "Wird aufgenommen …"
           }
         },
         "es" : {
@@ -274136,7 +274136,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wiederhole es, so oft du willst. Du wählst den Take, der online geht."
+            "value" : "Wiederhole es, so oft du willst. Du wählst den Take, den du postest."
           }
         },
         "es" : {
@@ -274966,7 +274966,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erinnere mich ans Kreativsein"
+            "value" : "Erinnere mich, kreativ zu werden"
           }
         },
         "es" : {
@@ -275085,7 +275085,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erinnere mich…"
+            "value" : "Erinnere mich …"
           }
         },
         "es" : {
@@ -275913,7 +275913,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fernbedienung per Apple Watch, iPad & Mac-Sync"
+            "value" : "Fernbedienung per Apple Watch, Sync mit iPad & Mac"
           }
         },
         "es" : {
@@ -283156,7 +283156,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Umgekehrt"
+            "value" : "Läuft rückwärts"
           }
         },
         "es" : {
@@ -284105,7 +284105,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Umformulierungen, Hooks und Themenideen laufen auf dem Gerät. Ein freier Prompt wird mit Private Cloud Compute von Apple geschrieben, das deine Anfrage nur zur Antwort nutzt und nicht speichert. Kein anderer KI-Dienst ist beteiligt."
+            "value" : "Umformulierungen, Hooks und Themenideen laufen auf dem Gerät. Ein freier Prompt wird mit Private Cloud Compute von Apple entworfen, das deine Anfrage nur zur Antwort nutzt und nicht speichert. Kein anderer KI-Dienst ist beteiligt."
           }
         },
         "es" : {
@@ -286602,7 +286602,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gleiches Bild wie Vorher · wähle ein Bild"
+            "value" : "Gleiches Bild wie „Vorher“ · Bild wählen"
           }
         },
         "es" : {
@@ -287431,7 +287431,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als meinen Stil sichern"
+            "value" : "Als „Mein Stil“ sichern"
           }
         },
         "es" : {
@@ -287667,7 +287667,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Speicher dir das"
+            "value" : "Speicher dir das ab"
           }
         },
         "es" : {
@@ -287785,7 +287785,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Speicher dir das, bevor du es brauchst."
+            "value" : "Speicher dir das ab, bevor du es brauchst."
           }
         },
         "es" : {
@@ -287904,7 +287904,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Speicher dir das für morgen früh."
+            "value" : "Speicher dir das für morgen früh ab."
           }
         },
         "es" : {
@@ -288022,7 +288022,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Speicher dir das, damit du es hast, wenn du es brauchst. [lächeln]"
+            "value" : "Speicher dir das ab, damit du es hast, wenn du es brauchst. [lächeln]"
           }
         },
         "es" : {
@@ -289088,7 +289088,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gesichert · Für neue Cover"
+            "value" : "Gesichert · Gilt für neue Cover"
           }
         },
         "es" : {
@@ -289324,7 +289324,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als Mein Stil gesichert"
+            "value" : "Als „Mein Stil“ gesichert"
           }
         },
         "es" : {
@@ -289442,7 +289442,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als v%1$lld gesichert · %2$lld Takes bei v%3$lld"
+            "value" : "Als v%1$lld gesichert · %2$lld Takes von v%3$lld"
           }
         },
         "en" : {
@@ -289566,7 +289566,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als v%1$lld gesichert · Take bei v%2$lld"
+            "value" : "Als v%1$lld gesichert · Take von v%2$lld"
           }
         },
         "en" : {
@@ -290046,7 +290046,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "In Takes gesichert. Füge Untertitel hinzu, bearbeite oder teile es, um dein Universum %@ zum Leuchten zu bringen."
+            "value" : "In Takes gesichert. Füge Untertitel hinzu, bearbeite oder teile das Video, um dein Universum %@ zum Leuchten zu bringen."
           }
         },
         "es" : {
@@ -290165,7 +290165,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Im Logbuch gespeichert."
+            "value" : "Im Logbuch gesichert."
           }
         },
         "es" : {
@@ -290874,7 +290874,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Speichert eine Idee in deinem Logbuch, um sie später zu schreiben."
+            "value" : "Sichert eine Idee in deinem Logbuch, um sie später zu schreiben."
           }
         },
         "es" : {
@@ -290992,7 +290992,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wird in Fotos gesichert · poste es überall"
+            "value" : "Wird in Fotos gesichert · poste es, wo du willst"
           }
         },
         "es" : {
@@ -291348,7 +291348,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lasse Platz für deine Pause"
+            "value" : "Platz für deine Pause wird eingeplant"
           }
         },
         "es" : {
@@ -294432,7 +294432,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skript-Details"
+            "value" : "Skriptdetails"
           }
         },
         "es" : {
@@ -295261,7 +295261,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skript-Typ"
+            "value" : "Skripttyp"
           }
         },
         "es" : {
@@ -297983,7 +297983,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sieh beim Aufnehmen, wo TikTok, Reels und Shorts ihre Buttons platzieren."
+            "value" : "Sieh beim Aufnehmen, wo TikTok, Reels und Shorts ihre Tasten platzieren."
           }
         },
         "es" : {
@@ -301060,7 +301060,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ernster Modus: keine Hooks, Witze, kein Hype und kein „Folg mir für mehr“."
+            "value" : "Ernster Modus: keine Hooks, Witze, kein Hype und kein „Folge mir für mehr“."
           }
         },
         "es" : {
@@ -302952,7 +302952,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Forme es für %@"
+            "value" : "Wird für %@ angepasst"
           }
         },
         "es" : {
@@ -303071,7 +303071,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Formt ihn auf deine Art"
+            "value" : "Wird auf deine Art gestaltet"
           }
         },
         "es" : {
@@ -303662,7 +303662,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nochmal teilen"
+            "value" : "Noch mal teilen"
           }
         },
         "es" : {
@@ -304017,7 +304017,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mein %@-Universum teilen"
+            "value" : "Mein Universum %@ teilen"
           }
         },
         "es" : {
@@ -306508,7 +306508,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MIT %lld NETZWERKEN GETEILT"
+            "value" : "AUF %lld NETZWERKEN GETEILT"
           }
         },
         "es" : {
@@ -308635,7 +308635,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeig eine einfache Budget-Methode ganz ohne Tabelle."
+            "value" : "Zeig eine einfache Budgetmethode ganz ohne Tabelle."
           }
         },
         "es" : {
@@ -315628,7 +315628,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schieben"
+            "value" : "Gleiten"
           }
         },
         "es" : {
@@ -316221,7 +316221,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entspannte Morgen"
+            "value" : "Entspannte Morgenstunden"
           }
         },
         "es" : {
@@ -319539,7 +319539,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das kam in den Kommentaren – ich antworte."
+            "value" : "Jemand hat das in den Kommentaren gefragt, hier meine Antwort."
           }
         },
         "es" : {
@@ -321554,7 +321554,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teilen"
+            "value" : "Aufteilen"
           }
         },
         "es" : {
@@ -321672,7 +321672,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geteilt bei %@"
+            "value" : "Aufgeteilt bei %@"
           }
         },
         "es" : {
@@ -321790,7 +321790,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teile an der Abspielposition, um einen Teil zu ändern"
+            "value" : "Teile an der Abspielposition auf, um einen Teil zu ändern"
           }
         },
         "es" : {
@@ -321909,7 +321909,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teile oder füge einen Clip hinzu, um neu anzuordnen"
+            "value" : "Teile auf oder füge einen Clip hinzu, um neu anzuordnen"
           }
         },
         "es" : {
@@ -322028,7 +322028,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teile das Video zuerst oder nutze „Video auf den Beats schneiden“"
+            "value" : "Teile das Video zuerst auf oder nutze „Video auf den Beats schneiden“"
           }
         },
         "es" : {
@@ -323213,7 +323213,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stand"
+            "value" : "Phase"
           }
         },
         "es" : {
@@ -323451,7 +323451,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Markier deinen Favoriten. Die anderen bleiben in Takes."
+            "value" : "Markiere deinen Favoriten mit einem Stern. Die anderen bleiben in Takes."
           }
         },
         "es" : {
@@ -324278,7 +324278,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis testen starten · jetzt exportieren"
+            "value" : "Kostenlos testen · jetzt exportieren"
           }
         },
         "es" : {
@@ -328428,7 +328428,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entwirft noch · dauert etwas länger"
+            "value" : "Wird noch entworfen · dauert etwas länger"
           }
         },
         "es" : {
@@ -331622,7 +331622,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Starke Flüche und Beleidigungen werden nie geschrieben — Apple Intelligence erzeugt sie nicht."
+            "value" : "Starke Flüche und Beleidigungen kommen nie vor: Apple Intelligence erzeugt sie nicht."
           }
         },
         "es" : {
@@ -333755,7 +333755,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Style eine Jeans auf drei verschiedene Arten."
+            "value" : "Kombiniere eine Jeans auf drei verschiedene Arten."
           }
         },
         "es" : {
@@ -334346,7 +334346,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Untertitel"
+            "value" : "Unterzeile"
           }
         },
         "es" : {
@@ -336847,7 +336847,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bring dein Universum weiter."
+            "value" : "Mach mehr aus deinem Universum."
           }
         },
         "es" : {
@@ -337675,7 +337675,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hohe, laute Versalien"
+            "value" : "Hohe, auffällige Versalien"
           }
         },
         "es" : {
@@ -338266,7 +338266,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe im Editor auf „Fertig“ oder wähle einen besten Take — dann landet das Video hier, bereit zum Posten."
+            "value" : "Tippe im Editor auf „Fertig“ oder wähle einen besten Take. Dann landet das Video hier, bereit zum Posten."
           }
         },
         "es" : {
@@ -338385,7 +338385,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe auf Play und warte den Countdown ab. Dann lies: Der Text läuft in gleichmäßigem Tempo."
+            "value" : "Tippe auf Abspielen und warte den Countdown ab. Dann lies: Der Text läuft in gleichmäßigem Tempo."
           }
         },
         "es" : {
@@ -338504,7 +338504,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe auf Play und warte den Countdown ab. Dann lies laut: Der Text bewegt sich, während du sprichst."
+            "value" : "Tippe auf Abspielen und warte den Countdown ab. Dann lies laut: Der Text bewegt sich, während du sprichst."
           }
         },
         "es" : {
@@ -338623,7 +338623,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe auf Play und warte den Countdown ab. Dann lies laut: Der Text folgt deiner Stimme."
+            "value" : "Tippe auf Abspielen und warte den Countdown ab. Dann lies laut: Der Text folgt deiner Stimme."
           }
         },
         "es" : {
@@ -338979,7 +338979,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tippe auf das erste Wort des Teils, den du schneiden willst, dann auf sein letztes Wort. Durchgestrichene Wörter wurden geschnitten."
+            "value" : "Tippe auf das erste Wort des Teils, den du schneiden willst, dann auf sein letztes Wort. Durchgestrichene Wörter wurden herausgeschnitten."
           }
         },
         "es" : {
@@ -341110,7 +341110,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bring einen schnellen Alltagslook bei, Schritt für Schritt."
+            "value" : "Zeig Schritt für Schritt einen schnellen Alltagslook."
           }
         },
         "es" : {
@@ -341228,7 +341228,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lehrer oder Erklärer"
+            "value" : "Lehrkraft oder Erklärer"
           }
         },
         "es" : {
@@ -341347,7 +341347,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeigt, wie du sprichst — wird nie für Geschichten, Meinungen oder Ergebnisse wiederverwendet. Bleibt auf diesem iPhone."
+            "value" : "Zeigt Cue, wie du sprichst. Wird nie für Geschichten, Meinungen oder Ergebnisse wiederverwendet. Bleibt auf diesem iPhone."
           }
         },
         "es" : {
@@ -343483,7 +343483,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeugnisse"
+            "value" : "Glaubenszeugnisse"
           }
         },
         "es" : {
@@ -346560,7 +346560,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Der 10-Minuten-Morgen, der wirklich bleibt"
+            "value" : "Der 10-Minuten-Morgen, den du wirklich durchhältst"
           }
         },
         "es" : {
@@ -350590,7 +350590,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abspielkopf und Ränder rasten daran ein"
+            "value" : "Abspielposition und Ränder rasten daran ein"
           }
         },
         "es" : {
@@ -352846,7 +352846,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das Video hat sich inzwischen geändert · friere das Bild erneut ein"
+            "value" : "Das Video hat sich inzwischen geändert · Friere das Bild erneut ein"
           }
         },
         "es" : {
@@ -352965,7 +352965,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Das Video hat sich inzwischen geändert · Kehre ihn noch einmal um"
+            "value" : "Das Video hat sich inzwischen geändert · Wende „Rückwärts“ erneut an"
           }
         },
         "es" : {
@@ -357949,7 +357949,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dieser Untertitel"
+            "value" : "Diese Unterzeile"
           }
         },
         "es" : {
@@ -359725,7 +359725,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Drei Momente reichen: was passiert ist, der Wendepunkt, wie es ausging. Cue fügt einen Cliffhanger-Hook und Tempo-Hinweise hinzu."
+            "value" : "Drei Momente reichen: was passiert ist, der Wendepunkt, wie es ausging. Cue fügt einen Cliffhanger-Hook und Tempohinweise hinzu."
           }
         },
         "es" : {
@@ -360792,7 +360792,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TikTok zahlt Creator Rewards ab über einer Minute."
+            "value" : "TikTok zahlt Creator Rewards für Videos über einer Minute."
           }
         },
         "es" : {
@@ -362330,7 +362330,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auswählen"
+            "value" : "Zum Auswählen"
           }
         },
         "es" : {
@@ -368366,7 +368366,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Test gestartet – viel Spaß mit Cue Pro"
+            "value" : "Testphase gestartet · Viel Spaß mit Cue Pro"
           }
         },
         "es" : {
@@ -368602,7 +368602,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kürze überflüssige Wörter"
+            "value" : "Überflüssige Wörter werden gekürzt"
           }
         },
         "es" : {
@@ -369312,7 +369312,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Versuche ein anderes Wort, z. B. Tempo oder spiegeln."
+            "value" : "Versuche ein anderes Wort, z. B. „Tempo“ oder „Spiegeln“."
           }
         },
         "es" : {
@@ -370144,7 +370144,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nimm es mit dem Teleprompter auf. Dein erster Stern ist nur einen Take entfernt."
+            "value" : "Probier, es mit dem Teleprompter aufzunehmen. Dein erster Stern ist nur einen Take entfernt."
           }
         },
         "es" : {
@@ -372750,7 +372750,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schreib deinen Untertitel"
+            "value" : "Schreib deine Unterzeile"
           }
         },
         "es" : {
@@ -373934,7 +373934,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unter 30 Sek."
+            "value" : "Unter 30 s"
           }
         },
         "es" : {
@@ -374998,7 +374998,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Frei nach %lld geteilten Videos"
+            "value" : "Freigeschaltet ab %lld geteilten Videos"
           }
         },
         "es" : {
@@ -375234,7 +375234,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unbeliebte Meinung, aber hör mir zu."
+            "value" : "Unbeliebte Meinung, aber hör mir kurz zu."
           }
         },
         "es" : {
@@ -376062,7 +376062,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "bis zu %lld · prägt Hook und Pointe"
+            "value" : "bis zu %lld · prägt Hook und Auflösung"
           }
         },
         "es" : {
@@ -378074,7 +378074,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "nutzername"
+            "value" : "Nutzername"
           }
         },
         "es" : {
@@ -378665,7 +378665,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nutzt das verbundene Mikro oder das vom iPhone"
+            "value" : "Nutzt das angeschlossene Mikro oder das des iPhone"
           }
         },
         "es" : {
@@ -379612,7 +379612,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Urteil"
+            "value" : "Fazit"
           }
         },
         "es" : {
@@ -382567,7 +382567,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sprachfolge hört auf %1$@. Untertitel hören in der Sprache des Skripts, %2$@. Wähle die gesprochene Sprache, wenn es eine andere ist."
+            "value" : "Sprachfolge hört auf %1$@. Untertitel nutzen die Sprache des Skripts, %2$@. Wähle die gesprochene Sprache, wenn sie abweicht."
           }
         },
         "en" : {
@@ -383401,7 +383401,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Warte …"
+            "value" : "Wart’s ab …"
           }
         },
         "es" : {
@@ -383756,7 +383756,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Warte auf dein anderes Gerät …"
+            "value" : "Warten auf dein anderes Gerät …"
           }
         },
         "es" : {
@@ -383994,7 +383994,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aufwach-Routinen"
+            "value" : "Aufwachroutinen"
           }
         },
         "es" : {
@@ -385773,7 +385773,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wärme den Prompter auf"
+            "value" : "Der Prompter wärmt sich auf"
           }
         },
         "es" : {
@@ -386957,7 +386957,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stärke"
+            "value" : "Schriftstärke"
           }
         },
         "es" : {
@@ -389680,7 +389680,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Was dir niemand übers Laufenanfangen sagt"
+            "value" : "Was dir niemand über den Einstieg ins Laufen sagt"
           }
         },
         "es" : {
@@ -390744,7 +390744,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ohne was kannst du nicht drehen?"
+            "value" : "Worauf kannst du beim Drehen nicht verzichten?"
           }
         },
         "es" : {
@@ -392047,7 +392047,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wo die Tasten und Untertitel jeder App das Bild verdecken"
+            "value" : "Wo Tasten und Texte jeder App das Bild verdecken"
           }
         },
         "es" : {
@@ -397495,7 +397495,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ohne Länge entwirft Cue für diese."
+            "value" : "Ohne Angabe entwirft Cue für diese Länge."
           }
         },
         "es" : {
@@ -398088,7 +398088,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wörter auf einem Etikett"
+            "value" : "Wörter auf einem Tag"
           }
         },
         "es" : {
@@ -398207,7 +398207,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wörter zurückgelegt"
+            "value" : "Wörter wiederhergestellt"
           }
         },
         "es" : {
@@ -400105,7 +400105,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Werbung schreiben"
+            "value" : "Werbung entwerfen"
           }
         },
         "es" : {
@@ -400698,7 +400698,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auf diesem iPhone mit Apple Intelligence geschrieben. Nichts verlässt dein Gerät."
+            "value" : "Auf diesem iPhone mit Apple Intelligence entworfen. Nichts verlässt dein Gerät."
           }
         },
         "es" : {
@@ -400817,7 +400817,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bisher geschrieben"
+            "value" : "Bisher entworfen"
           }
         },
         "es" : {
@@ -401054,7 +401054,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Falscher Code · Nochmal versuchen"
+            "value" : "Falscher Code · Noch mal versuchen"
           }
         },
         "es" : {
@@ -401765,7 +401765,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ja — in sozialen Medien teilen"
+            "value" : "Ja, in sozialen Medien teilen"
           }
         },
         "es" : {
@@ -405199,7 +405199,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein %@-Universum beginnt mit deinem ersten Teilen."
+            "value" : "Dein Universum %@ beginnt mit deinem ersten geteilten Video."
           }
         },
         "es" : {
@@ -405791,7 +405791,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Untertitel nutzen die Vorlage %@. Schrift, Farben, Hintergrund, Schatten und Leuchten dieses Texts ersetzen sie."
+            "value" : "Deine Untertitel nutzen das Preset %@. Schrift, Farben, Hintergrund, Schatten und Leuchten dieses Texts ersetzen es."
           }
         },
         "es" : {
@@ -407577,7 +407577,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Idee · in deiner Stimme entworfen"
+            "value" : "Deine Idee · in deinem Ton entworfen"
           }
         },
         "es" : {
@@ -407696,7 +407696,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine Idee ist schon angefangen"
+            "value" : "Du hast deine Idee schon angefangen"
           }
         },
         "es" : {
@@ -408052,7 +408052,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Licht. Es wächst mit jedem Video, das du teilst — ganz ohne Foto."
+            "value" : "Dein Licht. Es wächst mit jedem Video, das du teilst, ganz ohne Foto."
           }
         },
         "en" : {
@@ -410904,7 +410904,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Take fließt. Probier eine kürzere Länge."
+            "value" : "Dein Take läuft flüssig. Probier eine kürzere Länge."
           }
         },
         "es" : {
@@ -411022,7 +411022,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Take wird gleich gelesen und auf die Zeitleiste gelegt."
+            "value" : "Dein Take wird gleich gelesen und auf die Timeline gelegt."
           }
         },
         "es" : {
@@ -412090,7 +412090,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Universum beginnt mit deinem ersten Teilen."
+            "value" : "Dein Universum beginnt mit deinem ersten geteilten Video."
           }
         },
         "es" : {
@@ -412446,7 +412446,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Video, wie du es aufgenommen hast. Wähle Weichzeichnen, Farbe oder Bild, um zu ändern, was hinter dir ist."
+            "value" : "Dein Video, wie du es aufgenommen hast. Wähle Unschärfe, Farbe oder Bild, um zu ändern, was hinter dir ist."
           }
         },
         "es" : {
@@ -412564,7 +412564,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dein Video ist schon geladen und der Text ist kopiert."
+            "value" : "Dein Video ist schon geladen und der Beitragstext ist kopiert."
           }
         },
         "es" : {
