@@ -5,12 +5,12 @@
 
 import SwiftUI
 
-/// Settings (11.1): how the app behaves. "Your setup" first, then Create, Your Cue, General, Pro and About, as a grouped list with a
-/// search that finds the rows themselves. The title is the system's large one, which folds into the navigation bar as the list
-/// scrolls, and the search is the list's first row, so it scrolls away with it. Every page it opens is pushed (`SettingsRoute`).
+/// Settings (11.1): how the app behaves. Create first (each row says what is set: "Front · 1080p", "Voice"), then Your Cue, General,
+/// Pro and About, as a grouped list with a search that finds the rows themselves. The title is the system's large one, which folds into
+/// the navigation bar as the list scrolls, and the search is the list's first row, so it scrolls away with it. Every page it opens is
+/// pushed (`SettingsRoute`).
 struct SettingsView: View {
     @Environment(PreferencesService.self) private var preferences
-    @Environment(PresentationService.self) private var presentation
     @Environment(ToastService.self) private var toast
 
     @State private var query = ""
@@ -53,13 +53,6 @@ struct SettingsView: View {
 
     @ViewBuilder
     private func rootSections(_ bindings: SettingsBindings) -> some View {
-        Section {
-            SetupSummaryCard(camera: preferences.camera, prompter: preferences.prompter) { presentation.settingsPath.append($0) }
-                .listRowBackground(Color.clear)
-                .listRowInsets(EdgeInsets())
-        } footer: {
-            Text("Tap a value to change it. Platforms may suggest a setup. You choose.")
-        }
         section(String(localized: "Create"), [.recording, .prompter, .remote], bindings, footer: String(localized: "Set it up once. Every recording starts from here."))
         section(String(localized: "Your Cue"), [.myCueVoice, .personalize], bindings)
         section(String(localized: "General"), [.languageRegion, .notifications, .privacy], bindings)

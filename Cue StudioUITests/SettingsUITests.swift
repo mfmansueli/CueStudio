@@ -53,7 +53,10 @@ final class SettingsUITests: XCTestCase {
         row(app, "settings.privacy").tap()
         XCTAssertTrue(app.navigationBars["Privacy & AI data"].waitForExistence(timeout: 5))
         app.navigationBars["Privacy & AI data"].buttons.firstMatch.tap()
-        XCTAssertTrue(row(app, "settings.restorePurchases").waitForExistence(timeout: 5))
+        // Back on the root: its rows further down are there to scroll to.
+        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        app.scroll(to: row(app, "settings.restorePurchases"))
+        XCTAssertTrue(row(app, "settings.restorePurchases").exists)
         XCTAssertTrue(settings.isSelected)
     }
 
@@ -87,16 +90,17 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(row(app, "settings.noResults").waitForExistence(timeout: 5))
     }
 
-    /// A choice made on a page shows on the root's setup card and stays after leaving.
-    func testChoicesMadeInRecordingShowOnTheSetupCard() {
+    /// A choice made on a page shows on its row of the root ("Front · 4K") and stays after leaving.
+    func testChoicesMadeInRecordingShowOnTheirRow() {
         let app = CueApp.launch(seeded: true)
         tab(app, label: "Settings").tap()
         row(app, "settings.recording").tap()
         row(app, "settings.resolution").tap()
         app.buttons["4K"].firstMatch.tap()
         app.navigationBars["Recording"].buttons.firstMatch.tap()
-        XCTAssertTrue(app.buttons["settings.setup.quality"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.buttons["settings.setup.quality"].label.contains("4K"))
+        let recording = row(app, "settings.recording")
+        XCTAssertTrue(recording.waitForExistence(timeout: 5))
+        XCTAssertTrue(recording.label.contains("4K"), recording.label)
     }
 
     /// The Prompter page's switches are the ones the prompter reads.
@@ -112,15 +116,12 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(row(app, "settings.flipVertically").exists)
     }
 
-    /// Speed goes from 0.2× to 2×, and Text size is a slider in points from 12 to 56 (owner's decision, 20/10/2026). The setup card's Text
-    /// tile shows the points. The ends are reached on the same rows opened by Aa in the recorder: in the Settings tab the synthesized drag
-    /// of `adjust(toNormalizedSliderPosition:)` doesn't move the sliders of this page (any of them, line spacing included).
+    /// Speed goes from 0.2× to 2×, and Text size is a slider in points from 12 to 56 (owner's decision, 20/10/2026). The ends are reached
+    /// on the same rows opened by Aa in the recorder: in the Settings tab the synthesized drag of `adjust(toNormalizedSliderPosition:)`
+    /// doesn't move the sliders of this page (any of them, line spacing included).
     func testPrompterSpeedAndTextSizeSlidersReachTheirEnds() {
         let app = CueApp.launch(seeded: true)
         tab(app, label: "Settings").tap()
-        let text = app.buttons["settings.setup.text"]
-        XCTAssertTrue(text.waitForExistence(timeout: 5))
-        XCTAssertTrue(text.label.contains("36 pt"), text.label)
         row(app, "settings.prompter").tap()
         XCTAssertTrue(row(app, "settings.followVoice").waitForExistence(timeout: 5))
         // A Settings slider answers to its row's identifier (`PrompterEntryRow` names the whole row, slider included).

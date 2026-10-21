@@ -6,9 +6,9 @@
 import CoreHaptics
 
 /// The haptics drawn in time with something on screen (Core Haptics), where one tap of `Haptics` can't follow the motion: the sparkles
-/// of a new idea, an idea taking off as a star and landing as a script, an idea taken into the composer. Each falls back to the nearest
-/// `Haptics` tap where the iPhone has no Taptic Engine for patterns (and in the Simulator); Settings › Personalize › Haptics turns them off
-/// too (`Haptics.isEnabled`).
+/// of a new idea, an idea taking off as a star and landing as a script, an idea taken into the composer, a remote pairing and
+/// connecting. Each falls back to the nearest `Haptics` tap where the iPhone has no Taptic Engine for patterns (and in the Simulator);
+/// Settings › Personalize › Haptics turns them off too (`Haptics.isEnabled`).
 @MainActor
 enum HapticPatterns {
     /// One moment of a pattern: a tap (`duration` nil) or a hum, at `time` seconds, `intensity` and `sharpness` from 0 to 1. A hum may
@@ -67,6 +67,28 @@ enum HapticPatterns {
         Beat(time: 0.3, intensity: 0.35, sharpness: 0.2),
     ]
 
+    /// Settings › Remote, "Connect a device": a firm press, then a glint as the first ring leaves the teleprompter.
+    static let remoteSend: [Beat] = [
+        Beat(time: 0, intensity: 0.7, sharpness: 0.5),
+        Beat(time: 0.32, intensity: 0.3, sharpness: 0.9),
+    ]
+
+    /// Each of the next rings the teleprompter sends while it waits: the faintest tick, so the signal is felt and then left alone.
+    static let remoteWave: [Beat] = [Beat(time: 0, intensity: 0.22, sharpness: 0.95)]
+
+    /// A remote connected, in time with the ✓ popping on the link: a crisp tick, the click of the two meeting, and a soft settle.
+    static let remoteConnect: [Beat] = [
+        Beat(time: 0, intensity: 0.55, sharpness: 0.9),
+        Beat(time: 0.09, intensity: 0.8, sharpness: 0.5),
+        Beat(time: 0.22, intensity: 0.25, sharpness: 0.2),
+    ]
+
+    /// The remote let go: a dull drop as the link pulls back, and its echo.
+    static let remoteDisconnect: [Beat] = [
+        Beat(time: 0, intensity: 0.6, sharpness: 0.25),
+        Beat(time: 0.12, intensity: 0.2, sharpness: 0.15),
+    ]
+
     // MARK: - Playing
 
     static func playSparkles() { play(sparkles, fallback: Haptics.selection) }
@@ -75,6 +97,10 @@ enum HapticPatterns {
     static func playCommit() { play(commit, fallback: Haptics.light) }
     static func playFinish() { play(finish, fallback: Haptics.soft) }
     static func playListen() { play(listen, fallback: Haptics.selection) }
+    static func playRemoteSend() { play(remoteSend, fallback: Haptics.medium) }
+    static func playRemoteWave() { play(remoteWave, fallback: Haptics.selection) }
+    static func playRemoteConnect() { play(remoteConnect, fallback: Haptics.success) }
+    static func playRemoteDisconnect() { play(remoteDisconnect, fallback: Haptics.medium) }
 
     private static func play(_ beats: [Beat], fallback: () -> Void) {
         guard Haptics.isEnabled else { return }

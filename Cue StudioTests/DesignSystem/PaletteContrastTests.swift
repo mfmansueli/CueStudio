@@ -508,6 +508,38 @@ struct PaletteContrastTests {
     }
 
     /// The slider: the white thumb and the yellow fill stand out from the track and from every surface (3:1).
+    /// The Settings icons (`SettingsIcon`) are seen on their tiles over the row's card (`surface`): each family's glyph on the top and the
+    /// bottom of its tile's gradient, as a part of a control (1.4.11).
+    @Test func theSettingsIconsStandOutOnTheirTiles() {
+        let families: [(name: String, glyph: Color, top: Color, bottom: Color)] = [
+            ("tool", Palette.Settings.toolGlyph, Palette.Settings.toolTileTop, Palette.Settings.toolTileBottom),
+            ("ai", Palette.Settings.aiGlyph, Palette.Settings.aiTileTop, Palette.Settings.aiTileBottom),
+            ("general", Palette.Settings.generalGlyph, Palette.Settings.generalTileTop, Palette.Settings.generalTileBottom),
+            ("pro", Palette.Settings.proGlyph, Palette.Settings.proTileTop, Palette.Settings.proTileBottom),
+        ]
+        for appearance in Appearance.allCases {
+            for family in families {
+                for tile in [family.top, family.bottom] {
+                    let measured = ratio(family.glyph, onTint: tile, over: Palette.surface, in: appearance)
+                    #expect(measured >= ColorContrast.componentMinimum, "\(family.name) glyph on its tile, \(appearance): \(measured)")
+                }
+            }
+        }
+    }
+
+    /// Settings › Remote: the numbers of the steps on the other device (`accText` on the yellow tint over the card), and CONNECTED and
+    /// the waiting line over the night.
+    @Test func theRemotePagesWordsRead() {
+        for appearance in Appearance.allCases {
+            let number = ratio(Palette.accText, onTint: Palette.Settings.toolTileTop, over: Palette.surface, in: appearance)
+            #expect(number >= ColorContrast.textMinimum, "a step's number, \(appearance): \(number)")
+            for token in [("successText", Palette.successText), ("accText", Palette.accText)] {
+                let measured = ratio(token.1, on: Palette.bg, in: appearance)
+                #expect(measured >= ColorContrast.textMinimum, "\(token.0) on the night, \(appearance): \(measured)")
+            }
+        }
+    }
+
     @Test func theSliderPartsStandOutFromTheirSurface() {
         for appearance in Appearance.allCases {
             for surface in surfaces {
