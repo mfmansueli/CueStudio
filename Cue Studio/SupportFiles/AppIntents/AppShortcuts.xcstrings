@@ -88,7 +88,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adicionar uma ideia no ${applicationName}"
+            "value" : "Adicionar uma ideia ao ${applicationName}"
           }
         },
         "sv" : {
