@@ -152,8 +152,13 @@ final class SettingsUITests: XCTestCase {
         // in the middle would take the drag).
         for _ in 0..<6 where !(sheetSize.exists && sheetSize.isHittable) {
             let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.85))
-            from.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.6)))
+            // Held at the end: a list still gliding takes the slider's drag for itself.
+            from.press(
+                forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.6)),
+                withVelocity: .default, thenHoldForDuration: 0.1
+            )
         }
+        sheetSize.waitUntilStill()
         sheetSize.adjust(toNormalizedSliderPosition: 0)
         XCTAssertEqual(sheetSize.value as? String, "12 pt")
         sheetSize.adjust(toNormalizedSliderPosition: 1)

@@ -39,7 +39,7 @@ final class CreateScriptUITests: XCTestCase {
         XCTAssertTrue(app.buttons["newScript.write"].exists(within: 5))
     }
 
-    func testPlusOffersWriteMyOwnAndImportOnly() {
+    func testPlusHasNoneOfTheOldAIToolsAndWriteOpensThePage() {
         let app = CueApp.launch(seeded: true)
         let plus = app.buttons["scripts.newButton"]
         XCTAssertTrue(plus.exists(within: 15))
@@ -53,16 +53,5 @@ final class CreateScriptUITests: XCTestCase {
         }
         app.buttons["newScript.write"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["page.editor"].exists(within: 5))
-    }
-
-    func testWritingAnIdeaOpensItOnThePage() {
-        let app = CueApp.launch(seeded: true)
-        let field = app.descendants(matching: .any)["ideaCard.field"].firstMatch
-        XCTAssertTrue(field.exists(within: 15))
-        field.tap()
-        field.typeText("3 tips for better lighting")
-        app.buttons["ideaCard.submit"].tap()
-        XCTAssertTrue(app.pageBackButton.exists(within: 10))
-        XCTAssertTrue(app.descendants(matching: .any)["page.editor"].exists(within: 10))
     }
 }

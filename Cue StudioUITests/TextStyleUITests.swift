@@ -176,6 +176,9 @@ final class TextStyleUITests: XCTestCase {
         field.tap()
         let keyboard = app.keyboards.firstMatch
         XCTAssertTrue(keyboard.exists(within: 5))
+        // Measured once the keyboard is up and the panel has risen above it.
+        keyboard.waitUntilStill()
+        app.buttons["edit.panel.apply"].waitUntilStill()
         let top = keyboard.frame.minY
         for id in ["edit.panel.apply", "edit.panel.tab.presets", "edit.panel.tab.color"] {
             XCTAssertLessThanOrEqual(app.buttons[id].frame.maxY, top + 1, id)

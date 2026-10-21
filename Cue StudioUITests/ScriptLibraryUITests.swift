@@ -179,14 +179,6 @@ final class ScriptLibraryUITests: XCTestCase {
 
     // MARK: - Navigation
 
-    func testExistingScriptReturnsToScriptsWithOneBackTap() {
-        let app = CueApp.launch(seeded: true)
-        openScript(app, Self.lamp)
-        app.pageBackButton.tap()
-        XCTAssertTrue(element(app, "scripts.promptCard").exists(within: 5))
-        XCTAssertFalse(app.buttons["detail.recordButton"].exists)
-    }
-
     func testSavingAnExistingScriptAndReopeningItStillNeedsOnlyOneBackTap() {
         let app = CueApp.launch(seeded: true)
         openScript(app, Self.lamp)

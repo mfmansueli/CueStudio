@@ -178,10 +178,11 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.step("Cut from video")
         flow.tap(cut, "Cut from video")
         XCTAssertTrue(flow.toastSays("2 words cut"), "No toast after cutting \(words)")
+        // The toast's Undo stays 4 s: found at once, before the slower checks.
+        let undo = flow.toastUndo
         XCTAssertNotEqual(EditorApp.length(app), fullLength, "Cutting \(words) didn't shorten the video")
 
         flow.step("Undo in the toast")
-        let undo = flow.toastUndo
         XCTAssertNotNil(undo, "The toast's Undo can't be touched with Edit by text open")
         if let undo { flow.tap(undo, "Undo in the toast") }
         XCTAssertEqual(EditorApp.length(app), fullLength, "Undo didn't bring back \(words)")

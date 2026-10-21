@@ -139,11 +139,12 @@ final class ShareToUITests: XCTestCase {
     func testACancelledShareSheetGoesBackToTheStep() {
         let app = openShare(animations: true)
         app.buttons["shareFlow.start"].tap()
-        XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.send"]))
+        XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.send"]), "No Send after the export")
         app.buttons["shareFlow.send"].tap()
-        XCTAssertTrue(app.buttons["debug.share.cancel"].exists(within: 10))
+        // Real animations here: the share sheet slides up and away at the system's own pace, slower on a busy Mac.
+        XCTAssertTrue(app.buttons["debug.share.cancel"].exists(within: 20), "The share sheet didn't open")
         app.buttons["debug.share.cancel"].tap()
-        XCTAssertTrue(app.buttons["shareFlow.send"].exists(within: 10))
+        XCTAssertTrue(app.buttons["shareFlow.send"].exists(within: 20), "Cancelling didn't come back to the step")
         XCTAssertFalse(app.staticTexts["Posted on TikTok?"].exists)
     }
 
