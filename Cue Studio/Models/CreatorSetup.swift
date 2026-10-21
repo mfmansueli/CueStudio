@@ -113,7 +113,7 @@ nonisolated struct CreatorSetup: Hashable, Sendable {
     func label(for field: SetupField) -> String {
         switch field {
         case .camera:
-            return lens.isFront ? String(localized: "Front") : String(localized: "Back")
+            return lens.isFront ? String(localized: "Front") : String(localized: "Rear")
         case .microphone:
             return microphone.label
         case .format:

@@ -22,7 +22,7 @@ struct RecordingEntryRow: View {
         case .startsWith:
             SettingsSegmentedRow(
                 title: entry.title, selection: startsWithFront, options: [true, false],
-                label: { $0 ? String(localized: "Front") : String(localized: "Back") },
+                label: { $0 ? String(localized: "Front") : String(localized: "Rear") },
                 identifier: "settings.startsWithPicker"
             )
         case .resolution:

@@ -141,7 +141,10 @@ names in **bold** stay in English in every language.
 
 - Brand, unchanged: **Cue**, **Cue Pro**, **Pro**, **Apple Intelligence**, **Private Cloud Compute**,
   **My Cue Voice**, **Selfie**, **Studio**, **TikTok**, **Reels**, **Shorts**, **YouTube**,
-  **LinkedIn**, **Stories**, **Instagram**, **Lexend**.
+  **LinkedIn**, **Stories**, **Instagram**, **Lexend**, and the script page's ✦ **Shape** tool.
+- One key, one meaning: a word that means two things gets two English keys (camera *Front* / *Rear* vs. the
+  *Back* button; Quick edit's *Ratio* vs. ✦ *Shape*; the apology format's *Closing* section vs. the *Close* button;
+  the share sheet's *Post caption* vs. the video's *Caption*), so each language can translate both.
 - Voice: talk to one creator (pt-BR *você*, es *tú*, fr *vous*, de *du*, it *tu*, id *kamu*,
   tr *sen*, vi *bạn*, zh *你*, ar the singular, hi *आप*, nl *je*, sv *du*, da *du*, nb *du*; ja and ko
   polite and neutral), short sentences, no jargon.

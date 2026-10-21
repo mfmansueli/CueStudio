@@ -20,7 +20,7 @@ struct MediaPanel: View {
                 ) { layout in viewModel.updateMedia(media.id) { $0.layout = layout } }
                 if media.layout == .window {
                     PanelSegmented(
-                        label: String(localized: "Shape"), options: MediaShape.allCases.map { PanelOption($0, $0.label) },
+                        label: String(localized: "Ratio"), options: MediaShape.allCases.map { PanelOption($0, $0.label) },
                         selection: media.shape, identifier: "edit.mediaShape"
                     ) { shape in viewModel.updateMedia(media.id) { $0.shape = shape } }
                     PanelSlider(

@@ -112,7 +112,7 @@ struct ShareQueueStep: View {
                     .font(.system(size: 15)).foregroundStyle(Palette.aiText)
                     .accessibilityIdentifier("shareFlow.copyAgain")
             }
-            TextField("Caption", text: $flow.caption, axis: .vertical)
+            TextField("Post caption", text: $flow.caption, axis: .vertical)
                 .font(.system(size: 15))
                 .lineLimit(1...3)
                 .padding(12)

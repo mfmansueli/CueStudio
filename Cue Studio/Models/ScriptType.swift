@@ -139,7 +139,7 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 label: String(localized: "Apology / statement"),
                 blocks: [
                     String(localized: "Opening"), String(localized: "Acknowledge"), String(localized: "Own it"),
-                    String(localized: "What changes"), String(localized: "Close"),
+                    String(localized: "What changes"), String(localized: "Closing"),
                 ],
                 tones: [.sincere, .calm, .direct],
                 tools: [.moreHuman, .lessDefensive, .shorterAndDirect, .fixGrammar],
