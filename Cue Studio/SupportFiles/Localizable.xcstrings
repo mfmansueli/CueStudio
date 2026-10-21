@@ -2882,7 +2882,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — pengumuman"
+            "value" : "%@: pengumuman"
           }
         },
         "it" : {
@@ -3000,7 +3000,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — ulasan jujur"
+            "value" : "%@: ulasan jujur"
           }
         },
         "it" : {
@@ -3118,7 +3118,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — tautan di bio-ku. [lihat kamera] Video ini adalah kerja sama berbayar."
+            "value" : "%@. Tautannya ada di bioku. [lihat kamera] Video ini adalah kerja sama berbayar."
           }
         },
         "it" : {
@@ -3236,7 +3236,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — bersponsor"
+            "value" : "%@: bersponsor"
           }
         },
         "it" : {
@@ -7456,7 +7456,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ tidak ada di iPhone ini · Pilih aplikasi lain"
+            "value" : "%@ tidak ada di iPhone ini · Pilih app lain"
           }
         },
         "it" : {
@@ -8891,7 +8891,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ di atas %2$@"
+            "value" : "lebih %1$@ dari %2$@"
           }
         },
         "it" : {
@@ -10444,7 +10444,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ di bawah %2$@"
+            "value" : "kurang %1$@ dari %2$@"
           }
         },
         "it" : {
@@ -17934,7 +17934,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld DARI %lld · EKSPOR DENGAN PRO"
+            "value" : "SISA %1$lld DARI %2$lld · EKSPOR DENGAN PRO"
           }
         },
         "it" : {
@@ -20595,7 +20595,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld video — %2$lld lagi"
+            "value" : "%1$lld video · %2$lld lagi"
           }
         },
         "it" : {
@@ -23051,7 +23051,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "rentetan %lld minggu"
+            "value" : "%lld minggu beruntun"
           }
         },
         "it" : {
@@ -24131,7 +24131,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ Punyamu"
+            "value" : "+ Tambah sendiri"
           }
         },
         "it" : {
@@ -25078,7 +25078,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Suara Cue lengkap"
+            "value" : "✓ Cue Voice lengkap"
           }
         },
         "it" : {
@@ -26973,7 +26973,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Buat balasanku"
+            "value" : "✦ Buat draf balasanku"
           }
         },
         "it" : {
@@ -27923,7 +27923,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Pintar"
+            "value" : "✦ Smart"
           }
         },
         "it" : {
@@ -28279,7 +28279,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Tulis"
+            "value" : "✦ Buat draf"
           }
         },
         "it" : {
@@ -29711,7 +29711,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video ke-1 ✓"
+            "value" : "Video pertama ✓"
           }
         },
         "it" : {
@@ -30657,7 +30657,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4 pertanyaan singkat — sekitar 20 detik. Tanpa mengetik."
+            "value" : "4 pertanyaan singkat, sekitar 20 detik. Tanpa mengetik."
           }
         },
         "it" : {
@@ -32905,7 +32905,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Temanku yang menyuruhku mencoba ini — terima kasih banget."
+            "value" : "Temanku yang menyuruhku mencoba ini, aku berutang padanya."
           }
         },
         "it" : {
@@ -33142,7 +33142,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Panduan, bukan jaminan · Tak pernah direkam"
+            "value" : "Panduan, bukan jaminan · Tidak pernah direkam"
           }
         },
         "it" : {
@@ -36700,7 +36700,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengerti"
+            "value" : "Pengakuan"
           }
         },
         "it" : {
@@ -36818,7 +36818,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Penghargaan"
+            "value" : "Ucapan Terima Kasih"
           }
         },
         "it" : {
@@ -37530,7 +37530,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tambahkan keyframe, geser playhead, lalu seret foto atau video — Cue menggerakkannya di antara keyframe."
+            "value" : "Tambahkan keyframe, geser playhead, lalu seret foto atau video. Cue menggerakkannya di antara keyframe."
           }
         },
         "it" : {
@@ -37648,7 +37648,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tambahkan keyframe, geser playhead, lalu seret tulisan di video — Cue menggerakkannya di antara keyframe."
+            "value" : "Tambahkan keyframe, geser playhead, lalu seret tulisan di video. Cue menggerakkannya di antara keyframe."
           }
         },
         "it" : {
@@ -40610,7 +40610,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ditambahkan sebelum setiap ide yang kamu kirim ke Cue — naskah, hook, balasan, beserta tempat kamu memposting dan format yang kamu pilih. Tidak pernah dipakai untuk melatih model."
+            "value" : "Ditambahkan sebelum setiap ide yang kamu kirim ke Cue (naskah, hook, balasan), beserta tempat kamu memposting dan format yang kamu pilih. Tidak pernah dipakai untuk melatih model."
           }
         },
         "it" : {
@@ -42150,7 +42150,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Setelah memposting, ketuk ◀ Cue di kiri atas. Kami akan kembali untuk menyelesaikan."
+            "value" : "Setelah memposting, ketuk ◀ Cue di kiri atas untuk kembali dan menyelesaikannya."
           }
         },
         "it" : {
@@ -42268,7 +42268,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Setelah memposting, ketuk ◀ Cue di kiri atas. Kami akan membuka %@ berikutnya."
+            "value" : "Setelah memposting, ketuk ◀ Cue di kiri atas. Berikutnya %@ akan dibuka."
           }
         },
         "it" : {
@@ -47619,7 +47619,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lalu — %@. [jeda sejenak]"
+            "value" : "Lalu… %@. [jeda singkat]"
           }
         },
         "it" : {
@@ -47737,7 +47737,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lalu — %@. [senyum]"
+            "value" : "Lalu… %@. [senyum]"
           }
         },
         "it" : {
@@ -49984,7 +49984,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bahasa aplikasi"
+            "value" : "Bahasa app"
           }
         },
         "it" : {
@@ -52078,7 +52078,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Berlaku untuk seluruh video. Urungkan mengembalikannya."
+            "value" : "Berlaku untuk seluruh video. Urungkan untuk mengembalikannya."
           }
         },
         "it" : {
@@ -53263,7 +53263,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Meminta konfirmasi. Tidak bisa dibatalkan."
+            "value" : "Meminta konfirmasi. Tidak bisa diurungkan."
           }
         },
         "it" : {
@@ -54445,7 +54445,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Otomatis diterapkan · Atur di bawah"
+            "value" : "Diterapkan otomatis · Atur di bawah"
           }
         },
         "it" : {
@@ -54799,7 +54799,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Otomatis memperbaiki cahaya dan warna · Pengaturanmu tetap di atas"
+            "value" : "Otomatis memperbaiki cahaya dan warna · Hasil editmu tetap di atas"
           }
         },
         "it" : {
@@ -57871,7 +57871,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "sejenak"
+            "value" : "jeda singkat"
           }
         },
         "it" : {
@@ -58701,7 +58701,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sebelum apa pun — aku minta maaf."
+            "value" : "Pertama-tama, aku minta maaf."
           }
         },
         "it" : {
@@ -63092,7 +63092,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kekuatan blur"
+            "value" : "Tingkat buram"
           }
         },
         "it" : {
@@ -66289,7 +66289,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bawa naskah, caption, atau catatan yang kamu tulis. Cue belajar caramu menulis dari sana, di iPhone ini."
+            "value" : "Tambahkan naskah, keterangan, atau catatan yang pernah kamu tulis. Cue mempelajari caramu menulis dari situ, di iPhone ini."
           }
         },
         "it" : {
@@ -66408,7 +66408,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bawa tulisan yang sudah kamu buat."
+            "value" : "Masukkan tulisan yang sudah kamu buat."
           }
         },
         "it" : {
@@ -70323,7 +70323,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Akses kamera mati"
+            "value" : "Akses kamera nonaktif"
           }
         },
         "it" : {
@@ -70677,7 +70677,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kamera, mikrofon, kualitas, format, dan teleprompter kembali ke bawaan Cue. Naskah, take, dan editanmu tetap ada."
+            "value" : "Kamera, mikrofon, kualitas, format, dan teleprompter kembali ke bawaan Cue. Naskah, take, dan hasil editmu tetap ada."
           }
         },
         "it" : {
@@ -71031,7 +71031,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "File ini tak bisa ditambahkan"
+            "value" : "File ini tidak bisa ditambahkan"
           }
         },
         "it" : {
@@ -71150,7 +71150,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tidak dapat menambahkan suara ini"
+            "value" : "Suara ini tidak bisa ditambahkan"
           }
         },
         "it" : {
@@ -71268,7 +71268,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Take ini tak bisa ditambahkan"
+            "value" : "Take ini tidak bisa ditambahkan"
           }
         },
         "it" : {
@@ -71505,7 +71505,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Orang tak terdeteksi · Pakai layar hijau atau biru"
+            "value" : "Tidak ada orang terdeteksi · Pakai layar hijau atau biru"
           }
         },
         "it" : {
@@ -71623,7 +71623,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tak bisa ikuti %@ · Bergulir"
+            "value" : "Tidak bisa mengikuti %@ · Bergulir"
           }
         },
         "it" : {
@@ -71742,7 +71742,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tidak dapat membekukan bingkai ini"
+            "value" : "Bingkai ini tidak bisa dibekukan"
           }
         },
         "it" : {
@@ -76840,7 +76840,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ubah kapan saja di Profil › Suara Cue-ku."
+            "value" : "Ubah kapan saja di Profil › My Cue Voice."
           }
         },
         "it" : {
@@ -79093,7 +79093,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Periksa komentar sebelum Cue menulis."
+            "value" : "Periksa komentar sebelum Cue membuat draf."
           }
         },
         "it" : {
@@ -87396,7 +87396,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Komunitas atau tujuan"
+            "value" : "Komunitas atau misi sosial"
           }
         },
         "it" : {
@@ -91078,7 +91078,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Santai seperti ngobrol"
+            "value" : "Seperti mengobrol"
           }
         },
         "it" : {
@@ -94285,7 +94285,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tak bisa menyimpan · Coba lagi"
+            "value" : "Tidak bisa menyimpan · Coba lagi"
           }
         },
         "it" : {
@@ -99495,7 +99495,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue hanya menghubungimu saat itu membantu."
+            "value" : "Cue hanya menghubungimu kalau memang membantu."
           }
         },
         "it" : {
@@ -99732,7 +99732,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue membuka %@ dengan video dan keteranganmu. Kamu yang posting."
+            "value" : "Cue membuka %@ dengan video dan keteranganmu. Kamu yang memposting."
           }
         },
         "it" : {
@@ -99850,7 +99850,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue membuka tiap aplikasi"
+            "value" : "Cue membuka tiap app"
           }
         },
         "it" : {
@@ -99969,7 +99969,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue membuka aplikasi dengan video dan keteranganmu. Kamu yang posting."
+            "value" : "Cue membuka app dengan video dan keteranganmu. Kamu yang memposting."
           }
         },
         "it" : {
@@ -102102,7 +102102,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aba-aba"
+            "value" : "Isyarat"
           }
         },
         "it" : {
@@ -102220,7 +102220,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Isyarat seperti PAUSE atau SMILE di teks"
+            "value" : "Isyarat seperti JEDA atau SENYUM di teks"
           }
         },
         "it" : {
@@ -103047,7 +103047,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kecepatan khusus"
+            "value" : "Kecepatan kustom"
           }
         },
         "it" : {
@@ -104421,7 +104421,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Potongan"
+            "value" : "Pemisahan latar"
           }
         },
         "it" : {
@@ -104539,7 +104539,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Memangkas kata pengisi"
+            "value" : "Memotong kata pengisi"
           }
         },
         "it" : {
@@ -107263,7 +107263,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hapus data Cue saya"
+            "value" : "Hapus data Cue-ku"
           }
         },
         "it" : {
@@ -107854,7 +107854,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menghapus naskah, take, suntingan, dan My Cue Voice dari iPhone ini. Tidak bisa dibatalkan."
+            "value" : "Menghapus naskah, take, hasil edit, dan My Cue Voice dari iPhone ini. Tidak bisa diurungkan."
           }
         },
         "it" : {
@@ -108329,7 +108329,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Batalkan semua"
+            "value" : "Batal pilih semua"
           }
         },
         "it" : {
@@ -110930,7 +110930,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Larut"
+            "value" : "Melebur"
           }
         },
         "it" : {
@@ -112831,7 +112831,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengunduh model suara…"
+            "value" : "Mengunduh model ucapan…"
           }
         },
         "it" : {
@@ -112949,7 +112949,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengunduh model suara… %@"
+            "value" : "Mengunduh model ucapan… %@"
           }
         },
         "it" : {
@@ -113783,7 +113783,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Draf siap · edit sesukamu"
+            "value" : "Draf siap · Edit sesukamu"
           }
         },
         "it" : {
@@ -114138,7 +114138,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Didrafkan dari suaramu, agar orang bisa mengikuti tanpa suara."
+            "value" : "Draf dibuat dari suaramu, agar orang bisa mengikutinya meski suara dimatikan."
           }
         },
         "it" : {
@@ -114853,7 +114853,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Draf · %lld — Sedang dikerjakan"
+            "value" : "Draf · %lld · Sedang dikerjakan"
           }
         },
         "it" : {
@@ -115091,7 +115091,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seret klip ke tempat ia harus diputar"
+            "value" : "Seret klip ke posisi pemutarannya"
           }
         },
         "it" : {
@@ -115329,7 +115329,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seret sampul untuk menggeser gambar, cubit untuk zoom."
+            "value" : "Seret sampul untuk menggeser gambar, cubit untuk memperbesar."
           }
         },
         "it" : {
@@ -115566,7 +115566,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seret untuk memindah, cubit untuk mengubah ukuran. Ketuk di bagian yang tumpang tindih untuk memilih yang lain."
+            "value" : "Seret untuk memindahkan, cubit untuk mengubah ukuran. Ketuk di bagian yang tumpang tindih untuk memilih yang lain."
           }
         },
         "it" : {
@@ -120542,7 +120542,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Editan disimpan ke take ini"
+            "value" : "Hasil edit disimpan ke take ini"
           }
         },
         "it" : {
@@ -120660,7 +120660,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengubah nama dan nama pengguna Anda"
+            "value" : "Mengubah nama dan nama penggunamu"
           }
         },
         "it" : {
@@ -121371,7 +121371,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "tekanan"
+            "value" : "penekanan"
           }
         },
         "it" : {
@@ -123264,7 +123264,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tingkatkan suara"
+            "value" : "Perjelas suara"
           }
         },
         "it" : {
@@ -126232,7 +126232,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Semua ikon app tonggak"
+            "value" : "Semua ikon app pencapaian"
           }
         },
         "it" : {
@@ -130384,7 +130384,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Penjelas"
+            "value" : "Penjelasan"
           }
         },
         "it" : {
@@ -131929,7 +131929,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pencahayaan"
+            "value" : "Eksposur"
           }
         },
         "it" : {
@@ -134893,7 +134893,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Isi"
+            "value" : "Penuhi"
           }
         },
         "it" : {
@@ -137268,7 +137268,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sesuaikan potongan"
+            "value" : "Sempurnakan pemisahan latar"
           }
         },
         "it" : {
@@ -138095,7 +138095,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kesan pertama"
+            "value" : "Kesan awal"
           }
         },
         "it" : {
@@ -141528,7 +141528,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ikuti wajah mati · Kamu menggeser bingkai"
+            "value" : "Ikuti wajah nonaktif · Kamu menggeser bingkai"
           }
         },
         "it" : {
@@ -141765,7 +141765,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ikuti untuk lainnya"
+            "value" : "Ikuti untuk konten lainnya"
           }
         },
         "it" : {
@@ -144964,7 +144964,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Empat pertanyaan singkat. Draf Cue dimulai lebih dekat denganmu."
+            "value" : "Empat pertanyaan singkat. Draf dari Cue jadi lebih mirip denganmu sejak awal."
           }
         },
         "it" : {
@@ -146809,7 +146809,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis dicoba · %lld ekspor termasuk. Lalu 7 hari gratis."
+            "value" : "Gratis dicoba · termasuk %lld ekspor. Lalu gratis 7 hari."
           }
         },
         "it" : {
@@ -147283,7 +147283,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Freestyle · Tambah naskah kapan saja"
+            "value" : "Bebas · Tambah naskah kapan saja"
           }
         },
         "it" : {
@@ -148469,7 +148469,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dari File. Gunakan hanya musik milikmu atau yang hak-nya kamu punya — lagu dari Apple Music tidak bisa ditambahkan."
+            "value" : "Dari File. Gunakan hanya musik milikmu atau yang haknya kamu punya. Lagu dari Apple Music tidak bisa ditambahkan."
           }
         },
         "it" : {
@@ -149181,7 +149181,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dari Logbook-mu"
+            "value" : "Dari Buku log-mu"
           }
         },
         "it" : {
@@ -152381,7 +152381,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hampir"
+            "value" : "Hampir sampai"
           }
         },
         "it" : {
@@ -154044,7 +154044,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Online untuk mengunduh %@"
+            "value" : "Hubungkan ke internet untuk mengunduh %@"
           }
         },
         "it" : {
@@ -154162,7 +154162,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Online untuk mengunduh bahasa ini"
+            "value" : "Hubungkan ke internet untuk mengunduh bahasa ini"
           }
         },
         "it" : {
@@ -156063,7 +156063,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menambah audiens saya"
+            "value" : "Menambah audiensku"
           }
         },
         "it" : {
@@ -158552,7 +158552,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Begini caraku %@ — dari awal sampai akhir. [jeda]"
+            "value" : "Begini caraku %@, dari awal sampai akhir. [jeda]"
           }
         },
         "it" : {
@@ -162462,7 +162462,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Variasi pembuka, versi per platform, pilihan take terbaik"
+            "value" : "Variasi hook, versi per platform, pilihan take terbaik"
           }
         },
         "it" : {
@@ -163526,7 +163526,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cara aku mengatur anggaran tanpa spreadsheet"
+            "value" : "Caraku mengatur anggaran tanpa spreadsheet"
           }
         },
         "it" : {
@@ -163644,7 +163644,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cara aku membuat capsule wardrobe"
+            "value" : "Caraku membuat capsule wardrobe"
           }
         },
         "it" : {
@@ -163762,7 +163762,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cara aku merencanakan perjalanan dengan anggaran terbatas"
+            "value" : "Caraku merencanakan perjalanan dengan anggaran terbatas"
           }
         },
         "it" : {
@@ -163880,7 +163880,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cara aku bilang tidak di tempat kerja"
+            "value" : "Caraku bilang tidak di tempat kerja"
           }
         },
         "it" : {
@@ -166133,7 +166133,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Minum air sebelum kafein — efeknya lebih terasa."
+            "value" : "Minum air sebelum kafein, efeknya lebih terasa."
           }
         },
         "it" : {
@@ -166607,7 +166607,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saya"
+            "value" : "Aku"
           }
         },
         "it" : {
@@ -166843,7 +166843,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saya"
+            "value" : "Aku seorang"
           }
         },
         "it" : {
@@ -166961,7 +166961,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aku percaya ini bertahun-tahun — sampai aku mengeceknya."
+            "value" : "Aku percaya ini bertahun-tahun, sampai aku mengeceknya."
           }
         },
         "it" : {
@@ -167669,7 +167669,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aku sudah mengujinya untukmu."
+            "value" : "Aku sudah mencobanya, jadi kamu tidak perlu."
           }
         },
         "it" : {
@@ -167787,7 +167787,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aku sudah mencoba semuanya — ini yang bertahan."
+            "value" : "Aku sudah mencoba semuanya, dan ini yang bertahan."
           }
         },
         "it" : {
@@ -168261,7 +168261,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saya menulis ini sendiri"
+            "value" : "Aku menulis ini sendiri"
           }
         },
         "it" : {
@@ -169325,7 +169325,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ide untuk topik videomu. Tidak ada yang ditulis sampai kamu memilih."
+            "value" : "Ide untuk topik videomu. Tidak ada draf yang dibuat sampai kamu memilih salah satunya."
           }
         },
         "it" : {
@@ -173131,7 +173131,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Perbaiki naskah"
+            "value" : "Tingkatkan naskah"
           }
         },
         "it" : {
@@ -173368,7 +173368,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diedit"
+            "value" : "Sedang diedit"
           }
         },
         "it" : {
@@ -173486,7 +173486,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diedit · Tersimpan otomatis"
+            "value" : "Sedang diedit · Tersimpan otomatis"
           }
         },
         "it" : {
@@ -173842,7 +173842,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dengan gayaku"
+            "value" : "Dengan suaraku"
           }
         },
         "it" : {
@@ -178458,7 +178458,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gabung daftar tunggu — tautan di bio"
+            "value" : "Gabung ke daftar tunggu, tautannya di bio"
           }
         },
         "it" : {
@@ -179404,7 +179404,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Simpan"
+            "value" : "Pertahankan"
           }
         },
         "it" : {
@@ -179522,7 +179522,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tetap %@"
+            "value" : "Pertahankan %@"
           }
         },
         "it" : {
@@ -180351,7 +180351,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Simpan"
+            "value" : "Pertahankan"
           }
         },
         "it" : {
@@ -180469,7 +180469,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jaga di bawah 40 karakter."
+            "value" : "Maksimal 40 karakter."
           }
         },
         "it" : {
@@ -181768,7 +181768,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menyimpan editanmu sebagai draf"
+            "value" : "Menyimpan hasil editmu sebagai draf"
           }
         },
         "it" : {
@@ -185908,7 +185908,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kurang defensif"
+            "value" : "Kurangi nada defensif"
           }
         },
         "it" : {
@@ -190996,7 +190996,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Logbook · %lld menunggu"
+            "value" : "Buku log · %lld menunggu"
           }
         },
         "it" : {
@@ -191233,7 +191233,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PANJANG · CUE MEMANGKAS CONTOH DULU"
+            "value" : "PANJANG · CUE MEMOTONG CONTOH DULU"
           }
         },
         "it" : {
@@ -191705,7 +191705,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "RENTETAN TERPANJANG"
+            "value" : "RUNTUNAN TERPANJANG"
           }
         },
         "it" : {
@@ -192536,7 +192536,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hilang setelah %@ · Diam dari situ"
+            "value" : "Hilang setelah %@ · Posisinya tetap dari situ"
           }
         },
         "it" : {
@@ -194191,7 +194191,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Persingkat, atau rekam apa adanya — bisa dipangkas nanti."
+            "value" : "Persingkat, atau rekam apa adanya. Kamu bisa memangkasnya nanti."
           }
         },
         "it" : {
@@ -194310,7 +194310,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bikin jelas tanpa suara"
+            "value" : "Tetap jelas tanpa suara"
           }
         },
         "it" : {
@@ -196094,7 +196094,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maks %lld · ketuk untuk menghapus"
+            "value" : "Maks. %lld · ketuk untuk menghapus"
           }
         },
         "it" : {
@@ -196212,7 +196212,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maks %1$lld %2$@"
+            "value" : "Maks. %1$lld %2$@"
           }
         },
         "it" : {
@@ -196330,7 +196330,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maks 3 contoh · ketuk ✕ untuk mengganti"
+            "value" : "Maks. 3 contoh · ketuk ✕ untuk mengganti"
           }
         },
         "it" : {
@@ -196566,7 +196566,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mungkin disengaja — untuk penekanan"
+            "value" : "Mungkin disengaja, untuk penekanan"
           }
         },
         "it" : {
@@ -198344,7 +198344,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofon mati · Lihat Pengaturan"
+            "value" : "Mikrofon nonaktif · Lihat Pengaturan"
           }
         },
         "it" : {
@@ -198580,7 +198580,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofon mati"
+            "value" : "Mikrofon nonaktif"
           }
         },
         "it" : {
@@ -198699,7 +198699,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofon mati · Gulir stabil"
+            "value" : "Mikrofon nonaktif · Gulir stabil"
           }
         },
         "it" : {
@@ -199171,7 +199171,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mungkin bermakna — dengarkan dulu"
+            "value" : "Mungkin bermakna, dengarkan dulu"
           }
         },
         "it" : {
@@ -202622,7 +202622,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lebih aku"
+            "value" : "Lebih mirip aku"
           }
         },
         "it" : {
@@ -207244,7 +207244,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SEMESTA %@ SAYA"
+            "value" : "SEMESTAKU %@"
           }
         },
         "it" : {
@@ -207838,7 +207838,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SUARA CUE-KU"
+            "value" : "MY CUE VOICE"
           }
         },
         "it" : {
@@ -208193,7 +208193,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rapat pertamaku dengan brand — dan kameraku macet"
+            "value" : "Rapat pertamaku dengan brand, dan kameraku macet"
           }
         },
         "it" : {
@@ -208787,7 +208787,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Komunitas lokal saya"
+            "value" : "Komunitas lokalku"
           }
         },
         "it" : {
@@ -210679,7 +210679,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Narasikan di atas editanmu. Cue menjelaskannya sebelum kamu merekam."
+            "value" : "Narasikan di atas hasil editmu. Cue menjelaskannya sebelum kamu merekam."
           }
         },
         "it" : {
@@ -212336,7 +212336,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aba-aba baru"
+            "value" : "Isyarat baru"
           }
         },
         "it" : {
@@ -214704,7 +214704,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TONGGAK BERIKUTNYA · %1$lld / %2$lld"
+            "value" : "PENCAPAIAN BERIKUTNYA · %1$lld / %2$lld"
           }
         },
         "it" : {
@@ -216021,7 +216021,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kamera tak ditemukan · Mode Studio tetap jalan"
+            "value" : "Kamera tidak ditemukan · Mode Studio tetap berfungsi"
           }
         },
         "it" : {
@@ -216377,7 +216377,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Belum ada teks. Buat dulu, template akan menatanya juga."
+            "value" : "Belum ada teks. Buat dulu, templat akan menatanya juga."
           }
         },
         "it" : {
@@ -216732,7 +216732,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tanpa panduan"
+            "value" : "Tanpa panduan bingkai"
           }
         },
         "it" : {
@@ -217324,7 +217324,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tanpa wajah"
+            "value" : "Tidak ada wajah"
           }
         },
         "it" : {
@@ -218628,7 +218628,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofon tidak ditemukan. Sambungkan satu dan akan muncul di sini."
+            "value" : "Mikrofon tidak ditemukan. Sambungkan mikrofon agar muncul di sini."
           }
         },
         "it" : {
@@ -218984,7 +218984,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tidak ada orang"
+            "value" : "Orang tidak ditemukan"
           }
         },
         "it" : {
@@ -220526,7 +220526,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tak ada ruang · Geser playhead"
+            "value" : "Tidak ada ruang · Geser playhead"
           }
         },
         "it" : {
@@ -221118,7 +221118,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tak ada pengenalan suara"
+            "value" : "Tidak ada pengenalan ucapan"
           }
         },
         "it" : {
@@ -224909,7 +224909,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Belum, nanti saya lanjutkan"
+            "value" : "Belum, nanti aku kembali"
           }
         },
         "it" : {
@@ -226804,7 +226804,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notifikasi mati"
+            "value" : "Notifikasi nonaktif"
           }
         },
         "it" : {
@@ -226923,7 +226923,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notifikasi Cue mati di Pengaturan iOS. Pengingat disimpan di sini, di Cue."
+            "value" : "Notifikasi Cue nonaktif di Pengaturan iOS. Pengingat tetap disimpan di sini, di Cue."
           }
         },
         "it" : {
@@ -227161,7 +227161,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notifikasi tiba diam-diam"
+            "value" : "Notifikasi datang tanpa suara"
           }
         },
         "it" : {
@@ -227280,7 +227280,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notifikasi mati di iOS"
+            "value" : "Notifikasi nonaktif di iOS"
           }
         },
         "it" : {
@@ -227518,7 +227518,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sekarang, sungguhan"
+            "value" : "Sekarang, rekam sungguhan"
           }
         },
         "it" : {
@@ -229061,7 +229061,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oke, jujur ya — yang ini penting."
+            "value" : "Oke, jujur ya, yang ini penting."
           }
         },
         "it" : {
@@ -231907,7 +231907,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hanya beberapa kalimat yang disimpan, bukan naskah aslinya. Tidak ada yang keluar dari iPhone ini."
+            "value" : "Hanya beberapa kalimat yang disimpan, bukan tulisan aslinya. Tidak ada yang keluar dari iPhone ini."
           }
         },
         "it" : {
@@ -232262,7 +232262,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hanya keterangan ini yang berubah"
+            "value" : "Hanya sorotan ini yang berubah"
           }
         },
         "it" : {
@@ -233564,7 +233564,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buka Logbook ›"
+            "value" : "Buka Buku log ›"
           }
         },
         "it" : {
@@ -234273,7 +234273,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ dibuka dengan videomu · Cue tidak bisa melihat apakah kamu mengunggahnya"
+            "value" : "%@ dibuka dengan videomu · Cue tidak bisa melihat apakah kamu mempostingnya"
           }
         },
         "it" : {
@@ -234628,7 +234628,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Membuka editanmu"
+            "value" : "Membuka hasil editmu"
           }
         },
         "it" : {
@@ -234746,7 +234746,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MEMBUKA EDITANMU"
+            "value" : "MEMBUKA HASIL EDITMU"
           }
         },
         "it" : {
@@ -236165,7 +236165,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Opsional. Tidak ada di Cue yang butuh akun; masuk hanya mengisi namamu."
+            "value" : "Opsional. Tidak ada fitur Cue yang butuh akun; masuk hanya mengisi namamu."
           }
         },
         "it" : {
@@ -238055,7 +238055,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Akui"
+            "value" : "Tanggung jawab"
           }
         },
         "it" : {
@@ -241844,7 +241844,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Penutup"
+            "value" : "Akhir cerita"
           }
         },
         "it" : {
@@ -242436,7 +242436,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aba-aba seperti JEDA atau SENYUM"
+            "value" : "Isyarat seperti JEDA atau SENYUM"
           }
         },
         "it" : {
@@ -244925,7 +244925,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Foto dimatikan untuk Cue"
+            "value" : "Akses Foto nonaktif untuk Cue"
           }
         },
         "it" : {
@@ -247890,7 +247890,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pilih aplikasinya di lembar bagikan"
+            "value" : "Pilih app-nya di lembar bagikan"
           }
         },
         "it" : {
@@ -249073,7 +249073,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pilih maks. %lld · ketuk lagi untuk menghapus"
+            "value" : "Pilih hingga %lld · ketuk lagi untuk menghapus"
           }
         },
         "it" : {
@@ -252036,7 +252036,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Memutar asli — ketuk untuk berhenti"
+            "value" : "Memutar asli · ketuk untuk berhenti"
           }
         },
         "it" : {
@@ -254645,7 +254645,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kemungkinan diulang"
+            "value" : "Mungkin pengulangan"
           }
         },
         "it" : {
@@ -261146,7 +261146,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grid profil 3:4 · perkiraan"
+            "value" : "Kisi profil 3:4 · perkiraan"
           }
         },
         "it" : {
@@ -262804,7 +262804,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lebih nendang"
+            "value" : "Lebih menohok"
           }
         },
         "it" : {
@@ -265292,7 +265292,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Singkat saja — tiga kebiasaan yang mengubah segalanya!"
+            "value" : "Singkat saja: tiga kebiasaan yang mengubah segalanya!"
           }
         },
         "it" : {
@@ -267190,7 +267190,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Baca keras sekali"
+            "value" : "Bacakan sekali dengan suara keras"
           }
         },
         "it" : {
@@ -269558,7 +269558,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Siap diunggah ke %@"
+            "value" : "Siap diposting di %@"
           }
         },
         "it" : {
@@ -270267,7 +270267,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Siap, nanti saya posting"
+            "value" : "Siap, nanti aku posting"
           }
         },
         "it" : {
@@ -271452,7 +271452,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rekam narasi di atas editanmu. Tidak ada yang terekam sampai kamu menekan tombol."
+            "value" : "Rekam narasi di atas hasil editmu. Tidak ada yang terekam sampai kamu menekan tombol."
           }
         },
         "it" : {
@@ -274172,7 +274172,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ulangi sesukamu. Kamu yang pilih take yang diunggah."
+            "value" : "Ulangi sesukamu. Kamu yang memilih take yang akan diposting."
           }
         },
         "it" : {
@@ -278838,7 +278838,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Menghapus naskah, take, suntingan, dan My Cue Voice dari iPhone ini. Video yang disimpan di Foto tetap ada."
+            "value" : "Menghapus naskah, take, hasil edit, dan My Cue Voice dari iPhone ini. Video yang disimpan di Foto tetap ada."
           }
         },
         "it" : {
@@ -283073,7 +283073,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Putar balik untuk klip hingga 2 menit · Bagi dulu"
+            "value" : "Putar balik hanya untuk klip hingga 2 menit · Pisah dulu"
           }
         },
         "it" : {
@@ -285218,7 +285218,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Membulat dan ramah"
+            "value" : "Bulat dan ramah"
           }
         },
         "it" : {
@@ -289727,7 +289727,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tersimpan di Cue · notifikasi mati"
+            "value" : "Tersimpan di Cue · notifikasi nonaktif"
           }
         },
         "it" : {
@@ -290673,7 +290673,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Disimpan ke Foto · Buka %@ untuk mengunggahnya"
+            "value" : "Disimpan ke Foto · Buka %@ untuk mempostingnya"
           }
         },
         "it" : {
@@ -291028,7 +291028,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tersimpan di Foto · posting di mana saja"
+            "value" : "Menyimpan ke Foto · posting di mana saja"
           }
         },
         "it" : {
@@ -292099,7 +292099,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "mengatakan “saya”"
+            "value" : "memakai “aku”"
           }
         },
         "it" : {
@@ -292218,7 +292218,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "mengatakan “kami”"
+            "value" : "memakai “kami”"
           }
         },
         "it" : {
@@ -294823,7 +294823,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Panjang naskah mengincar yang menahan perhatian"
+            "value" : "Durasi naskah menyasar yang bisa menahan perhatian"
           }
         },
         "it" : {
@@ -294942,7 +294942,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Panjang naskah mengincar yang menghasilkan di %@"
+            "value" : "Durasi naskah menyasar yang menghasilkan uang di %@"
           }
         },
         "it" : {
@@ -300978,7 +300978,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Serius — tanpa hype"
+            "value" : "Serius, tanpa hype"
           }
         },
         "it" : {
@@ -301096,7 +301096,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mode serius: tanpa hook, lelucon, hype, atau “follow untuk konten lainnya”."
+            "value" : "Mode serius: tanpa hook, lelucon, hype, atau “ikuti untuk konten lainnya”."
           }
         },
         "it" : {
@@ -302516,7 +302516,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Awal, kejutan, penutup"
+            "value" : "Awal, kejutan, akhir"
           }
         },
         "it" : {
@@ -303935,7 +303935,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bagikan %@ saya"
+            "value" : "Bagikan tahun %@-ku"
           }
         },
         "it" : {
@@ -304053,7 +304053,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bagikan semesta %@ saya"
+            "value" : "Bagikan semestaku %@"
           }
         },
         "it" : {
@@ -305835,7 +305835,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bagikan %@ kamu"
+            "value" : "Bagikan tahun %@-mu"
           }
         },
         "it" : {
@@ -309621,7 +309621,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tampilkan aba-aba"
+            "value" : "Tampilkan isyarat"
           }
         },
         "it" : {
@@ -315308,7 +315308,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slang · Sedang → Jarang"
+            "value" : "Slang · Kadang → Jarang"
           }
         },
         "it" : {
@@ -316138,7 +316138,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "pelan"
+            "value" : "lebih pelan"
           }
         },
         "it" : {
@@ -319575,7 +319575,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ada yang tanya ini di komentar — aku jawab ya."
+            "value" : "Ada yang tanya ini di komentar, aku jawab ya."
           }
         },
         "it" : {
@@ -321945,7 +321945,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bagi atau tambahkan klip untuk mengubah urutan"
+            "value" : "Pisah atau tambahkan klip untuk mengubah urutan"
           }
         },
         "it" : {
@@ -322064,7 +322064,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bagi video dulu, atau pakai Potong video di ketukan"
+            "value" : "Pisah video dulu, atau pakai Potong video di ketukan"
           }
         },
         "it" : {
@@ -327274,7 +327274,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sampaikan opini dalam satu kalimat, beri satu alasan, tutup dengan pertanyaan — pertanyaan memancing komentar."
+            "value" : "Sampaikan opini dalam satu kalimat, beri satu alasan, tutup dengan pertanyaan. Pertanyaan memancing komentar."
           }
         },
         "it" : {
@@ -327392,7 +327392,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tetap diedit · tersimpan otomatis"
+            "value" : "Tetap di tahap edit · tersimpan otomatis"
           }
         },
         "it" : {
@@ -327629,7 +327629,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sudah stabil · tanpa zoom"
+            "value" : "Sudah stabil · tidak perlu zoom"
           }
         },
         "it" : {
@@ -327747,7 +327747,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tiru saja caraku — lebih mudah dari yang kamu kira."
+            "value" : "Tiru saja caraku, lebih mudah dari yang kamu kira."
           }
         },
         "it" : {
@@ -330473,7 +330473,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Waktunya cerita — dan ya, akhirnya bahagia."
+            "value" : "Waktunya cerita, dan ya, akhirnya bahagia."
           }
         },
         "it" : {
@@ -331658,7 +331658,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Umpatan kasar dan hinaan tidak pernah ditulis — Apple Intelligence tidak akan membuatnya."
+            "value" : "Umpatan kasar dan hinaan tidak pernah ditulis. Apple Intelligence tidak akan membuatnya."
           }
         },
         "it" : {
@@ -332841,7 +332841,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suara Studio bekerja pada rekamanmu. Kamu mendengarnya dulu sebelum menyimpannya."
+            "value" : "Suara Studio bekerja pada rekamanmu. Kamu mendengarnya dulu sebelum memakainya."
           }
         },
         "it" : {
@@ -334028,7 +334028,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Potong subjek"
+            "value" : "Angkat subjek"
           }
         },
         "it" : {
@@ -334737,7 +334737,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sarankan terbaik"
+            "value" : "Sarankan yang terbaik"
           }
         },
         "it" : {
@@ -338066,7 +338066,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ketuk grafis di sampul untuk mengubahnya. Seret untuk memindah, cubit atau pakai sudut untuk mengubah ukuran dan memutar."
+            "value" : "Ketuk grafis di sampul untuk mengubahnya. Seret untuk memindahkan, cubit atau pakai sudut untuk mengubah ukuran dan memutar."
           }
         },
         "it" : {
@@ -338302,7 +338302,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ketuk Selesai di editor, atau pilih take terbaik — videonya muncul di sini, siap diposting."
+            "value" : "Ketuk Selesai di editor, atau pilih take terbaik. Videonya muncul di sini, siap diposting."
           }
         },
         "it" : {
@@ -339134,7 +339134,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ketuk kata pertama bagian yang ingin dipotong, lalu kata terakhirnya. Urungkan mengembalikan yang kamu potong."
+            "value" : "Ketuk kata pertama bagian yang ingin dipotong, lalu kata terakhirnya. Urungkan untuk mengembalikan yang kamu potong."
           }
         },
         "it" : {
@@ -341383,7 +341383,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mengajarkan caramu bicara — tidak pernah dipakai ulang untuk cerita, opini, atau hasil. Tetap di iPhone ini."
+            "value" : "Mengajarkan caramu bicara, tidak pernah dipakai ulang untuk cerita, opini, atau hasil. Tetap di iPhone ini."
           }
         },
         "it" : {
@@ -342807,7 +342807,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Template"
+            "value" : "Templat"
           }
         },
         "it" : {
@@ -343637,7 +343637,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teks"
+            "value" : "Tulisan"
           }
         },
         "it" : {
@@ -344110,7 +344110,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teks dihapus"
+            "value" : "Tulisan dihapus"
           }
         },
         "it" : {
@@ -345172,7 +345172,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teks pada video"
+            "value" : "Tulisan di video"
           }
         },
         "it" : {
@@ -345291,7 +345291,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teks yang memilikinya: %lld dari %lld"
+            "value" : "Tulisan yang memakainya: %lld dari %lld"
           }
         },
         "it" : {
@@ -345410,7 +345410,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teks: %lld · Kata: %lld"
+            "value" : "Tulisan: %lld · Kata: %lld"
           }
         },
         "it" : {
@@ -347544,7 +347544,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mitos masak yang merusak pasta kamu"
+            "value" : "Mitos masak yang merusak pastamu"
           }
         },
         "it" : {
@@ -349322,7 +349322,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofon dimatikan untuk Cue. Aktifkan di Pengaturan untuk berdikte, atau ketik idemu."
+            "value" : "Mikrofon nonaktif untuk Cue. Aktifkan di Pengaturan untuk mendikte, atau ketik idemu."
           }
         },
         "it" : {
@@ -350389,7 +350389,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Urutan memakai skincare kamu"
+            "value" : "Urutan pemakaian skincare"
           }
         },
         "it" : {
@@ -350507,7 +350507,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gambar dibaca di sini, tak pernah disimpan."
+            "value" : "Gambar dibaca di sini, tidak pernah disimpan."
           }
         },
         "it" : {
@@ -352882,7 +352882,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video berubah sementara itu · bekukan bingkai lagi"
+            "value" : "Video berubah sementara itu · Bekukan bingkai lagi"
           }
         },
         "it" : {
@@ -353001,7 +353001,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video berubah sementara itu · Balik lagi"
+            "value" : "Video berubah sementara itu · Putar balik lagi"
           }
         },
         "it" : {
@@ -354542,7 +354542,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keterangan ini"
+            "value" : "Sorotan ini"
           }
         },
         "it" : {
@@ -356920,7 +356920,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone ini tidak bisa mengubah suara menjadi teks di sini. Kamu bisa mengetik idemu."
+            "value" : "iPhone ini tidak bisa mengubah ucapan menjadi teks di sini. Kamu bisa mengetik idemu."
           }
         },
         "it" : {
@@ -359761,7 +359761,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tiga bagian sudah cukup: apa yang terjadi, titik baliknya, bagaimana akhirnya. Cue menambahkan hook yang bikin penasaran dan aba-aba tempo."
+            "value" : "Tiga bagian sudah cukup: apa yang terjadi, titik baliknya, bagaimana akhirnya. Cue menambahkan hook yang bikin penasaran dan isyarat tempo."
           }
         },
         "it" : {
@@ -362366,7 +362366,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dipilih"
+            "value" : "Perlu dipilih"
           }
         },
         "it" : {
@@ -367457,7 +367457,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diterjemahkan di iPhone-mu · Tak ada yang dikirim"
+            "value" : "Diterjemahkan di iPhone-mu · Tidak ada yang dikirim"
           }
         },
         "it" : {
@@ -368402,7 +368402,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uji coba dimulai — nikmati Cue Pro"
+            "value" : "Uji coba dimulai · nikmati Cue Pro"
           }
         },
         "it" : {
@@ -368638,7 +368638,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Memangkas kata yang berlebih"
+            "value" : "Membuang kata yang berlebih"
           }
         },
         "it" : {
@@ -369230,7 +369230,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coba topik lain, atau ketik idemu sendiri di kolom ide."
+            "value" : "Coba topik lain, atau ketik idemu sendiri di kolom tulis."
           }
         },
         "it" : {
@@ -370890,7 +370890,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nyalakan Tingkatkan suara atau Kurangi derau untuk membandingkan."
+            "value" : "Nyalakan Perjelas suara atau Kurangi derau untuk membandingkan."
           }
         },
         "it" : {
@@ -372550,7 +372550,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ketik keteranganmu"
+            "value" : "Ketik sorotanmu"
           }
         },
         "it" : {
@@ -373022,7 +373022,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ketik milikmu"
+            "value" : "Ketik sendiri"
           }
         },
         "it" : {
@@ -373852,7 +373852,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Unboxing, kesan pertama"
+            "value" : "Unboxing, kesan awal"
           }
         },
         "it" : {
@@ -374206,7 +374206,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dibatalkan"
+            "value" : "Diurungkan"
           }
         },
         "it" : {
@@ -374916,7 +374916,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Buka dengan pencapaian. Beberapa datang bersama Pro."
+            "value" : "Buka dengan pencapaian. Beberapa hanya dengan Pro."
           }
         },
         "it" : {
@@ -380002,7 +380002,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kecerahan warna"
+            "value" : "Vibransi"
           }
         },
         "it" : {
@@ -380711,7 +380711,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video terlalu pendek"
+            "value" : "Video terlalu pendek untuk ditambahkan"
           }
         },
         "it" : {
@@ -386401,7 +386401,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lihat ini — %@. [demo]"
+            "value" : "Lihat ini: %@. [demo]"
           }
         },
         "it" : {
@@ -390544,7 +390544,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apa yang kamu tanggung jawabkan"
+            "value" : "Hal yang kamu pertanggungjawabkan"
           }
         },
         "it" : {
@@ -392083,7 +392083,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Di mana tombol dan teks tiap aplikasi menutupi bingkai"
+            "value" : "Di mana tombol dan keterangan tiap app menutupi bingkai"
           }
         },
         "it" : {
@@ -394450,7 +394450,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seluruh video · di iPhone-mu"
+            "value" : "Seluruh video · dibuat di iPhone-mu"
           }
         },
         "it" : {
@@ -396937,7 +396937,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Headset kabel"
+            "value" : "Headset berkabel"
           }
         },
         "it" : {
@@ -400141,7 +400141,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tulis iklannya"
+            "value" : "Buat draf iklan"
           }
         },
         "it" : {
@@ -401801,7 +401801,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ya — bagikan ke media sosial"
+            "value" : "Ya, bagikan ke media sosial"
           }
         },
         "it" : {
@@ -402748,7 +402748,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kalian yang minta — ini dia."
+            "value" : "Kalian yang minta, ini dia."
           }
         },
         "it" : {
@@ -403340,7 +403340,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kamu yang memutuskan apa yang dihapus"
+            "value" : "Kamu yang memutuskan apa yang keluar"
           }
         },
         "it" : {
@@ -404524,7 +404524,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kamu dibilangi ini seumur hidup. Itu salah. [jeda]"
+            "value" : "Sejak dulu kamu diberi tahu begini. Itu salah. [jeda]"
           }
         },
         "it" : {
@@ -404999,7 +404999,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ KAMU"
+            "value" : "TAHUN %@-MU"
           }
         },
         "it" : {
@@ -405117,7 +405117,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ulasan %@ kamu"
+            "value" : "Kilas balik %@-mu"
           }
         },
         "it" : {
@@ -405235,7 +405235,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Semesta %@ milikmu dimulai dari berbagi pertamamu."
+            "value" : "Semesta %@-mu dimulai saat kamu pertama kali berbagi."
           }
         },
         "it" : {
@@ -405589,7 +405589,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teksmu sudah ada di video · biarkan teks otomatis mati"
+            "value" : "Teksmu sudah ada di video · biarkan teks otomatis nonaktif"
           }
         },
         "it" : {
@@ -406425,7 +406425,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Data Cue-mu terhapus"
+            "value" : "Data Cue-mu telah dihapus"
           }
         },
         "it" : {
@@ -406544,7 +406544,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Editanmu"
+            "value" : "Hasil editmu"
           }
         },
         "it" : {
@@ -407613,7 +407613,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idemu · didrafkan dengan suaramu"
+            "value" : "Idemu · drafnya disusun dengan suaramu"
           }
         },
         "it" : {
@@ -407970,7 +407970,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone Anda terlalu panas untuk menyelesaikan video ini. Biarkan dingin, lalu ekspor lagi."
+            "value" : "iPhone-mu terlalu panas untuk menyelesaikan video ini. Biarkan dingin, lalu ekspor lagi."
           }
         },
         "it" : {
@@ -408094,7 +408094,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cahayamu. Ia tumbuh dengan setiap video yang kamu bagikan — tanpa perlu foto."
+            "value" : "Cahayamu. Tumbuh dengan setiap video yang kamu bagikan, tanpa perlu foto."
           }
         },
         "it" : {
@@ -408214,7 +408214,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Logbook-mu kosong"
+            "value" : "Buku log-mu kosong"
           }
         },
         "it" : {
@@ -409401,7 +409401,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Topik kamu sendiri"
+            "value" : "Topikmu sendiri"
           }
         },
         "it" : {
@@ -410468,7 +410468,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Naskah, take, suntingan, dan My Cue Voice dihapus dari iPhone ini. Tindakan ini tidak bisa dibatalkan."
+            "value" : "Naskah, take, hasil edit, dan My Cue Voice dihapus dari iPhone ini. Tindakan ini tidak bisa diurungkan."
           }
         },
         "it" : {
@@ -410822,7 +410822,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Take-mu"
+            "value" : "Pendapatmu"
           }
         },
         "it" : {
@@ -412126,7 +412126,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Semestamu dimulai dari berbagi pertamamu."
+            "value" : "Semestamu dimulai saat kamu pertama kali berbagi."
           }
         },
         "it" : {
@@ -413427,7 +413427,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ulasan tahunmu"
+            "value" : "Kilas balik tahunmu"
           }
         },
         "it" : {

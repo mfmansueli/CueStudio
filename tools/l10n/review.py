@@ -3,10 +3,11 @@
 
   tools/l10n/review.py export <lang> <dir> [--chunk N]   writes <dir>/<lang>-NN.json: every entry of the three catalogs
                                                           with its English text, comment and the <lang> translation
+                                                          ("key" is "<catalog>|<key>"; not "id", which is Indonesian)
   tools/l10n/review.py apply <lang> <corrections.json>    writes the corrected <lang> values back, nothing else
   tools/l10n/review.py check <lang> <corrections.json>    the same checks, writing nothing
 
-A corrections file maps "<catalog>|<key>" to the new value: a string, or the plural forms
+A corrections file maps "<catalog>|<key>" (the export's "key") to the new value: a string, or the plural forms
 ({"one": "…", "other": "…"}) in the language's own categories. The same checks as scripts/strings.py run
 first (placeholders kept, plural categories); one problem and nothing is written. Each change prints as
 "key: old → new", so the diff can be read.
@@ -41,7 +42,7 @@ def export(language, directory, chunk):
             if language not in localizations:
                 continue
             english = text_of(localizations[source]) if source in localizations else key
-            rows.append({"id": f"{name}|{key}", "en": english, "comment": entry.get("comment", ""),
+            rows.append({"key": f"{name}|{key}", "en": english, "comment": entry.get("comment", ""),
                          language: text_of(localizations[language])})
     os.makedirs(directory, exist_ok=True)
     for start in range(0, len(rows), chunk):
