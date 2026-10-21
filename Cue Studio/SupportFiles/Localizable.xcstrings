@@ -946,7 +946,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“%@”"
+            "value" : "「%@」"
           }
         }
       }
@@ -2954,7 +2954,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 公告"
+            "value" : "%@：公告"
           }
         }
       }
@@ -3072,7 +3072,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 誠實評測"
+            "value" : "%@：誠實評測"
           }
         }
       }
@@ -3190,7 +3190,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 連結在我的個人簡介。[看向鏡頭] 本影片為付費合作。"
+            "value" : "%@，連結在我的個人簡介。[看向鏡頭] 本影片為付費合作。"
           }
         }
       }
@@ -3308,7 +3308,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — 贊助"
+            "value" : "%@：贊助"
           }
         }
       }
@@ -4778,7 +4778,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · 倒轉"
+            "value" : "%@ · 倒放"
           }
         }
       }
@@ -5140,7 +5140,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · 點另一個來切換"
+            "value" : "%@ · 點另一個即可切換"
           }
         }
       }
@@ -6099,7 +6099,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ %@ 影片：%@"
+            "value" : "%@%@影片：%@"
           }
         }
       }
@@ -6810,7 +6810,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 鉤子"
+            "value" : "%@ 開場鉤子"
           }
         }
       }
@@ -8252,7 +8252,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 套用到每個剪接點"
+            "value" : "每個剪接點已套用 %@"
           }
         }
       }
@@ -8370,7 +8370,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 套用到每段文字"
+            "value" : "每段文字已套用 %@"
           }
         }
       }
@@ -8488,7 +8488,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 套用到字幕"
+            "value" : "字幕已套用 %@"
           }
         }
       }
@@ -8607,7 +8607,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "整部影片已套用%@"
+            "value" : "整部影片已套用 %@"
           }
         }
       }
@@ -8725,7 +8725,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 套用到這段文字"
+            "value" : "這段文字已套用 %@"
           }
         }
       }
@@ -9199,7 +9199,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 安全區域"
+            "value" : "%@ 安全區"
           }
         }
       }
@@ -10159,7 +10159,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ → %@"
+            "value" : "距離 %2$@ 還差 %1$@"
           }
         }
       }
@@ -10870,7 +10870,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 支影片"
+            "value" : "%@ 部影片"
           }
         }
       }
@@ -10994,7 +10994,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@, %2$@"
+            "value" : "%1$@，%2$@"
           }
         }
       }
@@ -11949,7 +11949,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@. %2$@"
+            "value" : "%1$@。%2$@"
           }
         }
       }
@@ -12303,7 +12303,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@s"
+            "value" : "%@ 秒"
           }
         }
       }
@@ -17171,7 +17171,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld/%lld · 已匯入：%lld"
+            "value" : "%lld / %lld · 已匯入：%lld"
           }
         }
       }
@@ -17289,7 +17289,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld / %2$lld · 點一個來替換"
+            "value" : "%1$lld / %2$lld · 點一個即可替換"
           }
         }
       }
@@ -18604,7 +18604,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鏡頭下方 %lld 點"
+            "value" : "相機下方 %lld 點"
           }
         }
       }
@@ -18840,7 +18840,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "鏡頭下方 %lld 點"
+            "value" : "相機下方 %lld 點"
           }
         }
       }
@@ -18958,7 +18958,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "相機下方 %lld pt · 推薦。"
+            "value" : "相機下方 %lld 點 · 建議值。"
           }
         }
       }
@@ -19088,7 +19088,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 個就緒"
+            "value" : "%lld 個已就緒"
           }
         }
       }
@@ -19561,7 +19561,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "還有 %lld 個分段是空的。"
+            "value" : "還有 %lld 個段落是空的。"
           }
         }
       }
@@ -20655,7 +20655,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld 支影片 — 還差 %2$lld"
+            "value" : "%1$lld 部影片 · 還差 %2$lld 部"
           }
         }
       }
@@ -21251,7 +21251,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld 支影片 ✓"
+            "value" : "%lld 部影片 ✓"
           }
         }
       }
@@ -21613,7 +21613,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已分享 %lld 支影片"
+            "value" : "已分享 %lld 部影片"
           }
         }
       }
@@ -21731,7 +21731,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已分享 %1$lld 支影片 · 自 %2$@ 起"
+            "value" : "已分享 %1$lld 部影片 · 自 %2$@ 起"
           }
         }
       }
@@ -24902,7 +24902,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ 字幕已加 · 下一步：分享"
+            "value" : "✓ 字幕已加入 · 下一步：分享"
           }
         }
       }
@@ -25138,7 +25138,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Cue 聲音已完整"
+            "value" : "✓ Cue Voice 已完成"
           }
         }
       }
@@ -26797,7 +26797,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Cue 還從這些學習"
+            "value" : "✦ Cue 也從這些內容學習"
           }
         }
       }
@@ -27747,7 +27747,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ 預覽我的風格"
+            "value" : "✦ 預覽我的口吻"
           }
         }
       }
@@ -27983,7 +27983,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ 智慧"
+            "value" : "✦ Smart"
           }
         }
       }
@@ -28339,7 +28339,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ 寫作"
+            "value" : "✦ 起草"
           }
         }
       }
@@ -28929,7 +28929,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "還有 1 個分段是空的。"
+            "value" : "還有 1 個段落是空的。"
           }
         }
       }
@@ -29771,7 +29771,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第 1 支影片 ✓"
+            "value" : "第 1 部影片 ✓"
           }
         }
       }
@@ -30717,7 +30717,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4 個簡單問題 — 約 20 秒，不需要打字。"
+            "value" : "4 個簡單問題，約 20 秒，不用打字。"
           }
         }
       }
@@ -32255,7 +32255,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一張白紙，寫你的話。"
+            "value" : "一張白紙，寫下你的話。"
           }
         }
       }
@@ -32965,7 +32965,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "朋友逼我試試這個 — 我欠她一次。"
+            "value" : "朋友拉我試了這個，真的要謝謝她。"
           }
         }
       }
@@ -35457,7 +35457,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的主題有一個新起點在等你。"
+            "value" : "有個適合你主題的起點在等你。"
           }
         }
       }
@@ -36760,7 +36760,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "確認"
+            "value" : "坦承"
           }
         }
       }
@@ -37590,7 +37590,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新增一個關鍵影格，移動播放頭，再拖曳照片或影片 — Cue 會在關鍵影格之間移動它。"
+            "value" : "新增關鍵影格、移動播放頭，再拖曳照片或影片，Cue 會在關鍵影格之間移動它。"
           }
         }
       }
@@ -37708,7 +37708,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新增一個關鍵影格，移動播放頭，再拖曳影片中的文字 — Cue 會在關鍵影格之間移動它。"
+            "value" : "新增關鍵影格、移動播放頭，再拖曳影片中的文字，Cue 會在關鍵影格之間移動它。"
           }
         }
       }
@@ -38181,7 +38181,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新增聲音範例"
+            "value" : "新增口吻範例"
           }
         }
       }
@@ -40670,7 +40670,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "會附在你傳給 Cue 的每個想法之前——腳本、鉤子、回覆，以及你發布的平台和所選的形式。絕不會用於訓練模型。"
+            "value" : "會附在你傳給 Cue 的每個想法前面（腳本、開場鉤子、回覆），連同你發布的平台和所選的格式。絕不會用於訓練模型。"
           }
         }
       }
@@ -41736,7 +41736,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "漂浮"
+            "value" : "漂流"
           }
         }
       }
@@ -42210,7 +42210,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "發布後，輕點左上角的 ◀ Cue。我們會回來收尾。"
+            "value" : "發布後，輕點左上角的 ◀ Cue，回來完成剩下的步驟。"
           }
         }
       }
@@ -42328,7 +42328,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "發布後，輕點左上角的 ◀ Cue。接下來我們會開啟 %@。"
+            "value" : "發布後，輕點左上角的 ◀ Cue，接著會開啟 %@。"
           }
         }
       }
@@ -44238,7 +44238,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "全部完成"
+            "value" : "都處理完了"
           }
         }
       }
@@ -45184,7 +45184,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "請在 iOS 設定中允許 Cue。"
+            "value" : "請在 iOS「設定」中允許 Cue。"
           }
         }
       }
@@ -45302,7 +45302,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "請允許以儲存你的影片。"
+            "value" : "請允許取用，才能儲存你的影片。"
           }
         }
       }
@@ -46967,7 +46967,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "下一支影片的點子"
+            "value" : "下一部影片的想法"
           }
         }
       }
@@ -47324,7 +47324,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "航行日誌裡有個點子在等你"
+            "value" : "航行日誌裡有個想法在等你"
           }
         }
       }
@@ -47679,7 +47679,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "然後 — %@。[停頓一拍]"
+            "value" : "然後，%@。[停頓一拍]"
           }
         }
       }
@@ -47797,7 +47797,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "然後——%@。[微笑]"
+            "value" : "然後，%@。[微笑]"
           }
         }
       }
@@ -48507,7 +48507,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "換一個點子"
+            "value" : "換一個想法"
           }
         }
       }
@@ -48979,7 +48979,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "回覆給"
+            "value" : "回覆平台"
           }
         }
       }
@@ -50281,7 +50281,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence · 在這台 iPhone 上"
+            "value" : "Apple Intelligence · 在這部 iPhone 上"
           }
         }
       }
@@ -51116,7 +51116,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此 iPhone 目前無法使用 Apple Intelligence"
+            "value" : "這部 iPhone 目前無法使用 Apple Intelligence"
           }
         }
       }
@@ -52138,7 +52138,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "套用於整部影片。還原即可復原。"
+            "value" : "套用於整部影片，可用「還原」復原。"
           }
         }
       }
@@ -53441,7 +53441,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "詢問影片是否可以發佈"
+            "value" : "詢問影片是否可以發布"
           }
         }
       }
@@ -54151,7 +54151,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "分享第一支影片即可解鎖極光。其他圖示會隨著你分享更多，搭配 Pro 解鎖。"
+            "value" : "分享第一部影片即可解鎖「極光」。分享更多影片並搭配 Pro，即可解鎖其他圖示。"
           }
         }
       }
@@ -55213,7 +55213,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "避開"
+            "value" : "避免"
           }
         }
       }
@@ -55449,7 +55449,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "後置 · 長焦"
+            "value" : "後置 · 望遠"
           }
         }
       }
@@ -56394,7 +56394,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已恢復推薦設定"
+            "value" : "已恢復建議設定"
           }
         }
       }
@@ -58761,7 +58761,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "先說一件事 — 我很抱歉。"
+            "value" : "先說最重要的：我很抱歉。"
           }
         }
       }
@@ -60894,7 +60894,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "大字 + 強調"
+            "value" : "大字 + 醒目標示"
           }
         }
       }
@@ -61369,7 +61369,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重大消息。看到最後。"
+            "value" : "重大消息，記得看到最後。"
           }
         }
       }
@@ -63388,7 +63388,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "內容"
+            "value" : "主體"
           }
         }
       }
@@ -64455,7 +64455,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "兩者"
+            "value" : "雙語"
           }
         }
       }
@@ -64573,7 +64573,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "兩者 · %@"
+            "value" : "雙語 · %@"
           }
         }
       }
@@ -65639,7 +65639,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "早餐創意"
+            "value" : "早餐靈感"
           }
         }
       }
@@ -66349,7 +66349,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "帶來你寫過的腳本、文案或筆記。Cue 會在這台 iPhone 上從中學習你的寫作方式。"
+            "value" : "匯入你寫過的腳本、說明文字或筆記。Cue 會在這部 iPhone 上從中學習你的寫作方式。"
           }
         }
       }
@@ -66468,7 +66468,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "帶來你已經寫好的內容。"
+            "value" : "匯入你已經寫好的內容。"
           }
         }
       }
@@ -66587,7 +66587,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "讓每個片段的人聲與此鏡頭一樣響，不會爆音。"
+            "value" : "將每個片段的人聲調到與此鏡頭相同的音量，不會破音。"
           }
         }
       }
@@ -67891,7 +67891,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "燒錄字幕"
+            "value" : "嵌入字幕"
           }
         }
       }
@@ -69081,7 +69081,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "越忙的日子越難好好吃飯。我們來把它變簡單。"
+            "value" : "越忙的日子越難好好吃飯，那就簡單一點吧。"
           }
         }
       }
@@ -70501,7 +70501,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "相機模糊"
+            "value" : "相機畫面模糊"
           }
         }
       }
@@ -70855,7 +70855,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "相機啟動後，鏡頭會顯示在這裡。"
+            "value" : "相機啟動後，可用的相機會顯示在這裡。"
           }
         }
       }
@@ -71447,7 +71447,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "無法擷取這段聲音"
+            "value" : "無法擷取音訊"
           }
         }
       }
@@ -72160,7 +72160,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "無法倒轉此片段"
+            "value" : "無法倒放此片段"
           }
         }
       }
@@ -73106,7 +73106,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "說明文字已拷貝 · 貼上到 %@"
+            "value" : "說明文字已拷貝 · 貼到 %@"
           }
         }
       }
@@ -73461,7 +73461,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "字幕和清理 · 可選"
+            "value" : "字幕和清理 · 選用"
           }
         }
       }
@@ -73697,7 +73697,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這部 iPhone 的字幕無法聆聽 %@。請選擇說話的語言，或自行撰寫字幕行。"
+            "value" : "這部 iPhone 無法辨識%@來製作字幕。請選擇影片中說的語言，或自行輸入字幕。"
           }
         }
       }
@@ -73821,7 +73821,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "字幕無法聆聽這個鏡頭中的%@，這些部分可能會缺漏。請檢查字幕行，或自行撰寫。"
+            "value" : "這個鏡頭中的%@無法辨識，部分字幕可能缺漏。請檢查字幕，或自行輸入。"
           }
         }
       }
@@ -73939,7 +73939,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "字幕無法開始聆聽。請再試一次。"
+            "value" : "字幕無法開始辨識語音。請再試一次。"
           }
         }
       }
@@ -75360,7 +75360,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "字幕、標題和動態一起 · 文字保持不變"
+            "value" : "字幕、標題和動態一次到位 · 文字維持原樣"
           }
         }
       }
@@ -76900,7 +76900,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "隨時可在「我的」› 我的 Cue 聲音中修改。"
+            "value" : "隨時可在「個人檔案」› My Cue Voice 中修改。"
           }
         }
       }
@@ -77492,7 +77492,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "更改僅適用於這條鏡頭。"
+            "value" : "更改僅適用於這個鏡頭。"
           }
         }
       }
@@ -77729,7 +77729,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "變更會在預覽中顯示，並隨時儲存。✓ 關閉面板。"
+            "value" : "變更會即時顯示在預覽中並自動儲存。點 ✓ 即可關閉面板。"
           }
         }
       }
@@ -78203,7 +78203,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第 2 章 · 你的第一支影片"
+            "value" : "第 2 章 · 你的第一部影片"
           }
         }
       }
@@ -79153,7 +79153,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在 Cue 撰寫之前，請先確認留言內容。"
+            "value" : "在 Cue 起草之前，請先確認留言內容。"
           }
         }
       }
@@ -80098,7 +80098,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "選擇其他的"
+            "value" : "選擇其他"
           }
         }
       }
@@ -81882,7 +81882,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "簡潔"
+            "value" : "Clean"
           }
         }
       }
@@ -84022,7 +84022,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "關閉遙控"
+            "value" : "關閉遙控器"
           }
         }
       }
@@ -84259,7 +84259,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "更接近 %@ · 現在 %@"
+            "value" : "更接近 %@ · 目前 %@"
           }
         }
       }
@@ -84970,7 +84970,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "代碼 %@"
+            "value" : "優惠碼 %@"
           }
         }
       }
@@ -85088,7 +85088,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "輸入代碼 MORNING 享 8 折"
+            "value" : "輸入優惠碼 MORNING 享 8 折"
           }
         }
       }
@@ -85206,7 +85206,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "代碼或連結"
+            "value" : "優惠碼或連結"
           }
         }
       }
@@ -91730,7 +91730,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拷貝 @使用者名稱"
+            "value" : "拷貝 @帳號"
           }
         }
       }
@@ -92324,7 +92324,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "請先複製腳本"
+            "value" : "請先拷貝腳本"
           }
         }
       }
@@ -93281,7 +93281,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "那裡沒有可追蹤的 · 請把它放到要跟隨的物體上"
+            "value" : "那裡找不到可追蹤的物體 · 請把它放到要追蹤的物體上"
           }
         }
       }
@@ -93637,7 +93637,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "部分片段無法收聽"
+            "value" : "有些片段無法聆聽"
           }
         }
       }
@@ -96118,7 +96118,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "建立給"
+            "value" : "目標平台"
           }
         }
       }
@@ -96236,7 +96236,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "建立給 %@"
+            "value" : "為 %@ 建立"
           }
         }
       }
@@ -96355,7 +96355,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "創作行程"
+            "value" : "創作習慣"
           }
         }
       }
@@ -96593,7 +96593,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "裁剪參考"
+            "value" : "裁切參考"
           }
         }
       }
@@ -99080,7 +99080,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 從這裡學到了"
+            "value" : "Cue 已從中學習"
           }
         }
       }
@@ -99673,7 +99673,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "只有你點按「錄製」時，Cue 才會錄製。"
+            "value" : "只有在你點按「錄影」時，Cue 才會錄影。"
           }
         }
       }
@@ -99792,7 +99792,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 會帶著影片和文案打開 %@。由你發布。"
+            "value" : "Cue 會帶著影片和說明文字開啟 %@，由你發布。"
           }
         }
       }
@@ -100029,7 +100029,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 會帶著影片和文案打開 App。由你發布。"
+            "value" : "Cue 會帶著影片和說明文字開啟 App，由你發布。"
           }
         }
       }
@@ -101688,7 +101688,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 會圍繞它們建議想法。"
+            "value" : "Cue 會依這些主題建議想法。"
           }
         }
       }
@@ -102280,7 +102280,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "文字中的 PAUSE、SMILE 等提示"
+            "value" : "文字中的「停頓」、「微笑」等提示"
           }
         }
       }
@@ -104836,7 +104836,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "騎行"
+            "value" : "單車"
           }
         }
       }
@@ -107914,7 +107914,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "將從此 iPhone 刪除你的腳本、拍攝、剪輯和 My Cue Voice。此操作無法復原。"
+            "value" : "將從這部 iPhone 刪除你的腳本、鏡頭、剪輯和 My Cue Voice。此操作無法復原。"
           }
         }
       }
@@ -108981,7 +108981,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這部 iPhone 的口述功能無法聆聽 %@。你可以改為輸入你的想法。"
+            "value" : "這部 iPhone 的聽寫無法辨識%@。你可以改為輸入想法。"
           }
         }
       }
@@ -109099,7 +109099,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "口述功能無法開始聆聽。你可以改為輸入你的想法。"
+            "value" : "聽寫無法開始辨識語音。你可以改為輸入想法。"
           }
         }
       }
@@ -109217,7 +109217,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "口述功能需要下載 %@。請連上網路後再試一次。"
+            "value" : "聽寫需要下載 %@。請連上網路後再試一次。"
           }
         }
       }
@@ -109335,7 +109335,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "口述功能需要下載此語言。請連上網路後再試一次。"
+            "value" : "聽寫需要下載此語言。請連上網路後再試一次。"
           }
         }
       }
@@ -109453,7 +109453,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "口述已停止。到目前為止你說的內容都已保留。"
+            "value" : "聽寫已停止。目前為止說的內容都已保留。"
           }
         }
       }
@@ -110518,7 +110518,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "聲明已在最前面"
+            "value" : "揭露聲明已在最前面"
           }
         }
       }
@@ -111820,7 +111820,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "看完這支影片再決定要不要買。"
+            "value" : "看完這部影片再決定要不要買。"
           }
         }
       }
@@ -111939,7 +111939,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "不再推薦"
+            "value" : "不再建議"
           }
         }
       }
@@ -113843,7 +113843,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "草稿完成 · 隨意修改"
+            "value" : "草稿已就緒 · 隨意修改"
           }
         }
       }
@@ -114793,7 +114793,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在用你的聲音起草"
+            "value" : "正在用你的口吻起草"
           }
         }
       }
@@ -114913,7 +114913,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "草稿 · %lld — 進行中"
+            "value" : "草稿 · %lld · 進行中"
           }
         }
       }
@@ -116574,7 +116574,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已到時間"
+            "value" : "已到期"
           }
         }
       }
@@ -117878,7 +117878,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "例如：註冊護理師"
+            "value" : "例如：執業護理師"
           }
         }
       }
@@ -118591,7 +118591,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每餐都在外面吃，花費漲得很快。這樣就能省下來。"
+            "value" : "每餐都在外面吃，花費很快就會累積。這樣吃就不會太傷荷包。"
           }
         }
       }
@@ -120248,7 +120248,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "編輯聲音"
+            "value" : "編輯口吻"
           }
         }
       }
@@ -123087,7 +123087,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "活力 · 溫暖 → 沉穩"
+            "value" : "活力 · 溫暖 → 平靜"
           }
         }
       }
@@ -124391,7 +124391,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "基礎 · 第 1 項，共 4 項"
+            "value" : "基礎 · 1 / 4"
           }
         }
       }
@@ -124510,7 +124510,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "基礎 · 第 2 項，共 4 項 · %lld/%lld"
+            "value" : "基礎 · 2 / 4 · %lld / %lld"
           }
         }
       }
@@ -124629,7 +124629,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "基礎 · 第 3 項，共 4 項"
+            "value" : "基礎 · 3 / 4"
           }
         }
       }
@@ -124748,7 +124748,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "基礎 · 第 4 項，共 4 項"
+            "value" : "基礎 · 4 / 4"
           }
         }
       }
@@ -126174,7 +126174,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每個家庭都有那道菜。讓我講講我們家的。"
+            "value" : "每個家庭都有一道招牌菜。來聊聊我們家的。"
           }
         }
       }
@@ -126528,7 +126528,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每支影片都有一個最佳鏡頭。"
+            "value" : "每部影片都有一個最佳鏡頭。"
           }
         }
       }
@@ -126647,7 +126647,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你分享的每支影片都會成為其中的一顆星。"
+            "value" : "你分享的每部影片都會成為其中的一顆星。"
           }
         }
       }
@@ -130563,7 +130563,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "讓你的聲音更清晰"
+            "value" : "試試讓你的聲音更清晰"
           }
         }
       }
@@ -130682,7 +130682,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "讓你的聲音更清晰。在你選擇級別前不會有任何改變。"
+            "value" : "試試讓你的聲音更清晰。在你選擇強度之前，不會有任何改變。"
           }
         }
       }
@@ -130801,7 +130801,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "看看關於%@的下一支影片點子。"
+            "value" : "看看下一部關於%@的影片想法。"
           }
         }
       }
@@ -131158,7 +131158,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "看看適合你主題的點子。"
+            "value" : "看看適合你主題的想法。"
           }
         }
       }
@@ -132226,7 +132226,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在擷取聲音…"
+            "value" : "正在擷取音訊…"
           }
         }
       }
@@ -132464,7 +132464,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此 iPhone 無法使用眼神交流"
+            "value" : "這部 iPhone 無法使用「眼神交流」"
           }
         }
       }
@@ -133768,7 +133768,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "家庭餐"
+            "value" : "家常菜"
           }
         }
       }
@@ -134006,7 +134006,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "夢幻體育"
+            "value" : "夢幻運動聯盟"
           }
         }
       }
@@ -137683,7 +137683,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完成中…"
+            "value" : "即將完成…"
           }
         }
       }
@@ -138155,7 +138155,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "初看"
+            "value" : "初步體驗"
           }
         }
       }
@@ -138628,7 +138628,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第一支影片 · 第一顆星"
+            "value" : "第一部影片 · 第一顆星"
           }
         }
       }
@@ -138747,7 +138747,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第一支影片指南"
+            "value" : "第一部影片指南"
           }
         }
       }
@@ -138865,7 +138865,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "符合"
+            "value" : "完整顯示"
           }
         }
       }
@@ -138983,7 +138983,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "配合時間"
+            "value" : "配合時長"
           }
         }
       }
@@ -139338,7 +139338,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "適合 %@"
+            "value" : "符合 %@"
           }
         }
       }
@@ -139693,7 +139693,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一個下午拍出五支影片"
+            "value" : "一個下午拍出五部影片"
           }
         }
       }
@@ -141944,7 +141944,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "追蹤我，獲取更多小技巧！"
+            "value" : "追蹤我，看更多小技巧！"
           }
         }
       }
@@ -143364,7 +143364,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "給 %@"
+            "value" : "用於 %@"
           }
         }
       }
@@ -144193,7 +144193,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正式度 · 平衡 → 隨性"
+            "value" : "正式度 · 適中 → 輕鬆"
           }
         }
       }
@@ -144311,7 +144311,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "畫幅"
+            "value" : "格式"
           }
         }
       }
@@ -144549,7 +144549,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "形式"
+            "value" : "格式"
           }
         }
       }
@@ -144668,7 +144668,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "形式、開場、結尾"
+            "value" : "格式、開場、結尾"
           }
         }
       }
@@ -144905,7 +144905,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在你的 iPhone 上從「檔案」加入的音樂中尋找。"
+            "value" : "由你的 iPhone 從你自「檔案」加入的音樂中偵測。"
           }
         }
       }
@@ -148529,7 +148529,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "來自「檔案」。僅使用你擁有或有權使用的音樂 — 無法加入 Apple Music 的歌曲。"
+            "value" : "來自「檔案」。只能使用你擁有或有權使用的音樂，無法加入 Apple Music 的歌曲。"
           }
         }
       }
@@ -149004,7 +149004,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用遙控可以"
+            "value" : "用遙控器可以"
           }
         }
       }
@@ -149122,7 +149122,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "來自整段鏡頭"
+            "value" : "來自整個鏡頭"
           }
         }
       }
@@ -149241,7 +149241,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "來自你的航海日誌"
+            "value" : "來自你的航行日誌"
           }
         }
       }
@@ -151375,7 +151375,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "準備"
+            "value" : "準備好"
           }
         }
       }
@@ -154459,7 +154459,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "個目標"
+            "value" : "目標"
           }
         }
       }
@@ -156123,7 +156123,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "擴大我的觀眾"
+            "value" : "擴大我的觀眾群"
           }
         }
       }
@@ -157665,7 +157665,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "聆聽原本的停頓"
+            "value" : "正在播放原本的停頓"
           }
         }
       }
@@ -158612,7 +158612,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我是這樣做%@的 — 從頭到尾。[停頓]"
+            "value" : "我是這樣做%@的，從頭到尾。[停頓]"
           }
         }
       }
@@ -160744,7 +160744,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "強調"
+            "value" : "醒目標示"
           }
         }
       }
@@ -160862,7 +160862,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "強調顏色"
+            "value" : "醒目顏色"
           }
         }
       }
@@ -160981,7 +160981,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "強調顯示為"
+            "value" : "醒目標示方式"
           }
         }
       }
@@ -162286,7 +162286,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開場"
+            "value" : "開場鉤子"
           }
         }
       }
@@ -162522,7 +162522,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開場白變體、各平台版本、最佳拍攝推薦"
+            "value" : "開場鉤子變化、各平台版本、最佳鏡頭推薦"
           }
         }
       }
@@ -163349,7 +163349,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你通常怎麼結束一支影片？"
+            "value" : "你通常怎麼結束一部影片？"
           }
         }
       }
@@ -164530,7 +164530,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "要讓 Cue 怎麼搭建？"
+            "value" : "Cue 該怎麼編排？"
           }
         }
       }
@@ -166785,7 +166785,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我差點沒發這支影片。[停頓]"
+            "value" : "我差點沒發這部影片。[停頓]"
           }
         }
       }
@@ -167375,7 +167375,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我欠你一個說明。[停頓]"
+            "value" : "我欠大家一個解釋。[停頓]"
           }
         }
       }
@@ -167847,7 +167847,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我什麼都試過 — 這些是真正留下來的。"
+            "value" : "我什麼都試過了，這些是真正留下來的。"
           }
         }
       }
@@ -169385,7 +169385,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "依你的影片主題提供點子。在你選定前不會寫任何內容。"
+            "value" : "依你的影片主題提供想法。在你選定前不會寫任何內容。"
           }
         }
       }
@@ -169504,7 +169504,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "適合你主題的點子"
+            "value" : "適合你主題的想法"
           }
         }
       }
@@ -169623,7 +169623,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "起步的想法。"
+            "value" : "可以起步的想法。"
           }
         }
       }
@@ -173310,7 +173310,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "進入和退出"
+            "value" : "進場與退場"
           }
         }
       }
@@ -174138,7 +174138,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在分享面板中輕點 %@"
+            "value" : "在分享表單中輕點 %@"
           }
         }
       }
@@ -174375,7 +174375,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用你的風格"
+            "value" : "用你的口吻"
           }
         }
       }
@@ -174494,7 +174494,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的聲音 · %@"
+            "value" : "你的口吻 · %@"
           }
         }
       }
@@ -175084,7 +175084,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Instagram 限時動態"
+            "value" : "Instagram Stories"
           }
         }
       }
@@ -176387,7 +176387,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可以發佈了嗎？"
+            "value" : "可以發布了嗎？"
           }
         }
       }
@@ -176741,7 +176741,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這真的值得炒作嗎？一起來看看。"
+            "value" : "這真的有傳說中那麼好嗎？一起來看看。"
           }
         }
       }
@@ -176979,7 +176979,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "它會進入輸入框。先改成你的樣子。"
+            "value" : "它會放進輸入框，先改成你自己的版本。"
           }
         }
       }
@@ -177569,7 +177569,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "終於要發生了。"
+            "value" : "終於來了。"
           }
         }
       }
@@ -177926,7 +177926,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已儲存到照片。打開 Cue 即可分享。"
+            "value" : "已儲存到「照片」。打開 Cue 即可分享。"
           }
         }
       }
@@ -178044,7 +178044,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "項"
+            "value" : "項目"
           }
         }
       }
@@ -178518,7 +178518,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "加入候補名單 — 連結在個人簡介"
+            "value" : "加入候補名單，連結在個人簡介"
           }
         }
       }
@@ -180647,7 +180647,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保留其聲音"
+            "value" : "保留原聲"
           }
         }
       }
@@ -181355,7 +181355,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "保持聲音音高"
+            "value" : "保留音高"
           }
         }
       }
@@ -183130,7 +183130,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "孩子能幫的忙比我們想的多。這樣開始。"
+            "value" : "孩子能幫的忙比我們想的多。從這裡開始吧。"
           }
         }
       }
@@ -184431,7 +184431,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "發射"
+            "value" : "發表"
           }
         }
       }
@@ -187155,7 +187155,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "淺色"
+            "value" : "輕度"
           }
         }
       }
@@ -189281,7 +189281,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "清單 / 小撇步"
+            "value" : "清單 / 技巧"
           }
         }
       }
@@ -190346,7 +190346,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在此 iPhone 上聆聽。部分語言首次使用時需下載模型。"
+            "value" : "在這部 iPhone 上聆聽。部分語言首次使用時需下載模型。"
           }
         }
       }
@@ -191056,7 +191056,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "航海日誌 · %lld 則待寫"
+            "value" : "航行日誌 · %lld 則待處理"
           }
         }
       }
@@ -191765,7 +191765,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最長連續"
+            "value" : "最長連續紀錄"
           }
         }
       }
@@ -194251,7 +194251,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "改短一點，或直接錄製，之後還能剪。"
+            "value" : "改短一點，或直接錄影，之後還能修剪。"
           }
         }
       }
@@ -195443,7 +195443,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "仍然標為可以錄影"
+            "value" : "仍標為就緒"
           }
         }
       }
@@ -195562,7 +195562,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "為要發布的那條加上星號"
+            "value" : "為要發布的那個鏡頭加上星號"
           }
         }
       }
@@ -196626,7 +196626,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可能是刻意的 — 用來強調"
+            "value" : "可能是刻意的，用來強調"
           }
         }
       }
@@ -198404,7 +198404,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "麥克風已關閉 · 請查看設定"
+            "value" : "麥克風已關閉 · 請查看「設定」"
           }
         }
       }
@@ -199231,7 +199231,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可能有其意義 — 請先聆聽"
+            "value" : "可能有意義 · 請先聆聽"
           }
         }
       }
@@ -206121,7 +206121,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "音樂 · 在你的聲音之下"
+            "value" : "音樂 · 襯在你的聲音之下"
           }
         }
       }
@@ -206832,7 +206832,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "必須說"
+            "value" : "必須提到"
           }
         }
       }
@@ -207660,7 +207660,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我的封面樣式"
+            "value" : "我的封面風格"
           }
         }
       }
@@ -207898,7 +207898,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我的 CUE 聲音"
+            "value" : "MY CUE VOICE"
           }
         }
       }
@@ -208253,7 +208253,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我的第一次品牌通話 — 結果相機當機了"
+            "value" : "我第一次和品牌開會，結果相機當機了"
           }
         }
       }
@@ -209083,7 +209083,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我的片語"
+            "value" : "我的口頭禪"
           }
         }
       }
@@ -209556,7 +209556,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我的影片用來"
+            "value" : "我拍影片是為了"
           }
         }
       }
@@ -209674,7 +209674,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我的聲音"
+            "value" : "我的口吻"
           }
         }
       }
@@ -211805,7 +211805,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "中性聲音"
+            "value" : "中性口吻"
           }
         }
       }
@@ -212041,7 +212041,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "不能說"
+            "value" : "不可提到"
           }
         }
       }
@@ -216081,7 +216081,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "找不到相機 · 攝影棚模式仍可使用"
+            "value" : "找不到相機 · Studio 模式仍可使用"
           }
         }
       }
@@ -216792,7 +216792,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "無裁剪參考"
+            "value" : "無裁切參考"
           }
         }
       }
@@ -218925,7 +218925,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "還沒有開場句"
+            "value" : "還沒有開場白"
           }
         }
       }
@@ -219519,7 +219519,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "沒關係，你仍然可以練習。想錄影時，在設定中開啟相機即可。"
+            "value" : "沒關係，你仍然可以練習。想錄影時，在「設定」中開啟相機即可。"
           }
         }
       }
@@ -219638,7 +219638,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "沒關係，你仍然可以練習。文字會等速捲動。在設定中開啟麥克風，文字就能跟著你的聲音走。"
+            "value" : "沒關係，你仍然可以練習。文字會等速捲動。在「設定」中開啟麥克風，文字就能跟著你的聲音走。"
           }
         }
       }
@@ -219757,7 +219757,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "沒關係，你仍然可以練習。文字會等速捲動。在設定中開啟它們，文字才能跟著你的聲音走，你也才能錄影。"
+            "value" : "沒關係，你仍然可以練習。文字會等速捲動。在「設定」中開啟它們，文字才能跟著你的聲音走，你也才能錄影。"
           }
         }
       }
@@ -220231,7 +220231,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "沒有已連線的遙控"
+            "value" : "沒有已連線的遙控器"
           }
         }
       }
@@ -220350,7 +220350,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "還沒有遙控"
+            "value" : "還沒有遙控器"
           }
         }
       }
@@ -223427,7 +223427,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "暫不可用"
+            "value" : "尚無法使用"
           }
         }
       }
@@ -224019,7 +224019,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此 iPhone 空間不足。請釋放約 %lld MB 後再試一次。"
+            "value" : "這部 iPhone 空間不足。請清出約 %lld MB 的空間後再試一次。"
           }
         }
       }
@@ -224612,7 +224612,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "暫時不要"
+            "value" : "現在不要"
           }
         }
       }
@@ -226153,7 +226153,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "沒有要避開的"
+            "value" : "沒有要避免的"
           }
         }
       }
@@ -226983,7 +226983,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 的通知在 iOS 設定中已關閉。提醒會保存在 Cue 中。"
+            "value" : "Cue 的通知已在 iOS「設定」中關閉。提醒會保存在 Cue 中。"
           }
         }
       }
@@ -229121,7 +229121,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "好，說真的 — 這件事很重要。"
+            "value" : "好，說真的，這件事很重要。"
           }
         }
       }
@@ -229950,7 +229950,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在這台 iPhone 上"
+            "value" : "在這部 iPhone 上"
           }
         }
       }
@@ -231135,7 +231135,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的一個點子正等著變成影片。要繼續發展嗎？"
+            "value" : "你的一個想法正等著變成影片。要繼續發展嗎？"
           }
         }
       }
@@ -231372,7 +231372,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一個小問題 · 聲音 %lld%%"
+            "value" : "一個小問題 · 口吻 %lld%%"
           }
         }
       }
@@ -231491,7 +231491,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一個小小的旅行失誤可能讓你損失一整天。這樣就能避免。"
+            "value" : "一個小小的旅行失誤可能讓你損失一整天。教你怎麼避免。"
           }
         }
       }
@@ -231967,7 +231967,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "只保留幾句話，絕不保留原文。任何內容都不會離開這台 iPhone。"
+            "value" : "只保留幾句話，絕不保留原文。任何內容都不會離開這部 iPhone。"
           }
         }
       }
@@ -233387,7 +233387,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開啟 iPhone 設定"
+            "value" : "打開 iPhone「設定」"
           }
         }
       }
@@ -233506,7 +233506,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打開繼續。準備好就錄影。"
+            "value" : "打開它繼續。準備好就錄影。"
           }
         }
       }
@@ -233624,7 +233624,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "打開航海日誌 ›"
+            "value" : "打開航行日誌 ›"
           }
         }
       }
@@ -233742,7 +233742,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開啟遙控"
+            "value" : "開啟遙控器"
           }
         }
       }
@@ -234333,7 +234333,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已帶著影片開啟 %@ · Cue 無法得知你是否發佈"
+            "value" : "已帶著影片開啟 %@ · Cue 無法得知你是否發布"
           }
         }
       }
@@ -234924,7 +234924,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開頭"
+            "value" : "開場"
           }
         }
       }
@@ -235161,7 +235161,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "以這些分段打開為草稿。"
+            "value" : "會以這些段落開啟為草稿。"
           }
         }
       }
@@ -235515,7 +235515,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開頭"
+            "value" : "開場"
           }
         }
       }
@@ -237997,7 +237997,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "相機畫面之上 · 自拍"
+            "value" : "相機畫面之上 · Selfie"
           }
         }
       }
@@ -240603,7 +240603,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "貼上文字、選擇封面，然後輕點發布。"
+            "value" : "貼上文字、選擇封面，然後輕點「發布」。"
           }
         }
       }
@@ -241904,7 +241904,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "成果"
+            "value" : "收尾"
           }
         }
       }
@@ -244985,7 +244985,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 的照片權限已關閉"
+            "value" : "Cue 的「照片」取用權限已關閉"
           }
         }
       }
@@ -245221,7 +245221,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "慣用語 · 已移除"
+            "value" : "口頭禪 · 已移除"
           }
         }
       }
@@ -246409,7 +246409,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在「樣式」中選擇一種外觀，才能單獨設定各行樣式。"
+            "value" : "在「風格」中選擇一種外觀，才能單獨設定各行樣式。"
           }
         }
       }
@@ -247950,7 +247950,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在分享選單中選擇 App"
+            "value" : "在分享表單中選擇 App"
           }
         }
       }
@@ -248778,7 +248778,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "選擇螢幕顏色"
+            "value" : "選擇幕布顏色"
           }
         }
       }
@@ -249252,7 +249252,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最多選 3 個。Cue 會用它們為你構思影片點子，每一個都會變成一個世界。"
+            "value" : "最多選 3 個。Cue 會用它們為你構思影片想法，每一個都會變成一個世界。"
           }
         }
       }
@@ -250200,7 +250200,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "通俗"
+            "value" : "淺白"
           }
         }
       }
@@ -252096,7 +252096,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在播放原始版本 — 點一下即可停止"
+            "value" : "正在播放原始版本 · 點一下即可停止"
           }
         }
       }
@@ -252570,7 +252570,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在你的聲音繼續時疊加在影片上播放（B-roll）。可在預覽中移動和調整大小。"
+            "value" : "疊加在影片上播放（B-roll），你的聲音會持續。可在預覽中移動和調整大小。"
           }
         }
       }
@@ -254350,7 +254350,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "流行"
+            "value" : "Pop"
           }
         }
       }
@@ -254942,7 +254942,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "發佈它"
+            "value" : "發布"
           }
         }
       }
@@ -256125,7 +256125,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第一人稱視角：它終於跟廣告一樣好看了。"
+            "value" : "POV：它終於跟廣告一樣好看了。"
           }
         }
       }
@@ -256243,7 +256243,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV：早上7點，靈感剛剛降臨。"
+            "value" : "POV：早上 7 點，靈感剛剛降臨。"
           }
         }
       }
@@ -256361,7 +256361,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV：你終於按下了錄製"
+            "value" : "POV：你終於按下錄影鍵"
           }
         }
       }
@@ -256479,7 +256479,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV：你終於按下了錄製。[停頓]"
+            "value" : "POV：你終於按下錄影鍵。[停頓]"
           }
         }
       }
@@ -256834,7 +256834,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV：你的第一支影片比預想的還好。"
+            "value" : "POV：你的第一部影片比預想的還好。"
           }
         }
       }
@@ -257071,7 +257071,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用提詞器練習"
+            "value" : "用提詞機練習"
           }
         }
       }
@@ -261443,7 +261443,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "個人資料已更新 · 新版本"
+            "value" : "個人檔案已更新 · 新版本"
           }
         }
       }
@@ -261916,7 +261916,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "範例 · %lld/%lld 個"
+            "value" : "證據 · %lld / %lld 個範例"
           }
         }
       }
@@ -264287,7 +264287,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "放進輸入框，改成你的樣子。"
+            "value" : "放進輸入框，改成你自己的版本。"
           }
         }
       }
@@ -265233,7 +265233,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "先說一聲：這支影片有贊助。"
+            "value" : "先說一聲：這部影片有贊助。"
           }
         }
       }
@@ -266301,7 +266301,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "重新錄製"
+            "value" : "重新錄影"
           }
         }
       }
@@ -267012,7 +267012,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "讀一遍；不會錄製任何內容"
+            "value" : "讀一遍，不會錄影"
           }
         }
       }
@@ -267605,7 +267605,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開讀！"
+            "value" : "開始讀！"
           }
         }
       }
@@ -269145,7 +269145,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "準備好下一支影片了嗎？"
+            "value" : "準備好下一部影片了嗎？"
           }
         }
       }
@@ -269500,7 +269500,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可以發佈"
+            "value" : "可以發布"
           }
         }
       }
@@ -269618,7 +269618,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可以發佈到 %@"
+            "value" : "可以發布到 %@"
           }
         }
       }
@@ -269854,7 +269854,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可錄製 · %lld"
+            "value" : "可以錄影 · %lld"
           }
         }
       }
@@ -269972,7 +269972,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "可錄製 · Shape 可加入提示"
+            "value" : "可以錄影 · Shape 可加入提示"
           }
         }
       }
@@ -270327,7 +270327,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "完成，稍後再發佈"
+            "value" : "好了，我稍後再發布"
           }
         }
       }
@@ -270684,7 +270684,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "個原因"
+            "value" : "原因"
           }
         }
       }
@@ -271275,7 +271275,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 的建議"
+            "value" : "建議用於 %@"
           }
         }
       }
@@ -271630,7 +271630,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "錄一份腳本，每則拍攝都會出現在這裡。"
+            "value" : "錄一份腳本，每個鏡頭都會出現在這裡。"
           }
         }
       }
@@ -272341,7 +272341,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "錄製我的第一支影片"
+            "value" : "錄製我的第一部影片"
           }
         }
       }
@@ -273169,7 +273169,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已錄製 · %lld"
+            "value" : "已錄影 · %lld"
           }
         }
       }
@@ -274587,7 +274587,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用你寫過的文字完善寫作風格。一切都留在這台 iPhone 上。"
+            "value" : "用你寫過的文字完善寫作風格。一切都留在這部 iPhone 上。"
           }
         }
       }
@@ -275537,7 +275537,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "遙控"
+            "value" : "遙控器"
           }
         }
       }
@@ -275655,7 +275655,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "遙控已連線"
+            "value" : "遙控器已連線"
           }
         }
       }
@@ -275773,7 +275773,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "遙控已連線"
+            "value" : "遙控器已連線"
           }
         }
       }
@@ -278898,7 +278898,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "將從這台 iPhone 移除你的腳本、鏡頭、剪輯和 My Cue Voice。已存入「照片」的影片會保留。"
+            "value" : "將從這部 iPhone 移除你的腳本、鏡頭、剪輯和 My Cue Voice。已存入「照片」的影片會保留。"
           }
         }
       }
@@ -281713,7 +281713,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "恢復為推薦設定"
+            "value" : "恢復為建議設定"
           }
         }
       }
@@ -283133,7 +283133,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "倒轉適用於 2 分鐘以內的片段 · 請先分割"
+            "value" : "倒放適用於 2 分鐘以內的片段 · 請先分割"
           }
         }
       }
@@ -283252,7 +283252,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已倒轉"
+            "value" : "已倒放"
           }
         }
       }
@@ -283371,7 +283371,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在倒轉片段…"
+            "value" : "正在倒放片段…"
           }
         }
       }
@@ -283490,7 +283490,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "倒轉"
+            "value" : "倒放"
           }
         }
       }
@@ -283608,7 +283608,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "檢視"
+            "value" : "評測"
           }
         }
       }
@@ -284201,7 +284201,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "改寫、開場鉤子與主題點子都在裝置上執行。自由輸入的提示詞則透過 Apple 的 Private Cloud Compute 撰寫，它只會用你的請求來回答，並不會保留。不涉及其他任何 AI 服務。"
+            "value" : "改寫、開場鉤子與主題想法都在裝置上執行。自由輸入的提示詞則透過 Apple 的 Private Cloud Compute 撰寫，它只會用你的請求來回答，並不會保留。不涉及其他任何 AI 服務。"
           }
         }
       }
@@ -287290,7 +287290,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在點子溜走前記下來"
+            "value" : "在想法溜走前記下來"
           }
         }
       }
@@ -287409,7 +287409,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在點子溜走前記下來，以後再發展。"
+            "value" : "在想法溜走前記下來，以後再發展。"
           }
         }
       }
@@ -288946,7 +288946,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已儲存 · 接近時 Cue 會安排"
+            "value" : "已儲存 · 時間接近時 Cue 會排定提醒"
           }
         }
       }
@@ -289302,7 +289302,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已儲存 · 聲音 %lld%%"
+            "value" : "已儲存 · 口吻 %lld%%"
           }
         }
       }
@@ -289905,7 +289905,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已儲存在拍攝中 · 隨時用 Pro 匯出"
+            "value" : "已儲存到「鏡頭」 · 隨時可用 Pro 匯出"
           }
         }
       }
@@ -290023,7 +290023,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已儲存在拍攝中 · 什麼都不會丟。你已用完 %lld 次免費匯出。"
+            "value" : "已儲存到「鏡頭」 · 不會遺失任何內容。你已用完 %lld 次免費匯出。"
           }
         }
       }
@@ -290733,7 +290733,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已儲存到「照片」 · 開啟 %@ 發佈"
+            "value" : "已儲存到「照片」 · 開啟 %@ 即可發布"
           }
         }
       }
@@ -291088,7 +291088,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "儲存到「照片」· 隨處都能發佈"
+            "value" : "儲存到「照片」· 隨處都能發布"
           }
         }
       }
@@ -295593,7 +295593,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "腳本和 My Cue Voice 只保留在這台 iPhone 上"
+            "value" : "腳本和 My Cue Voice 只保留在這部 iPhone 上"
           }
         }
       }
@@ -296304,7 +296304,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "腳本、改寫、開場鉤子與主題點子全都在這部 iPhone 上撰寫。不涉及其他任何 AI 服務。"
+            "value" : "腳本、改寫、開場鉤子與主題想法全都在這部 iPhone 上撰寫。不涉及其他任何 AI 服務。"
           }
         }
       }
@@ -297604,7 +297604,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在「拍攝」中查看 ›"
+            "value" : "在「鏡頭」中查看 ›"
           }
         }
       }
@@ -299145,7 +299145,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "自拍"
+            "value" : "Selfie"
           }
         }
       }
@@ -300092,7 +300092,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "句子 · 混合 → 簡短"
+            "value" : "句子 · 長短結合 → 短句"
           }
         }
       }
@@ -301038,7 +301038,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "嚴肅 — 不炒作"
+            "value" : "嚴肅，不浮誇"
           }
         }
       }
@@ -302340,7 +302340,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "設定 › 遙控"
+            "value" : "設定 › 遙控器"
           }
         }
       }
@@ -302458,7 +302458,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "設定"
+            "value" : "鋪陳"
           }
         }
       }
@@ -303403,7 +303403,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "再分享 %lld 支影片"
+            "value" : "再分享 %lld 部影片"
           }
         }
       }
@@ -308374,7 +308374,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "顯示 @使用者名稱"
+            "value" : "顯示 @帳號"
           }
         }
       }
@@ -319043,7 +319043,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有些理財錯誤在二十多歲時很容易犯。我們來避開它們。"
+            "value" : "有些理財錯誤在二十多歲時很容易犯，一起避開吧。"
           }
         }
       }
@@ -319635,7 +319635,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有人在留言區問了這個 — 讓我來回答。"
+            "value" : "有人在留言區問了這個，我來回答。"
           }
         }
       }
@@ -322953,7 +322953,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "防震"
+            "value" : "防手震"
           }
         }
       }
@@ -323547,7 +323547,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "幫最喜歡的加星。其他的留在鏡頭裡。"
+            "value" : "幫最喜歡的加星。其他的會留在「鏡頭」中。"
           }
         }
       }
@@ -324138,7 +324138,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開始一支影片"
+            "value" : "開始一部影片"
           }
         }
       }
@@ -324611,7 +324611,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "從一個點子、一種格式或一張白紙開始。你的宇宙還容得下一顆星。"
+            "value" : "從一個想法、一種格式或一張白紙開始。你的宇宙還容得下一顆星。"
           }
         }
       }
@@ -326979,7 +326979,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "起始鏡頭"
+            "value" : "起始相機"
           }
         }
       }
@@ -327216,7 +327216,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一句話說出迷思，講清人們為什麼相信，再給出事實。一支影片只講一個迷思。"
+            "value" : "一句話說出迷思，講清人們為什麼相信，再給出事實。一部影片只講一個迷思。"
           }
         }
       }
@@ -327334,7 +327334,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用一句話說出你的觀點，給一個理由，最後以問題收尾 — 問題會帶來留言。"
+            "value" : "用一句話說出你的觀點，給一個理由，最後以問題收尾，因為問題會帶來留言。"
           }
         }
       }
@@ -327570,7 +327570,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "固定"
+            "value" : "等速"
           }
         }
       }
@@ -327807,7 +327807,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "快學走我的方法 — 比你想的簡單。"
+            "value" : "快學走我的方法，比你想的簡單。"
           }
         }
       }
@@ -329114,7 +329114,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "別再買做這件事的那個版本。[停頓]"
+            "value" : "別再買會這樣的那款了。[停頓]"
           }
         }
       }
@@ -329232,7 +329232,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "停止口述"
+            "value" : "停止聽寫"
           }
         }
       }
@@ -329706,7 +329706,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "停下滑動十秒鐘。"
+            "value" : "先停下滑動十秒鐘。"
           }
         }
       }
@@ -330178,7 +330178,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "限時動態"
+            "value" : "Stories"
           }
         }
       }
@@ -330533,7 +330533,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "說故事時間 — 沒錯，結局很好。"
+            "value" : "說故事時間，而且結局很好。"
           }
         }
       }
@@ -330769,7 +330769,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "故事"
+            "value" : "說故事"
           }
         }
       }
@@ -330887,7 +330887,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "故事：%@"
+            "value" : "說故事：%@"
           }
         }
       }
@@ -331718,7 +331718,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "嚴重的髒話和侮辱性詞語絕不會被寫出——Apple Intelligence 不會產生它們。"
+            "value" : "嚴重的髒話和侮辱性詞語絕不會寫出來，因為 Apple Intelligence 不會產生這類內容。"
           }
         }
       }
@@ -331837,7 +331837,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "更有力的號召"
+            "value" : "行動呼籲更有力了"
           }
         }
       }
@@ -332310,7 +332310,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "攝影棚"
+            "value" : "Studio"
           }
         }
       }
@@ -332428,7 +332428,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "攝影棚"
+            "value" : "STUDIO"
           }
         }
       }
@@ -332546,7 +332546,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "攝影棚模式"
+            "value" : "Studio 模式"
           }
         }
       }
@@ -334206,7 +334206,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每月 %@ 訂閱"
+            "value" : "以每月 %@ 訂閱"
           }
         }
       }
@@ -334324,7 +334324,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每年 %@ 訂閱"
+            "value" : "以每年 %@ 訂閱"
           }
         }
       }
@@ -334679,7 +334679,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "個子主題"
+            "value" : "子主題"
           }
         }
       }
@@ -334797,7 +334797,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "推薦最佳"
+            "value" : "建議最佳"
           }
         }
       }
@@ -334916,7 +334916,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "推薦一件醒來後頭五分鐘可以做的事。"
+            "value" : "建議一件醒來後頭五分鐘可以做的事。"
           }
         }
       }
@@ -335035,7 +335035,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "按年齡推薦簡單的家事，以及如何讓孩子持續下去。"
+            "value" : "依年齡建議簡單的家事，以及如何讓孩子持續下去。"
           }
         }
       }
@@ -336462,7 +336462,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拍攝 %lld"
+            "value" : "鏡頭 %lld"
           }
         }
       }
@@ -336707,7 +336707,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第 %lld 次，共 %lld 次"
+            "value" : "鏡頭 %1$lld / %2$lld"
           }
         }
       }
@@ -337771,7 +337771,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "又高又響亮的大寫"
+            "value" : "高瘦醒目的大寫"
           }
         }
       }
@@ -338362,7 +338362,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在編輯器中點「完成」，或挑選一個最佳鏡頭 — 它就會出現在這裡，可以發佈。"
+            "value" : "在編輯器中點「完成」，或挑選一個最佳鏡頭，它就會出現在這裡，可以發布。"
           }
         }
       }
@@ -341443,7 +341443,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "用來了解你的說話方式——絕不會被挪用到故事、觀點或成果上。僅儲存在這台 iPhone 上。"
+            "value" : "用來學習你的說話方式，絕不會挪用到故事、觀點或成果上。只會留在這部 iPhone 上。"
           }
         }
       }
@@ -344878,7 +344878,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "文字視窗 · 自拍"
+            "value" : "文字視窗 · Selfie"
           }
         }
       }
@@ -345588,7 +345588,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "謝謝你對我有更高的期待。"
+            "value" : "謝謝大家用更高的標準要求我。"
           }
         }
       }
@@ -345825,7 +345825,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "那個點子已不在 · 點 ↻ 換一個"
+            "value" : "那個想法已不在 · 點 ↻ 換一個"
           }
         }
       }
@@ -347960,7 +347960,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 在背景時匯出已停止。"
+            "value" : "Cue 在背景執行時，匯出已停止。"
           }
         }
       }
@@ -348314,7 +348314,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "第一條竟然就是你留下的那條"
+            "value" : "你留下的正是第一個鏡頭"
           }
         }
       }
@@ -348670,7 +348670,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "強調顏色會變更，讓正在說的字詞更醒目：%@。"
+            "value" : "醒目顏色會變更，讓正在說的字詞更突出：%@。"
           }
         }
       }
@@ -348789,7 +348789,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone 溫度較高，輸出會更慢。如果可以，請讓它降溫。"
+            "value" : "iPhone 溫度較高，匯出會更慢。如果可以，請讓它降溫。"
           }
         }
       }
@@ -349382,7 +349382,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 的麥克風已關閉。請在「設定」中開啟以口述，或直接輸入你的想法。"
+            "value" : "Cue 的麥克風已關閉。請在「設定」中開啟以使用聽寫，或直接輸入你的想法。"
           }
         }
       }
@@ -349501,7 +349501,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "麥克風讓提詞機跟上你的話，處理都在這支 iPhone 上。相機會在你朗讀時顯示你。"
+            "value" : "麥克風讓提詞機跟上你說的話，全在這部 iPhone 上處理。相機會在你朗讀時顯示你。"
           }
         }
       }
@@ -352823,7 +352823,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "其間影片已變更 · 請重新擷取聲音"
+            "value" : "影片在此期間已變更 · 請重新擷取音訊"
           }
         }
       }
@@ -353061,7 +353061,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "影片在此期間已變更 · 請重新倒轉"
+            "value" : "影片在此期間已變更 · 請重新倒放"
           }
         }
       }
@@ -353299,7 +353299,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "影片會在沒有封面影像的情況下輸出。"
+            "value" : "影片會在沒有封面影像的情況下匯出。"
           }
         }
       }
@@ -353417,7 +353417,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這些影片會從 Cue 中移除。你儲存到「照片」的拷貝會保留在那裡。"
+            "value" : "這些影片會從 Cue 中移除。你儲存到「照片」的副本會保留在那裡。"
           }
         }
       }
@@ -353536,7 +353536,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "整行使用醒目提示顏色"
+            "value" : "整行使用醒目顏色"
           }
         }
       }
@@ -354484,7 +354484,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "我希望新手父母時就知道的事"
+            "value" : "剛當爸媽時就希望知道的事"
           }
         }
       }
@@ -355080,7 +355080,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此片段 · 播放時的鏡頭運動"
+            "value" : "此片段 · 播放時運鏡"
           }
         }
       }
@@ -355199,7 +355199,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此片段 · 穩住鏡頭晃動"
+            "value" : "此片段 · 穩住相機晃動"
           }
         }
       }
@@ -358990,7 +358990,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "無法開啟這支影片"
+            "value" : "無法開啟這部影片"
           }
         }
       }
@@ -359227,7 +359227,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這支影片有自己的聲音"
+            "value" : "這部影片有自己的聲音"
           }
         }
       }
@@ -359583,7 +359583,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "這支影片已逾期。"
+            "value" : "這部影片已過了預定時間。"
           }
         }
       }
@@ -361479,7 +361479,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "提示"
+            "value" : "小技巧"
           }
         }
       }
@@ -361597,7 +361597,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "提示"
+            "value" : "技巧"
           }
         }
       }
@@ -361715,7 +361715,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "提示 / 清單"
+            "value" : "技巧 / 清單"
           }
         }
       }
@@ -363611,7 +363611,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "種語氣"
+            "value" : "語氣"
           }
         }
       }
@@ -367635,7 +367635,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用 Apple 翻譯在你的 iPhone 上完成翻譯。不會傳送到任何地方。"
+            "value" : "使用 Apple 的「翻譯」功能在你的 iPhone 上完成翻譯。不會傳送到任何地方。"
           }
         }
       }
@@ -368462,7 +368462,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已開始試用 — 好好享受 Cue Pro"
+            "value" : "已開始試用 · 盡情享受 Cue Pro"
           }
         }
       }
@@ -369763,7 +369763,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "試試看，告訴我"
+            "value" : "試試看，再告訴我"
           }
         }
       }
@@ -371306,7 +371306,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已在「設定 › 隱私與 AI 資料」中關閉。"
+            "value" : "已在「設定」›「隱私權與 AI 資料」中關閉。"
           }
         }
       }
@@ -371542,7 +371542,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "教學 / 怎麼做"
+            "value" : "教學 / 步驟說明"
           }
         }
       }
@@ -373201,7 +373201,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "文字 · %@"
+            "value" : "輸入 · %@"
           }
         }
       }
@@ -373675,7 +373675,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "UGC、評論、社群經理"
+            "value" : "UGC、評測、社群經理"
           }
         }
       }
@@ -375094,7 +375094,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "分享 %lld 支影片後解鎖"
+            "value" : "分享 %lld 部影片後解鎖"
           }
         }
       }
@@ -376986,7 +376986,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用我的樣式"
+            "value" : "使用我的風格"
           }
         }
       }
@@ -377105,7 +377105,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在草稿中使用我的聲音"
+            "value" : "在草稿中使用我的口吻"
           }
         }
       }
@@ -377578,7 +377578,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "將這台 iPhone 用作遙控器"
+            "value" : "將這部 iPhone 用作遙控器"
           }
         }
       }
@@ -377934,7 +377934,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "偶爾使用，不會每支影片都用"
+            "value" : "偶爾使用，不會每部影片都用"
           }
         }
       }
@@ -378643,7 +378643,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用此 iPhone 上的 Apple Intelligence。"
+            "value" : "使用這部 iPhone 上的 Apple Intelligence。"
           }
         }
       }
@@ -378997,7 +378997,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "常用形式"
+            "value" : "常用格式"
           }
         }
       }
@@ -380535,7 +380535,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "影片 · 發布到 %@"
+            "value" : "影片用於 · %@"
           }
         }
       }
@@ -382787,7 +382787,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "聲音完成度"
+            "value" : "口吻完成度"
           }
         }
       }
@@ -382907,7 +382907,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "聲音強度 %lld%%"
+            "value" : "口吻完成度 %lld%%"
           }
         }
       }
@@ -385042,7 +385042,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "需要 Cue 提醒你完成這支影片嗎？"
+            "value" : "需要 Cue 提醒你完成這部影片嗎？"
           }
         }
       }
@@ -385515,7 +385515,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "暖調雜誌"
+            "value" : "暖調雜誌風"
           }
         }
       }
@@ -385869,7 +385869,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "正在預熱提詞器"
+            "value" : "正在預熱提詞機"
           }
         }
       }
@@ -386461,7 +386461,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "看這個 — %@。[示範]"
+            "value" : "看這個：%@。[示範]"
           }
         }
       }
@@ -387290,7 +387290,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "歡迎回來。發布後 Cue 會點亮它的星球。"
+            "value" : "歡迎回來。影片上線後，Cue 會點亮它的星球。"
           }
         }
       }
@@ -387880,7 +387880,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "會變更的內容"
+            "value" : "接下來的改變"
           }
         }
       }
@@ -387998,7 +387998,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "現在會變更的內容"
+            "value" : "現在會有什麼改變"
           }
         }
       }
@@ -390604,7 +390604,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你願意負責的事"
+            "value" : "你要承擔的責任"
           }
         }
       }
@@ -391077,7 +391077,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "是什麼想法？"
+            "value" : "你的想法是什麼？"
           }
         }
       }
@@ -391907,7 +391907,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 在此鏡頭中聆聽你的位置。"
+            "value" : "Cue 在此鏡頭中聽到你說話的位置。"
           }
         }
       }
@@ -392025,7 +392025,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你最常在哪裡發佈？"
+            "value" : "你最常在哪裡發布？"
           }
         }
       }
@@ -392261,7 +392261,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "流向哪裡"
+            "value" : "放置位置"
           }
         }
       }
@@ -394391,7 +394391,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "整段鏡頭 · 部分片段保留各自的設定"
+            "value" : "整個鏡頭 · 部分片段保留各自的設定"
           }
         }
       }
@@ -394748,7 +394748,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "整部影片 · 依發佈平台選擇格式"
+            "value" : "整部影片 · 依發布平台選擇畫幅"
           }
         }
       }
@@ -399371,7 +399371,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "寫"
+            "value" : "起草"
           }
         }
       }
@@ -399846,7 +399846,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "去寫"
+            "value" : "開始寫"
           }
         }
       }
@@ -400201,7 +400201,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "撰寫廣告"
+            "value" : "起草廣告"
           }
         }
       }
@@ -400794,7 +400794,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在這台 iPhone 上由 Apple Intelligence 撰寫。任何內容都不會離開你的裝置。"
+            "value" : "在這部 iPhone 上由 Apple Intelligence 撰寫。任何內容都不會離開你的裝置。"
           }
         }
       }
@@ -400913,7 +400913,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "已寫進度"
+            "value" : "起草進度"
           }
         }
       }
@@ -401507,7 +401507,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "按年"
+            "value" : "年繳"
           }
         }
       }
@@ -401861,7 +401861,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "是 — 分享到社群媒體"
+            "value" : "是，分享到社群媒體"
           }
         }
       }
@@ -402808,7 +402808,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你要的在這裡。"
+            "value" : "你們要的，來了。"
           }
         }
       }
@@ -403045,7 +403045,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你可以在設定 › 個人化中重新打開。"
+            "value" : "你可以在「設定」›「個人化」中重新開啟。"
           }
         }
       }
@@ -404584,7 +404584,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你一輩子都被這麼告知。但那是錯的。[停頓]"
+            "value" : "你從小到大都聽人這麼說。但那是錯的。[停頓]"
           }
         }
       }
@@ -406961,7 +406961,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的第一支影片，你的第一顆星。"
+            "value" : "你的第一部影片，你的第一顆星。"
           }
         }
       }
@@ -407673,7 +407673,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的想法 · 用你的聲音起草"
+            "value" : "你的想法 · 用你的口吻起草"
           }
         }
       }
@@ -407792,7 +407792,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的點子已經開始了"
+            "value" : "你的想法已經起步了"
           }
         }
       }
@@ -408154,7 +408154,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的光。每分享一支影片它就更亮——不需要照片。"
+            "value" : "你的光。每分享一部影片，它就更亮，不需要照片。"
           }
         }
       }
@@ -408274,7 +408274,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的航海日誌是空的"
+            "value" : "你的航行日誌是空的"
           }
         }
       }
@@ -408511,7 +408511,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的名稱"
+            "value" : "你的名字"
           }
         }
       }
@@ -408629,7 +408629,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的下一個點子可以開個頭。"
+            "value" : "下一個想法就能成為第一份。"
           }
         }
       }
@@ -408867,7 +408867,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "在第一支影片發出前，提示你的下一步"
+            "value" : "在第一部影片發出前，提示你的下一步"
           }
         }
       }
@@ -408986,7 +408986,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "下一支影片從這裡開始。Cue 會直接打開下一步。"
+            "value" : "下一部影片從這裡開始。Cue 會直接打開下一步。"
           }
         }
       }
@@ -410528,7 +410528,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的腳本、鏡頭、剪輯和 My Cue Voice 將從這台 iPhone 移除。此操作無法復原。"
+            "value" : "你的腳本、鏡頭、剪輯和 My Cue Voice 將從這部 iPhone 移除。此操作無法復原。"
           }
         }
       }
@@ -412660,7 +412660,7 @@
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "影片已載入，發布文字也已拷貝。"
+            "value" : "影片已載入，貼文說明也已拷貝。"
           }
         }
       }
