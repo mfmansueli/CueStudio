@@ -130,7 +130,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue, metin objektifin hemen altında kayarken çekimlerini kamerayla kaydeder."
+            "value" : "Cue, senaryon objektifin hemen altında kayarken çekimlerini kamerayla kaydeder."
           }
         },
         "vi" : {
@@ -256,7 +256,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue yakındaki diğer iPhone veya iPad'ine bağlanır, böylece biri diğerindeki teleprompter'ı kontrol edebilir."
+            "value" : "Cue yakındaki diğer iPhone veya iPad’ine bağlanır, böylece biri diğerindeki teleprompter’ı kontrol edebilir."
           }
         },
         "vi" : {
@@ -382,7 +382,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue her çekimde ve seslendirmelerde sesini kaydeder; metni kaydırmak için sesini de takip edebilir ve bir fikri sesle yazdığında seni dinler."
+            "value" : "Cue her çekimde ve seslendirmelerde sesini kaydeder; senaryoyu kaydırmak için sesini de takip edebilir ve bir fikri sesle yazdığında seni dinler."
           }
         },
         "vi" : {
@@ -634,7 +634,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue, metni okuduğun satırda tutmak ve sesle söylediğin fikri metne çevirmek için konuşmanı bu iPhone'da tanır. Hiçbir şey aygıttan çıkmaz."
+            "value" : "Cue, senaryoyu okuduğun satırda tutmak ve sesle söylediğin fikri metne çevirmek için konuşmanı bu iPhone’da tanır. Hiçbir şey aygıttan çıkmaz."
           }
         },
         "vi" : {

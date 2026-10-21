@@ -690,7 +690,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "· metninden"
+            "value" : "· senaryondan"
           }
         },
         "vi" : {
@@ -1164,7 +1164,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“… 3 şey”"
+            "value" : "“Şu 3 şey…”"
           }
         },
         "vi" : {
@@ -2936,7 +2936,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — duyuru"
+            "value" : "%@: duyuru"
           }
         },
         "vi" : {
@@ -3054,7 +3054,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — dürüst inceleme"
+            "value" : "%@: dürüst inceleme"
           }
         },
         "vi" : {
@@ -3172,7 +3172,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — bağlantı biyografimde. [kameraya bak] Bu video ücretli bir iş birliğidir."
+            "value" : "%@: bağlantı biyografimde. [kameraya bak] Bu video ücretli bir iş birliğidir."
           }
         },
         "vi" : {
@@ -3290,7 +3290,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — sponsorlu"
+            "value" : "%@: sponsorlu"
           }
         },
         "vi" : {
@@ -6554,7 +6554,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ videoyu almadı"
+            "value" : "%@ videoyu kabul etmedi"
           }
         },
         "vi" : {
@@ -7273,7 +7273,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ Cue’da saklanıyor. Paylaşmaya devam etmek için aç."
+            "value" : "%@ Cue’da duruyor. Paylaşmaya devam etmek için aç."
           }
         },
         "vi" : {
@@ -7510,7 +7510,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ bu iPhone'da yok · Başka bir uygulama seç"
+            "value" : "%@ bu iPhone’da yok · Başka bir uygulama seç"
           }
         },
         "vi" : {
@@ -8234,7 +8234,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her kesimde %@"
+            "value" : "Her kesmede %@"
           }
         },
         "vi" : {
@@ -9656,7 +9656,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@’de paylaşılanlar · filtreyi temizle"
+            "value" : "%@ yılında paylaşılanlar · filtreyi temizle"
           }
         },
         "vi" : {
@@ -11094,7 +11094,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@, %3$@’DE %2$lld video"
+            "value" : "%1$@, %3$@ yılında %2$lld video"
           }
         },
         "vi" : {
@@ -13132,7 +13132,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld ipucu"
+            "value" : "%lld yönerge"
           }
         },
         "vi" : {
@@ -13250,7 +13250,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld ipucu eklendi"
+            "value" : "%lld yönerge eklendi"
           }
         },
         "vi" : {
@@ -16436,7 +16436,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld TANE DAHA"
+            "value" : "AÇMAK İÇİN %lld TANE DAHA"
           }
         },
         "vi" : {
@@ -18468,7 +18468,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "yüzde %1$lld, %2$@"
+            "value" : "Yüzde %1$lld, %2$@"
           }
         },
         "vi" : {
@@ -18586,7 +18586,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kameranın %lld punto altında"
+            "value" : "Kameranın %lld nokta altında"
           }
         },
         "vi" : {
@@ -20649,7 +20649,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld video — %2$lld kaldı"
+            "value" : "%1$lld video · %2$lld kaldı"
           }
         },
         "vi" : {
@@ -21363,7 +21363,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$@’DE %1$lld VİDEO"
+            "value" : "%2$@ YILINDA %1$lld VİDEO"
           }
         },
         "vi" : {
@@ -21489,7 +21489,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$@’DE %1$lld video · %3$@ simgesi açıldı"
+            "value" : "%2$@ yılında %1$lld video · %3$@ simgesi açıldı"
           }
         },
         "vi" : {
@@ -21725,7 +21725,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$@ BERİ %1$lld VİDEO PAYLAŞILDI"
+            "value" : "%2$@ YILINDAN BERİ %1$lld VİDEO PAYLAŞILDI"
           }
         },
         "vi" : {
@@ -21843,7 +21843,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$@’DE %1$lld VİDEO PAYLAŞILDI"
+            "value" : "%2$@ YILINDA %1$lld VİDEO PAYLAŞILDI"
           }
         },
         "vi" : {
@@ -21961,7 +21961,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%2$@’DE %1$lld VİDEO PAYLAŞILDI · MÜHÜRLÜ"
+            "value" : "%2$@ YILINDA %1$lld VİDEO PAYLAŞILDI · MÜHÜRLÜ"
           }
         },
         "vi" : {
@@ -24185,7 +24185,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ Kendin"
+            "value" : "+ Kendi konun"
           }
         },
         "vi" : {
@@ -25132,7 +25132,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Cue sesi tamam"
+            "value" : "✓ My Cue Voice tamamlandı"
           }
         },
         "vi" : {
@@ -25250,7 +25250,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Uygun %@"
+            "value" : "✓ %@ için uygun"
           }
         },
         "vi" : {
@@ -25486,7 +25486,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Para kazandırır"
+            "value" : "✓ Para kazanmaya uygun"
           }
         },
         "vi" : {
@@ -25723,7 +25723,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Kaydedildi · Sırada: çekim seç"
+            "value" : "✓ Çekildi · Sırada: çekim seç"
           }
         },
         "vi" : {
@@ -26198,7 +26198,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ İlk yıldızın yayında"
+            "value" : "✓ İlk yıldızın gökyüzünde"
           }
         },
         "vi" : {
@@ -26554,7 +26554,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ %lld%%"
+            "value" : "✦ %%%lld"
           }
         },
         "vi" : {
@@ -27977,7 +27977,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Akıllı"
+            "value" : "✦ Smart"
           }
         },
         "vi" : {
@@ -28687,7 +28687,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 ipucu"
+            "value" : "1 yönerge"
           }
         },
         "vi" : {
@@ -29405,7 +29405,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@’DE 1 video · %@ simgesi açıldı"
+            "value" : "%@ yılında 1 video · %@ simgesi açıldı"
           }
         },
         "vi" : {
@@ -30711,7 +30711,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4 kısa soru — yaklaşık 20 saniye. Yazmana gerek yok."
+            "value" : "4 kısa soru, yaklaşık 20 saniye. Yazmana gerek yok."
           }
         },
         "vi" : {
@@ -32959,7 +32959,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir arkadaşım denememi istedi — ona borçluyum."
+            "value" : "Bir arkadaşım bunu denememi istedi, ona borçluyum."
           }
         },
         "vi" : {
@@ -34024,7 +34024,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her kilometre taşında bir ışık anı"
+            "value" : "Her dönüm noktasında bir ışık anı"
           }
         },
         "vi" : {
@@ -36754,7 +36754,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anladım"
+            "value" : "Kabul"
           }
         },
         "vi" : {
@@ -37584,7 +37584,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir anahtar kare ekle, oynatma çubuğunu taşı, sonra fotoğrafı veya videoyu sürükle — Cue onu anahtar kareler arasında hareket ettirir."
+            "value" : "Bir anahtar kare ekle, oynatma çubuğunu taşı, sonra fotoğrafı veya videoyu sürükle. Cue onu anahtar kareler arasında hareket ettirir."
           }
         },
         "vi" : {
@@ -37702,7 +37702,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir anahtar kare ekle, oynatma çubuğunu taşı, sonra videodaki metni sürükle — Cue onu anahtar kareler arasında hareket ettirir."
+            "value" : "Bir anahtar kare ekle, oynatma çubuğunu taşı, sonra videodaki metni sürükle. Cue onu anahtar kareler arasında hareket ettirir."
           }
         },
         "vi" : {
@@ -39004,7 +39004,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Açıklama ekle"
+            "value" : "Beyan ekle"
           }
         },
         "vi" : {
@@ -40545,7 +40545,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Çekimden sonra eklenir · Hızlı düzenleme'de değiştir."
+            "value" : "Çekimden sonra eklenir · Hızlı düzenleme’de değiştir."
           }
         },
         "vi" : {
@@ -40664,7 +40664,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue’ya gönderdiğin her fikrin önüne eklenir — senaryolar, kancalar, yanıtlar, ayrıca nerede paylaştığın ve seçtiğin format. Model eğitmek için asla kullanılmaz."
+            "value" : "Cue’ya gönderdiğin her fikrin önüne eklenir: senaryolar, kancalar, yanıtlar; nerede paylaştığın ve seçtiğin formatla birlikte. Model eğitmek için asla kullanılmaz."
           }
         },
         "vi" : {
@@ -42204,7 +42204,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Paylaştıktan sonra sol üstteki ◀ Cue’ya dokun. Bitirmek için geri döneceğiz."
+            "value" : "Paylaştıktan sonra sol üstteki ◀ Cue’ya dokun. Bitirmek için buraya dönersin."
           }
         },
         "vi" : {
@@ -44941,7 +44941,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kayıt için Ayarlar'dan Kamera ve Mikrofon'a izin ver."
+            "value" : "Kayıt için Ayarlar’dan Kamera ve Mikrofon’a izin ver."
           }
         },
         "vi" : {
@@ -45059,7 +45059,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ayarlar'da kameraya izin ver"
+            "value" : "Ayarlar’da kameraya izin ver"
           }
         },
         "vi" : {
@@ -46007,7 +46007,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zaten kurulu"
+            "value" : "Kurulu olanlar"
           }
         },
         "vi" : {
@@ -47673,7 +47673,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ve sonra — %@. [es]"
+            "value" : "Ve sonra… %@. [kısa es]"
           }
         },
         "vi" : {
@@ -47791,7 +47791,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sonra — %@. [gülümse]"
+            "value" : "Ve sonra… %@. [gülümse]"
           }
         },
         "vi" : {
@@ -48383,7 +48383,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anonim kullanım, asla video ya da metin değil"
+            "value" : "Anonim kullanım, asla video ya da senaryo değil"
           }
         },
         "vi" : {
@@ -48973,7 +48973,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "YANITIN YERİ"
+            "value" : "PLATFORM"
           }
         },
         "vi" : {
@@ -50393,7 +50393,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence · iPhone'unda çalışır"
+            "value" : "Apple Intelligence · iPhone’unda çalışır"
           }
         },
         "vi" : {
@@ -51352,7 +51352,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence’ın kısa bir ara vermesi gerekiyor. Birkaç dakika sonra tekrar dene."
+            "value" : "Apple Intelligence kısa bir mola vermeli. Birkaç dakika sonra tekrar dene."
           }
         },
         "vi" : {
@@ -52132,7 +52132,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videonun tamamına uygulanır. Geri al eski hâline getirir."
+            "value" : "Videonun tamamına uygulanır. Geri Al ile eski hâline döner."
           }
         },
         "vi" : {
@@ -52606,7 +52606,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uygula"
+            "value" : "Uygulanacak yer"
           }
         },
         "vi" : {
@@ -54853,7 +54853,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Otomatik ışık ve rengi düzeltir · Kendi ayarların üstte kalır"
+            "value" : "Işığı ve rengi otomatik düzeltir · Kendi ayarların üstte kalır"
           }
         },
         "vi" : {
@@ -55207,7 +55207,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaçın"
+            "value" : "Kaçınılacaklar"
           }
         },
         "vi" : {
@@ -57925,7 +57925,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "kısa mola"
+            "value" : "kısa es"
           }
         },
         "vi" : {
@@ -58399,7 +58399,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oynatma kafasındaki klipten sonra dizide ayrı bir klip olur. Yalnızca videolar."
+            "value" : "Oynatma çubuğundaki klipten sonra dizide ayrı bir klip olur. Yalnızca videolar."
           }
         },
         "vi" : {
@@ -58755,7 +58755,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her şeyden önce — özür dilerim."
+            "value" : "Her şeyden önce: özür dilerim."
           }
         },
         "vi" : {
@@ -62553,7 +62553,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bulanıklaştır"
+            "value" : "Bulanıklık"
           }
         },
         "vi" : {
@@ -62671,7 +62671,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Arka planı bulanıklaştır"
+            "value" : "Bulanık arka plan"
           }
         },
         "vi" : {
@@ -63028,7 +63028,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Arkandaki arka planı bulanıklaştır ya da değiştir."
+            "value" : "Arka planı bulanıklaştır ya da değiştir."
           }
         },
         "vi" : {
@@ -63382,7 +63382,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gövde"
+            "value" : "Gelişme"
           }
         },
         "vi" : {
@@ -63500,7 +63500,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GÖVDE"
+            "value" : "GELİŞME"
           }
         },
         "vi" : {
@@ -64685,7 +64685,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her iki cihazda da Cue ve Wi-Fi ya da Bluetooth açık olmalı."
+            "value" : "Her iki aygıtta da Cue ve Wi-Fi ya da Bluetooth açık olmalı."
           }
         },
         "vi" : {
@@ -68362,7 +68362,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İş sahipleri"
+            "value" : "İşletme sahipleri"
           }
         },
         "vi" : {
@@ -69787,7 +69787,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vurgu"
+            "value" : "Balon"
           }
         },
         "vi" : {
@@ -70731,7 +70731,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kamera, mikrofon, kalite, format ve teleprompter Cue'nun varsayılanlarına döner. Senaryoların, çekimlerin ve düzenlemelerin kalır."
+            "value" : "Kamera, mikrofon, kalite, format ve teleprompter Cue’nun varsayılanlarına döner. Senaryoların, çekimlerin ve düzenlemelerin kalır."
           }
         },
         "vi" : {
@@ -71559,7 +71559,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kimse bulunamadı · Yeşil veya mavi ekran kullan"
+            "value" : "Kimse bulunamadı · Yeşil veya mavi perde kullan"
           }
         },
         "vi" : {
@@ -71916,7 +71916,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Store'a ulaşılamıyor"
+            "value" : "App Store’a ulaşılamıyor"
           }
         },
         "vi" : {
@@ -73100,7 +73100,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Açıklama kopyalandı · %@’a yapıştır"
+            "value" : "Açıklama kopyalandı · %@ uygulamasına yapıştır"
           }
         },
         "vi" : {
@@ -74644,7 +74644,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Altyazıların %@ indirmesi gerekiyor. İnternete bağlanıp tekrar dene."
+            "value" : "Altyazılar için %@ indirilmeli. İnternete bağlanıp tekrar dene."
           }
         },
         "vi" : {
@@ -74762,7 +74762,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Altyazıların bu dili indirmesi gerekiyor. İnternete bağlanıp tekrar dene."
+            "value" : "Altyazılar için bu dil indirilmeli. İnternete bağlanıp tekrar dene."
           }
         },
         "vi" : {
@@ -76894,7 +76894,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Profil › Cue Sesim’den istediğin zaman değiştir."
+            "value" : "İstediğin zaman Profil › My Cue Voice’tan değiştir."
           }
         },
         "vi" : {
@@ -77368,7 +77368,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Çekim %lld'den beri değişti"
+            "value" : "%lld. çekimden beri değişti"
           }
         },
         "vi" : {
@@ -81516,7 +81516,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dersler, çalışma, şeyler nasıl işler"
+            "value" : "Dersler, ders çalışma, bir şeyin nasıl işlediği"
           }
         },
         "vi" : {
@@ -83305,7 +83305,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klip silindi · Geri al'a dokun"
+            "value" : "Klip silindi · Geri Al’a dokun"
           }
         },
         "vi" : {
@@ -85082,7 +85082,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MORNING koduyla indirim %20"
+            "value" : "MORNING koduyla %20 indirim"
           }
         },
         "vi" : {
@@ -86385,7 +86385,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hazır gelir: bölümler, ipuçları, süre."
+            "value" : "Hazır gelir: bölümler, yönergeler, süre."
           }
         },
         "vi" : {
@@ -86975,7 +86975,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cevabını yoruma yaz"
+            "value" : "Yanıtını yoruma yaz"
           }
         },
         "vi" : {
@@ -88871,7 +88871,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cihaz bağla"
+            "value" : "Aygıt bağla"
           }
         },
         "vi" : {
@@ -90895,7 +90895,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teleprompter'ını başka bir aygıttan kontrol et."
+            "value" : "Teleprompter’ını başka bir aygıttan kontrol et."
           }
         },
         "vi" : {
@@ -94221,7 +94221,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "App Store'a ulaşılamadı. Bağlantını kontrol edip yeniden dene."
+            "value" : "App Store’a ulaşılamadı. Bağlantını kontrol edip yeniden dene."
           }
         },
         "vi" : {
@@ -95639,7 +95639,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kapak kaydedildi · Videoyla Fotoğraflar'a gider"
+            "value" : "Kapak kaydedildi · Videoyla Fotoğraflar’a gider"
           }
         },
         "vi" : {
@@ -95876,7 +95876,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kapak stilleri, seri etiketleri, “Arkamda metin”"
+            "value" : "Kapak stilleri, seri etiketleri, “Yazı arkamda”"
           }
         },
         "vi" : {
@@ -96941,7 +96941,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İpucu: %@"
+            "value" : "Yönerge: %@"
           }
         },
         "vi" : {
@@ -97177,7 +97177,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue seni duyamıyor. Ses kaydetmek için Ayarlar'da mikrofona izin ver."
+            "value" : "Cue seni duyamıyor. Ses kaydetmek için Ayarlar’da mikrofona izin ver."
           }
         },
         "vi" : {
@@ -97295,7 +97295,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue yakındaki aygıtlara ulaşamıyor. Ayarlar'da Cue için Yerel Ağ'ı aç."
+            "value" : "Cue yakındaki aygıtlara ulaşamıyor. Ayarlar’da Cue için Yerel Ağ’ı aç."
           }
         },
         "vi" : {
@@ -97532,7 +97532,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue Fotoğraflar'a kaydedemiyor. Ayarlar › Gizlilik › Fotoğraflar'dan erişim izni ver."
+            "value" : "Cue Fotoğraflar’a kaydedemiyor. Ayarlar › Gizlilik › Fotoğraflar’dan erişim izni ver."
           }
         },
         "vi" : {
@@ -98837,7 +98837,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue seni bu iPhone'da her karede bulur ve etrafındaki her şeyi değiştirir."
+            "value" : "Cue seni bu iPhone’da her karede bulur ve etrafındaki her şeyi değiştirir."
           }
         },
         "vi" : {
@@ -98955,7 +98955,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue'nun sunucusu yok. Senaryoların, çekimlerin ve My Cue Voice bu aygıtta ve yedeklerinde saklanır. Apple ile giriş isteğe bağlıdır ve yalnızca Apple Hesabı'nı bu iPhone'da tutar."
+            "value" : "Cue’nun sunucusu yok. Senaryoların, çekimlerin ve My Cue Voice bu aygıtta ve yedeklerinde saklanır. Apple ile giriş isteğe bağlıdır ve yalnızca Apple Hesabı’nı bu iPhone’da tutar."
           }
         },
         "vi" : {
@@ -99193,7 +99193,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue her kelimeyi yazmak için videoyu iPhone'unda dinler. Sonra metinden kesersin."
+            "value" : "Cue her kelimeyi yazmak için videoyu iPhone’unda dinler. Sonra metinden kesersin."
           }
         },
         "vi" : {
@@ -99311,7 +99311,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue'nin mikrofona ihtiyacı var"
+            "value" : "Cue’nun mikrofona ihtiyacı var"
           }
         },
         "vi" : {
@@ -99667,7 +99667,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue yalnızca Kaydet’e dokunduğunda kayıt yapar."
+            "value" : "Cue yalnızca Kayıt’a dokunduğunda kayıt yapar."
           }
         },
         "vi" : {
@@ -101325,7 +101325,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue Studio onu yazmama, bir teleprompter'dan okumama ve hemen burada çekmeme yardım ediyor. Paylaşmadan önce otomatik altyazı ekleyip çekimimi düzenleyebiliyorum."
+            "value" : "Cue Studio onu yazmama, bir teleprompter’dan okumama ve hemen burada çekmeme yardım ediyor. Paylaşmadan önce otomatik altyazı ekleyip çekimimi düzenleyebiliyorum."
           }
         },
         "vi" : {
@@ -102274,7 +102274,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Metinde PAUSE veya SMILE gibi ipuçları"
+            "value" : "Metinde DURAKLA veya GÜLÜMSE gibi yönergeler"
           }
         },
         "vi" : {
@@ -103880,7 +103880,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ noktasında kesme"
+            "value" : "%@ konumunda kesme"
           }
         },
         "vi" : {
@@ -104118,7 +104118,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Şurada kes"
+            "value" : "Kesme sıklığı"
           }
         },
         "vi" : {
@@ -104593,7 +104593,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dolgu sözcüklerini keser"
+            "value" : "Dolgu kelimelerini keser"
           }
         },
         "vi" : {
@@ -107908,7 +107908,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu iPhone’daki metinlerini, çekimlerini, düzenlemelerini ve My Cue Voice’u siler. Geri alınamaz."
+            "value" : "Bu iPhone’daki senaryolarını, çekimlerini, düzenlemelerini ve My Cue Voice’u siler. Geri alınamaz."
           }
         },
         "vi" : {
@@ -109801,7 +109801,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Arka planı karart"
+            "value" : "Karartılmış arka plan"
           }
         },
         "vi" : {
@@ -110038,7 +110038,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dolaysız"
+            "value" : "Doğrudan"
           }
         },
         "vi" : {
@@ -110394,7 +110394,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Açıklama başa eklendi"
+            "value" : "Beyan başa eklendi"
           }
         },
         "vi" : {
@@ -110512,7 +110512,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bildirim zaten en başta"
+            "value" : "Beyan zaten en başta"
           }
         },
         "vi" : {
@@ -112170,7 +112170,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone'unda yapıldı. Görmek için başlığı arkana taşı."
+            "value" : "iPhone’unda yapıldı. Görmek için başlığı arkana taşı."
           }
         },
         "vi" : {
@@ -112643,7 +112643,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İndiriliyor %@"
+            "value" : "%@ indiriliyor"
           }
         },
         "vi" : {
@@ -114192,7 +114192,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sesinden taslak hazırlanır, böylece sessizde de takip edilir."
+            "value" : "Sesinden taslak olarak hazırlanır; ses kapalıyken de takip edilebilir."
           }
         },
         "vi" : {
@@ -114787,7 +114787,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Senin sesinle taslak hazırlanıyor"
+            "value" : "Senin tarzınla taslak hazırlanıyor"
           }
         },
         "vi" : {
@@ -114907,7 +114907,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Taslaklar · %lld — Sürüyor"
+            "value" : "Taslaklar · %lld · Sürüyor"
           }
         },
         "vi" : {
@@ -115738,7 +115738,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yeniden boyutlandırmak için sürükleyin. Sıfırlamak için çift dokunun."
+            "value" : "Yeniden boyutlandırmak için sürükle. Sıfırlamak için çift dokun."
           }
         },
         "vi" : {
@@ -116331,7 +116331,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuma sabah 9'da çıkıyor."
+            "value" : "Cuma sabah 9’da çıkıyor."
           }
         },
         "vi" : {
@@ -117160,7 +117160,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ör. barista yulaf sütü"
+            "value" : "örn. barista yulaf sütü"
           }
         },
         "vi" : {
@@ -117397,7 +117397,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ör. sağlık iddiaları, rakip isimleri"
+            "value" : "örn. sağlık iddiaları, rakip isimleri"
           }
         },
         "vi" : {
@@ -117634,7 +117634,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ör. Oat & Co."
+            "value" : "örn. Oat & Co."
           }
         },
         "vi" : {
@@ -117872,7 +117872,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "örn. kayıtlı hemşire"
+            "value" : "örn. yoğun bakım hemşiresi"
           }
         },
         "vi" : {
@@ -120714,7 +120714,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adınızı ve kullanıcı adınızı düzenler"
+            "value" : "Adını ve kullanıcı adını düzenler"
           }
         },
         "vi" : {
@@ -122726,7 +122726,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "bitiriş: %@"
+            "value" : "kapanış: %@"
           }
         },
         "vi" : {
@@ -123791,7 +123791,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Eğlence içerikleri"
+            "value" : "Şovmen"
           }
         },
         "vi" : {
@@ -125099,7 +125099,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her 4"
+            "value" : "4’te bir"
           }
         },
         "vi" : {
@@ -125218,7 +125218,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her 2"
+            "value" : "2’de bir"
           }
         },
         "vi" : {
@@ -126049,7 +126049,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tüm kesimler düz kesim"
+            "value" : "Tüm kesmeler düz kesme"
           }
         },
         "vi" : {
@@ -126286,7 +126286,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tüm kilometre taşı simgeleri"
+            "value" : "Tüm dönüm noktası simgeleri"
           }
         },
         "vi" : {
@@ -127470,7 +127470,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "örnek"
+            "value" : "örnekler"
           }
         },
         "vi" : {
@@ -128655,7 +128655,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uzman terimleri"
+            "value" : "Uzmanlık terimleri"
           }
         },
         "vi" : {
@@ -130320,7 +130320,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Faydalı bir nasıl yapılırı bir dakikadan kısa sürede anlat."
+            "value" : "Faydalı bir işin nasıl yapıldığını bir dakikadan kısa sürede anlat."
           }
         },
         "vi" : {
@@ -130557,7 +130557,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sesin için daha net bir ses keşfet"
+            "value" : "Sesin için daha net bir tını keşfet"
           }
         },
         "vi" : {
@@ -130676,7 +130676,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sesin için daha net bir ses keşfet. Bir seviye seçene kadar hiçbir şey değişmez."
+            "value" : "Sesin için daha net bir tını keşfet. Bir seviye seçene kadar hiçbir şey değişmez."
           }
         },
         "vi" : {
@@ -130914,7 +130914,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Önce Cue'yu keşfet"
+            "value" : "Önce Cue’yu keşfet"
           }
         },
         "vi" : {
@@ -131033,7 +131033,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue'yu keşfet"
+            "value" : "Cue’yu keşfet"
           }
         },
         "vi" : {
@@ -132458,7 +132458,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Göz Teması bu iPhone'da kullanılamıyor"
+            "value" : "Göz Teması bu iPhone’da kullanılamıyor"
           }
         },
         "vi" : {
@@ -133405,7 +133405,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İnanç, kâr amacı gütmeyen, aktivizm, siyaset"
+            "value" : "İnanç, kâr amacı gütmeyen kuruluşlar, aktivizm, siyaset"
           }
         },
         "vi" : {
@@ -134000,7 +134000,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fantezi sporları"
+            "value" : "Fantezi ligler"
           }
         },
         "vi" : {
@@ -134473,7 +134473,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "His"
+            "value" : "Hissiyat"
           }
         },
         "vi" : {
@@ -135184,7 +135184,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dolgu kelime"
+            "value" : "Dolgu kelimesi"
           }
         },
         "vi" : {
@@ -135302,7 +135302,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dolgu sözcükleri ve tekrarlar"
+            "value" : "Dolgu kelimeleri ve tekrarlar"
           }
         },
         "vi" : {
@@ -137084,7 +137084,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gözlerin aranıyor · %lld%%"
+            "value" : "Gözlerin aranıyor · %%%lld"
           }
         },
         "vi" : {
@@ -138385,7 +138385,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@’İN İLK YILDIZI · 0 / 1"
+            "value" : "%@ YILININ İLK YILDIZI · 0 / 1"
           }
         },
         "vi" : {
@@ -139924,7 +139924,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dilbilgisini düzelt"
+            "value" : "Dil bilgisini düzelt"
           }
         },
         "vi" : {
@@ -140753,7 +140753,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Süt gibi köpürür, hiç ağızda tat bırakmaz"
+            "value" : "Süt gibi köpürür, ağızda hiç tat bırakmaz"
           }
         },
         "vi" : {
@@ -141463,7 +141463,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yüzü takip et Doldur ile çalışır"
+            "value" : "Yüzü takip et, Doldur ile çalışır"
           }
         },
         "vi" : {
@@ -143595,7 +143595,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beam-splitter camı için"
+            "value" : "Yarı geçirgen cam için"
           }
         },
         "vi" : {
@@ -143713,7 +143713,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yarı geçirgen camlı teleprompter'lar için"
+            "value" : "Yarı geçirgen camlı teleprompter’lar için"
           }
         },
         "vi" : {
@@ -144425,7 +144425,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Biçim, %@"
+            "value" : "Format, %@"
           }
         },
         "vi" : {
@@ -144543,7 +144543,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "biçim"
+            "value" : "formatlar"
           }
         },
         "vi" : {
@@ -144899,7 +144899,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dosyalar'dan eklediğin müzikte iPhone'unda bulunur."
+            "value" : "Vuruşlar, Dosyalar’dan eklediğin müzikte iPhone’unda bulunur."
           }
         },
         "vi" : {
@@ -145018,7 +145018,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dört kısa soru. Cue'nun taslakları sana daha yakın başlar."
+            "value" : "Dört kısa soru. Cue’nun taslakları sana daha yakın başlar."
           }
         },
         "vi" : {
@@ -146267,7 +146267,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ÜCRETSİZ DIŞA AKTARIM"
+            "value" : "ÜCRETSİZ DIŞA AKTARMA"
           }
         },
         "vi" : {
@@ -146385,7 +146385,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kalan ücretsiz dışa aktarım"
+            "value" : "Kalan ücretsiz dışa aktarma"
           }
         },
         "vi" : {
@@ -146503,7 +146503,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld gün ücretsiz, ardından %2$@/ay. İstediğin zaman Ayarlar'dan iptal et."
+            "value" : "%1$lld gün ücretsiz, ardından %2$@/ay. İstediğin zaman Ayarlar’dan iptal et."
           }
         },
         "vi" : {
@@ -146627,7 +146627,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld gün ücretsiz, ardından %2$@/yıl. İstediğin zaman Ayarlar'dan iptal et."
+            "value" : "%1$lld gün ücretsiz, ardından %2$@/yıl. İstediğin zaman Ayarlar’dan iptal et."
           }
         },
         "vi" : {
@@ -148523,7 +148523,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dosyalar’dan. Yalnızca sana ait ya da hakkına sahip olduğun müzikleri kullan — Apple Music şarkıları eklenemez."
+            "value" : "Dosyalar’dan. Yalnızca sana ait ya da hakkına sahip olduğun müzikleri kullan. Apple Music şarkıları eklenemez."
           }
         },
         "vi" : {
@@ -149946,7 +149946,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aletler"
+            "value" : "Elektronik aletler"
           }
         },
         "vi" : {
@@ -154334,7 +154334,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pro'ya geç"
+            "value" : "Pro’ya geç"
           }
         },
         "vi" : {
@@ -154453,7 +154453,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "hedef"
+            "value" : "hedefler"
           }
         },
         "vi" : {
@@ -155287,7 +155287,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dilbilgisi düzeltildi"
+            "value" : "Dil bilgisi düzeltildi"
           }
         },
         "vi" : {
@@ -156828,7 +156828,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dokunsal geri bildirim"
+            "value" : "Dokunuş"
           }
         },
         "vi" : {
@@ -157423,7 +157423,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ dinle"
+            "value" : "%@ sesini dinle"
           }
         },
         "vi" : {
@@ -157659,7 +157659,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Duraklama olduğu gibi dinleniyor"
+            "value" : "Duraklama olduğu gibi oynatılıyor"
           }
         },
         "vi" : {
@@ -157895,7 +157895,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Çok Kalın"
+            "value" : "Çok kalın"
           }
         },
         "vi" : {
@@ -158369,7 +158369,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tekrar almadan önce iki kez düşünmeye değer üç şey var."
+            "value" : "İşte tekrar almadan önce iki kez düşünmeye değer üç şey."
           }
         },
         "vi" : {
@@ -158606,7 +158606,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İşte %@ nasıl yapıyorum — baştan sona. [durakla]"
+            "value" : "Baştan sona %@ işini nasıl yaptığımı anlatıyorum. [durakla]"
           }
         },
         "vi" : {
@@ -159554,7 +159554,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "HEVC dosyaları küçük tutar · Eski editörler için H.264"
+            "value" : "HEVC dosyaları küçük tutar · H.264 eski düzenleme uygulamalarına uyar"
           }
         },
         "vi" : {
@@ -160027,7 +160027,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gelişmişi gizle"
+            "value" : "Gelişmiş ayarları gizle"
           }
         },
         "vi" : {
@@ -161093,7 +161093,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Açık tonlar"
+            "value" : "Parlak alanlar"
           }
         },
         "vi" : {
@@ -162516,7 +162516,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Giriş cümlesi varyasyonları, platform sürümleri, en iyi çekim seçimi"
+            "value" : "Kanca varyasyonları, platform sürümleri, en iyi çekim seçimi"
           }
         },
         "vi" : {
@@ -163580,7 +163580,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tablo kullanmadan bütçemi nasıl yapıyorum"
+            "value" : "Tablo kullanmadan bütçemi nasıl yönetiyorum"
           }
         },
         "vi" : {
@@ -163934,7 +163934,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İş yerinde hayır demeyi nasıl yaparım"
+            "value" : "İş yerinde nasıl hayır diyorum"
           }
         },
         "vi" : {
@@ -164524,7 +164524,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue nasıl kursun?"
+            "value" : "Cue nasıl oluştursun?"
           }
         },
         "vi" : {
@@ -166187,7 +166187,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kafeinden önce su iç — daha iyi etki eder."
+            "value" : "Kafeinden önce su iç, daha iyi etki eder."
           }
         },
         "vi" : {
@@ -166424,7 +166424,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Su içmeyle ilgili efsaneler, çürütüldü"
+            "value" : "Su içme efsaneleri çürütüldü"
           }
         },
         "vi" : {
@@ -167015,7 +167015,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yıllarca buna inandım — kontrol edene kadar."
+            "value" : "Yıllarca buna inandım, ta ki kontrol edene kadar."
           }
         },
         "vi" : {
@@ -167841,7 +167841,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her şeyi denedim — kalıcı olanlar bunlar."
+            "value" : "Her şeyi denedim; kalıcı olanlar bunlar."
           }
         },
         "vi" : {
@@ -169142,7 +169142,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal %@–%@"
+            "value" : "İdeal %@–%@"
           }
         },
         "vi" : {
@@ -174132,7 +174132,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Paylaşım sayfasında %@’a dokun"
+            "value" : "Paylaşım sayfasında %@ simgesine dokun"
           }
         },
         "vi" : {
@@ -174369,7 +174369,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "senin sesinle"
+            "value" : "senin tarzınla"
           }
         },
         "vi" : {
@@ -174488,7 +174488,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Senin sesinle · %@"
+            "value" : "Senin tarzınla · %@"
           }
         },
         "vi" : {
@@ -176854,7 +176854,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İmlecin olduğu yere eklenir ve tüm metinler için çubukta kalır."
+            "value" : "İmlecin olduğu yere eklenir ve tüm senaryolar için çubukta kalır."
           }
         },
         "vi" : {
@@ -178512,7 +178512,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bekleme listesine katıl — bağlantı biyografide"
+            "value" : "Bekleme listesine katıl, bağlantı biyografide"
           }
         },
         "vi" : {
@@ -179103,7 +179103,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yeni başladı"
+            "value" : "Yeni başladın"
           }
         },
         "vi" : {
@@ -179340,7 +179340,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sadece konu ve maddelerin. Cue başta bir kanca ve sonda yorum çağrısı olan numaralı bir liste yazar."
+            "value" : "Sadece konu ve maddelerin. Cue başta bir kanca, sonda bir yorum çağrısı olan numaralı bir liste taslağı hazırlar."
           }
         },
         "vi" : {
@@ -181113,7 +181113,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ayarlarım Kalsın"
+            "value" : "Ayarlarım kalsın"
           }
         },
         "vi" : {
@@ -183242,7 +183242,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gerçekten işe yarayan mutfak ipuçları"
+            "value" : "Gerçekten işe yarayan mutfak püf noktaları"
           }
         },
         "vi" : {
@@ -184425,7 +184425,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fırlatma"
+            "value" : "Lansman"
           }
         },
         "vi" : {
@@ -188685,7 +188685,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yıldızları diziyorum"
+            "value" : "Yıldızlar diziliyor"
           }
         },
         "vi" : {
@@ -192708,7 +192708,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gür, kalın büyük harfler"
+            "value" : "Çarpıcı, kalın büyük harfler"
           }
         },
         "vi" : {
@@ -192826,7 +192826,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Konuşmada kıs"
+            "value" : "Konuşma sırasında kıs"
           }
         },
         "vi" : {
@@ -194245,7 +194245,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kısalt ya da olduğu gibi kaydet — sonra kırpabilirsin."
+            "value" : "Metni kısalt ya da olduğu gibi çek; videoyu sonra da kısaltabilirsin."
           }
         },
         "vi" : {
@@ -196384,7 +196384,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En fazla 3 örnek · değiştirmek için ✕ dokun"
+            "value" : "En fazla 3 örnek · değiştirmek için ✕ simgesine dokun"
           }
         },
         "vi" : {
@@ -196502,7 +196502,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En çok 3 fotoğraf veya video"
+            "value" : "En fazla 3 fotoğraf veya video"
           }
         },
         "vi" : {
@@ -196620,7 +196620,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bilerek olabilir — vurgu için"
+            "value" : "Bilerek olabilir: vurgu için"
           }
         },
         "vi" : {
@@ -198398,7 +198398,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofon kapalı · Ayarlar'a bak"
+            "value" : "Mikrofon kapalı · Ayarlar’a bak"
           }
         },
         "vi" : {
@@ -199225,7 +199225,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Anlamı olabilir — önce dinle"
+            "value" : "Anlamı olabilir, önce dinle"
           }
         },
         "vi" : {
@@ -199469,7 +199469,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DÖNÜM NOKTASI · %2$@’DE %1$lld VİDEO"
+            "value" : "DÖNÜM NOKTASI · %2$@ YILINDA %1$lld VİDEO"
           }
         },
         "vi" : {
@@ -199589,7 +199589,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DÖNÜM NOKTASI · %@’DE İLK VİDEO"
+            "value" : "DÖNÜM NOKTASI · %@ YILINDA İLK VİDEO"
           }
         },
         "vi" : {
@@ -199713,7 +199713,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kilometre taşları"
+            "value" : "Dönüm noktaları"
           }
         },
         "vi" : {
@@ -201375,7 +201375,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "20'li yaşlarımda yaptığım para hataları"
+            "value" : "20’li yaşlarımda yaptığım para hataları"
           }
         },
         "vi" : {
@@ -202440,7 +202440,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Daha fazla biçim"
+            "value" : "Daha fazla format"
           }
         },
         "vi" : {
@@ -202676,7 +202676,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Daha ben"
+            "value" : "Daha çok ben"
           }
         },
         "vi" : {
@@ -203151,7 +203151,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ içinde daha belirli"
+            "value" : "%@ alanında daha özel"
           }
         },
         "vi" : {
@@ -204576,7 +204576,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geri al"
+            "value" : "Sonraya kaydır"
           }
         },
         "vi" : {
@@ -204695,7 +204695,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öne al"
+            "value" : "Öne kaydır"
           }
         },
         "vi" : {
@@ -206352,7 +206352,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Müzik %40 ile eklendi"
+            "value" : "Müzik %40 seviyede eklendi"
           }
         },
         "vi" : {
@@ -206590,7 +206590,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dosyalar'dan müzik"
+            "value" : "Dosyalar’dan müzik"
           }
         },
         "vi" : {
@@ -207892,7 +207892,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CUE SESİM"
+            "value" : "MY CUE VOICE"
           }
         },
         "vi" : {
@@ -208247,7 +208247,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir markayla ilk görüşmem — ve kameram dondu"
+            "value" : "Bir markayla ilk görüşmem ve kameram dondu"
           }
         },
         "vi" : {
@@ -209431,7 +209431,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "60 saniyede Pazar sıfırlamam"
+            "value" : "60 saniyede pazar sıfırlamam"
           }
         },
         "vi" : {
@@ -210022,7 +210022,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Efsane avcısı"
+            "value" : "Efsane çürütme"
           }
         },
         "vi" : {
@@ -210733,7 +210733,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Düzenlemenin üzerine anlatım ekle. Kaydetmeden önce Cue açıklar."
+            "value" : "Düzenlemenin üzerine anlatım ekle. Cue, kayıttan önce nasıl olduğunu açıklar."
           }
         },
         "vi" : {
@@ -211442,7 +211442,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yakında Cue yüklü başka bir iPhone ya da iPad gerekir."
+            "value" : "Yakınında Cue yüklü başka bir iPhone ya da iPad gerekir."
           }
         },
         "vi" : {
@@ -213337,7 +213337,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yeni metinler bu dilde başlar. Metinler asla çevrilmez."
+            "value" : "Yeni senaryolar bu dilde başlar. Senaryolar asla çevrilmez."
           }
         },
         "vi" : {
@@ -214758,7 +214758,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SONRAKİ KİLOMETRE TAŞI · %1$lld / %2$lld"
+            "value" : "SONRAKİ DÖNÜM NOKTASI · %1$lld / %2$lld"
           }
         },
         "vi" : {
@@ -216075,7 +216075,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kamera bulunamadı · Stüdyo modu çalışır"
+            "value" : "Kamera bulunamadı · Studio modu çalışır"
           }
         },
         "vi" : {
@@ -216904,7 +216904,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İpucu yok"
+            "value" : "Yönerge yok"
           }
         },
         "vi" : {
@@ -219513,7 +219513,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sorun değil, yine de alıştırma yapabilirsin. Kayıt yapmak istediğinde Ayarlar'dan kamerayı aç."
+            "value" : "Sorun değil, yine de alıştırma yapabilirsin. Kayıt yapmak istediğinde Ayarlar’dan kamerayı aç."
           }
         },
         "vi" : {
@@ -219632,7 +219632,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sorun değil, yine de alıştırma yapabilirsin. Metin sabit hızda kayacak. Sesini takip etmesi için Ayarlar'dan mikrofonu aç."
+            "value" : "Sorun değil, yine de alıştırma yapabilirsin. Metin sabit hızda kayacak. Sesini takip etmesi için Ayarlar’dan mikrofonu aç."
           }
         },
         "vi" : {
@@ -219751,7 +219751,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sorun değil, yine de alıştırma yapabilirsin. Metin sabit hızda kayacak. Sesini takip etmesi ve kayıt için Ayarlar'dan aç."
+            "value" : "Sorun değil, yine de alıştırma yapabilirsin. Metin sabit hızda kayacak. Sesini takip etmesi ve kayıt için Ayarlar’dan aç."
           }
         },
         "vi" : {
@@ -223303,7 +223303,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu iPhone'da kullanılamaz"
+            "value" : "Bu iPhone’da kullanılamaz"
           }
         },
         "vi" : {
@@ -224013,7 +224013,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu iPhone'da yeterli alan yok. Yaklaşık %lld MB boşalt ve tekrar dene."
+            "value" : "Bu iPhone’da yeterli alan yok. Yaklaşık %lld MB boşalt ve tekrar dene."
           }
         },
         "vi" : {
@@ -224725,7 +224725,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ne kaydedeceğinden emin değil misin?"
+            "value" : "Ne çekeceğinden emin değil misin?"
           }
         },
         "vi" : {
@@ -229115,7 +229115,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tamam, açık konuşalım — bu önemli."
+            "value" : "Tamam, açık konuşalım: bu önemli."
           }
         },
         "vi" : {
@@ -229825,7 +229825,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Diğer iPhone veya iPad'de"
+            "value" : "Diğer iPhone veya iPad’de"
           }
         },
         "vi" : {
@@ -230416,7 +230416,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cihaz içi yapay zekâ"
+            "value" : "Aygıt üzerinde yapay zekâ"
           }
         },
         "vi" : {
@@ -232079,7 +232079,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Burada tek bir sözcük var"
+            "value" : "Burada tek bir kelime var"
           }
         },
         "vi" : {
@@ -232316,7 +232316,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yalnızca bu vurgu değişir"
+            "value" : "Yalnızca bu balon değişir"
           }
         },
         "vi" : {
@@ -232906,7 +232906,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teleprompter'da bir senaryo aç"
+            "value" : "Teleprompter’da bir senaryo aç"
           }
         },
         "vi" : {
@@ -233381,7 +233381,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone Ayarlarını aç"
+            "value" : "iPhone Ayarları’nı aç"
           }
         },
         "vi" : {
@@ -233500,7 +233500,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Devam etmek için aç. Hazır olduğunda kaydet."
+            "value" : "Devam etmek için aç. Hazır olduğunda kayda al."
           }
         },
         "vi" : {
@@ -233854,7 +233854,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ayarlar'ı Aç"
+            "value" : "Ayarlar’ı aç"
           }
         },
         "vi" : {
@@ -234090,7 +234090,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV cümlesiyle aç, sahneyi birkaç sözcükle kur ve bir sürprizle bitir. Kısa ve görsel."
+            "value" : "POV cümlesiyle aç, sahneyi birkaç kelimeyle kur ve bir sürprizle bitir. Kısa ve görsel."
           }
         },
         "vi" : {
@@ -236928,7 +236928,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Düzenleme"
+            "value" : "Ev düzeni"
           }
         },
         "vi" : {
@@ -238109,7 +238109,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sahiplen"
+            "value" : "Sorumluluk"
           }
         },
         "vi" : {
@@ -239058,7 +239058,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her zaman bulundurmaya değer kiler temelleri"
+            "value" : "Kilerde hep bulunması gereken temel ürünler"
           }
         },
         "vi" : {
@@ -242490,7 +242490,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DURAKLA veya GÜLÜMSE gibi performans ipuçları"
+            "value" : "DURAKLA veya GÜLÜMSE gibi performans yönergeleri"
           }
         },
         "vi" : {
@@ -243319,7 +243319,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kişilik · senin sözcüklerin"
+            "value" : "Kişilik · senin kelimelerin"
           }
         },
         "vi" : {
@@ -243794,7 +243794,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Evcil hayvanlar ve hayvanlar"
+            "value" : "Evcil hayvanlar ve hayvan dünyası"
           }
         },
         "vi" : {
@@ -245215,7 +245215,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kalıplar · Kaldırıldı"
+            "value" : "İfadeler · Kaldırıldı"
           }
         },
         "vi" : {
@@ -245334,7 +245334,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sözler ve sınırlar"
+            "value" : "İfadeler ve sınırlar"
           }
         },
         "vi" : {
@@ -245927,7 +245927,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 İLE 3 KONU SEÇ"
+            "value" : "1–3 KONU SEÇ"
           }
         },
         "vi" : {
@@ -249365,7 +249365,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Neyin geçeceğini seç. Sözler, ses ve zamanlama kalır."
+            "value" : "Neyin aktarılacağını seç. Sözler, ses ve zamanlama kalır."
           }
         },
         "vi" : {
@@ -249839,7 +249839,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hap"
+            "value" : "Kapsül"
           }
         },
         "vi" : {
@@ -250194,7 +250194,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sade"
+            "value" : "Yalın"
           }
         },
         "vi" : {
@@ -251500,7 +251500,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İkinci bir iPhone veya iPad'den oynat, duraklat ve hızı değiştir."
+            "value" : "İkinci bir iPhone veya iPad’den oynat, duraklat ve hızı değiştir."
           }
         },
         "vi" : {
@@ -251618,7 +251618,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İkinci bir iPhone veya iPad'den oynat, duraklat, hızı değiştir ve senaryoda ilerle. İkisinde de Cue olmalı, Wi-Fi açık olmalı."
+            "value" : "İkinci bir iPhone veya iPad’den oynat, duraklat, hızı değiştir ve senaryoda ilerle. İkisinde de Cue olmalı, Wi-Fi açık olmalı."
           }
         },
         "vi" : {
@@ -251736,7 +251736,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oyuncu"
+            "value" : "Şakacı"
           }
         },
         "vi" : {
@@ -252090,7 +252090,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Orijinal çalıyor — durdurmak için dokun"
+            "value" : "Orijinal oynatılıyor · durdurmak için dokun"
           }
         },
         "vi" : {
@@ -252208,7 +252208,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu duraklama olmadan çalıyor"
+            "value" : "Bu duraklama olmadan oynatılıyor"
           }
         },
         "vi" : {
@@ -252326,7 +252326,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Çalıyor…"
+            "value" : "Oynatılıyor…"
           }
         },
         "vi" : {
@@ -253038,7 +253038,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Podcaster, şef, oyuncu…"
+            "value" : "Podcast’çi, şef, oyun yayıncısı…"
           }
         },
         "vi" : {
@@ -255291,7 +255291,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@’da paylaş"
+            "value" : "%@ platformunda paylaş"
           }
         },
         "vi" : {
@@ -255409,7 +255409,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@’A SONRA PAYLAŞ"
+            "value" : "SONRA PAYLAŞ · %@"
           }
         },
         "vi" : {
@@ -255647,7 +255647,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@’da paylaştın mı?"
+            "value" : "%@ platformunda paylaştın mı?"
           }
         },
         "vi" : {
@@ -257538,7 +257538,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ön ayarlar, platformlar değiştikçe güncellenir."
+            "value" : "Hazır ayarlar, platformlar değiştikçe güncellenir."
           }
         },
         "vi" : {
@@ -257657,7 +257657,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ üzerinde oynat'a bas: metin burada başlar."
+            "value" : "%@ aygıtında Oynat’a bas: metin burada başlar."
           }
         },
         "vi" : {
@@ -262622,7 +262622,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yumruk"
+            "value" : "Ani yakınlaşma"
           }
         },
         "vi" : {
@@ -264044,7 +264044,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oynatma çubuğunda takip etmesi gereken şeyin üstüne koy, sonra Takip et'e dokun. Cue ayarlayabileceğin anahtar kareler oluşturur."
+            "value" : "Oynatma çubuğunda takip etmesi gereken şeyin üstüne koy, sonra Takip et’e dokun. Cue ayarlayabileceğin anahtar kareler oluşturur."
           }
         },
         "vi" : {
@@ -265346,7 +265346,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kısaca — her şeyi değiştiren üç alışkanlık!"
+            "value" : "Kısaca: her şeyi değiştiren üç alışkanlık!"
           }
         },
         "vi" : {
@@ -267125,7 +267125,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teleprompter'da sesli oku."
+            "value" : "Teleprompter’da sesli oku."
           }
         },
         "vi" : {
@@ -269258,7 +269258,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Burada hazır · gözlerin kalan kısımda aranıyor · %lld%%"
+            "value" : "Burada hazır · gözlerin kalan kısımda aranıyor · %%%lld"
           }
         },
         "vi" : {
@@ -269376,7 +269376,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu iPhone'da hazır"
+            "value" : "Bu iPhone’da hazır"
           }
         },
         "vi" : {
@@ -269966,7 +269966,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kayda hazır · Shape ipucu ekler"
+            "value" : "Kayda hazır · Shape yönerge ekler"
           }
         },
         "vi" : {
@@ -270678,7 +270678,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "neden"
+            "value" : "nedenler"
           }
         },
         "vi" : {
@@ -271624,7 +271624,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir senaryo kaydet. Her çekim burada görünür."
+            "value" : "Bir senaryo çek. Her çekim burada görünür."
           }
         },
         "vi" : {
@@ -271979,7 +271979,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tekrar kaydet"
+            "value" : "Tekrar çek"
           }
         },
         "vi" : {
@@ -272097,7 +272097,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yine de kaydet"
+            "value" : "Yine de çek"
           }
         },
         "vi" : {
@@ -272216,7 +272216,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uzaktan kaydet"
+            "value" : "Uzaktan çek"
           }
         },
         "vi" : {
@@ -272927,7 +272927,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İlk videonu kaydet"
+            "value" : "İlk videonu çek"
           }
         },
         "vi" : {
@@ -273045,7 +273045,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaydedildi"
+            "value" : "Çekildi"
           }
         },
         "vi" : {
@@ -273163,7 +273163,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaydedildi · %lld"
+            "value" : "Çekildi · %lld"
           }
         },
         "vi" : {
@@ -273753,7 +273753,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaydediliyor…"
+            "value" : "Kayıt yapılıyor…"
           }
         },
         "vi" : {
@@ -275767,7 +275767,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kumanda Bağlandı"
+            "value" : "Kumanda bağlandı"
           }
         },
         "vi" : {
@@ -276003,7 +276003,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Watch, iPad’den kumanda ve Mac senkronu"
+            "value" : "Apple Watch ve iPad’den kumanda, Mac eşzamanlama"
           }
         },
         "vi" : {
@@ -278115,7 +278115,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld silindi · %2$@"
+            "value" : "%1$lld kaldırıldı · %2$@"
           }
         },
         "vi" : {
@@ -278892,7 +278892,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Metinlerini, çekimlerini, düzenlemelerini ve My Cue Voice'u bu iPhone'dan kaldırır. Fotoğraflar'a kaydedilen videolar orada kalır."
+            "value" : "Senaryolarını, çekimlerini, düzenlemelerini ve My Cue Voice’u bu iPhone’dan kaldırır. Fotoğraflar’a kaydedilen videolar orada kalır."
           }
         },
         "vi" : {
@@ -279010,7 +279010,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her ay %@ ücretle yenilenir. İstediğin zaman Ayarlar'dan iptal et."
+            "value" : "Her ay %@ ücretle yenilenir. İstediğin zaman Ayarlar’dan iptal et."
           }
         },
         "vi" : {
@@ -279128,7 +279128,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her yıl %@ ücretle yenilenir. İstediğin zaman Ayarlar'dan iptal et."
+            "value" : "Her yıl %@ ücretle yenilenir. İstediğin zaman Ayarlar’dan iptal et."
           }
         },
         "vi" : {
@@ -281235,7 +281235,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence gerektirir. Yapay zekâ araçlarını kullanmak için Ayarlar'dan aç."
+            "value" : "Apple Intelligence gerektirir. Yapay zekâ araçlarını kullanmak için Ayarlar’dan aç."
           }
         },
         "vi" : {
@@ -281471,7 +281471,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İçerik Üretici Ayarlarını Sıfırla"
+            "value" : "İçerik Üretici Ayarları’nı sıfırla"
           }
         },
         "vi" : {
@@ -283008,7 +283008,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Beliriş"
+            "value" : "Belirme"
           }
         },
         "vi" : {
@@ -284077,7 +284077,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dilediğin gibi yeniden yaz. Bana benziyor'a dokun, Cue ondan öğrensin."
+            "value" : "Dilediğin gibi yeniden yaz. Bana benziyor’a dokun, Cue ondan öğrensin."
           }
         },
         "vi" : {
@@ -284195,7 +284195,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yeniden yazmalar, kancalar ve konu fikirleri aygıtta çalışır. Serbest bir İstem, Apple'ın Private Cloud Compute'u ile yazılır; isteğini yalnızca yanıtlamak için kullanır ve saklamaz. Başka hiçbir yapay zekâ hizmeti kullanılmaz."
+            "value" : "Yeniden yazmalar, kancalar ve konu fikirleri aygıtta çalışır. Serbest bir İstem, Apple’ın Private Cloud Compute’u ile yazılır; isteğini yalnızca yanıtlamak için kullanır ve saklamaz. Başka hiçbir yapay zekâ hizmeti kullanılmaz."
           }
         },
         "vi" : {
@@ -286573,7 +286573,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Metinle aynı"
+            "value" : "Senaryoyla aynı"
           }
         },
         "vi" : {
@@ -286692,7 +286692,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Önce ile aynı görsel · bir kare seç"
+            "value" : "“Önce” ile aynı görsel · bir kare seç"
           }
         },
         "vi" : {
@@ -289538,7 +289538,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "v%1$lld olarak kaydedildi · %2$lld çekim v%3$lld'de"
+            "value" : "v%1$lld olarak kaydedildi · v%3$lld üzerinde %2$lld çekim"
           }
         },
         "vi" : {
@@ -289662,7 +289662,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "v%1$lld olarak kaydedildi · Çekim v%2$lld'de"
+            "value" : "v%1$lld olarak kaydedildi · Çekim v%2$lld üzerinde"
           }
         },
         "vi" : {
@@ -289781,7 +289781,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue’ya kaydedildi · bildirimler kapalı"
+            "value" : "Cue’da kaydedildi · bildirimler kapalı"
           }
         },
         "vi" : {
@@ -290136,7 +290136,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Çekimler'e kaydedildi. Altyazı ekle, düzenle ya da paylaş ve %@ evrenini aydınlat."
+            "value" : "Çekimler’e kaydedildi. Altyazı ekle, düzenle ya da paylaş ve %@ evrenini aydınlat."
           }
         },
         "vi" : {
@@ -290491,7 +290491,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotoğraflar'a kaydedildi"
+            "value" : "Fotoğraflar’a kaydedildi"
           }
         },
         "vi" : {
@@ -290609,7 +290609,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotoğraflar'a kaydedildi · %2$lld ücretsiz dışa aktarmadan %1$lld kaldı"
+            "value" : "Fotoğraflar’a kaydedildi · %2$lld ücretsiz dışa aktarmadan %1$lld kaldı"
           }
         },
         "vi" : {
@@ -290727,7 +290727,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fotoğraflar'a kaydedildi · Paylaşmak için %@ uygulamasını aç"
+            "value" : "Fotoğraflar’a kaydedildi · Paylaşmak için %@ uygulamasını aç"
           }
         },
         "vi" : {
@@ -290964,7 +290964,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir fikri sonra yazmak üzere Seyir defterine kaydeder."
+            "value" : "Bir fikri sonra yazmak üzere seyir defterine kaydeder."
           }
         },
         "vi" : {
@@ -291438,7 +291438,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Duraklaman için yer bırakıyorum"
+            "value" : "Duraklaman için yer bırakılıyor"
           }
         },
         "vi" : {
@@ -292981,7 +292981,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bunu diğer cihazın Kamera'sıyla tara."
+            "value" : "Bunu diğer aygıtın Kamera uygulamasıyla tara."
           }
         },
         "vi" : {
@@ -294640,7 +294640,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Metin dili"
+            "value" : "Senaryo dili"
           }
         },
         "vi" : {
@@ -294758,7 +294758,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Senaryo Dili"
+            "value" : "Senaryo dili"
           }
         },
         "vi" : {
@@ -295587,7 +295587,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Metinler ve My Cue Voice bu iPhone’da kalır"
+            "value" : "Senaryolar ve My Cue Voice bu iPhone’da kalır"
           }
         },
         "vi" : {
@@ -295705,7 +295705,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Senaryolar ve çekimler bu iPhone'da kalır"
+            "value" : "Senaryolar ve çekimler bu iPhone’da kalır"
           }
         },
         "vi" : {
@@ -298073,7 +298073,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kayıt sırasında TikTok, Reels ve Shorts’un düğmelerini nereye koyduğunu gör."
+            "value" : "Kayıt sırasında TikTok, Reels ve Shorts düğmelerinin nerede olduğunu gör."
           }
         },
         "vi" : {
@@ -299495,7 +299495,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yarı Kalın"
+            "value" : "Yarı kalın"
           }
         },
         "vi" : {
@@ -299849,7 +299849,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@’a gönder"
+            "value" : "%@ platformuna gönder"
           }
         },
         "vi" : {
@@ -301032,7 +301032,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ciddi — abartı yok"
+            "value" : "Ciddi, abartı yok"
           }
         },
         "vi" : {
@@ -303042,7 +303042,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ için şekillendiriyorum"
+            "value" : "%@ için şekillendiriliyor"
           }
         },
         "vi" : {
@@ -305414,7 +305414,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@’ta paylaş"
+            "value" : "%@ platformunda paylaş"
           }
         },
         "vi" : {
@@ -306480,7 +306480,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@’TA PAYLAŞILDI"
+            "value" : "PAYLAŞILDI · %@"
           }
         },
         "vi" : {
@@ -307896,7 +307896,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Daha kısa ve dolaysız"
+            "value" : "Daha kısa ve doğrudan"
           }
         },
         "vi" : {
@@ -315718,7 +315718,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kaydır"
+            "value" : "Kaydırma"
           }
         },
         "vi" : {
@@ -315955,7 +315955,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yukarı kay"
+            "value" : "Yukarı kayma"
           }
         },
         "vi" : {
@@ -316074,7 +316074,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yandan kay"
+            "value" : "Yandan kayma"
           }
         },
         "vi" : {
@@ -319511,7 +319511,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bazı metinler alıntıların dışında bırakıldı: Apple Intelligence’ın öğrenmediği sözcükler içeriyor."
+            "value" : "Bazı metinler alıntıların dışında bırakıldı: Apple Intelligence bu kelimelerden öğrenmiyor."
           }
         },
         "vi" : {
@@ -319629,7 +319629,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Biri bunu yorumlarda sordu — cevaplayayım."
+            "value" : "Biri bunu yorumlarda sordu, yanıtlayayım."
           }
         },
         "vi" : {
@@ -320815,7 +320815,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Senin gibi konuşuyor"
+            "value" : "Sana benziyor"
           }
         },
         "vi" : {
@@ -321762,7 +321762,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ noktasında bölündü"
+            "value" : "%@ konumunda bölündü"
           }
         },
         "vi" : {
@@ -322118,7 +322118,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Önce videoyu böl veya Videoyu vuruşlarda kes'i kullan"
+            "value" : "Önce videoyu böl veya “Videoyu vuruşlarda kes” seçeneğini kullan"
           }
         },
         "vi" : {
@@ -323541,7 +323541,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Favorine yıldız ver. Diğerleri Çekimler'de kalır."
+            "value" : "Favorine yıldız ver. Diğerleri Çekimler’de kalır."
           }
         },
         "vi" : {
@@ -324132,7 +324132,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video başlat"
+            "value" : "Bir videoya başla"
           }
         },
         "vi" : {
@@ -327328,7 +327328,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Görüşünü tek cümleyle söyle, bir neden ver, bir soruyla bitir — sorular yorum getirir."
+            "value" : "Görüşünü tek cümleyle söyle, bir neden ver, bir soruyla bitir: sorular yorum getirir."
           }
         },
         "vi" : {
@@ -327801,7 +327801,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sistemimi kap — sandığından daha basit."
+            "value" : "Sistemimi kap, sandığından daha basit."
           }
         },
         "vi" : {
@@ -328518,7 +328518,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Taslak sürüyor · biraz uzun sürüyor"
+            "value" : "Taslak hazırlanıyor · biraz uzun sürüyor"
           }
         },
         "vi" : {
@@ -329936,7 +329936,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Durduruldu. Altyazıların olduğu gibi."
+            "value" : "Durduruldu. Altyazıların olduğu gibi kaldı."
           }
         },
         "vi" : {
@@ -330527,7 +330527,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hikâye zamanı — ve evet, sonu iyi bitiyor."
+            "value" : "Hikâye zamanı. Evet, sonu iyi bitiyor."
           }
         },
         "vi" : {
@@ -331118,7 +331118,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yayın akışı"
+            "value" : "Canlı yayın"
           }
         },
         "vi" : {
@@ -331712,7 +331712,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ağır küfürler ve hakaretler asla yazılmaz — Apple Intelligence bunları üretmez."
+            "value" : "Ağır küfürler ve hakaretler asla yazılmaz; Apple Intelligence bunları üretmez."
           }
         },
         "vi" : {
@@ -331831,7 +331831,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Daha güçlü harekete geçirici"
+            "value" : "Daha güçlü eylem çağrısı"
           }
         },
         "vi" : {
@@ -333607,7 +333607,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hepsine stil"
+            "value" : "Tümünü biçimlendir"
           }
         },
         "vi" : {
@@ -334200,7 +334200,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@/ay karşılığında abone ol"
+            "value" : "%@/ay ile abone ol"
           }
         },
         "vi" : {
@@ -334318,7 +334318,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@/yıl karşılığında abone ol"
+            "value" : "%@/yıl ile abone ol"
           }
         },
         "vi" : {
@@ -334673,7 +334673,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "alt konu"
+            "value" : "alt konular"
           }
         },
         "vi" : {
@@ -337765,7 +337765,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uzun, gür büyük harfler"
+            "value" : "Uzun, çarpıcı büyük harfler"
           }
         },
         "vi" : {
@@ -337883,7 +337883,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sakin kalarak huysuzluk nöbetleriyle başa çıkmak"
+            "value" : "Sakinliğimi koruyarak öfke nöbetleriyle başa çıkmak"
           }
         },
         "vi" : {
@@ -338356,7 +338356,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Düzenleyicide Bitti’a dokun ya da en iyi çekimi seç; video burada paylaşıma hazır görünür."
+            "value" : "Düzenleyicide Bitti’ye dokun ya da en iyi çekimi seç; video burada paylaşıma hazır görünür."
           }
         },
         "vi" : {
@@ -338831,7 +338831,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oynat'a dokun, sonra okumaya başla"
+            "value" : "Oynat’a dokun, sonra okumaya başla"
           }
         },
         "vi" : {
@@ -339188,7 +339188,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kesmek istediğin bölümün ilk kelimesine, sonra son kelimesine dokun. Geri al, kestiğini geri getirir."
+            "value" : "Kesmek istediğin bölümün ilk kelimesine, sonra son kelimesine dokun. Geri Al, kestiğini geri getirir."
           }
         },
         "vi" : {
@@ -339425,7 +339425,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kontroller için ekrana dokun"
+            "value" : "Denetimler için ekrana dokun"
           }
         },
         "vi" : {
@@ -340487,7 +340487,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stil için dokun"
+            "value" : "Biçimlendirmek için dokun"
           }
         },
         "vi" : {
@@ -341437,7 +341437,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nasıl konuştuğunu öğretir — hikâyeler, görüşler veya sonuçlar için asla yeniden kullanılmaz. Bu iPhone’da kalır."
+            "value" : "Nasıl konuştuğunu öğretir; hikâyeler, görüşler veya sonuçlar için asla yeniden kullanılmaz. Bu iPhone’da kalır."
           }
         },
         "vi" : {
@@ -343573,7 +343573,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Şahitlikler"
+            "value" : "Tanıklıklar"
           }
         },
         "vi" : {
@@ -348664,7 +348664,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Söylenen sözcük öne çıksın diye vurgu rengi değişir: %@."
+            "value" : "Söylenen kelime öne çıksın diye vurgu rengi değişir: %@."
           }
         },
         "vi" : {
@@ -349495,7 +349495,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofon, teleprompter'ın sözlerini bu iPhone'da takip etmesini sağlar. Kamera okurken seni gösterir."
+            "value" : "Mikrofon, teleprompter’ın sözlerini bu iPhone’da takip etmesini sağlar. Kamera okurken seni gösterir."
           }
         },
         "vi" : {
@@ -351395,7 +351395,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teleprompter'daki QR kodun altındaki altı harf ve rakam."
+            "value" : "Teleprompter’daki QR kodun altındaki altı harf ve rakam."
           }
         },
         "vi" : {
@@ -351514,7 +351514,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teleprompter'daki altı harf"
+            "value" : "Teleprompter’daki altı harf"
           }
         },
         "vi" : {
@@ -352817,7 +352817,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu sırada video değişti · Sesi yeniden ayıkla"
+            "value" : "Bu arada video değişti · Sesi yeniden ayıkla"
           }
         },
         "vi" : {
@@ -352936,7 +352936,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video bu arada değişti · kareyi yeniden dondur"
+            "value" : "Bu arada video değişti · Kareyi yeniden dondur"
           }
         },
         "vi" : {
@@ -353411,7 +353411,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videolar Cue'dan kaldırılır. Fotoğraflar'a kaydettiğin kopyalar orada kalır."
+            "value" : "Videolar Cue’dan kaldırılır. Fotoğraflar’a kaydettiğin kopyalar orada kalır."
           }
         },
         "vi" : {
@@ -354596,7 +354596,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu vurgu"
+            "value" : "Bu balon"
           }
         },
         "vi" : {
@@ -355905,7 +355905,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu aygıtta Cue'nun kullanabileceği bir kamera yok."
+            "value" : "Bu aygıtta Cue’nun kullanabileceği bir kamera yok."
           }
         },
         "vi" : {
@@ -356141,7 +356141,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu dosyada Cue'nun okuyabileceği metin yok. Taranmış PDF'ler önce metin tanıma gerektirir."
+            "value" : "Bu dosyada Cue’nun okuyabileceği metin yok. Taranmış PDF’ler önce metin tanıma gerektirir."
           }
         },
         "vi" : {
@@ -356377,7 +356377,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence'ın öğrenmeyeceği kelimeler var. Bunları sansürle (f***) ya da başka örnek seç."
+            "value" : "Apple Intelligence bu kelimelerden öğrenmez. Bunları sansürle (f***) ya da başka bir örnek seç."
           }
         },
         "vi" : {
@@ -359577,7 +359577,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu video çoktan gelmeliydi."
+            "value" : "Bu videoyu çoktan çekmeliydim."
           }
         },
         "vi" : {
@@ -359815,7 +359815,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Üç an yeterli: ne oldu, işlerin döndüğü an, nasıl bitti. Cue merak uyandıran bir kanca ve tempo ipuçları ekler."
+            "value" : "Üç an yeterli: ne oldu, işlerin döndüğü an, nasıl bitti. Cue merak uyandıran bir kanca ve tempo yönergeleri ekler."
           }
         },
         "vi" : {
@@ -360409,7 +360409,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Üç: Bugün önemli olan tek şeyi yazıyorum."
+            "value" : "Üç: bugün önemli olan tek şeyi yazıyorum."
           }
         },
         "vi" : {
@@ -360646,7 +360646,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sıkı"
+            "value" : "Dar"
           }
         },
         "vi" : {
@@ -360882,7 +360882,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TikTok, Creator Rewards'ı bir dakikayı aşan videolara öder."
+            "value" : "TikTok, Creator Rewards’ı bir dakikayı aşan videolara öder."
           }
         },
         "vi" : {
@@ -363605,7 +363605,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ton"
+            "value" : "tonlar"
           }
         },
         "vi" : {
@@ -363961,7 +363961,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fazla resmi"
+            "value" : "Fazla resmî"
           }
         },
         "vi" : {
@@ -365380,7 +365380,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "konu"
+            "value" : "konular"
           }
         },
         "vi" : {
@@ -367511,7 +367511,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone'unda çevrilir · Hiçbir şey gönderilmez"
+            "value" : "iPhone’unda çevrilir · Hiçbir şey gönderilmez"
           }
         },
         "vi" : {
@@ -368456,7 +368456,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deneme başladı — Cue Pro'nun keyfini çıkar"
+            "value" : "Deneme başladı · Cue Pro’nun keyfini çıkar"
           }
         },
         "vi" : {
@@ -368692,7 +368692,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fazla kelimeleri kırpıyorum"
+            "value" : "Fazla kelimeler ayıklanıyor"
           }
         },
         "vi" : {
@@ -369402,7 +369402,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hız veya aynala gibi başka bir sözcük dene."
+            "value" : "“Hız” veya “ayna” gibi başka bir kelime dene."
           }
         },
         "vi" : {
@@ -370115,7 +370115,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pro'yu dene ›"
+            "value" : "Pro’yu dene ›"
           }
         },
         "vi" : {
@@ -370234,7 +370234,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teleprompter ile kaydetmeyi dene. İlk yıldızın bir çekim uzağında."
+            "value" : "Teleprompter ile çekmeyi dene. İlk yıldızın bir çekim uzağında."
           }
         },
         "vi" : {
@@ -370353,7 +370353,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teleprompter'ı dene"
+            "value" : "Teleprompter’ı dene"
           }
         },
         "vi" : {
@@ -370590,7 +370590,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Takipçinin sorusunu senaryoya çevir"
+            "value" : "İzleyicinin bir sorusunu senaryoya dönüştür"
           }
         },
         "vi" : {
@@ -370708,7 +370708,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Takipçinin sorusunu senaryoya çevir."
+            "value" : "İzleyicinin bir sorusunu senaryoya dönüştür."
           }
         },
         "vi" : {
@@ -371300,7 +371300,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ayarlar › Gizlilik ve YZ verileri içinde kapalı."
+            "value" : "Ayarlar › Gizlilik ve yapay zekâ verileri bölümünde kapatıldı."
           }
         },
         "vi" : {
@@ -372604,7 +372604,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vurgunu yaz"
+            "value" : "Balon metnini yaz"
           }
         },
         "vi" : {
@@ -374142,7 +374142,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Geri al"
+            "value" : "Geri Al"
           }
         },
         "vi" : {
@@ -374852,7 +374852,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4K'ya kadar sınırsız dışa aktarma"
+            "value" : "4K’ya kadar sınırsız dışa aktarma"
           }
         },
         "vi" : {
@@ -374970,7 +374970,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kilometre taşlarıyla aç. Bazıları Pro ile gelir."
+            "value" : "Dönüm noktalarıyla aç. Bazıları Pro ile gelir."
           }
         },
         "vi" : {
@@ -376152,7 +376152,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "en fazla %lld · kancayı ve kapanışı şekillendirir"
+            "value" : "en fazla %lld · kancayı ve sonucu şekillendirir"
           }
         },
         "vi" : {
@@ -377336,7 +377336,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her kesimde kullan"
+            "value" : "Her kesmede kullan"
           }
         },
         "vi" : {
@@ -377454,7 +377454,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Önerileni Kullan"
+            "value" : "Önerileni kullan"
           }
         },
         "vi" : {
@@ -378637,7 +378637,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu iPhone’daki Apple Intelligence’ı kullanır."
+            "value" : "Bu iPhone’da Apple Intelligence ile çalışır."
           }
         },
         "vi" : {
@@ -378755,7 +378755,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bağlı mikrofonu veya iPhone'unkini kullanır"
+            "value" : "Bağlı mikrofonu veya iPhone’unkini kullanır"
           }
         },
         "vi" : {
@@ -378991,7 +378991,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sık kullanılan biçimler"
+            "value" : "Her zamanki formatlar"
           }
         },
         "vi" : {
@@ -379110,7 +379110,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Genel süre"
+            "value" : "Her zamanki süre"
           }
         },
         "vi" : {
@@ -380410,7 +380410,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video ve kapak Fotoğraflar'a kaydedildi"
+            "value" : "Video ve kapak Fotoğraflar’a kaydedildi"
           }
         },
         "vi" : {
@@ -380529,7 +380529,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "VİDEO · %@ İÇİN"
+            "value" : "%@ İÇİN VİDEO"
           }
         },
         "vi" : {
@@ -381357,7 +381357,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videolar Cue'dan yalnızca Fotoğraflar'a kaydettiğinde veya paylaştığında çıkar. Kamera ve mikrofon yalnızca kamera açıkken kullanılır."
+            "value" : "Videolar Cue’dan yalnızca Fotoğraflar’a kaydettiğinde veya paylaştığında çıkar. Kamera ve mikrofon yalnızca kamera açıkken kullanılır."
           }
         },
         "vi" : {
@@ -382663,7 +382663,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ses Takibi %1$@ dinliyor. Altyazılar senaryonun dilinde, %2$@, dinliyor. Konuşulan dil farklıysa onu seç."
+            "value" : "Ses Takibi %1$@ dinliyor. Altyazılar senaryonun dilinde (%2$@) dinliyor. Konuşulan dil farklıysa onu seç."
           }
         },
         "vi" : {
@@ -383728,7 +383728,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone'un soğuması bekleniyor · %%%lld"
+            "value" : "iPhone’un soğuması bekleniyor · %%%lld"
           }
         },
         "vi" : {
@@ -384917,7 +384917,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu senaryoyu kaydetmen için bir hatırlatıcı ister misin?"
+            "value" : "Bu senaryoyu çekmen için bir hatırlatıcı ister misin?"
           }
         },
         "vi" : {
@@ -385863,7 +385863,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prompter’ı ısıtıyorum"
+            "value" : "Prompter ısınıyor"
           }
         },
         "vi" : {
@@ -386455,7 +386455,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Şuna bak — %@. [demo]"
+            "value" : "Şuna bak: %@. [demo]"
           }
         },
         "vi" : {
@@ -387402,7 +387402,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue Pro'ya hoş geldin"
+            "value" : "Cue Pro’ya hoş geldin"
           }
         },
         "vi" : {
@@ -388110,7 +388110,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue'nun neyle kaydettiği ve neden."
+            "value" : "Cue’nun neyle kaydettiği ve neden."
           }
         },
         "vi" : {
@@ -388228,7 +388228,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue'nun gönderdiği"
+            "value" : "Cue’nun gönderdiği"
           }
         },
         "vi" : {
@@ -388346,7 +388346,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue'nun Apple Intelligence'a söyledikleri · cihazda"
+            "value" : "Cue’nun Apple Intelligence ile paylaştıkları · aygıtta"
           }
         },
         "vi" : {
@@ -391426,7 +391426,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bir metin ya da video seni beklerken."
+            "value" : "Bir senaryo ya da video seni beklerken."
           }
         },
         "vi" : {
@@ -391901,7 +391901,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue'nun bu çekimde seni nereden duyduğu."
+            "value" : "Cue’nun bu çekimde seni nereden duyduğu."
           }
         },
         "vi" : {
@@ -392137,7 +392137,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Her uygulamanın düğmeleri ve altyazılarının kadrajı kapattığı yerler"
+            "value" : "Her uygulamanın düğmelerinin ve açıklamalarının kadrajı kapattığı yerler"
           }
         },
         "vi" : {
@@ -393086,7 +393086,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hangi çekim o?"
+            "value" : "Asıl çekim hangisi?"
           }
         },
         "vi" : {
@@ -394504,7 +394504,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tüm video · iPhone'unda yapılır"
+            "value" : "Tüm video · iPhone’unda yapılır"
           }
         },
         "vi" : {
@@ -395808,7 +395808,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yapılacaklar listeleri neden başarısız olur, ne işe yarar"
+            "value" : "Yapılacaklar listeleri neden başarısız olur ve ne işe yarar"
           }
         },
         "vi" : {
@@ -396517,7 +396517,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GENİŞLİK %lld%% · %lld SATIR"
+            "value" : "GENİŞLİK %%%lld · %lld SATIR"
           }
         },
         "vi" : {
@@ -398060,7 +398060,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sözcükler"
+            "value" : "Kelimeler"
           }
         },
         "vi" : {
@@ -398654,7 +398654,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sözcükler, zamanlama, çeviriler, konum, boyut ve satırların belirişi aynı kalır. Diğer metinler değişmez."
+            "value" : "Kelimeler, zamanlama, çeviriler, konum, boyut ve satırların belirişi aynı kalır. Diğer metinler değişmez."
           }
         },
         "vi" : {
@@ -398773,7 +398773,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sözcükler, zamanlama ve hareket her metinde kendine kalır."
+            "value" : "Kelimeler, zamanlama ve hareket her metinde kendine kalır."
           }
         },
         "vi" : {
@@ -399484,7 +399484,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Birkaç satır yaz. Cue onların üzerine kurar."
+            "value" : "Birkaç satır yaz. Cue onları geliştirir."
           }
         },
         "vi" : {
@@ -400195,7 +400195,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reklamı yaz"
+            "value" : "Reklam taslağını hazırla"
           }
         },
         "vi" : {
@@ -400669,7 +400669,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Senaryonu yaz, kameraya bakarak oku ve kaydını yap. Sonra altyazı ekle, düzenle ve paylaş."
+            "value" : "Senaryonu yaz, kameraya bakarak oku ve çek. Sonra altyazı ekle, düzenle ve paylaş."
           }
         },
         "vi" : {
@@ -400788,7 +400788,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu iPhone’da Apple Intelligence ile yazıldı. Hiçbir şey cihazından çıkmaz."
+            "value" : "Bu iPhone’da Apple Intelligence ile yazıldı. Hiçbir şey aygıtından çıkmaz."
           }
         },
         "vi" : {
@@ -401855,7 +401855,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Evet — sosyal medyada paylaş"
+            "value" : "Evet, sosyal medyada paylaş"
           }
         },
         "vi" : {
@@ -402802,7 +402802,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bunu istediniz — işte burada."
+            "value" : "Bunu istediniz, işte burada."
           }
         },
         "vi" : {
@@ -406361,7 +406361,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Senin Cue’un"
+            "value" : "Senin Cue’n"
           }
         },
         "vi" : {
@@ -407667,7 +407667,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fikrin · senin sesinle taslak"
+            "value" : "Fikrin · senin tarzınla taslak"
           }
         },
         "vi" : {
@@ -407905,7 +407905,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fikir senden, taslak Cue'dan."
+            "value" : "Fikir senden, taslak Cue’dan."
           }
         },
         "vi" : {
@@ -408024,7 +408024,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone'un bu videoyu bitirmek için fazla ısındı. Soğumasını bekle, sonra yeniden dışa aktar."
+            "value" : "iPhone’un bu videoyu bitirmek için fazla ısındı. Soğumasını bekle, sonra yeniden dışa aktar."
           }
         },
         "vi" : {
@@ -408148,7 +408148,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Senin ışığın. Paylaştığın her videoyla büyür — fotoğraf gerekmez."
+            "value" : "Senin ışığın. Paylaştığın her videoyla büyür; fotoğraf gerekmez."
           }
         },
         "vi" : {
@@ -408861,7 +408861,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İlk videon yayınlanana kadar sıradaki adımın"
+            "value" : "İlk videon paylaşılana kadar sıradaki adımın"
           }
         },
         "vi" : {
@@ -410522,7 +410522,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Metinlerin, çekimlerin, düzenlemelerin ve My Cue Voice bu iPhone'dan kaldırılır. Bu işlem geri alınamaz."
+            "value" : "Senaryoların, çekimlerin, düzenlemelerin ve My Cue Voice bu iPhone’dan kaldırılır. Bu işlem geri alınamaz."
           }
         },
         "vi" : {
@@ -412536,7 +412536,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videon kaydettiğin gibi. Arkandakini değiştirmek için Bulanıklaştır, Renk veya Görsel'i seç."
+            "value" : "Videon kaydettiğin gibi. Arkandakini değiştirmek için Bulanıklık, Renk veya Görsel’i seç."
           }
         },
         "vi" : {
