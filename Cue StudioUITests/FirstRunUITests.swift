@@ -15,26 +15,26 @@ final class FirstRunUITests: XCTestCase {
     func testWritingTheFirstScript() {
         let app = CueApp.launch(seeded: false)
         let write = app.buttons["empty.writeButton"]
-        XCTAssertTrue(write.waitForExistence(timeout: 15))
+        XCTAssertTrue(write.exists(within: 15))
         XCTAssertTrue(element(app, "empty.promptCard").exists)
         write.tap()
 
         // A new page opens in the Draft with the title ready.
         // The title is a text field that grows.
         let title = app.textFields["page.titleField"]
-        XCTAssertTrue(title.waitForExistence(timeout: 5))
+        XCTAssertTrue(title.exists(within: 5))
         // The title takes the keyboard on its own: wait for it, then write.
-        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 10))
+        XCTAssertTrue(app.keyboards.firstMatch.exists(within: 10))
         title.typeText("My first script")
 
         // Empty, the Draft shows a hint over its text view: the tests type into the text view.
         let text = app.textViews["page.editor"]
-        XCTAssertTrue(text.waitForExistence(timeout: 5))
+        XCTAssertTrue(text.exists(within: 5))
         text.tap()
         text.typeText("Hello there. [pause]\nThis is my first script.")
 
         app.pageBackButton.tap()
-        XCTAssertTrue(app.staticTexts["My first script"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["My first script"].exists(within: 5))
     }
 
     /// The idea is answered in the card itself: tapping the field takes the keyboard, no sheet opens, the field
@@ -42,7 +42,7 @@ final class FirstRunUITests: XCTestCase {
     func testTheIdeaIsTypedInTheCardWithoutASheetAndTheCardNeverGrows() {
         let app = CueApp.launch(seeded: false)
         let field = element(app, "ideaCard.field")
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         // The "+" stays at the top right, the rows below the card are the quiet ones, the chips are gone.
         XCTAssertTrue(app.buttons["scripts.newButton"].exists)
         XCTAssertTrue(app.buttons["empty.writeButton"].exists && app.buttons["empty.importButton"].exists)
@@ -55,7 +55,7 @@ final class FirstRunUITests: XCTestCase {
         let twoLines = field.frame.height
 
         field.tap()
-        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.keyboards.firstMatch.exists(within: 5))
         field.typeText("Three ways to focus")
         XCTAssertEqual(field.value as? String, "Three ways to focus")
         let unavailable = element(app, "generate.unavailableNote").exists
@@ -74,19 +74,19 @@ final class FirstRunUITests: XCTestCase {
     func testTheArrowWritesTheIdeaIntoAPageAndTheCardEmpties() {
         let app = CueApp.launch(seeded: false)
         let field = element(app, "ideaCard.field")
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         field.tap()
         field.typeText("Carnival in Salvador")
         let send = app.buttons["ideaCard.submit"]
         XCTAssertTrue(send.isEnabled)
         send.tap()
 
-        XCTAssertTrue(element(app, "page.editor").waitForExistence(timeout: 15))
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Draft ready'")).firstMatch.waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "page.editor").exists(within: 15))
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Draft ready'")).firstMatch.exists(within: 10))
         XCTAssertEqual(element(app, "page.titleField").value as? String, "Carnival in Salvador")
         app.pageBackButton.tap()
         // It is a script in the library now, and the card starts empty.
-        XCTAssertTrue(app.staticTexts["Carnival in Salvador"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Carnival in Salvador"].exists(within: 5))
         XCTAssertNotEqual(element(app, "ideaCard.field").value as? String, "Carnival in Salvador")
     }
 
@@ -94,7 +94,7 @@ final class FirstRunUITests: XCTestCase {
     func testTheSameCardWorksOverTheScriptList() {
         let app = CueApp.launch(seeded: true)
         let field = element(app, "ideaCard.field")
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         XCTAssertTrue(app.buttons["scripts.newButton"].exists)
         for chip in ["platformChip", "voiceChip", "formatChip"] {
             XCTAssertTrue(app.buttons["ideaCard.\(chip)"].exists, chip)
@@ -103,7 +103,7 @@ final class FirstRunUITests: XCTestCase {
         field.typeText("A day in my life")
         XCTAssertEqual(field.value as? String, "A day in my life")
         app.buttons["ideaCard.submit"].tap()
-        XCTAssertTrue(element(app, "page.editor").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "page.editor").exists(within: 15))
     }
 
     // MARK: - Write in my voice
@@ -113,51 +113,51 @@ final class FirstRunUITests: XCTestCase {
     func testMyCueVoiceAsksFourQuestionsAndTheScriptIsThePreview() {
         let app = CueApp.launch(seeded: false)
         let field = element(app, "ideaCard.field")
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         field.tap()
         field.typeText("Carnival in Salvador")
 
         let chip = app.buttons["ideaCard.voiceChip"]
-        XCTAssertTrue(chip.waitForExistence(timeout: 5))
+        XCTAssertTrue(chip.exists(within: 5))
         XCTAssertEqual(chip.value as? String, "Set up")
         chip.tap()
-        XCTAssertTrue(element(app, "voiceSetup.sheet").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "voiceSetup.sheet").exists(within: 5))
         // Not now: the chip still says Set up and the idea is kept.
         app.buttons["sheet.closeButton"].tap()
-        XCTAssertTrue(chip.waitForExistence(timeout: 5))
+        XCTAssertTrue(chip.exists(within: 5))
         XCTAssertEqual(chip.value as? String, "Set up")
         XCTAssertEqual(field.value as? String, "Carnival in Salvador")
 
         // 01 · the kind of creator (Continue waits for a pick). 02 · topics. 03 · audience. 04 · tone.
         chip.tap()
-        XCTAssertTrue(app.buttons["voiceSetup.role.personal"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["voiceSetup.role.personal"].exists(within: 5))
         let next = app.buttons["voiceSetup.saveButton"]
         XCTAssertTrue(next.exists)
         XCTAssertFalse(next.isEnabled)
         app.buttons["voiceSetup.role.personal"].tap()
         XCTAssertTrue(next.isEnabled)
         next.tap()
-        XCTAssertTrue(app.buttons["voiceSetup.niche.lifestyle"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["voiceSetup.niche.lifestyle"].exists(within: 5))
         XCTAssertFalse(next.isEnabled)
         app.buttons["voiceSetup.niche.lifestyle"].tap()
         next.tap()
-        XCTAssertTrue(app.buttons["voiceSetup.audience.youngAdults"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["voiceSetup.audience.youngAdults"].exists(within: 5))
         XCTAssertFalse(next.isEnabled)
         app.buttons["voiceSetup.audience.youngAdults"].tap()
         app.buttons["voiceSetup.level.experienced"].tap()
         next.tap()
-        XCTAssertTrue(app.buttons["voiceSetup.tone.funny"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["voiceSetup.tone.funny"].exists(within: 5))
         app.buttons["voiceSetup.tone.funny"].tap()
         // With an idea on the card, the last question writes it.
         XCTAssertEqual(next.label, "✦ Draft my script")
         next.tap()
 
         // The script is the preview: it can be compared with the one without the voice, and approved.
-        XCTAssertTrue(element(app, "page.voicePreview").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "page.voicePreview").exists(within: 15))
         app.buttons["page.voice.without"].tap()
         app.buttons["page.voice.mine"].tap()
         app.buttons["page.voice.approve"].tap()
-        XCTAssertFalse(element(app, "page.voicePreview").waitForExistence(timeout: 2))
+        XCTAssertFalse(element(app, "page.voicePreview").exists(within: 2))
         app.pageBackButton.tap()
         // The chip shows how much of the creator Cue knows now: kind of creator, topics, audience (with its level) and tone at 10% each,
         // and one approval is not yet an example.
@@ -169,7 +169,7 @@ final class FirstRunUITests: XCTestCase {
     func testTheVoiceChipShowsTheStrengthOnceItIsSet() {
         let app = CueApp.launch(seeded: false)
         let chip = app.buttons["ideaCard.voiceChip"]
-        XCTAssertTrue(chip.waitForExistence(timeout: 15))
+        XCTAssertTrue(chip.exists(within: 15))
         chip.tap()
         app.buttons["voiceSetup.skipRole"].tap()
         app.buttons["voiceSetup.niche.tech"].tap()
@@ -181,16 +181,16 @@ final class FirstRunUITests: XCTestCase {
         // No idea waiting: the last button just says Done.
         XCTAssertEqual(app.buttons["voiceSetup.saveButton"].label, "Done")
         app.buttons["voiceSetup.saveButton"].tap()
-        XCTAssertTrue(chip.waitForExistence(timeout: 5))
+        XCTAssertTrue(chip.exists(within: 5))
         // The kind of creator was skipped: topics, audience (with its level) and tone are 3 × 10%.
         XCTAssertEqual(chip.value as? String, "30%")
         XCTAssertFalse(app.switches["ideaCard.voiceToggle"].exists)
 
         // Tapping the chip opens My Cue Voice (9.3): the three layers, each row with its own sheet.
         chip.tap()
-        XCTAssertTrue(element(app, "voicePage").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "voicePage").exists(within: 5))
         app.buttons["voicePage.done"].tap()
-        XCTAssertTrue(chip.waitForExistence(timeout: 5))
+        XCTAssertTrue(chip.exists(within: 5))
         XCTAssertEqual(chip.value as? String, "30%")
     }
 
@@ -201,7 +201,7 @@ final class FirstRunUITests: XCTestCase {
     func testDictatingInTheCardShowsTheWordsAndNeverSendsThemByItself() {
         let app = dictationApp("speech", text: "a video about my morning coffee routine")
         let field = element(app, "ideaCard.field")
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         let mic = app.buttons["ideaCard.dictate"]
         let send = app.buttons["ideaCard.submit"]
         XCTAssertEqual(mic.label, "Dictate your idea")
@@ -213,17 +213,17 @@ final class FirstRunUITests: XCTestCase {
         mic.tap()
         // No sheet: it listens right there, and the card keeps its height.
         let status = element(app, "ideaCard.dictationStatus")
-        XCTAssertTrue(status.waitForExistence(timeout: 5))
+        XCTAssertTrue(status.exists(within: 5))
         XCTAssertTrue(waitForLabel(status, "Listening…"))
         XCTAssertEqual(mic.label, "Stop dictation")
         XCTAssertFalse(send.isEnabled)
-        XCTAssertTrue(dictatedWords(app, saying: "coffee").waitForExistence(timeout: 10))
+        XCTAssertTrue(dictatedWords(app, saying: "coffee").exists(within: 10))
         XCTAssertEqual(card.frame.height, height, accuracy: 1)
         XCTAssertFalse(send.isEnabled)
 
         mic.tap()
         // Stopped: the words stay in the field, editable. Nothing was sent.
-        XCTAssertTrue(field.waitForExistence(timeout: 10))
+        XCTAssertTrue(field.exists(within: 10))
         XCTAssertEqual(field.value as? String, "a video about my morning coffee routine")
         XCTAssertFalse(status.exists)
         XCTAssertEqual(mic.label, "Dictate your idea")
@@ -236,7 +236,7 @@ final class FirstRunUITests: XCTestCase {
         mic.tap()
         XCTAssertTrue(waitForLabel(status, "Listening…"))
         mic.tap()
-        XCTAssertTrue(field.waitForExistence(timeout: 10))
+        XCTAssertTrue(field.exists(within: 10))
         XCTAssertEqual(field.value as? String, "a video about my morning coffee routine a video about my morning coffee routine")
     }
 
@@ -244,14 +244,14 @@ final class FirstRunUITests: XCTestCase {
     func testTappingTheWordsWhileListeningStopsAndEdits() {
         let app = dictationApp("speech", text: "a very long idea that keeps going")
         let field = element(app, "ideaCard.field")
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         app.buttons["ideaCard.dictate"].tap()
         let transcript = element(app, "ideaCard.transcript")
-        XCTAssertTrue(transcript.waitForExistence(timeout: 10))
-        XCTAssertTrue(dictatedWords(app, saying: "long idea").waitForExistence(timeout: 10))
+        XCTAssertTrue(transcript.exists(within: 10))
+        XCTAssertTrue(dictatedWords(app, saying: "long idea").exists(within: 10))
         transcript.tap()
-        XCTAssertTrue(field.waitForExistence(timeout: 10))
-        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(field.exists(within: 10))
+        XCTAssertTrue(app.keyboards.firstMatch.exists(within: 5))
         XCTAssertEqual(app.buttons["ideaCard.dictate"].label, "Dictate your idea")
         XCTAssertFalse(element(app, "ideaCard.dictationStatus").exists)
     }
@@ -260,12 +260,12 @@ final class FirstRunUITests: XCTestCase {
     func testLeavingTheScreenEndsTheDictationAndKeepsTheWords() {
         let app = dictationApp("speech", text: "a very long idea that keeps going")
         let field = element(app, "ideaCard.field")
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         app.buttons["ideaCard.dictate"].tap()
-        XCTAssertTrue(dictatedWords(app, saying: "long idea").waitForExistence(timeout: 10))
+        XCTAssertTrue(dictatedWords(app, saying: "long idea").exists(within: 10))
         app.cueTabBar.buttons.element(boundBy: 1).tap()
         app.cueTabBar.buttons.element(boundBy: 0).tap()
-        XCTAssertTrue(field.waitForExistence(timeout: 10))
+        XCTAssertTrue(field.exists(within: 10))
         XCTAssertEqual(app.buttons["ideaCard.dictate"].label, "Dictate your idea")
         XCTAssertFalse(element(app, "ideaCard.dictationStatus").exists)
         XCTAssertTrue((field.value as? String ?? "").hasPrefix("a very long idea"))
@@ -275,11 +275,11 @@ final class FirstRunUITests: XCTestCase {
     func testSilenceIsSaidAndTypingStillWorks() {
         let quiet = dictationApp("silence", text: "")
         let field = element(quiet, "ideaCard.field")
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         quiet.buttons["ideaCard.dictate"].tap()
         XCTAssertTrue(waitForLabel(element(quiet, "ideaCard.dictationStatus"), "Listening…"))
         quiet.buttons["ideaCard.dictate"].tap()
-        XCTAssertTrue(element(quiet, "ideaCard.dictationNotice").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(quiet, "ideaCard.dictationNotice").exists(within: 10))
         XCTAssertTrue(quiet.staticTexts["Didn’t catch anything. Try again, or type your idea."].exists)
         field.tap()
         field.typeText("Typed instead")
@@ -291,11 +291,11 @@ final class FirstRunUITests: XCTestCase {
     func testWhenDictationCantRunTheCreatorIsToldAndCanStillType() {
         let denied = dictationApp("denied", text: "")
         let deniedField = element(denied, "ideaCard.field")
-        XCTAssertTrue(deniedField.waitForExistence(timeout: 15))
+        XCTAssertTrue(deniedField.exists(within: 15))
         deniedField.tap()
         deniedField.typeText("Already typed")
         denied.buttons["ideaCard.dictate"].tap()
-        XCTAssertTrue(element(denied, "ideaCard.dictationNotice").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(denied, "ideaCard.dictationNotice").exists(within: 5))
         XCTAssertTrue(denied.buttons["Open Settings"].exists)
         // What was typed is untouched, and the field is still there.
         XCTAssertEqual(deniedField.value as? String, "Already typed")
@@ -303,9 +303,9 @@ final class FirstRunUITests: XCTestCase {
         denied.terminate()
 
         let unavailable = dictationApp("unavailable", text: "")
-        XCTAssertTrue(element(unavailable, "ideaCard.field").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(unavailable, "ideaCard.field").exists(within: 15))
         unavailable.buttons["ideaCard.dictate"].tap()
-        XCTAssertTrue(element(unavailable, "ideaCard.dictationNotice").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(unavailable, "ideaCard.dictationNotice").exists(within: 5))
         XCTAssertTrue(unavailable.staticTexts.containing(NSPredicate(format: "label CONTAINS 'type your idea'")).firstMatch.exists)
         XCTAssertFalse(unavailable.buttons["Open Settings"].exists)
     }
@@ -314,15 +314,15 @@ final class FirstRunUITests: XCTestCase {
         let app = CueApp.launch(seeded: false)
         // "Record without a script" lives in "+" (the first visit keeps only Write my own and Import).
         let plus = app.buttons["scripts.newButton"]
-        XCTAssertTrue(plus.waitForExistence(timeout: 15))
+        XCTAssertTrue(plus.exists(within: 15))
         plus.tap()
         let skip = app.buttons["newScript.freestyle"]
-        XCTAssertTrue(skip.waitForExistence(timeout: 5))
+        XCTAssertTrue(skip.exists(within: 5))
         skip.tap()
 
-        XCTAssertTrue(app.buttons["prompter.addScriptButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["prompter.addScriptButton"].exists(within: 5))
         app.buttons["prompter.closeButton"].tap()
-        XCTAssertTrue(plus.waitForExistence(timeout: 5))
+        XCTAssertTrue(plus.exists(within: 5))
     }
 
     // MARK: - Helpers

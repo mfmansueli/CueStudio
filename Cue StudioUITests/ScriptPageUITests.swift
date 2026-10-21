@@ -42,7 +42,7 @@ final class ScriptPageUITests: XCTestCase {
     func testAReadyScriptShowsReadyAndOneYellowRecord() throws {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.ready)
-        XCTAssertTrue(element(app, "page.strip").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "page.strip").exists(within: 5))
         XCTAssertTrue(isOn(app.pageReadyToggle), "a ready script has its switch on")
         XCTAssertEqual(app.buttons.matching(identifier: "detail.recordButton").count, 1)
         XCTAssertEqual(app.buttons["detail.recordButton"].label, "Record")
@@ -52,16 +52,16 @@ final class ScriptPageUITests: XCTestCase {
     func testADraftBecomesReadyWithItsSwitchAndBack() throws {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.draft)
-        XCTAssertTrue(element(app, "page.strip").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "page.strip").exists(within: 5))
         try capture(app, "4.2_draft")
         // The strip says Draft beside the switch; switching it on makes the script ready and the words stay.
         let ready = app.pageReadyToggle
-        XCTAssertTrue(ready.waitForExistence(timeout: 5))
+        XCTAssertTrue(ready.exists(within: 5))
         XCTAssertFalse(isOn(ready))
         XCTAssertTrue(strip(app).hasPrefix("Draft"))
         ready.tap()
         // A storytime has four sections and this one has a single line: the switch asks first.
-        XCTAssertTrue(app.alerts.firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.alerts.firstMatch.exists(within: 5))
         app.alerts.buttons["Mark ready anyway"].tap()
         XCTAssertTrue(isOn(ready))
         XCTAssertFalse(strip(app).hasPrefix("Draft"))
@@ -75,7 +75,7 @@ final class ScriptPageUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.ready)
         let text = element(app, "page.editor")
-        XCTAssertTrue(text.waitForExistence(timeout: 5))
+        XCTAssertTrue(text.exists(within: 5))
         text.tap()
         text.typeText(" One more line.")
         XCTAssertTrue(app.buttons["page.hideKeyboard"].exists, "while typing, the bar's ✓ only hides the keyboard")
@@ -90,12 +90,12 @@ final class ScriptPageUITests: XCTestCase {
     /// hiding, so it never comes back late and makes the dock jump).
     func testThePageHidesTheTabBarAndBackBringsItAtOnce() throws {
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(app.cueTabBar.waitForExistence(timeout: 15))
+        XCTAssertTrue(app.cueTabBar.exists(within: 15))
         app.openScriptPage(titled: Self.ready)
-        XCTAssertTrue(element(app, "page.strip").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "page.strip").exists(within: 5))
         XCTAssertFalse(app.cueTabBar.isHittable, "the tab bar is over the page")
         app.pageBackButton.tap()
-        XCTAssertTrue(app.cueTabBar.waitForExistence(timeout: 2) && app.cueTabBar.isHittable)
+        XCTAssertTrue(app.cueTabBar.exists(within: 2) && app.cueTabBar.isHittable)
     }
 
     /// Undo and Redo on the cues bar over the keyboard: what was typed goes and comes back.
@@ -103,10 +103,10 @@ final class ScriptPageUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.ready)
         let text = element(app, "page.editor")
-        XCTAssertTrue(text.waitForExistence(timeout: 5))
+        XCTAssertTrue(text.exists(within: 5))
         text.tap()
         let undo = app.buttons["cuesBar.undo"], redo = app.buttons["cuesBar.redo"]
-        XCTAssertTrue(undo.waitForExistence(timeout: 5))
+        XCTAssertTrue(undo.exists(within: 5))
         XCTAssertFalse(undo.isEnabled, "nothing to undo yet")
         text.typeText(" Zebra")
         XCTAssertTrue(undo.isEnabled)
@@ -121,9 +121,9 @@ final class ScriptPageUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         app.buttons["scripts.newButton"].tap()
         app.buttons["newScript.write"].tap()
-        XCTAssertTrue(app.textFields["page.titleField"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.textFields["page.titleField"].exists(within: 10))
         let ready = app.pageReadyToggle
-        XCTAssertTrue(ready.waitForExistence(timeout: 5))
+        XCTAssertTrue(ready.exists(within: 5))
         XCTAssertFalse(ready.isEnabled, "nothing to make ready yet")
     }
 
@@ -145,10 +145,10 @@ final class ScriptPageUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.draft)
         let shape = app.buttons["page.shapeButton"]
-        XCTAssertTrue(shape.waitForExistence(timeout: 5))
+        XCTAssertTrue(shape.exists(within: 5))
         shape.tap()
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'cue'")).firstMatch.waitForExistence(timeout: 5))
-        XCTAssertFalse(shape.waitForExistence(timeout: 2), "Shape is for scripts with no cues")
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'cue'")).firstMatch.exists(within: 5))
+        XCTAssertFalse(shape.exists(within: 2), "Shape is for scripts with no cues")
     }
 
     func testTheAIBarRewritesTheSelectionInPlaceAndKeepsOrUndoes() throws {
@@ -158,12 +158,12 @@ final class ScriptPageUITests: XCTestCase {
         text.tap()
         text.press(forDuration: 1.0)
         let selectAll = app.menuItems["Select All"]
-        if selectAll.waitForExistence(timeout: 3) { selectAll.tap() }
+        if selectAll.exists(within: 3) { selectAll.tap() }
         let shorter = app.buttons["page.selection.shorter"]
-        XCTAssertTrue(shorter.waitForExistence(timeout: 5), "No AI bar over a selection")
+        XCTAssertTrue(shorter.exists(within: 5), "No AI bar over a selection")
         try capture(app, "A_ai_bar")
         shorter.tap()
-        XCTAssertTrue(app.buttons["page.selection.keep"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["page.selection.keep"].exists(within: 10))
         XCTAssertTrue(app.buttons["page.selection.undo"].exists && app.buttons["page.selection.retry"].exists)
         try capture(app, "A_ai_replaced")
         app.buttons["page.selection.undo"].tap()
@@ -173,7 +173,7 @@ final class ScriptPageUITests: XCTestCase {
     func testWithoutAppleIntelligenceThePageHasNoShapeNoImproveAndNoBar() throws {
         let app = CueApp.launch(seeded: true, ai: .none)
         app.openScriptPage(titled: Self.draft)
-        XCTAssertTrue(element(app, "page.strip").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "page.strip").exists(within: 5))
         XCTAssertFalse(app.buttons["page.shapeButton"].exists)
         XCTAssertFalse(app.buttons["page.improveButton"].exists)
         XCTAssertTrue(app.buttons["page.hookButton"].exists)

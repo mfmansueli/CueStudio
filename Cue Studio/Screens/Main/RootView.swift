@@ -48,6 +48,7 @@ struct RootView: View {
                 services.motion.setActive(phase == .active)
                 services.eyes.setActive(phase == .active)
                 guard phase == .active else { return }
+                services.reloadWhatCouldntBeRead()
                 Task { await services.store.refreshEntitlements() }
                 // "Stop Using Apple ID" happens in Settings, outside Cue.
                 Task { await services.session.verify() }

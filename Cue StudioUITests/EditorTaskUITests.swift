@@ -33,7 +33,7 @@ final class EditorTaskUITests: XCTestCase {
         XCTAssertEqual(EditorApp.length(app), "00:18.6")
         // Its caption is hidden, not deleted: undo brings it back.
         EditorApp.tapTool(app, "captions")
-        XCTAssertTrue(app.descendants(matching: .any)["edit.captionLine.6"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["edit.captionLine.6"].exists(within: 5))
         XCTAssertFalse(app.descendants(matching: .any)["edit.captionLine.7"].exists)
         app.buttons["edit.panel.apply"].tap()
         app.buttons["edit.undoButton"].tap()
@@ -55,7 +55,7 @@ final class EditorTaskUITests: XCTestCase {
         XCTAssertTrue(length >= "00:18.3" && length <= "00:19.0", length)
         EditorApp.tapTool(app, "back")
         EditorApp.tapTool(app, "captions")
-        XCTAssertTrue(app.descendants(matching: .any)["edit.captionLine.6"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["edit.captionLine.6"].exists(within: 5))
         XCTAssertFalse(app.descendants(matching: .any)["edit.captionLine.7"].exists)
     }
 
@@ -64,7 +64,7 @@ final class EditorTaskUITests: XCTestCase {
         let app = EditorApp.open(demo: true)
         EditorApp.openPauses(app)
         let first = app.descendants(matching: .any)["edit.pause.0"]
-        XCTAssertTrue(first.waitForExistence(timeout: 5))
+        XCTAssertTrue(first.exists(within: 5))
         for index in 1...3 {
             XCTAssertTrue(app.descendants(matching: .any)["edit.pause.\(index)"].exists)
         }
@@ -86,19 +86,19 @@ final class EditorTaskUITests: XCTestCase {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "captions")
         let line = app.descendants(matching: .any)["edit.captionLine.6"]
-        XCTAssertTrue(line.waitForExistence(timeout: 5))
+        XCTAssertTrue(line.exists(within: 5))
         line.tap()
         // The end first, before the keyboard comes up (More holds the timing).
         let more = app.buttons["edit.captionMore"]
-        XCTAssertTrue(more.waitForExistence(timeout: 5))
+        XCTAssertTrue(more.exists(within: 5))
         more.tap()
         let later = app.buttons["edit.captionEnd.plus"]
-        XCTAssertTrue(later.waitForExistence(timeout: 5))
+        XCTAssertTrue(later.exists(within: 5))
         later.tap()
         later.tap()
-        XCTAssertTrue(app.staticTexts["00:14.6 → 00:16.4"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["00:14.6 → 00:16.4"].exists(within: 3))
         let field = app.descendants(matching: .any).matching(identifier: "edit.captionField").firstMatch
-        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        XCTAssertTrue(field.exists(within: 5))
         // The cursor at the end of the line, then everything out.
         field.coordinate(withNormalizedOffset: CGVector(dx: 0.97, dy: 0.5)).tap()
         let text = (field.value as? String) ?? ""
@@ -112,9 +112,9 @@ final class EditorTaskUITests: XCTestCase {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "captions")
         let first = app.descendants(matching: .any)["edit.captionLine.1"]
-        XCTAssertTrue(first.waitForExistence(timeout: 5))
+        XCTAssertTrue(first.exists(within: 5))
         let deleteAll = app.buttons["edit.captionsDeleteAll"]
-        XCTAssertTrue(deleteAll.waitForExistence(timeout: 5))
+        XCTAssertTrue(deleteAll.exists(within: 5))
         deleteAll.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "lines deleted"))
         XCTAssertFalse(first.exists)
@@ -123,7 +123,7 @@ final class EditorTaskUITests: XCTestCase {
         let undo = app.buttons.matching(identifier: "toast.action").allElementsBoundByIndex.first { $0.isHittable }
         XCTAssertNotNil(undo)
         undo?.tap()
-        XCTAssertTrue(first.waitForExistence(timeout: 5))
+        XCTAssertTrue(first.exists(within: 5))
     }
 
     /// Logbook on the title only, then on every text.
@@ -132,7 +132,7 @@ final class EditorTaskUITests: XCTestCase {
         EditorApp.tapTool(app, "text")
         EditorApp.tapTool(app, "styleAll")
         let subtitle = app.staticTexts["edit.panel.subtitle"]
-        XCTAssertTrue(subtitle.waitForExistence(timeout: 5))
+        XCTAssertTrue(subtitle.exists(within: 5))
         app.buttons["edit.style.scope.selected"].tap()
         XCTAssertEqual(subtitle.label, "Only this title changes")
         let logbook = app.buttons["edit.style.logbook"]
@@ -144,7 +144,7 @@ final class EditorTaskUITests: XCTestCase {
         logbook.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Logbook on every text"))
         app.buttons["edit.panel.apply"].tap()
-        XCTAssertTrue(app.buttons["edit.toolbar.back"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.toolbar.back"].exists(within: 5))
     }
 
     /// The keyboard over the Text style panel: it opens, stays one panel (never a second copy, never a
@@ -156,16 +156,16 @@ final class EditorTaskUITests: XCTestCase {
         EditorApp.tapTool(app, "text")
         EditorApp.tapTool(app, "styleAll")
         let panels = app.descendants(matching: .any).matching(identifier: "edit.panel.textStyle")
-        XCTAssertTrue(panels.firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(panels.firstMatch.exists(within: 5))
         let field = app.textFields["edit.textField"]
-        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        XCTAssertTrue(field.exists(within: 5))
         let apply = app.buttons["edit.panel.apply"]
 
         for round in 1...3 {
             field.tap()
-            XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5), "round \(round)")
+            XCTAssertTrue(app.keyboards.firstMatch.exists(within: 5), "round \(round)")
             // Give any layout flip the time it would have taken to show itself.
-            XCTAssertFalse(app.buttons["edit.toolbar.edit"].waitForExistence(timeout: 1.5), "the panel closed, round \(round)")
+            XCTAssertFalse(app.buttons["edit.toolbar.edit"].exists(within: 1.5), "the panel closed, round \(round)")
             XCTAssertEqual(panels.count, 1, "a second panel, round \(round)")
             XCTAssertTrue(field.exists && apply.exists && app.buttons["edit.style.scope.selected"].exists, "round \(round)")
             // Over the keyboard, not under it.
@@ -192,7 +192,7 @@ final class EditorTaskUITests: XCTestCase {
             app.buttons["edit.panel.tab.presets"].tap()
         }
         apply.tap()
-        XCTAssertTrue(app.buttons["edit.toolbar.back"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.toolbar.back"].exists(within: 5))
     }
 
     private func waitForGone(_ element: XCUIElement, timeout: TimeInterval = 5) -> Bool {

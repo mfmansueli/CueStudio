@@ -52,8 +52,10 @@ final class StoreManager {
                 }
             }
         }
-        await loadProducts()
+        // The purchase first: StoreKit has it on the iPhone, while the prices need the network (offline, a subscriber would be
+        // free until the prices failed to load).
         await refreshEntitlements()
+        await loadProducts()
     }
 
     // MARK: - Products

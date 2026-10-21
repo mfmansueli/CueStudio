@@ -31,7 +31,7 @@ final class CardDepthCaptureTests: XCTestCase {
     @discardableResult
     private func tap(_ app: XCUIApplication, _ id: String, wait: TimeInterval = 5) -> Bool {
         let control = element(app, id)
-        guard control.waitForExistence(timeout: wait), control.isHittable else { return false }
+        guard control.exists(within: wait), control.isHittable else { return false }
         control.tap()
         sleep(1)
         return true
@@ -39,13 +39,13 @@ final class CardDepthCaptureTests: XCTestCase {
 
     private func launch() -> XCUIApplication {
         let app = CueApp.launch(seeded: true, sampleVideo: true)
-        _ = app.buttons["ideaCard.submit"].waitForExistence(timeout: 20)
+        _ = app.buttons["ideaCard.submit"].exists(within: 20)
         return app
     }
 
     private func openTab(_ app: XCUIApplication, _ index: Int) {
         let bar = app.cueTabBar
-        if bar.waitForExistence(timeout: 5) { bar.buttons.element(boundBy: index).tap(); sleep(1) }
+        if bar.exists(within: 5) { bar.buttons.element(boundBy: index).tap(); sleep(1) }
     }
 
     func testScriptsAndTheLogbook() throws {
@@ -63,7 +63,7 @@ final class CardDepthCaptureTests: XCTestCase {
         openTab(app, 1)
         try shot(app, "04-takes-grid")
         let list = app.segmentedControls["takes.layout"].buttons["List"]
-        if list.waitForExistence(timeout: 4) {
+        if list.exists(within: 4) {
             list.tap()
             try shot(app, "05-takes-list")
         }
@@ -96,16 +96,16 @@ final class CardDepthCaptureTests: XCTestCase {
     func testSwipeActionsOnScriptsAndTakes() throws {
         let app = launch()
         let script = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'scripts.row.'")).firstMatch
-        if script.waitForExistence(timeout: 5) {
+        if script.exists(within: 5) {
             script.swipeLeft()
             try shot(app, "14-swipe-scripts")
         }
         openTab(app, 1)
         let list = app.segmentedControls["takes.layout"].buttons["List"]
-        if list.waitForExistence(timeout: 4) {
+        if list.exists(within: 4) {
             list.tap()
             let video = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.'")).firstMatch
-            if video.waitForExistence(timeout: 5) {
+            if video.exists(within: 5) {
                 video.swipeLeft()
                 try shot(app, "15-swipe-takes")
             }
@@ -120,7 +120,7 @@ final class CardDepthCaptureTests: XCTestCase {
             sleep(1)
         }
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'scripts.row.'")).firstMatch
-        if row.waitForExistence(timeout: 5) {
+        if row.exists(within: 5) {
             row.tap()
             if tap(app, "page.improveButton") {
                 try shot(app, "13-improve-sheet")

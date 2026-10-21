@@ -18,12 +18,24 @@ struct LocalScriptRepository: ScriptRepository {
         // Unencoded: `path()` gives "Application%20Support", which FileManager never finds.
         guard FileManager.default.fileExists(atPath: fileURL.path(percentEncoded: false)) else { return ScriptLibrarySnapshot() }
         let data = try Data(contentsOf: fileURL)
-        let snapshot = try JSONDecoder.library.decode(ScriptLibrarySnapshot.self, from: data)
+        guard let snapshot = try? JSONDecoder.library.decode(ScriptLibrarySnapshot.self, from: data) else {
+            // Read, but no longer a library (cut short, written over): kept aside, and a new library starts, rather than
+            // a library that can never be saved again.
+            keepCopy(of: data)
+            return ScriptLibrarySnapshot()
+        }
         // A script that couldn't be read is left out; the next save writes the library without it, so the file as it was is
         // kept aside first.
         let saved = ((try? JSONSerialization.jsonObject(with: data)) as? [String: Any])?["scripts"] as? [Any]
         if let saved, saved.count > snapshot.scripts.count { keepCopy(of: data) }
         return snapshot
+    }
+
+    /// The copies `keepCopy` set aside ("Delete my Cue data").
+    func deleteKeptCopies() {
+        let folder = fileURL.deletingLastPathComponent()
+        let names = (try? FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false))) ?? []
+        for name in names where name.hasPrefix("scripts-kept-") { try? FileManager.default.removeItem(at: folder.appending(path: name)) }
     }
 
     /// `scripts.json` as it was, next to it (`scripts-kept-<date>.json`).

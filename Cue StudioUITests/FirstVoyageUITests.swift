@@ -23,7 +23,7 @@ final class FirstVoyageUITests: XCTestCase {
 
     private func goToTab(_ app: XCUIApplication, _ name: String) {
         let tab = app.cueTabBar.buttons[name]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
     }
 
@@ -37,7 +37,7 @@ final class FirstVoyageUITests: XCTestCase {
     func testAnEmptyLibraryShowsTheFirstTipAboveTheDockAndSettingsBringsItBack() {
         let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestVoyage"])
         let tip = element(app, "voyage.tip.1")
-        XCTAssertTrue(tip.waitForExistence(timeout: 10), "the first step's tip comes above the dock")
+        XCTAssertTrue(tip.exists(within: 10), "the first step's tip comes above the dock")
         let dock = element(app, "empty.promptCard")
         XCTAssertLessThanOrEqual(tip.frame.maxY, dock.frame.minY + 1, "the tip sits above the dock, not over it")
         XCTAssertTrue(app.buttons["empty.writeButton"].exists, "the ways in are still there")
@@ -45,14 +45,14 @@ final class FirstVoyageUITests: XCTestCase {
 
         // "Get an idea" opens Find inspiration.
         app.buttons["voyage.tip.primary"].tap()
-        XCTAssertTrue(element(app, "inspiration.sheet").waitForExistence(timeout: 5), "Get an idea did nothing")
+        XCTAssertTrue(element(app, "inspiration.sheet").exists(within: 5), "Get an idea did nothing")
         app.buttons["sheet.closeButton"].firstMatch.tap()
         XCTAssertTrue(waitForGone(element(app, "inspiration.sheet")))
 
         // "★ 1 OF 6" opens every step.
-        XCTAssertTrue(tip.waitForExistence(timeout: 5))
+        XCTAssertTrue(tip.exists(within: 5))
         app.buttons["voyage.tip.steps"].tap()
-        XCTAssertTrue(element(app, "voyage.steps").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "voyage.steps").exists(within: 5))
         for number in 1...6 {
             XCTAssertTrue(element(app, "voyage.step.\(number)").exists, "step \(number)")
         }
@@ -79,7 +79,7 @@ final class FirstVoyageUITests: XCTestCase {
             XCTAssertEqual(XCTWaiter.wait(for: [changed], timeout: 4), .completed)
         }
         goToTab(app, "Scripts")
-        XCTAssertTrue(element(app, "voyage.tip.1").waitForExistence(timeout: 8), "Settings brought the guide back, its tip too")
+        XCTAssertTrue(element(app, "voyage.tip.1").exists(within: 8), "Settings brought the guide back, its tip too")
     }
 
     // MARK: - The tip leads to the next step
@@ -87,20 +87,21 @@ final class FirstVoyageUITests: XCTestCase {
     func testTheTipOpensTheEditorWithPolishsTipAndSkippingMovesOnToSharing() {
         let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestVoyage"])
         let floating = element(app, "voyage.tip.5")
-        XCTAssertTrue(floating.waitForExistence(timeout: 10), "four steps done: Polish it's tip floats above the dock")
+        XCTAssertTrue(floating.exists(within: 10), "four steps done: Polish it's tip floats above the dock")
         app.buttons["voyage.tip.primary"].tap()
 
         let tip = element(app, "voyage.tip.5")
-        XCTAssertTrue(app.buttons["edit.backButton"].waitForExistence(timeout: 15), "the tip opened the editor")
-        XCTAssertTrue(tip.waitForExistence(timeout: 10), "the editor opens with Polish it's tip")
+        XCTAssertTrue(app.buttons["edit.backButton"].exists(within: 15), "the tip opened the editor")
+        XCTAssertTrue(tip.exists(within: 10), "the editor opens with Polish it's tip")
+        EditorApp.waitUntilReady(app)
         XCTAssertTrue(app.buttons["edit.toolbar.captions"].exists || app.buttons["edit.toolbar.edit"].exists, "the tools are under it")
         app.buttons["voyage.tip.secondary"].tap()
         XCTAssertTrue(waitForGone(tip), "Skip closes the tip")
 
         app.buttons["edit.backButton"].tap()
         let back = app.buttons["review.backButton"]
-        XCTAssertTrue(back.waitForExistence(timeout: 10))
+        XCTAssertTrue(back.exists(within: 10))
         back.tap()
-        XCTAssertTrue(element(app, "voyage.tip.6").waitForExistence(timeout: 10), "the tip above the dock moved on to sharing")
+        XCTAssertTrue(element(app, "voyage.tip.6").exists(within: 10), "the tip above the dock moved on to sharing")
     }
 }

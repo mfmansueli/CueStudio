@@ -17,6 +17,13 @@ final class FakeCamera: CameraControlling {
     var missingLenses: Set<CameraLens> = []
     var failsToRecord = false
     var clipDuration: TimeInterval = 42
+    /// Where the next clip is (a fresh name in the temporary folder when nil).
+    var clipURL: URL?
+    /// Runs while a take is starting, before it records (the creator leaving then).
+    var whileStarting: (@MainActor () async -> Void)?
+    /// Like the capture engine when the system ended the take just as Stop came: the recorder is told it ended on its own,
+    /// and Stop then gets the same clip.
+    var endsByItselfWhileStopping: RecordingEndReason?
     private(set) var startCount = 0
     private(set) var stopCount = 0
     private(set) var appliedSettings: [CameraSettings] = []
@@ -47,14 +54,17 @@ final class FakeCamera: CameraControlling {
 
     func startRecording() async throws {
         if failsToRecord { throw CaptureEngineError.notRunning }
+        await whileStarting?()
         recordingsStarted += 1
         isRecording = true
     }
 
     func stopRecording() async -> RecordedClip? {
         isRecording = false
-        let url = URL.temporaryDirectory.appending(path: "fake-take-\(UUID().uuidString).mov")
-        return RecordedClip(url: url, duration: clipDuration)
+        let url = clipURL ?? URL.temporaryDirectory.appending(path: "fake-take-\(UUID().uuidString).mov")
+        let clip = RecordedClip(url: url, duration: clipDuration)
+        if let reason = endsByItselfWhileStopping { onRecordingEnded?(clip, reason) }
+        return clip
     }
 
     func setAudioHandler(_ handler: (@Sendable (AVAudioPCMBuffer) -> Void)?) {

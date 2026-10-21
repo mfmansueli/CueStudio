@@ -33,10 +33,20 @@ final class TakeLibraryService {
             canSave = true
         } catch {
             // The library is there but couldn't be read (say, before the first unlock): saving now would write an empty
-            // library over it. Nothing is saved until a launch reads it.
+            // library over it. Nothing is saved until it is read (`reloadIfUnread`).
             canSave = false
             logger.error("Could not load takes: \(error.localizedDescription)")
         }
+    }
+
+    /// The library couldn't be read at launch (Cue woke in the background before the first unlock): read it again now,
+    /// keeping the takes recorded since, so nothing made meanwhile is lost and saving can go on.
+    func reloadIfUnread() {
+        guard !canSave, let saved = try? repository.loadTakes() else { return }
+        let made = Set(takes.map(\.id))
+        takes = (takes + saved.filter { !made.contains($0.id) }).sorted { $0.recordedAt > $1.recordedAt }
+        canSave = true
+        logger.notice("Takes read after all: \(saved.count) on disk, \(made.count) made meanwhile")
     }
 
     // MARK: - Reading
@@ -195,6 +205,11 @@ final class TakeLibraryService {
         if let names = removed.take.edit?.mediaFileNames, !names.isEmpty { EditMediaFiles.remove(names) }
     }
 
+    /// "Delete my Cue data": the copies of a damaged library set aside while loading.
+    func deleteKeptCopies() {
+        repository.deleteKeptCopies()
+    }
+
     /// Keeps take titles in step when a script is renamed.
     func renameScript(_ scriptID: UUID, to title: String) {
         var changed = false
@@ -206,8 +221,9 @@ final class TakeLibraryService {
     }
 
     private func persist() {
+        reloadIfUnread()
         guard canSave else {
-            logger.error("Not saving takes: the library on disk couldn't be read at launch")
+            logger.error("Not saving takes: the library on disk still can't be read")
             return
         }
         do {

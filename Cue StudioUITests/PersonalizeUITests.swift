@@ -30,7 +30,7 @@ final class PersonalizeUITests: XCTestCase {
         let row = element(app, "settings.personalize")
         for _ in 0..<4 where !(row.exists && row.isHittable) { app.swipeUp() }
         row.tap()
-        XCTAssertTrue(element(app, "personalize.hero").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "personalize.hero").exists(within: 5))
     }
 
     func testChoosingASkyShowsInTheHeroAndALockedIconStaysUnchosen() throws {
@@ -47,7 +47,7 @@ final class PersonalizeUITests: XCTestCase {
         XCTAssertFalse(app.buttons["settings.appIcon.deepSpace"].isSelected)
 
         let adrift = app.buttons["settings.starrySky.adrift"]
-        XCTAssertTrue(adrift.waitForExistence(timeout: 5))
+        XCTAssertTrue(adrift.exists(within: 5))
         adrift.tap()
         XCTAssertTrue(adrift.isSelected)
         XCTAssertFalse(app.buttons["settings.starrySky.serene"].isSelected)
@@ -56,7 +56,7 @@ final class PersonalizeUITests: XCTestCase {
         try capture(app, "personalize_2_adrift")
 
         app.swipeUp()
-        XCTAssertTrue(element(app, "settings.celebrations").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "settings.celebrations").exists(within: 5))
         XCTAssertTrue(element(app, "settings.haptics").exists)
         XCTAssertTrue(element(app, "settings.autoTag").exists)
         try capture(app, "personalize_3_bottom")

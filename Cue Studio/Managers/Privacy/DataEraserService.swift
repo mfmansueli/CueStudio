@@ -6,10 +6,13 @@
 import Foundation
 
 /// "Delete my Cue data" (Settings › Privacy & AI data, 04 · F8): everything the creator made leaves this iPhone for good —
-/// scripts, takes and their videos and edits, the Logbook, saved brands, "your stars", My Cue Voice, the recording
-/// setup, the first voyage's marks, Cue's drafts waiting for a take, and the reminders, routine and notifications waiting.
-/// Not touched: the purchase (it belongs to the Apple ID), the free-export counter (kept in the Keychain so deleting data can't
-/// hand back free exports), the language and what Photos already holds. Irreversible, so the screen asks first.
+/// scripts and folders, takes and their videos and edits, exported videos waiting to be shared and the share queue, the
+/// Logbook, saved brands, "your stars", My Cue Voice, the ideas Cue wrote and the taste it learned, my text and cover styles,
+/// the recording setup, the first voyage's marks, Cue's drafts waiting for a take, the copies of a damaged library, and the
+/// reminders, routine and notifications waiting.
+/// Not touched: the purchase (it belongs to the Apple ID), the free-export counter and the exports' ledger (ids only: kept so
+/// deleting data can't hand back free exports), the count of videos shared (the universe's planets), the language and what
+/// Photos already holds. Irreversible, so the screen asks first.
 @MainActor
 @Observable
 final class DataEraserService {
@@ -29,12 +32,16 @@ final class DataEraserService {
     @ObservationIgnored private let voyage: FirstVoyageService?
     @ObservationIgnored private let draftLearning: DraftLearningService?
     @ObservationIgnored private let voiceQuestions: VoiceQuestionScheduler?
+    @ObservationIgnored private let ledger: ExportLedgerService?
+    @ObservationIgnored private let shareQueue: ShareQueueService?
+    @ObservationIgnored private let ideas: IdeaSuggestionService?
 
     init(
         library: ScriptLibraryService, takes: TakeLibraryService, drafts: QuickEditDraftStoring, logbook: LogbookService,
         brands: BrandStore, sky: SkyMemory, profile: CreatorProfileService, preferences: PreferencesService, defaults: UserDefaults = .standard,
         notifications: NotificationService? = nil, voyage: FirstVoyageService? = nil, draftLearning: DraftLearningService? = nil,
-        voiceQuestions: VoiceQuestionScheduler? = nil
+        voiceQuestions: VoiceQuestionScheduler? = nil, ledger: ExportLedgerService? = nil, shareQueue: ShareQueueService? = nil,
+        ideas: IdeaSuggestionService? = nil
     ) {
         self.library = library
         self.takes = takes
@@ -49,14 +56,22 @@ final class DataEraserService {
         self.voyage = voyage
         self.draftLearning = draftLearning
         self.voiceQuestions = voiceQuestions
+        self.ledger = ledger
+        self.shareQueue = shareQueue
+        self.ideas = ideas
     }
 
     func eraseEverything() {
         for take in takes.takes {
             drafts.discard(takeID: take.id)
+            ledger?.releaseFiles(forTake: take.id)
             takes.delete(take.id)
         }
+        takes.deleteKeptCopies()
+        shareQueue?.discardAll()
         library.delete(Set(library.scripts.map(\.id)))
+        library.deleteFoldersAndKeptCopies()
+        ideas?.forgetEverything()
         for entry in logbook.entries { logbook.delete(entry.id) }
         for brand in brands.brands { brands.remove(brand.id) }
         sky.removeAll()
@@ -65,7 +80,7 @@ final class DataEraserService {
         preferences.customCues = []
         preferences.showsCuesOnPage = true
         for key in [
-            DefaultsKey.voiceQuestionState, DefaultsKey.myTextStyle, DefaultsKey.myCoverStyle,
+            DefaultsKey.voiceQuestionState, DefaultsKey.myTextStyle, DefaultsKey.myCoverStyle, DefaultsKey.myCoverStudioStyle,
         ] {
             defaults.removeObject(forKey: key)
         }

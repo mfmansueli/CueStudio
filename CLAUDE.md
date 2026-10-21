@@ -78,7 +78,7 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
     `-uiTestSendOffAt`, `-uiTestFirstStar`, `-uiTestMilestone <n>`).
   - `-uiTestCatalogue <seção>` (transition, writing, universe, sky, inspire…) e `-uiTestSceneCapture on|off` (`DESIGN_PROJECT.md` §26).
 - **Idiomas:** `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra nos 20 idiomas dos String Catalogs.
-- Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme). Em Debug, uma instalação nova volta a ter as 5 exportações
+- Compras são testadas localmente com `Cue StudioTests/Fixtures/CueStudio.storekit` (selecionado no scheme; `StoreManagerTests` o usa num `SKTestSession`). Em Debug, uma instalação nova volta a ter as 5 exportações
   grátis (o contador fica no Keychain; `UsageQuotaService` o zera no primeiro lançamento, `DefaultsKey.installLaunched`). Release não zera.
 
 ### Testes no aparelho (opt-in)
@@ -107,8 +107,8 @@ Sessões do Claude Code já deixaram dezenas de GB de lixo em builds e simulador
 - **Não crie simuladores nem baixe runtimes de iOS** (`xcrun simctl create`, Xcode › Components). Use o simulador que os
   scripts já definem.
 - **Testes em paralelo criam clones de simulador** em `~/Library/Developer/XCTestDevices` (o `du` mostra ~18 GB cada, mas são
-  cópias APFS que dividem dados com o original; mesmo assim crescem a cada rodada). Evite rodar testes em
-  paralelo (`-parallel-testing-enabled NO`); se o script não permitir, avise o usuário em vez de seguir. Ao terminar uma
-  rodada de testes, rode `xcrun simctl --set testing delete all`.
+  cópias APFS que dividem dados com o original; mesmo assim crescem a cada rodada). `scripts/test.sh ui` e `full` usam **2 clones**
+  (decisão do dono, 21/10/2026: a UI caiu de ~113 para ~45 min neste M3 de 16 GB) e os apagam ao terminar; não use mais de 2, e
+  `--parallel 1` roda num simulador só. Fora do script, ao terminar uma rodada, rode `xcrun simctl --set testing delete all`.
 - **Ao fim de cada sessão, apague o que você criou fora do repositório** (pastas temporárias, capturas, logs grandes) e o
   `build/DerivedData` de worktrees descartados.

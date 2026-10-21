@@ -16,10 +16,10 @@ final class SettingsUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         assertTabs(app, labels: ["Scripts", "Takes", "Record", "Profile", "Settings"])
         tab(app, label: "Settings").tap()
-        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Settings"].exists(within: 5))
         capture(app, name: "Settings · English")
         tab(app, label: "Record").tap()
-        XCTAssertTrue(app.buttons["startRecording.skip"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["startRecording.skip"].exists(within: 5))
         app.buttons["sheet.closeButton"].tap()
         XCTAssertTrue(tab(app, label: "Settings").isSelected)
         XCTAssertTrue(row(app, "settings.recording").isHittable)
@@ -28,33 +28,33 @@ final class SettingsUITests: XCTestCase {
     func testTechnicalNavigationStaysOnSettingsAndReturnsToItsRoot() {
         let app = CueApp.launch(seeded: true)
         let settings = tab(app, label: "Settings")
-        XCTAssertTrue(settings.waitForExistence(timeout: 15))
+        XCTAssertTrue(settings.exists(within: 15))
         settings.tap()
         // v30: every page is pushed on the Settings stack.
         row(app, "settings.recording").tap()
-        XCTAssertTrue(app.navigationBars["Recording"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Recording"].exists(within: 5))
         XCTAssertTrue(settings.isSelected)
         app.navigationBars["Recording"].buttons.firstMatch.tap()
-        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Settings"].exists(within: 5))
         row(app, "settings.prompter").tap()
-        XCTAssertTrue(app.navigationBars["Prompter"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Prompter"].exists(within: 5))
         tab(app, label: "Profile").tap()
-        XCTAssertTrue(app.navigationBars["Profile"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Profile"].exists(within: 5))
         settings.tap()
-        XCTAssertTrue(app.navigationBars["Prompter"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Prompter"].exists(within: 5))
         app.navigationBars["Prompter"].buttons.firstMatch.tap()
-        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Settings"].exists(within: 5))
         app.scroll(to: row(app, "settings.languageRegion"))
         row(app, "settings.languageRegion").tap()
-        XCTAssertTrue(app.navigationBars["Language & Region"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Language & Region"].exists(within: 5))
         XCTAssertTrue(settings.isSelected)
         app.navigationBars["Language & Region"].buttons.firstMatch.tap()
         app.scroll(to: row(app, "settings.privacy"))
         row(app, "settings.privacy").tap()
-        XCTAssertTrue(app.navigationBars["Privacy & AI data"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Privacy & AI data"].exists(within: 5))
         app.navigationBars["Privacy & AI data"].buttons.firstMatch.tap()
         // Back on the root: its rows further down are there to scroll to.
-        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Settings"].exists(within: 5))
         app.scroll(to: row(app, "settings.restorePurchases"))
         XCTAssertTrue(row(app, "settings.restorePurchases").exists)
         XCTAssertTrue(settings.isSelected)
@@ -64,14 +64,14 @@ final class SettingsUITests: XCTestCase {
     func testResetCreatorSetupKeepsItsRowAndAsksFirst() {
         let app = CueApp.launch(seeded: true)
         let settings = tab(app, label: "Settings")
-        XCTAssertTrue(settings.waitForExistence(timeout: 15))
+        XCTAssertTrue(settings.exists(within: 15))
         settings.tap()
         let reset = app.buttons["creatorSetup.resetButton"]
         app.scrollAboveTabBar(to: reset)
         reset.tap()
-        XCTAssertTrue(app.buttons["creatorSetup.confirmResetButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["creatorSetup.confirmResetButton"].exists(within: 5))
         dismissDialog(app)
-        XCTAssertTrue(reset.waitForExistence(timeout: 5))
+        XCTAssertTrue(reset.exists(within: 5))
     }
 
     /// Search shows the rows themselves, grouped by where they live, and says so when nothing matches.
@@ -79,15 +79,15 @@ final class SettingsUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         tab(app, label: "Settings").tap()
         let field = app.textFields["settings.searchField"]
-        XCTAssertTrue(field.waitForExistence(timeout: 10))
+        XCTAssertTrue(field.exists(within: 10))
         field.tap()
         field.typeText("mirror")
-        XCTAssertTrue(row(app, "settings.mirrorText").waitForExistence(timeout: 5))
+        XCTAssertTrue(row(app, "settings.mirrorText").exists(within: 5))
         XCTAssertTrue(row(app, "settings.flipVertically").exists)
         XCTAssertFalse(row(app, "settings.recording").exists)
         app.buttons["Clear"].tap()
         field.typeText("zzzz")
-        XCTAssertTrue(row(app, "settings.noResults").waitForExistence(timeout: 5))
+        XCTAssertTrue(row(app, "settings.noResults").exists(within: 5))
     }
 
     /// A choice made on a page shows on its row of the root ("Front · 4K") and stays after leaving.
@@ -99,7 +99,7 @@ final class SettingsUITests: XCTestCase {
         app.buttons["4K"].firstMatch.tap()
         app.navigationBars["Recording"].buttons.firstMatch.tap()
         let recording = row(app, "settings.recording")
-        XCTAssertTrue(recording.waitForExistence(timeout: 5))
+        XCTAssertTrue(recording.exists(within: 5))
         XCTAssertTrue(recording.label.contains("4K"), recording.label)
     }
 
@@ -108,7 +108,7 @@ final class SettingsUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         tab(app, label: "Settings").tap()
         row(app, "settings.prompter").tap()
-        XCTAssertTrue(row(app, "settings.followVoice").waitForExistence(timeout: 5))
+        XCTAssertTrue(row(app, "settings.followVoice").exists(within: 5))
         XCTAssertTrue(row(app, "settings.prompterPreview").exists)
         capture(app, name: "Settings · Prompter")
         let mirror = row(app, "settings.mirrorText")
@@ -123,7 +123,7 @@ final class SettingsUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         tab(app, label: "Settings").tap()
         row(app, "settings.prompter").tap()
-        XCTAssertTrue(row(app, "settings.followVoice").waitForExistence(timeout: 5))
+        XCTAssertTrue(row(app, "settings.followVoice").exists(within: 5))
         // A Settings slider answers to its row's identifier (`PrompterEntryRow` names the whole row, slider included).
         let speed = app.sliders["settings.speed"]
         app.scroll(to: speed)
@@ -134,14 +134,14 @@ final class SettingsUITests: XCTestCase {
 
         tab(app, label: "Scripts").tap()
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 10))
+        XCTAssertTrue(record.exists(within: 10))
         record.tap()
         let display = app.buttons["prompter.displayButton"]
-        XCTAssertTrue(display.waitForExistence(timeout: 10))
+        XCTAssertTrue(display.exists(within: 10))
         display.tap()
-        XCTAssertTrue(row(app, "settings.followVoice").waitForExistence(timeout: 5))
+        XCTAssertTrue(row(app, "settings.followVoice").exists(within: 5))
         let sheetSpeed = app.sliders["settings.speed"]
-        XCTAssertTrue(sheetSpeed.waitForExistence(timeout: 5))
+        XCTAssertTrue(sheetSpeed.exists(within: 5))
         sheetSpeed.adjust(toNormalizedSliderPosition: 0)
         // The region decides the separator ("0.2×", "0,2×").
         XCTAssertTrue(["0.2×", "0,2×"].contains(sheetSpeed.value as? String ?? ""), "\(String(describing: sheetSpeed.value))")
@@ -173,7 +173,7 @@ final class SettingsUITests: XCTestCase {
             let app = CueApp.launch(seeded: true, appLanguage: language)
             assertTabs(app, labels: labels)
             tab(app, label: labels[4], index: 4).tap()
-            XCTAssertTrue(row(app, "settings.recording").waitForExistence(timeout: 5))
+            XCTAssertTrue(row(app, "settings.recording").exists(within: 5))
             capture(app, name: "Settings · \(language)")
             // Everything stays reachable by scrolling, in every language.
             app.scroll(to: row(app, "settings.restorePurchases"))
@@ -187,7 +187,7 @@ final class SettingsUITests: XCTestCase {
         assertTabs(app, labels: ["Skripte", "Takes", "Aufnehmen", "Profil", "Einstellungen"])
         tab(app, label: "Einstellungen", index: 4).tap()
         let language = row(app, "settings.languageRegion")
-        XCTAssertTrue(app.navigationBars["Einstellungen"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Einstellungen"].exists(within: 5))
         capture(app, name: "Settings · German · Accessibility XXXL")
         app.scroll(to: language)
         XCTAssertTrue(language.isHittable)
@@ -200,16 +200,16 @@ final class SettingsUITests: XCTestCase {
     func testFontLicensesRemainReachableFromSettings() {
         let app = CueApp.launch(seeded: true)
         let settings = tab(app, label: "Settings")
-        XCTAssertTrue(settings.waitForExistence(timeout: 15))
+        XCTAssertTrue(settings.exists(within: 15))
         settings.tap()
         let acknowledgements = row(app, "settings.acknowledgements")
         app.scroll(to: acknowledgements)
         acknowledgements.tap()
-        XCTAssertTrue(app.navigationBars["Acknowledgements"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Acknowledgements"].exists(within: 5))
         let font = app.buttons.matching(identifier: "acknowledgements.font").firstMatch
-        XCTAssertTrue(font.waitForExistence(timeout: 5))
+        XCTAssertTrue(font.exists(within: 5))
         font.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["acknowledgements.license"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["acknowledgements.license"].exists(within: 5))
         XCTAssertTrue(settings.isSelected)
     }
 
@@ -217,7 +217,7 @@ final class SettingsUITests: XCTestCase {
 
     private func assertTabs(_ app: XCUIApplication, labels: [String]) {
         let first = tab(app, label: labels[0], index: 0)
-        XCTAssertTrue(first.waitForExistence(timeout: 15))
+        XCTAssertTrue(first.exists(within: 15))
         let hasBottomBar = app.cueTabBar.exists
         if hasBottomBar { XCTAssertEqual(app.cueTabBar.buttons.count, 5) }
         var previousCenter: CGFloat?
@@ -258,13 +258,13 @@ final class SettingsUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         openPrivacy(app)
         let delete = row(app, "settings.deleteData")
-        XCTAssertTrue(delete.waitForExistence(timeout: 5))
+        XCTAssertTrue(delete.exists(within: 5))
         delete.tap()
-        XCTAssertTrue(app.buttons["privacy.confirmDelete"].firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["privacy.confirmDelete"].firstMatch.exists(within: 5))
         dismissDialog(app)
         app.swipeDown()
         tab(app, label: "Scripts").tap()
-        XCTAssertTrue(sampleScript(app).waitForExistence(timeout: 5))
+        XCTAssertTrue(sampleScript(app).exists(within: 5))
     }
 
     func testDeleteMyDataRemovesTheScripts() {
@@ -272,23 +272,23 @@ final class SettingsUITests: XCTestCase {
         openPrivacy(app)
         row(app, "settings.deleteData").tap()
         let confirm = app.buttons["privacy.confirmDelete"].firstMatch
-        XCTAssertTrue(confirm.waitForExistence(timeout: 5))
+        XCTAssertTrue(confirm.exists(within: 5))
         confirm.tap()
         app.swipeDown()
         tab(app, label: "Scripts").tap()
-        XCTAssertTrue(app.descendants(matching: .any)["empty.promptCard"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.descendants(matching: .any)["empty.promptCard"].exists(within: 10))
         XCTAssertFalse(sampleScript(app).exists)
     }
 
     /// The system answers a confirmation with a bubble that has no Cancel: a tap outside it says no.
     private func dismissDialog(_ app: XCUIApplication) {
         let cancel = app.buttons["actionSheet.cancel"]
-        if cancel.waitForExistence(timeout: 3) { cancel.tap() } else { app.coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.85)).tap() }
+        if cancel.exists(within: 3) { cancel.tap() } else { app.coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: 0.85)).tap() }
     }
 
     private func openPrivacy(_ app: XCUIApplication) {
         let settings = tab(app, label: "Settings")
-        XCTAssertTrue(settings.waitForExistence(timeout: 15))
+        XCTAssertTrue(settings.exists(within: 15))
         settings.tap()
         app.scroll(to: row(app, "settings.privacy"))
         row(app, "settings.privacy").tap()

@@ -39,12 +39,12 @@ final class ScreenCaptureUITests: XCTestCase {
     /// The review of a "3 morning habits" take (a small real video).
     private func openReview(_ app: XCUIApplication) {
         let tab = app.cueTabBar.buttons["Takes"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        XCTAssertTrue(row.exists(within: 5))
         row.tap()
-        XCTAssertTrue(app.buttons["review.editButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["review.editButton"].exists(within: 5))
     }
 
     /// The scrubber's "0:04 of 0:21": where the take is.
@@ -59,13 +59,13 @@ final class ScreenCaptureUITests: XCTestCase {
         openReview(app)
         XCTAssertFalse(shield(app).exists)
         let play = app.buttons["Play"]
-        XCTAssertTrue(play.waitForExistence(timeout: 5))
+        XCTAssertTrue(play.exists(within: 5))
         play.tap()
-        XCTAssertTrue(play.waitForNonExistence(timeout: 5), "the take plays")
+        XCTAssertTrue(play.isGone(within: 5), "the take plays")
         sleep(2)
 
         capture(true)
-        XCTAssertTrue(shield(app).waitForExistence(timeout: 5))
+        XCTAssertTrue(shield(app).exists(within: 5))
         XCTAssertTrue(shield(app).label.contains(Self.message))
         XCTAssertFalse(play.exists, "no play button over the shield")
         let held = reviewPosition(app)
@@ -80,18 +80,18 @@ final class ScreenCaptureUITests: XCTestCase {
         XCTAssertTrue(app.buttons["review.shareButton"].isHittable)
 
         capture(false)
-        XCTAssertTrue(shield(app).waitForNonExistence(timeout: 5))
-        XCTAssertTrue(play.waitForExistence(timeout: 5), "paused, never resumed on its own")
+        XCTAssertTrue(shield(app).isGone(within: 5))
+        XCTAssertTrue(play.exists(within: 5), "paused, never resumed on its own")
         sleep(2)
         XCTAssertEqual(reviewPosition(app), held, "back where it was")
         play.tap()
-        XCTAssertTrue(play.waitForNonExistence(timeout: 5), "the creator plays it again")
+        XCTAssertTrue(play.isGone(within: 5), "the creator plays it again")
     }
 
     func testCaptureBeforeLaunchHidesTheReviewFromItsFirstFrame() {
         let app = launch(captured: true)
         openReview(app)
-        XCTAssertTrue(shield(app).waitForExistence(timeout: 5))
+        XCTAssertTrue(shield(app).exists(within: 5))
         XCTAssertFalse(app.buttons["Play"].exists)
         let start = reviewPosition(app)
         shield(app).tap()
@@ -104,8 +104,8 @@ final class ScreenCaptureUITests: XCTestCase {
     func testTheEditorAndItsFullScreenHideWhileCapturedAndNothingPlays() {
         let app = EditorApp.open(arguments: ["-uiTestSceneCapture", "on"])
         let preview = element(app, "edit.preview")
-        XCTAssertTrue(preview.waitForExistence(timeout: 10))
-        XCTAssertTrue(shield(app).waitForExistence(timeout: 5))
+        XCTAssertTrue(preview.exists(within: 10))
+        XCTAssertTrue(shield(app).exists(within: 5))
         let time = app.staticTexts["edit.timeLabel"]
         let start = time.value as? String ?? time.label
         app.buttons["edit.playButton"].tap()
@@ -114,7 +114,7 @@ final class ScreenCaptureUITests: XCTestCase {
         XCTAssertEqual(app.buttons["edit.playButton"].label, "Play", "the play button can't start a captured preview")
 
         app.buttons["edit.fullScreenButton"].tap()
-        XCTAssertTrue(element(app, "edit.exitFullScreen").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "edit.exitFullScreen").exists(within: 5))
         XCTAssertTrue((preview.value as? String ?? "").contains(Self.message), "full screen says why it is hidden")
         // The middle of the screen is the full-screen preview: a tap there plays or pauses.
         app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
@@ -125,11 +125,11 @@ final class ScreenCaptureUITests: XCTestCase {
         let fullScreen = previews.max { $0.frame.height < $1.frame.height } ?? preview
         let below = (fullScreen.frame.maxY + app.windows.firstMatch.frame.maxY) / 2
         app.windows.firstMatch.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: app.windows.firstMatch.frame.midX, dy: below)).tap()
-        XCTAssertTrue(element(app, "edit.exitFullScreen").waitForNonExistence(timeout: 5), "out of full screen")
+        XCTAssertTrue(element(app, "edit.exitFullScreen").isGone(within: 5), "out of full screen")
         XCTAssertEqual(time.value as? String ?? time.label, start, "a tap on the full-screen preview plays nothing")
 
         capture(false)
-        XCTAssertTrue(shield(app).waitForNonExistence(timeout: 5))
+        XCTAssertTrue(shield(app).isGone(within: 5))
         sleep(1)
         XCTAssertEqual(time.value as? String ?? time.label, start, "capture ending doesn't play")
         XCTAssertEqual(app.buttons["edit.playButton"].label, "Play", "capture ending doesn't play")
@@ -150,13 +150,13 @@ final class ScreenCaptureUITests: XCTestCase {
     func testCaptureDuringATakeHidesTheCameraAndTheTakeRecordsOn() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestDemoCamera", "-uiTestSceneCapture", "off"])
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
         let recordButton = app.buttons["prompter.recordButton"]
-        XCTAssertTrue(recordButton.waitForExistence(timeout: 10))
+        XCTAssertTrue(recordButton.exists(within: 10))
         recordButton.tap()
         let badge = element(app, "prompter.recordingBadge")
-        XCTAssertTrue(badge.waitForExistence(timeout: 12))
+        XCTAssertTrue(badge.exists(within: 12))
         sleep(1)
 
         capture(true)
@@ -165,13 +165,16 @@ final class ScreenCaptureUITests: XCTestCase {
         XCTAssertTrue(element(app, "prompter.text").exists, "the script stays readable")
 
         recordButton.tap()
-        XCTAssertTrue(app.buttons["review.shareButton"].waitForExistence(timeout: 20), "the take was kept")
-        XCTAssertTrue(shield(app).waitForExistence(timeout: 5), "and its review is hidden too")
+        // A TikTok take under 1:00 asks first ("50s short of 1:00").
+        let stopAnyway = app.buttons["prompter.stopAnywayButton"]
+        if stopAnyway.exists(within: 3) { stopAnyway.tap() }
+        XCTAssertTrue(app.buttons["review.shareButton"].exists(within: 20), "the take was kept")
+        XCTAssertTrue(shield(app).exists(within: 5), "and its review is hidden too")
         // "0:00 of 0:05": the take is as long as it was held, capture included.
         let length = reviewPosition(app).components(separatedBy: " of ").last ?? ""
         let seconds = length.split(separator: ":").last.flatMap { Int($0) } ?? 0
         XCTAssertGreaterThanOrEqual(seconds, 5, "length \(length)")
         capture(false)
-        XCTAssertTrue(shield(app).waitForNonExistence(timeout: 5))
+        XCTAssertTrue(shield(app).isGone(within: 5))
     }
 }

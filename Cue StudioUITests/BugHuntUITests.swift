@@ -55,7 +55,7 @@ final class BugHuntUITests: XCTestCase {
         }
         dump("scripts")
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'scripts.row.'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 10))
+        XCTAssertTrue(row.exists(within: 10))
         row.tap()
         sleep(2)
         dump("page")
@@ -66,7 +66,7 @@ final class BugHuntUITests: XCTestCase {
         app.cueTabBar.buttons["Takes"].tap()
         dump("takes")
         let video = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.'")).firstMatch
-        if video.waitForExistence(timeout: 5) { video.tap(); dump("review") }
+        if video.exists(within: 5) { video.tap(); dump("review") }
     }
 
     private func crawl(tab: Int, depth: Int, part: String) throws {
@@ -90,7 +90,7 @@ final class BugHuntUITests: XCTestCase {
             sampleVideo: true, appLanguage: env["CUE_HUNT_LANG"], animations: false,
             extraArguments: ["-uiTestFakeShareSheet", "-uiTestPermissions", "granted"]
         )
-        _ = app.cueTabBar.waitForExistence(timeout: 25)
+        _ = app.cueTabBar.exists(within: 25)
         sleep(2)
         screen = app.frame
     }
@@ -227,7 +227,7 @@ final class BugHuntUITests: XCTestCase {
             usleep(700_000)
         }
         let bar = app.cueTabBar
-        if bar.waitForExistence(timeout: 3) {
+        if bar.exists(within: 3) {
             bar.buttons.element(boundBy: tabIndex).tap()
             usleep(500_000)
             bar.buttons.element(boundBy: tabIndex).tap()

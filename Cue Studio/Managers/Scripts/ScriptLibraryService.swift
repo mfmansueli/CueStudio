@@ -36,12 +36,24 @@ final class ScriptLibraryService {
             folders = snapshot.folders
             canSave = true
         } catch {
-            // The library is there but couldn't be read (say, before the first unlock): saving now would write an empty
-            // library over it. Nothing is saved until a launch reads it.
+            // The library is there but couldn't be read (its file is protected while the iPhone is locked, and Cue can wake in
+            // the background): saving now would write an empty library over it. Nothing is saved until it is read
+            // (`reloadIfUnread`).
             canSave = false
             logger.error("Could not load scripts: \(error.localizedDescription)")
         }
         hasLoaded = true
+    }
+
+    /// The library couldn't be read at launch: read it again now, keeping the scripts and folders made since (they win over
+    /// the disk's), so nothing made meanwhile is lost and saving can go on.
+    func reloadIfUnread() {
+        guard !canSave, let saved = try? repository.load() else { return }
+        let made = Set(scripts.map(\.id))
+        scripts = (scripts + saved.scripts.filter { !made.contains($0.id) }).sorted { $0.updatedAt > $1.updatedAt }
+        folders = saved.folders + folders.filter { !saved.folders.contains($0) }
+        canSave = true
+        logger.notice("Scripts read after all: \(saved.scripts.count) on disk, \(made.count) made meanwhile")
     }
 
     func script(id: UUID?) -> Script? {
@@ -172,11 +184,19 @@ final class ScriptLibraryService {
         persist()
     }
 
+    /// "Delete my Cue data": every folder, and the copies of a damaged library set aside while loading.
+    func deleteFoldersAndKeptCopies() {
+        folders = []
+        persist()
+        repository.deleteKeptCopies()
+    }
+
     // MARK: - Persistence
 
     private func persist() {
+        reloadIfUnread()
         guard canSave else {
-            logger.error("Not saving scripts: the library on disk couldn't be read at launch")
+            logger.error("Not saving scripts: the library on disk still can't be read")
             return
         }
         do {

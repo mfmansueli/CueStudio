@@ -39,7 +39,7 @@ final class BackgroundPanelUITests: XCTestCase {
                 content.swipeUp(velocity: .slow)
             }
         }
-        XCTAssertTrue(target.waitForExistence(timeout: 3), "\(target) isn't there", file: file, line: line)
+        XCTAssertTrue(target.exists(within: 3), "\(target) isn't there", file: file, line: line)
     }
 
     private func waitFor(_ condition: @escaping () -> Bool, timeout: TimeInterval = 5) -> Bool {
@@ -54,7 +54,7 @@ final class BackgroundPanelUITests: XCTestCase {
     func testTheBackgroundComesFirstAndTheCutoutIsItsOwnPart() {
         let app = EditorApp.open()
         EditorApp.tapTool(app, "background")
-        XCTAssertTrue(panel(app).waitForExistence(timeout: 5))
+        XCTAssertTrue(panel(app).exists(within: 5))
         XCTAssertTrue(subtitle(app).hasSuffix("As recorded"), subtitle(app))
         for style in ["original", "blur", "color", "image"] {
             XCTAssertTrue(app.buttons["edit.background.\(style)"].exists, style)
@@ -64,11 +64,11 @@ final class BackgroundPanelUITests: XCTestCase {
 
         // Only the picked background's control shows under the tiles.
         app.buttons["edit.background.blur"].tap()
-        XCTAssertTrue(element(app, "edit.backgroundBlur").waitForExistence(timeout: 3))
+        XCTAssertTrue(element(app, "edit.backgroundBlur").exists(within: 3))
         XCTAssertFalse(app.buttons["edit.backgroundColor.red"].exists)
         XCTAssertTrue(waitFor { self.subtitle(app).hasSuffix("Blur behind you") }, subtitle(app))
         app.buttons["edit.background.color"].tap()
-        XCTAssertTrue(app.buttons["edit.backgroundColor.red"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["edit.backgroundColor.red"].exists(within: 3))
         XCTAssertFalse(element(app, "edit.backgroundBlur").exists)
         app.buttons["edit.backgroundColor.red"].tap()
         XCTAssertTrue(waitFor { self.subtitle(app).hasSuffix("Color behind you") }, subtitle(app))
@@ -118,7 +118,7 @@ final class BackgroundPanelUITests: XCTestCase {
     func testTheLastLineIsClearOfTheHomeIndicator() {
         let app = EditorApp.open()
         EditorApp.tapTool(app, "background")
-        XCTAssertTrue(panel(app).waitForExistence(timeout: 5))
+        XCTAssertTrue(panel(app).exists(within: 5))
         app.buttons["edit.background.color"].tap()
         scroll(app, to: app.buttons["edit.backgroundCutout.colorKey"])
         app.buttons["edit.backgroundCutout.colorKey"].tap()

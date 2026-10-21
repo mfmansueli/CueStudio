@@ -61,11 +61,17 @@ extension XCUIApplication {
                 // Along the left edge, clear of the rows' controls: a swipe through the middle can land on a slider's thumb, which takes
                 // the drag (its fine adjustment) instead of scrolling the page.
                 let from = coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.72))
-                from.press(forDuration: 0.05, thenDragTo: coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.3)))
+                // Held at the end so the list stops under the finger: a tap while it still glides only stops it.
+                from.press(
+                    forDuration: 0.05, thenDragTo: coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.3)),
+                    withVelocity: .default, thenHoldForDuration: 0.1
+                )
             }
             swipes += 1
         }
-        XCTAssertTrue(element.waitForExistence(timeout: 5), "Scrolled eight times and \(element) isn't there", file: file, line: line)
+        XCTAssertTrue(element.exists(within: 5), "Scrolled eight times and \(element) isn't there", file: file, line: line)
+        // A swipe glides on after the finger lifts: a tap while the list still moves can miss.
+        if swipes > 0 { element.waitUntilStill() }
     }
 
     /// `scroll(to:)`, then on to where the list ends when `element` is still under the tab bar: the last row of a page counts as
@@ -92,11 +98,11 @@ extension XCUIApplication {
     @discardableResult
     func openScriptsSearch(timeout: TimeInterval = 15) -> XCUIElement {
         let magnifier = navigationBars.buttons["scripts.searchButton"]
-        XCTAssertTrue(magnifier.waitForExistence(timeout: timeout), "No magnifier in Scripts' bar")
+        XCTAssertTrue(magnifier.exists(within: timeout), "No magnifier in Scripts' bar")
         magnifier.tap()
         let field = scriptsSearchField
-        XCTAssertTrue(field.waitForExistence(timeout: 5), "The magnifier didn't open the search")
-        XCTAssertTrue(keyboards.firstMatch.waitForExistence(timeout: 5), "The search opened without the keyboard")
+        XCTAssertTrue(field.exists(within: 5), "The magnifier didn't open the search")
+        XCTAssertTrue(keyboards.firstMatch.exists(within: 5), "The search opened without the keyboard")
         return field
     }
 
@@ -106,19 +112,19 @@ extension XCUIApplication {
     /// Opens Find inspiration from "+" › Let Cue draft it (the dock's lightbulb opens it too).
     func openIdeas() {
         let plus = buttons["scripts.newButton"]
-        XCTAssertTrue(plus.waitForExistence(timeout: 15))
+        XCTAssertTrue(plus.exists(within: 15))
         plus.tap()
         let letCue = buttons["newScript.letCue"]
-        XCTAssertTrue(letCue.waitForExistence(timeout: 5))
+        XCTAssertTrue(letCue.exists(within: 5))
         letCue.tap()
-        XCTAssertTrue(descendants(matching: .any)["inspiration.sheet"].waitForExistence(timeout: 5), "No Find inspiration")
+        XCTAssertTrue(descendants(matching: .any)["inspiration.sheet"].exists(within: 5), "No Find inspiration")
     }
 
     /// A script's row on Scripts, scrolled into reach.
     func scriptRow(_ title: String) -> XCUIElement {
         let row = staticTexts[title]
         // Rows are built as they come into view: scroll until this one is there and can be touched.
-        _ = buttons["scripts.selectButton"].waitForExistence(timeout: 15)
+        _ = buttons["scripts.selectButton"].exists(within: 15)
         for _ in 0..<8 where !(row.exists && row.isHittable) { swipeUp() }
         XCTAssertTrue(row.exists, title)
         return row
@@ -127,14 +133,14 @@ extension XCUIApplication {
     /// Opens a script's page: a tap on its row opens it, whatever its state (a recorded one's videos are its "×n ›").
     func openScriptPage(titled title: String) {
         scriptRow(title).tap()
-        XCTAssertTrue(pageBackButton.waitForExistence(timeout: 5), "No page for \(title)")
+        XCTAssertTrue(pageBackButton.exists(within: 5), "No page for \(title)")
     }
 
     /// Studio mode from a row's menu (the row's own Studio button is gone in v29).
     func openStudio(titled title: String) {
         scriptRow(title).press(forDuration: 1.2)
         let studio = buttons["Studio mode"]
-        XCTAssertTrue(studio.waitForExistence(timeout: 5), "No Studio mode in the menu of \(title)")
+        XCTAssertTrue(studio.exists(within: 5), "No Studio mode in the menu of \(title)")
         studio.tap()
     }
 }

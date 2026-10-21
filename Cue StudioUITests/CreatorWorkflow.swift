@@ -136,7 +136,7 @@ final class CreatorWorkflow {
     /// The yellow ‹ back from a picked item's tools to the main ones.
     func backToMainTools(file: StaticString = #filePath, line: UInt = #line) {
         let back = app.buttons["edit.toolbar.back"]
-        if back.waitForExistence(timeout: 2) { tap(back, "‹ back", file: file, line: line) }
+        if back.exists(within: 2) { tap(back, "‹ back", file: file, line: line) }
         XCTAssertTrue(isOnMainTools(), "Not back on the main tools", file: file, line: line)
     }
 
@@ -144,16 +144,16 @@ final class CreatorWorkflow {
 
     /// Waits for `element`; a wait that runs out is tried once more and noted (a slow Simulator, not a missing control).
     func waits(for element: XCUIElement, timeout: TimeInterval = 5, _ what: String) -> Bool {
-        if element.waitForExistence(timeout: timeout) { return true }
+        if element.exists(within: timeout) { return true }
         retries.append(what)
         print("CREATOR STEP \(name) · retrying the wait for \(what)")
-        return element.waitForExistence(timeout: timeout)
+        return element.exists(within: timeout)
     }
 
     /// A toast saying `text` shows (the editor's, matched by its words).
     func toastSays(_ text: String, timeout: TimeInterval = 5) -> Bool {
         if EditorApp.toastSays(app, text, timeout: timeout) { return true }
-        return app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", text)).firstMatch.waitForExistence(timeout: 1)
+        return app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", text)).firstMatch.exists(within: 1)
     }
 
     // MARK: - Reporting

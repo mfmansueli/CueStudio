@@ -20,9 +20,20 @@ struct LocalTakeRepository: TakeRepository {
         let data = try Data(contentsOf: metadataURL)
         // Take by take: one that can't be read stays out, never the whole library; the file as it was is kept aside first,
         // since the next save writes the library without it.
-        let list = try JSONDecoder.library.decode(LossyList<Take>.self, from: data)
+        guard let list = try? JSONDecoder.library.decode(LossyList<Take>.self, from: data) else {
+            // Read, but no longer a list of takes: kept aside, and a new list starts, rather than one never saved again.
+            keepCopy(of: data)
+            return []
+        }
         if list.dropped > 0 { keepCopy(of: data) }
         return list.elements
+    }
+
+    /// The copies `keepCopy` set aside ("Delete my Cue data").
+    func deleteKeptCopies() {
+        let folder = directory
+        let names = (try? FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false))) ?? []
+        for name in names where name.hasPrefix("takes-kept-") { try? FileManager.default.removeItem(at: folder.appending(path: name)) }
     }
 
     /// `takes.json` as it was, next to it (`takes-kept-<date>.json`), once per damaged file.

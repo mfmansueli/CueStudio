@@ -14,7 +14,7 @@ final class InMemoryExportCountStore: ExportCountStoring {
         self.count = count
     }
 
-    func load() -> Int { count }
+    func load() -> Int? { count }
 
     func save(_ count: Int) { self.count = count }
 }

@@ -15,12 +15,12 @@ final class TabBarUITests: XCTestCase {
 
     func testEachTabIsSelectedAndTheBarIsTheSystemsOwn() throws {
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(app.tabBars.firstMatch.waitForExistence(timeout: 15), "The native tab bar isn't there")
+        XCTAssertTrue(app.tabBars.firstMatch.exists(within: 15), "The native tab bar isn't there")
         let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"]
 
         for name in tabs {
             let tab = app.tabBars.buttons[name]
-            XCTAssertTrue(tab.waitForExistence(timeout: 5), "No \(name) tab")
+            XCTAssertTrue(tab.exists(within: 5), "No \(name) tab")
             tab.tap()
             XCTAssertTrue(tab.isSelected, "\(name) isn't selected after a tap")
             for other in tabs where other != name {
@@ -40,9 +40,9 @@ final class TabBarUITests: XCTestCase {
     func testTheBarStaysWholeWhileAListScrolls() {
         let app = CueApp.launch(seeded: true)
         let takes = app.tabBars.buttons["Takes"]
-        XCTAssertTrue(takes.waitForExistence(timeout: 15))
+        XCTAssertTrue(takes.exists(within: 15))
         takes.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["takes.pipeline"].firstMatch.waitForExistence(timeout: 5), "Takes isn't up")
+        XCTAssertTrue(app.descendants(matching: .any)["takes.pipeline"].firstMatch.exists(within: 5), "Takes isn't up")
 
         for _ in 0..<3 { app.swipeUp() }
         // Give the bar the moment it would take to draw back, then look.
@@ -56,7 +56,7 @@ final class TabBarUITests: XCTestCase {
 
     func testRecordOpensTheStartSheetWithoutBecomingTheSelectedTab() {
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(app.tabBars.buttons["Scripts"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.tabBars.buttons["Scripts"].exists(within: 15))
         app.tabBars.buttons["Record"].tap()
         XCTAssertFalse(app.tabBars.buttons["Record"].isSelected)
         XCTAssertTrue(app.tabBars.buttons["Scripts"].isSelected, "The tab under the sheet changed")

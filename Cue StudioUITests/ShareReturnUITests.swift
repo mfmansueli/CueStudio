@@ -21,15 +21,15 @@ final class ShareReturnUITests: XCTestCase {
         // The networks' sheet comes back once the share sheet has animated away: without animations SwiftUI never presents it again.
         let app = CueApp.launch(seeded: true, sampleVideo: true, animations: true)
         let tab = app.cueTabBar.buttons["Takes"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        XCTAssertTrue(row.exists(within: 5))
         row.tap()
         let share = app.buttons["review.shareButton"]
-        XCTAssertTrue(share.waitForExistence(timeout: 10))
+        XCTAssertTrue(share.exists(within: 10))
         share.tap()
-        XCTAssertTrue(element(app, "shareFlow.start").waitForExistence(timeout: 120))
+        XCTAssertTrue(element(app, "shareFlow.start").exists(within: 120))
         let ready = element(app, "ready.sheet")
         let before = ready.frame
         app.buttons["shareFlow.start"].tap()
@@ -38,16 +38,16 @@ final class ShareReturnUITests: XCTestCase {
 
         // The system share sheet: end it with a finished activity.
         let copy = app.cells["Copy"].firstMatch
-        XCTAssertTrue(copy.waitForExistence(timeout: 30), "the system share sheet has Copy")
+        XCTAssertTrue(copy.exists(within: 30), "the system share sheet has Copy")
         copy.tap()
 
-        XCTAssertTrue(element(app, "shareFlow.confirm").waitForExistence(timeout: 15), "Posted on TikTok? comes up")
+        XCTAssertTrue(element(app, "shareFlow.confirm").exists(within: 15), "Posted on TikTok? comes up")
         // The screen behind is the same size it was, and the app answers.
         XCTAssertEqual(ready.frame.width, before.width, accuracy: 1)
         let notYet = app.buttons["shareFlow.notYet"]
         XCTAssertTrue(notYet.waitForHittable(timeout: 10))
         notYet.tap()
-        XCTAssertTrue(element(app, "shareFlow.step").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "shareFlow.step").exists(within: 10))
     }
 }
 

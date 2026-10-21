@@ -29,7 +29,7 @@ final class DockGrowthUITests: XCTestCase {
     func testTheFieldGrowsToFiveLinesAndStopsAtTwoHundredCharacters() throws {
         let app = CueApp.launch(seeded: true)
         let field = element(app, "ideaCard.field")
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         let twoLines = field.frame.height
         XCTAssertFalse(element(app, "ideaCard.counter").exists, "The count only shows near the limit")
 
@@ -45,7 +45,7 @@ final class DockGrowthUITests: XCTestCase {
         let atFiveLines = field.frame.height
         XCTAssertGreaterThan(atFiveLines, grown)
         XCTAssertLessThanOrEqual(atFiveLines, twoLines * 2.6, "The field is taller than five lines")
-        XCTAssertTrue(element(app, "ideaCard.counter").waitForExistence(timeout: 3), "No count near the limit")
+        XCTAssertTrue(element(app, "ideaCard.counter").exists(within: 3), "No count near the limit")
         try shot(app, "2-five-lines")
 
         // More than the limit: what does not fit is not written.
@@ -74,7 +74,7 @@ final class DockGrowthUITests: XCTestCase {
     func testAShortIdeaKeepsTheFieldTheSizeItHad() throws {
         let app = CueApp.launch(seeded: true)
         let field = element(app, "ideaCard.field")
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         let twoLines = field.frame.height
         field.tap()
         field.typeText("Three things I stopped buying")

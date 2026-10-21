@@ -80,4 +80,4 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   app para comparar quadro a quadro (`TEST_RUNNER_CUE_EYES_CLEANUP=1` com `removesWhatTheseRunsLeft()` apaga). O Face Mesh precisa de um rosto de
   verdade: os testes de unidade usam olhos desenhados (`EyeTestData`) e quadros pintados. O desenho foi feito antes no Mac
   (`tools/eyecontact/prototype.py`, `bench.py`), onde se mede o tremor que ele acrescenta.
-- Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme).
+- Compras são testadas localmente com `Cue StudioTests/Fixtures/CueStudio.storekit` (selecionado no scheme; `StoreManagerTests` o usa num `SKTestSession`).

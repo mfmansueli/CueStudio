@@ -521,6 +521,19 @@ final class IdeaSuggestionService {
     private func refreshIfTopicsChanged() {
         let now = currentSignature
         guard now != signature else { return }
+        clear(signature: now)
+        persist()
+    }
+
+    /// "Delete my Cue data": the ideas written for the creator and the taste Cue learned from them go too.
+    func forgetEverything() {
+        clear(signature: currentSignature)
+        taste = IdeaTaste()
+        defaults.removeObject(forKey: DefaultsKey.ideaSuggestions)
+    }
+
+    /// Nothing asked for or written any more, under `signature`.
+    private func clear(signature now: String) {
         task?.cancel()
         task = nil
         taskToken = nil
@@ -539,7 +552,6 @@ final class IdeaSuggestionService {
         displayed = [:]
         waitingFilters = []
         failedFilters = []
-        persist()
     }
 
     // MARK: - Memory

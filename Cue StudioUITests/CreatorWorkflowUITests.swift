@@ -46,7 +46,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.tool("captions")
         let line = flow.element("edit.captionLine.6")
         XCTAssertTrue(flow.waits(for: flow.element("edit.captionLine.0"), "the first caption line"))
-        XCTAssertTrue(line.waitForExistence(timeout: 5), "No seventh caption line")
+        XCTAssertTrue(line.exists(within: 5), "No seventh caption line")
 
         flow.step("Fix a caption word (caudo → caldo)")
         // The line with the typo is further down the list: the thumb scrolls the panel to it.
@@ -55,7 +55,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         let field = app.descendants(matching: .any).matching(identifier: "edit.captionField").firstMatch
         XCTAssertTrue(flow.waits(for: field, "the caption's field"))
         flow.tap(field.coordinate(withNormalizedOffset: CGVector(dx: 0.97, dy: 0.5)))
-        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5), "No keyboard for the caption")
+        XCTAssertTrue(app.keyboards.firstMatch.exists(within: 5), "No keyboard for the caption")
         flow.replaceText(of: field, with: "e caldo de cana do lado.")
         // Each key re-times the line, so the last keys can still be landing when typing returns: wait for them, never for less.
         let typed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", "e caldo de cana do lado."), object: field)
@@ -65,7 +65,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         // A check, not a creator's tap: the fix stayed once the panel closed.
         app.buttons["edit.toolbar.captions"].tap()
         let fixed = flow.element("edit.captionLine.6")
-        XCTAssertTrue(fixed.waitForExistence(timeout: 5))
+        XCTAssertTrue(fixed.exists(within: 5))
         let list = app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.9))
         for _ in 0..<6 where !fixed.isHittable {
             list.press(forDuration: 0.05, thenDragTo: list.withOffset(CGVector(dx: 0, dy: -160)), withVelocity: 600, thenHoldForDuration: 0.2)
@@ -73,7 +73,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(fixed.label.contains("caldo"), "The fixed word didn't stay: \(fixed.label)")
         app.buttons["edit.panel.apply"].tap()
         let back = app.buttons["edit.toolbar.back"]
-        if back.waitForExistence(timeout: 2) { back.tap() }
+        if back.exists(within: 2) { back.tap() }
         XCTAssertTrue(flow.isOnMainTools())
 
         flow.step("Text › Hook")
@@ -81,8 +81,8 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.tool("hook")
         let hookField = app.textFields["edit.textField"]
         XCTAssertTrue(flow.waits(for: hookField, "the hook's field"))
-        if !app.keyboards.firstMatch.waitForExistence(timeout: 2) { flow.tap(hookField, "the hook's field") }
-        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5), "No keyboard for the hook")
+        if !app.keyboards.firstMatch.exists(within: 2) { flow.tap(hookField, "the hook's field") }
+        XCTAssertTrue(app.keyboards.firstMatch.exists(within: 5), "No keyboard for the hook")
         flow.replaceText(of: hookField, with: "5 SP foods worth it")
         XCTAssertEqual(hookField.value as? String, "5 SP foods worth it")
         flow.tap(app.buttons["edit.panel.apply"], "✓ on the hook")
@@ -97,22 +97,22 @@ final class CreatorWorkflowUITests: XCTestCase {
         let explanation = flow.element("edit.mediaModeExplanation")
         XCTAssertTrue(explanation.label.contains("B-roll"), explanation.label)
         flow.tap(app.buttons["sheet.closeButton"].firstMatch, "Add photo or video's ×")
-        XCTAssertTrue(mode.waitForNonExistence(timeout: 5), "Add photo or video didn't go away")
+        XCTAssertTrue(mode.isGone(within: 5), "Add photo or video didn't go away")
         XCTAssertTrue(flow.isOnMainTools())
 
         flow.step("Cover Studio")
         flow.tool("cover")
         let coverDone = app.buttons["cover.done"]
         XCTAssertTrue(flow.waits(for: coverDone, "Cover Studio"), "Cover didn't open Cover Studio")
-        XCTAssertTrue(app.images["cover.image"].waitForExistence(timeout: 10), "Cover Studio draws no cover")
+        XCTAssertTrue(app.images["cover.image"].exists(within: 10), "Cover Studio draws no cover")
         flow.tap(coverDone, "Cover Studio's Done")
-        XCTAssertTrue(coverDone.waitForNonExistence(timeout: 5), "Cover Studio didn't close")
+        XCTAssertTrue(coverDone.isGone(within: 5), "Cover Studio didn't close")
         XCTAssertTrue(flow.isOnMainTools())
 
         flow.step("Done › Ready to post")
         flow.tap(app.buttons["edit.doneButton"], "Done")
         flow.tap(app.buttons["edit.done.ready"], "“Ready”")
-        XCTAssertTrue(app.buttons["review.editButton"].waitForExistence(timeout: 10), "Done didn't bring back the review")
+        XCTAssertTrue(app.buttons["review.editButton"].exists(within: 10), "Done didn't bring back the review")
         flow.report()
     }
 
@@ -130,17 +130,17 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.tap(app.buttons["edit.smart.editByText"], "the Edit by text tile")
         XCTAssertTrue(flow.waits(for: flow.element("edit.transcript"), "Edit by text"), "Edit by text didn't open")
         let first = app.buttons["edit.transcript.word.2"]
-        if !first.waitForExistence(timeout: 3) {
+        if !first.exists(within: 3) {
             // No words yet: Edit by text offers to listen to the video.
             flow.step("Listen to the video")
             flow.tap(app.buttons["edit.transcript.listen"], "Listen to the video")
             let replace = app.buttons["edit.captionsReplaceButton"]
-            if replace.waitForExistence(timeout: 3) {
+            if replace.exists(within: 3) {
                 print("CREATOR STEP edit-by-text · listening asks “Replace your edited captions?”")
                 flow.capture("replace-question")
                 flow.tap(replace, "Replace")
             }
-            let heard = first.waitForExistence(timeout: 60)
+            let heard = first.exists(within: 60)
             if !heard {
                 flow.capture("no-words-after-listening")
                 let toasts = app.descendants(matching: .any).matching(identifier: "toast").allElementsBoundByIndex.map(\.label)
@@ -150,7 +150,7 @@ final class CreatorWorkflowUITests: XCTestCase {
             if !heard {
                 // Listening ended without words: the sheet must say why, never just offer the same button again.
                 XCTAssertTrue(
-                    app.descendants(matching: .any)["edit.transcript.problem"].waitForExistence(timeout: 5),
+                    app.descendants(matching: .any)["edit.transcript.problem"].exists(within: 5),
                     "Edit by text: listening found no words and the sheet didn't say why"
                 )
                 // The Simulator can't recognise speech: the cut itself is validated on the iPhone, not here.
@@ -167,7 +167,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(flow.waits(for: guide, "the pick guide"))
         XCTAssertTrue(guide.label.hasPrefix("Start:"), guide.label)
         flow.tap(app.buttons["edit.transcript.pickAgain"], "Pick again")
-        XCTAssertFalse(guide.waitForExistence(timeout: 1), "Pick again left a word picked")
+        XCTAssertFalse(guide.exists(within: 1), "Pick again left a word picked")
         flow.tap(first, "the first word")
         flow.tap(second, "the second word")
         XCTAssertTrue(guide.label.hasPrefix("From"), guide.label)
@@ -214,7 +214,7 @@ final class CreatorWorkflowUITests: XCTestCase {
             XCTAssertTrue(flow.element("edit.reorder.clip.\(index)").exists, "Reorder has no clip \(index + 1)")
         }
         flow.tap(app.buttons["sheet.closeButton"].firstMatch, "Reorder's ×")
-        XCTAssertTrue(list.waitForNonExistence(timeout: 5), "Reorder didn't go away")
+        XCTAssertTrue(list.isGone(within: 5), "Reorder didn't go away")
         XCTAssertTrue(flow.waits(for: app.buttons["edit.toolbar.freeze"], "the clip's tools"), "Reorder didn't come back to the clip's tools")
 
         flow.step("Freeze frame")
@@ -296,7 +296,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(flow.waits(for: everyClip, "Paste look"), "Paste look didn't ask where")
         flow.tap(everyClip, "Every clip")
         XCTAssertTrue(flow.toastSays("Look pasted on every clip"), "No toast after pasting on every clip")
-        XCTAssertTrue(everyClip.waitForNonExistence(timeout: 5))
+        XCTAssertTrue(everyClip.isGone(within: 5))
         flow.backToMainTools()
         flow.report()
     }
@@ -316,9 +316,9 @@ final class CreatorWorkflowUITests: XCTestCase {
         // The toast comes once the sheet has gone (0.35 s) and stays 2 s: it's looked for first, before anything else spends
         // that time (waiting for the sheet to go took long enough, before, for the toast to be gone when it was looked for).
         XCTAssertTrue(flow.toastSays("Every clip already looks like this"), "No toast after pasting a look that changes nothing")
-        XCTAssertTrue(everyClip.waitForNonExistence(timeout: 5))
+        XCTAssertTrue(everyClip.isGone(within: 5))
         // Nothing changed: no undo step, the edit still unchanged.
-        XCTAssertTrue(app.buttons["edit.toolbar.pasteLook"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.toolbar.pasteLook"].exists(within: 5))
         XCTAssertFalse(app.buttons["edit.undoButton"].isEnabled, "Pasting an identical look added an undo step")
         flow.capture("after-every-clip")
         flow.report()
@@ -331,7 +331,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         let app = EditorApp.open(demo: true)
         let flow = CreatorWorkflow("format", app: app)
         let preview = flow.element("edit.preview")
-        XCTAssertTrue(preview.waitForExistence(timeout: 5))
+        XCTAssertTrue(preview.exists(within: 5))
 
         flow.step("Format")
         flow.tool("format")

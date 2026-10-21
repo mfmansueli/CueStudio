@@ -29,45 +29,45 @@ final class UserReportCaptureTests: XCTestCase {
 
     func testScriptsEmptyAndTheCreationSheets() throws {
         let app = CueApp.launch(seeded: false)
-        XCTAssertTrue(element(app, "empty.promptCard").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "empty.promptCard").exists(within: 15))
         try shot(app, "u01_scripts-empty")
         app.buttons["scripts.newButton"].tap()
-        XCTAssertTrue(element(app, "newScript.import").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "newScript.import").exists(within: 5))
         try shot(app, "u02_new-sheet")
         element(app, "newScript.import").tap()
-        XCTAssertTrue(element(app, "import.sheet").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "import.sheet").exists(within: 5))
         try shot(app, "u03_import")
         app.swipeDown(velocity: .fast)
         sleep(1)
         if !element(app, "newScript.format").exists {
             app.buttons["scripts.newButton"].tap()
         }
-        XCTAssertTrue(element(app, "newScript.format").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "newScript.format").exists(within: 5))
         element(app, "newScript.format").tap()
-        XCTAssertTrue(element(app, "format.confirm").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "format.confirm").exists(within: 5))
         try shot(app, "u04_format")
     }
 
     func testTheFormatChipAndMyCueVoiceOnTheCard() throws {
         let app = CueApp.launch(seeded: false)
-        XCTAssertTrue(element(app, "ideaCard.formatChip").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "ideaCard.formatChip").exists(within: 15))
         element(app, "ideaCard.formatChip").tap()
         sleep(1)
         try shot(app, "u05_dock-format")
         app.swipeDown(velocity: .fast)
         sleep(1)
         let voice = element(app, "ideaCard.voiceChip")
-        XCTAssertTrue(voice.waitForExistence(timeout: 5))
+        XCTAssertTrue(voice.exists(within: 5))
         voice.tap()
         sleep(1)
         try shot(app, "u06_voice-setup-1")
         // Each step: pick the first option, Continue, and capture the next one.
         for (index, prefix) in [(2, "voiceSetup.role."), (3, "voiceSetup.niche."), (4, "voiceSetup.audience.")] {
             let option = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", prefix)).firstMatch
-            guard option.waitForExistence(timeout: 3) else { break }
+            guard option.exists(within: 3) else { break }
             option.tap()
             let next = element(app, "voiceSetup.saveButton")
-            guard next.waitForExistence(timeout: 3) else { break }
+            guard next.exists(within: 3) else { break }
             next.tap()
             try shot(app, "u06_voice-setup-\(index)")
         }
@@ -76,19 +76,19 @@ final class UserReportCaptureTests: XCTestCase {
     func testProfileEmptyPreviewAndVoicePage() throws {
         let app = CueApp.launch(seeded: true)
         let tab = app.cueTabBar.buttons["Profile"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         sleep(2)
         // Set up My Cue Voice with the first answer of each question, so Preview and the voice page have a voice to work on.
         let setUp = element(app, "profile.setUpVoiceButton")
-        XCTAssertTrue(setUp.waitForExistence(timeout: 5))
+        XCTAssertTrue(setUp.exists(within: 5))
         setUp.tap()
         for prefix in ["voiceSetup.role.", "voiceSetup.niche.", "voiceSetup.audience.", "voiceSetup.tone."] {
             let option = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH %@", prefix)).firstMatch
-            XCTAssertTrue(option.waitForExistence(timeout: 5), prefix)
+            XCTAssertTrue(option.exists(within: 5), prefix)
             option.tap()
             let next = element(app, "voiceSetup.saveButton")
-            XCTAssertTrue(next.waitForExistence(timeout: 3))
+            XCTAssertTrue(next.exists(within: 3))
             next.tap()
         }
         sleep(2)
@@ -96,7 +96,7 @@ final class UserReportCaptureTests: XCTestCase {
         let preview = element(app, "profile.voicePreview")
         app.scroll(to: preview)
         preview.tap()
-        XCTAssertTrue(element(app, "voice.preview").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "voice.preview").exists(within: 5))
         try shot(app, "u09_profile-preview")
         let without = app.segmentedControls.buttons["Without"].firstMatch
         if without.exists {
@@ -122,12 +122,12 @@ final class UserReportCaptureTests: XCTestCase {
     func testProfileOfANewAccount() throws {
         let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestUniverse", "newAccount"])
         let tab = app.cueTabBar.buttons["Profile"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         sleep(2)
         try shot(app, "u14_profile-new-account")
         let edit = element(app, "profile.editButton")
-        if edit.waitForExistence(timeout: 3) {
+        if edit.exists(within: 3) {
             edit.tap()
             sleep(2)
             try shot(app, "u15_edit-profile")
@@ -138,11 +138,11 @@ final class UserReportCaptureTests: XCTestCase {
     func testThePrompterSettingsSheetOverARecording() throws {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
-        XCTAssertTrue(element(app, "prompter.readingLineHandle").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "prompter.readingLineHandle").exists(within: 5))
         app.buttons["prompter.displayButton"].tap()
-        XCTAssertTrue(element(app, "settings.followVoice").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "settings.followVoice").exists(within: 5))
         try shot(app, "u20_prompter-sheet-1")
         for index in 2...4 {
             // Along the left edge: the sliders' thumbs in the middle would take the drag.

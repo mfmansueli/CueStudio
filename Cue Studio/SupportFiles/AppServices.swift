@@ -215,7 +215,7 @@ struct AppServices {
         eraser = DataEraserService(
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands, sky: sky,
             profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications, voyage: voyage,
-            draftLearning: draftLearning, voiceQuestions: voiceQuestions
+            draftLearning: draftLearning, voiceQuestions: voiceQuestions, ledger: ledger, shareQueue: shareQueue, ideas: ideaSuggestions
         )
         topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }
@@ -230,6 +230,15 @@ struct AppServices {
         )
     }
 
+    /// Cue in front again: what couldn't be read at launch (Cue woke in the background while the iPhone was locked) is read
+    /// now, so the creator sees their libraries, what they make is saved, and the free exports are counted from the real number.
+    func reloadWhatCouldntBeRead() {
+        library.reloadIfUnread()
+        takes.reloadIfUnread()
+        brands.reloadIfUnread()
+        quota.reloadIfUnread()
+    }
+
     /// Gives back the space past sessions' sound files take (`EditStorageCleaner`), a few seconds after launch so it never
     /// competes with it, off the main actor. The edits' media are never swept: only an edit removes what it added.
     func cleanUpStorage() {
@@ -237,6 +246,11 @@ struct AppServices {
         Task.detached(priority: .background) {
             try? await Task.sleep(for: .seconds(8))
             await EditStorageCleaner.clean(launchedAt: launchedAt)
+        }
+        // A take a past session never filed (Cue stopped mid-take, or the library couldn't take it in) comes back (`TakeRecovery`).
+        Task { [takes, preferences] in
+            try? await Task.sleep(for: .seconds(3))
+            await TakeRecovery.recover(into: takes, camera: preferences.camera, launchedAt: launchedAt)
         }
     }
 

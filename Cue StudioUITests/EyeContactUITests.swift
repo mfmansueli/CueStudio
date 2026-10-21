@@ -18,14 +18,14 @@ final class EyeContactUITests: XCTestCase {
         EditorApp.tapTool(app, "smart")
         tapTile(app)
         let panel = app.descendants(matching: .any)["edit.panel.eyeContact"]
-        XCTAssertTrue(panel.waitForExistence(timeout: 5))
+        XCTAssertTrue(panel.exists(within: 5))
         return panel
     }
 
     /// The Eye Contact tile, scrolled into view (it's the last of the row) and tapped.
     private func tapTile(_ app: XCUIApplication) {
         let tile = app.buttons["edit.smart.eyeContact"]
-        XCTAssertTrue(tile.waitForExistence(timeout: 5))
+        XCTAssertTrue(tile.exists(within: 5))
         var swipes = 0
         while !app.windows.firstMatch.frame.contains(tile.frame), swipes < 4 {
             app.buttons["edit.smart.voice"].swipeLeft()
@@ -38,17 +38,17 @@ final class EyeContactUITests: XCTestCase {
         let app = EditorApp.open()
         _ = openPanel(app)
         let toggle = app.toggles["edit.eyeContact.toggle"]
-        XCTAssertTrue(toggle.waitForExistence(timeout: 5))
+        XCTAssertTrue(toggle.exists(within: 5))
         XCTAssertEqual(toggle.value as? String, "Off")
         XCTAssertFalse(app.descendants(matching: .any)["edit.eyeContact.strength"].exists)
         toggle.tap()
         XCTAssertEqual(toggle.value as? String, "On")
-        XCTAssertTrue(app.descendants(matching: .any)["edit.eyeContact.strength"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["edit.eyeContact.strength"].exists(within: 5))
         // Where it stands, in words (finding the eyes, then what came of it).
-        XCTAssertTrue(app.staticTexts["edit.eyeContact.status"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts["edit.eyeContact.status"].exists(within: 10))
         // Before / After with a tap.
         let before = app.buttons["edit.eyeContact.compare.before"]
-        XCTAssertTrue(before.waitForExistence(timeout: 5))
+        XCTAssertTrue(before.exists(within: 5))
         before.tap()
         XCTAssertTrue(before.isSelected)
         app.buttons["edit.eyeContact.compare.after"].tap()
@@ -56,7 +56,7 @@ final class EyeContactUITests: XCTestCase {
         // Back to the other tools: the tile says it's on.
         app.buttons["edit.eyeContact.back"].tap()
         let tile = app.buttons["edit.smart.eyeContact"]
-        XCTAssertTrue(tile.waitForExistence(timeout: 5))
+        XCTAssertTrue(tile.exists(within: 5))
         XCTAssertTrue(app.buttons["edit.smart.voice"].exists)
         // One undo turns it off again.
         app.buttons["edit.undoButton"].tap()
@@ -80,7 +80,7 @@ final class EyeContactUITests: XCTestCase {
             _ = openPanel(app)
             try shot("off")
             app.toggles["edit.eyeContact.toggle"].tap()
-            XCTAssertTrue(app.staticTexts["edit.eyeContact.status"].waitForExistence(timeout: 10))
+            XCTAssertTrue(app.staticTexts["edit.eyeContact.status"].exists(within: 10))
             try shot("on")
             app.buttons["edit.eyeContact.compare.before"].tap()
             try shot("before")

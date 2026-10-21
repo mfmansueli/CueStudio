@@ -32,6 +32,14 @@ final class BrandStore {
         }
     }
 
+    /// The brands couldn't be read at launch: read them again now, keeping (first) the ones saved since.
+    func reloadIfUnread() {
+        guard !canSave, let saved = try? repository.load() else { return }
+        let made = Set(brands.map(\.id))
+        brands += saved.filter { !made.contains($0.id) }
+        canSave = true
+    }
+
     /// Saves a brand and puts it first. A brand with the same name (any case) is updated, not duplicated. Returns the
     /// one stored, or nil when it lacks a brand or a product (`BrandBrief.isUsable`).
     @discardableResult
@@ -54,8 +62,9 @@ final class BrandStore {
     }
 
     private func persist() {
+        reloadIfUnread()
         guard canSave else {
-            logger.error("Not saving brands: the ones on disk couldn't be read at launch")
+            logger.error("Not saving brands: the ones on disk still can't be read")
             return
         }
         do {

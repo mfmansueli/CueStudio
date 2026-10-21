@@ -9,4 +9,10 @@ import Foundation
 protocol ScriptRepository {
     func load() throws -> ScriptLibrarySnapshot
     func save(_ snapshot: ScriptLibrarySnapshot) throws
+    /// The damaged libraries' copies set aside while loading ("Delete my Cue data").
+    func deleteKeptCopies()
+}
+
+extension ScriptRepository {
+    func deleteKeptCopies() {}
 }

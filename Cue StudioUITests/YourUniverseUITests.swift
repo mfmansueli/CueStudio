@@ -22,12 +22,12 @@ final class YourUniverseUITests: XCTestCase {
     private func openUniverse(_ data: String, seeded: Bool = false) -> XCUIApplication {
         let app = CueApp.launch(seeded: seeded, extraArguments: ["-uiTestUniverse", data])
         let tab = app.cueTabBar.buttons["Profile"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         let link = element(app, "profile.universeLink")
-        XCTAssertTrue(link.waitForExistence(timeout: 5))
+        XCTAssertTrue(link.exists(within: 5))
         link.tap()
-        XCTAssertTrue(element(app, "universe.screen").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "universe.screen").exists(within: 5))
         return app
     }
 
@@ -47,7 +47,7 @@ final class YourUniverseUITests: XCTestCase {
     func testATapOnAPlanetSaysHowManyVideosAndHowFarTheNextDetailIs() {
         let app = openUniverse("sample")
         element(app, "universe.planet.tiktok").tap()
-        XCTAssertTrue(app.staticTexts["12 VIDEOS IN \(year)"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["12 VIDEOS IN \(year)"].exists(within: 5))
         XCTAssertTrue(app.staticTexts["40 more to unlock brighter glow"].exists)
         XCTAssertTrue(app.buttons["universe.planetSeeInTakes"].exists)
     }
@@ -56,7 +56,7 @@ final class YourUniverseUITests: XCTestCase {
         let app = openUniverse("sample")
         app.buttons["\(year - 1)"].tap()
         XCTAssertEqual(element(app, "universe.headline").label, "41 VIDEOS SHARED IN \(year - 1) · SEALED")
-        XCTAssertTrue(element(app, "universe.sealedBadge").waitForExistence(timeout: 3))
+        XCTAssertTrue(element(app, "universe.sealedBadge").exists(within: 3))
         XCTAssertTrue(element(app, "universe.yearCard").exists, "a sealed year has its own card instead of the milestone")
         XCTAssertFalse(element(app, "universe.nextMilestone").exists)
     }
@@ -77,7 +77,7 @@ final class YourUniverseUITests: XCTestCase {
         XCTAssertTrue(element(app, "universe.record").exists)
         // The story is locked and says why.
         element(app, "universe.reviewRow").tap()
-        XCTAssertTrue(app.staticTexts["Share 3 videos to unlock it"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["Share 3 videos to unlock it"].exists(within: 3))
         XCTAssertFalse(element(app, "yearInReview.screen").exists)
     }
 
@@ -92,37 +92,37 @@ final class YourUniverseUITests: XCTestCase {
     func testTheShareSheetOffersImageOrVideoNumbersAndHandle() {
         let app = openUniverse("sample")
         element(app, "universe.share").tap()
-        XCTAssertTrue(element(app, "universeShare.kind").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "universeShare.kind").exists(within: 5))
         XCTAssertTrue(app.switches["universeShare.numbers"].exists)
         XCTAssertTrue(app.switches["universeShare.handle"].exists)
         XCTAssertTrue(app.buttons["universeShare.save"].exists && app.buttons["universeShare.share"].exists)
         app.buttons["6 s video"].tap()
         XCTAssertTrue(app.buttons["universeShare.share"].isEnabled)
         app.buttons["sheet.closeButton"].tap()
-        XCTAssertTrue(element(app, "universe.screen").waitForExistence(timeout: 3))
+        XCTAssertTrue(element(app, "universe.screen").exists(within: 3))
     }
 
     func testTheStoryHasFiveSlidesAndEndsWithShare() {
         let app = openUniverse("sample")
         element(app, "universe.reviewRow").tap()
-        XCTAssertTrue(element(app, "yearInReview.screen").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "yearInReview.screen").exists(within: 5))
         XCTAssertFalse(element(app, "yearInReview.share").exists)
         for _ in 0..<4 { element(app, "yearInReview.next").tap() }
-        XCTAssertTrue(element(app, "yearInReview.share").waitForExistence(timeout: 3), "the last slide offers Share my \(year)")
+        XCTAssertTrue(element(app, "yearInReview.share").exists(within: 3), "the last slide offers Share my \(year)")
         element(app, "yearInReview.close").tap()
-        XCTAssertTrue(element(app, "universe.screen").waitForExistence(timeout: 3))
+        XCTAssertTrue(element(app, "universe.screen").exists(within: 3))
     }
 
     /// "See in Takes ›" on a planet: Takes opens with the yellow "{YEAR} · SHARED ✕" chip, and ✕ clears it.
     func testSeeInTakesOpensTakesWithTheScopeChip() {
         let app = openUniverse("sample", seeded: true)
         element(app, "universe.planet.tiktok").tap()
-        XCTAssertTrue(app.buttons["universe.planetSeeInTakes"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["universe.planetSeeInTakes"].exists(within: 5))
         app.buttons["universe.planetSeeInTakes"].tap()
         let chip = element(app, "takes.scopeChip")
-        XCTAssertTrue(chip.waitForExistence(timeout: 5))
+        XCTAssertTrue(chip.exists(within: 5))
         XCTAssertTrue(app.staticTexts["\(year) · SHARED"].exists)
         chip.tap()
-        XCTAssertFalse(chip.waitForExistence(timeout: 2))
+        XCTAssertFalse(chip.exists(within: 2))
     }
 }

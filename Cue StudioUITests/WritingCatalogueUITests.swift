@@ -11,7 +11,7 @@ import XCTest
 final class WritingCatalogueUITests: XCTestCase {
     func testTheWordsArriveWithTheCaretAndThePill() throws {
         let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestCatalogue", "writing"])
-        XCTAssertTrue(app.descendants(matching: .any)["page.writingPill"].firstMatch.waitForExistence(timeout: 15))
+        XCTAssertTrue(app.descendants(matching: .any)["page.writingPill"].firstMatch.exists(within: 15))
         guard let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] else { return }
         let directory = URL(fileURLWithPath: folder, isDirectory: true)
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

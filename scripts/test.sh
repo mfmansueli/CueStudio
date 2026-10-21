@@ -18,12 +18,14 @@
 #                                    BackgroundDeviceTests, ContinuedTaskDeviceTests, MotionAnalysisDeviceTests, EditorMotionDeviceTests)
 #   scripts/test.sh device-ui <class>  a UI test class (or Class/test) on that iPhone (opt-in classes skip without their flag)
 #
-# After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests).
+# After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests);
+# --parallel N spreads the test classes over N simulator clones (ui and full use 2 unless given; --parallel 1 runs one at a time);
+# the clones are deleted when the run ends.
 
 source "$(dirname "$0")/_xcode.sh"
 
 usage() {
-    sed -n '2,21p' "$0"
+    sed -n '2,23p' "$0"
     exit 64
 }
 
@@ -44,6 +46,7 @@ require_unlocked() {
 mode="${1:-fast}"
 [ $# -gt 0 ] && shift
 action="test"
+workers=""
 ids=()
 extra=()
 while [ $# -gt 0 ]; do
@@ -54,6 +57,11 @@ while [ $# -gt 0 ]; do
             extra+=(-test-iterations "$2" -run-tests-until-failure)
             shift
             ;;
+        --parallel)
+            [ $# -ge 2 ] || usage
+            workers="$2"
+            shift
+            ;;
         -*) usage ;;
         *) ids+=("$1") ;;
     esac
@@ -61,6 +69,8 @@ while [ $# -gt 0 ]; do
 done
 
 destination="$SIMULATOR_DESTINATION"
+# The UI tests take turns on one simulator otherwise (~113 min); two clones measured 1.5–2.5× faster on an 8-core M3 with 16 GB.
+case "$mode" in ui | full) workers="${workers:-2}" ;; esac
 plan=(-testPlan Full)
 case "$mode" in
     fast) plan=(-testPlan Fast) ;;
@@ -126,6 +136,11 @@ esac
 
 result="$RESULTS/$mode-$(timestamp).xcresult"
 status=0
+if [ -n "$workers" ] && [ "$workers" -gt 1 ]; then
+    extra+=(-parallel-testing-enabled YES -parallel-testing-worker-count "$workers")
+    # Each clone is a copy of the simulator in ~/Library/Developer/XCTestDevices: gone when the run ends, passed or not.
+    trap 'xcrun simctl --set testing delete all >/dev/null 2>&1' EXIT
+fi
 # A test that runs past its allowance fails at once; without `never` xcodebuild then spends up to 10 minutes on a sysdiagnose.
 # `CUE_TEST_DIAGNOSTICS=on-failure` (or `on-failure`) keeps the crash reports and logs of a device run that dies.
 xcb "test-$mode" "${plan[@]}" -destination "$destination" -collect-test-diagnostics "${CUE_TEST_DIAGNOSTICS:-never}" \

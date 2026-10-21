@@ -19,16 +19,19 @@ final class KeychainExportCountStore: ExportCountStoring {
         self.service = service
     }
 
-    func load() -> Int {
+    func load() -> Int? {
         var query = baseQuery
         query[kSecReturnData as String] = true
         query[kSecMatchLimit as String] = kSecMatchLimitOne
         var result: CFTypeRef?
-        guard SecItemCopyMatching(query as CFDictionary, &result) == errSecSuccess,
-              let data = result as? Data,
-              let text = String(bytes: data, encoding: .utf8),
-              let value = Int(text)
-        else { return 0 }
+        let status = SecItemCopyMatching(query as CFDictionary, &result)
+        if status == errSecItemNotFound { return 0 }
+        guard status == errSecSuccess else {
+            // Locked (Cue woke in the background before the first unlock): unknown, never "none used".
+            logger.error("Could not read the export count: \(status)")
+            return nil
+        }
+        guard let data = result as? Data, let text = String(bytes: data, encoding: .utf8), let value = Int(text) else { return 0 }
         return max(0, value)
     }
 

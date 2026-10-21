@@ -42,13 +42,13 @@ final class StarTransitionUITests: XCTestCase {
     func testTheStarCoversTheScreenThenOpensTheScript() throws {
         let app = launch()
         let send = app.buttons["ideaCard.submit"]
-        XCTAssertTrue(send.waitForExistence(timeout: 15))
+        XCTAssertTrue(send.exists(within: 15))
         send.tap()
         let cancel = app.buttons["transition.cancel"]
-        XCTAssertTrue(cancel.waitForExistence(timeout: 5), "No transition")
+        XCTAssertTrue(cancel.exists(within: 5), "No transition")
         try capture(app, "transition_waiting")
         // At least three seconds from the tap, then the script is the page.
-        XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 15), "The script never opened")
+        XCTAssertTrue(app.pageBackButton.exists(within: 15), "The script never opened")
         // The star lands as the caret and the overlay goes a moment after the page is up.
         expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: cancel)
         waitForExpectations(timeout: 10)
@@ -59,18 +59,18 @@ final class StarTransitionUITests: XCTestCase {
     func testTheKeyboardIsAwayWhileTheStarFliesAndWhenThePageOpens() {
         let app = launch()
         let field = app.descendants(matching: .any)["ideaCard.field"].firstMatch
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         field.tap()
         field.typeText("3 tips for better lighting")
-        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.keyboards.firstMatch.exists(within: 5))
         app.buttons["ideaCard.submit"].tap()
         let cancel = app.buttons["transition.cancel"]
-        XCTAssertTrue(cancel.waitForExistence(timeout: 5), "No transition")
+        XCTAssertTrue(cancel.exists(within: 5), "No transition")
         let gone = NSPredicate(format: "exists == false")
         expectation(for: gone, evaluatedWith: app.keyboards.firstMatch)
         waitForExpectations(timeout: 2)
         XCTAssertTrue(cancel.exists, "the keyboard went down while the star was still up")
-        XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 15), "The script never opened")
+        XCTAssertTrue(app.pageBackButton.exists(within: 15), "The script never opened")
         expectation(for: gone, evaluatedWith: cancel)
         waitForExpectations(timeout: 10)
         XCTAssertFalse(app.keyboards.firstMatch.exists, "the page took the keyboard")
@@ -81,17 +81,17 @@ final class StarTransitionUITests: XCTestCase {
     func testTheWordsArriveWhereTheyWillStay() throws {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestSlowWriting"])
         let send = app.buttons["ideaCard.submit"]
-        XCTAssertTrue(send.waitForExistence(timeout: 15))
+        XCTAssertTrue(send.exists(within: 15))
         send.tap()
         let writing = app.descendants(matching: .any)["page.writingText"].firstMatch
-        XCTAssertTrue(writing.waitForExistence(timeout: 10), "The page never started writing")
+        XCTAssertTrue(writing.exists(within: 10), "The page never started writing")
         expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: app.buttons["transition.cancel"])
         waitForExpectations(timeout: 10)
         waitUntilSettled(writing)
         let writingFrame = writing.frame
         try capture(app, "page_writing")
         let editor = app.descendants(matching: .any)["page.editor"].firstMatch
-        XCTAssertTrue(editor.waitForExistence(timeout: 15), "The writing never ended")
+        XCTAssertTrue(editor.exists(within: 15), "The writing never ended")
         waitUntilSettled(editor)
         try capture(app, "page_written")
         // The editor's frame holds its text view's insets (8 pt above, 5 pt at the side); the arriving words' frame is the words.
@@ -104,10 +104,10 @@ final class StarTransitionUITests: XCTestCase {
     func testTheStarSaysHowMuchIsWrittenAndTheNumberOnlyGoesUp() throws {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestStarTransition", "-uiTestWriterStalls"])
         let send = app.buttons["ideaCard.submit"]
-        XCTAssertTrue(send.waitForExistence(timeout: 15))
+        XCTAssertTrue(send.exists(within: 15))
         send.tap()
         let progress = app.descendants(matching: .any)["transition.progress"].firstMatch
-        XCTAssertTrue(progress.waitForExistence(timeout: 5), "No percentage under the star")
+        XCTAssertTrue(progress.exists(within: 5), "No percentage under the star")
         let first = percent(progress)
         XCTAssertGreaterThanOrEqual(first, 0, "not a percentage: \(String(describing: progress.value))")
         Thread.sleep(forTimeInterval: 2)
@@ -130,7 +130,7 @@ final class StarTransitionUITests: XCTestCase {
     func testCancelMakesTheStarLeaveAndTheOverlayGo() {
         let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestCatalogue", "transition", "-uiTestStarTransition"])
         let cancel = app.buttons["transition.cancel"]
-        XCTAssertTrue(cancel.waitForExistence(timeout: 15))
+        XCTAssertTrue(cancel.exists(within: 15))
         cancel.tap()
         let gone = NSPredicate(format: "exists == false")
         expectation(for: gone, evaluatedWith: cancel)
@@ -142,10 +142,10 @@ final class StarTransitionUITests: XCTestCase {
     func testAfterCancelTheDockAndTheTabBarStayStill() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestStarTransition", "-uiTestWriterStalls"])
         let send = app.buttons["ideaCard.submit"]
-        XCTAssertTrue(send.waitForExistence(timeout: 15))
+        XCTAssertTrue(send.exists(within: 15))
         send.tap()
         let cancel = app.buttons["transition.cancel"]
-        XCTAssertTrue(cancel.waitForExistence(timeout: 10), "No transition")
+        XCTAssertTrue(cancel.exists(within: 10), "No transition")
         Thread.sleep(forTimeInterval: 1.5)
         cancel.tap()
         let dock = app.descendants(matching: .any)["scripts.promptCard"].firstMatch

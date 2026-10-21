@@ -23,16 +23,16 @@ final class RecorderFramingUITests: XCTestCase {
 
     private func openRecorder(_ app: XCUIApplication) {
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
-        XCTAssertTrue(app.buttons["prompter.recordButton"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["prompter.recordButton"].exists(within: 10))
     }
 
     /// The "Fill the screen" switch in the camera settings (the sheet scrolls to it).
     private func fillSwitch(_ app: XCUIApplication) -> XCUIElement {
         app.buttons["prompter.cameraSettingsButton"].tap()
         let toggle = app.switches.matching(NSPredicate(format: "label BEGINSWITH 'Fill the screen'")).firstMatch
-        if !toggle.waitForExistence(timeout: 5) {
+        if !toggle.exists(within: 5) {
             let switches = app.switches.allElementsBoundByIndex.map(\.label)
             let texts = app.staticTexts.allElementsBoundByIndex.map(\.label).filter { $0.contains("Fill") || $0.contains("Grid") || $0.contains("Frame") }
             XCTFail("No Fill the screen switch in the camera settings. Switches: \(switches). Texts: \(texts). Sheets: \(app.sheets.count)")
@@ -58,10 +58,10 @@ final class RecorderFramingUITests: XCTestCase {
     private func closeSheet(_ app: XCUIApplication) {
         // The sheet's own button; the recorder's "Close" (the X at the top) would leave the recorder.
         let done = app.buttons["Done"].firstMatch
-        XCTAssertTrue(done.waitForExistence(timeout: 3))
+        XCTAssertTrue(done.exists(within: 3))
         done.tap()
-        XCTAssertTrue(app.buttons["prompter.recordButton"].waitForExistence(timeout: 3))
-        XCTAssertFalse(app.buttons["Done"].firstMatch.waitForExistence(timeout: 1.5), "The camera settings stayed open")
+        XCTAssertTrue(app.buttons["prompter.recordButton"].exists(within: 3))
+        XCTAssertFalse(app.buttons["Done"].firstMatch.exists(within: 1.5), "The camera settings stayed open")
     }
 
     func testTheCameraOpensShowingTheWholeFrameAndFillingLastsOnlyUntilTheRecorderCloses() throws {

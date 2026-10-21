@@ -49,11 +49,11 @@ final class LanguageRegionUITests: XCTestCase {
     func testItalianInterfaceWithPortugueseScriptAndVoice() {
         let app = CueApp.launch(seeded: true, appLanguage: "it")
         openLanguageRegion(app)
-        XCTAssertTrue(app.navigationBars["Lingua e area geografica"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Lingua e area geografica"].exists(within: 5))
         pick("Português (Brasil)", from: "settings.scriptLanguage", in: app)
         pick("Português (Brasil)", from: "settings.voiceFollowingLanguage", in: app)
 
-        XCTAssertTrue(app.navigationBars["Lingua e area geografica"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Lingua e area geografica"].exists(within: 5))
         XCTAssertTrue(row(app, "settings.appLanguage").label.contains("Italiano"))
         XCTAssertTrue(row(app, "settings.scriptLanguage").label.contains("Português (Brasil)"))
         XCTAssertTrue(row(app, "settings.voiceFollowingLanguage").label.contains("Português (Brasil)"))
@@ -62,8 +62,8 @@ final class LanguageRegionUITests: XCTestCase {
     /// Cue in Japanese with English scripts: the scripts stay in English.
     func testJapaneseInterfaceKeepsEnglishScripts() {
         let app = CueApp.launch(seeded: true, appLanguage: "ja")
-        XCTAssertTrue(app.cueTabBar.buttons["台本"].waitForExistence(timeout: 15))
-        XCTAssertTrue(app.staticTexts[Self.sampleTitle].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.cueTabBar.buttons["台本"].exists(within: 15))
+        XCTAssertTrue(app.staticTexts[Self.sampleTitle].exists(within: 5))
     }
 
     /// Arabic mirrors the interface, whether picked in Cue or set on the iPhone: the new-script
@@ -76,7 +76,7 @@ final class LanguageRegionUITests: XCTestCase {
         for launch in launches {
             let app = launch()
             let newScript = app.buttons["scripts.newButton"]
-            XCTAssertTrue(newScript.waitForExistence(timeout: 15))
+            XCTAssertTrue(newScript.exists(within: 15))
             XCTAssertLessThan(newScript.frame.midX, app.frame.midX)
             app.terminate()
         }
@@ -95,19 +95,19 @@ final class LanguageRegionUITests: XCTestCase {
         let takeRow = app.buttons.matching(
             NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")
         ).firstMatch
-        XCTAssertTrue(takeRow.waitForExistence(timeout: 5))
+        XCTAssertTrue(takeRow.exists(within: 5))
         takeRow.tap()
         let edit = app.buttons["review.editButton"]
-        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        XCTAssertTrue(edit.exists(within: 5))
         edit.tap()
         // The take has no captions yet: Captions opens Auto captions, where the language is chosen.
-        XCTAssertTrue(app.buttons["edit.toolbar.edit"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["edit.toolbar.edit"].exists(within: 10))
         EditorApp.tapTool(app, "captions")
         let note = app.staticTexts["edit.captionsLanguageNote"]
-        XCTAssertTrue(note.waitForExistence(timeout: 5))
+        XCTAssertTrue(note.exists(within: 5))
         XCTAssertTrue(note.label.contains("Portuguese (Brazil)"))
         EditorApp.done(app)
-        XCTAssertTrue(edit.waitForExistence(timeout: 5))
+        XCTAssertTrue(edit.exists(within: 5))
     }
 
     // MARK: - Helpers
@@ -119,19 +119,19 @@ final class LanguageRegionUITests: XCTestCase {
     private func openLanguageRegion(_ app: XCUIApplication) {
         // Settings is the fifth tab in any language.
         let settings = app.cueTabBar.buttons.element(boundBy: 4)
-        XCTAssertTrue(settings.waitForExistence(timeout: 15))
+        XCTAssertTrue(settings.exists(within: 15))
         settings.tap()
         let page = row(app, "settings.languageRegion")
         app.scroll(to: page)
         page.tap()
-        XCTAssertTrue(row(app, "settings.appLanguage").waitForExistence(timeout: 5))
+        XCTAssertTrue(row(app, "settings.appLanguage").exists(within: 5))
     }
 
     /// Opens the menu of a language row and picks a language by its own name.
     private func pick(_ name: String, from rowID: String, in app: XCUIApplication) {
         row(app, rowID).tap()
         let option = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", name)).firstMatch
-        XCTAssertTrue(option.waitForExistence(timeout: 5), name)
+        XCTAssertTrue(option.exists(within: 5), name)
         option.tap()
     }
 }
