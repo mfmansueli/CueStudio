@@ -2942,7 +2942,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — thông báo"
+            "value" : "%@: thông báo"
           }
         },
         "zh-Hans" : {
@@ -3060,7 +3060,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — đánh giá thật lòng"
+            "value" : "%@: đánh giá thật lòng"
           }
         },
         "zh-Hans" : {
@@ -3178,7 +3178,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — link ở bio của mình. [nhìn camera] Video này là hợp tác có trả phí."
+            "value" : "%@, link ở bio của mình. [nhìn camera] Video này là hợp tác có trả phí."
           }
         },
         "zh-Hans" : {
@@ -3296,7 +3296,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — được tài trợ"
+            "value" : "%@: được tài trợ"
           }
         },
         "zh-Hans" : {
@@ -4281,7 +4281,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ · %2$lld TRÊN %3$lld"
+            "value" : "%1$@ · %2$lld/%3$lld"
           }
         },
         "zh-Hans" : {
@@ -5128,7 +5128,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · CHẠM VÀO ĐÍCH KHÁC ĐỂ ĐỔI"
+            "value" : "%@ · CHẠM NỀN TẢNG KHÁC ĐỂ ĐỔI"
           }
         },
         "zh-Hans" : {
@@ -6087,7 +6087,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video %@ %@: %@"
+            "value" : "Video %2$@ %1$@: %3$@"
           }
         },
         "zh-Hans" : {
@@ -6679,7 +6679,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ đã được bắt đầu"
+            "value" : "Bạn đã bắt đầu %@"
           }
         },
         "zh-Hans" : {
@@ -7759,7 +7759,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dài hơn mức lý tưởng của %2$@ %1$@"
+            "value" : "Dài hơn %1$@ so với mức lý tưởng của %2$@"
           }
         },
         "zh-Hans" : {
@@ -8951,7 +8951,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "dài hơn %2$@ %1$@"
+            "value" : "dư %1$@ so với %2$@"
           }
         },
         "zh-Hans" : {
@@ -9069,7 +9069,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dài hơn mức lý tưởng %@"
+            "value" : "Dư %@ so với mức lý tưởng"
           }
         },
         "zh-Hans" : {
@@ -9662,7 +9662,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã chia sẻ %@ · xóa bộ lọc"
+            "value" : "Đã chia sẻ năm %@ · xóa bộ lọc"
           }
         },
         "zh-Hans" : {
@@ -9905,7 +9905,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ngắn hơn mức lý tưởng của %2$@ %1$@"
+            "value" : "Ngắn hơn %1$@ so với mức lý tưởng của %2$@"
           }
         },
         "zh-Hans" : {
@@ -10504,7 +10504,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ngắn hơn %2$@ %1$@"
+            "value" : "thiếu %1$@ so với %2$@"
           }
         },
         "zh-Hans" : {
@@ -10622,7 +10622,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ngắn hơn mức lý tưởng %@"
+            "value" : "Thiếu %@ so với mức lý tưởng"
           }
         },
         "zh-Hans" : {
@@ -13138,7 +13138,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld gợi ý"
+            "value" : "%lld chỉ dẫn"
           }
         },
         "zh-Hans" : {
@@ -13256,7 +13256,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã thêm %lld gợi ý"
+            "value" : "Đã thêm %lld chỉ dẫn"
           }
         },
         "zh-Hans" : {
@@ -16678,7 +16678,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld trên %2$lld"
+            "value" : "%1$lld/%2$lld"
           }
         },
         "zh-Hans" : {
@@ -16922,7 +16922,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld TRÊN %2$lld · THÊM NỮA HOẶC TIẾP TỤC"
+            "value" : "%1$lld/%2$lld · THÊM NỮA HOẶC TIẾP TỤC"
           }
         },
         "zh-Hans" : {
@@ -17040,7 +17040,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld TRÊN %2$lld · THÊM MỘT CHỦ ĐỀ NỮA HOẶC TIẾP TỤC"
+            "value" : "%1$lld/%2$lld · THÊM MỘT CHỦ ĐỀ NỮA HOẶC TIẾP TỤC"
           }
         },
         "zh-Hans" : {
@@ -17277,7 +17277,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld TRÊN %2$lld · CHẠM VÀO MỘT CHỦ ĐỀ ĐỂ ĐỔI"
+            "value" : "%1$lld/%2$lld · CHẠM MỘT CHỦ ĐỀ ĐỂ ĐỔI"
           }
         },
         "zh-Hans" : {
@@ -17396,7 +17396,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld trên %lld ký tự"
+            "value" : "%lld/%lld ký tự"
           }
         },
         "zh-Hans" : {
@@ -18232,7 +18232,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld trên %2$lld bản ghi"
+            "value" : "%1$lld/%2$lld bản ghi"
           }
         },
         "zh-Hans" : {
@@ -18592,7 +18592,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dưới camera %lld point"
+            "value" : "Dưới camera %lld điểm"
           }
         },
         "zh-Hans" : {
@@ -18946,7 +18946,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dưới camera %lld pt · khuyên dùng."
+            "value" : "Dưới camera %lld pt · đề xuất."
           }
         },
         "zh-Hans" : {
@@ -19088,7 +19088,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld sẵn sàng"
+            "value" : "%lld đã sẵn sàng"
           }
         },
         "zh-Hans" : {
@@ -20655,7 +20655,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld video — còn %2$lld"
+            "value" : "%1$lld video · còn %2$lld"
           }
         },
         "zh-Hans" : {
@@ -21127,7 +21127,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld video · tháng bận rộn nhất"
+            "value" : "%lld video · tháng bận rộn nhất của bạn"
           }
         },
         "zh-Hans" : {
@@ -24073,7 +24073,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ Việc khác"
+            "value" : "+ Khác"
           }
         },
         "zh-Hans" : {
@@ -24191,7 +24191,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ Của bạn"
+            "value" : "+ Chủ đề riêng"
           }
         },
         "zh-Hans" : {
@@ -25020,7 +25020,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ TỆP SẠCH CHO MỌI MẠNG · KHÔNG LOGO NƯỚC"
+            "value" : "✓ TỆP SẠCH CHO MỌI MẠNG XÃ HỘI · KHÔNG HÌNH MỜ"
           }
         },
         "zh-Hans" : {
@@ -25138,7 +25138,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Giọng Cue hoàn chỉnh"
+            "value" : "✓ My Cue Voice hoàn chỉnh"
           }
         },
         "zh-Hans" : {
@@ -25374,7 +25374,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Phù hợp %1$@ · %2$@"
+            "value" : "✓ Vừa %1$@ · %2$@"
           }
         },
         "zh-Hans" : {
@@ -27033,7 +27033,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Soạn câu trả lời"
+            "value" : "✦ Soạn nháp câu trả lời"
           }
         },
         "zh-Hans" : {
@@ -27983,7 +27983,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Thông minh"
+            "value" : "✦ Smart"
           }
         },
         "zh-Hans" : {
@@ -28339,7 +28339,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Viết"
+            "value" : "✦ Soạn nháp"
           }
         },
         "zh-Hans" : {
@@ -28693,7 +28693,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 gợi ý"
+            "value" : "1 chỉ dẫn"
           }
         },
         "zh-Hans" : {
@@ -29047,7 +29047,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 take"
+            "value" : "1 cảnh quay"
           }
         },
         "zh-Hans" : {
@@ -29165,7 +29165,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 take · v%lld"
+            "value" : "1 cảnh quay · v%lld"
           }
         },
         "zh-Hans" : {
@@ -30717,7 +30717,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4 câu hỏi nhanh — khoảng 20 giây. Không cần gõ."
+            "value" : "4 câu hỏi nhanh, khoảng 20 giây. Không cần gõ."
           }
         },
         "zh-Hans" : {
@@ -31308,7 +31308,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "12 preset dành cho video quay bằng điện thoại"
+            "value" : "12 mẫu có sẵn dành cho video quay bằng điện thoại"
           }
         },
         "zh-Hans" : {
@@ -32728,7 +32728,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Một lớp hoàn thiện bạn có thể thêm trong Điều chỉnh. Bạn chọn cường độ, từ số không."
+            "value" : "Một lớp hoàn thiện bạn có thể thêm trong Điều chỉnh. Bạn chọn cường độ, bắt đầu từ 0."
           }
         },
         "zh-Hans" : {
@@ -32965,7 +32965,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bạn mình rủ thử cái này — phải cảm ơn cô ấy."
+            "value" : "Bạn mình rủ thử cái này, phải cảm ơn cô ấy mới được."
           }
         },
         "zh-Hans" : {
@@ -33202,7 +33202,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chỉ là gợi ý, không đảm bảo · Không bao giờ được quay"
+            "value" : "Chỉ là gợi ý, không đảm bảo · Không xuất hiện trong video"
           }
         },
         "zh-Hans" : {
@@ -35576,7 +35576,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Một lớp hoàn thiện nhẹ nhàng, nếu bạn muốn. Bắt đầu từ số không và bạn chọn cường độ."
+            "value" : "Một lớp hoàn thiện nhẹ nhàng, nếu bạn muốn. Bắt đầu từ 0 và bạn chọn cường độ."
           }
         },
         "zh-Hans" : {
@@ -36760,7 +36760,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã hiểu"
+            "value" : "Thừa nhận"
           }
         },
         "zh-Hans" : {
@@ -36996,7 +36996,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đang dùng"
+            "value" : "Đang hoạt động"
           }
         },
         "zh-Hans" : {
@@ -37590,7 +37590,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thêm khung hình chính, di chuyển đầu phát rồi kéo ảnh hoặc video — Cue sẽ di chuyển nó giữa các khung hình chính."
+            "value" : "Thêm khung hình chính, di chuyển đầu phát rồi kéo ảnh hoặc video. Cue sẽ di chuyển nó giữa các khung hình chính."
           }
         },
         "zh-Hans" : {
@@ -37708,7 +37708,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thêm khung hình chính, di chuyển đầu phát rồi kéo chữ trong video — Cue sẽ di chuyển nó giữa các khung hình chính."
+            "value" : "Thêm khung hình chính, di chuyển đầu phát rồi kéo chữ trong video. Cue sẽ di chuyển nó giữa các khung hình chính."
           }
         },
         "zh-Hans" : {
@@ -39010,7 +39010,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thêm công bố"
+            "value" : "Thêm công khai tài trợ"
           }
         },
         "zh-Hans" : {
@@ -40670,7 +40670,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Được thêm vào trước mỗi ý tưởng bạn gửi cho Cue — kịch bản, hook, phản hồi, cùng nơi bạn đăng và định dạng bạn chọn. Không bao giờ dùng để huấn luyện mô hình."
+            "value" : "Được thêm vào trước mỗi ý tưởng bạn gửi cho Cue (kịch bản, hook, câu trả lời), cùng nơi bạn đăng và định dạng bạn chọn. Không bao giờ dùng để huấn luyện mô hình."
           }
         },
         "zh-Hans" : {
@@ -41499,7 +41499,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chỉnh ánh mắt của bạn hướng về máy ảnh"
+            "value" : "Chỉnh ánh mắt của bạn hướng về camera"
           }
         },
         "zh-Hans" : {
@@ -42210,7 +42210,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sau khi đăng, chạm ◀ Cue ở góc trên bên trái. Chúng tôi sẽ quay lại để kết thúc."
+            "value" : "Sau khi đăng, chạm ◀ Cue ở góc trên bên trái. Cue sẽ đưa bạn quay lại để hoàn tất."
           }
         },
         "zh-Hans" : {
@@ -42328,7 +42328,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sau khi đăng, chạm ◀ Cue ở góc trên bên trái. Tiếp theo chúng tôi sẽ mở %@."
+            "value" : "Sau khi đăng, chạm ◀ Cue ở góc trên bên trái. Tiếp theo Cue sẽ mở %@."
           }
         },
         "zh-Hans" : {
@@ -42682,7 +42682,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Huấn luyện AI"
+            "value" : "Huấn luyện viên AI"
           }
         },
         "zh-Hans" : {
@@ -46132,7 +46132,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã chia sẻ trên các mạng bạn chọn"
+            "value" : "Đã chia sẻ lên các mạng xã hội bạn chọn"
           }
         },
         "zh-Hans" : {
@@ -47679,7 +47679,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Và rồi — %@. [ngắt nhịp]"
+            "value" : "Và rồi, %@. [dừng ngắn]"
           }
         },
         "zh-Hans" : {
@@ -47797,7 +47797,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Và rồi — %@. [cười]"
+            "value" : "Và rồi, %@. [cười]"
           }
         },
         "zh-Hans" : {
@@ -56394,7 +56394,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã về mặc định khuyên dùng"
+            "value" : "Đã về mức đề xuất"
           }
         },
         "zh-Hans" : {
@@ -57931,7 +57931,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "nhịp"
+            "value" : "dừng ngắn"
           }
         },
         "zh-Hans" : {
@@ -58761,7 +58761,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trước hết — mình xin lỗi."
+            "value" : "Trước hết, mình xin lỗi."
           }
         },
         "zh-Hans" : {
@@ -59593,7 +59593,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ra sau"
+            "value" : "Đưa ra sau"
           }
         },
         "zh-Hans" : {
@@ -60894,7 +60894,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "To + nhấn"
+            "value" : "To + tô sáng"
           }
         },
         "zh-Hans" : {
@@ -61013,7 +61013,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phụ đề lớn làm nổi từng từ · hook bật lên nổi bật"
+            "value" : "Phụ đề lớn làm nổi từng từ · hook bật lên"
           }
         },
         "zh-Hans" : {
@@ -62559,7 +62559,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Làm mờ"
+            "value" : "Mờ"
           }
         },
         "zh-Hans" : {
@@ -66587,7 +66587,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đưa giọng của từng clip về mức của cảnh quay này, không bị rè."
+            "value" : "Đưa giọng của từng clip về mức của cảnh quay này, không bị vỡ tiếng."
           }
         },
         "zh-Hans" : {
@@ -73697,7 +73697,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phụ đề không nghe được tiếng %@ trên iPhone này. Hãy chọn ngôn ngữ được nói hoặc tự viết các dòng."
+            "value" : "Phụ đề không nghe được %@ trên iPhone này. Hãy chọn ngôn ngữ được nói hoặc tự viết các dòng."
           }
         },
         "zh-Hans" : {
@@ -73821,7 +73821,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phụ đề không nghe được tiếng %@ trong cảnh quay này nên những phần đó có thể bị thiếu. Hãy kiểm tra các dòng hoặc tự viết."
+            "value" : "Phụ đề không nghe được %@ trong cảnh quay này nên những phần đó có thể bị thiếu. Hãy kiểm tra các dòng hoặc tự viết."
           }
         },
         "zh-Hans" : {
@@ -74176,7 +74176,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phụ đề tiếng %@"
+            "value" : "Phụ đề %@"
           }
         },
         "zh-Hans" : {
@@ -74414,7 +74414,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phụ đề dành cho trò chuyện · tiêu đề mềm mại từ bên cạnh"
+            "value" : "Phụ đề dành cho trò chuyện · tiêu đề trượt nhẹ từ bên cạnh"
           }
         },
         "zh-Hans" : {
@@ -75004,7 +75004,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "BẬT PHỤ ĐỀ"
+            "value" : "PHỤ ĐỀ ĐANG BẬT"
           }
         },
         "zh-Hans" : {
@@ -76900,7 +76900,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đổi bất cứ lúc nào trong Hồ sơ › Giọng Cue của tôi."
+            "value" : "Đổi bất cứ lúc nào trong Hồ sơ › My Cue Voice."
           }
         },
         "zh-Hans" : {
@@ -77374,7 +77374,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã đổi từ cảnh quay %lld"
+            "value" : "Đã đổi kể từ cảnh quay %lld"
           }
         },
         "zh-Hans" : {
@@ -77847,7 +77847,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đổi nền tảng và preset của nó"
+            "value" : "Đổi nền tảng và mẫu có sẵn của nền tảng đó"
           }
         },
         "zh-Hans" : {
@@ -79035,7 +79035,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kiểm tra phụ đề không bị các nút của mạng che."
+            "value" : "Kiểm tra để phụ đề không bị các nút của mạng xã hội che."
           }
         },
         "zh-Hans" : {
@@ -79153,7 +79153,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kiểm tra bình luận trước khi Cue viết."
+            "value" : "Kiểm tra bình luận trước khi Cue soạn nháp."
           }
         },
         "zh-Hans" : {
@@ -82120,7 +82120,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dọn dẹp"
+            "value" : "Dọn dẹp nhà cửa"
           }
         },
         "zh-Hans" : {
@@ -82714,7 +82714,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nhấp"
+            "value" : "Tiếng nhấp"
           }
         },
         "zh-Hans" : {
@@ -84022,7 +84022,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đóng điều khiển"
+            "value" : "Đóng điều khiển từ xa"
           }
         },
         "zh-Hans" : {
@@ -84615,7 +84615,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kết thúc"
+            "value" : "Lời kết"
           }
         },
         "zh-Hans" : {
@@ -86391,7 +86391,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Có sẵn: các phần, gợi ý, thời lượng."
+            "value" : "Có sẵn: các phần, chỉ dẫn, thời lượng."
           }
         },
         "zh-Hans" : {
@@ -87456,7 +87456,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cộng đồng hoặc mục tiêu"
+            "value" : "Cộng đồng hoặc lý tưởng"
           }
         },
         "zh-Hans" : {
@@ -90070,7 +90070,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TIẾP TỤC ĐĂNG · %lld / %lld"
+            "value" : "TIẾP TỤC ĐĂNG · %1$lld/%2$lld"
           }
         },
         "zh-Hans" : {
@@ -90308,7 +90308,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tiếp tục chia sẻ video lên các mạng bạn đã chọn."
+            "value" : "Tiếp tục chia sẻ video lên các mạng xã hội bạn đã chọn."
           }
         },
         "zh-Hans" : {
@@ -91849,7 +91849,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hãy sao chép giao diện của một clip trước"
+            "value" : "Hãy sao chép diện mạo của một clip trước"
           }
         },
         "zh-Hans" : {
@@ -92088,7 +92088,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sao chép giao diện"
+            "value" : "Sao chép diện mạo"
           }
         },
         "zh-Hans" : {
@@ -96947,7 +96947,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gợi ý %@"
+            "value" : "Chỉ dẫn %@"
           }
         },
         "zh-Hans" : {
@@ -99317,7 +99317,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue cần micro"
+            "value" : "Cue cần micrô"
           }
         },
         "zh-Hans" : {
@@ -102162,7 +102162,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gợi ý"
+            "value" : "Chỉ dẫn"
           }
         },
         "zh-Hans" : {
@@ -102280,7 +102280,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gợi ý như PAUSE hoặc SMILE trong văn bản"
+            "value" : "Chỉ dẫn như DỪNG hoặc CƯỜI trong văn bản"
           }
         },
         "zh-Hans" : {
@@ -104599,7 +104599,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cắt từ thừa"
+            "value" : "Cắt từ đệm"
           }
         },
         "zh-Hans" : {
@@ -107914,7 +107914,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Xóa kịch bản, take, bản chỉnh sửa và My Cue Voice khỏi iPhone này. Không thể hoàn tác."
+            "value" : "Xóa kịch bản, cảnh quay, bản chỉnh sửa và My Cue Voice khỏi iPhone này. Không thể hoàn tác."
           }
         },
         "zh-Hans" : {
@@ -108981,7 +108981,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone này chưa thể nghe bằng %@ để đọc. Bạn có thể gõ ý tưởng của mình."
+            "value" : "Đọc chính tả chưa nghe được %@ trên iPhone này. Bạn có thể gõ ý tưởng của mình."
           }
         },
         "zh-Hans" : {
@@ -109099,7 +109099,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Không thể bắt đầu nghe để đọc. Bạn có thể gõ ý tưởng của mình."
+            "value" : "Đọc chính tả không bắt đầu nghe được. Bạn có thể gõ ý tưởng của mình."
           }
         },
         "zh-Hans" : {
@@ -109217,7 +109217,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tính năng đọc cần tải %@. Hãy kết nối internet rồi thử lại."
+            "value" : "Đọc chính tả cần tải %@. Hãy kết nối internet rồi thử lại."
           }
         },
         "zh-Hans" : {
@@ -109335,7 +109335,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tính năng đọc cần tải ngôn ngữ này. Hãy kết nối internet rồi thử lại."
+            "value" : "Đọc chính tả cần tải ngôn ngữ này. Hãy kết nối internet rồi thử lại."
           }
         },
         "zh-Hans" : {
@@ -109453,7 +109453,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã dừng đọc. Những gì bạn đã nói vẫn được giữ lại."
+            "value" : "Đã dừng đọc chính tả. Những gì bạn đã nói vẫn được giữ lại."
           }
         },
         "zh-Hans" : {
@@ -110400,7 +110400,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã thêm công bố ở đầu"
+            "value" : "Đã thêm công khai tài trợ ở đầu"
           }
         },
         "zh-Hans" : {
@@ -110518,7 +110518,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phần công khai đã ở đầu"
+            "value" : "Công khai tài trợ đã ở đầu"
           }
         },
         "zh-Hans" : {
@@ -113725,7 +113725,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bản nháp xong · Kiểm tra thông tin"
+            "value" : "Bản nháp đã xong · Kiểm tra thông tin"
           }
         },
         "zh-Hans" : {
@@ -113843,7 +113843,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bản nháp đã xong · sửa gì cũng được"
+            "value" : "Bản nháp đã xong · Sửa gì cũng được"
           }
         },
         "zh-Hans" : {
@@ -114913,7 +114913,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bản nháp · %lld — Đang làm"
+            "value" : "Bản nháp · %lld · Đang làm"
           }
         },
         "zh-Hans" : {
@@ -117166,7 +117166,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "vd. sữa yến mạch barista"
+            "value" : "VD: Sữa yến mạch Barista"
           }
         },
         "zh-Hans" : {
@@ -117285,7 +117285,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "vd: tên thương hiệu"
+            "value" : "VD: Tên thương hiệu"
           }
         },
         "zh-Hans" : {
@@ -117403,7 +117403,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "vd. tuyên bố về sức khỏe, tên đối thủ"
+            "value" : "VD: Tuyên bố về sức khỏe, tên đối thủ"
           }
         },
         "zh-Hans" : {
@@ -117522,7 +117522,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "vd: y tá trực đêm"
+            "value" : "VD: Y tá trực đêm"
           }
         },
         "zh-Hans" : {
@@ -117640,7 +117640,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "vd. Oat & Co."
+            "value" : "VD: Oat & Co."
           }
         },
         "zh-Hans" : {
@@ -117759,7 +117759,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "vd: Ok, nói thật nhé."
+            "value" : "VD: Ok, nói thật nhé."
           }
         },
         "zh-Hans" : {
@@ -117878,7 +117878,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "vd: y tá có chứng chỉ hành nghề"
+            "value" : "VD: Y tá có chứng chỉ hành nghề"
           }
         },
         "zh-Hans" : {
@@ -117997,7 +117997,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "vd: meal prep thuần chay, F1, tarot"
+            "value" : "VD: Meal prep thuần chay, F1, tarot"
           }
         },
         "zh-Hans" : {
@@ -118116,7 +118116,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "vd: nhiếp ảnh gia đám cưới, huấn luyện viên cờ vua"
+            "value" : "VD: Nhiếp ảnh gia đám cưới, huấn luyện viên cờ vua"
           }
         },
         "zh-Hans" : {
@@ -122377,7 +122377,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "kết"
+            "value" : "kết thúc"
           }
         },
         "zh-Hans" : {
@@ -123797,7 +123797,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Giải trí"
+            "value" : "Nghệ sĩ giải trí"
           }
         },
         "zh-Hans" : {
@@ -125105,7 +125105,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mỗi 4"
+            "value" : "Mỗi 4 nhịp"
           }
         },
         "zh-Hans" : {
@@ -125224,7 +125224,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mỗi 2"
+            "value" : "Mỗi 2 nhịp"
           }
         },
         "zh-Hans" : {
@@ -125818,7 +125818,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mọi clip đã có giao diện này"
+            "value" : "Mọi clip đã có diện mạo này"
           }
         },
         "zh-Hans" : {
@@ -126765,7 +126765,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mọi người nói chung"
+            "value" : "Người bình thường"
           }
         },
         "zh-Hans" : {
@@ -129731,7 +129731,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Giải thích cách bắt đầu tủ đồ con nhộng, từng bước một."
+            "value" : "Giải thích cách bắt đầu tủ đồ capsule, từng bước một."
           }
         },
         "zh-Hans" : {
@@ -133530,7 +133530,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tạo cảm giác gấp giả"
+            "value" : "Thúc ép giả tạo"
           }
         },
         "zh-Hans" : {
@@ -136257,7 +136257,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tìm quãng lặng và đoạn lặp. Bạn chọn đoạn nào giữ lại."
+            "value" : "Tìm khoảng dừng và đoạn lặp. Bạn chọn đoạn nào giữ lại."
           }
         },
         "zh-Hans" : {
@@ -138509,7 +138509,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ĐOẠN ĐẦU TIÊN · HÔM NAY"
+            "value" : "CẢNH QUAY ĐẦU TIÊN · HÔM NAY"
           }
         },
         "zh-Hans" : {
@@ -141469,7 +141469,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Theo khuôn mặt dùng với Lấp đầy"
+            "value" : "Theo khuôn mặt chỉ dùng được với Lấp đầy"
           }
         },
         "zh-Hans" : {
@@ -143601,7 +143601,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dành cho kính beam-splitter"
+            "value" : "Dành cho kính phản chiếu"
           }
         },
         "zh-Hans" : {
@@ -143719,7 +143719,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cho bộ teleprompter có kính phản chiếu"
+            "value" : "Dành cho bộ teleprompter có kính phản chiếu"
           }
         },
         "zh-Hans" : {
@@ -146273,7 +146273,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "XUẤT MIỄN PHÍ"
+            "value" : "LƯỢT XUẤT MIỄN PHÍ"
           }
         },
         "zh-Hans" : {
@@ -148529,7 +148529,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Từ Tệp. Chỉ dùng nhạc của bạn hoặc bạn có quyền — không thể thêm bài hát từ Apple Music."
+            "value" : "Từ Tệp. Chỉ dùng nhạc của bạn hoặc nhạc bạn có quyền sử dụng. Không thể thêm bài hát từ Apple Music."
           }
         },
         "zh-Hans" : {
@@ -149004,7 +149004,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Từ điều khiển, bạn có thể"
+            "value" : "Với điều khiển từ xa, bạn có thể"
           }
         },
         "zh-Hans" : {
@@ -149122,7 +149122,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Từ cả take"
+            "value" : "Từ cả cảnh quay"
           }
         },
         "zh-Hans" : {
@@ -149241,7 +149241,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Từ nhật ký của bạn"
+            "value" : "Từ Nhật ký của bạn"
           }
         },
         "zh-Hans" : {
@@ -151375,7 +151375,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SẴN SÀNG"
+            "value" : "CHUẨN BỊ"
           }
         },
         "zh-Hans" : {
@@ -152323,7 +152323,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bắt đầu"
+            "value" : "Làm quen"
           }
         },
         "zh-Hans" : {
@@ -152797,7 +152797,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đang chuẩn bị đoạn quay"
+            "value" : "Đang chuẩn bị cảnh quay"
           }
         },
         "zh-Hans" : {
@@ -157665,7 +157665,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đang nghe khoảng lặng như cũ"
+            "value" : "Đang nghe khoảng dừng như cũ"
           }
         },
         "zh-Hans" : {
@@ -158612,7 +158612,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đây là cách mình làm %@ — từ đầu đến cuối. [dừng]"
+            "value" : "Đây là cách mình làm %@, từ đầu đến cuối. [dừng]"
           }
         },
         "zh-Hans" : {
@@ -160862,7 +160862,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Màu nhấn"
+            "value" : "Màu tô sáng"
           }
         },
         "zh-Hans" : {
@@ -161338,7 +161338,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Giữ micro để ghi lại một ý tưởng. Viết sau."
+            "value" : "Giữ micrô để ghi lại một ý tưởng. Viết sau."
           }
         },
         "zh-Hans" : {
@@ -162286,7 +162286,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MỞ ĐẦU"
+            "value" : "HOOK"
           }
         },
         "zh-Hans" : {
@@ -162522,7 +162522,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Biến thể câu mở đầu, phiên bản theo nền tảng, chọn take hay nhất"
+            "value" : "Biến thể hook, phiên bản theo nền tảng, chọn cảnh quay tốt nhất"
           }
         },
         "zh-Hans" : {
@@ -162759,7 +162759,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quan điểm gắt / trả lời"
+            "value" : "Quan điểm nóng / trả lời"
           }
         },
         "zh-Hans" : {
@@ -162877,7 +162877,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quan điểm gắt: %@"
+            "value" : "Quan điểm nóng: %@"
           }
         },
         "zh-Hans" : {
@@ -163113,7 +163113,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bạn nói trước máy quay thế nào?"
+            "value" : "Bạn nói trước camera thế nào?"
           }
         },
         "zh-Hans" : {
@@ -164412,7 +164412,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video của bạn có bao nhiêu hài hước?"
+            "value" : "Video của bạn hài hước đến mức nào?"
           }
         },
         "zh-Hans" : {
@@ -166193,7 +166193,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uống nước trước caffeine — hiệu quả hơn hẳn."
+            "value" : "Uống nước trước caffeine, hiệu quả hơn hẳn."
           }
         },
         "zh-Hans" : {
@@ -167021,7 +167021,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mình tin điều này nhiều năm — cho đến khi kiểm tra."
+            "value" : "Mình tin điều này nhiều năm, cho đến khi kiểm tra lại."
           }
         },
         "zh-Hans" : {
@@ -167847,7 +167847,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mình thử đủ cả — đây là những cái mình giữ lại."
+            "value" : "Mình thử đủ cả. Đây là những cái mình giữ lại."
           }
         },
         "zh-Hans" : {
@@ -173784,7 +173784,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ra trước"
+            "value" : "Đưa lên trước"
           }
         },
         "zh-Hans" : {
@@ -176860,7 +176860,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gợi ý được chèn tại vị trí con trỏ và ở lại trên thanh cho mọi kịch bản."
+            "value" : "Chỉ dẫn được chèn tại vị trí con trỏ và ở lại trên thanh cho mọi kịch bản."
           }
         },
         "zh-Hans" : {
@@ -178518,7 +178518,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đăng ký chờ — link ở bio"
+            "value" : "Đăng ký danh sách chờ: link ở bio"
           }
         },
         "zh-Hans" : {
@@ -179346,7 +179346,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chỉ cần chủ đề và các ý của bạn. Cue viết danh sách đánh số, có hook ở đầu và lời mời bình luận ở cuối."
+            "value" : "Chỉ cần chủ đề và các ý của bạn. Cue soạn nháp danh sách đánh số, có hook ở đầu và lời mời bình luận ở cuối."
           }
         },
         "zh-Hans" : {
@@ -179818,7 +179818,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Giữ ít nhất một đoạn"
+            "value" : "Giữ ít nhất một phần"
           }
         },
         "zh-Hans" : {
@@ -183958,7 +183958,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "LẦN XUẤT MIỄN PHÍ CUỐI"
+            "value" : "LƯỢT XUẤT MIỄN PHÍ CUỐI"
           }
         },
         "zh-Hans" : {
@@ -187746,7 +187746,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dòng %1$lld trên %2$lld"
+            "value" : "Dòng %1$lld/%2$lld"
           }
         },
         "zh-Hans" : {
@@ -190464,7 +190464,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Danh sách"
+            "value" : "Dạng danh sách"
           }
         },
         "zh-Hans" : {
@@ -191883,7 +191883,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "nhìn vào camera"
+            "value" : "nhìn camera"
           }
         },
         "zh-Hans" : {
@@ -192002,7 +192002,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã sao chép giao diện · chọn clip rồi Dán giao diện"
+            "value" : "Đã sao chép diện mạo · chọn clip rồi Dán diện mạo"
           }
         },
         "zh-Hans" : {
@@ -192121,7 +192121,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chỉ kiểu dáng: không gồm chữ hay ảnh."
+            "value" : "Chỉ diện mạo: không gồm chữ hay ảnh."
           }
         },
         "zh-Hans" : {
@@ -192240,7 +192240,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã dán giao diện cho mọi clip"
+            "value" : "Đã dán diện mạo cho mọi clip"
           }
         },
         "zh-Hans" : {
@@ -192359,7 +192359,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã dán giao diện"
+            "value" : "Đã dán diện mạo"
           }
         },
         "zh-Hans" : {
@@ -194251,7 +194251,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rút ngắn, hoặc quay luôn — bạn có thể cắt sau."
+            "value" : "Rút ngắn, hoặc quay luôn. Bạn có thể cắt bớt sau."
           }
         },
         "zh-Hans" : {
@@ -196626,7 +196626,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Có thể cố ý — để nhấn mạnh"
+            "value" : "Có thể cố ý, để nhấn mạnh"
           }
         },
         "zh-Hans" : {
@@ -198286,7 +198286,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mic"
+            "value" : "Micrô"
           }
         },
         "zh-Hans" : {
@@ -198640,7 +198640,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Micrô tắt"
+            "value" : "Micrô đang tắt"
           }
         },
         "zh-Hans" : {
@@ -198995,7 +198995,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "quảng cáo giữa"
+            "value" : "quảng cáo giữa video"
           }
         },
         "zh-Hans" : {
@@ -199231,7 +199231,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Có thể có ý nghĩa — nghe trước đã"
+            "value" : "Có thể có ý nghĩa, nghe trước đã"
           }
         },
         "zh-Hans" : {
@@ -202326,7 +202326,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Năng lượng hơn"
+            "value" : "Sôi nổi hơn"
           }
         },
         "zh-Hans" : {
@@ -202682,7 +202682,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Giống mình hơn"
+            "value" : "Giống tôi hơn"
           }
         },
         "zh-Hans" : {
@@ -207898,7 +207898,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "GIỌNG CUE CỦA TÔI"
+            "value" : "MY CUE VOICE"
           }
         },
         "zh-Hans" : {
@@ -208253,7 +208253,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuộc gọi đầu tiên với nhãn hàng — và camera bị đơ"
+            "value" : "Cuộc gọi đầu tiên với nhãn hàng, và camera bị đơ"
           }
         },
         "zh-Hans" : {
@@ -209319,7 +209319,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phong cách của tôi"
+            "value" : "Kiểu của tôi"
           }
         },
         "zh-Hans" : {
@@ -212396,7 +212396,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gợi ý mới"
+            "value" : "Chỉ dẫn mới"
           }
         },
         "zh-Hans" : {
@@ -216673,7 +216673,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Không bị giọng chuột khi tăng tốc"
+            "value" : "Không bị méo giọng khi tăng tốc"
           }
         },
         "zh-Hans" : {
@@ -216792,7 +216792,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Không có khung mẫu"
+            "value" : "Không có khung cắt mẫu"
           }
         },
         "zh-Hans" : {
@@ -216910,7 +216910,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Không có gợi ý"
+            "value" : "Không có chỉ dẫn"
           }
         },
         "zh-Hans" : {
@@ -217384,7 +217384,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Không có mặt"
+            "value" : "Không thấy mặt"
           }
         },
         "zh-Hans" : {
@@ -220231,7 +220231,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chưa kết nối điều khiển"
+            "value" : "Chưa kết nối điều khiển từ xa"
           }
         },
         "zh-Hans" : {
@@ -220350,7 +220350,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chưa có điều khiển"
+            "value" : "Chưa có điều khiển từ xa"
           }
         },
         "zh-Hans" : {
@@ -222245,7 +222245,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "không logo mờ"
+            "value" : "không hình mờ"
           }
         },
         "zh-Hans" : {
@@ -222363,7 +222363,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "KHÔNG LOGO MỜ"
+            "value" : "KHÔNG HÌNH MỜ"
           }
         },
         "zh-Hans" : {
@@ -222718,7 +222718,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Không"
+            "value" : "Không có"
           }
         },
         "zh-Hans" : {
@@ -222955,7 +222955,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thường"
+            "value" : "Bình thường"
           }
         },
         "zh-Hans" : {
@@ -223073,7 +223073,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chưa yêu cầu"
+            "value" : "Chưa được hỏi"
           }
         },
         "zh-Hans" : {
@@ -227221,7 +227221,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thông báo đến yên lặng"
+            "value" : "Thông báo được gửi im lặng"
           }
         },
         "zh-Hans" : {
@@ -229121,7 +229121,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nói thật nhé — chuyện này quan trọng."
+            "value" : "Ok, nói thật nhé: chuyện này quan trọng."
           }
         },
         "zh-Hans" : {
@@ -232558,7 +232558,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chỉ phụ đề nhỏ này thay đổi"
+            "value" : "Chỉ tiêu đề phụ này thay đổi"
           }
         },
         "zh-Hans" : {
@@ -233624,7 +233624,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mở nhật ký ›"
+            "value" : "Mở Nhật ký ›"
           }
         },
         "zh-Hans" : {
@@ -233742,7 +233742,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mở điều khiển"
+            "value" : "Mở điều khiển từ xa"
           }
         },
         "zh-Hans" : {
@@ -237643,7 +237643,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Viền người tôi"
+            "value" : "Viền quanh tôi"
           }
         },
         "zh-Hans" : {
@@ -238234,7 +238234,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nhịp"
+            "value" : "Nhịp độ"
           }
         },
         "zh-Hans" : {
@@ -238708,7 +238708,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thêm câu quảng cáo có tài trợ ở đầu"
+            "value" : "Câu hợp tác trả phí ở đầu"
           }
         },
         "zh-Hans" : {
@@ -240249,7 +240249,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dán giao diện"
+            "value" : "Dán diện mạo"
           }
         },
         "zh-Hans" : {
@@ -241668,7 +241668,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Khoảng lặng"
+            "value" : "Khoảng dừng"
           }
         },
         "zh-Hans" : {
@@ -241786,7 +241786,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Khoảng lặng dài hơn"
+            "value" : "Khoảng dừng dài hơn"
           }
         },
         "zh-Hans" : {
@@ -241904,7 +241904,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kết quả"
+            "value" : "Cú chốt"
           }
         },
         "zh-Hans" : {
@@ -242496,7 +242496,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gợi ý diễn xuất như DỪNG hoặc CƯỜI"
+            "value" : "Chỉ dẫn diễn xuất như DỪNG hoặc CƯỜI"
           }
         },
         "zh-Hans" : {
@@ -245221,7 +245221,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cụm từ · Đã xoá"
+            "value" : "Cụm từ · Đã xóa"
           }
         },
         "zh-Hans" : {
@@ -246409,7 +246409,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chọn một kiểu trong Phong cách để tạo kiểu cho từng dòng."
+            "value" : "Chọn một mẫu trong Kiểu để tạo kiểu riêng cho từng dòng."
           }
         },
         "zh-Hans" : {
@@ -246527,7 +246527,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chọn một mạng"
+            "value" : "Chọn một mạng xã hội"
           }
         },
         "zh-Hans" : {
@@ -249845,7 +249845,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Viên thuốc"
+            "value" : "Viên nhộng"
           }
         },
         "zh-Hans" : {
@@ -252096,7 +252096,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đang phát bản gốc — chạm để dừng"
+            "value" : "Đang phát bản gốc · chạm để dừng"
           }
         },
         "zh-Hans" : {
@@ -255771,7 +255771,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đăng lên %lld mạng"
+            "value" : "Đăng lên %lld mạng xã hội"
           }
         },
         "zh-Hans" : {
@@ -257071,7 +257071,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Luyện tập với máy nhắc chữ"
+            "value" : "Luyện tập với teleprompter"
           }
         },
         "zh-Hans" : {
@@ -257544,7 +257544,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cài đặt sẵn tự cập nhật khi nền tảng thay đổi."
+            "value" : "Mẫu có sẵn tự cập nhật khi nền tảng thay đổi."
           }
         },
         "zh-Hans" : {
@@ -261916,7 +261916,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Minh chứng · %lld/%lld ví dụ"
+            "value" : "Bằng chứng · %lld/%lld ví dụ"
           }
         },
         "zh-Hans" : {
@@ -262628,7 +262628,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cú đấm"
+            "value" : "Phóng mạnh"
           }
         },
         "zh-Hans" : {
@@ -264050,7 +264050,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đặt nó lên thứ cần bám theo tại đầu phát, rồi chạm Bám theo. Cue tạo các keyframe bạn có thể chỉnh."
+            "value" : "Đặt nó lên thứ cần bám theo tại đầu phát, rồi chạm Bám theo. Cue tạo các khung hình chính bạn có thể chỉnh."
           }
         },
         "zh-Hans" : {
@@ -265352,7 +265352,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nhanh thôi — ba thói quen đã thay đổi tất cả!"
+            "value" : "Nhanh thôi: ba thói quen đã thay đổi tất cả!"
           }
         },
         "zh-Hans" : {
@@ -269972,7 +269972,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sẵn sàng quay · Shape thêm gợi ý"
+            "value" : "Sẵn sàng quay · Shape thêm chỉ dẫn"
           }
         },
         "zh-Hans" : {
@@ -271039,7 +271039,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gợi ý"
+            "value" : "Đề xuất"
           }
         },
         "zh-Hans" : {
@@ -271630,7 +271630,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hãy quay một kịch bản. Mọi take sẽ nằm ở đây."
+            "value" : "Hãy quay một kịch bản. Mọi cảnh quay sẽ nằm ở đây."
           }
         },
         "zh-Hans" : {
@@ -271985,7 +271985,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quay lại"
+            "value" : "Quay lần nữa"
           }
         },
         "zh-Hans" : {
@@ -274232,7 +274232,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quay lại bao nhiêu lần cũng được. Bạn chọn cảnh quay được đăng."
+            "value" : "Quay bao nhiêu lần cũng được. Bạn chọn cảnh quay được đăng."
           }
         },
         "zh-Hans" : {
@@ -275537,7 +275537,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Điều khiển"
+            "value" : "Điều khiển từ xa"
           }
         },
         "zh-Hans" : {
@@ -275655,7 +275655,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã kết nối điều khiển"
+            "value" : "Đã kết nối điều khiển từ xa"
           }
         },
         "zh-Hans" : {
@@ -275773,7 +275773,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã kết nối điều khiển"
+            "value" : "Đã kết nối điều khiển từ xa"
           }
         },
         "zh-Hans" : {
@@ -276009,7 +276009,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Điều khiển từ Apple Watch, iPad và đồng bộ Mac"
+            "value" : "Điều khiển từ xa bằng Apple Watch, iPad và đồng bộ với Mac"
           }
         },
         "zh-Hans" : {
@@ -276787,7 +276787,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bỏ %lld khoảng lặng"
+            "value" : "Bỏ %lld khoảng dừng"
           }
         },
         "zh-Hans" : {
@@ -277379,7 +277379,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Xóa quãng lặng"
+            "value" : "Bỏ khoảng dừng"
           }
         },
         "zh-Hans" : {
@@ -278121,7 +278121,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã xóa %1$lld · %2$@"
+            "value" : "Đã bỏ %1$lld · %2$@"
           }
         },
         "zh-Hans" : {
@@ -281713,7 +281713,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đặt lại về khuyên dùng"
+            "value" : "Đặt lại về mức đề xuất"
           }
         },
         "zh-Hans" : {
@@ -282778,7 +282778,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quay lại"
+            "value" : "Quay lần nữa"
           }
         },
         "zh-Hans" : {
@@ -283727,7 +283727,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Xem lại quãng lặng và đoạn lặp"
+            "value" : "Xem lại khoảng dừng và đoạn lặp"
           }
         },
         "zh-Hans" : {
@@ -283846,7 +283846,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Review những sản phẩm không như lời đồn và nói lý do."
+            "value" : "Đánh giá những sản phẩm không như lời đồn và nói lý do."
           }
         },
         "zh-Hans" : {
@@ -286224,7 +286224,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "VÙNG AN TOÀN TẮT"
+            "value" : "VÙNG AN TOÀN: TẮT"
           }
         },
         "zh-Hans" : {
@@ -286342,7 +286342,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "VÙNG AN TOÀN BẬT"
+            "value" : "VÙNG AN TOÀN: BẬT"
           }
         },
         "zh-Hans" : {
@@ -289905,7 +289905,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã lưu trong Take · xuất bằng Pro bất cứ lúc nào"
+            "value" : "Đã lưu trong Cảnh quay · xuất bằng Pro bất cứ lúc nào"
           }
         },
         "zh-Hans" : {
@@ -290023,7 +290023,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã lưu trong Take · không mất gì cả. Bạn đã dùng hết %lld lượt xuất miễn phí."
+            "value" : "Đã lưu trong Cảnh quay · không mất gì cả. Bạn đã dùng hết %lld lượt xuất miễn phí."
           }
         },
         "zh-Hans" : {
@@ -291444,7 +291444,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đang chừa chỗ cho quãng nghỉ"
+            "value" : "Đang chừa chỗ cho khoảng dừng"
           }
         },
         "zh-Hans" : {
@@ -295948,7 +295948,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kịch bản dùng"
+            "value" : "Kịch bản xưng"
           }
         },
         "zh-Hans" : {
@@ -297604,7 +297604,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Xem trong Take ›"
+            "value" : "Xem trong Cảnh quay ›"
           }
         },
         "zh-Hans" : {
@@ -301038,7 +301038,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nghiêm túc — không phô trương"
+            "value" : "Nghiêm túc, không phô trương"
           }
         },
         "zh-Hans" : {
@@ -302340,7 +302340,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cài đặt › Điều khiển"
+            "value" : "Cài đặt › Điều khiển từ xa"
           }
         },
         "zh-Hans" : {
@@ -302576,7 +302576,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dẫn dắt, bước ngoặt, kết quả"
+            "value" : "Dẫn dắt, bước ngoặt, cú chốt"
           }
         },
         "zh-Hans" : {
@@ -305538,7 +305538,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chia sẻ lên %lld mạng"
+            "value" : "Chia sẻ lên %lld mạng xã hội"
           }
         },
         "zh-Hans" : {
@@ -306604,7 +306604,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ĐÃ CHIA SẺ LÊN %lld MẠNG"
+            "value" : "ĐÃ CHIA SẺ LÊN %lld MẠNG XÃ HỘI"
           }
         },
         "zh-Hans" : {
@@ -309681,7 +309681,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hiện gợi ý"
+            "value" : "Hiện chỉ dẫn"
           }
         },
         "zh-Hans" : {
@@ -319517,7 +319517,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Một số văn bản bị loại khỏi các đoạn trích: có từ mà Apple Intelligence không học."
+            "value" : "Một số văn bản bị loại khỏi các đoạn trích vì có từ mà Apple Intelligence không học."
           }
         },
         "zh-Hans" : {
@@ -319635,7 +319635,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Có bạn hỏi trong bình luận — để mình trả lời."
+            "value" : "Có bạn hỏi trong bình luận, để mình trả lời nhé."
           }
         },
         "zh-Hans" : {
@@ -322005,7 +322005,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chia hoặc thêm clip để sắp xếp lại"
+            "value" : "Tách hoặc thêm clip để sắp xếp lại"
           }
         },
         "zh-Hans" : {
@@ -322243,7 +322243,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nói · %@ · %@"
+            "value" : "Đã nói · %@ · %@"
           }
         },
         "zh-Hans" : {
@@ -325794,7 +325794,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bắt đầu từ đây"
+            "value" : "Bắt đầu từ ý này"
           }
         },
         "zh-Hans" : {
@@ -327334,7 +327334,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nêu quan điểm trong một câu, đưa một lý do, kết bằng một câu hỏi — câu hỏi kéo bình luận."
+            "value" : "Nêu quan điểm trong một câu, đưa một lý do, kết bằng một câu hỏi, vì câu hỏi kéo bình luận."
           }
         },
         "zh-Hans" : {
@@ -327689,7 +327689,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã ổn định · không cần phóng"
+            "value" : "Đã ổn định · không cần thu phóng"
           }
         },
         "zh-Hans" : {
@@ -327807,7 +327807,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lấy luôn hệ thống của mình — đơn giản hơn bạn nghĩ."
+            "value" : "Lấy luôn hệ thống của mình, đơn giản hơn bạn nghĩ."
           }
         },
         "zh-Hans" : {
@@ -328050,7 +328050,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bước %1$lld trên %2$lld"
+            "value" : "Bước %1$lld/%2$lld"
           }
         },
         "zh-Hans" : {
@@ -329232,7 +329232,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dừng đọc"
+            "value" : "Dừng đọc chính tả"
           }
         },
         "zh-Hans" : {
@@ -330533,7 +330533,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kể chuyện nè — và đúng vậy, kết thúc có hậu."
+            "value" : "Kể chuyện nè, và đúng vậy, kết thúc có hậu."
           }
         },
         "zh-Hans" : {
@@ -331718,7 +331718,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lời chửi thề nặng và lời xúc phạm không bao giờ được viết — Apple Intelligence sẽ không tạo ra."
+            "value" : "Lời chửi thề nặng và lời xúc phạm không bao giờ được viết: Apple Intelligence sẽ không tạo ra chúng."
           }
         },
         "zh-Hans" : {
@@ -332664,7 +332664,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studio cũng dùng các mục này. Màn hình luôn sáng khi prompter đang mở."
+            "value" : "Studio cũng dùng các mục này. Màn hình luôn sáng khi teleprompter đang mở."
           }
         },
         "zh-Hans" : {
@@ -333613,7 +333613,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kiểu cho tất cả"
+            "value" : "Áp dụng kiểu cho tất cả"
           }
         },
         "zh-Hans" : {
@@ -334442,7 +334442,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phụ đề nhỏ"
+            "value" : "Tiêu đề phụ"
           }
         },
         "zh-Hans" : {
@@ -336462,7 +336462,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TAKE %lld"
+            "value" : "CẢNH QUAY %lld"
           }
         },
         "zh-Hans" : {
@@ -336581,7 +336581,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cảnh quay %1$lld / %2$lld"
+            "value" : "Cảnh quay %1$lld/%2$lld"
           }
         },
         "zh-Hans" : {
@@ -336707,7 +336707,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TAKE %lld / %lld"
+            "value" : "CẢNH QUAY %1$lld/%2$lld"
           }
         },
         "zh-Hans" : {
@@ -338362,7 +338362,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chạm Xong trong trình chỉnh sửa, hoặc chọn cảnh quay tốt nhất — video sẽ hiện ở đây, sẵn sàng đăng."
+            "value" : "Chạm Xong trong trình chỉnh sửa, hoặc chọn cảnh quay tốt nhất. Video sẽ hiện ở đây, sẵn sàng đăng."
           }
         },
         "zh-Hans" : {
@@ -341443,7 +341443,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dạy Cue cách bạn nói — không bao giờ dùng lại cho câu chuyện, ý kiến hay kết quả. Chỉ lưu trên iPhone này."
+            "value" : "Dạy Cue cách bạn nói, không bao giờ dùng lại cho câu chuyện, ý kiến hay kết quả. Chỉ lưu trên iPhone này."
           }
         },
         "zh-Hans" : {
@@ -344760,7 +344760,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cửa sổ chữ"
+            "value" : "Khung chữ"
           }
         },
         "zh-Hans" : {
@@ -345232,7 +345232,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Văn bản trên video"
+            "value" : "Chữ trên video"
           }
         },
         "zh-Hans" : {
@@ -348670,7 +348670,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Màu nhấn sẽ đổi để từ đang nói nổi bật: %@."
+            "value" : "Màu tô sáng sẽ đổi để từ đang nói nổi bật: %@."
           }
         },
         "zh-Hans" : {
@@ -349382,7 +349382,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Micrô đang tắt với Cue. Hãy bật trong Cài đặt để đọc, hoặc gõ ý tưởng của bạn."
+            "value" : "Micrô đang tắt với Cue. Hãy bật trong Cài đặt để đọc chính tả, hoặc gõ ý tưởng của bạn."
           }
         },
         "zh-Hans" : {
@@ -351164,7 +351164,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cảnh quay"
+            "value" : "Bối cảnh"
           }
         },
         "zh-Hans" : {
@@ -352942,7 +352942,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video đã thay đổi trong lúc đó · hãy dừng hình lại"
+            "value" : "Video đã thay đổi trong lúc đó · Hãy dừng hình lại"
           }
         },
         "zh-Hans" : {
@@ -353180,7 +353180,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video đã thay đổi trong lúc đó · Hãy theo dõi lại"
+            "value" : "Video đã thay đổi trong lúc đó · Hãy bám theo lại"
           }
         },
         "zh-Hans" : {
@@ -353536,7 +353536,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cả dòng theo màu nổi bật"
+            "value" : "Cả dòng theo màu tô sáng"
           }
         },
         "zh-Hans" : {
@@ -355080,7 +355080,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clip này · máy quay di chuyển khi phát"
+            "value" : "Clip này · camera di chuyển khi phát"
           }
         },
         "zh-Hans" : {
@@ -355199,7 +355199,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clip này · giảm rung máy quay"
+            "value" : "Clip này · giảm rung camera"
           }
         },
         "zh-Hans" : {
@@ -355436,7 +355436,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clip này đã có giao diện này"
+            "value" : "Clip này đã có diện mạo này"
           }
         },
         "zh-Hans" : {
@@ -356029,7 +356029,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thiết bị này đang là điều khiển."
+            "value" : "Thiết bị này đang là điều khiển từ xa."
           }
         },
         "zh-Hans" : {
@@ -356265,7 +356265,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cái này giải quyết được. %@. [cho xem sản phẩm]"
+            "value" : "Cái này giải quyết được. %@. [giới thiệu sản phẩm]"
           }
         },
         "zh-Hans" : {
@@ -358045,7 +358045,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phụ đề nhỏ này"
+            "value" : "Tiêu đề phụ này"
           }
         },
         "zh-Hans" : {
@@ -359821,7 +359821,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ba nhịp là đủ: chuyện gì xảy ra, khoảnh khắc bước ngoặt, kết thúc ra sao. Cue thêm hook gây tò mò và gợi ý nhịp độ."
+            "value" : "Ba nhịp là đủ: chuyện gì xảy ra, khoảnh khắc bước ngoặt, kết thúc ra sao. Cue thêm hook gây tò mò và chỉ dẫn nhịp độ."
           }
         },
         "zh-Hans" : {
@@ -362544,7 +362544,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CẦN CHỌN · %lld ĐOẠN"
+            "value" : "CẦN CHỌN · %lld CẢNH QUAY"
           }
         },
         "zh-Hans" : {
@@ -365150,7 +365150,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ở góc trên bên trái màn hình. Cue sẽ đưa bạn tới mạng tiếp theo."
+            "value" : "Ở góc trên bên trái màn hình. Cue sẽ đưa bạn tới mạng xã hội tiếp theo."
           }
         },
         "zh-Hans" : {
@@ -365623,7 +365623,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã bám theo · %lld keyframe để chỉnh"
+            "value" : "Đã bám theo · %lld khung hình chính để chỉnh"
           }
         },
         "zh-Hans" : {
@@ -368462,7 +368462,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã bắt đầu dùng thử — tận hưởng Cue Pro nhé"
+            "value" : "Đã bắt đầu dùng thử · Tận hưởng Cue Pro nhé"
           }
         },
         "zh-Hans" : {
@@ -369290,7 +369290,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hãy thử chủ đề khác, hoặc gõ ý tưởng của bạn vào ô ý tưởng."
+            "value" : "Hãy thử chủ đề khác, hoặc gõ ý tưởng của bạn vào ô soạn."
           }
         },
         "zh-Hans" : {
@@ -369408,7 +369408,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thử từ khác, như tốc độ hoặc lật."
+            "value" : "Thử từ khác, như tốc độ hoặc lật gương."
           }
         },
         "zh-Hans" : {
@@ -370001,7 +370001,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thử trình chiếu video với phụ đề bằng ngôn ngữ khác."
+            "value" : "Thử giới thiệu video với phụ đề bằng ngôn ngữ khác."
           }
         },
         "zh-Hans" : {
@@ -372846,7 +372846,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nhập phụ đề nhỏ"
+            "value" : "Nhập tiêu đề phụ"
           }
         },
         "zh-Hans" : {
@@ -373082,7 +373082,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nhập của bạn"
+            "value" : "Tự nhập"
           }
         },
         "zh-Hans" : {
@@ -373201,7 +373201,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gõ · %@"
+            "value" : "Đã gõ · %@"
           }
         },
         "zh-Hans" : {
@@ -377578,7 +377578,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dùng iPhone này làm điều khiển"
+            "value" : "Dùng iPhone này làm điều khiển từ xa"
           }
         },
         "zh-Hans" : {
@@ -385869,7 +385869,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đang khởi động prompter"
+            "value" : "Đang khởi động teleprompter"
           }
         },
         "zh-Hans" : {
@@ -386461,7 +386461,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Xem nè — %@. [demo]"
+            "value" : "Xem nè: %@. [demo]"
           }
         },
         "zh-Hans" : {
@@ -391195,7 +391195,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Năng lượng của bạn trước máy quay thế nào?"
+            "value" : "Năng lượng của bạn trước camera thế nào?"
           }
         },
         "zh-Hans" : {
@@ -392143,7 +392143,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nơi nút và phụ đề của mỗi ứng dụng che khung hình"
+            "value" : "Nơi nút và chú thích của mỗi ứng dụng che khung hình"
           }
         },
         "zh-Hans" : {
@@ -394391,7 +394391,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cả take · một số clip giữ giá trị riêng"
+            "value" : "Toàn bộ cảnh quay · một số clip giữ giá trị riêng"
           }
         },
         "zh-Hans" : {
@@ -394510,7 +394510,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cả video · xử lý trên iPhone của bạn"
+            "value" : "Toàn bộ video · xử lý trên iPhone của bạn"
           }
         },
         "zh-Hans" : {
@@ -396879,7 +396879,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quét"
+            "value" : "Gạt"
           }
         },
         "zh-Hans" : {
@@ -399371,7 +399371,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Viết"
+            "value" : "Soạn nháp"
           }
         },
         "zh-Hans" : {
@@ -400201,7 +400201,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Viết quảng cáo"
+            "value" : "Soạn nháp quảng cáo"
           }
         },
         "zh-Hans" : {
@@ -400794,7 +400794,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Được viết trên iPhone này bằng Apple Intelligence. Không có gì rời khỏi thiết bị của bạn."
+            "value" : "Được soạn nháp trên iPhone này bằng Apple Intelligence. Không có gì rời khỏi thiết bị của bạn."
           }
         },
         "zh-Hans" : {
@@ -400913,7 +400913,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đã viết được"
+            "value" : "Đã soạn nháp được"
           }
         },
         "zh-Hans" : {
@@ -401861,7 +401861,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Có — chia sẻ lên mạng xã hội"
+            "value" : "Có, chia sẻ lên mạng xã hội"
           }
         },
         "zh-Hans" : {
@@ -402808,7 +402808,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Các bạn yêu cầu — nó đây rồi."
+            "value" : "Các bạn yêu cầu, nó đây rồi."
           }
         },
         "zh-Hans" : {
@@ -407792,7 +407792,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ý tưởng của bạn đã được bắt đầu"
+            "value" : "Bạn đã bắt đầu ý tưởng này"
           }
         },
         "zh-Hans" : {
@@ -408154,7 +408154,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ánh sáng của bạn. Nó lớn lên cùng mỗi video bạn chia sẻ — không cần ảnh."
+            "value" : "Ánh sáng của bạn. Nó lớn dần với mỗi video bạn chia sẻ, không cần ảnh."
           }
         },
         "zh-Hans" : {
@@ -408629,7 +408629,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ý tưởng tiếp theo có thể bắt đầu một cái."
+            "value" : "Ý tưởng tiếp theo của bạn có thể mở đầu một kịch bản."
           }
         },
         "zh-Hans" : {
@@ -411118,7 +411118,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Đoạn quay sẽ được đọc và đặt lên timeline trong giây lát."
+            "value" : "Cảnh quay của bạn sẽ được đọc và đặt lên dòng thời gian trong giây lát."
           }
         },
         "zh-Hans" : {
@@ -412542,7 +412542,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video đúng như bạn đã quay. Chọn Làm mờ, Màu hoặc Hình ảnh để đổi phần phía sau bạn."
+            "value" : "Video đúng như bạn đã quay. Chọn Mờ, Màu hoặc Hình ảnh để đổi phần phía sau bạn."
           }
         },
         "zh-Hans" : {

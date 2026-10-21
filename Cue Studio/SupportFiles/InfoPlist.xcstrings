@@ -136,7 +136,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue quay các bản quay của bạn bằng camera trong khi kịch bản cuộn ngay dưới ống kính."
+            "value" : "Cue dùng camera để quay các cảnh quay của bạn trong khi kịch bản cuộn ngay dưới ống kính."
           }
         },
         "zh-Hans" : {
@@ -262,7 +262,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue kết nối với iPhone hoặc iPad khác của bạn ở gần, để một thiết bị điều khiển máy nhắc chữ trên thiết bị kia."
+            "value" : "Cue kết nối với iPhone hoặc iPad khác của bạn ở gần, để một thiết bị điều khiển teleprompter trên thiết bị kia."
           }
         },
         "zh-Hans" : {
@@ -388,7 +388,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue ghi âm giọng bạn trong mỗi bản quay và cho phần lồng tiếng, có thể theo giọng bạn để cuộn kịch bản, và lắng nghe khi bạn đọc to một ý tưởng."
+            "value" : "Cue ghi âm giọng bạn trong mỗi cảnh quay và cho phần lồng tiếng, có thể theo giọng bạn để cuộn kịch bản, và lắng nghe khi bạn đọc chính tả một ý tưởng."
           }
         },
         "zh-Hans" : {
@@ -514,7 +514,7 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue lưu các bản quay bạn xuất vào thư viện ảnh."
+            "value" : "Cue lưu các cảnh quay bạn xuất vào thư viện ảnh."
           }
         },
         "zh-Hans" : {
