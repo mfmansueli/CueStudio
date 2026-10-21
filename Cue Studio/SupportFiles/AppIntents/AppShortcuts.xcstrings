@@ -421,7 +421,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "${applicationName} में ${script} रिकॉर्ड करो"
+            "value" : "${applicationName} में ${script} रिकॉर्ड करें"
           }
         },
         "id" : {
@@ -540,7 +540,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "${applicationName} में आइडिया सहेजें"
+            "value" : "${applicationName} में आइडिया सेव करें"
           }
         },
         "id" : {
