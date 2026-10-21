@@ -21,15 +21,15 @@ struct LocalizationCatalogTests {
         return table
     }
 
-    /// The specifiers of a string, without positions: how many of which kind.
-    private static func specifiers(in text: String) -> [String] {
+    /// The specifiers of a string, without positions: how many of which kind (`sorted`), or in the order they appear.
+    private static func specifiers(in text: String, sorted: Bool = true) -> [String] {
         var found: [String] = []
         var searchRange = text.startIndex..<text.endIndex
         while let range = text.range(of: specifierPattern, options: .regularExpression, range: searchRange) {
             found.append(text[range].replacingOccurrences(of: #"\d+\$"#, with: "", options: .regularExpression))
             searchRange = range.upperBound..<text.endIndex
         }
-        return found.sorted()
+        return sorted ? found.sorted() : found
     }
 
     /// An iPhone in a regional variant Cue has no localization of gets the language, not English, even with English
@@ -58,12 +58,19 @@ struct LocalizationCatalogTests {
         let leftInEnglish = missing.filter { key in key.contains { $0.isLetter } && key.split(separator: " ").count >= 3 }
         #expect(leftInEnglish.isEmpty, "\(language.interfaceLocalization) is missing \(leftInEnglish.count): \(leftInEnglish.prefix(5))")
         var mismatched: [String] = []
+        var reordered: [String] = []
         for (key, text) in table {
             guard let source = english[key] else { continue }
             if Self.specifiers(in: text) != Self.specifiers(in: source) { mismatched.append(key) }
+            // Unnumbered specifiers fill in order: a translation that moves "%@" before "%lld" without numbering them
+            // hands the number to the text one (a crash or garbage). Reordering needs %1$lld / %2$@.
+            if !text.contains("$"), Self.specifiers(in: text, sorted: false) != Self.specifiers(in: source, sorted: false) {
+                reordered.append(key)
+            }
             if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, !source.isEmpty { mismatched.append(key) }
         }
         #expect(mismatched.isEmpty, "\(language.interfaceLocalization): placeholders differ in \(mismatched.prefix(5))")
+        #expect(reordered.isEmpty, "\(language.interfaceLocalization): placeholders moved without numbers in \(reordered.prefix(5))")
     }
 
     @Test func theStringsThisWorkAddedAreInEveryLanguage() throws {
