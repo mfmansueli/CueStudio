@@ -862,7 +862,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“%@”"
+            "value" : "« %@ »"
           }
         },
         "hi" : {
@@ -980,7 +980,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« %@ » est vide"
+            "value" : "« %@ » est vide"
           }
         },
         "hi" : {
@@ -1216,7 +1216,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Super. Encore une astuce de vie. »"
+            "value" : "« Génial. Encore une astuce miracle. »"
           }
         },
         "hi" : {
@@ -1334,7 +1334,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Je ne dis jamais ça »"
+            "value" : "« Je ne dis pas ça »"
           }
         },
         "hi" : {
@@ -1452,7 +1452,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Voyons pourquoi. »"
+            "value" : "« Voyons pourquoi. »"
           }
         },
         "hi" : {
@@ -1570,7 +1570,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Ralentissons une seconde. »"
+            "value" : "« Ralentissons une seconde. »"
           }
         },
         "hi" : {
@@ -1688,7 +1688,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Mon réveil et moi, on n’est pas amis. »"
+            "value" : "« Mon réveil et moi, on n’est pas amis. »"
           }
         },
         "hi" : {
@@ -1806,7 +1806,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Bon, un truc rapide aujourd’hui… »"
+            "value" : "« Bon, un truc rapide aujourd’hui… »"
           }
         },
         "hi" : {
@@ -1924,7 +1924,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Alors voilà… »"
+            "value" : "« Alors voilà… »"
           }
         },
         "hi" : {
@@ -2042,7 +2042,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« C’est la méthode en laquelle j’ai confiance. »"
+            "value" : "« C’est la méthode à laquelle je me fie. »"
           }
         },
         "hi" : {
@@ -2160,7 +2160,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Trois étapes. Sans blabla. »"
+            "value" : "« Trois étapes. Sans blabla. »"
           }
         },
         "hi" : {
@@ -2279,7 +2279,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "« Nous » pour une entreprise, une marque ou une équipe. Vous faites plusieurs choses ? Choisissez ce que vous filmez le plus."
+            "value" : "« Nous » pour une entreprise, une marque ou une équipe. Vous faites plusieurs choses ? Choisissez ce que vous filmez le plus."
           }
         },
         "hi" : {
@@ -2870,7 +2870,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — annonce"
+            "value" : "%@ : annonce"
           }
         },
         "hi" : {
@@ -2988,7 +2988,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — avis honnête"
+            "value" : "%@ : avis honnête"
           }
         },
         "hi" : {
@@ -3106,7 +3106,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — lien dans ma bio. [regardez la caméra] Cette vidéo est un partenariat rémunéré."
+            "value" : "%@ : lien dans ma bio. [regardez la caméra] Cette vidéo est un partenariat rémunéré."
           }
         },
         "hi" : {
@@ -3224,7 +3224,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — sponsorisé"
+            "value" : "%@ : sponsorisé"
           }
         },
         "hi" : {
@@ -4575,7 +4575,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · PUBLIÉ EN SHORT"
+            "value" : "%@ · SERA UN SHORT"
           }
         },
         "hi" : {
@@ -4814,7 +4814,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · PARTAGÉS"
+            "value" : "%@ · PARTAGÉES"
           }
         },
         "hi" : {
@@ -5056,7 +5056,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ · TOUCHE-EN UNE AUTRE POUR CHANGER"
+            "value" : "%@ · TOUCHEZ-EN UNE AUTRE POUR CHANGER"
           }
         },
         "hi" : {
@@ -6607,7 +6607,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ est déjà commencé"
+            "value" : "%@ a déjà pris forme"
           }
         },
         "hi" : {
@@ -7568,7 +7568,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ RESTANTES"
+            "value" : "%@ RESTANT"
           }
         },
         "hi" : {
@@ -8879,7 +8879,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ au-dessus de %2$@"
+            "value" : "%1$@ au-delà de %2$@"
           }
         },
         "hi" : {
@@ -8997,7 +8997,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ au-dessus de l’idéal"
+            "value" : "%@ au-delà de l’idéal"
           }
         },
         "hi" : {
@@ -9115,7 +9115,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ZONE SÛRE · %@"
+            "value" : "ZONE SÛRE %@"
           }
         },
         "hi" : {
@@ -9590,7 +9590,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ partagés · effacer le filtre"
+            "value" : "%@ partagées · effacer le filtre"
           }
         },
         "hi" : {
@@ -10432,7 +10432,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ sous %2$@"
+            "value" : "%1$@ en deçà de %2$@"
           }
         },
         "hi" : {
@@ -10550,7 +10550,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ sous l’idéal"
+            "value" : "%@ en deçà de l’idéal"
           }
         },
         "hi" : {
@@ -11503,7 +11503,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ : l’erreur que font les débutants"
+            "value" : "%@ : l’erreur que font les débutants"
           }
         },
         "hi" : {
@@ -16252,7 +16252,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld MOMENTS · PRÊT À PARTAGER"
+            "value" : "%lld MOMENTS · PRÊTS À PARTAGER"
           }
         },
         "hi" : {
@@ -16850,7 +16850,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld SUR %2$lld · AJOUTE-EN OU CONTINUE"
+            "value" : "%1$lld SUR %2$lld · AJOUTEZ-EN OU CONTINUEZ"
           }
         },
         "hi" : {
@@ -16968,7 +16968,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld SUR %2$lld · AJOUTES-EN UN OU CONTINUE"
+            "value" : "%1$lld SUR %2$lld · AJOUTEZ-EN UN OU CONTINUEZ"
           }
         },
         "hi" : {
@@ -17087,7 +17087,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld sur %lld · Importés : %lld"
+            "value" : "%lld sur %lld · Importés : %lld"
           }
         },
         "hi" : {
@@ -17205,7 +17205,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld SUR %2$lld · TOUCHE-EN UN POUR L’ÉCHANGER"
+            "value" : "%1$lld SUR %2$lld · TOUCHEZ-EN UN POUR L’ÉCHANGER"
           }
         },
         "hi" : {
@@ -17922,7 +17922,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld SUR %lld RESTANT · EXPORTEZ AVEC PRO"
+            "value" : "%lld SUR %lld RESTANTS · EXPORTEZ AVEC PRO"
           }
         },
         "hi" : {
@@ -18041,7 +18041,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld parties sur %lld laissées telles que vous les avez écrites"
+            "value" : "%lld parties sur %lld laissées telles quelles"
           }
         },
         "hi" : {
@@ -20571,7 +20571,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld vidéos — encore %2$lld"
+            "value" : "%1$lld vidéos · encore %2$lld"
           }
         },
         "hi" : {
@@ -23027,7 +23027,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "série de %lld semaines"
+            "value" : "Série de %lld semaines"
           }
         },
         "hi" : {
@@ -23157,7 +23157,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld %%"
+            "value" : "%lld %%"
           }
         },
         "hi" : {
@@ -23515,7 +23515,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ Ajouter · 1 touche"
+            "value" : "+ Ajouter · 1 geste"
           }
         },
         "hi" : {
@@ -23871,7 +23871,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ Pas ici ? Ajoutez votre thème"
+            "value" : "+ Pas ici ? Ajoutez votre sujet"
           }
         },
         "hi" : {
@@ -24107,7 +24107,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ Le tien"
+            "value" : "+ Le vôtre"
           }
         },
         "hi" : {
@@ -24818,7 +24818,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Sous-titres ajoutés · Ensuite : partager"
+            "value" : "✓ Sous-titres ajoutés · Ensuite : partager"
           }
         },
         "hi" : {
@@ -25054,7 +25054,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Voix Cue complète"
+            "value" : "✓ Cue Voice complet"
           }
         },
         "hi" : {
@@ -25172,7 +25172,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Dans la cible %@"
+            "value" : "✓ Dans la plage %@"
           }
         },
         "hi" : {
@@ -25645,7 +25645,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Filmé · Ensuite : choisir une prise"
+            "value" : "✓ Filmé · Ensuite : choisir une prise"
           }
         },
         "hi" : {
@@ -25764,7 +25764,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Répété · Ensuite : filmer"
+            "value" : "✓ Répété · Ensuite : filmer"
           }
         },
         "hi" : {
@@ -26476,7 +26476,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ %lld%%"
+            "value" : "✦ %lld %%"
           }
         },
         "hi" : {
@@ -26831,7 +26831,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Cela vous ressemble ?"
+            "value" : "✦ Cela vous ressemble ?"
           }
         },
         "hi" : {
@@ -27068,7 +27068,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Rédiger mon brouillon"
+            "value" : "✦ Rédiger mon script"
           }
         },
         "hi" : {
@@ -27186,7 +27186,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ SUIT TA VOIX"
+            "value" : "✦ SUIVI DE VOTRE VOIX"
           }
         },
         "hi" : {
@@ -28255,7 +28255,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Écrire"
+            "value" : "✦ Rédiger"
           }
         },
         "hi" : {
@@ -30633,7 +30633,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4 questions rapides — environ 20 secondes. Rien à écrire."
+            "value" : "4 questions rapides, environ 20 secondes. Rien à écrire."
           }
         },
         "hi" : {
@@ -31224,7 +31224,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "12 préréglages conçus pour les vidéos au téléphone"
+            "value" : "12 préréglages pensés pour les vidéos filmées au téléphone"
           }
         },
         "hi" : {
@@ -32881,7 +32881,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une amie me l’a fait essayer — je lui dois bien ça."
+            "value" : "Une amie me l’a fait essayer, je lui dois bien ça."
           }
         },
         "hi" : {
@@ -33118,7 +33118,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un repère, pas une garantie · Jamais enregistré"
+            "value" : "Un repère, pas une garantie · Jamais filmé"
           }
         },
         "hi" : {
@@ -33946,7 +33946,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un instant de lumière à chaque étape"
+            "value" : "Un instant de lumière à chaque palier"
           }
         },
         "hi" : {
@@ -34064,7 +34064,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une nouvelle icône est à toi."
+            "value" : "Une nouvelle icône est à vous."
           }
         },
         "hi" : {
@@ -34663,7 +34663,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une phrase que tu dis toujours ?"
+            "value" : "Une phrase que vous dites toujours ?"
           }
         },
         "hi" : {
@@ -35136,7 +35136,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une garde-robe plus petite peut rendre l’habillage tellement plus simple."
+            "value" : "Avec moins de vêtements, s’habiller devient tellement plus simple."
           }
         },
         "hi" : {
@@ -35848,7 +35848,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une semaine, un petit sac, et rien qui te manquera."
+            "value" : "Une semaine, un petit sac, et rien qui vous manquera."
           }
         },
         "hi" : {
@@ -36676,7 +36676,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "J’ai compris"
+            "value" : "Reconnaître"
           }
         },
         "hi" : {
@@ -37270,7 +37270,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouter : %@"
+            "value" : "Ajouter : %@"
           }
         },
         "hi" : {
@@ -37506,7 +37506,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoutez une image clé, déplacez la tête de lecture, puis faites glisser la photo ou la vidéo — Cue la déplace entre les images clés."
+            "value" : "Ajoutez une image clé, déplacez la tête de lecture, puis faites glisser la photo ou la vidéo : Cue la déplace entre les images clés."
           }
         },
         "hi" : {
@@ -37624,7 +37624,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoutez une image clé, déplacez la tête de lecture, puis faites glisser le texte dans la vidéo — Cue le déplace entre les images clés."
+            "value" : "Ajoutez une image clé, déplacez la tête de lecture, puis faites glisser le texte dans la vidéo : Cue le déplace entre les images clés."
           }
         },
         "hi" : {
@@ -38097,7 +38097,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouter un exemple de ta voix"
+            "value" : "Ajouter un exemple de votre voix"
           }
         },
         "hi" : {
@@ -38689,7 +38689,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajoutez marque et produit"
+            "value" : "Ajoutez la marque et le produit"
           }
         },
         "hi" : {
@@ -40586,7 +40586,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ajouté avant chaque idée que vous envoyez à Cue — scripts, accroches, réponses, avec l’endroit où vous publiez et le format choisi. Jamais utilisé pour entraîner des modèles."
+            "value" : "Ajouté avant chaque idée que vous envoyez à Cue (scripts, accroches, réponses), avec l’endroit où vous publiez et le format choisi. Jamais utilisé pour entraîner des modèles."
           }
         },
         "hi" : {
@@ -40824,7 +40824,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu mets de l’huile dans l’eau des pâtes ? Parlons-en."
+            "value" : "Vous mettez de l’huile dans l’eau des pâtes ? Parlons-en."
           }
         },
         "hi" : {
@@ -42126,7 +42126,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Après la publication, touchez ◀ Cue en haut à gauche. Nous reviendrons pour terminer."
+            "value" : "Après la publication, touchez ◀ Cue en haut à gauche pour revenir et terminer."
           }
         },
         "hi" : {
@@ -42244,7 +42244,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Après la publication, touchez ◀ Cue en haut à gauche. Nous ouvrirons ensuite %@."
+            "value" : "Après la publication, touchez ◀ Cue en haut à gauche : %@ s’ouvrira ensuite."
           }
         },
         "hi" : {
@@ -43072,7 +43072,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visez environ 3 s. Voir des ouvertures plus courtes."
+            "value" : "Visez environ 3 s. Voir des accroches plus courtes."
           }
         },
         "hi" : {
@@ -45218,7 +45218,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Autorisez-le pour enregistrer votre vidéo."
+            "value" : "Autorisez l’accès pour enregistrer votre vidéo."
           }
         },
         "hi" : {
@@ -45929,7 +45929,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Déjà créés"
+            "value" : "Déjà programmés"
           }
         },
         "hi" : {
@@ -47240,7 +47240,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une idée vous attend dans votre journal de bord"
+            "value" : "Une idée vous attend dans votre Journal de bord"
           }
         },
         "hi" : {
@@ -47595,7 +47595,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Et là — %@. [temps]"
+            "value" : "Et là… %@. [temps]"
           }
         },
         "hi" : {
@@ -47713,7 +47713,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Et puis — %@. [souriez]"
+            "value" : "Et puis… %@. [souriez]"
           }
         },
         "hi" : {
@@ -47832,7 +47832,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Angle : %@"
+            "value" : "Angle : %@"
           }
         },
         "hi" : {
@@ -49133,7 +49133,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réponds simplement à la question de débutant la plus courante."
+            "value" : "Répondez simplement à la question de débutant la plus courante."
           }
         },
         "hi" : {
@@ -49252,7 +49252,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réponds simplement à la question que tous les débutants posent."
+            "value" : "Répondez simplement à la question que tous les débutants posent."
           }
         },
         "hi" : {
@@ -49370,7 +49370,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une phrase que vous répétez toujours ?"
+            "value" : "Une phrase que vous répétez toujours ?"
           }
         },
         "hi" : {
@@ -49488,7 +49488,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Des gros mots ?"
+            "value" : "Des gros mots ?"
           }
         },
         "hi" : {
@@ -49606,7 +49606,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quelque chose que Cue ne doit jamais écrire ?"
+            "value" : "Quelque chose que Cue ne doit jamais écrire ?"
           }
         },
         "hi" : {
@@ -52054,7 +52054,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "S'applique à toute la vidéo. Annuler rétablit l'état d'avant."
+            "value" : "S’applique à toute la vidéo. Annuler rétablit l’état d’avant."
           }
         },
         "hi" : {
@@ -52291,7 +52291,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appliquer ce style aux sous-titres ?"
+            "value" : "Appliquer ce style aux sous-titres ?"
           }
         },
         "hi" : {
@@ -58677,7 +58677,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avant tout — je suis désolé."
+            "value" : "Avant tout, je suis désolé."
           }
         },
         "hi" : {
@@ -58796,7 +58796,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avant de prendre ton téléphone demain, essaie plutôt ça."
+            "value" : "Avant de prendre votre téléphone demain, essayez plutôt ça."
           }
         },
         "hi" : {
@@ -58915,7 +58915,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avant de mettre ça dans ton panier, écoute-moi."
+            "value" : "Avant de mettre ça dans votre panier, écoutez-moi."
           }
         },
         "hi" : {
@@ -59034,7 +59034,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avant de changer d’appareil, pose-toi une question simple."
+            "value" : "Avant de changer d’appareil, posez-vous une question simple."
           }
         },
         "hi" : {
@@ -59153,7 +59153,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avant ton prochain achat, pose-toi cette question."
+            "value" : "Avant votre prochain achat, posez-vous cette question."
           }
         },
         "hi" : {
@@ -60101,7 +60101,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Meilleur mois : %@"
+            "value" : "Meilleur mois : %@"
           }
         },
         "hi" : {
@@ -65199,7 +65199,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Créateur de marques"
+            "value" : "Créateur pour les marques"
           }
         },
         "hi" : {
@@ -66028,7 +66028,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importez un script"
+            "value" : "Importer un script"
           }
         },
         "hi" : {
@@ -66265,7 +66265,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apportez des scripts, des légendes ou des notes que vous avez écrits. Cue y apprend votre façon d’écrire, sur cet iPhone."
+            "value" : "Apportez des scripts, des légendes ou des notes que vous avez écrits. Cue s’en sert pour apprendre votre façon d’écrire, sur cet iPhone."
           }
         },
         "hi" : {
@@ -66621,7 +66621,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Parcourir Fichiers"
+            "value" : "Parcourir les fichiers"
           }
         },
         "hi" : {
@@ -68403,7 +68403,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Démonte quelques mythes tech avec des explications claires."
+            "value" : "Démontez quelques mythes tech avec des explications claires."
           }
         },
         "hi" : {
@@ -68522,7 +68522,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Démonte quelques conseils parentaux populaires qui ne conviennent pas à toutes les familles."
+            "value" : "Démontez quelques conseils parentaux populaires qui ne conviennent pas à toutes les familles."
           }
         },
         "hi" : {
@@ -68641,7 +68641,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Démonte un mythe auquel on croit encore, avec une explication claire."
+            "value" : "Démontez un mythe auquel on croit encore, avec une explication claire."
           }
         },
         "hi" : {
@@ -68878,7 +68878,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Démonte deux mythes courants sur l’hydratation avec des faits simples et prudents."
+            "value" : "Démontez deux mythes courants sur l’hydratation avec des faits simples et prudents."
           }
         },
         "hi" : {
@@ -68997,7 +68997,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "C’est les jours chargés que bien manger devient difficile. Restons simples."
+            "value" : "C’est quand les journées sont chargées que bien manger devient difficile. Restons simples."
           }
         },
         "hi" : {
@@ -69116,7 +69116,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Démonte les mythes skincare que les gens répètent encore."
+            "value" : "Démontez les mythes skincare que les gens répètent encore."
           }
         },
         "hi" : {
@@ -69235,7 +69235,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Démonte un mythe courant sur les pâtes et montre la meilleure façon."
+            "value" : "Démontez un mythe courant sur les pâtes et montrez la meilleure façon de faire."
           }
         },
         "hi" : {
@@ -71126,7 +71126,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible d'ajouter ce son"
+            "value" : "Impossible d’ajouter ce son"
           }
         },
         "hi" : {
@@ -71599,7 +71599,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ non suivi · Défilement"
+            "value" : "Suivi impossible en %@ · Défilement"
           }
         },
         "hi" : {
@@ -72076,7 +72076,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible d'inverser ce clip"
+            "value" : "Impossible d’inverser ce clip"
           }
         },
         "hi" : {
@@ -74330,7 +74330,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sous-titres faits pour la conversation · titres doux venus du côté"
+            "value" : "Sous-titres faits pour parler · titres doux qui arrivent de côté"
           }
         },
         "hi" : {
@@ -75869,7 +75869,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cardio ou muscu en premier ?"
+            "value" : "Cardio ou muscu en premier ?"
           }
         },
         "hi" : {
@@ -76225,7 +76225,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notez-la maintenant dans le journal de bord. Développez-la plus tard."
+            "value" : "Notez-la maintenant dans le Journal de bord. Développez-la plus tard."
           }
         },
         "hi" : {
@@ -76816,7 +76816,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modifie-le à tout moment dans Profil › Ma voix Cue."
+            "value" : "Modifiez-le à tout moment dans Profil › My Cue Voice."
           }
         },
         "hi" : {
@@ -77645,7 +77645,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les changements s'affichent dans l'aperçu et sont enregistrés au fur et à mesure. ✓ ferme le panneau."
+            "value" : "Les changements s’affichent dans l’aperçu et sont enregistrés au fur et à mesure. ✓ ferme le panneau."
           }
         },
         "hi" : {
@@ -78832,7 +78832,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vols pas chers : ce qui marche vraiment"
+            "value" : "Vols pas chers : ce qui marche vraiment"
           }
         },
         "hi" : {
@@ -79069,7 +79069,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vérifie le commentaire avant que Cue écrive."
+            "value" : "Vérifiez le commentaire avant que Cue rédige."
           }
         },
         "hi" : {
@@ -82748,7 +82748,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Putaclic"
+            "value" : "Piège à clics"
           }
         },
         "hi" : {
@@ -84412,7 +84412,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La plus proche de la durée de ton script"
+            "value" : "La plus proche de la durée de votre script"
           }
         },
         "hi" : {
@@ -84650,7 +84650,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu fermes toutes tes apps pour économiser la batterie ? Parlons-en."
+            "value" : "Vous fermez toutes vos apps pour économiser la batterie ? Parlons-en."
           }
         },
         "hi" : {
@@ -85004,7 +85004,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Code MORNING : réduction de 20%"
+            "value" : "Code MORNING pour 20 % de réduction"
           }
         },
         "hi" : {
@@ -86307,7 +86307,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prêt à l’emploi : sections, indications, durée."
+            "value" : "Prêt à l’emploi : sections, indications, durée."
           }
         },
         "hi" : {
@@ -87610,7 +87610,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compare des choix abordables avec les produits chers que les gens achètent."
+            "value" : "Comparez des choix abordables avec les produits chers que les gens achètent."
           }
         },
         "hi" : {
@@ -87729,7 +87729,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compare les deux ordres et à qui chacun convient."
+            "value" : "Comparez les deux ordres et à qui chacun convient."
           }
         },
         "hi" : {
@@ -87848,7 +87848,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Compare où la qualité compte et où le pas cher suffit."
+            "value" : "Comparez où la qualité compte et où le pas cher suffit."
           }
         },
         "hi" : {
@@ -88085,7 +88085,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les intérêts composés, ça a l’air compliqué. C’est plus simple que tu crois."
+            "value" : "Les intérêts composés, ça a l’air compliqué. C’est plus simple que vous ne le pensez."
           }
         },
         "hi" : {
@@ -88321,7 +88321,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "confiant"
+            "value" : "avec assurance"
           }
         },
         "hi" : {
@@ -91173,7 +91173,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cuisine un dîner rapide du début à la fin."
+            "value" : "Cuisinez un dîner rapide du début à la fin."
           }
         },
         "hi" : {
@@ -91646,7 +91646,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copier @identifiant"
+            "value" : "Copier le @pseudo"
           }
         },
         "hi" : {
@@ -91765,7 +91765,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copiez d'abord le style d'un clip"
+            "value" : "Copiez d’abord le style d’un clip"
           }
         },
         "hi" : {
@@ -92122,7 +92122,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Copie d’abord le commentaire, puis colle-le ici."
+            "value" : "Copiez d’abord le commentaire, puis collez-le ici."
           }
         },
         "hi" : {
@@ -92483,7 +92483,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Corrige %lld%% de la vidéo. Les clignements et les regards ailleurs restent tels que filmés."
+            "value" : "Corrige %lld %% de la vidéo. Les clignements et les regards ailleurs restent tels que filmés."
           }
         },
         "hi" : {
@@ -92840,7 +92840,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible de rédiger le brouillon du script"
+            "value" : "Impossible de rédiger le brouillon"
           }
         },
         "hi" : {
@@ -93197,7 +93197,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rien à suivre ici · Placez-le sur ce qu'il doit suivre"
+            "value" : "Rien à suivre ici · Placez-le sur ce qu’il doit suivre"
           }
         },
         "hi" : {
@@ -93789,7 +93789,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible d’écouter cette prise : la vidéo n’a pas de sous-titres."
+            "value" : "Impossible d’écouter cette prise : la vidéo n’a pas de sous-titres."
           }
         },
         "hi" : {
@@ -94852,7 +94852,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impossible de lancer l’enregistrement"
+            "value" : "Impossible de commencer à filmer"
           }
         },
         "hi" : {
@@ -95798,7 +95798,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Styles de couverture, étiquettes de série, « Texte derrière moi »"
+            "value" : "Styles de couverture, étiquettes de série, « Texte derrière moi »"
           }
         },
         "hi" : {
@@ -97336,7 +97336,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue ne peut pas encore vous rappeler quoi que ce soit."
+            "value" : "Cue ne peut pas encore vous envoyer de rappels."
           }
         },
         "hi" : {
@@ -97573,7 +97573,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue s’est fermé avant la fin. Exporte à nouveau pour obtenir la vidéo."
+            "value" : "Cue s’est fermé avant la fin. Exportez à nouveau pour obtenir la vidéo."
           }
         },
         "hi" : {
@@ -97692,7 +97692,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue n’a trouvé personne sur cette image : rien ne passe devant les mots. Essayez une image où vous êtes bien visible."
+            "value" : "Cue n’a trouvé personne sur cette image : rien ne passe devant les mots. Essayez une image où vous êtes bien visible."
           }
         },
         "hi" : {
@@ -97810,7 +97810,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue n’a trouvé aucun mot dans l’image. Tu peux coller le commentaire."
+            "value" : "Cue n’a trouvé aucun mot dans cette image. Vous pouvez coller le commentaire à la place."
           }
         },
         "hi" : {
@@ -98402,7 +98402,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue rédige un brouillon de sous-titres à partir de votre voix. Corrigez n'importe quel mot."
+            "value" : "Cue rédige les sous-titres à partir de votre voix. Corrigez n’importe quel mot."
           }
         },
         "hi" : {
@@ -98521,7 +98521,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue rédige les lignes. Corrigez n'importe quel mot."
+            "value" : "Cue rédige les lignes. Corrigez n’importe quel mot."
           }
         },
         "hi" : {
@@ -98996,7 +98996,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue en a appris"
+            "value" : "Cue a appris de ce texte"
           }
         },
         "hi" : {
@@ -99589,7 +99589,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue n’enregistre que lorsque tu touches Enregistrer."
+            "value" : "Cue ne filme que lorsque vous touchez Filmer."
           }
         },
         "hi" : {
@@ -99945,7 +99945,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue ouvre l'app avec votre vidéo et sa légende. Vous publiez."
+            "value" : "Cue ouvre l’app avec votre vidéo et sa légende. Vous publiez."
           }
         },
         "hi" : {
@@ -102196,7 +102196,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Indications comme PAUSE ou SMILE dans le texte"
+            "value" : "Indications comme PAUSE ou SOURIEZ dans le texte"
           }
         },
         "hi" : {
@@ -104278,7 +104278,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Couper retire les mots de la vidéo. Corriger le sous-titre ne change que ce qu'il affiche."
+            "value" : "Couper retire les mots de la vidéo. Corriger le sous-titre ne change que ce qu’il affiche."
           }
         },
         "hi" : {
@@ -104515,7 +104515,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprime les mots de remplissage"
+            "value" : "Supprime les tics de langage"
           }
         },
         "hi" : {
@@ -106766,7 +106766,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer toutes vos données Cue ?"
+            "value" : "Supprimer toutes vos données Cue ?"
           }
         },
         "hi" : {
@@ -109133,7 +109133,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La dictée doit télécharger %@. Connectez-vous à internet et réessayez."
+            "value" : "La dictée doit télécharger %@. Connectez-vous à Internet et réessayez."
           }
         },
         "hi" : {
@@ -109251,7 +109251,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La dictée doit télécharger cette langue. Connectez-vous à internet et réessayez."
+            "value" : "La dictée doit télécharger cette langue. Connectez-vous à Internet et réessayez."
           }
         },
         "hi" : {
@@ -109487,7 +109487,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vouliez-vous dire « %@ » ?"
+            "value" : "Vouliez-vous dire « %@ » ?"
           }
         },
         "hi" : {
@@ -110079,7 +110079,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ignorer les modifications de cette couverture ?"
+            "value" : "Ignorer les modifications de cette couverture ?"
           }
         },
         "hi" : {
@@ -111143,7 +111143,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vous jurez devant la caméra ?"
+            "value" : "Vous dites des gros mots devant la caméra ?"
           }
         },
         "hi" : {
@@ -111262,7 +111262,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cela vous ressemble-t-il ?"
+            "value" : "Cela vous ressemble-t-il ?"
           }
         },
         "hi" : {
@@ -111499,7 +111499,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vous en faites plusieurs ? Choisissez celui que vous filmez le plus."
+            "value" : "Vous en faites plusieurs ? Choisissez celui que vous filmez le plus."
           }
         },
         "hi" : {
@@ -112565,7 +112565,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Téléchargement %@"
+            "value" : "Téléchargement de %@"
           }
         },
         "hi" : {
@@ -113759,7 +113759,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brouillon prêt · modifiez ce que vous voulez"
+            "value" : "Brouillon prêt · Modifiez ce que vous voulez"
           }
         },
         "hi" : {
@@ -114233,7 +114233,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brouillon de la version %@…"
+            "value" : "Rédaction de la version %@…"
           }
         },
         "hi" : {
@@ -114352,7 +114352,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brouillon des accroches…"
+            "value" : "Rédaction des accroches…"
           }
         },
         "hi" : {
@@ -114471,7 +114471,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brouillon d'une accroche…"
+            "value" : "Rédaction d’une accroche…"
           }
         },
         "hi" : {
@@ -114590,7 +114590,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brouillon…"
+            "value" : "Rédaction…"
           }
         },
         "hi" : {
@@ -114709,7 +114709,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brouillon avec votre voix"
+            "value" : "Rédaction avec votre voix"
           }
         },
         "hi" : {
@@ -114829,7 +114829,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brouillons · %lld — En cours"
+            "value" : "Brouillons · %lld · En cours"
           }
         },
         "hi" : {
@@ -114948,7 +114948,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rédige le brouillon maintenant. Changez ce que vous voulez ensuite."
+            "value" : "Rédige le brouillon maintenant. Modifiez ce que vous voulez ensuite."
           }
         },
         "hi" : {
@@ -116490,7 +116490,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Échu"
+            "value" : "En retard"
           }
         },
         "hi" : {
@@ -118625,7 +118625,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bord"
+            "value" : "Contour"
           }
         },
         "hi" : {
@@ -119928,7 +119928,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modifie-les dans My Cue Voice"
+            "value" : "Modifiez-les dans My Cue Voice"
           }
         },
         "hi" : {
@@ -121347,7 +121347,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "accent"
+            "value" : "insistez"
           }
         },
         "hi" : {
@@ -122293,7 +122293,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "fins"
+            "value" : "conclusions"
           }
         },
         "hi" : {
@@ -122648,7 +122648,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "termine : %@"
+            "value" : "conclusion : %@"
           }
         },
         "hi" : {
@@ -125615,7 +125615,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tous les clips l'ont déjà"
+            "value" : "Tous les clips l’ont déjà"
           }
         },
         "hi" : {
@@ -125853,7 +125853,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toutes les coupes l'ont déjà"
+            "value" : "Toutes les coupes l’ont déjà"
           }
         },
         "hi" : {
@@ -126090,7 +126090,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chaque famille a sa recette. Laisse-moi te parler de la nôtre."
+            "value" : "Chaque famille a sa recette. Laissez-moi vous parler de la nôtre."
           }
         },
         "hi" : {
@@ -126208,7 +126208,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toutes les icônes d’étape"
+            "value" : "Toutes les icônes de palier"
           }
         },
         "hi" : {
@@ -127748,7 +127748,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extraits : %lld"
+            "value" : "Extraits : %lld"
           }
         },
         "hi" : {
@@ -128814,7 +128814,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique pourquoi de petites habitudes souples battent les plannings stricts."
+            "value" : "Expliquez pourquoi de petites habitudes souples battent les plannings stricts."
           }
         },
         "hi" : {
@@ -128933,7 +128933,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique l’ordre des étapes et pourquoi il compte."
+            "value" : "Expliquez l’ordre des étapes et pourquoi il compte."
           }
         },
         "hi" : {
@@ -129052,7 +129052,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique pourquoi le repos aide à progresser au lieu de ralentir."
+            "value" : "Expliquez pourquoi le repos aide à progresser au lieu de ralentir."
           }
         },
         "hi" : {
@@ -129171,7 +129171,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique les causes habituelles et ce qui aide vraiment."
+            "value" : "Expliquez les causes habituelles et ce qui aide vraiment."
           }
         },
         "hi" : {
@@ -129290,7 +129290,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique les intérêts composés avec un exemple du quotidien."
+            "value" : "Expliquez les intérêts composés avec un exemple du quotidien."
           }
         },
         "hi" : {
@@ -129409,7 +129409,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique une petite habitude qui rend l’épargne plus facile."
+            "value" : "Expliquez une petite habitude qui rend l’épargne plus facile."
           }
         },
         "hi" : {
@@ -129528,7 +129528,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique à quoi sert une épargne de précaution et comment la commencer."
+            "value" : "Expliquez à quoi sert une épargne de précaution et comment la commencer."
           }
         },
         "hi" : {
@@ -129647,7 +129647,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique comment commencer une garde-robe capsule, étape par étape."
+            "value" : "Expliquez comment commencer une garde-robe capsule, étape par étape."
           }
         },
         "hi" : {
@@ -129766,7 +129766,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique pourquoi la plupart des listes échouent et propose mieux."
+            "value" : "Expliquez pourquoi la plupart des listes échouent et proposez mieux."
           }
         },
         "hi" : {
@@ -129885,7 +129885,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique la règle, quand elle aide et quand elle n’aide pas."
+            "value" : "Expliquez la règle, quand elle aide et quand elle n’aide pas."
           }
         },
         "hi" : {
@@ -130004,7 +130004,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique pourquoi faire une chose à la fois marche souvent mieux."
+            "value" : "Expliquez pourquoi faire une chose à la fois marche souvent mieux."
           }
         },
         "hi" : {
@@ -130123,7 +130123,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique l’origine surprenante d’un mot du quotidien."
+            "value" : "Expliquez l’origine surprenante d’un mot du quotidien."
           }
         },
         "hi" : {
@@ -130242,7 +130242,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique un tuto utile en moins d’une minute."
+            "value" : "Expliquez un tuto utile en moins d’une minute."
           }
         },
         "hi" : {
@@ -131074,7 +131074,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Découvrez des idées pour vos thèmes."
+            "value" : "Découvrez des idées pour vos sujets."
           }
         },
         "hi" : {
@@ -131787,7 +131787,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Export de ta vidéo"
+            "value" : "Export de votre vidéo"
           }
         },
         "hi" : {
@@ -135224,7 +135224,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mots de remplissage et reprises"
+            "value" : "Tics de langage et reprises"
           }
         },
         "hi" : {
@@ -136768,7 +136768,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recherche de la langue que tu parles…"
+            "value" : "Recherche de la langue que vous parlez…"
           }
         },
         "hi" : {
@@ -136887,7 +136887,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recherche de vous dans l’image…"
+            "value" : "Repérage de votre silhouette…"
           }
         },
         "hi" : {
@@ -137006,7 +137006,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recherche de vos yeux · %lld%%"
+            "value" : "Recherche de vos yeux · %lld %%"
           }
         },
         "hi" : {
@@ -137125,7 +137125,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Recherche de votre visage · %lld %%"
+            "value" : "Recherche de votre visage · %lld %%"
           }
         },
         "hi" : {
@@ -140439,7 +140439,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Changez à tout moment pendant l’enregistrement."
+            "value" : "Changez de caméra à tout moment pendant que vous filmez."
           }
         },
         "hi" : {
@@ -141266,7 +141266,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suivez @%@, créé avec Cue Studio"
+            "value" : "Suivez @%@, réalisé avec Cue Studio"
           }
         },
         "hi" : {
@@ -141860,7 +141860,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Abonnez-vous pour plus de conseils !"
+            "value" : "Abonnez-vous pour plus de conseils !"
           }
         },
         "hi" : {
@@ -142216,7 +142216,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suit votre voix"
+            "value" : "Suivi de votre voix"
           }
         },
         "hi" : {
@@ -143399,7 +143399,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour une vidéo filmée devant un fond vert ou bleu : seule la couleur du fond est remplacée."
+            "value" : "Pour une vidéo filmée devant un fond vert ou bleu : seule la couleur du fond est remplacée."
           }
         },
         "hi" : {
@@ -143753,7 +143753,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour les montages qui reflètent par le bas"
+            "value" : "Pour les supports à reflet par le bas"
           }
         },
         "hi" : {
@@ -143991,7 +143991,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oublie les gadgets viraux. Ces astuces de cuisine marchent, tout simplement."
+            "value" : "Oubliez les gadgets viraux. Ces astuces de cuisine marchent, tout simplement."
           }
         },
         "hi" : {
@@ -144109,7 +144109,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Formalité · Équilibrée → Décontractée"
+            "value" : "Registre · Équilibré → Décontracté"
           }
         },
         "hi" : {
@@ -144584,7 +144584,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Formats, ouvertures, fins"
+            "value" : "Formats, ouvertures, conclusions"
           }
         },
         "hi" : {
@@ -147377,7 +147377,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistrement libre"
+            "value" : "Tournage libre"
           }
         },
         "hi" : {
@@ -147496,7 +147496,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Figer l'image"
+            "value" : "Arrêt sur image"
           }
         },
         "hi" : {
@@ -147615,7 +147615,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Image en cours de figeage…"
+            "value" : "Création de l’arrêt sur image…"
           }
         },
         "hi" : {
@@ -148090,7 +148090,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De « %1$@ » à « %2$@ »"
+            "value" : "De « %1$@ » à « %2$@ »"
           }
         },
         "hi" : {
@@ -148445,7 +148445,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Depuis Fichiers. N’utilisez que de la musique à vous ou dont vous avez les droits — les morceaux d’Apple Music ne peuvent pas être ajoutés."
+            "value" : "Depuis Fichiers. N’utilisez que de la musique à vous ou dont vous avez les droits : les morceaux d’Apple Music ne peuvent pas être ajoutés."
           }
         },
         "hi" : {
@@ -149157,7 +149157,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De votre journal de bord"
+            "value" : "De votre Journal de bord"
           }
         },
         "hi" : {
@@ -150935,7 +150935,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Obtiens %@ avec Pro"
+            "value" : "Obtenez %@ avec Pro"
           }
         },
         "hi" : {
@@ -151291,7 +151291,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PRÉPARE-TOI"
+            "value" : "PRÉPAREZ-VOUS"
           }
         },
         "hi" : {
@@ -152713,7 +152713,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Préparation de ta prise"
+            "value" : "Préparation de votre prise"
           }
         },
         "hi" : {
@@ -152832,7 +152832,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Donne-moi soixante secondes et ton lundi sera bien plus léger."
+            "value" : "Donnez-moi soixante secondes et votre lundi sera bien plus léger."
           }
         },
         "hi" : {
@@ -152951,7 +152951,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Donne un test rapide à faire avant d’acheter quelque chose."
+            "value" : "Donnez au public un test rapide à faire avant d’acheter quelque chose."
           }
         },
         "hi" : {
@@ -153070,7 +153070,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Donne des étapes simples pour savoir ce qu’on aime porter."
+            "value" : "Donnez des étapes simples pour savoir ce qu’on aime porter."
           }
         },
         "hi" : {
@@ -153189,7 +153189,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Donne des façons polies de dire non sans abîmer les relations."
+            "value" : "Donnez des façons polies de dire non sans abîmer les relations."
           }
         },
         "hi" : {
@@ -153308,7 +153308,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Donne quelques façons calmes de réagir en pleine crise."
+            "value" : "Donnez quelques façons calmes de réagir en pleine crise."
           }
         },
         "hi" : {
@@ -153427,7 +153427,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Donne un avis clair et la raison derrière."
+            "value" : "Donnez un avis clair et la raison derrière."
           }
         },
         "hi" : {
@@ -153546,7 +153546,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Donne-moi une minute et je te montre quelque chose d’utile sur %@."
+            "value" : "Donnez-moi une minute et je vous montre quelque chose d’utile sur %@."
           }
         },
         "hi" : {
@@ -154494,7 +154494,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reprend quand Cue est ouvert · %lld %%"
+            "value" : "Reprend quand Cue est ouvert · %lld %%"
           }
         },
         "hi" : {
@@ -158053,7 +158053,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aidez à améliorer Cue"
+            "value" : "Aider à améliorer Cue"
           }
         },
         "hi" : {
@@ -158291,7 +158291,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voici trois choses à réfléchir à deux fois avant de les racheter."
+            "value" : "Voici trois choses auxquelles réfléchir à deux fois avant de les racheter."
           }
         },
         "hi" : {
@@ -158410,7 +158410,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aide à décider s’il vaut mieux changer maintenant ou attendre."
+            "value" : "Aidez le public à décider s’il vaut mieux changer maintenant ou attendre."
           }
         },
         "hi" : {
@@ -158528,7 +158528,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voici comment je fais %@ — du début à la fin. [pause]"
+            "value" : "Voici comment je fais %@, du début à la fin. [pause]"
           }
         },
         "hi" : {
@@ -159002,7 +159002,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voici ce que personne ne te dit quand tu débutes avec %@."
+            "value" : "Voici ce que personne ne vous dit quand vous débutez avec %@."
           }
         },
         "hi" : {
@@ -159120,7 +159120,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voici pourquoi on y croit : %@."
+            "value" : "Voici pourquoi on y croit : %@."
           }
         },
         "hi" : {
@@ -160542,7 +160542,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Haute"
+            "value" : "Élevée"
           }
         },
         "hi" : {
@@ -160778,7 +160778,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Couleur de surbrillance"
+            "value" : "Couleur de surlignage"
           }
         },
         "hi" : {
@@ -160897,7 +160897,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mise en avant"
+            "value" : "Style de mise en avant"
           }
         },
         "hi" : {
@@ -161254,7 +161254,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maintiens le micro pour saisir une idée. Écris-la plus tard."
+            "value" : "Maintenez le micro pour noter une idée. Écrivez-la plus tard."
           }
         },
         "hi" : {
@@ -161372,7 +161372,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Maintenez pour voir l’image telle qu’enregistrée"
+            "value" : "Maintenez pour voir l’image telle que filmée"
           }
         },
         "hi" : {
@@ -162911,7 +162911,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comment aimez-vous commencer ?"
+            "value" : "Comment aimez-vous commencer ?"
           }
         },
         "hi" : {
@@ -163029,7 +163029,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comment parles-tu face caméra ?"
+            "value" : "Comment parlez-vous face caméra ?"
           }
         },
         "hi" : {
@@ -163147,7 +163147,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comment parlez-vous ?"
+            "value" : "Comment parlez-vous ?"
           }
         },
         "hi" : {
@@ -163265,7 +163265,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comment terminez-vous d’habitude une vidéo ?"
+            "value" : "Comment terminez-vous d’habitude une vidéo ?"
           }
         },
         "hi" : {
@@ -163384,7 +163384,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comment voulez-vous commencer ?"
+            "value" : "Comment voulez-vous commencer ?"
           }
         },
         "hi" : {
@@ -164092,7 +164092,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quelle est la durée habituelle de tes vidéos ?"
+            "value" : "Quelle est la durée habituelle de vos vidéos ?"
           }
         },
         "hi" : {
@@ -164210,7 +164210,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Que savent-ils déjà ?"
+            "value" : "Que savent-ils déjà ?"
           }
         },
         "hi" : {
@@ -164328,7 +164328,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quelle part d’humour dans tes vidéos ?"
+            "value" : "Quelle part d’humour dans vos vidéos ?"
           }
         },
         "hi" : {
@@ -164446,7 +164446,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comment Cue doit-il le construire ?"
+            "value" : "Comment Cue doit-il le construire ?"
           }
         },
         "hi" : {
@@ -164683,7 +164683,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "À quel point tes mots sont-ils techniques ?"
+            "value" : "À quel point vos mots sont-ils techniques ?"
           }
         },
         "hi" : {
@@ -164802,7 +164802,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comment trouver ton style"
+            "value" : "Comment trouver votre style"
           }
         },
         "hi" : {
@@ -165277,7 +165277,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Comment planifier ta semaine en 15 minutes"
+            "value" : "Comment planifier votre semaine en 15 minutes"
           }
         },
         "hi" : {
@@ -166109,7 +166109,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hydratez-vous avant la caféine : l’effet est meilleur."
+            "value" : "Hydratez-vous avant la caféine : l’effet est meilleur."
           }
         },
         "hi" : {
@@ -166464,7 +166464,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mots survendeurs"
+            "value" : "Mots racoleurs"
           }
         },
         "hi" : {
@@ -166937,7 +166937,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "J’y ai cru pendant des années — jusqu’à ce que je vérifie."
+            "value" : "J’y ai cru pendant des années, jusqu’à ce que je vérifie."
           }
         },
         "hi" : {
@@ -167763,7 +167763,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "J’ai tout essayé — voici ce que j’ai gardé."
+            "value" : "J’ai tout essayé, et voici ce que j’ai gardé."
           }
         },
         "hi" : {
@@ -169182,7 +169182,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idéal pour %1$@ : %2$@–%3$@"
+            "value" : "Idéal pour %1$@ : %2$@–%3$@"
           }
         },
         "hi" : {
@@ -169301,7 +169301,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Des idées pour les thèmes de vos vidéos. Rien n’est écrit tant que vous n’en choisissez pas une."
+            "value" : "Des idées pour les sujets de vos vidéos. Rien n’est rédigé tant que vous n’en choisissez pas une."
           }
         },
         "hi" : {
@@ -169420,7 +169420,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idées pour vos thèmes"
+            "value" : "Idées pour vos sujets"
           }
         },
         "hi" : {
@@ -169658,7 +169658,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si le batch cooking ressemble à un dimanche entier perdu, essaie cette version plus courte."
+            "value" : "Si le batch cooking vous fait penser à un dimanche entier perdu, essayez cette version plus courte."
           }
         },
         "hi" : {
@@ -170134,7 +170134,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si les tableurs te donnent envie d’abandonner ton budget, essaie plutôt ça."
+            "value" : "Si les tableurs vous donnent envie d’abandonner votre budget, essayez plutôt ça."
           }
         },
         "hi" : {
@@ -170253,7 +170253,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si tu oublies ce que tu as révisé dès le lendemain, essaie ça."
+            "value" : "Si vous oubliez ce que vous avez révisé dès le lendemain, essayez ça."
           }
         },
         "hi" : {
@@ -170490,7 +170490,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si tu scrolles au lit jusqu’à minuit, cette habitude de cinq minutes est pour toi."
+            "value" : "Si vous scrollez au lit jusqu’à minuit, cette habitude de cinq minutes est pour vous."
           }
         },
         "hi" : {
@@ -170609,7 +170609,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si tu débutes en skincare, tu t’es sûrement déjà posé cette question."
+            "value" : "Si vous débutez en skincare, vous vous êtes sûrement déjà posé cette question."
           }
         },
         "hi" : {
@@ -170728,7 +170728,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si tu débutes avec %@, fais attention à celle-ci."
+            "value" : "Si vous débutez avec %@, attention à ce piège."
           }
         },
         "hi" : {
@@ -170965,7 +170965,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si ta routine du matin s’effondre dès mercredi, essaie-en une plus courte."
+            "value" : "Si votre routine du matin s’effondre dès mercredi, essayez-en une plus courte."
           }
         },
         "hi" : {
@@ -171084,7 +171084,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si tes notes sont éparpillées partout, ces apps peuvent t’aider."
+            "value" : "Si vos notes sont éparpillées partout, ces apps peuvent vous aider."
           }
         },
         "hi" : {
@@ -171203,7 +171203,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si ta batterie est à plat à midi, voici ce qui se passe sûrement."
+            "value" : "Si votre batterie est à plat à midi, voici ce qui se passe sûrement."
           }
         },
         "hi" : {
@@ -171322,7 +171322,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si ton placard est plein et que tu n’as rien à te mettre, commence ici."
+            "value" : "Si votre placard est plein et que vous n’avez rien à vous mettre, commencez ici."
           }
         },
         "hi" : {
@@ -171441,7 +171441,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si ta boîte mail dirige ta journée, essaie cette règle."
+            "value" : "Si votre boîte mail dirige votre journée, essayez cette règle."
           }
         },
         "hi" : {
@@ -171560,7 +171560,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si tu t’es déjà demandé par où commencer avec %@, c’est pour toi."
+            "value" : "Si vous vous êtes déjà demandé par où commencer avec %@, c’est pour vous."
           }
         },
         "hi" : {
@@ -172871,7 +172871,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importés : %lld"
+            "value" : "Importés : %lld"
           }
         },
         "hi" : {
@@ -175829,7 +175829,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iOS a arrêté l’export · Réessaie"
+            "value" : "iOS a arrêté l’export · Réessayez"
           }
         },
         "hi" : {
@@ -176303,7 +176303,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Est-il prêt à être publié ?"
+            "value" : "Est-elle prête à être publiée ?"
           }
         },
         "hi" : {
@@ -176539,7 +176539,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "C’est bien ça ?"
+            "value" : "C’est bien ça ?"
           }
         },
         "hi" : {
@@ -176895,7 +176895,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Elle va dans le champ. Faites-la vôtre d'abord."
+            "value" : "Elle va dans le champ. Faites-la vôtre d’abord."
           }
         },
         "hi" : {
@@ -177249,7 +177249,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il lance l’univers de cette année"
+            "value" : "Elle lance l’univers de cette année"
           }
         },
         "hi" : {
@@ -178434,7 +178434,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inscrivez-vous sur la liste d’attente — lien en bio"
+            "value" : "Inscrivez-vous sur la liste d’attente, lien en bio"
           }
         },
         "hi" : {
@@ -179262,7 +179262,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Juste le sujet et vos points. Cue écrit une liste numérotée avec une accroche au début et une question pour les commentaires à la fin."
+            "value" : "Juste le sujet et vos points. Cue rédige une liste numérotée avec une accroche au début et une question pour les commentaires à la fin."
           }
         },
         "hi" : {
@@ -179971,7 +179971,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Garde Cue ouvert jusqu’à la fin."
+            "value" : "Gardez Cue ouvert jusqu’à la fin."
           }
         },
         "hi" : {
@@ -180445,7 +180445,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gardez moins de 40 caractères."
+            "value" : "40 caractères maximum."
           }
         },
         "hi" : {
@@ -180681,7 +180681,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Garder les miennes"
+            "value" : "Garder ma version"
           }
         },
         "hi" : {
@@ -182927,7 +182927,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chapeau"
+            "value" : "Surtitre"
           }
         },
         "hi" : {
@@ -186122,7 +186122,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Laisse-moi te dire ce que je pense vraiment de %@."
+            "value" : "Laissez-moi vous dire ce que je pense vraiment de %@."
           }
         },
         "hi" : {
@@ -186478,7 +186478,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rendons les matins un peu plus doux, d’accord ?"
+            "value" : "Rendons les matins un peu plus doux, d’accord ?"
           }
         },
         "hi" : {
@@ -188017,7 +188017,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une ligne ici · Allez à un vide"
+            "value" : "Déjà une ligne ici · Placez-vous dans un espace libre"
           }
         },
         "hi" : {
@@ -188607,7 +188607,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "J’aligne les étoiles"
+            "value" : "Alignement des étoiles"
           }
         },
         "hi" : {
@@ -189316,7 +189316,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Liste les basiques qui deviennent plein de repas rapides."
+            "value" : "Listez les basiques qui se transforment en plein de repas rapides."
           }
         },
         "hi" : {
@@ -190972,7 +190972,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Journal · %lld en attente"
+            "value" : "Journal de bord · %lld en attente"
           }
         },
         "hi" : {
@@ -191563,7 +191563,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les vidéos longues rapportent : TikTok 1:00+, YouTube 8:00+"
+            "value" : "Les vidéos longues rapportent : TikTok 1:00+, YouTube 8:00+"
           }
         },
         "hi" : {
@@ -192037,7 +192037,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le style seulement : jamais les mots ni l’image."
+            "value" : "Le style seulement : jamais les mots ni l’image."
           }
         },
         "hi" : {
@@ -193103,7 +193103,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Créés par Cue · libres d'utilisation dans vos vidéos"
+            "value" : "Créés par Cue · libres d’utilisation dans vos vidéos"
           }
         },
         "hi" : {
@@ -194167,7 +194167,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Raccourcissez-le ou enregistrez tel quel — vous pourrez couper ensuite."
+            "value" : "Raccourcissez-le ou filmez tel quel : vous pourrez raccourcir ensuite."
           }
         },
         "hi" : {
@@ -194286,7 +194286,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Qu'il marche sans le son"
+            "value" : "Qu’elle marche sans le son"
           }
         },
         "hi" : {
@@ -194523,7 +194523,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Faites sonner vos scripts comme vous."
+            "value" : "Des scripts qui vous ressemblent."
           }
         },
         "hi" : {
@@ -194641,7 +194641,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Des scripts qui te ressemblent plus"
+            "value" : "Des scripts qui vous ressemblent davantage"
           }
         },
         "hi" : {
@@ -196542,7 +196542,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Peut-être volontaire — pour l’effet"
+            "value" : "Peut-être volontaire, pour l’effet"
           }
         },
         "hi" : {
@@ -196899,7 +196899,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mesure des tremblements · %lld %%"
+            "value" : "Mesure des tremblements · %lld %%"
           }
         },
         "hi" : {
@@ -199147,7 +199147,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Peut avoir un sens — écoutez d’abord"
+            "value" : "Peut avoir un sens : écoutez d’abord"
           }
         },
         "hi" : {
@@ -199265,7 +199265,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seulement léger"
+            "value" : "Légers seulement"
           }
         },
         "hi" : {
@@ -199391,7 +199391,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "JALON · %lld VIDÉOS EN %@"
+            "value" : "PALIER · %1$lld VIDÉOS EN %2$@"
           }
         },
         "hi" : {
@@ -199511,7 +199511,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "JALON · PREMIÈRE VIDÉO EN %@"
+            "value" : "PALIER · PREMIÈRE VIDÉO EN %@"
           }
         },
         "hi" : {
@@ -199635,7 +199635,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Étapes"
+            "value" : "Paliers"
           }
         },
         "hi" : {
@@ -200588,7 +200588,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mélangées"
+            "value" : "Variées"
           }
         },
         "hi" : {
@@ -203192,7 +203192,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Plus d’une personne dans l’image : rien n’a été corrigé"
+            "value" : "Plus d’une personne dans l’image : rien n’a été corrigé"
           }
         },
         "hi" : {
@@ -206274,7 +206274,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Musique ajoutée à 40 %"
+            "value" : "Musique ajoutée à 40 %"
           }
         },
         "hi" : {
@@ -207457,7 +207457,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mon réveil et moi n’étions pas amis. Puis ceci est arrivé."
+            "value" : "Mon réveil et moi n’étions pas amis. Et puis il s’est passé ça."
           }
         },
         "hi" : {
@@ -207814,7 +207814,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MA VOIX CUE"
+            "value" : "MY CUE VOICE"
           }
         },
         "hi" : {
@@ -208169,7 +208169,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mon premier appel avec une marque — et ma caméra a planté"
+            "value" : "Mon premier appel avec une marque, et ma caméra a planté"
           }
         },
         "hi" : {
@@ -210062,7 +210062,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mythe : %@"
+            "value" : "Mythe : %@"
           }
         },
         "hi" : {
@@ -210180,7 +210180,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mythe : %@. [pause]"
+            "value" : "Mythe : %@. [pause]"
           }
         },
         "hi" : {
@@ -210891,7 +210891,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Étroit : moins de mouvements des yeux"
+            "value" : "Étroit : moins de mouvements des yeux"
           }
         },
         "hi" : {
@@ -211601,7 +211601,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Besoin ou envie : un test simple"
+            "value" : "Besoin ou envie : un test simple"
           }
         },
         "hi" : {
@@ -212904,7 +212904,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nouveau téléphone ? Change ces réglages avant tout le reste."
+            "value" : "Nouveau téléphone ? Changez ces réglages avant tout le reste."
           }
         },
         "hi" : {
@@ -214207,7 +214207,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ensuite"
+            "value" : "Suivant"
           }
         },
         "hi" : {
@@ -214680,7 +214680,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PROCHAINE ÉTAPE · %1$lld / %2$lld"
+            "value" : "PROCHAIN PALIER · %1$lld / %2$lld"
           }
         },
         "hi" : {
@@ -214799,7 +214799,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prochaine étape : %@"
+            "value" : "Prochaine étape : %@"
           }
         },
         "hi" : {
@@ -215037,7 +215037,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ensuite : %@"
+            "value" : "Ensuite : %@"
           }
         },
         "hi" : {
@@ -215163,7 +215163,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ensuite : %@ · %@"
+            "value" : "Ensuite : %@ · %@"
           }
         },
         "hi" : {
@@ -215281,7 +215281,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ensuite : le brief de marque. #ad est ajouté pour vous."
+            "value" : "Ensuite : le brief de marque. #ad est ajouté pour vous."
           }
         },
         "hi" : {
@@ -215997,7 +215997,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune caméra · Le mode Studio fonctionne"
+            "value" : "Aucune caméra · Le mode Studio fonctionne quand même"
           }
         },
         "hi" : {
@@ -216945,7 +216945,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune coupe n'est proche d'un temps"
+            "value" : "Aucune coupe n’est proche d’un temps"
           }
         },
         "hi" : {
@@ -218250,7 +218250,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune ligne ne dit « %@ »"
+            "value" : "Aucune ligne ne dit « %@ »"
           }
         },
         "hi" : {
@@ -218960,7 +218960,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Personne détectée"
+            "value" : "Aucune personne détectée"
           }
         },
         "hi" : {
@@ -220384,7 +220384,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun résultat pour « %@ »"
+            "value" : "Aucun résultat pour « %@ »"
           }
         },
         "hi" : {
@@ -221212,7 +221212,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune parole à sous-titrer : la vidéo n’en a pas."
+            "value" : "Aucune parole à sous-titrer : la vidéo n’en a pas."
           }
         },
         "hi" : {
@@ -222398,7 +222398,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Personne ne te donne de mode d’emploi. Voici quelques trucs bons à savoir."
+            "value" : "Personne ne vous donne de mode d’emploi. Voici quelques trucs bons à savoir."
           }
         },
         "hi" : {
@@ -222634,7 +222634,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucune"
+            "value" : "Aucun"
           }
         },
         "hi" : {
@@ -222752,7 +222752,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aucun de ceux-ci"
+            "value" : "Aucun de ces choix"
           }
         },
         "hi" : {
@@ -224054,7 +224054,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toutes les tendances ne valent pas ton argent. Voilà ce que je zapperais."
+            "value" : "Toutes les tendances ne valent pas votre argent. Voilà ce que je zapperais."
           }
         },
         "hi" : {
@@ -224173,7 +224173,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tous les conseils parentaux ne conviennent pas à ta famille, et c’est normal."
+            "value" : "Tous les conseils parentaux ne conviennent pas à votre famille, et c’est normal."
           }
         },
         "hi" : {
@@ -224647,7 +224647,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vous ne savez pas quoi filmer ?"
+            "value" : "Vous ne savez pas quoi filmer ?"
           }
         },
         "hi" : {
@@ -229037,7 +229037,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bon, parlons franchement — celle-là compte."
+            "value" : "Bon, parlons franchement : celle-là compte."
           }
         },
         "hi" : {
@@ -230220,7 +230220,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "SUR TON ÉCRAN D’ACCUEIL"
+            "value" : "SUR VOTRE ÉCRAN D’ACCUEIL"
           }
         },
         "hi" : {
@@ -230695,7 +230695,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une habitude à essayer avant de regarder ton téléphone"
+            "value" : "Une habitude à essayer avant de regarder votre téléphone"
           }
         },
         "hi" : {
@@ -231051,7 +231051,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une de vos idées attend de devenir une vidéo. Envie de la développer ?"
+            "value" : "Une de vos idées attend de devenir une vidéo. Envie de la développer ?"
           }
         },
         "hi" : {
@@ -231288,7 +231288,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une question rapide · voix %lld %%"
+            "value" : "Une question rapide · voix %lld %%"
           }
         },
         "hi" : {
@@ -231407,7 +231407,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Une petite erreur en voyage peut te coûter une journée entière. Voici comment l’éviter."
+            "value" : "Une petite erreur en voyage peut vous coûter une journée entière. Voici comment l’éviter."
           }
         },
         "hi" : {
@@ -231526,7 +231526,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un : pas de téléphone pendant les vingt premières minutes. Je le laisse dans la cuisine."
+            "value" : "Un : pas de téléphone pendant les vingt premières minutes. Je le laisse dans la cuisine."
           }
         },
         "hi" : {
@@ -233540,7 +233540,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouvrir le journal ›"
+            "value" : "Ouvrir le Journal de bord ›"
           }
         },
         "hi" : {
@@ -234131,7 +234131,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Début : « %@ »"
+            "value" : "Début : « %@ »"
           }
         },
         "hi" : {
@@ -234604,7 +234604,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ouverture de ton montage"
+            "value" : "Ouverture de votre montage"
           }
         },
         "hi" : {
@@ -234722,7 +234722,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "OUVERTURE DE TON MONTAGE"
+            "value" : "OUVERTURE DE VOTRE MONTAGE"
           }
         },
         "hi" : {
@@ -236141,7 +236141,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Facultatif. Rien dans Cue ne nécessite de compte ; la connexion remplit seulement votre nom."
+            "value" : "Facultatif. Rien dans Cue ne nécessite de compte ; la connexion remplit seulement votre nom."
           }
         },
         "hi" : {
@@ -236495,7 +236495,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ou écris une idée…"
+            "value" : "Ou écrivez une idée…"
           }
         },
         "hi" : {
@@ -238031,7 +238031,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Assumez"
+            "value" : "Assumer"
           }
         },
         "hi" : {
@@ -240283,7 +240283,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Colle quelque chose que tu as écrit ou dit"
+            "value" : "Collez quelque chose que vous avez écrit ou dit"
           }
         },
         "hi" : {
@@ -243716,7 +243716,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Animaux de compagnie et animaux"
+            "value" : "Animaux"
           }
         },
         "hi" : {
@@ -245849,7 +245849,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "CHOISIS DE 1 À 3 THÈMES"
+            "value" : "CHOISISSEZ DE 1 À 3 SUJETS"
           }
         },
         "hi" : {
@@ -247036,7 +247036,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisis un thème"
+            "value" : "Choisissez un sujet"
           }
         },
         "hi" : {
@@ -248813,7 +248813,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reprenez le montage ou partagez-la quand vous êtes prêt."
+            "value" : "Reprenez le montage ou partagez-le quand vous êtes prêt."
           }
         },
         "hi" : {
@@ -249049,7 +249049,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisis jusqu’à %lld · touche à nouveau pour retirer"
+            "value" : "Choisissez-en jusqu’à %lld · touchez à nouveau pour retirer"
           }
         },
         "hi" : {
@@ -249287,7 +249287,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choisissez ce qui passe. Les mots, le son et le timing restent."
+            "value" : "Choisissez ce qui est collé. Les mots, le son et le timing restent."
           }
         },
         "hi" : {
@@ -252012,7 +252012,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lecture de l’original — touchez pour arrêter"
+            "value" : "Lecture de l’original · touchez pour arrêter"
           }
         },
         "hi" : {
@@ -252367,7 +252367,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Repasse à l'endroit"
+            "value" : "Repasse à l’endroit"
           }
         },
         "hi" : {
@@ -252486,7 +252486,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Passe par-dessus votre vidéo (B-roll) pendant que votre voix continue. Déplacez-le et redimensionnez-le dans l'aperçu."
+            "value" : "Passe par-dessus votre vidéo (B-roll) pendant que votre voix continue. Déplacez-le et redimensionnez-le dans l’aperçu."
           }
         },
         "hi" : {
@@ -253316,7 +253316,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre les erreurs courantes à la salle et la solution simple pour chacune."
+            "value" : "Montrez les erreurs courantes à la salle et la solution simple pour chacune."
           }
         },
         "hi" : {
@@ -253435,7 +253435,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre les erreurs d’argent courantes à la vingtaine et comment les éviter."
+            "value" : "Montrez les erreurs d’argent courantes à la vingtaine et comment les éviter."
           }
         },
         "hi" : {
@@ -253554,7 +253554,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre de petites erreurs de style et la correction rapide pour chacune."
+            "value" : "Montrez de petites erreurs de style et la correction rapide pour chacune."
           }
         },
         "hi" : {
@@ -253673,7 +253673,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre une erreur de débutant courante et comment l’éviter."
+            "value" : "Montrez une erreur de débutant courante et comment l’éviter."
           }
         },
         "hi" : {
@@ -254858,7 +254858,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le publier"
+            "value" : "Publier"
           }
         },
         "hi" : {
@@ -255569,7 +255569,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Publié sur %@ ?"
+            "value" : "Publié sur %@ ?"
           }
         },
         "hi" : {
@@ -256159,7 +256159,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV : il est 7 h du matin et l’idée vient d’arriver."
+            "value" : "POV : il est 7 h du matin et l’idée vient d’arriver."
           }
         },
         "hi" : {
@@ -256277,7 +256277,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV : vous lancez enfin l’enregistrement"
+            "value" : "POV : vous appuyez enfin sur REC"
           }
         },
         "hi" : {
@@ -256395,7 +256395,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV : vous lancez enfin l’enregistrement. [pause]"
+            "value" : "POV : vous appuyez enfin sur REC. [pause]"
           }
         },
         "hi" : {
@@ -256514,7 +256514,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV : vous avez enfin arrêté de perdre vos matins."
+            "value" : "POV : vous avez enfin arrêté de perdre vos matins."
           }
         },
         "hi" : {
@@ -256632,7 +256632,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV : vous êtes celui à qui tout le monde demande conseil."
+            "value" : "POV : c’est à vous que tout le monde demande conseil."
           }
         },
         "hi" : {
@@ -256750,7 +256750,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "POV : votre première vidéo se passe mieux que prévu."
+            "value" : "POV : votre première vidéo se passe mieux que prévu."
           }
         },
         "hi" : {
@@ -256868,7 +256868,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ENTRAÎNEMENT · PAS D’ENREGISTREMENT"
+            "value" : "ENTRAÎNEMENT · RIEN N’EST FILMÉ"
           }
         },
         "hi" : {
@@ -256987,7 +256987,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entraînez-vous avec le prompteur"
+            "value" : "Entraînez-vous avec le téléprompteur"
           }
         },
         "hi" : {
@@ -261832,7 +261832,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Preuves · %lld exemple(s) sur %lld"
+            "value" : "Preuves · %lld exemples sur %lld"
           }
         },
         "hi" : {
@@ -262425,7 +262425,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Reculer"
+            "value" : "Zoom arrière"
           }
         },
         "hi" : {
@@ -263610,7 +263610,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pousser"
+            "value" : "Poussée"
           }
         },
         "hi" : {
@@ -263728,7 +263728,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avancer"
+            "value" : "Zoom avant"
           }
         },
         "hi" : {
@@ -263966,7 +263966,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Placez-le sur ce qu'il doit suivre à la tête de lecture, puis touchez Suivre. Cue crée des images clés modifiables."
+            "value" : "Placez-le sur ce qu’il doit suivre à la tête de lecture, puis touchez Suivre. Cue crée des images clés modifiables."
           }
         },
         "hi" : {
@@ -265268,7 +265268,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vite fait : trois habitudes qui ont tout changé !"
+            "value" : "Vite fait : trois habitudes qui ont tout changé !"
           }
         },
         "hi" : {
@@ -266691,7 +266691,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lisez à votre rythme : le texte avance quand vous parlez et attend quand vous faites une pause."
+            "value" : "Lisez à votre rythme : le texte avance quand vous parlez et attend quand vous faites une pause."
           }
         },
         "hi" : {
@@ -266928,7 +266928,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lisez-le une fois ; rien n’est enregistré"
+            "value" : "Lisez-le une fois ; rien n’est filmé"
           }
         },
         "hi" : {
@@ -267403,7 +267403,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tout le script lu"
+            "value" : "Script lu en entier"
           }
         },
         "hi" : {
@@ -267521,7 +267521,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "LIS !"
+            "value" : "LISEZ !"
           }
         },
         "hi" : {
@@ -268942,7 +268942,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prêt pour le suivant ?"
+            "value" : "Prêt pour le suivant ?"
           }
         },
         "hi" : {
@@ -269061,7 +269061,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prêt pour votre prochaine vidéo ?"
+            "value" : "Prêt pour votre prochaine vidéo ?"
           }
         },
         "hi" : {
@@ -269180,7 +269180,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prêt ici · recherche de vos yeux dans le reste · %lld%%"
+            "value" : "Prêt ici · recherche de vos yeux dans le reste · %lld %%"
           }
         },
         "hi" : {
@@ -269652,7 +269652,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prêt à enregistrer"
+            "value" : "Prêt à filmer"
           }
         },
         "hi" : {
@@ -269770,7 +269770,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prêts à enregistrer · %lld"
+            "value" : "Prêts à filmer · %lld"
           }
         },
         "hi" : {
@@ -269888,7 +269888,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prêt à enregistrer · Shape ajoute des indications"
+            "value" : "Prêt à filmer · Shape ajoute des indications"
           }
         },
         "hi" : {
@@ -271546,7 +271546,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistre un script. Chaque prise arrive ici."
+            "value" : "Filmez un script. Chaque prise arrive ici."
           }
         },
         "hi" : {
@@ -271901,7 +271901,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Réenregistrer"
+            "value" : "Refilmer"
           }
         },
         "hi" : {
@@ -272019,7 +272019,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistrer quand même"
+            "value" : "Filmer quand même"
           }
         },
         "hi" : {
@@ -273085,7 +273085,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistrés · %lld"
+            "value" : "Filmés · %lld"
           }
         },
         "hi" : {
@@ -273557,7 +273557,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistrement arrêté · Prise enregistrée"
+            "value" : "Tournage arrêté · Prise enregistrée"
           }
         },
         "hi" : {
@@ -275216,7 +275216,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rappel créé · %@"
+            "value" : "Rappel programmé · %@"
           }
         },
         "hi" : {
@@ -275335,7 +275335,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rappels : %lld"
+            "value" : "Rappels : %lld"
           }
         },
         "hi" : {
@@ -277652,7 +277652,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Supprimer la couverture ?"
+            "value" : "Supprimer la couverture ?"
           }
         },
         "hi" : {
@@ -278696,7 +278696,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Retire les excuses et les « mais »"
+            "value" : "Retire les excuses et les « mais »"
           }
         },
         "hi" : {
@@ -280000,7 +280000,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remplacer vos sous-titres modifiés ?"
+            "value" : "Remplacer vos sous-titres modifiés ?"
           }
         },
         "hi" : {
@@ -280567,7 +280567,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Remplace : %@"
+            "value" : "Remplace : %@"
           }
         },
         "hi" : {
@@ -283049,7 +283049,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inverser fonctionne jusqu'à 2 minutes · Coupez d'abord le clip"
+            "value" : "Inverser fonctionne jusqu’à 2 minutes · Coupez d’abord le clip"
           }
         },
         "hi" : {
@@ -283762,7 +283762,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Passe en revue des produits qui n’ont pas tenu leurs promesses, et dis pourquoi."
+            "value" : "Passez en revue des produits qui n’ont pas tenu leurs promesses, et dites pourquoi."
           }
         },
         "hi" : {
@@ -284117,7 +284117,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les réécritures, accroches et idées de thèmes tournent sur l’appareil. Un Prompt libre est écrit avec Private Cloud Compute d’Apple, qui n’utilise votre demande que pour y répondre et ne la conserve pas. Aucun autre service d’IA n’intervient."
+            "value" : "Les réécritures, accroches et idées de thèmes tournent sur l’appareil. Une demande libre est rédigée avec Private Cloud Compute d’Apple, qui n’utilise votre demande que pour y répondre et ne la conserve pas. Aucun autre service d’IA n’intervient."
           }
         },
         "hi" : {
@@ -284472,7 +284472,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montages"
+            "value" : "Supports"
           }
         },
         "hi" : {
@@ -286140,7 +286140,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ZONES DE SÉCURITÉ INACTIVES"
+            "value" : "ZONES SÛRES DÉSACTIVÉES"
           }
         },
         "hi" : {
@@ -286258,7 +286258,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ZONES DE SÉCURITÉ ACTIVES"
+            "value" : "ZONES SÛRES ACTIVÉES"
           }
         },
         "hi" : {
@@ -287087,7 +287087,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ÉCONOMISEZ %lld%%"
+            "value" : "ÉCONOMISEZ %lld %%"
           }
         },
         "hi" : {
@@ -288152,7 +288152,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Garder dans le Journal de bord"
+            "value" : "Enregistrer dans le Journal de bord"
           }
         },
         "hi" : {
@@ -289218,7 +289218,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistré · voix %lld %%"
+            "value" : "Enregistré · voix %lld %%"
           }
         },
         "hi" : {
@@ -290295,7 +290295,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gardé dans le Journal de bord"
+            "value" : "Enregistré dans le Journal de bord"
           }
         },
         "hi" : {
@@ -290649,7 +290649,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistré dans Photos · Ouvrez %@ pour le publier"
+            "value" : "Enregistrée dans Photos · Ouvrez %@ pour la publier"
           }
         },
         "hi" : {
@@ -291004,7 +291004,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Enregistré dans Photos · publiez-le où vous voulez"
+            "value" : "Enregistre dans Photos · publiez-la où vous voulez"
           }
         },
         "hi" : {
@@ -291242,7 +291242,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Épargner, ce n’est pas qu’une question de volonté. C’est ce que tu rends automatique."
+            "value" : "Épargner, ce n’est pas qu’une question de volonté. C’est ce que vous automatisez qui compte."
           }
         },
         "hi" : {
@@ -291360,7 +291360,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je garde une place pour ta pause"
+            "value" : "Une place pour votre pause"
           }
         },
         "hi" : {
@@ -291598,7 +291598,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dis ou écris ton idée…"
+            "value" : "Dites ou écrivez votre idée…"
           }
         },
         "hi" : {
@@ -291718,7 +291718,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dis ou écris une idée"
+            "value" : "Dites ou écrivez une idée"
           }
         },
         "hi" : {
@@ -291837,7 +291837,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dis quelles tendances on peut zapper, et pourquoi."
+            "value" : "Dites quelles tendances on peut zapper, et pourquoi."
           }
         },
         "hi" : {
@@ -292075,7 +292075,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "dit « je »"
+            "value" : "dit « je »"
           }
         },
         "hi" : {
@@ -292194,7 +292194,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "dit « nous »"
+            "value" : "dit « nous »"
           }
         },
         "hi" : {
@@ -297164,7 +297164,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sections : %@"
+            "value" : "Sections : %@"
           }
         },
         "hi" : {
@@ -300127,7 +300127,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Distingue les astuces de réservation qui marchent des mythes."
+            "value" : "Distinguez les astuces de réservation qui marchent des mythes."
           }
         },
         "hi" : {
@@ -300954,7 +300954,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sérieux — sans emphase"
+            "value" : "Sérieux, sans emphase"
           }
         },
         "hi" : {
@@ -301191,7 +301191,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Créé"
+            "value" : "Programmé"
           }
         },
         "hi" : {
@@ -302964,7 +302964,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je l’adapte pour %@"
+            "value" : "Adaptation pour %@"
           }
         },
         "hi" : {
@@ -303083,7 +303083,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "À votre façon"
+            "value" : "Mise en forme à votre façon"
           }
         },
         "hi" : {
@@ -303319,7 +303319,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage encore %lld vidéos"
+            "value" : "Partagez encore %lld vidéos"
           }
         },
         "hi" : {
@@ -303556,7 +303556,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage un avis équilibré sur les enfants et les écrans."
+            "value" : "Partagez un avis équilibré sur les enfants et les écrans."
           }
         },
         "hi" : {
@@ -303793,7 +303793,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage des astuces de cuisine qui font gagner du temps sans ustensiles spéciaux."
+            "value" : "Partagez des astuces de cuisine qui font gagner du temps sans ustensiles spéciaux."
           }
         },
         "hi" : {
@@ -304148,7 +304148,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage une petite habitude du soir qui aide à s’endormir."
+            "value" : "Partagez une petite habitude du soir qui aide à s’endormir."
           }
         },
         "hi" : {
@@ -304267,7 +304267,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage une règle simple pour les e-mails et comment s’y mettre."
+            "value" : "Partagez une règle simple pour les e-mails et comment s’y mettre."
           }
         },
         "hi" : {
@@ -304386,7 +304386,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage des conseils pratiques pour les premiers mois avec un bébé."
+            "value" : "Partagez des conseils pratiques pour les premiers mois avec un bébé."
           }
         },
         "hi" : {
@@ -304623,7 +304623,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage trois achats à abandonner et ce qui change sans eux."
+            "value" : "Partagez trois achats à abandonner et ce qui change sans eux."
           }
         },
         "hi" : {
@@ -304742,7 +304742,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage les vraies difficultés des débuts en course et comment les passer."
+            "value" : "Partagez les vraies difficultés des débuts en course et comment les surmonter."
           }
         },
         "hi" : {
@@ -304861,7 +304861,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage des façons simples de bien manger à petit budget en voyage."
+            "value" : "Partagez des façons simples de bien manger à petit budget en voyage."
           }
         },
         "hi" : {
@@ -304980,7 +304980,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage des techniques d’étude qui aident à retenir."
+            "value" : "Partagez des techniques d’étude qui aident à retenir."
           }
         },
         "hi" : {
@@ -305099,7 +305099,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage trois conseils pratiques à essayer cette semaine."
+            "value" : "Partagez trois conseils pratiques à essayer cette semaine."
           }
         },
         "hi" : {
@@ -305218,7 +305218,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partage le côté honnête que la plupart découvrent plus tard."
+            "value" : "Partagez le côté honnête que la plupart découvrent plus tard."
           }
         },
         "hi" : {
@@ -305574,7 +305574,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Partager vers l’univers"
+            "value" : "Partager dans l’univers"
           }
         },
         "hi" : {
@@ -307582,7 +307582,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Phrases courtes ou plus longues ?"
+            "value" : "Phrases courtes ou plus longues ?"
           }
         },
         "hi" : {
@@ -307936,7 +307936,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Des ouvertures plus courtes à tester"
+            "value" : "Des accroches plus courtes à tester"
           }
         },
         "hi" : {
@@ -308290,7 +308290,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Afficher @identifiant"
+            "value" : "Afficher le @pseudo"
           }
         },
         "hi" : {
@@ -308409,7 +308409,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre une courte routine du matin que tout le monde peut tenir les jours chargés."
+            "value" : "Montrez une courte routine du matin que tout le monde peut tenir les jours chargés."
           }
         },
         "hi" : {
@@ -308528,7 +308528,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre un échauffement rapide que tout le monde peut faire avant l’entraînement."
+            "value" : "Montrez un échauffement rapide que tout le monde peut faire avant l’entraînement."
           }
         },
         "hi" : {
@@ -308647,7 +308647,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre une méthode de budget simple sans tableur."
+            "value" : "Montrez une méthode de budget simple sans tableur."
           }
         },
         "hi" : {
@@ -308766,7 +308766,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre une routine rapide de planification de la semaine, étape par étape."
+            "value" : "Montrez une routine rapide de planification de la semaine, étape par étape."
           }
         },
         "hi" : {
@@ -309003,7 +309003,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre une journée ordinaire honnêtement, sans les moments parfaits."
+            "value" : "Montrez une journée ordinaire honnêtement, sans les moments parfaits."
           }
         },
         "hi" : {
@@ -309240,7 +309240,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre des apps qui rassemblent notes, listes et plans au même endroit."
+            "value" : "Montrez des apps qui rassemblent notes, listes et plans au même endroit."
           }
         },
         "hi" : {
@@ -309478,7 +309478,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montrez à Cue un texte de vous : il apprend votre façon de dire les choses."
+            "value" : "Montrez à Cue un texte de vous : il apprend votre façon de dire les choses."
           }
         },
         "hi" : {
@@ -309954,7 +309954,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montrez des exemples pendant que vous parlez : ajoutez une photo ou un extrait par-dessus votre vidéo."
+            "value" : "Montrez des exemples pendant que vous parlez : ajoutez une photo ou un extrait par-dessus votre vidéo."
           }
         },
         "hi" : {
@@ -310073,7 +310073,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre comment trouver les coins plus calmes que la plupart des visiteurs ratent."
+            "value" : "Montrez comment trouver les coins plus calmes que la plupart des visiteurs ratent."
           }
         },
         "hi" : {
@@ -310192,7 +310192,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre comment faire tenir une semaine dans un seul petit sac."
+            "value" : "Montrez comment faire tenir une semaine dans un seul petit sac."
           }
         },
         "hi" : {
@@ -310901,7 +310901,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre trois mouvements simples qui travaillent tout le corps."
+            "value" : "Montrez trois mouvements simples qui travaillent tout le corps."
           }
         },
         "hi" : {
@@ -311020,7 +311020,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre la façon la plus simple de cuisiner une fois pour plusieurs jours."
+            "value" : "Montrez la façon la plus simple de cuisiner une fois pour plusieurs jours."
           }
         },
         "hi" : {
@@ -311139,7 +311139,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre des façons simples dont l’IA aide dans les tâches ordinaires."
+            "value" : "Montrez des façons simples dont l’IA aide dans les tâches ordinaires."
           }
         },
         "hi" : {
@@ -311375,7 +311375,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ta retouche est affichée"
+            "value" : "Retouche affichée"
           }
         },
         "hi" : {
@@ -312089,7 +312089,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Affiche l'arrière-plan de toute la prise. Un changement ici ne vaut que pour ce clip."
+            "value" : "Affiche l’arrière-plan de toute la prise. Un changement ici ne vaut que pour ce clip."
           }
         },
         "hi" : {
@@ -312444,7 +312444,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre avec quoi cette prise enregistre et d’où vient chaque réglage"
+            "value" : "Montre avec quoi cette prise est filmée et d’où vient chaque réglage"
           }
         },
         "hi" : {
@@ -314338,7 +314338,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Six étapes d’une idée à votre première étoile. À votre rythme ; rien n’est verrouillé."
+            "value" : "Six étapes d’une idée à votre première étoile. À votre rythme ; rien n’est verrouillé."
           }
         },
         "hi" : {
@@ -315166,7 +315166,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu sautes l’échauffement ? En voici un qui prend deux minutes."
+            "value" : "Vous sautez l’échauffement ? En voici un qui prend deux minutes."
           }
         },
         "hi" : {
@@ -317418,7 +317418,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour te voir pendant que tu lis"
+            "value" : "Pour vous voir pendant que vous lisez"
           }
         },
         "hi" : {
@@ -319433,7 +319433,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Certains textes ont été écartés des extraits : des mots dont Apple Intelligence n’apprend pas."
+            "value" : "Certains textes ont été écartés des extraits : des mots dont Apple Intelligence n’apprend pas."
           }
         },
         "hi" : {
@@ -319551,7 +319551,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "On me l’a demandé en commentaire — je réponds."
+            "value" : "On me l’a demandé en commentaire, je réponds."
           }
         },
         "hi" : {
@@ -322040,7 +322040,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Coupez d'abord la vidéo, ou utilisez Couper la vidéo sur les temps"
+            "value" : "Coupez d’abord la vidéo, ou utilisez Couper la vidéo sur les temps"
           }
         },
         "hi" : {
@@ -325118,7 +325118,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Commencer l’enregistrement"
+            "value" : "Commencer à filmer"
           }
         },
         "hi" : {
@@ -325236,7 +325236,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lancer le défilement avec l’enregistrement"
+            "value" : "Lancer le défilement en filmant"
           }
         },
         "hi" : {
@@ -326185,7 +326185,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Début : « %@ ». Touchez maintenant le dernier mot du passage."
+            "value" : "Début : « %@ ». Touchez maintenant le dernier mot du passage."
           }
         },
         "hi" : {
@@ -326304,7 +326304,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Des idées de départ à écrire vous-même. Avec Apple Intelligence, Cue en suggère d'autres."
+            "value" : "Des idées de départ à écrire vous-même. Avec Apple Intelligence, Cue en suggère d’autres."
           }
         },
         "hi" : {
@@ -326659,7 +326659,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Démarre un nouveau script à partir d’un prompt, d’une page blanche ou d’un document."
+            "value" : "Démarre un nouveau script à partir d’une demande, d’une page blanche ou d’un document."
           }
         },
         "hi" : {
@@ -327250,7 +327250,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Donnez votre avis en une phrase, une raison, et finissez par une question — les questions font réagir."
+            "value" : "Donnez votre avis en une phrase, une raison, et finissez par une question : les questions font réagir."
           }
         },
         "hi" : {
@@ -327723,7 +327723,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piquez-moi ma méthode — c’est plus simple que vous ne le pensez."
+            "value" : "Piquez-moi ma méthode : c’est plus simple que vous ne le pensez."
           }
         },
         "hi" : {
@@ -328085,7 +328085,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Étape %1$lld sur %2$lld : %3$@"
+            "value" : "Étape %1$lld sur %2$lld : %3$@"
           }
         },
         "hi" : {
@@ -328440,7 +328440,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brouillon en cours · un peu plus long"
+            "value" : "Rédaction en cours · un peu plus longue que prévu"
           }
         },
         "hi" : {
@@ -329385,7 +329385,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Arrêter l’enregistrement"
+            "value" : "Arrêter de filmer"
           }
         },
         "hi" : {
@@ -330449,7 +330449,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Petite histoire — et oui, ça finit bien."
+            "value" : "Petite histoire, et oui, ça finit bien."
           }
         },
         "hi" : {
@@ -331634,7 +331634,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les jurons violents et les insultes ne sont jamais écrits : Apple Intelligence ne les génère pas."
+            "value" : "Les jurons violents et les insultes ne sont jamais écrits : Apple Intelligence ne les génère pas."
           }
         },
         "hi" : {
@@ -331753,7 +331753,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Appel à l'action renforcé"
+            "value" : "Appel à l’action renforcé"
           }
         },
         "hi" : {
@@ -331989,7 +331989,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "THÈME LE PLUS FORT"
+            "value" : "SUJET PHARE"
           }
         },
         "hi" : {
@@ -333529,7 +333529,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Styler tout"
+            "value" : "Tout styliser"
           }
         },
         "hi" : {
@@ -333767,7 +333767,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Porte un même jean de trois façons différentes."
+            "value" : "Portez un même jean de trois façons différentes."
           }
         },
         "hi" : {
@@ -334832,7 +334832,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Propose une chose à faire dans les cinq minutes après le réveil."
+            "value" : "Proposez une chose à faire dans les cinq minutes après le réveil."
           }
         },
         "hi" : {
@@ -334951,7 +334951,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Propose des tâches simples selon l’âge et comment les faire durer."
+            "value" : "Proposez des tâches simples selon l’âge et comment les faire durer."
           }
         },
         "hi" : {
@@ -336859,7 +336859,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Emmène ton univers plus loin."
+            "value" : "Emmenez votre univers plus loin."
           }
         },
         "hi" : {
@@ -337096,7 +337096,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Retire la teinte du fond sur vous : le vert ou le bleu qu'il reflète sur la peau, les cheveux et les vêtements."
+            "value" : "Retire la teinte du fond sur vous : le vert ou le bleu qu’il reflète sur la peau, les cheveux et les vêtements."
           }
         },
         "hi" : {
@@ -337215,7 +337215,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prendre un jour off, ce n’est pas de la paresse. Ça fait partie du progrès."
+            "value" : "Prendre un jour de repos, ce n’est pas de la paresse. Ça fait partie du progrès."
           }
         },
         "hi" : {
@@ -338278,7 +338278,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Touchez OK dans l’éditeur ou choisissez une meilleure prise : la vidéo arrive ici, prête à publier."
+            "value" : "Touchez OK dans l’éditeur ou choisissez une meilleure prise : la vidéo arrive ici, prête à publier."
           }
         },
         "hi" : {
@@ -338397,7 +338397,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Touchez lecture et attendez le décompte. Puis lisez : le texte défile à un rythme régulier."
+            "value" : "Touchez Lire et attendez le décompte. Puis lisez : le texte défile à un rythme régulier."
           }
         },
         "hi" : {
@@ -338516,7 +338516,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Touchez lecture et attendez le décompte. Puis lisez à voix haute : le texte avance pendant que vous parlez."
+            "value" : "Touchez Lire et attendez le décompte. Puis lisez à voix haute : le texte avance pendant que vous parlez."
           }
         },
         "hi" : {
@@ -338635,7 +338635,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Touchez lecture et attendez le décompte. Puis lisez à voix haute : le texte suit votre voix."
+            "value" : "Touchez Lire et attendez le décompte. Puis lisez à voix haute : le texte suit votre voix."
           }
         },
         "hi" : {
@@ -340173,7 +340173,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TOUCHE POUR COMMENCER"
+            "value" : "TOUCHEZ POUR COMMENCER"
           }
         },
         "hi" : {
@@ -341122,7 +341122,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apprends un look rapide du quotidien, étape par étape."
+            "value" : "Montrez un look rapide du quotidien, étape par étape."
           }
         },
         "hi" : {
@@ -341359,7 +341359,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Montre comment vous parlez, sans jamais resservir pour des histoires, des opinions ou des résultats. Reste sur cet iPhone."
+            "value" : "Apprend à Cue votre façon de parler, sans jamais servir pour des histoires, des opinions ou des résultats. Reste sur cet iPhone."
           }
         },
         "hi" : {
@@ -343021,7 +343021,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Raconte d’où vient une recette de famille pendant que tu la cuisines."
+            "value" : "Racontez d’où vient une recette de famille pendant que vous la cuisinez."
           }
         },
         "hi" : {
@@ -343140,7 +343140,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Raconte un moment d’histoire surprenant et vrai."
+            "value" : "Racontez un moment d’histoire surprenant et vrai."
           }
         },
         "hi" : {
@@ -345267,7 +345267,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Textes concernés : %lld sur %lld"
+            "value" : "Textes concernés : %lld sur %lld"
           }
         },
         "hi" : {
@@ -345386,7 +345386,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Textes : %lld · Mots : %lld"
+            "value" : "Textes : %lld · Mots : %lld"
           }
         },
         "hi" : {
@@ -347520,7 +347520,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le mythe de cuisine qui gâche tes pâtes"
+            "value" : "Le mythe de cuisine qui gâche vos pâtes"
           }
         },
         "hi" : {
@@ -348112,7 +348112,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La réalité : %@. [regardez la caméra]"
+            "value" : "La réalité : %@. [regardez la caméra]"
           }
         },
         "hi" : {
@@ -348586,7 +348586,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La couleur de surbrillance change pour que le mot prononcé ressorte : %@."
+            "value" : "La couleur de surlignage change pour que le mot prononcé ressorte : %@."
           }
         },
         "hi" : {
@@ -348705,7 +348705,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L'iPhone est chaud, l'export prend donc plus de temps. Laissez-le refroidir si possible."
+            "value" : "L’iPhone est chaud, l’export prend donc plus de temps. Laissez-le refroidir si possible."
           }
         },
         "hi" : {
@@ -350365,7 +350365,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "L’ordre dans lequel appliquer tes soins"
+            "value" : "L’ordre dans lequel appliquer vos soins"
           }
         },
         "hi" : {
@@ -350602,7 +350602,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La tête de lecture et les bords s'y calent"
+            "value" : "La tête de lecture et les bords s’y calent"
           }
         },
         "hi" : {
@@ -351199,7 +351199,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les côtés qui ne rentrent pas sont quand même enregistrés, mais pas affichés"
+            "value" : "Les côtés qui ne rentrent pas sont quand même filmés, mais pas affichés"
           }
         },
         "hi" : {
@@ -352147,7 +352147,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le texte suit votre voix. Rien n'est filmé."
+            "value" : "Le texte suit votre voix. Rien n’est filmé."
           }
         },
         "hi" : {
@@ -352266,7 +352266,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le texte suit votre voix. %@, rien n'est filmé."
+            "value" : "Le texte suit votre voix. %@, rien n’est filmé."
           }
         },
         "hi" : {
@@ -352858,7 +352858,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La vidéo a changé entre-temps · figez l'image à nouveau"
+            "value" : "La vidéo a changé entre-temps · Figez l’image à nouveau"
           }
         },
         "hi" : {
@@ -355709,7 +355709,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce clip est muet · Active son son pour l’extraire"
+            "value" : "Ce clip est muet · Réactivez le son pour l’extraire"
           }
         },
         "hi" : {
@@ -356299,7 +356299,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Il contient des mots dont Apple Intelligence n’apprendra pas. Masquez-les (f***) ou choisissez un autre exemple."
+            "value" : "Ce texte contient des mots qu’Apple Intelligence refuse d’apprendre. Masquez-les (f***) ou choisissez un autre exemple."
           }
         },
         "hi" : {
@@ -356654,7 +356654,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cet iPhone ne peut pas repérer les personnes dans la vidéo : l’arrière-plan ne peut pas changer ici."
+            "value" : "Cet iPhone ne peut pas repérer les personnes dans la vidéo : l’arrière-plan ne peut pas changer ici."
           }
         },
         "hi" : {
@@ -356778,7 +356778,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cet iPhone ne peut pas traduire du %1$@ vers le %2$@. Vous pouvez écrire la traduction vous-même."
+            "value" : "Cet iPhone ne peut pas traduire cette paire de langues : %1$@ → %2$@. Vous pouvez écrire la traduction vous-même."
           }
         },
         "hi" : {
@@ -357370,7 +357370,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voici la routine du matin en laquelle j’ai confiance. Sans exception."
+            "value" : "Voici la routine du matin à laquelle je me fie. Sans exception."
           }
         },
         "hi" : {
@@ -359381,7 +359381,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cette vidéo est muette · Active son son pour l’extraire"
+            "value" : "Cette vidéo est muette · Réactivez le son pour l’extraire"
           }
         },
         "hi" : {
@@ -360331,7 +360331,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trois : je note la seule chose qui compte aujourd’hui."
+            "value" : "Trois : je note la seule chose qui compte aujourd’hui."
           }
         },
         "hi" : {
@@ -360804,7 +360804,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TikTok paie Creator Rewards au-delà d’une minute."
+            "value" : "TikTok rémunère les vidéos de plus d’une minute (Creator Rewards)."
           }
         },
         "hi" : {
@@ -360922,7 +360922,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Temps"
+            "value" : "Heure"
           }
         },
         "hi" : {
@@ -362224,7 +362224,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pour l'animer à votre façon"
+            "value" : "Pour l’animer à votre façon"
           }
         },
         "hi" : {
@@ -365302,7 +365302,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "thèmes"
+            "value" : "sujets"
           }
         },
         "hi" : {
@@ -365658,7 +365658,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suivi · %lld %%"
+            "value" : "Suivi · %lld %%"
           }
         },
         "hi" : {
@@ -367196,7 +367196,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Traduire à nouveau vos lignes corrigées ?"
+            "value" : "Traduire à nouveau vos lignes corrigées ?"
           }
         },
         "hi" : {
@@ -368378,7 +368378,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Essai démarré — profitez de Cue Pro"
+            "value" : "Essai démarré : profitez de Cue Pro"
           }
         },
         "hi" : {
@@ -368614,7 +368614,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je coupe les mots en trop"
+            "value" : "Suppression des mots en trop"
           }
         },
         "hi" : {
@@ -370156,7 +370156,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Essayez de le filmer avec le téléprompteur. Votre première étoile est à une prise."
+            "value" : "Essayez de le filmer avec le téléprompteur. Votre première étoile n’est qu’à une prise."
           }
         },
         "hi" : {
@@ -370512,7 +370512,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Transforme une question de ton public en script"
+            "value" : "Transformez une question de votre public en script"
           }
         },
         "hi" : {
@@ -370630,7 +370630,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Transforme une question de ton public en script."
+            "value" : "Transformez une question de votre public en script."
           }
         },
         "hi" : {
@@ -371458,7 +371458,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tuto / how-to"
+            "value" : "Tuto / pas-à-pas"
           }
         },
         "hi" : {
@@ -372052,7 +372052,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deux : un verre d’eau avant le café. [souriez] Ça paraît bête. Ça marche."
+            "value" : "Deux : un verre d’eau avant le café. [souriez] Ça paraît bête. Ça marche."
           }
         },
         "hi" : {
@@ -374892,7 +374892,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Débloquez-les avec les jalons. Certains viennent avec Pro."
+            "value" : "Débloquez-les avec les paliers. Certaines viennent avec Pro."
           }
         },
         "hi" : {
@@ -375010,7 +375010,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Débloqué après %lld vidéos partagées"
+            "value" : "Se débloque à %lld vidéos partagées"
           }
         },
         "hi" : {
@@ -376547,7 +376547,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utiliser « %@ »"
+            "value" : "Utiliser « %@ »"
           }
         },
         "hi" : {
@@ -377731,7 +377731,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utilisé dès qu'un arrière-plan est choisi"
+            "value" : "Utilisé dès qu’un arrière-plan est choisi"
           }
         },
         "hi" : {
@@ -382585,7 +382585,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suivi vocal écoute en %1$@. Les sous-titres écoutent dans la langue du script, %2$@. Choisissez la langue parlée si elle est différente."
+            "value" : "Le suivi vocal écoute en %1$@. Les sous-titres écoutent dans la langue du script, %2$@. Choisissez la langue parlée si elle est différente."
           }
         },
         "hi" : {
@@ -382823,7 +382823,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FORCE DE LA VOIX %lld %%"
+            "value" : "FORCE DE LA VOIX %lld %%"
           }
         },
         "hi" : {
@@ -383650,7 +383650,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En attente que l'iPhone refroidisse · %lld %%"
+            "value" : "En attente que l’iPhone refroidisse · %lld %%"
           }
         },
         "hi" : {
@@ -384125,7 +384125,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Présente une remise à zéro simple qui prépare la semaine."
+            "value" : "Présentez une remise à zéro simple qui prépare la semaine."
           }
         },
         "hi" : {
@@ -384244,7 +384244,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Présente des repas rapides qui gardent l’énergie stable les jours chargés."
+            "value" : "Présentez des repas rapides qui gardent l’énergie stable les jours chargés."
           }
         },
         "hi" : {
@@ -384363,7 +384363,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Passe en revue quelques réglages à changer sur un nouveau téléphone."
+            "value" : "Passez en revue quelques réglages à changer sur un nouveau téléphone."
           }
         },
         "hi" : {
@@ -384482,7 +384482,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Explique étape par étape comment préparer un voyage avec un petit budget."
+            "value" : "Expliquez étape par étape comment préparer un voyage avec un petit budget."
           }
         },
         "hi" : {
@@ -384601,7 +384601,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Présente une routine du coucher simple, étape par étape."
+            "value" : "Présentez une routine du coucher simple, étape par étape."
           }
         },
         "hi" : {
@@ -384720,7 +384720,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Envie d’un autre décor ?"
+            "value" : "Envie d’un autre décor ?"
           }
         },
         "hi" : {
@@ -384839,7 +384839,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voulez-vous un rappel pour filmer ce script ?"
+            "value" : "Voulez-vous un rappel pour filmer ce script ?"
           }
         },
         "hi" : {
@@ -384958,7 +384958,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voulez-vous que Cue vous rappelle de terminer cette vidéo ?"
+            "value" : "Voulez-vous que Cue vous rappelle de terminer cette vidéo ?"
           }
         },
         "hi" : {
@@ -385077,7 +385077,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Envie de scripts qui vous ressemblent davantage ?"
+            "value" : "Envie de scripts qui vous ressemblent davantage ?"
           }
         },
         "hi" : {
@@ -385785,7 +385785,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je prépare le prompteur"
+            "value" : "Préparation du téléprompteur"
           }
         },
         "hi" : {
@@ -386022,7 +386022,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Préviens d’une erreur de voyage courante et de la manière de l’éviter."
+            "value" : "Prévenez le public d’une erreur de voyage courante et de la manière de l’éviter."
           }
         },
         "hi" : {
@@ -386377,7 +386377,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Regardez — %@. [démo]"
+            "value" : "Regardez ça : %@. [démo]"
           }
         },
         "hi" : {
@@ -388032,7 +388032,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce avec quoi Cue enregistre, et pourquoi."
+            "value" : "Avec quoi Cue filme, et pourquoi."
           }
         },
         "hi" : {
@@ -388386,7 +388386,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Qu’est-ce qui ne vous ressemblait pas ?"
+            "value" : "Qu’est-ce qui ne vous ressemblait pas ?"
           }
         },
         "hi" : {
@@ -388504,7 +388504,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Que créez-vous ?"
+            "value" : "Que créez-vous ?"
           }
         },
         "hi" : {
@@ -388622,7 +388622,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Que filmez-vous le plus ?"
+            "value" : "Que filmez-vous le plus ?"
           }
         },
         "hi" : {
@@ -388740,7 +388740,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De quoi parles-tu ?"
+            "value" : "De quoi parlez-vous ?"
           }
         },
         "hi" : {
@@ -388859,7 +388859,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De quoi parlez-vous d’habitude ?"
+            "value" : "De quoi parlez-vous d’habitude ?"
           }
         },
         "hi" : {
@@ -389337,7 +389337,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quel type de créateur êtes-vous ?"
+            "value" : "Quel type de créateur êtes-vous ?"
           }
         },
         "hi" : {
@@ -389455,7 +389455,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Que peut dire la pub ?"
+            "value" : "Que peut dire la pub ?"
           }
         },
         "hi" : {
@@ -389574,7 +389574,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce que personne ne te dit sur %@"
+            "value" : "Ce que personne ne vous dit sur %@"
           }
         },
         "hi" : {
@@ -390164,7 +390164,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quoi faire ensuite"
+            "value" : "Que faire ensuite"
           }
         },
         "hi" : {
@@ -390993,7 +390993,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quelle est l’idée ?"
+            "value" : "Quelle est l’idée ?"
           }
         },
         "hi" : {
@@ -391111,7 +391111,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quelle énergie as-tu face caméra ?"
+            "value" : "Quelle énergie avez-vous face caméra ?"
           }
         },
         "hi" : {
@@ -391705,7 +391705,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quand votre fond n'est pas un vert ou un bleu standard"
+            "value" : "Quand votre fond n’est pas un vert ou un bleu standard"
           }
         },
         "hi" : {
@@ -391823,7 +391823,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Par où Cue vous entend dans cette prise."
+            "value" : "Le micro par lequel Cue vous entend dans cette prise."
           }
         },
         "hi" : {
@@ -391941,7 +391941,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Où publies-tu le plus ?"
+            "value" : "Où publiez-vous le plus ?"
           }
         },
         "hi" : {
@@ -392059,7 +392059,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Où les boutons et sous-titres de chaque app couvrent l’image"
+            "value" : "Où les boutons et légendes de chaque app couvrent l’image"
           }
         },
         "hi" : {
@@ -392533,7 +392533,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Où allez-vous partager vos vidéos ?"
+            "value" : "Où allez-vous partager vos vidéos ?"
           }
         },
         "hi" : {
@@ -392771,7 +392771,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Laquelle essayez-vous en premier ? Dites-le-moi en commentaire."
+            "value" : "Laquelle essayez-vous en premier ? Dites-le-moi en commentaire."
           }
         },
         "hi" : {
@@ -393008,7 +393008,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quelle prise est la bonne ?"
+            "value" : "Quelle prise est la bonne ?"
           }
         },
         "hi" : {
@@ -393126,7 +393126,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quelle vidéo faites-vous ?"
+            "value" : "Quelle vidéo faites-vous ?"
           }
         },
         "hi" : {
@@ -393244,7 +393244,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pendant l’enregistrement"
+            "value" : "Pendant que vous filmez"
           }
         },
         "hi" : {
@@ -393716,7 +393716,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "À qui parlez-vous ?"
+            "value" : "À qui parlez-vous ?"
           }
         },
         "hi" : {
@@ -393835,7 +393835,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Qui vous regarde ?"
+            "value" : "Qui vous regarde ?"
           }
         },
         "hi" : {
@@ -394071,7 +394071,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Qui te regarde ?"
+            "value" : "Qui vous regarde ?"
           }
         },
         "hi" : {
@@ -394901,7 +394901,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pourquoi certains matins ressemblent à un combat ?"
+            "value" : "Pourquoi certains matins ressemblent à un combat ?"
           }
         },
         "hi" : {
@@ -395020,7 +395020,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pourquoi vous regardent-ils ?"
+            "value" : "Pourquoi vous regardent-ils ?"
           }
         },
         "hi" : {
@@ -395967,7 +395967,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pourquoi la batterie de ton téléphone se vide si vite"
+            "value" : "Pourquoi la batterie de votre téléphone se vide si vite"
           }
         },
         "hi" : {
@@ -396439,7 +396439,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "LARGEUR %lld%% · %lld LIGNES"
+            "value" : "LARGEUR %lld %% · %lld LIGNES"
           }
         },
         "hi" : {
@@ -397032,7 +397032,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avec Réduire les animations activé, le ciel et les célébrations se reposent."
+            "value" : "Avec Réduire les animations activé, le ciel et les célébrations restent immobiles."
           }
         },
         "hi" : {
@@ -397151,7 +397151,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avec ces quelques produits dans ton placard, le dîner est toujours possible."
+            "value" : "Avec ces quelques produits dans votre placard, le dîner est toujours possible."
           }
         },
         "hi" : {
@@ -399287,7 +399287,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Écrire"
+            "value" : "Rédiger"
           }
         },
         "hi" : {
@@ -399762,7 +399762,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Écrivez-la"
+            "value" : "L’écrire"
           }
         },
         "hi" : {
@@ -399999,7 +399999,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Écrivez-le vous-même"
+            "value" : "Écrire vous-même"
           }
         },
         "hi" : {
@@ -400117,7 +400117,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Écrire la pub"
+            "value" : "Rédiger la pub"
           }
         },
         "hi" : {
@@ -400829,7 +400829,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Écrit jusqu’ici"
+            "value" : "Rédigé jusqu’ici"
           }
         },
         "hi" : {
@@ -401777,7 +401777,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oui — le partager sur les réseaux"
+            "value" : "Oui, la partager sur les réseaux"
           }
         },
         "hi" : {
@@ -402606,7 +402606,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TOI"
+            "value" : "VOUS"
           }
         },
         "hi" : {
@@ -402724,7 +402724,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vous l’avez demandé — le voici."
+            "value" : "Vous l’avez demandé, le voici."
           }
         },
         "hi" : {
@@ -403198,7 +403198,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu peux quitter Cue. L’export continue."
+            "value" : "Vous pouvez quitter Cue. L’export continue."
           }
         },
         "hi" : {
@@ -403435,7 +403435,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu n’as pas toujours besoin de la version chère. Comparons."
+            "value" : "Vous n’avez pas toujours besoin de la version chère. Comparons."
           }
         },
         "hi" : {
@@ -403672,7 +403672,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas besoin d’être calé en tech pour te faire aider par l’IA."
+            "value" : "Pas besoin d’être calé en tech pour vous faire aider par l’IA."
           }
         },
         "hi" : {
@@ -404146,7 +404146,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu le dis sûrement tous les jours. Tu sais d’où ça vient ?"
+            "value" : "Vous le dites sûrement tous les jours. Vous savez d’où ça vient ?"
           }
         },
         "hi" : {
@@ -404619,7 +404619,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vous y êtes. On filme ?"
+            "value" : "Vous y êtes. On filme ?"
           }
         },
         "hi" : {
@@ -404738,7 +404738,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tu as sûrement entendu qu’il faut huit verres par jour. Regardons ça de plus près."
+            "value" : "Vous avez sûrement entendu qu’il faut boire huit verres par jour. Regardons ça de plus près."
           }
         },
         "hi" : {
@@ -405927,7 +405927,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton noyau"
+            "value" : "Votre noyau"
           }
         },
         "hi" : {
@@ -407589,7 +407589,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Votre idée · en brouillon avec votre voix"
+            "value" : "Votre idée · rédigée avec votre voix"
           }
         },
         "hi" : {
@@ -408070,7 +408070,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ta lumière. Elle grandit à chaque vidéo partagée — pas besoin de photo."
+            "value" : "Votre lumière. Elle grandit à chaque vidéo partagée. Pas besoin de photo."
           }
         },
         "hi" : {
@@ -408190,7 +408190,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton journal de bord est vide"
+            "value" : "Votre Journal de bord est vide"
           }
         },
         "hi" : {
@@ -409377,7 +409377,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton propre sujet"
+            "value" : "Votre propre sujet"
           }
         },
         "hi" : {
@@ -411034,7 +411034,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ta prise est lue et placée sur la timeline dans un instant."
+            "value" : "Votre prise est lue et placée sur la timeline dans un instant."
           }
         },
         "hi" : {
@@ -411509,7 +411509,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ta to-do list n’est pas le problème. Sa construction, peut-être."
+            "value" : "Votre to-do list n’est pas le problème. Sa construction, peut-être."
           }
         },
         "hi" : {
@@ -411627,7 +411627,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tes sujets"
+            "value" : "Vos sujets"
           }
         },
         "hi" : {
@@ -411745,7 +411745,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton univers"
+            "value" : "Votre univers"
           }
         },
         "hi" : {
@@ -411865,7 +411865,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "TON UNIVERS"
+            "value" : "VOTRE UNIVERS"
           }
         },
         "hi" : {
@@ -412458,7 +412458,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Votre vidéo telle que vous l'avez filmée. Choisissez Flou, Couleur ou Image pour changer ce qu'il y a derrière vous."
+            "value" : "Votre vidéo telle que vous l’avez filmée. Choisissez Flou, Couleur ou Image pour changer ce qu’il y a derrière vous."
           }
         },
         "hi" : {
@@ -413049,7 +413049,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ta voix"
+            "value" : "Votre voix"
           }
         },
         "hi" : {
@@ -414823,7 +414823,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zoom de %lld %% pour cacher les bords"
+            "value" : "Zoom de %lld %% pour cacher les bords"
           }
         },
         "hi" : {

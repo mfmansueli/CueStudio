@@ -415,7 +415,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Filmer ${script} dans ${applicationName}"
+            "value" : "Filme ${script} dans ${applicationName}"
           }
         },
         "hi" : {
