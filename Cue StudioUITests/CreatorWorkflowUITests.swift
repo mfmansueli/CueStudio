@@ -57,7 +57,9 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.tap(field.coordinate(withNormalizedOffset: CGVector(dx: 0.97, dy: 0.5)))
         XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5), "No keyboard for the caption")
         flow.replaceText(of: field, with: "e caldo de cana do lado.")
-        XCTAssertEqual(field.value as? String, "e caldo de cana do lado.")
+        // Each key re-times the line, so the last keys can still be landing when typing returns: wait for them, never for less.
+        let typed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", "e caldo de cana do lado."), object: field)
+        XCTAssertEqual(XCTWaiter.wait(for: [typed], timeout: 5), .completed, "The field has “\(field.value as? String ?? "")”")
         flow.tap(app.buttons["edit.panel.apply"], "✓ on Captions")
         flow.backToMainTools()
         // A check, not a creator's tap: the fix stayed once the panel closed.
