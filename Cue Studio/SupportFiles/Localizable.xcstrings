@@ -916,7 +916,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "“%@”"
+            "value" : "”%@”"
           }
         },
         "th" : {
@@ -1860,7 +1860,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "”Okej, en snabb i dag …”"
+            "value" : "”Okej, en snabbis i dag…”"
           }
         },
         "th" : {
@@ -2214,7 +2214,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "”Tre steg. Inget fluff.”"
+            "value" : "”Tre steg. Rakt på sak.”"
           }
         },
         "th" : {
@@ -2924,7 +2924,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — tillkännagivande"
+            "value" : "Nyhet: %@"
           }
         },
         "th" : {
@@ -3042,7 +3042,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — ärlig recension"
+            "value" : "%@: ärlig recension"
           }
         },
         "th" : {
@@ -3160,7 +3160,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — länk i min bio. [titta i kameran] Den här videon är ett betalt samarbete."
+            "value" : "%@. Länken finns i min bio. [titta i kameran] Den här videon är ett betalt samarbete."
           }
         },
         "th" : {
@@ -3278,7 +3278,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ — sponsrad"
+            "value" : "%@: sponsrat"
           }
         },
         "th" : {
@@ -7142,7 +7142,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ är klart. Din nästa inspelning är ett tryck bort."
+            "value" : "%@ är klart. Nästa inspelning är bara ett tryck bort."
           }
         },
         "th" : {
@@ -7498,7 +7498,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ finns inte på den här iPhone · Välj en annan app"
+            "value" : "%@ finns inte på den här iPhonen · Välj en annan app"
           }
         },
         "th" : {
@@ -8222,7 +8222,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ vid varje klippning"
+            "value" : "%@ vid varje klipp"
           }
         },
         "th" : {
@@ -9169,7 +9169,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ SÄKERT OMRÅDE"
+            "value" : "SÄKERT OMRÅDE FÖR %@"
           }
         },
         "th" : {
@@ -9287,7 +9287,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ säker zon"
+            "value" : "Säker zon för %@"
           }
         },
         "th" : {
@@ -9524,7 +9524,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ inställning"
+            "value" : "Inställning för %@"
           }
         },
         "th" : {
@@ -9768,7 +9768,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ under %@"
+            "value" : "%1$@ kvar till %2$@"
           }
         },
         "th" : {
@@ -11319,7 +11319,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@, klippt"
+            "value" : "%@, bortklippt"
           }
         },
         "th" : {
@@ -13120,7 +13120,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld cues"
+            "value" : "%lld regianvisningar"
           }
         },
         "th" : {
@@ -13238,7 +13238,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld cues tillagda"
+            "value" : "%lld regianvisningar tillagda"
           }
         },
         "th" : {
@@ -14008,13 +14008,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld keyframe"
+                  "value" : "%lld nyckelbildruta"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld keyframes"
+                  "value" : "%lld nyckelbildrutor"
                 }
               }
             }
@@ -20625,7 +20625,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld videor — %2$lld kvar"
+            "value" : "%1$lld videor · %2$lld kvar"
           }
         },
         "th" : {
@@ -23925,7 +23925,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "+ Hittar du inte? Lägg till ditt ämne"
+            "value" : "+ Saknas det? Lägg till ditt ämne"
           }
         },
         "th" : {
@@ -25108,7 +25108,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✓ Cue-rösten är klar"
+            "value" : "✓ Cue Voice är klar"
           }
         },
         "th" : {
@@ -27003,7 +27003,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Skriv mitt svar"
+            "value" : "✦ Gör utkast till mitt svar"
           }
         },
         "th" : {
@@ -28309,7 +28309,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "✦ Skriv"
+            "value" : "✦ Gör utkast"
           }
         },
         "th" : {
@@ -28663,7 +28663,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 cue"
+            "value" : "1 regianvisning"
           }
         },
         "th" : {
@@ -29741,7 +29741,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1:a video ✓"
+            "value" : "Första videon ✓"
           }
         },
         "th" : {
@@ -30687,7 +30687,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "4 snabba frågor — cirka 20 sekunder. Inget skrivande behövs."
+            "value" : "4 snabba frågor, cirka 20 sekunder. Du behöver inte skriva."
           }
         },
         "th" : {
@@ -31397,7 +31397,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "25 sek."
+            "value" : "25 s"
           }
         },
         "th" : {
@@ -31752,7 +31752,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "45 sek."
+            "value" : "45 s"
           }
         },
         "th" : {
@@ -32935,7 +32935,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En vän fick mig att prova det här — jag är skyldig henne."
+            "value" : "En vän fick mig att prova det här. Jag är skyldig henne en tjänst."
           }
         },
         "th" : {
@@ -33408,7 +33408,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En latte art-hällning inför kameran"
+            "value" : "Latte art inför kameran"
           }
         },
         "th" : {
@@ -36020,7 +36020,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En ung målgruppe"
+            "value" : "En ung publik"
           }
         },
         "th" : {
@@ -36730,7 +36730,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bekräfta"
+            "value" : "Erkänn"
           }
         },
         "th" : {
@@ -36848,7 +36848,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tack"
+            "value" : "Erkännanden"
           }
         },
         "th" : {
@@ -37560,7 +37560,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lägg till en keyframe, flytta uppspelningsmarkören och dra sedan fotot eller videon — Cue flyttar det mellan keyframes."
+            "value" : "Lägg till en nyckelbildruta, flytta uppspelningsmarkören och dra sedan fotot eller videon. Cue flyttar det mellan nyckelbildrutorna."
           }
         },
         "th" : {
@@ -37678,7 +37678,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lägg till en keyframe, flytta uppspelningsmarkören och dra sedan texten i videon — Cue flyttar den mellan keyframes."
+            "value" : "Lägg till en nyckelbildruta, flytta uppspelningsmarkören och dra sedan texten i videon. Cue flyttar den mellan nyckelbildrutorna."
           }
         },
         "th" : {
@@ -38270,7 +38270,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lägg till en speakerröst"
+            "value" : "Lägg till en voiceover"
           }
         },
         "th" : {
@@ -38980,7 +38980,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lägg till upplysning"
+            "value" : "Lägg till reklammarkering"
           }
         },
         "th" : {
@@ -39217,7 +39217,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lägg till keyframe"
+            "value" : "Lägg till nyckelbildruta"
           }
         },
         "th" : {
@@ -40640,7 +40640,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Läggs till före varje idé du skickar till Cue — manus, hooks och svar, med var du postar och formatet du väljer. Används aldrig för att träna modeller."
+            "value" : "Läggs till före varje idé du skickar till Cue (manus, hooks och svar), med var du postar och formatet du väljer. Används aldrig för att träna modeller."
           }
         },
         "th" : {
@@ -41114,7 +41114,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lägger till #ad i din bildtext"
+            "value" : "Lägger till #ad i inläggets text"
           }
         },
         "th" : {
@@ -42180,7 +42180,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "När du har postat, tryck på ◀ Cue högst upp till vänster. Vi kommer tillbaka för att avsluta."
+            "value" : "När du har postat trycker du på ◀ Cue högst upp till vänster för att slutföra."
           }
         },
         "th" : {
@@ -42298,7 +42298,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "När du har postat, tryck på ◀ Cue högst upp till vänster. Vi öppnar %@ härnäst."
+            "value" : "När du har postat trycker du på ◀ Cue högst upp till vänster. Sedan öppnas %@."
           }
         },
         "th" : {
@@ -45154,7 +45154,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tillåt Cue i iOS-inställningar."
+            "value" : "Tillåt Cue i Inställningar."
           }
         },
         "th" : {
@@ -45272,7 +45272,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tillåt det för att spara din video."
+            "value" : "Tillåt åtkomst så att du kan spara videon."
           }
         },
         "th" : {
@@ -45864,7 +45864,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Passar redan i %@"
+            "value" : "Ligger redan inom %@"
           }
         },
         "th" : {
@@ -47649,7 +47649,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Och sedan — %@. [beat]"
+            "value" : "Och sedan: %@. [kort paus]"
           }
         },
         "th" : {
@@ -47767,7 +47767,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Och sedan — %@. [le]"
+            "value" : "Och sedan: %@. [le]"
           }
         },
         "th" : {
@@ -48123,7 +48123,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tillkännagivande"
+            "value" : "Lansering"
           }
         },
         "th" : {
@@ -50848,7 +50848,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Apple Intelligence håller fortfarande på att göras klart. Försök igen om några minuter."
+            "value" : "Apple Intelligence förbereds fortfarande. Försök igen om några minuter."
           }
         },
         "th" : {
@@ -54475,7 +54475,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auto tillämpad · Justera nedan"
+            "value" : "Auto tillämpat · Justera nedan"
           }
         },
         "th" : {
@@ -57901,7 +57901,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "beat"
+            "value" : "kort paus"
           }
         },
         "th" : {
@@ -58375,7 +58375,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Blir ett eget klipp i sekvensen, efter klippet vid uppspelningshuvudet. Endast videor."
+            "value" : "Blir ett eget klipp i sekvensen, efter klippet vid uppspelningsmarkören. Endast videor."
           }
         },
         "th" : {
@@ -58731,7 +58731,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Först av allt — jag är ledsen."
+            "value" : "Innan något annat: jag ber om ursäkt."
           }
         },
         "th" : {
@@ -58969,7 +58969,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Innan du lägger det här i varukorgen, lyssna på mig."
+            "value" : "Innan du lägger det här i varukorgen, hör vad jag har att säga."
           }
         },
         "th" : {
@@ -59207,7 +59207,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Innan ditt nästa köp, ställ dig själv den här frågan."
+            "value" : "Inför ditt nästa köp, ställ dig själv den här frågan."
           }
         },
         "th" : {
@@ -61576,7 +61576,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Större, högre text"
+            "value" : "Större, kraftigare text"
           }
         },
         "th" : {
@@ -62647,7 +62647,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sudda bakgrunden"
+            "value" : "Suddig bakgrund"
           }
         },
         "th" : {
@@ -65253,7 +65253,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Varumärkesskapare"
+            "value" : "Kreatör för varumärken"
           }
         },
         "th" : {
@@ -66794,7 +66794,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Billig skönhet"
+            "value" : "Skönhet på budget"
           }
         },
         "th" : {
@@ -66913,7 +66913,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Billig matlagning"
+            "value" : "Budgetmat"
           }
         },
         "th" : {
@@ -67743,7 +67743,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Punkter räcker. Öppna med din vanliga hälsning, träffa produkten med en stark replik, visa att den fungerar i mitten och avsluta med koden."
+            "value" : "Punkter räcker. Öppna med din vanliga hälsning, presentera produkten med en stark mening, visa att den fungerar i mitten och avsluta med koden."
           }
         },
         "th" : {
@@ -69763,7 +69763,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Callout"
+            "value" : "Pratbubbla"
           }
         },
         "th" : {
@@ -73076,7 +73076,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bildtext kopierad · klistra in i %@"
+            "value" : "Inläggstexten kopierad · klistra in i %@"
           }
         },
         "th" : {
@@ -74502,7 +74502,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Textning kräver taligenkänning. Du kan fortfarande skriva raderna själv."
+            "value" : "Undertexter kräver taligenkänning. Du kan fortfarande skriva raderna själv."
           }
         },
         "th" : {
@@ -75330,7 +75330,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Undertexter, titlar och rörelse tillsammans · dina ord stannar"
+            "value" : "Undertexter, titlar och rörelse tillsammans · dina ord finns kvar"
           }
         },
         "th" : {
@@ -76160,7 +76160,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ledigt"
+            "value" : "Avslappnad"
           }
         },
         "th" : {
@@ -76870,7 +76870,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ändra när som helst i Profil › Min Cue-röst."
+            "value" : "Ändra när som helst i Profil › My Cue Voice."
           }
         },
         "th" : {
@@ -79005,7 +79005,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kontrollera att dina undertexter håller sig borta från nätverkets knappar."
+            "value" : "Kontrollera att dina undertexter inte hamnar under nätverkets knappar."
           }
         },
         "th" : {
@@ -79123,7 +79123,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kontrollera kommentaren innan Cue skriver."
+            "value" : "Kontrollera kommentaren innan Cue gör ett utkast."
           }
         },
         "th" : {
@@ -81137,7 +81137,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cinema"
+            "value" : "Film"
           }
         },
         "th" : {
@@ -81852,7 +81852,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ren"
+            "value" : "Clean"
           }
         },
         "th" : {
@@ -83281,7 +83281,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klipp raderat · Tryck på Ångra"
+            "value" : "Klippet borttaget · Tryck på Ångra"
           }
         },
         "th" : {
@@ -86361,7 +86361,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kommer färdigt: avsnitt, cues, tid."
+            "value" : "Klart direkt: avsnitt, regianvisningar, timing."
           }
         },
         "th" : {
@@ -87308,7 +87308,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Communityskapare"
+            "value" : "Communitykreatör"
           }
         },
         "th" : {
@@ -87426,7 +87426,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gemenskap eller sak"
+            "value" : "Community eller ideell sak"
           }
         },
         "th" : {
@@ -90753,7 +90753,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Styr teleprompten från din andra iPhone eller iPad."
+            "value" : "Styr telepromptern från din andra iPhone eller iPad."
           }
         },
         "th" : {
@@ -91463,7 +91463,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kopierade @%@"
+            "value" : "@%@ kopierat"
           }
         },
         "th" : {
@@ -95852,7 +95852,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Omslagsstilar, serietaggar, “Text bakom mig”"
+            "value" : "Omslagsstilar, serietaggar, ”Text bakom mig”"
           }
         },
         "th" : {
@@ -96325,7 +96325,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skaparrutin"
+            "value" : "Skapanderutin"
           }
         },
         "th" : {
@@ -97627,7 +97627,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue stängdes innan den var klar. Exportera igen för att få videon."
+            "value" : "Cue stängdes innan exporten var klar. Exportera igen för att få videon."
           }
         },
         "th" : {
@@ -98218,7 +98218,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue kunde inte avgöra vilket språk det skulle lyssna på. Du kan skriva din idé i stället."
+            "value" : "Cue kunde inte avgöra vilket språk du talar. Du kan skriva din idé i stället."
           }
         },
         "th" : {
@@ -98931,7 +98931,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue har ingen server. Dina manus, tagningar och My Cue Voice lagras på den här enheten och i dina enhetsbackuper. Logga in med Apple är valfritt och sparar bara ditt Apple-ID på den här iPhonen."
+            "value" : "Cue har ingen server. Dina manus, tagningar och My Cue Voice lagras på den här enheten och i enhetens säkerhetskopior. Logga in med Apple är valfritt och sparar bara ditt Apple-ID på den här iPhonen."
           }
         },
         "th" : {
@@ -99762,7 +99762,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue öppnar %@ med din video och text. Du lägger upp."
+            "value" : "Cue öppnar %@ med din video och inläggstext. Du publicerar."
           }
         },
         "th" : {
@@ -99999,7 +99999,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue öppnar appen med din video och text. Du lägger upp."
+            "value" : "Cue öppnar appen med din video och inläggstext. Du publicerar."
           }
         },
         "th" : {
@@ -100826,7 +100826,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue ställer in bildruta, säkra zoner, teleprompterns position och längdmål. Finjustera när som helst."
+            "value" : "Cue ställer in format, säkra zoner, teleprompterns position och längdmål. Finjustera när som helst."
           }
         },
         "th" : {
@@ -102250,7 +102250,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Signaler som PAUSE eller SMILE i texten"
+            "value" : "Regianvisningar som PAUS eller LE i texten"
           }
         },
         "th" : {
@@ -103717,13 +103717,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Klipp %lld ord från videon"
+                  "value" : "Klipp bort %lld ord ur videon"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Klipp %lld ord från videon"
+                  "value" : "Klipp bort %lld ord ur videon"
                 }
               }
             }
@@ -104925,7 +104925,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dagens nyheter"
+            "value" : "Dagliga nyheter"
           }
         },
         "th" : {
@@ -107648,7 +107648,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Radera de markerade raderna"
+            "value" : "Ta bort de markerade raderna"
           }
         },
         "th" : {
@@ -109423,7 +109423,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dikteringen stoppade. Det du har sagt hittills sparas."
+            "value" : "Dikteringen stoppades. Det du har sagt hittills sparas."
           }
         },
         "th" : {
@@ -109777,7 +109777,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dämpa bakgrunden"
+            "value" : "Dämpad bakgrund"
           }
         },
         "th" : {
@@ -110370,7 +110370,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Upplysningen har lagts till först"
+            "value" : "Reklammarkeringen har lagts till först"
           }
         },
         "th" : {
@@ -110488,7 +110488,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Upplysningen står redan först"
+            "value" : "Reklammarkeringen står redan först"
           }
         },
         "th" : {
@@ -110960,7 +110960,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Toning"
+            "value" : "Övertoning"
           }
         },
         "th" : {
@@ -111079,7 +111079,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avdelare"
+            "value" : "Skiljelinje"
           }
         },
         "th" : {
@@ -113813,7 +113813,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utkastet är klart · ändra vad du vill"
+            "value" : "Utkastet är klart · Ändra vad du vill"
           }
         },
         "th" : {
@@ -114168,7 +114168,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utkast från din röst, så att folk kan följa med utan ljud."
+            "value" : "Utkast utifrån din röst, så att alla kan följa med utan ljud."
           }
         },
         "th" : {
@@ -114883,7 +114883,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utkast · %lld — Pågår"
+            "value" : "Utkast · %lld · Pågår"
           }
         },
         "th" : {
@@ -116307,7 +116307,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Släpps fredag kl. 9"
+            "value" : "Släpps på fredag kl. 9"
           }
         },
         "th" : {
@@ -116544,7 +116544,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förfallen"
+            "value" : "Passerad"
           }
         },
         "th" : {
@@ -121283,7 +121283,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Emojis i texter"
+            "value" : "Emojis i inläggstexter"
           }
         },
         "th" : {
@@ -122229,7 +122229,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slutet av valet"
+            "value" : "Slutet av markeringen"
           }
         },
         "th" : {
@@ -122702,7 +122702,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "avslutar: %@"
+            "value" : "avslut: %@"
           }
         },
         "th" : {
@@ -126025,7 +126025,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Varje klippning är hård"
+            "value" : "Alla klipp är raka klipp"
           }
         },
         "th" : {
@@ -126262,7 +126262,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alla milstolpe-appikoner"
+            "value" : "Alla appikoner för milstolpar"
           }
         },
         "th" : {
@@ -126617,7 +126617,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Varje video du delar blir en stjärna där."
+            "value" : "Varje video du delar blir en stjärna i det."
           }
         },
         "th" : {
@@ -132196,7 +132196,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Extraherar ljudet …"
+            "value" : "Extraherar ljudet…"
           }
         },
         "th" : {
@@ -132434,7 +132434,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ögonkontakt är inte tillgängligt på den här iPhonen"
+            "value" : "Ögonkontakt är inte tillgänglig på den här iPhonen"
           }
         },
         "th" : {
@@ -132908,7 +132908,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tona"
+            "value" : "Toning"
           }
         },
         "th" : {
@@ -133026,7 +133026,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton in"
+            "value" : "Tona in"
           }
         },
         "th" : {
@@ -133144,7 +133144,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ton ut"
+            "value" : "Tona ut"
           }
         },
         "th" : {
@@ -136703,7 +136703,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hittar taktslagen …"
+            "value" : "Hittar taktslagen…"
           }
         },
         "th" : {
@@ -136941,7 +136941,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Letar efter dig i bilden …"
+            "value" : "Letar efter dig i bilden…"
           }
         },
         "th" : {
@@ -137417,7 +137417,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Finish"
+            "value" : "Finputs"
           }
         },
         "th" : {
@@ -138479,7 +138479,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "FÖRSTA TAGNINGEN · IDAG"
+            "value" : "FÖRSTA TAGNINGEN · I DAG"
           }
         },
         "th" : {
@@ -140729,7 +140729,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skummar som mejeri, ingen eftersmak"
+            "value" : "Skummar som mjölk, ingen eftersmak"
           }
         },
         "th" : {
@@ -143571,7 +143571,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "För beam-splitter-glas"
+            "value" : "För glas med strålsplittare"
           }
         },
         "th" : {
@@ -143689,7 +143689,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "För glasrigg med strålsplittare"
+            "value" : "För glasriggar med strålsplittare"
           }
         },
         "th" : {
@@ -143807,7 +143807,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "För rigg som reflekterar underifrån"
+            "value" : "För riggar som reflekterar underifrån"
           }
         },
         "th" : {
@@ -144163,7 +144163,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Formalitet · Balanserad → Ledig"
+            "value" : "Formalitet · Balanserad → Avslappnad"
           }
         },
         "th" : {
@@ -145112,7 +145112,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bildruta"
+            "value" : "Bildutsnitt"
           }
         },
         "th" : {
@@ -148499,7 +148499,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Från Filer. Använd bara musik du äger eller har rättigheter till — låtar från Apple Music kan inte läggas till."
+            "value" : "Från Filer. Använd bara musik du äger eller har rättigheter till. Låtar från Apple Music kan inte läggas till."
           }
         },
         "th" : {
@@ -149684,7 +149684,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Roligt"
+            "value" : "Rolig"
           }
         },
         "th" : {
@@ -151819,7 +151819,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gör sig redo"
+            "value" : "Förbereder"
           }
         },
         "th" : {
@@ -151938,7 +151938,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gör redo att följa din röst"
+            "value" : "Snart redo att följa din röst"
           }
         },
         "th" : {
@@ -152056,7 +152056,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gör sig redo att följa dina ord. Skrollar med %@ medan du pratar."
+            "value" : "Snart redo att följa dina ord. Skrollar med %@ medan du pratar."
           }
         },
         "th" : {
@@ -152174,7 +152174,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gör sig redo att lyssna…"
+            "value" : "Snart redo att lyssna…"
           }
         },
         "th" : {
@@ -152530,7 +152530,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gör Följ rösten redo"
+            "value" : "Förbereder Följ rösten"
           }
         },
         "th" : {
@@ -152649,7 +152649,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gör Följ rösten redo · %@"
+            "value" : "Förbereder Följ rösten · %@"
           }
         },
         "th" : {
@@ -154074,7 +154074,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gå online för att hämta %@"
+            "value" : "Anslut till internet för att hämta %@"
           }
         },
         "th" : {
@@ -154192,7 +154192,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gå online för att hämta språket"
+            "value" : "Anslut till internet för att hämta språket"
           }
         },
         "th" : {
@@ -157635,7 +157635,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lyssna på pausen som den är"
+            "value" : "Lyssnar på pausen som den är"
           }
         },
         "th" : {
@@ -158582,7 +158582,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Så här gör jag %@ — från början till slut. [paus]"
+            "value" : "Så här gör jag %@, från början till slut. [paus]"
           }
         },
         "th" : {
@@ -159174,7 +159174,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det här är varför folk tror på den: %@."
+            "value" : "Därför tror folk på den: %@."
           }
         },
         "th" : {
@@ -159293,7 +159293,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Här är varför dina första tio minuter avgör din dag."
+            "value" : "Därför avgör dina första tio minuter din dag."
           }
         },
         "th" : {
@@ -161426,7 +161426,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Håll in för att visa bilden som inspelad"
+            "value" : "Håll in för att visa bilden som den spelades in"
           }
         },
         "th" : {
@@ -161545,7 +161545,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Håll för att prata · tryck för att börja"
+            "value" : "Håll in för att prata · tryck för att börja"
           }
         },
         "th" : {
@@ -165093,7 +165093,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hur du lär dig vad som helst snabbare"
+            "value" : "Så lär du dig vad som helst snabbare"
           }
         },
         "th" : {
@@ -166163,7 +166163,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Drick vatten före koffeinet — det slår bättre."
+            "value" : "Drick vatten före koffeinet. Det gör mer nytta."
           }
         },
         "th" : {
@@ -166991,7 +166991,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jag trodde på det i åratal — tills jag kollade."
+            "value" : "Jag trodde på det här i åratal, tills jag kollade."
           }
         },
         "th" : {
@@ -167817,7 +167817,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jag har provat allt — det här är det som fastnade."
+            "value" : "Jag har provat allt. Det här är det som fastnade."
           }
         },
         "th" : {
@@ -168409,7 +168409,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jag kommer att få skit för det här. [paus]"
+            "value" : "Jag kommer att få hat för det här. [paus]"
           }
         },
         "th" : {
@@ -170425,7 +170425,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Om du bara ändrar en sak imorgon, låt det vara det här."
+            "value" : "Om du bara ändrar en sak i morgon, låt det vara det här."
           }
         },
         "th" : {
@@ -172563,7 +172563,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importera mitt skrivande"
+            "value" : "Importera mina texter"
           }
         },
         "th" : {
@@ -172806,7 +172806,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Importerat från ditt skrivande"
+            "value" : "Importerat från dina texter"
           }
         },
         "th" : {
@@ -173516,7 +173516,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Under redigering · Sparas automatiskt"
+            "value" : "Under redigering · Sparat automatiskt"
           }
         },
         "th" : {
@@ -173635,7 +173635,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I varje undertextrad. Tajmingen är kvar."
+            "value" : "I varje undertextrad. Tiderna behålls."
           }
         },
         "th" : {
@@ -173872,7 +173872,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I min röst"
+            "value" : "Med min röst"
           }
         },
         "th" : {
@@ -176121,7 +176121,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "iPhone-språk"
+            "value" : "iPhonens språk"
           }
         },
         "th" : {
@@ -176830,7 +176830,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den läggs in där markören är och stannar i fältet för alla manus."
+            "value" : "Den läggs in där markören är och finns kvar i listen för alla manus."
           }
         },
         "th" : {
@@ -178488,7 +178488,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gå med i väntelistan — länk i bio"
+            "value" : "Gå med i väntelistan, länk i bio"
           }
         },
         "th" : {
@@ -178961,7 +178961,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Börja bara prata …"
+            "value" : "Börja bara prata…"
           }
         },
         "th" : {
@@ -179906,7 +179906,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Håll båda enheterna nära varandra, med wifi på."
+            "value" : "Håll båda enheterna nära varandra, med Wi-Fi på."
           }
         },
         "th" : {
@@ -180025,7 +180025,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Håll Cue öppen tills den är klar."
+            "value" : "Håll Cue öppet tills exporten är klar."
           }
         },
         "th" : {
@@ -180735,7 +180735,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Behåll min"
+            "value" : "Behåll min version"
           }
         },
         "th" : {
@@ -181562,7 +181562,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Håll orden borta från knapparna"
+            "value" : "Håll orden fria från knapparna"
           }
         },
         "th" : {
@@ -182508,7 +182508,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keyframe"
+            "value" : "Nyckelbildruta"
           }
         },
         "th" : {
@@ -182626,7 +182626,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keyframe tillagd · Dra nu"
+            "value" : "Nyckelbildruta tillagd · Dra nu"
           }
         },
         "th" : {
@@ -182744,7 +182744,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Keyframe borttagen"
+            "value" : "Nyckelbildruta borttagen"
           }
         },
         "th" : {
@@ -182981,7 +182981,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kicker"
+            "value" : "Överrubrik"
           }
         },
         "th" : {
@@ -187007,7 +187007,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Livsstilsskapare"
+            "value" : "Livsstilskreatör"
           }
         },
         "th" : {
@@ -188071,7 +188071,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Här finns en rad · Gå till ett glapp"
+            "value" : "Det finns redan en rad här · Flytta till en lucka"
           }
         },
         "th" : {
@@ -188307,7 +188307,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Raden delades"
+            "value" : "Raden delades upp"
           }
         },
         "th" : {
@@ -188661,7 +188661,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ställer upp stjärnorna"
+            "value" : "Ställer stjärnorna på rad"
           }
         },
         "th" : {
@@ -189370,7 +189370,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lista baserna som blir till många snabba måltider."
+            "value" : "Räkna upp basvarorna som kan bli många snabba måltider."
           }
         },
         "th" : {
@@ -189488,7 +189488,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Räkna upp stegen med vanliga ord, åtskilda av kommatecken. Cue gör en numrerad genomgång med en hook överst och ett spara-det-här-slut."
+            "value" : "Räkna upp stegen med vanliga ord, åtskilda av kommatecken. Cue gör en numrerad genomgång med en hook överst och ett slut som uppmanar tittarna att spara videon."
           }
         },
         "th" : {
@@ -191617,7 +191617,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Längre videor tjänar: TikTok 1:00+, YouTube 8:00+"
+            "value" : "Längre videor kan ge intäkter: TikTok 1:00+, YouTube 8:00+"
           }
         },
         "th" : {
@@ -192447,7 +192447,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Letar efter teleprompter…"
+            "value" : "Letar efter telepromptern…"
           }
         },
         "th" : {
@@ -192684,7 +192684,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Höga, feta versaler"
+            "value" : "Kraftiga, feta versaler"
           }
         },
         "th" : {
@@ -194221,7 +194221,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gör det kortare eller spela in som det är — du kan trimma senare."
+            "value" : "Gör det kortare eller spela in som det är. Du kan korta senare."
           }
         },
         "th" : {
@@ -196596,7 +196596,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kan vara avsiktligt — för att betona"
+            "value" : "Kan vara avsiktligt, för att betona"
           }
         },
         "th" : {
@@ -197308,7 +197308,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Media duplicerat"
+            "value" : "Mediefilen duplicerades"
           }
         },
         "th" : {
@@ -197426,7 +197426,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Media borttagen"
+            "value" : "Mediefilen togs bort"
           }
         },
         "th" : {
@@ -199201,7 +199201,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kan ha betydelse — lyssna först"
+            "value" : "Kan ha betydelse, lyssna först"
           }
         },
         "th" : {
@@ -201115,7 +201115,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "tjäna pengar"
+            "value" : "intäkter"
           }
         },
         "th" : {
@@ -201233,7 +201233,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "tjänar pengar"
+            "value" : "ger intäkter"
           }
         },
         "th" : {
@@ -201587,7 +201587,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mono kontrast"
+            "value" : "Kontrastmono"
           }
         },
         "th" : {
@@ -201823,7 +201823,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mono mjuk"
+            "value" : "Mjuk mono"
           }
         },
         "th" : {
@@ -204077,7 +204077,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rörelse och tajming ändras bara för den här texten"
+            "value" : "Rörelse och timing ändras bara för den här texten"
           }
         },
         "th" : {
@@ -207868,7 +207868,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "MIN CUE-RÖST"
+            "value" : "MY CUE VOICE"
           }
         },
         "th" : {
@@ -208223,7 +208223,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mitt första varumärkessamtal — och min kamera hängde sig"
+            "value" : "Mitt första möte med ett varumärke, och kameran frös"
           }
         },
         "th" : {
@@ -209407,7 +209407,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Min söndagsåterställning på 60 sekunder"
+            "value" : "Min söndagsreset på 60 sekunder"
           }
         },
         "th" : {
@@ -209998,7 +209998,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Avslöja myter"
+            "value" : "Mytkrossning"
           }
         },
         "th" : {
@@ -210945,7 +210945,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Smalt innebär mindre ögonrörelse"
+            "value" : "Smal bredd ger mindre ögonrörelser"
           }
         },
         "th" : {
@@ -213431,7 +213431,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nya på det"
+            "value" : "Nybörjare"
           }
         },
         "th" : {
@@ -214498,7 +214498,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nästa keyframe"
+            "value" : "Nästa nyckelbildruta"
           }
         },
         "th" : {
@@ -216051,7 +216051,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen kamera hittades · Studioläget fungerar"
+            "value" : "Ingen kamera hittades · Studioläget fungerar ändå"
           }
         },
         "th" : {
@@ -216407,7 +216407,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inga undertexter än. Skapa dem så stylar mallen dem också."
+            "value" : "Inga undertexter än. Skapa dem så formger mallen dem också."
           }
         },
         "th" : {
@@ -216643,7 +216643,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen jollrande röst vid snabbspolning"
+            "value" : "Ingen pipig röst när det går snabbare"
           }
         },
         "th" : {
@@ -216762,7 +216762,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ingen guide"
+            "value" : "Ingen beskärningsguide"
           }
         },
         "th" : {
@@ -216880,7 +216880,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inga cues"
+            "value" : "Inga regianvisningar"
           }
         },
         "th" : {
@@ -217117,7 +217117,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inga klippningar än"
+            "value" : "Inga klipp än"
           }
         },
         "th" : {
@@ -218185,7 +218185,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inga keyframes än"
+            "value" : "Inga nyckelbildrutor än"
           }
         },
         "th" : {
@@ -226953,7 +226953,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Notiser är av för Cue i iOS-inställningar. Påminnelsen sparas här i Cue."
+            "value" : "Notiser är avstängda för Cue i Inställningar. Påminnelsen sparas här i Cue."
           }
         },
         "th" : {
@@ -229091,7 +229091,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Okej, nu på riktigt — det här är viktigt."
+            "value" : "Okej, helt ärligt: det här är viktigt."
           }
         },
         "th" : {
@@ -232292,7 +232292,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bara den här calloutn ändras"
+            "value" : "Bara den här pratbubblan ändras"
           }
         },
         "th" : {
@@ -232528,7 +232528,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bara den här undertexten ändras"
+            "value" : "Bara den här underrubriken ändras"
           }
         },
         "th" : {
@@ -232882,7 +232882,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öppna ett manus på teleprompter"
+            "value" : "Öppna ett manus i telepromptern"
           }
         },
         "th" : {
@@ -233357,7 +233357,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öppna iPhone-inställningar"
+            "value" : "Öppna Inställningar"
           }
         },
         "th" : {
@@ -234185,7 +234185,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öppning: ”%@”"
+            "value" : "Börja med: ”%@”"
           }
         },
         "th" : {
@@ -234421,7 +234421,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öppning"
+            "value" : "Inledning"
           }
         },
         "th" : {
@@ -235249,7 +235249,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Öppnar iPhone-inställningar › Cue › Språk."
+            "value" : "Öppnar Inställningar › Cue › Språk."
           }
         },
         "th" : {
@@ -237613,7 +237613,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Konturera mig"
+            "value" : "Kontur runt mig"
           }
         },
         "th" : {
@@ -238678,7 +238678,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Betalt samarbete-rad först"
+            "value" : "Rad om betalt samarbete först"
           }
         },
         "th" : {
@@ -240573,7 +240573,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klistra in texten, välj omslaget, tryck på Posta."
+            "value" : "Klistra in texten, välj omslaget och tryck på Publicera."
           }
         },
         "th" : {
@@ -241874,7 +241874,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Utdelning"
+            "value" : "Upplösning"
           }
         },
         "th" : {
@@ -243176,7 +243176,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Personlighet · vart det går"
+            "value" : "Personlighet · var det publiceras"
           }
         },
         "th" : {
@@ -244955,7 +244955,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Foton är av för Cue"
+            "value" : "Bilder är avstängt för Cue"
           }
         },
         "th" : {
@@ -246379,7 +246379,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Välj en stil under Stil för att formge rader var för sig."
+            "value" : "Välj ett utseende under Stil för att formge rader var för sig."
           }
         },
         "th" : {
@@ -246972,7 +246972,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Välj en tid framåt"
+            "value" : "Välj en tid i framtiden"
           }
         },
         "th" : {
@@ -249341,7 +249341,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Välj vad som följer med. Ord, ljud och timing stannar."
+            "value" : "Välj vad som följer med. Ord, ljud och timing finns kvar."
           }
         },
         "th" : {
@@ -249815,7 +249815,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Piller"
+            "value" : "Kapsel"
           }
         },
         "th" : {
@@ -251594,7 +251594,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spela upp, pausa, ändra hastighet och navigera i manuset från en andra iPhone eller iPad. Båda behöver Cue och wifi på."
+            "value" : "Spela upp, pausa, ändra hastighet och navigera i manuset från en andra iPhone eller iPad. Båda behöver Cue och Wi-Fi på."
           }
         },
         "th" : {
@@ -252066,7 +252066,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spelar originalet — tryck för att stoppa"
+            "value" : "Spelar originalet · tryck för att stoppa"
           }
         },
         "th" : {
@@ -253132,7 +253132,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Poäng"
+            "value" : "Huvudpoäng"
           }
         },
         "th" : {
@@ -253965,7 +253965,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Putsa till den"
+            "value" : "Finputsa den"
           }
         },
         "th" : {
@@ -254794,7 +254794,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Text till inlägget"
+            "value" : "Inläggstext"
           }
         },
         "th" : {
@@ -258105,7 +258105,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förhandsvisning av prompter"
+            "value" : "Förhandsvisning av telepromptern"
           }
         },
         "th" : {
@@ -258223,7 +258223,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förhandsvisning av ditt universkort"
+            "value" : "Förhandsvisning av ditt universumkort"
           }
         },
         "th" : {
@@ -258341,7 +258341,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Föregående keyframe"
+            "value" : "Föregående nyckelbildruta"
           }
         },
         "th" : {
@@ -261649,7 +261649,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prompter"
+            "value" : "Teleprompter"
           }
         },
         "th" : {
@@ -262598,7 +262598,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Punch"
+            "value" : "Snabbzoom"
           }
         },
         "th" : {
@@ -262716,7 +262716,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Punch in"
+            "value" : "Snabb inzoomning"
           }
         },
         "th" : {
@@ -263664,7 +263664,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Knuff"
+            "value" : "Skjut"
           }
         },
         "th" : {
@@ -264020,7 +264020,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lägg den på det den ska följa vid spelhuvudet och tryck på Följ. Cue gör nyckelbilder du kan justera."
+            "value" : "Lägg den på det den ska följa vid uppspelningsmarkören och tryck på Följ. Cue skapar nyckelbildrutor som du kan justera."
           }
         },
         "th" : {
@@ -265203,7 +265203,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Snabb notis: den här videon är sponsrad."
+            "value" : "Bara så du vet: den här videon är sponsrad."
           }
         },
         "th" : {
@@ -266153,7 +266153,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Format"
+            "value" : "Bildformat"
           }
         },
         "th" : {
@@ -267339,7 +267339,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Läs mitt skrivande"
+            "value" : "Läs mina texter"
           }
         },
         "th" : {
@@ -269942,7 +269942,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Redo att spela in · Shape lägger till cues"
+            "value" : "Redo att spela in · Shape lägger till regianvisningar"
           }
         },
         "th" : {
@@ -273611,7 +273611,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inspelningen stoppade · Tagningen sparad"
+            "value" : "Inspelningen stoppades · Tagningen sparad"
           }
         },
         "th" : {
@@ -275979,7 +275979,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Fjärrkontroll från Apple Watch, iPad och Mac-synk"
+            "value" : "Fjärrstyrning från Apple Watch, synk med iPad och Mac"
           }
         },
         "th" : {
@@ -276995,7 +276995,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ta bort från fältet"
+            "value" : "Ta bort från listen"
           }
         },
         "th" : {
@@ -277231,7 +277231,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ta bort keyframe"
+            "value" : "Ta bort nyckelbildruta"
           }
         },
         "th" : {
@@ -278986,7 +278986,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förnyas månadsvis för %@. Avsluta när du vill i Inställningar."
+            "value" : "Förnyas varje månad för %@. Avsluta när du vill i Inställningar."
           }
         },
         "th" : {
@@ -279104,7 +279104,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Förnyas årsvis för %@. Avsluta när du vill i Inställningar."
+            "value" : "Förnyas varje år för %@. Avsluta när du vill i Inställningar."
           }
         },
         "th" : {
@@ -281447,7 +281447,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Återställ skaparinställning"
+            "value" : "Återställ kreatörsinställningarna"
           }
         },
         "th" : {
@@ -282984,7 +282984,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Visa"
+            "value" : "Avslöjande"
           }
         },
         "th" : {
@@ -283103,7 +283103,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Baklänges fungerar på klipp upp till 2 minuter · Dela det först"
+            "value" : "Baklänges fungerar på klipp upp till 2 minuter · Dela upp det först"
           }
         },
         "th" : {
@@ -283222,7 +283222,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vänt"
+            "value" : "Baklänges"
           }
         },
         "th" : {
@@ -283341,7 +283341,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vänder klippet …"
+            "value" : "Vänder klippet…"
           }
         },
         "th" : {
@@ -284526,7 +284526,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Rigg"
+            "value" : "Riggar"
           }
         },
         "th" : {
@@ -290112,7 +290112,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sparad i Tagningar. Lägg till undertexter, redigera eller dela den för att tända ditt universum %@."
+            "value" : "Sparad i Tagningar. Lägg till undertexter, redigera eller dela den för att tända ditt %@-universum."
           }
         },
         "th" : {
@@ -290940,7 +290940,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sparar en idé i din Loggbok, att skriva senare."
+            "value" : "Sparar en idé i din Loggbok så att du kan skriva den senare."
           }
         },
         "th" : {
@@ -291652,7 +291652,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Säg eller skriv din idé …"
+            "value" : "Säg eller skriv din idé…"
           }
         },
         "th" : {
@@ -292957,7 +292957,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skanna detta med kameran på den andra enheten."
+            "value" : "Skanna detta med Kamera-appen på den andra enheten."
           }
         },
         "th" : {
@@ -294972,7 +294972,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Manuslängden siktar på det som tjänar pengar på %@"
+            "value" : "Manuslängden siktar på det som kan ge intäkter på %@"
           }
         },
         "th" : {
@@ -300772,7 +300772,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Serif-undertexter som lyser upp varje ord · redaktionella titlar"
+            "value" : "Undertexter i serif som lyser upp varje ord · redaktionella titlar"
           }
         },
         "th" : {
@@ -301008,7 +301008,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Allvarligt — ingen hype"
+            "value" : "Allvarligt, ingen hype"
           }
         },
         "th" : {
@@ -302428,7 +302428,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inställning"
+            "value" : "Upplägg"
           }
         },
         "th" : {
@@ -302546,7 +302546,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Upplägg, vändning, utdelning"
+            "value" : "Upplägg, vändning, upplösning"
           }
         },
         "th" : {
@@ -314392,7 +314392,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sex steg från en idé till din första stjärna. I din egen takt; inget är låst."
+            "value" : "Sex steg från en idé till din första stjärna. Ta det i din egen takt, inget är låst."
           }
         },
         "th" : {
@@ -318300,7 +318300,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Solo-resor"
+            "value" : "Soloresor"
           }
         },
         "th" : {
@@ -319605,7 +319605,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Någon frågade det här i kommentarerna — låt mig svara."
+            "value" : "Någon frågade det här i kommentarerna, så jag svarar."
           }
         },
         "th" : {
@@ -321502,7 +321502,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spill"
+            "value" : "Färgspill"
           }
         },
         "th" : {
@@ -321620,7 +321620,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dela"
+            "value" : "Dela upp"
           }
         },
         "th" : {
@@ -321738,7 +321738,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dela vid %@"
+            "value" : "Dela upp vid %@"
           }
         },
         "th" : {
@@ -321856,7 +321856,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dela vid uppspelningsmarkören för att ändra en del"
+            "value" : "Dela upp vid uppspelningsmarkören för att ändra en del"
           }
         },
         "th" : {
@@ -321975,7 +321975,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dela eller lägg till ett klipp för att ändra ordning"
+            "value" : "Dela upp eller lägg till ett klipp för att ändra ordningen"
           }
         },
         "th" : {
@@ -322094,7 +322094,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dela videon först, eller använd Klipp videon på taktslagen"
+            "value" : "Dela upp videon först, eller använd Klipp videon på taktslagen"
           }
         },
         "th" : {
@@ -324818,7 +324818,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Början av valet"
+            "value" : "Början av markeringen"
           }
         },
         "th" : {
@@ -326120,7 +326120,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Starta, pausa och rulla teleprompten från en annan iPhone eller iPad."
+            "value" : "Starta, pausa och rulla telepromptern från en annan iPhone eller iPad."
           }
         },
         "th" : {
@@ -327304,7 +327304,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Säg åsikten på en rad, ge ett skäl och avsluta med en fråga — frågor ger kommentarer."
+            "value" : "Säg åsikten på en rad, ge ett skäl och avsluta med en fråga. Frågor ger kommentarer."
           }
         },
         "th" : {
@@ -327777,7 +327777,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stjäl mitt system — det är enklare än du tror."
+            "value" : "Sno mitt system. Det är enklare än du tror."
           }
         },
         "th" : {
@@ -328730,7 +328730,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stopp"
+            "value" : "Stoppa"
           }
         },
         "th" : {
@@ -329912,7 +329912,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Stoppad. Dina undertexter är som de var."
+            "value" : "Stoppat. Dina undertexter är som de var."
           }
         },
         "th" : {
@@ -330030,7 +330030,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lagringen full · Tagningen sparad"
+            "value" : "Lagringsutrymmet är fullt · Tagningen sparad"
           }
         },
         "th" : {
@@ -330503,7 +330503,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Berättartid — och ja, det slutar bra."
+            "value" : "Dags för en historia. Och ja, det slutar bra."
           }
         },
         "th" : {
@@ -331688,7 +331688,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grova svordomar och glåpord skrivs aldrig — Apple Intelligence genererar dem inte."
+            "value" : "Grova svordomar och glåpord skrivs aldrig. Apple Intelligence genererar dem inte."
           }
         },
         "th" : {
@@ -332634,7 +332634,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studio använder dem också. Skärmen förblir på medan prompter är öppen."
+            "value" : "Studio använder dem också. Skärmen förblir på medan telepromptern är öppen."
           }
         },
         "th" : {
@@ -333583,7 +333583,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Formatera alla"
+            "value" : "Formge alla"
           }
         },
         "th" : {
@@ -334649,7 +334649,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "undertemam"
+            "value" : "underämnen"
           }
         },
         "th" : {
@@ -335958,7 +335958,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Etikett"
+            "value" : "Tagg"
           }
         },
         "th" : {
@@ -336913,7 +336913,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ta ditt universum längre."
+            "value" : "Ta ditt universum vidare."
           }
         },
         "th" : {
@@ -337505,7 +337505,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Talking head, handledning, sponsrad annons … du skriver"
+            "value" : "Talking head, guide, sponsrad annons… du skriver det"
           }
         },
         "th" : {
@@ -337741,7 +337741,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Höga, högljudda versaler"
+            "value" : "Höga, kraftiga versaler"
           }
         },
         "th" : {
@@ -338332,7 +338332,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tryck på Klar i redigeraren, eller välj en bästa tagning — den hamnar här, redo att postas."
+            "value" : "Tryck på Klar i redigeraren eller välj en bästa tagning. Den hamnar här, redo att postas."
           }
         },
         "th" : {
@@ -339401,7 +339401,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tryck på skärmen för kontroller"
+            "value" : "Tryck på skärmen för reglage"
           }
         },
         "th" : {
@@ -340463,7 +340463,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tryck för att formatera"
+            "value" : "Tryck för att formge"
           }
         },
         "th" : {
@@ -340819,7 +340819,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tryck, steg"
+            "value" : "Knackningar, steg"
           }
         },
         "th" : {
@@ -341413,7 +341413,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lär hur du pratar — återanvänds aldrig till berättelser, åsikter eller resultat. Stannar på den här iPhonen."
+            "value" : "Lär Cue hur du pratar. Återanvänds aldrig till berättelser, åsikter eller resultat. Stannar på den här iPhonen."
           }
         },
         "th" : {
@@ -342006,7 +342006,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tech-nyheter"
+            "value" : "Tekniknyheter"
           }
         },
         "th" : {
@@ -344494,7 +344494,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Texten sticker ut"
+            "value" : "Text poppar upp"
           }
         },
         "th" : {
@@ -345558,7 +345558,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tack för att du håller mig till en högre standard."
+            "value" : "Tack för att ni håller mig till en högre standard."
           }
         },
         "th" : {
@@ -350656,7 +350656,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Spelhuvudet och kanterna fäster vid dem"
+            "value" : "Uppspelningsmarkören och kanterna fäster vid dem"
           }
         },
         "th" : {
@@ -351371,7 +351371,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De sex bokstäverna och siffrorna under QR-koden på teleprompter."
+            "value" : "De sex bokstäverna och siffrorna under QR-koden på telepromptern."
           }
         },
         "th" : {
@@ -351490,7 +351490,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De sex bokstäverna på teleprompter"
+            "value" : "De sex bokstäverna på telepromptern"
           }
         },
         "th" : {
@@ -351964,7 +351964,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Teleprompten kan följa din röst."
+            "value" : "Telepromptern kan följa din röst."
           }
         },
         "th" : {
@@ -352912,7 +352912,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videon ändrades under tiden · frys bildrutan igen"
+            "value" : "Videon ändrades under tiden · Frys bildrutan igen"
           }
         },
         "th" : {
@@ -353150,7 +353150,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videon ändrades under tiden · Spåra igen"
+            "value" : "Videon ändrades under tiden · Följ den igen"
           }
         },
         "th" : {
@@ -354572,7 +354572,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den här calloutn"
+            "value" : "Den här pratbubblan"
           }
         },
         "th" : {
@@ -355169,7 +355169,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det här klippet · stillar kamerans skakningar"
+            "value" : "Det här klippet · dämpar kamerans skakningar"
           }
         },
         "th" : {
@@ -356353,7 +356353,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Här finns ord som Apple Intelligence inte lär sig av. Pipa dem (f***) eller välj ett annat exempel."
+            "value" : "Här finns ord som Apple Intelligence inte lär sig av. Censurera dem (f***) eller välj ett annat exempel."
           }
         },
         "th" : {
@@ -358015,7 +358015,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den här undertexten"
+            "value" : "Den här underrubriken"
           }
         },
         "th" : {
@@ -359673,7 +359673,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den här videons export är redan räknad"
+            "value" : "Den här videons export är redan medräknad"
           }
         },
         "th" : {
@@ -359791,7 +359791,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tre beats räcker: vad som hände, ögonblicket då det vände, hur det slutade. Cue lägger till en cliffhanger-hook och tempoanvisningar."
+            "value" : "Tre steg räcker: vad som hände, ögonblicket då det vände, hur det slutade. Cue lägger till en cliffhanger-hook och regianvisningar för tempot."
           }
         },
         "th" : {
@@ -360385,7 +360385,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tre: Jag skriver ner det enda som spelar roll i dag."
+            "value" : "Tre: jag skriver ner det enda som spelar roll i dag."
           }
         },
         "th" : {
@@ -360504,7 +360504,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Second hand-shopping"
+            "value" : "Secondhand"
           }
         },
         "th" : {
@@ -362632,7 +362632,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idag"
+            "value" : "I dag"
           }
         },
         "th" : {
@@ -362750,7 +362750,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idag · %@"
+            "value" : "I dag · %@"
           }
         },
         "th" : {
@@ -364292,7 +364292,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "För lång. Korta titeln eller gör blocket bredare."
+            "value" : "Får inte plats. Korta titeln eller gör blocket bredare."
           }
         },
         "th" : {
@@ -365593,7 +365593,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Följt · %lld nyckelbilder att justera"
+            "value" : "Följt · %lld nyckelbildrutor att justera"
           }
         },
         "th" : {
@@ -366423,7 +366423,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Övergång vid närmaste klippning"
+            "value" : "Övergång vid närmaste klipp"
           }
         },
         "th" : {
@@ -368432,7 +368432,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Provperioden har startat — njut av Cue Pro"
+            "value" : "Provperioden har startat. Njut av Cue Pro"
           }
         },
         "th" : {
@@ -370210,7 +370210,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Prova att spela in det med teleprompten. Din första stjärna är en tagning bort."
+            "value" : "Prova att spela in det med telepromptern. Din första stjärna är bara en tagning bort."
           }
         },
         "th" : {
@@ -371394,7 +371394,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Handledning"
+            "value" : "Guide"
           }
         },
         "th" : {
@@ -371512,7 +371512,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tutorial / how-to"
+            "value" : "Guide / instruktion"
           }
         },
         "th" : {
@@ -372225,7 +372225,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Typsnitt"
+            "value" : "Typografi"
           }
         },
         "th" : {
@@ -372462,7 +372462,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skriv eller säg en titel …"
+            "value" : "Skriv eller säg en titel…"
           }
         },
         "th" : {
@@ -372580,7 +372580,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skriv din callout"
+            "value" : "Skriv text i pratbubblan"
           }
         },
         "th" : {
@@ -373290,7 +373290,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Skrivande"
+            "value" : "Tangentbord"
           }
         },
         "th" : {
@@ -373764,7 +373764,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Otillgängligt"
+            "value" : "Inte tillgänglig"
           }
         },
         "th" : {
@@ -375300,7 +375300,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Impopulär åsikt, men hör på."
+            "value" : "Impopulär åsikt, men lyssna nu."
           }
         },
         "th" : {
@@ -375654,7 +375654,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Manus utan rubrik"
+            "value" : "Namnlöst manus"
           }
         },
         "th" : {
@@ -376128,7 +376128,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "upp till %lld · formar hooken och avslutet"
+            "value" : "upp till %lld · formar hooken och upplösningen"
           }
         },
         "th" : {
@@ -377312,7 +377312,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Använd vid varje klippning"
+            "value" : "Använd vid varje klipp"
           }
         },
         "th" : {
@@ -380032,7 +380032,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Livfullhet"
+            "value" : "Lyster"
           }
         },
         "th" : {
@@ -383704,7 +383704,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Väntar på att iPhone ska svalna · %lld %%"
+            "value" : "Väntar på att iPhonen ska svalna · %lld %%"
           }
         },
         "th" : {
@@ -384060,7 +384060,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uppvaknandevanor"
+            "value" : "Vanor när du vaknar"
           }
         },
         "th" : {
@@ -385721,7 +385721,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Varmare, mindre inövat"
+            "value" : "Varmare, mindre tillgjort"
           }
         },
         "th" : {
@@ -385839,7 +385839,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Värmer upp promptern"
+            "value" : "Värmer upp telepromptern"
           }
         },
         "th" : {
@@ -386431,7 +386431,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Titta på det här — %@. [demo]"
+            "value" : "Titta på det här: %@. [demo]"
           }
         },
         "th" : {
@@ -387260,7 +387260,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Välkommen tillbaka. Cue tänder planeten när det är live."
+            "value" : "Välkommen tillbaka. Cue tänder planeten när videon är live."
           }
         },
         "th" : {
@@ -389391,7 +389391,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vad är du för typ av skapare?"
+            "value" : "Vad är du för typ av kreatör?"
           }
         },
         "th" : {
@@ -392231,7 +392231,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vart det går"
+            "value" : "Var det publiceras"
           }
         },
         "th" : {
@@ -394480,7 +394480,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hela videon · på din iPhone"
+            "value" : "Hela videon · görs på din iPhone"
           }
         },
         "th" : {
@@ -398630,7 +398630,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ord, tajming, översättningar, position, storlek och hur raderna visas förblir desamma. Andra texter ändras inte."
+            "value" : "Ord, timing, översättningar, position, storlek och hur raderna visas förblir desamma. Andra texter ändras inte."
           }
         },
         "th" : {
@@ -398749,7 +398749,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ord, tajming och rörelse hör till varje text."
+            "value" : "Ord, timing och rörelse behålls för varje text."
           }
         },
         "th" : {
@@ -401831,7 +401831,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ja — dela på sociala medier"
+            "value" : "Ja, dela på sociala medier"
           }
         },
         "th" : {
@@ -402186,7 +402186,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Igår"
+            "value" : "I går"
           }
         },
         "th" : {
@@ -402304,7 +402304,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Igår · %@"
+            "value" : "I går · %@"
           }
         },
         "th" : {
@@ -402778,7 +402778,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Du bad om det här — varsågod."
+            "value" : "Du bad om det här. Här är det."
           }
         },
         "th" : {
@@ -405501,7 +405501,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din bästa hittills"
+            "value" : "Bäst hittills"
           }
         },
         "th" : {
@@ -405619,7 +405619,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dina undertexter finns i videon · låt autotexter vara av"
+            "value" : "Dina undertexter finns i videon · låt automatiska undertexter vara av"
           }
         },
         "th" : {
@@ -406100,7 +406100,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din skapartid"
+            "value" : "Din tid för skapande"
           }
         },
         "th" : {
@@ -408124,7 +408124,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ditt ljus. Det växer med varje video du delar — inget foto behövs."
+            "value" : "Ditt ljus. Det växer med varje video du delar, inget foto behövs."
           }
         },
         "th" : {
@@ -408718,7 +408718,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din nästa inspelning är ett tryck bort."
+            "value" : "Nästa inspelning är bara ett tryck bort."
           }
         },
         "th" : {
@@ -412630,7 +412630,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Din video är redan inläst och texten är kopierad."
+            "value" : "Din video är redan inläst och inläggstexten är kopierad."
           }
         },
         "th" : {
@@ -413576,7 +413576,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ditt år i backspegeln är klart"
+            "value" : "Ditt år i översikt är klart"
           }
         },
         "th" : {
