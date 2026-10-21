@@ -109,7 +109,7 @@
             "value" : "Cue neemt je opnames op met de camera terwijl je script onder de lens scrolt."
           }
         },
-        "pt-BR" : {
+        "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Cue grava seus takes com a câmera enquanto o roteiro rola logo abaixo da lente."
@@ -235,7 +235,7 @@
             "value" : "Cue maakt verbinding met je andere iPhone of iPad in de buurt, zodat je de teleprompter op het ene apparaat met het andere kunt bedienen."
           }
         },
-        "pt-BR" : {
+        "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Cue se conecta ao seu outro iPhone ou iPad por perto, para que um controle o teleprompter do outro."
@@ -361,7 +361,7 @@
             "value" : "Cue neemt je stem op bij elke opname en voor voice-overs, kan je stem volgen om het script te scrollen en luistert mee wanneer je een idee dicteert."
           }
         },
-        "pt-BR" : {
+        "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Cue grava sua voz em cada take e nas narrações, pode seguir sua voz para rolar o roteiro e ouve você quando dita uma ideia."
@@ -487,7 +487,7 @@
             "value" : "Cue bewaart de opnames die je exporteert in je fotobibliotheek."
           }
         },
-        "pt-BR" : {
+        "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Cue salva na sua fototeca os takes que você exporta."
@@ -613,7 +613,7 @@
             "value" : "Cue herkent je spraak op deze iPhone om het script op de regel te houden die je leest en om een idee dat je dicteert in tekst om te zetten. Niets verlaat het apparaat."
           }
         },
-        "pt-BR" : {
+        "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "O Cue reconhece sua fala neste iPhone para manter o roteiro na linha que você está lendo e transformar em texto uma ideia que você dita. Nada sai do aparelho."

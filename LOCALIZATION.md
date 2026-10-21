@@ -26,7 +26,7 @@ script and never touches the iPhone's language. `LanguageService` owns the three
 
 Every language is a `CueLanguage` (`Models/CueLanguage.swift`), the only list of languages in the
 app: script/speech locale (`pt-BR`, `zh-CN`, `ar-SA`…, the raw value saved with scripts), interface
-localization (`pt-BR`, `zh-Hans`…), native and localized names, English name (for AI instructions),
+localization (`pt`, `zh-Hans`…), native and localized names, English name (for AI instructions),
 direction and whether it's written without spaces.
 
 - **Interface:** String Catalogs (`Localizable`, `InfoPlist`, `AppShortcuts`) with
@@ -114,7 +114,12 @@ does without Apple Intelligence; a format still gets its structured draft. **Pri
 (`hasPrivateCloudComputeEntitlement = false`): it is only a candidate when the app has the entitlement.
 
 **Regional variants.** Only the 20 languages above have a translated interface; no variant gets one of its
-own. A language the creator picked (Script Language, Voice Following Language) is used as picked, in Cue's
+own. Every interface localization is the language alone (`es`, `fr`, `pt`…), except the two Chinese scripts:
+iOS prefers English over a localization whose region doesn't match, so with `pt-BR` an iPhone in pt-PT with
+English second opened Cue in English. With `pt`, es-MX/es-419, fr-CA, de-AT, zh-HK, nn-NO, ar-EG and the rest
+reach their language (`LocalizationCatalogTests.aRegionalVariantGetsItsLanguage`); Malay and other languages Cue
+doesn't have fall back to English. The Portuguese text is Brazilian, and the App Store has its own pt-PT page.
+A language the creator picked (Script Language, Voice Following Language) is used as picked, in Cue's
 variant (pt-BR, zh-CN…). A language *read from the text* (Auto-detect) keeps the variant of the creator's own
 language list (en-GB, pt-PT, es-MX: `CueLanguage.variant(among:)`) for dictation, Voice Following, captions
 and the language AI writes in (`ScriptRequest.languageVariant`, asked of the model only when it writes that

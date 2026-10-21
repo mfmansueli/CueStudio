@@ -27,7 +27,7 @@ struct CueLanguageTests {
     /// The `.lproj` names match the String Catalogs' languages.
     @Test func interfaceLocalizationsAreTheCatalogLanguages() {
         #expect(CueLanguage.allCases.map(\.interfaceLocalization) == [
-            "en", "es", "pt-BR", "fr", "de", "it", "ja", "ko", "zh-Hans", "hi", "id", "ar", "tr", "th", "vi", "zh-Hant", "nl", "sv", "da", "nb",
+            "en", "es", "pt", "fr", "de", "it", "ja", "ko", "zh-Hans", "hi", "id", "ar", "tr", "th", "vi", "zh-Hant", "nl", "sv", "da", "nb",
         ])
     }
 
@@ -56,7 +56,9 @@ struct CueLanguageTests {
         #expect(CueLanguage.matching(languageCode: "nl") == .dutch)
         #expect(CueLanguage.matching(languageCode: "ru") == nil)
         #expect(CueLanguage.matching(interfaceLocalization: "zh-Hans") == .chineseSimplified)
+        #expect(CueLanguage.matching(interfaceLocalization: "pt") == .portugueseBrazil)
         #expect(CueLanguage.matching(interfaceLocalization: "pt-BR") == .portugueseBrazil)
+        #expect(CueLanguage.matching(interfaceLocalization: "pt-PT") == .portugueseBrazil)
         #expect(CueLanguage.matching(interfaceLocalization: "en") == .english)
     }
 

@@ -30,7 +30,7 @@ final class NotificationService {
     @ObservationIgnored let calendar: () -> Calendar
     @ObservationIgnored private let store: NotificationStateStore
 
-    /// The interface language the texts are written in ("pt-BR"); a new one writes every scheduled text again.
+    /// The interface language the texts are written in ("pt"); a new one writes every scheduled text again.
     @ObservationIgnored var interfaceLanguage: () -> String = { "" }
     /// "Help improve Cue" is on: outcomes go to the existing telemetry, not only the local counters.
     @ObservationIgnored var sendsUsage: () -> Bool = { false }

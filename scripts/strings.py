@@ -15,7 +15,7 @@ as the entries it touched and nothing else.
 NAME is Localizable (default), InfoPlist or AppShortcuts. The JSON for `add` maps each key (the English text, with
 %@ / %lld where the code interpolates) to its comment and every other language of the catalog:
 
-  {"Saved · voice %lld%%": {"comment": "Toast after an answer", "es": "…", "pt-BR": "…", "fr": "…", …}}
+  {"Saved · voice %lld%%": {"comment": "Toast after an answer", "es": "…", "pt": "…", "fr": "…", …}}
 
 Every language the catalog has must be there (LOCALIZATION.md: all 20). A new key goes where Xcode would sort it
 (Foundation's localizedStandardCompare, asked of `swift` once per run).
@@ -25,7 +25,7 @@ an object with the language's plural categories (CLDR: zero, one, two, few, many
 gives the English forms (the key is the English "other"):
 
   {"%lld lines deleted": {"comment": "…", "en": {"one": "%lld line deleted", "other": "%lld lines deleted"},
-                          "pt-BR": {"one": "%lld linha apagada", "other": "%lld linhas apagadas"}, "ja": "%lld 行を削除", …}}
+                          "pt": {"one": "%lld linha apagada", "other": "%lld linhas apagadas"}, "ja": "%lld 行を削除", …}}
 
 A language with one form (Japanese, Chinese, Korean, Thai, Vietnamese, Indonesian) takes a plain string. Every form keeps
 the key's placeholders.
@@ -101,7 +101,7 @@ PLURAL_CATEGORIES = {
     "da": {"one", "other"}, "de": {"one", "other"}, "en": {"one", "other"}, "nb": {"one", "other"},
     "nl": {"one", "other"}, "sv": {"one", "other"}, "tr": {"one", "other"}, "hi": {"one", "other"},
     "es": {"one", "many", "other"}, "fr": {"one", "many", "other"}, "it": {"one", "many", "other"},
-    "pt-BR": {"one", "many", "other"},
+    "pt": {"one", "many", "other"},
     "id": {"other"}, "ja": {"other"}, "ko": {"other"}, "th": {"other"}, "vi": {"other"},
     "zh-Hans": {"other"}, "zh-Hant": {"other"},
 }

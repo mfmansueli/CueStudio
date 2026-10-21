@@ -32,6 +32,17 @@ struct LocalizationCatalogTests {
         return found.sorted()
     }
 
+    /// An iPhone in a regional variant Cue has no localization of gets the language, not English, even with English
+    /// second in its list: iOS prefers English over a localization whose region doesn't match (pt-BR for pt-PT).
+    @Test(arguments: [
+        (["pt-PT", "en-PT"], "pt"), (["pt-BR", "en-BR"], "pt"), (["es-US", "en-US"], "es"), (["es-419", "en"], "es"),
+        (["fr-CA", "en-CA"], "fr"), (["de-AT", "en-AT"], "de"), (["zh-HK", "en-HK"], "zh-Hant"), (["zh-Hans-SG", "en-SG"], "zh-Hans"),
+        (["nn-NO", "en-NO"], "nb"), (["ar-EG", "en"], "ar"), (["en-GB"], "en"),
+    ])
+    func aRegionalVariantGetsItsLanguage(preferences: [String], expected: String) {
+        #expect(Bundle.preferredLocalizations(from: Bundle.main.localizations, forPreferences: preferences).first == expected)
+    }
+
     @Test(arguments: CueLanguage.allCases)
     func theLanguageIsInTheApp(language: CueLanguage) throws {
         #expect(Bundle.main.localizations.contains { $0.caseInsensitiveCompare(language.interfaceLocalization) == .orderedSame })
