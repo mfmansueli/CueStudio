@@ -42,7 +42,7 @@ nonisolated extension ScriptType {
             ]
         case .story:
             [
-                BriefField(key: "setup", label: String(localized: "What happened"), example: String(localized: "My first brand call — and my camera froze")),
+                BriefField(key: "setup", label: String(localized: "What happened"), example: String(localized: "My first brand call, and my camera froze")),
                 BriefField(key: "twist", label: String(localized: "The twist"), example: String(localized: "They said it was the most real pitch all week")),
                 BriefField(key: "payoff", label: String(localized: "How it ended"), example: String(localized: "We signed a three-month deal")),
             ]
@@ -63,7 +63,7 @@ nonisolated extension ScriptType {
                 BriefField(key: "news", label: String(localized: "The news"), example: String(localized: "My first preset pack")),
                 BriefField(key: "when", label: String(localized: "When"), example: String(localized: "Drops Friday at 9 a.m.")),
                 BriefField(key: "details", label: String(localized: "Key detail"), example: String(localized: "12 presets made for phone footage")),
-                BriefField(key: "cta", label: String(localized: "What to do next"), example: String(localized: "Join the waitlist — link in bio")),
+                BriefField(key: "cta", label: String(localized: "What to do next"), example: String(localized: "Join the waitlist. Link in bio")),
             ]
         case .apology:
             [
@@ -106,7 +106,7 @@ nonisolated extension ScriptType {
         case .tutorial: String(localized: "List the steps in plain words, separated by commas. Cue turns them into a numbered walkthrough with a hook up top and a save-this ending.")
         case .list: String(localized: "Just the topic and your points. Cue writes a numbered list with a hook up top and a comment prompt at the end.")
         case .story: String(localized: "Three beats are enough: what happened, the moment it turned, how it ended. Cue adds a cliffhanger hook and pacing cues.")
-        case .opinion: String(localized: "State the opinion in one line, give one reason, end with a question — questions drive comments.")
+        case .opinion: String(localized: "State the opinion in one line, give one reason, end with a question. Questions drive comments.")
         case .launch: String(localized: "Lead with the news, not the backstory. Add when it happens and one detail that makes people care.")
         case .apology: String(localized: "Be specific and brief. Name what happened, own it without a “but”, and say what changes. Cue removes hype, jokes and calls to action.")
         case .mythFact: String(localized: "State the myth in one line, say why people believe it, then give the fact. Keep to one belief per video.")
@@ -138,21 +138,22 @@ nonisolated extension ScriptType {
         switch self {
         case .ad:
             let brand = v("brand").split(whereSeparator: { "—,.".contains($0) }).first.map(String.init) ?? v("brand")
-            return String(localized: "\(brand.trimmingCharacters(in: .whitespaces)) — sponsored", writtenIn: language)
+            return String(localized: "\(brand.trimmingCharacters(in: .whitespaces)): sponsored", writtenIn: language)
         case .review:
-            return String(localized: "\(v("product")) — honest review", writtenIn: language)
+            return String(localized: "\(v("product")): honest review", writtenIn: language)
         case .tutorial:
             return v("topic")
         case .list:
             let count = Self.commaList(v("items")).count
             return String(localized: "\(count) \(v("topic").lowercased()) that work", writtenIn: language)
         case .story:
-            let setup = v("setup").components(separatedBy: " — ").first ?? v("setup")
-            return String(localized: "Storytime: \(setup.lowercased())", writtenIn: language)
+            // What the creator typed before a dash is the story's headline ("My first brand call — and my camera froze").
+            let setup = v("setup").components(separatedBy: " — ").first?.components(separatedBy: " – ").first ?? v("setup")
+            return String(localized: "Storytime: \(Self.lowercasedFirst(setup))", writtenIn: language)
         case .opinion:
             return String(localized: "Hot take: \(v("take").lowercased())", writtenIn: language)
         case .launch:
-            return String(localized: "\(v("news")) — announcement", writtenIn: language)
+            return String(localized: "\(v("news")): announcement", writtenIn: language)
         case .apology:
             return String(localized: "A note about \(v("what").lowercased())", writtenIn: language)
         case .mythFact:
@@ -178,8 +179,8 @@ nonisolated extension ScriptType {
                 say("Okay, I have to tell you about \(v("brand")). [pause]"),
                 say("If you've ever dealt with \(lc("pain")), you know the struggle."),
                 say("This fixes it. \(v("benefit")). [show product]"),
-                say("Watch this — \(lc("proof")). [demo]"),
-                say("\(v("offer")) — link in my bio. [look at camera] This video is a paid partnership."),
+                say("Watch this: \(lc("proof")). [demo]"),
+                say("\(v("offer")). Link in my bio. [look at camera] This video is a paid partnership."),
             ]
         case .review:
             paragraphs = [
@@ -192,7 +193,7 @@ nonisolated extension ScriptType {
             let steps = Self.commaList(v("steps")).enumerated().map { index, step in
                 say("Step \(Self.numberWord(index + 1, language: language)): \(Self.lowercasedFirst(step)).")
             }
-            paragraphs = [say("Here's how I do \(lc("topic")) — start to finish. [pause]"), say("By the end you'll have \(lc("result")).")]
+            paragraphs = [say("Here's how I do \(lc("topic")), start to finish. [pause]"), say("By the end you'll have \(lc("result")).")]
                 + steps
                 + [say("Save this so you have it when you need it. [smile]")]
         case .list:
@@ -207,7 +208,7 @@ nonisolated extension ScriptType {
             paragraphs = [
                 say("Okay, story time. [pause]"),
                 "\(v("setup")).",
-                say("And then — \(lc("twist")). [beat]"),
+                say("And then… \(lc("twist")). [beat]"),
                 say("\(v("payoff")). [smile]"),
             ]
         case .opinion:
@@ -220,7 +221,7 @@ nonisolated extension ScriptType {
         case .launch:
             paragraphs = [
                 say("I've been keeping a secret. [pause]"),
-                "\(v("news")) — \(lc("when")).",
+                "\(v("news")). \(v("when")).",
                 "\(v("details")).",
                 say("\(v("cta")). [smile]"),
             ]
@@ -243,7 +244,7 @@ nonisolated extension ScriptType {
             paragraphs = [
                 "\(v("pov")). [pause]",
                 "\(v("scene")).",
-                say("And then — \(lc("twist")). [smile]"),
+                say("And then… \(lc("twist")). [smile]"),
             ]
         }
         return paragraphs.joined(separator: "\n\n")

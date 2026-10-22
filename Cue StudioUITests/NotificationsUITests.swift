@@ -92,7 +92,7 @@ final class NotificationsUITests: XCTestCase {
 
     /// Opens the recorder from a script's page and closes it: the moment after a session, when the creator has recordings to finish.
     private func recordAndClose(_ app: XCUIApplication) {
-        app.openScriptPage(titled: "Oat & Co. — sponsored read")
+        app.openScriptPage(titled: "Oat & Co. · sponsored read")
         let record = app.buttons["detail.recordButton"]
         XCTAssertTrue(record.exists(within: 5))
         record.tap()

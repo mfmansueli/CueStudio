@@ -23,13 +23,13 @@ struct LengthFitTests {
     }
 
     @Test func theRangeReadsAsClockTimes() {
-        #expect(LengthFit(seconds: 75, ideal: ideal).rangeLabel == "1:00–1:30")
-        #expect(LengthFit(seconds: 8, ideal: 8...15).rangeLabel == "0:08–0:15")
+        #expect(LengthFit(seconds: 75, ideal: ideal).rangeLabel == "1:00 to 1:30")
+        #expect(LengthFit(seconds: 8, ideal: 8...15).rangeLabel == "0:08 to 0:15")
     }
 
     @Test func theLabelSaysFitsOrTheGap() {
-        #expect(LengthFit(seconds: 75, ideal: ideal).label == "✓ Fits 1:00–1:30")
-        #expect(LengthFit(seconds: 48, ideal: ideal).label == "12s under 1:00–1:30")
-        #expect(LengthFit(seconds: 98, ideal: ideal).label == "8s over 1:00–1:30")
+        #expect(LengthFit(seconds: 75, ideal: ideal).label == "✓ Fits 1:00 to 1:30")
+        #expect(LengthFit(seconds: 48, ideal: ideal).label == "12s under 1:00 to 1:30")
+        #expect(LengthFit(seconds: 98, ideal: ideal).label == "8s over 1:00 to 1:30")
     }
 }

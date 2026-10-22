@@ -175,7 +175,7 @@ final class WritingImportUITests: XCTestCase {
 
     /// The sheet is in the creator's language, and in a language that reads from right to left it still holds together.
     func testTheSheetSpeaksTheAppLanguageInPortugueseAndArabic() {
-        for (language, title) in [("pt-BR", "Importar meus textos"), ("ar", "استيراد كتاباتي")] {
+        for (language, title) in [("pt", "Importar meus textos"), ("ar", "استيراد كتاباتي")] {
             let app = CueApp.launch(seeded: true, ai: .stub, appLanguage: language, animations: false)
             openImport(app)
             XCTAssertTrue(app.staticTexts[title].exists(within: 5), "\(language): the title is translated")

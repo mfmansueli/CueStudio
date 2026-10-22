@@ -42,7 +42,7 @@ nonisolated enum CoverEffect: String, Codable, CaseIterable, Identifiable, Senda
 
     var glyph: String {
         switch self {
-        case .clean: "—"
+        case .clean: "T"
         case .lift: "T|ME"
         case .outline: "◌"
         case .dim: "◐"

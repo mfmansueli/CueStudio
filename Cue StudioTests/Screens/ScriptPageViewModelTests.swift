@@ -347,6 +347,46 @@ struct ScriptPageViewModelTests {
         #expect(!scenario.viewModel.page.isRewriting)
     }
 
+    // MARK: - A language Apple Intelligence can't draft in
+
+    /// The tools that need the model say why before anything is sent: no selection bar, the reason instead of a rewrite, and no
+    /// "Drafting the … version…" first.
+    @Test func aScriptInALanguageTheModelDoesntWriteSaysSoBeforeAnyTool() async {
+        let scenario = makeScenario(script: TestData.script(text: "สวัสดีครับ วันนี้เรามาคุยกันเรื่องกาแฟ", language: .thai))
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.languagesNotWritten = ["th"]
+        let reason = DraftingAvailability.Cause.languageNotSupported(.thai).reason
+        #expect(!scenario.viewModel.canDraft)
+        scenario.viewModel.page.selection = 0..<20
+        #expect(!scenario.viewModel.showsSelectionBar)
+        await scenario.viewModel.rewriteSelection(.rewrite)
+        #expect(scenario.toast.message == reason && scenario.writer.lastRewrite == nil)
+        await scenario.viewModel.run(.moreEnergy)
+        #expect(scenario.toast.message == reason && scenario.writer.lastRewrite == nil)
+        let count = scenario.library.scripts.count
+        await scenario.viewModel.makeVersion(for: .youtube)
+        #expect(scenario.toast.message == reason && scenario.library.scripts.count == count)
+    }
+
+    /// On Auto-detect the language is read from the words.
+    @Test func aScriptOnAutoIsJudgedInTheLanguageOfItsWords() {
+        let scenario = makeScenario(script: TestData.script(text: "สวัสดีครับ วันนี้เรามาคุยกันเรื่องกาแฟที่ร้านใกล้บ้าน"))
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.languagesNotWritten = ["th"]
+        #expect(scenario.viewModel.drafting == .unavailable(.languageNotSupported(.thai)))
+    }
+
+    /// Translate marks the targets Apple Intelligence can't draft in, and only for that reason.
+    @Test func translateMarksOnlyTheTargetsTheModelDoesntWrite() {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.languagesNotWritten = ["th"]
+        #expect(scenario.viewModel.draftingNote(for: .thai) != nil)
+        #expect(scenario.viewModel.draftingNote(for: .english) == nil)
+        scenario.writer.writingFailureToReturn = .deviceNotSupported
+        #expect(scenario.viewModel.draftingNote(for: .thai) == nil)
+    }
+
     @Test func whichErrorsExplainThemselves() {
         #expect(ScriptDetailViewModel.failureMessage(for: ScriptAIError.emptyResponse) == "Couldn’t draft it · Try again")
         #expect(ScriptDetailViewModel.failureMessage(for: URLError(.timedOut)) == "Couldn’t draft it · Try again")

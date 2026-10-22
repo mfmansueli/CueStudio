@@ -195,6 +195,7 @@ struct AppServices {
             notes: { [logbook] in logbook.waiting }, defaults: options.defaults
         )
         starter.briefWritten = { [ideaSuggestions] brief in ideaSuggestions.generated(from: brief) }
+        starter.keepsComment = { [logbook] comment in logbook.add(comment.author.map { "\($0): \(comment.text)" } ?? comment.text) }
         brands = BrandStore(repository: options.brandRepository)
         aiStatus = AIStatus(writer: options.writer)
         privacy = PrivacyPreferencesService(defaults: options.defaults, writer: options.writer)

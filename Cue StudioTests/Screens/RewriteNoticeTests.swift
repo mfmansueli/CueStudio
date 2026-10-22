@@ -47,13 +47,13 @@ struct RewriteNoticeTests {
         let text = Self.words(words)
         let notice = Self.notice(.fitToTime, before: text, after: text, left: 1)
         #expect(!notice.changesScript)
-        #expect(notice.message == "Already fits 1:00–1:30")
+        #expect(notice.message == "Already fits 1:00 to 1:30")
     }
 
     @Test func fitToTimeSaysHowFarItGotWhenItDidNotArrive() {
         let notice = Self.notice(.fitToTime, before: Self.words(600), after: Self.words(ReadTime.words(for: 120)))
         #expect(notice.changesScript)
-        #expect(notice.message.hasPrefix("Closer to 1:00–1:30 · now "))
+        #expect(notice.message.hasPrefix("Closer to the 1:00 to 1:30 goal · now "))
     }
 
     @Test func fitToTimeThatArrivedSaysDone() {

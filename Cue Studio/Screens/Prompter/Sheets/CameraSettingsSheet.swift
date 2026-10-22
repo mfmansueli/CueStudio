@@ -207,7 +207,7 @@ struct CameraSettingsSheet: View {
             segmentedRow(String(localized: "Countdown"), selection: $session.camera.countdown, options: Countdown.allCases) { $0.label }
             SettingToggleRow(title: String(localized: "Start scrolling with recording"), isOn: $session.camera.scrollsWithRecording, minHeight: 52)
             SettingToggleRow(title: String(localized: "Stop when script ends"), isOn: $session.camera.stopsWhenScriptEnds, minHeight: 52)
-            segmentedRow(String(localized: "Format"), selection: $session.camera.codec, options: VideoCodec.allCases) { $0.label }
+            segmentedRow(VideoCodec.settingLabel, selection: $session.camera.codec, options: VideoCodec.allCases) { $0.label }
         }
         Text("HEVC keeps files small · H.264 suits older editors")
             .font(.footnote)

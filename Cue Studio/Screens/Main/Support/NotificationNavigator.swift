@@ -140,7 +140,9 @@ struct NotificationNavigator {
         presentation.selectedTab = .scripts
         guard services.aiStatus.isAvailable else {
             presentation.scriptsPath = []
-            services.toast.show(String(localized: "Apple Intelligence isn’t available on this iPhone right now"), duration: Self.goneDuration)
+            // The real reason: Cue's switch, the iPhone, the iOS switch or a model getting ready.
+            let reason = services.writer.drafting(in: []).reason ?? String(localized: "Apple Intelligence isn’t available on this iPhone right now")
+            services.toast.show(reason, duration: Self.goneDuration)
             return
         }
         switch destination {

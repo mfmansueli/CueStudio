@@ -102,6 +102,16 @@ struct VoiceConstraintCheckerTests {
         #expect(kinds("POV: you finally stopped losing your mornings.", voice(openings: ["POV"])).isEmpty, "“POV:” is what that style looks like")
     }
 
+    /// The opening line the creator typed, dash included, is kept when the answer is cleaned (`ScriptRequest.preservedPhrases`), so the script
+    /// still opens with it; the dash the model wrote after it goes.
+    @Test func anOpeningLineTypedWithADashIsStillTheOpening() {
+        let line = "Stop—now: this changes your mornings."
+        let answer = "Stop—now: this changes your mornings. Here is why — and it takes five minutes."
+        let cleaned = ScriptPromptBuilder.clean(answer, language: Locale.Language(identifier: "en"), preserving: [line])
+        #expect(cleaned == "Stop—now: this changes your mornings. Here is why, and it takes five minutes.")
+        #expect(VoiceConstraintChecker.opensWith(line, cleaned))
+    }
+
     // MARK: - Length
 
     @Test func aScriptFarShorterThanAskedIsCaught() {

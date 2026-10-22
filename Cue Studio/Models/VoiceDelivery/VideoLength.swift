@@ -13,8 +13,8 @@ nonisolated enum VideoLength: String, Codable, CaseIterable, Identifiable, Senda
     var label: String {
         switch self {
         case .under30: String(localized: "Under 30 s")
-        case .thirtyToSixty: String(localized: "30–60 s")
-        case .oneToThree: String(localized: "1–3 min")
+        case .thirtyToSixty: String(localized: "30 to 60 s")
+        case .oneToThree: String(localized: "1 to 3 min")
         case .longer: String(localized: "Longer")
         }
     }

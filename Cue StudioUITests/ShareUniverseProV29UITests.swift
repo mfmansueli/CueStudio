@@ -54,7 +54,7 @@ final class ShareUniverseProV29UITests: XCTestCase {
         openUniverse(app)
         element(app, "universe.core").tap()
         XCTAssertTrue(element(app, "universeCore.sheet").exists(within: 5))
-        XCTAssertTrue(app.staticTexts["Your light. It grows with every video you share — no photo needed."].exists)
+        XCTAssertTrue(app.staticTexts["Your light. It grows with every video you share. No photo needed."].exists)
         for color in ["gold", "amber", "sunrise", "rose"] {
             XCTAssertTrue(app.buttons["coreColor.\(color)"].exists, color)
         }

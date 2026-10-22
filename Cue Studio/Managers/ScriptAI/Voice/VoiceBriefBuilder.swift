@@ -236,8 +236,8 @@ nonisolated enum VoiceBriefBuilder {
                 let said = voice.phrases.prefix(3).map { "“\($0)”" }.joined(separator: ", ")
                 lines.append(
                     voice.openings.isEmpty
-                        ? "They often say: \(said) — use one naturally, ideally in the opening."
-                        : "They often say: \(said) — use one once after the first sentence, never as the first words."
+                        ? "They often say: \(said). Use one naturally, ideally in the opening."
+                        : "They often say: \(said). Use one once after the first sentence, never as the first words."
                 )
             }
             return lines

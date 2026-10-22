@@ -21,15 +21,26 @@ struct LocalizationCatalogTests {
         return table
     }
 
-    /// The specifiers of a string, without positions: how many of which kind.
-    private static func specifiers(in text: String) -> [String] {
+    /// The specifiers of a string, without positions: how many of which kind (`sorted`), or in the order they appear.
+    private static func specifiers(in text: String, sorted: Bool = true) -> [String] {
         var found: [String] = []
         var searchRange = text.startIndex..<text.endIndex
         while let range = text.range(of: specifierPattern, options: .regularExpression, range: searchRange) {
             found.append(text[range].replacingOccurrences(of: #"\d+\$"#, with: "", options: .regularExpression))
             searchRange = range.upperBound..<text.endIndex
         }
-        return found.sorted()
+        return sorted ? found.sorted() : found
+    }
+
+    /// An iPhone in a regional variant Cue has no localization of gets the language, not English, even with English
+    /// second in its list: iOS prefers English over a localization whose region doesn't match (pt-BR for pt-PT).
+    @Test(arguments: [
+        (["pt-PT", "en-PT"], "pt"), (["pt-BR", "en-BR"], "pt"), (["es-US", "en-US"], "es"), (["es-419", "en"], "es"),
+        (["fr-CA", "en-CA"], "fr"), (["de-AT", "en-AT"], "de"), (["zh-HK", "en-HK"], "zh-Hant"), (["zh-Hans-SG", "en-SG"], "zh-Hans"),
+        (["nn-NO", "en-NO"], "nb"), (["ar-EG", "en"], "ar"), (["en-GB"], "en"),
+    ])
+    func aRegionalVariantGetsItsLanguage(preferences: [String], expected: String) {
+        #expect(Bundle.preferredLocalizations(from: Bundle.main.localizations, forPreferences: preferences).first == expected)
     }
 
     @Test(arguments: CueLanguage.allCases)
@@ -47,12 +58,32 @@ struct LocalizationCatalogTests {
         let leftInEnglish = missing.filter { key in key.contains { $0.isLetter } && key.split(separator: " ").count >= 3 }
         #expect(leftInEnglish.isEmpty, "\(language.interfaceLocalization) is missing \(leftInEnglish.count): \(leftInEnglish.prefix(5))")
         var mismatched: [String] = []
+        var reordered: [String] = []
         for (key, text) in table {
             guard let source = english[key] else { continue }
             if Self.specifiers(in: text) != Self.specifiers(in: source) { mismatched.append(key) }
+            // Unnumbered specifiers fill in order: a translation that moves "%@" before "%lld" without numbering them
+            // hands the number to the text one (a crash or garbage). Reordering needs %1$lld / %2$@.
+            if !text.contains("$"), Self.specifiers(in: text, sorted: false) != Self.specifiers(in: source, sorted: false) {
+                reordered.append(key)
+            }
             if text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, !source.isEmpty { mismatched.append(key) }
         }
         #expect(mismatched.isEmpty, "\(language.interfaceLocalization): placeholders differ in \(mismatched.prefix(5))")
+        #expect(reordered.isEmpty, "\(language.interfaceLocalization): placeholders moved without numbers in \(reordered.prefix(5))")
+    }
+
+    /// No dashes in any language (the owner's rule, LOCALIZATION.md §2.1): em and en dashes, the horizontal bar and their
+    /// small and fullwidth forms. Hyphens inside words, the minus sign and Japanese ー are other characters and stay.
+    @Test(arguments: CueLanguage.allCases)
+    func noStringHasADash(language: CueLanguage) throws {
+        let dashes = CharacterSet(charactersIn: "\u{2012}\u{2013}\u{2014}\u{2015}\u{2E3A}\u{2E3B}\u{FE58}\u{FE63}\u{FF0D}")
+        for table in ["Localizable", "InfoPlist", "AppShortcuts"] {
+            guard let path = Bundle.main.path(forResource: table, ofType: "strings", inDirectory: nil, forLocalization: language.interfaceLocalization),
+                  let strings = NSDictionary(contentsOfFile: path) as? [String: String] else { continue }
+            let dashed = strings.filter { $0.value.rangeOfCharacter(from: dashes) != nil }.map(\.key).sorted()
+            #expect(dashed.isEmpty, "\(language.interfaceLocalization) \(table) has dashes in \(dashed.prefix(5))")
+        }
     }
 
     @Test func theStringsThisWorkAddedAreInEveryLanguage() throws {

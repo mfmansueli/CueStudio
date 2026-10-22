@@ -22,7 +22,7 @@ struct CleanUpAnalyzerTests {
         #expect(found[0].title == "Long pause")
         #expect(!found[1].isSure)
         #expect(found[1].title == "Short pause")
-        #expect(found[1].note == "May be intentional — for emphasis")
+        #expect(found[1].note == "May be intentional, for emphasis")
         #expect(found.allSatisfy { $0.status == .pending })
     }
 

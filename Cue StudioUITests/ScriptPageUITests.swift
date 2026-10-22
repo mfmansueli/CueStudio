@@ -9,7 +9,7 @@ import XCTest
 /// and the page without Apple Intelligence. `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` saves a picture of each state.
 @MainActor
 final class ScriptPageUITests: XCTestCase {
-    private static let ready = "Oat & Co. — sponsored read"
+    private static let ready = "Oat & Co. · sponsored read"
     private static let draft = "Cold showers: one month in"
     private static let recorded = "Unboxing the Lumen desk lamp"
 

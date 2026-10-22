@@ -160,6 +160,28 @@ struct RewriteRunnerTests {
         #expect(result.text.contains("ok"))
     }
 
+    /// The answer cleaned as the service cleans it (`ScriptAIService.rewriteReported`): the creator's sentences with a dash are kept when the model
+    /// kept them, what the model rewrote has no dash, and a part left as written is the creator's, byte for byte.
+    @Test func theCreatorsDashesStayWhereTheModelDidntWriteAndGoWhereItDid() async throws {
+        let mine = "I tried everything — these are the ones that stuck. My mornings was a mess — honestly."
+        let model = Model { part, _ in
+            let answer = part.replacingOccurrences(of: "mornings was", with: "mornings were")
+            return ScriptPromptBuilder.clean(
+                answer, language: Locale.Language(identifier: "en"), preserving: ScriptPromptBuilder.preserved(inRewriteOf: part, tool: .fixGrammar, voice: nil)
+            )
+        }
+        let result = try await RewriteRunner.run(mine, tool: .fixGrammar, context: Self.context, ask: model.ask)
+        #expect(result.text == "I tried everything — these are the ones that stuck. My mornings were a mess, honestly.")
+
+        let text = "Not a to-do list — one thing. " + Self.script(paragraphs: 8, words: 70)
+        let declined = Model { part, _ in
+            if part.hasPrefix("Not a to-do list") { throw ScriptAIError.declined }
+            return part + " ok"
+        }
+        let left = try await RewriteRunner.run(text, tool: .fixGrammar, context: Self.context, ask: declined.ask)
+        #expect(left.leftAsWritten == 1 && left.text.hasPrefix("Not a to-do list — one thing."))
+    }
+
     @Test func aPartThatRanOnPastTheModelsWindowIsLeftAndTheOthersAreDone() async throws {
         let text = Self.script(paragraphs: 8, words: 70)
         let first = String(text.prefix(40))

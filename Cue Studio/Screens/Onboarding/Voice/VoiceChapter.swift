@@ -212,7 +212,10 @@ struct VoiceChapter: View {
             .background(Palette.warnSoft, in: Capsule())
         case .notAsked:
             // The board says "Next" on the step that follows an answered one, and "Allow" on the first.
-            Text(isNext && isFollowUp ? "Next" : "Allow")
+            Text(isNext && isFollowUp ? String(inInterfaceLanguage: LocalizedStringResource(
+                "step.next", defaultValue: "Next",
+                comment: "Status of the step that comes next (not a button): the first voyage's step list and the onboarding permission pill."
+            )) : String(localized: "Allow"))
                 .font(.system(size: 12.5, weight: .semibold))
                 .foregroundStyle(isNext ? Palette.accText : Palette.ink2)
                 .padding(.horizontal, 10).frame(height: 26)

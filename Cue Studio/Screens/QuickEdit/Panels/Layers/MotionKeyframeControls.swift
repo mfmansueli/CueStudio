@@ -55,8 +55,8 @@ struct MotionKeyframeControls: View {
             )
         }
         PanelNote(text: viewModel.selectedMediaID == nil
-            ? String(localized: "Add a keyframe, move the playhead, then drag the text in the video — Cue moves it between keyframes.")
-            : String(localized: "Add a keyframe, move the playhead, then drag the photo or video — Cue moves it between keyframes."))
+            ? String(localized: "Add a keyframe, move the playhead, then drag the text in the video. Cue moves it between keyframes.")
+            : String(localized: "Add a keyframe, move the playhead, then drag the photo or video. Cue moves it between keyframes."))
     }
 
     /// Track: follows what's under the item at the playhead; while it runs, how far it is and Cancel.

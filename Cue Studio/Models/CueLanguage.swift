@@ -47,12 +47,14 @@ nonisolated enum CueLanguage: String, CaseIterable, Identifiable, Codable, Hasha
     /// on a given device is always asked at runtime (`SpeechLocaleResolver`).
     var speechLocale: Locale { locale }
 
-    /// The `.lproj` the interface uses: the String Catalogs' language.
+    /// The `.lproj` the interface uses: the String Catalogs' language. Portuguese is `pt`, not `pt-BR`, so an
+    /// iPhone in Portuguese (Portugal) with English second still gets Cue in Portuguese: iOS prefers English over
+    /// a localization whose region doesn't match (LOCALIZATION.md, "Regional variants").
     var interfaceLocalization: String {
         switch self {
         case .english: "en"
         case .spanish: "es"
-        case .portugueseBrazil: "pt-BR"
+        case .portugueseBrazil: "pt"
         case .french: "fr"
         case .german: "de"
         case .italian: "it"
@@ -119,7 +121,10 @@ nonisolated enum CueLanguage: String, CaseIterable, Identifiable, Codable, Hasha
     }
 
     func name(in locale: Locale) -> String {
-        let name = locale.localizedString(forIdentifier: interfaceLocalization) ?? nativeName
+        // Portuguese keeps its region in names ("Portuguese (Brazil)"): scripts, speech and AI are pt-BR even
+        // though the interface localization is plain `pt`.
+        let identifier = self == .portugueseBrazil ? localeIdentifier : interfaceLocalization
+        let name = locale.localizedString(forIdentifier: identifier) ?? nativeName
         // Some languages write language names in lowercase ("portugués"); a list item starts upper.
         return name.prefix(1).uppercased(with: locale) + name.dropFirst()
     }
@@ -170,8 +175,8 @@ nonisolated enum CueLanguage: String, CaseIterable, Identifiable, Codable, Hasha
         return allCases.first { $0.languageCode == code }
     }
 
-    /// The interface language for an `.lproj` name ("pt-BR", "zh-Hans"), or nil when Cue isn't
-    /// translated into it.
+    /// The interface language for an `.lproj` name ("pt", "zh-Hans"; a stored "pt-BR" is still Portuguese), or nil
+    /// when Cue isn't translated into it.
     static func matching(interfaceLocalization localization: String) -> CueLanguage? {
         allCases.first { $0.interfaceLocalization.caseInsensitiveCompare(localization) == .orderedSame }
             ?? matching(languageCode: localization)

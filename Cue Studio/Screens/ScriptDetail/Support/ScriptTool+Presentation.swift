@@ -30,7 +30,7 @@ extension ScriptTool {
         case .inMyVoice: String(localized: "Closer to how you talk")
         case .newHooks: String(localized: "Shorter openings to test")
         case .fitToTime:
-            String(localized: "Ideal for \(platform.label): \(DurationText.clock(idealRange.lowerBound))–\(DurationText.clock(idealRange.upperBound))")
+            String(localized: "Ideal for \(platform.label): \(DurationText.clock(idealRange.lowerBound)) to \(DurationText.clock(idealRange.upperBound))")
         case .moreEnergy: String(localized: "Punchier lines, same message")
         case .fixGrammar: String(localized: "Typos and punctuation")
         case .translate: String(localized: "Saves a translated copy")

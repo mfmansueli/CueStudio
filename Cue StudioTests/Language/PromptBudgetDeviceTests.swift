@@ -46,22 +46,12 @@ struct PromptBudgetDeviceTests {
         return Self.sentences.map { localized.localizedString(forKey: $0, value: $0, table: nil) }.joined(separator: " ")
     }
 
-    /// The folder of a language in the app: "pt-BR" and the two Chinese scripts keep their region or script, the rest are the language alone.
-    private static func catalogCode(of language: CueLanguage) -> String {
-        switch language {
-        case .portugueseBrazil: "pt-BR"
-        case .chineseSimplified: "zh-Hans"
-        case .chineseTraditional: "zh-Hant"
-        default: language.rawValue.split(separator: "-").first.map(String.init) ?? language.rawValue
-        }
-    }
-
     @Test func tokensPerCharacterInEveryLanguage() async throws {
         KeepScreenAwake.enable()
         let model = try model()
         var lines = ["CONTEXT SIZE \(model.contextSize) tokens"]
         for language in CueLanguage.allCases {
-            let sample = text(in: Self.catalogCode(of: language))
+            let sample = text(in: language.interfaceLocalization)
             let tokens = try await model.tokenCount(for: sample)
             let ratio = Double(tokens) / Double(max(1, sample.count))
             lines.append(String(format: "TOKENS %@ chars=%d tokens=%d tokens/char=%.3f", language.rawValue, sample.count, tokens, ratio))

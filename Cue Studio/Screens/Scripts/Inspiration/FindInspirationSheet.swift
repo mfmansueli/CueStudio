@@ -61,8 +61,15 @@ struct FindInspirationSheet: View {
         writer = services.writer
     }
 
-    /// Apple Intelligence can write ideas and scripts now.
-    private var hasAI: Bool { writer.writingUnavailableReason == nil }
+    /// Whether Apple Intelligence can write the ideas, which are interface text: in the interface's language.
+    private var ideasDrafting: DraftingAvailability { writer.drafting(in: languages.interfaceLanguage) }
+
+    /// Apple Intelligence can write ideas now.
+    private var hasAI: Bool { ideasDrafting.isAvailable }
+
+    /// "Draft it now" can draft: what the dock can (a Script Language the model doesn't write can't; on Auto-detect the idea's own language
+    /// is told when it is sent).
+    private var canDraft: Bool { starter.dockDrafting.isAvailable }
 
     var body: some View {
         ScrollView {
@@ -132,15 +139,29 @@ struct FindInspirationSheet: View {
             .padding(.top, 14)
         }
         if !hasAI {
-            note(
-                text: Text("Starter ideas to write yourself. With Apple Intelligence, Cue suggests more."),
-                identifier: "inspiration.startersNote"
-            ) {
+            note(text: startersNote, identifier: "inspiration.startersNote") {
                 // The bulb's base sits on the text's first baseline.
                 CueIconView(Self.icon, size: noteIconSize).alignmentGuide(.firstTextBaseline) { $0.height * 0.92 }
             }
             .padding(.top, 14)
+        } else if let cause = starter.dockDrafting.cause, cause.isLanguage {
+            // The ideas come, but the Script Language is one Apple Intelligence can't draft in: they are to write by hand.
+            note(
+                text: Text(verbatim: cause.reason + " " + String(localized: "These ideas are yours to write.")),
+                identifier: "inspiration.languageNote"
+            ) {
+                CueIconView(Self.icon, size: noteIconSize).alignmentGuide(.firstTextBaseline) { $0.height * 0.92 }
+            }
+            .padding(.top, 14)
         }
+    }
+
+    /// Why the ideas are the starters: an interface language the model doesn't write ideas in, or no Apple Intelligence.
+    private var startersNote: Text {
+        if ideasDrafting.cause?.isLanguage == true {
+            return Text("Apple Intelligence can’t suggest ideas in \(languages.interfaceLanguage.localizedName) yet. Here are starter ideas to write yourself.")
+        }
+        return Text("Starter ideas to write yourself. With Apple Intelligence, Cue suggests more.")
     }
 
     private func note(text: Text, identifier: String, @ViewBuilder mark: () -> some View) -> some View {
@@ -386,7 +407,7 @@ struct FindInspirationSheet: View {
             if let idea { writeNow(idea) }
         } label: {
             Group {
-                if hasAI {
+                if canDraft {
                     HStack(spacing: 6) {
                         Text(verbatim: "✦").accessibilityHidden(true)
                         Text("Draft it now")
@@ -396,7 +417,7 @@ struct FindInspirationSheet: View {
                 }
             }
             .font(.subheadline.weight(.semibold))
-            .foregroundStyle(hasAI ? Palette.aiText : Palette.ink2)
+            .foregroundStyle(canDraft ? Palette.aiText : Palette.ink2)
             .padding(.horizontal, 12)
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Rectangle())
@@ -413,7 +434,7 @@ struct FindInspirationSheet: View {
     }
 
     private var writeNowHint: LocalizedStringKey {
-        hasAI ? "Drafts it now. Change anything after." : "Opens a blank draft with this idea as its title."
+        canDraft ? "Drafts it now. Change anything after." : "Opens a blank draft with this idea as its title."
     }
 
     /// The next idea: the card leaves `towards` a side (thrown there by a drag, or tapped away to the leading side), with the sparkles and
@@ -446,7 +467,7 @@ struct FindInspirationSheet: View {
         notifications.recordUse(.ideas)
         viewModel.willWrite(idea)
         dismiss()
-        guard hasAI else {
+        guard canDraft else {
             // Not `starter.writeByHand`, which empties the composer: the creator's own draft stays where it was.
             let script = library.create(
                 title: idea.title, text: "", platform: starter.platform, type: ideaDraft.format, language: languages.scriptLanguage, isFinished: false

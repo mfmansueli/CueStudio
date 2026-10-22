@@ -64,7 +64,7 @@ nonisolated enum VoiceSampleBuilder {
         case .educational?: String(localized: "Here’s why your first ten minutes decide your day.")
         case .confident?: String(localized: "This is the morning routine I trust. No exceptions.")
         case .warmCalm?: String(localized: "Let’s make mornings a little softer, okay?")
-        case .energetic?: String(localized: "Quick one — three habits that changed everything!")
+        case .energetic?: String(localized: "Quick one: three habits that changed everything!")
         case .funny?: String(localized: "My alarm and I were not friends. Then this happened.")
         case .dry?: String(localized: "Great, another morning routine. Except this one works.")
         case .casual?, nil: String(localized: "I used to hit snooze four times. Then I tried this.")
@@ -83,7 +83,7 @@ nonisolated enum VoiceSampleBuilder {
         ]
         case .some: [
             String(localized: "Twenty screen-free minutes protect your focus."),
-            String(localized: "Hydrate before caffeine — it hits better."),
+            String(localized: "Hydrate before caffeine. It hits better."),
             String(localized: "Pick one priority, not five."),
         ]
         case .experienced: [

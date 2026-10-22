@@ -331,7 +331,8 @@ final class IdeaSuggestionService {
 
     // MARK: - The model's ideas
 
-    private var canAskModel: Bool { writer.isEnabled && writer.availability.isAvailable }
+    /// The ideas are written in the interface's language: one the model doesn't write is never asked (the starters stay, and say why).
+    private var canAskModel: Bool { writer.drafting(in: interfaceLanguage()).isAvailable }
 
     /// A refill is under way or in line.
     private var isFetching: Bool { isRefilling || task != nil || busyWait != nil }
@@ -565,7 +566,8 @@ final class IdeaSuggestionService {
         guard let data = defaults.data(forKey: DefaultsKey.ideaSuggestions), let stored = try? JSONDecoder().decode(Stored.self, from: data) else { return }
         taste = stored.taste ?? IdeaTaste()
         guard stored.signature == signature else { return }
-        pool = stored.pool
+        // Ideas the model wrote before Cue rewrote its dashes come back without them; a Logbook note is the creator's and stays as it is.
+        pool = stored.pool.map { $0.logbookID == nil ? IdeaBriefReader.withoutDashes($0) : $0 }
         position = min(stored.position, stored.pool.count)
         seen = stored.seen
         echoes = stored.echoes ?? []

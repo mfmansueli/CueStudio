@@ -23,7 +23,7 @@ nonisolated struct ScriptStructure: Hashable, Sendable {
         tones: [.casual, .energetic, .expert, .funny],
         tools: [.newHooks, .fitToTime, .moreEnergy, .fixGrammar, .translate],
         hooks: [
-            String(localized: "Okay, real talk — this one matters."),
+            String(localized: "Okay, real talk: this one matters."),
             String(localized: "Nobody talks about this, so I will."),
             String(localized: "Stop scrolling for ten seconds."),
             String(localized: "I tested this so you don't have to."),

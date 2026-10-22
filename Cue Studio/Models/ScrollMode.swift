@@ -32,7 +32,10 @@ nonisolated enum ScrollMode: String, Codable, CaseIterable, Identifiable, Sendab
     var shortLabel: String {
         switch self {
         case .steady: String(localized: "Steady")
-        case .voice: String(localized: "Voice")
+        case .voice: String(inInterfaceLanguage: LocalizedStringResource(
+            "scrollMode.voice", defaultValue: "Voice",
+            comment: "Short name of the Voice Following mode in the prompter's Voice | Steady switch and in Settings › Prompter."
+        ))
         }
     }
 }

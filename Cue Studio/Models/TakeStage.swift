@@ -93,7 +93,7 @@ nonisolated enum TakeStage: Int, CaseIterable, Identifiable, Comparable, Sendabl
         switch self {
         case .pick: String(localized: "Every video has a best take.")
         case .edit: String(localized: "No edits waiting.")
-        case .ready: String(localized: "Tap Done in the editor, or pick a best take — it lands here, ready to post.")
+        case .ready: String(localized: "Tap Done in the editor, or pick a best take. It lands here, ready to post.")
         case .shared: String(localized: "Nothing shared yet.")
         }
     }

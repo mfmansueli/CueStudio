@@ -44,7 +44,7 @@ struct EditorDoneSheet: View {
             }
             .padding(.horizontal, 4)
             VStack(spacing: 8) {
-                option(.share, title: "Yes — share to social media", detail: "Pick the app in the share sheet", result: .shared, isPrimary: true)
+                option(.share, title: "Yes, share to social media", detail: "Pick the app in the share sheet", result: .shared, isPrimary: true)
                 option(.download, title: "Download video", detail: "Saves to Photos · post it anywhere", result: nil)
                 option(.ready, title: "Ready, I’ll post later", detail: "Goes to Ready in Takes", result: .ready)
                 option(.notYet, title: "Not yet, I’ll come back", detail: "Stays in edit · autosaved", result: .edit)

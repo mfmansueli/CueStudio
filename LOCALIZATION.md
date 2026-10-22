@@ -26,7 +26,7 @@ script and never touches the iPhone's language. `LanguageService` owns the three
 
 Every language is a `CueLanguage` (`Models/CueLanguage.swift`), the only list of languages in the
 app: script/speech locale (`pt-BR`, `zh-CN`, `ar-SA`…, the raw value saved with scripts), interface
-localization (`pt-BR`, `zh-Hans`…), native and localized names, English name (for AI instructions),
+localization (`pt`, `zh-Hans`…), native and localized names, English name (for AI instructions),
 direction and whether it's written without spaces.
 
 - **Interface:** String Catalogs (`Localizable`, `InfoPlist`, `AppShortcuts`) with
@@ -109,12 +109,39 @@ or `unsupportedTranslation` naming the pair), model still preparing, device not 
 off, too long, cancelled (silent). A result that comes back in another language (a polish answered in
 English, a translation handed back untouched) is refused and the script left as it was
 (`OutputLanguageCheck`; only when the text is long enough and Natural Language is sure). Translating has no
-default target. A free prompt in a language the model doesn't write opens a blank draft with the reason, the way it
-does without Apple Intelligence; a format still gets its structured draft. **Private Cloud Compute stays off**
+default target. **What can't be drafted is told before anything is sent, and never by opening an empty draft**
+(`DraftingAvailability`, `writer.drafting(in:)`): Cue's own On-device AI switch first, then the planner's order (device, Apple
+Intelligence off, the language, model preparing). The language is the **script's**: the Script Language when one is set (the
+Scripts dock then shows the reason in its note and its "Write it" state, and Language & Region marks the languages the model
+doesn't write); on Auto-detect the idea's own, judged only when it is sent (never the interface language as a guess), and then
+the idea stays in the field and a toast gives the reason with "Write it". An answered comment is read in the comment's language;
+ideas (interface text) in the interface's, and a language the model doesn't write ideas in is never asked. `ScriptAIService`
+still builds a format's structured draft when no model can take a `.format` request, but no screen sends one today (every
+request from the app is a prompt). **Private Cloud Compute stays off**
 (`hasPrivateCloudComputeEntitlement = false`): it is only a candidate when the app has the entitlement.
 
+**No dashes in what the model writes** (§2.1). Every instruction (script, rewrite tools and hooks, block lengthening, ideas)
+carries `ScriptPromptBuilder.punctuationRule`, and whatever still comes back goes through `DashRewriter`
+(`Managers/ScriptAI/Cleaning/`) inside `ScriptPromptBuilder.clean` / `cleanTitle`, which see only model output, before the
+language and voice checks: a dash between two parts becomes the language's comma, colon or full stop (connectors, a short head
+before it, a list after it, two full clauses), a pair becomes commas, a line-leading mark or dialogue dash is dropped, a range
+is said in words (`%1$@ to %2$@` in the text's language), a spaced ASCII " - " between words counts as a dash. Each language's
+marks come from `DashPunctuation` (French space before the colon, 、/，/، /। where they belong, no capitals where the script has
+none, Thai spaces). Never touched: hyphens in words, `5 - 3`, −, ー, 〜, links, handles, stage cues, and the creator's words the
+model had to repeat (`ScriptRequest.preservedPhrases`: catchphrases, a brand's must-say line, link and code, the idea's opening
+line; in a rewrite, every sentence of the creator's that holds a dash, so one the model kept word for word keeps it). Parts a
+rewrite leaves as written never pass through it; a translation is cleaned in full. Drafts are not shown while they are
+written (the page replays the finished, cleaned text); a screen that someday shows words as they arrive uses
+`DashRewriter.displayable`, which holds back the sentence after a dash until it ends, so a dash never appears even for a
+moment. Ideas saved by older versions are cleaned when restored; Logbook notes are the creator's and stay.
+
 **Regional variants.** Only the 20 languages above have a translated interface; no variant gets one of its
-own. A language the creator picked (Script Language, Voice Following Language) is used as picked, in Cue's
+own. Every interface localization is the language alone (`es`, `fr`, `pt`…), except the two Chinese scripts:
+iOS prefers English over a localization whose region doesn't match, so with `pt-BR` an iPhone in pt-PT with
+English second opened Cue in English. With `pt`, es-MX/es-419, fr-CA, de-AT, zh-HK, nn-NO, ar-EG and the rest
+reach their language (`LocalizationCatalogTests.aRegionalVariantGetsItsLanguage`); Malay and other languages Cue
+doesn't have fall back to English. The Portuguese text is Brazilian, and the App Store has its own pt-PT page.
+A language the creator picked (Script Language, Voice Following Language) is used as picked, in Cue's
 variant (pt-BR, zh-CN…). A language *read from the text* (Auto-detect) keeps the variant of the creator's own
 language list (en-GB, pt-PT, es-MX: `CueLanguage.variant(among:)`) for dictation, Voice Following, captions
 and the language AI writes in (`ScriptRequest.languageVariant`, asked of the model only when it writes that
@@ -136,14 +163,35 @@ names in **bold** stay in English in every language.
 
 - Brand, unchanged: **Cue**, **Cue Pro**, **Pro**, **Apple Intelligence**, **Private Cloud Compute**,
   **My Cue Voice**, **Selfie**, **Studio**, **TikTok**, **Reels**, **Shorts**, **YouTube**,
-  **LinkedIn**, **Stories**, **Instagram**, **Lexend**.
+  **LinkedIn**, **Stories**, **Instagram**, **Lexend**, and the script page's ✦ **Shape** tool.
+- One key, one meaning: a word that means two things gets two English keys (camera *Front* / *Rear* vs. the
+  *Back* button; Quick edit's *Ratio* vs. ✦ *Shape*; the apology format's *Closing* section vs. the *Close* button;
+  the share sheet's *Post caption* vs. the video's *Caption*), so each language can translate both. When the English must
+  stay the same word on screen, the code asks for a key of its own with the English as default
+  (`String(inInterfaceLanguage: LocalizedStringResource("step.next", defaultValue: "Next", comment: …))`) and the catalog gives
+  that key an `en` value (`scripts/strings.py add` takes `"en"` for such a key). Split this way (22 Oct 2026):
+  - **Format**: the video's frame (Quick edit, Recording setup, Script details) keeps `Format`; the script's format (Scripts
+    dock chip, Format sheet) is `format.script`; a file format (HEVC | H.264, Image | video) is `format.file`.
+  - **Voice**: the creator's writing voice (dock chip ✦ Voice, My Cue Voice) keeps `Voice`; the prompter's Voice | Steady switch
+    (Voice Following) is `scrollMode.voice`.
+  - **Quick**: Follow face's pace keeps `Quick`; the prompter's Aa sheet heading (quick settings) is `prompter.quickSettings`.
+  - **Line**: the caption animation keeps `Line`; Studio's reading line chip and slider is `studio.readingLine`.
+  - **Next**: the button keeps `Next`; the status of the step that comes next (first voyage, onboarding pill) is `step.next`;
+    `Next: %@` is My Cue Voice's status heading and Cover studio's button is `coverStudio.next`.
 - Voice: talk to one creator (pt-BR *você*, es *tú*, fr *vous*, de *du*, it *tu*, id *kamu*,
   tr *sen*, vi *bạn*, zh *你*, ar the singular, hi *आप*, nl *je*, sv *du*, da *du*, nb *du*; ja and ko
   polite and neutral), short sentences, no jargon.
 - Two pairs never share a word, because they sit on the same screens: **Record / Save** (fr
   *Filmer* / *Enregistrer*, tr *Kayıt* / *Kaydet*, th *อัด* / *บันทึก*) and **Trim / Crop** (es
   *Recortar* / *Encuadrar*, pt-BR *Aparar* / *Recortar*, id *Pangkas Durasi* / *Pangkas Bingkai*, tr
-  *Kısalt* / *Kırp*, vi *Cắt độ dài* / *Cắt khung*).
+  *Kısalt* / *Kırp*, vi *Cắt độ dài* / *Cắt khung*, ja *トリム* / *クロップ*, ar *تشذيب* / *اقتصاص*). Each word follows what the
+  control does: Trim shortens a clip in time, Crop frames the picture, Split divides a clip in two, Cut removes (text, or
+  words from the video) and "a cut" is the point between two clips (ar *قص* removes, *قطع* is the cut point, *تقسيم* splits;
+  ja *カット* for both, *分割* splits; ja *トリミング* still reads right where a sentence means trimming text, and *切り抜き* is a
+  cutout, not a crop).
+- Terms the owner settled from the review (22 Oct 2026): de Voice Following is *Stimme folgen*, a verb phrase, so a
+  sentence names it in quotes („Stimme folgen“ ist an) instead of using it as a noun; hi Settings is *सेटिंग्ज़*, Apple's
+  spelling, everywhere the plural appears (the singular *सेटिंग* stays); es Color key is *Croma*.
 - Arabic calls the hook *الافتتاحية* (the opening) and captions *الترجمة النصية*; *الخطّاف* reads as
   a literal fishing hook.
 - Performance cues inside scripts are translated with the script text (`[pause]` → pt-BR
@@ -159,10 +207,8 @@ names in **bold** stay in English in every language.
   / soạn nháp*, nl *concept*, sv/nb *utkast*, da *udkast*. These texts are kept as short as the English (German and French
   run about 30% longer), so each line still fits where it sits.
 - "%@ to %@" is a countdown ("18s to 1:00", "12s to monetize"), not a range.
-- Quick edit's Audio category holds Voice (the take's own speech), Music and Voice-over, and a
-  video over the take has its Sound: where a language has one word for all of them (ar *الصوت*, tr
-  *Ses*), the Voice tool uses the word for speech (ar *الكلام*, tr *Konuşma*) so the tool never
-  repeats its category's name.
+- Quick edit's Audio menu holds Studio Voice (the take's own speech, treated), Music and Voice-over, and a video over the
+  take has its Sound.
 - **Eye Contact** (✦ Smart) is a feature name translated as what it does for the creator: pt-BR *Corrigir olhar* (the owner's name for it), es
   *Contacto visual*, fr *Contact visuel*, de *Blickkontakt*, it *Contatto visivo*, ja *アイコンタクト*, ko *시선 맞춤*, zh *眼神交流*, ar *التواصل البصري*,
   hi *आई कॉन्टैक्ट*, id *Kontak Mata*, nl *Oogcontact*, sv *Ögonkontakt*, da *Øjenkontakt*, nb *Øyekontakt*, tr *Göz Teması*, th *สบตากล้อง*,
@@ -179,26 +225,26 @@ Teleprompter / Teleprompter / 提詞機*, Hook stays *hook* in nl/sv/da/nb (zh-H
 *Stem volgen / Följ rösten / Følg stemmen / Følg stemmen / 跟隨語音*. Brand and feature names stay in
 English as above. zh-Hant uses Taiwan wording (照片, 檔案, 儲存, 螢幕), not the zh-Hans glyph swap. None
 of the five is right to left; Traditional Chinese is written without spaces (`WordSegmenter`).
-Strings are translated by the model that built the app and marked for review by a native speaker
-before a public release.
+Strings are translated by the model that built the app. In October 2026 every language had an AI review in a native
+speaker's role (below); a human native review is still welcome before a public release.
 
 | English | es | pt-BR | fr | de | it | ja | ko | zh-Hans | hi | id | ar | tr | th | vi |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Teleprompter | Teleprompter | Teleprompter | Téléprompteur | Teleprompter | Teleprompter | プロンプター | 프롬프터 | 提词器 | टेलीप्रॉम्प्टर | Teleprompter | الملقّن | Teleprompter | เทเลพรอมป์เตอร์ | Teleprompter |
-| Voice Following | Seguimiento de voz | Seguir voz | Suivi vocal | Sprachfolge | Segui voce | 音声追従 | 음성 따라가기 | 语音跟随 | आवाज़ ट्रैकिंग | Ikuti Suara | تتبّع الصوت | Ses Takibi | ติดตามเสียง | Theo giọng nói |
+| Voice Following | Seguimiento de voz | Seguir voz | Suivi vocal | Stimme folgen | Segui voce | 音声追従 | 음성 따라가기 | 语音跟随 | आवाज़ ट्रैकिंग | Ikuti Suara | تتبّع الصوت | Ses Takibi | ติดตามเสียง | Theo giọng nói |
 | Script | Guion | Roteiro | Script | Skript | Copione | 台本 | 대본 | 脚本 | स्क्रिप्ट | Naskah | النص | Senaryo | สคริปต์ | Kịch bản |
 | Take | Toma | Take | Prise | Take | Ripresa | テイク | 테이크 | 镜头 | टेक | Take | اللقطة | Çekim | เทค | Cảnh quay |
 | Record | Grabar | Gravar | Filmer | Aufnehmen | Registra | 録画 | 녹화 | 录制 | रिकॉर्ड | Rekam | تسجيل | Kayıt | อัด | Quay |
 | Save | Guardar | Salvar | Enregistrer | Sichern | Salva | 保存 | 저장 | 存储 | सेव करें | Simpan | حفظ | Kaydet | บันทึก | Lưu |
 | Quick edit | Edición rápida | Edição rápida | Montage rapide | Schnellschnitt | Modifica rapida | クイック編集 | 빠른 편집 | 快速剪辑 | क्विक एडिट | Edit cepat | تعديل سريع | Hızlı düzenleme | แก้ไขด่วน | Sửa nhanh |
-| Trim | Recortar | Aparar | Raccourcir | Kürzen | Accorcia | トリミング | 다듬기 | 修剪 | ट्रिम | Pangkas Durasi | التشذيب | Kısalt | ตัดความยาว | Cắt độ dài |
-| Crop | Encuadrar | Recortar | Recadrer | Zuschneiden | Ritaglia | 切り取り | 자르기 | 裁剪 | क्रॉप | Pangkas Bingkai | قص | Kırp | ครอบตัด | Cắt khung |
+| Trim | Recortar | Aparar | Raccourcir | Kürzen | Accorcia | トリム | 다듬기 | 修剪 | ट्रिम | Pangkas Durasi | التشذيب | Kısalt | ตัดความยาว | Cắt độ dài |
+| Crop | Encuadrar | Recortar | Recadrer | Zuschneiden | Ritaglia | クロップ | 자르기 | 裁剪 | क्रॉप | Pangkas Bingkai | اقتصاص | Kırp | ครอบตัด | Cắt khung |
 | Captions | Subtítulos | Legendas | Sous-titres | Untertitel | Sottotitoli | 字幕 | 자막 | 字幕 | कैप्शन | Teks | الترجمة النصية | Altyazılar | คำบรรยาย | Phụ đề |
 | Free exports | Exportaciones gratis | Exportações grátis | Exports gratuits | Kostenlose Exporte | Esportazioni gratuite | 無料書き出し | 무료 내보내기 | 免费导出 | मुफ़्त एक्सपोर्ट | Ekspor gratis | عمليات تصدير مجانية | Ücretsiz dışa aktarma | การส่งออกฟรี | Lượt xuất miễn phí |
 | Camera | Cámara | Câmera | Caméra | Kamera | Fotocamera | カメラ | 카메라 | 相机 | कैमरा | Kamera | الكاميرا | Kamera | กล้อง | Camera |
 | Speed | Velocidad | Velocidade | Vitesse | Tempo | Velocità | 速度 | 속도 | 速度 | स्पीड | Kecepatan | السرعة | Hız | ความเร็ว | Tốc độ |
 | Play | Reproducir | Reproduzir | Lire | Abspielen | Riproduci | 再生 | 재생 | 播放 | चलाएँ | Putar | تشغيل | Oynat | เล่น | Phát |
-| Settings | Ajustes | Ajustes | Réglages | Einstellungen | Impostazioni | 設定 | 설정 | 设置 | सेटिंग्स | Pengaturan | الإعدادات | Ayarlar | การตั้งค่า | Cài đặt |
+| Settings | Ajustes | Ajustes | Réglages | Einstellungen | Impostazioni | 設定 | 설정 | 设置 | सेटिंग्ज़ | Pengaturan | الإعدادات | Ayarlar | การตั้งค่า | Cài đặt |
 | Profile | Perfil | Perfil | Profil | Profil | Profilo | プロフィール | 프로필 | 个人资料 | प्रोफ़ाइल | Profil | الملف الشخصي | Profil | โปรไฟล์ | Hồ sơ |
 | Hook | Gancho | Gancho | Accroche | Hook | Gancio | フック | 훅 | 钩子 | हुक | Hook | الافتتاحية | Kanca | ฮุก | Hook |
 | Clean Up | Limpieza | Limpeza | Nettoyage | Aufräumen | Pulizia | クリーンアップ | 정리 | 清理 | क्लीन अप | Bersihkan | تنظيف | Temizleme | เก็บกวาด | Dọn dẹp |
@@ -209,11 +255,58 @@ before a public release.
 | Steady | Constante | Constante | Constant | Gleichmäßig | Costante | 一定速度 | 일정 속도 | 匀速 | स्थिर | Stabil | ثابت | Sabit | คงที่ | Đều |
 | Keyframe | Fotograma clave | Quadro-chave | Image clé | Keyframe | Keyframe | キーフレーム | 키프레임 | 关键帧 | कीफ़्रेम | Keyframe | إطار رئيسي | Anahtar kare | คีย์เฟรม | Khung hình chính |
 | Music | Música | Música | Musique | Musik | Musica | 音楽 | 음악 | 音乐 | म्यूज़िक | Musik | الموسيقى | Müzik | เพลง | Nhạc |
-| Voice (Quick edit tool) | Voz | Voz | Voix | Stimme | Voce | 声 | 목소리 | 人声 | आवाज़ | Suara | الكلام | Konuşma | เสียงพูด | Giọng nói |
+| Voice (the writing voice, My Cue Voice) | Voz | Voz | Voix | Stimme | Voce | ボイス | 보이스 | 口吻 | आवाज़ | Suara | الصوت | Ses | น้ำเสียง | Giọng văn |
 | Background | Fondo | Fundo | Arrière-plan | Hintergrund | Sfondo | 背景 | 배경 | 背景 | बैकग्राउंड | Latar | الخلفية | Arka plan | พื้นหลัง | Nền |
-| Color key | Clave de color | Chroma key | Incrustation | Farbschlüssel | Chroma key | カラーキー | 컬러 키 | 色键抠像 | कलर की | Kunci warna | مفتاح اللون | Renk anahtarı | คีย์สี | Tách màu nền |
+| Color key | Croma | Chroma key | Incrustation | Farbschlüssel | Chroma key | カラーキー | 컬러 키 | 色键抠像 | कलर की | Kunci warna | مفتاح اللون | Renk anahtarı | คีย์สี | Tách màu nền |
 | Draft | Borrador | Rascunho | Brouillon | Entwurf | Bozza | 下書き | 초안 | 草稿 | ड्राफ़्ट | Draf | مسودة | Taslak | ฉบับร่าง | Bản nháp |
 | Language & Region | Idioma y región | Idioma e região | Langue et région | Sprache & Region | Lingua e area geografica | 言語と地域 | 언어 및 지역 | 语言与地区 | भाषा और क्षेत्र | Bahasa & Wilayah | اللغة والمنطقة | Dil ve Bölge | ภาษาและภูมิภาค | Ngôn ngữ & Vùng |
+
+### 2.1 The October 2026 review
+
+Each of the 19 languages was read in full (about 3,500 strings each) by an AI reviewer in the role of a demanding native
+speaker who knows Apple's wording, with the code at hand for strings without a comment; 7,410 strings changed (between 6% and 17% per language,
+most of them consistency and the rules below; true meaning errors were 1–2% per language). The
+tool is `tools/l10n/review.py` (`export` one language, `check`, `apply` only that language's values); each language's
+report, with the terms it settled on and the questions left for the owner, is in `tools/l10n/reports/2026-10-<lang>.md`.
+Those term lists extend the table above. What the review taught, for every language and every new string:
+
+- **A cue in brackets inside a template uses exactly the cue's own translated name** (`ScriptCueSymbol` recognizes a cue
+  by it). The cue "beat" is a short pause in every language (es *pausa corta*, pt *pausa curta*, de *kurze Pause*…).
+- **One key, one meaning.** A word with two uses gets two English keys (Front/Rear vs. Back; Ratio vs. ✦ Shape; Closing vs.
+  Close; Post caption vs. Caption). Keys still shared and reported for a split: Fade, Fade in, Words, Mono, Pop,
+  Reveal, Time, Keep mine, OFF.
+- **Placeholders in another order are numbered** (`%2$@ … %1$lld`): unnumbered ones fill in order, and a number in a
+  `%@` breaks the string. `LocalizationCatalogTests` fails on a translation that moves unnumbered placeholders of
+  different kinds; two of the same kind (`%lld of %lld`) can't be checked by a test, so a reviewer looks.
+- **The app never speaks as "I" or "we"**, and never says a video was posted. Buttons where Cue's AI writes (✦ Write,
+  Draft my reply, Write the ad) use the draft word too.
+- **No dashes, in any language** (owner, 22 Oct 2026, final): no em dash, en dash, horizontal bar, figure dash or their
+  small and fullwidth forms, in the interface, notices, help, notifications, accessibility, the examples, templates and
+  scripts Cue gives, and in everything Apple Intelligence writes. Each language rewrites with its own punctuation (a full
+  stop, a comma, a colon, parentheses, " · " between two short facts), never a hyphen in the dash's place and never two words
+  glued. A range is said in words: `DurationText.range` reads the key `%1$@ to %2$@` (pt *1:00 a 1:30*, de *1:00 bis 1:30*,
+  ja *1:00〜1:30*, hi *1:00 से 1:30 तक*); "%@ to %@" stays the countdown. Hyphens inside words, the minus sign (−), Japanese ー
+  and 〜, URLs and identifiers are other characters and stay. Text the creator wrote or imported is never changed for it.
+  `LocalizationCatalogTests.noStringHasADash` fails on a dash in any of the 20 languages; the AI side is below (§1.1).
+- **Feature names stay in English** like the brand: ✦ Smart, ✦ Shape, Selfie, Studio, My Cue Voice, Cue Voice, and the
+  Clean caption collection. **My Cue Voice** stays a proper name.
+- **Studio Voice is translated** (owner, 22 Oct 2026): it describes Quick edit's voice treatment (enhancement and noise
+  reduction), so each language says what it is: pt *Voz de estúdio*, es *Voz de estudio*, fr *Voix studio*, de *Studio-Stimme*,
+  it *Voce da studio*, ja *スタジオ音声*, ko *스튜디오 음성*, zh-Hans *录音棚人声*, zh-Hant *錄音室人聲*, hi *स्टूडियो आवाज़*, id
+  *Suara Studio*, ar *صوت الاستوديو*, tr *Stüdyo Sesi*, th *เสียงสตูดิโอ*, vi *Giọng studio*, nl *Studiostem*, sv *Studioröst*, da/nb
+  *Studiostemme*; sentences around it follow the word's grammar (hi *आवाज़* is feminine).
+- **App icon names are translated** (owner, 22 Oct 2026): First Light, Deep Space, Constellation and Aurora are names the
+  creator reads in Settings › Personalize and in the milestone that opens each one, so every language gives them a natural
+  name (pt *Primeira Luz, Espaço Profundo, Constelação, Aurora*; es *Primera Luz, Espacio Profundo, Constelación, Aurora*;
+  ja *最初の光, 深宇宙, 星座, オーロラ*…). Only the names shown change: `AppIconChoice`'s cases, the asset names and the
+  milestones stay. A message that places the name next to the word "icon" puts it where a several-word name still reads
+  (da *ikonet %@*, not *%@-ikonet*).
+- **A language's name may already contain the word "language"** (vi *Tiếng Anh*): a template never adds it again.
+- **Lines the creator says to camera** (templates, starters) avoid a gendered first person where the language marks it
+  (hi), and address the audience the way creators do (fr *vous*); the interface keeps the register above (ko 해요체
+  throughout, 합니다체 only in the system permission prompts).
+- Languages Apple Intelligence doesn't write (id, th, hi, ar) are translated faithfully like the rest; the app explains
+  before anything is drafted (§1.1).
 
 ## 3. Right to left and longer text
 

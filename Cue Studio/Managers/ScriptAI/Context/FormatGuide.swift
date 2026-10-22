@@ -108,7 +108,7 @@ nonisolated struct FormatGuide: Hashable, Sendable {
             )
         case .apology:
             return FormatGuide(
-                name: "apology or statement", blocks: ["Opening", "Acknowledge", "Own it", "What changes", "Close"],
+                name: "apology or statement", blocks: ["Opening", "Acknowledge", "Own it", "What changes", "Closing"],
                 purposes: [
                     "say what this is about, directly.",
                     "name what happened, plainly.",

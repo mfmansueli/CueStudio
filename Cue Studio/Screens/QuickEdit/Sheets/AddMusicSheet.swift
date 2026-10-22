@@ -50,7 +50,7 @@ struct AddMusicSheet: View {
             .buttonStyle(.plain)
             .disabled(viewModel.isImportingMusic)
             .accessibilityIdentifier("edit.addMusicButton")
-            Text("From Files. Use only music you own or have the rights to — songs from Apple Music can’t be added.")
+            Text("From Files. Use only music you own or have the rights to. Songs from Apple Music can’t be added.")
                 .font(.system(size: 12.5))
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)

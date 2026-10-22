@@ -66,7 +66,7 @@ final class ScriptsV29UITests: XCTestCase {
 
         let field = app.openScriptsSearch()
         field.typeText("Oat")
-        XCTAssertTrue(app.staticTexts["Oat & Co. — sponsored read"].exists(within: 5))
+        XCTAssertTrue(app.staticTexts["Oat & Co. · sponsored read"].exists(within: 5))
         XCTAssertFalse(draft.exists)
         XCTAssertTrue(dock.exists, "the dock stays while searching")
 

@@ -227,7 +227,7 @@
 				en,
 				Base,
 				es,
-				"pt-BR",
+				pt,
 				fr,
 				de,
 				it,

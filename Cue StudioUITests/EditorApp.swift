@@ -12,8 +12,11 @@ enum EditorApp {
     /// and a subtitle, and four pauses already found.
     static func open(sampleVideo: Bool = true, demo: Bool = false, arguments: [String] = []) -> XCUIApplication {
         let app = CueApp.launch(seeded: true, sampleVideo: sampleVideo, extraArguments: (demo ? ["-uiTestDemoEdit"] : []) + arguments)
-        let tab = app.cueTabBar.buttons["Takes"]
-        XCTAssertTrue(tab.exists(within: 15))
+        // Takes is the second tab; its label is "Takes" only in some languages (`-uiTestAppLanguage`).
+        XCTAssertTrue(app.cueTabBar.exists(within: 15))
+        let named = app.cueTabBar.buttons["Takes"]
+        let tab = named.exists ? named : app.cueTabBar.buttons.element(boundBy: 1)
+        XCTAssertTrue(tab.exists(within: 5))
         tab.tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
         XCTAssertTrue(row.exists(within: 5))

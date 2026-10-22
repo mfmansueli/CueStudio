@@ -22,7 +22,10 @@ struct ScriptsView: View {
     @Environment(ToastService.self) private var toast
     @Environment(FirstVoyageService.self) private var voyage
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.scenePhase) private var scenePhase
 
+    /// Goes up when Apple Intelligence may have changed outside Cue (back to the front, or a model getting ready): the dock asks again.
+    @State private var availabilityCheck = 0
     /// The dock's field has the keyboard: the list dims.
     @State private var isDockEditing = false
     /// An action picked in the More menu, run once its popover has gone (it may open the prompter, a page or another sheet).
@@ -98,6 +101,13 @@ struct ScriptsView: View {
             .task(id: library.scripts.filter { $0.topic == nil }.map(\.id)) { await tagging.tagUntagged() }
             // A library that has held a script (written, imported, seeded, or already there when the app opened) is never "first use" again.
             .onChange(of: library.scripts.count, initial: true) { _, count in history.note(scriptCount: count) }
+            // Apple Intelligence turned on or off in the iPhone's Settings, or a model that finished downloading, is seen on the way back.
+            .onChange(of: scenePhase) { _, phase in if phase == .active { availabilityCheck += 1 } }
+            .task(id: availabilityCheck) {
+                guard writer?.drafting(in: languages.scriptLanguage).cause == .modelPreparing else { return }
+                try? await Task.sleep(for: .seconds(30))
+                if !Task.isCancelled { availabilityCheck += 1 }
+            }
             .navigationTitle("Scripts")
             .toolbarTitleDisplayMode(.inlineLarge)
             .toolbar { toolbarItems }
@@ -227,9 +237,12 @@ struct ScriptsView: View {
         }
     }
 
-    /// Why Apple Intelligence can't write now (the creator's own words), or nil when it can.
+    /// Why Apple Intelligence can't draft the dock's ideas now, or nil when it can: Cue's switch, the iPhone, the model, or a Script Language
+    /// it doesn't write (on Auto-detect the idea's language is told when it is sent). Asked again each time Cue comes back to the front and,
+    /// while the model gets ready, every half a minute (`availabilityCheck`): nothing tells the screen when those change.
     private var writerUnavailableReason: String? {
-        writer?.writingUnavailableReason
+        _ = availabilityCheck
+        return writer?.drafting(in: languages.scriptLanguage).note
     }
 
     private var scriptList: some View {
@@ -445,7 +458,7 @@ struct ScriptsView: View {
     private func groupTitle(_ group: ScriptGroup) -> String {
         switch group.state {
         case .ready: String(localized: "Ready to record · \(group.count)")
-        case .draft: String(localized: "Drafts · \(group.count) — In progress")
+        case .draft: String(localized: "Drafts · \(group.count) · In progress")
         case .recorded: String(localized: "Recorded · \(group.count)")
         }
     }

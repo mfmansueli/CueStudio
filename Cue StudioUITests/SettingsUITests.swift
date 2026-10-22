@@ -171,7 +171,7 @@ final class SettingsUITests: XCTestCase {
     func testLongTranslationsKeepAllFiveTabsVisible() {
         let locales = [
             ("de", ["Skripte", "Takes", "Aufnehmen", "Profil", "Einstellungen"]),
-            ("pt-BR", ["Roteiros", "Takes", "Gravar", "Perfil", "Ajustes"]),
+            ("pt", ["Roteiros", "Takes", "Gravar", "Perfil", "Ajustes"]),
             ("it", ["Copioni", "Riprese", "Registra", "Profilo", "Impostazioni"]),
         ]
         for (language, labels) in locales {

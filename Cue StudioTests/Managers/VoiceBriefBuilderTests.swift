@@ -119,10 +119,11 @@ struct VoiceBriefBuilderTests {
 
     @Test func aCatchphraseIsForTheOpeningOnlyWhenTheCreatorChoseNoOpening() {
         var profile = CreatorProfile(niches: [.tech], phrases: ["Hey fam"])
-        #expect(brief(profile.voice).contains("— use one naturally, ideally in the opening."))
+        #expect(brief(profile.voice).contains("They often say: “Hey fam”. Use one naturally, ideally in the opening."))
         profile.openings = ["Question"]
         let text = brief(profile.voice)
-        #expect(text.contains("— use one once after the first sentence, never as the first words."))
+        #expect(text.contains("”. Use one once after the first sentence, never as the first words."))
+        #expect(!text.contains(where: DashRewriter.dashes.contains), "the brief is shown in What Cue sends")
         #expect(!text.contains("ideally in the opening"))
     }
 

@@ -104,7 +104,7 @@ struct SettingsRootRow: View {
     /// "Front · 1080p"
     private var recordingValue: String {
         let camera = bindings.camera.wrappedValue
-        let lens = camera.lens.isFront ? String(localized: "Front") : String(localized: "Back")
+        let lens = camera.lens.isFront ? String(localized: "Front") : String(localized: "Rear")
         return "\(lens) · \(camera.resolution.label)"
     }
 

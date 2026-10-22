@@ -26,15 +26,18 @@ struct ScriptRequestFactory {
         return Platform.primary.contains(platform) ? platform : .tiktok
     }
 
+    /// - Parameter languageText: the creator's own words when `idea` wraps them in Cue's (an answered comment): the language is read
+    ///   from them, not from the English around them.
     func request(
-        idea: String, platform: Platform?, format: ScriptType?, length: ScriptLength = .auto, brand: BrandBrief? = nil, brief: IdeaBrief? = nil
+        idea: String, platform: Platform?, format: ScriptType?, length: ScriptLength = .auto, brand: BrandBrief? = nil, brief: IdeaBrief? = nil,
+        languageText: String? = nil
     ) -> ScriptRequest {
         let text = idea.trimmingCharacters(in: .whitespacesAndNewlines)
         let platform = platform ?? defaultPlatform
         let effectiveLength = length == .auto ? (ScriptLength.detected(in: text) ?? .auto) : length
         let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
         let isSerious = format?.structure.isSerious ?? false
-        let language = writingLanguage(for: text)
+        let language = writingLanguage(for: languageText ?? text)
         let voice = profile.writesInMyVoice && !isSerious
             ? profile.profile.voice(
                 inLanguage: language?.locale.language.languageCode?.identifier, idea: text, professional: PlatformRegister(platform) == .professional
@@ -46,7 +49,7 @@ struct ScriptRequestFactory {
             voice: voice,
             targetRange: targetRange(for: effectiveLength, platform: platform, preset: preset, voice: voice),
             language: language,
-            languageVariant: writingVariant(for: text),
+            languageVariant: writingVariant(for: languageText ?? text),
             format: format,
             // A brand brief only means something for a sponsored ad.
             brand: format == .ad ? brand : nil,
@@ -72,8 +75,13 @@ struct ScriptRequestFactory {
     /// The script language when one is set; otherwise the language the creator typed in; otherwise
     /// the interface's.
     func writingLanguage(for typed: String) -> CueLanguage? {
-        if let scriptLanguage { return scriptLanguage }
-        return detectedLanguage(in: typed) ?? interfaceLanguage
+        knownLanguage(for: typed) ?? interfaceLanguage
+    }
+
+    /// The language the text would be drafted in when that is known before it is sent: the script language, or the one the text is
+    /// written in. Nil while neither says (the interface's is only what a request falls back to, never a guess at the creator's).
+    func knownLanguage(for typed: String) -> CueLanguage? {
+        scriptLanguage ?? detectedLanguage(in: typed)
     }
 
     /// The creator's regional variant of the language, for a language Cue had to work out itself.

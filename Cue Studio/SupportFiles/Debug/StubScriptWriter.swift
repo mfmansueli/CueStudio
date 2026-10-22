@@ -26,15 +26,46 @@ final class StubScriptWriter: ScriptWriting {
     let ideasFail: Bool
     /// A script well past a minute and a half (`-uiTestLongScript`): how the page writes, follows and settles a long one.
     let writesLong: Bool
+    /// Why Apple Intelligence can't draft (`-uiTestAIUnavailable`), told the way the real writer tells it before anything is sent.
+    let unavailable: Unavailable?
 
-    init(available: Bool, stalls: Bool = false, ideasDelay: Duration? = nil, ideasFail: Bool = false, writesLong: Bool = false) {
+    /// `-uiTestAIUnavailable <language|device|off|preparing|cue>`. `cue` is Cue's own switch, which lives in the defaults (`LaunchOptions`).
+    enum Unavailable: String {
+        /// Thai, Hindi, Indonesian and Arabic aren't drafted (what an iPhone answered in October 2026); the rest are.
+        case language
+        case device, off, preparing, cue
+
+        static let languagesNotWritten: Set<String> = ["th", "hi", "id", "ar"]
+    }
+
+    init(
+        available: Bool, stalls: Bool = false, ideasDelay: Duration? = nil, ideasFail: Bool = false, writesLong: Bool = false,
+        unavailable: Unavailable? = nil
+    ) {
         self.stalls = stalls
         self.writesLong = writesLong
         self.ideasDelay = ideasDelay
         self.ideasFail = ideasFail
-        availability = available
-            ? AIAvailability(onDevice: true, privateCloud: true, reason: nil)
-            : .unavailable
+        self.unavailable = unavailable
+        switch unavailable {
+        case .device: availability = AIAvailability(onDevice: false, privateCloud: false, reason: AIModelStatus.deviceNotEligible.reason)
+        case .off: availability = AIAvailability(onDevice: false, privateCloud: false, reason: AIModelStatus.turnedOff.reason)
+        case .preparing: availability = AIAvailability(onDevice: false, privateCloud: false, reason: AIModelStatus.preparing.reason)
+        case .language, .cue, nil:
+            availability = available ? AIAvailability(onDevice: true, privateCloud: true, reason: nil) : .unavailable
+        }
+    }
+
+    func writingFailure(in languages: [Locale.Language]) -> AIPlanFailure? {
+        switch unavailable {
+        case .device: return .deviceNotSupported
+        case .off: return .turnedOff
+        case .preparing: return .modelPreparing
+        case .language:
+            let missing = languages.first { Unavailable.languagesNotWritten.contains($0.languageCode?.identifier ?? "") }
+            return missing.map { .unsupportedLanguage($0) }
+        case .cue, nil: return nil
+        }
     }
 
     func generate(_ request: ScriptRequest) async throws -> GeneratedScript {

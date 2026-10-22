@@ -59,7 +59,10 @@ struct VoyageStepRow: View {
     private var stateLabel: String {
         switch state {
         case .done: String(localized: "Done")
-        case .next: String(localized: "Next")
+        case .next: String(inInterfaceLanguage: LocalizedStringResource(
+            "step.next", defaultValue: "Next",
+            comment: "Status of the step that comes next (not a button): the first voyage's step list and the onboarding permission pill."
+        ))
         case .ahead: String(localized: "Not done yet")
         }
     }

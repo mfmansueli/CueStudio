@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// "0:42 LEFT" and "1:12 · IDEAL 1:00–1:30": how long the rest of the script takes at the set speed, for training the text. It reads the
+/// "0:42 LEFT" and "1:12 · IDEAL 1:00 to 1:30": how long the rest of the script takes at the set speed, for training the text. It reads the
 /// scroll progress on its own, so only this line redraws while the text moves.
 struct StudioTimeLine: View {
     let viewModel: PrompterViewModel
@@ -32,10 +32,10 @@ struct StudioTimeLine: View {
         .accessibilityElement(children: .combine)
     }
 
-    /// "1:12" and, when the script has a platform, "1:12 · IDEAL 1:00–1:30".
+    /// "1:12" and, when the script has a platform, "1:12 · IDEAL 1:00 to 1:30".
     private func totalText(_ total: TimeInterval) -> String {
         guard let ideal = viewModel.preset?.idealRange else { return DurationText.clock(total) }
-        let range = DurationText.clock(ideal.lowerBound) + "–" + DurationText.clock(ideal.upperBound)
+        let range = DurationText.range(ideal)
         return String(localized: "\(DurationText.clock(total)) · IDEAL \(range)")
     }
 }

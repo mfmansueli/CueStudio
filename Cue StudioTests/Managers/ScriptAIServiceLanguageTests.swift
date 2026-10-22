@@ -65,6 +65,22 @@ struct ScriptAIServiceLanguageTests {
         #expect(!draft.text.isEmpty)
     }
 
+    /// The creator's catchphrase leads into the draft built from the brief with the language's comma, or as it is when it ends a sentence.
+    @Test func theCatchphraseJoinsTheStructuredDraftWithoutADash() async throws {
+        let service = makeService(FakeAIModelCapabilities(device: .turnedOff))
+        func draft(_ phrase: String) async throws -> String {
+            let voice = CreatorVoice(sounds: [], phrases: [phrase], vocabulary: nil, styles: [], niches: [])
+            let request = ScriptRequest(
+                source: .format(.review, brief: [:]), platform: .tiktok, tone: .casual, voice: voice, targetRange: 30...45, language: .english
+            )
+            return try await service.generate(request).text
+        }
+        let plain = try await draft("Hey fam")
+        #expect(plain.hasPrefix("Hey fam, "))
+        #expect(!plain.contains(where: DashRewriter.dashes.contains))
+        #expect(try await draft("Fala, galera!").hasPrefix("Fala, galera! "))
+    }
+
     @Test func appleIntelligenceThatIsOffIsToldAsSuch() async {
         let service = makeService(FakeAIModelCapabilities(device: .turnedOff))
         do {

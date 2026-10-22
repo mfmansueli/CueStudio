@@ -25,7 +25,10 @@ struct UniverseShareSheet: View {
                 .shadow(color: .black.opacity(0.5), radius: 20, y: 16)
                 .accessibilityLabel(Text("Preview of your universe card"))
                 .accessibilityIdentifier("universeShare.preview")
-            Picker("Format", selection: $viewModel.options.kind) {
+            Picker(String(inInterfaceLanguage: LocalizedStringResource(
+                "format.file", defaultValue: "Format",
+                comment: "The file format a video is saved or shared as: HEVC | H.264 in the recorder's camera sheet, Image | video when sharing the universe."
+            )), selection: $viewModel.options.kind) {
                 Text("Image").tag(UniverseShareOptions.Kind.image)
                 Text("6 s video").tag(UniverseShareOptions.Kind.video)
             }

@@ -503,6 +503,12 @@ struct LogbookView: View {
             dismiss()
             return
         }
+        // An idea in a language Apple Intelligence can't draft in doesn't light up: the toast says why (with "Write it"), the idea waits.
+        guard starter.drafting(before: entry.text).isAvailable else {
+            starter.write(idea: entry.text) { [logbook] scriptID in logbook.markShaped(entry.id, as: scriptID) }
+            dismiss()
+            return
+        }
         // The card lights in violet, then the star leaves from its Write button.
         writingID = entry.id
         Task {

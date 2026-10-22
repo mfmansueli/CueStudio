@@ -24,9 +24,11 @@ nonisolated enum IdeaBriefReader {
     }
 
     static func idea(from answer: Answer, slot: IdeaSlot, language: String?, phrases: [String] = []) -> ThemeIdea? {
-        let title = clean(answer.title, labels: ["title"])
-        let angle = clean(answer.angle, labels: ["angle", "your angle"])
-        let opening = withoutCatchphrase(clean(answer.openingLine, labels: ["opening line", "opening", "hook", "open with"]), phrases: phrases)
+        let title = clean(answer.title, labels: ["title"], language: language)
+        let angle = clean(answer.angle, labels: ["angle", "your angle"], language: language)
+        let opening = withoutCatchphrase(
+            clean(answer.openingLine, labels: ["opening line", "opening", "hook", "open with"], language: language), phrases: phrases
+        )
         guard !title.isEmpty, !opening.isEmpty else { return nil }
         var idea = ThemeIdea(
             title: title, kind: slot.angle.kind, length: length(for: slot.angle), niche: slot.topic.niche ?? .lifestyle,
@@ -67,19 +69,35 @@ nonisolated enum IdeaBriefReader {
         }
     }
 
+    /// An idea of the model's as an older version kept it, without the dashes it may hold (`IdeaSuggestionService` restores them).
+    static func withoutDashes(_ idea: ThemeIdea) -> ThemeIdea {
+        var idea = idea
+        let language = (idea.brief?.language).map(Locale.Language.init(identifier:))
+        idea.title = DashRewriter.rewrite(idea.title, language: language)
+        if var brief = idea.brief {
+            brief.subject = DashRewriter.rewrite(brief.subject, language: language)
+            brief.angle = DashRewriter.rewrite(brief.angle, language: language)
+            brief.openingLine = DashRewriter.rewrite(brief.openingLine, language: language)
+            idea.brief = brief
+        }
+        return idea
+    }
+
     /// The opening line without the creator's catchphrase in front of it (`CatchphraseTrim`).
     static func withoutCatchphrase(_ line: String, phrases: [String]) -> String {
         CatchphraseTrim.trimmingLeading(line, phrases: phrases)
     }
 
-    /// One line, without markdown, wrapping quotes or the label of the field ("Opening line: …").
-    static func clean(_ raw: String, labels: [String]) -> String {
-        var line = ScriptPromptBuilder.cleanTitle(raw)
+    /// One line, without markdown, wrapping quotes, dashes or the label of the field ("Opening line: …"); `language` is a minimal identifier.
+    static func clean(_ raw: String, labels: [String], language: String? = nil) -> String {
+        let language = language.map(Locale.Language.init(identifier:))
+        var line = ScriptPromptBuilder.cleanTitle(raw, language: language)
         for label in labels {
             guard line.lowercased().hasPrefix(label) else { continue }
-            let rest = line.dropFirst(label.count)
+            // "Angle — …" has become "Angle: …" (French puts a space before the colon).
+            let rest = line.dropFirst(label.count).drop { $0.isWhitespace }
             guard let first = rest.first, first == ":" || first == "-" || first == "—" else { continue }
-            line = ScriptPromptBuilder.cleanTitle(String(rest.dropFirst()))
+            line = ScriptPromptBuilder.cleanTitle(String(rest.dropFirst()), language: language)
             break
         }
         // Quotes the model put around a sentence after taking its label off.

@@ -3,6 +3,7 @@
 //  Cue StudioTests
 //
 
+import Foundation
 import Testing
 @testable import Cue_Studio
 
@@ -101,7 +102,40 @@ struct ScriptPromptBuilderTests {
 
         Body: Number one — no phone.
         """
-        #expect(ScriptPromptBuilder.clean(response) == "Okay, real talk. [pause]\n\nNumber one — no phone.")
+        #expect(ScriptPromptBuilder.clean(response) == "Okay, real talk. [pause]\n\nNumber one: no phone.", "and no dash")
+    }
+
+    // MARK: - No dashes
+
+    @Test func everyRequestThatWritesTellsTheModelNoDashes() {
+        let rule = ScriptPromptBuilder.punctuationRule
+        #expect(ScriptPromptBuilder.instructions(for: promptRequest("Morning habits")).contains(rule))
+        #expect(ScriptPromptBuilder.instructions(for: formatRequest(type: .apology)).contains(rule), "a serious statement too")
+        #expect(ScriptPromptBuilder.rewriteInstructions(voice: voice).contains(rule), "every tool, translation and hooks")
+        #expect(ScriptExpansionPrompt.instructions(for: promptRequest("Morning habits"), direction: .shorter).contains(rule))
+        #expect(ScriptPromptBuilder.themesInstructions(voice: voice).contains(rule))
+        #expect(!rule.contains("-"), "the rule names the dashes, never shows a hyphen as one")
+    }
+
+    @Test func cleanRewritesTheDashesOfTheAnswerInItsLanguage() {
+        let german = Locale.Language(identifier: "de")
+        #expect(ScriptPromptBuilder.clean("Klau dir mein System – es ist einfacher, als du denkst.", language: german)
+            == "Klau dir mein System. Es ist einfacher, als du denkst.")
+        #expect(ScriptPromptBuilder.cleanTitle("**Morning habits — the honest version**") == "Morning habits: the honest version")
+        #expect(ScriptPromptBuilder.cleanTitle("- My morning") == "My morning")
+    }
+
+    @Test func cleanLeavesWhatTheCreatorMustSayAsItIs() {
+        let answer = "Hey fam — let's go! Use code MORNING–20 at checkout — it ends Friday."
+        let cleaned = ScriptPromptBuilder.clean(answer, language: Locale.Language(identifier: "en"), preserving: ["Hey fam — let's go!", "MORNING–20"])
+        #expect(cleaned == "Hey fam — let's go! Use code MORNING–20 at checkout. It ends Friday.")
+    }
+
+    @Test func aToolKeepsTheCreatorsSentencesWithDashesAndATranslationKeepsNone() {
+        let script = "Not a to-do list — one thing. Then I move."
+        let kept = ScriptPromptBuilder.preserved(inRewriteOf: script, tool: .fixGrammar, voice: voice)
+        #expect(kept == ["Not a to-do list — one thing.", "Hey fam"])
+        #expect(ScriptPromptBuilder.preserved(inRewriteOf: script, tool: .translate, voice: voice).isEmpty)
     }
 
     @Test func cleanRemovesWrappingQuotes() {
@@ -149,5 +183,11 @@ struct ScriptPromptBuilderTests {
         #expect(ScriptPromptBuilder.collapsingRepeatedCues(stuck) == "I start here. [pause] and go on. [smile] Done.")
         let fine = "One. [pause] Two. [pause] Three. [pause] [smile] Four. [pause][pause]"
         #expect(ScriptPromptBuilder.collapsingRepeatedCues(fine) == fine, "two in a row, or the same cue far apart, is the creator's own")
+    }
+
+    @Test func whatTheCreatorTypedIsWhatTheModelMustKeep() {
+        var request = promptRequest("Morning habits", voice: voice)
+        request.brand = BrandBrief(name: "Oat & Co.", mustSay: "Foams like dairy — zero aftertaste", link: "oatco.com/morning", code: "MORNING–20")
+        #expect(request.preservedPhrases == ["Hey fam", "Foams like dairy — zero aftertaste", "oatco.com/morning", "MORNING–20"])
     }
 }

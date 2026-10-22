@@ -12,14 +12,19 @@ import SwiftUI
 struct BrandBriefSheet: View {
     let purpose: BrandBriefPurpose
     let canWriteWithAI: Bool
+    /// Why the ad can't be drafted (a language Apple Intelligence can't draft in), in place of the footnote; nil keeps the footnote.
+    let notice: String?
     let onConfirm: (BrandBrief) -> Void
 
     @State private var model: BrandBriefViewModel
     @Environment(ToastService.self) private var toast
 
-    init(store: BrandStore, purpose: BrandBriefPurpose, canWriteWithAI: Bool, onConfirm: @escaping (BrandBrief) -> Void) {
+    init(
+        store: BrandStore, purpose: BrandBriefPurpose, canWriteWithAI: Bool, notice: String? = nil, onConfirm: @escaping (BrandBrief) -> Void
+    ) {
         self.purpose = purpose
         self.canWriteWithAI = canWriteWithAI
+        self.notice = notice
         self.onConfirm = onConfirm
         _model = State(initialValue: BrandBriefViewModel(store: store))
     }
@@ -62,10 +67,12 @@ struct BrandBriefSheet: View {
                 .buttonStyle(.cuePrimary(.large))
                 .opacity(model.canWrite ? 1 : 0.4)
                 .accessibilityIdentifier("brandBrief.confirm")
-                Text("Cue uses only this. Nothing is invented.")
+                Text(notice ?? String(localized: "Cue uses only this. Nothing is invented."))
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
+                    .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity)
+                    .accessibilityIdentifier("brandBrief.footnote")
             }
             .padding(EdgeInsets(top: 20, leading: Metrics.gutter, bottom: 28, trailing: Metrics.gutter))
         }

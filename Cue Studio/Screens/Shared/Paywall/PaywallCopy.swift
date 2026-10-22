@@ -69,7 +69,7 @@ nonisolated enum PaywallCopy {
             }
         case .profile:
             if startedTrial {
-                String(localized: "Trial started — enjoy Cue Pro")
+                String(localized: "Trial started · Enjoy Cue Pro")
             } else {
                 String(localized: "Welcome to Cue Pro")
             }

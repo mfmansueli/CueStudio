@@ -15,7 +15,10 @@ enum StudioAdjustment: String, CaseIterable, Identifiable {
     var title: String {
         switch self {
         case .size: String(localized: "Size")
-        case .line: String(localized: "Line")
+        case .line: String(inInterfaceLanguage: LocalizedStringResource(
+            "studio.readingLine", defaultValue: "Line",
+            comment: "Studio's bar chip and slider for where the reading line sits on the screen."
+        ))
         case .margin: String(localized: "Margin")
         }
     }

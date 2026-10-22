@@ -55,8 +55,8 @@ nonisolated struct ProfileDraft: Equatable, Sendable {
     /// The footer under the name while it is too long: "Up to 40 characters".
     var nameError: String? { isNameValid ? nil : String(localized: "Up to 40 characters") }
 
-    /// The footer under the username while it is wrong: "Use 2–24 letters, numbers, . or _".
-    var handleError: String? { isHandleValid ? nil : String(localized: "Use 2–24 letters, numbers, . or _") }
+    /// The footer under the username while it is wrong: "Use 2 to 24 letters, numbers, . or _".
+    var handleError: String? { isHandleValid ? nil : String(localized: "Use 2 to 24 letters, numbers, . or _") }
 
     /// What the creator type reads as: their own, else the chosen one's name ("Educator"), nil when none.
     var creatorType: String? { customRole ?? role?.creatorLabel }

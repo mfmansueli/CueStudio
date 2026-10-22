@@ -35,7 +35,7 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(app.buttons["scripts.filter.reels"].exists(within: 15))
         app.buttons["scripts.filter.reels"].tap()
         XCTAssertTrue(app.scriptRow(Self.lamp).exists)
-        XCTAssertFalse(app.staticTexts["Oat & Co. — sponsored read"].exists)
+        XCTAssertFalse(app.staticTexts["Oat & Co. · sponsored read"].exists)
     }
 
     /// The AI dock is fixed at the bottom, above the tab bar. Selecting scripts and searching take it away (the selection bar and the
@@ -173,7 +173,7 @@ final class ScriptLibraryUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         let search = app.openScriptsSearch()
         search.typeText("Q&A")
-        XCTAssertTrue(app.staticTexts["Weekly Q&A — episode 12"].exists(within: 5))
+        XCTAssertTrue(app.staticTexts["Weekly Q&A · episode 12"].exists(within: 5))
         XCTAssertFalse(app.staticTexts[Self.lamp].exists)
     }
 
@@ -274,7 +274,7 @@ final class ScriptLibraryUITests: XCTestCase {
 
     func testThePageHasTheStripTheLengthAndExactlyOneRecordButton() {
         let app = CueApp.launch(seeded: true)
-        openScript(app, "Oat & Co. — sponsored read")
+        openScript(app, "Oat & Co. · sponsored read")
         XCTAssertTrue(element(app, "page.strip").exists(within: 5))
         XCTAssertTrue(element(app, "page.lengthBar").exists)
         XCTAssertTrue((element(app, "page.lengthBar").value as? String)?.localizedCaseInsensitiveContains("words") == true)

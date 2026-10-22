@@ -85,10 +85,10 @@
             "value" : "Voeg een idee toe aan ${applicationName}"
           }
         },
-        "pt-BR" : {
+        "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adicionar uma ideia no ${applicationName}"
+            "value" : "Adicionar uma ideia ao ${applicationName}"
           }
         },
         "sv" : {
@@ -213,7 +213,7 @@
             "value" : "Nieuw script in ${applicationName}"
           }
         },
-        "pt-BR" : {
+        "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Novo roteiro no ${applicationName}"
@@ -332,7 +332,7 @@
             "value" : "Lees ${script} met ${applicationName}"
           }
         },
-        "pt-BR" : {
+        "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ler ${script} com o ${applicationName}"
@@ -415,13 +415,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Filmer ${script} dans ${applicationName}"
+            "value" : "Filme ${script} dans ${applicationName}"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "${applicationName} में ${script} रिकॉर्ड करो"
+            "value" : "${applicationName} में ${script} रिकॉर्ड करें"
           }
         },
         "id" : {
@@ -460,7 +460,7 @@
             "value" : "Neem ${script} op in ${applicationName}"
           }
         },
-        "pt-BR" : {
+        "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Gravar ${script} no ${applicationName}"
@@ -540,7 +540,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "${applicationName} में आइडिया सहेजें"
+            "value" : "${applicationName} में आइडिया सेव करें"
           }
         },
         "id" : {
@@ -579,7 +579,7 @@
             "value" : "Bewaar een idee in ${applicationName}"
           }
         },
-        "pt-BR" : {
+        "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Salvar uma ideia no ${applicationName}"
@@ -698,7 +698,7 @@
             "value" : "Schrijf een script met ${applicationName}"
           }
         },
-        "pt-BR" : {
+        "pt" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Escrever um roteiro com o ${applicationName}"
