@@ -21,7 +21,7 @@ struct LengthNudgeSheet: View {
             Text("A bit long for \(platform.label)")
                 .font(.title3.bold())
                 .foregroundStyle(Palette.ink)
-            Text("Make it shorter, or record as is — you can trim later.")
+            Text("Make it shorter, or record as is. You can trim later.")
                 .font(.subheadline)
                 .foregroundStyle(Palette.ink2)
             Button(action: onRecordAnyway) {

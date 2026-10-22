@@ -20,7 +20,7 @@ struct ScriptTypeBriefTests {
     }
 
     @Test func adTitleUsesTheBrandName() {
-        #expect(ScriptType.ad.draftTitle(from: [:]) == "Oat & Co — sponsored")
+        #expect(ScriptType.ad.draftTitle(from: [:]) == "Oat & Co: sponsored")
     }
 
     @Test func listTitleCountsThePoints() {

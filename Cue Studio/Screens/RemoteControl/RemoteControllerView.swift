@@ -139,7 +139,7 @@ struct RemoteControllerView: View {
             HStack(spacing: 16) {
                 commandButton(.slower, systemImage: "minus", variant: .surface, diameter: 56)
                 VStack(spacing: 2) {
-                    Text(status?.speedLabel ?? "–")
+                    Text(status?.speedLabel ?? "…")
                         .font(.title2.weight(.bold).monospacedDigit())
                     Text("Speed")
                         .font(.caption)

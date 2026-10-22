@@ -73,6 +73,19 @@ struct LocalizationCatalogTests {
         #expect(reordered.isEmpty, "\(language.interfaceLocalization): placeholders moved without numbers in \(reordered.prefix(5))")
     }
 
+    /// No dashes in any language (the owner's rule, LOCALIZATION.md §2.1): em and en dashes, the horizontal bar and their
+    /// small and fullwidth forms. Hyphens inside words, the minus sign and Japanese ー are other characters and stay.
+    @Test(arguments: CueLanguage.allCases)
+    func noStringHasADash(language: CueLanguage) throws {
+        let dashes = CharacterSet(charactersIn: "\u{2012}\u{2013}\u{2014}\u{2015}\u{2E3A}\u{2E3B}\u{FE58}\u{FE63}\u{FF0D}")
+        for table in ["Localizable", "InfoPlist", "AppShortcuts"] {
+            guard let path = Bundle.main.path(forResource: table, ofType: "strings", inDirectory: nil, forLocalization: language.interfaceLocalization),
+                  let strings = NSDictionary(contentsOfFile: path) as? [String: String] else { continue }
+            let dashed = strings.filter { $0.value.rangeOfCharacter(from: dashes) != nil }.map(\.key).sorted()
+            #expect(dashed.isEmpty, "\(language.interfaceLocalization) \(table) has dashes in \(dashed.prefix(5))")
+        }
+    }
+
     @Test func theStringsThisWorkAddedAreInEveryLanguage() throws {
         let keys = [
             // The key the code looks up (`ScriptAIError`): two interpolations make two %@; translations may number them.

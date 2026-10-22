@@ -369,7 +369,7 @@ final class ScriptDetailViewModel {
     private func doneMessage(for tool: ScriptTool) -> String {
         switch tool {
         case .fitToTime:
-            let range = DurationText.clock(preset.idealRange.lowerBound) + "–" + DurationText.clock(preset.idealRange.upperBound)
+            let range = DurationText.range(preset.idealRange)
             return String(localized: "Fitted to \(range)")
         case .inMyVoice:
             let sounds = profile.profile.sounds.prefix(2).map { $0.label.lowercased() }.joined(separator: ", ")

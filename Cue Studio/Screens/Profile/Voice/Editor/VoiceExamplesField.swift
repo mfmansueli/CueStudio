@@ -33,7 +33,7 @@ struct VoiceExamplesField: View {
                     .foregroundStyle(Palette.ink2)
             }
             if !current.approvedSamples.isEmpty { approved }
-            Text("Teaches how you talk — never reused for stories, opinions or results. Stays on this iPhone.")
+            Text("Teaches how you talk. Never reused for stories, opinions or results. Stays on this iPhone.")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
@@ -124,7 +124,7 @@ struct VoiceExamplesField: View {
     private var adding: some View {
         VStack(alignment: .leading, spacing: 12) {
             VoiceFieldLabel(String(localized: "Add an example"))
-            TextField(String(localized: "Add 2–4 sentences"), text: $text, axis: .vertical)
+            TextField(String(localized: "Add 2 to 4 sentences"), text: $text, axis: .vertical)
                 .lineLimit(3...6)
                 .padding(14)
                 .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
@@ -175,7 +175,7 @@ struct VoiceExamplesField: View {
             feedback = nil
             toast.show(String(localized: "Example saved"))
         case .rejected(let check):
-            feedback = check == .blocked ? VoiceTextValidator.checkExample(text).message : String(localized: "Add 2–4 sentences")
+            feedback = check == .blocked ? VoiceTextValidator.checkExample(text).message : String(localized: "Add 2 to 4 sentences")
         case .alreadyThere:
             feedback = String(localized: "Already added.")
         case .limit(let message):

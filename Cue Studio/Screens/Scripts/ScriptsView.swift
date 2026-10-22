@@ -445,7 +445,7 @@ struct ScriptsView: View {
     private func groupTitle(_ group: ScriptGroup) -> String {
         switch group.state {
         case .ready: String(localized: "Ready to record · \(group.count)")
-        case .draft: String(localized: "Drafts · \(group.count) — In progress")
+        case .draft: String(localized: "Drafts · \(group.count) · In progress")
         case .recorded: String(localized: "Recorded · \(group.count)")
         }
     }

@@ -14,7 +14,7 @@ final class PrompterUITests: XCTestCase {
 
     func testStudioModePlaysAndOpensDisplaySettings() {
         let app = CueApp.launch(seeded: true)
-        app.openStudio(titled: "Oat & Co. — sponsored read")
+        app.openStudio(titled: "Oat & Co. · sponsored read")
 
         let play = app.buttons["prompter.playButton"]
         XCTAssertTrue(play.exists(within: 5))
@@ -36,12 +36,12 @@ final class PrompterUITests: XCTestCase {
         done.tap()
 
         app.buttons["prompter.closeButton"].tap()
-        XCTAssertTrue(app.staticTexts["Oat & Co. — sponsored read"].exists(within: 5))
+        XCTAssertTrue(app.staticTexts["Oat & Co. · sponsored read"].exists(within: 5))
     }
 
     func testStudioSwitchesToVoiceFollowing() {
         let app = CueApp.launch(seeded: true)
-        app.openStudio(titled: "Oat & Co. — sponsored read")
+        app.openStudio(titled: "Oat & Co. · sponsored read")
 
         XCTAssertTrue(element(app, "prompter.speedSlider").exists(within: 5))
         let speedLabel = element(app, "prompter.speedSlider").value as? String ?? "1×"
@@ -67,7 +67,7 @@ final class PrompterUITests: XCTestCase {
         XCTAssertNotEqual(status.label, "Follows your words")
         play.tap()
         app.buttons["prompter.closeButton"].tap()
-        XCTAssertTrue(app.staticTexts["Oat & Co. — sponsored read"].exists(within: 5))
+        XCTAssertTrue(app.staticTexts["Oat & Co. · sponsored read"].exists(within: 5))
     }
 
     func testVoiceFollowingIsOneTapInTheToolbar() {

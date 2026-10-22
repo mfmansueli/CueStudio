@@ -23,12 +23,12 @@ nonisolated struct LengthFit: Equatable, Sendable {
         return .fits
     }
 
-    /// "1:00–1:30"
+    /// "1:00 to 1:30"
     var rangeLabel: String {
-        DurationText.clock(ideal.lowerBound) + "–" + DurationText.clock(ideal.upperBound)
+        DurationText.range(ideal)
     }
 
-    /// "✓ Fits 1:00–1:30", "12s under 1:00–1:30", "8s over 1:00–1:30".
+    /// "✓ Fits 1:00 to 1:30", "12s under 1:00 to 1:30", "8s over 1:00 to 1:30".
     var label: String {
         switch verdict {
         case .fits: String(localized: "✓ Fits \(rangeLabel)")

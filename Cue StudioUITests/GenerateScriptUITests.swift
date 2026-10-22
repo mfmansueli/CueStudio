@@ -139,7 +139,7 @@ final class GenerateScriptUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestLongScript", "-uiTestRealWriting"])
         // As the owner had it: the cues hidden on the page (a setting for every script).
         if ProcessInfo.processInfo.environment["CUE_CUES_HIDDEN"] != nil {
-            app.openScriptPage(titled: "Oat & Co. — sponsored read")
+            app.openScriptPage(titled: "Oat & Co. · sponsored read")
             let cues = app.descendants(matching: .any)["page.cuesToggle"].firstMatch
             XCTAssertTrue(cues.exists(within: 5))
             cues.tap()

@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// 9.2 · tapping the core: "Your light. It grows with every video you share — no photo needed.", the topics as rings, the milestones and the
+/// 9.2 · tapping the core: "Your light. It grows with every video you share. No photo needed.", the topics as rings, the milestones and the
 /// colour of the core. The colour is the one in Settings › Personalize.
 struct UniverseCoreSheet: View {
     let snapshot: UniverseSnapshot
@@ -20,7 +20,7 @@ struct UniverseCoreSheet: View {
                 SheetHeader(title: "Your universe", subtitle: subtitle)
                 UniverseCore(color: personalization.coreColor, style: .preview)
                     .padding(.top, 6)
-                Text("Your light. It grows with every video you share — no photo needed.")
+                Text("Your light. It grows with every video you share. No photo needed.")
                     .font(.system(size: 15))
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Palette.ink2)
@@ -67,14 +67,14 @@ struct UniverseCoreSheet: View {
         return String(localized: "\(snapshot.total) VIDEOS SHARED · SINCE \(month)")
     }
 
-    /// "1st video ✓ · 10 videos ✓ · 25 videos — 2 to go": the milestones reached and the next one.
+    /// "1st video ✓ · 10 videos ✓ · 25 videos · 2 to go": the milestones reached and the next one.
     private var milestoneLine: String {
         var parts: [String] = []
         for step in MilestoneService.steps {
             if step <= milestones.shares {
                 parts.append(step == 1 ? String(localized: "1st video ✓") : String(localized: "\(step) videos ✓"))
             } else {
-                parts.append(String(localized: "\(step) videos — \(step - milestones.shares) to go"))
+                parts.append(String(localized: "\(step) videos · \(step - milestones.shares) to go"))
                 break
             }
         }

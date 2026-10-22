@@ -36,7 +36,7 @@ struct MyCueVoiceCard: View {
             Text("Make scripts sound like you.")
                 .font(.title3.bold())
                 .foregroundStyle(Palette.ink)
-            Text("4 quick questions — about 20 seconds. No typing needed.")
+            Text("4 quick questions, about 20 seconds. No typing needed.")
                 .font(.subheadline)
                 .foregroundStyle(Palette.ink2)
             Button { setup = ProfileVoiceSetup(mode: .missing) } label: {

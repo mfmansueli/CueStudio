@@ -160,7 +160,7 @@ struct VoyageChapter: View {
     private var hintText: String {
         guard let picked else { return "" }
         let preset = rules.preset(for: picked, monetizationGoals: true)
-        let range = "\(DurationText.clock(preset.idealRange.lowerBound))–\(DurationText.clock(preset.idealRange.upperBound))"
+        let range = DurationText.range(preset.idealRange)
         let zones = preset.showsSafeZones ? String(localized: "SAFE ZONES ON") : String(localized: "SAFE ZONES OFF")
         return "\(preset.aspect.label) · \(String(localized: "IDEAL")) \(range) · \(zones)"
     }

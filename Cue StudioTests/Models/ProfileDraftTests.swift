@@ -50,7 +50,7 @@ struct ProfileDraftTests {
     }
 
     @Test func aWrongUsernameShowsTheError() {
-        #expect(draft(handle: "a").handleError == "Use 2–24 letters, numbers, . or _")
+        #expect(draft(handle: "a").handleError == "Use 2 to 24 letters, numbers, . or _")
         #expect(draft(handle: "").handleError == nil, "an empty username is fine")
         #expect(draft(handle: "").isValid)
     }

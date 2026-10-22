@@ -81,7 +81,7 @@ struct VoiceToneField: View {
                     values: Swearing.allCases, selection: current.style.swearing, label: \.label,
                     onPick: { answer(.swearing, $0.rawValue, $0.label) }, identifier: "voice.swearing"
                 )
-                Text("Strong swearing and slurs are never written — Apple Intelligence won’t generate them.")
+                Text("Strong swearing and slurs are never written. Apple Intelligence won’t generate them.")
                     .font(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 4)

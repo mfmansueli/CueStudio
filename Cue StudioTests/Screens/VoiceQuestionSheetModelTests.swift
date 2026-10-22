@@ -122,7 +122,7 @@ struct VoiceQuestionSheetModelTests {
         let model = rig.model(.endings)
         model.typed = "x"
         model.addSomethingElse()
-        #expect(model.feedback == .message("Add 2–4 sentences") || model.feedback != nil)
+        #expect(model.feedback == .message("Add 2 to 4 sentences") || model.feedback != nil)
         model.typed = "Save thsi"
         model.addSomethingElse()
         if case .typo(let suggestion, _)? = model.feedback { #expect(suggestion == "Save this") } else { Issue.record("no typo suggestion") }

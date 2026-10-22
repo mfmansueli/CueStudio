@@ -39,7 +39,7 @@ nonisolated enum VoiceTextValidator {
         var message: String? {
             switch self {
             case .accepted: nil
-            case .tooShort: String(localized: "Add 2–4 sentences")
+            case .tooShort: String(localized: "Add 2 to 4 sentences")
             case .blocked: String(localized: "This has words Apple Intelligence won’t learn from. Bleep them (f***) or pick another example.")
             }
         }

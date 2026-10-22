@@ -33,7 +33,7 @@ struct VoiceSendsSheet: View {
                     }
                     briefCard
                     meter
-                    Text("Added before every idea you send to Cue — scripts, hooks, replies, with where you post and the format you pick. Never used to train models.")
+                    Text("Added before every idea you send to Cue (scripts, hooks, replies), with where you post and the format you pick. Never used to train models.")
                         .font(.footnote)
                         .foregroundStyle(Palette.ink2)
                         .padding(.horizontal, 4)

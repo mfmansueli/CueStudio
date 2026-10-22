@@ -53,8 +53,8 @@ nonisolated struct CleanUpSuggestion: Codable, Hashable, Identifiable, Sendable 
     /// Why a suggestion deserves a listen, or what was said in a retake.
     var note: String? {
         switch kind {
-        case .pause: isSure ? nil : String(localized: "May be intentional — for emphasis")
-        case .filler: isSure ? nil : String(localized: "Might carry meaning — listen first")
+        case .pause: isSure ? nil : String(localized: "May be intentional, for emphasis")
+        case .filler: isSure ? nil : String(localized: "Might carry meaning · listen first")
         case .retake: text.map { "“\($0)”" }
         }
     }

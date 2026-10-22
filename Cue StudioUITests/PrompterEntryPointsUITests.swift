@@ -9,7 +9,7 @@ import XCTest
 /// aspect button, the play button and the display button). Studio mode is the one other prompter, and only its own menu entry opens it.
 @MainActor
 final class PrompterEntryPointsUITests: XCTestCase {
-    private static let ready = "Oat & Co. — sponsored read"
+    private static let ready = "Oat & Co. · sponsored read"
 
     private func element(_ app: XCUIApplication, _ id: String) -> XCUIElement {
         app.descendants(matching: .any)[id].firstMatch

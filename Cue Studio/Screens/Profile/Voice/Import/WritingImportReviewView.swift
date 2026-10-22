@@ -71,7 +71,7 @@ struct WritingImportReviewView: View {
             }
             .tint(Palette.ink2)
             .accessibilityIdentifier("import.kept")
-            Text("Teaches how you talk — never reused for stories, opinions or results. Stays on this iPhone.")
+            Text("Teaches how you talk. Never reused for stories, opinions or results. Stays on this iPhone.")
                 .font(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)

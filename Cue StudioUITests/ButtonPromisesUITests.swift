@@ -138,7 +138,7 @@ final class ButtonPromisesUITests: XCTestCase {
 
     func testEachToolOfASponsoredScriptRunsItsOwnToolAndUndoTakesItBack() {
         let app = CueApp.launch(seeded: true)
-        app.openScriptPage(titled: "Oat & Co. — sponsored read")
+        app.openScriptPage(titled: "Oat & Co. · sponsored read")
         let original = editorText(app)
         for tool in ["inMyVoice", "strongerCTA", "fitToTime"] {
             openImprove(app)
@@ -155,7 +155,7 @@ final class ButtonPromisesUITests: XCTestCase {
 
     func testDisclosureGoesUpFrontOnceAndSaysSoTheSecondTime() {
         let app = CueApp.launch(seeded: true)
-        app.openScriptPage(titled: "Oat & Co. — sponsored read")
+        app.openScriptPage(titled: "Oat & Co. · sponsored read")
         openImprove(app)
         scrollSheet(app, to: app.buttons["improve.tool.addDisclosure"])
         app.buttons["improve.tool.addDisclosure"].tap()

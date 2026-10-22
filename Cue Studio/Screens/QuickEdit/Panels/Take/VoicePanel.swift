@@ -21,7 +21,7 @@ struct VoicePanel: View {
                 String(localized: "Reduce noise"), viewModel.edit.noiseReduction, "edit.reduceNoise", icon: .audio
             ) { viewModel.setNoiseReduction($0) }
             PanelButton(
-                label: viewModel.comparesOriginal ? String(localized: "Playing original — tap to stop") : String(localized: "Compare with original"),
+                label: viewModel.comparesOriginal ? String(localized: "Playing original · tap to stop") : String(localized: "Compare with original"),
                 systemImage: "ear", isEnabled: viewModel.canCompareOriginal || viewModel.comparesOriginal,
                 identifier: "edit.compareOriginal"
             ) { viewModel.toggleComparison() }

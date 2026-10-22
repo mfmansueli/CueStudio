@@ -9,11 +9,11 @@ import Testing
 @Suite("PlatformPreset")
 struct PlatformPresetTests {
     @Test func summaryDescribesFrameQualitySafeZonesAndIdealLength() {
-        #expect(TestData.preset(.tiktok).summary == "9:16 · 1080p30 · safe zones · ideal 1:00–1:30")
+        #expect(TestData.preset(.tiktok).summary == "9:16 · 1080p30 · safe zones · ideal 1:00 to 1:30")
     }
 
     @Test func summaryLeavesOutSafeZonesWhenThePlatformHasNone() {
-        #expect(TestData.preset(.youtube).summary == "16:9 · 4K24 · ideal 8:00–15:00")
+        #expect(TestData.preset(.youtube).summary == "16:9 · 4K24 · ideal 8:00 to 15:00")
     }
 
     @Test func theRecommendationTakesFrameResolutionAndFrameRateFromThePreset() {

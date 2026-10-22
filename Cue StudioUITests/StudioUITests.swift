@@ -27,7 +27,7 @@ final class StudioUITests: XCTestCase {
 
     private func launchStudio() -> XCUIApplication {
         let app = CueApp.launch(seeded: true)
-        app.openStudio(titled: "Oat & Co. — sponsored read")
+        app.openStudio(titled: "Oat & Co. · sponsored read")
         XCTAssertTrue(app.buttons["prompter.playButton"].exists(within: 10))
         return app
     }

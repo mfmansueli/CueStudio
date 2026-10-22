@@ -12,15 +12,15 @@ enum SampleScripts {
         id: UUID(uuidString: "00000000-0000-0000-0000-000000000001")!,
         title: "3 morning habits that changed my life",
         text: """
-        Okay, real talk. [pause] Three tiny habits completely changed my mornings — and none of them take more than five minutes.
+        Okay, real talk. [pause] Three tiny habits completely changed my mornings, and none of them take more than five minutes.
 
         Number one: I don't touch my phone for the first twenty minutes. No emails, no scrolling. Just water and daylight.
 
-        Number two: I write down one thing. Not a to-do list — one thing that would make today a win. [smile]
+        Number two: I write down one thing. Not a to-do list. One thing that would make today a win. [smile]
 
         Number three: I move. Ten squats, a quick stretch, a walk around the block. Anything that gets the blood going.
 
-        That's it. Try it for a week and tell me in the comments what changed. [look at camera] And follow for part two — my night routine is next.
+        That's it. Try it for a week and tell me in the comments what changed. [look at camera] And follow for part two: my night routine is next.
         """,
         platform: .tiktok, type: .list,
         createdAt: .now.addingTimeInterval(-7200), updatedAt: .now.addingTimeInterval(-7200)
@@ -32,9 +32,9 @@ enum SampleScripts {
         text: """
         This lamp has been on my desk for two weeks, and I have thoughts. [pause]
 
-        First — the light. Warm when you want it, crisp when you need to focus, and it never flickers on camera.
+        First, the light. Warm when you want it, crisp when you need to focus, and it never flickers on camera.
 
-        Second — it folds flat. Like, actually flat. [show lamp]
+        Second, it folds flat. Like, actually flat. [show lamp]
 
         Is it worth it? If you film at your desk, yes. Link's in my bio.
         """,
@@ -44,7 +44,7 @@ enum SampleScripts {
 
     static let sponsoredRead = Script(
         id: UUID(uuidString: "00000000-0000-0000-0000-000000000003")!,
-        title: "Oat & Co. — sponsored read",
+        title: "Oat & Co. · sponsored read",
         text: """
         Stop buying oat milk that does this. [pause]
 
@@ -60,11 +60,11 @@ enum SampleScripts {
 
     static let weeklyQA = Script(
         id: UUID(uuidString: "00000000-0000-0000-0000-000000000004")!,
-        title: "Weekly Q&A — episode 12",
+        title: "Weekly Q&A · episode 12",
         text: """
         Welcome back to the weekly Q&A! [smile] You sent in over two hundred questions this week, so let's get right into it.
 
-        First, from Maya: how do you stay consistent when you don't feel like filming? Honestly — I lower the bar. Some days the goal is one take, no edits.
+        First, from Maya: how do you stay consistent when you don't feel like filming? Honestly? I lower the bar. Some days the goal is one take, no edits.
 
         Next, from Jordan: what gear do I actually use? A phone, a cheap light, and this teleprompter. That's it. [pause]
 

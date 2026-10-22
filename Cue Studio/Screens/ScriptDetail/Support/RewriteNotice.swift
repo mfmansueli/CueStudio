@@ -39,12 +39,12 @@ nonisolated struct RewriteNotice: Equatable, Sendable {
         return RewriteNotice(message: message, changesScript: true)
     }
 
-    /// How far a script is from the length asked, when it isn't there ("Closer to 1:00–1:30 · now 0:48"); nil when it fits.
+    /// How far a script is from the length asked, when it isn't there ("Closer to the 1:00 to 1:30 goal · now 0:48"); nil when it fits.
     static func lengthNote(words: Int, idealRange: ClosedRange<TimeInterval>) -> String? {
         guard !fits(words: words, idealRange: idealRange) else { return nil }
-        let range = DurationText.clock(idealRange.lowerBound) + "–" + DurationText.clock(idealRange.upperBound)
+        let range = DurationText.range(idealRange)
         let length = DurationText.clock(Double(words) / (ReadTime.wordsPerMinute(speed: ReadTime.naturalSpeed) / 60))
-        return String(localized: "Closer to \(range) · now \(length)")
+        return String(localized: "Closer to the \(range) goal · now \(length)")
     }
 
     /// Whether `words` is the length asked, within what counting words can tell.
@@ -59,7 +59,7 @@ nonisolated struct RewriteNotice: Equatable, Sendable {
         case .fixGrammar where !result.isUntouched:
             return String(localized: "No mistakes to fix")
         case .fitToTime where fits(words: words, idealRange: idealRange):
-            let range = DurationText.clock(idealRange.lowerBound) + "–" + DurationText.clock(idealRange.upperBound)
+            let range = DurationText.range(idealRange)
             return String(localized: "Already fits \(range)")
         default:
             return String(localized: "Couldn’t draft it · Try again")

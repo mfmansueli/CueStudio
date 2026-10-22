@@ -22,7 +22,7 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
         case .story: String(localized: "Setup, twist, payoff")
         case .opinion: String(localized: "Opinion or comment reply")
         case .launch: String(localized: "Launch, drop, big news")
-        case .apology: String(localized: "Serious — no hype")
+        case .apology: String(localized: "Serious, no hype")
         case .mythFact: String(localized: "Bust one belief")
         case .pov: String(localized: "Put the viewer in a moment")
         }
@@ -43,7 +43,7 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 hooks: [
                     String(localized: "Stop buying the version that does this. [pause]"),
                     String(localized: "I found the only one that actually works."),
-                    String(localized: "A friend made me try this — I owe her."),
+                    String(localized: "A friend made me try this. I owe her."),
                     String(localized: "POV: it finally looks like the ad."),
                 ],
                 isSerious: false
@@ -68,7 +68,7 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
                     String(localized: "Here's the whole process in under a minute."),
-                    String(localized: "Steal my system — it's simpler than you think."),
+                    String(localized: "Steal my system. It's simpler than you think."),
                     String(localized: "You're doing this wrong. Here's the fix. [pause]"),
                     String(localized: "Save this before you need it."),
                 ],
@@ -81,7 +81,7 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
                     String(localized: "Three tiny changes. Totally different results."),
-                    String(localized: "I tried everything — these are the ones that stuck."),
+                    String(localized: "I tried everything. These are the ones that stuck."),
                     String(localized: "This is hard because you skip this. [pause]"),
                     String(localized: "If you only change one thing tomorrow, make it this."),
                 ],
@@ -96,7 +96,7 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                     String(localized: "This is the most embarrassing thing that's happened to me."),
                     String(localized: "It went wrong at the worst possible moment."),
                     String(localized: "I almost didn't post this. [pause]"),
-                    String(localized: "Story time — and yes, it ends well."),
+                    String(localized: "Story time, and yes, it ends well."),
                 ],
                 isSerious: false
             )
@@ -115,7 +115,7 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 tones: generic.tones, tools: generic.tools,
                 hooks: [
                     String(localized: "Unpopular opinion, but hear me out."),
-                    String(localized: "Someone asked this in the comments — let me answer."),
+                    String(localized: "Someone asked this in the comments, so let me answer."),
                     String(localized: "I'm going to get hate for this. [pause]"),
                     String(localized: "Can we talk about this for a second?"),
                 ],
@@ -129,7 +129,7 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 hooks: [
                     String(localized: "I've been keeping a secret. [pause]"),
                     String(localized: "It's finally happening."),
-                    String(localized: "You asked for this — here it is."),
+                    String(localized: "You asked for this. Here it is."),
                     String(localized: "Big news. Stay till the end."),
                 ],
                 isSerious: false
@@ -145,7 +145,7 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                 tools: [.moreHuman, .lessDefensive, .shorterAndDirect, .fixGrammar],
                 hooks: [
                     String(localized: "I want to talk about last week, directly."),
-                    String(localized: "Before anything else — I'm sorry."),
+                    String(localized: "Before anything else: I'm sorry."),
                     String(localized: "I owe you an explanation. [pause]"),
                     String(localized: "This video is overdue."),
                 ],
@@ -162,7 +162,7 @@ nonisolated enum ScriptType: String, Codable, CaseIterable, Identifiable, Sendab
                     String(localized: "You've been told this your whole life. It's wrong. [pause]"),
                     String(localized: "Stop believing this one thing."),
                     String(localized: "Everyone repeats this myth. Here's the truth."),
-                    String(localized: "I believed this for years — until I checked."),
+                    String(localized: "I believed this for years, until I checked."),
                 ],
                 isSerious: false
             )

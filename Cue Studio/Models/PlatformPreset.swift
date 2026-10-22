@@ -29,9 +29,9 @@ nonisolated struct PlatformPreset: Hashable, Sendable {
         "\(aspect.label) · \(resolution.label)\(frameRate.rawValue)"
     }
 
-    /// "9:16 · 1080p30 · safe zones · ideal 1:00–1:30"
+    /// "9:16 · 1080p30 · safe zones · ideal 1:00 to 1:30"
     var summary: String {
-        let ideal = DurationText.clock(idealRange.lowerBound) + "–" + DurationText.clock(idealRange.upperBound)
+        let ideal = DurationText.range(idealRange)
         let zones = showsSafeZones ? " · " + String(localized: "safe zones") : ""
         return captureSummary + zones + " · " + String(localized: "ideal \(ideal)")
     }

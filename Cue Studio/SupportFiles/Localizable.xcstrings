@@ -2841,478 +2841,6 @@
         }
       }
     },
-    "%@ — announcement" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: إعلان"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ – meddelelse"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ – Ankündigung"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: anuncio"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ : annonce"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: अनाउंसमेंट"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: pengumuman"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: annuncio"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@：お知らせ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: 공지"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: kunngjøring"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: aankondiging"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Anúncio: %@"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nyhet: %@"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: ประกาศ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: duyuru"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: thông báo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@：官宣"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@：公告"
-          }
-        }
-      }
-    },
-    "%@ — honest review" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: مراجعة صادقة"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ – ærlig anmeldelse"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ – ehrliche Review"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: reseña sincera"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ : avis honnête"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: ईमानदार रिव्यू"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: ulasan jujur"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: recensione sincera"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@：本音レビュー"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: 솔직 리뷰"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: ærlig anmeldelse"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: eerlijke review"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Análise sincera: %@"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: ärlig recension"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: รีวิวตรงไปตรงมา"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: dürüst inceleme"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: đánh giá thật lòng"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@：真实测评"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@：誠實評測"
-          }
-        }
-      }
-    },
-    "%@ — link in my bio. [look at camera] This video is a paid partnership." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: الرابط في نبذتي التعريفية. [انظر إلى الكاميرا] هذا الفيديو شراكة مدفوعة."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ – link i min bio. [kig ind i kameraet] Denne video er et betalt samarbejde."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ – Link in meiner Bio. [in die Kamera schauen] Dieses Video ist eine bezahlte Partnerschaft."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@, el enlace está en mi bio. [mira a cámara] Este video es una colaboración pagada."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ : lien dans ma bio. [regardez la caméra] Cette vidéo est un partenariat rémunéré."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: लिंक मेरी बायो में है। [कैमरे की ओर देखें] यह वीडियो एक पेड पार्टनरशिप है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@. Tautannya ada di bioku. [lihat kamera] Video ini adalah kerja sama berbayar."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: link nella mia bio. [guarda in camera] Questo video è una collaborazione retribuita."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@。リンクはプロフィール欄に。[カメラを見る] この動画は有料のタイアップです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@. 링크는 프로필에 있어요. [카메라 보기] 이 영상은 유료 광고를 포함하고 있어요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@. Lenke i bioen min. [se i kameraet] Denne videoen er et betalt samarbeid."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@. Link in mijn bio. [kijk in de camera] Deze video is een betaalde samenwerking."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@. Link na minha bio. [olhe para a câmera] Este vídeo é uma parceria paga."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@. Länken finns i min bio. [titta i kameran] Den här videon är ett betalt samarbete."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ ลิงก์อยู่ในไบโอ [มองกล้อง] วิดีโอนี้เป็นความร่วมมือแบบได้รับค่าตอบแทน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: bağlantı biyografimde. [kameraya bak] Bu video ücretli bir iş birliğidir."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@, link ở bio của mình. [nhìn camera] Video này là hợp tác có trả phí."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@，链接在我的主页简介里。[看镜头] 本视频为付费合作推广。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@，連結在我的個人簡介。[看向鏡頭] 本影片為付費合作。"
-          }
-        }
-      }
-    },
-    "%@ — sponsored" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: برعاية"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ – sponsoreret"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ – gesponsert"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: patrocinado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ : sponsorisé"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: स्पॉन्सर्ड"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: bersponsor"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: sponsorizzato"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@：PR"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: 광고"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: sponset"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: gesponsord"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Patrocinado: %@"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: sponsrat"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: ได้รับการสนับสนุน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: sponsorlu"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@: được tài trợ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@：推广"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@：贊助"
-          }
-        }
-      }
-    },
     "%@ · %@" : {
       "comment" : "Quick edit › Background, panel subtitle: what it changes (Whole take / This clip) · what is behind the creator now",
       "localizations" : {
@@ -10260,7 +9788,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%3$@ içinde %1$@ – %2$@"
+            "value" : "%3$@ içinde %1$@ ila %2$@"
           }
         },
         "vi" : {
@@ -10272,13 +9800,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%3$@ 中的 %1$@–%2$@"
+            "value" : "%3$@ 中的 %1$@ 至 %2$@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%3$@ 中的 %1$@–%2$@"
+            "value" : "%3$@ 中的 %1$@ 至 %2$@"
           }
         }
       }
@@ -11473,6 +11001,363 @@
         }
       }
     },
+    "%@: sponsored" : {
+      "comment" : "Script template (a format's draft without Apple Intelligence): a line or title the creator reads; %@ is what the creator typed in the brief. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: برعاية"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: sponsoreret"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: gesponsert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: patrocinado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ : sponsorisé"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: स्पॉन्सर्ड"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: bersponsor"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: sponsorizzato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：PR"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: 광고"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: sponset"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: gesponsord"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Patrocinado: %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: sponsrat"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: ได้รับการสนับสนุน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: sponsorlu"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: được tài trợ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：推广"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：贊助"
+          }
+        }
+      }
+    },
+    "%@: honest review" : {
+      "comment" : "Script template (a format's draft without Apple Intelligence): a line or title the creator reads; %@ is what the creator typed in the brief. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: مراجعة صادقة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: ærlig anmeldelse"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: ehrliche Review"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: reseña sincera"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ : avis honnête"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: ईमानदार रिव्यू"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: ulasan jujur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: recensione sincera"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：本音レビュー"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: 솔직 리뷰"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: ærlig anmeldelse"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: eerlijke review"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Análise sincera: %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: ärlig recension"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: รีวิวตรงไปตรงมา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: dürüst inceleme"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: đánh giá thật lòng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：真实测评"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：誠實評測"
+          }
+        }
+      }
+    },
+    "%@: announcement" : {
+      "comment" : "Script template (a format's draft without Apple Intelligence): a line or title the creator reads; %@ is what the creator typed in the brief. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: إعلان"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: meddelelse"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: Ankündigung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: anuncio"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ : annonce"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: अनाउंसमेंट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: pengumuman"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: annuncio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：お知らせ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: 공지"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: kunngjøring"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: aankondiging"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anúncio: %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nyhet: %@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: ประกาศ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: duyuru"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: thông báo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：官宣"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@：公告"
+          }
+        }
+      }
+    },
     "%@: the mistake beginners make" : {
       "comment" : "Find inspiration: the title of a starter made from the creator's own topic (%@ is the topic, as they typed it)",
       "localizations" : {
@@ -11954,6 +11839,125 @@
         }
       }
     },
+    "%@. Link in my bio. [look at camera] This video is a paid partnership." : {
+      "comment" : "Script template (a format's draft without Apple Intelligence): a line or title the creator reads; %@ is what the creator typed in the brief. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: الرابط في نبذتي التعريفية. [انظر إلى الكاميرا] هذا الفيديو شراكة مدفوعة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@. Link i min bio. [kig ind i kameraet] Denne video er et betalt samarbejde."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@. Link in meiner Bio. [in die Kamera schauen] Dieses Video ist eine bezahlte Partnerschaft."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, el enlace está en mi bio. [mira a cámara] Este video es una colaboración pagada."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ : lien dans ma bio. [regardez la caméra] Cette vidéo est un partenariat rémunéré."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: लिंक मेरी बायो में है। [कैमरे की ओर देखें] यह वीडियो एक पेड पार्टनरशिप है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@. Tautannya ada di bioku. [lihat kamera] Video ini adalah kerja sama berbayar."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: link nella mia bio. [guarda in camera] Questo video è una collaborazione retribuita."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@。リンクはプロフィール欄に。[カメラを見る] この動画は有料のタイアップです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@. 링크는 프로필에 있어요. [카메라 보기] 이 영상은 유료 광고를 포함하고 있어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@. Lenke i bioen min. [se i kameraet] Denne videoen er et betalt samarbeid."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@. Link in mijn bio. [kijk in de camera] Deze video is een betaalde samenwerking."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@. Link na minha bio. [olhe para a câmera] Este vídeo é uma parceria paga."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@. Länken finns i min bio. [titta i kameran] Den här videon är ett betalt samarbete."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ลิงก์อยู่ในไบโอ [มองกล้อง] วิดีโอนี้เป็นความร่วมมือแบบได้รับค่าตอบแทน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@: bağlantı biyografimde. [kameraya bak] Bu video ücretli bir iş birliğidir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@, link ở bio của mình. [nhìn camera] Video này là hợp tác có trả phí."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@，链接在我的主页简介里。[看镜头] 本视频为付费合作推广。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@，連結在我的個人簡介。[看向鏡頭] 本影片為付費合作。"
+          }
+        }
+      }
+    },
     "%@. That's on me. [pause]" : {
       "localizations" : {
         "ar" : {
@@ -12304,6 +12308,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ 秒"
+          }
+        }
+      }
+    },
+    "%1$@ to %2$@" : {
+      "comment" : "A range of video lengths, put into other strings (“ideal 1:00 to 1:30”, “✓ Fits 1:00 to 1:30”). Not the countdown “%@ to %@”.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ إلى %2$@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ til %2$@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ bis %2$@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ a %2$@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ à %2$@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ से %2$@ तक"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ sampai %2$@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ a %2$@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@〜%2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@~%2$@"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ til %2$@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ tot %2$@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ a %2$@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ till %2$@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ ถึง %2$@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ ila %2$@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ đến %2$@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 至 %2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ 至 %2$@"
           }
         }
       }
@@ -20548,130 +20671,6 @@
         }
       }
     },
-    "%lld videos — %lld to go" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld فيديو · بقي %2$lld"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld videoer – %2$lld tilbage"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld Videos · noch %2$lld"
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld videos — %lld to go"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld videos · faltan %2$lld"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld vidéos · encore %2$lld"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld वीडियो · %2$lld बाकी"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld video · %2$lld lagi"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld video, ne mancano %2$lld"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld本 · あと%2$lld本"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "영상 %1$lld개 · %2$lld개 남음"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld videoer · %2$lld igjen"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld video’s · nog %2$lld"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld vídeos · faltam %2$lld"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld videor · %2$lld kvar"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld วิดีโอ · อีก %2$lld"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld video · %2$lld kaldı"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld video · còn %2$lld"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld 个视频 · 还差 %2$lld 个"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld 部影片 · 還差 %2$lld 部"
-          }
-        }
-      }
-    },
     "%lld videos · %@ was your main planet" : {
       "localizations" : {
         "ar" : {
@@ -20786,6 +20785,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld 部影片 · %@ 是你的主星球"
+          }
+        }
+      }
+    },
+    "%lld videos · %lld to go" : {
+      "comment" : "Your universe: the core sheet (the creator's light and the next milestone). No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld فيديو · بقي %2$lld"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld videoer · %2$lld tilbage"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld Videos · noch %2$lld"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld videos · faltan %2$lld"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld vidéos · encore %2$lld"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld वीडियो · %2$lld बाकी"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld video · %2$lld lagi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld video, ne mancano %2$lld"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld本 · あと%2$lld本"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "영상 %1$lld개 · %2$lld개 남음"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld videoer · %2$lld igjen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld video’s · nog %2$lld"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld vídeos · faltam %2$lld"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld videor · %2$lld kvar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld วิดีโอ · อีก %2$lld"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld video · %2$lld kaldı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld video · còn %2$lld"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld 个视频 · 还差 %2$lld 个"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld 部影片 · 還差 %2$lld 部"
           }
         }
       }
@@ -29182,6 +29300,125 @@
         }
       }
     },
+    "1 to 3 min" : {
+      "comment" : "My Cue Voice: the length of the creator's usual videos (a choice). No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "من 1 إلى 3 دقائق"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 til 3 min."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 bis 3 Min."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De 1 a 3 min"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De 1 à 3 min"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 से 3 मिनट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 sampai 3 mnt"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da 1 a 3 min"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1〜3分"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1~3분"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 til 3 min"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 tot 3 min"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De 1 a 3 min"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 till 3 min"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 ถึง 3 นาที"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 ila 3 dk"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 đến 3 phút"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 到 3 分钟"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 到 3 分鐘"
+          }
+        }
+      }
+    },
     "1 video" : {
       "comment" : "The number of videos required to unlock a specific app icon.",
       "isCommentAutoGenerated" : true,
@@ -29542,124 +29779,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "連續 1 週"
-          }
-        }
-      }
-    },
-    "1–3 min" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 دقائق"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 min."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 Min."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 min"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 min"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 मिनट"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 mnt"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 min"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1〜3分"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3분"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 min"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 min"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 min"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 min"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 นาที"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 dk"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 phút"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 分钟"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "1–3 分鐘"
           }
         }
       }
@@ -30616,7 +30735,8 @@
         }
       }
     },
-    "4 quick questions — about 20 seconds. No typing needed." : {
+    "4 quick questions, about 20 seconds. No typing needed." : {
+      "comment" : "Profile › My Cue Voice card: what the questions take. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -31444,54 +31564,55 @@
         }
       }
     },
-    "30–60 s" : {
+    "30 to 60 s" : {
+      "comment" : "My Cue Voice: the length of the creator's usual videos (a choice). No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 ثانية"
+            "value" : "من 30 إلى 60 ثانية"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 s"
+            "value" : "30 til 60 s"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 s"
+            "value" : "30 bis 60 s"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 s"
+            "value" : "De 30 a 60 s"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 s"
+            "value" : "De 30 à 60 s"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 सेकंड"
+            "value" : "30 से 60 सेकंड"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 dtk"
+            "value" : "30 sampai 60 dtk"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 s"
+            "value" : "Da 30 a 60 s"
           }
         },
         "ja" : {
@@ -31503,61 +31624,61 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60초"
+            "value" : "30~60초"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 s"
+            "value" : "30 til 60 s"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 s"
+            "value" : "30 tot 60 s"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 s"
+            "value" : "De 30 a 60 s"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 s"
+            "value" : "30 till 60 s"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 วิ"
+            "value" : "30 ถึง 60 วิ"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 sn"
+            "value" : "30 ila 60 sn"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 giây"
+            "value" : "30 đến 60 giây"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 秒"
+            "value" : "30 到 60 秒"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "30–60 秒"
+            "value" : "30 到 60 秒"
           }
         }
       }
@@ -32864,7 +32985,8 @@
         }
       }
     },
-    "A friend made me try this — I owe her." : {
+    "A friend made me try this. I owe her." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -32875,7 +32997,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En veninde fik mig til at prøve det her – jeg skylder hende."
+            "value" : "En veninde fik mig til at prøve det her. Jeg skylder hende."
           }
         },
         "de" : {
@@ -37371,7 +37493,8 @@
         }
       }
     },
-    "Add 2–4 sentences" : {
+    "Add 2 to 4 sentences" : {
+      "comment" : "My Cue Voice: writing examples need 2 to 4 sentences. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -37382,19 +37505,19 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tilføj 2–4 sætninger"
+            "value" : "Tilføj 2 til 4 sætninger"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2–4 Sätze hinzufügen"
+            "value" : "2 bis 4 Sätze hinzufügen"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Añade 2–4 frases"
+            "value" : "Añade de 2 a 4 frases"
           }
         },
         "fr" : {
@@ -37406,19 +37529,19 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2–4 वाक्य जोड़ें"
+            "value" : "2 से 4 वाक्य जोड़ें"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tambahkan 2–4 kalimat"
+            "value" : "Tambahkan 2 sampai 4 kalimat"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aggiungi 2–4 frasi"
+            "value" : "Aggiungi da 2 a 4 frasi"
           }
         },
         "ja" : {
@@ -37430,19 +37553,19 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2–4문장 추가"
+            "value" : "2~4문장 추가"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Legg til 2–4 setninger"
+            "value" : "Legg til mellom 2 og 4 setninger"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voeg 2–4 zinnen toe"
+            "value" : "Voeg 2 tot 4 zinnen toe"
           }
         },
         "pt" : {
@@ -37454,42 +37577,43 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lägg till 2–4 meningar"
+            "value" : "Lägg till mellan 2 och 4 meningar"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เพิ่ม 2–4 ประโยค"
+            "value" : "เพิ่ม 2 ถึง 4 ประโยค"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2–4 cümle ekle"
+            "value" : "2 ila 4 cümle ekle"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Thêm 2–4 câu"
+            "value" : "Thêm 2 đến 4 câu"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "添加 2–4 句"
+            "value" : "添加 2 到 4 句"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新增 2–4 句"
+            "value" : "新增 2 到 4 句"
           }
         }
       }
     },
-    "Add a keyframe, move the playhead, then drag the photo or video — Cue moves it between keyframes." : {
+    "Add a keyframe, move the playhead, then drag the photo or video. Cue moves it between keyframes." : {
+      "comment" : "Quick edit › Motion: how keyframes work. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -37607,7 +37731,8 @@
         }
       }
     },
-    "Add a keyframe, move the playhead, then drag the text in the video — Cue moves it between keyframes." : {
+    "Add a keyframe, move the playhead, then drag the text in the video. Cue moves it between keyframes." : {
+      "comment" : "Quick edit › Motion: how keyframes work. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -40568,8 +40693,8 @@
         }
       }
     },
-    "Added before every idea you send to Cue — scripts, hooks, replies, with where you post and the format you pick. Never used to train models." : {
-      "comment" : "My Cue Voice: preview and learning",
+    "Added before every idea you send to Cue (scripts, hooks, replies), with where you post and the format you pick. Never used to train models." : {
+      "comment" : "My Cue Voice: preview and learning No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -47578,125 +47703,8 @@
         }
       }
     },
-    "And then — %@. [beat]" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ثم… %@. [وقفة قصيرة]"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Og så – %@. [kort pause]"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Und dann – %@. [kurze Pause]"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Y entonces… %@. [pausa corta]"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Et là… %@. [temps]"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "और फिर, %@। [ज़रा रुकें]"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lalu… %@. [jeda singkat]"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "E poi… %@. [breve pausa]"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "そして、%@。[一拍]"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "그리고, %@. [짧은 멈춤]"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Og så: %@. [kort pause]"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En dan… %@. [korte pauze]"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "E aí: %@. [pausa curta]"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Och sedan: %@. [kort paus]"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แล้วก็ %@ [เว้นจังหวะ]"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ve sonra… %@. [kısa es]"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Và rồi, %@. [dừng ngắn]"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "然后，%@。[短停顿]"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "然後，%@。[停頓一拍]"
-          }
-        }
-      }
-    },
-    "And then — %@. [smile]" : {
+    "And then… %@. [smile]" : {
+      "comment" : "Script template (a format's draft without Apple Intelligence): a line or title the creator reads; %@ is what the creator typed in the brief. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -47707,13 +47715,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Og så – %@. [smil]"
+            "value" : "Og så: %@. [smil]"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Und dann – %@. [lächeln]"
+            "value" : "Und dann … %@. [lächeln]"
           }
         },
         "es" : {
@@ -47810,6 +47818,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "然後，%@。[微笑]"
+          }
+        }
+      }
+    },
+    "And then… %@. [beat]" : {
+      "comment" : "Script template (a format's draft without Apple Intelligence): a line or title the creator reads; %@ is what the creator typed in the brief. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ثم… %@. [وقفة قصيرة]"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Og så: %@. [kort pause]"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Und dann … %@. [kurze Pause]"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Y entonces… %@. [pausa corta]"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et là… %@. [temps]"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "और फिर, %@। [ज़रा रुकें]"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lalu… %@. [jeda singkat]"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E poi… %@. [breve pausa]"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "そして、%@。[一拍]"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그리고, %@. [짧은 멈춤]"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Og så: %@. [kort pause]"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En dan… %@. [korte pauze]"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "E aí: %@. [pausa curta]"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Och sedan: %@. [kort paus]"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แล้วก็ %@ [เว้นจังหวะ]"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ve sonra… %@. [kısa es]"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Và rồi, %@. [dừng ngắn]"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "然后，%@。[短停顿]"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "然後，%@。[停頓一拍]"
           }
         }
       }
@@ -58661,7 +58788,8 @@
         }
       }
     },
-    "Before anything else — I'm sorry." : {
+    "Before anything else: I'm sorry." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -58678,7 +58806,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vor allem anderen – es tut mir leid."
+            "value" : "Vor allem anderen: Es tut mir leid."
           }
         },
         "es" : {
@@ -84158,125 +84286,6 @@
         }
       }
     },
-    "Closer to %@ · now %@" : {
-      "comment" : "Toast when Fit to time or a platform version did not reach the length: the range asked, then the length it has now",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أقرب إلى %1$@ · الآن %2$@"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tættere på %@ · nu %@"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Näher an %@ · jetzt %@"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Más cerca de %@ · ahora %@"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plus près de %@ · maintenant %@"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ के करीब · अब %2$@"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lebih dekat ke %@ · sekarang %@"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Più vicino a %@ · ora %@"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@に近づきました · 現在%2$@"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@에 가까워졌어요 · 현재 %@"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nærmere %@ · nå %@"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dichter bij %@ · nu %@"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mais perto de %@ · agora %@"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Närmare %@ · nu %@"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ใกล้ %1$@ มากขึ้น · ตอนนี้ %2$@"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ aralığına yaklaştı · şimdi %2$@"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gần hơn với %@ · hiện %@"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更接近 %@ · 现在 %@"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "更接近 %@ · 目前 %@"
-          }
-        }
-      }
-    },
     "Closer to how you talk" : {
       "comment" : "What the In my voice tool does (its detail line)",
       "localizations" : {
@@ -84392,6 +84401,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "更接近你說話的方式"
+          }
+        }
+      }
+    },
+    "Closer to the %@ goal · now %@" : {
+      "comment" : "Toast when Fit to time or a platform version did not reach the length: the range asked (like “1:00 to 1:30”), then the length it has now. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أقرب إلى هدف %1$@ · الآن %2$@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tættere på målet %@ · nu %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Näher am Ziel %@ · jetzt %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más cerca del objetivo de %@ · ahora %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus proche de l’objectif de %@ · maintenant %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ के लक्ष्य के क़रीब · अभी %2$@"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Makin dekat ke target %@ · sekarang %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Più vicino all’obiettivo di %@ · ora %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "目標の%1$@に近づきました · 現在%2$@"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "목표 %1$@에 가까워졌어요 · 현재 %2$@"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nærmere målet på %@ · nå %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dichter bij het doel van %@ · nu %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mais perto da meta de %@ · agora %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Närmare målet %@ · nu %@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใกล้เป้าหมาย %1$@ ขึ้นแล้ว · ตอนนี้ %2$@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ hedefine daha yakın · şimdi %2$@"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gần hơn với mục tiêu %@ · hiện %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更接近 %1$@ 的目标 · 现在 %2$@"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更接近 %1$@ 的目標 · 現在 %2$@"
           }
         }
       }
@@ -114813,9 +114941,8 @@
         }
       }
     },
-    "Drafts · %lld — In progress" : {
-      "comment" : "A label for a group of scripts that are ready to be recorded. The argument is the number of scripts in the group.",
-      "isCommentAutoGenerated" : true,
+    "Drafts · %lld · In progress" : {
+      "comment" : "A label for a group of scripts that are ready to be recorded. The argument is the number of scripts in the group. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -114826,7 +114953,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Udkast · %lld – I gang"
+            "value" : "Udkast · %lld · I gang"
           }
         },
         "de" : {
@@ -148432,7 +148559,8 @@
         }
       }
     },
-    "From Files. Use only music you own or have the rights to — songs from Apple Music can’t be added." : {
+    "From Files. Use only music you own or have the rights to. Songs from Apple Music can’t be added." : {
+      "comment" : "Quick edit › Add music: where music comes from and the rights rule. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -148449,7 +148577,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aus „Dateien“. Nutze nur Musik, die dir gehört oder für die du die Rechte hast – Songs aus Apple Music lassen sich nicht hinzufügen."
+            "value" : "Aus „Dateien“. Nutze nur Musik, die dir gehört oder für die du die Rechte hast. Songs aus Apple Music lassen sich nicht hinzufügen."
           }
         },
         "es" : {
@@ -158515,7 +158643,8 @@
         }
       }
     },
-    "Here's how I do %@ — start to finish. [pause]" : {
+    "Here's how I do %@, start to finish. [pause]" : {
+      "comment" : "Script template (a format's draft without Apple Intelligence): a line or title the creator reads; %@ is what the creator typed in the brief. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -158532,7 +158661,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "So mache ich %@ – von Anfang bis Ende. [Pause]"
+            "value" : "So mache ich %@, von Anfang bis Ende. [Pause]"
           }
         },
         "es" : {
@@ -166095,125 +166224,6 @@
         }
       }
     },
-    "Hydrate before caffeine — it hits better." : {
-      "comment" : "My Cue Voice: preview and learning",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اشرب الماء قبل الكافيين، فتأثيره أفضل."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Drik vand før koffein. Det virker bedre."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Trink vor dem Koffein Wasser. Es wirkt besser."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hidrátate antes de la cafeína: sienta mejor."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hydratez-vous avant la caféine : l’effet est meilleur."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कैफ़ीन से पहले पानी पिएँ, असर बेहतर होता है।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Minum air sebelum kafein, efeknya lebih terasa."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Idratati prima della caffeina: fa più effetto."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カフェインの前に水分補給を。効き方が違います。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "카페인 전에 수분부터 채우세요. 훨씬 잘 받아요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Drikk vann før koffein. Det virker bedre."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Drink water voor je cafeïne. Het werkt beter."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hidrate-se antes da cafeína. Faz mais efeito."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Drick vatten före koffeinet. Det gör mer nytta."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ดื่มน้ำก่อนคาเฟอีน จะรู้สึกดีกว่า"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kafeinden önce su iç, daha iyi etki eder."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uống nước trước caffeine, hiệu quả hơn hẳn."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "先补水再摄入咖啡因，效果更好。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "先補水再攝取咖啡因，效果更好。"
-          }
-        }
-      }
-    },
     "Hydrate before caffeine." : {
       "comment" : "My Cue Voice: preview and learning",
       "localizations" : {
@@ -166329,6 +166339,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "先補水，再攝取咖啡因。"
+          }
+        }
+      }
+    },
+    "Hydrate before caffeine. It hits better." : {
+      "comment" : "My Cue Voice: preview and learning No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اشرب الماء قبل الكافيين، فتأثيره أفضل."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drik vand før koffein. Det virker bedre."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trink vor dem Koffein Wasser. Es wirkt besser."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hidrátate antes de la cafeína: sienta mejor."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hydratez-vous avant la caféine : l’effet est meilleur."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कैफ़ीन से पहले पानी पिएँ, असर बेहतर होता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Minum air sebelum kafein, efeknya lebih terasa."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idratati prima della caffeina: fa più effetto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カフェインの前に水分補給を。効き方が違います。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "카페인 전에 수분부터 채우세요. 훨씬 잘 받아요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drikk vann før koffein. Det virker bedre."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drink water voor je cafeïne. Het werkt beter."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hidrate-se antes da cafeína. Faz mais efeito."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drick vatten före koffeinet. Det gör mer nytta."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ดื่มน้ำก่อนคาเฟอีน จะรู้สึกดีกว่า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kafeinden önce su iç, daha iyi etki eder."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uống nước trước caffeine, hiệu quả hơn hẳn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先补水再摄入咖啡因，效果更好。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "先補水再攝取咖啡因，效果更好。"
           }
         }
       }
@@ -166924,7 +167053,8 @@
         }
       }
     },
-    "I believed this for years — until I checked." : {
+    "I believed this for years, until I checked." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -166941,7 +167071,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Jahrelang habe ich das geglaubt – bis ich nachgeschaut habe."
+            "value" : "Jahrelang habe ich das geglaubt, bis ich nachgeschaut habe."
           }
         },
         "es" : {
@@ -167750,7 +167880,8 @@
         }
       }
     },
-    "I tried everything — these are the ones that stuck." : {
+    "I tried everything. These are the ones that stuck." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -167767,7 +167898,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ich hab alles ausprobiert – die hier sind geblieben."
+            "value" : "Ich hab alles ausprobiert. Die hier sind geblieben."
           }
         },
         "es" : {
@@ -169051,172 +169182,174 @@
         }
       }
     },
-    "Ideal %@–%@" : {
+    "Ideal %@ to %@" : {
+      "comment" : "Script page length bar: the ideal length range of the platform (%@ are clock times). No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "المثالي %@–%@"
+            "value" : "المثالي من %@ إلى %@"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideelt %1$@–%2$@"
+            "value" : "Ideelt %1$@ til %2$@"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal %@–%@"
+            "value" : "Ideal %@ bis %@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal %@–%@"
+            "value" : "Ideal de %@ a %@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idéal %@–%@"
+            "value" : "Idéal de %@ à %@"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आदर्श %@–%@"
+            "value" : "आदर्श %@ से %@"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal %@–%@"
+            "value" : "Ideal %@ sampai %@"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideale %@–%@"
+            "value" : "Ideale da %@ a %@"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "理想%@–%@"
+            "value" : "理想%@〜%@"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "권장 %@–%@"
+            "value" : "권장 %@~%@"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideelt %1$@–%2$@"
+            "value" : "Ideelt %1$@ til %2$@"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideaal %1$@–%2$@"
+            "value" : "Ideaal %1$@ tot %2$@"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal %@–%@"
+            "value" : "Ideal de %@ a %@"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal %1$@–%2$@"
+            "value" : "Ideal %1$@ till %2$@"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เหมาะสม %@–%@"
+            "value" : "เหมาะสม %@ ถึง %@"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "İdeal %@–%@"
+            "value" : "İdeal %@ ila %@"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lý tưởng %@–%@"
+            "value" : "Lý tưởng %@ đến %@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "理想 %@–%@"
+            "value" : "理想 %@ 至 %@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "理想 %1$@–%2$@"
+            "value" : "理想 %1$@ 至 %2$@"
           }
         }
       }
     },
-    "Ideal for %@: %@–%@" : {
+    "Ideal for %@: %@ to %@" : {
+      "comment" : "Script tools: the ideal length range of the platform (%1$@ platform, then two clock times). No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "المثالي لـ %1$@: %2$@–%3$@"
+            "value" : "المثالي لـ %1$@: من %2$@ إلى %3$@"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideelt til %@: %@–%@"
+            "value" : "Ideelt til %@: mellem %@ og %@"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal für %1$@: %2$@–%3$@"
+            "value" : "Ideal für %1$@: %2$@ bis %3$@"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal para %1$@: %2$@–%3$@"
+            "value" : "Ideal para %1$@: de %2$@ a %3$@"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idéal pour %1$@ : %2$@–%3$@"
+            "value" : "Idéal pour %1$@ : de %2$@ à %3$@"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ के लिए आदर्श: %2$@–%3$@"
+            "value" : "%1$@ के लिए आदर्श: %2$@ से %3$@"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal untuk %1$@: %2$@–%3$@"
+            "value" : "Ideal untuk %1$@: %2$@ sampai %3$@"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideale per %1$@: %2$@–%3$@"
+            "value" : "Ideale per %1$@: da %2$@ a %3$@"
           }
         },
         "ja" : {
@@ -169234,55 +169367,55 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideelt for %@: %@–%@"
+            "value" : "Ideelt for %@: %@ til %@"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideaal voor %@: %@–%@"
+            "value" : "Ideaal voor %@: %@ tot %@"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ideal para %1$@: %2$@–%3$@"
+            "value" : "Ideal para %1$@: de %2$@ a %3$@"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Idealiskt för %@: %@–%@"
+            "value" : "Idealiskt för %@: %@ till %@"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เหมาะกับ %1$@: %2$@–%3$@"
+            "value" : "เหมาะกับ %1$@: %2$@ ถึง %3$@"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ için ideal: %2$@–%3$@"
+            "value" : "%1$@ için ideal: %2$@ ila %3$@"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lý tưởng cho %1$@: %2$@–%3$@"
+            "value" : "Lý tưởng cho %1$@: %2$@ đến %3$@"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$@ 的理想时长：%2$@–%3$@"
+            "value" : "%1$@ 的理想时长：%2$@ 至 %3$@"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%@ 的理想長度：%@–%@"
+            "value" : "%@ 的理想長度：%@ 至 %@"
           }
         }
       }
@@ -178421,7 +178554,8 @@
         }
       }
     },
-    "Join the waitlist — link in bio" : {
+    "Join the waitlist. Link in bio" : {
+      "comment" : "Script template (a format's draft without Apple Intelligence): a line or title the creator reads; %@ is what the creator typed in the brief. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -178438,7 +178572,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trag dich in die Warteliste ein – Link in der Bio"
+            "value" : "Trag dich in die Warteliste ein. Link in der Bio"
           }
         },
         "es" : {
@@ -194154,7 +194288,8 @@
         }
       }
     },
-    "Make it shorter, or record as is — you can trim later." : {
+    "Make it shorter, or record as is. You can trim later." : {
+      "comment" : "Script page: the sheet when the script is longer than the platform's ideal. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -196529,7 +196664,8 @@
         }
       }
     },
-    "May be intentional — for emphasis" : {
+    "May be intentional, for emphasis" : {
+      "comment" : "Clean Up: why a found pause or filler word may be worth keeping. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -196546,7 +196682,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vielleicht Absicht – zur Betonung"
+            "value" : "Vielleicht Absicht, zur Betonung"
           }
         },
         "es" : {
@@ -199134,7 +199270,8 @@
         }
       }
     },
-    "Might carry meaning — listen first" : {
+    "Might carry meaning · listen first" : {
+      "comment" : "Clean Up: why a found pause or filler word may be worth keeping. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -199151,7 +199288,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Könnte Sinn haben – erst anhören"
+            "value" : "Könnte Sinn haben · erst anhören"
           }
         },
         "es" : {
@@ -208156,7 +208293,8 @@
         }
       }
     },
-    "My first brand call — and my camera froze" : {
+    "My first brand call, and my camera froze" : {
+      "comment" : "Script template (a format's draft without Apple Intelligence): a line or title the creator reads; %@ is what the creator typed in the brief. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -208173,7 +208311,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mein erster Call mit einer Marke – und meine Kamera hat sich aufgehängt"
+            "value" : "Mein erster Call mit einer Marke, und meine Kamera hat sich aufgehängt"
           }
         },
         "es" : {
@@ -229024,7 +229162,8 @@
         }
       }
     },
-    "Okay, real talk — this one matters." : {
+    "Okay, real talk: this one matters." : {
+      "comment" : "Example opening line in the script structure guide, read to camera. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -229041,7 +229180,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Okay, ganz ehrlich – das hier ist wichtig."
+            "value" : "Okay, ganz ehrlich: Das hier ist wichtig."
           }
         },
         "es" : {
@@ -245931,7 +246070,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1–3 KONU SEÇ"
+            "value" : "1 İLA 3 KONU SEÇ"
           }
         },
         "vi" : {
@@ -251426,7 +251565,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Starte, pausiere und ändere das Tempo – von einem zweiten iPhone oder iPad."
+            "value" : "Starte, pausiere und ändere das Tempo von einem zweiten iPhone oder iPad aus."
           }
         },
         "es" : {
@@ -251544,7 +251683,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Starte, pausiere, ändere das Tempo und bewege dich durchs Skript – von einem zweiten iPhone oder iPad. Beide brauchen Cue und WLAN."
+            "value" : "Starte, pausiere, ändere das Tempo und bewege dich durchs Skript: alles von einem zweiten iPhone oder iPad aus. Beide brauchen Cue und WLAN."
           }
         },
         "es" : {
@@ -251999,7 +252138,8 @@
         }
       }
     },
-    "Playing original — tap to stop" : {
+    "Playing original · tap to stop" : {
+      "comment" : "Quick edit › Voice: the compare button while the original sound plays. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -252016,7 +252156,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Original wird abgespielt – zum Stoppen tippen"
+            "value" : "Original wird abgespielt · zum Stoppen tippen"
           }
         },
         "es" : {
@@ -265254,8 +265394,8 @@
         }
       }
     },
-    "Quick one — three habits that changed everything!" : {
-      "comment" : "My Cue Voice: preview and learning",
+    "Quick one: three habits that changed everything!" : {
+      "comment" : "My Cue Voice: preview and learning No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -300941,124 +301081,6 @@
         }
       }
     },
-    "Serious — no hype" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جاد، بلا مبالغة"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seriøst, ingen hype"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ernst – ohne Hype"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serio, sin exageraciones"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sérieux, sans emphase"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "गंभीर, कोई हाइप नहीं"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serius, tanpa hype"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serio, senza enfasi"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "シリアス · 誇張なし"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "진지하게, 과장 없이"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seriøst, ingen hype"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Serieus, geen hype"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sério, sem hype"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Allvarligt, ingen hype"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "จริงจัง ไม่โอเวอร์"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ciddi, abartı yok"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nghiêm túc, không phô trương"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "严肃，不夸张"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "嚴肅，不浮誇"
-          }
-        }
-      }
-    },
     "Serious mode: no hooks, jokes, hype or “follow for more”." : {
       "localizations" : {
         "ar" : {
@@ -301173,6 +301195,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "嚴肅模式：沒有開場鉤子、玩笑、炒作或「追蹤看更多」。"
+          }
+        }
+      }
+    },
+    "Serious, no hype" : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "جاد، بلا مبالغة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seriøst, ingen hype"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ernst, ohne Hype"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serio, sin exageraciones"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sérieux, sans emphase"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "गंभीर, कोई हाइप नहीं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serius, tanpa hype"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serio, senza enfasi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "シリアス · 誇張なし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "진지하게, 과장 없이"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seriøst, ingen hype"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Serieus, geen hype"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sério, sem hype"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Allvarligt, ingen hype"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "จริงจัง ไม่โอเวอร์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ciddi, abartı yok"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nghiêm túc, không phô trương"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "严肃，不夸张"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "嚴肅，不浮誇"
           }
         }
       }
@@ -319538,7 +319679,8 @@
         }
       }
     },
-    "Someone asked this in the comments — let me answer." : {
+    "Someone asked this in the comments, so let me answer." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -327237,7 +327379,8 @@
         }
       }
     },
-    "State the opinion in one line, give one reason, end with a question — questions drive comments." : {
+    "State the opinion in one line, give one reason, end with a question. Questions drive comments." : {
+      "comment" : "Script template (a format's draft without Apple Intelligence): a line or title the creator reads; %@ is what the creator typed in the brief. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -327254,7 +327397,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sag deine Meinung in einem Satz, nenn einen Grund und ende mit einer Frage – Fragen bringen Kommentare."
+            "value" : "Sag deine Meinung in einem Satz, nenn einen Grund und ende mit einer Frage. Fragen bringen Kommentare."
           }
         },
         "es" : {
@@ -327710,7 +327853,8 @@
         }
       }
     },
-    "Steal my system — it's simpler than you think." : {
+    "Steal my system. It's simpler than you think." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -327727,7 +327871,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klau dir mein System – es ist einfacher, als du denkst."
+            "value" : "Klau dir mein System. Es ist einfacher, als du denkst."
           }
         },
         "es" : {
@@ -330436,7 +330580,8 @@
         }
       }
     },
-    "Story time — and yes, it ends well." : {
+    "Story time, and yes, it ends well." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -330453,7 +330598,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Storytime – und ja, es geht gut aus."
+            "value" : "Storytime, und ja, es geht gut aus."
           }
         },
         "es" : {
@@ -331620,8 +331765,8 @@
         }
       }
     },
-    "Strong swearing and slurs are never written — Apple Intelligence won’t generate them." : {
-      "comment" : "My Cue Voice (Apple Intelligence plan)",
+    "Strong swearing and slurs are never written. Apple Intelligence won’t generate them." : {
+      "comment" : "My Cue Voice (Apple Intelligence plan) No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -338266,7 +338411,8 @@
         }
       }
     },
-    "Tap Done in the editor, or pick a best take — it lands here, ready to post." : {
+    "Tap Done in the editor, or pick a best take. It lands here, ready to post." : {
+      "comment" : "Takes: what the Ready stage means. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -341346,8 +341492,8 @@
         }
       }
     },
-    "Teaches how you talk — never reused for stories, opinions or results. Stays on this iPhone." : {
-      "comment" : "My Cue Voice (Apple Intelligence plan)",
+    "Teaches how you talk. Never reused for stories, opinions or results. Stays on this iPhone." : {
+      "comment" : "My Cue Voice (Apple Intelligence plan) No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -368366,7 +368512,8 @@
         }
       }
     },
-    "Trial started — enjoy Cue Pro" : {
+    "Trial started · Enjoy Cue Pro" : {
+      "comment" : "Paywall: toast after the free trial starts. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -376771,7 +376918,8 @@
         }
       }
     },
-    "Use 2–24 letters, numbers, . or _" : {
+    "Use 2 to 24 letters, numbers, . or _" : {
+      "comment" : "Profile: the rule for the username, shown while it is wrong. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -376782,13 +376930,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Brug 2–24 bogstaver, tal, . eller _"
+            "value" : "Brug 2 til 24 bogstaver, tal, . eller _"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2–24 Buchstaben, Ziffern, . oder _ verwenden"
+            "value" : "2 bis 24 Buchstaben, Ziffern, . oder _ verwenden"
           }
         },
         "es" : {
@@ -376806,19 +376954,19 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2–24 अक्षर, अंक, . या _ इस्तेमाल करें"
+            "value" : "2 से 24 अक्षर, अंक, . या _ इस्तेमाल करें"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gunakan 2–24 huruf, angka, . atau _"
+            "value" : "Gunakan 2 sampai 24 huruf, angka, . atau _"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Usa 2–24 lettere, numeri, . o _"
+            "value" : "Usa da 2 a 24 lettere, numeri, . o _"
           }
         },
         "ja" : {
@@ -376830,19 +376978,19 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "문자, 숫자, . 또는 _ 2–24자를 사용하세요"
+            "value" : "문자, 숫자, . 또는 _ 2~24자를 사용하세요"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bruk 2–24 bokstaver, tall, . eller _"
+            "value" : "Bruk 2 til 24 bokstaver, tall, . eller _"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gebruik 2–24 letters, cijfers, . of _"
+            "value" : "Gebruik 2 tot 24 letters, cijfers, . of _"
           }
         },
         "pt" : {
@@ -376854,37 +377002,37 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Använd 2–24 bokstäver, siffror, . eller _"
+            "value" : "Använd 2 till 24 bokstäver, siffror, . eller _"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ใช้ตัวอักษร ตัวเลข . หรือ _ 2–24 ตัว"
+            "value" : "ใช้ตัวอักษร ตัวเลข . หรือ _ 2 ถึง 24 ตัว"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2–24 harf, rakam, . veya _ kullan"
+            "value" : "2 ila 24 harf, rakam, . veya _ kullan"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dùng 2–24 chữ cái, số, . hoặc _"
+            "value" : "Dùng 2 đến 24 chữ cái, số, . hoặc _"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用 2–24 个字母、数字、. 或 _"
+            "value" : "使用 2 到 24 个字母、数字、. 或 _"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "使用 2–24 個字母、數字、. 或 _"
+            "value" : "使用 2 到 24 個字母、數字、. 或 _"
           }
         }
       }
@@ -386365,7 +386513,8 @@
         }
       }
     },
-    "Watch this — %@. [demo]" : {
+    "Watch this: %@. [demo]" : {
+      "comment" : "Script template (a format's draft without Apple Intelligence): a line or title the creator reads; %@ is what the creator typed in the brief. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -386382,7 +386531,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Schau mal – %@. [Demo]"
+            "value" : "Schau mal: %@. [Demo]"
           }
         },
         "es" : {
@@ -401765,124 +401914,6 @@
         }
       }
     },
-    "Yes — share to social media" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نعم، شاركه على وسائل التواصل"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ja, del på sociale medier"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ja, in sozialen Medien teilen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sí: compártelo en redes sociales"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oui, la partager sur les réseaux"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "हाँ, सोशल मीडिया पर शेयर करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ya, bagikan ke media sosial"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sì, condividilo sui social"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "はい、SNSで共有する"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "네, 소셜 미디어에 공유"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ja, del på sosiale medier"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ja, delen op social media"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sim, compartilhar nas redes sociais"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ja, dela på sociala medier"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ใช่ แชร์ไปยังโซเชียลมีเดีย"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Evet, sosyal medyada paylaş"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Có, chia sẻ lên mạng xã hội"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "是的，分享到社交媒体"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "是，分享到社群媒體"
-          }
-        }
-      }
-    },
     "Yes, even before coffee. I know." : {
       "comment" : "My Cue Voice: preview and learning",
       "localizations" : {
@@ -402116,6 +402147,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "是的，已經發布"
+          }
+        }
+      }
+    },
+    "Yes, share to social media" : {
+      "comment" : "Quick edit › Done sheet: the main choice. No dashes in any language.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نعم، شاركه على وسائل التواصل"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ja, del på sociale medier"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ja, in sozialen Medien teilen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sí: compártelo en redes sociales"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oui, la partager sur les réseaux"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हाँ, सोशल मीडिया पर शेयर करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya, bagikan ke media sosial"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sì, condividilo sui social"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "はい、SNSで共有する"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "네, 소셜 미디어에 공유"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ja, del på sosiale medier"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ja, delen op social media"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sim, compartilhar nas redes sociais"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ja, dela på sociala medier"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใช่ แชร์ไปยังโซเชียลมีเดีย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Evet, sosyal medyada paylaş"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Có, chia sẻ lên mạng xã hội"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "是的，分享到社交媒体"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "是，分享到社群媒體"
           }
         }
       }
@@ -402712,7 +402862,8 @@
         }
       }
     },
-    "You asked for this — here it is." : {
+    "You asked for this. Here it is." : {
+      "comment" : "A ready-made opening line or tone of a script format, shown as an example the creator can pick and read to camera. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -402729,7 +402880,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ihr wolltet es – hier ist es."
+            "value" : "Ihr wolltet es. Hier ist es."
           }
         },
         "es" : {
@@ -408052,7 +408203,8 @@
         }
       }
     },
-    "Your light. It grows with every video you share — no photo needed." : {
+    "Your light. It grows with every video you share. No photo needed." : {
+      "comment" : "Your universe: the core sheet (the creator's light and the next milestone). No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -408070,12 +408222,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Dein Licht. Es wächst mit jedem Video, das du teilst, ganz ohne Foto."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Your light. It grows with every video you share — no photo needed."
           }
         },
         "es" : {

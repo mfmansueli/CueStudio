@@ -58,7 +58,7 @@ struct ScriptLengthBar: View {
     }
 
     private var ideal: some View {
-        Text("Ideal \(DurationText.clock(zone.preset.idealRange.lowerBound))–\(DurationText.clock(zone.preset.idealRange.upperBound))")
+        Text("Ideal \(DurationText.clock(zone.preset.idealRange.lowerBound)) to \(DurationText.clock(zone.preset.idealRange.upperBound))")
             .foregroundStyle(Palette.ink2)
     }
 

@@ -188,7 +188,7 @@ struct CaptionLineCard: View {
         let position = viewModel.captionPosition(of: cueID)
         return HStack(spacing: 0) {
             stepButton("chevron.left", label: Text("Previous line"), identifier: "edit.captionPrev", step: -1)
-            Text(verbatim: position.map { "\($0.number)/\($0.total)" } ?? "–")
+            Text(verbatim: position.map { "\($0.number)/\($0.total)" } ?? "·")
                 .font(.system(.footnote, weight: .semibold).monospacedDigit())
                 .foregroundStyle(Palette.ink2)
                 .lineLimit(1)
