@@ -151,7 +151,14 @@ names in **bold** stay in English in every language.
 - Two pairs never share a word, because they sit on the same screens: **Record / Save** (fr
   *Filmer* / *Enregistrer*, tr *Kayıt* / *Kaydet*, th *อัด* / *บันทึก*) and **Trim / Crop** (es
   *Recortar* / *Encuadrar*, pt-BR *Aparar* / *Recortar*, id *Pangkas Durasi* / *Pangkas Bingkai*, tr
-  *Kısalt* / *Kırp*, vi *Cắt độ dài* / *Cắt khung*).
+  *Kısalt* / *Kırp*, vi *Cắt độ dài* / *Cắt khung*, ja *トリム* / *クロップ*, ar *تشذيب* / *اقتصاص*). Each word follows what the
+  control does: Trim shortens a clip in time, Crop frames the picture, Split divides a clip in two, Cut removes (text, or
+  words from the video) and "a cut" is the point between two clips (ar *قص* removes, *قطع* is the cut point, *تقسيم* splits;
+  ja *カット* for both, *分割* splits; ja *トリミング* still reads right where a sentence means trimming text, and *切り抜き* is a
+  cutout, not a crop).
+- Terms the owner settled from the review (22 Oct 2026): de Voice Following is *Stimme folgen*, a verb phrase, so a
+  sentence names it in quotes („Stimme folgen“ ist an) instead of using it as a noun; hi Settings is *सेटिंग्ज़*, Apple's
+  spelling, everywhere the plural appears (the singular *सेटिंग* stays); es Color key is *Croma*.
 - Arabic calls the hook *الافتتاحية* (the opening) and captions *الترجمة النصية*; *الخطّاف* reads as
   a literal fishing hook.
 - Performance cues inside scripts are translated with the script text (`[pause]` → pt-BR
@@ -193,20 +200,20 @@ speaker's role (below); a human native review is still welcome before a public r
 | English | es | pt-BR | fr | de | it | ja | ko | zh-Hans | hi | id | ar | tr | th | vi |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
 | Teleprompter | Teleprompter | Teleprompter | Téléprompteur | Teleprompter | Teleprompter | プロンプター | 프롬프터 | 提词器 | टेलीप्रॉम्प्टर | Teleprompter | الملقّن | Teleprompter | เทเลพรอมป์เตอร์ | Teleprompter |
-| Voice Following | Seguimiento de voz | Seguir voz | Suivi vocal | Sprachfolge | Segui voce | 音声追従 | 음성 따라가기 | 语音跟随 | आवाज़ ट्रैकिंग | Ikuti Suara | تتبّع الصوت | Ses Takibi | ติดตามเสียง | Theo giọng nói |
+| Voice Following | Seguimiento de voz | Seguir voz | Suivi vocal | Stimme folgen | Segui voce | 音声追従 | 음성 따라가기 | 语音跟随 | आवाज़ ट्रैकिंग | Ikuti Suara | تتبّع الصوت | Ses Takibi | ติดตามเสียง | Theo giọng nói |
 | Script | Guion | Roteiro | Script | Skript | Copione | 台本 | 대본 | 脚本 | स्क्रिप्ट | Naskah | النص | Senaryo | สคริปต์ | Kịch bản |
 | Take | Toma | Take | Prise | Take | Ripresa | テイク | 테이크 | 镜头 | टेक | Take | اللقطة | Çekim | เทค | Cảnh quay |
 | Record | Grabar | Gravar | Filmer | Aufnehmen | Registra | 録画 | 녹화 | 录制 | रिकॉर्ड | Rekam | تسجيل | Kayıt | อัด | Quay |
 | Save | Guardar | Salvar | Enregistrer | Sichern | Salva | 保存 | 저장 | 存储 | सेव करें | Simpan | حفظ | Kaydet | บันทึก | Lưu |
 | Quick edit | Edición rápida | Edição rápida | Montage rapide | Schnellschnitt | Modifica rapida | クイック編集 | 빠른 편집 | 快速剪辑 | क्विक एडिट | Edit cepat | تعديل سريع | Hızlı düzenleme | แก้ไขด่วน | Sửa nhanh |
-| Trim | Recortar | Aparar | Raccourcir | Kürzen | Accorcia | トリミング | 다듬기 | 修剪 | ट्रिम | Pangkas Durasi | التشذيب | Kısalt | ตัดความยาว | Cắt độ dài |
-| Crop | Encuadrar | Recortar | Recadrer | Zuschneiden | Ritaglia | 切り取り | 자르기 | 裁剪 | क्रॉप | Pangkas Bingkai | قص | Kırp | ครอบตัด | Cắt khung |
+| Trim | Recortar | Aparar | Raccourcir | Kürzen | Accorcia | トリム | 다듬기 | 修剪 | ट्रिम | Pangkas Durasi | التشذيب | Kısalt | ตัดความยาว | Cắt độ dài |
+| Crop | Encuadrar | Recortar | Recadrer | Zuschneiden | Ritaglia | クロップ | 자르기 | 裁剪 | क्रॉप | Pangkas Bingkai | اقتصاص | Kırp | ครอบตัด | Cắt khung |
 | Captions | Subtítulos | Legendas | Sous-titres | Untertitel | Sottotitoli | 字幕 | 자막 | 字幕 | कैप्शन | Teks | الترجمة النصية | Altyazılar | คำบรรยาย | Phụ đề |
 | Free exports | Exportaciones gratis | Exportações grátis | Exports gratuits | Kostenlose Exporte | Esportazioni gratuite | 無料書き出し | 무료 내보내기 | 免费导出 | मुफ़्त एक्सपोर्ट | Ekspor gratis | عمليات تصدير مجانية | Ücretsiz dışa aktarma | การส่งออกฟรี | Lượt xuất miễn phí |
 | Camera | Cámara | Câmera | Caméra | Kamera | Fotocamera | カメラ | 카메라 | 相机 | कैमरा | Kamera | الكاميرا | Kamera | กล้อง | Camera |
 | Speed | Velocidad | Velocidade | Vitesse | Tempo | Velocità | 速度 | 속도 | 速度 | स्पीड | Kecepatan | السرعة | Hız | ความเร็ว | Tốc độ |
 | Play | Reproducir | Reproduzir | Lire | Abspielen | Riproduci | 再生 | 재생 | 播放 | चलाएँ | Putar | تشغيل | Oynat | เล่น | Phát |
-| Settings | Ajustes | Ajustes | Réglages | Einstellungen | Impostazioni | 設定 | 설정 | 设置 | सेटिंग्स | Pengaturan | الإعدادات | Ayarlar | การตั้งค่า | Cài đặt |
+| Settings | Ajustes | Ajustes | Réglages | Einstellungen | Impostazioni | 設定 | 설정 | 设置 | सेटिंग्ज़ | Pengaturan | الإعدادات | Ayarlar | การตั้งค่า | Cài đặt |
 | Profile | Perfil | Perfil | Profil | Profil | Profilo | プロフィール | 프로필 | 个人资料 | प्रोफ़ाइल | Profil | الملف الشخصي | Profil | โปรไฟล์ | Hồ sơ |
 | Hook | Gancho | Gancho | Accroche | Hook | Gancio | フック | 훅 | 钩子 | हुक | Hook | الافتتاحية | Kanca | ฮุก | Hook |
 | Clean Up | Limpieza | Limpeza | Nettoyage | Aufräumen | Pulizia | クリーンアップ | 정리 | 清理 | क्लीन अप | Bersihkan | تنظيف | Temizleme | เก็บกวาด | Dọn dẹp |
@@ -219,7 +226,7 @@ speaker's role (below); a human native review is still welcome before a public r
 | Music | Música | Música | Musique | Musik | Musica | 音楽 | 음악 | 音乐 | म्यूज़िक | Musik | الموسيقى | Müzik | เพลง | Nhạc |
 | Voice (Quick edit tool) | Voz | Voz | Voix | Stimme | Voce | 声 | 목소리 | 人声 | आवाज़ | Suara | الكلام | Konuşma | เสียงพูด | Giọng nói |
 | Background | Fondo | Fundo | Arrière-plan | Hintergrund | Sfondo | 背景 | 배경 | 背景 | बैकग्राउंड | Latar | الخلفية | Arka plan | พื้นหลัง | Nền |
-| Color key | Clave de color | Chroma key | Incrustation | Farbschlüssel | Chroma key | カラーキー | 컬러 키 | 色键抠像 | कलर की | Kunci warna | مفتاح اللون | Renk anahtarı | คีย์สี | Tách màu nền |
+| Color key | Croma | Chroma key | Incrustation | Farbschlüssel | Chroma key | カラーキー | 컬러 키 | 色键抠像 | कलर की | Kunci warna | مفتاح اللون | Renk anahtarı | คีย์สี | Tách màu nền |
 | Draft | Borrador | Rascunho | Brouillon | Entwurf | Bozza | 下書き | 초안 | 草稿 | ड्राफ़्ट | Draf | مسودة | Taslak | ฉบับร่าง | Bản nháp |
 | Language & Region | Idioma y región | Idioma e região | Langue et région | Sprache & Region | Lingua e area geografica | 言語と地域 | 언어 및 지역 | 语言与地区 | भाषा और क्षेत्र | Bahasa & Wilayah | اللغة والمنطقة | Dil ve Bölge | ภาษาและภูมิภาค | Ngôn ngữ & Vùng |
 
