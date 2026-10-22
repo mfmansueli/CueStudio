@@ -211,7 +211,7 @@ struct LookVersionTests {
         #expect(override.isEmpty)
     }
 
-    @Test func comparingShowsThePictureAsRecordedAndKeepsTheBackground() {
+    @Test func comparingShowsThePictureAsRecordedWithoutTheClipsBackground() {
         var take = edit()
         take.exposure = 10
         take.autoCorrection = FakeTakeEditor.measuredCorrection
@@ -228,10 +228,27 @@ struct LookVersionTests {
         #expect(take.hasPictureLook)
         let plain = take.withoutPictureLook()
         #expect(LookSettings(plain).isNeutral)
-        #expect(plain.timeline.segments[0].look?.background?.style == .blur)
-        #expect(plain.timeline.segments[0].look?.overridesAdjustment == false)
+        #expect(plain.timeline.segments[0].look == nil)
         #expect(!plain.hasPictureLook)
         #expect(!edit().hasPictureLook)
+    }
+
+    /// ◐ in Background compares too: a background alone is something to compare, and the original drops the take's and the clips'.
+    @Test func theOriginalPictureHasNoBackground() {
+        var take = edit()
+        var blur = BackgroundEffect()
+        blur.style = .blur
+        take.setBackground(blur, for: nil)
+        #expect(take.hasPictureLook)
+        var clip = take.timeline.segments[0]
+        var look = ClipLook()
+        look.background = blur
+        clip.look = look
+        take.timeline.replaceSegment(clip)
+        let plain = take.withoutPictureLook()
+        #expect(plain.backgrounds.isEmpty)
+        #expect(plain.timeline.segments[0].look == nil)
+        #expect(!plain.hasPictureLook)
     }
 
     @Test func undoTakesBackAutoAndTheNewDials() {

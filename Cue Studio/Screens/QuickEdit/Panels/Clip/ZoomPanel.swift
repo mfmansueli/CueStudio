@@ -22,7 +22,10 @@ struct ZoomPanel: View {
                 ],
                 selection: clip?.zoom, identifier: "edit.zoom"
             ) { viewModel.setClipZoom($0) }
-            PanelAdvancedButton(isOpen: viewModel.showsAdvanced) { viewModel.showsAdvanced.toggle() }
+            PanelAdvancedButton(
+                isOpen: viewModel.showsAdvanced,
+                detail: (clip?.zoomAmount ?? EditSegment.defaultZoomAmount) != EditSegment.defaultZoomAmount ? PanelAdvancedButton.changed(1) : nil
+            ) { viewModel.showsAdvanced.toggle() }
             if viewModel.showsAdvanced {
                 PanelSlider(
                     label: String(localized: "Intensity"), value: (clip?.zoomAmount ?? 0.5) * 100, range: 0...100,

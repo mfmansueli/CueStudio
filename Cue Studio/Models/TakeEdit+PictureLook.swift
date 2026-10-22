@@ -6,8 +6,8 @@
 import Foundation
 
 nonisolated extension TakeEdit {
-    /// The take drawn as recorded: no Auto, no Adjust and no filter, on the take or on any clip.
-    /// What "Compare" in Adjust shows; never what is saved or exported.
+    /// The take drawn as recorded: no Auto, no Adjust, no filter and no background, on the take or on any clip.
+    /// What ◐ (Compare with original) in Adjust, Filters and Background shows; never what is saved or exported.
     func withoutPictureLook() -> TakeEdit {
         var plain = self
         plain.exposure = 0
@@ -23,11 +23,12 @@ nonisolated extension TakeEdit {
         plain.autoCorrection = nil
         plain.filter = .original
         plain.filterAmount = 1
+        plain.backgrounds = []
         plain.timeline = timeline.withoutPictureLooks()
         return plain
     }
 
-    /// Something to compare with: the take or a clip has Auto, a dial or a filter set.
+    /// Something to compare with: the take or a clip has Auto, a dial, a filter or a background set.
     var hasPictureLook: Bool {
         withoutPictureLook() != self
     }

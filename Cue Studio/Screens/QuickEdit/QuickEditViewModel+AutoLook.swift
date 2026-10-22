@@ -151,6 +151,14 @@ extension QuickEditViewModel {
         comparesPicture = isHeld
     }
 
+    /// ◐ in Adjust, Filters and Background: the picture as recorded (no Auto, Adjust, filter or background).
+    var pictureCompare: PanelCompare {
+        PanelCompare(
+            isOn: comparesPicture, isEnabled: edit.hasPictureLook, hint: String(localized: "Shows the picture as recorded"),
+            identifier: "edit.compare.picture"
+        ) { [weak self] in self?.holdPictureComparison($0) }
+    }
+
     func togglePictureComparison() {
         guard comparesPicture || edit.hasPictureLook else { return }
         comparesPicture.toggle()

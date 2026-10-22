@@ -9,6 +9,10 @@ import Foundation
 /// project, not to what is said: it's placed on the edit's own seconds and stays there when
 /// something is cut before it. Its file is copied into the edit's media.
 nonisolated struct MusicClip: Codable, Hashable, Identifiable, Sendable {
+    /// The fades a music starts with.
+    static let defaultFadeIn: TimeInterval = 1
+    static let defaultFadeOut: TimeInterval = 1.5
+
     static let volumeRange: ClosedRange<Double> = 0...2
     static let fadeRange: ClosedRange<Double> = 0...5
     /// Shortest it can play.
@@ -31,8 +35,8 @@ nonisolated struct MusicClip: Codable, Hashable, Identifiable, Sendable {
     /// How long it plays.
     var length: TimeInterval
     var volume: Double = 0.5
-    var fadeIn: TimeInterval = 1
-    var fadeOut: TimeInterval = 1.5
+    var fadeIn: TimeInterval = MusicClip.defaultFadeIn
+    var fadeOut: TimeInterval = MusicClip.defaultFadeOut
     var isMuted = false
     /// Goes down while the voice or a voice-over speaks.
     var ducksUnderVoice = true

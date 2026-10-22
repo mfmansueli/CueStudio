@@ -117,10 +117,15 @@ final class EditorUITests: XCTestCase {
         }
         if amount.exists {
             // Intensity is its own ruler; Compare shows the picture as recorded, and Reset takes Auto away.
-            let compare = app.buttons["edit.adjust.compare"]
+            let compare = app.buttons["edit.compare.picture"]
             XCTAssertTrue(compare.exists)
-            // ◐ is held: it shows the original only while pressed, and lets go when the finger lifts.
+            // ◐ held shows the original only while pressed; a tap keeps it until the next tap, with "Original" on the preview.
             compare.press(forDuration: 0.5)
+            XCTAssertFalse(compare.isSelected)
+            compare.tap()
+            XCTAssertTrue(compare.isSelected)
+            XCTAssertTrue(app.descendants(matching: .any)["edit.originalPictureBadge"].exists(within: 3))
+            compare.tap()
             XCTAssertFalse(compare.isSelected)
             XCTAssertTrue(app.buttons["edit.adjust.resetOne"].exists(within: 5))
             app.buttons["edit.adjust.resetOne"].tap()

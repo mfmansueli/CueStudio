@@ -15,7 +15,7 @@ struct StabilizePanel: View {
         PanelFrame(viewModel: viewModel, panel: .stabilize) {
             PanelTiles(
                 options: [
-                    PanelOption(StabilizationLevel?.none, String(localized: "Off"), systemImage: "circle.slash", key: "off"),
+                    PanelOption(StabilizationLevel?.none, String(localized: "None"), systemImage: "circle.slash", key: "off"),
                     PanelOption(StabilizationLevel?.some(.gentle), StabilizationLevel.gentle.label, systemImage: "water.waves", key: "gentle"),
                     PanelOption(
                         StabilizationLevel?.some(.standard), StabilizationLevel.standard.label, systemImage: "camera.metering.center.weighted",

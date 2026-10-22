@@ -45,7 +45,10 @@ struct SpeedPanel: View {
                 action: viewModel.splitToChangeOnePart
             )
         }
-        PanelAdvancedButton(isOpen: viewModel.showsAdvanced) { viewModel.showsAdvanced.toggle() }
+        PanelAdvancedButton(
+            isOpen: viewModel.showsAdvanced,
+            detail: QuickEditViewModel.quickSpeeds.contains { abs($0 - speed) < 0.001 } ? nil : PanelAdvancedButton.changed(1)
+        ) { viewModel.showsAdvanced.toggle() }
         if viewModel.showsAdvanced {
             PanelSlider(
                 label: String(localized: "Custom speed"), value: speed, range: CueSliderSpec.clipSpeed.range,

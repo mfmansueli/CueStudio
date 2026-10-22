@@ -7,7 +7,7 @@ import SwiftUI
 import UIKit
 
 /// Background (the recording under the playhead, or the picked clip alone when opened from it; the file never changes). The header says
-/// what it changes and what is behind the creator now ("Whole take · Blur behind you"); a note under it tells the scope's rule when there
+/// what it changes and what is behind the creator now ("Whole video · Blur behind you"); a note under it tells the scope's rule when there
 /// is one (a clip with its own background, which Reset gives back to the take's). Then two parts, kept apart:
 ///
 /// - **Behind you**: Original, Blur, Color or Image, and right under them only the picked one's control (the blur's strength, the colors,
@@ -21,7 +21,7 @@ struct BackgroundPanel: View {
 
     var body: some View {
         let effect = viewModel.currentBackground
-        PanelFrame(viewModel: viewModel, panel: .background, onReset: reset) {
+        PanelFrame(viewModel: viewModel, panel: .background, onReset: reset, compare: viewModel.pictureCompare) {
             if let note = viewModel.backgroundScopeNote { scopeNote(note) }
             background(effect)
             cutout(effect)

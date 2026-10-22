@@ -6,7 +6,7 @@
 import Foundation
 
 /// The panels' headers: the title, and the subtitle that says what the panel changes ("This
-/// clip", "Whole take", "Applies to all 8 lines", "Only this title changes").
+/// clip", "Whole video", "Applies to all 8 lines", "Only this title changes").
 extension QuickEditViewModel {
     /// ✓: applies (everything already shows live) and closes the panel.
     func closePanel() {
@@ -51,16 +51,26 @@ extension QuickEditViewModel {
             let clip = targetClip
             let from = DurationText.editor(clip?.sourceLength ?? 0)
             let to = DurationText.editor(clip?.duration ?? 0)
-            return String(localized: "This clip · \(from) → \(to)")
-        case .zoom: return String(localized: "This clip · camera move while it plays")
-        case .stabilize: return String(localized: "This clip · steadies the camera’s shake")
+            return String(localized: "\(clipScope) · \(from) → \(to)")
+        case .zoom: return String(localized: "\(clipScope) · camera move while it plays")
+        case .stabilize: return String(localized: "\(clipScope) · steadies the camera’s shake")
         default:
             switch selection {
             case .music: return String(localized: "Music · under your voice")
             case .voiceOver: return String(localized: "Voice-over")
-            default: return String(localized: "This clip")
+            default: return clipScope
             }
         }
+    }
+
+    /// Which clip a clip panel changes: "This clip" while the video is one clip, else "Clip 2 of 3", so the creator always knows
+    /// where the change lands.
+    var clipScope: String {
+        let segments = edit.timeline.segments
+        guard segments.count > 1, let id = targetClip?.id, let index = segments.firstIndex(where: { $0.id == id }) else {
+            return String(localized: "This clip")
+        }
+        return String(localized: "Clip \(index + 1) of \(segments.count)")
     }
 
     private func captionSubtitle(_ panel: EditorPanel) -> String {

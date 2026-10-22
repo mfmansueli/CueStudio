@@ -58,7 +58,7 @@ struct QuickEditClipLookTests {
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.adjust))
         #expect(viewModel.lookClip?.id == viewModel.edit.timeline.segments[1].id)
-        #expect(viewModel.panelSubtitle(.adjust) == "This clip · the rest stays as it is")
+        #expect(viewModel.panelSubtitle(.adjust) == "Clip 2 of 3 · the rest stays as it is")
         viewModel.setAdjustment(.exposure, 40)
         #expect(viewModel.edit.exposure == 0)
         #expect(viewModel.edit.timeline.segments[1].look?.exposure == 40)
@@ -76,7 +76,7 @@ struct QuickEditClipLookTests {
         viewModel.setAdjustment(.exposure, 25)
         #expect(viewModel.edit.exposure == 25)
         #expect(viewModel.edit.timeline.segments.allSatisfy { $0.look == nil })
-        #expect(viewModel.panelSubtitle(.adjust) == "Whole take")
+        #expect(viewModel.panelSubtitle(.adjust) == "Whole video")
     }
 
     @Test func aClipShowsTheTakesValuesUntilItSetsItsOwn() async {
@@ -129,9 +129,9 @@ struct QuickEditClipLookTests {
         viewModel.panel = nil
         viewModel.selection = nil
         viewModel.perform(.open(.filters))
-        #expect(viewModel.panelSubtitle(.filters) == "Whole take · some clips keep their own")
+        #expect(viewModel.panelSubtitle(.filters) == "Whole video · some clips keep their own")
         // Adjust has no clip of its own yet.
-        #expect(viewModel.panelSubtitle(.adjust) == "Whole take")
+        #expect(viewModel.panelSubtitle(.adjust) == "Whole video")
     }
 
     // MARK: - Filters

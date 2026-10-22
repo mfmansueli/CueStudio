@@ -66,8 +66,8 @@ extension QuickEditViewModel {
     func lookSubtitle(for panel: EditorPanel) -> String {
         // Background says its scope and what is behind the creator; its scope's rule is a note inside the panel.
         if panel == .background { return backgroundSubtitle }
-        if lookClip != nil { return String(localized: "This clip · the rest stays as it is") }
-        if someClipKeepsItsOwn(for: panel) { return String(localized: "Whole take · some clips keep their own") }
-        return String(localized: "Whole take")
+        if lookClip != nil { return String(localized: "\(clipScope) · the rest stays as it is") }
+        if someClipKeepsItsOwn(for: panel) { return String(localized: "Whole video · some clips keep their own") }
+        return String(localized: "Whole video")
     }
 }

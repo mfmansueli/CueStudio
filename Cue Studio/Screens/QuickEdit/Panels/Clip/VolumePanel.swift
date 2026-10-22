@@ -68,7 +68,10 @@ struct VolumePanel: View {
 
     @ViewBuilder
     private func musicAdvanced(_ music: MusicClip) -> some View {
-        PanelAdvancedButton(isOpen: viewModel.showsAdvanced) { viewModel.showsAdvanced.toggle() }
+        let changed = [music.fadeIn != MusicClip.defaultFadeIn, music.fadeOut != MusicClip.defaultFadeOut].filter { $0 }.count
+        PanelAdvancedButton(isOpen: viewModel.showsAdvanced, detail: changed > 0 ? PanelAdvancedButton.changed(changed) : nil) {
+            viewModel.showsAdvanced.toggle()
+        }
         if viewModel.showsAdvanced {
             PanelSlider(
                 label: String(localized: "Fade in"), value: music.fadeIn, range: 0...MusicClip.fadeRange.upperBound, step: 0.1,

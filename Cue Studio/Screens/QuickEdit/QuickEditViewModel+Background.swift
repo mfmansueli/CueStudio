@@ -40,9 +40,9 @@ extension QuickEditViewModel {
         lookClip?.look?.background != nil
     }
 
-    /// The panel's subtitle: what it changes, and what is behind the creator now ("This clip · Blur behind you").
+    /// The panel's subtitle: what it changes, and what is behind the creator now ("Clip 2 of 3 · Blur behind you").
     var backgroundSubtitle: String {
-        let scope = lookClip == nil ? String(localized: "Whole take") : String(localized: "This clip")
+        let scope = lookClip == nil ? String(localized: "Whole video") : clipScope
         return String(localized: "\(scope) · \(Self.backgroundSummary(of: currentBackground))")
     }
 

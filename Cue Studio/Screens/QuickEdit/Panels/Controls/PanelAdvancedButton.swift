@@ -14,6 +14,11 @@ struct PanelAdvancedButton: View {
     var identifier = "edit.panel.advanced"
     let onToggle: () -> Void
 
+    /// "· 2 changed": how many settings inside differ from how they start.
+    static func changed(_ count: Int) -> String {
+        String(localized: "· \(count) changed")
+    }
+
     var body: some View {
         Button(action: onToggle) {
             HStack(spacing: 6) {

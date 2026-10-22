@@ -86,10 +86,10 @@ extension QuickEditViewModel {
         changeLook { $0.evensOutVoices = evens }
     }
 
-    /// "All 3 recordings", "2 of 3 recordings" or "Whole take": what Studio Voice changes, in its header.
+    /// "All 3 recordings", "2 of 3 recordings" or "Whole video": what Studio Voice changes, in its header.
     var voiceScopeLabel: String {
         let recordings = voiceRecordings
-        guard !recordings.isEmpty else { return String(localized: "Whole take") }
+        guard !recordings.isEmpty else { return String(localized: "Whole video") }
         let treated = recordings.filter(\.isTreated).count
         return treated == recordings.count
             ? String(localized: "All \(recordings.count) recordings")
@@ -121,6 +121,17 @@ extension QuickEditViewModel {
     }
 
     /// "Compare with original": starts playing the untreated sound, or goes back to the treated.
+    /// ◐ in Studio Voice: the sound as recorded, playing.
+    var soundCompare: PanelCompare {
+        PanelCompare(
+            isOn: comparesOriginal, isEnabled: canCompareOriginal, hint: String(localized: "Plays the sound as recorded"),
+            identifier: "edit.compare.sound"
+        ) { [weak self] shows in
+            guard let self, shows != comparesOriginal else { return }
+            toggleComparison()
+        }
+    }
+
     func toggleComparison() {
         if comparesOriginal {
             endComparison()

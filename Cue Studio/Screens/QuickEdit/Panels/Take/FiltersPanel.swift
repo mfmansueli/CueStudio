@@ -21,7 +21,7 @@ struct FiltersPanel: View {
     private var cardWidth: CGFloat { min(max(62, scaledCardWidth), 96) }
 
     var body: some View {
-        PanelFrame(viewModel: viewModel, panel: .filters, onReset: reset) {
+        PanelFrame(viewModel: viewModel, panel: .filters, onReset: reset, compare: viewModel.pictureCompare) {
             ScrollView(.horizontal) {
                 // Top-aligned: a name on two lines doesn't push its thumbnail down.
                 HStack(alignment: .top, spacing: 8) {

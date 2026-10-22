@@ -49,8 +49,6 @@ nonisolated struct CueSliderSpec: Equatable, Sendable {
     static let voice = CueSliderSpec(0...200, step: 5, default: 100)
     /// Music, in percent: it ducks under your voice.
     static let music = CueSliderSpec(0...100, step: 5, default: 20)
-    /// Off · Light · Strong, Light by default.
-    static let cleanUpVoice = steps(3, default: 1)
     /// How fast a clip plays.
     static let clipSpeed = CueSliderSpec(0.5...3, step: 0.1, default: 1)
     /// How much of a filter shows, in percent.

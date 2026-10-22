@@ -37,9 +37,8 @@ struct CueSliderSpecTests {
     }
 
     @Test func steppedControlsCountPositionsFromZero() {
-        // S/M/L/XL (Large), Off/Light/Strong (Light).
+        // S/M/L/XL (Large).
         #expect(CueSliderSpec.captionSize == .steps(4, default: 2))
-        #expect(CueSliderSpec.cleanUpVoice == .steps(3, default: 1))
         #expect(CueSliderSpec.captionSize.range == 0...3 && CueSliderSpec.captionSize.step == 1)
     }
 

@@ -78,13 +78,13 @@ struct QuickEditBackgroundPanelTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.background))
-        #expect(viewModel.panelSubtitle(.background) == "Whole take · As recorded")
+        #expect(viewModel.panelSubtitle(.background) == "Whole video · As recorded")
         viewModel.setBackgroundStyle(.blur)
-        #expect(viewModel.panelSubtitle(.background) == "Whole take · Blur behind you")
+        #expect(viewModel.panelSubtitle(.background) == "Whole video · Blur behind you")
         openFromClip(viewModel, 1)
-        #expect(viewModel.panelSubtitle(.background) == "This clip · Blur behind you")
+        #expect(viewModel.panelSubtitle(.background) == "Clip 2 of 2 · Blur behind you")
         viewModel.setBackgroundCutout(.colorKey)
-        #expect(viewModel.panelSubtitle(.background) == "This clip · Blur on the green or blue screen")
+        #expect(viewModel.panelSubtitle(.background) == "Clip 2 of 2 · Blur on the green or blue screen")
     }
 
     @Test func theScopeNoteTellsTheRuleOnlyWhenThereIsOne() async {
