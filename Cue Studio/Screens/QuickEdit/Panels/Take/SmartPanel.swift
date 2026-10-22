@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// ✦ Smart, in two categories (`SmartPanelSection`). **Tools**: what Cue can do for the take with one tap, as violet tiles:
-/// Edit by text, Auto captions, Remove pauses, Studio Voice, Auto adjust, the take's Background and Eye Contact. Each opens the panel that does it (Auto
+/// Edit by text, Auto captions, Remove pauses, Studio Voice, Auto adjust and the take's Background. Each opens the panel that does it (Auto
 /// adjust opens Adjust and measures the picture), so nothing happens that the creator can't see and undo. **Templates**: a whole
 /// look for a kind of video (`VideoTemplate`), one card each with what it changes, the one the edit is in marked; one Undo
 /// puts everything back. Violet is the AI's color; everything here runs on the iPhone.
@@ -56,9 +56,6 @@ struct SmartPanel: View {
                     // The whole take's background; a picked clip's own is in its tools.
                     viewModel.lookScopeIsClip = false
                     viewModel.panel = .background
-                }
-                tile(id: "eyeContact", title: "Eye Contact", systemImage: "eye", status: viewModel.smartEyeContactStatus) {
-                    viewModel.panel = .eyeContact
                 }
             }
             .padding(.horizontal, 16)

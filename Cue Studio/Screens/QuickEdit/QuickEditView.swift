@@ -41,7 +41,7 @@ struct QuickEditView: View {
         let languages = services.languages
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
-            editing: services.editing, drafts: services.drafts, toast: services.toast, motion: services.motion, eyes: services.eyes,
+            editing: services.editing, drafts: services.drafts, toast: services.toast, motion: services.motion,
             speechLanguage: { languages.captionRequest(for: $0) },
             likelySpokenLanguages: { languages.likelySpokenLanguages(for: $0) },
             languageConflict: { languages.languageConflict(for: $0) }
@@ -79,7 +79,6 @@ struct QuickEditView: View {
             if let opening { viewModel.open(opening) }
         }
         .onChange(of: services.motion.completed) { viewModel.motionAnalysisDidChange() }
-        .onChange(of: services.eyes.updated) { viewModel.eyeContactAnalysisDidChange() }
         .onChange(of: viewModel.panel) { _, panel in
             // Not tied to the panel: leaving Pauses doesn't stop it listening.
             if panel == .pauses { Task { await viewModel.analyzeIfNeeded() } }

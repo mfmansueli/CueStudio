@@ -56,7 +56,7 @@ struct LocalRepositoryTests {
         let source = URL.temporaryDirectory.appending(path: "source-\(UUID().uuidString).mov")
         try Data("video".utf8).write(to: source)
         let video = repository.videoURL(named: try repository.storeVideo(from: source))
-        let sidecars = [MotionAnalysisStore.url(forRecording: video), EyeContactAnalysisStore.url(forRecording: video)]
+        let sidecars = [MotionAnalysisStore.url(forRecording: video)]
         for sidecar in sidecars { try Data([0]).write(to: sidecar) }
 
         try repository.deleteVideo(named: video.lastPathComponent)

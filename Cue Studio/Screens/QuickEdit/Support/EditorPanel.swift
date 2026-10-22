@@ -22,15 +22,15 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     case media
     // The cut between two clips
     case transition
-    // ✦ Smart: the one-tap tools, and Eye Contact's own panel
-    case smart, eyeContact
+    // ✦ Smart: the one-tap tools
+    case smart
 
     var id: String { rawValue }
 
     var size: EditorPanelSize {
         switch self {
         case .zoom, .volume, .filters, .voiceOver, .autoCaptions: .mini
-        case .speed, .voice, .pauses, .captions, .adjust, .background, .media, .smart, .eyeContact, .transition, .crop, .stabilize, .beats: .medium
+        case .speed, .voice, .pauses, .captions, .adjust, .background, .media, .smart, .transition, .crop, .stabilize, .beats: .medium
         case .textStyle, .captionStyle: .full
         }
     }
@@ -103,7 +103,6 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .media: String(localized: "Photo or video")
         case .transition: String(localized: "Transition")
         case .smart: String(localized: "✦ Smart")
-        case .eyeContact: String(localized: "Eye Contact", comment: "✦ Smart tool that moves the creator's eyes toward the lens")
         }
     }
 }

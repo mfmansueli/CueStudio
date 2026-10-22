@@ -209,10 +209,6 @@ names in **bold** stay in English in every language.
 - "%@ to %@" is a countdown ("18s to 1:00", "12s to monetize"), not a range.
 - Quick edit's Audio menu holds Studio Voice (the take's own speech, treated), Music and Voice-over, and a video over the
   take has its Sound.
-- **Eye Contact** (✦ Smart) is a feature name translated as what it does for the creator: pt-BR *Corrigir olhar* (the owner's name for it), es
-  *Contacto visual*, fr *Contact visuel*, de *Blickkontakt*, it *Contatto visivo*, ja *アイコンタクト*, ko *시선 맞춤*, zh *眼神交流*, ar *التواصل البصري*,
-  hi *आई कॉन्टैक्ट*, id *Kontak Mata*, nl *Oogcontact*, sv *Ögonkontakt*, da *Øjenkontakt*, nb *Øyekontakt*, tr *Göz Teması*, th *สบตากล้อง*,
-  vi *Nhìn vào ống kính*; the same word in the tile, the panel, its messages and Acknowledgements.
 - Type preset names (Cue, Impact, Editorial, Soft, Minimal, Label, Pop) are translated where the
   word has a natural equivalent; **Cue** stays as the brand.
 

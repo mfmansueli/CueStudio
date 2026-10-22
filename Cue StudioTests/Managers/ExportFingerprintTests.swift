@@ -43,14 +43,16 @@ struct ExportFingerprintTests {
         #expect(fingerprint(base, take: UUID()) != fingerprint(base))
     }
 
-    @Test func eyeContactAndItsStrengthChangeIt() {
+    /// Eye Contact was removed (22/10/2026): an edit saved with it on still opens, as the same edit without it, and exports
+    /// like one that never had it.
+    @Test func anEditSavedWithEyeContactOpensAndExportsLikeOneWithout() throws {
         let edit = TakeEdit(sourceDuration: 20, aspect: .portrait)
-        var on = edit
-        on.eyeContact = EyeContactSettings()
-        var stronger = on
-        stronger.eyeContact?.strength = 0.9
-        let prints = [edit, on, stronger].map { fingerprint(ExportOptions(aspect: .portrait, edit: $0, burnsInCaptions: false, shortSide: nil)) }
-        #expect(Set(prints).count == 3)
+        var saved = try #require(try JSONSerialization.jsonObject(with: JSONEncoder.library.encode(edit)) as? [String: Any])
+        saved["eyeContact"] = ["engine": 2, "strength": 0.6]
+        let opened = try JSONDecoder.library.decode(TakeEdit.self, from: JSONSerialization.data(withJSONObject: saved))
+        #expect(opened == edit)
+        let prints = [edit, opened].map { fingerprint(ExportOptions(aspect: .portrait, edit: $0, burnsInCaptions: false, shortSide: nil)) }
+        #expect(prints[0] == prints[1])
     }
 
     @Test func aDifferentRecordingUnderTheSameNameIsADifferentExport() throws {
