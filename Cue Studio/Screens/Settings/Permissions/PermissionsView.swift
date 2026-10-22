@@ -24,7 +24,7 @@ struct PermissionsView: View {
             }
             Section {
                 Button {
-                    if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                    openURL.openAppSettings()
                 } label: {
                     Text("Open iPhone Settings")
                         .foregroundStyle(Palette.accText)

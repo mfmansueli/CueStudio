@@ -54,7 +54,6 @@ struct ReviewPlaybackTests {
         defer { finish(playback, clip) }
         playback.isPlaybackBlocked = true
         playback.play()
-        playback.toggle()
         try await Task.sleep(for: .milliseconds(300))
         #expect(!playback.isPlaying)
         #expect(playback.player.rate == 0)

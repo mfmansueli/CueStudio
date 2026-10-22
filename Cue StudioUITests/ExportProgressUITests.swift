@@ -17,12 +17,12 @@ final class ExportProgressUITests: XCTestCase {
     private func openReview(_ arguments: [String]) -> XCUIApplication {
         let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: arguments)
         let tab = app.cueTabBar.buttons["Takes"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        XCTAssertTrue(row.exists(within: 5))
         row.tap()
-        XCTAssertTrue(app.buttons["review.shareButton"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["review.shareButton"].exists(within: 10))
         return app
     }
 
@@ -38,22 +38,22 @@ final class ExportProgressUITests: XCTestCase {
         let app = openReview(["-uiTestSlowExport"])
         app.buttons["review.shareButton"].tap()
         let card = app.descendants(matching: .any)["review.export.progress"]
-        XCTAssertTrue(card.waitForExistence(timeout: 5), "No progress while exporting")
+        XCTAssertTrue(card.exists(within: 5), "No progress while exporting")
         XCTAssertTrue(card.label.contains("Exporting"), card.label)
         XCTAssertTrue(card.label.contains("Keep Cue open until it’s done."), card.label)
         try capture(app, "export-progress")
         // Gone once the file is made.
-        XCTAssertTrue(app.descendants(matching: .any)["ready.sheet"].waitForExistence(timeout: 30))
+        XCTAssertTrue(app.descendants(matching: .any)["ready.sheet"].exists(within: 30))
         XCTAssertFalse(card.exists)
     }
 
     func testATakeWhoseExportStoppedSaysSoUntilClosed() throws {
         let app = openReview(["-uiTestStoppedExport"])
         let card = app.descendants(matching: .any)["review.exportStopped"]
-        XCTAssertTrue(card.waitForExistence(timeout: 5), "The stopped export isn't told")
+        XCTAssertTrue(card.exists(within: 5), "The stopped export isn't told")
         XCTAssertTrue(app.buttons["review.exportStopped.save"].exists)
         try capture(app, "export-stopped")
         app.buttons["review.exportStopped.close"].tap()
-        XCTAssertFalse(card.waitForExistence(timeout: 2))
+        XCTAssertFalse(card.exists(within: 2))
     }
 }

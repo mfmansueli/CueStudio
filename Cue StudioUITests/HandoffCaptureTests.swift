@@ -41,9 +41,9 @@ final class HandoffCaptureTests: XCTestCase {
 
     private func settings(_ app: XCUIApplication) {
         let tab = app.cueTabBar.buttons["Settings"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
-        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Settings"].exists(within: 5))
     }
 
     private func back(_ app: XCUIApplication) {
@@ -67,7 +67,7 @@ final class HandoffCaptureTests: XCTestCase {
             ("settings.acknowledgements", "11.1_acknowledgements", "Acknowledgements"),
         ] {
             open(app, id)
-            XCTAssertTrue(app.navigationBars[bar].waitForExistence(timeout: 5), bar)
+            XCTAssertTrue(app.navigationBars[bar].exists(within: 5), bar)
             try shot(app, name)
             back(app)
         }
@@ -104,7 +104,7 @@ final class HandoffCaptureTests: XCTestCase {
         back(app)
         open(app, "settings.personalize")
         // The icons are on Personalize itself, a collection under its hero.
-        XCTAssertTrue(element(app, "settings.appIcon").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "settings.appIcon").exists(within: 5))
         try shot(app, "11.1_app-icon")
     }
 
@@ -131,7 +131,7 @@ final class HandoffCaptureTests: XCTestCase {
             usleep(300_000)
         }
         let start = app.buttons["onboarding.getStarted"]
-        XCTAssertTrue(start.waitForExistence(timeout: 12))
+        XCTAssertTrue(start.exists(within: 12))
         try shot(app, "1.1_final", wait: 1)
     }
 
@@ -156,22 +156,22 @@ final class HandoffCaptureTests: XCTestCase {
             let upgrade = element(app, "profile.upgradeButton")
             app.scroll(to: upgrade)
             upgrade.tap()
-            XCTAssertTrue(element(app, "paywall.closeButton").waitForExistence(timeout: 8))
+            XCTAssertTrue(element(app, "paywall.closeButton").exists(within: 8))
             try shot(app, "11.4_at_" + String(format: "%03.1f", second), wait: 2)
             app.terminate()
         }
         let calm = CueApp.launch(seeded: true, extraArguments: ["-uiTestExportsLeft", "0"])
         calm.cueTabBar.buttons["Takes"].tap()
         let row = calm.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        XCTAssertTrue(row.exists(within: 5))
         row.tap()
-        XCTAssertTrue(element(calm, "review.exportNotice").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(calm, "review.exportNotice").exists(within: 5))
         try shot(calm, "6.3_exports-none", wait: 1)
         calm.buttons["review.saveButton"].tap()
-        XCTAssertTrue(calm.buttons["exportReady.notNow"].waitForExistence(timeout: 5))
+        XCTAssertTrue(calm.buttons["exportReady.notNow"].exists(within: 5))
         try shot(calm, "8.1_your-video-is-ready", wait: 1)
         calm.buttons["exportReady.seePro"].tap()
-        XCTAssertTrue(calm.buttons["paywall.buyButton"].waitForExistence(timeout: 8))
+        XCTAssertTrue(calm.buttons["paywall.buyButton"].exists(within: 8))
         try shot(calm, "11.4_pro-calm", wait: 1)
     }
 
@@ -183,16 +183,16 @@ final class HandoffCaptureTests: XCTestCase {
             let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestUniverse", data])
             app.cueTabBar.buttons["Profile"].tap()
             let link = element(app, "profile.universeLink")
-            XCTAssertTrue(link.waitForExistence(timeout: 10))
+            XCTAssertTrue(link.exists(within: 10))
             link.tap()
-            XCTAssertTrue(element(app, "universe.screen").waitForExistence(timeout: 5))
+            XCTAssertTrue(element(app, "universe.screen").exists(within: 5))
             return app
         }
         let year = Calendar.current.component(.year, from: .now)
         let live = open("sample")
         try shot(live, "9.2_live", wait: 2)
         element(live, "universe.planet.tiktok").tap()
-        XCTAssertTrue(live.buttons["universe.planetSeeInTakes"].waitForExistence(timeout: 5))
+        XCTAssertTrue(live.buttons["universe.planetSeeInTakes"].exists(within: 5))
         try shot(live, "9.2_planet-popover", wait: 1)
         // The first tap only closes the popover.
         live.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
@@ -201,11 +201,11 @@ final class HandoffCaptureTests: XCTestCase {
         try shot(live, "9.2_sealed", wait: 2)
         element(live, "universe.year.\(year)").tap()
         element(live, "universe.share").tap()
-        XCTAssertTrue(element(live, "universeShare.kind").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(live, "universeShare.kind").exists(within: 5))
         try shot(live, "9.2_share-sheet", wait: 3)
         live.buttons["sheet.closeButton"].tap()
         element(live, "universe.reviewRow").tap()
-        XCTAssertTrue(element(live, "yearInReview.screen").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(live, "yearInReview.screen").exists(within: 5))
         try shot(live, "9.2_story-1", wait: 1)
         for slide in 2...5 {
             element(live, "yearInReview.next").tap()
@@ -224,7 +224,7 @@ final class HandoffCaptureTests: XCTestCase {
         let app = CueApp.launch(seeded: true, sampleVideo: true)
         app.cueTabBar.buttons["Takes"].tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 15))
+        XCTAssertTrue(row.exists(within: 15))
         try shot(app, "6.2_takes", wait: 2)
     }
 
@@ -235,18 +235,18 @@ final class HandoffCaptureTests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUniverse", "sample"])
         app.cueTabBar.buttons["Profile"].tap()
         let identity = element(app, "profile.creatorCard")
-        XCTAssertTrue(identity.waitForExistence(timeout: 10))
+        XCTAssertTrue(identity.exists(within: 10))
         try shot(app, "9.1_default", wait: 2)
         identity.press(forDuration: 0.8)
-        XCTAssertTrue(app.buttons["Edit profile"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Edit profile"].exists(within: 5))
         try shot(app, "9.1_context-menu", wait: 1)
         app.buttons["Edit profile"].tap()
-        XCTAssertTrue(element(app, "editProfile.doneButton").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "editProfile.doneButton").exists(within: 5))
         try shot(app, "9.1_edit-profile", wait: 1)
         app.buttons["editProfile.cancelButton"].tap()
         let empty = CueApp.launch(seeded: false, extraArguments: ["-uiTestUniverse", "newAccount"])
         empty.cueTabBar.buttons["Profile"].tap()
-        XCTAssertTrue(element(empty, "profile.creatorCard").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(empty, "profile.creatorCard").exists(within: 10))
         try shot(empty, "9.1_new-account", wait: 2)
     }
 
@@ -257,10 +257,10 @@ final class HandoffCaptureTests: XCTestCase {
         _ = try requireFolder()
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: "Unboxing the Lumen desk lamp")
-        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["detail.recordButton"].exists(within: 10))
         try shot(app, "4.1_page", wait: 1)
         element(app, "page.editor").tap()
-        XCTAssertTrue(app.buttons["page.addCueButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["page.addCueButton"].exists(within: 5))
         try shot(app, "4.2_cues-bar", wait: 1)
     }
 
@@ -272,12 +272,12 @@ final class HandoffCaptureTests: XCTestCase {
         let app = CueApp.launch(seeded: true, sampleVideo: true, animations: true, extraArguments: ["-uiTestFakeShareSheet", "-uiTestUniverse", "sample"])
         app.cueTabBar.buttons["Takes"].tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 10))
+        XCTAssertTrue(row.exists(within: 10))
         row.tap()
-        XCTAssertTrue(app.buttons["review.shareButton"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["review.shareButton"].exists(within: 10))
         try shot(app, "6.3_review", wait: 1)
         app.buttons["review.shareButton"].tap()
-        XCTAssertTrue(element(app, "shareFlow.start").waitForExistence(timeout: 120))
+        XCTAssertTrue(element(app, "shareFlow.start").exists(within: 120))
         element(app, "shareFlow.network.reels").tap()
         element(app, "shareFlow.network.linkedin").tap()
         try shot(app, "8.1_pick-networks", wait: 1)
@@ -285,29 +285,29 @@ final class HandoffCaptureTests: XCTestCase {
         XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.explainerStart"]))
         try shot(app, "8.1_explainer-3-networks", wait: 1)
         app.buttons["shareFlow.explainerStart"].tap()
-        XCTAssertTrue(element(app, "shareFlow.step").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "shareFlow.step").exists(within: 5))
         try shot(app, "8.1_queue-step", wait: 1)
         app.buttons["shareFlow.send"].tap()
-        XCTAssertTrue(app.buttons["debug.share.complete"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["debug.share.complete"].exists(within: 10))
         app.buttons["debug.share.complete"].tap()
-        XCTAssertTrue(element(app, "shareFlow.confirm").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "shareFlow.confirm").exists(within: 10))
         try shot(app, "8.1_posted-question", wait: 1)
         app.buttons["shareFlow.live"].tap()
-        XCTAssertTrue(element(app, "shareFlow.step").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "shareFlow.step").exists(within: 5))
         app.buttons["shareFlow.postLater"].tap()
         // Post later is a menu (a reminder or none): "No reminder" leaves the network for later, as the button did.
-        XCTAssertTrue(app.buttons["shareFlow.noReminder"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["shareFlow.noReminder"].exists(within: 5))
         app.buttons["shareFlow.noReminder"].tap()
-        XCTAssertTrue(element(app, "shareFlow.step").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "shareFlow.step").exists(within: 5))
         app.buttons["shareFlow.send"].tap()
         app.buttons["debug.share.complete"].tap()
         app.buttons["shareFlow.live"].tap()
-        XCTAssertTrue(element(app, "sendoff.sheet").waitForExistence(timeout: 20))
+        XCTAssertTrue(element(app, "sendoff.sheet").exists(within: 20))
         sleep(5)
         try shot(app, "8.2_2-networks", wait: 1)
         app.buttons["sendoff.done"].tap()
         try shot(app, "debug_after_sendoff", wait: 2)
-        XCTAssertTrue(element(app, "review.postLater").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "review.postLater").exists(within: 10))
         try shot(app, "6.3_post-later", wait: 1)
     }
 
@@ -317,14 +317,14 @@ final class HandoffCaptureTests: XCTestCase {
             let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestExportsLeft", left, "-uiTestFakeShareSheet"])
             app.cueTabBar.buttons["Takes"].tap()
             let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-            XCTAssertTrue(row.waitForExistence(timeout: 10))
+            XCTAssertTrue(row.exists(within: 10))
             row.tap()
-            XCTAssertTrue(app.buttons["review.shareButton"].waitForExistence(timeout: 10))
+            XCTAssertTrue(app.buttons["review.shareButton"].exists(within: 10))
             if name == "last-free-export" { try shot(app, "6.3_last-free-export", wait: 1) }
             app.buttons["review.shareButton"].tap()
-            XCTAssertTrue(element(app, "shareFlow.start").waitForExistence(timeout: 120))
+            XCTAssertTrue(element(app, "shareFlow.start").exists(within: 120))
             app.buttons["sheet.closeButton"].tap()
-            XCTAssertTrue(app.buttons["ready.shareButton"].waitForExistence(timeout: 10))
+            XCTAssertTrue(app.buttons["ready.shareButton"].exists(within: 10))
             try shot(app, "8.1_\(name)", wait: 1)
             app.terminate()
         }
@@ -333,10 +333,10 @@ final class HandoffCaptureTests: XCTestCase {
     func test8_1_ContinuePosting() throws {
         _ = try requireFolder()
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestShareQueue"])
-        XCTAssertTrue(element(app, "continuePosting.card").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "continuePosting.card").exists(within: 15))
         try shot(app, "3.2_continue-posting-card", wait: 1)
         app.cueTabBar.buttons["Takes"].tap()
-        XCTAssertTrue(element(app, "continuePosting.card").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "continuePosting.card").exists(within: 5))
         try shot(app, "6.2_continue-posting-card", wait: 1)
     }
 
@@ -348,31 +348,31 @@ final class HandoffCaptureTests: XCTestCase {
             let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: args)
             app.cueTabBar.buttons["Takes"].tap()
             let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-            XCTAssertTrue(row.waitForExistence(timeout: 10))
+            XCTAssertTrue(row.exists(within: 10))
             row.tap()
             return app
         }
         let milestone = openTake(["-uiTestMilestone", "25", "-uiTestUniverse", "sample", "-uiTestStoryAt", "6"])
-        XCTAssertTrue(element(milestone, "milestone.sheet").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(milestone, "milestone.sheet").exists(within: 15))
         try shot(milestone, "8.3_milestone", wait: 1)
         let firstStar = openTake(["-uiTestFirstStar", "-uiTestStoryAt", "7.5"])
-        XCTAssertTrue(element(firstStar, "firstStar.sheet").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(firstStar, "firstStar.sheet").exists(within: 15))
         try shot(firstStar, "1.7_first-star", wait: 1)
         let voice = CueApp.launch(seeded: true, extraArguments: ["-uiTestUniverse", "sample"])
         voice.cueTabBar.buttons["Profile"].tap()
         let edit = voice.buttons["Edit voice"]
-        XCTAssertTrue(edit.waitForExistence(timeout: 10))
+        XCTAssertTrue(edit.exists(within: 10))
         edit.tap()
-        XCTAssertTrue(element(voice, "voicePage").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(voice, "voicePage").exists(within: 10))
         try shot(voice, "9.3_my-cue-voice", wait: 1)
         let takes = CueApp.launch(seeded: true, extraArguments: ["-uiTestUniverse", "sample"])
         takes.cueTabBar.buttons["Profile"].tap()
         element(takes, "profile.universeLink").tap()
-        XCTAssertTrue(element(takes, "universe.planet.tiktok").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(takes, "universe.planet.tiktok").exists(within: 10))
         element(takes, "universe.planet.tiktok").tap()
-        XCTAssertTrue(takes.buttons["universe.planetSeeInTakes"].waitForExistence(timeout: 5))
+        XCTAssertTrue(takes.buttons["universe.planetSeeInTakes"].exists(within: 5))
         takes.buttons["universe.planetSeeInTakes"].tap()
-        XCTAssertTrue(element(takes, "takes.scopeChip").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(takes, "takes.scopeChip").exists(within: 10))
         try shot(takes, "6.2_takes-from-planet", wait: 1)
     }
 
@@ -384,9 +384,9 @@ final class HandoffCaptureTests: XCTestCase {
             let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFirstStar", "-uiTestStoryAt", second])
             app.cueTabBar.buttons["Takes"].tap()
             let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-            XCTAssertTrue(row.waitForExistence(timeout: 10))
+            XCTAssertTrue(row.exists(within: 10))
             row.tap()
-            XCTAssertTrue(element(app, "firstStar.sheet").waitForExistence(timeout: 15))
+            XCTAssertTrue(element(app, "firstStar.sheet").exists(within: 15))
             try shot(app, "1.7_finish_\(second)", wait: 1)
             app.terminate()
         }
@@ -399,9 +399,9 @@ final class HandoffCaptureTests: XCTestCase {
             let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFirstStar", "-uiTestStoryAt", second])
             app.cueTabBar.buttons["Takes"].tap()
             let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-            XCTAssertTrue(row.waitForExistence(timeout: 10))
+            XCTAssertTrue(row.exists(within: 10))
             row.tap()
-            XCTAssertTrue(element(app, "firstStar.sheet").waitForExistence(timeout: 15))
+            XCTAssertTrue(element(app, "firstStar.sheet").exists(within: 15))
             try shot(app, "1.7_at_\(second)", wait: 1)
             app.terminate()
         }
@@ -410,9 +410,9 @@ final class HandoffCaptureTests: XCTestCase {
             let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: arguments)
             app.cueTabBar.buttons["Takes"].tap()
             let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-            XCTAssertTrue(row.waitForExistence(timeout: 10))
+            XCTAssertTrue(row.exists(within: 10))
             row.tap()
-            XCTAssertTrue(element(app, "milestone.sheet").waitForExistence(timeout: 15))
+            XCTAssertTrue(element(app, "milestone.sheet").exists(within: 15))
             try shot(app, "8.3_at_\(second)", wait: 1)
             app.terminate()
         }
@@ -428,10 +428,10 @@ final class HandoffCaptureTests: XCTestCase {
                 )
                 app.cueTabBar.buttons["Takes"].tap()
                 let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-                XCTAssertTrue(row.waitForExistence(timeout: 10))
+                XCTAssertTrue(row.exists(within: 10))
                 row.tap()
                 app.buttons["review.shareButton"].tap()
-                XCTAssertTrue(element(app, "shareFlow.start").waitForExistence(timeout: 120))
+                XCTAssertTrue(element(app, "shareFlow.start").exists(within: 120))
                 if !extra.isEmpty {
                     element(app, "shareFlow.network.reels").tap()
                     element(app, "shareFlow.network.linkedin").tap()
@@ -444,12 +444,12 @@ final class HandoffCaptureTests: XCTestCase {
                 for _ in 0..<(extra.isEmpty ? 1 : 3) {
                     XCTAssertTrue(waitAllowingPhotos(for: app.buttons["shareFlow.send"]))
                     app.buttons["shareFlow.send"].tap()
-                    XCTAssertTrue(app.buttons["debug.share.complete"].waitForExistence(timeout: 10))
+                    XCTAssertTrue(app.buttons["debug.share.complete"].exists(within: 10))
                     app.buttons["debug.share.complete"].tap()
-                    XCTAssertTrue(element(app, "shareFlow.confirm").waitForExistence(timeout: 10))
+                    XCTAssertTrue(element(app, "shareFlow.confirm").exists(within: 10))
                     app.buttons["shareFlow.live"].tap()
                 }
-                XCTAssertTrue(element(app, "sendoff.sheet").waitForExistence(timeout: 20))
+                XCTAssertTrue(element(app, "sendoff.sheet").exists(within: 20))
                 try shot(app, "8.2_\(name)_at_\(second)", wait: 1)
                 app.terminate()
             }
@@ -461,7 +461,7 @@ final class HandoffCaptureTests: XCTestCase {
         _ = try requireFolder()
         let app = CueApp.launch(seeded: false, animations: true, extraArguments: ["-uiTestOnboarding"])
         app.buttons["onboarding.getStarted"].tap()
-        XCTAssertTrue(element(app, "onboarding.topic.niche.food").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "onboarding.topic.niche.food").exists(within: 10))
         try shot(app, "1.2_00_entry", wait: 0)
         usleep(900_000)
         try shot(app, "1.2_01_before", wait: 0)
@@ -485,7 +485,7 @@ final class HandoffCaptureTests: XCTestCase {
                 var arguments = ["-uiTestOnboarding", "-uiTestOnboardingStep", step, "-uiTestAppLanguage", language, "-uiTestPermissions", "granted"]
                 if step == "voyage" { arguments += ["-uiTestPlatformAt", "4"] }
                 let app = CueApp.launch(seeded: false, extraArguments: arguments)
-                XCTAssertTrue(element(app, "onboarding.root").waitForExistence(timeout: 15))
+                XCTAssertTrue(element(app, "onboarding.root").exists(within: 15))
                 try shot(app, "1.x_\(step)_\(language)", wait: 3)
                 app.terminate()
             }
@@ -494,19 +494,19 @@ final class HandoffCaptureTests: XCTestCase {
             let arguments = ["-uiTestOnboarding", "-uiTestOnboardingStep", "voice", "-uiTestPermissions", permissions, "-uiTestVoiceFollowing", voice]
             let app = CueApp.launch(seeded: false, extraArguments: arguments)
             let next = app.buttons["onboarding.continue"]
-            XCTAssertTrue(next.waitForExistence(timeout: 15))
+            XCTAssertTrue(next.exists(within: 15))
             next.tap()
             if permissions == "denied" { try shot(app, "1.5_denied", wait: 0) }
-            XCTAssertTrue(element(app, "practice.chip").waitForExistence(timeout: 10))
+            XCTAssertTrue(element(app, "practice.chip").exists(within: 10))
             try shot(app, "1.6_\(voice)_\(permissions)", wait: 2)
             app.terminate()
         }
         let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestFirstStar", "-uiTestStoryAt", "9"])
         app.cueTabBar.buttons["Takes"].tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 10))
+        XCTAssertTrue(row.exists(within: 10))
         row.tap()
-        XCTAssertTrue(element(app, "firstStar.sheet").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "firstStar.sheet").exists(within: 15))
         try shot(app, "1.7_final", wait: 1)
     }
 }

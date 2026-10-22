@@ -58,18 +58,6 @@ struct OnboardingServiceTests {
         #expect(service.isCompleted)
     }
 
-    @Test func backGoesToTheChapterBeforeAndStopsAtTheWelcome() {
-        let (service, defaults) = make()
-        defer { defaults.tearDown() }
-        service.advance()
-        service.advance()
-        service.back()
-        #expect(service.step == .universe)
-        service.back()
-        service.back()
-        #expect(service.step == .welcome)
-    }
-
     // MARK: - Topics
 
     @Test func atMostThreeTopicsAndAFourthIsNotTakenUntilOneIsLetGo() {
@@ -83,7 +71,6 @@ struct OnboardingServiceTests {
         #expect(!service.toggle(.niche(.fitness)))
         #expect(service.toggle(.niche(.finance)))
         #expect(service.topics == [.niche(.food), .niche(.tech), .niche(.finance)])
-        #expect(service.mainTopic == .niche(.food))
     }
 
     @Test func tappingAPickedTopicLetsItGo() {

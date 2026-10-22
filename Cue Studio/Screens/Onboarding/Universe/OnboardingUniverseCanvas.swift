@@ -130,7 +130,7 @@ struct OnboardingUniverseCanvas: View {
             )
         )
         canvas.draw(
-            Text("YOU").font(.system(size: 10, weight: .semibold, design: .monospaced)).tracking(1.4).foregroundStyle(Palette.Flight.ink.opacity(0.75)),
+            Text("YOU").font(.system(size: 10, weight: .semibold, design: .monospaced)).tracking(1.4).foregroundStyle(Palette.Flight.quietInk),
             at: CGPoint(x: center.x, y: center.y + 33)
         )
     }

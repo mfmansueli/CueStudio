@@ -177,20 +177,6 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         CaptionTimelineMapping.instances(lines, in: timeline)
     }
 
-    /// Whether anything visible or audible differs from the original.
-    func differs(from original: AspectRatio) -> Bool {
-        var untouched = TakeEdit(sourceDuration: sourceDuration, aspect: original)
-        untouched.captions = captions
-        untouched.captionTranscript = captionTranscript
-        untouched.sourceTranscripts = sourceTranscripts
-        untouched.captionLanguage = captionLanguage
-        untouched.suggestions = suggestions
-        untouched.cleanUpAnalyzed = cleanUpAnalyzed
-        untouched.cleanUpAnalyzedSources = cleanUpAnalyzedSources
-        if timeline.isWhole { untouched.timeline = timeline }
-        return self != untouched
-    }
-
     /// Texts that show somewhere in `timeline`, with where (edited seconds), in order.
     func editedTexts(in timeline: EditTimeline) -> [(text: TextOverlay, span: TimeSpan)] {
         texts.compactMap { text in

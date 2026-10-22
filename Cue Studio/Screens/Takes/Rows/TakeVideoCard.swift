@@ -78,7 +78,7 @@ struct TakeVideoCard: View {
                     .lineLimit(1)
             }
             .font(.system(size: 10, weight: .semibold, design: .monospaced))
-            .foregroundStyle(Palette.Flight.ink.opacity(0.75))
+            .foregroundStyle(Palette.inkSoft)
         }
         .padding(10)
     }

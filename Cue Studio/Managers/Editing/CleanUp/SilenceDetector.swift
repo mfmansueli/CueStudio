@@ -39,9 +39,4 @@ nonisolated enum SilenceDetector {
     static func silenceLength(ofCut span: TimeSpan) -> TimeInterval {
         span.duration + 2 * padding
     }
-
-    /// Total time the silences would cut.
-    static func totalDuration(of silences: [TimeSpan]) -> TimeInterval {
-        silences.reduce(0) { $0 + $1.duration }
-    }
 }

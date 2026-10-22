@@ -75,7 +75,7 @@ nonisolated enum LanguageDetector {
         tokenizer.string = text
         tokenizer.enumerateTokens(in: text.startIndex..<text.endIndex) { range, _ in
             let sentence = String(text[range])
-            let count = Double(wordCount(of: sentence))
+            let count = Double(WordSegmenter.roughWordCount(of: sentence))
             guard count > 0 else { return true }
             let recognizer = NLLanguageRecognizer()
             recognizer.processString(sentence)
@@ -90,12 +90,6 @@ nonisolated enum LanguageDetector {
             weights[language, default: 0] += total * leanWeight
         }
         return weights.max { $0.value < $1.value }?.key ?? fallback
-    }
-
-    /// Words in a sentence; a script written without spaces counts two letters to a word.
-    private static func wordCount(of sentence: String) -> Int {
-        if WordSegmenter.containsUnspacedScript(sentence) { return sentence.filter(\.isLetter).count / 2 }
-        return sentence.split(whereSeparator: \.isWhitespace).filter { $0.contains(where: \.isLetter) }.count
     }
 
     /// The creator's languages as a lean. It is added to the read of the text, never fed to the

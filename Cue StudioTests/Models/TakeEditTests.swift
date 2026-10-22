@@ -17,20 +17,19 @@ struct TakeEditTests {
         let edit = edit()
         #expect(edit.keptSpans == [TimeSpan(start: 0, end: 60)])
         #expect(edit.editedDuration == 60)
-        #expect(!edit.differs(from: .portrait))
     }
 
     @Test func timelineChangesCount() {
         var edit = edit()
         edit.timeline.trimStart(to: 5)
         #expect(edit.editedDuration == 55)
-        #expect(edit.differs(from: .portrait))
     }
 
     @Test func pauseSuggestionsAloneChangeNothing() {
         var edit = edit()
         edit.suggestions = [CleanUpSuggestion(kind: .pause, span: TimeSpan(start: 10, end: 12), confidence: 1)]
-        #expect(!edit.differs(from: .portrait))
+        #expect(edit.keptSpans == [TimeSpan(start: 0, end: 60)])
+        #expect(edit.timeline.isWhole)
     }
 
     @Test func captionsFollowTheCuts() {

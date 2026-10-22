@@ -62,7 +62,7 @@ struct ScriptPromptBuilderV29Tests {
         profile.swearing = .never
         profile.customTags = ["Slow living"]
         profile.examples = [VoiceExample(text: "Here is how I really write.")]
-        let brief = ScriptPromptBuilder.voiceBrief(profile)
+        let brief = ScriptPromptBuilder.brief(for: profile).text
         #expect(brief.contains("“Okay, real talk.”"), "an opening the creator typed is told as typed")
         #expect(brief.contains("“Save this.”"), "so is an ending that is none of Cue's (this one has a full stop)")
         #expect(brief.contains("tutorials"))
@@ -76,10 +76,10 @@ struct ScriptPromptBuilderV29Tests {
         profile.confirm(.audience)
         profile.confirm(.tone)
         profile.swearing = .mild
-        #expect(ScriptPromptBuilder.voiceBrief(profile).contains("Never write strong swearing or slurs."))
+        #expect(ScriptPromptBuilder.brief(for: profile).text.contains("Never write strong swearing or slurs."))
     }
 
     @Test func theVoiceBriefIsEmptyUntilThereIsEnoughToSend() {
-        #expect(ScriptPromptBuilder.voiceBrief(CreatorProfile()).isEmpty)
+        #expect(ScriptPromptBuilder.brief(for: CreatorProfile()).text.isEmpty)
     }
 }

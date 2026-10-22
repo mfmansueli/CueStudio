@@ -60,7 +60,8 @@ struct PaletteContrastTests {
     ]
 
     private let textTokens: [(name: String, color: Color)] = [
-        ("ink", Palette.ink), ("ink2", Palette.ink2), ("inkHint", Palette.inkHint), ("accText", Palette.accText), ("warnText", Palette.warnText),
+        ("ink", Palette.ink), ("inkSoft", Palette.inkSoft), ("ink2", Palette.ink2), ("inkHint", Palette.inkHint), ("accText", Palette.accText),
+        ("warnText", Palette.warnText),
         ("dangerText", Palette.dangerText), ("infoText", Palette.infoText), ("successText", Palette.successText),
         ("aiText", Palette.aiText), ("aiTextStrong", Palette.aiTextStrong),
     ]
@@ -346,6 +347,7 @@ struct PaletteContrastTests {
     @Test func theSecondaryTextStepsUpWithIncreaseContrast() {
         for (normal, increased) in [(Appearance.dark, Appearance.darkIncreased)] {
             #expect(ratio(Palette.ink2, on: Palette.surface, in: increased) > ratio(Palette.ink2, on: Palette.surface, in: normal))
+            #expect(ratio(Palette.inkSoft, on: Palette.surface, in: increased) > ratio(Palette.inkSoft, on: Palette.surface, in: normal))
             #expect(ratio(Palette.ink3, on: Palette.surface, in: increased) > ratio(Palette.ink3, on: Palette.surface, in: normal))
         }
     }

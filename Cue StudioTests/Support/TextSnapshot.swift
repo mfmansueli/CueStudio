@@ -40,11 +40,6 @@ enum TextSnapshot {
         return try String(contentsOf: bundled, encoding: .utf8)
     }
 
-    /// The kept text (nil when there is none yet).
-    static func stored(_ name: String, in folder: String) -> String? {
-        try? kept(name, in: folder)
-    }
-
     static func write(_ text: String, named name: String, in folder: String) throws {
         let source = url(name, in: folder)
         let url = recordFolder.map { $0.appendingPathComponent(source.lastPathComponent) } ?? source

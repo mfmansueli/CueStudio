@@ -16,16 +16,19 @@ struct FormatChoiceTests {
         ])
     }
 
+    /// Every choice the sheet has: the grid, then "More formats".
+    private var everyChoice: [FormatChoice] { FormatChoice.gridTiles + FormatChoice.moreFormats }
+
     @Test func moreFormatsListsEveryOtherTypeInTheEnumsOrder() {
         #expect(FormatChoice.moreFormats == [.type(.opinion), .type(.launch), .type(.apology)])
-        #expect(Set(FormatChoice.allTiles.compactMap(\.scriptType)) == Set(ScriptType.allCases))
-        #expect(FormatChoice.allTiles.count == 12)
+        #expect(Set(everyChoice.compactMap(\.scriptType)) == Set(ScriptType.allCases))
+        #expect(everyChoice.count == 12)
     }
 
     @Test func noFormatIsLost() {
         // Every format that existed before v29 is still a choice: a tile or a row under "More formats".
         for type in [ScriptType.ad, .review, .tutorial, .list, .story, .opinion, .launch, .apology] {
-            #expect(FormatChoice.allTiles.contains(.type(type)), "\(type) has no tile")
+            #expect(everyChoice.contains(.type(type)), "\(type) has no tile")
         }
     }
 
@@ -44,7 +47,7 @@ struct FormatChoiceTests {
     }
 
     @Test func onlyTheSponsoredAdNeedsABrandBrief() {
-        #expect(FormatChoice.allTiles.filter(\.needsBrandBrief) == [.type(.ad)])
+        #expect(everyChoice.filter(\.needsBrandBrief) == [.type(.ad)])
     }
 
     @Test func anApologyIsSerious() {

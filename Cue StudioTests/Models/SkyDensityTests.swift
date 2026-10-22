@@ -65,8 +65,8 @@ struct SkyDensityTests {
         #expect(SkyDensity(saved: "stormy") == nil)
     }
 
-    @Test func thePickerHasFourSteps() {
-        #expect(SkyDensity.allCases.map(\.step) == [0, 1, 2, 3])
+    @Test func thePickerHasFourSkiesInOrder() {
+        #expect(SkyDensity.allCases == [.off, .serene, .adrift, .interstellar])
     }
 
     /// A choice made in Settings is kept (and read back) by the service, so every screen draws the same sky.

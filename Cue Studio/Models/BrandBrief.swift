@@ -34,19 +34,6 @@ nonisolated struct BrandBrief: Codable, Hashable, Identifiable, Sendable {
 
     /// "✦ Write the ad" needs a brand and a product.
     var isUsable: Bool { !name.trimmed.isEmpty && !product.trimmed.isEmpty }
-
-    /// The brief of an `ad` script saved before v29: the old fields become the brand. Nothing is lost: the
-    /// old "Brand & product" text is the brand, its benefit is the product and what to say, and the code or link stays.
-    init(legacyAdBrief brief: [String: String]) {
-        let brand = (brief["brand"] ?? "").trimmed
-        let benefit = (brief["benefit"] ?? "").trimmed
-        let offer = (brief["offer"] ?? "").trimmed
-        self.init(name: brand, product: benefit.isEmpty ? brand : benefit, mustSay: benefit)
-        // "oatandco.com/maya" is a link; "Code MORNING for 20% off" is kept whole as the code.
-        if !offer.isEmpty {
-            if offer.contains(" ") || !offer.contains(".") { code = offer } else { link = offer }
-        }
-    }
 }
 
 private nonisolated extension String {

@@ -19,7 +19,7 @@ struct VoiceBriefBuilderTests {
 
     @Test func aVoiceWithNothingAnsweredIsEmptyAndNeverJustTheHeader() {
         let empty = VoiceBriefBuilder.brief(for: CreatorProfile().voice)
-        #expect(empty.isEmpty && empty.lines.isEmpty && empty.closingRules.isEmpty)
+        #expect(empty.text.isEmpty && empty.lines.isEmpty && empty.closingRules.isEmpty)
     }
 
     @Test func theDefaultsOfANewProfileAreNeverSent() {
@@ -203,7 +203,7 @@ struct VoiceBriefBuilderTests {
     @Test func aVoiceThatFitsIsSentWholeAndMeasuredByTheSameText() {
         let small = VoiceBriefBuilder.brief(for: yoga)
         #expect(small.trimmed.isEmpty && !small.isLong && small.text == small.fullText)
-        #expect(small.length == small.text.count && small.cost <= VoiceBrief.budget)
+        #expect(small.cost <= VoiceBrief.budget)
     }
 
     @Test func aLongVoiceIsCutToTheBudgetExamplesFirst() {
@@ -214,7 +214,7 @@ struct VoiceBriefBuilderTests {
         #expect(full.fullCost > budget, "the test voice is long on purpose")
         let brief = VoiceBriefBuilder.brief(for: voice, budget: budget)
         #expect(brief.cost <= budget)
-        #expect(brief.fullLength == full.fullLength && brief.fullCost > budget)
+        #expect(brief.fullText.count == full.fullText.count && brief.fullCost > budget)
         #expect(brief.trimmed.first == .examples, "the examples go first")
         #expect(brief.text.contains("Rules:"), "the rules are what stays")
     }
@@ -282,7 +282,7 @@ struct VoiceBriefBuilderTests {
     @Test func everyPersonaFitsTheBudgetWithRoomForTheIdea() {
         for persona in VoicePersonas.all + VoicePersonas.languageVariants {
             let brief = VoiceBriefBuilder.brief(for: persona.profile.voice)
-            #expect(brief.cost <= VoiceBrief.budget && !brief.isEmpty, "\(persona.id): \(brief.cost)")
+            #expect(brief.cost <= VoiceBrief.budget && !brief.text.isEmpty, "\(persona.id): \(brief.cost)")
         }
     }
 }

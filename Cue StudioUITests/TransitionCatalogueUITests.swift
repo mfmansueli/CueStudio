@@ -18,7 +18,7 @@ final class TransitionCatalogueUITests: XCTestCase {
         }
         let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestCatalogue", "transition", "-uiTestStarTransition"])
         let cancel = app.buttons["transition.cancel"]
-        XCTAssertTrue(cancel.waitForExistence(timeout: 15))
+        XCTAssertTrue(cancel.exists(within: 15))
         try shot("star_1_waiting", app)
         app.buttons["catalogue.transitionReady"].tap()
         try shot("star_2_finishing", app)

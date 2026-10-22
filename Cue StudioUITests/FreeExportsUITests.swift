@@ -19,12 +19,12 @@ final class FreeExportsUITests: XCTestCase {
 
     private func openTake(_ app: XCUIApplication) {
         let tab = app.cueTabBar.buttons["Takes"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        XCTAssertTrue(row.exists(within: 5))
         row.tap()
-        XCTAssertTrue(element(app, "review.exportNotice").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "review.exportNotice").exists(within: 5))
     }
 
     func testTheLineUnderShareCountsDownAndTurnsToTheLastOne() {
@@ -52,13 +52,13 @@ final class FreeExportsUITests: XCTestCase {
         XCTAssertTrue(element(app, "review.exportNotice").label.contains("0 OF 5 FREE EXPORTS LEFT"))
         app.buttons["review.saveButton"].tap()
         let notNow = app.buttons["exportReady.notNow"]
-        XCTAssertTrue(notNow.waitForExistence(timeout: 5))
+        XCTAssertTrue(notNow.exists(within: 5))
         XCTAssertTrue(app.buttons["exportReady.trial"].exists)
         XCTAssertTrue(app.buttons["exportReady.seePro"].exists)
         notNow.tap()
         // First: a toast stays 2.4 s, and the queries below each take a moment of their own.
         XCTAssertTrue(EditorApp.toastSays(app, "export with Pro anytime", timeout: 5))
-        XCTAssertTrue(element(app, "review.exportNotice").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "review.exportNotice").exists(within: 5))
         XCTAssertTrue(element(app, "review.exportNotice").label.contains("READY · EXPORT WITH PRO"))
     }
 
@@ -67,9 +67,9 @@ final class FreeExportsUITests: XCTestCase {
         openTake(app)
         app.buttons["review.saveButton"].tap()
         let trial = app.buttons["exportReady.trial"]
-        XCTAssertTrue(trial.waitForExistence(timeout: 5))
+        XCTAssertTrue(trial.exists(within: 5))
         trial.tap()
-        XCTAssertTrue(app.buttons["paywall.closeButton"].waitForExistence(timeout: 8))
+        XCTAssertTrue(app.buttons["paywall.closeButton"].exists(within: 8))
         XCTAssertTrue(app.staticTexts["YOUR VIDEO IS READY"].exists)
         XCTAssertTrue(app.staticTexts["Keep sharing your universe."].exists)
     }
@@ -80,10 +80,10 @@ final class FreeExportsUITests: XCTestCase {
         openTake(app)
         app.buttons["review.saveButton"].tap()
         app.buttons["exportReady.seePro"].tap()
-        XCTAssertTrue(app.buttons["paywall.buyButton"].waitForExistence(timeout: 8))
+        XCTAssertTrue(app.buttons["paywall.buyButton"].exists(within: 8))
         XCTAssertTrue(app.buttons["paywall.plan.annual"].exists && app.buttons["paywall.plan.monthly"].exists)
         XCTAssertTrue(app.buttons["Restore"].exists)
         app.buttons["paywall.privacyButton"].tap()
-        XCTAssertTrue(app.navigationBars["Privacy & AI data"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Privacy & AI data"].exists(within: 5))
     }
 }

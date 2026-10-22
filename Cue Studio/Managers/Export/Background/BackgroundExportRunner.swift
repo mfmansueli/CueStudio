@@ -4,7 +4,6 @@
 //
 
 import Synchronization
-import UIKit
 
 /// Runs exports so they survive the creator leaving Cue. iOS is asked for a continued task with the GPU (Cue's frames are
 /// drawn on it): when it takes it, the export goes on in another app with its progress in a Live Activity, and if iOS ends
@@ -67,24 +66,8 @@ final class BackgroundExportRunner: BackgroundExportRunning {
         }
     }
 
-    /// `beginBackgroundTask`, ended by whoever comes first: the export, or iOS when the time is up.
+    /// `beginBackgroundTask` (`ApplicationGrace`), ended by whoever comes first: the export, or iOS when the time is up.
     static func applicationGrace() -> @MainActor () -> Void {
-        let grace = GraceTask()
-        grace.identifier = UIApplication.shared.beginBackgroundTask(withName: "Cue export") { [grace] in
-            Task { @MainActor in grace.end() }
-        }
-        return { grace.end() }
-    }
-
-    /// One `beginBackgroundTask`, ended once.
-    @MainActor
-    private final class GraceTask {
-        var identifier = UIBackgroundTaskIdentifier.invalid
-
-        func end() {
-            guard identifier != .invalid else { return }
-            UIApplication.shared.endBackgroundTask(identifier)
-            identifier = .invalid
-        }
+        ApplicationGrace.begin(named: "Cue export")
     }
 }

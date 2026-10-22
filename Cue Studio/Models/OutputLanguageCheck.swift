@@ -30,7 +30,7 @@ nonisolated enum OutputLanguageCheck {
 
     static func isPlausible(_ text: String, in expected: Locale.Language) -> Bool {
         let spoken = CueParser.stripCues(text)
-        guard wordCount(of: spoken) >= minimumWords, let code = expected.languageCode?.identifier else { return true }
+        guard WordSegmenter.roughWordCount(of: spoken) >= minimumWords, let code = expected.languageCode?.identifier else { return true }
         let recognizer = NLLanguageRecognizer()
         recognizer.processString(spoken)
         let hypotheses = recognizer.languageHypotheses(withMaximum: 3).sorted { $0.value > $1.value }
@@ -49,10 +49,5 @@ nonisolated enum OutputLanguageCheck {
         guard let heardLanguage = CueLanguage.matching(language: heard),
               let expectedLanguage = CueLanguage.matching(language: expected) else { return false }
         return heardLanguage != expectedLanguage
-    }
-
-    private static func wordCount(of text: String) -> Int {
-        if WordSegmenter.containsUnspacedScript(text) { return text.filter(\.isLetter).count / 2 }
-        return text.split(whereSeparator: \.isWhitespace).filter { $0.contains(where: \.isLetter) }.count
     }
 }

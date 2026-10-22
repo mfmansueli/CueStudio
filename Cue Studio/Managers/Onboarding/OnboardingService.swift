@@ -73,9 +73,6 @@ final class OnboardingService {
         if !topics.contains(where: { $0.id == topic.id }) { toggle(topic) }
     }
 
-    /// The topic the first script is about: the first one picked.
-    var mainTopic: OnboardingTopic? { topics.first }
-
     // MARK: - Moving through
 
     func advance() {
@@ -84,11 +81,6 @@ final class OnboardingService {
             return
         }
         step = next
-    }
-
-    func back() {
-        guard let previous = OnboardingStep(rawValue: step.rawValue - 1) else { return }
-        step = previous
     }
 
     /// The last chapter: the story is over.

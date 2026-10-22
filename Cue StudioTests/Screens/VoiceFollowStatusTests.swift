@@ -18,12 +18,6 @@ struct VoiceFollowStatusTests {
         #expect(VoiceFollowStatus(followsSpeech: false, preparation: nil) == .scrollsWhileTalking)
     }
 
-    @Test func theTagSaysWhoSetsThePace() {
-        #expect(VoiceFollowStatus.followingWords.tag(speedLabel: "0.7×") == String(localized: "AUTO"))
-        #expect(VoiceFollowStatus.scrollsWhileTalking.tag(speedLabel: "0.7×") == "0.7×")
-        #expect(VoiceFollowStatus.preparing.tag(speedLabel: "0.7×") == "0.7×")
-    }
-
     @Test func scrollingWhileTalkingNamesTheSpeed() {
         let detail = VoiceFollowStatus.scrollsWhileTalking.detail(speedLabel: "0.7×")
         #expect(detail.contains("0.7×"))

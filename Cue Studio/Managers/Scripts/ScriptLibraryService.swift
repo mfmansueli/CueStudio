@@ -36,12 +36,24 @@ final class ScriptLibraryService {
             folders = snapshot.folders
             canSave = true
         } catch {
-            // The library is there but couldn't be read (say, before the first unlock): saving now would write an empty
-            // library over it. Nothing is saved until a launch reads it.
+            // The library is there but couldn't be read (its file is protected while the iPhone is locked, and Cue can wake in
+            // the background): saving now would write an empty library over it. Nothing is saved until it is read
+            // (`reloadIfUnread`).
             canSave = false
             logger.error("Could not load scripts: \(error.localizedDescription)")
         }
         hasLoaded = true
+    }
+
+    /// The library couldn't be read at launch: read it again now, keeping the scripts and folders made since (they win over
+    /// the disk's), so nothing made meanwhile is lost and saving can go on.
+    func reloadIfUnread() {
+        guard !canSave, let saved = try? repository.load() else { return }
+        let made = Set(scripts.map(\.id))
+        scripts = (scripts + saved.scripts.filter { !made.contains($0.id) }).sorted { $0.updatedAt > $1.updatedAt }
+        folders = saved.folders + folders.filter { !saved.folders.contains($0) }
+        canSave = true
+        logger.notice("Scripts read after all: \(saved.scripts.count) on disk, \(made.count) made meanwhile")
     }
 
     func script(id: UUID?) -> Script? {
@@ -164,19 +176,49 @@ final class ScriptLibraryService {
         persist()
     }
 
-    func deleteFolder(_ name: String) {
-        folders.removeAll { $0 == name }
+    /// A folder taken away, so "Undo" can put it back where it was, with its scripts.
+    struct RemovedFolder: Equatable {
+        let name: String
+        let position: Int
+        let scriptIDs: Set<UUID>
+    }
+
+    /// Deletes the folder; its scripts stay (out of any folder).
+    @discardableResult
+    func deleteFolder(_ name: String) -> RemovedFolder? {
+        guard let position = folders.firstIndex(of: name) else { return nil }
+        let removed = RemovedFolder(name: name, position: position, scriptIDs: Set(scripts.filter { $0.folder == name }.map(\.id)))
+        folders.remove(at: position)
         for index in scripts.indices where scripts[index].folder == name {
             scripts[index].folder = nil
         }
         persist()
+        return removed
+    }
+
+    /// Undo: the folder is back where it was, with the scripts it held (unless one was moved elsewhere since).
+    func restoreFolder(_ removed: RemovedFolder) {
+        guard !folders.contains(removed.name) else { return }
+        folders.insert(removed.name, at: min(removed.position, folders.count))
+        for index in scripts.indices where removed.scriptIDs.contains(scripts[index].id) && scripts[index].folder == nil {
+            scripts[index].folder = removed.name
+        }
+        persist()
+    }
+
+    /// "Delete my Cue data": every folder, and the copies of a damaged library set aside while loading.
+    func deleteFoldersAndKeptCopies() {
+        folders = []
+        persist()
+        repository.deleteKeptCopies()
     }
 
     // MARK: - Persistence
 
     private func persist() {
+        reloadIfUnread()
         guard canSave else {
-            logger.error("Not saving scripts: the library on disk couldn't be read at launch")
+            logger.error("Not saving scripts: the library on disk still can't be read")
             return
         }
         do {

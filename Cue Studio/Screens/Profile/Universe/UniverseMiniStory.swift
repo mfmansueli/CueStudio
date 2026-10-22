@@ -18,7 +18,7 @@ struct UniverseMiniStory: View {
                 }
                 Spacer(minLength: 0)
                 Text("\(count)").font(.system(size: 13, weight: .heavy)).foregroundStyle(.white).minimumScaleFactor(0.6)
-                Text("VIDEOS").font(.system(size: 4.5, weight: .semibold, design: .monospaced)).foregroundStyle(.white.opacity(0.65))
+                Text("VIDEOS").font(.system(size: 4.5, weight: .semibold, design: .monospaced)).foregroundStyle(Palette.inkSoft)
                 Spacer(minLength: 0)
             }
             .padding(3)

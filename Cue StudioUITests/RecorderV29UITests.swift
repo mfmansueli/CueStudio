@@ -29,9 +29,9 @@ final class RecorderV29UITests: XCTestCase {
     private func launchRecorder() -> XCUIApplication {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestDemoCamera"])
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
-        XCTAssertTrue(app.buttons["prompter.recordButton"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["prompter.recordButton"].exists(within: 10))
         return app
     }
 
@@ -46,8 +46,8 @@ final class RecorderV29UITests: XCTestCase {
         try capture(app, "5.2_idle")
 
         app.buttons["prompter.recordButton"].tap()
-        XCTAssertTrue(element(app, "prompter.recordingBadge").waitForExistence(timeout: 12), "REC and the clock are in the bar")
-        XCTAssertTrue(element(app, "prompter.showControlsArea").waitForExistence(timeout: 5), "the controls gather into one row")
+        XCTAssertTrue(element(app, "prompter.recordingBadge").exists(within: 12), "REC and the clock are in the bar")
+        XCTAssertTrue(element(app, "prompter.showControlsArea").exists(within: 5), "the controls gather into one row")
         // Folded away with the reading controls: out of sight and out of reach.
         let voice = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"]
         let folded = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false OR hittable == false"), object: voice)
@@ -59,17 +59,17 @@ final class RecorderV29UITests: XCTestCase {
         let back = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == true AND hittable == true"), object: voice)
         XCTAssertEqual(XCTWaiter.wait(for: [back], timeout: 3), .completed, "the tap didn't bring the controls back")
         try capture(app, "5.2_recording_peek")
-        XCTAssertTrue(element(app, "prompter.showControlsArea").waitForExistence(timeout: 8))
+        XCTAssertTrue(element(app, "prompter.showControlsArea").exists(within: 8))
 
         app.buttons["prompter.recordButton"].tap()
-        XCTAssertTrue(app.buttons["review.shareButton"].waitForExistence(timeout: 20) || element(app, "review.takeLabel").waitForExistence(timeout: 20))
+        XCTAssertTrue(app.buttons["review.shareButton"].exists(within: 20) || element(app, "review.takeLabel").exists(within: 20))
     }
 
     /// The text box opens near the top of the screen, under the lens, not in the middle of it.
     func testTheBoxOpensNearTheTop() throws {
         let app = launchRecorder()
         let box = element(app, "prompter.text")
-        XCTAssertTrue(box.waitForExistence(timeout: 5))
+        XCTAssertTrue(box.exists(within: 5))
         XCTAssertLessThan(box.frame.minY, app.frame.height * 0.25, "the box starts in the top quarter")
         XCTAssertLessThan(box.frame.midY, app.frame.height * 0.5, "its middle is above the middle of the screen")
         try capture(app, "5.2_box_top")

@@ -22,7 +22,7 @@ struct SpeedScaleTests {
 
     /// A speed saved between two stops (160 words a minute, on the old 5-word steps) reads as the stop the slider shows, everywhere.
     @Test func aSpeedBetweenStopsReadsAsTheNearest() {
-        #expect(SpeedScale.label(forSpeed: PrompterSettings.speed(forWordsPerMinute: 160)) == SpeedScale.label(forMultiple: 1.1))
+        #expect(SpeedScale.label(forSpeed: PrompterSettings.clampedSpeed(160 / ReadTime.wordsPerMinuteAtOneX)) == SpeedScale.label(forMultiple: 1.1))
     }
 
     /// A stop is a whole number of 5-word steps, so the speed the slider stores is the one `clampedSpeed` keeps, and its label is the stop's.
@@ -33,7 +33,7 @@ struct SpeedScaleTests {
         #expect(PrompterSettings.speedRange.contains(speed))
         #expect(SpeedScale.stops[SpeedScale.nearestStop(toSpeed: speed)] == multiple)
         #expect(SpeedScale.label(forSpeed: speed) == SpeedScale.label(forMultiple: multiple))
-        let wordsPerMinute = PrompterSettings.wordsPerMinute(forSpeed: speed)
+        let wordsPerMinute = ReadTime.wordsPerMinute(speed: speed)
         #expect(abs(wordsPerMinute - wordsPerMinute.rounded()) < 0.000_001)
         #expect(Int(wordsPerMinute.rounded()) % 15 == 0)
     }

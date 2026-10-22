@@ -87,18 +87,6 @@ nonisolated enum PaywallCopy {
         }
     }
 
-    static func detail(for plan: ProPlan, monthlyEquivalent: String?, trialDays: Int?) -> String {
-        switch plan {
-        case .annual:
-            let perMonth = monthlyEquivalent.map { String(localized: "\($0)/mo") }
-            let trial = trialDays.map { String(localized: "\($0) days free") }
-            return [perMonth, trial].compactMap { $0 }.joined(separator: " · ")
-        case .monthly:
-            guard let trialDays else { return String(localized: "Cancel anytime") }
-            return String(localized: "\(trialDays) days free · cancel anytime")
-        }
-    }
-
     static func callToAction(for plan: ProPlan, displayPrice: String?, trialDays: Int?, context: PaywallContext = .profile) -> String {
         if context == .export, trialDays != nil { return String(localized: "Start free trial · export now") }
         if let trialDays { return String(localized: "Start \(trialDays)-day free trial") }

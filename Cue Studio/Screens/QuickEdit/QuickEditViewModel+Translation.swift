@@ -35,11 +35,6 @@ extension QuickEditViewModel {
         edit.captionTranslations.first { $0.language == language }
     }
 
-    /// Lines of `language`'s translation whose original changed since.
-    func outdatedLines(_ language: CueLanguage) -> [TranslatedCaptionLine] {
-        translation(language)?.outdatedLines(against: edit.captions) ?? []
-    }
-
     /// Asks whether this iPhone can translate the captions into `target`, then hands the request to
     /// the view's translation task. `replacingRevised` translates corrected lines again too;
     /// `shows` shows the captions in `target` when done.

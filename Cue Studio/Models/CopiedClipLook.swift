@@ -39,9 +39,6 @@ nonisolated struct CopiedClipLook: Hashable, Sendable {
         zoomAmount = segment.zoomAmount
     }
 
-    /// The parts that change something (a part left as recorded is still offered, so pasting can undo a look).
-    var parts: [ClipLookPart] { ClipLookPart.allCases }
-
     /// `segment` with `parts` of this look, keeping as its own only what differs from the video's (`edit`), so Filters, Adjust
     /// and Background on the whole video still reach it where the two agree.
     func pasted(_ parts: Set<ClipLookPart>, on segment: EditSegment, in edit: TakeEdit) -> EditSegment {

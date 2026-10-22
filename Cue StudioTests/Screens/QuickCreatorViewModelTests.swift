@@ -7,7 +7,7 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The Quick Creator tools in Quick edit: texts, media, voice-overs, speed, Remove Pauses,
+/// The Quick Creator tools in Quick edit: texts, media, voice-overs, a clip's speed and zoom,
 /// transitions, styles and the cover. Every change is an undo step (a drag or a sheet is one), and
 /// Done saves it on the take.
 @MainActor
@@ -46,6 +46,12 @@ struct QuickCreatorViewModelTests {
 
     private func photo(_ name: String = "photo-\(UUID().uuidString).jpg") -> ImportedMedia {
         ImportedMedia(kind: .photo, fileName: name, aspect: 1, duration: nil)
+    }
+
+    /// A cover from the frame under the playhead, made in Cover Studio and kept with Done.
+    private func makeCover(_ viewModel: QuickEditViewModel) throws {
+        viewModel.openCoverStudio()
+        viewModel.finishCoverStudio(try #require(viewModel.coverStudio))
     }
 
     // MARK: - Text
@@ -158,12 +164,12 @@ struct QuickCreatorViewModelTests {
         #expect(text.weight == .heavy)
     }
 
-    @Test func aPresetOnEveryTextIsOneStepAndLeavesThePictureAlone() async {
+    @Test func aPresetOnEveryTextIsOneStepAndLeavesThePictureAlone() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.addText(.title)
         viewModel.pickFilter(.film)
-        viewModel.useFrameAsCover()
+        try makeCover(viewModel)
         let cover = viewModel.edit.cover
         let steps = viewModel.history.past.count
         viewModel.applyPreset(.impact, to: .allTexts)
@@ -255,114 +261,53 @@ struct QuickCreatorViewModelTests {
 
     // MARK: - Speed
 
-    @Test func theWholeVideoAtDoubleSpeed() async {
+    @Test func aClipPlaysAtItsOwnSpeedInOneStep() async {
         let scenario = await makeScenario()
-        scenario.viewModel.setSpeed(.double)
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 32)
+        viewModel.splitClip()
+        let right = viewModel.edit.timeline.segments[1].id
+        #expect(viewModel.selection == .clip(right))
+        let steps = viewModel.history.past.count
+        viewModel.setClipSpeed(0.5)
+        #expect(viewModel.edit.timeline.segments.map(\.speed) == [1, 0.5])
+        #expect(viewModel.edit.editedDuration == 96)
+        #expect(viewModel.history.past.count == steps + 1)
+        // Quick moves of the slider on the same clip are one step, on the twentieths.
+        viewModel.setClipSpeed(1.52)
+        #expect(viewModel.edit.timeline.segments[1].speed == 1.5)
+        #expect(viewModel.history.past.count == steps + 1)
+        viewModel.undo()
+        #expect(viewModel.edit.timeline.segments.map(\.speed) == [1, 1])
+    }
+
+    @Test func withOneClipSpeedChangesTheWholeVideo() async {
+        let scenario = await makeScenario()
+        scenario.viewModel.setClipSpeed(2)
         #expect(scenario.viewModel.edit.editedDuration == 32)
-        #expect(scenario.viewModel.durationChange == "1:04 → 0:32")
-        #expect(scenario.viewModel.currentSpeed == .double)
         scenario.viewModel.undo()
         #expect(scenario.viewModel.edit.editedDuration == 64)
     }
 
-    @Test func oneSectionSlowerThanTheRest() async {
+    @Test func aZoomGoesOnThePickedClipAndPlaysItsStart() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 32)
-        viewModel.cut()
-        viewModel.panel = .speed
-        viewModel.speedScope = .section
+        viewModel.splitClip()
         scenario.player.seek(to: 40)
-        viewModel.setSpeed(.half)
-        #expect(viewModel.edit.timeline.segments.map(\.speed) == [1, 0.5])
-        #expect(viewModel.edit.editedDuration == 96)
-        #expect(viewModel.currentSpeed == .half)
-        #expect(viewModel.speedDetail.hasPrefix("Section 2 of 2"))
-    }
-
-    // MARK: - Remove Pauses
-
-    @Test func pausesAreFoundAndAddedUp() async {
-        let scenario = await makeScenario()
-        await scenario.viewModel.analyzeIfNeeded()
-        #expect(scenario.viewModel.removablePauses.count == 2)
-        #expect(scenario.viewModel.pausesTitle == "Found 2 pauses")
-        #expect(scenario.viewModel.pausesTotalLabel == "Total: \(TestData.decimal("3.0"))s")
-        #expect(scenario.viewModel.edit.timeline.isWhole)
-    }
-
-    @Test func thePreviewPlaysWithoutThePausesAndCancelPutsThemBack() async {
-        let scenario = await makeScenario()
-        let viewModel = scenario.viewModel
-        await viewModel.analyzeIfNeeded()
-        let steps = viewModel.history.past.count
-        viewModel.previewPauses()
-        #expect(viewModel.isPreviewingPauses)
-        #expect(viewModel.edit.editedDuration == 61)
+        viewModel.setClipZoom(.pushIn)
+        #expect(viewModel.edit.timeline.segments.map(\.zoom) == [nil, .pushIn])
+        // The first seconds of the clip play to show it.
+        #expect(scenario.player.reviewedPart == 32...(32 + QuickEditViewModel.zoomPreviewLength))
         #expect(scenario.player.isPlaying)
-        #expect(viewModel.history.past.count == steps)
-        // Still says what it takes out.
-        #expect(viewModel.pausesTitle == "Found 2 pauses")
-
-        viewModel.cancelPausePreview()
-        #expect(!viewModel.isPreviewingPauses)
-        #expect(viewModel.edit.timeline.isWhole)
-        #expect(viewModel.removablePauses.count == 2)
-    }
-
-    @Test func applyAfterThePreviewIsOneUndoStep() async {
-        let scenario = await makeScenario()
-        let viewModel = scenario.viewModel
-        await viewModel.analyzeIfNeeded()
-        let steps = viewModel.history.past.count
-        viewModel.previewPauses()
-        viewModel.applyPauses()
-        #expect(!viewModel.isPreviewingPauses)
-        #expect(viewModel.edit.editedDuration == 61)
-        #expect(viewModel.history.past.count == steps + 1)
-        #expect(scenario.toast.message == "Removed 2 pauses · \(TestData.decimal("3.0"))s")
+        viewModel.setZoomIntensity(150)
+        #expect(viewModel.edit.timeline.segments[1].zoomAmount == 1)
+        viewModel.setClipZoom(nil)
+        #expect(viewModel.edit.timeline.segments[1].zoom == nil)
         viewModel.undo()
-        #expect(viewModel.edit.timeline.isWhole)
-        #expect(viewModel.removablePauses.count == 2)
-    }
-
-    @Test func leavingTheToolOrUndoingDropsThePreview() async {
-        let scenario = await makeScenario()
-        let viewModel = scenario.viewModel
-        await viewModel.analyzeIfNeeded()
-        viewModel.panel = .pauses
-        viewModel.previewPauses()
-        viewModel.panel = nil
-        #expect(viewModel.edit.timeline.isWhole)
-        viewModel.panel = .pauses
-        viewModel.previewPauses()
-        // Switching to Review puts the pauses back too.
-        viewModel.cleanUpSection = .review
-        #expect(viewModel.edit.timeline.isWhole)
-        viewModel.cleanUpSection = .pauses
-        viewModel.previewPauses()
-        #expect(viewModel.canUndo)
         viewModel.undo()
-        #expect(viewModel.edit.timeline.isWhole)
-        #expect(!viewModel.isPreviewingPauses)
-    }
-
-    @Test func doneDuringThePreviewKeepsWhatWasHeard() async {
-        let scenario = await makeScenario()
-        await scenario.viewModel.analyzeIfNeeded()
-        scenario.viewModel.previewPauses()
-        scenario.viewModel.done()
-        #expect(scenario.takes.takes[0].edit?.editedDuration == 61)
-    }
-
-    @Test func applyWithoutAPreviewTakesThePausesOut() async {
-        let scenario = await makeScenario()
-        await scenario.viewModel.analyzeIfNeeded()
-        scenario.viewModel.applyPauses()
-        #expect(scenario.viewModel.edit.keptSpans == [
-            TimeSpan(start: 0, end: 10), TimeSpan(start: 12, end: 30), TimeSpan(start: 31, end: 64),
-        ])
-        #expect(scenario.viewModel.removablePauses.isEmpty)
+        viewModel.undo()
+        #expect(viewModel.edit.timeline.segments.allSatisfy { $0.zoom == nil })
     }
 
     // MARK: - Transitions
@@ -372,7 +317,7 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         for time in [20.0, 40] {
             scenario.player.seek(to: time)
-            viewModel.cut()
+            viewModel.splitClip()
         }
         #expect(viewModel.cuts.map(\.index) == [1, 2])
         let steps = viewModel.history.past.count
@@ -564,21 +509,22 @@ struct QuickCreatorViewModelTests {
         #expect(scenario.player.currentTime == 12)
         #expect(scenario.player.isPlaying)
 
-        viewModel.keepVoiceOver()
-        #expect(viewModel.reviewedVoiceOverID == nil)
         viewModel.undo()
         #expect(viewModel.edit.voiceOvers.isEmpty)
     }
 
-    @Test func redoRecordsAgainFromTheSameMoment() async {
+    @Test func reRecordRecordsAgainFromTheSameMoment() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 8)
         await viewModel.startVoiceOver()
         viewModel.stopVoiceOver()
         scenario.player.seek(to: 30)
-        await viewModel.redoVoiceOver()
+        viewModel.reRecordVoiceOver(try #require(viewModel.edit.voiceOvers.first?.id))
         #expect(viewModel.edit.voiceOvers.isEmpty)
+        #expect(scenario.player.currentTime == 8)
+        #expect(viewModel.panel == .voiceOver)
+        await viewModel.startVoiceOver()
         #expect(viewModel.recordingStart == 8)
         viewModel.stopVoiceOver()
         #expect(viewModel.edit.voiceOvers.map(\.anchor) == [8])
@@ -598,10 +544,12 @@ struct QuickCreatorViewModelTests {
         await viewModel.startVoiceOver()
         viewModel.stopVoiceOver()
         let id = viewModel.edit.voiceOvers[0].id
-        viewModel.setVoiceOverVolume(id, volume: 3)
+        #expect(viewModel.selection == .voiceOver(id))
+        viewModel.setTargetVolume(3)
         #expect(viewModel.edit.voiceOvers[0].volume == 2)
-        viewModel.setVoiceOverVolume(id, volume: 0.4)
+        viewModel.setTargetVolume(0.4)
         #expect(viewModel.edit.voiceOvers[0].volume == 0.4)
+        #expect(viewModel.targetVolume == 0.4)
         viewModel.deleteVoiceOver(id)
         #expect(viewModel.edit.voiceOvers.isEmpty)
     }
@@ -668,25 +616,9 @@ struct QuickCreatorViewModelTests {
 
     // MARK: - Cover
 
-    @Test func theFrameUnderThePlayheadBecomesTheCover() async {
+    @Test func theCoverKeepsItsStyleWhenTheTypeChanges() async throws {
         let scenario = await makeScenario()
-        let viewModel = scenario.viewModel
-        scenario.player.seek(to: 20)
-        viewModel.useFrameAsCover()
-        #expect(viewModel.edit.cover?.source.frame?.time == 20)
-        viewModel.setCoverTitle("3 erros que todo creator comete")
-        viewModel.setCoverTitlePosition(2)
-        #expect(viewModel.edit.cover?.title == "3 erros que todo creator comete")
-        #expect(viewModel.edit.cover?.titleY == 1 - OverlayPoint.margin)
-        viewModel.undo()
-        viewModel.undo()
-        viewModel.undo()
-        #expect(viewModel.edit.cover == nil)
-    }
-
-    @Test func theCoverKeepsItsStyleWhenTheTypeChanges() async {
-        let scenario = await makeScenario()
-        scenario.viewModel.useFrameAsCover()
+        try makeCover(scenario.viewModel)
         let style = scenario.viewModel.edit.cover?.style
         scenario.viewModel.applyPreset(.soft, to: .allTexts)
         scenario.viewModel.applyPreset(.soft, to: .allCaptions)
@@ -695,13 +627,14 @@ struct QuickCreatorViewModelTests {
 
     // MARK: - Done
 
-    @Test func doneSavesEverythingOnTheTake() async {
+    @Test func doneSavesEverythingOnTheTake() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.addText(.title)
         viewModel.addMedia(photo("kept.jpg"))
-        viewModel.setSpeed(.oneAndAHalf)
-        viewModel.useFrameAsCover()
+        viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
+        viewModel.setClipSpeed(1.5)
+        try makeCover(viewModel)
         viewModel.done()
         let saved = scenario.takes.takes[0]
         #expect(saved.edit?.texts.count == 1)

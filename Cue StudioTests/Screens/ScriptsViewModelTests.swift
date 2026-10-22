@@ -67,6 +67,20 @@ struct ScriptsViewModelTests {
         #expect(toast.message == "Folder created")
     }
 
+    @Test func deletingTheFolderOnShowShowsAllAndUndoBringsItBack() throws {
+        let script = TestData.script(folder: "Ideas")
+        let (viewModel, library, toast) = makeViewModel(scripts: [script], folders: ["Ideas"])
+        viewModel.filter = .folder("Ideas")
+        viewModel.deleteFolder("Ideas")
+        #expect(viewModel.filter == .all)
+        #expect(!viewModel.filters.contains(.folder("Ideas")))
+        #expect(library.script(id: script.id) != nil, "the scripts stay")
+        #expect(toast.message == "Folder deleted")
+        try #require(toast.action).perform()
+        #expect(library.folders == ["Ideas"])
+        #expect(library.script(id: script.id)?.folder == "Ideas")
+    }
+
     @Test func summaryCountsTheScriptsAndHowManyAreReady() {
         let recorded = TestData.script(title: "Recorded"), draft = TestData.script(title: "Draft", isFinished: false)
         let (viewModel, _, _) = makeViewModel(scripts: [TestData.script(title: "Ready"), draft, recorded])

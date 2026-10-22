@@ -5,6 +5,7 @@
 
 #if DEBUG
 import AVFoundation
+import os
 import UIKit
 
 /// Small real videos behind sample takes, so UI tests can play, scrub, trim and cut in Quick
@@ -19,13 +20,33 @@ enum SampleVideo {
     nonisolated private static let size = CGSize(width: 144, height: 256)
     nonisolated private static let framesPerSecond: Int32 = 8
 
-    /// Writes a video for each take whose file isn't there yet, as long as the take.
+    /// Writes a video for each take whose file isn't there yet, as long as the take. One already there is kept only if it plays
+    /// as long as the take: the temporary folder outlives launches, and a file a struggling Simulator once left broken was opened
+    /// blank by every later test.
     static func writeMissing(for takes: [Take], in repository: TakeRepository) {
         for take in takes {
             let url = repository.videoURL(named: take.fileName)
-            guard !FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else { continue }
+            if FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) {
+                guard !plays(url, seconds: take.duration) else { continue }
+                try? FileManager.default.removeItem(at: url)
+            }
             write(to: url, seconds: take.duration)
         }
+    }
+
+    /// Whether `url` is a video about `seconds` long, read off the main actor (blocking, like `write`).
+    nonisolated private static func plays(_ url: URL, seconds: TimeInterval) -> Bool {
+        let answer = OSAllocatedUnfairLock(initialState: false)
+        let checked = DispatchSemaphore(value: 0)
+        Task.detached {
+            let asset = AVURLAsset(url: url)
+            let duration = (try? await asset.load(.duration))?.seconds ?? 0
+            let hasVideo = !((try? await asset.loadTracks(withMediaType: .video)) ?? []).isEmpty
+            answer.withLock { $0 = hasVideo && abs(duration - seconds) < 0.5 }
+            checked.signal()
+        }
+        checked.wait()
+        return answer.withLock { $0 }
     }
 
     /// Deletes the videos behind `takes`, if an earlier launch wrote them.

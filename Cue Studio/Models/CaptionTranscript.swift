@@ -24,9 +24,4 @@ nonisolated struct CaptionTranscript: Codable, Hashable, Sendable {
     static let currentVersion = 2
 
     var isCurrent: Bool { (version ?? 1) >= Self.currentVersion }
-
-    /// The words heard between two moments of the recording, as said.
-    func text(in span: TimeSpan) -> String {
-        CaptionText.joined(words.filter { $0.end > span.start + 0.01 && $0.start < span.end - 0.01 }.map(\.text))
-    }
 }

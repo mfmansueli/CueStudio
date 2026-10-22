@@ -34,7 +34,7 @@ struct ScriptsLogbookSection: View {
                     Button { presentation.present(.logbook) } label: {
                         Text("Open Logbook ›")
                             .font(.system(size: 14.5, weight: .semibold))
-                            .foregroundStyle(Palette.ink.opacity(0.75))
+                            .foregroundStyle(Palette.inkSoft)
                             .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
                             .contentShape(Rectangle())
                     }

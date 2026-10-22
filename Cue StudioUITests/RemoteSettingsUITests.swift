@@ -17,9 +17,9 @@ final class RemoteSettingsUITests: XCTestCase {
     private func openRemote(_ app: XCUIApplication) {
         app.cueTabBar.buttons["Settings"].tap()
         let row = app.descendants(matching: .any)["settings.remote"].firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 5))
+        XCTAssertTrue(row.exists(within: 5))
         row.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["remote.statusHero"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["remote.statusHero"].exists(within: 5))
     }
 
     private func capture(_ app: XCUIApplication, _ name: String) throws {
@@ -35,18 +35,18 @@ final class RemoteSettingsUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         openRemote(app)
         let connect = app.buttons["remote.connectButton"]
-        XCTAssertTrue(connect.waitForExistence(timeout: 5))
+        XCTAssertTrue(connect.exists(within: 5))
         XCTAssertTrue(app.descendants(matching: .any)["settings.enterCode"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["remote.capabilities"].exists)
         try capture(app, "remote_1_apart")
         connect.tap()
         let code = app.descendants(matching: .any)["remote.code"].firstMatch
-        XCTAssertTrue(code.waitForExistence(timeout: 5))
+        XCTAssertTrue(code.exists(within: 5))
         XCTAssertTrue(code.label.hasPrefix("Code "), code.label)
         XCTAssertTrue(app.descendants(matching: .any)["remote.status"].exists)
         try capture(app, "remote_2_pairing")
         app.buttons["remote.cancelButton"].tap()
-        XCTAssertTrue(connect.waitForExistence(timeout: 5))
+        XCTAssertTrue(connect.exists(within: 5))
     }
 
     /// A remote connects: its name, the capabilities lit, Disconnect; and let go, the invitation is back.
@@ -55,12 +55,12 @@ final class RemoteSettingsUITests: XCTestCase {
         openRemote(app)
         app.buttons["remote.connectButton"].tap()
         let connected = app.descendants(matching: .any)["remote.connected"].firstMatch
-        XCTAssertTrue(connected.waitForExistence(timeout: 10))
+        XCTAssertTrue(connected.exists(within: 10))
         XCTAssertTrue(connected.label.contains("iPad"), connected.label)
         try capture(app, "remote_3_linked")
         let disconnect = app.buttons["remote.disconnectButton"]
         XCTAssertTrue(disconnect.exists)
         disconnect.tap()
-        XCTAssertTrue(app.buttons["remote.connectButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["remote.connectButton"].exists(within: 5))
     }
 }

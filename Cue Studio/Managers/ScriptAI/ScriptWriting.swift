@@ -82,11 +82,6 @@ extension ScriptWriting {
     /// Writers that run nothing in the background (tests, a device without Apple Intelligence) are never busy.
     var isBusyForeground: Bool { false }
 
-    /// Ideas with no voice behind them.
-    func themeIdeas(for niches: [Niche], language: CueLanguage?) async throws -> [ThemeIdea] {
-        try await themeIdeas(for: niches, language: language, voice: nil)
-    }
-
     /// Writers that don't know languages (tests) take any.
     func writingFailure(in languages: [Locale.Language]) -> AIPlanFailure? { nil }
 

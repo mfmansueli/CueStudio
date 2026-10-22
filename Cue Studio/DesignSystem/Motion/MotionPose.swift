@@ -22,7 +22,6 @@ nonisolated struct MotionPose: Sendable {
     /// 0...1 along the layer's `offset-path`.
     var along: Double?
     var color: Color?
-    var background: Color?
     var brightness = 1.0
     var glowRadius = 0.0
     var glowSpread = 0.0
@@ -30,11 +29,8 @@ nonisolated struct MotionPose: Sendable {
     /// 0...1 of the width hidden from the right (a reveal), when the board clips with `inset(0 n% 0 0)`.
     var clipRight: Double?
     var topPct: Double?
-    var radius: Double?
     var bgX: Double?
 
     /// The part of an SVG stroke that is drawn (`Shape.trim(from: 0, to:)`).
     var drawn: Double { 1 - (dash ?? 0) / 100 }
-
-    var scale: Double { (sx + sy) / 2 }
 }

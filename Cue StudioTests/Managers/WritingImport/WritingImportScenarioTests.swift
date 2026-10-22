@@ -132,7 +132,7 @@ struct WritingImportScenarioTests {
         let request = factory(service).request(idea: "How to start investing with little money", platform: .tiktok, format: nil)
         let voice = try #require(request.voice)
         let brief = VoiceBriefBuilder.brief(for: voice)
-        #expect(brief.length <= VoiceBrief.budget)
+        #expect(brief.text.count <= VoiceBrief.budget)
         #expect(brief.text.contains("Here is how they write"))
         #expect(brief.text.contains("They almost never use exclamation marks."))
         #expect(ScriptPromptBuilder.instructions(for: request).contains("Here is how they write"))

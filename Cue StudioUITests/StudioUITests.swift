@@ -28,7 +28,7 @@ final class StudioUITests: XCTestCase {
     private func launchStudio() -> XCUIApplication {
         let app = CueApp.launch(seeded: true)
         app.openStudio(titled: "Oat & Co. — sponsored read")
-        XCTAssertTrue(app.buttons["prompter.playButton"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["prompter.playButton"].exists(within: 10))
         return app
     }
 
@@ -41,7 +41,7 @@ final class StudioUITests: XCTestCase {
         let scrollMode = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch
         XCTAssertTrue(scrollMode.buttons["Voice"].exists && scrollMode.buttons["Steady"].exists)
         XCTAssertTrue(element(app, "prompter.speedSlider").exists)
-        XCTAssertTrue(element(app, "studio.timeLeft").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "studio.timeLeft").exists(within: 5))
         try capture(app, "studio_idle")
     }
 
@@ -51,7 +51,7 @@ final class StudioUITests: XCTestCase {
         XCTAssertTrue(size.exists)
         XCTAssertFalse(element(app, "studio.slider.size").exists)
         size.tap()
-        XCTAssertTrue(element(app, "studio.slider.size").waitForExistence(timeout: 3))
+        XCTAssertTrue(element(app, "studio.slider.size").exists(within: 3))
         XCTAssertTrue(size.isSelected)
         // Points, over the range of Settings › Prompter (12 to 56).
         let sizeSlider = app.sliders["studio.slider.size"]
@@ -61,7 +61,7 @@ final class StudioUITests: XCTestCase {
         try capture(app, "studio_size")
 
         app.buttons["studio.adjust.line"].tap()
-        XCTAssertTrue(element(app, "studio.slider.line").waitForExistence(timeout: 3))
+        XCTAssertTrue(element(app, "studio.slider.line").exists(within: 3))
         XCTAssertFalse(element(app, "studio.slider.size").exists, "one slider at a time")
 
         app.buttons["studio.adjust.line"].tap()
@@ -84,7 +84,7 @@ final class StudioUITests: XCTestCase {
     func testTheBarFoldsItsAdjustmentsAndOpensThemAgain() throws {
         let app = launchStudio()
         let handle = element(app, "prompter.sheetHandle")
-        XCTAssertTrue(handle.waitForExistence(timeout: 5))
+        XCTAssertTrue(handle.exists(within: 5))
         XCTAssertTrue(app.buttons["studio.adjust.size"].isHittable)
         handle.tap()
         sleep(1)
@@ -101,7 +101,7 @@ final class StudioUITests: XCTestCase {
         let app = launchStudio()
         let play = app.buttons["prompter.playButton"]
         play.tap()
-        XCTAssertTrue(element(app, "prompter.countdown").waitForExistence(timeout: 3))
+        XCTAssertTrue(element(app, "prompter.countdown").exists(within: 3))
         try capture(app, "studio_countdown")
         let playing = NSPredicate(format: "label == 'Pause'")
         expectation(for: playing, evaluatedWith: play)

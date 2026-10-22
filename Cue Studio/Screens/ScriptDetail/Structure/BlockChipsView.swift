@@ -35,7 +35,6 @@ struct BlockChipsView: View {
                 .kerning(0.6)
             Text(DurationText.short(summary.seconds))
                 .monospacedDigit()
-                .foregroundStyle(foreground.opacity(0.85))
         }
         .font(.caption.weight(.semibold))
         .foregroundStyle(foreground)

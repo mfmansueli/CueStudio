@@ -19,7 +19,6 @@ final class ScriptStarter {
     private let presentation: PresentationService
     private let ideaDraft: IdeaDraftService
     private let transition: IdeaTransitionService
-    private let sky: SkyMemory
     private let writer: ScriptWriting
     private let toast: ToastService
     /// Told when a script was written from an idea of Find inspiration's (what of its brief the creator's text still said): the strongest sign of
@@ -29,12 +28,11 @@ final class ScriptStarter {
     init(
         library: ScriptLibraryService, rules: PlatformRulesService, profile: CreatorProfileService,
         languages: LanguageService, presentation: PresentationService, ideaDraft: IdeaDraftService,
-        transition: IdeaTransitionService, sky: SkyMemory, writer: ScriptWriting, toast: ToastService
+        transition: IdeaTransitionService, writer: ScriptWriting, toast: ToastService
     ) {
         self.writer = writer
         self.toast = toast
         self.transition = transition
-        self.sky = sky
         self.library = library
         self.rules = rules
         self.profile = profile
@@ -86,7 +84,6 @@ final class ScriptStarter {
             from: origin ?? .zero, idea: text, platformName: request.platform.label,
             abort: { [weak self] in self?.abort(scriptID) },
             arrive: { [weak self] in
-                self?.sky.addStar()
                 if let brief = request.brief { self?.briefWritten?(brief) }
                 whenWritten?(scriptID)
             }

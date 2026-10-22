@@ -63,7 +63,9 @@ struct MotionTests {
 
     @Test func aZoomTravelsWithItsSection() throws {
         var timeline = EditTimeline(sourceDuration: 30)
-        timeline.setZoom(.pushIn, forSegmentAt: 0)
+        var zoomed = timeline.segments[0]
+        zoomed.zoom = .pushIn
+        timeline.replaceSegment(zoomed)
         timeline.split(atEdited: 10)
         #expect(timeline.segments.map(\.zoom) == [.pushIn, .pushIn])
         let copy = timeline.duplicateSegment(id: timeline.segments[1].id)

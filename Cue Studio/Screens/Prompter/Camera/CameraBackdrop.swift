@@ -94,8 +94,8 @@ struct CameraBackdrop: View {
                     .font(.subheadline)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)
-                if showsSettings, let url = URL(string: UIApplication.openSettingsURLString) {
-                    Button("Open Settings") { openURL(url) }
+                if showsSettings {
+                    Button("Open Settings") { openURL.openAppSettings() }
                         .buttonStyle(.cueGlass(.compact, expands: false))
                         .padding(.top, 6)
                 }

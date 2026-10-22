@@ -26,13 +26,6 @@ struct PaywallCopyTests {
         #expect(PaywallCopy.price(for: .monthly, displayPrice: nil) == "… / month")
     }
 
-    @Test func planDetails() {
-        #expect(PaywallCopy.detail(for: .annual, monthlyEquivalent: "$3.33", trialDays: 7) == "$3.33/mo · 7 days free")
-        #expect(PaywallCopy.detail(for: .annual, monthlyEquivalent: "$3.33", trialDays: nil) == "$3.33/mo")
-        #expect(PaywallCopy.detail(for: .monthly, monthlyEquivalent: nil, trialDays: 7) == "7 days free · cancel anytime")
-        #expect(PaywallCopy.detail(for: .monthly, monthlyEquivalent: nil, trialDays: nil) == "Cancel anytime")
-    }
-
     @Test func savingsBadgeOnlyForRealSavings() {
         #expect(PaywallCopy.savingsBadge(percent: 58) == "SAVE 58%")
         #expect(PaywallCopy.savingsBadge(percent: 0) == nil)

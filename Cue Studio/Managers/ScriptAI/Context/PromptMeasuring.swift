@@ -14,8 +14,3 @@ nonisolated protocol PromptMeasuring: Sendable {
     /// The tokens of a request: its instructions, its prompt and, for guided generation, the answer's structure.
     func tokens(instructions: String, prompt: String, structure: ResponseStructure) async -> Int?
 }
-
-/// The structure the answer is written in (`@Generable`), which the framework puts in the request.
-nonisolated enum ResponseStructure: Sendable {
-    case script, ideas, text
-}

@@ -60,7 +60,7 @@ nonisolated extension EditedComposition {
     /// says), by clip, with the assets to keep while the composition is built. A clip whose sound can't be rendered is stretched
     /// in steps. Throws `CancellationError` when the build is dropped meanwhile.
     static func curveSounds(
-        for segments: [EditSegment], take: URL, sound: (UUID?) -> AVAssetTrack?
+        for segments: [EditSegment], sound: (UUID?) -> AVAssetTrack?
     ) async throws -> (assets: [AVURLAsset], tracks: [UUID: AVAssetTrack]) {
         var assets: [AVURLAsset] = []
         var tracks: [UUID: AVAssetTrack] = [:]

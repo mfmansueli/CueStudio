@@ -15,12 +15,6 @@ nonisolated enum EditorSelection: Hashable, Sendable {
     case voiceOver(UUID)
     case media(UUID)
 
-    var id: UUID {
-        switch self {
-        case .clip(let id), .text(let id), .caption(let id), .music(let id), .voiceOver(let id), .media(let id): id
-        }
-    }
-
     /// The track it sits on.
     var lane: TimelineLane {
         switch self {

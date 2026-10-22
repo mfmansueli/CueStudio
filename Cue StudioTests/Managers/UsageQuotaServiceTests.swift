@@ -96,4 +96,34 @@ struct UsageQuotaServiceTests {
         _ = UsageQuotaService(counter: FakeExportCountStore(), defaults: store.defaults)
         #expect(store.defaults.object(forKey: DefaultsKey.legacyAIScriptsUsedPrefix + "2026-09") == nil)
     }
+
+    /// Cue woke in the background before the first unlock: the Keychain can't be read. That is not "none used", and the real
+    /// count is never written over.
+    @Test func aCountThatCouldntBeReadIsNeverWrittenOverAndCountsOnceRead() {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        let counter = FakeExportCountStore(count: 4)
+        counter.isLocked = true
+        let quota = UsageQuotaService(counter: counter, defaults: store.defaults)
+        quota.recordExport(tier: .free)
+        #expect(counter.count == 4, "not saved over the real count")
+
+        counter.isLocked = false
+        quota.reloadIfUnread()
+        #expect(quota.exportsUsed == 5, "the 4 before and the one made while locked")
+        #expect(counter.count == 5)
+        #expect(!quota.canExport(tier: .free))
+    }
+
+    @Test func theNextExportAfterTheUnlockReadsTheCountFirst() {
+        let store = TestDefaults()
+        defer { store.tearDown() }
+        let counter = FakeExportCountStore(count: 2)
+        counter.isLocked = true
+        let quota = UsageQuotaService(counter: counter, defaults: store.defaults)
+        counter.isLocked = false
+        quota.recordExport(tier: .free)
+        #expect(counter.count == 3)
+        #expect(quota.exportsLeft(for: .free) == 2)
+    }
 }

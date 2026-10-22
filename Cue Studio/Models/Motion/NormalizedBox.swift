@@ -33,14 +33,6 @@ nonisolated struct NormalizedBox: Codable, Hashable, Sendable {
     var center: CGPoint { CGPoint(x: midX, y: midY) }
     var area: Double { width * height }
 
-    /// How much two boxes cover each other (intersection over union), 0 to 1.
-    func overlap(with other: NormalizedBox) -> Double {
-        let shared = sharedArea(with: other)
-        guard shared > 0 else { return 0 }
-        let union = area + other.area - shared
-        return union > 0 ? shared / union : 0
-    }
-
     /// The area the two boxes share.
     func sharedArea(with other: NormalizedBox) -> Double {
         let left = max(x, other.x), right = min(x + width, other.x + other.width)

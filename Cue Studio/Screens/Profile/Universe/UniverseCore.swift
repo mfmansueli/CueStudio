@@ -19,8 +19,6 @@ struct UniverseCore: View {
     var style: Style = .compact
     var animates = true
 
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
     var body: some View {
         AmbientTimeline(paused: !animates) { ambient in
             let time = animates ? ambient.seconds : 0
@@ -85,15 +83,12 @@ struct UniverseCore: View {
         Canvas { canvas, size in
             let center = CGPoint(x: size.width / 2, y: size.height / 2)
             for (radius, color) in [(15.0, Palette.World.mint), (19, Palette.World.warm), (23, Palette.World.pink)] {
-                canvas.stroke(Self.circle(center, radius), with: .color(color.opacity(0.45)), lineWidth: 1)
+                canvas.stroke(LightFX.disc(center, radius), with: .color(color.opacity(0.45)), lineWidth: 1)
             }
         }
         .frame(width: boxSize, height: boxSize)
     }
 
-    private static func circle(_ center: CGPoint, _ radius: CGFloat) -> Path {
-        Path(ellipseIn: CGRect(x: center.x - radius, y: center.y - radius, width: radius * 2, height: radius * 2))
-    }
 }
 
 #if DEBUG

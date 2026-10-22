@@ -40,7 +40,5 @@ nonisolated struct VoyageProgress: Equatable, Sendable {
         isComplete ? nil : VoyageStep.allCases.first { !done.contains($0) }
     }
 
-    var doneCount: Int { done.count }
-
     static var stepCount: Int { VoyageStep.allCases.count }
 }

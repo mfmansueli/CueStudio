@@ -129,15 +129,3 @@ struct OnboardingView: View {
         presentation.prompter = PrompterLaunch(scriptID: scriptID, mode: .selfie, isPractice: true)
     }
 }
-
-/// What is under the prompter while the creator practices.
-struct PracticeChapter: View {
-    var body: some View {
-        VStack {
-            Spacer()
-            ProgressView().tint(Palette.accText)
-            Spacer()
-        }
-        .accessibilityHidden(true)
-    }
-}

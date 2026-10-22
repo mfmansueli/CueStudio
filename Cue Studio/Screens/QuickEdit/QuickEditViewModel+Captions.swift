@@ -23,18 +23,6 @@ extension QuickEditViewModel {
         edit.captions.contains { $0.isRevised || $0.origin == .manual }
     }
 
-    /// Shows or hides the captions; the first time they show, they are made from the take.
-    func setShowsCaptions(_ shows: Bool) async {
-        edit.showsCaptions = shows
-        if !shows {
-            cancelCaptions() // A late recognition result must not turn captions back on.
-            return
-        }
-        guard edit.captions.isEmpty, !captionState.isWorking else { return }
-        makeCaptions()
-        await captionTask?.value
-    }
-
     /// Listens to the take (and a montage's other recordings) and makes the lines. Asks first when
     /// that would replace lines the creator corrected (`confirmsCaptionReplacement`), unless
     /// `replacingRevised`.
@@ -164,12 +152,6 @@ extension QuickEditViewModel {
         edit.captions.filter { !$0.hasWordTiming }.count
     }
 
-    /// A preset for the captions (one undo step); turns them on when they were off.
-    func setCaptionPreset(_ preset: TypePreset) async {
-        applyPreset(preset, to: .allCaptions)
-        if !edit.showsCaptions { await setShowsCaptions(true) }
-    }
-
     /// Selecting a look never enables transcription. Generation has its own explicit control.
     /// With `reveal` (the way of showing words a complete preset brings), both change in the same
     /// undo step, so one Undo goes back to the look before, never to a mix of the two.
@@ -283,38 +265,12 @@ extension QuickEditViewModel {
         edit.editedCaptionInstances.first { $0.line.id == id }?.cueID ?? id
     }
 
-    /// What was heard over the line's time, before any correction; nil for a line written by hand
-    /// or when nothing was heard there.
-    func heardText(of cue: CaptionCue) -> String? {
-        guard cue.origin == .speech, let transcript = transcript(of: cue.sourceID) else { return nil }
-        let heard = transcript.text(in: cue.span)
-        return heard.isEmpty ? nil : heard
-    }
-
     /// Where the line plays in the edit (edited seconds); nil when it was cut.
     func editedSpan(ofCaption id: UUID) -> TimeSpan? {
         edit.editedCaptions.first { $0.id == id }?.span
     }
 
     // MARK: - Correcting
-
-    /// A new line at the playhead, written by hand (the way to caption a take no model can hear),
-    /// open for writing.
-    func addCaption() {
-        guard isReady else { return }
-        player.pause()
-        // On the recording that plays there (another take's, in a montage).
-        let pinned = edit.timeline.anchoredSpan(forEdited: placement(at: player.currentTime, length: 2))
-        var cue = CaptionCue(text: "", start: pinned.span.start, end: pinned.span.end, origin: .manual)
-        cue.sourceID = pinned.anchor.sourceID
-        change { snapshot in
-            var lines = snapshot.captions ?? []
-            lines.append(cue)
-            snapshot.captions = lines.sorted { $0.start < $1.start }
-        }
-        edit.showsCaptions = true
-        editingCaptionID = cue.id
-    }
 
     /// New words for a line: the times the voice gave are kept where the words still match.
     func setCaptionText(_ id: UUID, _ text: String) {
@@ -399,7 +355,6 @@ extension QuickEditViewModel {
 
     func deleteCaption(_ id: UUID) {
         change { snapshot in snapshot.captions?.removeAll { $0.id == id } }
-        if editingCaptionID == id { editingCaptionID = nil }
     }
 
     /// Caption › Split: splits the line at the playhead, between the words nearest to it, and picks
@@ -449,22 +404,6 @@ extension QuickEditViewModel {
     private func transcript(of source: UUID?) -> CaptionTranscript? {
         guard let source else { return edit.captionTranscript }
         return edit.sourceTranscripts.first { $0.sourceID == source }
-    }
-
-    /// Whether the line can be joined with the next one (`CaptionJoin`).
-    func canMergeCaption(_ id: UUID) -> Bool {
-        if case .next = CaptionJoin.next(after: id, in: edit) { return true }
-        return false
-    }
-
-    /// The editing sheet closed: a line left empty goes.
-    func endEditingCaption() {
-        if let id = editingCaptionID, let cue = edit.captions.first(where: { $0.id == id }),
-           cue.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            deleteCaption(id)
-        }
-        editingCaptionID = nil
-        endChange()
     }
 
     private func updateCaption(_ id: UUID, key: String? = nil, _ update: (CaptionCue) -> CaptionCue) {

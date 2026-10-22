@@ -94,6 +94,6 @@ struct InstagramShareManagerTests {
         #expect(InstagramSurface.stories.accepts(duration: 20))
         #expect(!InstagramSurface.stories.accepts(duration: 20.5))
         #expect(!InstagramSurface.stories.accepts(duration: 0))
-        #expect(InstagramSurface.reels.scheme != InstagramSurface.stories.scheme)
+        #expect(InstagramShareManager.url(for: .reels, appID: "1") != InstagramShareManager.url(for: .stories, appID: "1"))
     }
 }

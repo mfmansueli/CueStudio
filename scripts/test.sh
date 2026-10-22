@@ -18,12 +18,14 @@
 #                                    BackgroundDeviceTests, ContinuedTaskDeviceTests, MotionAnalysisDeviceTests, EditorMotionDeviceTests)
 #   scripts/test.sh device-ui <class>  a UI test class (or Class/test) on that iPhone (opt-in classes skip without their flag)
 #
-# After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests).
+# After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests);
+# --parallel N spreads the test classes over N simulator clones (ui and full use 2 unless given; --parallel 1 runs one at a time);
+# the clones are deleted when the run ends.
 
 source "$(dirname "$0")/_xcode.sh"
 
 usage() {
-    sed -n '2,21p' "$0"
+    sed -n '2,23p' "$0"
     exit 64
 }
 
@@ -44,6 +46,7 @@ require_unlocked() {
 mode="${1:-fast}"
 [ $# -gt 0 ] && shift
 action="test"
+workers=""
 ids=()
 extra=()
 while [ $# -gt 0 ]; do
@@ -54,6 +57,11 @@ while [ $# -gt 0 ]; do
             extra+=(-test-iterations "$2" -run-tests-until-failure)
             shift
             ;;
+        --parallel)
+            [ $# -ge 2 ] || usage
+            workers="$2"
+            shift
+            ;;
         -*) usage ;;
         *) ids+=("$1") ;;
     esac
@@ -61,6 +69,8 @@ while [ $# -gt 0 ]; do
 done
 
 destination="$SIMULATOR_DESTINATION"
+# The UI tests take turns on one simulator otherwise (~113 min); two clones measured 1.5–2.5× faster on an 8-core M3 with 16 GB.
+case "$mode" in ui | full) workers="${workers:-2}" ;; esac
 plan=(-testPlan Full)
 case "$mode" in
     fast) plan=(-testPlan Fast) ;;
@@ -124,15 +134,10 @@ case "$mode" in
     *) usage ;;
 esac
 
-result="$RESULTS/$mode-$(timestamp).xcresult"
-status=0
-# A test that runs past its allowance fails at once; without `never` xcodebuild then spends up to 10 minutes on a sysdiagnose.
-# `CUE_TEST_DIAGNOSTICS=on-failure` (or `on-failure`) keeps the crash reports and logs of a device run that dies.
-xcb "test-$mode" "${plan[@]}" -destination "$destination" -collect-test-diagnostics "${CUE_TEST_DIAGNOSTICS:-never}" \
-    -resultBundlePath "$result" ${extra[@]+"${extra[@]}"} "$action" || status=$?
-
-if [ -d "$result" ]; then
-    xcrun xcresulttool get test-results summary --path "$result" 2>/dev/null | python3 -c '
+# Prints a result bundle's counts and every failure.
+summarize() {
+    [ -d "$1" ] || return 0
+    xcrun xcresulttool get test-results summary --path "$1" 2>/dev/null | python3 -c '
 import json, sys
 d = json.load(sys.stdin)
 seconds = d.get("finishTime", 0) - d.get("startTime", 0)
@@ -143,6 +148,36 @@ for failure in d.get("testFailures", []):
     print("  ✘ " + (failure.get("testIdentifierString") or failure.get("testName") or "?"))
     print("    " + failure.get("failureText", "").replace("\n", "\n    "))
 ' || true
-    echo "  result: ${result#"$REPO_ROOT"/}"
+    echo "  result: ${1#"$REPO_ROOT"/}"
+}
+
+# A test that runs past its allowance fails at once; without `never` xcodebuild then spends up to 10 minutes on a sysdiagnose.
+# `CUE_TEST_DIAGNOSTICS=on-failure` (or `on-failure`) keeps the crash reports and logs of a device run that dies.
+diagnostics=(-collect-test-diagnostics "${CUE_TEST_DIAGNOSTICS:-never}")
+status=0
+parallel=()
+if [ -n "$workers" ] && [ "$workers" -gt 1 ]; then
+    parallel=(-parallel-testing-enabled YES -parallel-testing-worker-count "$workers")
+    # Each clone is a copy of the simulator in ~/Library/Developer/XCTestDevices: gone when the run ends, passed or not.
+    trap 'xcrun simctl --set testing delete all >/dev/null 2>&1' EXIT
 fi
+
+if [ "$mode" = full ] && [ ${#parallel[@]} -gt 0 ]; then
+    # The unit tests first, on one simulator (they already run side by side in their process): beside the UI clones their real
+    # exports and video analyses overloaded the Mac (load ~70) and ran past their time allowances. Then the UI tests on the clones.
+    unit="$RESULTS/full-unit-$(timestamp).xcresult"
+    xcb "test-full-unit" "${plan[@]}" -destination "$destination" "${diagnostics[@]}" -resultBundlePath "$unit" \
+        -only-testing:"Cue StudioTests" ${extra[@]+"${extra[@]}"} "$action" || status=$?
+    summarize "$unit"
+    ui="$RESULTS/full-ui-$(timestamp).xcresult"
+    xcb "test-full-ui" "${plan[@]}" -destination "$destination" "${diagnostics[@]}" -resultBundlePath "$ui" \
+        -only-testing:"Cue StudioUITests" "${parallel[@]}" ${extra[@]+"${extra[@]}"} test-without-building || status=$?
+    summarize "$ui"
+    exit "$status"
+fi
+
+result="$RESULTS/$mode-$(timestamp).xcresult"
+xcb "test-$mode" "${plan[@]}" -destination "$destination" "${diagnostics[@]}" \
+    -resultBundlePath "$result" ${parallel[@]+"${parallel[@]}"} ${extra[@]+"${extra[@]}"} "$action" || status=$?
+summarize "$result"
 exit "$status"

@@ -22,7 +22,7 @@ final class PlaybackCamera: CameraControlling {
     func apply(_ settings: CameraSettings) async {}
     func stop() async {}
 
-    func startRecording(settings: CameraSettings) async throws {
+    func startRecording() async throws {
         isRecording = true
     }
 

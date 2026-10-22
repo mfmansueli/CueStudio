@@ -17,12 +17,12 @@ final class EditorMotionUITests: XCTestCase {
         let app = EditorApp.open()
         EditorApp.tapTool(app, "format")
         let follow = app.descendants(matching: .any)["edit.crop.followFace"]
-        XCTAssertTrue(follow.waitForExistence(timeout: 5))
+        XCTAssertTrue(follow.exists(within: 5))
         app.buttons["edit.crop.1:1"].tap()
         follow.tap()
         XCTAssertEqual(follow.value as? String, "On")
         let pace = app.buttons["edit.crop.followPace.calm"]
-        XCTAssertTrue(pace.waitForExistence(timeout: 5))
+        XCTAssertTrue(pace.exists(within: 5))
         pace.tap()
         XCTAssertTrue(pace.isSelected)
         EditorApp.capture(app, "motion-follow-face")
@@ -34,7 +34,7 @@ final class EditorMotionUITests: XCTestCase {
         let app = EditorApp.open()
         openClipTool(app, "stabilize")
         let standard = app.buttons["edit.stabilize.standard"]
-        XCTAssertTrue(standard.waitForExistence(timeout: 5))
+        XCTAssertTrue(standard.exists(within: 5))
         standard.tap()
         XCTAssertTrue(standard.isSelected)
         EditorApp.capture(app, "motion-stabilize")
@@ -42,10 +42,10 @@ final class EditorMotionUITests: XCTestCase {
 
         openClipTool(app, "speed")
         let curve = app.buttons["edit.speed.mode.curve"]
-        XCTAssertTrue(curve.waitForExistence(timeout: 5))
+        XCTAssertTrue(curve.exists(within: 5))
         curve.tap()
         let hero = app.buttons["edit.speed.curve.hero"]
-        XCTAssertTrue(hero.waitForExistence(timeout: 5))
+        XCTAssertTrue(hero.exists(within: 5))
         hero.tap()
         XCTAssertTrue(hero.isSelected)
         XCTAssertTrue(app.descendants(matching: .any)["edit.speed.curvePoint.1"].exists)
@@ -60,7 +60,7 @@ final class EditorMotionUITests: XCTestCase {
     private func openClipTool(_ app: XCUIApplication, _ id: String) {
         if !app.buttons["edit.toolbar.split"].exists {
             let edit = app.buttons["edit.toolbar.edit"]
-            XCTAssertTrue(edit.waitForExistence(timeout: 5))
+            XCTAssertTrue(edit.exists(within: 5))
             edit.tap()
         }
         EditorApp.tapTool(app, id)

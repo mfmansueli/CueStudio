@@ -20,7 +20,7 @@ final class VoiceTipUITests: XCTestCase {
     /// The tip's own button (its words), since the tip's container carries the identifier.
     private func openTip(_ app: XCUIApplication) {
         let open = app.buttons.matching(NSPredicate(format: "label CONTAINS 'One quick question'")).firstMatch
-        XCTAssertTrue(open.waitForExistence(timeout: 5), "No tip to open")
+        XCTAssertTrue(open.exists(within: 5), "No tip to open")
         open.tap()
     }
 
@@ -35,29 +35,29 @@ final class VoiceTipUITests: XCTestCase {
     func testTheTipAsksOneQuestionAndOffersOneMore() throws {
         let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestVoiceTip"])
         let tip = element(app, "voice.tip")
-        XCTAssertTrue(tip.waitForExistence(timeout: 15), "No tip")
+        XCTAssertTrue(tip.exists(within: 15), "No tip")
         try capture(app, "voice_tip")
         openTip(app)
 
         // The first question of an empty voice is the kind of creator.
         try capture(app, "voice_question_role")
-        XCTAssertTrue(element(app, "voice.sheet.role").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "voice.sheet.role").exists(within: 5))
         element(app, "voice.option.personal").tap()
         let saved = element(app, "voice.saved")
-        XCTAssertTrue(saved.waitForExistence(timeout: 5))
+        XCTAssertTrue(saved.exists(within: 5))
         XCTAssertTrue(saved.label.contains("10%"), saved.label)
         try capture(app, "voice_saved")
 
         element(app, "voice.more").tap()
-        XCTAssertTrue(element(app, "voice.sheet.topics").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "voice.sheet.topics").exists(within: 5))
         app.buttons["sheet.closeButton"].tap()
-        XCTAssertTrue(app.buttons["scripts.newButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["scripts.newButton"].exists(within: 5))
     }
 
     func testClosingTheTipIsADismissal() {
         let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestVoiceTip"])
         let tip = element(app, "voice.tip")
-        XCTAssertTrue(tip.waitForExistence(timeout: 15))
+        XCTAssertTrue(tip.exists(within: 15))
         app.buttons["Close tip"].tap()
         let gone = NSPredicate(format: "exists == false")
         expectation(for: gone, evaluatedWith: tip)
@@ -67,18 +67,18 @@ final class VoiceTipUITests: XCTestCase {
     func testAMultipleAnswerQuestionHasSaveAndNoneOfThese() {
         // The "Saved" shows for 0.9 s before the sheet closes; without the closing animation it can be gone before the test looks.
         let app = CueApp.launch(seeded: false, animations: true, extraArguments: ["-uiTestVoiceTip"])
-        XCTAssertTrue(element(app, "voice.tip").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "voice.tip").exists(within: 15))
         openTip(app)
         element(app, "voice.option.personal").tap()
         element(app, "voice.more").tap()
-        XCTAssertTrue(element(app, "voice.sheet.topics").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "voice.sheet.topics").exists(within: 5))
         element(app, "voice.option.fitness").tap()
         element(app, "voice.option.food").tap()
         XCTAssertTrue(app.buttons["voice.sheet.save"].exists)
         // "+ Something else" and "None of these" close the list, below the topics.
-        app.scroll(to: element(app, "voice.somethingElse"))
-        XCTAssertTrue(element(app, "voice.sheet.none").exists)
+        app.scroll(to: element(app, "voice.sheet.none"))
+        XCTAssertTrue(element(app, "voice.somethingElse").exists)
         app.buttons["voice.sheet.save"].tap()
-        XCTAssertTrue(element(app, "voice.saved").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "voice.saved").exists(within: 5))
     }
 }

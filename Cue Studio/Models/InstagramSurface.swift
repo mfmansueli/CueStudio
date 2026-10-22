@@ -10,14 +10,6 @@ import Foundation
 nonisolated enum InstagramSurface: Equatable, Sendable {
     case reels, stories
 
-    /// The scheme to declare in `LSApplicationQueriesSchemes` and to ask `canOpenURL` about.
-    var scheme: String {
-        switch self {
-        case .reels: "instagram-reels"
-        case .stories: "instagram-stories"
-        }
-    }
-
     /// Reels: 3 to 60 s. Stories: up to 20 s (Meta's asset tables). A video outside these is not sent this way.
     func accepts(duration: TimeInterval) -> Bool {
         switch self {

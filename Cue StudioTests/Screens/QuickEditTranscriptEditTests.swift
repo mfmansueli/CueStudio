@@ -109,7 +109,7 @@ struct QuickEditTranscriptEditTests {
         #expect(viewModel.edit.editedDuration == duration)
         #expect(viewModel.sheet == nil)
         #expect(viewModel.panel == .captions)
-        #expect(viewModel.editingCaptionID == viewModel.edit.captions.first?.id)
+        #expect(viewModel.selection == .caption(try #require(viewModel.edit.captions.first?.id)))
     }
 
     @Test func wordsOfAnotherRecordingAreCutInThatRecording() async throws {

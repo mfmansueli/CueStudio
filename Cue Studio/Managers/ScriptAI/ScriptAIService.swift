@@ -443,7 +443,7 @@ final class ScriptAIService: ScriptWriting {
         let languageCode = language?.locale.language.minimalIdentifier
         return try await withFallback(plan, operation: "themes", language: language?.locale.identifier) { model in
             let session = self.session(on: model, instructions: ScriptPromptBuilder.themesInstructions(voice: voice))
-            let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, voice: voice, language: language, inspiration: inspiration, asBriefs: asBriefs)
+            let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, language: language, inspiration: inspiration, asBriefs: asBriefs)
             // A creative task: the idea is the point, not the one answer the model is surest of.
             let options = GenerationOptions(temperature: 1.0)
             var ideas: [ThemeIdea] = []

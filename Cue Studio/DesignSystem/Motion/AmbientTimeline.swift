@@ -35,7 +35,7 @@ struct AmbientTimeline<Content: View>: View {
 
     var body: some View {
         TimelineView(.animation(minimumInterval: interval, paused: !isRunning)) { context in
-            content(AmbientTime(seconds: isStilled ? 0 : clock.clock.elapsed(at: context.date), date: context.date, isStill: !isRunning))
+            content(AmbientTime(seconds: isStilled ? 0 : clock.clock.elapsed(at: context.date), date: context.date))
         }
         .onAppear { isOnScreen = true }
         .onDisappear {

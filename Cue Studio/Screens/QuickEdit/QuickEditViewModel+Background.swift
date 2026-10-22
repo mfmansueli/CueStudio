@@ -20,14 +20,6 @@ extension QuickEditViewModel {
         return segments[edit.timeline.segmentIndex(atEdited: player.currentTime)].sourceID
     }
 
-    /// What the effect applies to: "This take", or the other recording's name.
-    var backgroundTargetTitle: String {
-        guard let id = backgroundSourceID, let source = edit.sources.first(where: { $0.id == id }) else {
-            return String(localized: "This take")
-        }
-        return source.title
-    }
-
     /// The settings the panel shows, kept even while Original: the picked clip's own, or its
     /// recording's where the clip sets none, when Background is changing a clip; else the recording's
     /// under the playhead.

@@ -25,7 +25,7 @@ nonisolated struct TextLook: Codable, Hashable, Sendable {
     var sizeScale: Double = 1
     var tracking: Double = 0
     var isUppercase = false
-    var alignment: TextOverlayAlignment = .center
+    var alignment: LineAlignment = .center
     var color: OverlayColor = .white
     var background: TextOverlayBackground = .none
     var backgroundColor: OverlayColor = .black
@@ -83,7 +83,7 @@ nonisolated struct TextLook: Codable, Hashable, Sendable {
 
     init(
         font: TextOverlayFont = .classic, weight: TextOverlayWeight = .bold, sizeScale: Double = 1, tracking: Double = 0,
-        isUppercase: Bool = false, alignment: TextOverlayAlignment = .center, color: OverlayColor = .white,
+        isUppercase: Bool = false, alignment: LineAlignment = .center, color: OverlayColor = .white,
         background: TextOverlayBackground = .none, backgroundColor: OverlayColor = .black, backgroundOpacity: Double = 1,
         hasShadow: Bool = true, hasOutline: Bool = false, glow: Double = 0, verticalOffset: Double = 0
     ) {
@@ -121,7 +121,7 @@ nonisolated struct TextLook: Codable, Hashable, Sendable {
         let spacing = (try? container.decodeIfPresent(Double.self, forKey: .tracking)) ?? defaults.tracking
         tracking = min(max(spacing, Self.trackingRange.lowerBound), Self.trackingRange.upperBound)
         isUppercase = (try? container.decodeIfPresent(Bool.self, forKey: .isUppercase)) ?? defaults.isUppercase
-        alignment = (try? container.decodeIfPresent(TextOverlayAlignment.self, forKey: .alignment)) ?? defaults.alignment
+        alignment = (try? container.decodeIfPresent(LineAlignment.self, forKey: .alignment)) ?? defaults.alignment
         color = (try? container.decodeIfPresent(OverlayColor.self, forKey: .color)) ?? defaults.color
         background = (try? container.decodeIfPresent(TextOverlayBackground.self, forKey: .background)) ?? defaults.background
         backgroundColor = (try? container.decodeIfPresent(OverlayColor.self, forKey: .backgroundColor)) ?? defaults.backgroundColor

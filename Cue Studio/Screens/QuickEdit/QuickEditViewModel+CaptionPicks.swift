@@ -25,7 +25,6 @@ extension QuickEditViewModel {
     func startPickingCaptions(with first: UUID? = nil) {
         guard isReady, !edit.captions.isEmpty else { return }
         if selection?.captionID != nil { selection = nil }
-        editingCaptionID = nil
         captionPicks = first.map { [$0] } ?? []
         Haptics.selection()
     }

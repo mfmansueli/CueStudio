@@ -26,21 +26,21 @@ final class RealTakeWorkflowUITests: XCTestCase {
 
         flow.step("Takes › the newest take › Edit")
         let takes = app.cueTabBar.buttons["Takes"]
-        XCTAssertTrue(takes.waitForExistence(timeout: 20))
+        XCTAssertTrue(takes.exists(within: 20))
         takes.tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 10), "No take in the library")
+        XCTAssertTrue(row.exists(within: 10), "No take in the library")
         print("CREATOR STEP real-take · take: \(row.label)")
         flow.tap(row, "the newest take")
         flow.tap(app.buttons["review.editButton"], "Edit")
-        XCTAssertTrue(app.buttons["edit.toolbar.edit"].waitForExistence(timeout: 20), "The editor didn't open")
+        XCTAssertTrue(app.buttons["edit.toolbar.edit"].exists(within: 20), "The editor didn't open")
         let start = Date()
 
         flow.step("✦ Smart › Remove pauses")
         flow.tool("smart")
         flow.tap(app.buttons["edit.smart.pauses"], "Remove pauses")
         let apply = app.buttons["edit.pauses.apply"]
-        if apply.waitForExistence(timeout: 60), apply.isEnabled {
+        if apply.exists(within: 60), apply.isEnabled {
             flow.tap(apply, "Remove the pauses")
             print("CREATOR STEP real-take · pauses removed: \(flow.toastSays("Removed", timeout: 10))")
         } else {
@@ -51,9 +51,9 @@ final class RealTakeWorkflowUITests: XCTestCase {
         flow.step("Captions from the voice")
         flow.tool("captions")
         let make = app.buttons["edit.captionsMakeButton"]
-        if make.waitForExistence(timeout: 5) { flow.tap(make, "Make captions") }
+        if make.exists(within: 5) { flow.tap(make, "Make captions") }
         let line = app.descendants(matching: .any)["edit.captionLine.0"]
-        XCTAssertTrue(line.waitForExistence(timeout: 120), "No caption line from the real voice in 2 minutes")
+        XCTAssertTrue(line.exists(within: 120), "No caption line from the real voice in 2 minutes")
         flow.capture("captions")
         closePanel(app)
 
@@ -61,11 +61,11 @@ final class RealTakeWorkflowUITests: XCTestCase {
         flow.tool("smart")
         flow.tap(app.buttons["edit.smart.editByText"], "Edit by text")
         let firstWord = app.buttons["edit.transcript.word.4"]
-        if !firstWord.waitForExistence(timeout: 5) {
+        if !firstWord.exists(within: 5) {
             let listen = app.buttons["edit.transcript.listen"]
             if listen.exists { flow.tap(listen, "Listen to the video") }
         }
-        XCTAssertTrue(firstWord.waitForExistence(timeout: 120), "Edit by text has no words for the real voice")
+        XCTAssertTrue(firstWord.exists(within: 120), "Edit by text has no words for the real voice")
         // Two words in a row still in the video (a run before this one may have cut some: they stay listed, crossed out).
         let pick = try XCTUnwrap((4..<60).first { index in
             [index, index + 1].allSatisfy { word in
@@ -75,14 +75,14 @@ final class RealTakeWorkflowUITests: XCTestCase {
         }, "No two words in a row left to cut")
         print("CREATOR STEP real-take · cutting words \(pick) and \(pick + 1)")
         flow.tap(app.buttons["edit.transcript.word.\(pick)"], "the first word")
-        XCTAssertTrue(app.descendants(matching: .any)["edit.transcript.pickGuide"].waitForExistence(timeout: 3), "No guide after the first word")
+        XCTAssertTrue(app.descendants(matching: .any)["edit.transcript.pickGuide"].exists(within: 3), "No guide after the first word")
         flow.tap(app.buttons["edit.transcript.word.\(pick + 1)"], "the last word")
         flow.tap(app.buttons["edit.transcript.cut"], "Cut from video")
         XCTAssertTrue(flow.toastSays("words cut", timeout: 5), "No toast after cutting")
         flow.capture("cut")
         // The sheet's ×: a swipe on the words scrolls them instead of closing it.
         flow.tap(app.buttons["sheet.closeButton"].firstMatch, "Edit by text's ×")
-        XCTAssertFalse(firstWord.waitForExistence(timeout: 2), "Edit by text stayed open")
+        XCTAssertFalse(firstWord.exists(within: 2), "Edit by text stayed open")
 
         flow.step("✦ Smart › Templates › Bold hook")
         flow.tool("smart")
@@ -95,7 +95,7 @@ final class RealTakeWorkflowUITests: XCTestCase {
         flow.step("Cover › Done")
         flow.tool("cover")
         let coverDone = app.buttons["cover.done"]
-        XCTAssertTrue(coverDone.waitForExistence(timeout: 10))
+        XCTAssertTrue(coverDone.exists(within: 10))
         flow.tap(coverDone, "Done on the cover")
 
         flow.step("Done › Download video")
@@ -103,7 +103,7 @@ final class RealTakeWorkflowUITests: XCTestCase {
         flow.tap(app.buttons["edit.done.download"], "Download video")
         allowSystemAlerts()
         let notice = app.descendants(matching: .any)["review.exportNotice"]
-        let saved = flow.toastSays("Photos", timeout: 180) || notice.waitForExistence(timeout: 5)
+        let saved = flow.toastSays("Photos", timeout: 180) || notice.exists(within: 5)
         flow.capture("downloaded")
         print("CREATOR STEP real-take · editing and download took \(Int(Date().timeIntervalSince(start))) s · saved: \(saved)")
         XCTAssertTrue(saved, "Download video didn't say the video went to Photos")
@@ -113,9 +113,9 @@ final class RealTakeWorkflowUITests: XCTestCase {
     /// ✓ on whatever panel is open, then back to the main tools.
     private func closePanel(_ app: XCUIApplication) {
         let apply = app.buttons["edit.panel.apply"]
-        if apply.waitForExistence(timeout: 2) { apply.tap() }
+        if apply.exists(within: 2) { apply.tap() }
         let back = app.buttons["edit.toolbar.back"]
-        if back.waitForExistence(timeout: 2) { back.tap() }
+        if back.exists(within: 2) { back.tap() }
     }
 
     /// The system's Photos or speech prompts, answered yes (the owner agreed to this run).
@@ -123,7 +123,7 @@ final class RealTakeWorkflowUITests: XCTestCase {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         for label in ["Allow Full Access", "Allow", "OK", "Permitir Acesso Total", "Permitir", "Ok"] {
             let button = springboard.buttons[label]
-            if button.waitForExistence(timeout: 1) { button.tap() }
+            if button.exists(within: 1) { button.tap() }
         }
     }
 }

@@ -56,6 +56,12 @@ final class ShareQueueService {
         save()
     }
 
+    /// "Delete my Cue data".
+    func discardAll() {
+        queues = []
+        defaults.removeObject(forKey: DefaultsKey.shareQueues)
+    }
+
     private func change(_ takeID: UUID, _ change: (inout ShareQueue) -> Void) {
         guard let index = queues.firstIndex(where: { $0.takeID == takeID }) else { return }
         change(&queues[index])

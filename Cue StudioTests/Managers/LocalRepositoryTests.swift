@@ -49,6 +49,21 @@ struct LocalRepositoryTests {
         #expect(!exists(repository.videoURL(named: fileName)))
     }
 
+    @Test func aDeletedVideoTakesItsAnalysesWithIt() throws {
+        let directory = temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: directory) }
+        let repository = LocalTakeRepository(directory: directory)
+        let source = URL.temporaryDirectory.appending(path: "source-\(UUID().uuidString).mov")
+        try Data("video".utf8).write(to: source)
+        let video = repository.videoURL(named: try repository.storeVideo(from: source))
+        let sidecars = [MotionAnalysisStore.url(forRecording: video), EyeContactAnalysisStore.url(forRecording: video)]
+        for sidecar in sidecars { try Data([0]).write(to: sidecar) }
+
+        try repository.deleteVideo(named: video.lastPathComponent)
+        #expect(!exists(video))
+        #expect(sidecars.allSatisfy { !exists($0) })
+    }
+
     // MARK: - Relaunch
 
     @Test func scriptsSurviveARelaunch() throws {

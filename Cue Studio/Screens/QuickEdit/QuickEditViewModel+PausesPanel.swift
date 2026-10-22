@@ -15,6 +15,12 @@ extension QuickEditViewModel {
     /// Played around a pause when listening to it.
     static let listenMargin: TimeInterval = 1.2
 
+    /// The pauses Pauses lists and marks on the timeline: still playing, at least as long as the
+    /// threshold, to remove or kept.
+    var pauseCandidates: [CleanUpSuggestion] {
+        cleanUpSuggestions.filter { $0.kind == .pause && $0.status != .removed && !edit.timeline.isRemoved($0) }
+    }
+
     /// Filler words and possible retakes still playing, to remove or kept.
     var wordCandidates: [CleanUpSuggestion] {
         cleanUpSuggestions.filter { $0.kind != .pause && $0.status != .removed && !edit.timeline.isRemoved($0) }

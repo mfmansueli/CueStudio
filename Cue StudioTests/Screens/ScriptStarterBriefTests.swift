@@ -30,7 +30,7 @@ struct ScriptStarterBriefTests {
         let starter = ScriptStarter(
             library: ScriptLibraryService(repository: FakeScriptRepository(), now: { TestData.now }), rules: TestData.rulesService(),
             profile: CreatorProfileService(defaults: defaults.defaults), languages: TestData.languages(defaults: defaults.defaults),
-            presentation: presentation, ideaDraft: ideaDraft, transition: transition, sky: SkyMemory(defaults: defaults.defaults),
+            presentation: presentation, ideaDraft: ideaDraft, transition: transition,
             writer: FakeScriptWriter(), toast: ToastService()
         )
         return Scenario(starter: starter, presentation: presentation, ideaDraft: ideaDraft, transition: transition, defaults: defaults)
@@ -51,7 +51,6 @@ struct ScriptStarterBriefTests {
         var reported: [IdeaBrief] = []
         scenario.starter.briefWritten = { reported.append($0) }
         scenario.ideaDraft.use(idea)
-        #expect(scenario.ideaDraft.submittedBrief == idea.brief)
         scenario.starter.write(from: .zero)
         #expect(scenario.presentation.scriptsPath.first?.writing?.brief == idea.brief)
         #expect(reported.isEmpty, "not before it is written")

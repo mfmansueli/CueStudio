@@ -54,7 +54,7 @@ struct ScriptGenerationFlowDeviceTests {
         transition.speed = 0.01
         let starter = ScriptStarter(
             library: library, rules: rules, profile: profile, languages: languages, presentation: presentation,
-            ideaDraft: ideaDraft, transition: transition, sky: SkyMemory(defaults: defaults.defaults), writer: writer, toast: toast
+            ideaDraft: ideaDraft, transition: transition, writer: writer, toast: toast
         )
         return Flow(
             starter: starter, library: library, presentation: presentation, ideaDraft: ideaDraft, toast: toast, writer: writer,

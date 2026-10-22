@@ -29,8 +29,4 @@ extension SpeechTranscribing {
     }
 
     func discardHeard() {}
-
-    func start(script: String, language: SpeechLanguageRequest) async -> SpeechStartResult {
-        await start(script: script, language: language, preparation: { _ in })
-    }
 }

@@ -39,7 +39,7 @@ final class FidelityCaptureTests: XCTestCase {
     func test3_Scripts() throws {
         _ = try requireFolder()
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(app.cueTabBar.buttons["Scripts"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.cueTabBar.buttons["Scripts"].exists(within: 15))
         try shot(app, "3.2")
         app.buttons["scripts.newButton"].tap()
         try shot(app, "3.5")
@@ -48,7 +48,7 @@ final class FidelityCaptureTests: XCTestCase {
     func test3_1_ScriptsFirstVisit() throws {
         _ = try requireFolder()
         let app = CueApp.launch(seeded: false)
-        XCTAssertTrue(element(app, "empty.promptCard").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "empty.promptCard").exists(within: 15))
         try shot(app, "3.1")
     }
 
@@ -58,9 +58,9 @@ final class FidelityCaptureTests: XCTestCase {
         _ = try requireFolder()
         let app = CueApp.launch(seeded: true)
         let tab = app.cueTabBar.buttons["Profile"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
-        XCTAssertTrue(element(app, "profile.creatorCard").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "profile.creatorCard").exists(within: 5))
         try shot(app, "9.1")
     }
 }

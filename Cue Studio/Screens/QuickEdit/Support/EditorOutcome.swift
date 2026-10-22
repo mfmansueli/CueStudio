@@ -20,17 +20,4 @@ enum EditorOutcome: String, Identifiable, CaseIterable {
     case back
 
     var id: String { rawValue }
-
-    /// Whether the edit is saved on the take (and the draft dropped).
-    var savesTheEdit: Bool {
-        switch self {
-        case .share, .download, .ready: true
-        case .notYet, .back: false
-        }
-    }
-
-    /// The video the review comes back to is shared or saved by this answer, so the stage becomes SHARED.
-    var exportsTheVideo: Bool {
-        self == .share || self == .download
-    }
 }

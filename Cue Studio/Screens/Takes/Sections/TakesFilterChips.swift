@@ -35,11 +35,11 @@ struct TakesFilterChips: View {
                 if let option { ColorDot(color: option.tint, size: 7) }
                 Text(title).font(.system(size: 13.5, weight: option == nil ? .semibold : .medium))
             }
-            .foregroundStyle(isOn ? Color.black : Palette.ink)
+            .foregroundStyle(isOn ? Palette.chipOnInk : Palette.ink)
             .padding(.leading, option == nil ? 13 : 10)
             .padding(.trailing, option == nil ? 13 : 12)
             .frame(height: Metrics.filterChipHeight)
-            .background(isOn ? Color.white : Palette.fill, in: Capsule())
+            .background(isOn ? Palette.chipOn : Palette.fill, in: Capsule())
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Capsule())
         }

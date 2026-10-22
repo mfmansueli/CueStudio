@@ -26,7 +26,7 @@ struct LanguageEntryRow: View {
         switch entry {
         case .appLanguage:
             Button {
-                if let url = URL(string: UIApplication.openSettingsURLString) { openURL(url) }
+                openURL.openAppSettings()
             } label: {
                 HStack(spacing: 12) {
                     Text(entry.title).foregroundStyle(Palette.ink)

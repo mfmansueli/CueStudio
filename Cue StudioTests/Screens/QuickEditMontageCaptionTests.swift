@@ -89,7 +89,9 @@ struct QuickEditMontageCaptionTests {
         viewModel.commit(timeline)
         let second = try #require(line("my friends", in: viewModel))
         #expect(CaptionJoin.next(after: second.id, in: viewModel.edit) == .earlierInTheRecording)
-        #expect(!viewModel.canMergeCaption(second.id))
+        let before = viewModel.edit.captions
+        viewModel.joinCaption(second.id)
+        #expect(viewModel.edit.captions == before)
     }
 
     @Test func aNudgedEdgeStaysOnItsOwnClip() async throws {

@@ -143,20 +143,12 @@ extension QuickEditViewModel {
         if selectedMusicID == id { selectedMusicID = nil }
     }
 
-    func setMusicVolume(_ id: UUID, _ volume: Double) {
-        updateMusic(id) { $0.volume = min(max(volume, MusicClip.volumeRange.lowerBound), MusicClip.volumeRange.upperBound) }
-    }
-
     func setMusicFadeIn(_ id: UUID, _ seconds: TimeInterval) {
         updateMusic(id) { $0.fadeIn = min(max(seconds, MusicClip.fadeRange.lowerBound), MusicClip.fadeRange.upperBound) }
     }
 
     func setMusicFadeOut(_ id: UUID, _ seconds: TimeInterval) {
         updateMusic(id) { $0.fadeOut = min(max(seconds, MusicClip.fadeRange.lowerBound), MusicClip.fadeRange.upperBound) }
-    }
-
-    func setMusicMuted(_ id: UUID, _ muted: Bool) {
-        updateMusic(id) { $0.isMuted = muted }
     }
 
     func setMusicDucks(_ id: UUID, _ ducks: Bool) {

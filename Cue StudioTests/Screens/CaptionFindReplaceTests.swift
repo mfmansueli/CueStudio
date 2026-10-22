@@ -12,16 +12,16 @@ import Testing
 @Suite("Caption find and replace")
 struct CaptionFindReplaceTests {
     @Test func capitalsAndWidthAreIgnoredButAccentsAreNot() {
-        #expect(CaptionFindReplace.count(of: "cue", in: "Cue makes CUE videos") == 2)
-        #expect(CaptionFindReplace.count(of: "ＣＵＥ", in: "Cue") == 1)
+        #expect(CaptionFindReplace.ranges(of: "cue", in: "Cue makes CUE videos").count == 2)
+        #expect(CaptionFindReplace.ranges(of: "ＣＵＥ", in: "Cue").count == 1)
         // "e" and "é" are different words in Portuguese, French, Spanish…
-        #expect(CaptionFindReplace.count(of: "e", in: "é") == 0)
-        #expect(CaptionFindReplace.count(of: "você", in: "Você e você") == 2)
+        #expect(CaptionFindReplace.ranges(of: "e", in: "é").count == 0)
+        #expect(CaptionFindReplace.ranges(of: "você", in: "Você e você").count == 2)
     }
 
     @Test func matchesDontOverlapAndEmptyFindsNothing() {
-        #expect(CaptionFindReplace.count(of: "aa", in: "aaaa") == 2)
-        #expect(CaptionFindReplace.count(of: "  ", in: "a  b") == 0)
+        #expect(CaptionFindReplace.ranges(of: "aa", in: "aaaa").count == 2)
+        #expect(CaptionFindReplace.ranges(of: "  ", in: "a  b").count == 0)
         #expect(CaptionFindReplace.ranges(of: "", in: "anything").isEmpty)
     }
 
@@ -51,7 +51,7 @@ struct CaptionFindReplaceTests {
     }
 
     @Test func rightToLeftAndUnspacedWritingIsFound() {
-        #expect(CaptionFindReplace.count(of: "مرحبا", in: "مرحبا بكم مرحبا") == 2)
+        #expect(CaptionFindReplace.ranges(of: "مرحبا", in: "مرحبا بكم مرحبا").count == 2)
         #expect(CaptionFindReplace.replacing("東京", with: "大阪", in: "東京へ行く") == "大阪へ行く")
     }
 }

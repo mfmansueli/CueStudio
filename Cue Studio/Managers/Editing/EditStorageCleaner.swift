@@ -27,8 +27,8 @@ nonisolated enum EditStorageCleaner {
         }
     }
 
-    /// The files in `folder` and when each was last changed.
-    private static func modified(in folder: URL) -> [String: Date] {
+    /// The files in `folder` and when each was last changed (also what `TakeRecovery` looks through).
+    static func modified(in folder: URL) -> [String: Date] {
         let urls = (try? FileManager.default.contentsOfDirectory(
             at: folder, includingPropertiesForKeys: [.contentModificationDateKey, .isRegularFileKey], options: .skipsHiddenFiles
         )) ?? []

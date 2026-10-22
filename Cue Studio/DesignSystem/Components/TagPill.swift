@@ -17,7 +17,7 @@ struct TagPill: View {
         }
         .font(.caption.weight(.medium))
         .lineLimit(1)
-        .foregroundStyle(Palette.ink.opacity(0.8))
+        .foregroundStyle(Palette.inkSoft)
         .padding(.horizontal, 8)
         .frame(height: 22)
         .background(Palette.surface2, in: Capsule())

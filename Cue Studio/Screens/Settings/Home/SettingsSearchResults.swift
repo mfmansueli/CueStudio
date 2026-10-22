@@ -12,7 +12,7 @@ struct SettingsSearchResults: View {
     let bindings: SettingsBindings
 
     var body: some View {
-        let groups = SettingsSearchGroup.results(for: query, isShown: SettingsView.isShown)
+        let groups = SettingsSearchGroup.results(for: query)
         if groups.isEmpty {
             Section {
                 ContentUnavailableView {

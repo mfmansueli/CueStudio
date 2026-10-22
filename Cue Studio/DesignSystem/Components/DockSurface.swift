@@ -27,30 +27,35 @@ extension View {
     }
 }
 
-/// The two lights of the dock, as ellipses sized by it (CSS `radial-gradient(90% 120% at 0 0, …)` and `(80% 100% at 100% 100%, …)`).
-private struct DockAurora: View {
-    var body: some View {
-        Canvas { context, size in
-            context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(Palette.Scripts.dockBase))
-            light(&context, size: size, color: Palette.Scripts.dockAuroraViolet, center: .zero, rx: 0.9, ry: 1.2, stop: 0.6)
-            light(&context, size: size, color: Palette.Scripts.dockAuroraIndigo, center: CGPoint(x: size.width, y: size.height), rx: 0.8, ry: 1.0, stop: 0.65)
-        }
-    }
-
-    private func light(_ context: inout GraphicsContext, size: CGSize, color: Color, center: CGPoint, rx: Double, ry: Double, stop: Double) {
-        var layer = context
-        layer.translateBy(x: center.x, y: center.y)
-        layer.scaleBy(x: size.width * rx, y: size.height * ry)
-        layer.fill(
-            Path(ellipseIn: CGRect(x: -1, y: -1, width: 2, height: 2)),
-            with: .radialGradient(Gradient(colors: [color, color.opacity(0)]), center: .zero, startRadius: 0, endRadius: stop)
-        )
-    }
-}
-
 #if DEBUG
 #Preview {
     Text("Dock").padding(40).dockSurface().padding()
         .background(LinearGradient(colors: [.indigo, .black], startPoint: .top, endPoint: .bottom))
 }
 #endif
+
+extension DockSurface {
+    /// The two lights of the dock, as ellipses sized by it (CSS `radial-gradient(90% 120% at 0 0, …)` and `(80% 100% at 100% 100%, …)`).
+    private struct DockAurora: View {
+        var body: some View {
+            Canvas { context, size in
+                context.fill(Path(CGRect(origin: .zero, size: size)), with: .color(Palette.Scripts.dockBase))
+                light(&context, size: size, color: Palette.Scripts.dockAuroraViolet, center: .zero, rx: 0.9, ry: 1.2, stop: 0.6)
+                light(
+                    &context, size: size, color: Palette.Scripts.dockAuroraIndigo, center: CGPoint(x: size.width, y: size.height), rx: 0.8, ry: 1.0,
+                    stop: 0.65
+                )
+            }
+        }
+
+        private func light(_ context: inout GraphicsContext, size: CGSize, color: Color, center: CGPoint, rx: Double, ry: Double, stop: Double) {
+            var layer = context
+            layer.translateBy(x: center.x, y: center.y)
+            layer.scaleBy(x: size.width * rx, y: size.height * ry)
+            layer.fill(
+                Path(ellipseIn: CGRect(x: -1, y: -1, width: 2, height: 2)),
+                with: .radialGradient(Gradient(colors: [color, color.opacity(0)]), center: .zero, startRadius: 0, endRadius: stop)
+            )
+        }
+    }
+}

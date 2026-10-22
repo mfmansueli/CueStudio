@@ -110,7 +110,7 @@ struct OverlayEditingLayer: View {
                 .contentShape(Rectangle())
                 .frame(width: max(rect.width, Metrics.hitTarget), height: max(rect.height, Metrics.hitTarget))
                 .onTapGesture { viewModel.tapText(text.id) }
-                .gesture(moveGesture(text, rect: rect))
+                .gesture(moveGesture(text))
             if isSelected {
                 RoundedRectangle(cornerRadius: 4, style: .continuous)
                     .strokeBorder(Palette.acc, lineWidth: 2)
@@ -150,7 +150,7 @@ struct OverlayEditingLayer: View {
         .accessibilityIdentifier(id)
     }
 
-    private func moveGesture(_ text: TextOverlay, rect: CGRect) -> some Gesture {
+    private func moveGesture(_ text: TextOverlay) -> some Gesture {
         DragGesture(minimumDistance: 3, coordinateSpace: .named(Self.space))
             .onChanged { value in
                 if drag == nil {

@@ -39,9 +39,6 @@ nonisolated struct OverlayMotion: Hashable, Sendable {
         self.base = base
     }
 
-    /// Whether anything moves.
-    var isEmpty: Bool { keyframes.isEmpty && animation == nil }
-
     /// The state `time` seconds into the item; nil when nothing moves it (the item stands still).
     func state(at time: TimeInterval) -> State? {
         guard let animation else { return keyframeState(at: time) }

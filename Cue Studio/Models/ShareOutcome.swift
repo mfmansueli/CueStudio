@@ -20,17 +20,3 @@ nonisolated enum ShareOutcome: Equatable, Sendable {
     case unavailable(ShareUnavailability)
     case failed(ShareFailure)
 }
-
-nonisolated enum ShareUnavailability: Equatable, Sendable {
-    case appNotInstalled
-    /// The app is there but wouldn't open.
-    case couldNotOpen
-}
-
-nonisolated enum ShareFailure: Equatable, Sendable {
-    /// The destination's app couldn't read the video from Photos.
-    case photosAccess
-    /// The platform refused the video (length, size, format) or the request.
-    case rejected
-    case unknown
-}

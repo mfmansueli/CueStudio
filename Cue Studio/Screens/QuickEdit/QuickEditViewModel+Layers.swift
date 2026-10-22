@@ -54,50 +54,10 @@ extension QuickEditViewModel {
         }
     }
 
-    /// Tapping a bar selects it (again: lets go). Picking one lets go of the others, so Delete
-    /// always means the one shown as picked.
-    func selectBar(_ bar: LayerBar) {
-        let wasSelected = selectedLayer?.id == bar.id
-        clearLayerSelection()
-        guard !wasSelected else { return }
-        clearStripSelection()
-        switch bar.kind {
-        case .text: selectText(bar.id)
-        case .caption:
-            selectedCaptionID = captionCueID(forLine: bar.id)
-            player.pause()
-            player.seek(to: bar.span.start)
-        case .media: selectMedia(bar.id)
-        case .voiceOver: reviewedVoiceOverID = bar.id
-        case .music: selectedMusicID = bar.id
-        }
-    }
-
     /// The bar picked on the timeline: a text, a caption line, a photo or video, a voice-over or
     /// music.
     var selectedLayer: LayerBar? {
         (textBars + captionBars + mediaBars + voiceOverBars + musicBars).first(where: \.isSelected)
-    }
-
-    /// Lets go of whatever bar is picked.
-    func clearLayerSelection() {
-        selectedTextID = nil
-        selectedCaptionID = nil
-        selectedMediaID = nil
-        reviewedVoiceOverID = nil
-        selectedMusicID = nil
-    }
-
-    /// Deletes the picked bar (one undo step).
-    func deleteSelectedLayer() {
-        guard let bar = selectedLayer else { return }
-        switch bar.kind {
-        case .text: deleteText(bar.id)
-        case .caption: deleteCaption(captionCueID(forLine: bar.id))
-        case .media: deleteMedia(bar.id)
-        case .voiceOver: deleteVoiceOver(bar.id)
-        case .music: deleteMusic(bar.id)
-        }
     }
 
     /// Moves a bar so it starts at `start` (edited seconds), keeping its length.

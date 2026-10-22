@@ -507,13 +507,10 @@ struct PrompterViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.cycleAspect()
         scenario.viewModel.flipCamera()
-        scenario.viewModel.cycleCountdown()
         #expect(scenario.viewModel.session.camera.aspect == .vertical)
         #expect(scenario.viewModel.session.camera.lens == .wide)
         // Frame and lens are Creator Setup: they change for this take only.
         #expect(scenario.preferences.camera.aspect == .portrait)
         #expect(scenario.preferences.camera.lens == .front)
-        // The countdown isn't part of it and is saved as before.
-        #expect(scenario.preferences.camera.countdown == .three)
     }
 }

@@ -9,11 +9,6 @@ import Foundation
 /// missing of their analyses, so it never comes out with the eyes corrected in one part and not another; the preview draws with
 /// what's ready and is drawn again as more is (`EyeContactAnalysisService`).
 nonisolated extension EditedComposition {
-    /// Whether the edit corrects the eyes.
-    static func usesEyeContact(_ edit: TakeEdit) -> Bool {
-        edit.eyeContact != nil
-    }
-
     /// The decisions for every recording the edit plays, when it corrects the eyes; with `analyzesMissing`, the parts of their
     /// analyses not made yet (or of another version or file) are made now, off the main thread, reporting how far (0 to 1, all
     /// recordings together) to `progress`. A recording that can't be read is drawn as filmed. Making one stops when the build is

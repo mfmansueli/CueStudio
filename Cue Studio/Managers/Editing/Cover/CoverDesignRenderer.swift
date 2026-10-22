@@ -22,7 +22,7 @@ nonisolated enum CoverDesignRenderer {
         drawShade(design.effect, size: size, in: context)
         if design.layout == .beforeAfter { drawSplit(size: size) }
         if design.layout.showsTitle || design.layout == .number {
-            drawWords(title: cover.title, cover: cover, design: design, size: size, in: context)
+            drawWords(title: cover.title, cover: cover, design: design, size: size)
         }
         if let cutout {
             if let outline = cutout.outline { outline.draw(in: CGRect(origin: .zero, size: size)) }
@@ -110,7 +110,7 @@ nonisolated enum CoverDesignRenderer {
         return width + gap * CGFloat(max(0, line.count - 1))
     }
 
-    private static func drawWords(title: String, cover: VideoCover, design: CoverDesign, size: CGSize, in context: CGContext) {
+    private static func drawWords(title: String, cover: VideoCover, design: CoverDesign, size: CGSize) {
         let parts = design.words(of: title)
         let layout = design.layout
         let width = size.width

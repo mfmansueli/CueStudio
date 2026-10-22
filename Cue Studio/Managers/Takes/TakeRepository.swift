@@ -13,4 +13,10 @@ protocol TakeRepository {
     func storeVideo(from temporaryURL: URL) throws -> String
     func deleteVideo(named fileName: String) throws
     func videoURL(named fileName: String) -> URL
+    /// The damaged libraries' copies set aside while loading ("Delete my Cue data").
+    func deleteKeptCopies()
+}
+
+extension TakeRepository {
+    func deleteKeptCopies() {}
 }

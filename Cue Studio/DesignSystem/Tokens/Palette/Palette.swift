@@ -68,6 +68,9 @@ enum Palette {
     static let ink = Color.white
     /// Secondary text: 4.5:1 or more on every surface.
     static let ink2 = Color(normal: Color(hex: 0xE1E4F5, opacity: 0.62), increasedContrast: Color(hex: 0xE1E4F5, opacity: 0.8))
+    /// A step under `ink` that still reads like it: a tag, a map's labels, the quiet words on the night. White at 80%, 92% with
+    /// Increase Contrast (`PaletteContrastTests`).
+    static let inkSoft = Color(normal: Color.white.opacity(0.8), increasedContrast: Color.white.opacity(0.92))
     /// What needn't be read: chevrons, dashed outlines, rings, disabled controls. 3:1 on every
     /// surface, not enough for text.
     static let ink3 = Color(normal: Color(hex: 0xE1E4F5, opacity: 0.45), increasedContrast: Color(hex: 0xE1E4F5, opacity: 0.62))

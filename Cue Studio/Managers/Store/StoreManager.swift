@@ -52,8 +52,10 @@ final class StoreManager {
                 }
             }
         }
-        await loadProducts()
+        // The purchase first: StoreKit has it on the iPhone, while the prices need the network (offline, a subscriber would be
+        // free until the prices failed to load).
         await refreshEntitlements()
+        await loadProducts()
     }
 
     // MARK: - Products
@@ -191,8 +193,25 @@ final class StoreManager {
                 renewal = transaction.expirationDate
             }
         }
+        if newTier == .free, let grace = await gracePeriodPlan() {
+            newTier = .subscriber
+            plan = grace.plan
+            renewal = grace.until
+        }
         tier = newTier
         activePlan = plan
         renewalDate = renewal
+    }
+
+    /// Apple's billing grace period: the renewal failed and is being retried, and the creator keeps Pro meanwhile. The current
+    /// entitlements don't always list such a subscription (its own expiry has passed), so its renewal state is asked too.
+    private func gracePeriodPlan() async -> (plan: ProPlan, until: Date?)? {
+        for owned in ProPlan.allCases {
+            guard case .verified(let transaction)? = await Transaction.latest(for: owned.productID), transaction.revocationDate == nil,
+                  let status = await transaction.subscriptionStatus, status.state == .inGracePeriod
+            else { continue }
+            return (owned, (try? status.renewalInfo.payloadValue)?.gracePeriodExpirationDate)
+        }
+        return nil
     }
 }

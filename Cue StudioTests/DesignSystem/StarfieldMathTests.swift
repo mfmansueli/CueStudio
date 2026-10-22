@@ -206,7 +206,6 @@ struct StarfieldMathTests {
         #expect(SkyDensity.serene.twinkleCount == 0 && !SkyDensity.serene.hasComet)
         #expect(SkyDensity.adrift.twinkleCount == 14 && SkyDensity.adrift.hasComet)
         #expect(SkyDensity.interstellar.twinkleCount == 14 && !SkyDensity.interstellar.hasComet)
-        #expect(SkyDensity.allCases.map(\.step) == [0, 1, 2, 3])
     }
 
     @Test func theTwinklesAreSmallerThanTheDesignsOriginalOnes() {

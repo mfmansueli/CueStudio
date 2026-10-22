@@ -120,7 +120,7 @@ struct VoyageChapter: View {
         let arrived = pose("L77", min(time.clock, 3)).opacity
         return ZStack(alignment: .leading) {
             Text("CHOOSE ONE PLATFORM")
-                .foregroundStyle(Color.white.opacity(0.82))
+                .foregroundStyle(Palette.Flight.quietInk)
                 .opacity(picked == nil ? 1 : 0)
                 .accessibilityHidden(picked != nil)
             Text("\((picked ?? onboarding.platform).label.uppercased()) · TAP ANOTHER TO SWITCH")
@@ -148,7 +148,7 @@ struct VoyageChapter: View {
         return Text(text)
             .font(.system(size: 10, weight: .semibold, design: .monospaced))
             .tracking(1)
-            .foregroundStyle(Palette.Flight.ink.opacity(0.6))
+            .foregroundStyle(Palette.ink2)
             .lineLimit(1)
             .minimumScaleFactor(0.7)
             .mask(alignment: .leading) { GeometryReader { Rectangle().frame(width: $0.size.width * revealed) } }

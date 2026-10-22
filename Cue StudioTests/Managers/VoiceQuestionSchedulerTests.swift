@@ -218,14 +218,18 @@ struct VoiceQuestionSchedulerTests {
         #expect(!rig.scheduler.completionToastIsDue())
     }
 
-    @Test func resetClearsTheHistoryButNotTheDaysOpened() {
+    @Test func resetStartsOverAsAFreshInstall() {
         let rig = make()
         defer { rig.defaults.tearDown() }
         rig.scheduler.dismissed(.endings)
         rig.scheduler.skipped(.openings)
         rig.scheduler.reset()
-        #expect(rig.scheduler.state.skipped.isEmpty && rig.scheduler.state.snoozedUntil.isEmpty)
-        #expect(rig.scheduler.state.firstEligibleDays.count == 2)
+        #expect(rig.scheduler.state == VoiceQuestionState())
+        // Nothing is left to read back on the next launch, and the next save doesn't bring the old history back.
+        let again = VoiceQuestionScheduler(profile: rig.profile, defaults: rig.defaults.defaults, now: { rig.clock.now }, calendar: Self.utc)
+        #expect(again.state == VoiceQuestionState())
+        rig.scheduler.skipped(.tone)
+        #expect(rig.scheduler.state.skipped == [VoiceQuestion.tone.rawValue])
     }
 
     @Test func theStateSurvivesARelaunch() {

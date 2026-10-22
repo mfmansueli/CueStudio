@@ -37,7 +37,7 @@ final class VideoExportService: VideoExporting {
 
         let needsCrop = abs(crop.width - oriented.width) > 2 || abs(crop.height - oriented.height) > 2
         guard needsCrop else {
-            try FileManager.default.copyItem(at: source, to: output)
+            try await Self.writing(output) { try FileManager.default.copyItem(at: source, to: output) }
             return output
         }
 
@@ -75,15 +75,20 @@ final class VideoExportService: VideoExporting {
             }
         }
         defer { watcher?.cancel() }
+        try await writing(output) { try await session.export(to: output, as: .mov) }
+        progress?(1)
+    }
+
+    /// Runs `write`, which makes `output`. A stopped or failed one leaves no half-written file behind, and iOS stopping it
+    /// while Cue is in the background (`AVError.operationInterrupted`) comes out as `VideoExportError.interrupted`.
+    static func writing(_ output: URL, _ write: () async throws -> Void) async throws {
         do {
-            try await session.export(to: output, as: .mov)
+            try await write()
         } catch {
-            // A stopped or failed export leaves no half-written file behind.
             try? FileManager.default.removeItem(at: output)
             if let error = error as? AVError, error.code == .operationInterrupted { throw VideoExportError.interrupted }
             throw error
         }
-        progress?(1)
     }
 
     // MARK: - Edited

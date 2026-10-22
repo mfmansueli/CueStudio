@@ -25,19 +25,19 @@ final class BackgroundExportDeviceUITests: XCTestCase {
         let app = XCUIApplication()
         app.launch()
         let takes = app.cueTabBar.buttons["Takes"]
-        XCTAssertTrue(takes.waitForExistence(timeout: 20))
+        XCTAssertTrue(takes.exists(within: 20))
         takes.tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 10), "No take in the library")
+        XCTAssertTrue(row.exists(within: 10), "No take in the library")
         print("BACKGROUND EXPORT · take: \(row.label)")
         row.tap()
         let save = app.buttons["review.saveButton"]
-        XCTAssertTrue(save.waitForExistence(timeout: 10))
+        XCTAssertTrue(save.exists(within: 10))
         let started = Date()
         save.tap()
 
         let mode = app.staticTexts["review.export.mode"]
-        XCTAssertTrue(mode.waitForExistence(timeout: 15), "The export didn't say how it runs")
+        XCTAssertTrue(mode.exists(within: 15), "The export didn't say how it runs")
         print("BACKGROUND EXPORT · mode: \(mode.label)")
 
         // Away from Cue, with another app that wants the GPU.
@@ -48,7 +48,7 @@ final class BackgroundExportDeviceUITests: XCTestCase {
         app.activate()
 
         let ready = app.descendants(matching: .any)["ready.sheet"]
-        let saved = ready.waitForExistence(timeout: 120)
+        let saved = ready.exists(within: 120)
         let seconds = Int(Date().timeIntervalSince(started))
         let progress = app.descendants(matching: .any)["review.export.progress"]
         print("BACKGROUND EXPORT · saved: \(saved) · \(seconds) s from Save · still exporting on return: \(progress.exists)")
@@ -76,17 +76,17 @@ final class BackgroundExportDeviceUITests: XCTestCase {
         }
         let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestLongTake", "\(seconds)"] + arguments)
         let takes = app.cueTabBar.buttons["Takes"]
-        XCTAssertTrue(takes.waitForExistence(timeout: 120), "The long take wasn't written in time")
+        XCTAssertTrue(takes.exists(within: 120), "The long take wasn't written in time")
         takes.tap()
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
-        XCTAssertTrue(row.waitForExistence(timeout: 10))
+        XCTAssertTrue(row.exists(within: 10))
         row.tap()
         let share = app.buttons["review.shareButton"]
-        XCTAssertTrue(share.waitForExistence(timeout: 10))
+        XCTAssertTrue(share.exists(within: 10))
         let started = Date()
         share.tap()
         let mode = app.staticTexts["review.export.mode"]
-        XCTAssertTrue(mode.waitForExistence(timeout: 15), "The export didn't say how it runs")
+        XCTAssertTrue(mode.exists(within: 15), "The export didn't say how it runs")
         let label = mode.label
         var onReturn = "stayed in Cue"
         if leaves {
@@ -103,7 +103,7 @@ final class BackgroundExportDeviceUITests: XCTestCase {
             if !progress.exists, !ready.exists { return }
         }
         let picker = app.descendants(matching: .any)["ready.sheet"]
-        let done = picker.waitForExistence(timeout: 200)
+        let done = picker.exists(within: 200)
         let toast = app.descendants(matching: .any).matching(identifier: "toast").firstMatch
         print("LONG RENDER · \(name) · mode: \(label) · on return: \(onReturn) · done: \(done) · \(Int(Date().timeIntervalSince(started))) s"
             + (done ? "" : " · toast: \(toast.exists ? toast.label : "none")"))

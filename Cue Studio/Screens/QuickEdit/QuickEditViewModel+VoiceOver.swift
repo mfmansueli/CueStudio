@@ -7,13 +7,9 @@ import Foundation
 
 /// Voice-over: Record plays the edit from the playhead (muted, so the take's sound doesn't leak
 /// into the mic) while the narration records; Stop adds it where it started and plays it back;
-/// then Keep, Redo or Delete. Each narration has its own volume. Recorded on the device.
+/// then Re-record or Delete. Each narration has its own volume. Recorded on the device.
 extension QuickEditViewModel {
     var isRecordingVoiceOver: Bool { recorder.isRecording }
-
-    var reviewedVoiceOver: VoiceOverClip? {
-        reviewedVoiceOverID.flatMap { id in edit.voiceOvers.first { $0.id == id } }
-    }
 
     /// "● 00:04.2"
     var recordingElapsedLabel: String {
@@ -83,21 +79,6 @@ extension QuickEditViewModel {
         player.isMuted = false
     }
 
-    func keepVoiceOver() {
-        reviewedVoiceOverID = nil
-        toast.show(String(localized: "Voice-over kept"))
-    }
-
-    /// Takes the narration just recorded away and records again from where it started.
-    func redoVoiceOver() async {
-        if let clip = reviewedVoiceOver, let span = clip.editedSpan(in: edit.timeline) {
-            change { $0.voiceOvers.removeAll { $0.id == clip.id } }
-            player.pause()
-            player.seek(to: span.start)
-        }
-        await startVoiceOver()
-    }
-
     /// "Re-record": the narration goes, the playhead goes back to where it started and the
     /// Voice-over panel opens to record again.
     func reRecordVoiceOver(_ id: UUID) {
@@ -113,12 +94,5 @@ extension QuickEditViewModel {
     func deleteVoiceOver(_ id: UUID) {
         change { $0.voiceOvers.removeAll { $0.id == id } }
         toast.show(String(localized: "Voice-over deleted"))
-    }
-
-    func setVoiceOverVolume(_ id: UUID, volume: Double) {
-        change { snapshot in
-            guard let index = snapshot.voiceOvers.firstIndex(where: { $0.id == id }) else { return }
-            snapshot.voiceOvers[index].volume = min(max(volume, VoiceOverClip.volumeRange.lowerBound), VoiceOverClip.volumeRange.upperBound)
-        }
     }
 }

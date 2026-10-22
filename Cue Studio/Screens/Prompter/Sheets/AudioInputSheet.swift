@@ -79,10 +79,8 @@ struct AudioInputSheet: View {
                 .font(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
-            if let url = URL(string: UIApplication.openSettingsURLString) {
-                Button("Open Settings") { openURL(url) }
-                    .buttonStyle(.cueSecondary(.compact, expands: false))
-            }
+            Button("Open Settings") { openURL.openAppSettings() }
+                .buttonStyle(.cueSecondary(.compact, expands: false))
         }
         .padding(.horizontal, 4)
     }

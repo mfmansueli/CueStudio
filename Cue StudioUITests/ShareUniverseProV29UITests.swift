@@ -27,7 +27,7 @@ final class ShareUniverseProV29UITests: XCTestCase {
 
     private func openUniverse(_ app: XCUIApplication) {
         let tab = app.cueTabBar.buttons["Profile"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         let card = element(app, "profile.universeLink")
         var swipes = 0
@@ -36,14 +36,14 @@ final class ShareUniverseProV29UITests: XCTestCase {
             swipes += 1
         }
         card.tap()
-        XCTAssertTrue(element(app, "universe.screen").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "universe.screen").exists(within: 5))
     }
 
     /// 9.2 with nothing shared: the map shows the core alone and the empty state invites the first star.
     func testYourUniverseWithNothingSharedShowsTheCoreAndTheEmptyState() {
         let app = CueApp.launch(seeded: false)
         openUniverse(app)
-        XCTAssertTrue(app.staticTexts["Your universe starts with your first share."].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Your universe starts with your first share."].exists(within: 5))
         XCTAssertTrue(element(app, "universe.record").exists)
         capture(app, "9.2_universe_empty")
     }
@@ -53,7 +53,7 @@ final class ShareUniverseProV29UITests: XCTestCase {
         let app = CueApp.launch(seeded: false)
         openUniverse(app)
         element(app, "universe.core").tap()
-        XCTAssertTrue(element(app, "universeCore.sheet").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "universeCore.sheet").exists(within: 5))
         XCTAssertTrue(app.staticTexts["Your light. It grows with every video you share — no photo needed."].exists)
         for color in ["gold", "amber", "sunrise", "rose"] {
             XCTAssertTrue(app.buttons["coreColor.\(color)"].exists, color)
@@ -69,7 +69,7 @@ final class ShareUniverseProV29UITests: XCTestCase {
     func testThePaywallShowsPlansTheTrialAndRestore() {
         let app = CueApp.launch(seeded: false)
         let tab = app.cueTabBar.buttons["Profile"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         let upgrade = element(app, "profile.upgradeButton")
         var swipes = 0
@@ -78,7 +78,7 @@ final class ShareUniverseProV29UITests: XCTestCase {
             swipes += 1
         }
         upgrade.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["paywall.benefits"].firstMatch.waitForExistence(timeout: 10))
+        XCTAssertTrue(app.descendants(matching: .any)["paywall.benefits"].firstMatch.exists(within: 10))
         capture(app, "11.4_pro")
     }
 }

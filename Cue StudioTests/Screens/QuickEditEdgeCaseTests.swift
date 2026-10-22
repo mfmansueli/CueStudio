@@ -53,7 +53,7 @@ struct QuickEditEdgeCaseTests {
         let (viewModel, player) = await makeViewModel(seconds: 300)
         let geometry = TimelineGeometry(viewModel.timelineInput(heightClass: .regular))
         #expect(abs(geometry.contentWidth - 300 * TimelineGeometry.basePointsPerSecond) < 0.5)
-        viewModel.scrub(to: 299.9)
+        viewModel.scrubTimeline(to: 299.9)
         #expect(abs(player.currentTime - 299.9) < 0.001)
         // The ruler keeps a readable step all the way out.
         let ticks = TimelineRuler.ticks(from: 0, to: 300, duration: 300, pointsPerSecond: geometry.pointsPerSecond * 0.35)

@@ -25,3 +25,7 @@ SWIFT_APPROACHABLE_CONCURRENCY                  = YES
 SWIFT_EMIT_LOC_STRINGS                          = NO
 SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES
 SWIFT_VERSION                                   = 6.0
+
+// StoreKitTest's own Objective-C header (SKTestTransaction.h, for StoreManagerTests) uses SKPaymentTransactionState, which the
+// SDK deprecated in iOS 18: a warning from Apple's header, not from the tests' code. Only C-imported deprecations are quieted.
+OTHER_SWIFT_FLAGS = $(inherited) -Xcc -Wno-deprecated-declarations

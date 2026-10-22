@@ -368,14 +368,6 @@ final class CoverStudioViewModel: Identifiable {
         removesCover = true
     }
 
-    /// The files copied in that the finished cover doesn't use: the editor cleans them up.
-    var unusedImports: Set<String> {
-        var used: Set<String> = []
-        if case .photo(let name) = cover.source { used.insert(name) }
-        if case .photo(let name)? = composition.split?.source { used.insert(name) }
-        return importedFiles.subtracting(used)
-    }
-
     func remember(imported name: String) {
         importedFiles.insert(name)
     }

@@ -26,11 +26,15 @@ nonisolated final class RecordingDelegate: NSObject, AVCaptureFileOutputRecordin
         from connections: [AVCaptureConnection],
         error: (any Error)?
     ) {
+        finish(at: outputFileURL, duration: output.recordedDuration.seconds, error: error)
+    }
+
+    /// The recording's end as the movie output reports it, apart from the output itself so tests can play it without a
+    /// capture session.
+    func finish(at url: URL, duration: TimeInterval, error: (any Error)?) {
         // Some errors still leave a complete, playable file.
         let finishedAnyway = (error as NSError?)?.userInfo[AVErrorRecordingSuccessfullyFinishedKey] as? Bool ?? false
-        let clip = (error == nil || finishedAnyway)
-            ? RecordedClip(url: outputFileURL, duration: output.recordedDuration.seconds)
-            : nil
+        let clip = (error == nil || finishedAnyway) ? RecordedClip(url: url, duration: duration) : nil
         typealias Ended = @Sendable (RecordedClip?, RecordingEndReason) -> Void
         let (waiting, endedByItself) = state.withLock { state -> (CheckedContinuation<RecordedClip?, Never>?, Ended?) in
             state.finished = true

@@ -13,10 +13,10 @@ final class DesignCatalogueUITests: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["-uiTestInMemory", "-uiTestCatalogue", "sliders"]
         app.launch()
-        XCTAssertTrue(app.descendants(matching: .any)["catalogue.root"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.descendants(matching: .any)["catalogue.root"].exists(within: 15))
 
         let slider = app.descendants(matching: .any)["catalogue.slider.speed"].firstMatch
-        XCTAssertTrue(slider.waitForExistence(timeout: 5))
+        XCTAssertTrue(slider.exists(within: 5))
         XCTAssertEqual(slider.value as? String, "140 words per minute")
         // Drag the thumb toward the right end of its track.
         let start = slider.coordinate(withNormalizedOffset: CGVector(dx: 0.45, dy: 0.7))

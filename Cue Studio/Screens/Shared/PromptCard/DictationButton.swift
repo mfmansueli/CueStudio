@@ -30,7 +30,7 @@ struct DictationButton: View {
                 } else {
                     Image(systemName: "mic.fill")
                         .font(.system(size: style == .primary ? 17 : 16, weight: .semibold))
-                        .foregroundStyle(style == .primary ? Palette.accInk : Palette.aiTextStrong.opacity(0.8))
+                        .foregroundStyle(style == .primary ? Palette.accInk : Palette.aiText)
                 }
             }
             .frame(width: style == .primary ? 40 : 36, height: style == .primary ? 40 : 36)

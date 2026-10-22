@@ -140,33 +140,35 @@ struct AnswerCommentSheet: View {
     }
 }
 
-/// A big row of the first step: an icon, what it does and a line under it.
-private struct AnswerOptionRow: View {
-    let title: String
-    let detail: String
-    let icon: String
-    let primary: Bool
+extension AnswerCommentSheet {
+    /// A big row of the first step: an icon, what it does and a line under it.
+    private struct AnswerOptionRow: View {
+        let title: String
+        let detail: String
+        let icon: String
+        let primary: Bool
 
-    var body: some View {
-        let shape = RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
-        return HStack(spacing: 14) {
-            Image(systemName: icon).font(.title3)
-                .foregroundStyle(primary ? Palette.accText : Palette.ink)
-                .frame(width: 42, height: 42)
-                .background(primary ? Palette.accSoft : Palette.overlayFill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-            VStack(alignment: .leading, spacing: 2) {
-                // Long words and large text wrap; they never end in "…" (German at the accessibility sizes did).
-                Text(title).font(.body.weight(.semibold)).foregroundStyle(Palette.ink)
-                    .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
-                Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
-                    .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
+        var body: some View {
+            let shape = RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
+            return HStack(spacing: 14) {
+                Image(systemName: icon).font(.title3)
+                    .foregroundStyle(primary ? Palette.accText : Palette.ink)
+                    .frame(width: 42, height: 42)
+                    .background(primary ? Palette.accSoft : Palette.overlayFill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                VStack(alignment: .leading, spacing: 2) {
+                    // Long words and large text wrap; they never end in "…" (German at the accessibility sizes did).
+                    Text(title).font(.body.weight(.semibold)).foregroundStyle(Palette.ink)
+                        .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
+                    Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
+                        .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
             }
-            Spacer(minLength: 0)
+            .padding(16)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Palette.surface2, in: shape)
+            .overlay(shape.strokeBorder(primary ? Palette.acc : .clear, lineWidth: 1.5))
+            .contentShape(shape)
         }
-        .padding(16)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Palette.surface2, in: shape)
-        .overlay(shape.strokeBorder(primary ? Palette.acc : .clear, lineWidth: 1.5))
-        .contentShape(shape)
     }
 }

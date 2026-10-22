@@ -18,7 +18,7 @@ struct EyeRedrawSceneTests {
     /// over `edgeWidth` pixels.
     private func painted(edgeWidth: Double, iris: (Int, Double) -> Float = { _, _ in 40 }) -> EyePatch {
         let width = 220, height = 180
-        var patch = EyePatch(width: width, height: height)
+        var patch = EyePatch(width: width, height: height, channels: Array(repeating: [Float](repeating: 0, count: width * height), count: 3))
         let opening = EyePatchFilters.coverage(of: eye.contour, width: width, height: height)
         let edgeStart = eye.irisRadius - edgeWidth / 2
         for y in 0..<height {

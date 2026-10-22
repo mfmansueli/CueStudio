@@ -23,16 +23,12 @@ struct TextStyleEditTests {
         #expect(changed.weight == .regular)
     }
 
-    @Test func sizeIsInTheDesignsPointsAndOnlyForTexts() {
+    @Test func sizeIsInTheDesignsPoints() {
         var changed = text
         TextStyleEdit.size(30).apply(to: &changed)
         #expect(abs(changed.size - 30) < 0.000_1)
         TextStyleEdit.size(300).apply(to: &changed)
         #expect(changed.size == TextOverlay.sizeRange.upperBound)
-        var look = TypePreset.cue.look(for: .caption)
-        let before = look
-        TextStyleEdit.size(30).apply(to: &look)
-        #expect(look == before)
     }
 
     @Test func shadowStylesMapToShadowAndOutline() {

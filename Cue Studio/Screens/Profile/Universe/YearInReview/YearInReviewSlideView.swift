@@ -23,7 +23,7 @@ struct YearInReviewSlideView: View {
                 .multilineTextAlignment(.center)
             Text(line)
                 .font(.system(size: slide == .total ? 13 : 14))
-                .foregroundStyle(.white.opacity(0.65))
+                .foregroundStyle(Palette.inkSoft)
                 .multilineTextAlignment(.center)
         }
         .padding(.horizontal, 32)

@@ -35,6 +35,6 @@ struct SilenceDetectorTests {
     @Test func trailingSilenceCounts() {
         let silences = SilenceDetector.silences(levels: levels([(-20, 5), (-80, 20)]), interval: 0.1)
         #expect(silences.count == 1)
-        #expect(abs(SilenceDetector.totalDuration(of: silences) - 1.76) < 0.001)
+        #expect(abs(silences[0].duration - 1.76) < 0.001)
     }
 }

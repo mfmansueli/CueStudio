@@ -36,7 +36,7 @@ struct HooksSheet: View {
                     .foregroundStyle(Palette.ink2)
                     Text(currentHook.isEmpty ? String(localized: "No opening line yet") : CueParser.stripCues(currentHook))
                         .font(.subheadline)
-                        .foregroundStyle(Palette.ink.opacity(0.7))
+                        .foregroundStyle(Palette.inkSoft)
                 }
                 .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
                 .overlay(

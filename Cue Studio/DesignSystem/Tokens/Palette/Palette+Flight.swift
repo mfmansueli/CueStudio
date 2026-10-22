@@ -21,7 +21,7 @@ extension Palette {
         static let ink = Color(hex: 0xE1E4F5)
         /// The boards' quiet words on the night (75% white on the board) and a waiting yellow button's title (80%). One
         /// token at 80%, 92% with Increase Contrast (`PaletteContrastTests`).
-        static let quietInk = Color(normal: Color.white.opacity(0.8), increasedContrast: Color.white.opacity(0.92))
+        static let quietInk = Palette.inkSoft
         /// `#B4A7FF`, the base of `aiText`: the lilac of rims, carets and the light of the writing.
         static let lilac = Color(hex: 0xB4A7FF)
         /// `#C9F1FF`: the ice-blue light of a galaxy's arrival.

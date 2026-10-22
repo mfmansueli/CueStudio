@@ -17,7 +17,7 @@ final class PrompterUITests: XCTestCase {
         app.openStudio(titled: "Oat & Co. — sponsored read")
 
         let play = app.buttons["prompter.playButton"]
-        XCTAssertTrue(play.waitForExistence(timeout: 5))
+        XCTAssertTrue(play.exists(within: 5))
         XCTAssertEqual(play.label, "Play")
         play.tap()
         // From the top it counts down first (3 s by default), then plays.
@@ -32,24 +32,24 @@ final class PrompterUITests: XCTestCase {
         waitUntilHittable(display)
         display.tap()
         let done = app.buttons["display.doneButton"]
-        XCTAssertTrue(done.waitForExistence(timeout: 5))
+        XCTAssertTrue(done.exists(within: 5))
         done.tap()
 
         app.buttons["prompter.closeButton"].tap()
-        XCTAssertTrue(app.staticTexts["Oat & Co. — sponsored read"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Oat & Co. — sponsored read"].exists(within: 5))
     }
 
     func testStudioSwitchesToVoiceFollowing() {
         let app = CueApp.launch(seeded: true)
         app.openStudio(titled: "Oat & Co. — sponsored read")
 
-        XCTAssertTrue(element(app, "prompter.speedSlider").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "prompter.speedSlider").exists(within: 5))
         let speedLabel = element(app, "prompter.speedSlider").value as? String ?? "1×"
         XCTAssertTrue(app.buttons["prompter.backButton"].exists)
         XCTAssertTrue(app.buttons["prompter.forwardButton"].exists)
         app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].tap()
         allowMicrophoneIfAsked()
-        XCTAssertTrue(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "prompter.voiceIndicator").exists(within: 5))
         XCTAssertFalse(element(app, "prompter.speedSlider").exists)
         let play = app.buttons["prompter.playButton"]
         play.tap()
@@ -61,23 +61,23 @@ final class PrompterUITests: XCTestCase {
         // The Simulator can't run speech recognition: there the text scrolls at the set speed while
         // you talk, and says so, speed included. It never claims to follow the words.
         let status = element(app, "prompter.voiceStatus")
-        XCTAssertTrue(status.waitForExistence(timeout: 5))
+        XCTAssertTrue(status.exists(within: 5))
         let honest = NSPredicate(format: "label CONTAINS 'while you talk' AND label CONTAINS %@", speedLabel)
         XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: honest, evaluatedWith: status)], timeout: 10), .completed)
         XCTAssertNotEqual(status.label, "Follows your words")
         play.tap()
         app.buttons["prompter.closeButton"].tap()
-        XCTAssertTrue(app.staticTexts["Oat & Co. — sponsored read"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Oat & Co. — sponsored read"].exists(within: 5))
     }
 
     func testVoiceFollowingIsOneTapInTheToolbar() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
 
         let voice = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"]
-        XCTAssertTrue(voice.waitForExistence(timeout: 5))
+        XCTAssertTrue(voice.exists(within: 5))
         let speed = element(app, "prompter.speedSlider")
         XCTAssertTrue(speed.exists)
         // The natural pace: 1×.
@@ -85,7 +85,7 @@ final class PrompterUITests: XCTestCase {
         voice.tap()
         allowMicrophoneIfAsked()
         let indicator = element(app, "prompter.voiceIndicator")
-        XCTAssertTrue(indicator.waitForExistence(timeout: 5))
+        XCTAssertTrue(indicator.exists(within: 5))
         XCTAssertTrue(voice.isSelected)
         XCTAssertFalse(speed.exists)
         // Getting ready, then (the Simulator can't recognize speech) scrolling while you talk:
@@ -94,10 +94,10 @@ final class PrompterUITests: XCTestCase {
         XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: settled, evaluatedWith: indicator)], timeout: 10), .completed)
 
         app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Steady"].tap()
-        XCTAssertFalse(element(app, "prompter.voiceIndicator").waitForExistence(timeout: 2))
+        XCTAssertFalse(element(app, "prompter.voiceIndicator").exists(within: 2))
         XCTAssertTrue(speed.exists)
         app.buttons["prompter.closeButton"].tap()
-        XCTAssertTrue(record.waitForExistence(timeout: 5))
+        XCTAssertTrue(record.exists(within: 5))
     }
 
     /// Aa opens the Prompter page of Settings (09 §11) over the recording, without the preview (the real text window is right behind the
@@ -105,12 +105,12 @@ final class PrompterUITests: XCTestCase {
     func testAaOpensThePrompterPageOverTheRecorder() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
 
-        XCTAssertTrue(element(app, "prompter.text").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "prompter.text").exists(within: 5))
         app.buttons["prompter.displayButton"].tap()
-        XCTAssertTrue(app.buttons["display.doneButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["display.doneButton"].exists(within: 5))
         XCTAssertFalse(element(app, "settings.prompterPreview").exists)
         XCTAssertTrue(element(app, "settings.followVoice").exists)
         XCTAssertTrue(element(app, "settings.speed").exists)
@@ -120,28 +120,30 @@ final class PrompterUITests: XCTestCase {
     func testReadingLineMovesFromThePrompterPageAndResetsToRecommended() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
 
         let handle = element(app, "prompter.readingLineHandle")
-        XCTAssertTrue(handle.waitForExistence(timeout: 5))
+        XCTAssertTrue(handle.exists(within: 5))
         XCTAssertFalse(app.buttons["prompter.readingLineTip"].exists)
+        // Where the line rests once the page is laid out, the place Reset brings it back to.
+        handle.waitUntilStill()
         let lineY = handle.frame.midY
         app.buttons["prompter.displayButton"].tap()
         let position = app.sliders["settings.readingLinePosition"]
-        XCTAssertTrue(element(app, "settings.followVoice").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "settings.followVoice").exists(within: 5))
         // The list is under the sheet's handle: drag from its lower half, where the rows are, along the left edge (the sliders' thumbs
         // in the middle would take the drag).
         for _ in 0..<6 where !(position.exists && position.isHittable) {
             let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.85))
             from.press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.55)))
         }
-        XCTAssertTrue(position.waitForExistence(timeout: 5))
+        XCTAssertTrue(position.exists(within: 5))
         position.adjust(toNormalizedSliderPosition: 0.9)
         XCTAssertNotEqual(handle.frame.midY, lineY, accuracy: 1)
 
         let reset = element(app, "settings.resetReadingLine")
-        XCTAssertTrue(reset.waitForExistence(timeout: 5))
+        XCTAssertTrue(reset.exists(within: 5))
         reset.tap()
         // The line glides back to where it is recommended: wait for it to arrive.
         let arrived = NSPredicate { _, _ in abs(handle.frame.midY - lineY) <= 2 }
@@ -155,11 +157,11 @@ final class PrompterUITests: XCTestCase {
     func testTextWindowResizesFromItsCornerAndResetsOnDoubleTap() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
 
         let handle = element(app, "prompter.textWindowResizeHandle")
-        XCTAssertTrue(handle.waitForExistence(timeout: 5))
+        XCTAssertTrue(handle.exists(within: 5))
         let original = handle.value as? String
         let start = handle.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
         start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: -90, dy: -120)))
@@ -170,7 +172,7 @@ final class PrompterUITests: XCTestCase {
 
         // Nothing resizes while a sheet is open.
         app.buttons["prompter.displayButton"].tap()
-        XCTAssertTrue(app.buttons["display.doneButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["display.doneButton"].exists(within: 5))
         XCTAssertFalse(handle.exists)
         app.buttons["display.doneButton"].tap()
     }
@@ -179,12 +181,12 @@ final class PrompterUITests: XCTestCase {
     func testCustomSafeZoneFromThePrompterPage() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
 
-        XCTAssertTrue(app.buttons["prompter.displayButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["prompter.displayButton"].exists(within: 5))
         app.buttons["prompter.displayButton"].tap()
-        XCTAssertTrue(element(app, "settings.followVoice").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "settings.followVoice").exists(within: 5))
         // The sheet is the lower part of the screen (the text window stays above it): the swipes go to its list, which is short, so they
         // are quick ones.
         let zone = element(app, "settings.socialSafeZone")
@@ -195,7 +197,7 @@ final class PrompterUITests: XCTestCase {
         }
         XCTAssertLessThan(zone.frame.maxY, sheetBottom, "Social safe zone isn't reachable in the sheet")
         zone.tap()
-        XCTAssertTrue(element(app, "settings.safeZoneToggle").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "settings.safeZoneToggle").exists(within: 5))
         XCTAssertTrue(app.buttons["settings.safeZone.reels"].exists)
         XCTAssertFalse(element(app, "settings.safeZoneMargin.top").exists)
         // The page is in the same short sheet: Custom and its margins are further down.
@@ -213,61 +215,61 @@ final class PrompterUITests: XCTestCase {
         for _ in 0..<6 where !(top.exists && top.frame.maxY < bottom) {
             zonePage.swipeUp(velocity: .fast)
         }
-        XCTAssertTrue(top.waitForExistence(timeout: 2))
+        XCTAssertTrue(top.exists(within: 2))
     }
 
     func testPlatformChipOpensCreateFor() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
 
         // With a script the chip is the platform ("● TikTok"): "Create for", the network as its value.
         let chip = app.buttons["prompter.aspectButton"]
-        XCTAssertTrue(chip.waitForExistence(timeout: 5))
+        XCTAssertTrue(chip.exists(within: 5))
         XCTAssertEqual(chip.label, "Create for")
         XCTAssertEqual(chip.value as? String, "TikTok")
         chip.tap()
         let youtube = app.buttons["destination.youtube"]
-        XCTAssertTrue(youtube.waitForExistence(timeout: 5))
+        XCTAssertTrue(youtube.exists(within: 5))
         youtube.tap()
         // The toast is brief; the chip is the lasting proof the platform changed.
         let youtubeChip = app.buttons.matching(NSPredicate(format: "identifier == 'prompter.aspectButton' AND value == 'YouTube'")).firstMatch
-        XCTAssertTrue(youtubeChip.waitForExistence(timeout: 5))
+        XCTAssertTrue(youtubeChip.exists(within: 5))
         // YouTube's 16:9 · 4K · 24 fps is offered, not applied: the frame (in the setup line) stays 9:16 until the creator picks.
         let setup = app.buttons["prompter.setupButton"]
         XCTAssertTrue((setup.value as? String ?? "").contains("9:16"))
         let use = app.buttons["prompter.useRecommendedButton"]
-        XCTAssertTrue(use.waitForExistence(timeout: 5))
+        XCTAssertTrue(use.exists(within: 5))
         XCTAssertEqual(use.label, "Use Recommended")
         use.tap()
         let landscape = app.buttons.matching(NSPredicate(format: "identifier == 'prompter.setupButton' AND value CONTAINS '16:9'")).firstMatch
-        XCTAssertTrue(landscape.waitForExistence(timeout: 5))
+        XCTAssertTrue(landscape.exists(within: 5))
         app.buttons["prompter.closeButton"].tap()
     }
 
     func testMicrophonePillPicksTheAudioInput() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
         allowMicrophoneIfAsked()
 
         let pill = app.buttons["prompter.audioInputButton"]
-        XCTAssertTrue(pill.waitForExistence(timeout: 5))
+        XCTAssertTrue(pill.exists(within: 5))
         pill.tap()
-        XCTAssertTrue(app.staticTexts["Audio Input"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Audio Input"].exists(within: 5))
 
         // Whatever the Simulator offers: picking an input closes the sheet and the pill names it.
         let option = app.buttons.matching(identifier: "audioInput.option").firstMatch
-        if option.waitForExistence(timeout: 2) {
+        if option.exists(within: 2) {
             let name = option.label.components(separatedBy: ",").first ?? option.label
             option.tap()
-            XCTAssertTrue(app.staticTexts["Audio Input"].waitForNonExistence(timeout: 5))
+            XCTAssertTrue(app.staticTexts["Audio Input"].isGone(within: 5))
             XCTAssertEqual(pill.value as? String, name)
         } else {
             app.buttons.matching(NSPredicate(format: "label == 'Close' AND identifier != 'prompter.closeButton'")).firstMatch.tap()
-            XCTAssertTrue(app.staticTexts["Audio Input"].waitForNonExistence(timeout: 5))
+            XCTAssertTrue(app.staticTexts["Audio Input"].isGone(within: 5))
         }
         XCTAssertTrue(app.buttons["prompter.recordButton"].exists)
         app.buttons["prompter.closeButton"].tap()
@@ -277,18 +279,18 @@ final class PrompterUITests: XCTestCase {
     func testMoreMenuHoldsCountdownRemoteControlAndThisTake() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
 
         let more = app.buttons["prompter.moreButton"]
-        XCTAssertTrue(more.waitForExistence(timeout: 5))
+        XCTAssertTrue(more.exists(within: 5))
         more.tap()
-        XCTAssertTrue(app.buttons["prompter.moreRemote"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["prompter.moreRemote"].exists(within: 5))
         XCTAssertTrue(app.buttons["prompter.moreThisTake"].exists)
         app.buttons["prompter.moreThisTake"].tap()
-        XCTAssertTrue(app.buttons["sheet.closeButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["sheet.closeButton"].exists(within: 5))
         app.buttons["sheet.closeButton"].tap()
-        XCTAssertTrue(app.buttons["sheet.closeButton"].waitForNonExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["sheet.closeButton"].isGone(within: 5))
         app.buttons["prompter.closeButton"].tap()
     }
 
@@ -297,10 +299,10 @@ final class PrompterUITests: XCTestCase {
     func testTheToolbarHasTheV26Controls() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
 
-        XCTAssertTrue(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].exists(within: 5))
         // The system's segmented control: each segment says its short name.
         XCTAssertEqual(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"].label, "Voice")
         XCTAssertTrue(app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Steady"].exists)
@@ -327,32 +329,32 @@ final class PrompterUITests: XCTestCase {
     func testSelfieModeSwitchesToStudio() throws {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
 
         // The Simulator has no camera, so Cue explains instead of showing a feed.
-        if !app.descendants(matching: .any)["camera.unavailableMessage"].waitForExistence(timeout: 5) {
+        if !app.descendants(matching: .any)["camera.unavailableMessage"].exists(within: 5) {
             throw XCTSkip("A camera is available; this check is for devices without one.")
         }
         XCTAssertTrue(app.buttons["prompter.recordButton"].exists)
         app.segmentedControls["prompter.mode"].buttons["Studio"].tap()
-        XCTAssertTrue(app.buttons["prompter.playButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["prompter.playButton"].exists(within: 5))
         app.buttons["prompter.closeButton"].tap()
     }
 
     func testCameraSettingsStopBelowTheScript() {
         let app = CueApp.launch(seeded: true)
         let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.waitForExistence(timeout: 15))
+        XCTAssertTrue(record.exists(within: 15))
         record.tap()
 
         let script = app.descendants(matching: .any)["prompter.text"]
-        XCTAssertTrue(script.waitForExistence(timeout: 5))
+        XCTAssertTrue(script.exists(within: 5))
         let scriptBottom = script.frame.maxY
 
         app.buttons["prompter.cameraSettingsButton"].tap()
         let done = app.buttons["camera.doneButton"]
-        XCTAssertTrue(done.waitForExistence(timeout: 5))
+        XCTAssertTrue(done.exists(within: 5))
         XCTAssertGreaterThan(done.frame.minY, scriptBottom)
 
         // Pulling the sheet up doesn't let it grow over the script.
@@ -362,7 +364,7 @@ final class PrompterUITests: XCTestCase {
         XCTAssertGreaterThan(done.frame.minY, scriptBottom)
 
         done.tap()
-        XCTAssertTrue(app.buttons["prompter.recordButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["prompter.recordButton"].exists(within: 5))
     }
 
     // MARK: - Helpers
@@ -370,7 +372,7 @@ final class PrompterUITests: XCTestCase {
     /// The first play folds Studio's adjustments and speed (or voice line) into the bar (`StudioControlPanel`); the chevron brings them back.
     private func bringStudioBarOut(_ app: XCUIApplication) {
         let handle = element(app, "prompter.sheetHandle")
-        XCTAssertTrue(handle.waitForExistence(timeout: 5))
+        XCTAssertTrue(handle.exists(within: 5))
         let folded = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'Hidden'"), object: handle)
         XCTAssertEqual(XCTWaiter.wait(for: [folded], timeout: 5), .completed, "The bar didn't fold for the first play")
         handle.tap()
@@ -391,7 +393,7 @@ final class PrompterUITests: XCTestCase {
     private func allowMicrophoneIfAsked() {
         let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
         let allow = springboard.alerts.buttons["Allow"]
-        if allow.waitForExistence(timeout: 3) {
+        if allow.exists(within: 3) {
             allow.tap()
         }
     }

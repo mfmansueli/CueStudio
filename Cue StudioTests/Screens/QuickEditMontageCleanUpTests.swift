@@ -46,6 +46,15 @@ struct QuickEditMontageCleanUpTests {
         }
     }
 
+    /// Pauses with only `id` marked to go, then "Remove": what the creator does to take out one pause.
+    private func removeOnly(_ id: UUID, in viewModel: QuickEditViewModel) {
+        viewModel.panel = .pauses
+        for other in viewModel.pauseCandidates + viewModel.wordCandidates where other.id != id && viewModel.isMarked(other) {
+            viewModel.toggleMark(other.id)
+        }
+        viewModel.applyCleanUp()
+    }
+
     @Test func everyRecordingIsListenedToAndKeepsItsSuggestions() async throws {
         let scenario = try await makeScenario()
         defer { scenario.cleanUp() }
@@ -68,7 +77,7 @@ struct QuickEditMontageCleanUpTests {
         let viewModel = scenario.viewModel
         await viewModel.analyzeIfNeeded()
         let theirs = try #require(viewModel.pauseCandidates.first { $0.sourceID == scenario.source.id })
-        viewModel.removeSuggestion(theirs.id)
+        removeOnly(theirs.id, in: viewModel)
         let timeline = viewModel.edit.timeline
         // The take plays whole; the other take loses its pause (the cut keeps a breath on both sides).
         #expect(timeline.segments.filter { $0.sourceID == nil }.map(\.span) == [TimeSpan(start: 0, end: 12)])
@@ -93,7 +102,7 @@ struct QuickEditMontageCleanUpTests {
         // At 2× the 2 s pause lasts 1 s; the copy still plays it at 1×.
         #expect(viewModel.edit.timeline.editedSpan(of: theirs)?.duration == 1)
         // Removing it takes it out of the original and the copy alike.
-        viewModel.removeSuggestion(theirs.id)
+        removeOnly(theirs.id, in: viewModel)
         let pieces = viewModel.edit.timeline.segments.filter { $0.sourceID == scenario.source.id }
         #expect(pieces.allSatisfy { !$0.span.overlaps(TimeSpan(start: 10.2, end: 11.8)) })
     }

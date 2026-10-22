@@ -43,7 +43,7 @@ struct RemotePairingTests {
     @Test func messagesSurviveTheTrip() throws {
         let status = RemoteStatus(scriptTitle: "3 habits", isPlaying: true, speed: 0.9, followsVoice: false, progress: 0.4, isRecording: true)
         for message in [RemoteMessage.command(.faster), .status(status)] {
-            #expect(try RemoteMessage.decoded(from: message.encoded()) == message)
+            #expect(try JSONDecoder().decode(RemoteMessage.self, from: JSONEncoder().encode(message)) == message)
         }
     }
 }

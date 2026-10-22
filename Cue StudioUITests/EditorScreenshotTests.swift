@@ -30,7 +30,7 @@ final class EditorScreenshotTests: XCTestCase {
         }
         func back() {
             let back = app.buttons["edit.toolbar.back"]
-            if back.waitForExistence(timeout: 2) { back.tap() }
+            if back.exists(within: 2) { back.tap() }
         }
         /// A panel tab; on a compact screen the tabs share a sideways row with the scope.
         func tab(_ id: String) {
@@ -109,11 +109,11 @@ final class EditorScreenshotTests: XCTestCase {
         try capture("23-smart-templates")
         apply()
         EditorApp.tapTool(app, "cover")
-        XCTAssertTrue(app.buttons["cover.done"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["cover.done"].exists(within: 5))
         try capture("23-cover")
         app.buttons["cover.done"].tap()
         app.buttons["edit.doneButton"].tap()
-        XCTAssertTrue(app.buttons["edit.done.share"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.done.share"].exists(within: 5))
         try capture("21-done-question")
         app.swipeDown()
         app.buttons["edit.fullScreenButton"].tap()

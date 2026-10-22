@@ -35,7 +35,7 @@ final class ExploratoryTourTests: XCTestCase {
         try begin()
         tab(1)
         let video = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.'")).firstMatch
-        guard video.waitForExistence(timeout: 5) else { return }
+        guard video.exists(within: 5) else { return }
         video.tap()
         sleep(3)
         shot("preview-review")
@@ -52,7 +52,7 @@ final class ExploratoryTourTests: XCTestCase {
         try begin()
         tab(1)
         let video = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.'")).firstMatch
-        guard video.waitForExistence(timeout: 5) else { return }
+        guard video.exists(within: 5) else { return }
         video.tap()
         sleep(3)
         guard tap("review.editButton") else { return }
@@ -77,7 +77,7 @@ final class ExploratoryTourTests: XCTestCase {
         }
         // The cover, from the "Cover" tile before the first clip.
         let cover = app.buttons["Cover"].firstMatch
-        if cover.waitForExistence(timeout: 3), cover.isHittable {
+        if cover.exists(within: 3), cover.isHittable {
             cover.tap(); sleep(2); shot("panel-cover")
             for tab in ["edit.panel.tab.coverText", "edit.panel.tab.elements", "edit.panel.tab.look"] where app.buttons[tab].exists {
                 app.buttons[tab].tap(); sleep(1); shot("panel-cover-\(tab.split(separator: ".").last ?? "")")
@@ -176,7 +176,7 @@ final class ExploratoryTourTests: XCTestCase {
             sampleVideo: true, appLanguage: env["CUE_TOUR_LANG"], contentSize: env["CUE_TOUR_SIZE"]
         )
         continueAfterFailure = true
-        _ = app.buttons["ideaCard.submit"].waitForExistence(timeout: 20)
+        _ = app.buttons["ideaCard.submit"].exists(within: 20)
         sleep(1)
     }
 
@@ -195,7 +195,7 @@ final class ExploratoryTourTests: XCTestCase {
         }
         if tap("scripts.newButton") { shot("new-script"); closeSheet() }
         let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'scripts.row.'")).firstMatch
-        if row.waitForExistence(timeout: 5) {
+        if row.exists(within: 5) {
             row.tap()
             shot("script-shaped")
             shot("script-draft")
@@ -233,7 +233,7 @@ final class ExploratoryTourTests: XCTestCase {
         tab(1)
         shot("takes")
         let list = app.segmentedControls["takes.layout"].buttons["List"]
-        if list.waitForExistence(timeout: 4) {
+        if list.exists(within: 4) {
             list.tap()
             sleep(1)
             shot("takes-list")
@@ -241,7 +241,7 @@ final class ExploratoryTourTests: XCTestCase {
             misses.append("takes.layout")
         }
         let video = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.'")).firstMatch
-        if video.waitForExistence(timeout: 5) {
+        if video.exists(within: 5) {
             video.tap()
             sleep(4)
             shot("review")
@@ -280,7 +280,7 @@ final class ExploratoryTourTests: XCTestCase {
     private func prompter() {
         tab(0)
         let record = app.buttons["row.recordButton"].firstMatch
-        guard record.waitForExistence(timeout: 5) else { misses.append("row.recordButton"); return }
+        guard record.exists(within: 5) else { misses.append("row.recordButton"); return }
         record.tap()
         sleep(2)
         shot("prompter")
@@ -309,14 +309,14 @@ final class ExploratoryTourTests: XCTestCase {
 
     private func tab(_ index: Int) {
         let bar = app.cueTabBar
-        if bar.waitForExistence(timeout: 5) { bar.buttons.element(boundBy: index).tap(); sleep(1) } else { misses.append("tabBar") }
+        if bar.exists(within: 5) { bar.buttons.element(boundBy: index).tap(); sleep(1) } else { misses.append("tabBar") }
     }
 
     /// Taps a control by identifier; a missing one is written down, not a failure.
     @discardableResult
     private func tap(_ id: String) -> Bool {
         let element = app.descendants(matching: .any)[id].firstMatch
-        guard element.waitForExistence(timeout: 4) else { misses.append(id); return false }
+        guard element.exists(within: 4) else { misses.append(id); return false }
         var scrolls = 0
         while !element.isHittable, scrolls < 3 { app.swipeUp(); scrolls += 1 }
         guard element.isHittable else { misses.append("\(id) (not hittable)"); return false }

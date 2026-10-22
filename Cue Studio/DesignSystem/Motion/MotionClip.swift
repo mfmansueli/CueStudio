@@ -68,13 +68,11 @@ nonisolated struct MotionClip: Sendable {
         if let value = sampler.number(\.glowSpread) { pose.glowSpread = value }
         if let value = sampler.number(\.clipRight) { pose.clipRight = value / 100 }
         if let value = sampler.number(\.topPct) { pose.topPct = value }
-        if let value = sampler.number(\.radius) { pose.radius = value }
         if let value = sampler.number(\.bgX) { pose.bgX = value }
     }
 
     private func applyColours(_ sampler: Sampler, to pose: inout MotionPose) {
         if let value = sampler.colour(\.color) { pose.color = value }
-        if let value = sampler.colour(\.background) { pose.background = value }
         if let value = sampler.colour(\.glow) { pose.glow = value }
     }
 

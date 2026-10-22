@@ -14,12 +14,20 @@ final class UsageQuotaService {
 
     private let counter: ExportCountStoring
     private let defaults: UserDefaults
+    /// Exports made while the count couldn't be read (Cue woke in the background before the first unlock): added to the
+    /// stored count once it can be, never saved over it.
+    private var unreadExports: Int?
 
     /// `resetsOnNewInstall` (Debug builds, `LaunchOptions`) gives a new install its free exports back.
     init(counter: ExportCountStoring = KeychainExportCountStore(), defaults: UserDefaults = .standard, resetsOnNewInstall: Bool = false) {
         self.counter = counter
         self.defaults = defaults
-        exportsUsed = counter.load()
+        if let stored = counter.load() {
+            exportsUsed = stored
+        } else {
+            exportsUsed = 0
+            unreadExports = 0
+        }
         migrateCountFromDefaults()
         removeLegacyAICounters()
         if resetsOnNewInstall { resetOnNewInstall() }
@@ -41,8 +49,21 @@ final class UsageQuotaService {
     /// Only the free plan counts exports.
     func recordExport(tier: MembershipTier) {
         guard UsagePolicy.exportLimit(for: tier) != nil else { return }
+        reloadIfUnread()
         exportsUsed += 1
-        counter.save(exportsUsed)
+        if let unread = unreadExports {
+            unreadExports = unread + 1
+        } else {
+            counter.save(exportsUsed)
+        }
+    }
+
+    /// The count couldn't be read at launch: read it now and add the exports made since.
+    func reloadIfUnread() {
+        guard let unread = unreadExports, let stored = counter.load() else { return }
+        unreadExports = nil
+        exportsUsed = stored + unread
+        if unread > 0 { counter.save(exportsUsed) }
     }
 
     // MARK: - Private
@@ -50,6 +71,7 @@ final class UsageQuotaService {
     /// Earlier builds kept the count in UserDefaults; it moves to the Keychain without handing back
     /// exports already used.
     private func migrateCountFromDefaults() {
+        guard unreadExports == nil else { return }
         let legacy = defaults.integer(forKey: DefaultsKey.legacyCleanExportsUsed)
         guard defaults.object(forKey: DefaultsKey.legacyCleanExportsUsed) != nil else { return }
         if legacy > exportsUsed {
@@ -64,6 +86,7 @@ final class UsageQuotaService {
     private func resetOnNewInstall() {
         guard defaults.object(forKey: DefaultsKey.installLaunched) == nil else { return }
         defaults.set(true, forKey: DefaultsKey.installLaunched)
+        unreadExports = nil
         guard exportsUsed > 0 else { return }
         exportsUsed = 0
         counter.save(0)

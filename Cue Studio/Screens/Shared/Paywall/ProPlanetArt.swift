@@ -93,7 +93,7 @@ struct ProPlanetArt: View {
         let breath = (1 - cos(ambient / 6 * 2 * .pi)) / 2
         let reach = 110 * birth.scale * (0.94 + 0.08 * breath)
         canvas.fill(
-            disc(.zero, reach),
+            LightFX.disc(.zero, reach),
             with: .radialGradient(
                 Gradient(colors: [Palette.World.warm.opacity((0.32 + 0.06 * breath) * birth.opacity), .clear]), center: .zero, startRadius: 0,
                 endRadius: reach
@@ -104,7 +104,7 @@ struct ProPlanetArt: View {
     private func planet(in canvas: inout GraphicsContext, birth: Pose, ambient: TimeInterval) {
         guard birth.opacity > 0.01 else { return }
         let radius = Self.planetRadius * birth.scale
-        let ball = disc(.zero, radius)
+        let ball = LightFX.disc(.zero, radius)
         var layer = canvas
         layer.opacity = birth.opacity
         layer.drawLayer { lit in
@@ -207,7 +207,7 @@ struct ProPlanetArt: View {
             guard (sin(theta) < 0) == (half == .back) else { continue }
             let twinkle = 0.5 + 0.5 * sin(ambient * 1.7 + Double(index) * 2.3)
             let point = point(on: orbit, at: theta)
-            canvas.fill(disc(point, 0.7 + 0.4 * twinkle), with: .color(orbit.color.opacity(opacity * (0.35 + 0.65 * twinkle))))
+            canvas.fill(LightFX.disc(point, 0.7 + 0.4 * twinkle), with: .color(orbit.color.opacity(opacity * (0.35 + 0.65 * twinkle))))
         }
     }
 
@@ -233,20 +233,17 @@ struct ProPlanetArt: View {
         for step in 1...10 {
             let behind = point(on: orbit, at: theta - Double(step) * 0.035)
             let left = 1 - Double(step) / 11
-            canvas.fill(disc(behind, traveller.size / 2 * 0.55 * left), with: .color(traveller.color.opacity(0.4 * left * opacity * fade)))
+            canvas.fill(LightFX.disc(behind, traveller.size / 2 * 0.55 * left), with: .color(traveller.color.opacity(0.4 * left * opacity * fade)))
         }
         let centre = point(on: orbit, at: theta)
         canvas.drawLayer { layer in
             layer.addFilter(.shadow(color: traveller.color.opacity(0.85), radius: 5))
-            layer.fill(disc(centre, traveller.size / 2), with: .color(traveller.color.opacity(opacity * fade)))
+            layer.fill(LightFX.disc(centre, traveller.size / 2), with: .color(traveller.color.opacity(opacity * fade)))
         }
         canvas.fill(
-            disc(CGPoint(x: centre.x - traveller.size * 0.15, y: centre.y - traveller.size * 0.15), traveller.size * 0.18),
+            LightFX.disc(CGPoint(x: centre.x - traveller.size * 0.15, y: centre.y - traveller.size * 0.15), traveller.size * 0.18),
             with: .color(.white.opacity(0.55 * opacity * fade))
         )
     }
 
-    private func disc(_ centre: CGPoint, _ radius: CGFloat) -> Path {
-        Path(ellipseIn: CGRect(x: centre.x - radius, y: centre.y - radius, width: radius * 2, height: radius * 2))
-    }
 }

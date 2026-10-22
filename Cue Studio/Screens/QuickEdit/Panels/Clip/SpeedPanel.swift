@@ -22,7 +22,7 @@ struct SpeedPanel: View {
             if viewModel.showsCurveTab {
                 SpeedCurvePanel(viewModel: viewModel)
             } else {
-                normal(clip: clip, speed: speed)
+                normal(speed: speed)
             }
             PanelToggleRow(
                 label: String(localized: "Keep voice pitch"), detail: String(localized: "No chipmunk effect when sped up"),
@@ -32,9 +32,9 @@ struct SpeedPanel: View {
     }
 
     @ViewBuilder
-    private func normal(clip: EditSegment?, speed: Double) -> some View {
+    private func normal(speed: Double) -> some View {
         PanelSegmented(
-            options: QuickEditViewModel.quickSpeeds.map { PanelOption($0, Self.label($0), key: Self.key($0)) },
+            options: QuickEditViewModel.quickSpeeds.map { PanelOption($0, SpeedScale.label(forMultiple: $0), key: Self.key($0)) },
             selection: QuickEditViewModel.quickSpeeds.first { abs($0 - speed) < 0.001 },
             accent: true, identifier: "edit.speed"
         ) { viewModel.setClipSpeed($0) }
@@ -53,10 +53,6 @@ struct SpeedPanel: View {
                 format: .speed, identifier: "edit.speed.custom"
             ) { viewModel.setClipSpeed($0) }
         }
-    }
-
-    static func label(_ speed: Double) -> String {
-        speed.formatted(.number.precision(.fractionLength(0...2)).locale(.interface)) + "×"
     }
 
     static func key(_ speed: Double) -> String {

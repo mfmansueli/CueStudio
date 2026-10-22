@@ -43,7 +43,6 @@ extension QuickEditViewModel {
         let count = edit.captions.count
         guard isReady, count > 0 else { return }
         if selection?.captionID != nil { selection = nil }
-        editingCaptionID = nil
         change { $0.captions = [] }
         Haptics.delete()
         toast.show(

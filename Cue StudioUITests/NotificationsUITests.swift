@@ -22,12 +22,12 @@ final class NotificationsUITests: XCTestCase {
 
     private func openNotificationSettings(_ app: XCUIApplication) {
         let settings = app.cueTabBar.buttons["Settings"]
-        XCTAssertTrue(settings.waitForExistence(timeout: 15))
+        XCTAssertTrue(settings.exists(within: 15))
         settings.tap()
         let row = element(app, "settings.notifications")
         app.scroll(to: row)
         row.tap()
-        XCTAssertTrue(element(app, "notifications.screen").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "notifications.screen").exists(within: 5))
     }
 
     private func isOn(_ toggle: XCUIElement) -> Bool {
@@ -69,7 +69,7 @@ final class NotificationsUITests: XCTestCase {
             let lit = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == '1'"), object: app.switches["notifications.group.\(group)"])
             XCTAssertEqual(XCTWaiter.wait(for: [lit], timeout: 5), .completed, "\(group) lights with the yes")
         }
-        XCTAssertTrue(element(app, "notifications.routine.day.2").waitForExistence(timeout: 3), "The routine opens on its usual days")
+        XCTAssertTrue(element(app, "notifications.routine.day.2").exists(within: 3), "The routine opens on its usual days")
         XCTAssertTrue(isOn(app.switches["notifications.permission"]))
         XCTAssertEqual(cardTitle(app).label, "Notifications are on")
         flip(app.switches["notifications.group.news"])
@@ -94,10 +94,10 @@ final class NotificationsUITests: XCTestCase {
     private func recordAndClose(_ app: XCUIApplication) {
         app.openScriptPage(titled: "Oat & Co. — sponsored read")
         let record = app.buttons["detail.recordButton"]
-        XCTAssertTrue(record.waitForExistence(timeout: 5))
+        XCTAssertTrue(record.exists(within: 5))
         record.tap()
         let close = app.buttons["prompter.closeButton"]
-        XCTAssertTrue(close.waitForExistence(timeout: 15))
+        XCTAssertTrue(close.exists(within: 15))
         close.tap()
     }
 
@@ -105,10 +105,10 @@ final class NotificationsUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestNotificationInvite"])
         recordAndClose(app)
         let sheet = element(app, "notificationInvite.sheet")
-        XCTAssertTrue(sheet.waitForExistence(timeout: 10), "The invitation comes after the recorder closes")
+        XCTAssertTrue(sheet.exists(within: 10), "The invitation comes after the recorder closes")
         XCTAssertTrue(app.staticTexts["Want Cue to remind you to finish this video?"].exists)
         app.buttons["notificationInvite.allow"].tap()
-        XCTAssertFalse(sheet.waitForExistence(timeout: 2))
+        XCTAssertFalse(sheet.exists(within: 2))
         app.pageBackButton.tap()
         openNotificationSettings(app)
         XCTAssertTrue(isOn(app.switches["notifications.permission"]), "Allow brought up iOS's question, and the in-memory iOS said yes")
@@ -119,9 +119,9 @@ final class NotificationsUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestNotificationInvite"])
         recordAndClose(app)
         let notNow = app.buttons["notificationInvite.notNow"]
-        XCTAssertTrue(notNow.waitForExistence(timeout: 10))
+        XCTAssertTrue(notNow.exists(within: 10))
         notNow.tap()
-        XCTAssertFalse(element(app, "notificationInvite.sheet").waitForExistence(timeout: 2))
+        XCTAssertFalse(element(app, "notificationInvite.sheet").exists(within: 2))
         app.pageBackButton.tap()
         openNotificationSettings(app)
         XCTAssertEqual(cardTitle(app).label, "Notifications are off", "iOS wasn't asked")
@@ -135,16 +135,16 @@ final class NotificationsUITests: XCTestCase {
         app.openScriptPage(titled: "Unboxing the Lumen desk lamp")
         app.buttons["page.menuButton"].tap()
         let remind = app.buttons["page.remindMe"]
-        XCTAssertTrue(remind.waitForExistence(timeout: 5))
+        XCTAssertTrue(remind.exists(within: 5))
         remind.tap()
         let tomorrow = app.buttons["reminder.tomorrow"]
-        XCTAssertTrue(tomorrow.waitForExistence(timeout: 5))
+        XCTAssertTrue(tomorrow.exists(within: 5))
         tomorrow.tap()
         let set = app.staticTexts.matching(NSPredicate(format: "label BEGINSWITH 'Reminder set'")).firstMatch
-        XCTAssertTrue(set.waitForExistence(timeout: 5), "Set is only said once the system took it")
+        XCTAssertTrue(set.exists(within: 5), "Set is only said once the system took it")
         app.pageBackButton.tap()
         openNotificationSettings(app)
-        XCTAssertTrue(element(app, "notifications.reminder").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "notifications.reminder").exists(within: 5))
     }
 
     func testWithNotificationsOffAReminderIsKeptInCue() {
@@ -153,54 +153,54 @@ final class NotificationsUITests: XCTestCase {
         app.buttons["page.menuButton"].tap()
         app.buttons["page.remindMe"].tap()
         app.buttons["reminder.tomorrow"].tap()
-        XCTAssertTrue(app.staticTexts["Saved in Cue · notifications are off"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Saved in Cue · notifications are off"].exists(within: 5))
     }
 
     // MARK: - Opening a notification
 
     func testANotificationOpensItsScript() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestNotificationTap", "script"])
-        XCTAssertTrue(app.pageBackButton.waitForExistence(timeout: 15), "The script's page opens")
+        XCTAssertTrue(app.pageBackButton.exists(within: 15), "The script's page opens")
         XCTAssertTrue(app.buttons["page.menuButton"].exists)
     }
 
     func testAToolsNotificationIntroducesTheToolAndNotNowOpensNothing() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestNotificationTap", "cleanUp"])
         let sheet = element(app, "featureIntro.sheet")
-        XCTAssertTrue(sheet.waitForExistence(timeout: 15))
+        XCTAssertTrue(sheet.exists(within: 15))
         XCTAssertTrue(app.buttons["featureIntro.try"].exists && app.buttons["featureIntro.decline"].exists)
         XCTAssertTrue(element(app, "featureIntro.note").exists, "What the tool uses is said before Try it")
         app.buttons["featureIntro.notNow"].tap()
-        XCTAssertFalse(sheet.waitForExistence(timeout: 2))
+        XCTAssertFalse(sheet.exists(within: 2))
         XCTAssertFalse(app.buttons["review.shareButton"].exists, "Not now opens nothing")
     }
 
     func testTryItOpensCleanUpOnThatTake() {
         let app = CueApp.launch(seeded: true, sampleVideo: true, extraArguments: ["-uiTestNotificationTap", "cleanUp"])
         let tryIt = app.buttons["featureIntro.try"]
-        XCTAssertTrue(tryIt.waitForExistence(timeout: 15))
+        XCTAssertTrue(tryIt.exists(within: 15))
         tryIt.tap()
-        XCTAssertTrue(element(app, "edit.panel.pauses").waitForExistence(timeout: 30), "Quick edit opens on Clean Up")
+        XCTAssertTrue(element(app, "edit.panel.pauses").exists(within: 30), "Quick edit opens on Clean Up")
         XCTAssertTrue(app.buttons["edit.pauses.threshold.minus"].exists)
     }
 
     func testANotificationAboutADeletedScriptSaysSo() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestNotificationTap", "deletedScript"])
-        XCTAssertTrue(app.staticTexts["That script is no longer in Cue"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.staticTexts["That script is no longer in Cue"].exists(within: 15))
         XCTAssertFalse(app.pageBackButton.exists)
     }
 
     func testAPayloadCueCantReadOpensNothing() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestNotificationTap", "invalid"])
-        XCTAssertTrue(app.buttons["scripts.selectButton"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["scripts.selectButton"].exists(within: 15))
         XCTAssertFalse(app.pageBackButton.exists)
         XCTAssertFalse(element(app, "featureIntro.sheet").exists)
     }
 
     func testATapTheSystemRepeatsOpensOnce() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestNotificationTap", "duplicate"])
-        XCTAssertTrue(element(app, "notifications.screen").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "notifications.screen").exists(within: 15))
         app.navigationBars.buttons.firstMatch.tap()
-        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5), "No second Notifications page on top")
+        XCTAssertTrue(app.navigationBars["Settings"].exists(within: 5), "No second Notifications page on top")
     }
 }

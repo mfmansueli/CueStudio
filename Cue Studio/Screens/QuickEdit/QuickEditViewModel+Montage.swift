@@ -44,15 +44,7 @@ extension QuickEditViewModel {
 
     // MARK: - Arranging
 
-    /// Copies the picked section (or the one under the playhead) right after it, with what plays on
-    /// it.
-    func duplicateSection() {
-        guard isReady else { return }
-        let timeline = edit.timeline
-        let index = selectedSegmentIndex ?? timeline.segmentIndex(atEdited: player.currentTime)
-        duplicateSection(timeline.segments[index].id)
-    }
-
+    /// Copies a section right after it, with what plays on it.
     func duplicateSection(_ id: UUID) {
         guard isReady else { return }
         var next = arranged(edit)
@@ -87,18 +79,12 @@ extension QuickEditViewModel {
         commit(EditSnapshot(next))
     }
 
-    /// Takes a section out of the edit (never the recording it comes from).
-    func removeSection(_ id: UUID) {
-        guard isReady else { return }
-        var timeline = edit.timeline
-        guard timeline.removeSegment(id: id) else {
-            toast.show(String(localized: "Keep at least one section"))
-            return
-        }
-        commit(timeline)
-    }
-
     // MARK: - Adding
+
+    /// The creator's other takes, newest first: Add photo or video › Insert as clip offers them before Photos.
+    var addableTakes: [Take] {
+        takes.takes.filter { $0.id != take.id }
+    }
 
     /// Adds another take from the library at the end of the montage (or after the picked section).
     func addClip(from take: Take) async {

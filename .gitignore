@@ -9,6 +9,10 @@ build/
 *.xcscmblueprint
 *.xccheckout
 
+# Python caches (scripts/, tools/)
+__pycache__/
+*.pyc
+
 # Swift Package Manager
 .build/
 .swiftpm/

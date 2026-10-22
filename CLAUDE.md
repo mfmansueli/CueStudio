@@ -26,7 +26,7 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
 
 - **Texto:** pelo menos **4,5:1** contra o que realmente está atrás dele (texto grande, de 18 pt ou mais, ou 14 pt em negrito ou mais, **3:1**). Isso vale para textos pequenos, rótulos mono, placeholders, textos legais e para texto sobre vidro, aurora, céu ou vídeo: o fundo é o **pior ponto** da superfície, não o token médio.
 - **Partes de controle, ícones que informam e bordas de campo:** **3:1** (WCAG 1.4.11). Só o que é decorativo (setas de disclosure, separadores, pontos) pode ficar abaixo.
-- **Use os tokens de texto de `Palette`** (`ink`, `ink2`, `inkHint`, `accText`, `aiText`, `warnText`, …); eles já são medidos em `PaletteContrastTests` com e sem Aumentar Contraste. `ink3` é só para o que não precisa ser lido (nunca para texto). **Não invente** `Color.white.opacity(x)`, `Palette.Flight.ink.opacity(x)` etc. para texto: se um token não serve, crie ou ajuste o token e meça.
+- **Use os tokens de texto de `Palette`** (`ink`, `inkSoft`, `ink2`, `inkHint`, `accText`, `aiText`, `warnText`, …); eles já são medidos em `PaletteContrastTests` com e sem Aumentar Contraste. `ink3` é só para o que não precisa ser lido (nunca para texto). **Não invente** `Color.white.opacity(x)`, `Palette.Flight.ink.opacity(x)` etc. para texto: se um token não serve, crie ou ajuste o token e meça.
 - **Meça de verdade:** um token novo entra em `PaletteContrastTests`; uma tela com fundo translúcido (dock, cartões sobre o céu, vidro, onboarding) é conferida na imagem renderizada (`UserReportCaptureTests` / `HandoffCaptureTests` gravam o PNG e a hierarquia; `tools/contrast/audit.py` mede cada texto). Qualquer par abaixo do mínimo é corrigido na mesma entrega, e o relatório final diz o que foi medido.
 
 ## Build e testes
@@ -78,7 +78,7 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
     `-uiTestSendOffAt`, `-uiTestFirstStar`, `-uiTestMilestone <n>`).
   - `-uiTestCatalogue <seção>` (transition, writing, universe, sky, inspire…) e `-uiTestSceneCapture on|off` (`DESIGN_PROJECT.md` §26).
 - **Idiomas:** `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra nos 20 idiomas dos String Catalogs.
-- Compras são testadas localmente com `CueStudio.storekit` (selecionado no scheme). Em Debug, uma instalação nova volta a ter as 5 exportações
+- Compras são testadas localmente com `Cue StudioTests/Fixtures/CueStudio.storekit` (selecionado no scheme; `StoreManagerTests` o usa num `SKTestSession`). Em Debug, uma instalação nova volta a ter as 5 exportações
   grátis (o contador fica no Keychain; `UsageQuotaService` o zera no primeiro lançamento, `DefaultsKey.installLaunched`). Release não zera.
 
 ### Testes no aparelho (opt-in)
@@ -97,6 +97,7 @@ aparelho não roda aparece como **não validado** (teste cancelado), nunca aprov
 | Qualidade de roteiros e ideias (PT/EN/ES, voz completa, meia e sem voz) | `ScriptQualityDeviceTests` (`TEST_RUNNER_CUE_QUALITY_RUN=<nome>`; `tools/quality/collect.py`, `report.py`; reaplicar a lógica pura nos textos: `QualityReplayTests`) | `DESIGN_PROJECT.md` §4.1 |
 | Quick edit | `QuickEditPreviewLatencyTests`; `SkinSmoothingDeviceTests` e `BackgroundDeviceTests` (Vision de verdade; foto de retrato em `Documents` do app via `xcrun devicectl device copy to … --domain-identifier com.cuestudioteleprompter`, `TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg`) | `DESIGN_PROJECT.md` §20, §31 |
 | Eye Contact (✦ Smart) | `EyeContactDeviceTests` (o Face Mesh em Core ML e o desenho na CPU de verdade numa CÓPIA da tomada mais nova; `TEST_RUNNER_CUE_EYES_TAKE=<arquivo>` escolhe outra, `…_SECONDS`, `…_STRENGTH`; o vídeo corrigido e a análise vão para `Documents` do app; `TEST_RUNNER_CUE_EYES_CLEANUP=1` com `EyeContactDeviceTests/removesWhatTheseRunsLeft()` apaga o que ficou lá) | `DESIGN_PROJECT.md` §40 |
+| Desempenho | `PerformanceDeviceUITests` (`TEST_RUNNER_CUE_PERF=1`, `device-ui`: abertura a frio, rolagem sobre o céu, editor pronto, universo; métricas do XCTest) | `DESIGN_PROJECT.md` §42 |
 
 ## Espaço em disco (não encher o Mac)
 
@@ -107,8 +108,8 @@ Sessões do Claude Code já deixaram dezenas de GB de lixo em builds e simulador
 - **Não crie simuladores nem baixe runtimes de iOS** (`xcrun simctl create`, Xcode › Components). Use o simulador que os
   scripts já definem.
 - **Testes em paralelo criam clones de simulador** em `~/Library/Developer/XCTestDevices` (o `du` mostra ~18 GB cada, mas são
-  cópias APFS que dividem dados com o original; mesmo assim crescem a cada rodada). Evite rodar testes em
-  paralelo (`-parallel-testing-enabled NO`); se o script não permitir, avise o usuário em vez de seguir. Ao terminar uma
-  rodada de testes, rode `xcrun simctl --set testing delete all`.
+  cópias APFS que dividem dados com o original; mesmo assim crescem a cada rodada). `scripts/test.sh ui` e `full` usam **2 clones**
+  (decisão do dono, 21/10/2026: a UI caiu de ~113 para ~45 min neste M3 de 16 GB) e os apagam ao terminar; não use mais de 2, e
+  `--parallel 1` roda num simulador só. Fora do script, ao terminar uma rodada, rode `xcrun simctl --set testing delete all`.
 - **Ao fim de cada sessão, apague o que você criou fora do repositório** (pastas temporárias, capturas, logs grandes) e o
   `build/DerivedData` de worktrees descartados.

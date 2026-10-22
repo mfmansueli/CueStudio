@@ -114,42 +114,14 @@ struct PrompterViewModelLayoutTests {
         #expect(scenario.viewModel.readingLayout.lineOffset == ReadingLayout.recommendedFrontOffset)
     }
 
-    // MARK: - Reset
-
-    @Test func resetBringsBackTheRecommendedLayout() {
-        var prompter = PrompterSettings()
-        prompter.textWindowHeight = 200
-        prompter.readingWidth = 0.6
-        prompter.speed = 1.5
-        let scenario = makeScenario(prompter: prompter, showsSafeZones: false)
-        defer { scenario.defaults.tearDown() }
-        let viewModel = scenario.viewModel
-        viewModel.moveReadingLine(toY: 300)
-        viewModel.pickSafeZone(.custom)
-
-        viewModel.resetLayout()
-
-        let session = viewModel.session
-        #expect(session.prompter.readingLineOffset == nil)
-        #expect(session.prompter.textWindowHeight == 380)
-        #expect(session.prompter.readingWidth == 0.93)
-        #expect(session.prompter.speed == ReadTime.naturalSpeed)
-        #expect(session.camera.showsSafeZones)
-        // Speed and safe zones are Creator Setup: the reset is for this session.
-        #expect(scenario.preferences.prompter == prompter)
-        #expect(!scenario.preferences.camera.showsSafeZones)
-        #expect(viewModel.safeZone == .platform(.tiktok))
-        #expect(scenario.toast.message == "Back to recommended layout")
-    }
-
     // MARK: - Safe zone
 
-    @Test func theSafeZoneFollowsTheScriptThenThePick() throws {
+    @Test func theSafeZoneFollowsTheScriptThenTheSettingsPick() throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         let viewModel = scenario.viewModel
         #expect(viewModel.safeZone == .platform(.tiktok))
-        viewModel.pickSafeZone(.platform(.shorts))
+        viewModel.session.prompter.safeZoneKey = SafeZoneChoice.platform(.shorts).key
         #expect(viewModel.safeZone == .platform(.shorts))
 
         let shorts = try #require(TestData.rules.safeZone(for: .shorts))
@@ -173,14 +145,13 @@ struct PrompterViewModelLayoutTests {
         scenario.viewModel.useRecommendedSetup()
         #expect(scenario.viewModel.safeZone == nil)
         #expect(!scenario.viewModel.showsSafeZone)
-        #expect(scenario.viewModel.safeZoneOptions.isEmpty)
         await scenario.viewModel.disappear()
     }
 
     @Test func customSafeZoneUsesTheCreatorsMargins() {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
-        scenario.viewModel.pickSafeZone(.custom)
+        scenario.viewModel.session.prompter.safeZoneKey = SafeZoneChoice.custom.key
         scenario.viewModel.session.prompter.customSafeZone = SafeZoneMargins(top: 10, bottom: 20, left: 5, right: 5)
         let frame = scenario.viewModel.frameGeometry.frameRect
         let content = scenario.viewModel.safeZoneContentRect

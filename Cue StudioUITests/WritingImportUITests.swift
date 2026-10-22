@@ -35,13 +35,13 @@ final class WritingImportUITests: XCTestCase {
 
     private func openImport(_ app: XCUIApplication) {
         // Profile is the one before the last tab (Scripts, Takes, Record, Profile, Settings), whatever language its name is in.
-        XCTAssertTrue(app.cueTabBar.waitForExistence(timeout: 15))
+        XCTAssertTrue(app.cueTabBar.exists(within: 15))
         let tabs = app.cueTabBar.buttons.allElementsBoundByIndex
         let tab = tabs.count >= 2 ? tabs[tabs.count - 2] : app.cueTabBar.buttons["Profile"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         let setUp = app.buttons["profile.setUpVoiceButton"]
-        XCTAssertTrue(setUp.waitForExistence(timeout: 5))
+        XCTAssertTrue(setUp.exists(within: 5))
         setUp.tap()
         app.buttons["voiceSetup.skipRole"].tap()
         app.buttons["voiceSetup.niche.food"].tap()
@@ -50,7 +50,7 @@ final class WritingImportUITests: XCTestCase {
         app.buttons["voiceSetup.saveButton"].tap()
         app.buttons["voiceSetup.tone.casual"].tap()
         app.buttons["voiceSetup.saveButton"].tap()
-        XCTAssertTrue(element(app, "profile.voiceSentence").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "profile.voiceSentence").exists(within: 5))
         let edit = app.buttons["profile.editVoice"]
         app.scroll(to: edit)
         edit.tap()
@@ -58,19 +58,19 @@ final class WritingImportUITests: XCTestCase {
         app.scroll(to: row)
         row.tap()
         let importButton = app.buttons["voice.import"]
-        XCTAssertTrue(importButton.waitForExistence(timeout: 5))
+        XCTAssertTrue(importButton.exists(within: 5))
         capture(app, "examples_editor_\(app.launchArguments.contains("ar") ? "ar" : "en")")
         importButton.tap()
-        XCTAssertTrue(element(app, "import.sheet").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "import.sheet").exists(within: 5))
     }
 
     private func bringTexts(_ app: XCUIApplication) {
         let field = app.textViews["import.field"].exists ? app.textViews["import.field"] : app.textFields["import.field"]
-        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        XCTAssertTrue(field.exists(within: 5))
         field.tap()
         field.typeText(writing)
         app.buttons["import.add"].tap()
-        XCTAssertTrue(element(app, "import.count").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "import.count").exists(within: 5))
     }
 
     func testBringingTextsReadingAndKeepingWhatCueHeard() {
@@ -85,14 +85,14 @@ final class WritingImportUITests: XCTestCase {
         capture(app, "import_1_collect")
         app.buttons["import.read"].tap()
 
-        XCTAssertTrue(element(app, "import.review").waitForExistence(timeout: 20))
+        XCTAssertTrue(element(app, "import.review").exists(within: 20))
         XCTAssertTrue(element(app, "import.summary").label.contains("3"))
         capture(app, "import_2_review")
         XCTAssertTrue(element(app, "import.finding.tones").exists, "the stand-in model said how they sound")
         XCTAssertTrue(element(app, "import.finding.phrases").exists, "'Okay, real talk' comes back in every text")
         app.buttons["import.accept"].tap()
 
-        XCTAssertTrue(element(app, "voice.import.count").waitForExistence(timeout: 5), "the editor shows what was imported")
+        XCTAssertTrue(element(app, "voice.import.count").exists(within: 5), "the editor shows what was imported")
         XCTAssertFalse(app.buttons["voice.import"].exists)
     }
 
@@ -103,9 +103,9 @@ final class WritingImportUITests: XCTestCase {
         bringTexts(app)
         app.switches["import.own"].tap()
         app.buttons["import.read"].tap()
-        XCTAssertTrue(element(app, "import.review").waitForExistence(timeout: 20))
+        XCTAssertTrue(element(app, "import.review").exists(within: 20))
         app.buttons["import.accept"].tap()
-        XCTAssertTrue(element(app, "voice.import.count").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "voice.import.count").exists(within: 5))
         app.buttons["voice.editor.done"].tap()
         let row = element(app, "voicePage.row.examples")
         app.scroll(to: row)
@@ -114,7 +114,7 @@ final class WritingImportUITests: XCTestCase {
         app.scroll(to: sends)
         sends.tap()
         let brief = element(app, "voice.sends.brief")
-        XCTAssertTrue(brief.waitForExistence(timeout: 5))
+        XCTAssertTrue(brief.exists(within: 5))
         XCTAssertTrue(brief.label.contains("Here is how they write"), "the brief holds the creator's own sentences")
         XCTAssertTrue(brief.label.contains("Okay, real talk"))
         capture(app, "import_what_cue_sends")
@@ -126,12 +126,12 @@ final class WritingImportUITests: XCTestCase {
         bringTexts(app)
         app.switches["import.own"].tap()
         app.buttons["import.read"].tap()
-        XCTAssertTrue(element(app, "import.review").waitForExistence(timeout: 20))
+        XCTAssertTrue(element(app, "import.review").exists(within: 20))
         app.buttons["import.accept"].tap()
         let forget = app.buttons["voice.import.forget"]
-        XCTAssertTrue(forget.waitForExistence(timeout: 5))
+        XCTAssertTrue(forget.exists(within: 5))
         forget.tap()
-        XCTAssertTrue(app.buttons["voice.import"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["voice.import"].exists(within: 5))
     }
 
     func testAFewWordsAreSaidNotToBeEnoughAndTheCreatorCanGoBack() {
@@ -141,7 +141,7 @@ final class WritingImportUITests: XCTestCase {
         field.tap()
         field.typeText("hello there")
         app.buttons["import.add"].tap()
-        XCTAssertTrue(element(app, "import.pasteEmpty").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "import.pasteEmpty").exists(within: 5))
         XCTAssertFalse(app.buttons["import.read"].isEnabled)
     }
 
@@ -152,13 +152,13 @@ final class WritingImportUITests: XCTestCase {
         app.switches["import.own"].tap()
         app.buttons["import.read"].tap()
         // The stand-in answers at once: either the reading screen is still up and Cancel works, or the review is already there and Back does.
-        if app.buttons["import.cancel"].waitForExistence(timeout: 1) {
+        if app.buttons["import.cancel"].exists(within: 1) {
             app.buttons["import.cancel"].tap()
         } else {
-            XCTAssertTrue(element(app, "import.review").waitForExistence(timeout: 20))
+            XCTAssertTrue(element(app, "import.review").exists(within: 20))
             app.buttons["import.back"].tap()
         }
-        XCTAssertTrue(element(app, "import.count").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "import.count").exists(within: 5))
         XCTAssertTrue(element(app, "import.count").label.contains("3"))
     }
 
@@ -168,7 +168,7 @@ final class WritingImportUITests: XCTestCase {
         bringTexts(app)
         app.switches["import.own"].tap()
         app.buttons["import.read"].tap()
-        XCTAssertTrue(element(app, "import.review").waitForExistence(timeout: 20))
+        XCTAssertTrue(element(app, "import.review").exists(within: 20))
         XCTAssertTrue(element(app, "import.finding.phrases").exists)
         XCTAssertFalse(element(app, "import.finding.tones").exists, "no model, no tone")
     }
@@ -178,13 +178,13 @@ final class WritingImportUITests: XCTestCase {
         for (language, title) in [("pt-BR", "Importar meus textos"), ("ar", "استيراد كتاباتي")] {
             let app = CueApp.launch(seeded: true, ai: .stub, appLanguage: language, animations: false)
             openImport(app)
-            XCTAssertTrue(app.staticTexts[title].waitForExistence(timeout: 5), "\(language): the title is translated")
+            XCTAssertTrue(app.staticTexts[title].exists(within: 5), "\(language): the title is translated")
             XCTAssertFalse(app.staticTexts["Import my writing"].exists, "\(language): no English left on the sheet")
             capture(app, "import_collect_\(language)")
             bringTexts(app)
             app.switches["import.own"].tap()
             app.buttons["import.read"].tap()
-            XCTAssertTrue(element(app, "import.review").waitForExistence(timeout: 20))
+            XCTAssertTrue(element(app, "import.review").exists(within: 20))
             capture(app, "import_review_\(language)")
             app.terminate()
         }

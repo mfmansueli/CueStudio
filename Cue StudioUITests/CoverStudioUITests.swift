@@ -26,20 +26,20 @@ final class CoverStudioUITests: XCTestCase {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "cover")
         let done = app.buttons["cover.done"]
-        XCTAssertTrue(done.waitForExistence(timeout: 5))
-        XCTAssertTrue(app.images["cover.image"].waitForExistence(timeout: 10), "The cover is drawn")
+        XCTAssertTrue(done.exists(within: 5))
+        XCTAssertTrue(app.images["cover.image"].exists(within: 10), "The cover is drawn")
         try capture(app, "1-picture")
 
         app.buttons["cover.next"].tap()
         let template = app.buttons["cover.template.opinion"]
-        XCTAssertTrue(template.waitForExistence(timeout: 5))
+        XCTAssertTrue(template.exists(within: 5))
         template.tap()
         XCTAssertTrue(template.isSelected)
         try capture(app, "2-template")
 
         app.buttons["cover.next"].tap()
         let field = app.textFields["cover.titleField"]
-        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        XCTAssertTrue(field.exists(within: 5))
         field.tap()
         if let current = field.value as? String {
             field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: current.count))
@@ -52,7 +52,7 @@ final class CoverStudioUITests: XCTestCase {
         app.buttons["cover.step.elements"].tap()
         app.buttons["cover.add.arrow"].tap()
         let arrow = app.descendants(matching: .any)["cover.item.arrow"]
-        XCTAssertTrue(arrow.waitForExistence(timeout: 3))
+        XCTAssertTrue(arrow.exists(within: 3))
         let canvas = app.descendants(matching: .any)["cover.canvas"]
         arrow.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5))
             .press(forDuration: 0.1, thenDragTo: canvas.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.7)))
@@ -65,30 +65,30 @@ final class CoverStudioUITests: XCTestCase {
 
         XCTAssertTrue(app.buttons["cover.undo"].isEnabled)
         done.tap()
-        XCTAssertFalse(done.waitForExistence(timeout: 1))
-        XCTAssertTrue(app.buttons["edit.toolbar.cover"].waitForExistence(timeout: 3))
+        XCTAssertFalse(done.exists(within: 1))
+        XCTAssertTrue(app.buttons["edit.toolbar.cover"].exists(within: 3))
     }
 
     func testCancelWithChangesAsksFirst() throws {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "cover")
-        XCTAssertTrue(app.buttons["cover.next"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["cover.next"].exists(within: 5))
         app.buttons["cover.step.template"].tap()
         app.buttons["cover.template.list"].tap()
         app.buttons["cover.cancel"].tap()
         let discard = app.buttons["Discard changes"]
-        XCTAssertTrue(discard.waitForExistence(timeout: 3))
+        XCTAssertTrue(discard.exists(within: 3))
         discard.tap()
-        XCTAssertTrue(app.buttons["edit.toolbar.cover"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["edit.toolbar.cover"].exists(within: 3))
     }
 
     func testBeforeAfterHasTwoPicturesAndADivider() throws {
         let app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "cover")
-        XCTAssertTrue(app.buttons["cover.step.template"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["cover.step.template"].exists(within: 5))
         app.buttons["cover.step.template"].tap()
         let beforeAfter = app.buttons["cover.template.beforeAfter"]
-        XCTAssertTrue(beforeAfter.waitForExistence(timeout: 3))
+        XCTAssertTrue(beforeAfter.exists(within: 3))
         var swipes = 0
         let screen = app.windows.firstMatch.frame
         while !screen.contains(beforeAfter.frame), swipes < 4 {
@@ -96,10 +96,10 @@ final class CoverStudioUITests: XCTestCase {
             swipes += 1
         }
         beforeAfter.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["cover.divider"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.descendants(matching: .any)["cover.divider"].exists(within: 3))
         app.buttons["cover.step.image"].tap()
         let after = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'cover.half.'")).element(boundBy: 1)
-        XCTAssertTrue(after.waitForExistence(timeout: 3))
+        XCTAssertTrue(after.exists(within: 3))
         after.tap()
         XCTAssertTrue(after.isSelected)
         try capture(app, "6-before-after")

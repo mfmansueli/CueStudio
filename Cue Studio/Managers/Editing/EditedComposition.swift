@@ -113,7 +113,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             : nil
         // Curved clips get their sound rendered along the curve (see `CurveSoundRenderer`), unless it's wanted at once.
         let curved = options.rendersCurveSound ? edit.timeline.segments : []
-        let (curveAssets, curveSounds) = try await curveSounds(for: curved, take: source, sound: recordingSound(of:))
+        let (curveAssets, curveSounds) = try await curveSounds(for: curved, sound: recordingSound(of:))
         defer { withExtendedLifetime(curveAssets) {} }
         let cursor = try insertPieces(
             of: edit.timeline, recording: recording, sound: recordingSound(of:), curveSounds: curveSounds, video: video,

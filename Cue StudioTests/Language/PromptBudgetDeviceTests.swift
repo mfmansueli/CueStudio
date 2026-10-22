@@ -95,7 +95,7 @@ struct PromptBudgetDeviceTests {
             let request = persona.request(for: idea, withVoice: budget > 0, profile: fullProfile())
             let instructions = ScriptPromptBuilder.instructions(for: request)
             let prompt = ScriptPromptBuilder.prompt(for: request)
-            let briefLength = request.voice.map { VoiceBriefBuilder.brief(for: $0).length } ?? 0
+            let briefLength = request.voice.map { VoiceBriefBuilder.brief(for: $0).text.count } ?? 0
             let tokens = try await model.tokenCount(for: Instructions(instructions)) + model.tokenCount(for: prompt)
             var firsts: [Double] = []
             for _ in 0..<3 {

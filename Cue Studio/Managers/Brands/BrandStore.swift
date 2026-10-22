@@ -32,6 +32,14 @@ final class BrandStore {
         }
     }
 
+    /// The brands couldn't be read at launch: read them again now, keeping (first) the ones saved since.
+    func reloadIfUnread() {
+        guard !canSave, let saved = try? repository.load() else { return }
+        let made = Set(brands.map(\.id))
+        brands += saved.filter { !made.contains($0.id) }
+        canSave = true
+    }
+
     /// Saves a brand and puts it first. A brand with the same name (any case) is updated, not duplicated. Returns the
     /// one stored, or nil when it lacks a brand or a product (`BrandBrief.isUsable`).
     @discardableResult
@@ -53,24 +61,10 @@ final class BrandStore {
         persist()
     }
 
-    func brand(id: UUID?) -> BrandBrief? {
-        guard let id else { return nil }
-        return brands.first { $0.id == id }
-    }
-
-    /// The brief an `ad` script saved before v29 carried, saved once as a brand. Doing it again for the same brand
-    /// changes nothing. Returns the brand, or nil when the old brief had no brand.
-    @discardableResult
-    func adopt(legacyAdBrief brief: [String: String]) -> BrandBrief? {
-        let legacy = BrandBrief(legacyAdBrief: brief)
-        guard legacy.isUsable else { return nil }
-        if let existing = brands.first(where: { $0.name.caseInsensitiveCompare(legacy.name) == .orderedSame }) { return existing }
-        return save(legacy)
-    }
-
     private func persist() {
+        reloadIfUnread()
         guard canSave else {
-            logger.error("Not saving brands: the ones on disk couldn't be read at launch")
+            logger.error("Not saving brands: the ones on disk still can't be read")
             return
         }
         do {

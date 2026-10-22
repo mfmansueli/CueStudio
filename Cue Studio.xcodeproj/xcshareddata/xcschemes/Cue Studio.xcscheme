@@ -61,7 +61,7 @@
          </BuildableReference>
       </BuildableProductRunnable>
       <StoreKitConfigurationFileReference
-         identifier = "../CueStudio.storekit">
+         identifier = "../Cue StudioTests/Fixtures/CueStudio.storekit">
       </StoreKitConfigurationFileReference>
    </LaunchAction>
    <ProfileAction

@@ -220,7 +220,7 @@ struct ScriptQualityDeviceTests {
             kind: "ideas", run: run, language: language.rawValue, condition: condition, index: index,
             idea: slots.map { "\($0.angle.rawValue)@\($0.topic.label)" }.joined(separator: ", "), hasBrief: true, seconds: 0
         )
-        let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, voice: voice, language: language, inspiration: inspiration, asBriefs: true)
+        let prompt = ScriptPromptBuilder.themesPrompt(slots: slots, language: language, inspiration: inspiration, asBriefs: true)
         let instructions = ScriptPromptBuilder.themesInstructions(voice: voice)
         sample.instructions = instructions
         sample.prompt = prompt

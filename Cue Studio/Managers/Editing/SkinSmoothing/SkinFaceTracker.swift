@@ -6,14 +6,6 @@
 import CoreGraphics
 import Foundation
 
-/// A face that stays the same face from one detection to the next, and how much of the smoothing it has now.
-nonisolated struct TrackedFace: Hashable, Sendable {
-    var id: Int
-    var landmarks: FaceLandmarks
-    /// 0…1: a face that has just come into the shot fades in, one that stops being found fades out, so smoothing never switches on or off in one frame.
-    var presence: Double
-}
-
 /// Follows the faces of a stretch of video from one detection to the next, so the smoothing doesn't flicker or jump. Pure: it is given the faces each
 /// detection found and the time, and says where each face is and how present it is.
 /// - A detection near a face already followed is that face: it moves `followRate` of the way there (steady, and still keeps up with a head turn).

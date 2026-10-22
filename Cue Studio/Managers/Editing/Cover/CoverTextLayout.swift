@@ -300,7 +300,7 @@ nonisolated struct CoverTextLayout {
             )
         }
 
-        static func resolved(_ alignment: TextOverlayAlignment, rightToLeft: Bool) -> TextOverlayAlignment {
+        static func resolved(_ alignment: LineAlignment, rightToLeft: Bool) -> LineAlignment {
             guard rightToLeft else { return alignment }
             switch alignment {
             case .leading: return .trailing

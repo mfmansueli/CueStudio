@@ -72,6 +72,6 @@ struct VoiceFingerprintRulesTests {
         #expect(header != nil)
         let first = lines.first { $0.hasPrefix("- “") }
         #expect(first?.contains("A pasted example") == false)
-        #expect(brief.length <= VoiceBrief.budget)
+        #expect(brief.text.count <= VoiceBrief.budget)
     }
 }

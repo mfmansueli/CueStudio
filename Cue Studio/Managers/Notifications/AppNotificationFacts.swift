@@ -51,7 +51,7 @@ final class AppNotificationFacts: NotificationFactsSource {
                 updatedAt: script.updatedAt, language: nil, platform: script.platform
             )
         }
-        facts.takes = takeFacts(takes, scripts: library)
+        facts.takes = takeFacts(takes)
         if capabilities { fillLanguages(&facts, scripts: library) }
         facts.queues = sources.shareQueue.queues.map { queue in
             NotificationFacts.QueueFact(
@@ -83,7 +83,7 @@ final class AppNotificationFacts: NotificationFactsSource {
 
     // MARK: - Takes
 
-    private func takeFacts(_ takes: [Take], scripts: [Script]) -> [NotificationFacts.TakeFact] {
+    private func takeFacts(_ takes: [Take]) -> [NotificationFacts.TakeFact] {
         let byVideo = Dictionary(grouping: takes) { $0.scriptID ?? $0.id }
         let drafts = sources.drafts
         return takes.map { take in

@@ -18,12 +18,12 @@ final class ProfileUITests: XCTestCase {
         app.scroll(to: upgrade)
         upgrade.tap()
         let close = app.buttons["paywall.closeButton"]
-        XCTAssertTrue(close.waitForExistence(timeout: 5))
+        XCTAssertTrue(close.exists(within: 5))
         // The regular Pro: Cue's marketing above the system's plans; the opening takes 2.4 s and the list is there when it ends.
-        XCTAssertTrue(app.descendants(matching: .any)["paywall.benefits"].firstMatch.waitForExistence(timeout: 8))
-        XCTAssertTrue(app.staticTexts["Take your universe further."].exists)
+        XCTAssertTrue(app.descendants(matching: .any)["paywall.benefits"].firstMatch.exists(within: 8))
+        XCTAssertTrue(app.staticTexts["Take your universe further."].exists(within: 3))
         close.tap()
-        XCTAssertTrue(upgrade.waitForExistence(timeout: 5))
+        XCTAssertTrue(upgrade.exists(within: 5))
     }
 
     /// A catchphrase is an answer of "My phrases" on the full page (9.3): the editor opens on it and the phrase stays in the list.
@@ -34,27 +34,27 @@ final class ProfileUITests: XCTestCase {
         let row = app.buttons["voicePage.row.phrases"]
         app.scroll(to: row)
         row.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["voice.editor.phrases"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["voice.editor.phrases"].exists(within: 5))
         let field = app.textFields["voice.phrases.field"]
         app.scroll(to: field)
         field.tap()
         field.typeText("Bora")
         app.buttons["voice.phrases.field.add"].tap()
-        XCTAssertTrue(app.staticTexts["“Bora”"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["“Bora”"].exists(within: 5))
     }
 
     func testANewProfileOffersToSetUpMyCueVoiceAndThenShowsWhatCueUses() {
         let app = openProfile()
         let setUp = app.buttons["profile.setUpVoiceButton"]
-        XCTAssertTrue(setUp.waitForExistence(timeout: 5))
+        XCTAssertTrue(setUp.exists(within: 5))
         XCTAssertFalse(app.buttons["profile.editVoice"].exists)
         setUpVoice(app)
         // The card now says what Cue uses; a row opens the question that holds it.
         openVoicePage(app)
         let audience = app.buttons["voicePage.row.audience"]
-        XCTAssertTrue(audience.waitForExistence(timeout: 5))
+        XCTAssertTrue(audience.exists(within: 5))
         audience.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["voiceSetup.audience.insiders"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["voiceSetup.audience.insiders"].exists(within: 5))
         app.buttons["voice.editor.done"].tap()
     }
 
@@ -66,7 +66,7 @@ final class ProfileUITests: XCTestCase {
         app.scroll(to: preview)
         preview.tap()
         let card = app.descendants(matching: .any)["voice.preview.card"].firstMatch
-        XCTAssertTrue(card.waitForExistence(timeout: 5))
+        XCTAssertTrue(card.exists(within: 5))
         // The tone chosen in the setup is the conversational one: its line is the one the sample opens with.
         XCTAssertTrue(card.label.contains("I used to hit snooze four times."))
     }
@@ -75,7 +75,7 @@ final class ProfileUITests: XCTestCase {
     func testSignInWithAppleIsOfferedWhenSignedOut() {
         let app = openProfile()
         app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
-        XCTAssertTrue(app.textFields["editProfile.nameField"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.textFields["editProfile.nameField"].exists(within: 5))
         let signIn = app.buttons["profile.signInButton"]
         app.scroll(to: signIn)
         XCTAssertTrue(signIn.exists)
@@ -87,7 +87,7 @@ final class ProfileUITests: XCTestCase {
         let app = openProfile()
         app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
         let name = app.textFields["editProfile.nameField"]
-        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        XCTAssertTrue(name.exists(within: 5))
         name.tap()
         name.typeText("Maya Costa")
         let handle = app.textFields["editProfile.handleField"]
@@ -101,7 +101,7 @@ final class ProfileUITests: XCTestCase {
         app.buttons["editProfile.doneButton"].tap()
         // Settings has none of them.
         app.cueTabBar.buttons["Settings"].tap()
-        XCTAssertTrue(app.descendants(matching: .any)["settings.recording"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.descendants(matching: .any)["settings.recording"].exists(within: 10))
         XCTAssertFalse(app.switches["profile.monetizationGoalsToggle"].exists)
         // Back on the Profile tab, Edit Profile shows the value kept.
         app.cueTabBar.buttons["Profile"].tap()
@@ -116,10 +116,10 @@ final class ProfileUITests: XCTestCase {
         let app = openProfile()
         app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
         let done = app.buttons["editProfile.doneButton"]
-        XCTAssertTrue(done.waitForExistence(timeout: 5))
+        XCTAssertTrue(done.exists(within: 5))
         XCTAssertTrue(done.isEnabled)
         done.tap()
-        XCTAssertTrue(app.staticTexts["Profile updated"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Profile updated"].exists(within: 5))
     }
 
     /// Pictures of the Profile, empty (a new install) and with a year in it (`CUE_SCREENSHOT_DIR`); without the folder it only checks the cards.
@@ -127,9 +127,9 @@ final class ProfileUITests: XCTestCase {
         for (name, arguments) in [("profile_empty", [String]()), ("profile_full", ["-uiTestUniverse", "sample"])] {
             let app = CueApp.launch(seeded: !arguments.isEmpty, extraArguments: arguments)
             let tab = app.cueTabBar.buttons["Profile"]
-            XCTAssertTrue(tab.waitForExistence(timeout: 15))
+            XCTAssertTrue(tab.exists(within: 15))
             tab.tap()
-            XCTAssertTrue(app.descendants(matching: .any)["profile.creatorCard"].firstMatch.waitForExistence(timeout: 5))
+            XCTAssertTrue(app.descendants(matching: .any)["profile.creatorCard"].firstMatch.exists(within: 5))
             XCTAssertTrue(app.descendants(matching: .any)["profile.universeLink"].firstMatch.exists)
             if let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] {
                 sleep(2)
@@ -145,7 +145,7 @@ final class ProfileUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUniverse", "sample"])
         app.cueTabBar.buttons["Profile"].tap()
         let card = app.descendants(matching: .any)["profile.universeLink"].firstMatch
-        XCTAssertTrue(card.waitForExistence(timeout: 5))
+        XCTAssertTrue(card.exists(within: 5))
         sleep(1)
         let first = card.screenshot().pngRepresentation
         Thread.sleep(forTimeInterval: 1.5)
@@ -157,7 +157,7 @@ final class ProfileUITests: XCTestCase {
         let app = openProfile()
         app.descendants(matching: .any)["profile.creatorCard"].firstMatch.tap()
         let badge = app.buttons["editProfile.photoButton"]
-        XCTAssertTrue(badge.waitForExistence(timeout: 5))
+        XCTAssertTrue(badge.exists(within: 5))
         badge.tap()
         // The library is another process: the sheet under it stops being the one in front, so its Done can no longer be reached.
         let covered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isHittable == false"), object: app.buttons["editProfile.doneButton"])
@@ -181,17 +181,17 @@ final class ProfileUITests: XCTestCase {
         }
         add.tap()
         let field = app.textFields["editProfile.role.field"]
-        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        XCTAssertTrue(field.exists(within: 5))
         field.typeText("Podcaster\n")
-        XCTAssertTrue(app.descendants(matching: .any)["editProfile.role.own"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["editProfile.role.own"].exists(within: 5))
         XCTAssertTrue(app.staticTexts["Podcaster"].exists)
         if let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] {
             sleep(1)
             try app.screenshot().pngRepresentation.write(to: URL(fileURLWithPath: folder).appending(path: "edit_profile_2.png"))
         }
         app.buttons["editProfile.doneButton"].tap()
-        XCTAssertTrue(app.staticTexts["Profile updated"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'Podcaster'")).firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Profile updated"].exists(within: 5))
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'Podcaster'")).firstMatch.exists(within: 5))
     }
 
     /// Edit Profile (9.1): a username typed must fit (2–24 of a–z 0–9 . _); Done saves name and username and says so.
@@ -200,7 +200,7 @@ final class ProfileUITests: XCTestCase {
         let identity = app.descendants(matching: .any)["profile.creatorCard"].firstMatch
         identity.tap()
         let name = app.textFields["editProfile.nameField"]
-        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        XCTAssertTrue(name.exists(within: 5))
         let done = app.buttons["editProfile.doneButton"]
         let handle = app.textFields["editProfile.handleField"]
         name.tap()
@@ -213,8 +213,8 @@ final class ProfileUITests: XCTestCase {
         XCTAssertEqual(handle.value as? String, "mayacooks", "the field keeps the username lowercase and without spaces")
         XCTAssertTrue(done.isEnabled)
         done.tap()
-        XCTAssertTrue(app.staticTexts["Profile updated"].waitForExistence(timeout: 5))
-        XCTAssertTrue(app.staticTexts["Maya Costa"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Profile updated"].exists(within: 5))
+        XCTAssertTrue(app.staticTexts["Maya Costa"].exists(within: 5))
     }
 
     func testCancelLeavesTheProfileAsItWas() {
@@ -222,11 +222,11 @@ final class ProfileUITests: XCTestCase {
         let identity = app.descendants(matching: .any)["profile.creatorCard"].firstMatch
         identity.tap()
         let name = app.textFields["editProfile.nameField"]
-        XCTAssertTrue(name.waitForExistence(timeout: 5))
+        XCTAssertTrue(name.exists(within: 5))
         name.tap()
         name.typeText("Someone Else")
         app.buttons["editProfile.cancelButton"].tap()
-        XCTAssertFalse(app.staticTexts["Someone Else"].waitForExistence(timeout: 2))
+        XCTAssertFalse(app.staticTexts["Someone Else"].exists(within: 2))
     }
 
     /// Edit in the toolbar and the long press on the identity open the same sheet (9.1).
@@ -234,14 +234,14 @@ final class ProfileUITests: XCTestCase {
         let app = openProfile()
         // The seeded profile is empty: its card offers "Set up your profile" where a filled one has Edit.
         app.buttons["profile.setUpButton"].tap()
-        XCTAssertTrue(app.buttons["editProfile.doneButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["editProfile.doneButton"].exists(within: 5))
         app.buttons["editProfile.cancelButton"].tap()
         let identity = app.descendants(matching: .any)["profile.creatorCard"].firstMatch
-        XCTAssertTrue(identity.waitForExistence(timeout: 5))
+        XCTAssertTrue(identity.exists(within: 5))
         identity.press(forDuration: 0.8)
-        XCTAssertTrue(app.buttons["Edit profile"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Edit profile"].exists(within: 5))
         app.buttons["Edit profile"].tap()
-        XCTAssertTrue(app.buttons["editProfile.doneButton"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["editProfile.doneButton"].exists(within: 5))
     }
 
     func testProPlanHidesTheUpgrade() {
@@ -257,7 +257,7 @@ final class ProfileUITests: XCTestCase {
     private func openProfile(animations: Bool = false) -> XCUIApplication {
         let app = CueApp.launch(seeded: true, animations: animations)
         let tab = app.cueTabBar.buttons["Profile"]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
         return app
     }

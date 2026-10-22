@@ -78,8 +78,6 @@ final class PrompterViewModel {
     // MARK: Selfie layout (see PrompterViewModel+Layout)
     /// What the Selfie screen measured on this device.
     var screenMetrics = SelfieScreenMetrics()
-    /// The safe zone picked in Display › Layout, for this session.
-    var safeZonePick: SafeZoneChoice?
 
     /// This recording's setup. Views read and bind `session.camera` / `session.prompter`.
     let session: SessionSetupService
@@ -102,6 +100,13 @@ final class PrompterViewModel {
     private var countdownTask: Task<Void, Never>?
     private var recordingClock: Task<Void, Never>?
     private var autoStopTask: Task<Void, Never>?
+    /// Asks iOS for time in the background, returning what gives it back. A take holds it from its start until it is filed:
+    /// an app iOS has suspended never hears that the recording ended (going to the background ends it), so swiped away
+    /// then, the take would never reach the library.
+    private let recordingGrace: @MainActor () -> @MainActor () -> Void
+    private var endRecordingGrace: (@MainActor () -> Void)?
+    /// The prompter is off screen (`disappear`): a take whose start was still under way then is filed at once.
+    private var hasLeft = false
     // Voice Following's state below is internal for PrompterViewModel+VoiceFollow, which reads and writes it.
     var levelTask: Task<Void, Never>?
     var speechTask: Task<Void, Never>?
@@ -167,9 +172,11 @@ final class PrompterViewModel {
         toast: ToastService,
         microphone: MicrophoneAccess = MicrophoneAccess(),
         clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
-        speechRestartDelay: Duration = .seconds(1)
+        speechRestartDelay: Duration = .seconds(1),
+        recordingGrace: @escaping @MainActor () -> @MainActor () -> Void = { ApplicationGrace.begin(named: "Cue take") }
     ) {
         self.speechRestartDelay = speechRestartDelay
+        self.recordingGrace = recordingGrace
         scriptID = launch.scriptID
         mode = launch.mode
         session = SessionSetupService(preferences: preferences)
@@ -230,6 +237,7 @@ final class PrompterViewModel {
     // MARK: - Lifecycle
 
     func appear() async {
+        hasLeft = false
         startSessionOnce()
         remote.attach(
             onCommand: { [weak self] command in self?.handle(command) },
@@ -242,6 +250,7 @@ final class PrompterViewModel {
     }
 
     func disappear() async {
+        hasLeft = true
         // What the creator adjusted here (the box, the line, the size, the speed…) is what the next session opens with.
         if !isPractice { session.rememberReadingLayout(includingScrollMode: !practiceChoseScrollMode) }
         countdownTask?.cancel()
@@ -574,13 +583,20 @@ final class PrompterViewModel {
         // The phone does not buzz while the take records: it could be heard in its audio (`AudioRoute.allowHapticsDuringRecording`).
         AudioRoute.allowHapticsDuringRecording(false)
         do {
-            try await camera.startRecording(settings: session.camera)
+            try await camera.startRecording()
         } catch {
             AudioRoute.allowHapticsDuringRecording(true)
             toast.show(error.localizedDescription)
             return
         }
         isRecording = true
+        endRecordingGrace = recordingGrace()
+        // The creator left while the camera was still starting the take, after `disappear` found nothing to stop: it is
+        // filed like a take left mid-way.
+        if hasLeft {
+            await stopRecording(openReview: false)
+            return
+        }
         recordingSeconds = 0
         showsStopWarning = false
         bar.collapse()
@@ -607,6 +623,9 @@ final class PrompterViewModel {
         showsStopWarning = false
         pause()
         let clip = await camera.stopRecording()
+        // The take ended on its own while it was stopping, and `recordingEndedByItself` filed it: the same clip again would
+        // be a second take of one recording (or, its file moved already, a "couldn't be saved" for a take that was).
+        guard isRecording else { return }
         AudioRoute.allowHapticsDuringRecording(true)
         isRecording = false
         bar.collapse()
@@ -629,6 +648,11 @@ final class PrompterViewModel {
 
     /// The recorded clip becomes a take; `message` (why it stopped) replaces nothing when the take can't be saved.
     private func file(_ clip: RecordedClip?, openReview: Bool, message: String?) {
+        // Filed or not, the take no longer needs time in the background.
+        defer {
+            endRecordingGrace?()
+            endRecordingGrace = nil
+        }
         guard let clip else {
             toast.show(String(localized: "The take couldn't be saved"))
             return

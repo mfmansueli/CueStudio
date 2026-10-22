@@ -39,9 +39,6 @@ nonisolated struct InspirationCardContent: Hashable, Sendable {
         }
     }
 
-    /// The card has more than its title to show (an angle, an opening line, or both).
-    var hasBrief: Bool { angle != nil || openingLine != nil }
-
     private static func trimmed(_ text: String?) -> String? {
         guard let text = text?.trimmingCharacters(in: .whitespacesAndNewlines), !text.isEmpty else { return nil }
         return text

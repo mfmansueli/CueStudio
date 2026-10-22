@@ -33,9 +33,6 @@ nonisolated struct VoiceBrief: Hashable, Sendable {
     /// What is sent costs this much of the budget (`PromptCost`): its characters, more for scripts that take more tokens.
     var cost: Int { PromptCost.units(of: text) }
     var fullCost: Int { PromptCost.units(of: fullText) }
-    var length: Int { text.count }
-    var fullLength: Int { fullText.count }
-    var isEmpty: Bool { text.isEmpty }
     /// The brief with no limit doesn't fit: Cue trims it.
     var isLong: Bool { fullCost > Self.budget }
     var lines: [String] { text.isEmpty ? [] : text.components(separatedBy: "\n") }

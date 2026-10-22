@@ -11,6 +11,8 @@ final class FakeTakeRepository: TakeRepository {
     var takes: [Take]
     private(set) var deletedFiles: [String] = []
     private(set) var storedFiles: [String] = []
+    /// Like a library that can't take the file in (its folder can't be made): the recording stays where it was.
+    var failsToStore = false
 
     init(takes: [Take] = []) {
         self.takes = takes
@@ -21,6 +23,7 @@ final class FakeTakeRepository: TakeRepository {
     func saveTakes(_ takes: [Take]) throws { self.takes = takes }
 
     func storeVideo(from temporaryURL: URL) throws -> String {
+        if failsToStore { throw CocoaError(.fileWriteUnknown) }
         let name = temporaryURL.lastPathComponent
         storedFiles.append(name)
         return name

@@ -22,9 +22,9 @@ final class TextStyleUITests: XCTestCase {
         EditorApp.tapTool(app, "text")
         EditorApp.tapTool(app, "styleAll")
         let panel = app.descendants(matching: .any)["edit.panel.textStyle"]
-        XCTAssertTrue(panel.waitForExistence(timeout: 5))
+        XCTAssertTrue(panel.exists(within: 5))
         let selected = app.buttons["edit.style.scope.selected"]
-        XCTAssertTrue(selected.waitForExistence(timeout: 5))
+        XCTAssertTrue(selected.exists(within: 5))
         selected.tap()
         return panel
     }
@@ -67,7 +67,7 @@ final class TextStyleUITests: XCTestCase {
                 start.press(forDuration: 0.2, thenDragTo: end, withVelocity: 300, thenHoldForDuration: 0.2)
             }
         }
-        XCTAssertTrue(element.waitForExistence(timeout: 5), "\(element) isn't there", file: file, line: line)
+        XCTAssertTrue(element.exists(within: 5), "\(element) isn't there", file: file, line: line)
     }
 
     /// A full touch target: 44 pt, give or take the layout's rounding.
@@ -117,12 +117,12 @@ final class TextStyleUITests: XCTestCase {
         // Caption style opens expanded too.
         app.buttons["edit.panel.apply"].tap()
         let back = app.buttons["edit.toolbar.back"]
-        if back.waitForExistence(timeout: 3) { back.tap() }
+        if back.exists(within: 3) { back.tap() }
         EditorApp.tapTool(app, "captions")
         let style = app.buttons["edit.captionsStyleButton"]
-        XCTAssertTrue(style.waitForExistence(timeout: 5))
+        XCTAssertTrue(style.exists(within: 5))
         style.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["edit.panel.captionStyle"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["edit.panel.captionStyle"].exists(within: 5))
         XCTAssertEqual(app.buttons["edit.panel.expand"].label, "Collapse panel")
         app.buttons["edit.panel.expand"].tap()
         XCTAssertTrue(waitFor { app.buttons["edit.panel.expand"].label == "Expand panel" })
@@ -134,7 +134,7 @@ final class TextStyleUITests: XCTestCase {
         let app = EditorApp.open(demo: true)
         _ = openTextStyle(app)
         let size = app.descendants(matching: .any)["edit.textSize"]
-        XCTAssertTrue(size.waitForExistence(timeout: 5))
+        XCTAssertTrue(size.exists(within: 5))
         let value = size.value as? String
         let top = size.frame.minY
         // The track's right end: the thumb is nearer the middle of 24–120 pt.
@@ -152,7 +152,7 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts["edit.style.scopeNote"].exists)
         app.buttons["edit.style.scope.allTexts"].tap()
         XCTAssertEqual(subtitle.label, "All 2 texts change together")
-        XCTAssertTrue(app.staticTexts["edit.style.scopeNote"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.staticTexts["edit.style.scopeNote"].exists(within: 3))
         // Motion is the picked text's: no scope, no captions action, and the header says so.
         app.buttons["edit.panel.tab.motion"].tap()
         XCTAssertTrue(waitFor { subtitle.label == "Motion and timing change only this text" }, subtitle.label)
@@ -161,7 +161,7 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.keyframe.toggle"].exists)
         // Back on a look's tab, the scope is where it was left.
         app.buttons["edit.panel.tab.color"].tap()
-        XCTAssertTrue(app.buttons["edit.style.scope.allTexts"].waitForExistence(timeout: 3))
+        XCTAssertTrue(app.buttons["edit.style.scope.allTexts"].exists(within: 3))
         XCTAssertTrue(app.buttons["edit.style.scope.allTexts"].isSelected)
         XCTAssertEqual(subtitle.label, "All 2 texts change together")
     }
@@ -172,10 +172,13 @@ final class TextStyleUITests: XCTestCase {
         let app = EditorApp.open(demo: true)
         _ = openTextStyle(app)
         let field = app.textFields["edit.textField"]
-        XCTAssertTrue(field.waitForExistence(timeout: 5))
+        XCTAssertTrue(field.exists(within: 5))
         field.tap()
         let keyboard = app.keyboards.firstMatch
-        XCTAssertTrue(keyboard.waitForExistence(timeout: 5))
+        XCTAssertTrue(keyboard.exists(within: 5))
+        // Measured once the keyboard is up and the panel has risen above it.
+        keyboard.waitUntilStill()
+        app.buttons["edit.panel.apply"].waitUntilStill()
         let top = keyboard.frame.minY
         for id in ["edit.panel.apply", "edit.panel.tab.presets", "edit.panel.tab.color"] {
             XCTAssertLessThanOrEqual(app.buttons[id].frame.maxY, top + 1, id)
@@ -202,7 +205,7 @@ final class TextStyleUITests: XCTestCase {
         // Cancel: nothing happens.
         copy.tap()
         let alert = app.alerts.firstMatch
-        XCTAssertTrue(alert.waitForExistence(timeout: 5))
+        XCTAssertTrue(alert.exists(within: 5))
         XCTAssertTrue(alert.staticTexts["Apply this style to captions?"].exists)
         XCTAssertTrue(alert.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "Your captions use the Cue preset.")).firstMatch.exists)
         alert.buttons["Cancel"].firstMatch.tap()
@@ -211,20 +214,20 @@ final class TextStyleUITests: XCTestCase {
 
         // Apply.
         copy.tap()
-        XCTAssertTrue(alert.waitForExistence(timeout: 5))
+        XCTAssertTrue(alert.exists(within: 5))
         alert.buttons["Apply"].firstMatch.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Captions use this style"))
 
         // Caption style shows the copy as Custom, picked.
         app.buttons["edit.panel.apply"].tap()
         let back = app.buttons["edit.toolbar.back"]
-        if back.waitForExistence(timeout: 3) { back.tap() }
+        if back.exists(within: 3) { back.tap() }
         EditorApp.tapTool(app, "captions")
         let style = app.buttons["edit.captionsStyleButton"]
-        XCTAssertTrue(style.waitForExistence(timeout: 5))
+        XCTAssertTrue(style.exists(within: 5))
         style.tap()
         let custom = app.buttons["edit.captionPreset.custom"]
-        XCTAssertTrue(custom.waitForExistence(timeout: 5))
+        XCTAssertTrue(custom.exists(within: 5))
         XCTAssertTrue(custom.isSelected)
         XCTAssertFalse(app.buttons["edit.captionPreset.cue"].isSelected)
         XCTAssertTrue(app.staticTexts["edit.captionCustomNote"].exists)
@@ -237,7 +240,7 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertTrue(waitFor { !custom.exists })
         XCTAssertTrue(app.buttons["edit.captionPreset.pop"].isSelected)
         app.buttons["edit.undoButton"].tap()
-        XCTAssertTrue(custom.waitForExistence(timeout: 3))
+        XCTAssertTrue(custom.exists(within: 3))
         XCTAssertTrue(custom.isSelected)
         app.buttons["edit.redoButton"].tap()
         XCTAssertTrue(waitFor { !custom.exists })

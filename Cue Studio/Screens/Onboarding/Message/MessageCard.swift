@@ -123,7 +123,7 @@ struct MessageCard: View {
             Text("VIDEO FOR · \(platform.label.uppercased())")
                 .font(.system(size: 10, weight: .semibold, design: .monospaced))
                 .tracking(1)
-                .foregroundStyle(Palette.Flight.ink.opacity(0.72))
+                .foregroundStyle(Palette.Flight.quietInk)
                 .lineLimit(1)
             Spacer(minLength: 0)
             progressRing

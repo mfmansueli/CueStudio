@@ -22,10 +22,4 @@ nonisolated enum Countdown: Int, Codable, CaseIterable, Identifiable, Sendable {
     var shortLabel: String {
         self == .off ? String(localized: "OFF") : String(localized: "\(rawValue)s")
     }
-
-    var next: Countdown {
-        let all = Self.allCases
-        let index = all.firstIndex(of: self) ?? 0
-        return all[(index + 1) % all.count]
-    }
 }

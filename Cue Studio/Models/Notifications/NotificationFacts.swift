@@ -96,8 +96,6 @@ nonisolated struct NotificationFacts: Sendable {
     /// The year whose review is ready to watch (December onwards, three videos at least), when there is one.
     var yearReviewReady: Int?
     var appVersion = "1.0"
-    /// When the creator last worked in Cue.
-    var lastActivity: Date?
 
     var hasRecorded: Bool { !takes.isEmpty }
 

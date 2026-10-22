@@ -21,11 +21,6 @@ nonisolated struct RecordingSounds: Hashable, Sendable {
         sourceID.map { sources[$0] } ?? take
     }
 
-    /// Every file, for keeping their assets while a composition is built.
-    var files: [URL] {
-        [take].compactMap(\.self) + sources.values
-    }
-
     /// The sounds `edit` plays with: each treated recording's treatment, then, when the edit evens levels out, each brought to
     /// the take's level. `takeURL` is the take's video; the other recordings are read from the edit's media.
     static func prepare(for edit: TakeEdit, takeURL: URL, cache: RecordingSoundCache = .shared) async throws -> RecordingSounds {

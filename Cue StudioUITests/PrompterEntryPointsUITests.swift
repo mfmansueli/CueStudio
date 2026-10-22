@@ -19,8 +19,8 @@ final class PrompterEntryPointsUITests: XCTestCase {
     private func assertSelfiePrompter(
         _ app: XCUIApplication, _ path: String, hasScript: Bool = true, file: StaticString = #filePath, line: UInt = #line
     ) {
-        XCTAssertTrue(app.buttons["prompter.closeButton"].waitForExistence(timeout: 15), "\(path): no prompter", file: file, line: line)
-        XCTAssertTrue(element(app, "prompter.aspectButton").waitForExistence(timeout: 5), "\(path): not the Selfie prompter", file: file, line: line)
+        XCTAssertTrue(app.buttons["prompter.closeButton"].exists(within: 15), "\(path): no prompter", file: file, line: line)
+        XCTAssertTrue(element(app, "prompter.aspectButton").exists(within: 5), "\(path): not the Selfie prompter", file: file, line: line)
         if hasScript {
             XCTAssertTrue(element(app, "prompter.playButton").exists, "\(path): no play button", file: file, line: line)
             XCTAssertTrue(element(app, "prompter.displayButton").exists, "\(path): no display button", file: file, line: line)
@@ -32,20 +32,20 @@ final class PrompterEntryPointsUITests: XCTestCase {
 
     func testTheCameraButtonOpensSelfieWithTheScriptYouPick() throws {
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(app.tabBars.buttons["Record"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.tabBars.buttons["Record"].exists(within: 15))
         app.tabBars.buttons["Record"].tap()
         let recent = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'startRecording.recent.'")).firstMatch
-        XCTAssertTrue(recent.waitForExistence(timeout: 5))
+        XCTAssertTrue(recent.exists(within: 5))
         recent.tap()
         assertSelfiePrompter(app, "camera button › script")
     }
 
     func testTheCameraButtonWithoutAScriptOpensTheSameSelfie() throws {
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(app.tabBars.buttons["Record"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.tabBars.buttons["Record"].exists(within: 15))
         app.tabBars.buttons["Record"].tap()
         let skip = app.buttons["startRecording.skip"]
-        XCTAssertTrue(skip.waitForExistence(timeout: 5))
+        XCTAssertTrue(skip.exists(within: 5))
         skip.tap()
         assertSelfiePrompter(app, "camera button › without a script", hasScript: false)
     }
@@ -54,7 +54,7 @@ final class PrompterEntryPointsUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.ready)
         let record = app.buttons["detail.recordButton"]
-        XCTAssertTrue(record.waitForExistence(timeout: 5))
+        XCTAssertTrue(record.exists(within: 5))
         record.tap()
         assertSelfiePrompter(app, "script page › Record")
     }
@@ -64,7 +64,7 @@ final class PrompterEntryPointsUITests: XCTestCase {
         app.scriptRow(Self.ready).press(forDuration: 1.2)
         // The tab bar has a "Record" too: the menu's is the one above it.
         let tabBar = app.tabBars.firstMatch
-        XCTAssertTrue(app.buttons["Studio mode"].waitForExistence(timeout: 5), "The row's menu didn't open")
+        XCTAssertTrue(app.buttons["Studio mode"].exists(within: 5), "The row's menu didn't open")
         let record = app.buttons.matching(identifier: "Record").allElementsBoundByIndex.first { !$0.frame.intersects(tabBar.frame) }
         try XCTUnwrap(record).tap()
         assertSelfiePrompter(app, "script row › Record")
@@ -73,7 +73,7 @@ final class PrompterEntryPointsUITests: XCTestCase {
     func testOnlyStudioModeOpensTheStudioPrompter() throws {
         let app = CueApp.launch(seeded: true)
         app.openStudio(titled: Self.ready)
-        XCTAssertTrue(element(app, "prompter.remoteButton").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "prompter.remoteButton").exists(within: 15))
         XCTAssertFalse(element(app, "prompter.aspectButton").exists, "Studio has no camera frame")
     }
 }

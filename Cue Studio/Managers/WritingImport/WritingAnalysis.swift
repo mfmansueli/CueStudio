@@ -34,7 +34,4 @@ nonisolated struct WritingAnalysis: Hashable, Sendable {
 
     /// The creator mixes languages: a second one has a fifth of the words or more.
     var isMixedLanguage: Bool { languageShares.filter { $0.value >= 0.2 }.count > 1 }
-
-    /// Nothing usable came out of it.
-    var isEmpty: Bool { pieceCount == 0 }
 }

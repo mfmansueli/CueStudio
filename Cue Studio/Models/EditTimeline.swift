@@ -505,23 +505,6 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return true
     }
 
-    /// Sets a slow zoom on the piece at `index` (nil: none). False, and no change, when it already
-    /// has it.
-    @discardableResult
-    mutating func setZoom(_ zoom: SectionZoom?, forSegmentAt index: Int) -> Bool {
-        guard segments.indices.contains(index), segments[index].zoom != zoom else { return false }
-        segments[index].zoom = zoom
-        return true
-    }
-
-    /// Plays every piece at `speed`. False, and no change, when they all already do.
-    @discardableResult
-    mutating func setSpeed(_ speed: Double) -> Bool {
-        var changed = false
-        for index in segments.indices where setSpeed(speed, forSegmentAt: index) { changed = true }
-        return changed
-    }
-
     /// Drops a piece. False when it is the only one left: an edit always plays something.
     @discardableResult
     mutating func removeSegment(id: UUID) -> Bool {

@@ -111,8 +111,4 @@ extension PrompterViewModel {
         guard canChangeAudioInput else { return }
         sheet = .audioInput
     }
-
-    func cycleCountdown() {
-        session.camera.countdown = session.camera.countdown.next
-    }
 }

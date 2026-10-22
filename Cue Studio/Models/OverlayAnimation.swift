@@ -43,7 +43,7 @@ nonisolated struct OverlayAnimation: Codable, Hashable, Sendable {
             return (0, 0, 1 + (0.04 + 0.16 * intensity) * progress, 1)
         case .pop:
             let start = 0.75 - 0.35 * intensity
-            return (0, 0, FrameOverlay.popScale(from: start, elapsed: time, duration: entrance), min(1, into * 2))
+            return (0, 0, PopEase.scale(from: start, elapsed: time, duration: entrance), min(1, into * 2))
         case .inAndOut:
             let out = min(max((length - time) / entrance, 0), 1)
             let outEased = out * out * (3 - 2 * out)

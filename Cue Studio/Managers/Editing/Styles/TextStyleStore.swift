@@ -14,17 +14,9 @@ final class TextStyleStore: TextStyleStoring {
         self.defaults = defaults
     }
 
-    var myCoverLook: CoverLook? {
-        get {
-            defaults.data(forKey: DefaultsKey.myCoverStyle).flatMap { try? JSONDecoder().decode(CoverLook.self, from: $0) }
-        }
-        set {
-            if let newValue, let data = try? JSONEncoder().encode(newValue) {
-                defaults.set(data, forKey: DefaultsKey.myCoverStyle)
-            } else {
-                defaults.removeObject(forKey: DefaultsKey.myCoverStyle)
-            }
-        }
+    /// The cover look a creator saved in the v26 Cover panel, what Cover Studio's style starts from when there's none.
+    private var myCoverLook: CoverLook? {
+        defaults.data(forKey: DefaultsKey.myCoverStyle).flatMap { try? JSONDecoder().decode(CoverLook.self, from: $0) }
     }
 
     /// Cover Studio's style; a creator who saved one in the v26 Cover panel starts from it, converted.

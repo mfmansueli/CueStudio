@@ -26,7 +26,7 @@ final class ScriptsV29UITests: XCTestCase {
 
     func testTheListIsGroupedByState() throws {
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(element(app, "scripts.group.ready").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "scripts.group.ready").exists(within: 15))
         XCTAssertTrue(element(app, "scripts.group.draft").exists)
         XCTAssertTrue(element(app, "scripts.group.recorded").exists)
         // A ready script has its REC pill, a draft "Continue ›", a recorded one "×n ›".
@@ -45,11 +45,11 @@ final class ScriptsV29UITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         let field = app.openScriptsSearch()
         field.typeText("zzzzzz")
-        XCTAssertTrue(element(app, "scripts.empty").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "scripts.empty").exists(within: 5))
         XCTAssertFalse(element(app, "scripts.group.ready").exists)
         try capture(app, "3.2f_no_results")
         app.buttons["scripts.empty.action"].tap()
-        XCTAssertTrue(element(app, "scripts.group.ready").waitForExistence(timeout: 5))
+        XCTAssertTrue(element(app, "scripts.group.ready").exists(within: 5))
     }
 
     /// The search is the bar's magnifier, beside the Logbook and "+": it opens a field at the top of the list with the keyboard, typing narrows
@@ -57,7 +57,7 @@ final class ScriptsV29UITests: XCTestCase {
     func testTheMagnifierOpensTheSearchAndTheDockStays() {
         let app = CueApp.launch(seeded: true)
         let dock = element(app, "scripts.promptCard")
-        XCTAssertTrue(dock.waitForExistence(timeout: 15))
+        XCTAssertTrue(dock.exists(within: 15))
         XCTAssertFalse(app.scriptsSearchField.exists, "the search waits for the magnifier")
         XCTAssertTrue(app.navigationBars.buttons["scripts.logbookButton"].exists)
         XCTAssertTrue(app.navigationBars.buttons["scripts.newButton"].exists)
@@ -66,22 +66,22 @@ final class ScriptsV29UITests: XCTestCase {
 
         let field = app.openScriptsSearch()
         field.typeText("Oat")
-        XCTAssertTrue(app.staticTexts["Oat & Co. — sponsored read"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Oat & Co. — sponsored read"].exists(within: 5))
         XCTAssertFalse(draft.exists)
         XCTAssertTrue(dock.exists, "the dock stays while searching")
 
         element(app, "scripts.search").buttons["Clear search"].tap()
-        XCTAssertTrue(draft.waitForExistence(timeout: 5), "the whole list is back")
+        XCTAssertTrue(draft.exists(within: 5), "the whole list is back")
         XCTAssertTrue(dock.exists)
 
         // Without words, the field goes with the keyboard (a scroll sends the keyboard away).
         app.swipeDown()
-        XCTAssertTrue(field.waitForNonExistence(timeout: 5), "the empty search stayed after the keyboard went")
+        XCTAssertTrue(field.isGone(within: 5), "the empty search stayed after the keyboard went")
     }
 
     func testTheFirstVisitOffersItsWaysIn() throws {
         let app = CueApp.launch(seeded: false)
-        XCTAssertTrue(element(app, "empty.promptCard").waitForExistence(timeout: 15))
+        XCTAssertTrue(element(app, "empty.promptCard").exists(within: 15))
         XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists, "Find inspiration is the dock's lightbulb")
         XCTAssertTrue(element(app, "empty.writeButton").exists)
         XCTAssertTrue(element(app, "empty.importButton").exists)
@@ -94,7 +94,7 @@ final class ScriptsV29UITests: XCTestCase {
     func testWithoutAppleIntelligenceTheCardSaysWriteItAndOpensADraft() throws {
         let app = CueApp.launch(seeded: false, ai: .none)
         let submit = app.buttons["ideaCard.submit"]
-        XCTAssertTrue(submit.waitForExistence(timeout: 15))
+        XCTAssertTrue(submit.exists(within: 15))
         XCTAssertEqual(submit.label, "Write it")
         XCTAssertFalse(app.buttons["ideaCard.voiceChip"].exists, "nothing on the card is violet without Apple Intelligence")
         try capture(app, "3.1_no_ai")
@@ -102,18 +102,18 @@ final class ScriptsV29UITests: XCTestCase {
         field.tap()
         field.typeText("My morning routine")
         submit.tap()
-        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 10) || app.textFields["page.titleField"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["detail.recordButton"].exists(within: 10) || app.textFields["page.titleField"].exists(within: 10))
     }
 
     func testFindInspirationFromTheFirstVisitWritesAnIdea() throws {
         let app = CueApp.launch(seeded: false)
         let inspiration = app.buttons["ideaCard.inspirationButton"]
-        XCTAssertTrue(inspiration.waitForExistence(timeout: 15))
+        XCTAssertTrue(inspiration.exists(within: 15))
         inspiration.tap()
         let write = app.buttons["inspiration.writeNow"]
-        XCTAssertTrue(write.waitForExistence(timeout: 5))
-        XCTAssertTrue(element(app, "inspiration.card.title").waitForExistence(timeout: 10))
+        XCTAssertTrue(write.exists(within: 5))
+        XCTAssertTrue(element(app, "inspiration.card.title").exists(within: 10))
         write.tap()
-        XCTAssertTrue(app.buttons["detail.recordButton"].waitForExistence(timeout: 15))
+        XCTAssertTrue(app.buttons["detail.recordButton"].exists(within: 15))
     }
 }

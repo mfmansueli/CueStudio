@@ -17,7 +17,6 @@ struct ScriptStarterTests {
         let presentation: PresentationService
         let ideaDraft: IdeaDraftService
         let transition: IdeaTransitionService
-        let sky: SkyMemory
         let writer: FakeScriptWriter
         let toast: ToastService
         let defaults: TestDefaults
@@ -30,16 +29,15 @@ struct ScriptStarterTests {
         let ideaDraft = IdeaDraftService()
         let transition = IdeaTransitionService()
         transition.speed = 0.01
-        let sky = SkyMemory(defaults: defaults.defaults)
         let writer = FakeScriptWriter()
         let toast = ToastService()
         let starter = ScriptStarter(
             library: library, rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
             languages: languages ?? TestData.languages(defaults: defaults.defaults), presentation: presentation, ideaDraft: ideaDraft,
-            transition: transition, sky: sky, writer: writer, toast: toast
+            transition: transition, writer: writer, toast: toast
         )
         return Scenario(
-            starter: starter, library: library, presentation: presentation, ideaDraft: ideaDraft, transition: transition, sky: sky,
+            starter: starter, library: library, presentation: presentation, ideaDraft: ideaDraft, transition: transition,
             writer: writer, toast: toast, defaults: defaults
         )
     }
@@ -96,16 +94,14 @@ struct ScriptStarterTests {
         // No script is created, the page goes, and the idea is still in the field.
         #expect(scenario.library.scripts.isEmpty && scenario.presentation.scriptsPath.isEmpty)
         #expect(scenario.ideaDraft.text == "Carnival in Salvador")
-        #expect(scenario.sky.points.isEmpty)
     }
 
-    @Test func whenTheScriptIsReadyTheIdeaBecomesAStarInTheSky() async {
+    @Test func whenTheScriptIsReadyItStaysInTheLibrary() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.ideaDraft.text = "Carnival in Salvador"
         scenario.starter.write(from: CGPoint(x: 300, y: 700))
         await scenario.transition.contentReady()
-        #expect(scenario.sky.points.count == 1)
         #expect(scenario.library.scripts.count == 1)
     }
 

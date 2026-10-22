@@ -27,7 +27,7 @@ struct TakeTile: View {
                     Spacer(minLength: 4)
                     Text(DurationText.clock(take.duration))
                         .monospacedDigit()
-                        .foregroundStyle(.white.opacity(0.8))
+                        .foregroundStyle(Palette.inkSoft)
                 }
                 .font(.caption.weight(.semibold))
                 .foregroundStyle(.white)

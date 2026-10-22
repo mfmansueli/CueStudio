@@ -90,7 +90,7 @@ struct VoiceFollowingSpeechTests {
         defer { speech.stop() }
 
         let transcription: SpeechTranscription
-        switch await speech.start(script: script, language: .language(language)) {
+        switch await speech.start(script: script, language: .language(language), preparation: { _ in }) {
         case .listening(let started, let route):
             transcription = started
             // Recognized in the language asked for, and no other.

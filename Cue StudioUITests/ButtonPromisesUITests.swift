@@ -43,7 +43,7 @@ final class ButtonPromisesUITests: XCTestCase {
 
     private func goToTab(_ app: XCUIApplication, _ name: String) {
         let tab = app.cueTabBar.buttons[name]
-        XCTAssertTrue(tab.waitForExistence(timeout: 15))
+        XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
     }
 
@@ -53,16 +53,16 @@ final class ButtonPromisesUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestDictation", "speech", "-uiTestDictationText", "a video about slow mornings"])
         app.buttons["scripts.logbookButton"].tap()
         let button = element(app, "logbook.captureButton")
-        XCTAssertTrue(button.waitForExistence(timeout: 5))
+        XCTAssertTrue(button.exists(within: 5))
         button.tap()
         // A tap is not a hold, and it is not nothing: it keeps listening and says how to finish.
-        XCTAssertTrue(element(app, "logbook.tapToFinish").waitForExistence(timeout: 5), "A tap on the button did nothing")
+        XCTAssertTrue(element(app, "logbook.tapToFinish").exists(within: 5), "A tap on the button did nothing")
         // The words arrive in the field while it listens (the Logbook of the native-bars rework), and the next tap saves them.
         let field = element(app, "logbook.field")
         let heard = NSPredicate(format: "value CONTAINS 'slow mornings'")
         XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: heard, object: field)], timeout: 10), .completed, "Nothing was heard")
         button.tap()
-        XCTAssertTrue(element(app, "logbook.entry").waitForExistence(timeout: 10), "The idea it heard did not reach the Logbook")
+        XCTAssertTrue(element(app, "logbook.entry").exists(within: 10), "The idea it heard did not reach the Logbook")
         XCTAssertFalse(element(app, "logbook.tapToFinish").exists)
     }
 
@@ -70,9 +70,9 @@ final class ButtonPromisesUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestDictation", "speech", "-uiTestDictationText", "one more idea"])
         app.buttons["scripts.logbookButton"].tap()
         let button = element(app, "logbook.captureButton")
-        XCTAssertTrue(button.waitForExistence(timeout: 5))
+        XCTAssertTrue(button.exists(within: 5))
         button.press(forDuration: 2.5)
-        XCTAssertTrue(element(app, "logbook.entry").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "logbook.entry").exists(within: 10))
         XCTAssertFalse(element(app, "logbook.tapToFinish").exists, "A hold ended with the finger and has no tap to finish")
     }
 
@@ -80,11 +80,11 @@ final class ButtonPromisesUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestDictation", "unavailable"])
         app.buttons["scripts.logbookButton"].tap()
         let button = element(app, "logbook.captureButton")
-        XCTAssertTrue(button.waitForExistence(timeout: 5))
+        XCTAssertTrue(button.exists(within: 5))
         button.tap()
         XCTAssertTrue(
             app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'turn speech into text' OR label CONTAINS 'recognize'")).firstMatch
-                .waitForExistence(timeout: 5),
+                .exists(within: 5),
             "No reason was given"
         )
         XCTAssertFalse(element(app, "logbook.tapToFinish").exists, "It keeps listening to nothing")
@@ -97,9 +97,9 @@ final class ButtonPromisesUITests: XCTestCase {
     func testAnotherIdeaKeepsBringingNewOnes() {
         let app = CueApp.launch(seeded: true)
         let field = element(app, "ideaCard.field")
-        XCTAssertTrue(field.waitForExistence(timeout: 15))
+        XCTAssertTrue(field.exists(within: 15))
         let another = element(app, "ideaCard.anotherIdea")
-        XCTAssertTrue(another.waitForExistence(timeout: 10))
+        XCTAssertTrue(another.exists(within: 10))
         // Let the first batch of the model's ideas arrive (the stub answers at once).
         sleep(2)
         var shown = Set<String>()
@@ -116,9 +116,9 @@ final class ButtonPromisesUITests: XCTestCase {
     /// The page's own "Improve" chip (the only way into Improve: the menu doesn't repeat it).
     private func openImprove(_ app: XCUIApplication) {
         let chip = app.buttons["page.improveButton"]
-        XCTAssertTrue(chip.waitForExistence(timeout: 5), "The page has no Improve button")
+        XCTAssertTrue(chip.exists(within: 5), "The page has no Improve button")
         chip.tap()
-        if !app.buttons["improve.tool.inMyVoice"].waitForExistence(timeout: 5) { snap(app, "improve-sheet") }
+        if !app.buttons["improve.tool.inMyVoice"].exists(within: 5) { snap(app, "improve-sheet") }
         XCTAssertTrue(app.buttons["improve.tool.inMyVoice"].exists, "The Improve sheet did not open")
     }
 
@@ -143,10 +143,10 @@ final class ButtonPromisesUITests: XCTestCase {
         for tool in ["inMyVoice", "strongerCTA", "fitToTime"] {
             openImprove(app)
             let button = app.buttons["improve.tool.\(tool)"]
-            XCTAssertTrue(button.waitForExistence(timeout: 5), "No \(tool) in the sheet of a sponsored script")
+            XCTAssertTrue(button.exists(within: 5), "No \(tool) in the sheet of a sponsored script")
             scrollSheet(app, to: button)
             button.tap()
-            XCTAssertTrue(app.buttons["toast.action"].waitForExistence(timeout: 10), "\(tool): nothing was said")
+            XCTAssertTrue(app.buttons["toast.action"].exists(within: 10), "\(tool): nothing was said")
             XCTAssertTrue(editorText(app).contains("Rewritten with \(tool)."), "\(tool): the script is not what the tool wrote")
             app.buttons["toast.action"].tap()
             XCTAssertEqual(editorText(app), original, "\(tool): Undo did not bring the script back")
@@ -159,12 +159,12 @@ final class ButtonPromisesUITests: XCTestCase {
         openImprove(app)
         scrollSheet(app, to: app.buttons["improve.tool.addDisclosure"])
         app.buttons["improve.tool.addDisclosure"].tap()
-        XCTAssertTrue(app.staticTexts["Disclosure added up front"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Disclosure added up front"].exists(within: 5))
         XCTAssertTrue(editorText(app).contains("paid partnership"))
         openImprove(app)
         scrollSheet(app, to: app.buttons["improve.tool.addDisclosure"])
         app.buttons["improve.tool.addDisclosure"].tap()
-        XCTAssertTrue(app.staticTexts["Disclosure is already first"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["Disclosure is already first"].exists(within: 5))
     }
 
     func testEachToolOfAPlainScriptRunsItsOwnToolAndUndoTakesItBack() {
@@ -174,11 +174,11 @@ final class ButtonPromisesUITests: XCTestCase {
         for tool in ["fixGrammar", "moreEnergy"] {
             openImprove(app)
             let button = app.buttons["improve.tool.\(tool)"]
-            XCTAssertTrue(button.waitForExistence(timeout: 5), "No \(tool) in the sheet")
+            XCTAssertTrue(button.exists(within: 5), "No \(tool) in the sheet")
             // The sheet opens half way: the tool may be further down the list.
             scrollSheet(app, to: button)
             button.tap()
-            if !app.buttons["toast.action"].waitForExistence(timeout: 3) {
+            if !app.buttons["toast.action"].exists(within: 3) {
                 let said = app.staticTexts.allElementsBoundByIndex.map(\.label).filter { $0.count > 12 && $0.count < 80 }
                 XCTFail("\(tool) said: \(said)")
                 snap(app, "tool-\(tool)")
@@ -198,12 +198,12 @@ final class ButtonPromisesUITests: XCTestCase {
         scrollSheet(app, to: app.buttons["improve.tool.translate"])
         app.buttons["improve.tool.translate"].tap()
         let spanish = app.buttons["Spanish"]
-        XCTAssertTrue(spanish.waitForExistence(timeout: 5), "The translate menu offers no language")
+        XCTAssertTrue(spanish.exists(within: 5), "The translate menu offers no language")
         spanish.tap()
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'version saved'")).firstMatch.waitForExistence(timeout: 10))
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'version saved'")).firstMatch.exists(within: 10))
         XCTAssertEqual(editorText(app), original, "The script that was translated changed")
         app.pageBackButton.tap()
-        XCTAssertTrue(app.staticTexts["Unboxing the Lumen desk lamp (Spanish)"].waitForExistence(timeout: 10) || app.scriptRowExists(containing: "(Spanish)"))
+        XCTAssertTrue(app.staticTexts["Unboxing the Lumen desk lamp (Spanish)"].exists(within: 10) || app.scriptRowExists(containing: "(Spanish)"))
     }
 
     func testAToolHasNothingToWorkOnInABlankScript() {
@@ -212,13 +212,13 @@ final class ButtonPromisesUITests: XCTestCase {
         app.buttons["newScript.write"].tap()
         // A blank script opens with the keyboard on its title: the bar has the ✓ that hides it, and the menu comes back once it is down.
         let hideKeyboard = app.buttons["page.hideKeyboard"]
-        if hideKeyboard.waitForExistence(timeout: 5) { hideKeyboard.tap() }
-        XCTAssertTrue(app.buttons["page.menuButton"].waitForExistence(timeout: 5))
+        if hideKeyboard.exists(within: 5) { hideKeyboard.tap() }
+        XCTAssertTrue(app.buttons["page.menuButton"].exists(within: 5))
         openImprove(app)
         scrollSheet(app, to: app.buttons["improve.tool.moreEnergy"])
         app.buttons["improve.tool.moreEnergy"].tap()
         XCTAssertTrue(
-            app.staticTexts["Write a few lines. Cue builds on them."].waitForExistence(timeout: 5),
+            app.staticTexts["Write a few lines. Cue builds on them."].exists(within: 5),
             "A tool ran on a script with nothing in it, or said nothing"
         )
         XCTAssertFalse(editorText(app).contains("Rewritten"))
@@ -230,17 +230,17 @@ final class ButtonPromisesUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         goToTab(app, "Takes")
         let ready = app.buttons["takes.stage.ready"]
-        XCTAssertTrue(ready.waitForExistence(timeout: 10))
+        XCTAssertTrue(ready.exists(within: 10))
         ready.tap()
         app.buttons["takes.platform.shorts"].tap()
         let empty = element(app, "takes.emptyStage")
-        XCTAssertTrue(empty.waitForExistence(timeout: 5), "A list with nothing in it said nothing")
+        XCTAssertTrue(empty.exists(within: 5), "A list with nothing in it said nothing")
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Shorts'")).count > 0, "It does not say which platform has nothing")
         let showAll = app.buttons["takes.showAll"]
-        if !showAll.waitForExistence(timeout: 5) { snap(app, "takes-empty") }
+        if !showAll.exists(within: 5) { snap(app, "takes-empty") }
         XCTAssertTrue(showAll.exists, "An empty list is a dead end")
         showAll.tap()
-        XCTAssertTrue(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.'")).firstMatch.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.'")).firstMatch.exists(within: 5))
         XCTAssertFalse(element(app, "takes.emptyStage").exists)
         XCTAssertFalse(ready.isSelected, "The stage is still picked after showing everything")
     }
@@ -256,7 +256,7 @@ final class ButtonPromisesUITests: XCTestCase {
 
     private func backToSettings(_ app: XCUIApplication) {
         app.navigationBars.buttons.firstMatch.tap()
-        XCTAssertTrue(app.navigationBars["Settings"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.navigationBars["Settings"].exists(within: 5))
     }
 
     func testEverySwitchOfSettingsFlipsAndKeepsItsValue() {
@@ -266,32 +266,38 @@ final class ButtonPromisesUITests: XCTestCase {
             ("prompter", ["settings.aiCoach", "settings.showReadingLine", "settings.mirrorText", "settings.flipVertically"]),
             ("personalize", ["settings.autoTag", "settings.celebrations", "settings.haptics"]),
         ]
+        // Each page once to flip every switch, once to see each kept its value and flip it back.
         for (page, ids) in pages {
+            openSettingsPage(app, page)
+            var before: [String?] = []
+            var after: [String?] = []
             for id in ids {
-                openSettingsPage(app, page)
                 let toggle = app.switches[id]
                 app.scrollAboveTabBar(to: toggle)
-                let before = toggle.value as? String
+                before.append(toggle.value as? String)
                 XCTAssertTrue(toggle.isEnabled, "\(id) is off for good")
                 flip(toggle)
-                let after = value(of: toggle, differentFrom: before)
-                XCTAssertNotEqual(before, after, "\(id): the switch did not flip")
-                // Out of the page and back: it is still as it was left.
-                backToSettings(app)
-                openSettingsPage(app, page)
+                after.append(value(of: toggle, differentFrom: before.last ?? nil))
+                XCTAssertNotEqual(before.last, after.last, "\(id): the switch did not flip")
+            }
+            // Out of the page and back: each is still as it was left.
+            backToSettings(app)
+            openSettingsPage(app, page)
+            usleep(500_000)
+            for (index, id) in ids.enumerated() {
                 let again = app.switches[id]
                 app.scrollAboveTabBar(to: again)
-                XCTAssertEqual(again.value as? String, after, "\(id): the choice was forgotten")
-                usleep(500_000)
+                let left = after[index]
+                XCTAssertEqual(again.value as? String, left, "\(id): the choice was forgotten")
                 flip(again)
                 // A tap that lands while the page is still settling after it was opened is lost on a busy simulator: a person taps again.
-                if value(of: again, differentFrom: after) == after {
+                if value(of: again, differentFrom: left) == left {
                     usleep(800_000)
                     flip(again)
                 }
-                XCTAssertEqual(value(of: again, differentFrom: after), before, "\(id): it does not flip back")
-                backToSettings(app)
+                XCTAssertEqual(value(of: again, differentFrom: left), before[index], "\(id): it does not flip back")
             }
+            backToSettings(app)
         }
     }
 
@@ -305,29 +311,29 @@ final class ButtonPromisesUITests: XCTestCase {
         flip(toggle)
         sleep(1)
         snap(app, "flip-after")
-        XCTAssertTrue(toggle.waitForExistence(timeout: 3), "The switch left the page when it was tapped")
+        XCTAssertTrue(toggle.exists(within: 3), "The switch left the page when it was tapped")
         XCTAssertEqual(toggle.frame.minY, before, accuracy: 4, "The page moved under the finger")
     }
 
     func testEveryRowOfMyCueVoiceOpensItsEditorFromSettings() {
         let app = CueApp.launch(seeded: true)
         openSettingsPage(app, "myCueVoice")
-        XCTAssertTrue(element(app, "voicePage").waitForExistence(timeout: 10))
+        XCTAssertTrue(element(app, "voicePage").exists(within: 10))
         let rows = ["role", "topics", "audience", "watch", "tone", "style", "formats", "openings", "endings", "phrases", "avoid", "examples"]
         var opened = 0
         for row in rows {
             let button = app.buttons["voicePage.row.\(row)"]
             if !button.exists { app.swipeUp() }
-            guard button.waitForExistence(timeout: 3) else { continue }
+            guard button.exists(within: 3) else { continue }
             app.scroll(to: button)
             button.tap()
             let editor = app.descendants(matching: .any).matching(NSPredicate(format: "identifier BEGINSWITH 'voice.editor.'")).firstMatch
-            XCTAssertTrue(editor.waitForExistence(timeout: 5), "The row \(row) opens nothing")
+            XCTAssertTrue(editor.exists(within: 5), "The row \(row) opens nothing")
             opened += 1
             let done = app.buttons["voice.editor.done"]
-            XCTAssertTrue(done.waitForExistence(timeout: 5), "The editor of \(row) has no way out")
+            XCTAssertTrue(done.exists(within: 5), "The editor of \(row) has no way out")
             done.tap()
-            XCTAssertTrue(element(app, "voicePage").waitForExistence(timeout: 5), "Done in the editor of \(row) did not come back to the page")
+            XCTAssertTrue(element(app, "voicePage").exists(within: 5), "Done in the editor of \(row) did not come back to the page")
         }
         XCTAssertGreaterThanOrEqual(opened, 8, "Too few rows were found to open")
     }
@@ -341,11 +347,11 @@ final class ButtonPromisesUITests: XCTestCase {
         app.scroll(to: universe)
         universe.tap()
         let core = element(app, "universe.core")
-        XCTAssertTrue(core.waitForExistence(timeout: 10))
+        XCTAssertTrue(core.exists(within: 10))
         core.tap()
         for colour in ["rose", "amber", "sunrise", "gold"] {
             let chip = app.buttons["coreColor.\(colour)"]
-            XCTAssertTrue(chip.waitForExistence(timeout: 5), "No \(colour)")
+            XCTAssertTrue(chip.exists(within: 5), "No \(colour)")
             chip.tap()
             XCTAssertTrue(chip.isSelected, "\(colour) was tapped and is not the one selected")
         }
@@ -355,6 +361,6 @@ final class ButtonPromisesUITests: XCTestCase {
 private extension XCUIApplication {
     /// A script row of Scripts whose title has `text`.
     func scriptRowExists(containing text: String) -> Bool {
-        buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'scripts.row.' AND label CONTAINS %@", text)).firstMatch.waitForExistence(timeout: 5)
+        buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'scripts.row.' AND label CONTAINS %@", text)).firstMatch.exists(within: 5)
     }
 }

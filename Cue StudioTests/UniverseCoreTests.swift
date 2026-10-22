@@ -30,7 +30,7 @@ struct UniverseCoreTests {
             for drawn in 0..<40 {
                 let first = UniverseMap.videoSpot(topic: topic, dot: drawn, drawn: drawn)
                 let again = UniverseMap.videoSpot(topic: topic, dot: drawn, drawn: drawn)
-                #expect(first.offset == again.offset)
+                #expect(first.point(spin: 0) == again.point(spin: 0))
                 #expect((1.9...2.9).contains(first.radius))
                 // However far the disc has turned, a video stays on the board.
                 for turn in stride(from: 0.0, to: 2 * Double.pi, by: 0.5) {

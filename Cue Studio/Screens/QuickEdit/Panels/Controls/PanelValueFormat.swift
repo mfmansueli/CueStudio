@@ -26,7 +26,7 @@ enum PanelValueFormat {
         case .signed: value > 0.5 ? "+\(Int(value.rounded()))" : "\(Int(value.rounded()))"
         case .plain: "\(Int(value.rounded()))"
         case .seconds: DurationText.tenths(value)
-        case .speed: value.formatted(.number.precision(.fractionLength(0...2)).locale(.interface)) + "×"
+        case .speed: SpeedScale.label(forMultiple: value)
         case .points: String(localized: "\(Int(value.rounded())) pt")
         }
     }

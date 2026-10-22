@@ -32,7 +32,7 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     var font: PrompterFont = .lexend
     var size: Double = 36
     var lineSpacing: Double = 1.35
-    var alignment: PrompterAlignment = .center
+    var alignment: LineAlignment = .center
     var textColor: PrompterTextColor = .white
     var margin: Double = 20
     /// Selfie text window width as a fraction of the screen, 50% to 93%. Narrowing it keeps the
@@ -116,15 +116,6 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     /// The speed slider moves in steps of this many words a minute.
     static let wordsPerMinuteStep: Double = 5
 
-    /// The stored speed for a pace in words a minute, and back.
-    static func speed(forWordsPerMinute wordsPerMinute: Double) -> Double {
-        clampedSpeed(wordsPerMinute / ReadTime.wordsPerMinuteAtOneX)
-    }
-
-    static func wordsPerMinute(forSpeed speed: Double) -> Double {
-        speed * ReadTime.wordsPerMinuteAtOneX
-    }
-
     /// The same reading pace, expressed on the current stored scale: 1.0 saved at 150 words a minute
     /// becomes 0.698 at 215. A speed past today's range (the 3×, 4× and 5× the slider had before 20/10/2026) opens on the nearest end, 2×.
     static func recalibrated(_ speed: Double, savedAt wordsPerMinute: Double) -> Double {
@@ -154,7 +145,7 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
         let storedSize = try container.decodeIfPresent(Double.self, forKey: .size) ?? defaults.size
         size = min(Self.sizeRange.upperBound, max(Self.sizeRange.lowerBound, storedSize))
         lineSpacing = try container.decodeIfPresent(Double.self, forKey: .lineSpacing) ?? defaults.lineSpacing
-        alignment = (try? container.decodeIfPresent(PrompterAlignment.self, forKey: .alignment)) ?? defaults.alignment
+        alignment = (try? container.decodeIfPresent(LineAlignment.self, forKey: .alignment)) ?? defaults.alignment
         textColor = (try? container.decodeIfPresent(PrompterTextColor.self, forKey: .textColor)) ?? defaults.textColor
         let storedMargin = try container.decodeIfPresent(Double.self, forKey: .margin) ?? defaults.margin
         margin = min(Self.marginRange.upperBound, max(Self.marginRange.lowerBound, storedMargin))

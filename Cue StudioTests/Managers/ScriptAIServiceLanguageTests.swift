@@ -157,7 +157,7 @@ struct ScriptAIServiceLanguageTests {
             _ = try await service.hooks(for: "مرحبا بالجميع", context: context(source: "ar"))
         }
         await #expect(throws: ScriptAIError.self) {
-            _ = try await service.themeIdeas(for: [.tech], language: .hindi)
+            _ = try await service.themeIdeas(for: [.tech], language: .hindi, voice: nil)
         }
     }
 
@@ -185,7 +185,7 @@ struct ScriptAIServiceLanguageTests {
 struct ScriptAIServiceFallbackTests {
     private let ranOut = LanguageModelError.contextSizeExceeded(.init(contextSize: 4096, tokenCount: 4100, debugDescription: "ran out"))
 
-    private func service(cloud: Bool = false) -> ScriptAIService {
+    private func service() -> ScriptAIService {
         ScriptAIService(usesPrivateCloudCompute: false, capabilities: FakeAIModelCapabilities())
     }
 

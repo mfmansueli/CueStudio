@@ -8,7 +8,8 @@ import SwiftUI
 
 /// "Add photo or video": the photo library right in the sheet, and where the pick goes: on top of
 /// the video (on the text track, for 3 s; a video for its length) or as a clip after the one at
-/// the playhead (videos only: the video track plays recordings).
+/// the playhead (videos only: the video track plays recordings). As a clip, the creator's other
+/// takes come first, for a montage of several takes.
 struct AddMediaSheet: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -30,6 +31,14 @@ struct AddMediaSheet: View {
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("edit.mediaModeExplanation")
+            if viewModel.mediaInsertMode == .clip, !viewModel.addableTakes.isEmpty {
+                TakeRow(takes: viewModel.addableTakes) { take in
+                    Task {
+                        await viewModel.addClip(from: take)
+                        dismiss()
+                    }
+                }
+            }
             ZStack {
                 PhotosPicker(
                     selection: $picked,
@@ -65,5 +74,52 @@ struct AddMediaSheet: View {
         .cueSheetChrome()
         .presentationDetents([.medium, .large])
         .presentationDragIndicator(.visible)
+    }
+}
+
+extension AddMediaSheet {
+    /// "Your takes": the other takes in a sideways row, each with its script, number and length; a tap adds it as a clip.
+    private struct TakeRow: View {
+        let takes: [Take]
+        let add: (Take) -> Void
+
+        var body: some View {
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Your takes")
+                    .font(.system(.footnote, weight: .semibold))
+                    .foregroundStyle(Palette.ink2)
+                ScrollView(.horizontal) {
+                    HStack(spacing: 8) {
+                        ForEach(takes) { take in
+                            Button { add(take) } label: { card(take) }
+                                .buttonStyle(.cuePress)
+                                .accessibilityElement(children: .ignore)
+                                .accessibilityLabel(Text("\(take.scriptTitle) · Take \(take.number)"))
+                                .accessibilityValue(Text(DurationText.clock(take.duration)))
+                                .accessibilityAddTraits(.isButton)
+                                .accessibilityIdentifier("edit.addTake.\(take.id.uuidString)")
+                        }
+                    }
+                }
+                .scrollIndicators(.hidden)
+            }
+        }
+
+        private func card(_ take: Take) -> some View {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(take.scriptTitle)
+                    .font(.system(.subheadline, weight: .semibold))
+                    .foregroundStyle(Palette.ink)
+                    .lineLimit(1)
+                Text(verbatim: "\(String(localized: "Take \(take.number)")) · \(DurationText.clock(take.duration))")
+                    .font(.system(.caption, design: .monospaced))
+                    .foregroundStyle(Palette.ink2)
+            }
+            .frame(width: 150, alignment: .leading)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 10)
+            .background(Palette.fill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .frame(minHeight: Metrics.hitTarget)
+        }
     }
 }

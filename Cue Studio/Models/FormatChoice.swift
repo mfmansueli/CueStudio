@@ -33,9 +33,6 @@ nonisolated enum FormatChoice: Hashable, Identifiable, Sendable {
         .filter { type in !gridTiles.contains(.type(type)) }
         .map(FormatChoice.type)
 
-    /// Every choice the sheet has: the grid, then "More formats".
-    static let allTiles: [FormatChoice] = gridTiles + moreFormats
-
     /// What goes on the script: nil for Auto and Talking head.
     var scriptType: ScriptType? {
         if case .type(let type) = self { type } else { nil }
