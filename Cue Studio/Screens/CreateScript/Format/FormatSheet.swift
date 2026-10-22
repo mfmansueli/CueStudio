@@ -37,7 +37,7 @@ struct FormatSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: Metrics.blockGap) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(mode == .blank ? "Start from a format" : "Format")
+                        Text(mode == .blank ? String(localized: "Start from a format") : FormatChoice.formatLabel)
                             .font(CueStudioFont.hud).textCase(.uppercase).tracking(1.2)
                             .foregroundStyle(Palette.accText)
                         Text(mode == .blank ? "Which video are you making?" : "How should Cue build it?")

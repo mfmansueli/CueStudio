@@ -17,7 +17,10 @@ struct DisplaySettingsControls: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            SectionHeading(text: String(localized: "Quick"))
+            SectionHeading(text: String(inInterfaceLanguage: LocalizedStringResource(
+            "prompter.quickSettings", defaultValue: "Quick",
+            comment: "Heading of the prompter's Aa sheet over the controls used most, above Advanced: quick settings."
+        )))
                 .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
             GroupedCard(background: Palette.surface2, radius: 22) {
                 SettingToggleRow(

@@ -7,7 +7,8 @@ import XCTest
 
 /// Captures every state of the editor on the design's demo take, for the phase reports. Opt-in:
 /// `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder> scripts/test.sh only "Cue StudioUITests/EditorScreenshotTests"` (another simulator:
-/// `CUE_SIMULATOR`; another text size: `TEST_RUNNER_CUE_SCREENSHOT_CONTENT_SIZE`).
+/// `CUE_SIMULATOR`; another text size: `TEST_RUNNER_CUE_SCREENSHOT_CONTENT_SIZE`; another interface language, to see that the
+/// compact controls still fit: `TEST_RUNNER_CUE_SCREENSHOT_LANGUAGE=de`).
 @MainActor
 final class EditorScreenshotTests: XCTestCase {
     func testCaptureEditorStates() throws {
@@ -18,8 +19,11 @@ final class EditorScreenshotTests: XCTestCase {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         // `TEST_RUNNER_CUE_SCREENSHOT_CONTENT_SIZE=UICTContentSizeCategoryAccessibilityL` (for one) captures in that text size.
         let size = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_CONTENT_SIZE"]
+        let language = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_LANGUAGE"]
         let device = UIDevice.current.name.replacingOccurrences(of: " ", with: "-") + (size.map { "-\($0.suffix(16))" } ?? "")
-        let app = EditorApp.open(demo: true, arguments: size.map { ["-UIPreferredContentSizeCategoryName", $0] } ?? [])
+            + (language.map { "-\($0)" } ?? "")
+        let arguments = (size.map { ["-UIPreferredContentSizeCategoryName", $0] } ?? []) + (language.map { ["-uiTestAppLanguage", $0] } ?? [])
+        let app = EditorApp.open(demo: true, arguments: arguments)
         sleep(2)
         func capture(_ name: String) throws {
             sleep(1)
@@ -84,6 +88,7 @@ final class EditorScreenshotTests: XCTestCase {
         apply()
         back()
         EditorApp.tapTool(app, "audio")
+        try capture("15a-audio-menu")
         EditorApp.tapTool(app, "voice")
         try capture("15-voice")
         apply()

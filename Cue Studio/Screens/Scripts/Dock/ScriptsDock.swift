@@ -269,7 +269,7 @@ struct ScriptsDock: View {
     private var formatChip: some View {
         Button { presentation.present(.format) } label: {
             IdeaCardChip(
-                label: ideaDraft.formatChoice == .auto ? String(localized: "Format") : ideaDraft.formatChoice.title,
+                label: ideaDraft.formatChoice == .auto ? FormatChoice.formatLabel : ideaDraft.formatChoice.title,
                 showsChevron: true, isTag: ideaDraft.formatChoice == .type(.ad) ? "AD" : nil, hitHeight: Self.topRowHeight
             )
         }

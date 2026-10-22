@@ -39,7 +39,7 @@ struct StudioAdjustSlider: View {
     private var lineSlider: some View {
         let range = PrompterSettings.guideRange
         return LabeledSlider(
-            label: String(localized: "Line"),
+            label: StudioAdjustment.line.title,
             valueText: (session.prompter.guidePosition).formatted(.percent.precision(.fractionLength(0)).locale(.interface)),
             value: Binding(
                 get: { (session.prompter.guidePosition * 100).rounded() },

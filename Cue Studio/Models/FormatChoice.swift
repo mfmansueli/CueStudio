@@ -22,6 +22,14 @@ nonisolated enum FormatChoice: Hashable, Identifiable, Sendable {
         }
     }
 
+    /// "Format" as the dock's chip and the Format sheet call the script's format (not the video's frame or a file format).
+    static var formatLabel: String {
+        String(inInterfaceLanguage: LocalizedStringResource(
+            "format.script", defaultValue: "Format",
+            comment: "The script's format (Talking head, Tutorial…): the Scripts dock chip and the Format sheet's eyebrow."
+        ))
+    }
+
     /// The grid's nine tiles, in order: Auto, Talking head, Tutorial, Storytime, List / tips, Review, Myth vs fact, POV, Sponsored ad.
     static let gridTiles: [FormatChoice] = [
         .auto, .talkingHead, .type(.tutorial), .type(.story), .type(.list), .type(.review),

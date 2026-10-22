@@ -97,7 +97,10 @@ struct CoverStudioView: View {
                     } label: {
                         HStack(spacing: 4) {
                             // With the largest text sizes, just "Next": the step's name would be cut.
-                            if typeSize.isAccessibilitySize { Text("Next") } else { Text("Next: \(next.label)") }
+                            if typeSize.isAccessibilitySize { Text("Next") } else { Text(String(inInterfaceLanguage: LocalizedStringResource(
+                                "coverStudio.next", defaultValue: "Next: \(next.label)",
+                                comment: "Cover studio: the button that goes on to the next step, naming it. An action, not a status."
+                            ))) }
                             Image(systemName: "chevron.right").font(.system(size: 12, weight: .bold))
                         }
                         .font(.system(.subheadline, weight: .semibold))

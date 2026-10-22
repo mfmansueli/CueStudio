@@ -67,7 +67,9 @@ def apply(language, corrections_path, write=True):
             if key not in catalog["strings"] or language not in catalog["strings"][key].get("localizations", {}):
                 problems.append(f"{name}|{key!r}: no {language} entry to correct")
                 continue
-            S.check_value(key, language, value, problems)
+            # A key that isn't its English ("step.next") keeps the English's placeholders.
+            english = catalog["strings"][key]["localizations"].get(catalog["sourceLanguage"], {}).get("stringUnit", {}).get("value")
+            S.check_value(english or key, language, value, problems)
     if problems:
         print("\n".join(problems))
         sys.exit(1)

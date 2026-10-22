@@ -29,6 +29,12 @@ gives the English forms (the key is the English "other"):
 
 A language with one form (Japanese, Chinese, Korean, Thai, Vietnamese, Indonesian) takes a plain string. Every form keeps
 the key's placeholders.
+
+A key that isn't its English text (one English word with two meanings gets a key per meaning, LOCALIZATION.md §2: the code
+asks `LocalizedStringResource("step.next", defaultValue: "Next")`) gives its English as "en"; the translations keep the
+English's placeholders:
+
+  {"coverStudio.next": {"comment": "…", "en": "Next: %@", "pt": "Próximo: %@", …}}
 """
 
 import json
@@ -145,13 +151,15 @@ def add(name, json_path):
         missing = [language for language in wanted if not values.get(language)]
         if missing:
             problems.append(f"{key!r}: missing {', '.join(missing)}")
+        # A key that isn't its English (`LocalizedStringResource("step.next", defaultValue: "Next")`) gives the English as "en";
+        # the placeholders are then the English's.
+        english = values.get(source) if isinstance(values.get(source), str) else None
+        if english == key:
+            problems.append(f"{key!r}: the source language is the key; give \"en\" only for a key that isn't its English")
         for language, value in values.items():
-            if language == "comment":
+            if language in ("comment", source) and isinstance(value, str):
                 continue
-            if language == source and isinstance(value, str):
-                problems.append(f"{key!r}: the source language is the key; give it only as plural forms")
-                continue
-            check_value(key, language, value, problems)
+            check_value(english or key, language, value, problems)
     if problems:
         sys.exit("Nothing written:\n  " + "\n  ".join(problems))
 
@@ -174,7 +182,7 @@ def add(name, json_path):
         localizations = dict(entry.get("localizations", {}))
         for language in wanted:
             localizations[language] = localization(values[language])
-        if isinstance(values.get(source), dict):
+        if values.get(source):
             localizations[source] = localization(values[source])
         updated["localizations"] = dict(sorted(localizations.items()))
         entry.clear()

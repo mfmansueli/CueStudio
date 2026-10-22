@@ -144,7 +144,18 @@ names in **bold** stay in English in every language.
   **LinkedIn**, **Stories**, **Instagram**, **Lexend**, and the script page's ✦ **Shape** tool.
 - One key, one meaning: a word that means two things gets two English keys (camera *Front* / *Rear* vs. the
   *Back* button; Quick edit's *Ratio* vs. ✦ *Shape*; the apology format's *Closing* section vs. the *Close* button;
-  the share sheet's *Post caption* vs. the video's *Caption*), so each language can translate both.
+  the share sheet's *Post caption* vs. the video's *Caption*), so each language can translate both. When the English must
+  stay the same word on screen, the code asks for a key of its own with the English as default
+  (`String(inInterfaceLanguage: LocalizedStringResource("step.next", defaultValue: "Next", comment: …))`) and the catalog gives
+  that key an `en` value (`scripts/strings.py add` takes `"en"` for such a key). Split this way (22 Oct 2026):
+  - **Format**: the video's frame (Quick edit, Recording setup, Script details) keeps `Format`; the script's format (Scripts
+    dock chip, Format sheet) is `format.script`; a file format (HEVC | H.264, Image | video) is `format.file`.
+  - **Voice**: the creator's writing voice (dock chip ✦ Voice, My Cue Voice) keeps `Voice`; the prompter's Voice | Steady switch
+    (Voice Following) is `scrollMode.voice`.
+  - **Quick**: Follow face's pace keeps `Quick`; the prompter's Aa sheet heading (quick settings) is `prompter.quickSettings`.
+  - **Line**: the caption animation keeps `Line`; Studio's reading line chip and slider is `studio.readingLine`.
+  - **Next**: the button keeps `Next`; the status of the step that comes next (first voyage, onboarding pill) is `step.next`;
+    `Next: %@` is My Cue Voice's status heading and Cover studio's button is `coverStudio.next`.
 - Voice: talk to one creator (pt-BR *você*, es *tú*, fr *vous*, de *du*, it *tu*, id *kamu*,
   tr *sen*, vi *bạn*, zh *你*, ar the singular, hi *आप*, nl *je*, sv *du*, da *du*, nb *du*; ja and ko
   polite and neutral), short sentences, no jargon.
@@ -174,10 +185,8 @@ names in **bold** stay in English in every language.
   / soạn nháp*, nl *concept*, sv/nb *utkast*, da *udkast*. These texts are kept as short as the English (German and French
   run about 30% longer), so each line still fits where it sits.
 - "%@ to %@" is a countdown ("18s to 1:00", "12s to monetize"), not a range.
-- Quick edit's Audio category holds Voice (the take's own speech), Music and Voice-over, and a
-  video over the take has its Sound: where a language has one word for all of them (ar *الصوت*, tr
-  *Ses*), the Voice tool uses the word for speech (ar *الكلام*, tr *Konuşma*) so the tool never
-  repeats its category's name.
+- Quick edit's Audio menu holds Studio Voice (the take's own speech, treated), Music and Voice-over, and a video over the
+  take has its Sound.
 - **Eye Contact** (✦ Smart) is a feature name translated as what it does for the creator: pt-BR *Corrigir olhar* (the owner's name for it), es
   *Contacto visual*, fr *Contact visuel*, de *Blickkontakt*, it *Contatto visivo*, ja *アイコンタクト*, ko *시선 맞춤*, zh *眼神交流*, ar *التواصل البصري*,
   hi *आई कॉन्टैक्ट*, id *Kontak Mata*, nl *Oogcontact*, sv *Ögonkontakt*, da *Øjenkontakt*, nb *Øyekontakt*, tr *Göz Teması*, th *สบตากล้อง*,
@@ -224,7 +233,7 @@ speaker's role (below); a human native review is still welcome before a public r
 | Steady | Constante | Constante | Constant | Gleichmäßig | Costante | 一定速度 | 일정 속도 | 匀速 | स्थिर | Stabil | ثابت | Sabit | คงที่ | Đều |
 | Keyframe | Fotograma clave | Quadro-chave | Image clé | Keyframe | Keyframe | キーフレーム | 키프레임 | 关键帧 | कीफ़्रेम | Keyframe | إطار رئيسي | Anahtar kare | คีย์เฟรม | Khung hình chính |
 | Music | Música | Música | Musique | Musik | Musica | 音楽 | 음악 | 音乐 | म्यूज़िक | Musik | الموسيقى | Müzik | เพลง | Nhạc |
-| Voice (Quick edit tool) | Voz | Voz | Voix | Stimme | Voce | 声 | 목소리 | 人声 | आवाज़ | Suara | الكلام | Konuşma | เสียงพูด | Giọng nói |
+| Voice (the writing voice, My Cue Voice) | Voz | Voz | Voix | Stimme | Voce | ボイス | 보이스 | 口吻 | आवाज़ | Suara | الصوت | Ses | น้ำเสียง | Giọng văn |
 | Background | Fondo | Fundo | Arrière-plan | Hintergrund | Sfondo | 背景 | 배경 | 背景 | बैकग्राउंड | Latar | الخلفية | Arka plan | พื้นหลัง | Nền |
 | Color key | Croma | Chroma key | Incrustation | Farbschlüssel | Chroma key | カラーキー | 컬러 키 | 色键抠像 | कलर की | Kunci warna | مفتاح اللون | Renk anahtarı | คีย์สี | Tách màu nền |
 | Draft | Borrador | Rascunho | Brouillon | Entwurf | Bozza | 下書き | 초안 | 草稿 | ड्राफ़्ट | Draf | مسودة | Taslak | ฉบับร่าง | Bản nháp |
@@ -242,8 +251,8 @@ Those term lists extend the table above. What the review taught, for every langu
 - **A cue in brackets inside a template uses exactly the cue's own translated name** (`ScriptCueSymbol` recognizes a cue
   by it). The cue "beat" is a short pause in every language (es *pausa corta*, pt *pausa curta*, de *kurze Pause*…).
 - **One key, one meaning.** A word with two uses gets two English keys (Front/Rear vs. Back; Ratio vs. ✦ Shape; Closing vs.
-  Close; Post caption vs. Caption). Keys still shared and reported for a split: Format, Quick, Line, Fade, Fade in, Words,
-  Voice, Mono, Pop, Reveal, Next, Time, Keep mine, OFF.
+  Close; Post caption vs. Caption). Keys still shared and reported for a split: Fade, Fade in, Words, Mono, Pop,
+  Reveal, Time, Keep mine, OFF.
 - **Placeholders in another order are numbered** (`%2$@ … %1$lld`): unnumbered ones fill in order, and a number in a
   `%@` breaks the string. `LocalizationCatalogTests` fails on a translation that moves unnumbered placeholders of
   different kinds; two of the same kind (`%lld of %lld`) can't be checked by a test, so a reviewer looks.
