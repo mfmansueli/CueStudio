@@ -5,5 +5,6 @@
 `fix-<lang>.json` for Back and Shape), and the numbered placeholders (`order-<lang>.json`).
 
 Kept so the review can be re-applied on a catalog that changed underneath (a rebase): `apply` writes each value again and
-skips the ones already equal. Order: `new-keys.json`, then `fix-*`, then the language files, then `order-*`. The French file
+skips the ones already equal. Order: `new-keys.json`, then `fix-*`, then `order-*`, then the language files last (the
+reviewers refined the split keys and some numbered strings afterwards, so an earlier file must not overwrite them). The French file
 lost its "Back" entry on purpose (the key was split while it was being reviewed).
