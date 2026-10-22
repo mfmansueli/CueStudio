@@ -23,6 +23,9 @@ final class TakeLibraryService {
     private let logger = Logger(subsystem: "studio.cue", category: "TakeLibrary")
     /// False when the library on disk couldn't be read: writing would replace it with what's in memory.
     @ObservationIgnored private var canSave = true
+    /// The last write failed (the iPhone full): what changed is only in memory until a save works, the next change's or
+    /// `saveAgainIfFailed` when Cue comes back to the front. The app says so (`RootView`).
+    private(set) var saveFailed = false
 
     init(repository: TakeRepository = LocalTakeRepository(), drafts: QuickEditDraftStoring? = nil, now: @escaping () -> Date = Date.init) {
         self.repository = repository
@@ -265,6 +268,18 @@ final class TakeLibraryService {
             logger.error("Not saving takes: the library on disk still can't be read")
             return
         }
-        try repository.saveTakes(takes)
+        do {
+            try repository.saveTakes(takes)
+            if saveFailed { saveFailed = false }
+        } catch {
+            saveFailed = true
+            throw error
+        }
+    }
+
+    /// Writes what a failed save left only in memory.
+    func saveAgainIfFailed() {
+        guard saveFailed else { return }
+        persist()
     }
 }

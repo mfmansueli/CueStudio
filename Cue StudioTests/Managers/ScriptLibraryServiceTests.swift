@@ -19,6 +19,22 @@ struct ScriptLibraryServiceTests {
         return (service, repository)
     }
 
+    @Test func aScriptThatCantBeWrittenStaysInMemoryAndIsWrittenOnceItCan() {
+        let (service, repository) = makeService()
+        repository.failsToSave = true
+        let script = service.create(title: "Hooks", text: "Okay.", platform: .tiktok)
+        #expect(service.saveFailed)
+        #expect(service.script(id: script.id) != nil)
+        #expect(repository.snapshot.scripts.isEmpty)
+
+        service.saveAgainIfFailed()
+        #expect(service.saveFailed, "still full")
+        repository.failsToSave = false
+        service.saveAgainIfFailed()
+        #expect(!service.saveFailed)
+        #expect(repository.snapshot.scripts.map(\.id) == [script.id])
+    }
+
     @Test func loadSortsByLastEdited() {
         let old = TestData.script(title: "Old", updatedAt: now.addingTimeInterval(-100))
         let new = TestData.script(title: "New", updatedAt: now)

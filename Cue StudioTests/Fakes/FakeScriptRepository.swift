@@ -10,6 +10,8 @@ import Foundation
 final class FakeScriptRepository: ScriptRepository {
     var snapshot: ScriptLibrarySnapshot
     private(set) var saveCount = 0
+    /// Like a full iPhone: the library reads, but writing it fails.
+    var failsToSave = false
 
     init(scripts: [Script] = [], folders: [String] = []) {
         snapshot = ScriptLibrarySnapshot(scripts: scripts, folders: folders)
@@ -18,6 +20,7 @@ final class FakeScriptRepository: ScriptRepository {
     func load() throws -> ScriptLibrarySnapshot { snapshot }
 
     func save(_ snapshot: ScriptLibrarySnapshot) throws {
+        if failsToSave { throw CocoaError(.fileWriteOutOfSpace) }
         self.snapshot = snapshot
         saveCount += 1
     }

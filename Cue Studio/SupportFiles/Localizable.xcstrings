@@ -94970,6 +94970,125 @@
         }
       }
     },
+    "Couldn't save your work · Free up space on this iPhone" : {
+      "comment" : "Toast when scripts or takes couldn't be written to disk (usually a full iPhone): the changes are only in memory until space is freed and Cue saves again.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر حفظ عملك · وفّر مساحة على جهاز iPhone هذا"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke gemme dit arbejde · Frigør plads på denne iPhone"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Arbeit wurde nicht gesichert · Gib Speicher auf diesem iPhone frei"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo guardar tu trabajo · Libera espacio en este iPhone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’enregistrer votre travail · Libérez de l’espace sur cet iPhone"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका काम सेव नहीं हो सका · इस iPhone पर जगह खाली करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pekerjaanmu tidak bisa disimpan · Kosongkan ruang di iPhone ini"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile salvare il tuo lavoro · Libera spazio su questo iPhone"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "作業内容を保存できませんでした · このiPhoneの空き容量を増やしてください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작업 내용을 저장하지 못했어요 · 이 iPhone의 공간을 확보하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunne ikke lagre arbeidet ditt · Frigjør plass på denne iPhonen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je werk is niet bewaard · Maak ruimte vrij op deze iPhone"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não foi possível salvar seu trabalho · Libere espaço neste iPhone"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kunde inte spara ditt arbete · Frigör utrymme på den här iPhonen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บันทึกงานของคุณไม่ได้ · เพิ่มพื้นที่ว่างใน iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çalışmanız kaydedilemedi · Bu iPhone’da yer aç"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không lưu được nội dung của bạn · Hãy giải phóng dung lượng trên iPhone này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法存储你的内容 · 请释放这台 iPhone 的空间"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法儲存你的內容 · 請釋放這部 iPhone 的空間"
+          }
+        }
+      }
+    },
     "Couldn’t set the reminder · Try again" : {
       "comment" : "Toast: the system refused the request",
       "localizations" : {

@@ -168,6 +168,18 @@ struct TakeLibraryServiceTests {
         #expect(!EditMediaFiles.exists(draftOnly.name))
     }
 
+    @Test func aChangeThatCantBeWrittenIsWrittenAgainOnceItCan() {
+        let take = TestData.take(scriptID: UUID())
+        let (service, repository) = makeService(takes: [take])
+        repository.failsToSave = true
+        service.setBest(take.id, isBest: true)
+        #expect(service.saveFailed)
+        repository.failsToSave = false
+        service.saveAgainIfFailed()
+        #expect(!service.saveFailed)
+        #expect(repository.takes[0].isBest)
+    }
+
     @Test func renamingAScriptUpdatesItsTakes() {
         let scriptID = UUID()
         let (service, _) = makeService(takes: [TestData.take(scriptID: scriptID, title: "Old")])

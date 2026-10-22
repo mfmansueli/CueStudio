@@ -235,7 +235,13 @@ struct AppServices {
         takes.reloadIfUnread()
         brands.reloadIfUnread()
         quota.reloadIfUnread()
+        // And writes what a failed save (a full iPhone) left only in memory, now that space may be free.
+        library.saveAgainIfFailed()
+        takes.saveAgainIfFailed()
     }
+
+    /// Scripts or takes changed but couldn't be written: kept in memory, lost if Cue is closed before a save works.
+    var hasUnsavedWork: Bool { library.saveFailed || takes.saveFailed }
 
     /// Gives back the space past sessions' sound files take (`EditStorageCleaner`), a few seconds after launch so it never
     /// competes with it, off the main actor. The edits' media are never swept: only an edit removes what it added.
