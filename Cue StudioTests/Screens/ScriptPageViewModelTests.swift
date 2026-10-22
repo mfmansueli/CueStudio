@@ -44,7 +44,10 @@ struct ScriptPageViewModelTests {
             library: library, takes: takes, preferences: PreferencesService(defaults: defaults.defaults), profile: profile,
             rules: TestData.rulesService(), writer: writer, toast: toast
         )
-        return Scenario(viewModel: viewModel, library: library, repository: repository, writer: writer, toast: toast, profile: profile, ideaDraft: ideaDraft, defaults: defaults)
+        return Scenario(
+            viewModel: viewModel, library: library, repository: repository, writer: writer, toast: toast, profile: profile,
+            ideaDraft: ideaDraft, defaults: defaults
+        )
     }
 
     private func request(voice: CreatorVoice? = nil) -> ScriptRequest {

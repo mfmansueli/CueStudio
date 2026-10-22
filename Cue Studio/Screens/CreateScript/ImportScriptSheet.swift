@@ -42,6 +42,8 @@ struct ImportScriptSheet: View {
     @State private var isReading = false
     @State private var cameraIsOff = false
     @State private var errorMessage: String?
+    /// A scanned PDF longer than what is read: how many of its pages were.
+    @State private var pagesNote: String?
     @FocusState private var isEditing: Bool
 
     private var canUse: Bool { !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty && !isReading }
@@ -61,6 +63,12 @@ struct ImportScriptSheet: View {
                 sourcePicker
                 if cameraIsOff { cameraCard }
                 editor
+                if let pagesNote {
+                    Text(pagesNote)
+                        .font(.subheadline)
+                        .foregroundStyle(Palette.inkSoft)
+                        .accessibilityIdentifier("import.pagesNote")
+                }
                 if isReading {
                     HStack(spacing: 10) {
                         ProgressView().tint(Palette.accText)
@@ -184,6 +192,7 @@ struct ImportScriptSheet: View {
     private func choose(_ option: Source) {
         source = option
         cameraIsOff = false
+        pagesNote = nil
         switch option {
         case .paste: pasteFromClipboard()
         case .scan: startScan()
@@ -217,7 +226,13 @@ struct ImportScriptSheet: View {
             take(try importer.importDocument(at: url))
         } catch DocumentImportError.noText where url.pathExtension.lowercased() == "pdf" {
             // A scanned PDF has no text layer: read its pages like photos.
-            recognize(importer.pageImages(ofPDFAt: url, maxPages: 10))
+            isReading = true
+            Task {
+                let pages = await importer.pageImages(ofPDFAt: url, maxPages: 10)
+                isReading = false
+                recognize(pages.images)
+                pagesNote = pages.unreadNote
+            }
         } catch {
             errorMessage = error.localizedDescription
         }

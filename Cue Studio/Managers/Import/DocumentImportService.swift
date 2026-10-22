@@ -45,17 +45,24 @@ final class DocumentImportService: DocumentImporting {
         )
     }
 
-    /// Pages of a scanned PDF as images, for text recognition when the file has no text layer.
-    func pageImages(ofPDFAt url: URL, maxPages: Int = 10) -> [CGImage] {
+    /// Pages of a scanned PDF as images, for text recognition when the file has no text layer. At most `maxPages` (each is a
+    /// 2000 px picture in memory), drawn off the main thread so the sheet never freezes; the file's page count comes with them,
+    /// so the sheet can say when not every page was read.
+    func pageImages(ofPDFAt url: URL, maxPages: Int = 10) async -> ScannedPDFPages {
+        await Task.detached(priority: .userInitiated) { Self.drawPages(ofPDFAt: url, maxPages: maxPages) }.value
+    }
+
+    nonisolated private static func drawPages(ofPDFAt url: URL, maxPages: Int) -> ScannedPDFPages {
         let scoped = url.startAccessingSecurityScopedResource()
         defer { if scoped { url.stopAccessingSecurityScopedResource() } }
-        guard let document = PDFDocument(url: url) else { return [] }
-        return (0..<min(document.pageCount, maxPages)).compactMap { index in
+        guard let document = PDFDocument(url: url) else { return ScannedPDFPages(images: [], pageCount: 0) }
+        let images: [CGImage] = (0..<min(document.pageCount, maxPages)).compactMap { index in
             guard let page = document.page(at: index) else { return nil }
             let bounds = page.bounds(for: .mediaBox)
             let scale = 2000 / max(bounds.width, bounds.height, 1)
             return page.thumbnail(of: CGSize(width: bounds.width * scale, height: bounds.height * scale), for: .mediaBox).cgImage
         }
+        return ScannedPDFPages(images: images, pageCount: document.pageCount)
     }
 
     func clipboardText() -> String? {
