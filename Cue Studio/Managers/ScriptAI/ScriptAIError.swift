@@ -41,7 +41,7 @@ nonisolated enum ScriptAIError: LocalizedError, Sendable {
         case .modelUnavailable(let reason): reason
         case .emptyResponse: String(localized: "The model didn't return any text. Try again.")
         case .tooLong: String(localized: "Too long for Apple Intelligence on this iPhone. Try a shorter script, or one part at a time.")
-        case .unsupportedLanguage: String(localized: "Apple Intelligence can't write in this script's language yet.")
+        case .unsupportedLanguage: String(localized: "Apple Intelligence can’t draft in this script’s language yet.")
         case .unsupportedTranslation(let source, let target):
             String(localized: "Apple Intelligence can’t translate between \(source) and \(target) yet.")
         case .modelPreparing: String(localized: "Apple Intelligence is still getting ready. Try again in a few minutes.")

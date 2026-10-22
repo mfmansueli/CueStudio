@@ -15,6 +15,8 @@ struct LanguageEntryRow: View {
     @Environment(\.openURL) private var openURL
 
     @State private var availability: [CueLanguage: VoiceFollowingAvailability] = [:]
+    /// Whether Apple Intelligence drafts in each language, for the Script Language menu.
+    @State private var aiWriting: [CueLanguage: FeatureSupport] = [:]
 
     var body: some View {
         content
@@ -40,21 +42,25 @@ struct LanguageEntryRow: View {
             .buttonStyle(.plain)
         case .voiceFollowingLanguage:
             menu(
-                selection: languages.voiceFollowingLanguage, automatic: String(localized: "Same as script"), showsAvailability: true
-            ) { languages.voiceFollowingLanguage = $0 }
+                selection: languages.voiceFollowingLanguage, automatic: String(localized: "Same as script"),
+                subtitle: { availability[$0]?.label }, onPick: { languages.voiceFollowingLanguage = $0 }
+            )
                 .task { await loadAvailability() }
         case .scriptLanguage:
             menu(
-                selection: languages.scriptLanguage, automatic: String(localized: "Auto-detect"), showsAvailability: false
-            ) { languages.scriptLanguage = $0 }
+                selection: languages.scriptLanguage, automatic: String(localized: "Auto-detect"),
+                subtitle: { Self.draftingNote(aiWriting[$0]) }, onPick: { languages.scriptLanguage = $0 }
+            )
+                .task { await loadAIWriting() }
         default:
             EmptyView()
         }
     }
 
-    /// "Same as script", then Cue's languages by their own name; Voice Following says under each whether this iPhone can listen in it.
+    /// "Same as script" (or "Auto-detect"), then Cue's languages by their own name, each with `subtitle` under it: Voice Following says
+    /// whether this iPhone can listen in it, Script Language whether Apple Intelligence can't draft in it.
     private func menu(
-        selection: CueLanguage?, automatic: String, showsAvailability: Bool, onPick: @escaping (CueLanguage?) -> Void
+        selection: CueLanguage?, automatic: String, subtitle: @escaping (CueLanguage) -> String?, onPick: @escaping (CueLanguage?) -> Void
     ) -> some View {
         Menu {
             Button { onPick(nil) } label: {
@@ -67,7 +73,7 @@ struct LanguageEntryRow: View {
                     } else {
                         Text(verbatim: language.nativeName)
                     }
-                    if showsAvailability, let status = availability[language] { Text(status.label) }
+                    if let note = subtitle(language) { Text(note) }
                 }
             }
         } label: {
@@ -87,5 +93,18 @@ struct LanguageEntryRow: View {
         for language in CueLanguage.allCases {
             availability[language] = VoiceFollowingAvailability(await capabilities.support(.voiceFollowing, for: language))
         }
+    }
+
+    private func loadAIWriting() async {
+        for language in CueLanguage.allCases {
+            aiWriting[language] = await capabilities.support(.aiWriting, for: language)
+        }
+    }
+
+    /// Only a language the model doesn't write is marked: without Apple Intelligence at all every language would say the same, and the
+    /// dock already says that.
+    static func draftingNote(_ support: FeatureSupport?) -> String? {
+        guard case .unavailable(.languageNotSupported)? = support else { return nil }
+        return String(localized: "Apple Intelligence can’t draft in it yet")
     }
 }

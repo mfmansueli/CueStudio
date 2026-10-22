@@ -152,6 +152,18 @@ struct MainView: View {
 
     // MARK: - Sheets
 
+    /// The sponsored ad's draft, in the dock idea's language when that is known: what Apple Intelligence can't draft in opens the draft to
+    /// write instead.
+    private var adDrafting: DraftingAvailability { services.starter.drafting(before: services.ideaDraft.submission) }
+
+    private var canDraftAd: Bool { services.aiStatus.isAvailable && adDrafting.isAvailable }
+
+    /// Why the ad opens as a draft to write, when the language is the reason (without Apple Intelligence the sheet simply has no AI).
+    private var adDraftingNotice: String? {
+        guard let cause = adDrafting.cause, cause.isLanguage else { return nil }
+        return cause.reason + " " + String(localized: "Open the draft to write it yourself.")
+    }
+
     @ViewBuilder
     private func sheetContent(_ sheet: AppSheet) -> some View {
         switch sheet {
@@ -167,7 +179,8 @@ struct MainView: View {
                     presentation.sheet = nil
                     presentation.openPrompter(scriptID: nil, mode: .selfie)
                 },
-                hasAI: services.aiStatus.isAvailable
+                // A Script Language Apple Intelligence can't draft in is the same as no Apple Intelligence here.
+                hasAI: services.aiStatus.isAvailable && services.starter.dockDrafting.isAvailable
             )
         case .startRecording:
             StartRecordingSheet(
@@ -210,7 +223,8 @@ struct MainView: View {
                 savesToLogbook: { text in
                     services.logbook.add(text)
                     toast.show(String(localized: "Saved to Logbook"))
-                }
+                },
+                drafting: { services.starter.drafting(before: $0) }
             ))
             .presentationDetents([.large])
         case .format:
@@ -232,10 +246,13 @@ struct MainView: View {
                 }
             }
         case .brandBrief(let purpose):
-            BrandBriefSheet(store: services.brands, purpose: purpose, canWriteWithAI: services.aiStatus.isAvailable) { brief in
+            BrandBriefSheet(
+                store: services.brands, purpose: purpose, canWriteWithAI: canDraftAd,
+                notice: purpose == .writeFromCard ? adDraftingNotice : nil
+            ) { brief in
                 presentation.sheet = nil
                 switch purpose {
-                case .writeFromCard where services.aiStatus.isAvailable:
+                case .writeFromCard where canDraftAd:
                     // The ad is written from the brief and nothing else: the card's idea, or the product itself.
                     services.ideaDraft.formatChoice = .type(.ad)
                     services.ideaDraft.brand = brief

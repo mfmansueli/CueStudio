@@ -18,12 +18,15 @@ struct AnswerCommentSheet: View {
         _model = State(initialValue: model)
     }
 
+    /// "✦ Draft my reply" is offered: Apple Intelligence is there and drafts in the comment's language.
+    private var canDraft: Bool { aiStatus.isAvailable && model.draftingNotice == nil }
+
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
             SheetHeader(
                 title: model.step == .confirm ? String(localized: "Is this right?") : String(localized: "Answer a comment"),
                 subtitle: model.step == .confirm
-                    ? String(localized: "Check the comment before Cue writes.")
+                    ? model.draftingNotice ?? String(localized: "Check the comment before Cue writes.")
                     : String(localized: "Turn a question from your audience into a script.")
             )
             switch model.step {
@@ -113,16 +116,16 @@ struct AnswerCommentSheet: View {
                     }
                 }
             }
-            if aiStatus.isAvailable {
+            if canDraft {
                 Button { model.write(); dismiss() } label: { Text("✦ Draft my reply") }
                     .buttonStyle(.cuePrimary(.large))
                     .disabled(!model.canWrite)
                     .accessibilityIdentifier("answer.write")
             }
-            // Without Apple Intelligence this is the only way, and the primary one (10.2).
+            // Without Apple Intelligence (or in a language it can't draft in) this is the only way, and the primary one (10.2).
             if model.offersWritingByHand {
                 Button { model.writeMyself(); dismiss() } label: { Text("Write it myself") }
-                    .buttonStyle(aiStatus.isAvailable ? .cueSecondary(.large) : .cuePrimary(.large))
+                    .buttonStyle(canDraft ? .cueSecondary(.large) : .cuePrimary(.large))
                     .disabled(!model.canWrite)
                     .accessibilityIdentifier("answer.writeMyself")
             }

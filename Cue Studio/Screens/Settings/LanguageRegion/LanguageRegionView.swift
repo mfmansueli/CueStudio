@@ -11,6 +11,19 @@ import SwiftUI
 struct LanguageRegionView: View {
     let bindings: SettingsBindings
 
+    @Environment(LanguageService.self) private var languages
+    @Environment(LanguageCapabilityService.self) private var capabilities
+    /// Whether Apple Intelligence drafts in the picked Script Language (nil on Auto-detect, or until asked).
+    @State private var scriptAIWriting: FeatureSupport?
+
+    /// The script language's footer, and the reason when Apple Intelligence can't draft in the language picked (never on Auto-detect,
+    /// where each script's language is its own).
+    private var scriptFooter: String {
+        let footer = String(localized: "New scripts start in it. Scripts are never translated.")
+        guard let language = languages.scriptLanguage, case .unavailable(.languageNotSupported)? = scriptAIWriting else { return footer }
+        return footer + " " + String(localized: "Apple Intelligence can’t draft in \(language.localizedName) yet.")
+    }
+
     var body: some View {
         List {
             Section {
@@ -26,7 +39,15 @@ struct LanguageRegionView: View {
             Section {
                 SettingsEntryRow(entry: .scriptLanguage, bindings: bindings)
             } footer: {
-                Text("New scripts start in it. Scripts are never translated.")
+                Text(scriptFooter)
+                    .accessibilityIdentifier("languageRegion.scriptFooter")
+            }
+        }
+        .task(id: languages.scriptLanguage) {
+            if let language = languages.scriptLanguage {
+                scriptAIWriting = await capabilities.support(.aiWriting, for: language)
+            } else {
+                scriptAIWriting = nil
             }
         }
         .cueGroupedList()

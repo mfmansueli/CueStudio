@@ -19,6 +19,8 @@ final class FakeScriptWriter: ScriptWriting {
     var error: Error?
     /// Set, the writer says it can't write the request's languages (what the real one decides from the model).
     var writingFailureToReturn: AIPlanFailure?
+    /// Languages (ISO codes) the model doesn't write: a request that asks one of them is told so, the way the planner does.
+    var languagesNotWritten: Set<String> = []
     private(set) var lastRequest: ScriptRequest?
     private(set) var lastRewrite: (tool: ScriptTool, context: RewriteContext)?
     private(set) var hooksRequested = 0
@@ -61,7 +63,9 @@ final class FakeScriptWriter: ScriptWriting {
     }
 
     func writingFailure(in languages: [Locale.Language]) -> AIPlanFailure? {
-        writingFailureToReturn
+        if let writingFailureToReturn { return writingFailureToReturn }
+        let missing = languages.first { languagesNotWritten.contains($0.languageCode?.identifier ?? "") }
+        return missing.map { .unsupportedLanguage($0) }
     }
 
     func generate(_ request: ScriptRequest) async throws -> GeneratedScript {

@@ -14,9 +14,11 @@ struct ImproveScriptSheet: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
+                // A script in a language Apple Intelligence can't draft in: the subtitle says so, and the tools that need it are dimmed.
                 SheetHeader(
                     title: String(localized: "Improve script"),
-                    subtitle: String(localized: "Apple Intelligence · runs on your iPhone")
+                    subtitle: viewModel.drafting.cause?.isLanguage == true
+                        ? viewModel.drafting.reason : String(localized: "Apple Intelligence · runs on your iPhone")
                 )
                 if let overrun = viewModel.hookOverrun {
                     hookTip(overrun)
@@ -77,7 +79,7 @@ struct ImproveScriptSheet: View {
 
     private func row(_ tool: ScriptTool) -> some View {
         let isRunning = viewModel.runningTool == tool
-        let dimmed = tool.needsLanguageModel && !viewModel.isLanguageModelAvailable
+        let dimmed = tool.needsLanguageModel && !viewModel.canDraft
         let label = HStack(spacing: 12) {
             Group {
                 if isRunning {
@@ -111,7 +113,11 @@ struct ImproveScriptSheet: View {
             if tool == .translate {
                 Menu {
                     ForEach(viewModel.translationLanguages) { language in
-                        Button(language.localizedName) { Task { await viewModel.run(.translate, language: language) } }
+                        // A target Apple Intelligence can't draft in says so under its name (the way Language & Region's menus do).
+                        Button { Task { await viewModel.run(.translate, language: language) } } label: {
+                            Text(verbatim: language.localizedName)
+                            if let note = viewModel.draftingNote(for: language) { Text(note) }
+                        }
                     }
                 } label: {
                     label
@@ -127,7 +133,7 @@ struct ImproveScriptSheet: View {
         }
         .opacity(dimmed ? 0.5 : 1)
         .disabled(viewModel.runningTool != nil)
-        .accessibilityHint(dimmed ? Text("Requires Apple Intelligence") : Text(""))
+        .accessibilityHint(dimmed ? Text(viewModel.drafting.reason ?? String(localized: "Requires Apple Intelligence")) : Text(""))
         .accessibilityIdentifier("improve.tool.\(tool.rawValue)")
     }
 }

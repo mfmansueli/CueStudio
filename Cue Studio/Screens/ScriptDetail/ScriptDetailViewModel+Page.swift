@@ -236,9 +236,10 @@ extension ScriptDetailViewModel {
         return selected.count > Self.minimumSelection ? selected : nil
     }
 
-    /// The bar over a selection: with Apple Intelligence only (it doesn't exist without it), not while the AI writes the page.
+    /// The bar over a selection: with Apple Intelligence only, in a language it drafts in (it doesn't exist otherwise), not while the AI
+    /// writes the page.
     var showsSelectionBar: Bool {
-        selectedText != nil && writer.isLanguageModelAvailable && !page.isWriting
+        selectedText != nil && canDraft && !page.isWriting
     }
 
     /// Rewrite · Shorter · Punchier · More me change the selected words in place, in violet, and wait for Keep, Undo or Try
@@ -250,8 +251,8 @@ extension ScriptDetailViewModel {
             cut(selected, range: range)
             return
         }
-        guard writer.isLanguageModelAvailable else {
-            toast.show(writer.unavailableReason ?? String(localized: "AI isn't available now"))
+        if let reason = drafting.reason {
+            toast.show(reason)
             return
         }
         page.isRewriting = true

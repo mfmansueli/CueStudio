@@ -144,8 +144,10 @@ struct ScriptsDock: View {
                         }
                 }
             } else {
-                // With an idea waiting in the dock, the last question writes it: the script is the preview.
-                VoiceSetupSheet(mode: mode, profile: profile.profile, ideaText: ideaDraft.submission) { writesScript in
+                // With an idea waiting in the dock, the last question writes it: the script is the preview. An idea in a language
+                // Apple Intelligence can't draft in ends on "Done" instead (the dock says why when it is sent).
+                let ideaText = starter.drafting(before: ideaDraft.submission).isAvailable ? ideaDraft.submission : nil
+                VoiceSetupSheet(mode: mode, profile: profile.profile, ideaText: ideaText) { writesScript in
                     if writesScript { starter.write() }
                 }
             }
@@ -521,6 +523,11 @@ struct ScriptsDock: View {
             return
         }
         let idea = hasTypedIdea ? nil : suggestion
+        // An idea in a language Apple Intelligence can't draft in takes nothing off: the starter says why (with "Write it") and it stays.
+        guard starter.drafting(before: idea ?? ideaDraft.submission).isAvailable else {
+            starter.write(idea: idea, from: sendCenter)
+            return
+        }
         HapticPatterns.playTakeoff()
         sendTurn += 1
         guard idea != nil else {

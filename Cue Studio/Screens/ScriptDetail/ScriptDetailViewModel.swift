@@ -143,6 +143,19 @@ final class ScriptDetailViewModel {
 
     var isLanguageModelAvailable: Bool { writer.isLanguageModelAvailable }
 
+    /// Whether Apple Intelligence can draft in this script's language, with why not: the tools that need the model say so before anything is
+    /// sent (Improve's rows, the selection bar, Shorter, a version for another platform).
+    var drafting: DraftingAvailability { writer.drafting(in: textLanguage.map { [$0] } ?? []) }
+
+    var canDraft: Bool { drafting.isAvailable }
+
+    /// Whether Apple Intelligence drafts in `language` (a Translate target), asked only of the language: nil when it does, or when the
+    /// reason isn't the language (the whole sheet says that one).
+    func draftingNote(for language: CueLanguage) -> String? {
+        guard writer.drafting(in: language).cause?.isLanguage == true else { return nil }
+        return String(localized: "Apple Intelligence can’t draft in it yet")
+    }
+
     /// The tools above the keyboard: "In my voice" first, then the format's own.
     var tools: [ScriptTool] { [.inMyVoice] + structure.tools }
 
@@ -188,7 +201,7 @@ final class ScriptDetailViewModel {
     }
 
     func showMoreHooks() async {
-        if writer.isLanguageModelAvailable {
+        if canDraft {
             await loadHooks()
         } else {
             hookRotation += 1
@@ -196,7 +209,7 @@ final class ScriptDetailViewModel {
     }
 
     private func loadHooks() async {
-        guard !isLoadingHooks, writer.isLanguageModelAvailable else { return }
+        guard !isLoadingHooks, canDraft else { return }
         isLoadingHooks = true
         defer { isLoadingHooks = false }
         if let hooks = try? await writer.hooks(for: workingText, context: rewriteContext), !hooks.isEmpty {
@@ -264,8 +277,8 @@ final class ScriptDetailViewModel {
 
     private func rewrite(with tool: ScriptTool) async {
         guard script != nil else { return }
-        guard writer.isLanguageModelAvailable else {
-            toast.show(writer.unavailableReason ?? String(localized: "AI isn't available now"))
+        if let reason = drafting.reason {
+            toast.show(reason)
             return
         }
         let before = workingText
@@ -291,8 +304,9 @@ final class ScriptDetailViewModel {
 
     private func translate(into language: CueLanguage) async {
         guard let script else { return }
-        guard writer.isLanguageModelAvailable else {
-            toast.show(writer.unavailableReason ?? String(localized: "AI isn't available now"))
+        // Apple Intelligence itself is told here; a language of the pair it can't take is named by the translation (both languages).
+        if let reason = writer.drafting(in: []).reason {
+            toast.show(reason)
             return
         }
         guard ReadTime.wordCount(in: workingText) > 0 else {
@@ -331,8 +345,9 @@ final class ScriptDetailViewModel {
     /// "Make a version for…": a copy fitted to another platform's length and pace, with its preset.
     func makeVersion(for platform: Platform) async {
         guard let script, versionInProgress == nil else { return }
-        guard writer.isLanguageModelAvailable else {
-            toast.show(writer.unavailableReason ?? String(localized: "AI isn't available now"))
+        // Told before "Drafting the … version…", not after it.
+        if let reason = drafting.reason {
+            toast.show(reason)
             return
         }
         versionInProgress = platform

@@ -89,12 +89,22 @@ extension ScriptWriting {
     func pickTopic(for text: String, among topics: [String]) async -> String? { nil }
 
     var isLanguageModelAvailable: Bool { isEnabled && availability.isAvailable }
-    var unavailableReason: String? { isEnabled ? availability.reason : AIAvailability.turnedOffReason }
 
     /// Why Apple Intelligence can't write now, in words for the creator; nil when it can.
     var writingUnavailableReason: String? {
         guard !isLanguageModelAvailable else { return nil }
         guard isEnabled else { return AIAvailability.turnedOffReason }
         return availability.reason ?? AIAvailability.unavailable.reason
+    }
+
+    /// Whether Apple Intelligence can draft in `languages` now (a translation lists both), with why not; told before anything is sent.
+    /// No languages tells only what doesn't depend on one (Cue's switch, the iPhone, the iOS switch, the model).
+    func drafting(in languages: [Locale.Language]) -> DraftingAvailability {
+        DraftingAvailability(isEnabled: isEnabled, failure: writingFailure(in: languages), availability: availability)
+    }
+
+    /// `drafting(in:)` for one of Cue's languages; nil (Auto-detect, not known yet) asks nothing about a language.
+    func drafting(in language: CueLanguage?) -> DraftingAvailability {
+        drafting(in: language.map { [$0.locale.language] } ?? [])
     }
 }

@@ -331,7 +331,8 @@ final class IdeaSuggestionService {
 
     // MARK: - The model's ideas
 
-    private var canAskModel: Bool { writer.isEnabled && writer.availability.isAvailable }
+    /// The ideas are written in the interface's language: one the model doesn't write is never asked (the starters stay, and say why).
+    private var canAskModel: Bool { writer.drafting(in: interfaceLanguage()).isAvailable }
 
     /// A refill is under way or in line.
     private var isFetching: Bool { isRefilling || task != nil || busyWait != nil }

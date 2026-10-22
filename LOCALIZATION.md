@@ -109,8 +109,15 @@ or `unsupportedTranslation` naming the pair), model still preparing, device not 
 off, too long, cancelled (silent). A result that comes back in another language (a polish answered in
 English, a translation handed back untouched) is refused and the script left as it was
 (`OutputLanguageCheck`; only when the text is long enough and Natural Language is sure). Translating has no
-default target. A free prompt in a language the model doesn't write opens a blank draft with the reason, the way it
-does without Apple Intelligence; a format still gets its structured draft. **Private Cloud Compute stays off**
+default target. **What can't be drafted is told before anything is sent, and never by opening an empty draft**
+(`DraftingAvailability`, `writer.drafting(in:)`): Cue's own On-device AI switch first, then the planner's order (device, Apple
+Intelligence off, the language, model preparing). The language is the **script's**: the Script Language when one is set (the
+Scripts dock then shows the reason in its note and its "Write it" state, and Language & Region marks the languages the model
+doesn't write); on Auto-detect the idea's own, judged only when it is sent (never the interface language as a guess), and then
+the idea stays in the field and a toast gives the reason with "Write it". An answered comment is read in the comment's language;
+ideas (interface text) in the interface's, and a language the model doesn't write ideas in is never asked. `ScriptAIService`
+still builds a format's structured draft when no model can take a `.format` request, but no screen sends one today (every
+request from the app is a prompt). **Private Cloud Compute stays off**
 (`hasPrivateCloudComputeEntitlement = false`): it is only a candidate when the app has the entitlement.
 
 **No dashes in what the model writes** (§2.1). Every instruction (script, rewrite tools and hooks, block lengthening, ideas)
@@ -299,7 +306,7 @@ Those term lists extend the table above. What the review taught, for every langu
   (hi), and address the audience the way creators do (fr *vous*); the interface keeps the register above (ko 해요체
   throughout, 합니다체 only in the system permission prompts).
 - Languages Apple Intelligence doesn't write (id, th, hi, ar) are translated faithfully like the rest; the app explains
-  at draft time.
+  before anything is drafted (§1.1).
 
 ## 3. Right to left and longer text
 

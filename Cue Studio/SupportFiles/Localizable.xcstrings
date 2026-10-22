@@ -42824,124 +42824,6 @@
         }
       }
     },
-    "AI isn't available now" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الذكاء الاصطناعي غير متاح الآن"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI er ikke tilgængelig lige nu"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "KI gerade nicht verfügbar"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "La IA no está disponible ahora"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "IA indisponible pour l’instant"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI अभी उपलब्ध नहीं है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI belum tersedia saat ini"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "L’IA non è disponibile ora"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "現在AIは利用できません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "지금은 AI를 쓸 수 없어요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "KI er ikke tilgjengelig nå"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI is nu niet beschikbaar"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A IA não está disponível agora"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI är inte tillgänglig just nu"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ตอนนี้ยังใช้ AI ไม่ได้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yapay zekâ şu an kullanılamıyor"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI hiện chưa dùng được"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI 暂时不可用"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI 暫時無法使用"
-          }
-        }
-      }
-    },
     "AI tools" : {
       "comment" : "My Cue Voice: a more specific topic inside a topic",
       "localizations" : {
@@ -50543,6 +50425,482 @@
         }
       }
     },
+    "Apple Intelligence can’t draft in it yet" : {
+      "comment" : "Grey line under a language's name in a menu (Language & Region › Script Language, the Translate tool's targets): Apple Intelligence doesn't write that language. No final full stop, like the Voice Following menu's lines.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يستطيع Apple Intelligence كتابة مسودة بهذه اللغة بعد"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan endnu ikke lave udkast på dette sprog"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kann in dieser Sprache noch nicht entwerfen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence todavía no redacta en este idioma"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ne rédige pas encore dans cette langue"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence अभी इस भाषा में ड्राफ़्ट नहीं बना सकता"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence belum bisa menyusun draf dalam bahasa ini"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence non prepara ancora bozze in questa lingua"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligenceはまだこの言語で下書きできません"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence는 아직 이 언어로 초안을 만들 수 없어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan ikke lage utkast på dette språket ennå"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan nog geen concept opstellen in deze taal"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Apple Intelligence ainda não rascunha neste idioma"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan inte göra utkast på det här språket än"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ยังร่างเป็นภาษานี้ไม่ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence henüz bu dilde taslak hazırlayamıyor"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence chưa thể soạn nháp bằng ngôn ngữ này"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 暂时无法用这种语言起草"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 目前還不能用這種語言起草"
+          }
+        }
+      }
+    },
+    "Apple Intelligence can’t suggest ideas in %@ yet. Here are starter ideas to write yourself." : {
+      "comment" : "Find inspiration's note when the interface language is one Apple Intelligence can't write ideas in (%@ = that language's name, which may already contain the word for language, e.g. vi Tiếng Thái): the ideas shown are the built-in starters.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يستطيع Apple Intelligence اقتراح أفكار باللغة %@ بعد. إليك أفكارًا أولية لتكتبها بنفسك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan endnu ikke foreslå idéer på %@. Her er startidéer, du selv skriver."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kann noch keine Ideen auf %@ vorschlagen. Hier sind Startideen zum Selberschreiben."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence todavía no puede sugerir ideas en %@. Aquí tienes ideas para que las escribas tú."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ne peut pas encore suggérer d’idées en %@. Voici des idées de départ à écrire vous-même."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence अभी %@ में आइडिया नहीं सुझा सकता। ये रहे खुद लिखने के लिए शुरुआती आइडिया।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence belum bisa menyarankan ide dalam bahasa %@. Ini ide awal untuk kamu tulis sendiri."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence non può ancora suggerire idee in %@. Ecco idee di partenza da scrivere tu."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligenceはまだ%@でアイデアを提案できません。自分で書くためのアイデアをどうぞ。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence는 아직 %@ 아이디어를 제안할 수 없어요. 직접 쓸 수 있는 시작 아이디어예요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan ikke foreslå idéer på %@ ennå. Her er startidéer du skriver selv."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan nog geen ideeën voorstellen in het %@. Hier zijn startideeën om zelf te schrijven."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Apple Intelligence ainda não sugere ideias em %@. Aqui estão ideias de partida para você escrever."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan inte föreslå idéer på %@ än. Här är startidéer att skriva själv."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ยังเสนอไอเดียเป็นภาษา%@ไม่ได้ นี่คือไอเดียตั้งต้นให้คุณเขียนเอง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence henüz %@ fikir öneremiyor. İşte kendin yazman için başlangıç fikirleri."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence chưa thể gợi ý ý tưởng bằng %@. Đây là ý tưởng khởi đầu để bạn tự viết."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 暂时无法用%@提供想法。这些是供你自己写的起步想法。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 目前還不能用%@提供想法。這些是供你自己寫的起步想法。"
+          }
+        }
+      }
+    },
+    "Apple Intelligence can’t draft in this script’s language yet." : {
+      "comment" : "Why an AI tool on the script page (rewrite, shorter, a version for another platform…) can't run: Apple Intelligence doesn't write the script's language. Also the error when a rewrite is refused for that reason. 'Draft' as in the glossary.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يستطيع Apple Intelligence كتابة مسودة بلغة هذا النص بعد."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan endnu ikke lave udkast på manuskriptets sprog."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kann in der Sprache dieses Skripts noch nicht entwerfen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence todavía no puede redactar en el idioma de este guion."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ne peut pas encore rédiger dans la langue de ce script."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence अभी इस स्क्रिप्ट की भाषा में ड्राफ़्ट नहीं बना सकता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence belum bisa menyusun draf dalam bahasa naskah ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence non può ancora preparare bozze nella lingua di questo copione."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligenceはまだこの台本の言語で下書きできません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence는 아직 이 대본의 언어로 초안을 만들 수 없어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan ikke lage utkast på manusets språk ennå."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan nog geen concept opstellen in de taal van dit script."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Apple Intelligence ainda não rascunha no idioma deste roteiro."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan inte göra utkast på manusets språk än."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ยังร่างเป็นภาษาของสคริปต์นี้ไม่ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence henüz bu senaryonun dilinde taslak hazırlayamıyor."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence chưa thể soạn nháp bằng ngôn ngữ của kịch bản này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 暂时无法用这个脚本的语言起草。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 目前還不能用這個腳本的語言起草。"
+          }
+        }
+      }
+    },
+    "Apple Intelligence can’t draft in %@ yet." : {
+      "comment" : "Why Apple Intelligence can't draft for the creator: the model doesn't write the language (%@ = the language's name in the interface language, e.g. Thai; in some languages the name already contains the word for language, e.g. vi Tiếng Thái, so don't add it again). Shown in the Scripts dock's note, a toast when an idea is sent, Language & Region's footer. 'Draft' as in the glossary.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يستطيع Apple Intelligence كتابة مسودة باللغة %@ بعد."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan endnu ikke lave udkast på %@."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kann noch nicht auf %@ entwerfen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence todavía no puede redactar en %@."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ne peut pas encore rédiger en %@."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence अभी %@ में ड्राफ़्ट नहीं बना सकता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence belum bisa menyusun draf dalam bahasa %@."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence non può ancora preparare bozze in %@."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligenceはまだ%@で下書きできません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence는 아직 %@ 초안을 만들 수 없어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan ikke lage utkast på %@ ennå."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan nog geen concept opstellen in het %@."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A Apple Intelligence ainda não rascunha em %@."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan inte göra utkast på %@ än."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence ยังร่างเป็นภาษา%@ไม่ได้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence henüz %@ taslak hazırlayamıyor."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence chưa thể soạn nháp bằng %@."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 暂时无法用%@起草。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 目前還不能用%@起草。"
+          }
+        }
+      }
+    },
     "Apple Intelligence can’t translate between %@ and %@ yet." : {
       "comment" : "Shown when Apple Intelligence can't translate a script between the two languages (source, target).",
       "localizations" : {
@@ -50782,124 +51140,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple Intelligence 無法使用這個詞。"
-          }
-        }
-      }
-    },
-    "Apple Intelligence can't write in this script's language yet." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا يستطيع Apple Intelligence الكتابة بلغة هذا النص بعد."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence kan endnu ikke skrive på dette manuskripts sprog."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence kann noch nicht in der Sprache dieses Skripts schreiben."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence todavía no puede escribir en el idioma de este guion."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence ne peut pas encore écrire dans la langue de ce script."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence अभी इस स्क्रिप्ट की भाषा में नहीं लिख सकता।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence belum bisa menulis dalam bahasa naskah ini."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence non può ancora scrivere nella lingua di questo copione."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligenceはこの台本の言語ではまだ書けません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence는 아직 이 대본의 언어로 쓸 수 없어요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence kan ikke skrive på språket i dette manuset ennå."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence kan nog niet schrijven in de taal van dit script."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "A Apple Intelligence ainda não escreve no idioma deste roteiro."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence kan inte skriva på det här manusets språk än."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence ยังเขียนเป็นภาษาของสคริปต์นี้ไม่ได้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence henüz bu senaryonun dilinde yazamıyor."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence chưa thể viết bằng ngôn ngữ của kịch bản này."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence 暂时无法用这个脚本的语言写作。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apple Intelligence 目前還不能以這份腳本的語言撰寫。"
           }
         }
       }
@@ -234515,6 +234755,125 @@
         }
       }
     },
+    "Open the draft to write it yourself." : {
+      "comment" : "Sponsored ad brief, after the reason when Apple Intelligence can't draft in the idea's language: the button reads Open the draft, to write the ad by hand.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "افتح المسودة لتكتبه بنفسك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åbn udkastet, og skriv det selv."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öffne den Entwurf und schreib ihn selbst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abre el borrador y escríbelo tú."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ouvrez le brouillon pour l’écrire vous-même."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ड्राफ़्ट खोलकर खुद लिखें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buka draf untuk menulisnya sendiri."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apri la bozza e scrivila tu."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下書きを開いて自分で書いてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "초안을 열어 직접 써 보세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Åpne utkastet og skriv det selv."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Open het concept en schrijf het zelf."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abra o rascunho para escrever você mesmo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Öppna utkastet och skriv det själv."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เปิดฉบับร่างแล้วเขียนเอง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taslağı aç ve kendin yaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mở bản nháp để tự viết."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打开草稿，自己来写。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "打開草稿，自己來寫。"
+          }
+        }
+      }
+    },
     "Open with the POV line, set the scene in a few words, and end on a twist. Short and visual." : {
       "localizations" : {
         "ar" : {
@@ -355057,6 +355416,125 @@
         }
       }
     },
+    "These ideas are yours to write." : {
+      "comment" : "Find inspiration, after the reason when the Script Language is one Apple Intelligence can't draft in: the ideas still show, to write by hand.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "هذه الأفكار لتكتبها بنفسك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disse idéer skriver du selv."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diese Ideen schreibst du selbst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estas ideas son para que las escribas tú."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ces idées sont à écrire vous-même."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ये आइडिया आप खुद लिखें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ide ini untuk kamu tulis sendiri."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Queste idee sono da scrivere tu."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これらのアイデアは自分で書いてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 아이디어는 직접 써 보세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disse ideene skriver du selv."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deze ideeën schrijf je zelf."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Estas ideias são para você escrever."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De här idéerna skriver du själv."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไอเดียเหล่านี้ให้คุณเขียนเอง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu fikirleri kendin yazarsın."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Những ý tưởng này để bạn tự viết."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这些想法由你自己来写。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這些想法由你自己來寫。"
+          }
+        }
+      }
+    },
     "They decide the words Cue uses." : {
       "localizations" : {
         "ar" : {
@@ -401133,6 +401611,125 @@
         }
       }
     },
+    "Write it yourself or import a script." : {
+      "comment" : "Second sentence of the Scripts dock's note when Apple Intelligence can't draft (after the reason): the ways that need no AI, writing by hand or importing.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتبه بنفسك أو استورد نصًا."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv det selv, eller importer et manuskript."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schreib es selbst oder importiere ein Skript."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escríbelo tú o importa un guion."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrivez-le vous-même ou importez un script."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "खुद लिखें या कोई स्क्रिप्ट इंपोर्ट करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tulis sendiri atau impor naskah."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scrivilo tu o importa un copione."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "自分で書くか、台本を読み込んでください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "직접 쓰거나 대본을 가져오세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv det selv, eller importer et manus."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schrijf het zelf of importeer een script."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escreva você mesmo ou importe um roteiro."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv det själv eller importera ett manus."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เขียนเองหรือนำเข้าสคริปต์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kendin yaz ya da bir senaryo içe aktar."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hãy tự viết hoặc nhập kịch bản."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你可以自己写，或导入脚本。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你可以自己寫，或匯入腳本。"
+          }
+        }
+      }
+    },
     "Write the ad" : {
       "localizations" : {
         "ar" : {
@@ -401602,6 +402199,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "寫下你的第一個腳本"
+          }
+        }
+      }
+    },
+    "Write your reply yourself." : {
+      "comment" : "Answer a comment, after the reason when the comment's language is one Apple Intelligence can't draft in: the creator writes the reply (the Write it myself button is there).",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتب ردّك بنفسك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv dit svar selv."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schreib deine Antwort selbst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe tú la respuesta."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Écrivez votre réponse vous-même."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपना जवाब खुद लिखें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tulis sendiri balasanmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scrivi tu la risposta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "返信は自分で書いてください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "답변은 직접 써 주세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv svaret ditt selv."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schrijf je antwoord zelf."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escreva sua resposta você mesmo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv ditt svar själv."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เขียนคำตอบเอง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yanıtını kendin yaz."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hãy tự viết câu trả lời."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "请自己写回复。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "請自己寫回覆。"
           }
         }
       }

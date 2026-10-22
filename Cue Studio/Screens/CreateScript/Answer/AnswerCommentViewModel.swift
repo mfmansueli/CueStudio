@@ -28,11 +28,14 @@ final class AnswerCommentViewModel {
     private let writesByHand: ((ScriptComment, Platform) -> Void)?
     /// "Save to Logbook": keeps the comment as an idea for later.
     private let savesToLogbook: ((String) -> Void)?
+    /// Whether a reply to these words can be drafted (`ScriptStarter.drafting(before:)`, in the comment's own language).
+    private let drafting: ((String) -> DraftingAvailability)?
 
     init(
         defaultPlatform: Platform, recognizer: TextRecognizing, clipboard: @escaping () -> String?,
         starter: @escaping (ScriptComment, Platform) -> Void,
-        writesByHand: ((ScriptComment, Platform) -> Void)? = nil, savesToLogbook: ((String) -> Void)? = nil
+        writesByHand: ((ScriptComment, Platform) -> Void)? = nil, savesToLogbook: ((String) -> Void)? = nil,
+        drafting: ((String) -> DraftingAvailability)? = nil
     ) {
         platform = defaultPlatform
         self.recognizer = recognizer
@@ -40,10 +43,18 @@ final class AnswerCommentViewModel {
         self.starter = starter
         self.writesByHand = writesByHand
         self.savesToLogbook = savesToLogbook
+        self.drafting = drafting
     }
 
     /// The words are enough to write from.
     var canWrite: Bool { !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
+
+    /// The comment is in a language Apple Intelligence can't draft in: why, said before the sheet goes, with the ways that remain. Nil
+    /// when a reply can be drafted, or when it is Apple Intelligence itself that is missing (the sheet then has no AI at all).
+    var draftingNotice: String? {
+        guard let cause = drafting?(text).cause, cause.isLanguage else { return nil }
+        return cause.reason + " " + String(localized: "Write your reply yourself.")
+    }
 
     // MARK: - Choosing
 

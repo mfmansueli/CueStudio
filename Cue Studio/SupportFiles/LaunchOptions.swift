@@ -58,6 +58,10 @@ import Foundation
 /// - `-uiTestWriterStalls`: with `-uiTestStubAI`, the model never answers (the star transition's slow states).
 /// - `-uiTestIdeasSlow`: with `-uiTestStubAI`, every batch of ideas takes 12 s (Find inspiration waiting for the next ones: longer than tapping through six).
 /// - `-uiTestIdeasFail`: with `-uiTestStubAI`, every batch of ideas fails (Find inspiration's "Try again").
+/// - `-uiTestAIUnavailable <language|device|off|preparing|cue>`: with `-uiTestStubAI`, Apple Intelligence can't draft, and why: Thai,
+///   Hindi, Indonesian and Arabic aren't drafted (`language`), the iPhone can't run it, it is off in iOS, the model is getting ready, or
+///   Cue's own On-device AI switch is off (`DraftingAvailability`).
+/// - `-uiTestScriptLanguage <locale>`: with `-uiTestInMemory`, Language & Region's Script Language starts on that language (`th-TH`).
 /// - `-uiTestChapterAt <seconds>`: the opening of the chapter on screen (1.2 to 1.6) stands still at that second of its timeline.
 /// - `-uiTestWelcomeOpening`: the welcome's star opening (1.1) plays in full (about 8 s); UI tests otherwise show its final state.
 /// - `-uiTestSceneCapture <on|off>`: the scene starts recorded or mirrored (`on`) or not, and the test runner can start and stop
@@ -170,6 +174,19 @@ struct LaunchOptions {
 
     #if DEBUG
     /// `-uiTestTopics fitness,custom:Daily Routine`: a profile that holds those topics and nothing else.
+    /// `-uiTestScriptLanguage` and `-uiTestAIUnavailable`: the Script Language to start on, and why Apple Intelligence can't draft. Cue's own
+    /// switch (`cue`) is a preference that Settings › Privacy & AI data reads from the defaults; the others are the stub writer's.
+    private static func readDrafting(_ arguments: [String], into defaults: UserDefaults) -> StubScriptWriter.Unavailable? {
+        if let index = arguments.firstIndex(of: "-uiTestScriptLanguage"), arguments.indices.contains(index + 1),
+           let language = CueLanguage(rawValue: arguments[index + 1]) {
+            defaults.set(language.rawValue, forKey: DefaultsKey.scriptLanguage)
+        }
+        guard let index = arguments.firstIndex(of: "-uiTestAIUnavailable"), arguments.indices.contains(index + 1),
+              let unavailable = StubScriptWriter.Unavailable(rawValue: arguments[index + 1]) else { return nil }
+        if unavailable == .cue { defaults.set(false, forKey: DefaultsKey.onDeviceAI) }
+        return unavailable
+    }
+
     private static func writeTopics(_ list: String, to defaults: UserDefaults) {
         var profile = CreatorProfile()
         for item in list.split(separator: ",").map({ $0.trimmingCharacters(in: .whitespaces) }) where !item.isEmpty {
@@ -302,11 +319,12 @@ struct LaunchOptions {
                let scenario = ScriptedVoiceFollowing.Scenario(rawValue: arguments[index + 1]) {
                 options.prompterSpeech = ScriptedVoiceFollowing(scenario: scenario)
             }
+            let unavailable = Self.readDrafting(arguments, into: options.defaults)
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(
                     available: !arguments.contains("-uiTestNoAI"), stalls: arguments.contains("-uiTestWriterStalls"),
                     ideasDelay: arguments.contains("-uiTestIdeasSlow") ? .seconds(12) : nil, ideasFail: arguments.contains("-uiTestIdeasFail"),
-                    writesLong: arguments.contains("-uiTestLongScript")
+                    writesLong: arguments.contains("-uiTestLongScript"), unavailable: unavailable
                 )
                 options.styleReader = arguments.contains("-uiTestNoAI") ? NoStyleReader() : StubStyleReader()
                 // A test never waits for words to arrive one by one, unless it is looking at them arrive (slowly, or at the real pace).
