@@ -28,6 +28,13 @@
 			remoteGlobalIDString = 000000000000000100000000;
 			remoteInfo = "Cue Studio";
 		};
+		000000000000000190000000 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 000000000000000000000000 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 000000000000000600000000;
+			remoteInfo = "Cue Studio Watch";
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -35,9 +42,11 @@
 		000000000000000000000032 /* App.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = App.xcconfig; sourceTree = "<group>"; };
 		000000000000000000000033 /* UnitTests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = UnitTests.xcconfig; sourceTree = "<group>"; };
 		000000000000000000000034 /* UITests.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = UITests.xcconfig; sourceTree = "<group>"; };
+		000000000000000000000035 /* Watch.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Watch.xcconfig; sourceTree = "<group>"; };
 		000000000000000000000120 /* Cue Studio.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cue Studio.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		000000000000000000000121 /* Cue StudioTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cue StudioTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		000000000000000000000122 /* Cue StudioUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Cue StudioUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000000000123 /* Cue Studio Watch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Cue Studio Watch.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -47,6 +56,13 @@
 				SupportFiles/Info.plist,
 			);
 			target = 000000000000000100000000 /* Cue Studio */;
+		};
+		000000000000000000000016 /* Exceptions for "Cue Studio Watch" folder in "Cue Studio Watch" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 000000000000000600000000 /* Cue Studio Watch */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -67,6 +83,19 @@
 		000000000000000000000012 /* Cue StudioUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Cue StudioUITests";
+			sourceTree = "<group>";
+		};
+		000000000000000000000014 /* Cue Studio Watch */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				000000000000000000000016 /* Exceptions for "Cue Studio Watch" folder in "Cue Studio Watch" target */,
+			);
+			path = "Cue Studio Watch";
+			sourceTree = "<group>";
+		};
+		000000000000000000000015 /* Cue Watch Shared */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = "Cue Watch Shared";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -91,6 +120,11 @@
 			files = (
 			);
 		};
+		000000000000000630000000 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -99,6 +133,8 @@
 			children = (
 				000000000000000000000030 /* Config */,
 				000000000000000000000010 /* Cue Studio */,
+				000000000000000000000014 /* Cue Studio Watch */,
+				000000000000000000000015 /* Cue Watch Shared */,
 				000000000000000000000011 /* Cue StudioTests */,
 				000000000000000000000012 /* Cue StudioUITests */,
 				000000000000000000000020 /* Products */,
@@ -111,6 +147,7 @@
 				000000000000000000000120 /* Cue Studio.app */,
 				000000000000000000000121 /* Cue StudioTests.xctest */,
 				000000000000000000000122 /* Cue StudioUITests.xctest */,
+				000000000000000000000123 /* Cue Studio Watch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -122,6 +159,7 @@
 				000000000000000000000032 /* App.xcconfig */,
 				000000000000000000000033 /* UnitTests.xcconfig */,
 				000000000000000000000034 /* UITests.xcconfig */,
+				000000000000000000000035 /* Watch.xcconfig */,
 			);
 			path = Config;
 			sourceTree = "<group>";
@@ -141,8 +179,12 @@
 			);
 			buildRules = (
 			);
+			dependencies = (
+				000000000000000180000000 /* PBXTargetDependency */,
+			);
 			fileSystemSynchronizedGroups = (
 				000000000000000000000010 /* Cue Studio */,
+				000000000000000000000015 /* Cue Watch Shared */,
 			);
 			name = "Cue Studio";
 			packageProductDependencies = (
@@ -197,6 +239,25 @@
 			productReference = 000000000000000000000122 /* Cue StudioUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		000000000000000600000000 /* Cue Studio Watch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 000000000000000610000000 /* Build configuration list for PBXNativeTarget "Cue Studio Watch" */;
+			buildPhases = (
+				000000000000000620000000 /* Sources */,
+				000000000000000630000000 /* Frameworks */,
+				000000000000000640000000 /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				000000000000000000000014 /* Cue Studio Watch */,
+				000000000000000000000015 /* Cue Watch Shared */,
+			);
+			name = "Cue Studio Watch";
+			productName = "Cue Studio Watch";
+			productReference = 000000000000000000000123 /* Cue Studio Watch.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -217,6 +278,9 @@
 					000000000000000300000000 = {
 						CreatedOnToolsVersion = 27.0;
 						TestTargetID = 000000000000000100000000;
+					};
+					000000000000000600000000 = {
+						CreatedOnToolsVersion = 27.0;
 					};
 				};
 			};
@@ -260,6 +324,7 @@
 				000000000000000100000000 /* Cue Studio */,
 				000000000000000200000000 /* Cue StudioTests */,
 				000000000000000300000000 /* Cue StudioUITests */,
+				000000000000000600000000 /* Cue Studio Watch */,
 			);
 		};
 /* End PBXProject section */
@@ -276,6 +341,11 @@
 			);
 		};
 		000000000000000340000000 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		000000000000000640000000 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
 			);
@@ -345,6 +415,11 @@
 			files = (
 			);
 		};
+		000000000000000620000000 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -357,6 +432,11 @@
 			isa = PBXTargetDependency;
 			target = 000000000000000100000000 /* Cue Studio */;
 			targetProxy = 000000000000000350000000 /* PBXContainerItemProxy */;
+		};
+		000000000000000180000000 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 000000000000000600000000 /* Cue Studio Watch */;
+			targetProxy = 000000000000000190000000 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -417,6 +497,20 @@
 			};
 			name = Release;
 		};
+		000000000000000611000000 /* Debug configuration for PBXNativeTarget "Cue Studio Watch" */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 000000000000000000000035 /* Watch.xcconfig */;
+			buildSettings = {
+			};
+			name = Debug;
+		};
+		000000000000000612000000 /* Release configuration for PBXNativeTarget "Cue Studio Watch" */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 000000000000000000000035 /* Watch.xcconfig */;
+			buildSettings = {
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -449,6 +543,14 @@
 			buildConfigurations = (
 				000000000000000311000000 /* Debug configuration for PBXNativeTarget "Cue StudioUITests" */,
 				000000000000000312000000 /* Release configuration for PBXNativeTarget "Cue StudioUITests" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		000000000000000610000000 /* Build configuration list for PBXNativeTarget "Cue Studio Watch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				000000000000000611000000 /* Debug configuration for PBXNativeTarget "Cue Studio Watch" */,
+				000000000000000612000000 /* Release configuration for PBXNativeTarget "Cue Studio Watch" */,
 			);
 			defaultConfigurationName = Release;
 		};

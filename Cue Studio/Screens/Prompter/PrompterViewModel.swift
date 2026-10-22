@@ -92,6 +92,19 @@ final class PrompterViewModel {
     let speech: SpeechTranscribing
     let languages: LanguageService
     let remote: RemoteControlService
+    /// The Apple Watch companion, when the app has one running (`PrompterViewModel+Watch`).
+    let watch: WatchLinkService?
+    // The watch's state below is internal for PrompterViewModel+Watch.
+    /// The last watch command whose effect has happened, named in what the watch is told so it stops waiting.
+    var watchAnswer: UUID?
+    /// How the last take asked from anywhere ended, until the next command: what the watch shows after the take.
+    var watchOutcome: WatchTakeOutcome?
+    /// The watch asked for a rehearsal: the script plays without recording.
+    var watchRehearsing = false
+    /// When the take started, so the watch counts its time.
+    private(set) var recordingStartedAt: Date?
+    /// Between End and the take in the library.
+    private(set) var isSavingTake = false
     let toast: ToastService
     /// Whether the microphone was refused (the practice then reads at a steady pace).
     let microphone: MicrophoneAccess
@@ -169,6 +182,7 @@ final class PrompterViewModel {
         speech: SpeechTranscribing,
         languages: LanguageService,
         remote: RemoteControlService,
+        watch: WatchLinkService? = nil,
         toast: ToastService,
         microphone: MicrophoneAccess = MicrophoneAccess(),
         clock: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
@@ -190,6 +204,7 @@ final class PrompterViewModel {
         self.speech = speech
         self.languages = languages
         self.remote = remote
+        self.watch = watch
         self.toast = toast
         self.microphone = microphone
         self.clock = clock
@@ -244,6 +259,7 @@ final class PrompterViewModel {
             status: { [weak self] in self?.remoteStatus ?? .idle }
         )
         camera.onRecordingEnded = { [weak self] clip, reason in self?.recordingEndedByItself(clip, reason: reason) }
+        attachWatch()
         guard reviewingTake == nil else { return }
         preparePractice()
         await enter(mode)
@@ -260,6 +276,7 @@ final class PrompterViewModel {
         pause()
         if isRecording { await stopRecording(openReview: false) }
         remote.detach()
+        watch?.detach()
         camera.onRecordingEnded = nil
         await camera.stop()
     }
@@ -534,6 +551,7 @@ final class PrompterViewModel {
         }
         guard camera.status == .running else {
             toast.show(String(localized: "The camera isn't ready"))
+            watchOutcome = .failedStart
             return
         }
         let seconds = session.camera.countdown.rawValue
@@ -562,6 +580,7 @@ final class PrompterViewModel {
         countdownTask = Task { [weak self] in
             for remaining in stride(from: seconds, to: 0, by: -1) {
                 self?.countdown = remaining
+                self?.watch?.publishCurrent()
                 try? await Task.sleep(for: .seconds(1))
                 if Task.isCancelled { return }
             }
@@ -574,6 +593,7 @@ final class PrompterViewModel {
         countdownTask?.cancel()
         countdownTask = nil
         countdown = nil
+        watch?.publishCurrent()
     }
 
     private func beginRecording() async {
@@ -587,8 +607,12 @@ final class PrompterViewModel {
         } catch {
             AudioRoute.allowHapticsDuringRecording(true)
             toast.show(error.localizedDescription)
+            watchOutcome = .failedStart
+            watch?.publishCurrent()
             return
         }
+        recordingStartedAt = .now
+        watchOutcome = nil
         isRecording = true
         endRecordingGrace = recordingGrace()
         // The creator left while the camera was still starting the take, after `disappear` found nothing to stop: it is
@@ -621,6 +645,7 @@ final class PrompterViewModel {
         recordingClock?.cancel()
         autoStopTask?.cancel()
         showsStopWarning = false
+        isSavingTake = true
         pause()
         let clip = await camera.stopRecording()
         // The take ended on its own while it was stopping, and `recordingEndedByItself` filed it: the same clip again would
@@ -648,13 +673,17 @@ final class PrompterViewModel {
 
     /// The recorded clip becomes a take; `message` (why it stopped) replaces nothing when the take can't be saved.
     private func file(_ clip: RecordedClip?, openReview: Bool, message: String?) {
-        // Filed or not, the take no longer needs time in the background.
+        // Filed or not, the take no longer needs time in the background; the watch hears how it ended.
         defer {
             endRecordingGrace?()
             endRecordingGrace = nil
+            isSavingTake = false
+            recordingStartedAt = nil
+            watch?.publishCurrent()
         }
         guard let clip else {
             toast.show(String(localized: "The take couldn't be saved"))
+            watchOutcome = .failedSave
             return
         }
         do {
@@ -666,8 +695,10 @@ final class PrompterViewModel {
                 reviewingTake = take
             }
             if let message { toast.show(message) }
+            watchOutcome = .saved(take: take.number, seconds: clip.duration)
         } catch {
             toast.show(String(localized: "The take couldn't be saved"))
+            watchOutcome = .failedSave
         }
     }
 

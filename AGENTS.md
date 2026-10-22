@@ -33,7 +33,9 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
 
 - **Build settings em `Config/*.xcconfig`** (`Project`, `App`, `UnitTests`, `UITests`), nunca no `project.pbxproj`: mude o
   arquivo de texto, não o editor de Build Settings do Xcode (ele grava no projeto, e `scripts/check-project.sh` acusa).
-- Scheme compartilhado `Cue Studio` (app + `Cue StudioTests` + `Cue StudioUITests`), Swift 6, iOS 27. Testes por planos
+- Scheme compartilhado `Cue Studio` (app + `Cue StudioTests` + `Cue StudioUITests`), Swift 6, iOS 27. O app do Apple Watch (`Cue Studio Watch`,
+  watchOS 10, `Config/Watch.xcconfig`) compila junto com o do iPhone, mas ainda não vai embutido nele (é uma base; DESIGN_PROJECT §43); código dos
+  dois em `Cue Watch Shared/`. Testes por planos
   (`TestPlans/`): **Full** (o padrão do ⌘U: unidade + UI), **Fast** (unidade sem as exportações reais, tag `.realExports`) e
   **UISmoke** (um teste de UI por fluxo).
 - **Build e testes pelos scripts** (`scripts/`), não por `xcodebuild` solto: um derivedData por checkout (`build/`), pacotes

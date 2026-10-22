@@ -41,6 +41,7 @@ struct PrompterView: View {
             speech: services.prompterSpeech,
             languages: services.languages,
             remote: services.remote,
+            watch: services.watch,
             toast: services.toast,
             // The first flight's answers (stubbed in UI tests), the system's otherwise.
             microphone: MicrophoneAccess(isDenied: { services.permissions.microphone() == .denied })

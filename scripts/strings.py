@@ -12,7 +12,7 @@ as the entries it touched and nothing else.
                                                          extractionState: only the Xcode IDE rewrites that, and the
                                                          scripts build without it, so "stale" can be months old
 
-NAME is Localizable (default), InfoPlist or AppShortcuts. The JSON for `add` maps each key (the English text, with
+NAME is Localizable (default), InfoPlist, AppShortcuts or Watch (the Apple Watch app). The JSON for `add` maps each key (the English text, with
 %@ / %lld where the code interpolates) to its comment and every other language of the catalog:
 
   {"Saved · voice %lld%%": {"comment": "Toast after an answer", "es": "…", "pt": "…", "fr": "…", …}}
@@ -51,6 +51,7 @@ CATALOGS = {
     "Localizable": "Cue Studio/SupportFiles/Localizable.xcstrings",
     "InfoPlist": "Cue Studio/SupportFiles/InfoPlist.xcstrings",
     "AppShortcuts": "Cue Studio/SupportFiles/AppIntents/AppShortcuts.xcstrings",
+    "Watch": "Cue Studio Watch/Localizable.xcstrings",
 }
 SPECIFIER = re.compile(r"%(\d+\$)?(lld|ld|llu|lu|d|u|@|f|\.\d+f)")
 

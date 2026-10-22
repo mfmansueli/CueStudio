@@ -4,6 +4,8 @@
 
 included:
   - Cue Studio
+  - Cue Studio Watch
+  - Cue Watch Shared
   - Cue StudioTests
   - Cue StudioUITests
 

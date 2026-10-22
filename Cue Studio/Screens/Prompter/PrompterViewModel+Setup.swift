@@ -89,8 +89,10 @@ extension PrompterViewModel {
         )
     }
 
+    /// Tells the remote and the Apple Watch what changed.
     func publishRemoteStatus() {
         remote.publish(remoteStatus)
+        watch?.publishCurrent()
     }
 
     // MARK: - Camera controls
