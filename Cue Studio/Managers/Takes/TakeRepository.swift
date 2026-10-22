@@ -15,11 +15,12 @@ protocol TakeRepository {
     func returnVideo(named fileName: String, to temporaryURL: URL) throws
     func deleteVideo(named fileName: String) throws
     func videoURL(named fileName: String) -> URL
-    /// The damaged libraries' copies set aside while loading ("Delete my Cue data").
-    func deleteKeptCopies()
+    /// "Delete my Cue data": every video, the metadata, the analyses next to the videos and the copies of a damaged library,
+    /// including what no take points to any more.
+    func deleteEverything()
 }
 
 extension TakeRepository {
     func returnVideo(named fileName: String, to temporaryURL: URL) throws {}
-    func deleteKeptCopies() {}
+    func deleteEverything() {}
 }

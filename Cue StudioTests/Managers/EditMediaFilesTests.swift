@@ -29,4 +29,12 @@ struct EditMediaFilesTests {
         #expect(!exists(file.url))
         #expect(sidecars.allSatisfy { !exists($0) })
     }
+
+    /// A video copied in that can't be read leaves nothing behind: nothing would ever name it, so nothing would remove it.
+    @Test func aVideoThatCantBeReadLeavesNoCopy() async throws {
+        let file = try EditMediaFiles.newFile(pathExtension: "mov")
+        try Data("not a movie".utf8).write(to: file.url)
+        await #expect(throws: (any Error).self) { try await EditMediaImporter.describeVideo(at: file.url) }
+        #expect(!exists(file.url))
+    }
 }

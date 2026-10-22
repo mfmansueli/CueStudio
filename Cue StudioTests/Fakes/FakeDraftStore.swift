@@ -20,4 +20,6 @@ final class FakeDraftStore: QuickEditDraftStoring {
     }
 
     func discard(takeID: UUID) { drafts[takeID] = nil }
+
+    func discardAll() { drafts = [:] }
 }

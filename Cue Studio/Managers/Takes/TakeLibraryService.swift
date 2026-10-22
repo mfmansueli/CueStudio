@@ -17,13 +17,16 @@ final class TakeLibraryService {
     @ObservationIgnored var onTakeAdded: ((Take) -> Void)?
 
     private let repository: TakeRepository
+    /// Quick edit's drafts: a deleted take's draft, and what only the draft named, go with it.
+    private let drafts: QuickEditDraftStoring?
     private let now: () -> Date
     private let logger = Logger(subsystem: "studio.cue", category: "TakeLibrary")
     /// False when the library on disk couldn't be read: writing would replace it with what's in memory.
     @ObservationIgnored private var canSave = true
 
-    init(repository: TakeRepository = LocalTakeRepository(), now: @escaping () -> Date = Date.init) {
+    init(repository: TakeRepository = LocalTakeRepository(), drafts: QuickEditDraftStoring? = nil, now: @escaping () -> Date = Date.init) {
         self.repository = repository
+        self.drafts = drafts
         self.now = now
     }
 
@@ -181,8 +184,7 @@ final class TakeLibraryService {
         }
         takes.removeAll { $0.id == id }
         persist()
-        // What Quick edit added belongs to this take alone.
-        if let names = take.edit?.mediaFileNames, !names.isEmpty { EditMediaFiles.remove(names) }
+        removeEditFiles(of: take)
     }
 
     /// A take taken out of the library whose video is still on disk, so "Undo" can bring it back (the review's trash).
@@ -215,12 +217,26 @@ final class TakeLibraryService {
         } catch {
             logger.error("Could not delete take video: \(error.localizedDescription)")
         }
-        if let names = removed.take.edit?.mediaFileNames, !names.isEmpty { EditMediaFiles.remove(names) }
+        removeEditFiles(of: removed.take)
     }
 
-    /// "Delete my Cue data": the copies of a damaged library set aside while loading.
-    func deleteKeptCopies() {
-        repository.deleteKeptCopies()
+    /// What Quick edit added belongs to this take alone: the saved edit's media, and the draft with the media only it names
+    /// (B-roll added since the last Done).
+    private func removeEditFiles(of take: Take) {
+        var names = take.edit?.mediaFileNames ?? []
+        if let drafts {
+            names.formUnion(drafts.draft(for: take.id)?.edit.mediaFileNames ?? [])
+            drafts.discard(takeID: take.id)
+        }
+        if !names.isEmpty { EditMediaFiles.remove(names) }
+    }
+
+    /// "Delete my Cue data", after each take was deleted: the library's whole folder goes, with whatever no take pointed
+    /// to and a library that couldn't be read, and an empty one starts.
+    func deleteEverything() {
+        repository.deleteEverything()
+        takes = []
+        canSave = true
     }
 
     /// Keeps take titles in step when a script is renamed.

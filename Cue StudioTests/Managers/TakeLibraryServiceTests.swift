@@ -137,6 +137,37 @@ struct TakeLibraryServiceTests {
         #expect(repository.takes[0].isEdited)
     }
 
+    /// A take's draft goes with it, and the editor files only the draft named (added since the last Done): deleted at once,
+    /// or once the Undo's seconds are over.
+    @Test(arguments: [false, true])
+    func deletingATakeTakesItsDraftAndWhatOnlyTheDraftNamed(withUndo: Bool) throws {
+        let saved = try EditMediaFiles.newFile(pathExtension: "mov")
+        let draftOnly = try EditMediaFiles.newFile(pathExtension: "mov")
+        for file in [saved, draftOnly] { try Data([1]).write(to: file.url) }
+        defer { EditMediaFiles.remove([saved.name, draftOnly.name]) }
+        var take = TestData.take(scriptID: nil)
+        var edit = TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
+        edit.sources = [ClipSource(fileName: saved.name, duration: 5, title: "B-roll")]
+        take.edit = edit
+        var drafted = edit
+        drafted.sources.append(ClipSource(fileName: draftOnly.name, duration: 5, title: "New B-roll"))
+        let drafts = FakeDraftStore()
+        drafts.drafts[take.id] = QuickEditDraft(takeID: take.id, edit: drafted, playhead: 0, history: EditHistory(), savedAt: TestData.now)
+        let service = TakeLibraryService(repository: FakeTakeRepository(takes: [take]), drafts: drafts)
+        service.load()
+
+        if withUndo {
+            let removed = try #require(service.remove(take.id))
+            #expect(drafts.drafts[take.id] != nil, "Undo can still bring it back")
+            service.purge(removed)
+        } else {
+            service.delete(take.id)
+        }
+        #expect(drafts.drafts.isEmpty)
+        #expect(!EditMediaFiles.exists(saved.name))
+        #expect(!EditMediaFiles.exists(draftOnly.name))
+    }
+
     @Test func renamingAScriptUpdatesItsTakes() {
         let scriptID = UUID()
         let (service, _) = makeService(takes: [TestData.take(scriptID: scriptID, title: "Old")])

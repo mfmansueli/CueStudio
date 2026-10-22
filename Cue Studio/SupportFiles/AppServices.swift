@@ -111,7 +111,7 @@ struct AppServices {
         }
         capabilities = LanguageCapabilityService(checker: options.languageCapabilities)
         library = ScriptLibraryService(repository: options.scriptRepository)
-        takes = TakeLibraryService(repository: options.takeRepository)
+        takes = TakeLibraryService(repository: options.takeRepository, drafts: options.draftStore)
         preferences = PreferencesService(defaults: options.defaults)
         personalization = PersonalizationService(defaults: options.defaults)
         onboarding = OnboardingService(defaults: options.defaults, isEnabled: options.showsOnboarding, startStep: options.onboardingStep)

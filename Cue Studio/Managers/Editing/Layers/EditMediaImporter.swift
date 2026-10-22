@@ -27,19 +27,23 @@ final class EditMediaImporter: EditMediaImporting {
         return try await Task.detached { try Self.storePhoto(data) }.value
     }
 
-    private static func describeVideo(at url: URL) async throws -> ImportedMedia {
-        let asset = AVURLAsset(url: url)
-        guard let track = try await asset.loadTracks(withMediaType: .video).first else {
+    /// The copied video's shape and length. One that can't be read leaves no copy behind: nothing names it, so nothing
+    /// would ever remove it.
+    static func describeVideo(at url: URL) async throws -> ImportedMedia {
+        do {
+            let asset = AVURLAsset(url: url)
+            guard let track = try await asset.loadTracks(withMediaType: .video).first else { throw EditMediaImportError.unreadable }
+            let (naturalSize, transform) = try await track.load(.naturalSize, .preferredTransform)
+            let duration = try await asset.load(.duration).seconds
+            let upright = CGRect(origin: .zero, size: naturalSize).applying(transform)
+            let aspect = abs(upright.height) > 0 ? abs(upright.width) / abs(upright.height) : 1
+            guard duration.isFinite, duration > 0 else { throw EditMediaImportError.unreadable }
+            let hasSound = (try? await asset.loadTracks(withMediaType: .audio).isEmpty == false) ?? false
+            return ImportedMedia(kind: .video, fileName: url.lastPathComponent, aspect: Double(aspect), duration: duration, hasSound: hasSound)
+        } catch {
             try? FileManager.default.removeItem(at: url)
-            throw EditMediaImportError.unreadable
+            throw error
         }
-        let (naturalSize, transform) = try await track.load(.naturalSize, .preferredTransform)
-        let duration = try await asset.load(.duration).seconds
-        let upright = CGRect(origin: .zero, size: naturalSize).applying(transform)
-        let aspect = abs(upright.height) > 0 ? abs(upright.width) / abs(upright.height) : 1
-        guard duration.isFinite, duration > 0 else { throw EditMediaImportError.unreadable }
-        let hasSound = (try? await asset.loadTracks(withMediaType: .audio).isEmpty == false) ?? false
-        return ImportedMedia(kind: .video, fileName: url.lastPathComponent, aspect: Double(aspect), duration: duration, hasSound: hasSound)
     }
 
     func importAudio(from url: URL) async throws -> ImportedAudio {

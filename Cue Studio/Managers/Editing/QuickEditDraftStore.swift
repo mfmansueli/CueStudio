@@ -48,6 +48,10 @@ final class QuickEditDraftStore: QuickEditDraftStoring {
         try? FileManager.default.removeItem(at: url)
     }
 
+    func discardAll() {
+        try? FileManager.default.removeItem(at: directory)
+    }
+
     private func fileURL(for takeID: UUID) -> URL {
         directory.appending(path: "\(takeID.uuidString).json")
     }

@@ -43,6 +43,11 @@ nonisolated enum EditMediaFiles {
         return name
     }
 
+    /// "Delete my Cue data": the whole folder, with what an earlier deletion or a failed import left.
+    static func removeAll(in folder: URL = directory) {
+        try? FileManager.default.removeItem(at: folder)
+    }
+
     /// Removes files nothing names any more (a deleted take's media, what an edit left behind).
     /// Never touches a take's recording, which lives elsewhere.
     static func remove(_ names: Set<String>) {

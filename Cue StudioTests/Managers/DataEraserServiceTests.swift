@@ -34,7 +34,7 @@ struct DataEraserServiceTests {
         defaults.defaults.set(Data("stars".utf8), forKey: DefaultsKey.skyMemory)
         let eraser = DataEraserService(
             library: library, takes: takes, drafts: FakeDraftStore(), logbook: LogbookService(defaults: defaults.defaults), brands: brands,
-            profile: profile, preferences: preferences, defaults: defaults.defaults
+            profile: profile, preferences: preferences, defaults: defaults.defaults, eraseLooseFiles: {}
         )
 
         eraser.eraseEverything()
@@ -62,7 +62,7 @@ struct DataEraserServiceTests {
             library: ScriptLibraryService(repository: FakeScriptRepository(scripts: [])), takes: TakeLibraryService(repository: FakeTakeRepository()),
             drafts: FakeDraftStore(), logbook: LogbookService(defaults: defaults.defaults), brands: BrandStore(repository: InMemoryBrandRepository()),
             profile: profile, preferences: PreferencesService(defaults: defaults.defaults),
-            defaults: defaults.defaults, voiceQuestions: scheduler
+            defaults: defaults.defaults, voiceQuestions: scheduler, eraseLooseFiles: {}
         )
 
         eraser.eraseEverything()
@@ -112,7 +112,7 @@ struct DataEraserServiceTests {
             library: library, takes: takes, drafts: FakeDraftStore(), logbook: LogbookService(defaults: defaults.defaults),
             brands: BrandStore(repository: InMemoryBrandRepository()), profile: profile,
             preferences: PreferencesService(defaults: defaults.defaults), defaults: defaults.defaults, ledger: ledger, shareQueue: shareQueue,
-            ideas: ideas
+            ideas: ideas, eraseLooseFiles: {}
         )
 
         eraser.eraseEverything()
@@ -130,5 +130,60 @@ struct DataEraserServiceTests {
         #expect(defaults.defaults.object(forKey: DefaultsKey.myCoverStudioStyle) == nil)
         // The ledger keeps its ids so deleting data can't hand back free exports.
         #expect(quota.exportsLeft(for: .free) == 4)
+    }
+
+    /// What no take names any more goes too: a video and a draft left by a take deleted before, an editor file a failed import
+    /// left, a damaged library's copy and a recording the camera left for `TakeRecovery`, which would come back as a take.
+    @Test func whatNoTakeNamesAnyMoreGoesToo() throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let folder = URL.temporaryDirectory.appending(path: "erase-loose-\(UUID().uuidString)", directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let takeFolder = folder.appending(path: "Takes", directoryHint: .isDirectory)
+        let mediaFolder = folder.appending(path: "EditMedia", directoryHint: .isDirectory)
+        let cameraFolder = folder.appending(path: "tmp", directoryHint: .isDirectory)
+        for directory in [takeFolder, mediaFolder, cameraFolder] {
+            try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        }
+        let take = TestData.take(scriptID: nil)
+        try LocalTakeRepository(directory: takeFolder).saveTakes([take])
+        for name in [take.fileName, "earlier-take.mov", "earlier-take.mov.cuemotion", "takes-kept-2026.json"] {
+            try Data([1]).write(to: takeFolder.appending(path: name))
+        }
+        try Data([1]).write(to: mediaFolder.appending(path: "failed-import.mov"))
+        let leftover = cameraFolder.appending(path: "\(TakeRecovery.prefix)\(UUID().uuidString).mov")
+        let notARecording = cameraFolder.appending(path: "other.mov")
+        for file in [leftover, notARecording] { try Data([1]).write(to: file) }
+        let takes = TakeLibraryService(repository: LocalTakeRepository(directory: takeFolder))
+        takes.load()
+        let drafts = FakeDraftStore()
+        let orphan = UUID()
+        drafts.drafts[orphan] = QuickEditDraft(
+            takeID: orphan, edit: TakeEdit(sourceDuration: 10, aspect: .vertical), playhead: 0, history: EditHistory(), savedAt: TestData.now
+        )
+        let eraser = DataEraserService(
+            library: ScriptLibraryService(repository: FakeScriptRepository(scripts: [])), takes: takes, drafts: drafts,
+            logbook: LogbookService(defaults: defaults.defaults), brands: BrandStore(repository: InMemoryBrandRepository()),
+            profile: CreatorProfileService(defaults: defaults.defaults), preferences: PreferencesService(defaults: defaults.defaults),
+            defaults: defaults.defaults,
+            eraseLooseFiles: {
+                EditMediaFiles.removeAll(in: mediaFolder)
+                TakeRecovery.removeLeftovers(folder: cameraFolder)
+            }
+        )
+
+        eraser.eraseEverything()
+
+        #expect(!FileManager.default.fileExists(atPath: takeFolder.path(percentEncoded: false)))
+        #expect(!FileManager.default.fileExists(atPath: mediaFolder.path(percentEncoded: false)))
+        #expect(drafts.drafts.isEmpty)
+        let camera = try FileManager.default.contentsOfDirectory(atPath: cameraFolder.path(percentEncoded: false))
+        #expect(camera == ["other.mov"], "only the camera's own recordings")
+        // An empty library starts and is saved again.
+        #expect(try LocalTakeRepository(directory: takeFolder).loadTakes().isEmpty)
+        let recording = folder.appending(path: "new.mov")
+        try Data([1]).write(to: recording)
+        try takes.addTake(fileAt: recording, duration: 5, script: nil, camera: CameraSettings())
+        #expect(try LocalTakeRepository(directory: takeFolder).loadTakes().count == 1)
     }
 }

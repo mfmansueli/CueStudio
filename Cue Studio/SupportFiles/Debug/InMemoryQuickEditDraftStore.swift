@@ -15,5 +15,7 @@ final class InMemoryQuickEditDraftStore: QuickEditDraftStoring {
     func save(_ draft: QuickEditDraft) { drafts[draft.takeID] = draft }
 
     func discard(takeID: UUID) { drafts[takeID] = nil }
+
+    func discardAll() { drafts = [:] }
 }
 #endif
