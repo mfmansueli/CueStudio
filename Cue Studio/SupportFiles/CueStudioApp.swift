@@ -33,6 +33,7 @@ struct CueStudioApp: App {
         // In-memory launches (UI tests) know none of the device's takes: they never clean.
         if !options.isInMemory { services.cleanUpStorage() }
         services.registerIntentDependencies()
+        services.watch.activate()
         services.connectNotifications(tap: options.notificationTap)
         Self.configureTips(inMemory: options.isInMemory)
         _services = State(initialValue: services)

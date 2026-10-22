@@ -56,6 +56,8 @@ struct AppServices {
     /// Where a free export is counted, once per exported file.
     let ledger: ExportLedgerService
     let remote: RemoteControlService
+    /// The Apple Watch companion: records and drives the recorder from the wrist.
+    let watch: WatchLinkService
     let languages: LanguageService
     /// What this device does in each language (interface, Apple Intelligence, speech, translation), asked once and kept.
     let capabilities: LanguageCapabilityService
@@ -185,6 +187,7 @@ struct AppServices {
         self.apps = apps
         sharing = options.sharing ?? VideoSharingService(apps: apps, tikTok: TikTokShareManager(), instagram: InstagramShareManager(apps: apps))
         remote = RemoteControlService(transport: options.remoteTransport)
+        watch = WatchLinkService(transport: options.watchTransport)
         logbook = LogbookService(defaults: options.defaults)
         ideaSuggestions = IdeaSuggestionService(
             writer: options.writer, profile: profile, interfaceLanguage: { [languages] in languages.interfaceLanguage },

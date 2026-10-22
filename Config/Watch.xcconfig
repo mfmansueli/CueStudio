@@ -1,0 +1,36 @@
+// The Apple Watch companion (Cue Studio Watch): records and drives the iPhone's recorder from the wrist.
+// Shared settings are in Project.xcconfig.
+
+// Identity and signing: inside the iPhone app, which it belongs to
+CODE_SIGN_STYLE           = Automatic
+CURRENT_PROJECT_VERSION   = 1
+DEVELOPMENT_TEAM          = X5392U638Q
+MARKETING_VERSION         = 1.0
+PRODUCT_BUNDLE_IDENTIFIER = com.cuestudioteleprompter.watchkitapp
+PRODUCT_NAME              = $(TARGET_NAME)
+SKIP_INSTALL              = YES
+
+// Platform: watchOS 10, so an Apple Watch Series 4 or 5 (whose last watchOS is 10) runs it too
+SDKROOT                   = watchos
+SUPPORTED_PLATFORMS       = watchos watchsimulator
+TARGETED_DEVICE_FAMILY    = 4
+WATCHOS_DEPLOYMENT_TARGET = 10.0
+
+// Info.plist: generated, plus the two keys only a file can say (WKApplication, WKCompanionAppBundleIdentifier)
+GENERATE_INFOPLIST_FILE           = YES
+INFOPLIST_FILE                    = Cue Studio Watch/Info.plist
+INFOPLIST_KEY_CFBundleDisplayName = Cue Studio
+
+// Resources: the iPhone app's icon (Icon Composer's file, rendered for each watchOS)
+ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon
+
+// Swift: as the iPhone app
+SWIFT_APPROACHABLE_CONCURRENCY                  = YES
+SWIFT_DEFAULT_ACTOR_ISOLATION                   = MainActor
+SWIFT_EMIT_LOC_STRINGS                          = YES
+SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES
+SWIFT_VERSION                                   = 6.0
+
+// Everything else
+ENABLE_PREVIEWS        = YES
+LD_RUNPATH_SEARCH_PATHS = @executable_path/Frameworks

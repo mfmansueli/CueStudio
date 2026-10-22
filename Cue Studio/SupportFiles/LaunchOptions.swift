@@ -98,6 +98,8 @@ struct LaunchOptions {
     var styleReader: (any WritingStyleReading)?
     var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
     var remoteTransport: RemoteTransport = NearbyRemoteTransport()
+    /// The Apple Watch companion's channel: WatchConnectivity, or nothing in UI tests (`InMemoryWatchTransport`).
+    var watchTransport: WatchTransport = WatchConnectivityTransport()
     var languageStore: AppLanguageStoring = SystemAppLanguageStore()
     /// What the device can do in each language; the system's own answers unless a test gives a fixed list.
     var languageCapabilities: LanguageCapabilityChecking = AppleLanguageCapabilityChecker()
@@ -295,6 +297,7 @@ struct LaunchOptions {
                 options.permissions = StubPermissions(grants: arguments[index + 1] != "denied")
             }
             options.remoteTransport = DemoRemoteTransport(connects: arguments.contains("-uiTestRemoteConnects"))
+            options.watchTransport = InMemoryWatchTransport()
             let notificationStart = arguments.firstIndex(of: "-uiTestNotificationAuth").flatMap { index in
                 arguments.indices.contains(index + 1) ? InMemoryNotificationCenter.Start(rawValue: arguments[index + 1]) : nil
             }
