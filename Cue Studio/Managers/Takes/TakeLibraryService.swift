@@ -17,13 +17,19 @@ final class TakeLibraryService {
     @ObservationIgnored var onTakeAdded: ((Take) -> Void)?
 
     private let repository: TakeRepository
+    /// Quick edit's drafts: a deleted take's draft, and what only the draft named, go with it.
+    private let drafts: QuickEditDraftStoring?
     private let now: () -> Date
     private let logger = Logger(subsystem: "studio.cue", category: "TakeLibrary")
     /// False when the library on disk couldn't be read: writing would replace it with what's in memory.
     @ObservationIgnored private var canSave = true
+    /// The last write failed (the iPhone full): what changed is only in memory until a save works, the next change's or
+    /// `saveAgainIfFailed` when Cue comes back to the front. The app says so (`RootView`).
+    private(set) var saveFailed = false
 
-    init(repository: TakeRepository = LocalTakeRepository(), now: @escaping () -> Date = Date.init) {
+    init(repository: TakeRepository = LocalTakeRepository(), drafts: QuickEditDraftStoring? = nil, now: @escaping () -> Date = Date.init) {
         self.repository = repository
+        self.drafts = drafts
         self.now = now
     }
 
@@ -84,7 +90,9 @@ final class TakeLibraryService {
     // MARK: - Actions
 
     /// Moves the recording into the library and records its metadata. A background effect chosen
-    /// while recording becomes the take's recipe (the recording keeps the camera's own image).
+    /// while recording becomes the take's recipe (the recording keeps the camera's own image). When the library can't be
+    /// written (the iPhone full), the take isn't added and its video goes back where the camera left it, where
+    /// `TakeRecovery` finds it at the next launch: never a video in the library that no take points to.
     @discardableResult
     func addTake(
         fileAt url: URL, duration: TimeInterval, script: Script?, camera: CameraSettings, background: BackgroundEffect? = nil
@@ -110,7 +118,17 @@ final class TakeLibraryService {
             take.edit = edit
         }
         takes.insert(take, at: 0)
-        persist()
+        do {
+            try save()
+        } catch {
+            takes.removeAll { $0.id == take.id }
+            do {
+                try repository.returnVideo(named: fileName, to: url)
+            } catch {
+                logger.error("Could not put the unsaved take's video back: \(error.localizedDescription)")
+            }
+            throw error
+        }
         onTakeAdded?(take)
         return take
     }
@@ -126,13 +144,14 @@ final class TakeLibraryService {
     }
 
     /// Quick edit's Done: keeps the recipe, the new length and the Edited mark. The video file is
-    /// untouched.
-    func applyEdit(_ edit: TakeEdit, to id: UUID) {
+    /// untouched. Throws when the library couldn't be written: the take keeps the edit in memory (the next save writes
+    /// it), but nothing is on disk yet, so Quick edit keeps its draft.
+    func applyEdit(_ edit: TakeEdit, to id: UUID) throws {
         guard let index = takes.firstIndex(where: { $0.id == id }) else { return }
         takes[index].edit = edit
         takes[index].duration = edit.editedDuration
         takes[index].isEdited = true
-        persist()
+        try save()
     }
 
     /// Recognition is source data, not a destructive edit. Repeated exports and editor sessions
@@ -168,8 +187,7 @@ final class TakeLibraryService {
         }
         takes.removeAll { $0.id == id }
         persist()
-        // What Quick edit added belongs to this take alone.
-        if let names = take.edit?.mediaFileNames, !names.isEmpty { EditMediaFiles.remove(names) }
+        removeEditFiles(of: take)
     }
 
     /// A take taken out of the library whose video is still on disk, so "Undo" can bring it back (the review's trash).
@@ -202,12 +220,26 @@ final class TakeLibraryService {
         } catch {
             logger.error("Could not delete take video: \(error.localizedDescription)")
         }
-        if let names = removed.take.edit?.mediaFileNames, !names.isEmpty { EditMediaFiles.remove(names) }
+        removeEditFiles(of: removed.take)
     }
 
-    /// "Delete my Cue data": the copies of a damaged library set aside while loading.
-    func deleteKeptCopies() {
-        repository.deleteKeptCopies()
+    /// What Quick edit added belongs to this take alone: the saved edit's media, and the draft with the media only it names
+    /// (B-roll added since the last Done).
+    private func removeEditFiles(of take: Take) {
+        var names = take.edit?.mediaFileNames ?? []
+        if let drafts {
+            names.formUnion(drafts.draft(for: take.id)?.edit.mediaFileNames ?? [])
+            drafts.discard(takeID: take.id)
+        }
+        if !names.isEmpty { EditMediaFiles.remove(names) }
+    }
+
+    /// "Delete my Cue data", after each take was deleted: the library's whole folder goes, with whatever no take pointed
+    /// to and a library that couldn't be read, and an empty one starts.
+    func deleteEverything() {
+        repository.deleteEverything()
+        takes = []
+        canSave = true
     }
 
     /// Keeps take titles in step when a script is renamed.
@@ -221,6 +253,16 @@ final class TakeLibraryService {
     }
 
     private func persist() {
+        do {
+            try save()
+        } catch {
+            logger.error("Could not save takes: \(error.localizedDescription)")
+        }
+    }
+
+    /// Writes the library. One that couldn't be read isn't written over: what changed stays in memory and is saved
+    /// with what's on disk once it can be read (`reloadIfUnread`), so that's no failure. Throws when the write fails.
+    private func save() throws {
         reloadIfUnread()
         guard canSave else {
             logger.error("Not saving takes: the library on disk still can't be read")
@@ -228,8 +270,16 @@ final class TakeLibraryService {
         }
         do {
             try repository.saveTakes(takes)
+            if saveFailed { saveFailed = false }
         } catch {
-            logger.error("Could not save takes: \(error.localizedDescription)")
+            saveFailed = true
+            throw error
         }
+    }
+
+    /// Writes what a failed save left only in memory.
+    func saveAgainIfFailed() {
+        guard saveFailed else { return }
+        persist()
     }
 }

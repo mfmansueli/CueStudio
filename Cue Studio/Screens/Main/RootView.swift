@@ -49,9 +49,15 @@ struct RootView: View {
                 services.eyes.setActive(phase == .active)
                 guard phase == .active else { return }
                 services.reloadWhatCouldntBeRead()
+                if services.hasUnsavedWork { warnUnsavedWork() }
                 Task { await services.store.refreshEntitlements() }
                 // "Stop Using Apple ID" happens in Settings, outside Cue.
                 Task { await services.session.verify() }
+            }
+            // A save that failed in front of the creator is said at once (one that failed in the background, locked, is tried
+            // again on the way back first).
+            .onChange(of: services.hasUnsavedWork) { _, unsaved in
+                if unsaved, scenePhase == .active { warnUnsavedWork() }
             }
             .onChange(of: IntentRouter.shared.pending, initial: true) {
                 handleIntent()
@@ -101,6 +107,11 @@ struct RootView: View {
 
     /// The first flight, the camera, the editor or the remote hold a tap back until they close; then it opens what it names (checked
     /// again by `NotificationNavigator`), or the tool's introduction first.
+    /// Scripts or takes are only in memory: the creator hears it while there is still time to free space.
+    private func warnUnsavedWork() {
+        services.toast.show(String(localized: "Couldn't save your work · Free up space on this iPhone"))
+    }
+
     private func handleNotificationTaps() {
         let presentation = services.presentation
         guard !services.onboarding.isActive, presentation.prompter == nil, !presentation.showsRemoteController,

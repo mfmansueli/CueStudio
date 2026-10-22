@@ -15,6 +15,9 @@ final class ScriptLibraryService {
     private(set) var scripts: [Script] = []
     private(set) var folders: [String] = []
     private(set) var hasLoaded = false
+    /// The last write failed (the iPhone full): what changed is only in memory until a save works, the next change's or
+    /// `saveAgainIfFailed` when Cue comes back to the front. The app says so (`RootView`).
+    private(set) var saveFailed = false
     /// False when the library on disk couldn't be read: writing would replace it with what's in memory.
     @ObservationIgnored private var canSave = true
 
@@ -223,8 +226,16 @@ final class ScriptLibraryService {
         }
         do {
             try repository.save(ScriptLibrarySnapshot(scripts: scripts, folders: folders))
+            if saveFailed { saveFailed = false }
         } catch {
             logger.error("Could not save scripts: \(error.localizedDescription)")
+            saveFailed = true
         }
+    }
+
+    /// Writes what a failed save left only in memory.
+    func saveAgainIfFailed() {
+        guard saveFailed else { return }
+        persist()
     }
 }

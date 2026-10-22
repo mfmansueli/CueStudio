@@ -29,11 +29,9 @@ struct LocalTakeRepository: TakeRepository {
         return list.elements
     }
 
-    /// The copies `keepCopy` set aside ("Delete my Cue data").
-    func deleteKeptCopies() {
-        let folder = directory
-        let names = (try? FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false))) ?? []
-        for name in names where name.hasPrefix("takes-kept-") { try? FileManager.default.removeItem(at: folder.appending(path: name)) }
+    /// The whole folder: videos, `takes.json`, the analyses next to the videos and the copies `keepCopy` set aside.
+    func deleteEverything() {
+        try? FileManager.default.removeItem(at: directory)
     }
 
     /// `takes.json` as it was, next to it (`takes-kept-<date>.json`), once per damaged file.
@@ -55,6 +53,10 @@ struct LocalTakeRepository: TakeRepository {
         let fileName = UUID().uuidString + "." + ext
         try FileManager.default.moveItem(at: temporaryURL, to: videoURL(named: fileName))
         return fileName
+    }
+
+    func returnVideo(named fileName: String, to temporaryURL: URL) throws {
+        try FileManager.default.moveItem(at: videoURL(named: fileName), to: temporaryURL)
     }
 
     func deleteVideo(named fileName: String) throws {

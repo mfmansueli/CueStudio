@@ -83,6 +83,103 @@ struct TakeLibraryServiceTests {
         #expect(repository.deletedFiles == [take.fileName])
     }
 
+    @Test func aTakeTheLibraryCantWriteIsNotAddedAndItsVideoGoesBack() {
+        let (service, repository) = makeService()
+        repository.failsToSave = true
+        var told = 0
+        service.onTakeAdded = { _ in told += 1 }
+        let clip = clipURL()
+        #expect(throws: CocoaError.self) {
+            try service.addTake(fileAt: clip, duration: 30, script: TestData.script(), camera: CameraSettings())
+        }
+        #expect(service.takes.isEmpty)
+        #expect(repository.returnedFiles == [clip.lastPathComponent: clip])
+        #expect(told == 0)
+    }
+
+    /// On disk: `takes.json` can't be written (a folder stands in its place), so the recording goes back to the camera's
+    /// folder under its own name, where `TakeRecovery` looks at the next launch, and the library keeps no video without a take.
+    @Test func aRecordingTheLibraryCantRecordIsLeftForTheNextLaunch() throws {
+        let root = URL.temporaryDirectory.appending(path: "take-library-\(UUID().uuidString)", directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: root) }
+        let library = root.appending(path: "Takes", directoryHint: .isDirectory)
+        let camera = root.appending(path: "Camera", directoryHint: .isDirectory)
+        try FileManager.default.createDirectory(at: camera, withIntermediateDirectories: true)
+        let recording = camera.appending(path: "\(TakeRecovery.prefix)\(UUID().uuidString).mov")
+        try Data("video".utf8).write(to: recording)
+        let service = TakeLibraryService(repository: LocalTakeRepository(directory: library))
+        service.load()
+        try FileManager.default.createDirectory(at: library.appending(path: "takes.json"), withIntermediateDirectories: true)
+
+        #expect(throws: (any Error).self) {
+            try service.addTake(fileAt: recording, duration: 30, script: nil, camera: CameraSettings())
+        }
+        #expect(service.takes.isEmpty)
+        #expect(FileManager.default.fileExists(atPath: recording.path(percentEncoded: false)))
+        let stored = try FileManager.default.contentsOfDirectory(atPath: library.path(percentEncoded: false))
+        #expect(stored == ["takes.json"])
+        let leftovers = TakeRecovery.leftovers(files: EditStorageCleaner.modified(in: camera), launchedAt: .now.addingTimeInterval(1))
+        #expect(leftovers == [recording.lastPathComponent])
+    }
+
+    @Test func anEditTheLibraryCantWriteSaysSoAndStaysInMemory() throws {
+        let take = TestData.take(scriptID: nil)
+        let (service, repository) = makeService(takes: [take])
+        repository.failsToSave = true
+        let edit = TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
+        #expect(throws: CocoaError.self) { try service.applyEdit(edit, to: take.id) }
+        #expect(service.takes[0].isEdited)
+        #expect(repository.takes[0].edit == nil)
+
+        // The next save that works writes it.
+        repository.failsToSave = false
+        service.markExported(take.id)
+        #expect(repository.takes[0].isEdited)
+    }
+
+    /// A take's draft goes with it, and the editor files only the draft named (added since the last Done): deleted at once,
+    /// or once the Undo's seconds are over.
+    @Test(arguments: [false, true])
+    func deletingATakeTakesItsDraftAndWhatOnlyTheDraftNamed(withUndo: Bool) throws {
+        let saved = try EditMediaFiles.newFile(pathExtension: "mov")
+        let draftOnly = try EditMediaFiles.newFile(pathExtension: "mov")
+        for file in [saved, draftOnly] { try Data([1]).write(to: file.url) }
+        defer { EditMediaFiles.remove([saved.name, draftOnly.name]) }
+        var take = TestData.take(scriptID: nil)
+        var edit = TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
+        edit.sources = [ClipSource(fileName: saved.name, duration: 5, title: "B-roll")]
+        take.edit = edit
+        var drafted = edit
+        drafted.sources.append(ClipSource(fileName: draftOnly.name, duration: 5, title: "New B-roll"))
+        let drafts = FakeDraftStore()
+        drafts.drafts[take.id] = QuickEditDraft(takeID: take.id, edit: drafted, playhead: 0, history: EditHistory(), savedAt: TestData.now)
+        let service = TakeLibraryService(repository: FakeTakeRepository(takes: [take]), drafts: drafts)
+        service.load()
+
+        if withUndo {
+            let removed = try #require(service.remove(take.id))
+            #expect(drafts.drafts[take.id] != nil, "Undo can still bring it back")
+            service.purge(removed)
+        } else {
+            service.delete(take.id)
+        }
+        #expect(drafts.drafts.isEmpty)
+        #expect(!EditMediaFiles.exists(saved.name))
+        #expect(!EditMediaFiles.exists(draftOnly.name))
+    }
+
+    @Test func aChangeThatCantBeWrittenIsWrittenAgainOnceItCan() {
+        let take = TestData.take(scriptID: UUID())
+        let (service, repository) = makeService(takes: [take])
+        repository.failsToSave = true
+        service.setBest(take.id, isBest: true)
+        #expect(service.saveFailed)
+        repository.failsToSave = false
+        service.saveAgainIfFailed()
+        #expect(!service.saveFailed)
+        #expect(repository.takes[0].isBest)
+    }
+
     @Test func renamingAScriptUpdatesItsTakes() {
         let scriptID = UUID()
         let (service, _) = makeService(takes: [TestData.take(scriptID: scriptID, title: "Old")])

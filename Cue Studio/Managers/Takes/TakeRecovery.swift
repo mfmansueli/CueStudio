@@ -66,6 +66,15 @@ nonisolated enum TakeRecovery {
         return recovered
     }
 
+    /// "Delete my Cue data": the recordings past sessions left, which would otherwise come back as takes at the next launch.
+    /// Never during a recording (the eraser is in Settings).
+    static func removeLeftovers(folder: URL = .temporaryDirectory) {
+        let names = (try? FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false))) ?? []
+        for name in names where name.hasPrefix(prefix) && name.hasSuffix(".mov") {
+            try? FileManager.default.removeItem(at: folder.appending(path: name))
+        }
+    }
+
     /// Whether the recording plays and for how long, read off the main actor.
     @concurrent
     static func verdict(for url: URL) async -> Verdict {

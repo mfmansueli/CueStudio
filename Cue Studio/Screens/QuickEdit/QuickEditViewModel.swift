@@ -630,12 +630,24 @@ final class QuickEditViewModel {
         let played = Set(edit.timeline.segments.compactMap(\.sourceID))
         saved.sources.removeAll { $0.reversal != nil && !played.contains($0.id) }
         if source == .ready, hasUnsavedChanges {
-            takes.applyEdit(saved, to: take.id)
+            do {
+                try takes.applyEdit(saved, to: take.id)
+            } catch {
+                // Not on disk: the edit stays a draft (and its files with it) that Edit opens again, or, when even that
+                // can't be written, the creator hears it wasn't saved.
+                let kept = saveDraft(forced: true)
+                close(keepingDraft: true)
+                toast.show(kept ? String(localized: "Couldn't save the edits · Kept as a draft") : Self.notSaved)
+                return
+            }
             toast.show(String(localized: "Edits saved to this take"))
         }
         removeUnusedImports(keeping: saved.mediaFileNames)
         close(keepingDraft: false)
     }
+
+    /// The edit couldn't be written anywhere: a full iPhone is the likely reason.
+    private static var notSaved: String { String(localized: "Couldn't save the edits · Free up space on this iPhone") }
 
     /// Done: pauses and asks "Is it ready to post?" (`EditorDoneSheet`); the answer is `finish(_:)`.
     func askIfReadyToPost() {
@@ -663,8 +675,9 @@ final class QuickEditViewModel {
     private func keepForLater() {
         endChange()
         if recorder.isRecording { cancelVoiceOver() }
-        saveDraft(forced: true)
+        let kept = saveDraft(forced: true)
         close(keepingDraft: true)
+        if !kept { toast.show(Self.notSaved) }
     }
 
     /// Leaves without saving on the take. Changes stay in a draft that Edit picks up again; the take
@@ -677,9 +690,9 @@ final class QuickEditViewModel {
             close(keepingDraft: false)
             return
         }
-        saveDraft()
+        let kept = saveDraft()
         close(keepingDraft: true)
-        toast.show(String(localized: "Draft saved"))
+        toast.show(kept ? String(localized: "Draft saved") : Self.notSaved)
     }
 
     /// Leaving the app or the screen without Done or Cancel: the draft keeps everything.
@@ -722,13 +735,20 @@ final class QuickEditViewModel {
         }
     }
 
-    /// Keeps the edit, the playhead and the undo steps, or drops the draft when nothing changed.
-    func saveDraft(forced: Bool = false) {
-        guard source == .ready, !isClosed else { return }
+    /// Keeps the edit, the playhead and the undo steps, or drops the draft when nothing changed. False when the draft
+    /// couldn't be written (the store logs why).
+    @discardableResult
+    func saveDraft(forced: Bool = false) -> Bool {
+        guard source == .ready, !isClosed else { return true }
         if edit != original || forced {
-            drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: history, savedAt: .now))
+            do {
+                try drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: history, savedAt: .now))
+            } catch {
+                return false
+            }
         } else {
             drafts.discard(takeID: take.id)
         }
+        return true
     }
 }

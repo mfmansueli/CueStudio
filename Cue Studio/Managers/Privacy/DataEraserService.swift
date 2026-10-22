@@ -34,13 +34,20 @@ final class DataEraserService {
     @ObservationIgnored private let ledger: ExportLedgerService?
     @ObservationIgnored private let shareQueue: ShareQueueService?
     @ObservationIgnored private let ideas: IdeaSuggestionService?
+    /// The editor's media folder and the camera's leftover recordings, whole. Tests point it at folders of their own: these
+    /// are the app's, shared by every test running at the same time.
+    @ObservationIgnored private let eraseLooseFiles: () -> Void
 
     init(
         library: ScriptLibraryService, takes: TakeLibraryService, drafts: QuickEditDraftStoring, logbook: LogbookService,
         brands: BrandStore, profile: CreatorProfileService, preferences: PreferencesService, defaults: UserDefaults = .standard,
         notifications: NotificationService? = nil, voyage: FirstVoyageService? = nil, draftLearning: DraftLearningService? = nil,
         voiceQuestions: VoiceQuestionScheduler? = nil, ledger: ExportLedgerService? = nil, shareQueue: ShareQueueService? = nil,
-        ideas: IdeaSuggestionService? = nil
+        ideas: IdeaSuggestionService? = nil,
+        eraseLooseFiles: @escaping () -> Void = {
+            EditMediaFiles.removeAll()
+            TakeRecovery.removeLeftovers()
+        }
     ) {
         self.library = library
         self.takes = takes
@@ -57,6 +64,7 @@ final class DataEraserService {
         self.ledger = ledger
         self.shareQueue = shareQueue
         self.ideas = ideas
+        self.eraseLooseFiles = eraseLooseFiles
     }
 
     func eraseEverything() {
@@ -65,7 +73,11 @@ final class DataEraserService {
             ledger?.releaseFiles(forTake: take.id)
             takes.delete(take.id)
         }
-        takes.deleteKeptCopies()
+        // Then the folders whole: what no take names any more (a take deleted before, an import that failed) goes too. Only
+        // here, where the creator asked for everything to go: nothing else sweeps "orphans" (DESIGN_PROJECT.md §37).
+        takes.deleteEverything()
+        drafts.discardAll()
+        eraseLooseFiles()
         shareQueue?.discardAll()
         library.delete(Set(library.scripts.map(\.id)))
         library.deleteFoldersAndKeptCopies()

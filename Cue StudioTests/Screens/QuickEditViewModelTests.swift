@@ -23,12 +23,13 @@ struct QuickEditViewModelTests {
         script: Script? = TestData.script(text: "Okay, real talk."),
         editor: FakeTakeEditor = FakeTakeEditor(),
         drafts: FakeDraftStore = FakeDraftStore(),
-        takes: TakeLibraryService? = nil
+        takes: TakeLibraryService? = nil,
+        repository: FakeTakeRepository? = nil
     ) async -> Scenario {
         var take = TestData.take(scriptID: script?.id, number: 3)
         take.duration = 64
         let takes = takes ?? {
-            let service = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
+            let service = TakeLibraryService(repository: repository.map { $0.takes = [take]; return $0 } ?? FakeTakeRepository(takes: [take]))
             service.load()
             return service
         }()
@@ -583,6 +584,53 @@ struct QuickEditViewModelTests {
         #expect(second.viewModel.edit.timeline.trimEnd == 30)
         #expect(second.viewModel.canUndo)
         #expect(second.toast.message == "Draft restored")
+    }
+
+    @Test func doneThatCantSaveOnTheTakeKeepsADraftAndSaysSo() async {
+        let repository = FakeTakeRepository()
+        let drafts = FakeDraftStore()
+        let first = await makeScenario(drafts: drafts, repository: repository)
+        repository.failsToSave = true
+        dragHandle(.start, to: 4, on: first.viewModel)
+        first.viewModel.done()
+        #expect(first.toast.message == "Couldn't save the edits · Kept as a draft")
+        #expect(drafts.drafts.values.first?.edit.timeline.trimStart == 4)
+        #expect(repository.takes[0].edit == nil)
+        #expect(first.player.isStopped)
+
+        // Next launch: the take on disk is as it was, and Edit opens the draft.
+        repository.failsToSave = false
+        let relaunched = TakeLibraryService(repository: repository)
+        relaunched.load()
+        #expect(relaunched.takes[0].edit == nil)
+        let second = await makeScenario(drafts: drafts, takes: relaunched)
+        #expect(second.viewModel.edit.timeline.trimStart == 4)
+        #expect(second.toast.message == "Draft restored")
+    }
+
+    @Test func doneThatCantSaveAnywhereSaysNothingWasSaved() async {
+        let repository = FakeTakeRepository()
+        let drafts = FakeDraftStore()
+        let scenario = await makeScenario(drafts: drafts, repository: repository)
+        repository.failsToSave = true
+        drafts.failsToSave = true
+        dragHandle(.start, to: 4, on: scenario.viewModel)
+        scenario.viewModel.done()
+        #expect(scenario.toast.message == "Couldn't save the edits · Free up space on this iPhone")
+    }
+
+    @Test func cancelThatCantWriteTheDraftNeverSaysDraftSaved() async {
+        let drafts = FakeDraftStore()
+        drafts.failsToSave = true
+        let scenario = await makeScenario(drafts: drafts)
+        dragHandle(.end, to: 30, on: scenario.viewModel)
+        scenario.viewModel.cancel()
+        #expect(drafts.drafts.isEmpty)
+        #expect(scenario.toast.message == "Couldn't save the edits · Free up space on this iPhone")
+
+        let notYet = await makeScenario(drafts: drafts)
+        notYet.viewModel.finish(.notYet)
+        #expect(notYet.toast.message == "Couldn't save the edits · Free up space on this iPhone")
     }
 
     // MARK: - Done asks "Is it ready to post?"

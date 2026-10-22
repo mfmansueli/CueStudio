@@ -32,12 +32,13 @@ final class QuickEditDraftStore: QuickEditDraftStoring {
         FileManager.default.fileExists(atPath: fileURL(for: takeID).path(percentEncoded: false))
     }
 
-    func save(_ draft: QuickEditDraft) {
+    func save(_ draft: QuickEditDraft) throws {
         do {
             try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
             try JSONEncoder().encode(draft).write(to: fileURL(for: draft.takeID), options: .atomic)
         } catch {
             logger.error("Could not save Quick edit draft: \(error.localizedDescription)")
+            throw error
         }
     }
 
@@ -45,6 +46,10 @@ final class QuickEditDraftStore: QuickEditDraftStoring {
         let url = fileURL(for: takeID)
         guard FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else { return }
         try? FileManager.default.removeItem(at: url)
+    }
+
+    func discardAll() {
+        try? FileManager.default.removeItem(at: directory)
     }
 
     private func fileURL(for takeID: UUID) -> URL {

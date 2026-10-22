@@ -60,6 +60,8 @@ extension ScriptDetailViewModel {
         }
         if bumpsVersion {
             page.bumpedVersion = true
+            // Not written (a full iPhone): the app says so (`RootView`), never "Saved as v…".
+            guard !library.saveFailed else { return }
             toast.show(takeCount == 1
                 ? String(localized: "Saved as v\(script.version + 1) · Take on v\(script.version)")
                 : String(localized: "Saved as v\(script.version + 1) · \(takeCount) takes on v\(script.version)"))

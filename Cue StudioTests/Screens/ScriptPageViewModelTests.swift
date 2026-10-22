@@ -16,6 +16,7 @@ struct ScriptPageViewModelTests {
     private struct Scenario {
         let viewModel: ScriptDetailViewModel
         let library: ScriptLibraryService
+        let repository: FakeScriptRepository
         let writer: FakeScriptWriter
         let toast: ToastService
         let profile: CreatorProfileService
@@ -27,7 +28,8 @@ struct ScriptPageViewModelTests {
         script: Script = TestData.script(), takeCount: Int = 0, startsEditing: Bool = false, writing: ScriptRequest? = nil
     ) -> Scenario {
         let defaults = TestDefaults()
-        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]), now: { TestData.now })
+        let repository = FakeScriptRepository(scripts: [script])
+        let library = ScriptLibraryService(repository: repository, now: { TestData.now })
         library.load()
         let takes = TakeLibraryService(repository: FakeTakeRepository(takes: (0..<takeCount).map {
             TestData.take(scriptID: script.id, number: $0 + 1)
@@ -42,7 +44,10 @@ struct ScriptPageViewModelTests {
             library: library, takes: takes, preferences: PreferencesService(defaults: defaults.defaults), profile: profile,
             rules: TestData.rulesService(), writer: writer, toast: toast
         )
-        return Scenario(viewModel: viewModel, library: library, writer: writer, toast: toast, profile: profile, ideaDraft: ideaDraft, defaults: defaults)
+        return Scenario(
+            viewModel: viewModel, library: library, repository: repository, writer: writer, toast: toast, profile: profile,
+            ideaDraft: ideaDraft, defaults: defaults
+        )
     }
 
     private func request(voice: CreatorVoice? = nil) -> ScriptRequest {
@@ -95,6 +100,26 @@ struct ScriptPageViewModelTests {
         scenario.viewModel.commitPage()
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.version == 2)
         #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text == "Second change.")
+    }
+
+    /// A full iPhone: the new version stays in memory (one per visit still), and the page never says "Saved as v…".
+    @Test func aNewVersionThatCantBeWrittenIsNeverCalledSaved() {
+        let scenario = makeScenario(takeCount: 1)
+        defer { scenario.defaults.tearDown() }
+        scenario.repository.failsToSave = true
+        scenario.viewModel.page.text = "First change."
+        scenario.viewModel.commitPage()
+        #expect(scenario.library.saveFailed)
+        #expect(scenario.toast.message == nil)
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.version == 2)
+        scenario.viewModel.page.text = "Second change."
+        scenario.viewModel.commitPage()
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.version == 2)
+
+        scenario.repository.failsToSave = false
+        scenario.library.saveAgainIfFailed()
+        #expect(!scenario.library.saveFailed)
+        #expect(scenario.repository.snapshot.scripts.first?.text == "Second change.")
     }
 
     @Test func onlyAnotherSpacingBetweenParagraphsIsNotAChange() {
