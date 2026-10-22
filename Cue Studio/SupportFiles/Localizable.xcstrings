@@ -332686,6 +332686,7 @@
       }
     },
     "Studio Voice" : {
+      "comment" : "Name of Quick edit's voice treatment (voice enhancement and noise reduction), in the discovery notification that points to it. A descriptive name, translated in every language (not a brand like My Cue Voice).",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -332720,7 +332721,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studio Voice"
+            "value" : "स्टूडियो आवाज़"
           }
         },
         "id" : {
@@ -332732,19 +332733,19 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voce Studio"
+            "value" : "Voce da studio"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studio Voice"
+            "value" : "スタジオ音声"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studio Voice"
+            "value" : "스튜디오 음성"
           }
         },
         "nb" : {
@@ -332839,7 +332840,7 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studio Voice आपकी रिकॉर्डिंग पर काम करता है। रखने से पहले सुन लें।"
+            "value" : "स्टूडियो आवाज़ आपकी रिकॉर्डिंग पर काम करती है। रखने से पहले सुन लें।"
           }
         },
         "id" : {
@@ -332851,19 +332852,19 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Voce Studio agisce sulla tua registrazione. La ascolti prima di tenerla."
+            "value" : "Voce da studio lavora sulla tua registrazione. La ascolti prima di tenerla."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studio Voiceが録画の声を整えます。残す前に聞けます。"
+            "value" : "スタジオ音声が録画の声を整えます。残す前に聞けます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Studio Voice가 녹화 영상의 목소리를 다듬어요. 적용 전에 먼저 들어 보세요."
+            "value" : "스튜디오 음성이 녹화 영상의 목소리를 다듬어요. 적용 전에 먼저 들어 보세요."
           }
         },
         "nb" : {

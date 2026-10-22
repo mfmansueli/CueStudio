@@ -245,7 +245,12 @@ Those term lists extend the table above. What the review taught, for every langu
 - **No em dashes** in any language (a colon, a comma, a full stop or " · "). The English source still has about 40;
   every reviewer had to rewrite them.
 - **Feature names stay in English** like the brand: ✦ Smart, ✦ Shape, Selfie, Studio, My Cue Voice, Cue Voice, and the
-  Clean caption collection.
+  Clean caption collection. **My Cue Voice** stays a proper name.
+- **Studio Voice is translated** (owner, 22 Oct 2026): it describes Quick edit's voice treatment (enhancement and noise
+  reduction), so each language says what it is: pt *Voz de estúdio*, es *Voz de estudio*, fr *Voix studio*, de *Studio-Stimme*,
+  it *Voce da studio*, ja *スタジオ音声*, ko *스튜디오 음성*, zh-Hans *录音棚人声*, zh-Hant *錄音室人聲*, hi *स्टूडियो आवाज़*, id
+  *Suara Studio*, ar *صوت الاستوديو*, tr *Stüdyo Sesi*, th *เสียงสตูดิโอ*, vi *Giọng studio*, nl *Studiostem*, sv *Studioröst*, da/nb
+  *Studiostemme*; sentences around it follow the word's grammar (hi *आवाज़* is feminine).
 - **App icon names are translated** (owner, 22 Oct 2026): First Light, Deep Space, Constellation and Aurora are names the
   creator reads in Settings › Personalize and in the milestone that opens each one, so every language gives them a natural
   name (pt *Primeira Luz, Espaço Profundo, Constelação, Aurora*; es *Primera Luz, Espacio Profundo, Constelación, Aurora*;
