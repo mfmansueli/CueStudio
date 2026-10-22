@@ -97,6 +97,7 @@ aparelho não roda aparece como **não validado** (teste cancelado), nunca aprov
 | Qualidade de roteiros e ideias (PT/EN/ES, voz completa, meia e sem voz) | `ScriptQualityDeviceTests` (`TEST_RUNNER_CUE_QUALITY_RUN=<nome>`; `tools/quality/collect.py`, `report.py`; reaplicar a lógica pura nos textos: `QualityReplayTests`) | `DESIGN_PROJECT.md` §4.1 |
 | Quick edit | `QuickEditPreviewLatencyTests`; `SkinSmoothingDeviceTests` e `BackgroundDeviceTests` (Vision de verdade; foto de retrato em `Documents` do app via `xcrun devicectl device copy to … --domain-identifier com.cuestudioteleprompter`, `TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg`) | `DESIGN_PROJECT.md` §20, §31 |
 | Eye Contact (✦ Smart) | `EyeContactDeviceTests` (o Face Mesh em Core ML e o desenho na CPU de verdade numa CÓPIA da tomada mais nova; `TEST_RUNNER_CUE_EYES_TAKE=<arquivo>` escolhe outra, `…_SECONDS`, `…_STRENGTH`; o vídeo corrigido e a análise vão para `Documents` do app; `TEST_RUNNER_CUE_EYES_CLEANUP=1` com `EyeContactDeviceTests/removesWhatTheseRunsLeft()` apaga o que ficou lá) | `DESIGN_PROJECT.md` §40 |
+| Desempenho | `PerformanceDeviceUITests` (`TEST_RUNNER_CUE_PERF=1`, `device-ui`: abertura a frio, rolagem sobre o céu, editor pronto, universo; métricas do XCTest) | `DESIGN_PROJECT.md` §42 |
 
 ## Espaço em disco (não encher o Mac)
 

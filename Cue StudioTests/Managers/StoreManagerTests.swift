@@ -25,6 +25,16 @@ struct StoreManagerTests {
         return session
     }
 
+    /// The test store settles a clean start on its own time too: what an earlier test bought must be gone before this one buys.
+    private func nothingOwned() async {
+        for _ in 0..<50 {
+            var owned = false
+            for await _ in Transaction.currentEntitlements { owned = true }
+            if !owned { return }
+            try? await Task.sleep(for: .milliseconds(100))
+        }
+    }
+
     /// StoreKit's test store settles a purchase, an expiry or a renewal on its own time: `refreshEntitlements` until the tier is
     /// `tier` (at most 5 s), the way the app hears of it through `Transaction.updates`.
     private func refresh(_ store: StoreManager, until tier: MembershipTier) async {
@@ -63,6 +73,7 @@ struct StoreManagerTests {
 
     @Test func anExpiredSubscriptionIsFreeAgain() async throws {
         let session = try session()
+        await nothingOwned()
         try await session.buyProduct(identifier: ProPlan.monthly.productID)
         try session.expireSubscription(productIdentifier: ProPlan.monthly.productID)
         let store = StoreManager()
@@ -73,6 +84,7 @@ struct StoreManagerTests {
 
     @Test func aRefundedSubscriptionIsFreeAgain() async throws {
         let session = try session()
+        await nothingOwned()
         let bought = try await session.buyProduct(identifier: ProPlan.annual.productID)
         try session.refundTransaction(identifier: UInt(bought.id))
         let store = StoreManager()

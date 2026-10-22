@@ -101,7 +101,7 @@ final class LanguageRegionUITests: XCTestCase {
         XCTAssertTrue(edit.exists(within: 5))
         edit.tap()
         // The take has no captions yet: Captions opens Auto captions, where the language is chosen.
-        XCTAssertTrue(app.buttons["edit.toolbar.edit"].exists(within: 10))
+        EditorApp.waitUntilReady(app)
         EditorApp.tapTool(app, "captions")
         let note = app.staticTexts["edit.captionsLanguageNote"]
         XCTAssertTrue(note.exists(within: 5))

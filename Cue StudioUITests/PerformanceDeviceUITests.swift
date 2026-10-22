@@ -78,6 +78,35 @@ final class PerformanceDeviceUITests: XCTestCase {
         }
     }
 
+    /// Only the wait the creator sees after Edit ("Getting your take ready"): from the tap to the editor's tools turning on.
+    func testTheEditorGettingReady() {
+        let app = CueApp.launch(seeded: true, sampleVideo: true, animations: true)
+        let tab = app.cueTabBar.buttons["Takes"]
+        XCTAssertTrue(tab.exists(within: 15))
+        tab.tap()
+        let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
+        XCTAssertTrue(row.exists(within: 10))
+        let options = options
+        options.invocationOptions = [.manuallyStart, .manuallyStop]
+        // XCTest runs the block on the main thread.
+        measure(metrics: [XCTClockMetric(), XCTCPUMetric(application: app)], options: options) {
+            MainActor.assumeIsolated {
+                row.tap()
+                let edit = app.buttons["review.editButton"]
+                XCTAssertTrue(edit.exists(within: 10))
+                startMeasuring()
+                edit.tap()
+                EditorApp.waitUntilReady(app)
+                stopMeasuring()
+                app.buttons["edit.backButton"].tap()
+                let back = app.buttons["review.backButton"]
+                XCTAssertTrue(back.exists(within: 10))
+                back.tap()
+                XCTAssertTrue(row.exists(within: 10))
+            }
+        }
+    }
+
     /// Profile with the year's universe drawn, from the tab: time, memory and CPU while it draws.
     func testOpeningTheUniverse() {
         let app = CueApp.launch(seeded: true, animations: true, extraArguments: ["-uiTestUniverse", "sample"])

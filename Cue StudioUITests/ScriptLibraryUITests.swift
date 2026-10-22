@@ -369,14 +369,18 @@ final class ScriptLibraryUITests: XCTestCase {
         for platform in ["tiktok", "reels", "shorts", "youtube", "linkedin", "stories"] {
             XCTAssertTrue(app.buttons["destination.\(platform)"].exists(within: 5), "Missing \(platform)")
         }
-        app.buttons["destination.linkedin"].tap()
-        XCTAssertTrue(app.staticTexts["Create for LinkedIn"].exists(within: 5))
+        let linkedIn = app.buttons["destination.linkedin"]
+        linkedIn.waitUntilStill()
+        linkedIn.tap()
+        XCTAssertTrue(app.staticTexts["Create for LinkedIn"].exists(within: 10), "Picking LinkedIn didn't set the page for it")
         XCTAssertEqual(app.buttons["page.platformChip"].value as? String, "LinkedIn")
         // The details show the format the destination sets.
         app.buttons["page.menuButton"].tap()
-        app.buttons["Script details"].tap()
+        let details = app.buttons["Script details"]
+        XCTAssertTrue(details.exists(within: 5), "No Script details in the menu")
+        details.tap()
         let format = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS '4:5 · 1080p30'")).firstMatch
-        XCTAssertTrue(format.exists(within: 5))
+        XCTAssertTrue(format.exists(within: 10), "The details don't show LinkedIn's format")
     }
 
     func testImproveIsOnThePageAndTheMenuLeadsToDetails() {

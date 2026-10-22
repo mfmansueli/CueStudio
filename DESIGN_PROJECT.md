@@ -1411,3 +1411,14 @@ no código aberto do Locked Gaze, MIT, reescrito; `THIRD_PARTY_NOTICES.md`); o d
 - **Testes:** `SpokenLanguageIdentifierTests`, `LanguageServiceTests/aTakeWithoutAScriptIsComparedInItsLikelyLanguages`,
   `QuickEditLanguageTests/aLanguagePickedUnlikeTheScriptsIsCheckedAgainstIt`, `CaptionBuilderTests/wordsSpreadOverTheSpeechMakeWholeLines`;
   aparelho `SpokenLanguageDeviceTests`.
+
+## 42. Desempenho medido no iPhone (22 de outubro de 2026)
+
+`PerformanceDeviceUITests` (opt-in: `CUE_DEVICE=… TEST_RUNNER_CUE_PERF=1 scripts/test.sh device-ui PerformanceDeviceUITests`), com as métricas do
+XCTest, em memória e com os exemplos (nunca a biblioteca do criador), animações reais. Build **Debug**: compare rodadas entre si, não com a App Store.
+iPhone 15 Pro, média de 5:
+- **Abertura a frio** até aceitar toques: 1,20 s.
+- **Scripts rolando sobre o céu Interstellar:** 0 travadas (hitch ratio 0 ms/s), ~82 fps, pico de memória ~200 MB.
+- **Editor ficando pronto** (do toque em Edit às ferramentas acesas, "Getting your take ready"): 1,78 s, CPU 0,9 s; ida e volta inteira 5,3 s,
+  pico 144 MB.
+- **Universo** (Profile e de volta a Scripts): 3,7 s, 75 MB.

@@ -95,12 +95,14 @@ final class CueUniverseScreenshotTests: XCTestCase {
         XCTAssertTrue(element(app, "shareFlow.start").exists(within: 120))
         capture(app, "ready-1-networks")
         app.buttons["shareFlow.start"].tap()
-        XCTAssertTrue(element(app, "shareFlow.step").exists(within: 30))
+        // The export saves to Photos first: on a fresh Simulator iOS asks for access once.
+        XCTAssertTrue(waitAllowingPhotos(for: element(app, "shareFlow.step"), timeout: 30), "No first network step after the export")
         capture(app, "ready-2-step")
         app.buttons["shareFlow.send"].tap()
-        XCTAssertTrue(app.buttons["debug.share.complete"].exists(within: 10))
+        // Real animations: the share sheet slides up and away at the system's own pace, slower on a busy Mac.
+        XCTAssertTrue(app.buttons["debug.share.complete"].exists(within: 20), "The share sheet didn't open")
         app.buttons["debug.share.complete"].tap()
-        XCTAssertTrue(element(app, "shareFlow.confirm").exists(within: 10))
+        XCTAssertTrue(element(app, "shareFlow.confirm").exists(within: 20), "No question whether it was posted")
         capture(app, "ready-3-posted-question")
         app.buttons["shareFlow.live"].tap()
         XCTAssertTrue(element(app, "sendoff.sheet").exists(within: 20))
