@@ -57,6 +57,10 @@ struct LocalTakeRepository: TakeRepository {
         return fileName
     }
 
+    func returnVideo(named fileName: String, to temporaryURL: URL) throws {
+        try FileManager.default.moveItem(at: videoURL(named: fileName), to: temporaryURL)
+    }
+
     func deleteVideo(named fileName: String) throws {
         let url = videoURL(named: fileName)
         // Its motion and eye analyses go with it.

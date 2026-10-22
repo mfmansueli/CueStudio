@@ -23,21 +23,33 @@ struct QuickEditDraftStoreTests {
         return QuickEditDraft(takeID: takeID, edit: edit, playhead: 4.2, history: history, savedAt: TestData.now)
     }
 
-    @Test func aDraftComesBackAsItWasSaved() {
+    @Test func aDraftComesBackAsItWasSaved() throws {
         let directory = temporaryDirectory()
         defer { try? FileManager.default.removeItem(at: directory.deletingLastPathComponent()) }
         let saved = draft()
-        QuickEditDraftStore(directory: directory).save(saved)
+        try QuickEditDraftStore(directory: directory).save(saved)
         let loaded = QuickEditDraftStore(directory: directory).draft(for: saved.takeID)
         #expect(loaded == saved)
     }
 
-    @Test func discardingRemovesIt() {
+    /// A draft that can't be written says so (Quick edit then never says "Draft saved"): here a file stands where its
+    /// folder goes.
+    @Test func aDraftThatCantBeWrittenThrows() throws {
+        let directory = temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: directory.deletingLastPathComponent()) }
+        try FileManager.default.createDirectory(at: directory.deletingLastPathComponent(), withIntermediateDirectories: true)
+        try Data().write(to: directory.deletingLastPathComponent().appending(path: directory.lastPathComponent, directoryHint: .notDirectory))
+        let saved = draft()
+        #expect(throws: (any Error).self) { try QuickEditDraftStore(directory: directory).save(saved) }
+        #expect(QuickEditDraftStore(directory: directory).draft(for: saved.takeID) == nil)
+    }
+
+    @Test func discardingRemovesIt() throws {
         let directory = temporaryDirectory()
         defer { try? FileManager.default.removeItem(at: directory.deletingLastPathComponent()) }
         let store = QuickEditDraftStore(directory: directory)
         let saved = draft()
-        store.save(saved)
+        try store.save(saved)
         store.discard(takeID: saved.takeID)
         #expect(store.draft(for: saved.takeID) == nil)
         store.discard(takeID: UUID())

@@ -84,7 +84,9 @@ final class TakeLibraryService {
     // MARK: - Actions
 
     /// Moves the recording into the library and records its metadata. A background effect chosen
-    /// while recording becomes the take's recipe (the recording keeps the camera's own image).
+    /// while recording becomes the take's recipe (the recording keeps the camera's own image). When the library can't be
+    /// written (the iPhone full), the take isn't added and its video goes back where the camera left it, where
+    /// `TakeRecovery` finds it at the next launch: never a video in the library that no take points to.
     @discardableResult
     func addTake(
         fileAt url: URL, duration: TimeInterval, script: Script?, camera: CameraSettings, background: BackgroundEffect? = nil
@@ -110,7 +112,17 @@ final class TakeLibraryService {
             take.edit = edit
         }
         takes.insert(take, at: 0)
-        persist()
+        do {
+            try save()
+        } catch {
+            takes.removeAll { $0.id == take.id }
+            do {
+                try repository.returnVideo(named: fileName, to: url)
+            } catch {
+                logger.error("Could not put the unsaved take's video back: \(error.localizedDescription)")
+            }
+            throw error
+        }
         onTakeAdded?(take)
         return take
     }
@@ -126,13 +138,14 @@ final class TakeLibraryService {
     }
 
     /// Quick edit's Done: keeps the recipe, the new length and the Edited mark. The video file is
-    /// untouched.
-    func applyEdit(_ edit: TakeEdit, to id: UUID) {
+    /// untouched. Throws when the library couldn't be written: the take keeps the edit in memory (the next save writes
+    /// it), but nothing is on disk yet, so Quick edit keeps its draft.
+    func applyEdit(_ edit: TakeEdit, to id: UUID) throws {
         guard let index = takes.firstIndex(where: { $0.id == id }) else { return }
         takes[index].edit = edit
         takes[index].duration = edit.editedDuration
         takes[index].isEdited = true
-        persist()
+        try save()
     }
 
     /// Recognition is source data, not a destructive edit. Repeated exports and editor sessions
@@ -221,15 +234,21 @@ final class TakeLibraryService {
     }
 
     private func persist() {
+        do {
+            try save()
+        } catch {
+            logger.error("Could not save takes: \(error.localizedDescription)")
+        }
+    }
+
+    /// Writes the library. One that couldn't be read isn't written over: what changed stays in memory and is saved
+    /// with what's on disk once it can be read (`reloadIfUnread`), so that's no failure. Throws when the write fails.
+    private func save() throws {
         reloadIfUnread()
         guard canSave else {
             logger.error("Not saving takes: the library on disk still can't be read")
             return
         }
-        do {
-            try repository.saveTakes(takes)
-        } catch {
-            logger.error("Could not save takes: \(error.localizedDescription)")
-        }
+        try repository.saveTakes(takes)
     }
 }
