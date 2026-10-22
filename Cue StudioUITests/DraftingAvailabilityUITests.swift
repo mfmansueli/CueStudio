@@ -69,7 +69,10 @@ final class DraftingAvailabilityUITests: XCTestCase {
             let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestAIUnavailable", state])
             let note = element(app, "generate.unavailableNote")
             XCTAssertTrue(note.exists(within: 15), state)
-            XCTAssertTrue(note.label.contains(words), "\(state): \(note.label)")
+            // The note can show before its reason is known: wait for the reason, not the first label read.
+            let told = app.descendants(matching: .any).matching(identifier: "generate.unavailableNote")
+                .matching(NSPredicate(format: "label CONTAINS %@", words)).firstMatch
+            XCTAssertTrue(told.exists(within: 5), "\(state): \(note.label)")
             XCTAssertEqual(app.buttons["ideaCard.submit"].label, "Write it", state)
             app.terminate()
         }
