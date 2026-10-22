@@ -44,9 +44,8 @@ struct RootView: View {
                 await services.session.verify()
             }
             .onChange(of: scenePhase) { _, phase in
-                // The motion and eye analyses run only while Cue is in front.
+                // The motion analyses run only while Cue is in front.
                 services.motion.setActive(phase == .active)
-                services.eyes.setActive(phase == .active)
                 guard phase == .active else { return }
                 services.reloadWhatCouldntBeRead()
                 Task { await services.store.refreshEntitlements() }

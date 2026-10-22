@@ -32,9 +32,6 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     /// Added with Follow face: `followsFaceKnown` is set in every step that has it (nil in steps saved before, which leave it).
     var faceFollow: FaceFollow?
     var followsFaceKnown: Bool?
-    /// Added with Eye Contact: `eyeContactKnown` is set in every step that has it (nil in steps saved before, which leave it).
-    var eyeContact: EyeContactSettings?
-    var eyeContactKnown: Bool?
     /// Added with Beats: nil in steps saved before, which leave it as it is.
     var snapsToBeats: Bool?
     var volume: Double
@@ -69,8 +66,6 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         cropFit = edit.cropFit
         faceFollow = edit.faceFollow
         followsFaceKnown = true
-        eyeContact = edit.eyeContact
-        eyeContactKnown = true
         snapsToBeats = edit.snapsToBeats
         volume = edit.volume
         audioVersion = edit.audioVersion
@@ -106,7 +101,6 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         edit.cropOffset = cropOffset
         edit.cropFit = cropFit
         if followsFaceKnown == true { edit.faceFollow = faceFollow }
-        if eyeContactKnown == true { edit.eyeContact = eyeContact }
         if let snapsToBeats { edit.snapsToBeats = snapsToBeats }
         edit.volume = volume
         edit.audioVersion = audioVersion

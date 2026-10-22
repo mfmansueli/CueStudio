@@ -7,7 +7,7 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The editor's media copies: a file nothing names any more goes, and what was worked out from it (its motion and eye analyses,
+/// The editor's media copies: a file nothing names any more goes, and what was worked out from it (its motion analysis,
 /// a sound's beats) goes with it.
 @MainActor
 @Suite("Edit media files")
@@ -20,7 +20,7 @@ struct EditMediaFilesTests {
         let file = try EditMediaFiles.newFile(pathExtension: "mov")
         try Data([0]).write(to: file.url)
         let sidecars = [
-            MotionAnalysisStore.url(forRecording: file.url), EyeContactAnalysisStore.url(forRecording: file.url),
+            MotionAnalysisStore.url(forRecording: file.url),
             file.url.appendingPathExtension(BeatStore.pathExtension),
         ]
         for sidecar in sidecars { try Data([0]).write(to: sidecar) }

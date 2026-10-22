@@ -109,10 +109,7 @@ nonisolated enum CoverRenderer {
         generator.requestedTimeToleranceAfter = .zero
         guard let result = try? await generator.image(at: CMTime(seconds: max(0, time), preferredTimescale: 600)) else { return nil }
         let context = CIContext(options: [.cacheIntermediates: false])
-        // Eye Contact like the video's at that moment (the frame the generator gave, upright, before the crop).
-        let full = EyeContactStill.corrected(
-            result.image, recording: url, at: result.actualTime.seconds, settings: edit.eyeContact, context: context
-        )
+        let full = result.image
         let size = CGSize(width: full.width, height: full.height)
         var crop = CropMath.crop(in: size, aspect: edit.aspect.widthOverHeight, offset: edit.cropOffset)
         // Follow face: the crop where it is at that moment of the video.

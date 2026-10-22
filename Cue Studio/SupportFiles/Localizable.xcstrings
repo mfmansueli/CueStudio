@@ -41522,125 +41522,6 @@
         }
       }
     },
-    "Adjusts your gaze toward the camera" : {
-      "comment" : "Eye Contact: what the tool does",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يوجّه نظرك نحو الكاميرا"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retter dit blik mod kameraet"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Richtet deinen Blick zur Kamera aus"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajusta tu mirada hacia la cámara"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oriente votre regard vers la caméra"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आपकी नज़र को कैमरे की ओर करता है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mengarahkan tatapanmu ke kamera"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Orienta il tuo sguardo verso la fotocamera"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "視線をカメラの方へ合わせます"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "시선을 카메라 쪽으로 맞춰요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retter blikket ditt mot kameraet"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Richt je blik op de camera"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ajusta seu olhar em direção à câmera"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Riktar din blick mot kameran"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ปรับสายตาของคุณให้มองไปที่กล้อง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bakışını kameraya doğru ayarlar"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chỉnh ánh mắt của bạn hướng về camera"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "将你的视线调整为看向镜头"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "將你的視線調整為看向鏡頭"
-          }
-        }
-      }
-    },
     "Adoption & rescue" : {
       "comment" : "My Cue Voice: a more specific topic inside a topic",
       "localizations" : {
@@ -92835,125 +92716,6 @@
         }
       }
     },
-    "Corrects %lld%% of the video. Blinks and looks away stay as filmed." : {
-      "comment" : "Eye Contact: share of the video corrected",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يصحّح %lld%% من الفيديو. الرمش والنظر بعيدًا يبقيان كما صُوّرا."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retter %lld %% af videoen. Blink og blik væk fra kameraet bevares, som de blev filmet."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Korrigiert %lld%% des Videos. Blinzeln und Wegschauen bleiben wie gefilmt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Corrige el %lld%% del video. Los parpadeos y las miradas a otro lado quedan como se grabaron."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Corrige %lld %% de la vidéo. Les clignements et les regards ailleurs restent tels que filmés."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "वीडियो का %lld%% ठीक करता है। पलकें झपकना और दूसरी ओर देखना वैसे ही रहते हैं जैसे फ़िल्माए गए।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mengoreksi %lld%% video. Kedipan dan tatapan ke arah lain tetap seperti direkam."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Corregge il %lld%% del video. Battiti di ciglia e sguardi altrove restano come girati."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "動画の%lld%%を補正します。まばたきやよそ見は撮影したままです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "영상의 %lld%%를 보정해요. 눈 깜빡임과 다른 곳을 보는 순간은 촬영한 그대로예요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Retter %lld%% av videoen. Blunking og blikk bort blir som filmet."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Corrigeert %lld%% van de video. Knipperen en wegkijken blijven zoals gefilmd."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Corrige %lld%% do vídeo. Piscadas e olhares para longe ficam como foram gravados."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Korrigerar %lld%% av videon. Blinkningar och blickar bort förblir som de filmades."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "แก้ไข %lld%% ของวิดีโอ การกะพริบตาและการมองไปทางอื่นยังคงเหมือนตอนถ่าย"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Videonun %%%lld kadarını düzeltir. Göz kırpmalar ve başka yere bakışlar çekildiği gibi kalır."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Chỉnh %lld%% video. Lúc chớp mắt và nhìn đi chỗ khác vẫn giữ như khi quay."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "校正视频的 %lld%%。眨眼和看向别处的画面保持原样。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "校正影片的 %lld%%。眨眼和看向別處的畫面保持原樣。"
-          }
-        }
-      }
-    },
     "Couldn’t connect" : {
       "comment" : "Settings › Remote: title when pairing with the other device failed",
       "localizations" : {
@@ -132857,244 +132619,6 @@
         }
       }
     },
-    "Eye Contact isn’t available on this iPhone" : {
-      "comment" : "Eye Contact can't run on this device",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التواصل البصري غير متاح على هذا الـ iPhone"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Øjenkontakt er ikke tilgængelig på denne iPhone"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Blickkontakt ist auf diesem iPhone nicht verfügbar"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contacto visual no está disponible en este iPhone"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contact visuel n’est pas disponible sur cet iPhone"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "इस iPhone पर आई कॉन्टैक्ट उपलब्ध नहीं है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kontak Mata tidak tersedia di iPhone ini"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contatto visivo non disponibile su questo iPhone"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "このiPhoneではアイコンタクトを使えません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 iPhone에서는 시선 맞춤을 사용할 수 없어요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Øyekontakt er ikke tilgjengelig på denne iPhonen"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oogcontact is niet beschikbaar op deze iPhone"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Corrigir olhar não está disponível neste iPhone"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ögonkontakt är inte tillgänglig på den här iPhonen"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "สบตากล้องใช้ไม่ได้บน iPhone เครื่องนี้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Göz Teması bu iPhone’da kullanılamıyor"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nhìn vào ống kính không có trên iPhone này"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此 iPhone 无法使用眼神交流"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "這部 iPhone 無法使用「眼神交流」"
-          }
-        }
-      }
-    },
-    "Eye Contact" : {
-      "comment" : "✦ Smart tool that moves the creator's eyes toward the lens",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "التواصل البصري"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Øjenkontakt"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Blickkontakt"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contacto visual"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contact visuel"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आई कॉन्टैक्ट"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kontak Mata"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contatto visivo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "アイコンタクト"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "시선 맞춤"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Øyekontakt"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oogcontact"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Corrigir olhar"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ögonkontakt"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "สบตากล้อง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Göz Teması"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nhìn vào ống kính"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "眼神交流"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "眼神交流"
-          }
-        }
-      }
-    },
     "Fact" : {
       "localizations" : {
         "ar" : {
@@ -137479,125 +137003,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "正在畫面中找你…"
-          }
-        }
-      }
-    },
-    "Finding your eyes · %lld%%" : {
-      "comment" : "Eye Contact: analyzing the video",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جارٍ العثور على عينيك · %lld%%"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Finder dine øjne · %lld %%"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deine Augen werden gesucht · %lld %%"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buscando tus ojos · %lld%%"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Recherche de vos yeux · %lld %%"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आपकी आँखें ढूँढी जा रही हैं · %lld%%"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mencari matamu · %lld%%"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ricerca degli occhi · %lld%%"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "目を検出中 · %lld%%"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "눈을 찾는 중 · %lld%%"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Finner øynene dine · %lld%%"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je ogen zoeken · %lld%%"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Procurando seus olhos · %lld%%"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Letar efter dina ögon · %lld%%"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "กำลังหาดวงตาของคุณ · %lld%%"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gözlerin aranıyor · %%%lld"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đang tìm mắt bạn · %lld%%"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在寻找你的眼睛 · %lld%%"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "正在尋找你的眼睛 · %lld%%"
           }
         }
       }
@@ -203931,125 +203336,6 @@
         }
       }
     },
-    "More than one person in the frame: nothing was corrected" : {
-      "comment" : "Eye Contact: several faces",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أكثر من شخص في الإطار: لم يُصحَّح شيء"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mere end én person i billedet: intet blev rettet"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mehr als eine Person im Bild: nichts wurde korrigiert"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hay más de una persona en la imagen: no se corrigió nada"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Plus d’une personne dans l’image : rien n’a été corrigé"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "फ़्रेम में एक से ज़्यादा लोग हैं: कुछ भी ठीक नहीं किया गया"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ada lebih dari satu orang di bingkai: tidak ada yang dikoreksi"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Più di una persona nell’inquadratura: niente è stato corretto"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "画面に複数の人がいるため、補正していません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "화면에 여러 사람이 있어 보정하지 않았어요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mer enn én person i bildet: ingenting ble rettet"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Meer dan één persoon in beeld: er is niets gecorrigeerd"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mais de uma pessoa no quadro: nada foi corrigido"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mer än en person i bild: inget korrigerades"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "มีมากกว่าหนึ่งคนในภาพ: ไม่ได้แก้ไขอะไร"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Karede birden fazla kişi var: hiçbir şey düzeltilmedi"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Có hơn một người trong khung hình: không chỉnh gì"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "画面中有不止一人：未进行校正"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "畫面中有不只一人：未進行校正"
-          }
-        }
-      }
-    },
     "Morning habits" : {
       "localizations" : {
         "ar" : {
@@ -218037,244 +217323,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "沒有待處理的剪輯。"
-          }
-        }
-      }
-    },
-    "No face" : {
-      "comment" : "✦ Smart tile status: Eye Contact found no face to correct",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا وجه"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Intet ansigt"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kein Gesicht"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sin cara"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun visage"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "चेहरा नहीं"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak ada wajah"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nessun volto"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顔なし"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "얼굴 없음"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ikke noe ansikt"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geen gezicht"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sem rosto"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inget ansikte"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ไม่มีใบหน้า"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yüz yok"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Không thấy mặt"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无人脸"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無臉孔"
-          }
-        }
-      }
-    },
-    "No face clear enough to correct" : {
-      "comment" : "Eye Contact: no usable face",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا يوجد وجه واضح بما يكفي لتصحيحه"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Intet ansigt tydeligt nok til at rette"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kein Gesicht deutlich genug zum Korrigieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No hay una cara lo bastante clara para corregir"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aucun visage assez net pour être corrigé"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ठीक करने लायक साफ़ चेहरा नहीं मिला"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak ada wajah yang cukup jelas untuk dikoreksi"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nessun volto abbastanza chiaro da correggere"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "補正できるほどはっきりした顔がありません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "보정할 만큼 또렷한 얼굴이 없어요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ingen ansikter tydelige nok til å rettes"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Geen gezicht duidelijk genoeg om te corrigeren"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nenhum rosto nítido o bastante para corrigir"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inget ansikte är tydligt nog att korrigera"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ไม่มีใบหน้าที่ชัดพอจะแก้ไขได้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Düzeltilecek kadar net bir yüz yok"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Không có khuôn mặt nào đủ rõ để chỉnh"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "没有足够清晰的人脸可供校正"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "沒有足夠清晰的臉孔可供校正"
           }
         }
       }
@@ -270164,125 +269212,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "準備好下一部影片了嗎？"
-          }
-        }
-      }
-    },
-    "Ready here · finding your eyes in the rest · %lld%%" : {
-      "comment" : "Eye Contact: the part on screen is ready, the rest is being analyzed",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جاهز هنا · جارٍ العثور على عينيك في الباقي · %lld%%"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Klar her · finder dine øjne i resten · %lld %%"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hier fertig · Augen im Rest werden gesucht · %lld %%"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Listo aquí · buscando tus ojos en el resto · %lld%%"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prêt ici · recherche de vos yeux dans le reste · %lld %%"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "यहाँ तैयार · बाकी में आपकी आँखें ढूँढी जा रही हैं · %lld%%"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Siap di sini · mencari matamu di sisanya · %lld%%"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pronto qui · ricerca degli occhi nel resto · %lld%%"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ここは完了 · 残りで目を検出中 · %lld%%"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "여기는 준비됨 · 나머지에서 눈을 찾는 중 · %lld%%"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Klar her · finner øynene dine i resten · %lld%%"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hier klaar · je ogen zoeken in de rest · %lld%%"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pronto aqui · procurando seus olhos no resto · %lld%%"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Klart här · letar efter dina ögon i resten · %lld%%"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ตรงนี้พร้อมแล้ว · กำลังหาดวงตาของคุณในส่วนที่เหลือ · %lld%%"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Burada hazır · gözlerin kalan kısımda aranıyor · %%%lld"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đoạn này đã xong · đang tìm mắt bạn ở phần còn lại · %lld%%"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此处已就绪 · 正在其余部分查找你的眼睛 · %lld%%"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "此處已就緒 · 正在其餘部分尋找你的眼睛 · %lld%%"
           }
         }
       }
@@ -375200,125 +374129,6 @@
         }
       }
     },
-    "Unavailable" : {
-      "comment" : "✦ Smart tile status: the tool can't run",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "غير متاح"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utilgængelig"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Nicht verfügbar"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "No disponible"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indisponible"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "उपलब्ध नहीं"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tidak tersedia"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Non disponibile"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "使用不可"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "사용 불가"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Utilgjengelig"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Niet beschikbaar"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Indisponível"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inte tillgänglig"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ใช้ไม่ได้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kullanılamıyor"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Không khả dụng"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "不可用"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無法使用"
-          }
-        }
-      }
-    },
     "Unboxing, first look" : {
       "localizations" : {
         "ar" : {
@@ -382297,121 +381107,121 @@
         }
       }
     },
-    "Video transitions and Eye Contact in Cue's editor build on these open-source works, rewritten or converted for Cue." : {
-      "comment" : "Settings › Acknowledgements: footer of the open-source works",
+    "Video transitions in Cue's editor build on this open-source work, rewritten for Cue." : {
+      "comment" : "Settings › Acknowledgements: footer of the open-source work credited (GL Transitions)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تعتمد انتقالات الفيديو والتواصل البصري في محرّر Cue على هذه الأعمال مفتوحة المصدر، بعد إعادة كتابتها أو تحويلها لـ Cue."
+            "value" : "تعتمد انتقالات الفيديو في محرّر Cue على هذا العمل مفتوح المصدر، بعد إعادة كتابته لـ Cue."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videoovergange og Øjenkontakt i Cues editor bygger på disse open source-værker, omskrevet eller konverteret til Cue."
+            "value" : "Videoovergangene i Cues editor bygger på dette open source-værk, omskrevet til Cue."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videoübergänge und Blickkontakt im Editor von Cue bauen auf diesen Open-Source-Werken auf, für Cue neu geschrieben oder umgewandelt."
+            "value" : "Die Videoübergänge im Editor von Cue bauen auf diesem Open-Source-Werk auf, für Cue neu geschrieben."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Las transiciones de video y Contacto visual del editor de Cue se basan en estas obras de código abierto, reescritas o convertidas para Cue."
+            "value" : "Las transiciones de video del editor de Cue se basan en esta obra de código abierto, reescrita para Cue."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Les transitions vidéo et Contact visuel de l’éditeur de Cue s’appuient sur ces œuvres open source, réécrites ou converties pour Cue."
+            "value" : "Les transitions vidéo de l’éditeur de Cue s’appuient sur cette œuvre open source, réécrite pour Cue."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue के एडिटर में वीडियो ट्रांज़िशन और आई कॉन्टैक्ट इन ओपन-सोर्स कामों पर आधारित हैं, जिन्हें Cue के लिए दोबारा लिखा या बदला गया है।"
+            "value" : "Cue के एडिटर में वीडियो ट्रांज़िशन इस ओपन-सोर्स काम पर आधारित हैं, जिसे Cue के लिए दोबारा लिखा गया है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Transisi video dan Kontak Mata di editor Cue dibangun dari karya sumber terbuka ini, ditulis ulang atau dikonversi untuk Cue."
+            "value" : "Transisi video di editor Cue dibangun dari karya sumber terbuka ini, ditulis ulang untuk Cue."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Le transizioni video e Contatto visivo nell’editor di Cue si basano su queste opere open source, riscritte o convertite per Cue."
+            "value" : "Le transizioni video nell’editor di Cue si basano su quest’opera open source, riscritta per Cue."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cueエディタの動画トランジションとアイコンタクトは、これらのオープンソース作品をもとに、Cue用に書き直し・変換したものです。"
+            "value" : "Cueエディタの動画トランジションは、このオープンソース作品をもとにCue用に書き直したものです。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 편집기의 영상 전환과 시선 맞춤은 이 오픈 소스 작업을 바탕으로 Cue에 맞게 다시 작성하거나 변환했어요."
+            "value" : "Cue 편집기의 영상 전환은 이 오픈 소스 작업을 바탕으로 Cue에 맞게 다시 작성했어요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videoovergangene og Øyekontakt i Cues redigeringsverktøy bygger på disse verkene med åpen kildekode, skrevet om eller konvertert for Cue."
+            "value" : "Videoovergangene i Cues redigeringsverktøy bygger på dette verket med åpen kildekode, skrevet om for Cue."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Video-overgangen en Oogcontact in de editor van Cue bouwen op deze opensourcewerken, herschreven of omgezet voor Cue."
+            "value" : "De video-overgangen in de editor van Cue bouwen op dit opensourcewerk, herschreven voor Cue."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "As transições de vídeo e o Corrigir olhar do editor do Cue se baseiam nestas obras de código aberto, reescritas ou convertidas para o Cue."
+            "value" : "As transições de vídeo do editor do Cue se baseiam nesta obra de código aberto, reescrita para o Cue."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Videoövergångar och Ögonkontakt i Cues redigerare bygger på dessa verk med öppen källkod, omskrivna eller konverterade för Cue."
+            "value" : "Videoövergångarna i Cues redigerare bygger på detta verk med öppen källkod, omskrivet för Cue."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ทรานซิชันวิดีโอและสบตากล้องในตัวแก้ไขของ Cue สร้างจากงานโอเพนซอร์สเหล่านี้ โดยเขียนใหม่หรือแปลงให้ใช้กับ Cue"
+            "value" : "ทรานซิชันวิดีโอในตัวแก้ไขของ Cue สร้างจากงานโอเพนซอร์สนี้ โดยเขียนใหม่ให้ใช้กับ Cue"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue düzenleyicisindeki video geçişleri ve Göz Teması, Cue için yeniden yazılmış ya da dönüştürülmüş bu açık kaynak çalışmalara dayanır."
+            "value" : "Cue düzenleyicisindeki video geçişleri, Cue için yeniden yazılmış bu açık kaynak çalışmaya dayanır."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hiệu ứng chuyển cảnh và Nhìn vào ống kính trong trình chỉnh sửa của Cue dựa trên các công trình mã nguồn mở này, được viết lại hoặc chuyển đổi cho Cue."
+            "value" : "Hiệu ứng chuyển cảnh trong trình chỉnh sửa của Cue dựa trên công trình mã nguồn mở này, được viết lại cho Cue."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 编辑器中的视频转场和眼神交流基于这些开源作品，并为 Cue 重写或转换。"
+            "value" : "Cue 编辑器中的视频转场基于这项开源作品，并为 Cue 重写。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cue 編輯器中的影片轉場和眼神交流以這些開源作品為基礎，並為 Cue 重寫或轉換。"
+            "value" : "Cue 編輯器中的影片轉場以這項開源作品為基礎，並為 Cue 重寫。"
           }
         }
       }
@@ -395919,125 +394729,6 @@
         }
       }
     },
-    "Whole video · made on your iPhone" : {
-      "comment" : "Eye Contact panel subtitle",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الفيديو كله · على الـ iPhone"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hele videoen · på din iPhone"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ganzes Video · auf deinem iPhone"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Todo el video · en tu iPhone"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toute la vidéo · sur votre iPhone"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "पूरा वीडियो · आपके iPhone पर"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seluruh video · dibuat di iPhone-mu"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tutto il video · sul tuo iPhone"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "動画全体 · iPhone上で処理"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "영상 전체 · iPhone에서 처리"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hele videoen · laget på iPhonen din"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hele video · gemaakt op je iPhone"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vídeo inteiro · feito no seu iPhone"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hela videon · görs på din iPhone"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ทั้งวิดีโอ · ทำบน iPhone ของคุณ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tüm video · iPhone’unda yapılır"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Toàn bộ video · xử lý trên iPhone của bạn"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "整个视频 · 在你的 iPhone 上处理"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "整部影片 · 在你的 iPhone 上處理"
-          }
-        }
-      }
-    },
     "Whoosh" : {
       "comment" : "Sound effect",
       "localizations" : {
@@ -408372,125 +407063,6 @@
         }
       }
     },
-    "Your eyes are too small in the frame to correct" : {
-      "comment" : "Eye Contact: face too far",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "عيناك صغيرتان جدًا في الإطار لتصحيحهما"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dine øjne er for små i billedet til at rette"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deine Augen sind im Bild zu klein zum Korrigieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tus ojos se ven demasiado pequeños para corregirlos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vos yeux sont trop petits dans l’image pour être corrigés"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "फ़्रेम में आपकी आँखें ठीक करने के लिए बहुत छोटी हैं"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Matamu terlalu kecil di bingkai untuk dikoreksi"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I tuoi occhi sono troppo piccoli nell’inquadratura per correggerli"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "画面上の目が小さすぎて補正できません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "화면 속 눈이 너무 작아 보정할 수 없어요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Øynene dine er for små i bildet til å rettes"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je ogen zijn te klein in beeld om te corrigeren"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seus olhos estão pequenos demais no quadro para corrigir"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dina ögon är för små i bild för att korrigeras"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ดวงตาของคุณเล็กเกินไปในภาพที่จะแก้ไขได้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gözlerin karede düzeltilemeyecek kadar küçük"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mắt bạn quá nhỏ trong khung hình để chỉnh"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "画面中你的眼睛太小，无法校正"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "畫面中你的眼睛太小，無法校正"
-          }
-        }
-      }
-    },
     "Your first script is ready" : {
       "comment" : "Notification title",
       "localizations" : {
@@ -408963,125 +407535,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的首次航程"
-          }
-        }
-      }
-    },
-    "Your head is turned too far to correct" : {
-      "comment" : "Eye Contact: head turned or tilted",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "رأسك مائل أو مستدير أكثر من اللازم لتصحيحه"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dit hoved er drejet for meget til at rette"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dein Kopf ist zu stark gedreht zum Korrigieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tu cabeza está demasiado girada para corregirla"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Votre tête est trop tournée pour être corrigée"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आपका सिर ठीक करने के लिए बहुत ज़्यादा मुड़ा है"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kepalamu terlalu menoleh untuk dikoreksi"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hai la testa troppo girata per correggere lo sguardo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顔の向きが大きすぎて補正できません"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "고개가 너무 돌아가 있어 보정할 수 없어요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hodet ditt er snudd for mye til å rettes"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je hoofd is te ver gedraaid om te corrigeren"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sua cabeça está virada demais para corrigir"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ditt huvud är för vridet för att korrigeras"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ศีรษะของคุณหันมากเกินไปที่จะแก้ไขได้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Başın düzeltilemeyecek kadar dönük"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đầu bạn quay quá nhiều để chỉnh"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你的头部转动过大，无法校正"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你的頭部轉動過大，無法校正"
           }
         }
       }

@@ -10,7 +10,10 @@ struct LocalTakeRepository: TakeRepository {
     private let directory: URL
     private var metadataURL: URL { directory.appending(path: "takes.json") }
 
-    init(directory: URL = URL.applicationSupportDirectory.appending(path: "Takes", directoryHint: .isDirectory)) {
+    /// Application Support/Takes.
+    nonisolated static var defaultDirectory: URL { URL.applicationSupportDirectory.appending(path: "Takes", directoryHint: .isDirectory) }
+
+    init(directory: URL = Self.defaultDirectory) {
         self.directory = directory
     }
 
@@ -59,9 +62,8 @@ struct LocalTakeRepository: TakeRepository {
 
     func deleteVideo(named fileName: String) throws {
         let url = videoURL(named: fileName)
-        // Its motion and eye analyses go with it.
+        // Its motion analysis goes with it.
         MotionAnalysisStore.remove(forRecording: url)
-        EyeContactAnalysisStore.remove(forRecording: url)
         guard FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else { return }
         try FileManager.default.removeItem(at: url)
     }

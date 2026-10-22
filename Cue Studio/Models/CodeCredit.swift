@@ -26,16 +26,5 @@ nonisolated struct CodeCredit: Identifiable, Hashable, Sendable {
             name: "GL Transitions", license: "MIT License", copyright: "Copyright (c) 2017-present gl-transitions contributors",
             licenseFile: "gl-transitions-MIT"
         ),
-        // Eye Contact's face landmarks: MediaPipe's trained weights, converted for Core ML (`tools/eyecontact/landmarks.py`).
-        CodeCredit(
-            name: "MediaPipe Face Mesh (Eye Contact)", license: "Apache License 2.0", copyright: "Copyright 2023 The MediaPipe Authors",
-            licenseFile: "mediapipe-Apache-2.0"
-        ),
-        // Eye Contact's rules (when to correct, how fast, how to blend) follow how this open host of NVIDIA Maxine's eye contact runs
-        // it; its code was read and the rules rewritten, none of it is in Cue.
-        CodeCredit(
-            name: "Locked Gaze (Eye Contact)", license: "MIT License", copyright: "Copyright (c) 2026 albond",
-            licenseFile: "locked-gaze-MIT"
-        ),
     ]
 }

@@ -217,10 +217,9 @@ extension QuickEditViewModel {
         player.scrub(to: min(max(0, time), edit.editedDuration))
     }
 
-    /// The finger let go of the content: the eye analysis moves to where the playhead stopped.
+    /// The finger let go of the content.
     func endTimelineScrub() {
         player.endScrub()
-        refocusEyeContact()
     }
 
     // MARK: - Handles

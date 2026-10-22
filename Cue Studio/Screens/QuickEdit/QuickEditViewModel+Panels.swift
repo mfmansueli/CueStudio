@@ -42,7 +42,6 @@ extension QuickEditViewModel {
         case .media: String(localized: "On top of the video")
         case .transition: transitionSubtitle
         case .smart: String(localized: "Quick fixes, made on your iPhone")
-        case .eyeContact: String(localized: "Whole video · made on your iPhone")
         }
     }
 

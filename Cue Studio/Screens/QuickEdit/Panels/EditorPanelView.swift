@@ -31,7 +31,6 @@ struct EditorPanelView: View {
         case .beats: BeatsPanel(viewModel: viewModel)
         case .media: MediaPanel(viewModel: viewModel)
         case .smart: SmartPanel(viewModel: viewModel)
-        case .eyeContact: EyeContactPanel(viewModel: viewModel)
         }
     }
 }

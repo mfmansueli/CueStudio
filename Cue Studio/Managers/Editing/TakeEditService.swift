@@ -125,7 +125,7 @@ final class TakeEditService: TakeEditing {
         let composition = try await EditedComposition.build(
             source: url, edit: edit, sound: treated, speech: await voiceActivity(for: url, edit: edit),
             options: .init(
-                burnsInCaptions: true, shortSide: 1080, window: window, analyzesMissingMotion: false, analyzesMissingEyes: false,
+                burnsInCaptions: true, shortSide: 1080, window: window, analyzesMissingMotion: false,
                 rendersCurveSound: rendersCurveSound
             )
         )

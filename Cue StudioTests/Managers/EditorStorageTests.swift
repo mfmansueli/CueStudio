@@ -28,6 +28,22 @@ struct EditorStorageTests {
         #expect(EditStorageCleaner.staleSounds(files: files, launchedAt: launch) == ["Cue-audio-1234.m4a"])
     }
 
+    /// Eye Contact's analyses (removed 22/10/2026) go from next to the recordings at launch; the recordings and their motion
+    /// analyses stay.
+    @Test func aRemovedToolsAnalysesGoAndTheRecordingsStay() async throws {
+        let folder = URL.temporaryDirectory.appending(path: "retired-\(UUID().uuidString)", directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let recording = folder.appending(path: "take.mov")
+        let kept = [recording, MotionAnalysisStore.url(forRecording: recording)]
+        for file in kept + [recording.appendingPathExtension("cueeyes")] { try Data([1]).write(to: file) }
+
+        await EditStorageCleaner.clean(launchedAt: .now, recordingFolders: [folder])
+
+        let left = try FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false))
+        #expect(Set(left) == Set(kept.map(\.lastPathComponent)))
+    }
+
     @Test func aLevelThatChangedNothingNeverDeletesItsInput() async throws {
         let cache = RecordingSoundCache()
         let input = URL.temporaryDirectory.appending(path: "level-input-\(UUID().uuidString).caf")

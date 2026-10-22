@@ -47,10 +47,6 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         /// Makes the motion analyses Follow face and stabilization need when they're missing (an export); the preview draws
         /// with the ones ready.
         var analyzesMissingMotion = true
-        /// Makes the parts of Eye Contact's analyses still missing (an export, which reports how far through `analysisProgress`);
-        /// the preview draws with what's ready.
-        var analyzesMissingEyes = true
-        var analysisProgress: (@Sendable (Double) -> Void)?
         /// Renders curved clips' sound along their curves (`CurveSoundRenderer`); off, it's stretched in steps like the picture,
         /// which is instant: the preview while a finger shapes a curve or drags a handle.
         var rendersCurveSound = true
@@ -150,7 +146,6 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         }
         let ownBackgrounds = clipBackgrounds(of: edit.timeline, build: build)
         let analyses = try await motionAnalyses(take: source, edit: edit, analyzesMissing: options.analyzesMissingMotion)
-        let eyes = try await eyeContactTracks(take: source, edit: edit, analyzesMissing: options.analyzesMissingEyes, progress: options.analysisProgress)
         var follows: [UUID?: FaceFollowPath] = [:]
         func frame(_ id: UUID?) -> SourceFrame {
             guard let played = recording(id) else { return SourceFrame(transform: .identity, crop: crop, scale: 1) }
@@ -161,7 +156,6 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             result.uprightSize = played.uprightSize
             if follows[id] == nil { follows[id] = followPath(for: edit, analysis: analyses[id], crop: own, size: played.uprightSize) }
             result.follow = follows[id]
-            result.eyes = eyes[id]
             return result
         }
         var steadyPaths: [String: StabilizationPath] = [:]

@@ -44,7 +44,7 @@ struct AcknowledgementsView: View {
                     .cardRowBackground(position: CardRowPosition(index: index, count: CodeCredit.all.count))
                 }
             } footer: {
-                Text("Video transitions and Eye Contact in Cue's editor build on these open-source works, rewritten or converted for Cue.")
+                Text("Video transitions in Cue's editor build on this open-source work, rewritten for Cue.")
             }
         }
         .cueGroupedList()

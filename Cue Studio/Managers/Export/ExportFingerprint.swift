@@ -24,8 +24,6 @@ nonisolated enum ExportFingerprint {
             encoder.outputFormatting = [.sortedKeys]
             encoder.dateEncodingStrategy = .secondsSince1970
             parts.append((try? encoder.encode(edit)).flatMap { String(bytes: $0, encoding: .utf8) } ?? "edit")
-            // A new gaze model or new rules draw the same settings differently.
-            if edit.eyeContact != nil { parts.append(EyeContactEngine.identity) }
         } else {
             parts.append("no-edit")
         }
