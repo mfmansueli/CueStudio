@@ -9,6 +9,9 @@ import Foundation
 /// so it can be tested without the model.
 nonisolated enum ScriptPromptBuilder {
     static let cueHint = "Add short stage cues in square brackets where they help delivery, like [pause], [smile] or [look at camera]. Never put spoken words inside brackets."
+    /// Cue writes no dashes in any language (the owner's rule). The hyphen is named as allowed: told only "no dashes", a small model starts
+    /// splitting words. `DashRewriter` still rewrites any dash the model writes.
+    static let punctuationRule = "Never use a dash (— or –) between words or sentences: use a full stop, comma, colon or parentheses. Hyphens inside words are fine."
 
     // MARK: - Generation
 
@@ -20,6 +23,7 @@ nonisolated enum ScriptPromptBuilder {
             "Write in the first person, as the creator, in natural spoken language\(sentenceClause(for: voice)).",
             "Fill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.",
             cueHint,
+            punctuationRule,
         ]
         if structure.isSerious {
             lines.append(seriousRule)
@@ -320,7 +324,7 @@ nonisolated enum ScriptPromptBuilder {
     /// What the model is told before it suggests ideas: who it works for, and the creator's voice when there is one (their topics, who is
     /// watching and why) so the ideas are theirs and not any creator's.
     static func themesInstructions(voice: CreatorVoice? = nil, voiceBudget: Int? = nil) -> String {
-        var lines = ["You suggest video ideas for creators who film themselves talking to camera."]
+        var lines = ["You suggest video ideas for creators who film themselves talking to camera.", punctuationRule]
         if let voice { lines += voiceLines(voice, budget: voiceBudget) }
         return lines.joined(separator: "\n")
     }
@@ -393,6 +397,7 @@ nonisolated enum ScriptPromptBuilder {
             "Never add stage cues, scene descriptions, sound effects or notes of your own: only the words the creator says.",
             "Return only the full edited script: no explanations, no headings, no markdown, no quotes around it.",
             "Separate paragraphs with a blank line.",
+            punctuationRule,
             "Keep the script in the language it is written in, unless you are asked to translate it.",
         ]
         if let language, language.languageCode?.identifier != "en" {
@@ -474,9 +479,12 @@ nonisolated enum ScriptPromptBuilder {
 
     // MARK: - Cleaning
 
-    /// Strips markdown, block labels and wrapping quotes the model sometimes adds, and normalizes
-    /// paragraphs.
-    static func clean(_ response: String) -> String {
+    /// Strips markdown, block labels and wrapping quotes the model sometimes adds, rewrites its dashes (`DashRewriter`) and normalizes
+    /// paragraphs. Only for what the model wrote.
+    /// - Parameters:
+    ///   - language: the language of the answer, for the punctuation that replaces a dash; nil reads it from the text.
+    ///   - preserving: the creator's words the model had to repeat, left as they are (`ScriptRequest.preservedPhrases`, `preserved(inRewriteOf:)`).
+    static func clean(_ response: String, language: Locale.Language? = nil, preserving: [String] = []) -> String {
         let lines: [String] = response
             .replacingOccurrences(of: "\r\n", with: "\n")
             .components(separatedBy: "\n")
@@ -498,7 +506,7 @@ nonisolated enum ScriptPromptBuilder {
         if text.count > 2, let first = text.first, let last = text.last, "\"“".contains(first), "\"”".contains(last) {
             text = String(text.dropFirst().dropLast())
         }
-        return ScriptTextNormalizer.normalize(collapsingRepeatedCues(text))
+        return ScriptTextNormalizer.normalize(DashRewriter.rewrite(collapsingRepeatedCues(text), language: language, preserving: preserving))
     }
 
     /// A cue repeated three times in a row or more is the model stuck: "[pause]... [pause]... [pause]..." went on for hundreds, until its answer
@@ -527,15 +535,22 @@ nonisolated enum ScriptPromptBuilder {
         return paragraphs.joined(separator: "\n\n")
     }
 
-    /// A title or a single line (hook, idea): one line, no markdown or wrapping quotes.
-    static func cleanTitle(_ raw: String) -> String {
+    /// A title or a single line (hook, idea): one line, no markdown, wrapping quotes or dashes (`clean`).
+    static func cleanTitle(_ raw: String, language: Locale.Language? = nil, preserving: [String] = []) -> String {
         var line = raw.components(separatedBy: .newlines).first { !$0.trimmingCharacters(in: .whitespaces).isEmpty } ?? ""
         line = line.replacingOccurrences(of: "**", with: "")
             .trimmingCharacters(in: CharacterSet(charactersIn: "#*-• ").union(.whitespaces))
         if line.count > 2, let first = line.first, let last = line.last, "\"“'".contains(first), "\"”'".contains(last) {
             line = String(line.dropFirst().dropLast())
         }
-        return line.trimmingCharacters(in: .whitespaces)
+        return DashRewriter.rewrite(line.trimmingCharacters(in: .whitespaces), language: language, preserving: preserving)
+    }
+
+    /// What a tool that edits the creator's script must leave as it is: the sentences of theirs that hold a dash (one the model kept word for
+    /// word keeps it; one it rewrote comes back without) and their catchphrases. A translation is all the model's, so nothing.
+    static func preserved(inRewriteOf source: String, tool: ScriptTool, voice: CreatorVoice?) -> [String] {
+        guard tool != .translate else { return [] }
+        return DashRewriter.sentencesWithDashes(in: source) + (voice?.phrases ?? [])
     }
 
     /// Block names the model tends to echo as "Hook: …".

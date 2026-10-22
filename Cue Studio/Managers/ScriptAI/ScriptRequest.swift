@@ -52,6 +52,13 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
         if case .prompt = source { true } else { false }
     }
 
+    /// The creator's words the model has to repeat as they are: catchphrases, the brand's approved line, link and code, and the opening line of
+    /// the idea. Their dashes stay when the model's answer is cleaned (`DashRewriter`).
+    var preservedPhrases: [String] {
+        let brand = brand.map { [$0.mustSay, $0.link, $0.code] } ?? []
+        return ((voice?.phrases ?? []) + brand + [brief?.openingLine ?? ""]).filter { !$0.isEmpty }
+    }
+
     /// History, science, "how X came to be": needs a fact check before recording.
     var isFactualTopic: Bool {
         if case .prompt(let text) = source { FactualTopic.isFactual(text) } else { false }

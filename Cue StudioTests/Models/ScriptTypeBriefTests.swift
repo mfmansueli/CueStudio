@@ -59,4 +59,15 @@ struct ScriptTypeBriefTests {
     func lowercasedFirstKeepsNamesAndAcronyms(input: String, expected: String) {
         #expect(ScriptType.lowercasedFirst(input) == expected)
     }
+
+    /// The story's headline is what the creator typed before a dash, its nouns as they wrote them; the launch draft writes no dash.
+    @Test func theStoryTitleAndTheLaunchDraftWriteNoDash() {
+        #expect(ScriptType.story.draftTitle(from: ["setup": "My first brand call — and my camera froze"]) == "Storytime: my first brand call")
+        #expect(ScriptType.story.draftTitle(from: ["setup": "Mein erster Call – und die Kamera fror ein"]) == "Storytime: mein erster Call")
+        let launch = ScriptType.launch.draft(from: [
+            "news": "My first preset pack", "when": "Drops Friday at 9 a.m.", "details": "12 presets", "cta": "Join the waitlist",
+        ])
+        #expect(launch.contains("My first preset pack. Drops Friday at 9 a.m."))
+        #expect(!launch.contains(where: DashRewriter.dashes.contains))
+    }
 }

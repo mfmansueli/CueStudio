@@ -37,7 +37,7 @@ extension ScriptAIService {
             let started = ContinuousClock.now
             do {
                 let answer = try await answering { try await session.respond(to: prompt, options: options).content }
-                let text = ScriptPromptBuilder.clean(answer)
+                let text = ScriptPromptBuilder.clean(answer, language: request.language?.locale.language, preserving: request.preservedPhrases)
                 let words = ScriptExpansion.words(in: text)
                 if step.isShorter ? (words < step.words && words > 0) : words > step.words { replacements[step.index] = text }
             } catch is CancellationError {

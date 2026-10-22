@@ -21,6 +21,7 @@ nonisolated enum ScriptExpansionPrompt {
             "Never invent personal stories, clients, results, numbers or credentials. Say facts only when you are sure of them.",
             "Keep the stage cues in square brackets, and put no spoken words inside brackets.",
             "Answer only with the new text of the block: no label, no heading, no quotes, no markdown.",
+            ScriptPromptBuilder.punctuationRule,
         ]
         if let language = request.language, language != .english || request.languageVariant != nil {
             lines.append(ScriptPromptBuilder.languageRule(language, variant: request.languageVariant))

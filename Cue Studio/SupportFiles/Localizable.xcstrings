@@ -12313,7 +12313,7 @@
       }
     },
     "%1$@ to %2$@" : {
-      "comment" : "A range of video lengths, put into other strings (“ideal 1:00 to 1:30”, “✓ Fits 1:00 to 1:30”). Not the countdown “%@ to %@”.",
+      "comment" : "A range of numbers or lengths (“3 to 5”, “1:00 to 1:30”). Not the countdown “%@ to %@”. No dashes in any language.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {

@@ -113,6 +113,21 @@ default target. A free prompt in a language the model doesn't write opens a blan
 does without Apple Intelligence; a format still gets its structured draft. **Private Cloud Compute stays off**
 (`hasPrivateCloudComputeEntitlement = false`): it is only a candidate when the app has the entitlement.
 
+**No dashes in what the model writes** (§2.1). Every instruction (script, rewrite tools and hooks, block lengthening, ideas)
+carries `ScriptPromptBuilder.punctuationRule`, and whatever still comes back goes through `DashRewriter`
+(`Managers/ScriptAI/Cleaning/`) inside `ScriptPromptBuilder.clean` / `cleanTitle`, which see only model output, before the
+language and voice checks: a dash between two parts becomes the language's comma, colon or full stop (connectors, a short head
+before it, a list after it, two full clauses), a pair becomes commas, a line-leading mark or dialogue dash is dropped, a range
+is said in words (`%1$@ to %2$@` in the text's language), a spaced ASCII " - " between words counts as a dash. Each language's
+marks come from `DashPunctuation` (French space before the colon, 、/，/، /। where they belong, no capitals where the script has
+none, Thai spaces). Never touched: hyphens in words, `5 - 3`, −, ー, 〜, links, handles, stage cues, and the creator's words the
+model had to repeat (`ScriptRequest.preservedPhrases`: catchphrases, a brand's must-say line, link and code, the idea's opening
+line; in a rewrite, every sentence of the creator's that holds a dash, so one the model kept word for word keeps it). Parts a
+rewrite leaves as written never pass through it; a translation is cleaned in full. Drafts are not shown while they are
+written (the page replays the finished, cleaned text); a screen that someday shows words as they arrive uses
+`DashRewriter.displayable`, which holds back the sentence after a dash until it ends, so a dash never appears even for a
+moment. Ideas saved by older versions are cleaned when restored; Logbook notes are the creator's and stay.
+
 **Regional variants.** Only the 20 languages above have a translated interface; no variant gets one of its
 own. Every interface localization is the language alone (`es`, `fr`, `pt`…), except the two Chinese scripts:
 iOS prefers English over a localization whose region doesn't match, so with `pt-BR` an iPhone in pt-PT with
@@ -258,8 +273,14 @@ Those term lists extend the table above. What the review taught, for every langu
   different kinds; two of the same kind (`%lld of %lld`) can't be checked by a test, so a reviewer looks.
 - **The app never speaks as "I" or "we"**, and never says a video was posted. Buttons where Cue's AI writes (✦ Write,
   Draft my reply, Write the ad) use the draft word too.
-- **No em dashes** in any language (a colon, a comma, a full stop or " · "). The English source still has about 40;
-  every reviewer had to rewrite them.
+- **No dashes, in any language** (owner, 22 Oct 2026, final): no em dash, en dash, horizontal bar, figure dash or their
+  small and fullwidth forms, in the interface, notices, help, notifications, accessibility, the examples, templates and
+  scripts Cue gives, and in everything Apple Intelligence writes. Each language rewrites with its own punctuation (a full
+  stop, a comma, a colon, parentheses, " · " between two short facts), never a hyphen in the dash's place and never two words
+  glued. A range is said in words: `DurationText.range` reads the key `%1$@ to %2$@` (pt *1:00 a 1:30*, de *1:00 bis 1:30*,
+  ja *1:00〜1:30*, hi *1:00 से 1:30 तक*); "%@ to %@" stays the countdown. Hyphens inside words, the minus sign (−), Japanese ー
+  and 〜, URLs and identifiers are other characters and stay. Text the creator wrote or imported is never changed for it.
+  `LocalizationCatalogTests.noStringHasADash` fails on a dash in any of the 20 languages; the AI side is below (§1.1).
 - **Feature names stay in English** like the brand: ✦ Smart, ✦ Shape, Selfie, Studio, My Cue Voice, Cue Voice, and the
   Clean caption collection. **My Cue Voice** stays a proper name.
 - **Studio Voice is translated** (owner, 22 Oct 2026): it describes Quick edit's voice treatment (enhancement and noise

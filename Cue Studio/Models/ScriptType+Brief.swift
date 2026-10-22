@@ -147,8 +147,9 @@ nonisolated extension ScriptType {
             let count = Self.commaList(v("items")).count
             return String(localized: "\(count) \(v("topic").lowercased()) that work", writtenIn: language)
         case .story:
-            let setup = v("setup").components(separatedBy: " — ").first ?? v("setup")
-            return String(localized: "Storytime: \(setup.lowercased())", writtenIn: language)
+            // What the creator typed before a dash is the story's headline ("My first brand call — and my camera froze").
+            let setup = v("setup").components(separatedBy: " — ").first?.components(separatedBy: " – ").first ?? v("setup")
+            return String(localized: "Storytime: \(Self.lowercasedFirst(setup))", writtenIn: language)
         case .opinion:
             return String(localized: "Hot take: \(v("take").lowercased())", writtenIn: language)
         case .launch:
@@ -220,7 +221,7 @@ nonisolated extension ScriptType {
         case .launch:
             paragraphs = [
                 say("I've been keeping a secret. [pause]"),
-                "\(v("news")) — \(lc("when")).",
+                "\(v("news")). \(v("when")).",
                 "\(v("details")).",
                 say("\(v("cta")). [smile]"),
             ]

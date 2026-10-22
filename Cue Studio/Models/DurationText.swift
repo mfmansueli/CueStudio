@@ -22,8 +22,11 @@ nonisolated enum DurationText {
     /// "1:00 to 1:30" in the interface's words (de "1:00 bis 1:30", ja "1:00〜1:30"): a range of lengths, never written with a
     /// dash. Its own numbered key, because "%@ to %@" is the countdown ("18s to 1:00").
     static func range(_ range: ClosedRange<TimeInterval>) -> String {
-        String(format: String(localized: "%1$@ to %2$@", comment: "A range of video lengths, put into other strings (“Ideal 1:00 to 1:30”). Not the countdown “%@ to %@”."),
-               clock(range.lowerBound), clock(range.upperBound))
+        let template = String(
+            localized: "%1$@ to %2$@",
+            comment: "A range of numbers or lengths (“3 to 5”, “1:00 to 1:30”). Not the countdown “%@ to %@”."
+        )
+        return String(format: template, clock(range.lowerBound), clock(range.upperBound))
     }
 
     /// Like `short`, but rounds up: used for time that is still missing ("12s to monetize").

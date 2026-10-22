@@ -258,6 +258,7 @@ final class ScriptAIService: ScriptWriting {
                 if firstResponse == nil { firstResponse = started.duration(to: clock.now) }
                 progress.noteProgress()
                 latest = snapshot.rawContent
+                // Never shown: the page replays the finished, cleaned script. Words shown as they arrive go through `DashRewriter.displayable`.
                 partial = snapshot.content
                 // The words are counted a few times a second, not at every token: counting Japanese or Chinese runs a tokenizer.
                 if let meter, counted.map({ $0.duration(to: clock.now) >= Self.countInterval }) ?? true {
@@ -302,7 +303,10 @@ final class ScriptAIService: ScriptWriting {
         let timings = GenerationTimings(
             prepare: begin.duration(to: started), firstResponse: firstResponse, generation: started.duration(to: clock.now)
         )
-        let text = ScriptPromptBuilder.collapsingRepeatedSentences(ScriptPromptBuilder.clean(draft.scriptText))
+        let language = request.language?.locale.language
+        let text = ScriptPromptBuilder.collapsingRepeatedSentences(
+            ScriptPromptBuilder.clean(draft.scriptText, language: language, preserving: request.preservedPhrases)
+        )
         guard !text.isEmpty else {
             Self.noteEmpty("the script was empty once cleaned: \(draft.blocks.count) blocks")
             throw ScriptAIError.emptyResponse
@@ -310,7 +314,7 @@ final class ScriptAIService: ScriptWriting {
         try Self.requireLanguage(request.language?.locale.language, in: text)
         let title: String = switch request.source {
         case .format(let type, let brief): type.draftTitle(from: brief, language: request.language)
-        case .prompt: ScriptPromptBuilder.cleanTitle(draft.title)
+        case .prompt: ScriptPromptBuilder.cleanTitle(draft.title, language: language, preserving: request.preservedPhrases)
         }
         return GeneratedScript(
             title: title,
@@ -326,7 +330,15 @@ final class ScriptAIService: ScriptWriting {
     private func structuredDraft(type: ScriptType, brief: [String: String], voice: CreatorVoice?, language: CueLanguage?) -> String {
         let draft = type.draft(from: brief, language: language)
         guard let phrase = voice?.phrases.first, !type.structure.isSerious else { return draft }
-        return "\(phrase) — \(ScriptType.lowercasedFirst(draft))"
+        // A catchphrase that ends a sentence leads into the draft as it is; otherwise the language's comma joins them (Cue writes no dashes).
+        if let last = phrase.last, ".!?…。！？".contains(last) { return "\(phrase) \(draft)" }
+        let comma = switch language?.interfaceLocalization {
+        case "ja": "、"
+        case "zh-Hans", "zh-Hant": "，"
+        case "ar": "، "
+        default: ", "
+        }
+        return phrase + comma + ScriptType.lowercasedFirst(draft)
     }
 
     // MARK: - Editing
@@ -366,7 +378,9 @@ final class ScriptAIService: ScriptWriting {
                 // model's window and took the whole tool down with "too long". Cut at its bound it is a part that missed, and is asked again or left as it was.
                 let options = GenerationOptions(maximumResponseTokens: Self.rewriteTokens(for: part, details: details))
                 let response = try await self.answering { try await session.respond(to: prompt, options: options).content }
-                let rewritten = ScriptPromptBuilder.clean(response)
+                // The creator's own sentences the model kept as they were keep their dashes; what it wrote has none.
+                let preserved = ScriptPromptBuilder.preserved(inRewriteOf: part, tool: tool, voice: context.voice)
+                let rewritten = ScriptPromptBuilder.clean(response, language: expected, preserving: preserved)
                 guard !rewritten.isEmpty else { throw ScriptAIError.emptyResponse }
                 try Self.requireLanguage(expected, in: rewritten)
                 return rewritten
@@ -400,7 +414,9 @@ final class ScriptAIService: ScriptWriting {
             let session = self.session(on: model, instructions: ScriptPromptBuilder.rewriteInstructions(voice: context.voice))
             let prompt = ScriptPromptBuilder.hooksPrompt(for: text, context: context)
             let ideas = try await self.answering { try await session.respond(to: prompt, generating: HookIdeas.self).content }
-            let hooks = ideas.hooks.map(ScriptPromptBuilder.cleanTitle).filter { !$0.isEmpty }
+            let hooks = ideas.hooks.map {
+                ScriptPromptBuilder.cleanTitle($0, language: context.sourceLanguage, preserving: context.voice?.phrases ?? [])
+            }.filter { !$0.isEmpty }
             guard !hooks.isEmpty else { throw ScriptAIError.emptyResponse }
             try Self.requireLanguage(context.sourceLanguage, in: hooks.joined(separator: " "))
             return Array(hooks.prefix(3))
@@ -458,7 +474,7 @@ final class ScriptAIService: ScriptWriting {
                     try await session.respond(to: prompt, generating: ThemeSuggestions.self, options: options).content
                 }
                 for (index, idea) in suggestions.ideas.enumerated() where index < slots.count {
-                    let title = ScriptPromptBuilder.cleanTitle(idea.title)
+                    let title = ScriptPromptBuilder.cleanTitle(idea.title, language: language?.locale.language)
                     guard !title.isEmpty else { continue }
                     // The slot says the angle and the topic; the model's own label for either is not trusted.
                     let slot = slots[index]
@@ -485,7 +501,7 @@ final class ScriptAIService: ScriptWriting {
             let prompt = ScriptPromptBuilder.themesPrompt(for: known, voice: voice, language: language)
             let suggestions = try await self.answering { try await session.respond(to: prompt, generating: ThemeSuggestions.self).content }
             let ideas = suggestions.ideas.compactMap { idea -> ThemeIdea? in
-                let title = ScriptPromptBuilder.cleanTitle(idea.title)
+                let title = ScriptPromptBuilder.cleanTitle(idea.title, language: language?.locale.language)
                 guard !title.isEmpty else { return nil }
                 let niche = known.first { $0.label.caseInsensitiveCompare(idea.niche) == .orderedSame } ?? known[0]
                 return ThemeIdea(title: title, kind: idea.kind.capitalized, length: idea.minutes >= 2 ? .minutes2 : .minute1, niche: niche)

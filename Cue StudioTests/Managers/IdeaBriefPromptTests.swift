@@ -61,6 +61,35 @@ struct IdeaBriefPromptTests {
         #expect(brief.angleKind == "myth" && brief.topicKey == "Daily Routine" && brief.language == "en")
     }
 
+    @Test func anIdeaComesBackWithoutDashesAndItsLabelsStillGo() throws {
+        let slot = IdeaSlot(angle: .myth, topic: topics[1])
+        let answer = IdeaBriefReader.Answer(
+            title: "Saving — the easy way", angle: "Angle — Explain one habit that makes saving easier.",
+            openingLine: "Opening line: Saving isn't willpower — it's what you automate."
+        )
+        let idea = try #require(IdeaBriefReader.idea(from: answer, slot: slot, language: "en"))
+        let brief = try #require(idea.brief)
+        #expect(idea.title == "Saving: the easy way")
+        #expect(brief.angle == "Explain one habit that makes saving easier.")
+        #expect(brief.openingLine == "Saving isn't willpower. It's what you automate.")
+        let french = try #require(IdeaBriefReader.idea(
+            from: .init(title: "Épargner", angle: "Angle — Expliquez une habitude.", openingLine: "Épargner — c’est automatiser."), slot: slot, language: "fr"
+        ))
+        #expect(french.brief?.angle == "Expliquez une habitude.", "the label goes even with French spacing before the colon")
+    }
+
+    @Test func anIdeaKeptByAnOlderVersionLosesItsDashes() {
+        var idea = ThemeIdea(title: "Saving — the easy way", kind: "Myth", length: .minute1, niche: .finance)
+        idea.brief = IdeaBrief(
+            subject: "Saving — the easy way", angle: "Explain one habit — the one that sticks.",
+            openingLine: "Saving isn't willpower — it's what you automate.", subtopic: nil, language: "en", angleKind: "myth", topicKey: "finance"
+        )
+        let clean = IdeaBriefReader.withoutDashes(idea)
+        #expect(clean.title == "Saving: the easy way" && clean.brief?.subject == "Saving: the easy way")
+        #expect(clean.brief?.angle == "Explain one habit. The one that sticks.")
+        #expect(clean.brief?.openingLine == "Saving isn't willpower. It's what you automate.")
+    }
+
     @Test func aFirstFlightTopicIsKeptByItsNiche() throws {
         let slot = IdeaSlot(angle: .list, topic: topics[1])
         let idea = try #require(IdeaBriefReader.idea(

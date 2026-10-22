@@ -565,7 +565,8 @@ final class IdeaSuggestionService {
         guard let data = defaults.data(forKey: DefaultsKey.ideaSuggestions), let stored = try? JSONDecoder().decode(Stored.self, from: data) else { return }
         taste = stored.taste ?? IdeaTaste()
         guard stored.signature == signature else { return }
-        pool = stored.pool
+        // Ideas the model wrote before Cue rewrote its dashes come back without them; a Logbook note is the creator's and stays as it is.
+        pool = stored.pool.map { $0.logbookID == nil ? IdeaBriefReader.withoutDashes($0) : $0 }
         position = min(stored.position, stored.pool.count)
         seen = stored.seen
         echoes = stored.echoes ?? []
