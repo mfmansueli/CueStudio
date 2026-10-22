@@ -75,7 +75,7 @@ nonisolated struct FrameOverlay: @unchecked Sendable {
             if fadeIn > 0 { alpha *= CGFloat(min(1, max(0, (time - span.start) / fadeIn))) }
             if fadeOut > 0 { alpha *= CGFloat(min(1, max(0, (span.end - time) / fadeOut))) }
             if popDuration > 0, popScale != 1, motion == nil {
-                let scale = CGFloat(Self.popScale(from: popScale, elapsed: time - span.start, duration: popDuration))
+                let scale = CGFloat(PopEase.scale(from: popScale, elapsed: time - span.start, duration: popDuration))
                 if scale != 1 {
                     transform = CGAffineTransform(translationX: -size.width / 2, y: -size.height / 2)
                         .concatenating(CGAffineTransform(scaleX: scale, y: scale))
@@ -88,18 +88,5 @@ nonisolated struct FrameOverlay: @unchecked Sendable {
             placed = placed.applyingFilter("CIColorMatrix", parameters: ["inputAVector": CIVector(x: 0, y: 0, z: 0, w: alpha)])
         }
         return placed
-    }
-
-    /// The size of a line `elapsed` seconds after it came in, as a share of its full size: it starts
-    /// at `start` and grows to full over `duration`, going a little past it on the way (ease-out
-    /// with a small overshoot), so a caption lands rather than appears. 1 before and after.
-    static func popScale(from start: Double, elapsed: TimeInterval, duration: TimeInterval) -> Double {
-        guard duration > 0, elapsed < duration else { return 1 }
-        let progress = min(max(elapsed / duration, 0), 1)
-        // Ease-out-back: overshoots the end by about 10% of the way, then settles.
-        let c1 = 1.2
-        let c3 = c1 + 1
-        let eased = 1 + c3 * pow(progress - 1, 3) + c1 * pow(progress - 1, 2)
-        return start + (1 - start) * eased
     }
 }

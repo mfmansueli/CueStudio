@@ -407,7 +407,7 @@ struct ScriptsDock: View {
                 } else {
                     Image(systemName: "arrow.triangle.2.circlepath")
                         .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(Palette.aiTextStrong.opacity(0.75))
+                        .foregroundStyle(Palette.aiText)
                         .symbolEffect(.rotate.clockwise.byLayer, options: .speed(1.6), value: anotherTurn)
                 }
             }

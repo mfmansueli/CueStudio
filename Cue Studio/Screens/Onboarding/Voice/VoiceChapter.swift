@@ -161,7 +161,7 @@ struct VoiceChapter: View {
                 )
             VStack(alignment: .leading, spacing: 1) {
                 Text(permission.title).font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.ink)
-                Text(permission.detail).font(.system(size: 12.5)).foregroundStyle(Palette.Flight.ink.opacity(0.6))
+                Text(permission.detail).font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
             }
             Spacer(minLength: 8)
             stateBadge(state, isNext: isNext, isFollowUp: permission.identifier == "camera" && model.microphone != .notAsked)

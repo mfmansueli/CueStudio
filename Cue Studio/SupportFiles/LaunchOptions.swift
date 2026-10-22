@@ -229,6 +229,7 @@ struct LaunchOptions {
                 try? repository.saveTakes(takes)
                 SampleVideo.writeLong(to: repository.videoURL(named: takes[index].fileName), seconds: seconds)
             }
+            UITestLeftovers.removeOldExports()
             if arguments.contains("-uiTestSampleVideo") {
                 SampleVideo.writeMissing(for: habits, in: repository)
             } else {

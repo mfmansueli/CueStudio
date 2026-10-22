@@ -122,7 +122,7 @@ struct PracticeBoxOverlay: View {
             Text("TAP TO START")
                 .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
                 .tracking(1.68)
-                .foregroundStyle(Color.white.opacity(0.85))
+                .foregroundStyle(Palette.inkSoft)
                 .offset(y: 54 + 8)
                 .opacity(caption.opacity)
         }

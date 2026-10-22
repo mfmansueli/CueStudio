@@ -50,7 +50,7 @@ struct UniverseShareCard: View {
     private var numbers: some View {
         VStack(spacing: 6) {
             Text("\(shownCount)").font(.system(size: 64, weight: .heavy)).foregroundStyle(.white).monospacedDigit()
-            Text(subtitle).font(.system(size: 14)).foregroundStyle(.white.opacity(0.8)).multilineTextAlignment(.center).lineLimit(2)
+            Text(subtitle).font(.system(size: 14)).foregroundStyle(Palette.inkSoft).multilineTextAlignment(.center).lineLimit(2)
         }
     }
 

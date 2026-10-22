@@ -27,17 +27,18 @@ final class BackgroundPanelUITests: XCTestCase {
         app.descendants(matching: .any)[id].firstMatch
     }
 
-    /// Scrolls the panel's content (slowly: a quick swipe didn't move it) until `target` shows above the screen's bottom. `up` for what
-    /// is above: the tiles are in a lazy grid, so scrolled past they leave the hierarchy and can't say where they are.
+    /// Scrolls the panel's content until `target` shows above the screen's bottom: a drag held at its end, so the content moves by
+    /// the drag and stops there (a quick swipe didn't move it, a slow one glides on). `up` for what is above: the tiles are in a
+    /// lazy grid, so scrolled past they leave the hierarchy and can't say where they are.
     private func scroll(_ app: XCUIApplication, to target: XCUIElement, up: Bool = false, file: StaticString = #filePath, line: UInt = #line) {
         let bottom = app.windows.firstMatch.frame.maxY
         for _ in 0..<8 where !(target.exists && target.frame.maxY <= bottom && target.isHittable) {
             let content = panel(app).scrollViews.firstMatch
-            if up || (target.exists && target.frame.maxY < content.frame.minY) {
-                content.swipeDown(velocity: .slow)
-            } else {
-                content.swipeUp(velocity: .slow)
-            }
+            let down = up || (target.exists && target.frame.maxY < content.frame.minY)
+            // Along the left edge, clear of the sliders' thumbs.
+            let low = content.coordinate(withNormalizedOffset: CGVector(dx: 0.06, dy: 0.8))
+            let high = content.coordinate(withNormalizedOffset: CGVector(dx: 0.06, dy: 0.3))
+            (down ? high : low).press(forDuration: 0.05, thenDragTo: down ? low : high, withVelocity: .default, thenHoldForDuration: 0.1)
         }
         XCTAssertTrue(target.exists(within: 3), "\(target) isn't there", file: file, line: line)
     }

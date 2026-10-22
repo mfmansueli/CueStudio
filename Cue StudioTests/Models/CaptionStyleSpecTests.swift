@@ -181,10 +181,10 @@ struct CaptionStyleSpecTests {
     // MARK: - Coming in
 
     @Test func aLineLandsWithALittleOvershootAndSettles() {
-        #expect(abs(FrameOverlay.popScale(from: 0.86, elapsed: 0, duration: 0.18) - 0.86) < 0.000_000_1)
-        #expect(FrameOverlay.popScale(from: 0.86, elapsed: 0.18, duration: 0.18) == 1)
-        #expect(FrameOverlay.popScale(from: 0.86, elapsed: 5, duration: 0.18) == 1)
-        let middle = (1...17).map { FrameOverlay.popScale(from: 0.86, elapsed: Double($0) * 0.01, duration: 0.18) }
+        #expect(abs(PopEase.scale(from: 0.86, elapsed: 0, duration: 0.18) - 0.86) < 0.000_000_1)
+        #expect(PopEase.scale(from: 0.86, elapsed: 0.18, duration: 0.18) == 1)
+        #expect(PopEase.scale(from: 0.86, elapsed: 5, duration: 0.18) == 1)
+        let middle = (1...17).map { PopEase.scale(from: 0.86, elapsed: Double($0) * 0.01, duration: 0.18) }
         #expect(middle.max()! > 1 && middle.max()! < 1.05)
         #expect(middle.allSatisfy { $0 > 0.86 })
     }

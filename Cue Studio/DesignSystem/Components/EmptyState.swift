@@ -53,7 +53,7 @@ struct EmptyState: View {
                 Button(action: link) {
                     Text(linkTitle)
                         .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(Palette.ink.opacity(0.8))
+                        .foregroundStyle(Palette.inkSoft)
                         .frame(minHeight: Metrics.hitTarget)
                         .padding(.horizontal, 8)
                 }

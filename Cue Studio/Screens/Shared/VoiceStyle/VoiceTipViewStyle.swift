@@ -43,7 +43,7 @@ struct VoiceTipViewStyle: TipViewStyle {
                     .foregroundStyle(Palette.ink)
                 configuration.message?
                     .font(.system(size: 13))
-                    .foregroundStyle(Palette.ink.opacity(0.7))
+                    .foregroundStyle(Palette.inkSoft)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
@@ -55,7 +55,7 @@ struct VoiceTipViewStyle: TipViewStyle {
         } label: {
             Image(systemName: "xmark")
                 .font(.system(size: 12, weight: .bold))
-                .foregroundStyle(Palette.ink.opacity(0.5))
+                .foregroundStyle(Palette.ink2)
                 .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                 .contentShape(Rectangle())
         }

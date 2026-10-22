@@ -291,7 +291,7 @@ struct VoicePermissionsArt: View {
         for (text, centre) in [("VOICE", Self.voice.x), ("CAMERA", Self.camera.x)] {
             context.draw(
                 Text(verbatim: text).font(.system(size: 9.5, weight: .semibold, design: .monospaced)).tracking(1.33)
-                    .foregroundStyle(Palette.Flight.ink.opacity(0.55)),
+                    .foregroundStyle(Palette.inkHint),
                 at: CGPoint(x: centre, y: 156)
             )
         }

@@ -134,20 +134,10 @@ case "$mode" in
     *) usage ;;
 esac
 
-result="$RESULTS/$mode-$(timestamp).xcresult"
-status=0
-if [ -n "$workers" ] && [ "$workers" -gt 1 ]; then
-    extra+=(-parallel-testing-enabled YES -parallel-testing-worker-count "$workers")
-    # Each clone is a copy of the simulator in ~/Library/Developer/XCTestDevices: gone when the run ends, passed or not.
-    trap 'xcrun simctl --set testing delete all >/dev/null 2>&1' EXIT
-fi
-# A test that runs past its allowance fails at once; without `never` xcodebuild then spends up to 10 minutes on a sysdiagnose.
-# `CUE_TEST_DIAGNOSTICS=on-failure` (or `on-failure`) keeps the crash reports and logs of a device run that dies.
-xcb "test-$mode" "${plan[@]}" -destination "$destination" -collect-test-diagnostics "${CUE_TEST_DIAGNOSTICS:-never}" \
-    -resultBundlePath "$result" ${extra[@]+"${extra[@]}"} "$action" || status=$?
-
-if [ -d "$result" ]; then
-    xcrun xcresulttool get test-results summary --path "$result" 2>/dev/null | python3 -c '
+# Prints a result bundle's counts and every failure.
+summarize() {
+    [ -d "$1" ] || return 0
+    xcrun xcresulttool get test-results summary --path "$1" 2>/dev/null | python3 -c '
 import json, sys
 d = json.load(sys.stdin)
 seconds = d.get("finishTime", 0) - d.get("startTime", 0)
@@ -158,6 +148,36 @@ for failure in d.get("testFailures", []):
     print("  ✘ " + (failure.get("testIdentifierString") or failure.get("testName") or "?"))
     print("    " + failure.get("failureText", "").replace("\n", "\n    "))
 ' || true
-    echo "  result: ${result#"$REPO_ROOT"/}"
+    echo "  result: ${1#"$REPO_ROOT"/}"
+}
+
+# A test that runs past its allowance fails at once; without `never` xcodebuild then spends up to 10 minutes on a sysdiagnose.
+# `CUE_TEST_DIAGNOSTICS=on-failure` (or `on-failure`) keeps the crash reports and logs of a device run that dies.
+diagnostics=(-collect-test-diagnostics "${CUE_TEST_DIAGNOSTICS:-never}")
+status=0
+parallel=()
+if [ -n "$workers" ] && [ "$workers" -gt 1 ]; then
+    parallel=(-parallel-testing-enabled YES -parallel-testing-worker-count "$workers")
+    # Each clone is a copy of the simulator in ~/Library/Developer/XCTestDevices: gone when the run ends, passed or not.
+    trap 'xcrun simctl --set testing delete all >/dev/null 2>&1' EXIT
 fi
+
+if [ "$mode" = full ] && [ ${#parallel[@]} -gt 0 ]; then
+    # The unit tests first, on one simulator (they already run side by side in their process): beside the UI clones their real
+    # exports and video analyses overloaded the Mac (load ~70) and ran past their time allowances. Then the UI tests on the clones.
+    unit="$RESULTS/full-unit-$(timestamp).xcresult"
+    xcb "test-full-unit" "${plan[@]}" -destination "$destination" "${diagnostics[@]}" -resultBundlePath "$unit" \
+        -only-testing:"Cue StudioTests" ${extra[@]+"${extra[@]}"} "$action" || status=$?
+    summarize "$unit"
+    ui="$RESULTS/full-ui-$(timestamp).xcresult"
+    xcb "test-full-ui" "${plan[@]}" -destination "$destination" "${diagnostics[@]}" -resultBundlePath "$ui" \
+        -only-testing:"Cue StudioUITests" "${parallel[@]}" ${extra[@]+"${extra[@]}"} test-without-building || status=$?
+    summarize "$ui"
+    exit "$status"
+fi
+
+result="$RESULTS/$mode-$(timestamp).xcresult"
+xcb "test-$mode" "${plan[@]}" -destination "$destination" "${diagnostics[@]}" \
+    -resultBundlePath "$result" ${parallel[@]+"${parallel[@]}"} ${extra[@]+"${extra[@]}"} "$action" || status=$?
+summarize "$result"
 exit "$status"

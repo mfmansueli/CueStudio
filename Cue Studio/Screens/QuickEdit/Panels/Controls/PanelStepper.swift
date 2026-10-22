@@ -35,7 +35,7 @@ struct PanelStepper: View {
         Button(action: action) {
             Image(systemName: symbol)
                 .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(Palette.ink.opacity(enabled ? 1 : 0.35))
+                .foregroundStyle(enabled ? Palette.ink : Palette.ink3)
                 .frame(width: 36, height: 32)
                 .background(Palette.fill, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
                 .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)

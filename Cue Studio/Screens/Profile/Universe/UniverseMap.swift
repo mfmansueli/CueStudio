@@ -108,7 +108,7 @@ struct UniverseMap: View {
                 Text("YOU")
                     .font(.system(size: 10, weight: .semibold, design: .monospaced))
                     .tracking(1)
-                    .foregroundStyle(Palette.ink.opacity(0.75))
+                    .foregroundStyle(Palette.inkSoft)
                     .position(x: center.x, y: center.y + 40 * scale)
                 if onCore != nil || onSeeInTakes != nil || onDot != nil {
                     taps(scale: scale, origin: origin, center: CGPoint(x: origin.x + Self.corePoint.x * scale, y: origin.y + Self.corePoint.y * scale))
@@ -147,7 +147,7 @@ struct UniverseMap: View {
         let hasGhost = ghost != nil
         return Text(text)
             .font(.system(size: 16, weight: .medium))
-            .foregroundStyle(Palette.ink.opacity(0.85))
+            .foregroundStyle(Palette.inkSoft)
             .multilineTextAlignment(.center)
             .frame(maxWidth: (hasGhost ? 220 : 330) * scale)
             .position(x: origin.x + Self.center.x * scale, y: origin.y + (Self.center.y + (hasGhost ? 121 : 74)) * scale)
@@ -501,7 +501,7 @@ struct UniverseMap: View {
         var named = canvas
         named.opacity = min(1, birth.scale)
         named.draw(
-            label.foregroundStyle(Palette.ink.opacity(0.7)), at: CGPoint(x: node.point.x + side * distance, y: node.point.y + 4), anchor: node.labelAnchor
+            label.foregroundStyle(Palette.inkSoft), at: CGPoint(x: node.point.x + side * distance, y: node.point.y + 4), anchor: node.labelAnchor
         )
     }
 
