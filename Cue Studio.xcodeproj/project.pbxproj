@@ -11,7 +11,6 @@
 		000000000000000000000502 /* TikTokOpenShareSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000000000512 /* TikTokOpenShareSDK */; };
 		000000000000000411000000 /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000410000000 /* FirebaseAnalyticsCore */; };
 		000000000000000421000000 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000420000000 /* FirebaseCrashlytics */; };
-		000000000000000000000503 /* Cue Studio Watch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 000000000000000000000123 /* Cue Studio Watch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,18 +36,6 @@
 			remoteInfo = "Cue Studio Watch";
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		000000000000000170000000 /* Embed Watch Content */ = {
-			isa = PBXCopyFilesBuildPhase;
-			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
-			dstSubfolderSpec = 16;
-			files = (
-				000000000000000000000503 /* Cue Studio Watch.app in Embed Watch Content */,
-			);
-			name = "Embed Watch Content";
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		000000000000000000000031 /* Project.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Project.xcconfig; sourceTree = "<group>"; };
@@ -188,7 +175,6 @@
 				000000000000000120000000 /* Sources */,
 				000000000000000130000000 /* Frameworks */,
 				000000000000000140000000 /* Resources */,
-				000000000000000170000000 /* Embed Watch Content */,
 				000000000000000160000000 /* Upload dSYMs to Crashlytics */,
 			);
 			buildRules = (
