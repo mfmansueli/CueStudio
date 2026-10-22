@@ -21399,7 +21399,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld videoer i %@ · %@-ikonet er låst op"
+            "value" : "%lld videoer i %@ · ikonet %@ er låst op"
           }
         },
         "de" : {
@@ -21459,13 +21459,13 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld videoer i %@ · %@-ikonet er låst opp"
+            "value" : "%lld videoer i %@ · ikonet %@ er låst opp"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld video’s in %@ · %@-icoon ontgrendeld"
+            "value" : "%lld video’s in %@ · icoon %@ ontgrendeld"
           }
         },
         "pt" : {
@@ -21477,7 +21477,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld videor %@ · %@-ikonen upplåst"
+            "value" : "%lld videor %@ · ikonen %@ upplåst"
           }
         },
         "th" : {
@@ -29315,7 +29315,7 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 video i %@ · %@-ikonet er låst op"
+            "value" : "1 video i %@ · ikonet %@ er låst op"
           }
         },
         "de" : {
@@ -29375,13 +29375,13 @@
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 video i %@ · %@-ikonet er låst opp"
+            "value" : "1 video i %@ · ikonet %@ er låst opp"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 video in %@ · %@-icoon ontgrendeld"
+            "value" : "1 video in %@ · icoon %@ ontgrendeld"
           }
         },
         "pt" : {
@@ -29393,7 +29393,7 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "1 video %@ · %@-ikonen upplåst"
+            "value" : "1 video %@ · ikonen %@ upplåst"
           }
         },
         "th" : {
@@ -53932,23 +53932,24 @@
       }
     },
     "Aurora" : {
+      "comment" : "App icon name (Settings › Personalize; the milestone that opens it). The polar lights in the sky; a name shown to the creator, translated.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "الشفق القطبي"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "Nordlys"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "Polarlicht"
           }
         },
         "es" : {
@@ -53960,13 +53961,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "Aurore"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "ध्रुवीय ज्योति"
           }
         },
         "id" : {
@@ -53984,25 +53985,25 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "オーロラ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "오로라"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "Nordlys"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "Poollicht"
           }
         },
         "pt" : {
@@ -54014,31 +54015,31 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "Norrsken"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "แสงออโรรา"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "Kutup Işığı"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "Cực quang"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora"
+            "value" : "极光"
           }
         },
         "zh-Hant" : {
@@ -54055,19 +54056,19 @@
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تُفتح Aurora مع أول فيديو تشاركه. وتُفتح الأخرى كلما شاركت أكثر، مع Pro."
+            "value" : "تُفتح أيقونة الشفق القطبي مع أول فيديو تشاركه. وتُفتح الأخرى كلما شاركت أكثر، مع Pro."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora låses op med din første delte video. De andre, efterhånden som du deler mere, med Pro."
+            "value" : "Nordlys låses op med din første delte video. De andre, efterhånden som du deler mere, med Pro."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora wird mit deinem ersten geteilten Video freigeschaltet. Die anderen folgen mit Pro, je mehr du teilst."
+            "value" : "Polarlicht wird mit deinem ersten geteilten Video freigeschaltet. Die anderen folgen mit Pro, je mehr du teilst."
           }
         },
         "es" : {
@@ -54079,13 +54080,13 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora se débloque avec votre première vidéo partagée. Les autres, au fil de vos partages, avec Pro."
+            "value" : "Aurore se débloque avec votre première vidéo partagée. Les autres, au fil de vos partages, avec Pro."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "पहला वीडियो शेयर करते ही Aurora खुल जाता है। बाकी आइकन ज़्यादा शेयर करने पर Pro के साथ खुलते हैं।"
+            "value" : "पहला वीडियो शेयर करते ही ध्रुवीय ज्योति आइकन खुल जाता है। बाकी आइकन ज़्यादा शेयर करने पर Pro के साथ खुलते हैं।"
           }
         },
         "id" : {
@@ -54103,25 +54104,25 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Auroraは最初の動画を共有すると解放されます。ほかのアイコンは、共有を重ねるとProで解放されます。"
+            "value" : "オーロラは最初の動画を共有すると解放されます。ほかのアイコンは、共有を重ねるとProで解放されます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora는 첫 영상을 공유하면 열려요. 다른 아이콘은 더 공유할수록 Pro와 함께 열려요."
+            "value" : "오로라는 첫 영상을 공유하면 열려요. 다른 아이콘은 더 공유할수록 Pro와 함께 열려요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora låses opp med den første videoen du deler. De andre etter hvert som du deler mer, med Pro."
+            "value" : "Nordlys låses opp med den første videoen du deler. De andre etter hvert som du deler mer, med Pro."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora gaat open bij je eerste gedeelde video. De andere naarmate je meer deelt, met Pro."
+            "value" : "Poollicht gaat open bij je eerste gedeelde video. De andere naarmate je meer deelt, met Pro."
           }
         },
         "pt" : {
@@ -54133,31 +54134,31 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora låses upp med din första delade video. De andra när du delar mer, med Pro."
+            "value" : "Norrsken låses upp med din första delade video. De andra när du delar mer, med Pro."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora ปลดล็อกเมื่อคุณแชร์วิดีโอแรก ไอคอนอื่นๆ ปลดล็อกเมื่อแชร์มากขึ้น พร้อม Pro"
+            "value" : "แสงออโรราปลดล็อกเมื่อคุณแชร์วิดีโอแรก ไอคอนอื่นๆ ปลดล็อกเมื่อแชร์มากขึ้น พร้อม Pro"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora ilk paylaştığın videoyla açılır. Diğerleri daha çok paylaştıkça Pro ile açılır."
+            "value" : "Kutup Işığı ilk paylaştığın videoyla açılır. Diğerleri daha çok paylaştıkça Pro ile açılır."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aurora mở khóa khi bạn chia sẻ video đầu tiên. Các biểu tượng khác mở dần khi bạn chia sẻ thêm, với Pro."
+            "value" : "Cực quang mở khóa khi bạn chia sẻ video đầu tiên. Các biểu tượng khác mở dần khi bạn chia sẻ thêm, với Pro."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "分享第一个视频即可解锁 Aurora。分享更多视频后，其他图标也会随之解锁（需 Pro）。"
+            "value" : "分享第一个视频即可解锁“极光”。分享更多视频后，其他图标也会随之解锁（需 Pro）。"
           }
         },
         "zh-Hant" : {
@@ -89369,29 +89370,30 @@
       }
     },
     "Constellation" : {
+      "comment" : "App icon name (Settings › Personalize; the milestone that opens it). A group of stars; a name shown to the creator, translated.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "الكوكبة"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "Stjernebillede"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "Sternbild"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "Constelación"
           }
         },
         "fr" : {
@@ -89403,43 +89405,43 @@
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "तारामंडल"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "Rasi Bintang"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "Costellazione"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "星座"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "별자리"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "Stjernebilde"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "Sterrenbeeld"
           }
         },
         "pt" : {
@@ -89451,31 +89453,31 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "Stjärnbild"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "กลุ่มดาว"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "Takımyıldız"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "Chòm sao"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Constellation"
+            "value" : "星座"
           }
         },
         "zh-Hant" : {
@@ -105805,77 +105807,78 @@
       }
     },
     "Deep Space" : {
+      "comment" : "App icon name (Settings › Personalize; the milestone that opens it). Space far from Earth; a name shown to the creator, translated.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "الفضاء العميق"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "Det dybe rum"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "Tiefer Weltraum"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "Espacio Profundo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "Espace profond"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "गहरा अंतरिक्ष"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "Antariksa Dalam"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "Spazio Profondo"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "深宇宙"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "깊은 우주"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "Det dype rommet"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "Diepe Ruimte"
           }
         },
         "pt" : {
@@ -105887,31 +105890,31 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "Rymdens djup"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "ห้วงอวกาศลึก"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "Derin Uzay"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "Không gian sâu thẳm"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deep Space"
+            "value" : "深空"
           }
         },
         "zh-Hant" : {
@@ -137937,77 +137940,78 @@
       }
     },
     "First Light" : {
+      "comment" : "App icon name (Settings › Personalize; the milestone that opens it). The first light of dawn or of a new telescope; a name shown to the creator, translated.",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "الضوء الأول"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "Første lys"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "Erstes Licht"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "Primera Luz"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "Première lumière"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "पहली रोशनी"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "Cahaya Pertama"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "Prima Luce"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "最初の光"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "첫 빛"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "Første lys"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "Eerste Licht"
           }
         },
         "pt" : {
@@ -138019,31 +138023,31 @@
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "Första ljuset"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "แสงแรก"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "İlk Işık"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "Tia sáng đầu tiên"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "First Light"
+            "value" : "第一缕光"
           }
         },
         "zh-Hant" : {

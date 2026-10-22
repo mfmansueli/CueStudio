@@ -245,7 +245,13 @@ Those term lists extend the table above. What the review taught, for every langu
 - **No em dashes** in any language (a colon, a comma, a full stop or " · "). The English source still has about 40;
   every reviewer had to rewrite them.
 - **Feature names stay in English** like the brand: ✦ Smart, ✦ Shape, Selfie, Studio, My Cue Voice, Cue Voice, and the
-  Clean caption collection. Whether Studio Voice is one of them is still the owner's call (ja, ko, hi keep it in English).
+  Clean caption collection.
+- **App icon names are translated** (owner, 22 Oct 2026): First Light, Deep Space, Constellation and Aurora are names the
+  creator reads in Settings › Personalize and in the milestone that opens each one, so every language gives them a natural
+  name (pt *Primeira Luz, Espaço Profundo, Constelação, Aurora*; es *Primera Luz, Espacio Profundo, Constelación, Aurora*;
+  ja *最初の光, 深宇宙, 星座, オーロラ*…). Only the names shown change: `AppIconChoice`'s cases, the asset names and the
+  milestones stay. A message that places the name next to the word "icon" puts it where a several-word name still reads
+  (da *ikonet %@*, not *%@-ikonet*).
 - **A language's name may already contain the word "language"** (vi *Tiếng Anh*): a template never adds it again.
 - **Lines the creator says to camera** (templates, starters) avoid a gendered first person where the language marks it
   (hi), and address the audience the way creators do (fr *vous*); the interface keeps the register above (ko 해요체
