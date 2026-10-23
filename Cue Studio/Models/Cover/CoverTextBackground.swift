@@ -6,7 +6,10 @@
 import Foundation
 
 /// What keeps a cover's words readable over its picture.
-nonisolated enum CoverTextBackground: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum CoverTextBackground: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = CoverTextBackground.none
+
     /// The words alone.
     case none
     /// A soft shadow under the words.

@@ -6,7 +6,10 @@
 import Foundation
 
 /// A ready-made way for a text or a photo or video to come in (and go out): what Motion offers before keyframes.
-nonisolated enum MotionPreset: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum MotionPreset: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = MotionPreset.fade
+
     /// Fades in.
     case fade
     /// Rises a little as it fades in.

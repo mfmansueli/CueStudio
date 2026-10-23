@@ -7,7 +7,10 @@ import Foundation
 
 /// A slow zoom on a section, without keyframes: the common way to keep a talking head alive or to
 /// soften a jump cut. It is part of the section, so it moves, copies and splits with it.
-nonisolated enum SectionZoom: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum SectionZoom: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = SectionZoom.pushIn
+
     /// From the frame as filmed, slowly closer.
     case pushIn
     /// From closer, slowly back to the frame as filmed.

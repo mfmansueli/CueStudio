@@ -8,7 +8,10 @@ import Foundation
 /// Where a cover starts: a few finished looks for the videos creators make most, each one a full composition (type, place,
 /// highlight, elements, effect) the creator then changes (`CoverComposition.make`). Each works with short and long titles and
 /// with light and dark pictures: the words fit their block (`CoverTextLayout`) and sit on a shade, an outline or a box.
-nonisolated enum CoverTemplate: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum CoverTemplate: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = CoverTemplate.educational
+
     /// Teaching something: the title low, in clean type, the key word on a yellow box.
     case educational
     /// A strong take: big condensed words up top, outlined, the picture dimmed.

@@ -6,7 +6,10 @@
 import Foundation
 
 /// How the lines of a text line up with each other: a text on the video, a caption or the prompter.
-nonisolated enum LineAlignment: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum LineAlignment: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = LineAlignment.center
+
     case leading, center, trailing
 
     var id: String { rawValue }

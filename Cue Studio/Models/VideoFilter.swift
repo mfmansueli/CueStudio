@@ -6,7 +6,10 @@
 import Foundation
 
 /// Looks in Quick edit › Filters.
-nonisolated enum VideoFilter: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum VideoFilter: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = VideoFilter.original
+
     // The first filters, still drawn exactly as they were in every edit that picked them.
     case original, vivid, warm, cool, mono, film, fade
     // The collection: each a graded look with its own intent (`FilterGrade`).

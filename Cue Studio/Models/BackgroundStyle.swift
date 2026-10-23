@@ -6,7 +6,10 @@
 import Foundation
 
 /// What goes behind the creator: the recording as it is, blurred, a color or a photo.
-nonisolated enum BackgroundStyle: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum BackgroundStyle: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = BackgroundStyle.original
+
     case original, blur, color, image
 
     var id: String { rawValue }

@@ -6,7 +6,10 @@
 import Foundation
 
 /// How motion arrives at a keyframe: at an even pace, or easing in and out.
-nonisolated enum KeyframeEasing: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum KeyframeEasing: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = KeyframeEasing.smooth
+
     case linear, smooth
 
     var id: String { rawValue }

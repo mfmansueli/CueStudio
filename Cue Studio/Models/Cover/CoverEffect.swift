@@ -6,7 +6,10 @@
 import Foundation
 
 /// What is done to the picture behind the words (Cover › Look).
-nonisolated enum CoverEffect: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum CoverEffect: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = CoverEffect.clean
+
     /// The words sit on top of the picture.
     case clean
     /// "Text behind me": the person is cut out and drawn over the words.

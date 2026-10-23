@@ -333,10 +333,11 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
 
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+        let report = decoder.decodingReport
         if let timeline = try container.decodeIfPresent(EditTimeline.self, forKey: .timeline) {
             self.timeline = timeline
             sources = container.decodeLossy([ClipSource].self, forKey: .sources)
-            suggestions = try container.decodeIfPresent([CleanUpSuggestion].self, forKey: .suggestions) ?? []
+            suggestions = container.decodeLossy([CleanUpSuggestion].self, forKey: .suggestions)
             cleanUpAnalyzed = try container.decodeIfPresent(Bool.self, forKey: .cleanUpAnalyzed) ?? false
             cleanUpAnalyzedSources = (try? container.decodeIfPresent([UUID].self, forKey: .cleanUpAnalyzedSources)) ?? []
         } else {
@@ -370,37 +371,37 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         vibrance = (try? container.decodeIfPresent(Double.self, forKey: .vibrance)) ?? 0
         tint = (try? container.decodeIfPresent(Double.self, forKey: .tint)) ?? 0
         skinSmoothing = SkinSmoothingCalibration.clamped((try? container.decodeIfPresent(Double.self, forKey: .skinSmoothing)) ?? 0)
-        autoCorrection = try? container.decodeIfPresent(AutoCorrection.self, forKey: .autoCorrection)
+        autoCorrection = container.decodeLenient(AutoCorrection.self, forKey: .autoCorrection, report: report)
         autoAmount = (try? container.decodeIfPresent(Double.self, forKey: .autoAmount)) ?? 1
         cropFit = (try? container.decodeIfPresent(CropFit.self, forKey: .cropFit)) ?? .fill
         // Added with Follow face: edits saved before keep their still crop.
-        faceFollow = try? container.decodeIfPresent(FaceFollow.self, forKey: .faceFollow)
+        faceFollow = container.decodeLenient(FaceFollow.self, forKey: .faceFollow, report: report)
         // An "eyeContact" key that edits saved with Eye Contact (removed 22/10/2026) still hold is left unread.
         pauseThreshold = (try? container.decodeIfPresent(TimeInterval.self, forKey: .pauseThreshold)) ?? 0.7
         aspect = try container.decode(AspectRatio.self, forKey: .aspect)
         cropOffset = try container.decodeIfPresent(Double.self, forKey: .cropOffset) ?? 0
         showsCaptions = try container.decodeIfPresent(Bool.self, forKey: .showsCaptions) ?? false
-        captionCollection = try container.decodeIfPresent(CaptionSettings.self, forKey: .captionCollection)
+        captionCollection = container.decodeLenient(CaptionSettings.self, forKey: .captionCollection, report: report)
         captionStyle = try container.decodeIfPresent(CaptionStyle.self, forKey: .captionStyle) ?? .bold
-        captionLook = try? container.decodeIfPresent(TextLook.self, forKey: .captionLook)
+        captionLook = container.decodeLenient(TextLook.self, forKey: .captionLook, report: report)
         captionPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .captionPreset)
         captionPosition = try container.decodeIfPresent(CaptionPosition.self, forKey: .captionPosition) ?? .bottom
         // One line that can't be read never takes the others (or the whole edit) with it.
         captions = container.decodeLossy([CaptionCue].self, forKey: .captions)
-        captionTranscript = try? container.decodeIfPresent(CaptionTranscript.self, forKey: .captionTranscript)
-        sourceTranscripts = (try? container.decodeIfPresent([CaptionTranscript].self, forKey: .sourceTranscripts)) ?? []
+        captionTranscript = container.decodeLenient(CaptionTranscript.self, forKey: .captionTranscript, report: report)
+        sourceTranscripts = container.decodeLossy([CaptionTranscript].self, forKey: .sourceTranscripts)
         captionLanguage = try? container.decodeIfPresent(CueLanguage.self, forKey: .captionLanguage)
         captionAnimation = (try? container.decodeIfPresent(CaptionAnimation.self, forKey: .captionAnimation)) ?? .line
-        captionTranslations = (try? container.decodeIfPresent([CaptionTranslation].self, forKey: .captionTranslations)) ?? []
+        captionTranslations = container.decodeLossy([CaptionTranslation].self, forKey: .captionTranslations)
         captionDisplay = (try? container.decodeIfPresent(CaptionDisplay.self, forKey: .captionDisplay)) ?? .original
         // Added later: edits saved before have none, and a damaged one loses only that part.
         texts = container.decodeLossy([TextOverlay].self, forKey: .texts)
         media = container.decodeLossy([MediaOverlay].self, forKey: .media)
         voiceOvers = container.decodeLossy([VoiceOverClip].self, forKey: .voiceOvers)
         creatorStyle = try? container.decodeIfPresent(CreatorStyle.self, forKey: .creatorStyle)
-        textLook = try? container.decodeIfPresent(TextLook.self, forKey: .textLook)
+        textLook = container.decodeLenient(TextLook.self, forKey: .textLook, report: report)
         textPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .textPreset)
-        cover = try? container.decodeIfPresent(VideoCover.self, forKey: .cover)
+        cover = container.decodeLenient(VideoCover.self, forKey: .cover, report: report)
         // An edit saved before the calibrated dials reads them the first way, unless it never used them.
         lookVersion = (try? container.decodeIfPresent(Int.self, forKey: .lookVersion)) ?? (usesAdjustDials ? 1 : LookSettings.currentVersion)
     }

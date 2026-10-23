@@ -28,6 +28,23 @@ nonisolated struct CoverComposition: Codable, Hashable, Sendable {
         self.template = template
     }
 
+    private enum CodingKeys: String, CodingKey {
+        case template, framing, title, items, effect, effectAmount, split
+    }
+
+    /// A part that can't be read keeps where a new cover starts, and a graphic a newer version added is left out (`LossyList`).
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let report = decoder.decodingReport
+        template = (try? container.decodeIfPresent(CoverTemplate.self, forKey: .template)) ?? .educational
+        framing = container.decodeLenient(CoverFraming.self, forKey: .framing, report: report) ?? CoverFraming()
+        title = container.decodeLenient(CoverTitleStyle.self, forKey: .title, report: report) ?? CoverTitleStyle()
+        items = container.decodeLossy([CoverItem].self, forKey: .items)
+        effect = (try? container.decodeIfPresent(CoverEffect.self, forKey: .effect)) ?? .clean
+        effectAmount = (try? container.decodeIfPresent(Double.self, forKey: .effectAmount)) ?? 0.5
+        split = container.decodeLenient(CoverSplit.self, forKey: .split, report: report)
+    }
+
     /// The item with `id`.
     func item(_ id: UUID) -> CoverItem? {
         items.first { $0.id == id }

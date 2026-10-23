@@ -11,7 +11,10 @@ import Foundation
 /// texts styled with it before.
 ///
 /// A preset is type only: filters, Adjust and the cover stay as they are.
-nonisolated enum TypePreset: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum TypePreset: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = TypePreset.cue
+
     /// DM Sans heavy, black on a yellow box.
     case cue
     /// Heavy capitals with an outline (before the v10 editor).

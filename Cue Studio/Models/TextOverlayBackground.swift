@@ -6,7 +6,10 @@
 import Foundation
 
 /// What sits behind a text on the video.
-nonisolated enum TextOverlayBackground: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum TextOverlayBackground: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = TextOverlayBackground.none
+
     case none, box, pill
 
     var id: String { rawValue }

@@ -21,7 +21,13 @@ final class QuickEditDraftStore: QuickEditDraftStoring {
         // Unencoded: `path()` gives "Application%20Support", which FileManager never finds.
         guard FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else { return nil }
         do {
-            return try JSONDecoder().decode(QuickEditDraft.self, from: Data(contentsOf: url))
+            let report = DecodingReport()
+            let draft = try JSONDecoder().reporting(to: report).decode(QuickEditDraft.self, from: Data(contentsOf: url))
+            let notes = report.notes
+            if !notes.isEmpty {
+                logger.error("Quick edit draft read with \(notes.count) parts left out or read as a stand-in: \(notes.joined(separator: "; "), privacy: .public)")
+            }
+            return draft
         } catch {
             logger.error("Could not read Quick edit draft: \(error.localizedDescription)")
             return nil

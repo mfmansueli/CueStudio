@@ -6,7 +6,10 @@
 import Foundation
 
 /// The window's shape: the media's own, or a crop of it.
-nonisolated enum MediaShape: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum MediaShape: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = MediaShape.original
+
     case original, square, portrait, landscape
 
     var id: String { rawValue }

@@ -23,6 +23,7 @@ nonisolated struct LossyList<Element: Decodable>: Decodable {
                 // A failed decode doesn't move on: read the element as anything to step past it.
                 _ = try? container.decode(Skipped.self)
                 dropped += 1
+                decoder.decodingReport?.note("\(Element.self) left out of a list")
             }
         }
         self.elements = elements
@@ -38,5 +39,16 @@ extension KeyedDecodingContainer {
     /// The list at `key`, element by element (`LossyList`); empty when there is none or it isn't a list.
     nonisolated func decodeLossy<Element: Decodable>(_ type: [Element].Type, forKey key: Key) -> [Element] {
         ((try? decodeIfPresent(LossyList<Element>.self, forKey: key)) ?? nil)?.elements ?? []
+    }
+
+    /// The part at `key`, or nil when there is none or it can't be read: then it is noted in `report` (a part a newer
+    /// version wrote, or a damaged one), so the store keeps the file as it was (`DecodingReport`).
+    nonisolated func decodeLenient<Value: Decodable>(_ type: Value.Type, forKey key: Key, report: DecodingReport?) -> Value? {
+        do {
+            return try decodeIfPresent(type, forKey: key)
+        } catch {
+            report?.note("\(Value.self) at “\(key.stringValue)” left out")
+            return nil
+        }
     }
 }

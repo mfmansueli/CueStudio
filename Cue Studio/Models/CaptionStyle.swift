@@ -6,7 +6,10 @@
 import Foundation
 
 /// How burned-in captions look.
-nonisolated enum CaptionStyle: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum CaptionStyle: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = CaptionStyle.bold
+
     /// White on a dark box.
     case classic
     /// Big, bold, uppercase, with a shadow.

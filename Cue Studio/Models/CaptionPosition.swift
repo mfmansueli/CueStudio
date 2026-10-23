@@ -5,7 +5,12 @@
 
 import Foundation
 
-nonisolated enum CaptionPosition: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum CaptionPosition: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+
+    static let fallback = CaptionPosition.bottom
+
     case top, middle, bottom
 
     var id: String { rawValue }

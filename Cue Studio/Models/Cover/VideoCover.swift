@@ -28,6 +28,24 @@ nonisolated struct VideoCover: Codable, Hashable, Sendable {
         self.preset = preset
     }
 
+    private enum CodingKeys: String, CodingKey {
+        case source, title, titleY, style, preset, design, composition
+    }
+
+    /// Only the picture is needed: a design or a composition that can't be read (a newer version's) is left out, so the
+    /// cover still shows, the way an older version drew it.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let report = decoder.decodingReport
+        source = try container.decode(CoverSource.self, forKey: .source)
+        title = (try? container.decodeIfPresent(String.self, forKey: .title)) ?? ""
+        titleY = (try? container.decodeIfPresent(Double.self, forKey: .titleY)) ?? 0.2
+        style = (try? container.decodeIfPresent(CreatorStyle.self, forKey: .style)) ?? .bold
+        preset = try? container.decodeIfPresent(TypePreset.self, forKey: .preset)
+        design = container.decodeLenient(CoverDesign.self, forKey: .design, report: report)
+        composition = container.decodeLenient(CoverComposition.self, forKey: .composition, report: report)
+    }
+
     /// The title as a text overlay, set like a title in the cover's style.
     var titleOverlay: TextOverlay? {
         guard !title.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }

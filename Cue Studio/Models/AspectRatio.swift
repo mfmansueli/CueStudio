@@ -7,7 +7,10 @@ import Foundation
 
 /// Output frame of a take. Recording always uses the full portrait sensor; the frame is applied as a
 /// guide while filming and as a crop on export.
-nonisolated enum AspectRatio: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum AspectRatio: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = AspectRatio.portrait
+
     case portrait = "9:16"
     case vertical = "4:5"
     case square = "1:1"
