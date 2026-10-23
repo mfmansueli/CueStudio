@@ -123,8 +123,8 @@ final class QuickEditPlayer: EditPlayback {
         if key != itemKey {
             // New pieces: the item on screen can't play them, so it holds still until the new one is
             // in, and a build still running for the old ones is dropped.
-            let newPieces = itemKey?.spans != key.spans || itemKey?.speeds != key.speeds || itemKey?.curves != key.curves
-                || itemKey?.transitions != key.transitions
+            let newPieces = itemKey?.spans != key.spans || itemKey?.sources != key.sources || itemKey?.speeds != key.speeds
+                || itemKey?.curves != key.curves || itemKey?.transitions != key.transitions
             itemKey = key
             if newPieces, avPlayer.currentItem != nil {
                 awaitsItem = true
@@ -422,9 +422,12 @@ final class QuickEditPlayer: EditPlayback {
 
     /// What an item depends on: the look, the sound, what is laid on top, where the pieces join,
     /// how and at what speed. Not where the handles are, which only moves the playback window.
-    private struct ItemKey: Equatable {
+    struct ItemKey: Equatable {
         let recipe: TakeEdit
         let spans: [TimeSpan]
+        /// One per span: the recording it is of (nil: the take). Two clips of the same seconds of different recordings,
+        /// swapped, are new pieces.
+        let sources: [UUID?]
         /// One per span: pieces at different speeds never join.
         let speeds: [Double]
         /// One per span: a curved piece's curve (its timing is new pieces).
@@ -456,6 +459,7 @@ final class QuickEditPlayer: EditPlayback {
             self.recipe = recipe
             let reachable = edit.timeline.reachable
             var spans: [TimeSpan] = []
+            var sources: [UUID?] = []
             var speeds: [Double] = []
             var curves: [SpeedCurve?] = []
             for (index, segment) in reachable.segments.enumerated() {
@@ -463,11 +467,13 @@ final class QuickEditPlayer: EditPlayback {
                     spans[spans.count - 1].end = segment.sourceEnd
                 } else {
                     spans.append(segment.span)
+                    sources.append(segment.sourceID)
                     speeds.append(segment.speed)
                     curves.append(segment.speedCurve)
                 }
             }
             self.spans = spans
+            self.sources = sources
             self.speeds = speeds
             self.curves = curves
             transitions = TransitionWindow.windows(in: reachable)
