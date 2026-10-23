@@ -6,7 +6,7 @@
 #if DEBUG
 import Foundation
 
-/// The v10 design's demo edit, for UI tests (`-uiTestDemoEdit`): a 21.6 s take with eight caption
+/// The v10 design's demo edit, for UI tests (`-uiTestDemoEdit`, `demo`): a 21.6 s take with eight caption
 /// lines (one with "caudo", one with "não, pera"), a title and a subtitle, and the four pauses
 /// between the lines already found by Clean Up. `heard`: the words were heard too (`-uiTestDemoTranscript`), so Edit by text
 /// lists them without the speech recognition the Simulator lacks.
@@ -46,6 +46,32 @@ enum SampleEdit {
         edit.texts = [title, subtitle]
         edit.suggestions = pauses.map { CleanUpSuggestion(kind: .pause, span: $0, confidence: 0.9) }
         edit.cleanUpAnalyzed = true
+        return edit
+    }
+
+    /// The editor's demo as `-uiTestDemoEdit` opens it: `make`, with something on every track, so each tool has what it works on.
+    /// The take is cut in two clips between "Primeiro: o pastel de feira." and "Massa fina…" (Reorder, the cut's transition);
+    /// music with a steady beat under the whole video (Beats); a B-roll window over "Mas valem cada centavo" and the line after
+    /// it; and a voice-over over the opening. Their files are made at launch (`SampleEditMedia`).
+    static func demo(aspect: AspectRatio, heard: Bool = false) -> TakeEdit {
+        var edit = make(aspect: aspect, heard: heard)
+        edit.timeline.split(atEdited: 12.4)
+        var music = MusicClip(
+            fileName: SampleEditMedia.musicFile, title: "Demo beat", fileDuration: SampleEditMedia.musicDuration, start: 0, length: duration
+        )
+        music.volume = 0.3
+        edit.music = [music]
+        var broll = MediaOverlay(
+            kind: .video, fileName: SampleEditMedia.brollFile, aspect: SampleEditMedia.brollAspect,
+            mediaDuration: SampleEditMedia.brollDuration, span: TimeSpan(start: 4.2, end: 8.0)
+        )
+        broll.layout = .window
+        broll.width = 0.4
+        broll.center = OverlayPoint(x: 0.7, y: 0.36)
+        broll.layer = 0
+        broll.hasSound = false
+        edit.media = [broll]
+        edit.voiceOvers = [VoiceOverClip(fileName: SampleEditMedia.voiceFile, duration: SampleEditMedia.voiceDuration, anchor: 0.5)]
         return edit
     }
 

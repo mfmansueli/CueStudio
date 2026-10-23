@@ -323,6 +323,65 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
     }
 
+    /// The demo's other tracks (`SampleEdit.demo`: two clips, music with a beat, a B-roll window, a voice-over): Reorder on its own
+    /// clips, the music's tools and Beats, the voice-over's and a caption's tools, the B-roll's tools and its panel, and Voice-over
+    /// with the script over the preview.
+    func test10DemoTracks() throws {
+        start()
+        EditorApp.tapTool(app, "edit")
+        if tool("reorder") {
+            try tour("demo-sheet-reorder")
+            closeSheet()
+        }
+        tap("edit.toolbar.back", within: 2)
+        // The tracks under the video: texts and media (0), captions (1), music (2), voice-over (3).
+        if tapTrack(2, secondsAfterPlayhead: 1.5), app.buttons["edit.toolbar.beats"].exists(within: 3) {
+            try capture("demo-music-picked")
+            if tool("beats") {
+                sleep(3)
+                try tour("demo-beats")
+                apply()
+            }
+            tap("edit.toolbar.back", within: 2)
+        }
+        if tapTrack(3, secondsAfterPlayhead: 2.5), app.buttons["edit.toolbar.reRecord"].exists(within: 3) {
+            try capture("demo-voiceover-picked")
+            tap("edit.toolbar.back", within: 2)
+        }
+        if tapTrack(1, secondsAfterPlayhead: 1), app.buttons["edit.toolbar.editCaption"].exists(within: 3) {
+            try capture("demo-caption-picked")
+            if scrollToolbarToEnd() { try capture("demo-caption-picked-end") }
+            tap("edit.toolbar.back", within: 2)
+        }
+        // The B-roll plays from 4.2 s: the playhead goes there, and its window on the preview picks it.
+        EditorApp.scrub(app, points: 250)
+        if tap("edit.mediaHandle") || (tapTrack(0, secondsAfterPlayhead: 0) && app.buttons["edit.toolbar.editMedia"].exists(within: 3)) {
+            try capture("demo-media-picked")
+            if scrollToolbarToEnd() { try capture("demo-media-picked-end") }
+            if tool("editMedia") {
+                try tour("demo-media-panel")
+                apply()
+            }
+            tap("edit.toolbar.back", within: 2)
+        }
+        EditorApp.tapTool(app, "audio")
+        if tap("edit.toolbar.voiceOver") {
+            try tour("demo-voice-over-script")
+            apply()
+        }
+    }
+
+    /// Taps a track under the video, `seconds` after the playhead (44 points a second at the starting zoom). From the timeline's
+    /// top: the ruler (28 pt), the video (56), then 28 pt tracks 8 apart; false when the track is below the timeline's fold.
+    private func tapTrack(_ index: Int, secondsAfterPlayhead seconds: CGFloat) -> Bool {
+        let timeline = app.descendants(matching: .any)["edit.timeline"]
+        guard timeline.exists(within: 3) else { return false }
+        let y = 92 + CGFloat(index) * 36 + 14
+        guard y < timeline.frame.height - 4 else { return false }
+        timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0)).withOffset(CGVector(dx: seconds * 44, dy: y)).tap()
+        return true
+    }
+
     // MARK: - Tour
 
     /// Every tab of the open panel, each from its top to its end, with its Advanced open.
