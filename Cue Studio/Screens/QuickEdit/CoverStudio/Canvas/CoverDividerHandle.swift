@@ -19,9 +19,9 @@ struct CoverDividerHandle: View {
             .frame(width: 22, height: 56)
             .overlay(Image(systemName: "arrow.left.and.right").font(.system(size: 11, weight: .bold)).foregroundStyle(Palette.accInk))
             .shadow(color: Palette.Editor.overlayOutlineHalo, radius: 2)
-            .frame(width: Metrics.hitTarget, height: 72)
+            .frame(width: Metrics.hitTarget, height: CoverStudioViewModel.dividerKnobHeight)
             .contentShape(Rectangle())
-            .position(x: CGFloat(position) * size.width, y: size.height * 0.62)
+            .position(x: CGFloat(position) * size.width, y: size.height * CoverStudioViewModel.dividerKnobY)
             .gesture(
                 DragGesture(minimumDistance: 1, coordinateSpace: .named(CoverCanvas.space))
                     .onChanged { value in

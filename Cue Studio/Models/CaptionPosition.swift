@@ -18,11 +18,12 @@ nonisolated enum CaptionPosition: String, Codable, CaseIterable, Identifiable, S
         }
     }
 
-    /// Vertical center of the caption as a fraction of the frame height.
+    /// Vertical center of the caption as a fraction of the frame height, from the top: where Position puts the captions and
+    /// where a drag sticks them (`QuickEditViewModel.captionStops`). Middle is the frame's middle, on the preview's guide.
     var verticalFraction: Double {
         switch self {
-        case .top: 0.12
-        case .middle: 0.46
+        case .top: 0.16
+        case .middle: 0.5
         case .bottom: 0.76
         }
     }

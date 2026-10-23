@@ -20,7 +20,7 @@ struct CoverItemHandle: View {
     var body: some View {
         let frame = viewModel.itemFrame(item, in: size)
         let isSelected = viewModel.selection == .item(item.id)
-        let box = CGSize(width: max(frame.size.width + 14, Metrics.hitTarget), height: max(frame.size.height + 14, Metrics.hitTarget))
+        let box = CoverStudioViewModel.itemTouchSize(frame.size)
         ZStack {
             Rectangle()
                 .fill(Color.clear)

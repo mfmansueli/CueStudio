@@ -44,6 +44,8 @@ nonisolated enum DefaultsKey {
     /// absent = the prompter's), `EditorPreferencesStore`.
     static let narrationScriptShown = "editor.narrationScriptShown"
     static let narrationScriptSpeed = "editor.narrationScriptSpeed"
+    /// When the editor last said Low Power Mode was on (`LowPowerNotice`: once a day).
+    static let lowPowerNoticeShownAt = "editor.lowPowerNoticeShownAt"
     /// Free exports used, before the count moved to the Keychain; migrated and removed at launch.
     static let legacyCleanExportsUsed = "cleanExportsUsed"
     /// Debug builds: this install has launched before. UserDefaults goes with the app and the Keychain stays, so without

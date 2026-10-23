@@ -29,4 +29,9 @@ final class EditorPreferencesStore: EditorPreferencesStoring {
             }
         }
     }
+
+    var lowPowerNoticeShownAt: Date? {
+        get { defaults.object(forKey: DefaultsKey.lowPowerNoticeShownAt) as? Date }
+        set { defaults.set(newValue, forKey: DefaultsKey.lowPowerNoticeShownAt) }
+    }
 }

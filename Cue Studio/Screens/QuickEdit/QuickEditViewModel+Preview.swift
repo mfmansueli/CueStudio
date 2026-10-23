@@ -13,8 +13,8 @@ import Foundation
 extension QuickEditViewModel {
     /// A text or the caption sticks to the middle within this share of the frame.
     static let centerSnap: Double = 0.025
-    /// Where captions stick when dragged: top, middle and bottom.
-    static let captionStops: [Double] = [0.16, 0.5, 0.76]
+    /// Where captions stick when dragged: top, middle and bottom, the same places Position puts them.
+    static let captionStops: [Double] = CaptionPosition.allCases.map(\.verticalFraction)
     /// Captions stick to a stop within this share of the frame.
     static let captionSnap: Double = 0.03
     /// How much the corner handle scales per point dragged (down and right grows).

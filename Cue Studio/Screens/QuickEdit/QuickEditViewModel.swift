@@ -203,6 +203,8 @@ final class QuickEditViewModel {
     var showsNarrationScript: Bool {
         didSet { editorPreferences.showsNarrationScript = showsNarrationScript }
     }
+    /// The Low Power Mode notice over the preview (`QuickEditViewModel+LowPower`).
+    var showsLowPowerNotice = false
     /// How far that script has been read, at a steady pace from the start of the recording.
     var narrationPace: NarrationScriptPace
     /// The cover as drawn, for the timeline's cover block; nil until drawn or without a cover.

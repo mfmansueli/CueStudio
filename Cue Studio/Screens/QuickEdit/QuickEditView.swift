@@ -34,6 +34,7 @@ struct QuickEditView: View {
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.forcesLowPowerMode) private var forcesLowPowerMode
     /// The screen is recorded or mirrored: the previews hide behind `CaptureShield` and the player holds still.
     @SceneCaptured private var isSceneCaptured
 
@@ -231,6 +232,22 @@ struct QuickEditView: View {
                         NarrationScriptOverlay(viewModel: viewModel, size: CGSize(width: width, height: layout.preview))
                     }
                 }
+                .overlay(alignment: .bottom) {
+                    // Low Power Mode: at the preview's foot, clear of the toasts at its top.
+                    if viewModel.showsLowPowerNotice {
+                        LowPowerNoticeBanner(viewModel: viewModel)
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 10)
+                            .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .bottom)))
+                    }
+                }
+                .animation(reduceMotion ? .easeOut(duration: 0.15) : .easeOut(duration: 0.25), value: viewModel.showsLowPowerNotice)
+                .task {
+                    viewModel.lowPowerModeChanged(isLowPower)
+                    for await _ in NotificationCenter.default.notifications(named: .NSProcessInfoPowerStateDidChange) {
+                        viewModel.lowPowerModeChanged(isLowPower)
+                    }
+                }
             EditorPlayerBar(viewModel: viewModel)
                 .frame(height: layout.playerBar)
             timeline(layout)
@@ -289,6 +306,11 @@ struct QuickEditView: View {
     }
 
     /// The take's frame, as large as fits in `available`, with a little room around it.
+    /// Low Power Mode, as the system says (or on, in UI tests that ask for it).
+    private var isLowPower: Bool {
+        forcesLowPowerMode || ProcessInfo.processInfo.isLowPowerModeEnabled
+    }
+
     private func previewSize(in available: CGSize) -> CGSize {
         let aspect = viewModel.edit.aspect.widthOverHeight
         let maxWidth = max(0, available.width - 16)

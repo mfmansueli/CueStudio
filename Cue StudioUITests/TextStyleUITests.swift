@@ -105,6 +105,8 @@ final class TextStyleUITests: XCTestCase {
             XCTAssertTrue(button.isHittable, tab)
             assertFullTarget(button, tab)
         }
+        // The text's colors are on the Color tab.
+        app.buttons["edit.panel.tab.color"].tap()
         let swatch = app.buttons["edit.textColor.white"]
         scrollPanel(app, to: swatch)
         assertFullTarget(swatch)

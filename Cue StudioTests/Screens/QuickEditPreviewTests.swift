@@ -49,6 +49,9 @@ struct QuickEditPreviewTests {
         #expect(QuickEditViewModel.snappedCaption(0.74).y == 0.76)
         #expect(QuickEditViewModel.snappedCaption(0.62).stop == nil)
         #expect(QuickEditViewModel.snappedCaption(0.99).y == 0.9)
+        // The stops are where Position puts the captions: a drag and the control agree.
+        #expect(QuickEditViewModel.captionStops == CaptionPosition.allCases.map(\.verticalFraction))
+        #expect(CaptionPosition.middle.verticalFraction == 0.5)
     }
 
     @Test func tappingATextPicksItThenOpensItsWordsToEdit() async throws {

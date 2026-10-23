@@ -457,6 +457,22 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The Low Power Mode notice over the preview: its title, its sentence and ✕ on the toast's fill, over a white or a black
+    /// picture; the battery is an icon that informs (3:1).
+    @Test func theLowPowerNoticeReadsOverAnyPicture() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            for appearance in Appearance.allCases {
+                let fill = rgb(Palette.Editor.toast, in: appearance, over: picture)
+                for (name, color) in [("title", Palette.ink), ("sentence and ✕", Palette.ink2)] {
+                    let words = ColorContrast.ratio(rgb(color, in: appearance, over: fill), fill)
+                    #expect(words >= ColorContrast.textMinimum, "\(name), \(appearance): \(words)")
+                }
+                let icon = ColorContrast.ratio(rgb(Palette.accText, in: appearance, over: fill), fill)
+                #expect(icon >= 3, "battery, \(appearance): \(icon)")
+            }
+        }
+    }
+
     /// The star's words over its cover (84% of `transitionCover`, 09 §8) on whatever the screen behind it shows: black, and at worst white.
     @Test func theStarsWordsReadOverItsCoverOnAnyScreen() {
         let words: [(name: String, color: Color)] = [

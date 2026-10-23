@@ -147,7 +147,7 @@ struct TextStylePanel: View {
 
     // MARK: - Tabs
 
-    /// The styles in a row, then Size and Glow and the colors: the whole look in one place.
+    /// The styles in a row, then Size and Glow. The colors are the Color tab's alone.
     @ViewBuilder
     private func presets(_ text: TextOverlay) -> some View {
         styleCards
@@ -160,10 +160,6 @@ struct TextStylePanel: View {
             step: CueSliderSpec.textGlow.step ?? 5, defaultValue: CueSliderSpec.textGlow.defaultValue, format: .percent,
             identifier: "edit.textGlow"
         ) { viewModel.restyleText(.glow($0 / 100), key: "textGlow") }
-        PanelSwatches(
-            label: String(localized: "Text"), colors: OverlayColor.textSwatches, selection: text.color,
-            diameter: Self.swatchDiameter, identifier: "edit.textColor"
-        ) { viewModel.restyleText(.color($0)) }
     }
 
     private var styleCards: some View {

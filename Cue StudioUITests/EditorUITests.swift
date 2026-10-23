@@ -433,4 +433,20 @@ final class EditorUITests: XCTestCase {
         tile.tap()
         XCTAssertTrue(app.descendants(matching: .any)["edit.transcript"].firstMatch.exists(within: 5))
     }
+
+    // MARK: - Low Power Mode
+
+    /// With Low Power Mode on, the editor says so at the foot of the preview, without stopping anything; ✕ lets it go.
+    func testLowPowerModeIsSaidOverThePreviewUntilClosed() {
+        let app = EditorApp.open(arguments: ["-uiTestLowPower"])
+        let notice = app.descendants(matching: .any)["edit.lowPowerNotice"]
+        XCTAssertTrue(notice.exists(within: 5))
+        XCTAssertTrue(notice.label.contains("Low Power Mode is on"), notice.label)
+        // The edit goes on under it.
+        XCTAssertTrue(app.buttons["edit.playButton"].isHittable)
+        let close = app.buttons["edit.lowPowerNotice.close"]
+        XCTAssertGreaterThanOrEqual(close.frame.width, 44)
+        close.tap()
+        XCTAssertTrue(notice.waitForNonExistence(timeout: 3))
+    }
 }

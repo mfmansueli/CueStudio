@@ -19,11 +19,12 @@ struct CoverTitleHandle: View {
     var body: some View {
         if let frame = viewModel.titleFrame(in: size) {
             let isSelected = viewModel.selection == .title
+            let touch = CoverStudioViewModel.titleTouchFrame(frame)
             ZStack(alignment: .topLeading) {
                 Rectangle()
                     .fill(Color.clear)
                     .contentShape(Rectangle())
-                    .frame(width: max(frame.width + 16, Metrics.hitTarget), height: max(frame.height + 16, Metrics.hitTarget))
+                    .frame(width: touch.width, height: touch.height)
                     .overlay {
                         if isSelected {
                             RoundedRectangle(cornerRadius: 4, style: .continuous)
@@ -88,8 +89,9 @@ struct CoverTitleHandle: View {
 
     /// A white knob on the block's side: dragging it sideways makes the block wider or narrower (the words fit again).
     private func widthHandle(_ frame: CGRect) -> some View {
-        let height = max(frame.height + 16, Metrics.hitTarget)
-        let width = max(frame.width + 16, Metrics.hitTarget)
+        let touch = CoverStudioViewModel.titleTouchFrame(frame)
+        let height = touch.height
+        let width = touch.width
         return Capsule()
             .fill(Palette.Editor.overlayOutline)
             .frame(width: 8, height: 26)

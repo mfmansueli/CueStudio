@@ -324,20 +324,44 @@ final class CoverStudioViewModel: Identifiable {
         return (CGPoint(x: item.center.x * size.width, y: item.center.y * size.height), shape)
     }
 
-    /// What a tap at `point` on a canvas of `size` lands on, the top first: a graphic, the title, the divider.
+    /// What a tap at `point` on a canvas of `size` lands on, the top first: a graphic, the title, the divider. Each is reached
+    /// exactly where its handle on the canvas takes a finger, so a tap and a drag always find the same thing.
     func hit(at point: CGPoint, in size: CGSize) -> CoverStudioSelection? {
         for item in composition.items.reversed() {
             let frame = itemFrame(item, in: size)
             let local = point.applying(
                 CGAffineTransform(translationX: -frame.center.x, y: -frame.center.y).concatenating(CGAffineTransform(rotationAngle: -CGFloat(item.rotation)))
             )
-            let reach = CGRect(x: -frame.size.width / 2, y: -frame.size.height / 2, width: frame.size.width, height: frame.size.height)
-                .insetBy(dx: -12, dy: -12)
-            if reach.contains(local) { return .item(item.id) }
+            let touch = Self.itemTouchSize(frame.size)
+            if CGRect(x: -touch.width / 2, y: -touch.height / 2, width: touch.width, height: touch.height).contains(local) { return .item(item.id) }
         }
-        if let title = titleFrame(in: size), title.insetBy(dx: -10, dy: -10).contains(point) { return .title }
-        if let split = composition.activeSplit, abs(point.x - split.position * size.width) < 22 { return .divider }
+        if let title = titleFrame(in: size), Self.titleTouchFrame(title).contains(point) { return .title }
+        if let split = composition.activeSplit, Self.dividerTouchFrame(position: split.position, in: size).contains(point) { return .divider }
         return nil
+    }
+
+    /// Where a finger takes a graphic, in its own turned frame: its shape and 7 pt around, at least 44 pt (`CoverItemHandle`).
+    static func itemTouchSize(_ shape: CGSize) -> CGSize {
+        CGSize(width: max(shape.width + 14, Metrics.hitTarget), height: max(shape.height + 14, Metrics.hitTarget))
+    }
+
+    /// Where a finger takes the title: its block and 8 pt around, at least 44 pt (`CoverTitleHandle`).
+    static func titleTouchFrame(_ block: CGRect) -> CGRect {
+        let width = max(block.width + 16, Metrics.hitTarget)
+        let height = max(block.height + 16, Metrics.hitTarget)
+        return CGRect(x: block.midX - width / 2, y: block.midY - height / 2, width: width, height: height)
+    }
+
+    /// How high a before/after's divider knob takes a finger, and where its middle sits (a share of the canvas's height).
+    static let dividerKnobHeight: CGFloat = 72
+    static let dividerKnobY: CGFloat = 0.62
+
+    /// Where a finger takes a before/after's divider: its knob, 44 × 72 pt (`CoverDividerHandle`), not the whole line.
+    static func dividerTouchFrame(position: Double, in size: CGSize) -> CGRect {
+        CGRect(
+            x: CGFloat(position) * size.width - Metrics.hitTarget / 2, y: size.height * dividerKnobY - dividerKnobHeight / 2,
+            width: Metrics.hitTarget, height: dividerKnobHeight
+        )
     }
 
     /// A tap on the canvas: picks what's there (and opens its step), or lets go.
