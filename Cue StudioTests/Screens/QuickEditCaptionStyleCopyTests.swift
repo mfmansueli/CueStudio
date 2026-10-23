@@ -98,12 +98,12 @@ struct QuickEditCaptionStyleCopyTests {
         let viewModel = scenario.viewModel
         _ = styledTexts(viewModel)
         let edit = viewModel.edit
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.askToCopyStyleToCaptions()
         viewModel.cancelCopyingStyleToCaptions()
         #expect(viewModel.captionStyleCopySourceID == nil)
         #expect(viewModel.edit == edit)
-        #expect(viewModel.history.past.count == steps)
+        #expect(viewModel.document.history.past.count == steps)
     }
 
     // MARK: - Applying
@@ -118,7 +118,7 @@ struct QuickEditCaptionStyleCopyTests {
         viewModel.pickCaptionReveal(.groups)
         let before = viewModel.edit
         let reveal = viewModel.captionReveal
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
 
         viewModel.askToCopyStyleToCaptions()
         viewModel.copyStyleToCaptions()
@@ -140,7 +140,7 @@ struct QuickEditCaptionStyleCopyTests {
         #expect(viewModel.edit.texts == before.texts)
         #expect(title?.size == 80)
         // One undo step; the question is answered.
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.captionStyleCopySourceID == nil)
         #expect(scenario.toast.message == "Captions use this style")
         #expect(scenario.toast.action?.title == "Undo")

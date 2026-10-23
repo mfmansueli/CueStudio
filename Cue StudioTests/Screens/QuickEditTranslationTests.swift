@@ -49,7 +49,7 @@ struct QuickEditTranslationTests {
     @Test func captionsAreTranslatedSentenceBySentenceAsOneStep() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         await viewModel.translateCaptions(to: .portugueseBrazil)
         #expect(viewModel.translationState == .translating)
         let request = try #require(viewModel.translationRequest)
@@ -58,7 +58,7 @@ struct QuickEditTranslationTests {
         #expect(session.asked == ["Okay, real talk."])
         #expect(viewModel.translation(.portugueseBrazil)?.lines.map(\.text) == ["EN Okay, real talk."])
         #expect(viewModel.translationState == .idle)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(scenario.toast.message?.hasPrefix("Translated to") == true)
         // The original lines are untouched.
         #expect(viewModel.edit.captions.map(\.text) == ["Okay, real talk."])

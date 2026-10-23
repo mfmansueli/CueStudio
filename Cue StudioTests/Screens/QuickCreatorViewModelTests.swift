@@ -80,12 +80,12 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         viewModel.addText(.hook)
         let id = viewModel.edit.texts[0].id
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.beginChange()
         for text in ["S", "St", "Stop"] { viewModel.updateText(id) { $0.text = text } }
         viewModel.updateText(id) { $0.color = .yellow }
         viewModel.endChange()
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.edit.texts[0].text == "Stop")
 
         viewModel.undo()
@@ -113,7 +113,7 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.addText(.title)
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         let bar = viewModel.textBars[0]
         viewModel.beginChange()
         viewModel.moveBar(bar, toStart: 5)
@@ -125,7 +125,7 @@ struct QuickCreatorViewModelTests {
         viewModel.resizeBar(moved, edge: .end, to: 20)
         viewModel.endChange()
         #expect(viewModel.textBars[0].span == TimeSpan(start: 8, end: 20))
-        #expect(viewModel.history.past.count == steps + 2)
+        #expect(viewModel.document.history.past.count == steps + 2)
     }
 
     @Test func aPresetRestylesOneText() async {
@@ -171,9 +171,9 @@ struct QuickCreatorViewModelTests {
         viewModel.pickFilter(.film)
         try makeCover(viewModel)
         let cover = viewModel.edit.cover
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.applyPreset(.impact, to: .allTexts)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.edit.texts[0].isUppercase)
         #expect(viewModel.edit.texts[0].hasOutline)
         #expect(viewModel.edit.textPreset == .impact)
@@ -268,15 +268,15 @@ struct QuickCreatorViewModelTests {
         viewModel.splitClip()
         let right = viewModel.edit.timeline.segments[1].id
         #expect(viewModel.selection == .clip(right))
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.setClipSpeed(0.5)
         #expect(viewModel.edit.timeline.segments.map(\.speed) == [1, 0.5])
         #expect(viewModel.edit.editedDuration == 96)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         // Quick moves of the slider on the same clip are one step, on the twentieths.
         viewModel.setClipSpeed(1.52)
         #expect(viewModel.edit.timeline.segments[1].speed == 1.5)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         viewModel.undo()
         #expect(viewModel.edit.timeline.segments.map(\.speed) == [1, 1])
     }
@@ -320,10 +320,10 @@ struct QuickCreatorViewModelTests {
             viewModel.splitClip()
         }
         #expect(viewModel.cuts.map(\.index) == [1, 2])
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.setTransitionOnEveryCut(.slide)
         #expect(viewModel.edit.timeline.segments.map(\.transitionIn) == [.hardCut, .slide, .slide])
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         viewModel.setTransition(.fade, atJoin: 2)
         #expect(viewModel.edit.timeline.transition(atJoin: 2) == .fade)
     }
@@ -445,7 +445,7 @@ struct QuickCreatorViewModelTests {
         viewModel.addMedia(photo())
         let original = try #require(viewModel.edit.media.first)
         viewModel.selection = .media(original.id)
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.perform(.duplicateMedia)
         #expect(viewModel.edit.media.count == 2)
         let copy = try #require(viewModel.edit.media.first { $0.id != original.id })
@@ -453,7 +453,7 @@ struct QuickCreatorViewModelTests {
         #expect(copy.span == original.span)
         #expect(copy.stackOrder > original.stackOrder)
         #expect(viewModel.selection == .media(copy.id))
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(scenario.toast.message == "Media duplicated")
         // Deleting the copy keeps the file the original still shows.
         viewModel.deleteMedia(copy.id)

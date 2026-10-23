@@ -237,7 +237,7 @@ struct QuickEditTimelineTests {
         viewModel.addStyledText(.title)
         let id = try #require(viewModel.selectedTextID)
         let span = try #require(viewModel.editedSpan(ofText: id))
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         // Within the snapping distance of a cut (6 pt at 44 pt a second: about 0.14 s).
         let reach = TimeInterval(TimelineSnapping.distance / TimelineGeometry.basePointsPerSecond)
         viewModel.beginTimelineHandle(.move(.text, id), snapTimes: [span.start, span.end, 10, 15])
@@ -256,7 +256,7 @@ struct QuickEditTimelineTests {
         #expect(abs(now.end - 15) < 0.001)
         #expect(abs(now.duration - span.duration) < 0.001)
         viewModel.endTimelineHandle()
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         viewModel.undo()
         let back = try #require(viewModel.editedSpan(ofText: id))
         #expect(abs(back.start - span.start) < 0.001)

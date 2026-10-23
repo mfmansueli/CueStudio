@@ -100,7 +100,7 @@ struct QuickEditViewModelTests {
         viewModel.endTimelineHandle()
         #expect(viewModel.handleDrag == nil)
         #expect(viewModel.edit.timeline.trimStart < viewModel.edit.timeline.trimEnd)
-        #expect(viewModel.history.past.count == 1)
+        #expect(viewModel.document.history.past.count == 1)
         viewModel.undo()
         #expect(viewModel.edit.timeline.isWhole)
     }
@@ -117,7 +117,7 @@ struct QuickEditViewModelTests {
         #expect(spans(viewModel) == [[5, 30]])
         // Held between the handles: 25 s is the end of the edit.
         #expect(scenario.player.currentTime == 25)
-        #expect(viewModel.history.past.count == 2)
+        #expect(viewModel.document.history.past.count == 2)
     }
 
     @Test func aHandleOnlyMovesWhileItsDragIsOn() async {

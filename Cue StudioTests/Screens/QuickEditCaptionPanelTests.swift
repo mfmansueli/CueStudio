@@ -54,14 +54,14 @@ struct QuickEditCaptionPanelTests {
         let scenario = await makeScenario(lines: [(0, 2, "First"), (2.5, 4, "Second")])
         let viewModel = scenario.viewModel
         let first = viewModel.captionListLines[0].cueID
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         for _ in 0..<10 { viewModel.nudgeCaptionLine(first, edge: .end, by: 0.1) }
         let end = viewModel.editedSpan(ofCaption: first)?.end ?? 0
         #expect(abs(end - 2.5) < 0.001)
         // The playhead shows the line's last moments.
         #expect(abs(scenario.player.currentTime - 2.2) < 0.001)
         // Quick taps are one undo step.
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         let second = viewModel.captionListLines[1].cueID
         viewModel.nudgeCaptionLine(second, edge: .start, by: -0.1)
         #expect(abs((viewModel.editedSpan(ofCaption: second)?.start ?? 0) - 2.5) < 0.001)

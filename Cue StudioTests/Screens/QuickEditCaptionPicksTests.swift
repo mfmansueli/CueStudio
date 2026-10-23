@@ -66,9 +66,9 @@ struct QuickEditCaptionPicksTests {
         viewModel.startPickingCaptions()
         viewModel.toggleCaptionPick(lines[0])
         viewModel.toggleCaptionPick(lines[2])
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.setPickedCaptionsEmphasized(true)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.pickedCaptionsAreEmphasized)
         let styles = Dictionary(uniqueKeysWithValues: viewModel.edit.captions.map { ($0.id, $0.lineStyle) })
         #expect(styles[lines[0]]??.isEmphasized == true && styles[lines[2]]??.isEmphasized == true)
@@ -98,7 +98,7 @@ struct QuickEditCaptionPicksTests {
         viewModel.startPickingCaptions()
         viewModel.toggleCaptionPick(lines[1])
         viewModel.toggleCaptionPick(lines[2])
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         #expect(viewModel.movePickedCaptions(by: 0.1))
         #expect(viewModel.movePickedCaptions(by: 0.1))
         let moved = Dictionary(uniqueKeysWithValues: viewModel.edit.captions.map { ($0.id, $0) })
@@ -106,7 +106,7 @@ struct QuickEditCaptionPicksTests {
         #expect(abs((moved[lines[2]]?.end ?? 0) - 3.2) < 0.000_1)
         #expect(moved[lines[0]]?.start == 0 && moved[lines[3]]?.start == 3.5)
         // Quick taps are one undo step.
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         // "c" ends at 3.2; "d" starts at 3.5: the group goes 0.3 further and no more.
         #expect(viewModel.movePickedCaptions(by: 1))
         #expect(abs((viewModel.edit.captions.first { $0.id == lines[2] }?.end ?? 0) - 3.5) < 0.000_1)

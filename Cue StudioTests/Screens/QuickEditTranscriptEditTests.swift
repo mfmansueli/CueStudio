@@ -67,9 +67,9 @@ struct QuickEditTranscriptEditTests {
         #expect(player.currentTime == 1)
         viewModel.tapTranscriptWord(at: 4)
         #expect(viewModel.selectedTranscriptWords.map(\.text) == ["I", "want", "to"])
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.cutSelectedWords()
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(abs(viewModel.edit.editedDuration - 8.5) < 0.000_1)
         #expect(viewModel.transcriptSelection == nil)
         // Listed crossed out, and gone from the caption.
@@ -160,9 +160,9 @@ struct QuickEditVideoTemplateTests {
         viewModel.change { $0.captions = [CaptionCue(text: "Real talk", start: 1, end: 2)] }
         viewModel.addGraphic(.arrow)
         let before = viewModel.edit
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.applyVideoTemplate(.boldHook)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         // Bold hook's captions: heavy type on a violet band behind each line, bigger, the word being said in yellow.
         let captions = try #require(viewModel.edit.captionCollection)
         #expect(captions.theme == .pop)
@@ -354,9 +354,9 @@ struct QuickEditAuditFixTests {
         viewModel.setTransitionDuration(1.2)
         viewModel.setTransitionOnEveryCut(.zoom)
         #expect(viewModel.edit.timeline.segments.dropFirst().allSatisfy { $0.transitionIn == .zoom && $0.transitionDuration == 1.2 })
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.setTransitionOnEveryCut(.zoom)
-        #expect(viewModel.history.past.count == steps)
+        #expect(viewModel.document.history.past.count == steps)
     }
 
     @Test func editByTextCutsOnlyTheClipTheWordsWereReadIn() async throws {
@@ -418,14 +418,14 @@ struct QuickEditAuditFixTests {
     /// A handle held on something that isn't there leaves no change open: the next change is an undo step of its own.
     @Test func aHandleOnNothingLeavesNoChangeOpen() async throws {
         let (viewModel, _) = await makeViewModel()
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.beginTimelineHandle(.clip(UUID(), .end), snapTimes: [])
         viewModel.beginTimelineHandle(.move(.text, UUID()), snapTimes: [])
         viewModel.beginTimelineHandle(.item(.caption, UUID(), .start), snapTimes: [])
         var timeline = viewModel.edit.timeline
         timeline.split(atEdited: 10)
         viewModel.commit(timeline)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         viewModel.undo()
         #expect(viewModel.edit.timeline.segments.count == 1)
     }

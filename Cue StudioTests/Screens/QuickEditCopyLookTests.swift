@@ -57,14 +57,14 @@ struct QuickEditCopyLookTests {
         viewModel.perform(.pasteLook)
         #expect(viewModel.showsPasteLook)
         viewModel.togglePasteLookPart(.zoom)
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.pasteLook(on: false)
         let pasted = try #require(viewModel.edit.timeline.segment(id: second))
         #expect(pasted.look?.exposure == 30)
         #expect(pasted.look?.filter == .film)
         #expect(pasted.zoom == nil)
         #expect(viewModel.edit.timeline.segments[2].look == nil)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         viewModel.undo()
         #expect(viewModel.edit.timeline.segment(id: second)?.look == nil)
     }
@@ -98,9 +98,9 @@ struct QuickEditCopyLookTests {
         let (viewModel, _) = await makeViewModel()
         viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
         viewModel.copyClipLook()
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.pasteLook(on: true)
-        #expect(viewModel.history.past.count == steps)
+        #expect(viewModel.document.history.past.count == steps)
         // Said once the sheet has gone (0.35 s later; a busy simulator can take longer, so wait for it rather than a fixed time).
         #expect(try await toast(of: viewModel, becomes: "Every clip already looks like this"))
         viewModel.selection = .clip(viewModel.edit.timeline.segments[1].id)
@@ -183,14 +183,14 @@ struct QuickEditSoundEffectTests {
         // Music fills the whole edit.
         viewModel.addMusic(ImportedAudio(fileName: "song-\(UUID().uuidString).m4a", title: "Song", duration: 60))
         player.currentTime = 12
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.addSoundEffect(.whoosh)
         let effect = try #require(viewModel.edit.music.first { $0.effect == .whoosh })
         defer { EditMediaFiles.remove([effect.fileName]) }
         #expect(abs(effect.start - 12) < 0.001)
         #expect(!effect.ducksUnderVoice)
         #expect(viewModel.edit.music.count == 2)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(EditMediaFiles.exists(effect.fileName))
         #expect(viewModel.edit.mediaFileNames.contains(effect.fileName))
     }

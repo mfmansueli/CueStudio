@@ -167,11 +167,11 @@ struct QuickEditSoundTests {
         viewModel.addMusic(song())
         let id = try #require(viewModel.edit.music.first?.id)
         viewModel.selection = .music(id)
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.beginChange()
         for volume in stride(from: 0.5, through: 0.9, by: 0.1) { viewModel.setTargetVolume(volume) }
         viewModel.endChange()
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(abs((viewModel.edit.music.first?.volume ?? 0) - 0.9) < 0.001)
         #expect(abs(viewModel.targetVolume - 0.9) < 0.001)
         // Volume never goes past 200%.

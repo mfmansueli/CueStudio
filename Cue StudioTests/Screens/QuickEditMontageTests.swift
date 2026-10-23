@@ -88,9 +88,9 @@ struct QuickEditMontageTests {
         viewModel.splitClip()
         scenario.player.currentTime = 5
         viewModel.addText(.title)
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.duplicateClip(viewModel.edit.timeline.segments[0].id)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.edit.timeline.segments.count == 3)
         #expect(viewModel.edit.texts.count == 2)
         let ids = Set(viewModel.edit.texts.map(\.id))

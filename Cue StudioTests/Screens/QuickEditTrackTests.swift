@@ -51,13 +51,13 @@ struct QuickEditTrackTests {
         let scenario = try await makeScenario()
         defer { try? FileManager.default.removeItem(at: scenario.footage) }
         let viewModel = scenario.viewModel, player = scenario.player, id = scenario.textID
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.perform(.trackItem)
         #expect(viewModel.isTracking)
         await Wait.until(timeout: .seconds(120)) { !viewModel.isTracking }
         let keyframes = viewModel.edit.texts.first { $0.id == id }?.keyframes ?? []
         #expect(keyframes.count >= 2 && keyframes.count <= 30, "\(keyframes.count) keyframes")
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         // At 2.5 s (frame 75) the text is on the square.
         player.seek(to: 2.5)
         let center = viewModel.motionState(of: .text(id)).center
@@ -71,13 +71,13 @@ struct QuickEditTrackTests {
         let scenario = try await makeScenario()
         defer { try? FileManager.default.removeItem(at: scenario.footage) }
         let viewModel = scenario.viewModel, id = scenario.textID
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         // Cancelled, then again at once: only the second run lands, in one step.
         viewModel.perform(.trackItem)
         viewModel.cancelTracking()
         viewModel.perform(.trackItem)
         await Wait.until(timeout: .seconds(120)) { !viewModel.isTracking }
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect((viewModel.edit.texts.first { $0.id == id }?.keyframes.count ?? 0) >= 2)
         viewModel.undo()
         // The video changed while it ran: the path, measured on what it was, is dropped.

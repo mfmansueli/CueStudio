@@ -105,7 +105,7 @@ struct QuickEditCaptionsTests {
     @Test func captionsComeFromTheVoiceAsOneUndoStep() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.makeCaptions()
         #expect(viewModel.captionState.isWorking)
         await finish(viewModel)
@@ -114,7 +114,7 @@ struct QuickEditCaptionsTests {
         #expect(viewModel.edit.captions[0].hasWordTiming)
         #expect(viewModel.edit.captionTranscript?.words.count == 3)
         #expect(viewModel.edit.showsCaptions)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(scenario.toast.message == "1 line to check")
     }
 

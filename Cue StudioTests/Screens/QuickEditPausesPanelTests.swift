@@ -48,10 +48,10 @@ struct QuickEditPausesPanelTests {
         viewModel.tapCleanUpCard(kept.id)
         #expect(!viewModel.isMarked(kept))
         #expect(viewModel.cleanUpApplyLabel == "Remove 3 pauses")
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.applyCleanUp()
         #expect(abs(viewModel.edit.editedDuration - 18.4) < 0.001)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.panel == nil)
         // The kept one stays listed next time; the removed ones are gone from the edit.
         #expect(viewModel.edit.suggestions.first { $0.id == kept.id }?.status == .kept)

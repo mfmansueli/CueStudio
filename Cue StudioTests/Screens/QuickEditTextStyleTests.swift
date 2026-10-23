@@ -169,10 +169,10 @@ struct QuickEditTextStyleTests {
         let viewModel = await makeViewModel()
         viewModel.addStyledText(.title)
         let id = viewModel.edit.texts[0].id
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         for text in ["5", "5 c", "5 co", "5 comidas de SP"] { viewModel.setTextContent(id, text) }
         #expect(viewModel.edit.texts[0].text == "5 comidas de SP")
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         viewModel.undo()
         #expect(viewModel.edit.texts[0].text == TextOverlayRole.title.placeholder)
     }

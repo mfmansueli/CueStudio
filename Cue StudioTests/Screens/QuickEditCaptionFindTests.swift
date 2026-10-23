@@ -47,7 +47,7 @@ struct QuickEditCaptionFindTests {
     @Test func oneMatchIsReplacedAndTheTimesStay() async {
         let line = heard([("the", 1, 1.2), ("cat", 1.3, 1.6), ("and", 1.7, 1.9), ("the", 2, 2.2), ("dog", 2.3, 2.6)])
         let (viewModel, toast) = await makeViewModel(lines: [line])
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         let second = viewModel.captionMatches(for: "the")[1]
         viewModel.replaceCaptionMatch(second, query: "the", with: "a")
         let replaced = viewModel.edit.captions[0]
@@ -56,7 +56,7 @@ struct QuickEditCaptionFindTests {
         // The words that still match keep the voice's times.
         #expect(replaced.words.first { $0.text == "dog" }?.start == 2.3)
         #expect(replaced.isRevised)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(toast.message == "Replaced")
     }
 
@@ -67,11 +67,11 @@ struct QuickEditCaptionFindTests {
             CaptionCue(text: "I love cue studio", start: 2, end: 3),
         ]
         let (viewModel, toast) = await makeViewModel(lines: lines)
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         #expect(viewModel.replaceAllCaptionMatches("cue studio", with: "Cue Studio") == 2)
         #expect(viewModel.edit.captions.map(\.text) == ["Cue Studio is great", "nothing", "I love Cue Studio"])
         #expect(viewModel.edit.captions.map(\.start) == [0, 1, 2])
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(toast.message == "Replaced 2 times")
         #expect(toast.action != nil)
         viewModel.undo()
@@ -80,10 +80,10 @@ struct QuickEditCaptionFindTests {
 
     @Test func nothingToReplaceChangesNothing() async {
         let (viewModel, _) = await makeViewModel(lines: [CaptionCue(text: "hello", start: 0, end: 1)])
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         #expect(viewModel.replaceAllCaptionMatches("bye", with: "hi") == 0)
         #expect(viewModel.replaceAllCaptionMatches("hello", with: "hello") == 1)
-        #expect(viewModel.history.past.count == steps)
+        #expect(viewModel.document.history.past.count == steps)
     }
 
     @Test func linesInCutPartsAreLeftAlone() async {
