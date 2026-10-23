@@ -54,6 +54,8 @@ struct EditorPlayerBar: View {
                 .accessibilityIdentifier("edit.playButton")
                 if showsFrameSteps { frameStep(1) }
             }
+            // Time runs left to right in every language (media never mirrors): ‹ back a frame stays on the left in Arabic too.
+            .environment(\.layoutDirection, .leftToRight)
         }
         .padding(.leading, 16)
         .padding(.trailing, 10)
