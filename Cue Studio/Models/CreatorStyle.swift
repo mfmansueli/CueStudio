@@ -11,7 +11,7 @@ import Foundation
 /// start from it.
 nonisolated enum CreatorStyle: String, LenientChoice, CaseIterable, Identifiable, Sendable {
     /// Read in place of a value a newer version of Cue added (`LenientChoice`).
-    static let fallback = CreatorStyle.clean
+    static let fallback = CreatorStyle.bold
 
     /// Clear and neutral: white semibold with a soft shadow.
     case clean

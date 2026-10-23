@@ -114,17 +114,20 @@ nonisolated struct TextLook: Codable, Hashable, Sendable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let defaults = TextLook()
-        font = (try? container.decodeIfPresent(TextOverlayFont.self, forKey: .font)) ?? defaults.font
-        weight = (try? container.decodeIfPresent(TextOverlayWeight.self, forKey: .weight)) ?? defaults.weight
+        let report = decoder.decodingReport
+        // A font, weight or colour a newer version wrote reads as a new look's.
+        font = container.decodeChoice(TextOverlayFont.self, forKey: .font, unknown: defaults.font, report: report) ?? defaults.font
+        weight = container.decodeChoice(TextOverlayWeight.self, forKey: .weight, unknown: defaults.weight, report: report) ?? defaults.weight
         let scale = (try? container.decodeIfPresent(Double.self, forKey: .sizeScale)) ?? defaults.sizeScale
         sizeScale = min(max(scale, Self.sizeScaleRange.lowerBound), Self.sizeScaleRange.upperBound)
         let spacing = (try? container.decodeIfPresent(Double.self, forKey: .tracking)) ?? defaults.tracking
         tracking = min(max(spacing, Self.trackingRange.lowerBound), Self.trackingRange.upperBound)
         isUppercase = (try? container.decodeIfPresent(Bool.self, forKey: .isUppercase)) ?? defaults.isUppercase
         alignment = (try? container.decodeIfPresent(LineAlignment.self, forKey: .alignment)) ?? defaults.alignment
-        color = (try? container.decodeIfPresent(OverlayColor.self, forKey: .color)) ?? defaults.color
+        color = container.decodeChoice(OverlayColor.self, forKey: .color, unknown: defaults.color, report: report) ?? defaults.color
         background = (try? container.decodeIfPresent(TextOverlayBackground.self, forKey: .background)) ?? defaults.background
-        backgroundColor = (try? container.decodeIfPresent(OverlayColor.self, forKey: .backgroundColor)) ?? defaults.backgroundColor
+        backgroundColor = container.decodeChoice(OverlayColor.self, forKey: .backgroundColor, unknown: defaults.backgroundColor, report: report)
+            ?? defaults.backgroundColor
         let opacity = (try? container.decodeIfPresent(Double.self, forKey: .backgroundOpacity)) ?? defaults.backgroundOpacity
         backgroundOpacity = min(max(opacity, 0), 1)
         hasShadow = (try? container.decodeIfPresent(Bool.self, forKey: .hasShadow)) ?? defaults.hasShadow

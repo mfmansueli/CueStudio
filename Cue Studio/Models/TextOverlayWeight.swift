@@ -9,7 +9,7 @@ nonisolated enum TextOverlayWeight: String, LenientChoice, CaseIterable, Identif
 
     /// Read in place of a value a newer version of Cue added (`LenientChoice`).
 
-    static let fallback = TextOverlayWeight.regular
+    static let fallback = TextOverlayWeight.bold
 
     case regular, medium, semibold, bold, heavy
 

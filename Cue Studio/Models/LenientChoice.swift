@@ -16,6 +16,20 @@ nonisolated protocol LenientChoice: RawRepresentable, Codable where RawValue == 
     static var fallback: Self { get }
 }
 
+extension KeyedDecodingContainer {
+    /// The choice at `key`, with this place's own stand-in for a value a newer version wrote (a text's background reads black,
+    /// a sticker its kind's colour), where the choice's general `fallback` would be wrong here; nil when there is none or it
+    /// isn't a word.
+    nonisolated func decodeChoice<Choice: LenientChoice>(
+        _ type: Choice.Type, forKey key: Key, unknown: Choice, report: DecodingReport?
+    ) -> Choice? {
+        guard let raw = (try? decodeIfPresent(String.self, forKey: key)) ?? nil else { return nil }
+        if let known = Choice(rawValue: raw) { return known }
+        report?.note("\(Choice.self) “\(raw)” read as “\(unknown.rawValue)”")
+        return unknown
+    }
+}
+
 nonisolated extension LenientChoice {
     init(from decoder: Decoder) throws {
         let raw = try decoder.singleValueContainer().decode(String.self)

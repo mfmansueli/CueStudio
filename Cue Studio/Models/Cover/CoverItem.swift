@@ -48,7 +48,8 @@ nonisolated struct CoverItem: Codable, Hashable, Identifiable, Sendable {
         center = try container.decode(OverlayPoint.self, forKey: .center)
         scale = (try? container.decodeIfPresent(Double.self, forKey: .scale)) ?? 1
         rotation = (try? container.decodeIfPresent(Double.self, forKey: .rotation)) ?? 0
-        color = (try? container.decodeIfPresent(OverlayColor.self, forKey: .color)) ?? kind.defaultColor
+        color = container.decodeChoice(OverlayColor.self, forKey: .color, unknown: kind.defaultColor, report: decoder.decodingReport)
+            ?? kind.defaultColor
         text = (try? container.decodeIfPresent(String.self, forKey: .text)) ?? ""
         isFromTemplate = (try? container.decodeIfPresent(Bool.self, forKey: .isFromTemplate)) ?? false
     }

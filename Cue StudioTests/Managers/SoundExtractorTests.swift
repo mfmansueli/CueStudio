@@ -36,7 +36,9 @@ extension RealExports {
             defer { EditMediaFiles.remove([sound.fileName]) }
             let file = EditMediaFiles.url(for: sound.fileName)
             #expect(abs(sound.duration - 2) < 0.000_1)
-            #expect(abs(try await AVURLAsset(url: file).load(.duration).seconds - 2) < 0.1)
+            // The file runs on a little past the sound: the AAC encoder's frames and the spectral pitch's tail, up to five frames
+            // (0.116 s at 44.1 kHz, measured 23/10/2026, depending on the build). The clip's length is `sound.duration`, never the file's.
+            #expect(abs(try await AVURLAsset(url: file).load(.duration).seconds - 2) < 0.15)
             // Second 2 of the clip plays from 1 s to 1.5 s at 2×.
             #expect(try await TestClip.loudness(of: file, from: 1.1, to: 1.4) > -20)
             #expect(try await TestClip.loudness(of: file, from: 0.2, to: 0.8) < -40)

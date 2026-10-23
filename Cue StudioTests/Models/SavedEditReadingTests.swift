@@ -59,7 +59,12 @@ struct SavedEditReadingTests {
         let directory = try Self.library(with: Self.newer { edit in
             edit["filter"] = "auroraFilm"
             edit["aspect"] = "3:4"
-            Self.change(&edit, "texts", 0) { $0["font"] = "futureSans"; $0["color"] = "ultraviolet" }
+            Self.change(&edit, "texts", 0) { text in
+                text["font"] = "futureSans"
+                text["color"] = "ultraviolet"
+                text["backgroundColor"] = "neonPink"
+                text["weight"] = "ultra"
+            }
             Self.change(&edit, "music", 0) { $0["effect"] = "laser" }
             Self.change(&edit, "media", 0) { $0["kind"] = "sticker" }
             var timeline = edit["timeline"] as? [String: Any] ?? [:]
@@ -78,6 +83,9 @@ struct SavedEditReadingTests {
         #expect(edit.aspect == .portrait)
         #expect(edit.texts.first?.font == .sfPro)
         #expect(edit.texts.first?.color == .white)
+        // Each place's own stand-in: a background reads black (never a white box), a weight the texts' bold.
+        #expect(edit.texts.first?.backgroundColor == .black)
+        #expect(edit.texts.first?.weight == .bold)
         #expect(edit.texts.first?.text == "Comidas de SP")
         #expect(edit.timeline.transition(atJoin: 1) == .hardCut)
         #expect(edit.captionCollection?.theme == .cue)
