@@ -63,7 +63,7 @@ struct PanelSegmented<Value: Hashable>: View {
         }
         .buttonStyle(.plain)
         .disabled(!option.isEnabled)
-        .opacity(option.isEnabled ? 1 : 0.35)
+        .opacity(option.isEnabled ? 1 : Metrics.disabledOpacity)
         .accessibilityAddTraits(isOn ? .isSelected : [])
         .accessibilityIdentifier("\(identifier).\(option.key)")
     }

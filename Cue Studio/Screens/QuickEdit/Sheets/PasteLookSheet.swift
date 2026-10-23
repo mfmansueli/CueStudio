@@ -28,6 +28,10 @@ struct PasteLookSheet: View {
                     identifier: "edit.pasteLook.clip"
                 ) { viewModel.pasteLook(on: false) }
             }
+            // A dimmed button always says why.
+            if viewModel.pastesLookParts.isEmpty {
+                PanelNote(text: String(localized: "Turn on a part to paste it."))
+            }
         }
         .padding(.horizontal, 16)
         .padding(.top, 8)

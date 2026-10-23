@@ -85,7 +85,7 @@ struct CoverGraphicsStep: View {
                 Text(title).font(.system(.caption2, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.75)
             }
             .foregroundStyle(isDestructive ? Palette.dangerText : Palette.ink)
-            .opacity(isEnabled ? 1 : 0.4)
+            .opacity(isEnabled ? 1 : Metrics.disabledOpacity)
             .frame(maxWidth: .infinity, minHeight: 52)
             .background(Palette.fill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .contentShape(Rectangle())

@@ -24,7 +24,7 @@ struct PanelCompareButton: View {
             .background(compare.isOn ? Palette.acc : Palette.fill, in: Circle())
             .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
             .contentShape(Rectangle())
-            .opacity(compare.isEnabled || compare.isOn ? 1 : 0.4)
+            .opacity(compare.isEnabled || compare.isOn ? 1 : Metrics.disabledOpacity)
             .gesture(pressGesture, isEnabled: compare.isEnabled || compare.isOn)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text("Compare with original"))

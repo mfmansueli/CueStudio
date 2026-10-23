@@ -65,7 +65,7 @@ struct EditorPlayerBar: View {
             Image(systemName: direction < 0 ? "chevron.left" : "chevron.right")
                 .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(Palette.ink)
-                .opacity(viewModel.isReady ? 1 : 0.4)
+                .opacity(viewModel.isReady ? 1 : Metrics.disabledOpacity)
                 .frame(width: 34, height: Metrics.hitTarget)
                 .contentShape(Rectangle())
         }
@@ -90,7 +90,7 @@ struct EditorPlayerBar: View {
             Image(systemName: systemImage)
                 .font(.system(size: 18, weight: .medium))
                 .foregroundStyle(Palette.ink)
-                .opacity(enabled ? 1 : 0.3)
+                .opacity(enabled ? 1 : Metrics.disabledOpacity)
                 .frame(width: 40, height: Metrics.hitTarget)
                 .contentShape(Rectangle())
         }
