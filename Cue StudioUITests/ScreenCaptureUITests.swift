@@ -6,14 +6,13 @@
 import notify
 import XCTest
 
-/// The video previews while the screen is recorded or mirrored. The Simulator's own recording never marks the scene as captured,
+/// The video previews while the screen is recorded or mirrored: on the free plan they carry Cue's mark and keep playing; on Pro
+/// nothing changes (decision of 23/10/2026). The Simulator's own recording never marks the scene as captured,
 /// so the app starts with `-uiTestSceneCapture on|off` and the test starts and stops "capture" while it runs, the way Control
 /// Center's Screen Recording would (`SimulatedSceneCapture`, Darwin notifications). What a real capture looks like on an iPhone
 /// is on the device checklist (`DESIGN_PROJECT.md` §26).
 @MainActor
 final class ScreenCaptureUITests: XCTestCase {
-    private static let message = "Stop screen recording or mirroring to view this preview."
-
     override func setUp() {
         continueAfterFailure = false
     }
@@ -28,8 +27,8 @@ final class ScreenCaptureUITests: XCTestCase {
         app.descendants(matching: .any)[id].firstMatch
     }
 
-    private func shield(_ app: XCUIApplication) -> XCUIElement {
-        element(app, "captureShield")
+    private func watermark(_ app: XCUIApplication) -> XCUIElement {
+        element(app, "captureWatermark")
     }
 
     private func launch(captured: Bool, arguments: [String] = []) -> XCUIApplication {
@@ -54,100 +53,62 @@ final class ScreenCaptureUITests: XCTestCase {
 
     // MARK: - Take review
 
-    func testCaptureDuringPlaybackHidesTheReviewAndItsEndLeavesItPausedWhereItWas() {
+    func testOnTheFreePlanCaptureSignsTheReviewAndItKeepsPlaying() {
         let app = launch(captured: false)
         openReview(app)
-        XCTAssertFalse(shield(app).exists)
+        XCTAssertFalse(watermark(app).exists)
         let play = app.buttons["Play"]
         XCTAssertTrue(play.exists(within: 5))
         play.tap()
         XCTAssertTrue(play.isGone(within: 5), "the take plays")
-        sleep(2)
 
         capture(true)
-        XCTAssertTrue(shield(app).exists(within: 5))
-        XCTAssertTrue(shield(app).label.contains(Self.message))
-        XCTAssertFalse(play.exists, "no play button over the shield")
-        let held = reviewPosition(app)
+        XCTAssertTrue(watermark(app).exists(within: 5))
+        let during = reviewPosition(app)
         sleep(2)
-        XCTAssertEqual(reviewPosition(app), held, "paused while the screen is captured")
-        // A tap on the shield asks a held player to play: nothing happens.
-        shield(app).tap()
-        sleep(1)
-        XCTAssertEqual(reviewPosition(app), held)
-        // Everything else still works.
+        XCTAssertNotEqual(reviewPosition(app), during, "it keeps playing under the mark")
         XCTAssertTrue(app.buttons["review.editButton"].isHittable)
         XCTAssertTrue(app.buttons["review.shareButton"].isHittable)
 
         capture(false)
-        XCTAssertTrue(shield(app).isGone(within: 5))
-        XCTAssertTrue(play.exists(within: 5), "paused, never resumed on its own")
-        sleep(2)
-        XCTAssertEqual(reviewPosition(app), held, "back where it was")
-        play.tap()
-        XCTAssertTrue(play.isGone(within: 5), "the creator plays it again")
+        XCTAssertTrue(watermark(app).isGone(within: 5))
     }
 
-    func testCaptureBeforeLaunchHidesTheReviewFromItsFirstFrame() {
-        let app = launch(captured: true)
+    func testOnProCaptureChangesNothing() {
+        let app = launch(captured: true, arguments: ["-uiTestPro"])
         openReview(app)
-        XCTAssertTrue(shield(app).exists(within: 5))
-        XCTAssertFalse(app.buttons["Play"].exists)
-        let start = reviewPosition(app)
-        shield(app).tap()
-        sleep(2)
-        XCTAssertEqual(reviewPosition(app), start, "nothing plays")
+        let play = app.buttons["Play"]
+        XCTAssertTrue(play.exists(within: 5))
+        XCTAssertFalse(watermark(app).exists)
+        play.tap()
+        XCTAssertTrue(play.isGone(within: 5), "the take plays")
+        sleep(1)
+        XCTAssertFalse(watermark(app).exists)
     }
 
     // MARK: - Quick edit
 
-    func testTheEditorAndItsFullScreenHideWhileCapturedAndNothingPlays() {
+    func testOnTheFreePlanTheEditorAndItsFullScreenAreSignedAndPlay() {
         let app = EditorApp.open(arguments: ["-uiTestSceneCapture", "on"])
-        let preview = element(app, "edit.preview")
-        XCTAssertTrue(preview.exists(within: 10))
-        XCTAssertTrue(shield(app).exists(within: 5))
-        let time = app.staticTexts["edit.timeLabel"]
-        let start = time.value as? String ?? time.label
+        XCTAssertTrue(element(app, "edit.preview").exists(within: 10))
+        XCTAssertTrue(watermark(app).exists(within: 5))
         app.buttons["edit.playButton"].tap()
-        sleep(2)
-        XCTAssertEqual(time.value as? String ?? time.label, start, "the play button can't start a captured preview")
-        XCTAssertEqual(app.buttons["edit.playButton"].label, "Play", "the play button can't start a captured preview")
+        XCTAssertEqual(app.buttons["edit.playButton"].label, "Pause", "a captured preview plays")
+        app.buttons["edit.playButton"].tap()
 
         app.buttons["edit.fullScreenButton"].tap()
         XCTAssertTrue(element(app, "edit.exitFullScreen").exists(within: 5))
-        XCTAssertTrue((preview.value as? String ?? "").contains(Self.message), "full screen says why it is hidden")
-        // The middle of the screen is the full-screen preview: a tap there plays or pauses.
-        app.windows.firstMatch.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        sleep(1)
-        // Outside the video, under it: a 9:16 take fills the width, so the middle of "exit" is the video itself. The editor's own preview stays
-        // under the full-screen one: the full-screen one is the taller.
-        let previews = app.descendants(matching: .any).matching(identifier: "edit.preview").allElementsBoundByIndex
-        let fullScreen = previews.max { $0.frame.height < $1.frame.height } ?? preview
-        let below = (fullScreen.frame.maxY + app.windows.firstMatch.frame.maxY) / 2
-        app.windows.firstMatch.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: app.windows.firstMatch.frame.midX, dy: below)).tap()
-        XCTAssertTrue(element(app, "edit.exitFullScreen").isGone(within: 5), "out of full screen")
-        XCTAssertEqual(time.value as? String ?? time.label, start, "a tap on the full-screen preview plays nothing")
+        XCTAssertTrue(watermark(app).exists, "full screen is signed too")
 
         capture(false)
-        XCTAssertTrue(shield(app).isGone(within: 5))
-        sleep(1)
-        XCTAssertEqual(time.value as? String ?? time.label, start, "capture ending doesn't play")
-        XCTAssertEqual(app.buttons["edit.playButton"].label, "Play", "capture ending doesn't play")
-        // Once capture ends the creator plays it again: play is no longer refused. The playhead only moves on a device (the Simulator
-        // can't draw the editor's composition: `EditorUITests.testPlayPlaysAndPauseHoldsThePlayhead`).
-        app.buttons["edit.playButton"].tap()
-        XCTAssertEqual(app.buttons["edit.playButton"].label, "Pause")
-        #if !targetEnvironment(simulator)
-        let playing = expectation(for: NSPredicate(format: "value != %@", start), evaluatedWith: time)
-        wait(for: [playing], timeout: 5)
-        #endif
+        XCTAssertTrue(watermark(app).isGone(within: 5))
     }
 
     // MARK: - Recorder
 
-    /// Cue's own recording isn't the screen's: capture starting mid-take hides the camera, and the take records on and is kept,
-    /// as long as it was held.
-    func testCaptureDuringATakeHidesTheCameraAndTheTakeRecordsOn() {
+    /// Cue's own recording isn't the screen's: capture starting mid-take signs the camera on the free plan, and the take records
+    /// on and is kept, as long as it was held.
+    func testCaptureDuringATakeSignsTheCameraAndTheTakeRecordsOn() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestDemoCamera", "-uiTestSceneCapture", "off"])
         let record = app.buttons["row.recordButton"].firstMatch
         XCTAssertTrue(record.exists(within: 15))
@@ -160,7 +121,8 @@ final class ScreenCaptureUITests: XCTestCase {
         sleep(1)
 
         capture(true)
-        sleep(4)
+        XCTAssertTrue(watermark(app).exists(within: 5))
+        sleep(3)
         XCTAssertTrue(badge.exists, "still recording")
         XCTAssertTrue(element(app, "prompter.text").exists, "the script stays readable")
 
@@ -169,12 +131,12 @@ final class ScreenCaptureUITests: XCTestCase {
         let stopAnyway = app.buttons["prompter.stopAnywayButton"]
         if stopAnyway.exists(within: 3) { stopAnyway.tap() }
         XCTAssertTrue(app.buttons["review.shareButton"].exists(within: 20), "the take was kept")
-        XCTAssertTrue(shield(app).exists(within: 5), "and its review is hidden too")
+        XCTAssertTrue(watermark(app).exists(within: 5), "and its review is signed too")
         // "0:00 of 0:05": the take is as long as it was held, capture included.
         let length = reviewPosition(app).components(separatedBy: " of ").last ?? ""
         let seconds = length.split(separator: ":").last.flatMap { Int($0) } ?? 0
         XCTAssertGreaterThanOrEqual(seconds, 5, "length \(length)")
         capture(false)
-        XCTAssertTrue(shield(app).isGone(within: 5))
+        XCTAssertTrue(watermark(app).isGone(within: 5))
     }
 }

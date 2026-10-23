@@ -12,9 +12,8 @@ import SwiftUI
 /// stops, the view moves to another scene or the app comes back to the foreground. Cue's own camera and voice-over recordings
 /// never set it: only the system capturing the screen does.
 ///
-/// Video surfaces hide behind `CaptureShield` while it is true and their players hold still (`isPlaybackBlocked`). Detection is
-/// all iOS offers: it can't stop a screenshot, and the frame on screen when capture starts may make it into the recording
-/// before SwiftUI draws the shield.
+/// On the free plan, video surfaces carry Cue's mark while it is true (`CaptureWatermark`); on Pro nothing changes. Detection
+/// is all iOS offers: the frame on screen when capture starts may make it into the recording before SwiftUI draws the mark.
 @MainActor
 @propertyWrapper
 struct SceneCaptured: DynamicProperty {

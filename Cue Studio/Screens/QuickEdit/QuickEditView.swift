@@ -35,8 +35,6 @@ struct QuickEditView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.forcesLowPowerMode) private var forcesLowPowerMode
-    /// The screen is recorded or mirrored: the previews hide behind `CaptureShield` and the player holds still.
-    @SceneCaptured private var isSceneCaptured
 
     init(take: Take, services: AppServices, opening: EditorTool? = nil, onClose: @escaping (EditorOutcome) -> Void) {
         let languages = services.languages
@@ -148,8 +146,6 @@ struct QuickEditView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase == .active { viewModel.becameActive() } else { viewModel.pauseAndKeepDraft() }
         }
-        // On appear too: a recording that started before the editor opened holds it before anything can play.
-        .onChange(of: isSceneCaptured, initial: true) { _, captured in viewModel.sceneCaptureChanged(captured) }
         .onDisappear { viewModel.pauseAndKeepDraft() }
         .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: viewModel.panel)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.stylePanelIsExpanded)

@@ -67,7 +67,8 @@ import Foundation
 /// - `-uiTestChapterAt <seconds>`: the opening of the chapter on screen (1.2 to 1.6) stands still at that second of its timeline.
 /// - `-uiTestWelcomeOpening`: the welcome's star opening (1.1) plays in full (about 8 s); UI tests otherwise show its final state.
 /// - `-uiTestSceneCapture <on|off>`: the scene starts recorded or mirrored (`on`) or not, and the test runner can start and stop
-///   it while the app runs (`SimulatedSceneCapture`): the video previews hide behind `CaptureShield`. Read in `CueStudioApp`.
+///   it while the app runs (`SimulatedSceneCapture`): on the free plan the video previews carry Cue's mark (`CaptureWatermark`).
+///   Read in `CueStudioApp`.
 /// - `-uiTestNotificationAuth <notDetermined|refuses|authorized|denied|provisional>`: with `-uiTestInMemory`, notifications use an in-memory
 ///   center that answers the permission at once (no system prompt; `notDetermined` by default, which allows when asked).
 /// - `-uiTestNotificationTap <script|cleanUp|share|deletedScript|invalid|duplicate|routine|logbook|universe>`: Cue opens as if launched

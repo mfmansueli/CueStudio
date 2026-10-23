@@ -388,6 +388,14 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
     }
 
+    /// The free plan's mark while the screen is recorded (`CaptureWatermark`): the editor and its full screen.
+    func test13CaptureWatermark() throws {
+        start(arguments: ["-uiTestSceneCapture", "on"])
+        try capture("watermark-editor")
+        if tap("edit.fullScreenButton") { try capture("watermark-fullscreen") }
+        app.terminate()
+    }
+
     func test10DemoTracks() throws {
         start()
         EditorApp.tapTool(app, "edit")

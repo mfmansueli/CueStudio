@@ -28,7 +28,7 @@ struct TakeReviewView: View {
 
     @State private var flow: ShareFlow
     @State private var playback = ReviewPlayback()
-    /// The screen is recorded or mirrored: the video hides behind `CaptureShield` and `playback` holds still.
+    /// The screen is recorded or mirrored: the video carries Cue's mark on the free plan (`CaptureWatermark`).
     @SceneCaptured private var isSceneCaptured
 
     /// "Pick your best take", opened by ✦ Suggest best.
@@ -160,8 +160,6 @@ struct TakeReviewView: View {
         // top of each other and the stage names turn into "ESC…".
         .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .task(id: PlayerKey(takeID: viewModel.takeID, edit: viewModel.take?.edit)) { await runPlayer() }
-        // On appear too: a recording that started before this screen (or before launch) holds it from the first frame.
-        .onChange(of: isSceneCaptured, initial: true) { _, captured in playback.isPlaybackBlocked = captured }
         .onChange(of: viewModel.take?.edit?.showsCaptions ?? false) { _, shown in
             viewModel.burnsInCaptions = shown
         }
@@ -252,8 +250,8 @@ struct TakeReviewView: View {
             .ignoresSafeArea()
             .allowsHitTesting(false)
         }
-        // Under the shield the swipe to another take still works; a tap asks a held player to play and nothing happens.
-        .captureShielded(isSceneCaptured)
+        // Signed on the free plan while the screen is recorded or mirrored (`CaptureWatermark`); it plays as always.
+        .captureWatermarked(isSceneCaptured)
         .contentShape(Rectangle())
         .onTapGesture { tapVideo() }
         .simultaneousGesture(
@@ -271,7 +269,7 @@ struct TakeReviewView: View {
     private var playButton: some View {
         ZStack {
             ReviewPauseFlash(trigger: pauseFlashes)
-            if !playback.isPlaying, !isSceneCaptured {
+            if !playback.isPlaying {
                 Button {
                     Haptics.light()
                     playback.play()

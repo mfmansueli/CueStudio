@@ -38,13 +38,6 @@ final class QuickEditPlayer: EditPlayback {
         didSet { avPlayer.isMuted = isMuted }
     }
 
-    var isPlaybackBlocked = false {
-        didSet {
-            guard isPlaybackBlocked, !oldValue else { return }
-            pause()
-        }
-    }
-
     var stepsCurveSound = false {
         didSet {
             // The finger lifted: the sound the item has in steps is rendered along the curves now.
@@ -93,8 +86,8 @@ final class QuickEditPlayer: EditPlayback {
         self.editing = editing
         self.audioSession = audioSession
         avPlayer.actionAtItemEnd = .pause
-        // Never sent to an AirPlay receiver as video: that doesn't mark the scene as captured, so nothing would hide it
-        // (`isPlaybackBlocked`). The sound still follows the audio route.
+        // Never sent to an AirPlay receiver as video: that doesn't mark the scene as captured, so the free plan's mark
+        // (`CaptureWatermark`) wouldn't show. The sound still follows the audio route.
         avPlayer.allowsExternalPlayback = false
         timeObserver = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 60), queue: .main) { [weak self] time in
             MainActor.assumeIsolated { self?.playerDidTick(time) }
@@ -175,7 +168,7 @@ final class QuickEditPlayer: EditPlayback {
     // MARK: - Transport
 
     func play() {
-        guard state == .ready, duration > 0, !isPlaybackBlocked else { return }
+        guard state == .ready, duration > 0 else { return }
         isPlaying = true
         var from = currentTime
         if let part = reviewedPart, abs(currentTime - part.upperBound) < 0.02 {
@@ -254,7 +247,6 @@ final class QuickEditPlayer: EditPlayback {
     private func startPlayback() {
         playbackTask?.cancel()
         playbackTask = nil
-        guard !isPlaybackBlocked else { return }
         // Voice-over records while this player runs silently. Do not replace its recording
         // session with an output-only category, or the microphone would stop recording.
         guard !isMuted else {
@@ -264,7 +256,7 @@ final class QuickEditPlayer: EditPlayback {
         playbackTask = Task { [weak self, audioSession] in
             await audioSession.prepareForPlayback()
             // Capture may have started while the audio session got ready.
-            guard !Task.isCancelled, let self, self.isPlaying, !self.isSeeking, !self.awaitsItem, !self.isPlaybackBlocked else { return }
+            guard !Task.isCancelled, let self, self.isPlaying, !self.isSeeking, !self.awaitsItem else { return }
             self.playbackTask = nil
             self.avPlayer.play()
         }
@@ -416,9 +408,6 @@ final class QuickEditPlayer: EditPlayback {
     }
 
     private func playerDidTick(_ time: CMTime) {
-        // The safety net while capture holds the preview: whatever started the player (the system, a route change) is stopped
-        // on its first tick.
-        if isPlaybackBlocked, avPlayer.rate != 0 { avPlayer.pause() }
         guard state == .ready, !isSeeking, !isScrubbing, !awaitsItem, time.isNumeric else { return }
         let edited = time.seconds - windowStart
         let end = playbackEnd

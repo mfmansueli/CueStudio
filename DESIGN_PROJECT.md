@@ -751,26 +751,23 @@ linha, 5 pt acima do fundo.
   characters".
 - Testes: `IdeaPromptDraftTests`, `DockGrowthUITests`.
 
-## 26. Gravação e espelhamento da tela escondem as prévias
+## 26. Gravação e espelhamento da tela: a marca do Cue no plano grátis
 
-Gravar a tela com uma prévia tocando daria o vídeo sem exportar. Com a cena gravada, espelhada ou em AirPlay, toda superfície de vídeo vira um cartão
-opaco e o player para. Grátis e Pro, sem interruptor.
+Decisão do dono (23/10/2026): **Pro** não muda nada (já pagou); no **grátis**, a prévia continua visível e tocando, com a marca do Cue por cima,
+para que uma gravação de tela saia assinada (a exportação é o vídeo limpo). Nenhum player para.
 - **Detecção** (`SceneCaptured`): o `isSceneCaptured` do SwiftUI (traço `sceneCaptureState` da cena; `UIScreen.isCaptured` será descontinuado), lido ao
-  aparecer (`onChange(initial: true)`). A gravação do próprio Cue não marca a cena.
-- **Onde:** revisão da take, prévia e tela cheia do Quick edit, câmera do Selfie e da prática. Pôsteres, capas e quadros da linha do tempo ficam.
-- **Cartão** (`CaptureShield`, `captureShielded(_:)`): `Palette.surface` opaco, `eye.slash` em `ink2`, "Stop screen recording or mirroring to view this
-  preview." em `ink`. Sem animação. A superfície fica na árvore com opacidade 0 e sem toques (o player guarda item e posição; a prévia da câmera continua
-  dando a rotação). Na câmera, moldura, grade e zonas seguras somem; teleprompter e controles ficam.
-- **Player** (`ReviewPlayback`, `QuickEditPlayer`/`EditPlayback.isPlaybackBlocked`): ligar pausa no quadro; enquanto vale nada toca (botão, sessão de áudio,
-  busca, reconstrução, voice-over), e um player ligado por fora é parado. No editor a agulha ainda se move. Desligar **não toca**. Sem AirPlay de vídeo
-  (`allowsExternalPlayback = false`, que não marcaria a cena).
-- **Gravações:** take e voice-over continuam (relógio do voice-over é `recorder.elapsed`). **Exportações:** nada muda.
-- **Limites:** é detecção, não bloqueio; o primeiro quadro pode entrar; tela escondida atrás de outra só atualiza ao voltar; câmera apontada para a tela não
-  é detectável.
-- **Testes:** `ReviewPlaybackTests`, `QuickEditPlayerTests`, `QuickCreatorViewModelTests`, `ExportAccountingTests`, `ScreenCaptureUITests`;
-  `-uiTestSceneCapture` + `SimulatedSceneCapture` (o Simulator não marca a cena). **Falta no aparelho:** Gravação de Tela durante a revisão (tocando e
-  parada), começada antes de abrir o Cue, editor e tela cheia, voltar ao primeiro plano, Espelhamento para Apple TV/Mac, gravação no meio de uma take e de
-  um voice-over.
+  aparecer. A gravação do próprio Cue não marca a cena.
+- **Onde:** revisão da take, prévia e tela cheia do Quick edit, câmera do Selfie e da prática (a área inteira da câmera). Pôsteres, capas e quadros da
+  linha do tempo ficam como estão.
+- **Marca** (`CaptureWatermark`, `captureWatermarked(_:markY:)`, lê o plano no `StoreManager`): "✦ CUE STUDIO" em SF Mono 13 semibold, branco a 70%
+  com sombra, centrada a três quartos da altura; na câmera, no meio do espaço livre entre o texto e os controles (`captureMarkY`). Sem animação, sem
+  toques. É o nome da marca: como logotipo, não tem mínimo de contraste (WCAG 1.4.3), e a sombra a deixa visível em imagem clara.
+- **AirPlay de vídeo** continua desligado (`allowsExternalPlayback = false`): ele não marcaria a cena, e a marca não apareceria.
+- **Gravações e exportações:** nada muda.
+- **Limites:** é detecção, não bloqueio; o primeiro quadro pode entrar sem a marca; câmera apontada para a tela não é detectável.
+- **Testes:** `ScreenCaptureUITests` (grátis assina e toca na revisão, no editor e na tela cheia e na câmera durante uma take; Pro não muda),
+  `ExportAccountingTests`; `-uiTestSceneCapture` + `SimulatedSceneCapture` (o Simulator não marca a cena). **Falta no aparelho:** Gravação de Tela e
+  Espelhamento de verdade, no grátis e no Pro.
 
 ## 27. Notificações, lembretes e introdução de ferramentas
 

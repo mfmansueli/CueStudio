@@ -18,10 +18,8 @@ struct SelfieModeView: View {
     @Environment(AudioInputManager.self) private var audio
     /// A finger is on the window's corner: the window follows it right away instead of gliding.
     @State private var isResizingWindow = false
-    /// The screen is recorded or mirrored: the camera hides behind `CaptureShield` (the text, the controls and a take that is
-    /// recording carry on), and so do the frame, grid and safe zone drawn over it.
-    @SceneCaptured private var isSceneCaptured
-    /// The practice's card bottom and buttons top, measured: the shield's message goes between them.
+    /// The practice's card bottom and buttons top, measured: the free plan's mark goes between them while the screen is
+    /// recorded (`CaptureWatermark`).
     @State private var practiceCardBottom: CGFloat?
     @State private var practiceBarTop: CGFloat?
 
@@ -69,15 +67,15 @@ struct SelfieModeView: View {
                 sensorRect: viewModel.isPractice ? CGRect(origin: .zero, size: screen) : sensorRect,
                 onVideoRectChange: { rect in viewModel.cameraImageMoved(to: rect) },
                 fillsScreen: viewModel.isPractice,
-                captureMessageY: captureMessageY
+                captureMarkY: captureMarkY
             )
-            if session.camera.showsGrid, !viewModel.isPractice, !isSceneCaptured {
+            if session.camera.showsGrid, !viewModel.isPractice {
                 GridOverlay(frame: geometry.frameRect)
             }
-            if !viewModel.isPractice, !isSceneCaptured {
+            if !viewModel.isPractice {
                 FrameGuideOverlay(frame: geometry.frameRect)
             }
-            if !viewModel.isPractice, !isSceneCaptured, viewModel.showsSafeZone, let zone = viewModel.safeZone,
+            if !viewModel.isPractice, viewModel.showsSafeZone, let zone = viewModel.safeZone,
                let content = viewModel.safeZoneContentRect {
                 let readable = CGRect(x: 0, y: 0, width: screen.width, height: min(screen.height, viewModel.screenMetrics.toolbarTop))
                 SafeZoneOverlay(frame: geometry.frameRect, content: content, label: zone.overlayLabel, visible: readable)
@@ -118,8 +116,8 @@ struct SelfieModeView: View {
     }
 
     /// The middle of the camera left free between the text (the practice's card) and the controls, in screen points: where
-    /// the shield says why the camera is hidden, instead of under the text window.
-    private var captureMessageY: CGFloat {
+    /// the free plan's mark goes while the screen is recorded, never under the text window or the buttons.
+    private var captureMarkY: CGFloat {
         let metrics = viewModel.screenMetrics
         let top: CGFloat
         let bottom: CGFloat
