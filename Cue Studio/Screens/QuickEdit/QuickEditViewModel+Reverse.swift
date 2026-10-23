@@ -36,11 +36,19 @@ extension QuickEditViewModel {
         let url = clip.sourceID.flatMap { clipSourceURLs[$0] } ?? videoURL
         let timeline = edit.timeline
         isImportingMedia = true
-        defer { isImportingMedia = false }
-        toast.show(String(localized: "Reversing the clip…"))
+        work = EditorWork(kind: .reversing, job: .reverse)
+        defer {
+            isImportingMedia = false
+            if work?.job == .reverse { work = nil }
+        }
         let name: String
         do {
-            name = try await ReversedClipWriter.write(url, span: clip.span) { _ in }
+            name = try await ReversedClipWriter.write(url, span: clip.span) { [weak self] fraction in
+                Task { @MainActor in self?.reportWork(.reverse, fraction) }
+            }
+        } catch is CancellationError {
+            // Cancel on the pill, or the editor closed: the clip stays as it was.
+            return
         } catch {
             noteFailure(error, "reverse")
             toast.show(String(localized: "Can’t reverse this clip"))

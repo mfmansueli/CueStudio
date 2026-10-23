@@ -166,6 +166,8 @@ final class QuickEditViewModel {
         set { select(newValue.map(EditorSelection.caption), replacing: \.captionID) }
     }
     var isImportingMedia = false
+    /// A reverse or an import the creator waits for, over the preview with Cancel (`QuickEditViewModel+Work`).
+    var work: EditorWork?
     /// The voice-over picked on its track (or just recorded).
     var reviewedVoiceOverID: UUID? {
         get { selection?.voiceOverID }

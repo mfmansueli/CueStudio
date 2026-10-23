@@ -225,13 +225,18 @@ struct QuickEditView: View {
                     }
                 }
                 .overlay(alignment: .bottom) {
-                    // Low Power Mode: at the preview's foot, clear of the toasts at its top.
-                    if viewModel.showsLowPowerNotice {
-                        LowPowerNoticeBanner(viewModel: viewModel)
-                            .padding(.horizontal, 16)
-                            .padding(.bottom, 10)
-                            .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .bottom)))
+                    // At the preview's foot, clear of the toasts at its top: a reverse or an import with Cancel, and Low Power Mode.
+                    VStack(spacing: 8) {
+                        if let work = viewModel.work {
+                            EditorWorkPill(viewModel: viewModel, work: work)
+                        }
+                        if viewModel.showsLowPowerNotice {
+                            LowPowerNoticeBanner(viewModel: viewModel)
+                                .padding(.horizontal, 16)
+                                .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .bottom)))
+                        }
                     }
+                    .padding(.bottom, 10)
                 }
                 .animation(reduceMotion ? .easeOut(duration: 0.15) : .easeOut(duration: 0.25), value: viewModel.showsLowPowerNotice)
                 .task {

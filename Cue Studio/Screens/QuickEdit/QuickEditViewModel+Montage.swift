@@ -111,7 +111,7 @@ extension QuickEditViewModel {
         isImportingMedia = true
         defer { isImportingMedia = false }
         do {
-            let imported = try await mediaImporter.importMedia(item)
+            let imported = try await importPicked(item)
             guard !isClosed else {
                 EditMediaFiles.remove([imported.fileName])
                 return
@@ -122,6 +122,8 @@ extension QuickEditViewModel {
                 return
             }
             addSource(ClipSource(fileName: imported.fileName, duration: duration, title: String(localized: "Video")))
+        } catch is CancellationError {
+            // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
             noteFailure(error, "addVideo")
             toast.show(String(localized: "Can't add this file"))

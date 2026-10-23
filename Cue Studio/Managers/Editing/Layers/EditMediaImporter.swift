@@ -18,14 +18,44 @@ final class EditMediaImporter: EditMediaImporting {
     /// Longest side of an imported photo.
     nonisolated private static let maxPhotoSide: CGFloat = 2160
 
-    func importMedia(_ item: PhotosPickerItem) async throws -> ImportedMedia {
+    func importMedia(_ item: PhotosPickerItem, progress: @escaping @MainActor (Double) -> Void) async throws -> ImportedMedia {
         let isVideo = item.supportedContentTypes.contains { $0.conforms(to: .movie) }
         if isVideo {
-            guard let movie = try await item.loadTransferable(type: PickedMovie.self) else { throw EditMediaImportError.unreadable }
+            guard let movie = try await Self.load(PickedMovie.self, from: item, progress: progress) else { throw EditMediaImportError.unreadable }
+            // Cancelled as the copy finished: the copy goes.
+            guard !Task.isCancelled else {
+                try? FileManager.default.removeItem(at: movie.url)
+                throw CancellationError()
+            }
             return try await Self.describeVideo(at: movie.url)
         }
-        guard let data = try await item.loadTransferable(type: Data.self) else { throw EditMediaImportError.unreadable }
+        guard let data = try await Self.load(Data.self, from: item, progress: progress) else { throw EditMediaImportError.unreadable }
         return try await Task.detached { try Self.storePhoto(data) }.value
+    }
+
+    /// What `item` holds as `type`, telling how far the loading is (Photos downloads it from iCloud first when it isn't on the
+    /// iPhone) and stopping when the task is cancelled.
+    private static func load<Value: Transferable & Sendable>(
+        _ type: Value.Type, from item: PhotosPickerItem, progress: @escaping @MainActor (Double) -> Void
+    ) async throws -> Value? {
+        let loading = LoadingProgress()
+        let value: Value?
+        do {
+            value = try await withTaskCancellationHandler {
+                try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Value?, Error>) in
+                    let started = item.loadTransferable(type: type) { result in continuation.resume(with: result) }
+                    loading.watch(started, report: progress)
+                }
+            } onCancel: {
+                loading.cancel()
+            }
+        } catch {
+            // A loading stopped by Cancel ends with the system's own error.
+            if Task.isCancelled { throw CancellationError() }
+            throw error
+        }
+        try Task.checkCancellation()
+        return value
     }
 
     /// The copied video's shape and length. One that can't be read leaves no copy behind: nothing names it, so nothing

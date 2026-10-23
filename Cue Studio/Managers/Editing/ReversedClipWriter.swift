@@ -23,6 +23,8 @@ nonisolated enum ReversedClipWriter {
     /// how far it is, 0 to 1.
     @concurrent
     static func write(_ url: URL, span: TimeSpan, progress: @escaping @Sendable (Double) -> Void) async throws -> String {
+        // Cancelled before it began (Cancel, or the editor closed): nothing is read.
+        try Task.checkCancellation()
         guard span.duration <= longest + 0.001 else { throw WriteError.tooLong }
         let asset = AVURLAsset(url: url)
         guard let video = try await asset.loadTracks(withMediaType: .video).first else { throw WriteError.noVideo }

@@ -321,7 +321,9 @@ extension QuickEditViewModel {
         case .duplicateClip: selection?.clipID.map(duplicateClip)
         case .reorderClips: openClipOrder()
         case .freezeFrame: startJob { await self.freezeFrame() }
-        case .reverseClip: startJob { await self.reverseClip() }
+        case .reverseClip:
+            // One at a time: a second tap never stops the first.
+            if !jobs.isRunning(.reverse) { jobs.start(.reverse) { [weak self] _ in await self?.reverseClip() } }
         case .replaceClip: askToReplaceClip()
         case .extractAudio: startJob { await self.extractAudio() }
         case .copyLook: copyClipLook()

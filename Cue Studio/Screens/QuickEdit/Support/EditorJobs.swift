@@ -34,6 +34,10 @@ final class EditorJobs {
         case beats(String)
         /// Clean Up listening to the recordings.
         case cleanUp
+        /// A clip being reversed (`EditorWork`).
+        case reverse
+        /// A photo or video coming from the library, from iCloud when it isn't on the iPhone (`EditorWork`); each its own.
+        case importing(UUID)
         /// A tool's work (`startTool`).
         case tool(UUID)
     }
@@ -44,7 +48,14 @@ final class EditorJobs {
         let id = UUID()
     }
 
-    private var running: [Kind: (ticket: Ticket, task: Task<Void, Never>)] = [:]
+    /// A job running: its ticket, the task that ends when it does, and how to stop it.
+    private struct Running {
+        let ticket: Ticket
+        let task: Task<Void, Never>
+        let cancel: () -> Void
+    }
+
+    private var running: [Kind: Running] = [:]
     /// The editor closed: nothing starts any more and what finishes late is dropped.
     private(set) var isClosed = false
 
@@ -59,8 +70,27 @@ final class EditorJobs {
             await work(ticket)
             self?.finished(ticket)
         }
-        running[kind] = (ticket, task)
+        running[kind] = Running(ticket: ticket, task: task) { task.cancel() }
         return ticket
+    }
+
+    /// Runs `work` as the job of `kind` (cancelling the one running) and hands back what it makes: the caller waits for it,
+    /// and `cancel(kind)` or closing the editor stops it (`CancellationError`).
+    func run<Value: Sendable>(_ kind: Kind, _ work: @escaping @MainActor () async throws -> Value) async throws -> Value {
+        guard !isClosed else { throw CancellationError() }
+        cancel(kind)
+        let ticket = Ticket(kind: kind)
+        let inner = Task { try await work() }
+        let task = Task { [weak self] in
+            _ = await inner.result
+            self?.finished(ticket)
+        }
+        running[kind] = Running(ticket: ticket, task: task) { inner.cancel() }
+        return try await withTaskCancellationHandler {
+            try await inner.value
+        } onCancel: {
+            inner.cancel()
+        }
     }
 
     /// Starts a tool's work, side by side with any other tool's.
@@ -85,13 +115,13 @@ final class EditorJobs {
 
     /// Stops the job of `kind`; whatever it finds later is dropped.
     func cancel(_ kind: Kind) {
-        running.removeValue(forKey: kind)?.task.cancel()
+        running.removeValue(forKey: kind)?.cancel()
     }
 
     /// The editor closes: every job is cancelled and none starts again.
     func close() {
         isClosed = true
-        for job in running.values { job.task.cancel() }
+        for job in running.values { job.cancel() }
         running = [:]
     }
 
