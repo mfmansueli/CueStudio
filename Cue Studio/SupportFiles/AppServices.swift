@@ -247,7 +247,8 @@ struct AppServices {
     var hasUnsavedWork: Bool { library.saveFailed || takes.saveFailed }
 
     /// Gives back the space past sessions' sound files take (`EditStorageCleaner`), a few seconds after launch so it never
-    /// competes with it, off the main actor. The edits' media are never swept: only an edit removes what it added.
+    /// competes with it, off the main actor. The edits' media go only when nothing Cue keeps names them and they haven't
+    /// changed for a week (`EditStorageCleaner.orphanedMedia`).
     func cleanUpStorage() {
         let launchedAt = Date()
         Task.detached(priority: .background) {
