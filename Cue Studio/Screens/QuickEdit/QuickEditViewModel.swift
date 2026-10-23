@@ -316,6 +316,8 @@ final class QuickEditViewModel {
     /// A short part playing to show a change (a zoom, a reveal, a pause heard).
     @ObservationIgnored var previewTask: Task<Void, Never>?
     @ObservationIgnored private var draftTask: Task<Void, Never>?
+    /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
+    @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
     /// Work started from a tool that the editor waits for (`startJob`).
     @ObservationIgnored private var jobs: [UUID: Task<Void, Never>] = [:]
     @ObservationIgnored private(set) var isClosed = false
@@ -372,6 +374,7 @@ final class QuickEditViewModel {
         do {
             duration = try await editing.sourceDuration(ofVideoAt: videoURL)
         } catch {
+            noteFailure(error, "open")
             source = .unavailable
             return
         }
@@ -673,6 +676,7 @@ final class QuickEditViewModel {
             do {
                 try takes.applyEdit(saved, to: take.id)
             } catch {
+                noteFailure(error, "save")
                 // Not on disk: the edit stays a draft (and its files with it) that Edit opens again, or, when even that
                 // can't be written, the creator hears it wasn't saved.
                 let kept = saveDraft(forced: true)
@@ -770,6 +774,13 @@ final class QuickEditViewModel {
         player.stop()
     }
 
+    /// Writes down a failure the creator was told about (`EditorFailureReport`): what was being done, the error and the
+    /// edit's size. A cancellation isn't one.
+    func noteFailure(_ error: any Error, _ operation: String) {
+        guard let report = EditorFailureReport.make(error, operation: operation, edit: edit) else { return }
+        reportFailure(report)
+    }
+
     /// Starts work a tool waits for (a freeze frame, a reverse, a sound pulled out): leaving the editor cancels it.
     func startJob(_ work: @escaping @MainActor () async -> Void) {
         guard !isClosed else { return }
@@ -801,6 +812,7 @@ final class QuickEditViewModel {
             do {
                 try drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: history, savedAt: .now))
             } catch {
+                noteFailure(error, "draft")
                 return false
             }
         } else {

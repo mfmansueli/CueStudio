@@ -385,17 +385,25 @@ struct TakeReviewViewModelTests {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.photos.error = PhotoLibraryError.notAuthorized
+        var failures: [EditorFailureReport] = []
+        scenario.viewModel.reportFailure = { failures.append($0) }
         await scenario.viewModel.save()
         #expect(scenario.viewModel.photosDenied)
         #expect(scenario.toast.message == nil)
+        // The creator's own choice isn't a failure.
+        #expect(failures.isEmpty)
     }
 
     @Test func aFailedExportDoesNotCountAndSaysSo() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.exporter.error = URLError(.unknown)
+        var failures: [EditorFailureReport] = []
+        scenario.viewModel.reportFailure = { failures.append($0) }
         await scenario.viewModel.save()
         #expect(scenario.toast.message == "Couldn't export · Try again")
+        #expect(failures.map(\.operation) == ["export"])
+        #expect(failures.first?.reason == "NSURLErrorDomain -1")
         #expect(scenario.quota.exportsLeft(for: .free) == 5)
         #expect(!scenario.viewModel.photosDenied)
     }

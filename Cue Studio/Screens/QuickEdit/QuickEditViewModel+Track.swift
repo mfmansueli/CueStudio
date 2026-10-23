@@ -70,6 +70,7 @@ extension QuickEditViewModel {
                 }
                 self?.trackingFinished(points, item: item, span: span, timeline: timeline, reached: (from - span.start)...(until - span.start))
             } catch {
+                self?.noteFailure(error, "track")
                 self?.trackingFinished(nil, item: item, span: span, timeline: timeline)
             }
         }

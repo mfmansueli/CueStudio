@@ -136,6 +136,7 @@ extension QuickEditViewModel {
             }
             setBackgroundImage(imported.fileName)
         } catch {
+            noteFailure(error, "importBackground")
             toast.show(error.localizedDescription)
         }
     }

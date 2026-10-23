@@ -38,6 +38,7 @@ extension QuickEditViewModel {
         do {
             try await recorder.start()
         } catch {
+            noteFailure(error, "voiceOverStart")
             toast.show(error.localizedDescription)
             return
         }

@@ -30,6 +30,7 @@ extension QuickEditViewModel {
             }
             addMedia(imported)
         } catch {
+            noteFailure(error, "importMedia")
             toast.show(error.localizedDescription)
         }
     }

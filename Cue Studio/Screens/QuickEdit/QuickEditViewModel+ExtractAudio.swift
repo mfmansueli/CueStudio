@@ -108,6 +108,7 @@ extension QuickEditViewModel {
         } catch AudioTrackExtractor.ExtractError.noAudio {
             toast.show(String(localized: "This clip has no sound"))
         } catch {
+            noteFailure(error, "extractAudio")
             toast.show(String(localized: "Can't extract this sound"))
         }
         return nil

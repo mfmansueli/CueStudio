@@ -34,6 +34,7 @@ extension QuickEditViewModel {
             }
             addMusic(imported)
         } catch {
+            noteFailure(error, "importMusic")
             toast.show(error.localizedDescription)
         }
     }
@@ -129,6 +130,7 @@ extension QuickEditViewModel {
             player.seek(to: start)
             sayUndoable(String(localized: "\(effect.label) added at \(DurationText.editor(start))"))
         } catch {
+            noteFailure(error, "addSound")
             toast.show(String(localized: "Can't add this sound"))
         }
     }

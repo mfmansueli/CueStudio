@@ -34,6 +34,7 @@ extension QuickEditViewModel {
         do {
             replaceMedia(id, with: try await mediaImporter.importMedia(item))
         } catch {
+            noteFailure(error, "replaceMedia")
             toast.show(error.localizedDescription)
         }
     }

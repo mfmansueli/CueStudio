@@ -40,6 +40,7 @@ extension QuickEditViewModel {
                 }
                 listened.append(source)
             } catch {
+                noteFailure(error, "cleanUp")
                 failed = true
             }
             guard !isClosed else { return }

@@ -52,6 +52,7 @@ extension CoverStudioViewModel {
             }
             setSource(.photo(fileName: imported.fileName))
         } catch {
+            EditorFailureReport.make(error, operation: "coverPicture")?.send()
             notice = error.localizedDescription
         }
     }

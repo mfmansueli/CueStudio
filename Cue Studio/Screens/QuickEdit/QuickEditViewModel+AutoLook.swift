@@ -76,6 +76,7 @@ extension QuickEditViewModel {
                     autoState = .idle
                 }
             } catch {
+                noteFailure(error, "autoLook")
                 finishAuto(request, target: target, found: nil)
             }
         }

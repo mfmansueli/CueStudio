@@ -280,6 +280,7 @@ final class QuickEditPlayer: EditPlayback {
                 let item = try await editing.previewItem(forVideoAt: videoURL, edit: playable, window: window, rendersCurveSound: rendersCurveSound)
                 self?.install(item, generation: generation)
             } catch {
+                EditorFailureReport.make(error, operation: "preview", edit: edit)?.send()
                 self?.buildFailed(generation: generation)
             }
         }

@@ -100,6 +100,7 @@ extension QuickEditViewModel {
             source.scriptReference = take.captionScript(current: library.script(id: take.scriptID))
             addSource(source)
         } catch {
+            noteFailure(error, "addTake")
             toast.show(String(localized: "Can't add this take"))
         }
     }
@@ -122,6 +123,7 @@ extension QuickEditViewModel {
             }
             addSource(ClipSource(fileName: imported.fileName, duration: duration, title: String(localized: "Video")))
         } catch {
+            noteFailure(error, "addVideo")
             toast.show(String(localized: "Can't add this file"))
         }
     }
@@ -173,6 +175,7 @@ extension QuickEditViewModel {
         do {
             name = try await editing.stillClip(ofVideoAt: url, at: timeline.sourceTime(forEdited: time), length: Self.freezeFileLength)
         } catch {
+            noteFailure(error, "freezeFrame")
             toast.show(String(localized: "Can't freeze this frame"))
             return
         }

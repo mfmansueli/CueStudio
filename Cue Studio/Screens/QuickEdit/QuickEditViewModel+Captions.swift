@@ -68,6 +68,7 @@ extension QuickEditViewModel {
                 finishCaptions(request, with: .cancelled)
                 return
             } catch {
+                noteFailure(error, "captions")
                 finishCaptions(request, with: .failed)
                 return
             }
