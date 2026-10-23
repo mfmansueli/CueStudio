@@ -443,6 +443,20 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The preview's "Original" and "Original audio" badges (◐ held or on): the words and the ◐ / ear icon on the badge's pill,
+    /// over the worst picture (white) and a black one.
+    @Test func theOriginalBadgesReadOverAnyPicture() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            let pill = rgb(Palette.Takes.durationBadge, in: .dark, over: picture)
+            for appearance in Appearance.allCases {
+                let words = ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: pill), pill)
+                #expect(words >= ColorContrast.textMinimum, "Original, \(appearance): \(words)")
+                let icon = ColorContrast.ratio(rgb(Palette.accText, in: appearance, over: pill), pill)
+                #expect(icon >= 3, "◐ icon, \(appearance): \(icon)")
+            }
+        }
+    }
+
     /// The star's words over its cover (84% of `transitionCover`, 09 §8) on whatever the screen behind it shows: black, and at worst white.
     @Test func theStarsWordsReadOverItsCoverOnAnyScreen() {
         let words: [(name: String, color: Color)] = [

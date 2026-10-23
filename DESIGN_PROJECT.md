@@ -1475,4 +1475,7 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   copiado, tamanho, destaque, posição e revelação; nunca as palavras nem as margens da plataforma.
 - **Testes:** `QuickEditFrameStepTests`, `QuickEditMyCaptionStyleTests`, `LookVersionTests.theOriginalPictureHasNoBackground`,
   `QuickEditPreviewTests` (dois toques), `QuickEditClipLookTests`/`QuickEditBackgroundPanelTests` (escopo), `EditorUITests` (◐ toque e
-  segurar); `ToolAuditCaptureTests` (opt-in, `TEST_RUNNER_CUE_SCREENSHOT_DIR`) fotografa cada ferramenta.
+  segurar), `QuickEditToolbarTests` (Lock), `TimelineGeometryTests` (alças de 44 pt, toque ao lado); `ToolAuditCaptureTests` (opt-in,
+  `TEST_RUNNER_CUE_SCREENSHOT_DIR`) fotografa cada ferramenta.
+- **Contraste:** `PaletteContrastTests.theOriginalBadgesReadOverAnyPicture` ("Original" e o ◐ sobre vídeo branco e preto),
+  `theNarrationScriptReadsOverAnyPicture` (roteiro do voice-over).
