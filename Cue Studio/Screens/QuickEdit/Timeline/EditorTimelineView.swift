@@ -68,6 +68,7 @@ struct EditorTimelineView: UIViewRepresentable {
                 nudge: { viewModel.nudgePlayhead(by: $0) },
                 selectClipAtPlayhead: { viewModel.selectClipAtPlayhead() },
                 pickNearestCut: { viewModel.pickNearestJoin() },
+                jumpToCut: { viewModel.jumpToCut(forward: $0) },
                 accessibilityValue: { viewModel.timelineAccessibilityValue }
             )
             view.show(time: viewModel.player.currentTime)

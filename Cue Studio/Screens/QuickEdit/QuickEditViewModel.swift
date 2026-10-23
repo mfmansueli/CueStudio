@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import Accessibility
 import CoreGraphics
 import Foundation
 
@@ -548,6 +549,8 @@ final class QuickEditViewModel {
         restore(previous)
         // Edit by text picks words by their place in the list, which an undone cut changes.
         transcriptSelection = nil
+        // VoiceOver hears it happen, as a sighted creator sees the edit change.
+        AccessibilityNotification.Announcement(String(localized: "Undone")).post()
     }
 
     func redo() {
@@ -556,6 +559,7 @@ final class QuickEditViewModel {
         guard let next = history.redo(from: snapshot) else { return }
         restore(next)
         transcriptSelection = nil
+        AccessibilityNotification.Announcement(String(localized: "Redone")).post()
     }
 
     /// What undo keeps of the edit: the timeline, the suggestions' decisions, what was added on top

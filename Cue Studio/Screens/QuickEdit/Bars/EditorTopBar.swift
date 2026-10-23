@@ -54,6 +54,9 @@ struct EditorTopBar: ToolbarContent {
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(changed ? "In edit · Autosaved" : "No changes yet"))
+        // Words to read, not a control (the bar would otherwise offer it like one of its buttons).
+        .accessibilityAddTraits(.isStaticText)
+        .accessibilityRemoveTraits(.isButton)
         .accessibilityIdentifier("edit.statusChip")
     }
 }

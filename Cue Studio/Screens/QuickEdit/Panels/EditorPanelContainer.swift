@@ -19,6 +19,8 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     let title: String
     let subtitle: String
     @Environment(\.dynamicTypeSize) private var typeSize
+    /// VoiceOver lands on the title when the panel opens, so the controls it brought are read from the top.
+    @AccessibilityFocusState private var titleIsFocused: Bool
     var onReset: (() -> Void)?
     /// ◐ Compare with original, between Reset and ✓ (panels that change the picture or the sound).
     var compare: PanelCompare?
@@ -73,6 +75,9 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                 .ignoresSafeArea(edges: .bottom)
         }
         .accessibilityElement(children: .contain)
+        // VoiceOver's escape (a two-finger Z) closes the panel like ✓: its changes are already on the video.
+        .accessibilityAction(.escape, onApply)
+        .onAppear { titleIsFocused = true }
         // Controls grow up to AX Medium; past it the panel's content scrolls.
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }
@@ -84,6 +89,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                     .font(.system(.body, weight: .bold))
                     .lineLimit(1)
                     .accessibilityAddTraits(.isHeader)
+                    .accessibilityFocused($titleIsFocused)
                 Text(subtitle)
                     .font(.system(.footnote))
                     .foregroundStyle(Palette.ink2)
