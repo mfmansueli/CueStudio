@@ -15,21 +15,21 @@ struct PasteLookSheet: View {
             VStack(spacing: 2) {
                 ForEach(ClipLookPart.allCases) { part in
                     PanelToggleRow(
-                        label: part.label, isOn: viewModel.pastesLookParts.contains(part), identifier: "edit.pasteLook.\(part.rawValue)"
-                    ) { viewModel.togglePasteLookPart(part) }
+                        label: part.label, isOn: viewModel.look.pastesLookParts.contains(part), identifier: "edit.pasteLook.\(part.rawValue)"
+                    ) { viewModel.look.togglePasteLookPart(part) }
                 }
             }
             HStack(spacing: 10) {
                 PanelButton(
-                    label: String(localized: "Every clip"), isEnabled: !viewModel.pastesLookParts.isEmpty, identifier: "edit.pasteLook.all"
-                ) { viewModel.pasteLook(on: true) }
+                    label: String(localized: "Every clip"), isEnabled: !viewModel.look.pastesLookParts.isEmpty, identifier: "edit.pasteLook.all"
+                ) { viewModel.look.pasteLook(on: true) }
                 PanelButton(
-                    label: String(localized: "This clip"), isPrimary: true, isEnabled: !viewModel.pastesLookParts.isEmpty && viewModel.selection?.clipID != nil,
-                    identifier: "edit.pasteLook.clip"
-                ) { viewModel.pasteLook(on: false) }
+                    label: String(localized: "This clip"), isPrimary: true,
+                    isEnabled: !viewModel.look.pastesLookParts.isEmpty && viewModel.selection?.clipID != nil, identifier: "edit.pasteLook.clip"
+                ) { viewModel.look.pasteLook(on: false) }
             }
             // A dimmed button always says why.
-            if viewModel.pastesLookParts.isEmpty {
+            if viewModel.look.pastesLookParts.isEmpty {
                 PanelNote(text: String(localized: "Turn on a part to paste it."))
             }
         }

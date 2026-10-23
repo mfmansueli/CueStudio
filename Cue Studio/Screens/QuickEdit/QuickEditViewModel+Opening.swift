@@ -24,11 +24,11 @@ extension QuickEditViewModel {
         case .studioVoice:
             panel = .voice
         case .skinSmoothing:
-            lookScopeIsClip = false
-            adjustOpensOn = .skinSmoothing
+            look.lookScopeIsClip = false
+            look.adjustOpensOn = .skinSmoothing
             panel = .adjust
         case .background:
-            lookScopeIsClip = false
+            look.lookScopeIsClip = false
             panel = .background
         case .cover:
             cover.openCoverStudio()

@@ -41,7 +41,7 @@ extension QuickEditViewModel {
         switch panel {
         case .speed, .zoom, .volume, .stabilize: clipSubtitle(panel)
         case .voice: voiceScopeLabel
-        case .adjust, .filters, .background: lookSubtitle(for: panel)
+        case .adjust, .filters, .background: look.lookSubtitle(for: panel)
         case .pauses: String(localized: "Marked in yellow on the timeline")
         case .crop: String(localized: "Whole video · format for where you post")
         case .captions, .autoCaptions, .captionStyle: captionSubtitle(panel)

@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Stabilize.swift
+//  LookViewModel+Stabilize.swift
 //  Cue Studio
 //
 
@@ -8,7 +8,7 @@ import Foundation
 /// Stabilize (this clip): Off, Gentle, Standard or Strong, and "Use on every clip". The clip's recording is analyzed for its
 /// shake (`MotionAnalysisService`); until it is, the panel says how far that is and the clip plays as filmed. Each change is an
 /// undo step.
-extension QuickEditViewModel {
+extension LookViewModel {
     func setStabilization(_ level: StabilizationLevel?) {
         guard targetClip?.stabilization != level else { return }
         updateClip { $0.stabilization = level }

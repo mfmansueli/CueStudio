@@ -4,6 +4,8 @@
 //
 
 import Foundation
+import PhotosUI
+import SwiftUI
 
 /// What every part of the editor (`EditorPart`: Captions, …) works through: the edit and its undo steps, the player, the jobs
 /// and the toasts, held by the part itself, and what is picked, the open panel and Undo, asked of the editor (`EditorHost`).
@@ -82,6 +84,17 @@ final class EditorSession {
     /// Writes down a failure the creator was told about (`EditorFailureReport`).
     func noteFailure(_ error: any Error, _ operation: String) {
         host?.noteFailure(error, operation)
+    }
+
+    /// What the preview plays changed: the player shows it again.
+    func showPlayedEdit() {
+        host?.showPlayedEdit()
+    }
+
+    /// The picked photo or video copied in, with its progress over the preview; the editor gone, it is cancelled.
+    func importPicked(_ item: PhotosPickerItem) async throws -> ImportedMedia {
+        guard let host else { throw CancellationError() }
+        return try await host.importPicked(item)
     }
 
     /// Undo, as the toast's button.

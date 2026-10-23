@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+FaceFollow.swift
+//  LookViewModel+FaceFollow.swift
 //  Cue Studio
 //
 
@@ -8,7 +8,7 @@ import Foundation
 /// Format › Follow face: a Fill crop moves with the creator's face over the whole video, at a pace (Calm, Natural, Quick). It
 /// needs room: a format narrower or wider than the recording, in Fill. Each change is an undo step; moving the crop by hand
 /// turns it off.
-extension QuickEditViewModel {
+extension LookViewModel {
     /// The recording's upright width over height: its analysis has it, or the file read when the editor opened; recordings are
     /// filmed upright at 9:16.
     private var recordingAspect: Double {

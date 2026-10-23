@@ -431,7 +431,7 @@ struct QuickEditViewModelTests {
     @Test func undoTakesBackTheLightAndTheSound() async {
         let scenario = await makeScenario()
         dragHandle(.start, to: 4, on: scenario.viewModel)
-        scenario.viewModel.setAdjustment(.exposure, 30)
+        scenario.viewModel.look.setAdjustment(.exposure, 30)
         scenario.viewModel.setVoiceEnhancement(.strong)
         scenario.viewModel.undo()
         #expect(scenario.viewModel.edit.exposure == 30)
@@ -447,7 +447,7 @@ struct QuickEditViewModelTests {
     @Test func aFilterIsItsOwnUndoStep() async {
         let scenario = await makeScenario()
         dragHandle(.start, to: 4, on: scenario.viewModel)
-        scenario.viewModel.pickFilter(.mono)
+        scenario.viewModel.look.pickFilter(.mono)
         scenario.viewModel.undo()
         #expect(scenario.viewModel.edit.filter == .original)
         #expect(scenario.viewModel.edit.timeline.trimStart == 4)

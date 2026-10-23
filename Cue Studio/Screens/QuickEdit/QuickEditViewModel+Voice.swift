@@ -14,7 +14,7 @@ extension QuickEditViewModel {
     /// What the preview plays: the edit (without what a finger is dragging), or while comparing, the take's sound untreated at
     /// the same loudness.
     var playedEdit: TakeEdit {
-        let shown = hidingDraggedOverlay(in: comparesPicture ? edit.withoutPictureLook() : edit)
+        let shown = hidingDraggedOverlay(in: look.comparesPicture ? edit.withoutPictureLook() : edit)
         guard comparesOriginal, let volume = originalVolume else { return shown }
         var played = shown
         played.audioVersion = VoiceProcessing.currentVersion

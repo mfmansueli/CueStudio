@@ -68,7 +68,7 @@ extension QuickEditViewModel {
 
     private var stabilizeReset: (() -> Void)? {
         guard targetClip?.stabilization != nil else { return nil }
-        return { [weak self] in self?.setStabilization(nil) }
+        return { [weak self] in self?.look.setStabilization(nil) }
     }
 
     private var transitionReset: (() -> Void)? {

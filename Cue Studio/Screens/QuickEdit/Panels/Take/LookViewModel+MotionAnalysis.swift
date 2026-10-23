@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+MotionAnalysis.swift
+//  LookViewModel+MotionAnalysis.swift
 //  Cue Studio
 //
 
@@ -9,11 +9,11 @@ import Foundation
 /// opens (so Follow face and Stabilize are ready by the time they're turned on), when the editor opens on an edit that uses
 /// them, and for each new one it plays while it uses them (a clip reversed or replaced, a new clip of a montage); the preview is
 /// drawn again when one is ready.
-extension QuickEditViewModel {
+extension LookViewModel {
     /// The take's recording and the other recordings the edit plays.
     var playedRecordingURLs: [URL] {
         var urls: [URL] = []
-        if edit.timeline.segments.contains(where: { $0.sourceID == nil }) { urls.append(videoURL) }
+        if edit.timeline.segments.contains(where: { $0.sourceID == nil }) { urls.append(session.videoURL) }
         urls += edit.playedSources.map { EditMediaFiles.url(for: $0.fileName) }
         return urls
     }
@@ -34,12 +34,6 @@ extension QuickEditViewModel {
         requestMotionAnalysis()
     }
 
-    /// An analysis is ready: the preview is drawn again when the edit reads one.
-    func motionAnalysisDidChange() {
-        guard source == .ready, EditedComposition.usesMotion(playedEdit) else { return }
-        player.redraw()
-    }
-
     /// Where the analysis of the recordings the edit plays stands: the one furthest behind (nil when every one is ready or
     /// was never asked for).
     var motionAnalysisStatus: MotionAnalysisStatus? {
@@ -50,6 +44,6 @@ extension QuickEditViewModel {
 
     /// The take's analysis, when it's ready.
     var takeMotionAnalysis: MotionAnalysis? {
-        MotionAnalysisStore.complete(forRecording: videoURL)
+        MotionAnalysisStore.complete(forRecording: session.videoURL)
     }
 }

@@ -135,7 +135,7 @@ extension RealMedia {
             first.viewModel.player.seek(to: 2)
             first.viewModel.selectClipAtPlayhead()
             first.viewModel.splitClip()
-            first.viewModel.pickFilter(.warmFilm)
+            first.viewModel.look.pickFilter(.warmFilm)
             first.viewModel.pauseAndKeepDraft()
             let left = first.viewModel.edit
 

@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+ClipLook.swift
+//  LookViewModel+ClipScope.swift
 //  Cue Studio
 //
 
@@ -11,7 +11,7 @@ import Foundation
 /// the clip doesn't set its own. The panels, the sliders and the rendering are the same for both:
 /// only where a change is written differs. Every change is an undo step (a clip's overrides live in
 /// the timeline's clips, which undo already keeps).
-extension QuickEditViewModel {
+extension LookViewModel {
     /// The clip Adjust, Filters or Background is changing, or nil when they change the whole take.
     var lookClip: EditSegment? {
         guard lookScopeIsClip, let id = selection?.clipID else { return nil }

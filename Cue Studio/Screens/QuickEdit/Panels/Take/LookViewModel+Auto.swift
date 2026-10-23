@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+AutoLook.swift
+//  LookViewModel+Auto.swift
 //  Cue Studio
 //
 
@@ -13,7 +13,7 @@ import Foundation
 ///
 /// A measurement belongs to what was picked when it started: finishing after the picked clip
 /// changed, the panel closed or the editor was left, it is dropped, never applied to another clip.
-extension QuickEditViewModel {
+extension LookViewModel {
     enum AutoAdjustState: Equatable {
         case idle, analyzing
     }

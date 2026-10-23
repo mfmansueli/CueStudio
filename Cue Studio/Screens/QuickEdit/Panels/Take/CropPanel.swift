@@ -15,23 +15,23 @@ struct CropPanel: View {
             PanelTiles(
                 options: AspectRatio.allCases.map { PanelOption($0, $0.label, systemImage: Self.symbol($0), key: $0.rawValue) },
                 selection: viewModel.edit.aspect, identifier: "edit.crop"
-            ) { viewModel.setAspect($0) }
+            ) { viewModel.look.setAspect($0) }
             PanelSegmented(
                 label: String(localized: "Framing"), options: CropFit.allCases.map { PanelOption($0, $0.label) },
                 selection: viewModel.edit.cropFit, identifier: "edit.crop.fit"
-            ) { viewModel.setCropFit($0) }
+            ) { viewModel.look.setCropFit($0) }
             PanelToggleRow(
                 label: String(localized: "Follow face"), detail: String(localized: "The frame keeps your face in view as you move"),
-                isOn: viewModel.followsFace, identifier: "edit.crop.followFace"
-            ) { viewModel.setFollowsFace(!viewModel.followsFace) }
-                .disabled(!viewModel.canFollowFace)
-            if viewModel.followsFace {
+                isOn: viewModel.look.followsFace, identifier: "edit.crop.followFace"
+            ) { viewModel.look.setFollowsFace(!viewModel.look.followsFace) }
+                .disabled(!viewModel.look.canFollowFace)
+            if viewModel.look.followsFace {
                 PanelSegmented(
                     label: String(localized: "Pace"), options: FollowPace.allCases.map { PanelOption($0, $0.label) },
                     selection: viewModel.edit.faceFollow?.pace ?? .natural, identifier: "edit.crop.followPace"
-                ) { viewModel.setFollowPace($0) }
+                ) { viewModel.look.setFollowPace($0) }
             }
-            if let note = viewModel.faceFollowNote {
+            if let note = viewModel.look.faceFollowNote {
                 PanelNote(text: note)
                     .accessibilityIdentifier("edit.crop.followNote")
             }

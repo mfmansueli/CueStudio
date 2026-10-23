@@ -53,47 +53,47 @@ struct QuickEditSkinSmoothingTests {
     // MARK: - The dial
 
     @Test func isTheLastDialOfAdjustAndNeedsNoNegativeSide() {
-        let dials = QuickEditViewModel.Adjustment.allCases
+        let dials = LookViewModel.Adjustment.allCases
         #expect(dials.last == .skinSmoothing)
         #expect(dials.count == 10)
-        #expect(QuickEditViewModel.Adjustment.skinSmoothing.label == "Skin Smoothing")
-        #expect(!QuickEditViewModel.Adjustment.skinSmoothing.isBipolar)
-        #expect(QuickEditViewModel.Adjustment.skinSmoothing.hint != nil)
+        #expect(LookViewModel.Adjustment.skinSmoothing.label == "Skin Smoothing")
+        #expect(!LookViewModel.Adjustment.skinSmoothing.isBipolar)
+        #expect(LookViewModel.Adjustment.skinSmoothing.hint != nil)
         #expect(dials.filter { $0.hint != nil } == [.skinSmoothing], "only the new dial needs a spoken hint")
     }
 
     @Test func startsAtZeroAndChangesTheTake() async {
         let viewModel = (await makeScenario()).viewModel
-        #expect(viewModel.adjustment(.skinSmoothing) == 0)
-        #expect(!viewModel.hasAdjustments)
-        viewModel.setAdjustment(.skinSmoothing, 35)
+        #expect(viewModel.look.adjustment(.skinSmoothing) == 0)
+        #expect(!viewModel.look.hasAdjustments)
+        viewModel.look.setAdjustment(.skinSmoothing, 35)
         #expect(viewModel.edit.skinSmoothing == 35)
-        #expect(viewModel.adjustment(.skinSmoothing) == 35)
-        #expect(viewModel.hasAdjustments && viewModel.canResetAdjustment(.skinSmoothing))
-        #expect(viewModel.effectiveLook.skinSmoothing == 35)
+        #expect(viewModel.look.adjustment(.skinSmoothing) == 35)
+        #expect(viewModel.look.hasAdjustments && viewModel.look.canResetAdjustment(.skinSmoothing))
+        #expect(viewModel.look.effectiveLook.skinSmoothing == 35)
     }
 
     @Test func staysBetweenZeroAndOneHundred() async {
         let viewModel = (await makeScenario()).viewModel
-        viewModel.setAdjustment(.skinSmoothing, 250)
+        viewModel.look.setAdjustment(.skinSmoothing, 250)
         #expect(viewModel.edit.skinSmoothing == 100)
-        viewModel.setAdjustment(.skinSmoothing, -40)
+        viewModel.look.setAdjustment(.skinSmoothing, -40)
         #expect(viewModel.edit.skinSmoothing == 0)
-        viewModel.setAdjustment(.skinSmoothing, 33.6)
+        viewModel.look.setAdjustment(.skinSmoothing, 33.6)
         #expect(viewModel.edit.skinSmoothing == 34)
     }
 
     @Test func doesNotTouchTheFiltersOrTheOtherDials() async {
         let viewModel = (await makeScenario()).viewModel
-        viewModel.pickFilter(.studio)
-        viewModel.setAdjustment(.exposure, 15)
-        let amount = viewModel.currentFilterAmount
-        viewModel.setAdjustment(.skinSmoothing, 60)
-        #expect(viewModel.edit.filter == .studio && viewModel.currentFilterAmount == amount)
+        viewModel.look.pickFilter(.studio)
+        viewModel.look.setAdjustment(.exposure, 15)
+        let amount = viewModel.look.currentFilterAmount
+        viewModel.look.setAdjustment(.skinSmoothing, 60)
+        #expect(viewModel.edit.filter == .studio && viewModel.look.currentFilterAmount == amount)
         #expect(viewModel.edit.exposure == 15)
-        viewModel.pickFilter(.original)
+        viewModel.look.pickFilter(.original)
         #expect(viewModel.edit.skinSmoothing == 60, "any filter, or none, with the same smoothing")
-        viewModel.resetAdjustment(.skinSmoothing)
+        viewModel.look.resetAdjustment(.skinSmoothing)
         #expect(viewModel.edit.exposure == 15)
     }
 
@@ -101,7 +101,7 @@ struct QuickEditSkinSmoothingTests {
 
     @Test func undoAndRedoTakeItBackAndForth() async {
         let viewModel = (await makeScenario()).viewModel
-        viewModel.setAdjustment(.skinSmoothing, 45)
+        viewModel.look.setAdjustment(.skinSmoothing, 45)
         #expect(viewModel.canUndo)
         viewModel.undo()
         #expect(viewModel.edit.skinSmoothing == 0)
@@ -112,20 +112,20 @@ struct QuickEditSkinSmoothingTests {
 
     @Test func resetPutsOneDialOrEveryDialBack() async {
         let viewModel = (await makeScenario()).viewModel
-        viewModel.setAdjustment(.skinSmoothing, 45)
-        viewModel.setAdjustment(.contrast, 20)
-        viewModel.resetAdjustment(.skinSmoothing)
+        viewModel.look.setAdjustment(.skinSmoothing, 45)
+        viewModel.look.setAdjustment(.contrast, 20)
+        viewModel.look.resetAdjustment(.skinSmoothing)
         #expect(viewModel.edit.skinSmoothing == 0 && viewModel.edit.contrast == 20)
-        #expect(!viewModel.canResetAdjustment(.skinSmoothing))
-        viewModel.setAdjustment(.skinSmoothing, 45)
-        viewModel.resetAdjustments()
+        #expect(!viewModel.look.canResetAdjustment(.skinSmoothing))
+        viewModel.look.setAdjustment(.skinSmoothing, 45)
+        viewModel.look.resetAdjustments()
         #expect(viewModel.edit.skinSmoothing == 0 && viewModel.edit.contrast == 0)
-        #expect(!viewModel.hasAdjustments)
+        #expect(!viewModel.look.hasAdjustments)
     }
 
     @Test func isSavedWithTheEditWhenDone() async {
         let scenario = await makeScenario()
-        scenario.viewModel.setAdjustment(.skinSmoothing, 25)
+        scenario.viewModel.look.setAdjustment(.skinSmoothing, 25)
         scenario.viewModel.done()
         #expect(scenario.takes.takes[0].edit?.skinSmoothing == 25)
     }
@@ -135,12 +135,12 @@ struct QuickEditSkinSmoothingTests {
     @Test func compareShowsThePictureWithoutItAndGivesItBack() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.setAdjustment(.skinSmoothing, 50)
+        viewModel.look.setAdjustment(.skinSmoothing, 50)
         #expect(scenario.player.shown.last?.skinSmoothing == 50)
-        viewModel.holdPictureComparison(true)
+        viewModel.look.holdPictureComparison(true)
         #expect(scenario.player.shown.last?.skinSmoothing == 0)
         #expect(viewModel.edit.skinSmoothing == 50, "what is saved doesn't change")
-        viewModel.holdPictureComparison(false)
+        viewModel.look.holdPictureComparison(false)
         #expect(scenario.player.shown.last?.skinSmoothing == 50)
     }
 
@@ -152,11 +152,11 @@ struct QuickEditSkinSmoothingTests {
         split(scenario)
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.adjust))
-        viewModel.setAdjustment(.skinSmoothing, 50)
+        viewModel.look.setAdjustment(.skinSmoothing, 50)
         #expect(viewModel.edit.skinSmoothing == 0)
         #expect(viewModel.edit.timeline.segments[1].look?.skinSmoothing == 50)
         #expect(viewModel.edit.timeline.segments[0].look == nil && viewModel.edit.timeline.segments[2].look == nil)
-        #expect(viewModel.adjustment(.skinSmoothing) == 50 && viewModel.clipOverrides(.skinSmoothing))
+        #expect(viewModel.look.adjustment(.skinSmoothing) == 50 && viewModel.look.clipOverrides(.skinSmoothing))
         #expect(viewModel.edit.lookSettings(for: viewModel.edit.timeline.segments[1]).skinSmoothing == 50)
         #expect(viewModel.edit.lookSettings(for: viewModel.edit.timeline.segments[0]).skinSmoothing == 0)
     }
@@ -166,16 +166,16 @@ struct QuickEditSkinSmoothingTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.adjust))
-        viewModel.setAdjustment(.skinSmoothing, 30)
+        viewModel.look.setAdjustment(.skinSmoothing, 30)
         viewModel.panel = nil
         pick(viewModel, clip: 2)
         viewModel.perform(.open(.adjust))
-        #expect(viewModel.adjustment(.skinSmoothing) == 30 && !viewModel.clipOverrides(.skinSmoothing))
-        viewModel.setAdjustment(.skinSmoothing, 0)
-        #expect(viewModel.adjustment(.skinSmoothing) == 0 && viewModel.clipOverrides(.skinSmoothing), "a clip can turn it off")
+        #expect(viewModel.look.adjustment(.skinSmoothing) == 30 && !viewModel.look.clipOverrides(.skinSmoothing))
+        viewModel.look.setAdjustment(.skinSmoothing, 0)
+        #expect(viewModel.look.adjustment(.skinSmoothing) == 0 && viewModel.look.clipOverrides(.skinSmoothing), "a clip can turn it off")
         #expect(viewModel.edit.skinSmoothing == 30)
-        viewModel.resetAdjustment(.skinSmoothing)
-        #expect(viewModel.adjustment(.skinSmoothing) == 30)
+        viewModel.look.resetAdjustment(.skinSmoothing)
+        #expect(viewModel.look.adjustment(.skinSmoothing) == 30)
         #expect(viewModel.edit.timeline.segments[2].look == nil)
     }
 
@@ -185,7 +185,7 @@ struct QuickEditSkinSmoothingTests {
         split(scenario)
         pick(viewModel, clip: 2)
         viewModel.perform(.open(.adjust))
-        viewModel.setAdjustment(.skinSmoothing, 40)
+        viewModel.look.setAdjustment(.skinSmoothing, 40)
         viewModel.panel = nil
         scenario.player.seek(to: 15)
         viewModel.selectClipAtPlayhead()
@@ -202,7 +202,7 @@ struct QuickEditSkinSmoothingTests {
         split(scenario)
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.adjust))
-        viewModel.setAdjustment(.skinSmoothing, 50)
+        viewModel.look.setAdjustment(.skinSmoothing, 50)
         viewModel.undo()
         #expect(viewModel.edit.timeline.segments[1].look == nil)
         viewModel.redo()

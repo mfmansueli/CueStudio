@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Background.swift
+//  LookViewModel+Background.swift
 //  Cue Studio
 //
 
@@ -10,9 +10,9 @@ import SwiftUI
 /// Background: blur the creator's background, or put a color or a photo behind them, found by
 /// Vision on the iPhone or by a green or blue screen (a chroma key). It belongs to a recording: the
 /// one under the playhead (the take, or another take or video of a montage), on every section of
-/// it, unless a clip sets its own (opened from a picked clip, `QuickEditViewModel+ClipLook`). Every
+/// it, unless a clip sets its own (opened from a picked clip, `LookViewModel+ClipScope`). Every
 /// change is an undo step; a slider is one. The recording itself never changes.
-extension QuickEditViewModel {
+extension LookViewModel {
     /// The recording under the playhead: nil for the take.
     var backgroundSourceID: UUID? {
         let segments = edit.timeline.segments

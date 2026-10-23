@@ -1,15 +1,15 @@
 //
-//  QuickEditViewModel+Look.swift
+//  LookViewModel+Adjust.swift
 //  Cue Studio
 //
 
 import Foundation
 
 /// Adjust, Filters and Crop. Adjust and Filters change the whole take, or one clip when opened from
-/// it (`QuickEditViewModel+ClipLook`); Crop is the take's frame. Each change shows live and is an undo
+/// it (`LookViewModel+ClipScope`); Crop is the take's frame. Each change shows live and is an undo
 /// step; a slider's quick moves are one (`EditHistory.coalescingInterval`). Auto, the measured
-/// correction, is in `QuickEditViewModel+AutoLook`.
-extension QuickEditViewModel {
+/// correction, is in `LookViewModel+Auto`.
+extension LookViewModel {
     /// Adjust's settings, −100…+100 (Sharpness and Skin Smoothing 0…100), in the order of the dials.
     enum Adjustment: String, CaseIterable, Identifiable {
         case exposure, contrast, warmth, tint, saturation, vibrance, highlights, shadows, sharpness, skinSmoothing

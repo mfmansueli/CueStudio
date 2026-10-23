@@ -16,10 +16,11 @@ import Foundation
 /// one undo step (`beginChange` / `endChange`). A draft is kept while editing and when leaving
 /// with Cancel; Done saves the edit on the take.
 ///
-/// The editor coordinates its parts (`EditorPart`: `CaptionsViewModel`, `CoverViewModel`), each with its own state, working on the edit
-/// through the session (`EditorSession`) the editor hosts (`EditorHost`): it wires what one part's change means for another
-/// (a panel left, the edit changed, the editor closed). The tools not in a part yet are in their own extensions
-/// (`QuickEditViewModel+Text`, `+Media`, `+VoiceOver`, `+ClipSettings`, `+PausesPanel`, `+Style`, `+CleanUp`).
+/// The editor coordinates its parts (`EditorPart`: `CaptionsViewModel`, `CoverViewModel`, `LookViewModel`), each with its
+/// own state, working on the edit through the session (`EditorSession`) the editor hosts (`EditorHost`): it wires what one
+/// part's change means for another (a panel left, the edit changed, the editor closed). The tools not in a part yet are in
+/// their own extensions (`QuickEditViewModel+Text`, `+Media`, `+VoiceOver`, `+ClipSettings`, `+PausesPanel`, `+Style`,
+/// `+CleanUp`).
 @MainActor
 @Observable
 final class QuickEditViewModel: EditorHost, EditorPart {
@@ -98,20 +99,9 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         get { selection?.joinID }
         set { select(newValue.map(EditorSelection.join), replacing: \.joinID) }
     }
-    /// The setting Adjust opens on, once (`open(_:)`); nil opens where it always does.
-    var adjustOpensOn: Adjustment?
-    /// Auto measuring the clip (see `QuickEditViewModel+AutoLook`).
-    var autoState: AutoAdjustState = .idle
     /// The text or photo or video a finger is moving on the preview: the video leaves it out meanwhile
     /// (`hidingDraggedOverlay(in:)`).
     var draggedOverlay: EditorSelection?
-    /// Adjust › Compare: the preview shows the picture without Auto, Adjust and Filters.
-    var comparesPicture = false {
-        didSet {
-            guard comparesPicture != oldValue else { return }
-            player.show(playedEdit)
-        }
-    }
     /// Frames per second of the recording: read from the file when it opens, the take's setting
     /// until then. The timeline puts every edit on a frame (`FrameGrid`).
     private(set) var frameRate: Double
@@ -190,22 +180,11 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     var showsSpeedCurves = false
     /// Track: how far following the picked item's object is, 0 to 1; nil when it isn't (`QuickEditViewModel+Track`).
     var trackingProgress: Double?
-    /// The recordings whose motion analysis was last asked for while the edit used it (`requestMotionAnalysisIfNeeded`).
-    @ObservationIgnored var motionRequestedURLs: [URL] = []
-    /// The take's upright frame in pixels, read when the recording opens (Follow face needs a format other than it).
-    @ObservationIgnored var recordingUprightSize: CGSize?
     /// A point of the speed curve is being dragged (`QuickEditViewModel+SpeedCurve`).
     @ObservationIgnored var shapesCurve = false
 
-    // MARK: Background
-    /// Whether this iPhone can find people in video; nil until checked.
-    var canFindPeople: Bool?
-    var isImportingBackground = false
     /// Why the photo library is open, if it is (`EditorPhotoPicker`).
     var photoRequest: PhotoRequest?
-    /// Adjust, Filters or Background was opened from a picked clip: it changes that clip only, and
-    /// follows the picked clip. Opened from the main toolbar it changes the whole take.
-    var lookScopeIsClip = false
 
     // MARK: Sound
     /// The music clip picked on its track.
@@ -240,9 +219,6 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     let soundPreviews: SoundEffectPreviewing
     /// The library of takes (a montage adds others from it).
     let takes: TakeLibraryService
-    /// Analyzes the recordings' motion for Follow face and Stabilize (`QuickEditViewModel+MotionAnalysis`); nil in tests that
-    /// don't use it.
-    let motion: MotionAnalysisService?
     /// Follows an object through a recording for Track.
     let tracker: ObjectTracking
     private let drafts: QuickEditDraftStoring
@@ -254,6 +230,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     let captions: CaptionsViewModel
     /// The cover: Cover Studio over the editor, and the cover drawn for the timeline's block (`CoverViewModel`).
     let cover: CoverViewModel
+    /// The picture: Adjust, Auto, Filters, Background, Format, Stabilize, Copy look (`LookViewModel`).
+    let look: LookViewModel
     /// Opens Cue's page in the Settings app (a toast's "Settings" when the microphone is off for Cue); tests count it.
     @ObservationIgnored var opensSettings: @MainActor () -> Void = { AppSettingsLink.open() }
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
@@ -287,7 +265,6 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
         self.recorder = recorder ?? VoiceOverRecorder()
         self.takes = takes
-        self.motion = motion
         self.tracker = tracker
         self.library = library
         self.editing = editing
@@ -311,6 +288,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             session: session, editing: editing, pictures: coverPictures ?? CoverPictureService(), importer: self.mediaImporter,
             styles: self.styles
         )
+        look = LookViewModel(session: session, editing: editing, motion: motion)
         session.host = self
         self.recorder.stoppedByItself = { [weak self] reason in self?.voiceOverStoppedByItself(reason) }
         self.player.playingStopped = { [weak self] in self?.playingStopped() }
@@ -329,7 +307,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             return
         }
         if let rate = await editing.frameRate(ofVideoAt: videoURL) { frameRate = FrameGrid(rate: rate).rate }
-        recordingUprightSize = await EditFraming.shape(of: videoURL)?.uprightSize
+        look.recordingUprightSize = await EditFraming.shape(of: videoURL)?.uprightSize
         guard !isClosed else { return }
         // The file's own length wins over the take's saved one; a draft left behind comes back with its undo steps.
         var playhead: TimeInterval = 0
@@ -345,7 +323,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         cover.drawCover()
         // Only an edit that uses Follow face or Stabilize has its recordings analyzed now; the others when Format or
         // Stabilize opens (an hour of video is a lot to analyze for nothing).
-        requestMotionAnalysisIfNeeded()
+        look.requestMotionAnalysisIfNeeded()
         findBeatsIfNeeded()
     }
 
@@ -366,11 +344,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         if selectedJoinID != nil, selectedJoinIndex == nil { selectedJoinID = nil }
         // A new treatment isn't what was being compared.
         if comparesOriginal, edit.voiceProcessing != comparedProcessing { endComparison() }
-        // A change is no longer what was being compared.
-        if comparesPicture { comparesPicture = false }
+        // A change is no longer what was being compared; a recording now played is analyzed when it needs to be.
+        look.editChanged()
         updateCurveSoundStepping()
         player.show(playedEdit)
-        requestMotionAnalysisIfNeeded()
         cover.editChanged()
         scheduleDraftSave()
     }
@@ -396,7 +373,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
                 leavePanel(for: nil, endingChange: true)
                 leavePanel(for: .transition, endingChange: true)
             }
-        } else if let panel = shownPanel, followsSelection(panel), !(next.map { accepts($0, in: panel) } ?? false) {
+        } else if let panel = shownPanel, look.followsSelection(panel), !(next.map { look.accepts($0, in: panel) } ?? false) {
             leavePanel(for: nil, endingChange: false)
         }
     }
@@ -409,20 +386,17 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         showsAdvanced = false
         panelTab = .presets
         if previous == .voice { endComparison() }
-        // Leaving Adjust (or opening it again) never leaves a measurement running or the picture compared.
-        if next != .adjust { cancelAuto() }
-        comparesPicture = false
+        // Auto, Compare, the recordings' analysis for Format and Stabilize, a clip's scope.
+        look.panelChanged(to: next)
         if endingChange { endChange() }
         if recorder.isRecording { stopVoiceOver() }
         // A cut is picked only while its Transition panel is open.
         if previous == .transition, picked?.joinID != nil { picked = nil }
-        if next == .crop || next == .stabilize { requestMotionAnalysis() }
         if next == .pauses {
             cleanUpMarks = [:]
             // Not tied to the panel: leaving Pauses doesn't stop it listening.
             listenForCleanUp()
         }
-        if next == nil { lookScopeIsClip = false }
         captions.panelChanged(to: next)
     }
 
@@ -504,6 +478,17 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     func retryPreview() {
         guard source == .ready else { return }
         player.retry()
+    }
+
+    /// What the preview plays changed (a comparison started or ended): the player shows it again.
+    func showPlayedEdit() {
+        player.show(playedEdit)
+    }
+
+    /// A recording's motion analysis is ready: the preview is drawn again when what it plays reads one.
+    func motionAnalysisDidChange() {
+        guard source == .ready, EditedComposition.usesMotion(playedEdit) else { return }
+        player.redraw()
     }
 
     /// Cue is in front again: a preview that failed meanwhile (iOS resets its media services in the background) is built
@@ -654,7 +639,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Nothing started here outlives the editor: every job is cancelled, and what a slow one hands back after is dropped
     /// (its ticket is no longer current; work awaited elsewhere checks `isClosed`).
     private func close(keepingDraft: Bool) {
-        cancelAuto()
+        look.cancelAuto()
         trackingProgress = nil
         jobs.close()
         captions.translationRequest = nil

@@ -42,16 +42,16 @@ struct QuickEditBackgroundTests {
     @Test func theTakesBackgroundIsOneUndoStep() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        #expect(viewModel.backgroundSourceID == nil)
-        viewModel.setBackgroundStyle(.blur)
+        #expect(viewModel.look.backgroundSourceID == nil)
+        viewModel.look.setBackgroundStyle(.blur)
         #expect(viewModel.edit.background(for: nil)?.style == .blur)
         viewModel.beginChange()
-        viewModel.updateBackground { $0.blur = 0.2 }
-        viewModel.updateBackground { $0.blur = 0.9 }
+        viewModel.look.updateBackground { $0.blur = 0.2 }
+        viewModel.look.updateBackground { $0.blur = 0.9 }
         viewModel.endChange()
-        #expect(viewModel.currentBackground.blur == 0.9)
+        #expect(viewModel.look.currentBackground.blur == 0.9)
         viewModel.undo()
-        #expect(viewModel.currentBackground.blur == 0.5)
+        #expect(viewModel.look.currentBackground.blur == 0.5)
         viewModel.undo()
         #expect(viewModel.edit.background(for: nil) == nil)
     }
@@ -65,9 +65,9 @@ struct QuickEditBackgroundTests {
             $0.timeline.insertClip(source: source.id, duration: 10)
         }
         scenario.player.currentTime = 70
-        #expect(viewModel.backgroundSourceID == source.id)
-        viewModel.setBackgroundCutout(.colorKey)
-        viewModel.setBackgroundStyle(.color)
+        #expect(viewModel.look.backgroundSourceID == source.id)
+        viewModel.look.setBackgroundCutout(.colorKey)
+        viewModel.look.setBackgroundStyle(.color)
         #expect(viewModel.edit.background(for: source.id)?.cutout == .colorKey)
         #expect(viewModel.edit.background(for: nil) == nil)
     }
@@ -75,9 +75,9 @@ struct QuickEditBackgroundTests {
     @Test func aKeyColorKeepsItsTolerance() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.updateBackground { $0.key.tolerance = 0.6 }
-        viewModel.setKeyColor(red: 0, green: 0.28, blue: 0.73)
-        #expect(viewModel.currentBackground.key == {
+        viewModel.look.updateBackground { $0.key.tolerance = 0.6 }
+        viewModel.look.setKeyColor(red: 0, green: 0.28, blue: 0.73)
+        #expect(viewModel.look.currentBackground.key == {
             var key = ChromaKey.blue
             key.tolerance = 0.6
             return key
@@ -87,8 +87,8 @@ struct QuickEditBackgroundTests {
     @Test func aPhotoGoesBehindTheCreator() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.setBackgroundImage("beach.jpg")
-        #expect(viewModel.currentBackground.style == .image)
+        viewModel.look.setBackgroundImage("beach.jpg")
+        #expect(viewModel.look.currentBackground.style == .image)
         #expect(viewModel.edit.background(for: nil)?.imageFileName == "beach.jpg")
         #expect(viewModel.importedFiles.contains("beach.jpg"))
     }
@@ -97,12 +97,12 @@ struct QuickEditBackgroundTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         #expect(viewModel.timelineInput(heightClass: .regular).clips[0].badge == nil)
-        viewModel.setBackgroundStyle(.blur)
+        viewModel.look.setBackgroundStyle(.blur)
         #expect(viewModel.timelineInput(heightClass: .regular).clips[0].badge == "Blur")
         // A photo style with no photo picked yet changes nothing, so the clip says nothing.
-        viewModel.setBackgroundStyle(.image)
+        viewModel.look.setBackgroundStyle(.image)
         #expect(viewModel.timelineInput(heightClass: .regular).clips[0].badge == nil)
-        viewModel.setBackgroundImage("photo.jpg")
+        viewModel.look.setBackgroundImage("photo.jpg")
         #expect(viewModel.timelineInput(heightClass: .regular).clips[0].badge == "Image")
     }
 

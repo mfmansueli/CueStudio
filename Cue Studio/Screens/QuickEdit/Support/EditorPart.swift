@@ -4,6 +4,8 @@
 //
 
 import Foundation
+import PhotosUI
+import SwiftUI
 
 /// A part of the editor with its own state (Captions, …): it reads and changes the edit, plays and picks through its session
 /// (`EditorSession`), which it holds, with the same words the editor uses, so a tool's code reads the same wherever it lives.
@@ -19,6 +21,9 @@ extension EditorPart {
     /// What undo keeps of the edit.
     var snapshot: EditSnapshot { session.document.snapshot }
     var player: EditPlayback { session.player }
+    /// The take being edited, and its recording.
+    var take: Take { session.take }
+    var videoURL: URL { session.videoURL }
     var jobs: EditorJobs { session.jobs }
     var toast: ToastService { session.toast }
     var isReady: Bool { session.isReady }
@@ -68,6 +73,11 @@ extension EditorPart {
 
     func noteFailure(_ error: any Error, _ operation: String) {
         session.noteFailure(error, operation)
+    }
+
+    /// The picked photo or video copied in, with its progress over the preview.
+    func importPicked(_ item: PhotosPickerItem) async throws -> ImportedMedia {
+        try await session.importPicked(item)
     }
 
     // MARK: - Changing the edit (`EditDocument`)

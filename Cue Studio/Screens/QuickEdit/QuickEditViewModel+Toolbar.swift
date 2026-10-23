@@ -151,7 +151,7 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "copyLook", label: String(localized: "Copy look"), systemImage: "doc.on.doc", action: .copyLook),
                 EditorToolbarItem(
                     id: "pasteLook", label: String(localized: "Paste look"), systemImage: "doc.on.clipboard",
-                    style: canPasteLook ? .normal : .dimmed, action: .pasteLook
+                    style: look.canPasteLook ? .normal : .dimmed, action: .pasteLook
                 ),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteClip),
             ]
@@ -233,7 +233,7 @@ extension QuickEditViewModel {
             captions.addCaptionAtPlayhead()
         case .open(let panel):
             // From a picked clip, Adjust, Filters and Background change that clip only.
-            lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
+            look.lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
             self.panel = panel
         case .addMedia, .addMediaChoice:
             mediaInsertMode = .overlay
@@ -326,8 +326,8 @@ extension QuickEditViewModel {
             if !jobs.isRunning(.reverse) { jobs.start(.reverse) { [weak self] _ in await self?.reverseClip() } }
         case .replaceClip: askToReplaceClip()
         case .extractAudio: startJob { await self.extractAudio() }
-        case .copyLook: copyClipLook()
-        case .pasteLook: askToPasteLook()
+        case .copyLook: look.copyClipLook()
+        case .pasteLook: look.askToPasteLook()
         case .deleteClip: selection?.clipID.map(deleteClip)
         default: return false
         }

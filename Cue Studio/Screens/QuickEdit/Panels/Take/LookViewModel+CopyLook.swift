@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+CopyLook.swift
+//  LookViewModel+CopyLook.swift
 //  Cue Studio
 //
 
@@ -7,7 +7,7 @@ import Foundation
 
 /// "Copy look" and "Paste look" on clips: a picked clip's light and color, filter, background and zoom, pasted on another clip
 /// or on every clip, all of it or only the parts picked (`CopiedClipLook`). One undo step per paste.
-extension QuickEditViewModel {
+extension LookViewModel {
     /// Copies the picked clip's look.
     func copyClipLook() {
         guard let id = selection?.clipID, let segment = edit.timeline.segment(id: id) else { return }

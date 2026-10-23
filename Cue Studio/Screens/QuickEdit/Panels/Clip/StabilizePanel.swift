@@ -24,15 +24,15 @@ struct StabilizePanel: View {
                     PanelOption(StabilizationLevel?.some(.strong), StabilizationLevel.strong.label, systemImage: "figure.walk", key: "strong"),
                 ],
                 selection: clip?.stabilization, identifier: "edit.stabilize"
-            ) { viewModel.setStabilization($0) }
-            if let note = viewModel.stabilizationNote {
+            ) { viewModel.look.setStabilization($0) }
+            if let note = viewModel.look.stabilizationNote {
                 PanelNote(text: note)
                     .accessibilityIdentifier("edit.stabilize.note")
             }
             if clip?.stabilization != nil, viewModel.edit.timeline.segments.count > 1 {
                 PanelButton(
                     label: String(localized: "Use on every clip"), systemImage: "square.stack.3d.up", identifier: "edit.stabilize.everyClip",
-                    action: viewModel.useStabilizationOnEveryClip
+                    action: viewModel.look.useStabilizationOnEveryClip
                 )
             }
         }

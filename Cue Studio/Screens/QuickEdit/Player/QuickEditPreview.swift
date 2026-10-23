@@ -115,7 +115,7 @@ struct QuickEditPreview: View {
             .padding(.top, 12)
             .allowsHitTesting(false)
             .accessibilityIdentifier("edit.originalAudioBadge")
-        } else if viewModel.comparesPicture {
+        } else if viewModel.look.comparesPicture {
             // ◐ in Adjust, Filters or Background: the picture as recorded.
             HStack(spacing: 6) {
                 Image(systemName: "circle.lefthalf.filled").font(.editorGlyph(EditorGlyph.small, weight: .bold)).foregroundStyle(Palette.accText)
@@ -188,11 +188,11 @@ struct QuickEditPreview: View {
         DragGesture()
             .onChanged { value in
                 let start = dragStartOffset ?? viewModel.edit.cropOffset
-                if dragStartOffset == nil { viewModel.beginCropMove() }
+                if dragStartOffset == nil { viewModel.look.beginCropMove() }
                 dragStartOffset = start
                 let wide = viewModel.edit.aspect.widthOverHeight > 9.0 / 16.0
                 let travel = wide ? value.translation.width / max(1, size.width) : value.translation.height / max(1, size.height)
-                viewModel.moveCrop(to: start - Double(travel) * 2)
+                viewModel.look.moveCrop(to: start - Double(travel) * 2)
             }
             .onEnded { _ in
                 dragStartOffset = nil

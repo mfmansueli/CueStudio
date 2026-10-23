@@ -168,7 +168,7 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.addText(.title)
-        viewModel.pickFilter(.film)
+        viewModel.look.pickFilter(.film)
         try makeCover(viewModel)
         let cover = viewModel.edit.cover
         let steps = viewModel.document.history.past.count

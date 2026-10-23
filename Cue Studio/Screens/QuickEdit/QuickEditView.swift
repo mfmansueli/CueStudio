@@ -130,7 +130,7 @@ struct QuickEditView: View {
         .sheet(isPresented: Bindable(viewModel.captions).showsTranslation) {
             CaptionTranslationSheet(viewModel: viewModel)
         }
-        .sheet(isPresented: $viewModel.showsPasteLook) {
+        .sheet(isPresented: Bindable(viewModel.look).showsPasteLook) {
             PasteLookSheet(viewModel: viewModel)
         }
         .fullScreenCover(item: Bindable(viewModel.cover).coverStudio) { studio in

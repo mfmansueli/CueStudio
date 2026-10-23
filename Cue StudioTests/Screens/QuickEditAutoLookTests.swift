@@ -60,12 +60,12 @@ struct QuickEditAutoLookTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.perform(.open(.adjust))
-        viewModel.autoAdjust()
-        #expect(viewModel.autoState == .analyzing)
+        viewModel.look.autoAdjust()
+        #expect(viewModel.look.autoState == .analyzing)
         await finish(viewModel)
-        #expect(viewModel.autoState == .idle)
+        #expect(viewModel.look.autoState == .idle)
         #expect(viewModel.edit.autoCorrection == FakeTakeEditor.measuredCorrection)
-        #expect(viewModel.edit.autoAmount == 1 && viewModel.hasAuto)
+        #expect(viewModel.edit.autoAmount == 1 && viewModel.look.hasAuto)
         #expect(scenario.toast.message == "Auto applied · Adjust below")
         #expect(scenario.editor.autoSpans == [TimeSpan(start: 0, end: 21.6)])
         // The dials were not touched: Auto is a step of its own.
@@ -80,11 +80,11 @@ struct QuickEditAutoLookTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.perform(.open(.adjust))
-        viewModel.autoAdjust()
+        viewModel.look.autoAdjust()
         await finish(viewModel)
-        viewModel.setAutoAmount(40)
-        #expect(viewModel.edit.autoAmount == 0.4 && viewModel.autoAmount == 0.4)
-        viewModel.setAutoAmount(400)
+        viewModel.look.setAutoAmount(40)
+        #expect(viewModel.edit.autoAmount == 0.4 && viewModel.look.autoAmount == 0.4)
+        viewModel.look.setAutoAmount(400)
         #expect(viewModel.edit.autoAmount == 1)
         #expect(scenario.editor.autoRequests == 1)
     }
@@ -93,18 +93,18 @@ struct QuickEditAutoLookTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.perform(.open(.adjust))
-        viewModel.setAdjustment(.exposure, 20)
-        viewModel.autoAdjust()
+        viewModel.look.setAdjustment(.exposure, 20)
+        viewModel.look.autoAdjust()
         await finish(viewModel)
-        #expect(viewModel.canResetAuto)
-        viewModel.resetAuto()
-        #expect(viewModel.edit.autoCorrection == nil && !viewModel.canResetAuto)
+        #expect(viewModel.look.canResetAuto)
+        viewModel.look.resetAuto()
+        #expect(viewModel.edit.autoCorrection == nil && !viewModel.look.canResetAuto)
         #expect(viewModel.edit.exposure == 20)
-        viewModel.autoAdjust()
+        viewModel.look.autoAdjust()
         await finish(viewModel)
         // Resetting everything takes Auto and the dials.
-        viewModel.resetAdjustments()
-        #expect(viewModel.edit.autoCorrection == nil && viewModel.edit.exposure == 0 && !viewModel.hasAdjustments)
+        viewModel.look.resetAdjustments()
+        #expect(viewModel.edit.autoCorrection == nil && viewModel.edit.exposure == 0 && !viewModel.look.hasAdjustments)
     }
 
     @Test func aPictureThatLooksFineIsLeftAlone() async {
@@ -112,7 +112,7 @@ struct QuickEditAutoLookTests {
         editor.autoResult = AutoCorrection()
         let scenario = await makeScenario(editor: editor)
         scenario.viewModel.perform(.open(.adjust))
-        scenario.viewModel.autoAdjust()
+        scenario.viewModel.look.autoAdjust()
         await finish(scenario.viewModel)
         #expect(scenario.viewModel.edit.autoCorrection == nil)
         #expect(scenario.toast.message == "Already balanced")
@@ -124,13 +124,13 @@ struct QuickEditAutoLookTests {
         let scenario = await makeScenario(editor: editor)
         let viewModel = scenario.viewModel
         viewModel.perform(.open(.adjust))
-        viewModel.autoAdjust()
+        viewModel.look.autoAdjust()
         await finish(viewModel)
-        #expect(viewModel.edit.autoCorrection == nil && viewModel.autoState == .idle)
+        #expect(viewModel.edit.autoCorrection == nil && viewModel.look.autoState == .idle)
         #expect(scenario.toast.message == "Couldn’t measure · No change")
         editor.autoFails = false
         editor.autoResult = nil
-        viewModel.autoAdjust()
+        viewModel.look.autoAdjust()
         await finish(viewModel)
         #expect(viewModel.edit.autoCorrection == nil)
     }
@@ -143,17 +143,17 @@ struct QuickEditAutoLookTests {
         split(scenario)
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.adjust))
-        viewModel.autoAdjust()
+        viewModel.look.autoAdjust()
         await finish(viewModel)
         #expect(scenario.editor.autoSpans == [TimeSpan(start: 7.1, end: 10.1)])
         #expect(viewModel.edit.autoCorrection == nil)
         #expect(viewModel.edit.timeline.segments[1].look?.auto == FakeTakeEditor.measuredCorrection)
         #expect(viewModel.edit.timeline.segments[0].look == nil && viewModel.edit.timeline.segments[2].look == nil)
         // Its own intensity, and Reset gives it the take's again.
-        viewModel.setAutoAmount(30)
+        viewModel.look.setAutoAmount(30)
         #expect(viewModel.edit.timeline.segments[1].look?.autoAmount == 0.3)
-        #expect(viewModel.canResetAuto)
-        viewModel.resetAuto()
+        #expect(viewModel.look.canResetAuto)
+        viewModel.look.resetAuto()
         #expect(viewModel.edit.timeline.segments[1].look == nil)
     }
 
@@ -162,14 +162,14 @@ struct QuickEditAutoLookTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.adjust))
-        viewModel.autoAdjust()
+        viewModel.look.autoAdjust()
         await finish(viewModel)
         viewModel.panel = nil
         pick(viewModel, clip: 2)
         viewModel.perform(.open(.adjust))
-        #expect(viewModel.hasAuto && !viewModel.clipOverridesAuto)
-        viewModel.setAutoAmount(0)
-        #expect(viewModel.clipOverridesAuto && viewModel.autoAmount == 0)
+        #expect(viewModel.look.hasAuto && !viewModel.look.clipOverridesAuto)
+        viewModel.look.setAutoAmount(0)
+        #expect(viewModel.look.clipOverridesAuto && viewModel.look.autoAmount == 0)
         #expect(viewModel.edit.autoAmount == 1)
         #expect(viewModel.edit.timeline.segments[2].look?.autoAmount == 0)
     }
@@ -184,13 +184,13 @@ struct QuickEditAutoLookTests {
         split(scenario)
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.adjust))
-        viewModel.autoAdjust()
+        viewModel.look.autoAdjust()
         // Another clip is picked while measuring: the panel follows it, and what was measured for the first isn't its.
         pick(viewModel, clip: 0)
         await finish(viewModel)
         #expect(viewModel.edit.timeline.segments.allSatisfy { $0.look == nil })
         #expect(viewModel.edit.autoCorrection == nil)
-        #expect(viewModel.autoState == .idle)
+        #expect(viewModel.look.autoState == .idle)
     }
 
     @Test func closingThePanelStopsMeasuring() async {
@@ -199,9 +199,9 @@ struct QuickEditAutoLookTests {
         let scenario = await makeScenario(editor: editor)
         let viewModel = scenario.viewModel
         viewModel.perform(.open(.adjust))
-        viewModel.autoAdjust()
+        viewModel.look.autoAdjust()
         viewModel.panel = nil
-        #expect(viewModel.autoState == .idle)
+        #expect(viewModel.look.autoState == .idle)
         try? await Task.sleep(for: .milliseconds(300))
         #expect(viewModel.edit.autoCorrection == nil)
     }
@@ -212,8 +212,8 @@ struct QuickEditAutoLookTests {
         let scenario = await makeScenario(editor: editor)
         let viewModel = scenario.viewModel
         viewModel.perform(.open(.adjust))
-        viewModel.autoAdjust()
-        viewModel.autoAdjust()
+        viewModel.look.autoAdjust()
+        viewModel.look.autoAdjust()
         await finish(viewModel)
         #expect(editor.autoRequests == 1)
     }
@@ -225,22 +225,22 @@ struct QuickEditAutoLookTests {
         let viewModel = scenario.viewModel
         viewModel.perform(.open(.adjust))
         // Nothing to compare with yet.
-        viewModel.togglePictureComparison()
-        #expect(!viewModel.comparesPicture)
-        viewModel.setAdjustment(.exposure, 30)
-        viewModel.togglePictureComparison()
-        #expect(viewModel.comparesPicture)
+        viewModel.look.togglePictureComparison()
+        #expect(!viewModel.look.comparesPicture)
+        viewModel.look.setAdjustment(.exposure, 30)
+        viewModel.look.togglePictureComparison()
+        #expect(viewModel.look.comparesPicture)
         #expect(scenario.player.shown.last?.exposure == 0)
         // What is saved never loses the look.
         #expect(viewModel.edit.exposure == 30)
-        viewModel.togglePictureComparison()
-        #expect(!viewModel.comparesPicture && scenario.player.shown.last?.exposure == 30)
-        viewModel.togglePictureComparison()
-        viewModel.setAdjustment(.contrast, 10)
-        #expect(!viewModel.comparesPicture)
-        viewModel.togglePictureComparison()
+        viewModel.look.togglePictureComparison()
+        #expect(!viewModel.look.comparesPicture && scenario.player.shown.last?.exposure == 30)
+        viewModel.look.togglePictureComparison()
+        viewModel.look.setAdjustment(.contrast, 10)
+        #expect(!viewModel.look.comparesPicture)
+        viewModel.look.togglePictureComparison()
         viewModel.panel = nil
-        #expect(!viewModel.comparesPicture)
+        #expect(!viewModel.look.comparesPicture)
     }
 
     // MARK: - Filters start balanced
@@ -249,15 +249,15 @@ struct QuickEditAutoLookTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.perform(.open(.filters))
-        viewModel.pickFilter(.cinema)
+        viewModel.look.pickFilter(.cinema)
         #expect(viewModel.edit.filter == .cinema && viewModel.edit.filterAmount == VideoFilter.cinema.defaultAmount)
-        viewModel.setFilterAmount(0.3)
-        viewModel.pickFilter(.cinema)
+        viewModel.look.setFilterAmount(0.3)
+        viewModel.look.pickFilter(.cinema)
         #expect(viewModel.edit.filterAmount == 0.3)
-        viewModel.pickFilter(.studio)
+        viewModel.look.pickFilter(.studio)
         #expect(viewModel.edit.filterAmount == VideoFilter.studio.defaultAmount)
         // The first filters start at full strength, as they always did.
-        viewModel.pickFilter(.vivid)
+        viewModel.look.pickFilter(.vivid)
         #expect(viewModel.edit.filterAmount == 1)
     }
 
@@ -267,11 +267,11 @@ struct QuickEditAutoLookTests {
         split(scenario)
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.filters))
-        viewModel.pickFilter(.retro)
+        viewModel.look.pickFilter(.retro)
         #expect(viewModel.edit.timeline.segments[1].look?.filter == .retro)
         #expect(viewModel.edit.timeline.segments[1].look?.filterAmount == VideoFilter.retro.defaultAmount)
         #expect(viewModel.edit.filter == .original)
         // The thumbnails come from the clip.
-        #expect(viewModel.filterPreviewSource.time > 7.1 && viewModel.filterPreviewSource.time < 10.1)
+        #expect(viewModel.look.filterPreviewSource.time > 7.1 && viewModel.look.filterPreviewSource.time < 10.1)
     }
 }
