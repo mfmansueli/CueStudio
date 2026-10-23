@@ -28,7 +28,8 @@ nonisolated enum FrameLook {
         apply(LookSettings(edit), to: image)
     }
 
-    static func apply(_ look: LookSettings, to image: CIImage, skin: SkinSmoothingPass? = nil) -> CIImage {
+    /// `time` is the frame's moment in the edit (nil for a still): a filter's grain changes with it.
+    static func apply(_ look: LookSettings, to image: CIImage, skin: SkinSmoothingPass? = nil, time: TimeInterval? = nil) -> CIImage {
         var output = image
         if let auto = look.auto, look.autoAmount > 0 {
             output = AutoCorrectionRenderer.apply(auto.scaled(by: look.autoAmount), to: output)
@@ -37,7 +38,7 @@ nonisolated enum FrameLook {
             output = skin.apply(value: look.skinSmoothing, to: output)
         }
         output = look.version >= 2 ? adjusted(look, output) : adjustedWithFirstReading(look, output)
-        return filtered(look, output)
+        return filtered(look, output, time: time)
     }
 
     /// The first reading of the dials, then what came later (vibrance and tint), which has only one.

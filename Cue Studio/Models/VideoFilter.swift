@@ -11,9 +11,16 @@ nonisolated enum VideoFilter: String, Codable, CaseIterable, Identifiable, Senda
     case original, vivid, warm, cool, mono, film, fade
     // The collection: each a graded look with its own intent (`FilterGrade`).
     case natural, studio, soft, cinema, warmEditorial, retro, monoSoft, monoContrast
+    /// The looks creators ask for most (2025–26), each with a texture besides its grade (`FilterTexture`): warm film
+    /// with grain, a golden glow, the old digital camera, the camcorder tape, black and white film.
+    case warmFilm, goldenGlow, digicam, vhs, filmMono
 
-    /// The collection Filters offers, in order: clean and true-to-life first, then the moods.
-    static let collection: [VideoFilter] = [.natural, .studio, .soft, .cinema, .warmEditorial, .retro, .monoSoft, .monoContrast]
+    /// The collection Filters offers, in order: clean and true-to-life first, then the moods, the nostalgic looks, and black
+    /// and white.
+    static let collection: [VideoFilter] = [
+        .natural, .studio, .soft, .goldenGlow, .cinema, .warmEditorial, .warmFilm, .retro, .digicam, .vhs, .monoSoft, .monoContrast,
+        .filmMono,
+    ]
 
     /// The filters Filters offers: no filter, then the collection.
     static let editorFilters: [VideoFilter] = [.original] + collection
@@ -41,6 +48,11 @@ nonisolated enum VideoFilter: String, Codable, CaseIterable, Identifiable, Senda
         case .retro: 0.75
         case .monoSoft: 0.9
         case .monoContrast: 0.85
+        case .warmFilm: 0.85
+        case .goldenGlow: 0.8
+        case .digicam: 0.85
+        case .vhs: 0.8
+        case .filmMono: 0.9
         default: 1
         }
     }
@@ -62,6 +74,11 @@ nonisolated enum VideoFilter: String, Codable, CaseIterable, Identifiable, Senda
         case .retro: String(localized: "Retro")
         case .monoSoft: String(localized: "Mono Soft")
         case .monoContrast: String(localized: "Mono Contrast")
+        case .warmFilm: String(localized: "Warm Film")
+        case .goldenGlow: String(localized: "Golden Glow")
+        case .digicam: String(localized: "Digicam")
+        case .vhs: String(localized: "VHS")
+        case .filmMono: String(localized: "B&W Film")
         }
     }
 }

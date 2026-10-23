@@ -8,11 +8,12 @@ import CoreImage.CIFilterBuiltins
 
 /// The filter step: the preset drawn on the adjusted frame, mixed in at the intensity picked. The
 /// first filters (Vivid, Warm, Cool, Mono, Film, Fade) are drawn as they always were
-/// (`FrameLook+Legacy`); the collection is a graded color cube (`FilterGrade`, `FilterLUT`).
+/// (`FrameLook+Legacy`); the collection is a graded color cube (`FilterGrade`, `FilterLUT`), and
+/// some add a texture over it (`FilterTexture`: grain at `time`, glow, vignette…).
 nonisolated extension FrameLook {
-    static func filtered(_ look: LookSettings, _ image: CIImage) -> CIImage {
+    static func filtered(_ look: LookSettings, _ image: CIImage, time: TimeInterval? = nil) -> CIImage {
         guard look.filter != .original else { return image }
-        let filtered = applyPreset(look.filter, to: image)
+        let filtered = applyPreset(look.filter, to: image, time: time)
         let amount = min(max(look.filterAmount, 0), 1)
         guard amount < 0.999 else { return filtered }
         let mix = CIFilter.dissolveTransition()
@@ -22,9 +23,10 @@ nonisolated extension FrameLook {
         return mix.outputImage?.cropped(to: image.extent) ?? filtered
     }
 
-    private static func applyPreset(_ preset: VideoFilter, to image: CIImage) -> CIImage {
+    private static func applyPreset(_ preset: VideoFilter, to image: CIImage, time: TimeInterval?) -> CIImage {
         if let legacy = legacyPreset(preset, to: image) { return legacy }
         guard let grade = FilterGrade.grade(for: preset) else { return image }
-        return FilterLUT.apply(grade, key: preset.rawValue, to: image)
+        let graded = FilterLUT.apply(grade, key: preset.rawValue, to: image)
+        return FilterTexture.texture(for: preset)?.apply(to: graded, time: time) ?? graded
     }
 }
