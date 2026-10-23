@@ -102,6 +102,19 @@ struct LongTakeDeviceTests {
         }
         let first = try await RenderParity.frame(try #require(built).asset, composition: built?.videoComposition, at: 905)
         let withPreview = MotionAnalysisDeviceTests.footprint()
+        // What every change after opening costs: the lines are laid out already (`CaptionLineSizes`), and a corrected line
+        // is the only one laid out again.
+        var adjusted = edit
+        adjusted.exposure = 20
+        let again = try await Self.time {
+            _ = try await EditRenderRequest.prepare(source: url, edit: adjusted, purpose: .editorPreview(rendersCurveSound: true), sounds: sounds)
+                .build()
+        }
+        adjusted.captions[300].text = "A corrected line in the middle"
+        let corrected = try await Self.time {
+            _ = try await EditRenderRequest.prepare(source: url, edit: adjusted, purpose: .editorPreview(rendersCurveSound: true), sounds: sounds)
+                .build()
+        }
 
         var treated = edit
         treated.voiceEnhancement = .strong
@@ -114,6 +127,7 @@ struct LongTakeDeviceTests {
         print(
             "LONG TAKE preview · \(Self.minutes) min, \(Self.lines) caption lines"
                 + " · built in \(Self.ms(preview)) · frame \(first.width)×\(first.height)"
+                + " · again after a look change \(Self.ms(again)) · after a corrected line \(Self.ms(corrected))"
                 + " · memory +\((withPreview - before) / 1_048_576) MB"
                 + " · Studio Voice \(String(format: "%.1f s", voice)) for \(size / 1_048_576) MB"
                 + " · budget \(RecordingSoundCache.byteBudget(freeSpace: free) / 1_048_576) MB of \(free / 1_073_741_824) GB free"
