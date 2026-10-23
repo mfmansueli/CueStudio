@@ -799,12 +799,23 @@ final class QuickEditViewModel {
         draftTask = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(600))
             guard !Task.isCancelled else { return }
-            self?.saveDraft()
+            self?.autosaveDraft()
         }
     }
 
-    /// Keeps the edit, the playhead and the undo steps, or drops the draft when nothing changed. False when the draft
-    /// couldn't be written (the store logs why).
+    /// 600 ms after a change: the draft written off the main thread (`QuickEditDraftStoring.saveSoon`), or dropped when
+    /// nothing is changed any more.
+    private func autosaveDraft() {
+        guard source == .ready, !isClosed else { return }
+        if edit != original {
+            drafts.saveSoon(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: history, savedAt: .now))
+        } else {
+            drafts.discard(takeID: take.id)
+        }
+    }
+
+    /// Keeps the edit, the playhead and the undo steps now (on leaving, or the app going away), or drops the draft when
+    /// nothing changed. False when the draft couldn't be written (the store logs why).
     @discardableResult
     func saveDraft(forced: Bool = false) -> Bool {
         guard source == .ready, !isClosed else { return true }

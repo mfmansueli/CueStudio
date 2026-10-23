@@ -25,6 +25,14 @@ nonisolated struct QuickEditDraft: Codable, Hashable, Sendable {
         self.savedAt = savedAt
     }
 
+    /// As it is written: each undo step's caption lines and translations kept only where they differ from the step after it
+    /// (`EditSnapshot.thinned`), so a long take's lines aren't written sixty times.
+    func thinned() -> QuickEditDraft {
+        var thin = self
+        thin.history = history.thinned(current: EditSnapshot(edit), EditSnapshot.thinned)
+        return thin
+    }
+
     private enum CodingKeys: String, CodingKey {
         case takeID, edit, playhead, history, savedAt
     }

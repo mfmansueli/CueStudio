@@ -61,6 +61,15 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
 }
 
 nonisolated extension EditSnapshot {
+    /// `step` as a saved draft keeps it: its caption lines and translations left out when they are the same as in `newer`,
+    /// the state it is applied on, which an undo step without them leaves as they are (`TakeEdit.apply`).
+    static func thinned(_ step: EditSnapshot, onto newer: EditSnapshot) -> EditSnapshot {
+        var thin = step
+        if step.captions != nil, step.captions == newer.captions { thin.captions = nil }
+        if step.captionTranslations != nil, step.captionTranslations == newer.captionTranslations { thin.captionTranslations = nil }
+        return thin
+    }
+
     /// What undo keeps of `edit`.
     init(_ edit: TakeEdit) {
         self.init(
