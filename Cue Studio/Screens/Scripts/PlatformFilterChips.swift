@@ -52,7 +52,7 @@ struct PlatformFilterChips: View {
             }
             Text(filter.label)
             Text(verbatim: "\(count(filter))")
-                .font(.system(size: 11, design: .monospaced))
+                .monoFont(size: 11)
                 .foregroundStyle(isSelected ? Palette.inkOnLight : Palette.inkHint)
         }
         .font(.system(size: 14, weight: .semibold))

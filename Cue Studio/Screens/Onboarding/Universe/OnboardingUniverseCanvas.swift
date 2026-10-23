@@ -130,7 +130,9 @@ struct OnboardingUniverseCanvas: View {
             )
         )
         canvas.draw(
-            Text("YOU").font(.system(size: 10, weight: .semibold, design: .monospaced)).tracking(1.4).foregroundStyle(Palette.Flight.quietInk),
+            Text("YOU").font(.mono(size: 10, weight: .semibold, locale: canvas.environment.locale))
+                .interfaceTracking(1.4, locale: canvas.environment.locale)
+                .foregroundStyle(Palette.Flight.quietInk),
             at: CGPoint(x: center.x, y: center.y + 33)
         )
     }
@@ -229,7 +231,8 @@ struct OnboardingUniverseCanvas: View {
         glow.fill(star, with: .color(Palette.acc))
         if age > 0.6 {
             canvas.draw(
-                Text(String(localized: "FIRST TAKE · TODAY")).font(.system(size: 10, weight: .bold, design: .monospaced)).foregroundStyle(Palette.accText),
+                Text(String(localized: "FIRST TAKE · TODAY")).font(.mono(size: 10, weight: .bold, locale: canvas.environment.locale))
+                    .foregroundStyle(Palette.accText),
                 at: CGPoint(x: place.x, y: place.y - 22)
             )
         }
@@ -279,7 +282,8 @@ struct OnboardingUniverseCanvas: View {
         let label = TopicBirth.pose(TopicBirth.label, at: age)
         if label.opacity > 0.01 {
             canvas.draw(
-                Text(topic.label.uppercased()).font(.system(size: 9.5, weight: .semibold, design: .monospaced)).tracking(1.3)
+                Text(topic.label.uppercased()).font(.mono(size: 9.5, weight: .semibold, locale: canvas.environment.locale))
+                    .interfaceTracking(1.3, locale: canvas.environment.locale)
                     .foregroundStyle(color.opacity(label.opacity)),
                 at: CGPoint(x: point.x, y: point.y + diameter / 2 + 12 + label.ty)
             )

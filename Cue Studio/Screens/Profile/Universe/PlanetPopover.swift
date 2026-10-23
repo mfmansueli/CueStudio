@@ -20,7 +20,7 @@ struct PlanetPopover: View {
                 Text(platform.label).font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.ink)
             }
             Text("\(count) VIDEOS IN \(String(year))")
-                .font(.system(size: 11, weight: .semibold, design: .monospaced)).tracking(1).foregroundStyle(Palette.accText)
+                .monoFont(size: 11, weight: .semibold).interfaceTracking(1).foregroundStyle(Palette.accText)
             if isLive, let next = PlanetSize.next(videos: count) {
                 Text("\(next.remaining) more to unlock \(PlanetPopover.detailName(next.detail))")
                     .font(.system(size: 12.5)).foregroundStyle(Palette.ink2).lineLimit(1).minimumScaleFactor(0.85)

@@ -26,8 +26,8 @@ struct EditProfilePhoto: View {
         ZStack(alignment: .topLeading) {
             SkyMiniature(density: personalization.sky == .off ? .serene : personalization.sky)
             Text("How you appear")
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                .tracking(1.4)
+                .monoFont(size: 10, weight: .semibold)
+                .interfaceTracking(1.4)
                 .textCase(.uppercase)
                 .foregroundStyle(Palette.ink2)
                 .padding(14)

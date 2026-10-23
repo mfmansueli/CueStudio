@@ -53,7 +53,7 @@ struct ImportScriptSheet: View {
             VStack(alignment: .leading, spacing: Metrics.blockGap) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Import")
-                        .font(CueStudioFont.hud).textCase(.uppercase).tracking(1.2)
+                        .hudFont().textCase(.uppercase).tracking(1.2)
                         .foregroundStyle(Palette.accText)
                     Text("Bring a script in")
                         .font(.title2.bold())

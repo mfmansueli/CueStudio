@@ -19,8 +19,8 @@ struct RecPill: View {
                     .fill(Palette.Camera.recPillDot)
                     .frame(width: Metrics.recPillDotSize, height: Metrics.recPillDotSize)
                 Text("REC")
-                    .font(.system(size: 10.5, weight: .heavy, design: .monospaced))
-                    .tracking(1)
+                    .monoFont(size: 10.5, weight: .heavy)
+                    .interfaceTracking(1)
                     .foregroundStyle(Palette.ink)
             }
             .padding(.horizontal, Metrics.recPillPadding)

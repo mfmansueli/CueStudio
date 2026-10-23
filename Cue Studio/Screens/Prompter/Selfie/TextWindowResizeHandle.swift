@@ -31,7 +31,7 @@ struct TextWindowResizeHandle: View {
                     .position(x: rect.midX, y: rect.midY)
                     .allowsHitTesting(false)
                 Text(resize.label)
-                    .font(CueStudioFont.hud)
+                    .hudFont()
                     .foregroundStyle(Palette.accText)
                     .padding(.horizontal, 10)
                     .frame(height: 26)

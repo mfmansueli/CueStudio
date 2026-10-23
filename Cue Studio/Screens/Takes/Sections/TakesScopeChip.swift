@@ -16,8 +16,8 @@ struct TakesScopeChip: View {
                 Text("\(String(year)) · SHARED")
                 Text(verbatim: "✕").font(.system(size: 13)).foregroundStyle(Palette.Universe.starGold)
             }
-            .font(.system(size: 11, weight: .bold, design: .monospaced))
-            .tracking(0.66)
+            .monoFont(size: 11, weight: .bold)
+            .interfaceTracking(0.66)
             .foregroundStyle(Palette.accText)
             .padding(.leading, 12)
             .padding(.trailing, 10)

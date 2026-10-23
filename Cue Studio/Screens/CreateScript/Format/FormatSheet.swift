@@ -38,7 +38,7 @@ struct FormatSheet: View {
                 VStack(alignment: .leading, spacing: Metrics.blockGap) {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(mode == .blank ? String(localized: "Start from a format") : FormatChoice.formatLabel)
-                            .font(CueStudioFont.hud).textCase(.uppercase).tracking(1.2)
+                            .hudFont().textCase(.uppercase).tracking(1.2)
                             .foregroundStyle(Palette.accText)
                         Text(mode == .blank ? "Which video are you making?" : "How should Cue build it?")
                             .font(.title2.bold())
@@ -87,7 +87,7 @@ struct FormatSheet: View {
     private var moreFormats: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("More formats")
-                .font(CueStudioFont.hud).textCase(.uppercase).tracking(1.2)
+                .hudFont().textCase(.uppercase).tracking(1.2)
                 .foregroundStyle(Palette.inkHint)
                 .padding(.horizontal, 4)
                 .accessibilityAddTraits(.isHeader)

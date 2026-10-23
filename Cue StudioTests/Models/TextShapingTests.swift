@@ -30,6 +30,16 @@ struct TextShapingTests {
         }
     }
 
+    /// The monospaced face has Latin, Greek and Cyrillic letters: other languages' labels use the system face (`monoFont`).
+    @Test func labelsAreMonospacedOnlyWhereTheFaceHasTheLetters() {
+        for code in ["en", "pt-BR", "de", "tr", "vi", "ru", "el"] {
+            #expect(TextShaping.hasMonospacedLetters(in: Locale.Language(identifier: code)), "\(code)")
+        }
+        for code in ["ar", "hi", "th", "ja", "ko", "zh-Hans", "zh-Hant"] {
+            #expect(!TextShaping.hasMonospacedLetters(in: Locale.Language(identifier: code)), "\(code)")
+        }
+    }
+
     @Test func turkishCapitalsKeepTheDot() {
         #expect(TextShaping.uppercased("istanbul'da bir gün nasıl geçer") == "İSTANBUL'DA BİR GÜN NASIL GEÇER")
         #expect(TextShaping.uppercased("five things in istanbul you should see") == "FIVE THINGS IN ISTANBUL YOU SHOULD SEE")

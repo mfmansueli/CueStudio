@@ -19,7 +19,7 @@ struct UniverseShareCard: View {
             LinearGradient(colors: [Palette.Universe.nightDeep, Palette.Universe.nightIndigo], startPoint: .top, endPoint: .bottom)
             VStack(spacing: 14) {
                 Text("MY \(String(snapshot.year)) UNIVERSE")
-                    .font(.system(size: 13, weight: .bold, design: .monospaced)).tracking(2).foregroundStyle(Palette.acc)
+                    .monoFont(size: 13, weight: .bold).interfaceTracking(2).foregroundStyle(Palette.acc)
                     .padding(.top, 34)
                 UniverseMap(
                     snapshot: snapshot, animates: false, coreColor: coreColor, frozenTime: time ?? UniverseShareOptions.buildDuration,
@@ -32,7 +32,7 @@ struct UniverseShareCard: View {
                     Text(verbatim: "@\(handle)").font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
                 }
                 Text("MADE IN CUE STUDIO")
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced)).tracking(1.5).foregroundStyle(Palette.inkHint)
+                    .monoFont(size: 9, weight: .semibold).interfaceTracking(1.5).foregroundStyle(Palette.inkHint)
                     .padding(.bottom, 26)
             }
             .padding(.horizontal, 24)

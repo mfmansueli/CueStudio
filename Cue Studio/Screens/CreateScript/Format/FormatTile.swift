@@ -28,7 +28,7 @@ struct FormatTile: View {
                     .multilineTextAlignment(.leading)
                 Spacer(minLength: 6)
                 Text(choice.sections.joined(separator: " › "))
-                    .font(.system(size: 9, weight: .semibold, design: .monospaced))
+                    .monoFont(size: 9, weight: .semibold)
                     .textCase(.uppercase)
                     .tracking(0.5)
                     .foregroundStyle(isSelected ? Palette.accText : Palette.inkHint)

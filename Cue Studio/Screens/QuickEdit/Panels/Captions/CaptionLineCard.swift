@@ -79,7 +79,11 @@ struct CaptionLineCard: View {
 
     private var header: some View {
         HStack(spacing: 8) {
-            Text(verbatim: "\(DurationText.editor(line.start)) → \(DurationText.editor(line.end))")
+            // The arrow follows the reading ("←" in Arabic).
+            Text(String(
+                localized: "\(DurationText.editor(line.start)) → \(DurationText.editor(line.end))",
+                comment: "Two moments of the video, from → to: a caption line's start and end, the length before and after Clean Up"
+            ))
             Spacer(minLength: 4)
             if let style = line.lineStyle, style.size != .regular {
                 Text(style.size.label)

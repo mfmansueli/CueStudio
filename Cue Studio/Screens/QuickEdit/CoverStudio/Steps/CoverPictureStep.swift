@@ -64,7 +64,7 @@ struct CoverPictureStep: View {
                         viewModel.stepFrame(by: -1, frameRate: frameRate)
                     }
                     Text(timeLabel)
-                        .font(.system(.footnote, design: .monospaced).weight(.semibold))
+                        .monoFont(.footnote, weight: .semibold)
                         .foregroundStyle(Palette.ink2)
                         .frame(maxWidth: .infinity)
                     stepButton("chevron.right", label: Text("One frame forward"), id: "cover.frameForward") {

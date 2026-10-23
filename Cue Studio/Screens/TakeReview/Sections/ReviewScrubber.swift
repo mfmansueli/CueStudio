@@ -54,7 +54,7 @@ struct ReviewScrubber: View {
                 Spacer()
                 Text(DurationText.clock(duration)).foregroundStyle(Palette.ink2)
             }
-            .font(.system(size: 11, weight: .semibold, design: .monospaced))
+            .monoFont(size: 11, weight: .semibold)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Playhead"))
@@ -68,7 +68,7 @@ struct ReviewScrubber: View {
     /// The time over the knob while it is held.
     private var bubble: some View {
         Text(DurationText.clock(duration * progress))
-            .font(.system(size: 12, weight: .bold, design: .monospaced))
+            .monoFont(size: 12, weight: .bold)
             .foregroundStyle(Color.black)
             .frame(width: 52, height: 24)
             .background(Color.white, in: RoundedRectangle(cornerRadius: 8, style: .continuous))

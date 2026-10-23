@@ -24,8 +24,8 @@ struct PracticeTopBar: View {
                 Text(verbatim: "✦").foregroundStyle(Palette.Flight.lilac)
                 Text("PRACTICE · NOT RECORDING")
             }
-            .font(.system(size: 10, weight: .semibold, design: .monospaced))
-            .tracking(0.8)
+            .monoFont(size: 10, weight: .semibold)
+            .interfaceTracking(0.8)
             .foregroundStyle(Palette.aiTextStrong)
             .lineLimit(1)
             .minimumScaleFactor(0.7)

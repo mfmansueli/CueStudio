@@ -124,7 +124,7 @@ struct PickBestTakeView: View {
                     Spacer()
                     Text(DurationText.clock(take.duration))
                 }
-                .font(CueStudioFont.hud)
+                .hudFont()
                 .foregroundStyle(.white)
             }
             .padding(14)
@@ -188,8 +188,8 @@ struct PickBestTakeView: View {
         let shape = RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous)
         return VStack(alignment: .leading, spacing: 12) {
             Text(isBestChosen ? "✦ WHY CUE PICKED \(chosen.label.uppercased())" : "✦ \(chosen.label.uppercased()) · CUE PICKED \(proposal.best.label.uppercased())")
-                .font(CueStudioFont.hud)
-                .tracking(1.2)
+                .hudFont()
+                .interfaceTracking(1.2)
                 .foregroundStyle(Palette.aiText)
             FlowLayout(spacing: 8, lineSpacing: 8) {
                 ForEach(Array(chips.enumerated()), id: \.offset) { index, chip in

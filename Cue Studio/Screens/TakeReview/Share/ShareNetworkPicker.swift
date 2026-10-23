@@ -86,7 +86,7 @@ struct ShareNetworkPicker: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(take.scriptTitle).font(.system(size: 19, weight: .semibold)).lineLimit(2)
                 Text("✓ CLEAN FILE FOR EVERY NETWORK · NO WATERMARKS")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced)).tracking(0.6).foregroundStyle(Palette.successText)
+                    .monoFont(size: 10, weight: .semibold).interfaceTracking(0.6).foregroundStyle(Palette.successText)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }

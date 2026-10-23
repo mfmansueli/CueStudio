@@ -116,7 +116,7 @@ struct ScriptCuesBar: View {
     private func chip(_ cue: String) -> some View {
         Button { onCue(cue) } label: {
             Text(verbatim: cue)
-                .font(.system(size: 12.5, weight: .bold, design: .monospaced))
+                .monoFont(size: 12.5, weight: .bold)
                 .foregroundStyle(Palette.accText)
                 .lineLimit(1)
                 .padding(.horizontal, 13)

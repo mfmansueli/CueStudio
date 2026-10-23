@@ -20,7 +20,7 @@ struct OnboardingHeading: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text(label)
-                .font(CueStudioFont.hud)
+                .hudFont()
                 .textCase(.uppercase)
                 .tracking(1.4)
                 .foregroundStyle(Palette.accText)

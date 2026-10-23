@@ -43,7 +43,7 @@ struct RecorderMoreMenu: View {
         .overlay(alignment: .topTrailing) {
             if countdown != .off {
                 Text(countdown.shortLabel)
-                    .font(.system(size: 9.5, weight: .heavy, design: .monospaced))
+                    .monoFont(size: 9.5, weight: .heavy)
                     .foregroundStyle(Palette.accInk)
                     .padding(.horizontal, 4)
                     .frame(height: 16)

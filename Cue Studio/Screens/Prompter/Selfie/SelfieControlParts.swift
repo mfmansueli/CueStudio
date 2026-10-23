@@ -101,7 +101,7 @@ struct SelfieControlParts {
         HStack(spacing: 6) {
             audioPill
             Text("·")
-                .font(CueStudioFont.hud)
+                .hudFont()
                 .foregroundStyle(Palette.ink3)
                 .accessibilityHidden(true)
             setupPill

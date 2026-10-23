@@ -22,7 +22,7 @@ struct ProfilePlanCard: View {
                         Text(store.tier.isPro ? "Cue Pro" : "Free plan").font(.system(size: 14)).foregroundStyle(Palette.ink)
                         Spacer(minLength: 8)
                         Text(detail)
-                            .font(.system(size: 11, weight: .semibold, design: .monospaced))
+                            .monoFont(size: 11, weight: .semibold)
                             .foregroundStyle(detailTint)
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)

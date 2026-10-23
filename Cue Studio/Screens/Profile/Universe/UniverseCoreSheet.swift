@@ -31,7 +31,7 @@ struct UniverseCoreSheet: View {
                             Circle().fill(OnboardingTopic.color(at: index)).frame(width: 10, height: 10)
                             Text(entry.topic.label).foregroundStyle(Palette.ink)
                             Spacer()
-                            Text("ring").font(CueStudioFont.hud).foregroundStyle(Palette.ink2)
+                            Text("ring").hudFont().foregroundStyle(Palette.ink2)
                         }
                         .font(.system(size: 17))
                         .padding(.horizontal, 16)

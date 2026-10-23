@@ -205,7 +205,7 @@ struct StarTransitionOverlay: View {
         ZStack {
             if let meter = transition.progress {
                 WritingProgressLabel(meter: meter)
-                    .font(CueStudioFont.hud)
+                    .hudFont()
                     .foregroundStyle(Palette.ink2)
                     .accessibilityIdentifier("transition.progress")
             }

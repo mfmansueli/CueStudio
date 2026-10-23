@@ -57,8 +57,8 @@ struct ReviewExportFooter: View {
             }
         }
         .textCase(.uppercase)
-        .font(.system(size: 10.5, weight: .heavy, design: .monospaced))
-        .tracking(0.6)
+        .monoFont(size: 10.5, weight: .heavy)
+        .interfaceTracking(0.6)
         .frame(maxWidth: .infinity)
         // One notice that says the line (the count, or the network left for later), with Go Pro still a button of its own inside it.
         .accessibilityElement(children: .contain)

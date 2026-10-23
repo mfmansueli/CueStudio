@@ -19,7 +19,7 @@ struct VoicePreviewStrip: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
                 Text("✦ Does it sound like you?")
-                    .font(CueStudioFont.hud)
+                    .hudFont()
                     .textCase(.uppercase)
                     .tracking(0.6)
                     .foregroundStyle(Palette.aiText)

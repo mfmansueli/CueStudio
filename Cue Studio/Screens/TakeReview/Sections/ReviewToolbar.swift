@@ -65,7 +65,7 @@ struct ReviewToolbar: ToolbarContent {
                         .foregroundStyle(Palette.ink2)
                 }
             }
-            .font(.system(.subheadline, design: .monospaced, weight: .bold))
+            .monoFont(.subheadline, weight: .bold)
             .foregroundStyle(Palette.ink)
             .lineLimit(1)
             .padding(.horizontal, 14)

@@ -23,7 +23,7 @@ struct ExportReadySheet: View {
                     .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
                     .overlay(alignment: .topLeading) {
                         Text("✓ READY")
-                            .font(.system(size: 8.5, weight: .heavy, design: .monospaced))
+                            .monoFont(size: 8.5, weight: .heavy)
                             .foregroundStyle(Palette.success)
                             .padding(.horizontal, 6)
                             .frame(height: 18)

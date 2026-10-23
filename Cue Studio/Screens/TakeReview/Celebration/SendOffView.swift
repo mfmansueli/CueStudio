@@ -88,8 +88,8 @@ struct SendOffView: View {
     private var texts: some View {
         VStack(spacing: 8) {
             Text(headline)
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                .tracking(1.32)
+                .monoFont(size: 11, weight: .semibold)
+                .interfaceTracking(1.32)
                 .foregroundStyle(Palette.acc)
                 .accessibilityIdentifier("sendoff.headline")
             Text("On its way.")

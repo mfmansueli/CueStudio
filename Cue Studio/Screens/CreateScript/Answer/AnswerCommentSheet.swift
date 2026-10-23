@@ -88,7 +88,7 @@ struct AnswerCommentSheet: View {
     private var confirm: some View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("FROM").font(CueStudioFont.hud).tracking(1).foregroundStyle(Palette.ink2)
+                Text("FROM").hudFont().interfaceTracking(1).foregroundStyle(Palette.ink2)
                 TextField("@name", text: $model.author)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
@@ -97,7 +97,7 @@ struct AnswerCommentSheet: View {
                     .accessibilityIdentifier("answer.author")
             }
             VStack(alignment: .leading, spacing: 6) {
-                Text("COMMENT").font(CueStudioFont.hud).tracking(1).foregroundStyle(Palette.ink2)
+                Text("COMMENT").hudFont().interfaceTracking(1).foregroundStyle(Palette.ink2)
                 TextField("What they asked", text: $model.text, axis: .vertical)
                     .lineLimit(3...8)
                     .padding(14)
@@ -105,7 +105,7 @@ struct AnswerCommentSheet: View {
                     .accessibilityIdentifier("answer.text")
             }
             VStack(alignment: .leading, spacing: 8) {
-                Text("ANSWER FOR").font(CueStudioFont.hud).tracking(1).foregroundStyle(Palette.ink2)
+                Text("ANSWER FOR").hudFont().interfaceTracking(1).foregroundStyle(Palette.ink2)
                 FlowLayout(spacing: 8, lineSpacing: 8) {
                     ForEach(Platform.allCases) { platform in
                         Button { model.platform = platform } label: {

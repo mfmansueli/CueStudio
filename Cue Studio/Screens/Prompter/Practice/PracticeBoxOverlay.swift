@@ -53,8 +53,8 @@ struct PracticeBoxOverlay: View {
     private func label(_ second: Double) -> some View {
         VStack {
             Text("GET READY")
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                .tracking(1.76)
+                .monoFont(size: 11, weight: .semibold)
+                .interfaceTracking(1.76)
                 .foregroundStyle(Palette.Universe.starGold)
                 .motion(pose("L2", second))
                 .padding(.top, 20)
@@ -120,8 +120,8 @@ struct PracticeBoxOverlay: View {
             .accessibilityLabel(Text("Start practice"))
             .accessibilityIdentifier("practice.play")
             Text("TAP TO START")
-                .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
-                .tracking(1.68)
+                .monoFont(size: 10.5, weight: .semibold)
+                .interfaceTracking(1.68)
                 .foregroundStyle(Palette.inkSoft)
                 .offset(y: 54 + 8)
                 .opacity(caption.opacity)

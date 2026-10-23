@@ -16,7 +16,7 @@ struct ShareQueueConfirm: View {
         VStack(spacing: 16) {
             VStack(spacing: 2) {
                 Text("\(position) OF \(queue.count)")
-                    .font(.system(size: 10.5, weight: .semibold, design: .monospaced)).tracking(1).foregroundStyle(Palette.ink2)
+                    .monoFont(size: 10.5, weight: .semibold).interfaceTracking(1).foregroundStyle(Palette.ink2)
                 Text("Post to \(network.platform.label)").font(.headline)
             }
             ShareQueueBar(items: queue.items, current: network).padding(.horizontal, Metrics.gutter)

@@ -112,7 +112,7 @@ extension AddMediaSheet {
                     .foregroundStyle(Palette.ink)
                     .lineLimit(1)
                 Text(verbatim: "\(String(localized: "Take \(take.number)")) · \(DurationText.clock(take.duration))")
-                    .font(.system(.caption, design: .monospaced))
+                    .monoFont(.caption)
                     .foregroundStyle(Palette.ink2)
             }
             .frame(width: 150, alignment: .leading)

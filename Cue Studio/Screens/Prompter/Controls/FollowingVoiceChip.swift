@@ -9,8 +9,8 @@ import SwiftUI
 struct FollowingVoiceChip: View {
     var body: some View {
         Text("✦ FOLLOWING YOUR VOICE")
-            .font(CueStudioFont.hud)
-            .tracking(1.1)
+            .hudFont()
+            .interfaceTracking(1.1)
             .foregroundStyle(Palette.aiTextStrong)
             .padding(.horizontal, 10)
             .frame(height: 24)

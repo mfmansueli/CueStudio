@@ -111,7 +111,7 @@ struct CueSlider: View {
                     Spacer()
                     Text(maxCaption ?? "")
                 }
-                .font(CueStudioFont.hud)
+                .hudFont()
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 .foregroundStyle(Palette.inkHint)
                 .textCase(.uppercase)
@@ -134,7 +134,7 @@ struct CueSlider: View {
     private var compact: some View {
         HStack(spacing: 10) {
             Text(label)
-                .font(CueStudioFont.hud)
+                .hudFont()
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 .textCase(.uppercase)
                 .foregroundStyle(Palette.ink2)
@@ -154,13 +154,13 @@ struct CueSlider: View {
         } label: {
             VStack(alignment: .trailing, spacing: 1) {
                 Text(valueText)
-                    .font(CueStudioFont.hud)
+                    .hudFont()
                     .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .foregroundStyle(isHeld ? Palette.ink : Palette.accText)
                     .contentTransition(.numericText())
                 if let fine = precision.label {
                     Text(fine)
-                        .font(.system(size: 9, weight: .bold, design: .monospaced))
+                        .monoFont(size: 9, weight: .bold)
                         .foregroundStyle(Palette.ink)
                 }
             }

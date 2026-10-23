@@ -22,7 +22,7 @@ struct HUDLine: View {
         HStack(spacing: 6) {
             if let dotColor { ColorDot(color: dotColor, size: 6) }
             Text(values.joined(separator: separator))
-                .font(CueStudioFont.hud)
+                .hudFont()
                 .textCase(.uppercase)
                 .tracking(0.6)
                 .foregroundStyle(tint)

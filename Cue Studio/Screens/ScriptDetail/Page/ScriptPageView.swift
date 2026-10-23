@@ -185,7 +185,7 @@ struct ScriptPageView: View {
                     .foregroundStyle(Palette.ink)
                     .lineLimit(1)
                 Text(wordsAndTime)
-                    .font(CueStudioFont.hud)
+                    .hudFont()
                     .textCase(.uppercase)
                     .foregroundStyle(Palette.accText)
             }

@@ -14,7 +14,7 @@ struct YearInReviewSlideView: View {
 
     var body: some View {
         VStack(spacing: 14) {
-            Text(label).font(.system(size: 10, weight: .bold, design: .monospaced)).tracking(2).foregroundStyle(Palette.acc)
+            Text(label).monoFont(size: 10, weight: .bold).interfaceTracking(2).foregroundStyle(Palette.acc)
             picture
             // The total reads as a number with a small caption; the others name the thing in large type.
             Text(headline)

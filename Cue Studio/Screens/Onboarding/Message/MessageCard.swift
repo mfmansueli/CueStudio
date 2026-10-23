@@ -79,8 +79,8 @@ struct MessageCard: View {
                     .foregroundStyle(Palette.Universe.starLilac)
                     .motion(Self.clip.pose(of: "L20", at: board))
             }
-            .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
-            .tracking(1.05)
+            .monoFont(size: 10.5, weight: .semibold)
+            .interfaceTracking(1.05)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(height: 22)
@@ -121,15 +121,15 @@ struct MessageCard: View {
         HStack(spacing: 8) {
             Circle().fill(platform.tint).frame(width: 7, height: 7).shadow(color: platform.tint, radius: 4)
             Text("VIDEO FOR · \(platform.label.uppercased())")
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                .tracking(1)
+                .monoFont(size: 10, weight: .semibold)
+                .interfaceTracking(1)
                 .foregroundStyle(Palette.Flight.quietInk)
                 .lineLimit(1)
             Spacer(minLength: 0)
             progressRing
             Text(durationLabel)
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                .tracking(1)
+                .monoFont(size: 10, weight: .semibold)
+                .interfaceTracking(1)
                 .foregroundStyle(Palette.Universe.starGold)
         }
         .frame(height: 18)
@@ -199,8 +199,8 @@ struct MessageCard: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(label)
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                .tracking(1)
+                .monoFont(size: 10, weight: .semibold)
+                .interfaceTracking(1)
                 .foregroundStyle(tint)
                 .motion(Self.clip.pose(of: labelLayer, at: board))
             MessageWords(text: text, part: part, color: color, board: board, caret: caret, ambient: ambient, size: size)

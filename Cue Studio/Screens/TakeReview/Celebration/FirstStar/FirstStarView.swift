@@ -87,8 +87,8 @@ struct FirstStarView: View {
                 // The take's own picture is behind the pill (a bright one too): at 80% black the green reads at 4.5:1 or more on any frame
                 // (`PaletteContrastTests.theFirstStarsSavedPillReads`).
                 Text("✓ SAVED")
-                    .font(.system(size: 8, weight: .semibold, design: .monospaced))
-                    .tracking(0.8)
+                    .monoFont(size: 8, weight: .semibold)
+                    .interfaceTracking(0.8)
                     .foregroundStyle(Palette.successText)
                     .frame(maxWidth: .infinity)
                     .frame(height: 18)
@@ -129,8 +129,8 @@ struct FirstStarView: View {
         let subtitle = FirstStarScript.arrival(startingAt: FirstStarScript.subtitleStart, length: 10, at: story)
         return VStack(spacing: 8) {
             Text("FIRST VIDEO · FIRST STAR")
-                .font(.system(size: 12, weight: .semibold, design: .monospaced))
-                .tracking(1.54)
+                .monoFont(size: 12, weight: .semibold)
+                .interfaceTracking(1.54)
                 .foregroundStyle(Palette.acc)
                 .opacity(chapter)
                 .offset(y: 8 * (1 - chapter))

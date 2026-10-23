@@ -44,7 +44,7 @@ struct PanelGlyphTile: View {
                 if let caption {
                     Text(caption)
                         .textCase(.uppercase)
-                        .font(.system(size: captionSize, weight: .heavy, design: .monospaced))
+                        .monoFont(size: captionSize, weight: .heavy)
                         .interfaceTracking(0.4)
                         .foregroundStyle(isOn ? Palette.accText : captionTint)
                         .lineLimit(1)

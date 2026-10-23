@@ -32,8 +32,8 @@ struct MilestoneView: View {
                 let time = frozenAt ?? (reduceMotion ? MilestoneScript.duration : context.date.timeIntervalSince(start))
                 ZStack(alignment: .top) {
                     Text(eyebrow)
-                        .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                        .tracking(1.3)
+                        .monoFont(size: 11, weight: .semibold)
+                        .interfaceTracking(1.3)
                         .foregroundStyle(Palette.accText)
                         .frame(maxWidth: .infinity)
                         .offset(y: 96)
@@ -158,8 +158,8 @@ struct MilestoneView: View {
     private var homeScreenRow: some View {
         VStack(spacing: 10) {
             Text("ON YOUR HOME SCREEN")
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                .tracking(1)
+                .monoFont(size: 10, weight: .semibold)
+                .interfaceTracking(1)
                 .foregroundStyle(Palette.inkHint)
             HStack(spacing: 20) {
                 ForEach(0..<4, id: \.self) { index in

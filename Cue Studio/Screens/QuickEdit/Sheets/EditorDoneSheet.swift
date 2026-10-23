@@ -38,7 +38,7 @@ struct EditorDoneSheet: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text("Edit saved · \(duration)")
                     .textCase(.uppercase)
-                    .font(.system(.caption2, design: .monospaced, weight: .heavy))
+                    .monoFont(.caption2, weight: .heavy)
                     .interfaceTracking(1)
                     .foregroundStyle(Palette.accText)
                 Text("Is it ready to post?")
@@ -94,7 +94,7 @@ struct EditorDoneSheet: View {
             Circle().fill(tint).frame(width: 5, height: 5)
             Text(label).textCase(.uppercase).lineLimit(1)
         }
-        .font(.system(size: smallLabelSize, weight: .heavy, design: .monospaced))
+        .monoFont(size: smallLabelSize, weight: .heavy)
         .interfaceTracking(0.5)
         .foregroundStyle(tint)
         .padding(.horizontal, 8)

@@ -30,7 +30,7 @@ struct SetupSummaryPill: View {
                 Text("›")
                     .foregroundStyle(Palette.ink2)
             }
-            .font(CueStudioFont.hud)
+            .hudFont()
             .textCase(.uppercase)
             .tracking(0.6)
             .lineLimit(1)

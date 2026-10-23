@@ -52,8 +52,8 @@ struct WritingImportSheet: View {
         VStack(alignment: .leading, spacing: 6) {
             // Only said when Apple Intelligence is the one that reads: without it the numbers are all there is, still on this iPhone.
             Text((model.canUseModel ? String(localized: "Apple Intelligence · on this iPhone") : String(localized: "On this iPhone")).uppercased())
-                .font(.system(size: 10.5, weight: .bold, design: .monospaced))
-                .tracking(1)
+                .monoFont(size: 10.5, weight: .bold)
+                .interfaceTracking(1)
                 .foregroundStyle(Palette.aiText)
             Text(model.step == .review ? String(localized: "Here’s what Cue heard") : String(localized: "Import my writing"))
                 .font(.system(size: 28, weight: .bold))

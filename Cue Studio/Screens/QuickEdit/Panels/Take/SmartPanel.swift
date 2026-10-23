@@ -153,7 +153,7 @@ struct SmartPanel: View {
                     .minimumScaleFactor(0.85)
                 Text(status ?? " ")
                     .textCase(.uppercase)
-                    .font(.system(size: statusSize, weight: .heavy, design: .monospaced))
+                    .monoFont(size: statusSize, weight: .heavy)
                     .interfaceTracking(0.5)
                     .foregroundStyle(Palette.aiText)
                     .lineLimit(1)

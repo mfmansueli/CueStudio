@@ -113,8 +113,8 @@ struct VoicePreviewSheet: View {
     private func part(_ label: String, _ text: String, isFirst: Bool) -> some View {
         if !text.isEmpty {
             Text(label)
-                .font(.system(size: 9.5, weight: .bold, design: .monospaced))
-                .tracking(0.8)
+                .monoFont(size: 9.5, weight: .bold)
+                .interfaceTracking(0.8)
                 .foregroundStyle(isFirst ? Palette.accText : Palette.inkHint)
             Text(text)
                 .font(.system(size: isFirst ? 17 : 15, weight: isFirst ? .semibold : .regular))
@@ -149,8 +149,8 @@ struct VoicePreviewSheet: View {
     private func header(eyebrow: String, title: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(eyebrow.uppercased())
-                .font(.system(size: 10.5, weight: .bold, design: .monospaced))
-                .tracking(1)
+                .monoFont(size: 10.5, weight: .bold)
+                .interfaceTracking(1)
                 .foregroundStyle(Palette.aiText)
             Text(title)
                 .font(.system(size: 28, weight: .bold))

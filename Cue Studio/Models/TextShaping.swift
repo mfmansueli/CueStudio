@@ -35,6 +35,15 @@ nonisolated enum TextShaping {
         return script.map { !joinedScripts.contains($0) } ?? true
     }
 
+    /// Writing systems Cue's monospaced face draws (SF Mono): others fall back to a face that isn't monospaced, stretched.
+    private static let monospacedScripts: Set<String> = ["Latn", "Grek", "Cyrl"]
+
+    /// Whether the interface in `language` can use the monospaced face for words (`monoFont`).
+    static func hasMonospacedLetters(in language: Locale.Language) -> Bool {
+        let script = Locale.Language(identifier: language.maximalIdentifier).script?.identifier
+        return script.map(monospacedScripts.contains) ?? true
+    }
+
     /// `text` in capitals, as its language writes them: Turkish and Azerbaijani "i" becomes "İ", never "I".
     static func uppercased(_ text: String) -> String {
         uppercased(text, locale: capitalsLocale(for: text))

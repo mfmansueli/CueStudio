@@ -97,8 +97,8 @@ struct VoyageTipCard: View {
                     .font(.system(size: 9, weight: .bold))
                     .foregroundStyle(Palette.acc)
                 Text("\(step.number) OF \(VoyageProgress.stepCount)")
-                    .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
-                    .tracking(1.2)
+                    .monoFont(size: 10.5, weight: .semibold)
+                    .interfaceTracking(1.2)
                     .foregroundStyle(Palette.aiText)
             }
             .frame(minHeight: 24)

@@ -35,7 +35,7 @@ struct SettingsIconLabel: View {
             Text(title).foregroundStyle(titleColor)
             if let badge {
                 Text(badge)
-                    .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                    .monoFont(size: 10, weight: .heavy)
                     .foregroundStyle(Palette.accInk)
                     .padding(.horizontal, 6)
                     .frame(height: 18)

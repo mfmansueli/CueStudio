@@ -15,7 +15,7 @@ struct EditorOpeningOverlay: View {
             Palette.bg.ignoresSafeArea()
             VStack(spacing: 0) {
                 Text("OPENING YOUR EDIT")
-                    .font(CueStudioFont.hud)
+                    .hudFont()
                     .interfaceTracking(1.5)
                     .foregroundStyle(Palette.ink2)
                     .padding(.top, 20)

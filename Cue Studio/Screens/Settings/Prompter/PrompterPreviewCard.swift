@@ -74,8 +74,8 @@ struct PrompterPreviewCard: View {
         .overlay(RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous).strokeBorder(Palette.glassBorder, lineWidth: 0.5))
         .overlay(alignment: .topLeading) {
             Text("PREVIEW")
-                .font(CueStudioFont.hud)
-                .tracking(1)
+                .hudFont()
+                .interfaceTracking(1)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 7)
                 .padding(.vertical, 3)

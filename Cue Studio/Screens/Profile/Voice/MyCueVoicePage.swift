@@ -68,7 +68,7 @@ struct MyCueVoicePage: View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("✦ WHAT CUE USES")
-                    .font(.system(size: 10.5, weight: .bold, design: .monospaced)).tracking(1).foregroundStyle(Palette.aiText)
+                    .monoFont(size: 10.5, weight: .bold).interfaceTracking(1).foregroundStyle(Palette.aiText)
                 Spacer()
                 Toggle("Use my voice in drafts", isOn: profile.writesInMyVoiceBinding { setup = ProfileVoiceSetup(mode: .missing) })
                     .labelsHidden()

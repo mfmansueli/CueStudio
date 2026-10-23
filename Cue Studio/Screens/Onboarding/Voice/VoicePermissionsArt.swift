@@ -290,7 +290,8 @@ struct VoicePermissionsArt: View {
     private func drawLabels(in context: inout GraphicsContext) {
         for (text, centre) in [("VOICE", Self.voice.x), ("CAMERA", Self.camera.x)] {
             context.draw(
-                Text(verbatim: text).font(.system(size: 9.5, weight: .semibold, design: .monospaced)).tracking(1.33)
+                Text(verbatim: text).font(.mono(size: 9.5, weight: .semibold, locale: context.environment.locale))
+                    .interfaceTracking(1.33, locale: context.environment.locale)
                     .foregroundStyle(Palette.inkHint),
                 at: CGPoint(x: centre, y: 156)
             )

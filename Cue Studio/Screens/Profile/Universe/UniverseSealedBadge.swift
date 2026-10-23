@@ -11,8 +11,8 @@ struct UniverseSealedBadge: View {
 
     var body: some View {
         Text(text)
-            .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
-            .tracking(1)
+            .monoFont(size: 10.5, weight: .semibold)
+            .interfaceTracking(1)
             .foregroundStyle(Palette.ink)
             .padding(.horizontal, 14)
             .frame(height: 28)

@@ -17,7 +17,7 @@ struct UniverseYearSelector: View {
             ForEach(years, id: \.self) { year in
                 Button { onSelect(year) } label: {
                     Text(String(year))
-                        .font(.system(size: 13, weight: .semibold, design: .monospaced))
+                        .monoFont(size: 13, weight: .semibold)
                         .foregroundStyle(year == selected ? Palette.ink : Palette.ink2)
                         .frame(width: 58, height: 32)
                         .background(year == selected ? Color.white.opacity(0.16) : .clear, in: Capsule())

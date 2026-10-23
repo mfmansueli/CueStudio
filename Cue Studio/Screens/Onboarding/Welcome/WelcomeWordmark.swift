@@ -29,7 +29,7 @@ struct WelcomeWordmark: View {
         let pose = letter.track.pose(at: time)
         let glint = letter.glow.pose(at: time).opacity
         return Text(String(letter.character))
-            .font(.system(size: Self.fontSize, weight: .semibold, design: .monospaced))
+            .monoFont(size: Self.fontSize, weight: .semibold)
             .foregroundStyle(Palette.aiTextStrong.mix(with: Palette.Universe.starGold, by: glint))
             .shadow(color: Palette.acc.opacity(0.85 * glint), radius: 10)
             .scaleEffect(x: pose.scaleX, y: pose.scaleY)

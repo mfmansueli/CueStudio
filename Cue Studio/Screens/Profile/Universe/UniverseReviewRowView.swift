@@ -17,7 +17,7 @@ struct UniverseReviewRowView: View {
                 UniverseMiniStory(count: row.count)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(row.title).font(.system(size: 16.5, weight: .semibold)).foregroundStyle(Palette.ink).lineLimit(1)
-                    Text(row.line).font(.system(size: 10, weight: .medium, design: .monospaced)).tracking(0.8).foregroundStyle(Palette.ink2).lineLimit(1)
+                    Text(row.line).monoFont(size: 10, weight: .medium).interfaceTracking(0.8).foregroundStyle(Palette.ink2).lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 if !row.isLocked {

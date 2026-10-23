@@ -38,7 +38,7 @@ struct ScriptRow: View {
                 HStack(spacing: 6) {
                     PlatformDot(color: script.platform.tint, isSmall: true)
                     Text(line.values.joined(separator: " · "))
-                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                        .monoFont(size: 10, weight: .semibold)
                         .textCase(.uppercase)
                         .tracking(0.6)
                         .foregroundStyle(Palette.inkHint)

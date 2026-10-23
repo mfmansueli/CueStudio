@@ -30,8 +30,8 @@ struct ReadyToTravelView: View {
                 .padding(.top, 6)
                 .padding(.horizontal, 24)
             Text(detailLine)
-                .font(CueStudioFont.hud)
-                .tracking(1)
+                .hudFont()
+                .interfaceTracking(1)
                 .foregroundStyle(Palette.inkHint)
                 .padding(.top, 8)
             Spacer(minLength: 12)
@@ -58,8 +58,8 @@ struct ReadyToTravelView: View {
     private var topBar: some View {
         ZStack {
             Text("EXPORTED · \(video.formatLabel)")
-                .font(CueStudioFont.hud)
-                .tracking(1.5)
+                .hudFont()
+                .interfaceTracking(1.5)
                 .foregroundStyle(Palette.successText)
             HStack {
                 Button(action: onClose) { Image(systemName: "xmark") }
@@ -86,7 +86,7 @@ struct ReadyToTravelView: View {
             .overlay(shape.strokeBorder(Palette.acc.opacity(0.7), lineWidth: 1))
             .overlay(alignment: .bottomTrailing) {
                 Text(DurationText.clock(video.take.duration))
-                    .font(CueStudioFont.hud)
+                    .hudFont()
                     .foregroundStyle(.white)
                     .padding(.horizontal, 10)
                     .frame(height: 28)
@@ -116,8 +116,8 @@ struct ReadyToTravelView: View {
                 }
                 Text(label.text).foregroundStyle(tint)
             }
-            .font(CueStudioFont.hud)
-            .tracking(1)
+            .hudFont()
+            .interfaceTracking(1)
             .lineLimit(1)
             .minimumScaleFactor(0.7)
             .animation(.easeOut(duration: 0.25), value: label.tone)

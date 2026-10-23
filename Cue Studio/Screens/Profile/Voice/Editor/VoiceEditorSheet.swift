@@ -46,8 +46,8 @@ struct VoiceEditorSheet: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(field.eyebrow(for: profile.profile).uppercased())
-                .font(.system(size: 10.5, weight: .bold, design: .monospaced))
-                .tracking(1)
+                .monoFont(size: 10.5, weight: .bold)
+                .interfaceTracking(1)
                 .foregroundStyle(Palette.aiText)
                 .accessibilityIdentifier("voice.editor.eyebrow")
             Text(field.title)

@@ -37,7 +37,7 @@ struct BrandBriefSheet: View {
             VStack(alignment: .leading, spacing: Metrics.blockGap) {
                 VStack(alignment: .leading, spacing: 4) {
                     Text("Sponsored ad · Brand brief")
-                        .font(CueStudioFont.hud).textCase(.uppercase).tracking(1.2)
+                        .hudFont().textCase(.uppercase).tracking(1.2)
                         .foregroundStyle(Palette.accText)
                     Text("What may the ad say?")
                         .font(.title2.bold())
@@ -132,7 +132,7 @@ struct BrandBriefSheet: View {
         return VStack(spacing: 0) {
             HStack(spacing: 10) {
                 Text(verbatim: "AD")
-                    .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                    .monoFont(size: 9.5, weight: .bold)
                     .foregroundStyle(Palette.Scripts.adTagInk)
                     .padding(.horizontal, 5).padding(.vertical, 2)
                     .background(Palette.Scripts.adTagFill, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
@@ -142,7 +142,7 @@ struct BrandBriefSheet: View {
                 }
                 Spacer(minLength: 8)
                 Text("Always on")
-                    .font(.system(size: 10, weight: .bold, design: .monospaced)).textCase(.uppercase)
+                    .monoFont(size: 10, weight: .bold).textCase(.uppercase)
                     .foregroundStyle(Palette.successText)
             }
             .padding(14)

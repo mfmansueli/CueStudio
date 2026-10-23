@@ -54,8 +54,8 @@ struct ReviewInfoPanel: View {
             if take.isEdited {
                 Text("Edited")
                     .textCase(.uppercase)
-                    .font(.system(size: 9.5, weight: .heavy, design: .monospaced))
-                    .tracking(0.5)
+                    .monoFont(size: 9.5, weight: .heavy)
+                    .interfaceTracking(0.5)
                     .foregroundStyle(Palette.infoText)
                     .padding(.horizontal, 7)
                     .frame(height: 18)
@@ -147,8 +147,8 @@ struct ReviewInfoPanel: View {
                         }
                         .frame(height: 3)
                     Text(label)
-                        .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                        .tracking(0.6)
+                        .monoFont(size: 10, weight: .semibold)
+                        .interfaceTracking(0.6)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                         .foregroundStyle(isCurrent ? stage.pillTint : Palette.inkHint)

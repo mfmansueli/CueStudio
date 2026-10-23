@@ -138,8 +138,8 @@ struct YourUniverseView: View {
                 }
             }
             Text(content.headline)
-                .font(.system(size: 11, weight: .semibold, design: .monospaced))
-                .tracking(1.2)
+                .monoFont(size: 11, weight: .semibold)
+                .interfaceTracking(1.2)
                 .foregroundStyle(Palette.accText)
                 .padding(.horizontal, 2)
                 .accessibilityIdentifier("universe.headline")
