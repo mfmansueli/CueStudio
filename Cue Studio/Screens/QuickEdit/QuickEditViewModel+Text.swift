@@ -90,7 +90,7 @@ extension QuickEditViewModel {
         }
         change { $0.texts.append(copy) }
         selection = .text(copy.id)
-        toast.show(String(localized: "Text duplicated"))
+        sayUndoable(String(localized: "Text duplicated"))
     }
 
     func updateText(_ id: UUID, key: String? = nil, _ update: (inout TextOverlay) -> Void) {
@@ -104,7 +104,7 @@ extension QuickEditViewModel {
         change { $0.texts.removeAll { $0.id == id } }
         Haptics.delete()
         if editingTextID == id { editingTextID = nil }
-        toast.show(String(localized: "Text deleted"))
+        sayUndoable(String(localized: "Text deleted"))
     }
 
     /// Where the text plays (edited seconds); nil when none of it does.

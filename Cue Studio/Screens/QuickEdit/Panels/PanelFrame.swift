@@ -11,13 +11,15 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
     let viewModel: QuickEditViewModel
     let panel: EditorPanel
     var onReset: (() -> Void)?
+    var compare: PanelCompare?
     @ViewBuilder var fixed: Fixed
     @ViewBuilder var content: Content
     @ViewBuilder var footer: Footer
 
     var body: some View {
         EditorPanelContainer(
-            title: viewModel.panelTitle(panel), subtitle: viewModel.panelSubtitle(panel), onReset: onReset,
+            title: viewModel.panelTitle(panel), subtitle: viewModel.panelSubtitle(panel), onReset: onReset ?? viewModel.panelReset(panel),
+            compare: compare,
             expansion: panel.isExpandable ? expansion : nil, clearsHomeIndicator: panel.scrollsClearOfHomeIndicator, contentKey: viewModel.panelTab,
             onApply: viewModel.closePanel, fixed: { fixed }, content: { content }, footer: { footer }
         )
@@ -30,25 +32,35 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
 }
 
 extension PanelFrame where Fixed == EmptyView, Footer == EmptyView {
-    init(viewModel: QuickEditViewModel, panel: EditorPanel, onReset: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
-        self.init(viewModel: viewModel, panel: panel, onReset: onReset, fixed: { EmptyView() }, content: content, footer: { EmptyView() })
+    init(
+        viewModel: QuickEditViewModel, panel: EditorPanel, onReset: (() -> Void)? = nil, compare: PanelCompare? = nil,
+        @ViewBuilder content: () -> Content
+    ) {
+        self.init(
+            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, fixed: { EmptyView() }, content: content,
+            footer: { EmptyView() }
+        )
     }
 }
 
 extension PanelFrame where Footer == EmptyView {
     init(
-        viewModel: QuickEditViewModel, panel: EditorPanel, onReset: (() -> Void)? = nil,
+        viewModel: QuickEditViewModel, panel: EditorPanel, onReset: (() -> Void)? = nil, compare: PanelCompare? = nil,
         @ViewBuilder fixed: () -> Fixed, @ViewBuilder content: () -> Content
     ) {
-        self.init(viewModel: viewModel, panel: panel, onReset: onReset, fixed: fixed, content: content, footer: { EmptyView() })
+        self.init(
+            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, fixed: fixed, content: content, footer: { EmptyView() }
+        )
     }
 }
 
 extension PanelFrame where Fixed == EmptyView {
     init(
-        viewModel: QuickEditViewModel, panel: EditorPanel, onReset: (() -> Void)? = nil,
+        viewModel: QuickEditViewModel, panel: EditorPanel, onReset: (() -> Void)? = nil, compare: PanelCompare? = nil,
         @ViewBuilder content: () -> Content, @ViewBuilder footer: () -> Footer
     ) {
-        self.init(viewModel: viewModel, panel: panel, onReset: onReset, fixed: { EmptyView() }, content: content, footer: footer)
+        self.init(
+            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, fixed: { EmptyView() }, content: content, footer: footer
+        )
     }
 }

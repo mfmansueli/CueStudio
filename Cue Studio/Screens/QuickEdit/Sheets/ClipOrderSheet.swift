@@ -15,6 +15,8 @@ struct ClipOrderSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             SheetHeader(title: String(localized: "Reorder"), subtitle: String(localized: "Drag a clip to where it should play"))
+                // Lined up with the rows and with every other sheet's title.
+                .padding(.horizontal, 16)
             List {
                 ForEach(viewModel.clips) { clip in
                     row(clip)

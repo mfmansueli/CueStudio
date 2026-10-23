@@ -304,7 +304,8 @@ struct QuickEditViewModelTests {
         #expect(spans(scenario.viewModel) == [[0, 20]])
         #expect(scenario.viewModel.edit.editedDuration == 20)
         #expect(scenario.viewModel.selectedSegmentID == nil)
-        #expect(scenario.toast.message == "Clip deleted · Tap Undo")
+        #expect(scenario.toast.message == "Clip 2 deleted")
+        #expect(scenario.toast.action?.title == "Undo")
         #expect(scenario.player.shown.last?.keptSpans == [TimeSpan(start: 0, end: 20)])
     }
 

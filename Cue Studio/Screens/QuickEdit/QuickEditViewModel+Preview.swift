@@ -13,8 +13,8 @@ import Foundation
 extension QuickEditViewModel {
     /// A text or the caption sticks to the middle within this share of the frame.
     static let centerSnap: Double = 0.025
-    /// Where captions stick when dragged: top, middle and bottom.
-    static let captionStops: [Double] = [0.16, 0.5, 0.76]
+    /// Where captions stick when dragged: top, middle and bottom, the same places Position puts them.
+    static let captionStops: [Double] = CaptionPosition.allCases.map(\.verticalFraction)
     /// Captions stick to a stop within this share of the frame.
     static let captionSnap: Double = 0.03
     /// How much the corner handle scales per point dragged (down and right grows).
@@ -22,12 +22,14 @@ extension QuickEditViewModel {
 
     // MARK: - Texts
 
-    /// A tap on a text in the preview: picks it, or opens Text style when it was already picked.
+    /// A tap on a text in the preview: picks it; a second tap opens Text style with the keyboard on its words, ready to fix
+    /// one (the way CapCut's double tap does).
     func tapText(_ id: UUID) {
         guard isReady else { return }
         player.pause()
         if selection == .text(id) {
             panel = .textStyle
+            focusesTextField = true
             return
         }
         Haptics.selection()
@@ -82,12 +84,14 @@ extension QuickEditViewModel {
         return (instance.cueID, frame)
     }
 
-    /// A tap on the caption in the preview: picks its line, or opens Captions when it was picked.
+    /// A tap on the caption in the preview: picks its line; a second tap opens Captions on that line, keyboard up.
     func tapCaption(_ id: UUID) {
         guard isReady else { return }
         player.pause()
         if selection == .caption(id) {
+            // A second tap: the line's words, with the keyboard up, to fix a word where it shows.
             panel = .captions
+            focusesCaptionField = true
             return
         }
         Haptics.selection()

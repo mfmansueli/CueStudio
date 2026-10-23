@@ -42,6 +42,8 @@ extension QuickEditViewModel {
             return
         }
         recordingStart = start
+        // The script on screen starts with the recording (`QuickEditViewModel+NarrationScript`).
+        narrationPace.start(at: .now)
         Haptics.record()
         player.isMuted = true
         player.play()
@@ -51,6 +53,7 @@ extension QuickEditViewModel {
     func stopVoiceOver() {
         let start = recordingStart
         recordingStart = nil
+        narrationPace.reset()
         player.pause()
         player.isMuted = false
         guard let recorded = recorder.stop(), let start else { return }
@@ -75,6 +78,7 @@ extension QuickEditViewModel {
     func cancelVoiceOver() {
         recorder.cancel()
         recordingStart = nil
+        narrationPace.reset()
         player.pause()
         player.isMuted = false
     }
@@ -91,8 +95,37 @@ extension QuickEditViewModel {
         panel = .voiceOver
     }
 
+    /// Moves one end of a narration to `time` (edited seconds). The start takes the recording along: later skips its
+    /// beginning, back brings it again, never before the recording's start; the end never goes past the recording's.
+    func resizeVoiceOver(_ id: UUID, edge: LayerEdge, to time: TimeInterval) {
+        guard let clip = edit.voiceOvers.first(where: { $0.id == id }), let span = clip.editedSpan(in: edit.timeline) else { return }
+        let shortest = MediaOverlay.minimumDuration
+        let offset = clip.offset ?? 0
+        switch edge {
+        case .start:
+            let earliest = max(0, span.start - offset)
+            let start = min(max(time, earliest), span.end - shortest)
+            let moved = start - span.start
+            let pinned = edit.pin(TimeSpan(start: start, end: span.end))
+            change { snapshot in
+                guard let index = snapshot.voiceOvers.firstIndex(where: { $0.id == id }) else { return }
+                snapshot.voiceOvers[index].offset = offset + moved
+                snapshot.voiceOvers[index].length = clip.length.map { $0 - moved }
+                snapshot.voiceOvers[index].anchor = pinned.span.start
+                snapshot.voiceOvers[index].clipAnchor = pinned.anchor
+            }
+        case .end:
+            let longest = min(clip.duration - offset, edit.editedDuration - span.start)
+            let length = min(max(time - span.start, shortest), max(shortest, longest))
+            change { snapshot in
+                guard let index = snapshot.voiceOvers.firstIndex(where: { $0.id == id }) else { return }
+                snapshot.voiceOvers[index].length = length
+            }
+        }
+    }
+
     func deleteVoiceOver(_ id: UUID) {
         change { $0.voiceOvers.removeAll { $0.id == id } }
-        toast.show(String(localized: "Voice-over deleted"))
+        sayUndoable(String(localized: "Voice-over deleted"))
     }
 }

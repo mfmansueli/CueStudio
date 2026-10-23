@@ -107,6 +107,24 @@ struct CoverStudioViewModelTests {
         #expect(studio.selection == nil)
     }
 
+    /// A tap finds a thing exactly where its handle takes a finger: just inside the title's touch frame picks it, just outside
+    /// lets go; a before/after's line picks the divider only at its knob.
+    @Test func aTapFindsWhatTheHandlesTake() async throws {
+        let studio = makeStudio()
+        await studio.start()
+        let touch = CoverStudioViewModel.titleTouchFrame(try #require(studio.titleFrame(in: canvas)))
+        studio.tap(at: CGPoint(x: touch.midX, y: touch.minY + 1), in: canvas)
+        #expect(studio.selection == .title)
+        studio.tap(at: CGPoint(x: touch.midX, y: touch.minY - 1), in: canvas)
+        #expect(studio.selection != .title)
+
+        studio.applyTemplate(.beforeAfter)
+        let split = try #require(studio.composition.activeSplit)
+        let knob = CoverStudioViewModel.dividerTouchFrame(position: split.position, in: canvas)
+        #expect(studio.hit(at: CGPoint(x: knob.midX, y: knob.midY), in: canvas) == .divider)
+        #expect(studio.hit(at: CGPoint(x: knob.midX, y: knob.minY - 4), in: canvas) != .divider)
+    }
+
     @Test func aBeforeAfterHasItsOwnPictureFramingAndDivider() async throws {
         let studio = makeStudio()
         await studio.start()

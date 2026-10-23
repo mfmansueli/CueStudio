@@ -246,7 +246,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 faces.masker.mask(for: image, key: background.cacheKey + framing.key)
             }
         }
-        return FrameLook.apply(look, to: image, skin: smoothing)
+        return FrameLook.apply(look, to: image, skin: smoothing, time: moment.time)
     }
 
     /// Stabilize: the upright frame moved and turned onto the smooth path, zoomed in to hide its edges, cut back to its size.

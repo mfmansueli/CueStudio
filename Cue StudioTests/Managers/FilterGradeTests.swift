@@ -29,8 +29,8 @@ struct FilterGradeTests {
 
     // MARK: - The collection
 
-    @Test func theCollectionIsEightGradesAndTheFirstFiltersHaveNone() {
-        #expect(VideoFilter.collection.count == 8)
+    @Test func theCollectionIsThirteenGradesAndTheFirstFiltersHaveNone() {
+        #expect(VideoFilter.collection.count == 13)
         #expect(VideoFilter.collection.allSatisfy { FilterGrade.grade(for: $0) != nil })
         for legacy in VideoFilter.allCases where legacy.isLegacy || legacy == .original {
             #expect(FilterGrade.grade(for: legacy) == nil)
@@ -59,7 +59,7 @@ struct FilterGradeTests {
     // MARK: - Skin and detail
 
     @Test func skinKeepsItsHueAndItsColorInTheFilmsThatShouldNotTurnIt() throws {
-        for filter in [VideoFilter.natural, .studio, .soft, .cinema, .warmEditorial] {
+        for filter in [VideoFilter.natural, .studio, .soft, .cinema, .warmEditorial, .warmFilm, .goldenGlow] {
             let grade = try grade(filter)
             for color in skin {
                 let graded = grade.apply(to: color)

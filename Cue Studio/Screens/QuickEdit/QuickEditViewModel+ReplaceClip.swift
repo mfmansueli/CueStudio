@@ -61,7 +61,7 @@ extension QuickEditViewModel {
             shorter
                 ? String(localized: "Clip replaced · the video is shorter, so the clip is too")
                 : String(localized: "Clip replaced"),
-            action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
+            action: undoAction
         )
     }
 }

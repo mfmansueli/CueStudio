@@ -17,7 +17,7 @@ import Foundation
 /// - With a panel open the timeline is compact: the video track shrinks to 40 pt and the track the
 ///   panel is about (if any) comes up under the ruler, alone with the video.
 /// - The picked item has a yellow outline and handles (16 pt on a clip, 12 on a track item, held
-///   from 32 pt); its track grows; everything else dims.
+///   from 32 pt; a clip's reach grows into the clip, never over its neighbour); its track grows; everything else dims.
 /// - The cover sits before the start, and a "+" after the end adds a clip.
 nonisolated struct TimelineGeometry: Equatable, Sendable {
     /// What the timeline shows, read from the edit.
@@ -74,6 +74,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var keyframes: [TimeInterval] = []
         /// Edited seconds of its beats (music from Files).
         var beats: [TimeInterval] = []
+        /// Locked in place (`TakeEdit.lockedLayers`): no handles, a lock drawn on it.
+        var isLocked = false
     }
 
     struct PauseInput: Equatable, Sendable {
@@ -131,6 +133,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var keyframeOffsets: [CGFloat]
         /// Beat ticks (music), from the item's left edge.
         var beatOffsets: [CGFloat] = []
+        var isLocked = false
     }
 
     struct Pause: Equatable, Sendable {
@@ -298,8 +301,11 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
             let width = CGFloat(clip.duration) * pps
             let isSelected = selection == .clip(clip.id)
             if isSelected {
-                handles.append(Self.handle(.clip(clip.id, .start), x: x - Self.clipHandleWidth + 1, width: Self.clipHandleWidth, lane: main))
-                handles.append(Self.handle(.clip(clip.id, .end), x: x + width - 1, width: Self.clipHandleWidth, lane: main))
+                let inward = (width - 2) / 2
+                handles.append(Self.handle(
+                    .clip(clip.id, .start), x: x - Self.clipHandleWidth + 1, width: Self.clipHandleWidth, lane: main, inward: inward
+                ))
+                handles.append(Self.handle(.clip(clip.id, .end), x: x + width - 1, width: Self.clipHandleWidth, lane: main, inward: inward))
             }
             return Clip(
                 id: clip.id,
@@ -362,13 +368,13 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                     isSelected: isSelected,
                     isDimmed: selection != nil && !isSelected,
                     keyframeOffsets: item.keyframes.map { CGFloat($0 - item.span.start) * pps },
-                    beatOffsets: item.beats.map { CGFloat($0 - item.span.start) * pps }
+                    beatOffsets: item.beats.map { CGFloat($0 - item.span.start) * pps },
+                    isLocked: item.isLocked
                 ))
-                if isSelected, kind != .music, kind != .voiceOver {
+                // A picked item trims by its handles and moves by its body; a locked one keeps its place.
+                if isSelected, !item.isLocked {
                     handles.append(Self.handle(.item(kind, id, .start), x: x - Self.itemHandleWidth, width: Self.itemHandleWidth, lane: lane))
                     handles.append(Self.handle(.item(kind, id, .end), x: x + width, width: Self.itemHandleWidth, lane: lane))
-                }
-                if isSelected, kind != .voiceOver, kind != .recording {
                     let body = CGRect(x: x, y: lane.y, width: width, height: lane.height)
                     bodies.append(Handle(target: .move(kind, id), frame: body, hitFrame: body))
                 }
@@ -417,11 +423,15 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         }
     }
 
-    private static func handle(_ target: HandleTarget, x: CGFloat, width: CGFloat, lane: LaneFrame) -> Handle {
+    /// A handle reached from at least `handleReach`. A track item's grows outward, so the item itself stays tappable and draggable.
+    /// A clip's sits on the cut, over the neighbour: it grows into the picked clip (up to `inward`, half of it), so over the
+    /// neighbour a finger finds only the handle it sees, and the rest of the neighbour is the neighbour's.
+    private static func handle(_ target: HandleTarget, x: CGFloat, width: CGFloat, lane: LaneFrame, inward: CGFloat? = nil) -> Handle {
         let frame = CGRect(x: x, y: lane.y, width: width, height: lane.height)
-        // Reached from at least `handleReach`, growing outward so the item itself stays tappable.
-        let extra = max(0, handleReach - width)
-        let hitX = target.edge == .start ? x - extra : x
+        var extra = max(0, handleReach - width)
+        if let inward { extra = min(extra, max(0, inward)) }
+        let growsLeft = (target.edge == .start) == (inward == nil)
+        let hitX = growsLeft ? x - extra : x
         let hit = CGRect(x: hitX, y: lane.y - 4, width: width + extra, height: lane.height + 8)
         return Handle(target: target, frame: frame, hitFrame: hit)
     }
@@ -463,12 +473,13 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     // MARK: - Snapping
 
     /// Edited seconds the playhead and the handles stick to: cuts between clips, the start and end
-    /// of the video, of every caption and text, keyframes, and the music's beats when they snap.
+    /// of the video, of every caption, text, photo or video, music and voice-over, keyframes, and the music's beats when they snap.
     var snapTimes: [TimeInterval] {
         var times: [TimeInterval] = [0, input.duration]
         times += input.clips.map(\.start)
         times += input.captions.flatMap { [$0.span.start, $0.span.end] }
         times += input.texts.flatMap { [$0.span.start, $0.span.end] + $0.keyframes }
+        times += (input.media + input.music + input.voiceOvers).flatMap { [$0.span.start, $0.span.end] }
         times += input.beatSnaps
         return Array(Set(times)).sorted()
     }

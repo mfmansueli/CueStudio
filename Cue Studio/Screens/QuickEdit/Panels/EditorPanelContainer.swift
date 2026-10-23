@@ -6,8 +6,9 @@
 import SwiftUI
 
 /// Every panel's frame: the title and, under it, what the panel changes ("This clip", "Whole
-/// take", "Applies to all 8 lines"); Reset when it makes sense; and the yellow ✓ that applies and
-/// closes. Under the header, optional fixed rows (a field, tabs), then the content, which scrolls
+/// take", "Applies to all 8 lines"); Reset once something changed; ◐ in the panels that change
+/// the picture or the sound; and the yellow ✓ that applies and closes. Reset sits left of ◐ and ✓,
+/// so they never move when it appears. Under the header, optional fixed rows (a field, tabs), then the content, which scrolls
 /// when it doesn't fit (large text, a short screen), and an optional footer that never scrolls away
 /// (Pauses' "Remove 3 pauses").
 ///
@@ -19,6 +20,8 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     let subtitle: String
     @Environment(\.dynamicTypeSize) private var typeSize
     var onReset: (() -> Void)?
+    /// ◐ Compare with original, between Reset and ✓ (panels that change the picture or the sound).
+    var compare: PanelCompare?
     var expansion: Binding<Bool>?
     /// The content stops further above the Home Indicator and fades under it while it scrolls (always with `expansion`).
     var clearsHomeIndicator = false
@@ -98,6 +101,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                     .buttonStyle(.plain)
                     .accessibilityIdentifier("edit.panel.reset")
             }
+            if let compare { PanelCompareButton(compare: compare) }
             if let expansion { expandButton(expansion) }
             Button {
                 Haptics.apply()

@@ -69,7 +69,8 @@ extension QuickEditViewModel {
         if imported.kind == .video, imported.hasSound { soundChoiceMediaID = media.id }
         player.pause()
         player.seek(to: start)
-        toast.show(imported.kind == .photo ? String(localized: "Photo added") : String(localized: "Video added"))
+        let place = DurationText.editor(start)
+        sayUndoable(imported.kind == .photo ? String(localized: "Photo added at \(place)") : String(localized: "Video added at \(place)"))
     }
 
     /// Answers "keep its sound?" for a video just added: kept at full volume, or muted.
@@ -132,7 +133,7 @@ extension QuickEditViewModel {
         }
         change { $0.media.append(copy) }
         selection = .media(copy.id)
-        toast.show(String(localized: "Media duplicated"))
+        sayUndoable(String(localized: "Media duplicated"))
     }
 
     func deleteMedia(_ id: UUID) {

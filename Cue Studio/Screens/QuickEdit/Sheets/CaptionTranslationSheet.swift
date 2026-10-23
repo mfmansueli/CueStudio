@@ -26,6 +26,8 @@ struct CaptionTranslationSheet: View {
                             Text(verbatim: language.nativeName).tag(Optional(language))
                         }
                     }
+                    // The languages as a list with a check at the right, the way every other language is picked.
+                    .pickerStyle(.navigationLink)
                     .accessibilityIdentifier("translation.language")
                     if let message = viewModel.translationState.message {
                         HStack(spacing: 10) {
@@ -61,9 +63,10 @@ struct CaptionTranslationSheet: View {
             .navigationTitle("Translate captions")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
-                        .accessibilityIdentifier("translation.doneButton")
+                // The native close button at the leading edge, like every other sheet of the editor (`cueSheetChrome`).
+                ToolbarItem(placement: .cancellationAction) {
+                    Button(role: .close) { dismiss() }
+                        .accessibilityIdentifier("sheet.closeButton")
                 }
             }
             .confirmationDialog("Translate your corrected lines again?", isPresented: $confirmsReplacing, titleVisibility: .visible) {

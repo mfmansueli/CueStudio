@@ -35,6 +35,8 @@ enum Metrics {
     static let mediumButtonHeight: CGFloat = 42
     /// Minimum touch target.
     static let hitTarget: CGFloat = 44
+    /// How a control that can't be used now looks (always with the reason written nearby).
+    static let disabledOpacity: Double = 0.4
     static let chipHeight: CGFloat = 34
     /// The filter chips of Takes (6.2): 32 pt on screen, 44 pt to touch.
     static let filterChipHeight: CGFloat = 32

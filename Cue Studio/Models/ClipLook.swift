@@ -78,4 +78,9 @@ nonisolated struct ClipLook: Codable, Hashable, Sendable {
         filter = nil
         filterAmount = nil
     }
+
+    /// Gives the clip its recording's background again.
+    mutating func removeBackground() {
+        background = nil
+    }
 }

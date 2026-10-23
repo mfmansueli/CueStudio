@@ -8,8 +8,9 @@ import XCTest
 /// Opens the editor on the "3 morning habits" take (a small real video), from its review.
 @MainActor
 enum EditorApp {
-    /// `demo`: Take 3 is the v10 design's 21.6 s edit (`SampleEdit`): eight caption lines, a title
-    /// and a subtitle, and four pauses already found.
+    /// `demo`: Take 3 is the v10 design's 21.6 s edit (`SampleEdit.demo`): two clips (cut at 12.4 s), eight caption lines, a title
+    /// and a subtitle, four pauses already found, music with a beat under the whole video, a B-roll window (4.2–8 s) and a
+    /// voice-over (0.5–4.5 s).
     static func open(sampleVideo: Bool = true, demo: Bool = false, arguments: [String] = []) -> XCUIApplication {
         let app = CueApp.launch(seeded: true, sampleVideo: sampleVideo, extraArguments: (demo ? ["-uiTestDemoEdit"] : []) + arguments)
         // Takes is the second tab; its label is "Takes" only in some languages (`-uiTestAppLanguage`).

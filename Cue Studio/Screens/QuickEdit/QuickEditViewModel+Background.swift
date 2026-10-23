@@ -40,9 +40,9 @@ extension QuickEditViewModel {
         lookClip?.look?.background != nil
     }
 
-    /// The panel's subtitle: what it changes, and what is behind the creator now ("This clip · Blur behind you").
+    /// The panel's subtitle: what it changes, and what is behind the creator now ("Clip 2 of 3 · Blur behind you").
     var backgroundSubtitle: String {
-        let scope = lookClip == nil ? String(localized: "Whole take") : String(localized: "This clip")
+        let scope = lookClip == nil ? String(localized: "Whole video") : clipScope
         return String(localized: "\(scope) · \(Self.backgroundSummary(of: currentBackground))")
     }
 
@@ -65,8 +65,8 @@ extension QuickEditViewModel {
     var backgroundScopeNote: String? {
         if lookClip != nil {
             return clipOverridesBackground
-                ? String(localized: "This clip has its own background. Reset gives it the whole take's again.")
-                : String(localized: "Shows the whole take's background. A change here is for this clip only.")
+                ? String(localized: "This clip has its own background. Reset gives it the whole video's again.")
+                : String(localized: "Shows the whole video's background. A change here is for this clip only.")
         }
         return someClipKeepsItsOwn(for: .background) ? String(localized: "Clips with their own background keep it.") : nil
     }

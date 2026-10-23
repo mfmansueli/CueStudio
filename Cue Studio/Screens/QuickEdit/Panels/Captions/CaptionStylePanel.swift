@@ -66,6 +66,16 @@ struct CaptionStylePanel: View {
             columns: [GridItem(.adaptive(minimum: Self.presetCell), spacing: 8, alignment: .top)],
             spacing: 12
         ) {
+            // "My style" first, as in Text style: saved once, worn by the next videos' captions.
+            if viewModel.edit.captionCollection != nil {
+                PanelSaveStyleCard(identifier: "edit.captionStyle.saveMine", action: viewModel.saveMyCaptionStyle)
+            }
+            if let mine = viewModel.myCaptionStyle {
+                PanelPresetCard(
+                    name: String(localized: "My style"), sample: CaptionThemePreview.image(mine.settings), frame: frame,
+                    isSelected: viewModel.captionsWearMyStyle, identifier: "edit.captionPreset.mine"
+                ) { viewModel.applyMyCaptionStyle() }
+            }
             if let look = viewModel.captionCustomLook { customCard(look) }
             ForEach(shownThemes) { theme in
                 PanelPresetCard(
@@ -123,26 +133,33 @@ struct CaptionStylePanel: View {
             options: CaptionPosition.allCases.map { PanelOption($0, $0.label) },
             selection: viewModel.captionPositionStop, height: 38, identifier: "edit.captionPosition"
         ) { viewModel.setCaptionPositionStop($0) }
-        CueSlider(
-            value: Binding(
-                get: { Double(CaptionSize.nearest(to: viewModel.captionPointSize).rawValue) },
-                set: { viewModel.setCaptionPointSize((CaptionSize(rawValue: Int($0.rounded())) ?? .medium).points) }
-            ),
-            range: CueSliderSpec.captionSize.range, step: CueSliderSpec.captionSize.step, defaultValue: CueSliderSpec.captionSize.defaultValue,
-            style: .full,
-            label: String(localized: "Size"), valueText: CaptionSize.nearest(to: viewModel.captionPointSize).label, systemIcon: .textSize,
-            minCaption: CaptionSize.small.label, maxCaption: CaptionSize.extraLarge.label, accessibilityIdentifier: "edit.captionSize"
-        )
+        // S · M · L · XL: four words, so a segmented control, like Position above it.
+        PanelSegmented(
+            label: String(localized: "Size"),
+            options: CaptionSize.allCases.map { PanelOption($0, $0.label, key: "\($0.rawValue)") },
+            selection: CaptionSize.nearest(to: viewModel.captionPointSize), height: 38, identifier: "edit.captionSize"
+        ) { viewModel.setCaptionPointSize($0.points) }
         PanelNote(text: String(localized: "You can also drag the caption in the video."))
     }
 
-    /// A preset's highlight color; for a custom look, its family, weight and color too.
+    /// A preset's family (its own, or one of the video's over it) and highlight color; for a custom look, its family,
+    /// weight and color.
     @ViewBuilder
     private var font: some View {
+        if viewModel.captionEditableLook == nil, viewModel.edit.captionCollection != nil {
+            // Over a preset only the family changes: the rest stays the preset's.
+            PanelChips(
+                options: [PanelOption(nil, String(localized: "Preset"), key: "preset")]
+                    + TextOverlayFont.editorFonts.map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },
+                selection: viewModel.captionFace,
+                font: { face, size in face.map { CueStudioFont.chip($0, size: size) } ?? .system(size: size, weight: .semibold) },
+                identifier: "edit.captionFace", onSelect: viewModel.setCaptionFace
+            )
+        }
         if let look = viewModel.captionEditableLook {
             PanelChips(
                 options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: look.font,
-                font: { CueStudioFont.chip($0) }, identifier: "edit.captionFont",
+                font: { CueStudioFont.chip($0, size: $1) }, identifier: "edit.captionFont",
                 onSelect: { family in
                     viewModel.updateCaptionLook { look in
                         look.font = family
@@ -155,7 +172,7 @@ struct CaptionStylePanel: View {
                 selection: look.weight, height: 38, identifier: "edit.captionWeight"
             ) { weight in viewModel.updateCaptionLook { $0.weight = weight } }
             PanelSwatches(
-                label: String(localized: "Color"), colors: OverlayColor.textSwatches, selection: look.color,
+                label: String(localized: "Color"), colors: OverlayColor.palette, selection: look.color,
                 diameter: Self.swatchDiameter, identifier: "edit.captionColor"
             ) { color in viewModel.updateCaptionLook { $0.color = color } }
         }
@@ -164,32 +181,11 @@ struct CaptionStylePanel: View {
         }
     }
 
-    /// The collection's highlight: the color the word being said takes.
+    /// The collection's highlight: the color the word being said takes, from the palette.
     private func accents(_ current: CaptionAccent) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Highlight color").font(.system(.subheadline, weight: .semibold))
-            HStack(spacing: 4) {
-                ForEach(CaptionAccent.allCases) { accent in
-                    let parts = accent.components
-                    let isOn = accent == current
-                    Button {
-                        Haptics.selection()
-                        viewModel.setCaptionAccent(accent)
-                    } label: {
-                        Circle()
-                            .fill(Color(red: parts.red, green: parts.green, blue: parts.blue))
-                            .frame(width: Self.swatchDiameter, height: Self.swatchDiameter)
-                            .padding(3)
-                            .overlay(Circle().strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
-                            .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(Text(accent.label))
-                    .accessibilityAddTraits(isOn ? .isSelected : [])
-                    .accessibilityIdentifier("edit.captionAccent.\(accent.rawValue)")
-                }
-            }
-        }
+        PanelSwatches(
+            label: String(localized: "Highlight color"), colors: OverlayColor.palette, selection: current,
+            diameter: Self.swatchDiameter, identifier: "edit.captionAccent"
+        ) { viewModel.setCaptionAccent($0) }
     }
 }

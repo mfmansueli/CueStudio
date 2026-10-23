@@ -433,7 +433,7 @@ struct QuickCreatorViewModelTests {
         viewModel.addMedia(photo())
         let id = viewModel.edit.media[0].id
         viewModel.selection = .media(id)
-        #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "track", "duplicate", "replaceMedia", "delete"])
+        #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "track", "duplicate", "replaceMedia", "lock", "delete"])
         viewModel.perform(.replaceMedia)
         #expect(viewModel.photoRequest?.purpose == .replaceMedia(id, kind: .photo))
         #expect(viewModel.photoRequest?.offersVideos == false)
@@ -552,6 +552,32 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.targetVolume == 0.4)
         viewModel.deleteVoiceOver(id)
         #expect(viewModel.edit.voiceOvers.isEmpty)
+    }
+
+    /// On the timeline a narration moves and trims like a text: its start takes the recording along (never before the
+    /// recording's start), its end never goes past the recording's.
+    @Test func aVoiceOverMovesAndTrimsOnTheTimeline() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 12)
+        await viewModel.startVoiceOver()
+        viewModel.stopVoiceOver()
+        viewModel.moveBar(try #require(viewModel.voiceOverBars.first), toStart: 20)
+        #expect(viewModel.voiceOverBars.map(\.span) == [TimeSpan(start: 20, end: 24)])
+
+        viewModel.resizeBar(try #require(viewModel.voiceOverBars.first), edge: .start, to: 21)
+        #expect(viewModel.voiceOverBars.map(\.span) == [TimeSpan(start: 21, end: 24)])
+        #expect(viewModel.edit.voiceOvers[0].offset == 1)
+        viewModel.resizeBar(try #require(viewModel.voiceOverBars.first), edge: .end, to: 30)
+        #expect(viewModel.voiceOverBars.map(\.span) == [TimeSpan(start: 21, end: 24)])
+        viewModel.resizeBar(try #require(viewModel.voiceOverBars.first), edge: .end, to: 23)
+        #expect(viewModel.voiceOverBars.map(\.span) == [TimeSpan(start: 21, end: 23)])
+        viewModel.resizeBar(try #require(viewModel.voiceOverBars.first), edge: .start, to: 15)
+        #expect(viewModel.voiceOverBars.map(\.span) == [TimeSpan(start: 20, end: 23)])
+        #expect(viewModel.edit.voiceOvers[0].offset == 0)
+
+        viewModel.undo()
+        #expect(viewModel.voiceOverBars.map(\.span) == [TimeSpan(start: 21, end: 23)])
     }
 
     @Test func screenCaptureDuringAVoiceOverHoldsTheVideoAndKeepsRecording() async throws {

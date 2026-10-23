@@ -103,6 +103,8 @@ struct AppServices {
     let milestoneToShow: Int?
     /// UI tests: a stand-in for the system share sheet.
     let fakesShareSheet: Bool
+    /// UI tests: the editor reads Low Power Mode as on.
+    let forcesLowPowerMode: Bool
 
     init(options: LaunchOptions) {
         languages = LanguageService(defaults: options.defaults, store: options.languageStore) { language in
@@ -138,6 +140,7 @@ struct AppServices {
         storyFrozenTime = options.storyFrozenTime
         milestoneToShow = options.milestoneToShow
         fakesShareSheet = options.fakesShareSheet
+        forcesLowPowerMode = options.forcesLowPowerMode
         profile = CreatorProfileService(defaults: options.defaults)
         session = SessionService(defaults: options.defaults, checker: options.credentialChecker)
         rules = options.platformRules
@@ -387,5 +390,6 @@ extension View {
             .environment(\.sendOffFrozenAt, services.sendOffFrozenTime)
             .environment(\.storyFrozenAt, services.storyFrozenTime)
             .environment(\.fakesShareSheet, services.fakesShareSheet)
+            .environment(\.forcesLowPowerMode, services.forcesLowPowerMode)
     }
 }

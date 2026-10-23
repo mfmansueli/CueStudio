@@ -5,9 +5,9 @@
 
 import SwiftUI
 
-/// "Save as my style", first in Text style's presets: keeps the picked text's look for this edit
-/// and the next ones.
+/// "Save as my style", first in Text style's and Caption style's presets: keeps the look for this edit and the next ones.
 struct PanelSaveStyleCard: View {
+    var identifier = "edit.style.saveMine"
     let action: () -> Void
 
     var body: some View {
@@ -34,6 +34,6 @@ struct PanelSaveStyleCard: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityIdentifier("edit.style.saveMine")
+        .accessibilityIdentifier(identifier)
     }
 }

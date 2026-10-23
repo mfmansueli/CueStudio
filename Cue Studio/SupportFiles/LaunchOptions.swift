@@ -17,7 +17,8 @@ import Foundation
 /// - `-uiTestSlowExport`: the review's exports take a few seconds, so its progress can be seen; `-uiTestStoppedExport`: Take 3's
 ///   export stopped with Cue the last time, and its review says so.
 /// - `-uiTestDemoEdit`: "3 morning habits" Take 3 opens in the editor as the v10 design's demo
-///   (`SampleEdit`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text.
+///   (`SampleEdit.demo`: two clips, captions, texts, music with a beat, a B-roll window and a voice-over, their files made by
+///   `SampleEditMedia`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text.
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
@@ -46,6 +47,7 @@ import Foundation
 /// - `-uiTestExportsLeft <0...5>`: the free exports that are left (5 without it): 1 is the last one, 0 asks "Your video is ready" on export.
 /// - `-uiTestUniverse <sample|newYear|newAccount>`: what "Your universe" holds (the board's APP DATA panel; see `UniverseSeed`).
 /// - `-uiTestFakeShareSheet`: a stand-in with Complete and Cancel takes the place of the system share sheet.
+/// - `-uiTestLowPower`: the editor reads Low Power Mode as on (its notice shows; the Simulator can't turn the mode on).
 /// - `-uiTestShareQueue`: a "Share to universe" queue left for the sample take (the Continue posting card).
 /// - `-uiTestStoryAt <seconds>`: the milestone and first-star stories stand still at that second.
 /// - `-uiTestFirstStar` / `-uiTestMilestone <videos>`: the review opens on the first-star (1.7) / milestone (8.3) story.
@@ -133,6 +135,8 @@ struct LaunchOptions {
     var keepsWelcomeOpening = false
     /// UI tests: a stand-in for the system share sheet (`-uiTestFakeShareSheet`).
     var fakesShareSheet = false
+    /// UI tests: the editor reads Low Power Mode as on (`-uiTestLowPower`).
+    var forcesLowPowerMode = false
     /// UI tests: the welcome's opening is frozen at this second (`-uiTestWelcomeAt`).
     var welcomeFrozenTime: Double?
     /// UI tests: the Pro opening is frozen at this second (`-uiTestProAt`).
@@ -221,7 +225,8 @@ struct LaunchOptions {
             }) {
                 takes[index].duration = SampleEdit.duration
                 takes[index].fileName = "sample-demo-edit.mov"
-                takes[index].edit = SampleEdit.make(aspect: takes[index].aspect, heard: arguments.contains("-uiTestDemoTranscript"))
+                takes[index].edit = SampleEdit.demo(aspect: takes[index].aspect, heard: arguments.contains("-uiTestDemoTranscript"))
+                SampleEditMedia.writeMissing()
             }
             let repository = InMemoryTakeRepository(takes: takes)
             options.takeRepository = repository
@@ -278,6 +283,7 @@ struct LaunchOptions {
                 UniverseSeed.apply(kind, to: options.defaults)
             }
             options.fakesShareSheet = arguments.contains("-uiTestFakeShareSheet")
+            options.forcesLowPowerMode = arguments.contains("-uiTestLowPower")
             // A "Share to universe" queue the creator left: TikTok then Reels for the sample take (`-uiTestShareQueue`).
             let habits3 = takes.first { $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3 }
             if arguments.contains("-uiTestShareQueue"), let take = habits3 {

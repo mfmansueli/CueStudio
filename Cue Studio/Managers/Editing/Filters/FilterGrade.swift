@@ -171,6 +171,33 @@ nonisolated struct FilterGrade: Equatable, Sendable {
         case .monoContrast:
             // Black and white, dramatic: deep blacks, bright whites, skin a little lighter than the sky.
             return FilterGrade(contrast: 0.55, monoMix: Color(0.36, 0.52, 0.12))
+        case .warmFilm:
+            // Portrait film: gentle contrast, creamy highlights, warm skin, cool-teal shadows; grain and a soft glow on top.
+            return FilterGrade(
+                contrast: 0.12, lift: 0.045, ceiling: 0.965, saturation: 0.92, skinProtection: 0.9, warmth: 0.035,
+                shadowTint: Color(0, 0.12, 0.14), shadowAmount: 0.10, highlightTint: Color(0.40, 0.28, 0.12), highlightAmount: 0.12
+            )
+        case .goldenGlow:
+            // Late-afternoon light: warmer and softer than Warm Editorial, open shadows, the highlights glowing gold.
+            return FilterGrade(
+                contrast: -0.12, lift: 0.03, saturation: 1.10, skinProtection: 0.85, warmth: 0.08,
+                shadowTint: Color(0.18, 0.08, 0), shadowAmount: 0.06, highlightTint: Color(0.50, 0.32, 0.04), highlightAmount: 0.22
+            )
+        case .digicam:
+            // The 2000s pocket camera: punchy, a little cool, green in the shadows, crisp edges and fine noise.
+            return FilterGrade(
+                contrast: 0.30, lift: 0.015, saturation: 1.18, skinProtection: 0.6, warmth: -0.035,
+                shadowTint: Color(0, 0.20, 0.12), shadowAmount: 0.14, highlightTint: Color(0, 0.05, 0.12), highlightAmount: 0.05
+            )
+        case .vhs:
+            // A camcorder tape: washed-out blacks, a dull white, faded colors with violet shadows; soft, fringed and lined.
+            return FilterGrade(
+                contrast: -0.05, lift: 0.07, ceiling: 0.91, saturation: 0.85, skinProtection: 0.4, warmth: 0.02,
+                shadowTint: Color(0.05, 0, 0.18), shadowAmount: 0.12, highlightTint: Color(0.30, 0.20, 0.05), highlightAmount: 0.08
+            )
+        case .filmMono:
+            // Black and white film: firm contrast, soft blacks, a trace of warmth, and grain.
+            return FilterGrade(contrast: 0.38, lift: 0.03, ceiling: 0.97, monoMix: Color(0.34, 0.54, 0.12), monoTint: Color(0.01, 0.006, 0))
         default:
             return nil
         }

@@ -117,10 +117,15 @@ final class EditorUITests: XCTestCase {
         }
         if amount.exists {
             // Intensity is its own ruler; Compare shows the picture as recorded, and Reset takes Auto away.
-            let compare = app.buttons["edit.adjust.compare"]
+            let compare = app.buttons["edit.compare.picture"]
             XCTAssertTrue(compare.exists)
-            // ◐ is held: it shows the original only while pressed, and lets go when the finger lifts.
+            // ◐ held shows the original only while pressed; a tap keeps it until the next tap, with "Original" on the preview.
             compare.press(forDuration: 0.5)
+            XCTAssertFalse(compare.isSelected)
+            compare.tap()
+            XCTAssertTrue(compare.isSelected)
+            XCTAssertTrue(app.descendants(matching: .any)["edit.originalPictureBadge"].exists(within: 3))
+            compare.tap()
             XCTAssertFalse(compare.isSelected)
             XCTAssertTrue(app.buttons["edit.adjust.resetOne"].exists(within: 5))
             app.buttons["edit.adjust.resetOne"].tap()
@@ -319,6 +324,29 @@ final class EditorUITests: XCTestCase {
         XCTAssertEqual(app.state, .runningForeground)
     }
 
+    // MARK: - Voice-over
+
+    /// Audio › Voice-over on a take with a script offers "Show script" (on): the script shows over the preview with the
+    /// teleprompter's speed under the switch; turning it off takes both away. Recording isn't run (no microphone in the Simulator).
+    func testVoiceOverShowsTheScriptOverThePreviewUntilItsSwitchIsOff() {
+        let app = EditorApp.open(demo: true)
+        EditorApp.tapTool(app, "audio")
+        let voiceOver = app.buttons["edit.toolbar.voiceOver"]
+        XCTAssertTrue(voiceOver.exists(within: 5))
+        voiceOver.tap()
+        let toggle = app.descendants(matching: .any)["edit.voiceOverScriptToggle"]
+        XCTAssertTrue(toggle.exists(within: 5), "No Show script in Voice-over")
+        XCTAssertEqual(toggle.value as? String, "On")
+        let script = app.descendants(matching: .any)["edit.narrationScript"]
+        XCTAssertTrue(script.exists(within: 5), "The script isn't over the preview")
+        XCTAssertTrue(app.descendants(matching: .any)["prompter.speedSlider"].exists)
+        XCTAssertTrue(app.buttons["edit.recordVoiceOverButton"].exists)
+        toggle.tap()
+        XCTAssertTrue(script.isGone(within: 5), "The script stayed after Show script was turned off")
+        XCTAssertEqual(toggle.value as? String, "Off")
+        XCTAssertFalse(app.descendants(matching: .any)["prompter.speedSlider"].exists)
+    }
+
     // MARK: - Timeline
 
     /// ✦ Smart keeps its tools and its templates apart: Templates is a tab of its own; a template applies to the whole video,
@@ -404,5 +432,21 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(tile.exists(within: 5))
         tile.tap()
         XCTAssertTrue(app.descendants(matching: .any)["edit.transcript"].firstMatch.exists(within: 5))
+    }
+
+    // MARK: - Low Power Mode
+
+    /// With Low Power Mode on, the editor says so at the foot of the preview, without stopping anything; ✕ lets it go.
+    func testLowPowerModeIsSaidOverThePreviewUntilClosed() {
+        let app = EditorApp.open(arguments: ["-uiTestLowPower"])
+        let notice = app.descendants(matching: .any)["edit.lowPowerNotice"]
+        XCTAssertTrue(notice.exists(within: 5))
+        XCTAssertTrue(notice.label.contains("Low Power Mode is on"), notice.label)
+        // The edit goes on under it.
+        XCTAssertTrue(app.buttons["edit.playButton"].isHittable)
+        let close = app.buttons["edit.lowPowerNotice.close"]
+        XCTAssertGreaterThanOrEqual(close.frame.width, 44)
+        close.tap()
+        XCTAssertTrue(notice.waitForNonExistence(timeout: 3))
     }
 }

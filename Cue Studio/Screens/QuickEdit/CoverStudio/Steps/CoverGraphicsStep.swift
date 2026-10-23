@@ -51,7 +51,7 @@ struct CoverGraphicsStep: View {
                 .accessibilityIdentifier("cover.itemText")
             }
             PanelSwatches(
-                label: String(localized: "Color"), colors: [.yellow, .red, .white, .black, .cyan, .mint, .blush], selection: item.color,
+                label: String(localized: "Color"), colors: OverlayColor.palette, selection: item.color,
                 identifier: "cover.itemColor"
             ) { color in viewModel.updateItem(item.id) { $0.color = color } }
             PanelSlider(
@@ -62,7 +62,7 @@ struct CoverGraphicsStep: View {
             )
             PanelSlider(
                 label: String(localized: "Turn"), value: item.rotation * 180 / .pi, range: -180...180, step: 1, defaultValue: 0,
-                bipolar: true, format: .plain, identifier: "cover.itemTurn",
+                bipolar: true, format: .degrees, identifier: "cover.itemTurn",
                 onChange: { value in viewModel.updateItem(item.id) { $0.rotation = value * .pi / 180 } }, onEditingChanged: gesture
             )
             HStack(spacing: 8) {
@@ -85,7 +85,7 @@ struct CoverGraphicsStep: View {
                 Text(title).font(.system(.caption2, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.75)
             }
             .foregroundStyle(isDestructive ? Palette.dangerText : Palette.ink)
-            .opacity(isEnabled ? 1 : 0.4)
+            .opacity(isEnabled ? 1 : Metrics.disabledOpacity)
             .frame(maxWidth: .infinity, minHeight: 52)
             .background(Palette.fill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .contentShape(Rectangle())

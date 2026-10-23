@@ -7,6 +7,9 @@ import Foundation
 
 /// One piece of the edited video: a stretch of the original recording that plays, at its speed.
 nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
+    /// The zoom's strength a clip starts with.
+    static let defaultZoomAmount = 0.5
+
     /// Slowest and fastest a piece can play (the Speed tool offers 0.5× to 2×).
     static let speedRange: ClosedRange<Double> = 0.25...4
 
@@ -29,8 +32,8 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     var sourceID: UUID?
     /// A slow zoom over the piece; nil plays it as filmed.
     var zoom: SectionZoom?
-    /// How strong the zoom is, 0 to 1 (1 is 1.3× at most); 0.5 for new clips.
-    var zoomAmount: Double = 0.5
+    /// How strong the zoom is, 0 to 1 (1 is 1.3× at most); `defaultZoomAmount` for new clips.
+    var zoomAmount: Double = EditSegment.defaultZoomAmount
     /// The clip's own sound, 0 to 2 (200%), on top of the Voice tool's volume.
     var volume: Double = 1
     /// "Mute this clip".

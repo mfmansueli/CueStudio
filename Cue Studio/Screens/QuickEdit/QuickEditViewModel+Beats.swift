@@ -77,7 +77,7 @@ extension QuickEditViewModel {
         }
         commit(moved.timeline)
         toast.show(
-            String(localized: "\(moved.moved) cuts on the beat"), action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
+            String(localized: "\(moved.moved) cuts on the beat"), action: undoAction
         )
     }
 
@@ -88,7 +88,7 @@ extension QuickEditViewModel {
         }
         commit(cut.timeline)
         toast.show(
-            String(localized: "\(cut.cuts) cuts on the beats"), action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
+            String(localized: "\(cut.cuts) cuts on the beats"), action: undoAction
         )
     }
 }

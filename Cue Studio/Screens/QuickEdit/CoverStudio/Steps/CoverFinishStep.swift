@@ -55,7 +55,9 @@ struct CoverFinishStep: View {
                 }
             }
             if viewModel.hadCover {
-                PanelButton(label: String(localized: "Remove cover"), systemImage: "trash", identifier: "cover.remove", action: onRemove)
+                PanelButton(
+                    label: String(localized: "Remove cover"), systemImage: "trash", isDestructive: true, identifier: "cover.remove", action: onRemove
+                )
             }
         }
     }

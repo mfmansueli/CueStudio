@@ -167,7 +167,8 @@ final class EditorTaskUITests: XCTestCase {
             // Give any layout flip the time it would have taken to show itself.
             XCTAssertFalse(app.buttons["edit.toolbar.edit"].exists(within: 1.5), "the panel closed, round \(round)")
             XCTAssertEqual(panels.count, 1, "a second panel, round \(round)")
-            XCTAssertTrue(field.exists && apply.exists && app.buttons["edit.style.scope.selected"].exists, "round \(round)")
+            // The words and the tabs; the look's controls wait for the keyboard to go.
+            XCTAssertTrue(field.exists && apply.exists && app.buttons["edit.panel.tab.presets"].exists, "round \(round)")
             // Over the keyboard, not under it.
             let keyboardTop = app.keyboards.firstMatch.frame.minY
             XCTAssertLessThanOrEqual(field.frame.maxY, keyboardTop + 1, "round \(round)")
@@ -185,6 +186,7 @@ final class EditorTaskUITests: XCTestCase {
             field.typeText(XCUIKeyboardKey.return.rawValue)
             XCTAssertTrue(waitForGone(app.keyboards.firstMatch), "round \(round)")
             XCTAssertTrue(panels.firstMatch.exists && field.exists, "round \(round)")
+            XCTAssertTrue(app.buttons["edit.style.scope.selected"].exists(within: 2), "round \(round)")
             XCTAssertEqual(field.value as? String, typed, "round \(round)")
             // A tab of the style tools, and back to the field.
             app.buttons["edit.panel.tab.font"].tap()

@@ -40,7 +40,8 @@ struct QuickEditPreview: View {
                 if isFullScreen { playBadge }
             }
             .overlay {
-                if !isFullScreen, viewModel.panel != .crop {
+                // Under Voice-over's script (`NarrationScriptOverlay`) the handles would only draw over the words.
+                if !isFullScreen, viewModel.panel != .crop, !viewModel.showsNarrationScriptOverlay {
                     OverlayEditingLayer(viewModel: viewModel, size: size)
                 }
             }
@@ -84,8 +85,8 @@ struct QuickEditPreview: View {
         }
     }
 
-    /// "● REC 00:04.20" at the top while a voice-over records; "Original audio" while Voice
-    /// compares with the untreated sound.
+    /// "● REC 00:04.20" at the top while a voice-over records; "Original audio" while Voice compares with the untreated sound;
+    /// "Original" while ◐ shows the picture as recorded.
     @ViewBuilder
     private var recordingBadge: some View {
         if viewModel.isRecordingVoiceOver {
@@ -114,6 +115,19 @@ struct QuickEditPreview: View {
             .padding(.top, 12)
             .allowsHitTesting(false)
             .accessibilityIdentifier("edit.originalAudioBadge")
+        } else if viewModel.comparesPicture {
+            // ◐ in Adjust, Filters or Background: the picture as recorded.
+            HStack(spacing: 6) {
+                Image(systemName: "circle.lefthalf.filled").font(.system(size: 11, weight: .bold)).foregroundStyle(Palette.accText)
+                Text("Original").font(.footnote.weight(.semibold))
+            }
+            .padding(.horizontal, 12)
+            .frame(height: 30)
+            .background(Palette.Takes.durationBadge, in: Capsule())
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding(.top, 12)
+            .allowsHitTesting(false)
+            .accessibilityIdentifier("edit.originalPictureBadge")
         }
     }
 

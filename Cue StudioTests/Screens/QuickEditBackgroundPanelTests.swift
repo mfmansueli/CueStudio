@@ -78,13 +78,13 @@ struct QuickEditBackgroundPanelTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.background))
-        #expect(viewModel.panelSubtitle(.background) == "Whole take · As recorded")
+        #expect(viewModel.panelSubtitle(.background) == "Whole video · As recorded")
         viewModel.setBackgroundStyle(.blur)
-        #expect(viewModel.panelSubtitle(.background) == "Whole take · Blur behind you")
+        #expect(viewModel.panelSubtitle(.background) == "Whole video · Blur behind you")
         openFromClip(viewModel, 1)
-        #expect(viewModel.panelSubtitle(.background) == "This clip · Blur behind you")
+        #expect(viewModel.panelSubtitle(.background) == "Clip 2 of 2 · Blur behind you")
         viewModel.setBackgroundCutout(.colorKey)
-        #expect(viewModel.panelSubtitle(.background) == "This clip · Blur on the green or blue screen")
+        #expect(viewModel.panelSubtitle(.background) == "Clip 2 of 2 · Blur on the green or blue screen")
     }
 
     @Test func theScopeNoteTellsTheRuleOnlyWhenThereIsOne() async {
@@ -95,10 +95,10 @@ struct QuickEditBackgroundPanelTests {
         #expect(viewModel.backgroundScopeNote == nil)
         viewModel.setBackgroundStyle(.blur)
         openFromClip(viewModel, 1)
-        #expect(viewModel.backgroundScopeNote == "Shows the whole take's background. A change here is for this clip only.")
+        #expect(viewModel.backgroundScopeNote == "Shows the whole video's background. A change here is for this clip only.")
         viewModel.setBackgroundStyle(.color)
         #expect(viewModel.clipOverridesBackground)
-        #expect(viewModel.backgroundScopeNote == "This clip has its own background. Reset gives it the whole take's again.")
+        #expect(viewModel.backgroundScopeNote == "This clip has its own background. Reset gives it the whole video's again.")
         viewModel.panel = nil
         viewModel.selection = nil
         viewModel.perform(.open(.background))
@@ -106,7 +106,7 @@ struct QuickEditBackgroundPanelTests {
         // Reset gives the clip the take's again, and the note goes with it.
         openFromClip(viewModel, 1)
         viewModel.resetClipBackground()
-        #expect(viewModel.backgroundScopeNote == "Shows the whole take's background. A change here is for this clip only.")
+        #expect(viewModel.backgroundScopeNote == "Shows the whole video's background. A change here is for this clip only.")
     }
 
     @Test func theFoldedSettingsSayWhenTheyWereChanged() async {

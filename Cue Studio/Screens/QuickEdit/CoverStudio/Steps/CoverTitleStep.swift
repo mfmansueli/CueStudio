@@ -12,6 +12,8 @@ struct CoverTitleStep: View {
     let viewModel: CoverStudioViewModel
 
     @FocusState private var isTyping: Bool
+    /// A word of the title to highlight, growing with the text size.
+    @ScaledMetric(relativeTo: .subheadline) private var wordSize: CGFloat = 14
 
     private var style: CoverTitleStyle { viewModel.composition.title }
 
@@ -24,11 +26,18 @@ struct CoverTitleStep: View {
             if !viewModel.suggestions.isEmpty, viewModel.cover.title.isEmpty || isTyping { suggestions }
             if viewModel.titleWords.count > 1 { highlights }
             group(String(localized: "Type")) {
+                // The same families as the texts and captions on the video, each chip in its own face.
                 PanelChips(
-                    options: CoverFont.allCases.map { PanelOption($0, $0.label) }, selection: style.font,
-                    font: { Font(CoverDesignRenderer.words($0, size: 17)) }, identifier: "cover.font",
-                    onSelect: { font in viewModel.updateTitle { $0.font = font } }
+                    options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: style.font.face,
+                    font: { CueStudioFont.chip($0, size: $1) }, identifier: "cover.font",
+                    onSelect: { face in viewModel.updateTitle { $0.font = CoverFont(face, weight: $0.font.weight) } }
                 )
+                if style.font.face.weights.count > 1 {
+                    PanelSegmented(
+                        label: String(localized: "Weight"), options: style.font.face.weights.map { PanelOption($0, $0.label) },
+                        selection: style.font.weight, height: 38, identifier: "cover.weight"
+                    ) { weight in viewModel.updateTitle { $0.font = CoverFont($0.font.face, weight: weight) } }
+                }
                 PanelSlider(
                     label: String(localized: "Size"), value: style.size * 1000,
                     range: CoverTitleStyle.sizeRange.lowerBound * 1000...CoverTitleStyle.sizeRange.upperBound * 1000, step: 5,
@@ -51,11 +60,11 @@ struct CoverTitleStep: View {
             }
             group(String(localized: "Color")) {
                 PanelSwatches(
-                    label: String(localized: "Text"), colors: OverlayColor.textSwatches, selection: style.textColor, identifier: "cover.textColor"
+                    label: String(localized: "Text"), colors: OverlayColor.palette, selection: style.textColor, identifier: "cover.textColor"
                 ) { color in
                     viewModel.updateTitle { $0.textColor = color }
                 }
-                PanelSwatches(label: String(localized: "Highlight"), colors: Self.accents, selection: style.accent, identifier: "cover.accent") { color in
+                PanelSwatches(label: String(localized: "Highlight"), colors: OverlayColor.palette, selection: style.accent, identifier: "cover.accent") { color in
                     viewModel.updateTitle { $0.accent = color }
                 }
                 PanelSegmented(
@@ -71,7 +80,7 @@ struct CoverTitleStep: View {
                 ) { background in viewModel.updateTitle { $0.background = background } }
                 if style.background == .box {
                     PanelSwatches(
-                        label: String(localized: "Box"), colors: OverlayColor.backgroundSwatches, selection: style.boxColor, identifier: "cover.boxColor"
+                        label: String(localized: "Box"), colors: OverlayColor.palette, selection: style.boxColor, identifier: "cover.boxColor"
                     ) { color in viewModel.updateTitle { $0.boxColor = color } }
                 }
             }
@@ -88,8 +97,6 @@ struct CoverTitleStep: View {
             }
         }
     }
-
-    static let accents: [OverlayColor] = [.yellow, .red, .cyan, .mint, .blush, .white, .orange]
 
     private var field: some View {
         TextField(String(localized: "Title on the cover"), text: Binding(get: { viewModel.cover.title }, set: { viewModel.setTitle($0) }))
@@ -140,7 +147,7 @@ struct CoverTitleStep: View {
                         let isOn = style.highlights.contains(index)
                         Button { viewModel.toggleHighlight(index) } label: {
                             Text(style.uppercase ? word.localizedUppercase : word)
-                                .font(.system(size: 14, weight: .semibold))
+                                .font(.system(size: wordSize, weight: .semibold))
                                 .foregroundStyle(isOn ? Palette.chipOnInk : Palette.ink)
                                 .padding(.horizontal, 11)
                                 .frame(height: 32)

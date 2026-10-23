@@ -10,9 +10,10 @@ import Testing
 
 extension RealExports {
     /// Studio Voice over a montage with real sound: a take recorded about 9 dB quieter than the take it follows comes out within
-    /// 2 dB of it once evened out, never clipping, and the preview plays the same files the export does.
+    /// 2 dB of it once evened out, never clipping, and the preview plays the same files the export does. Each test takes
+    /// seconds; 3 minutes leaves room for a loaded run and stops a stuck one before it holds the run for 10.
     @MainActor
-    @Suite("Studio Voice in a montage", .serialized, .timeLimit(.minutes(10)))
+    @Suite("Studio Voice in a montage", .serialized, .timeLimit(.minutes(3)))
     struct StudioVoiceMontageExportTests {
         /// A 2 s take with a tone all along, and a quieter copy of it stored as another recording of the montage.
         private func montage() async throws -> (take: URL, quiet: URL, name: String) {

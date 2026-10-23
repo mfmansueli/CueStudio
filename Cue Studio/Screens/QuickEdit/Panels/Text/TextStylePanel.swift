@@ -12,7 +12,8 @@ import UIKit
 /// what the look changes ("This title" or "All texts · 3": the words, timing and motion are always
 /// this text's), the controls, and "Apply this style to captions", which copies the look onto the
 /// captions once, after asking. Motion is the picked text's alone. The panel expands (the header's
-/// button, or a drag) to give the controls the room the video gives up.
+/// button, or a drag) to give the controls the room the video gives up. While the words are typed only
+/// the field and the tabs show, so the video stays big; a tab puts the keyboard away.
 struct TextStylePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -37,19 +38,16 @@ struct TextStylePanel: View {
             PanelFrame(viewModel: viewModel, panel: .textStyle) {
                 VStack(spacing: 0) {
                     if !isLarge { field(text).padding(.horizontal, 16).padding(.bottom, 4) }
-                    PanelTabs(tabs: EditorPanelTab.textStyle, selection: tab) { viewModel.panelTab = $0 }
+                    // While typing, the words and the tabs (as in CapCut): the video above gets the room the controls
+                    // would take (`EditorLayout.typingPanelHeight`); a tab puts the keyboard away and shows its controls.
+                    PanelTabs(tabs: EditorPanelTab.textStyle, selection: tab) { picked in
+                        writes = false
+                        viewModel.panelTab = picked
+                    }
                 }
             } content: {
                 if isLarge { field(text) }
-                if viewModel.textStyleTabChangesLook, !isLarge { scope }
-                switch tab {
-                case .font: font(text)
-                case .color: color(text)
-                case .motion: MotionKeyframeControls(viewModel: viewModel)
-                default: presets(text)
-                }
-                if viewModel.textStyleTabChangesLook, isLarge { scope }
-                if viewModel.textStyleTabChangesLook, viewModel.canCopyStyleToCaptions { copyToCaptions }
+                if !typing || !Self.hidesControlsWhileTyping(typeSize) { lookControls(text, tab: tab, isLarge: isLarge) }
             }
             .task {
                 guard frame == nil else { return }
@@ -72,6 +70,29 @@ struct TextStylePanel: View {
                 Text(viewModel.captionStyleCopyMessage)
             }
         }
+    }
+
+    /// The look's controls under the tabs: the scope, the tab's own controls, and copying the look to the captions.
+    @ViewBuilder
+    private func lookControls(_ text: TextOverlay, tab: EditorPanelTab, isLarge: Bool) -> some View {
+        if viewModel.textStyleTabChangesLook, !isLarge { scope }
+        switch tab {
+        case .font: font(text)
+        case .color: color(text)
+        case .motion: MotionKeyframeControls(viewModel: viewModel)
+        default: presets(text)
+        }
+        if viewModel.textStyleTabChangesLook, isLarge { scope }
+        if viewModel.textStyleTabChangesLook, viewModel.canCopyStyleToCaptions { copyToCaptions }
+    }
+
+    /// The words are being typed (the keyboard is up for the field).
+    private var typing: Bool { writes }
+
+    /// While typing, only the field and the tabs show (`EditorLayout.typingPanelHeight`). With large text they wouldn't fit that
+    /// room, so the controls stay and scroll over the keyboard as before.
+    static func hidesControlsWhileTyping(_ typeSize: DynamicTypeSize) -> Bool {
+        typeSize < .xxLarge
     }
 
     private func focusIfAsked() {
@@ -126,7 +147,7 @@ struct TextStylePanel: View {
 
     // MARK: - Tabs
 
-    /// The styles in a row, then Size and Glow and the colors: the whole look in one place.
+    /// The styles in a row, then Size and Glow. The colors are the Color tab's alone.
     @ViewBuilder
     private func presets(_ text: TextOverlay) -> some View {
         styleCards
@@ -139,10 +160,6 @@ struct TextStylePanel: View {
             step: CueSliderSpec.textGlow.step ?? 5, defaultValue: CueSliderSpec.textGlow.defaultValue, format: .percent,
             identifier: "edit.textGlow"
         ) { viewModel.restyleText(.glow($0 / 100), key: "textGlow") }
-        PanelSwatches(
-            label: String(localized: "Text"), colors: OverlayColor.textSwatches, selection: text.color,
-            diameter: Self.swatchDiameter, identifier: "edit.textColor"
-        ) { viewModel.restyleText(.color($0)) }
     }
 
     private var styleCards: some View {
@@ -173,7 +190,7 @@ struct TextStylePanel: View {
     private func font(_ text: TextOverlay) -> some View {
         PanelChips(
             options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: text.font,
-            font: { CueStudioFont.chip($0) }, identifier: "edit.textFont",
+            font: { CueStudioFont.chip($0, size: $1) }, identifier: "edit.textFont",
             onSelect: { viewModel.restyleText(.font($0)) }
         )
         PanelSegmented(
@@ -185,7 +202,7 @@ struct TextStylePanel: View {
     @ViewBuilder
     private func color(_ text: TextOverlay) -> some View {
         PanelSwatches(
-            label: String(localized: "Text"), colors: OverlayColor.textSwatches, selection: text.color,
+            label: String(localized: "Text"), colors: OverlayColor.palette, selection: text.color,
             diameter: Self.swatchDiameter, identifier: "edit.textColor"
         ) { viewModel.restyleText(.color($0)) }
         PanelSegmented(
@@ -194,7 +211,7 @@ struct TextStylePanel: View {
         ) { viewModel.restyleText(.background($0)) }
         if text.background != .none {
             PanelSwatches(
-                label: String(localized: "Background color"), colors: OverlayColor.backgroundSwatches,
+                label: String(localized: "Background color"), colors: OverlayColor.palette,
                 selection: text.backgroundColor, diameter: Self.swatchDiameter, identifier: "edit.textBackgroundColor"
             ) { viewModel.restyleText(.backgroundColor($0)) }
         }

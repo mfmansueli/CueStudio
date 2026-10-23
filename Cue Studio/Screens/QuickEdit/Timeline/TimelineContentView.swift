@@ -317,7 +317,8 @@ final class TimelineContentView: UIView {
         // The label stays readable while the item's start is scrolled away.
         let inset = max(0, visible.minX - item.frame.minX)
         var x: CGFloat = 7 + min(inset, max(0, item.frame.width - 60))
-        if let icon = symbolLayer(style.symbol, size: 10, color: style.ink) {
+        // A locked item says so where its kind's symbol was.
+        if let icon = symbolLayer(item.isLocked ? "lock.fill" : style.symbol, size: 10, color: style.ink) {
             icon.frame.origin = CGPoint(x: x, y: (item.frame.height - icon.frame.height) / 2)
             box.addSublayer(icon)
             x += icon.frame.width + 5

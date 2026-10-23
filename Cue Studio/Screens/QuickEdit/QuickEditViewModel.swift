@@ -198,6 +198,15 @@ final class QuickEditViewModel {
     }
     /// Edited seconds where the voice-over being recorded started.
     var recordingStart: TimeInterval?
+    /// Voice-over's "Show script": the take's script over the preview while a narration records, remembered for every take
+    /// (`QuickEditViewModel+NarrationScript`).
+    var showsNarrationScript: Bool {
+        didSet { editorPreferences.showsNarrationScript = showsNarrationScript }
+    }
+    /// The Low Power Mode notice over the preview (`QuickEditViewModel+LowPower`).
+    var showsLowPowerNotice = false
+    /// How far that script has been read, at a steady pace from the start of the recording.
+    var narrationPace: NarrationScriptPace
     /// The cover as drawn, for the timeline's cover block; nil until drawn or without a cover.
     var coverImage: Data?
     var isDrawingCover = false
@@ -214,6 +223,8 @@ final class QuickEditViewModel {
     var keepsCaptionsHiddenAfterListening = false
     /// The type the creator saved as "My style" (see `QuickEditViewModel+Style`).
     var myStyle: TextLook?
+    /// The captions' saved "My style" (`QuickEditViewModel+MyCaptionStyle`).
+    var myCaptionStyle: MyCaptionStyle?
     /// The creator's handle, for the cover's "@handle" graphic and series (set by the screen).
     var creatorHandle = ""
     /// The beats found in the music files, by file (`QuickEditViewModel+Beats`); bumped `beatsFound` when one comes in.
@@ -267,6 +278,11 @@ final class QuickEditViewModel {
     let mediaImporter: EditMediaImporting
     let recorder: VoiceOverRecording
     let styles: TextStyleStoring
+    /// Quick edit's own switches, kept between edits.
+    let editorPreferences: EditorPreferencesStoring
+    /// How the creator's teleprompter draws a script (font, colour, spacing, speed): the script shown while a narration records
+    /// is drawn the same way.
+    let prompterLook: PrompterSettings
     /// Cover Studio's pictures.
     let coverPictures: CoverPicturing
     /// Hears a sound effect before it's added.
@@ -304,6 +320,7 @@ final class QuickEditViewModel {
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
+        editorPreferences: EditorPreferencesStoring? = nil, prompterLook: PrompterSettings = PrompterSettings(),
         coverPictures: CoverPicturing? = nil, soundPreviews: SoundEffectPreviewing? = nil,
         translations: TranslationAvailabilityChecking = AppleTranslationAvailability(), motion: MotionAnalysisService? = nil,
         tracker: ObjectTracking = ObjectTracker(),
@@ -316,6 +333,12 @@ final class QuickEditViewModel {
         self.styles = styles ?? TextStyleStore()
         self.translations = translations
         myStyle = self.styles.myStyle
+        myCaptionStyle = self.styles.myCaptionStyle
+        let preferences = editorPreferences ?? EditorPreferencesStore()
+        self.editorPreferences = preferences
+        self.prompterLook = prompterLook
+        showsNarrationScript = preferences.showsNarrationScript
+        narrationPace = NarrationScriptPace(speed: preferences.narrationScriptSpeed ?? prompterLook.speed)
         self.coverPictures = coverPictures ?? CoverPictureService()
         self.soundPreviews = soundPreviews ?? SoundEffectPreviewPlayer()
         speechLanguageFor = speechLanguage

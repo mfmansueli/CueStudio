@@ -133,5 +133,27 @@ extension RealExports {
             #expect(try await TestClip.loudness(of: output, from: 0.1, to: 1.9) < -40)
             #expect(try await TestClip.loudness(of: output, from: 2.1, to: 3.9) > -30)
         }
+
+        /// A narration whose start was trimmed plays from there in the recording: its second second is heard where it starts.
+        @Test func aTrimmedVoiceOverIsHeardFromItsNewStart() async throws {
+            let clip = try await TestClip.make(seconds: 4, loudSeconds: [])
+            let voice = try await TestClip.make(seconds: 3, loudSeconds: [1])
+            defer {
+                try? FileManager.default.removeItem(at: clip)
+                try? FileManager.default.removeItem(at: voice)
+            }
+            let name = try stored(voice)
+            defer { EditMediaFiles.remove([name]) }
+
+            var edit = TakeEdit(sourceDuration: 4, aspect: .portrait)
+            edit.voiceEnhancement = .off
+            var narration = VoiceOverClip(fileName: name, duration: 3, anchor: 2)
+            narration.offset = 1
+            edit.voiceOvers = [narration]
+            let output = try await export(edit, of: clip)
+            defer { try? FileManager.default.removeItem(at: output) }
+            #expect(try await TestClip.loudness(of: output, from: 2.1, to: 2.9) > -30)
+            #expect(try await TestClip.loudness(of: output, from: 3.1, to: 3.9) < -40)
+        }
     }
 }

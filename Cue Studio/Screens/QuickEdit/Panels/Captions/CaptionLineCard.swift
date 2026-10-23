@@ -210,7 +210,7 @@ struct CaptionLineCard: View {
             Image(systemName: symbol)
                 .font(.system(size: 13, weight: .bold))
                 .frame(width: 34, height: 32)
-                .opacity(isAvailable ? 1 : 0.35)
+                .opacity(isAvailable ? 1 : Metrics.disabledOpacity)
                 .frame(minHeight: Metrics.hitTarget)
                 .contentShape(Rectangle())
         }

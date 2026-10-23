@@ -7,8 +7,8 @@ import Foundation
 
 /// The range, step and default of each slider in the app (v29, `02-Tokens.md` §6): minimums and
 /// maximums that make sense for what is being changed. One place, so a screen never invents its own
-/// and a test can hold the table to the design. Values are in the units the slider shows (wpm, %, pt);
-/// stepped controls (S/M/L/XL, Off/Light/Strong) count steps from 0.
+/// and a test can hold the table to the design. Values are in the units the slider shows (wpm, %, pt).
+/// A choice of a few words (S/M/L/XL, Off/Light/Strong) is a segmented control, not a slider.
 nonisolated struct CueSliderSpec: Equatable, Sendable {
     let range: ClosedRange<Double>
     /// Nil for a smooth control.
@@ -19,11 +19,6 @@ nonisolated struct CueSliderSpec: Equatable, Sendable {
         self.range = range
         self.step = step
         self.defaultValue = defaultValue
-    }
-
-    /// The stepped control with `count` positions (0 ... count − 1), one step apart.
-    static func steps(_ count: Int, default defaultValue: Int) -> CueSliderSpec {
-        CueSliderSpec(0...Double(count - 1), step: 1, default: Double(defaultValue))
     }
 
     // MARK: - Settings › Prompter and the recorder (Steady only)
@@ -43,14 +38,10 @@ nonisolated struct CueSliderSpec: Equatable, Sendable {
     static let textPoints = CueSliderSpec(24...120, step: 2, default: 64)
     /// Glow of a text, in percent.
     static let textGlow = CueSliderSpec(0...100, step: 5, default: 35)
-    /// S · M · L · XL, Large by default.
-    static let captionSize = steps(4, default: 2)
     /// Your voice, in percent: 100% is as recorded.
     static let voice = CueSliderSpec(0...200, step: 5, default: 100)
     /// Music, in percent: it ducks under your voice.
     static let music = CueSliderSpec(0...100, step: 5, default: 20)
-    /// Off · Light · Strong, Light by default.
-    static let cleanUpVoice = steps(3, default: 1)
     /// How fast a clip plays.
     static let clipSpeed = CueSliderSpec(0.5...3, step: 0.1, default: 1)
     /// How much of a filter shows, in percent.

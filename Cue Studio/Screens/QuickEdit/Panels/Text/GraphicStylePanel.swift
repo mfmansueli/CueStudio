@@ -28,7 +28,7 @@ struct GraphicStylePanel: View {
                     .accessibilityIdentifier("edit.graphic.text")
                 }
                 PanelSwatches(
-                    label: String(localized: "Color"), colors: [.yellow, .red, .white, .black, .cyan, .mint, .blush], selection: text.color,
+                    label: String(localized: "Color"), colors: OverlayColor.palette, selection: text.color,
                     identifier: "edit.graphic.color"
                 ) { color in viewModel.updateText(text.id) { $0.color = color } }
                 PanelSlider(
@@ -39,7 +39,7 @@ struct GraphicStylePanel: View {
                 )
                 PanelSlider(
                     label: String(localized: "Turn"), value: graphic.rotation * 180 / .pi, range: -180...180, step: 1, defaultValue: 0,
-                    bipolar: true, format: .plain, identifier: "edit.graphic.turn",
+                    bipolar: true, format: .degrees, identifier: "edit.graphic.turn",
                     onChange: { viewModel.setGraphicRotation(text.id, degrees: $0) }
                 )
                 MotionKeyframeControls(viewModel: viewModel)

@@ -161,6 +161,16 @@ extension QuickEditViewModel {
         return settings.customLook
     }
 
+    /// The family picked over the preset (Caption style › Font); nil draws the preset's own.
+    var captionFace: TextOverlayFont? { edit.captionCollection?.face }
+
+    /// Draws the preset's lines in `face` (nil: its own font) and keeps the rest of it. One undo step.
+    func setCaptionFace(_ face: TextOverlayFont?) {
+        guard edit.captionCollection != nil, captionFace != face else { return }
+        updateCaptionSettings { $0.face = face }
+        previewCurrentCaptionLine()
+    }
+
     /// Custom's name: a type preset an older version put on the captions keeps its own.
     var captionCustomLookName: String {
         if edit.captionCollection == nil, let preset = edit.captionPreset { return preset.label }

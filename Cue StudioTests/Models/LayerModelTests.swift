@@ -114,6 +114,25 @@ struct LayerModelTests {
         #expect(clip.editedSpan(in: timeline) == TimeSpan(start: 8, end: 16))
     }
 
+    /// Trimmed on the timeline, it plays what's left: from `offset` into the recording, up to `length`. An edit saved before
+    /// trimming existed still opens, untrimmed.
+    @Test func aTrimmedVoiceOverPlaysWhatIsLeft() throws {
+        let timeline = EditTimeline(sourceDuration: 30)
+        var clip = VoiceOverClip(fileName: "v.m4a", duration: 10, anchor: 12)
+        clip.offset = 2
+        #expect(clip.playedDuration == 8)
+        #expect(clip.editedSpan(in: timeline) == TimeSpan(start: 12, end: 20))
+        clip.length = 3
+        #expect(clip.editedSpan(in: timeline) == TimeSpan(start: 12, end: 15))
+        clip.length = 20
+        #expect(clip.playedDuration == 8)
+
+        let old = #"{"id":"4E1C0D0A-6F7B-4C55-9B7F-0E2E3B1C9A11","fileName":"v.m4a","duration":10,"anchor":12,"volume":1}"#
+        let decoded = try JSONDecoder().decode(VoiceOverClip.self, from: Data(old.utf8))
+        #expect(decoded.offset == nil && decoded.length == nil)
+        #expect(decoded.playedDuration == 10)
+    }
+
     // MARK: - Cover
 
     @Test func aCoverTitleIsSetLikeATitle() {

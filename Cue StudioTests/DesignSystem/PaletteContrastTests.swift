@@ -426,6 +426,53 @@ struct PaletteContrastTests {
         }
     }
 
+    /// Voice-over's script over the preview: every colour the teleprompter offers on its scrim, and the "Paused" badge (ink on a
+    /// second scrim), over the worst picture (white) and a black one.
+    @Test func theNarrationScriptReadsOverAnyPicture() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            let scrim = rgb(Palette.Editor.narrationScrim, in: .dark, over: picture)
+            for color in PrompterTextColor.allCases {
+                let measured = ColorContrast.ratio(rgb(color.color, in: .dark, over: scrim), scrim)
+                #expect(measured >= ColorContrast.textMinimum, "\(color.label) over the scrim: \(measured)")
+            }
+            let badge = rgb(Palette.Editor.narrationScrim, in: .dark, over: scrim)
+            for appearance in Appearance.allCases {
+                let paused = ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: badge), badge)
+                #expect(paused >= ColorContrast.textMinimum, "Paused, \(appearance): \(paused)")
+            }
+        }
+    }
+
+    /// The preview's "Original" and "Original audio" badges (◐ held or on): the words and the ◐ / ear icon on the badge's pill,
+    /// over the worst picture (white) and a black one.
+    @Test func theOriginalBadgesReadOverAnyPicture() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            let pill = rgb(Palette.Takes.durationBadge, in: .dark, over: picture)
+            for appearance in Appearance.allCases {
+                let words = ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: pill), pill)
+                #expect(words >= ColorContrast.textMinimum, "Original, \(appearance): \(words)")
+                let icon = ColorContrast.ratio(rgb(Palette.accText, in: appearance, over: pill), pill)
+                #expect(icon >= 3, "◐ icon, \(appearance): \(icon)")
+            }
+        }
+    }
+
+    /// The Low Power Mode notice over the preview: its title, its sentence and ✕ on the toast's fill, over a white or a black
+    /// picture; the battery is an icon that informs (3:1).
+    @Test func theLowPowerNoticeReadsOverAnyPicture() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            for appearance in Appearance.allCases {
+                let fill = rgb(Palette.Editor.toast, in: appearance, over: picture)
+                for (name, color) in [("title", Palette.ink), ("sentence and ✕", Palette.ink2)] {
+                    let words = ColorContrast.ratio(rgb(color, in: appearance, over: fill), fill)
+                    #expect(words >= ColorContrast.textMinimum, "\(name), \(appearance): \(words)")
+                }
+                let icon = ColorContrast.ratio(rgb(Palette.accText, in: appearance, over: fill), fill)
+                #expect(icon >= 3, "battery, \(appearance): \(icon)")
+            }
+        }
+    }
+
     /// The star's words over its cover (84% of `transitionCover`, 09 §8) on whatever the screen behind it shows: black, and at worst white.
     @Test func theStarsWordsReadOverItsCoverOnAnyScreen() {
         let words: [(name: String, color: Color)] = [

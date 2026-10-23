@@ -753,8 +753,7 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
 }
 
 nonisolated extension EditTimeline {
-    /// The same pieces without their own Auto, Adjust or filter, for "Compare": a clip's background
-    /// stays, since it isn't part of the look being compared.
+    /// The same pieces without their own Auto, Adjust, filter or background, for ◐ Compare with original.
     func withoutPictureLooks() -> EditTimeline {
         var plain = self
         plain.segments = segments.map { segment in
@@ -762,6 +761,7 @@ nonisolated extension EditTimeline {
             if var look = segment.look {
                 look.removeAdjustment()
                 look.removeFilter()
+                look.removeBackground()
                 segment.look = look.normalized
             }
             return segment

@@ -10,6 +10,9 @@ import UIKit
 /// script uses the system weight to avoid mixing a Latin display cut with missing glyph boxes.
 nonisolated enum CaptionFont {
     static func font(spec: CaptionStyleSpec, size: CGFloat, text: String) -> UIFont {
+        if let face = spec.face {
+            return TextFont.font(face, weight: TextOverlayWeight.nearest(to: spec.fontWeight, in: face.weights), size: size, text: text)
+        }
         let fallback = UIFont.systemFont(ofSize: size, weight: systemWeight(spec.fallbackWeight))
         guard let bundled = UIFont(name: spec.fontName, size: size) else { return fallback }
         let variation: [NSNumber: NSNumber] = [0x77676874: NSNumber(value: spec.fontWeight)]

@@ -94,7 +94,7 @@ struct MotionKeyframeControls: View {
                 .font(.system(size: 15, weight: .bold))
                 .frame(width: 40, height: 40)
                 .background(Palette.fill, in: Circle())
-                .opacity(enabled ? 1 : 0.3)
+                .opacity(enabled ? 1 : Metrics.disabledOpacity)
                 .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                 .contentShape(Rectangle())
         }

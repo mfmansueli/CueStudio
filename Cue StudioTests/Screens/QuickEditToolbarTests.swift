@@ -43,7 +43,7 @@ struct QuickEditToolbarTests {
 
     @Test func theMainToolbarHasEveryToolWithNothingPicked() async {
         let viewModel = await makeScenario().viewModel
-        #expect(ids(viewModel) == ["edit", "captions", "text", "smart", "addMedia", "audio", "format", "filters", "cover"])
+        #expect(ids(viewModel) == ["edit", "captions", "text", "smart", "addMedia", "audio", "format", "adjustVideo", "filters", "cover"])
         #expect(viewModel.toolbarContextLabel == nil)
     }
 
@@ -112,7 +112,7 @@ struct QuickEditToolbarTests {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.addText(.title))
         #expect(viewModel.toolbarContextLabel == "Text")
-        #expect(ids(viewModel) == ["editText", "style", "animation", "keyframe", "track", "duplicate", "delete"])
+        #expect(ids(viewModel) == ["editText", "style", "animation", "keyframe", "track", "duplicate", "lock", "delete"])
         let line = CaptionCue(text: "Massa fina, muito recheio", start: 12.4, end: 14.6, origin: .manual)
         viewModel.edit.captions = [line]
         viewModel.selection = .caption(line.id)
@@ -121,11 +121,11 @@ struct QuickEditToolbarTests {
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
         viewModel.edit.music = [music]
         viewModel.selection = .music(music.id)
-        #expect(ids(viewModel) == ["volume", "beats", "replace", "delete"])
+        #expect(ids(viewModel) == ["volume", "beats", "replace", "lock", "delete"])
         let voice = VoiceOverClip(fileName: "v.m4a", duration: 2, anchor: 1)
         viewModel.edit.voiceOvers = [voice]
         viewModel.selection = .voiceOver(voice.id)
-        #expect(ids(viewModel) == ["volume", "reRecord", "delete"])
+        #expect(ids(viewModel) == ["volume", "reRecord", "lock", "delete"])
     }
 
     @Test func aTextsAnimationToolOpensItsStyleOnTheMotionTab() async throws {
@@ -133,7 +133,7 @@ struct QuickEditToolbarTests {
         viewModel.perform(.addText(.title))
         viewModel.closePanel()
         let animation = try #require(viewModel.toolbarItems.first { $0.id == "animation" })
-        #expect(animation.label == "Animation")
+        #expect(animation.label == "Motion")
         #expect(animation.action == .openTextAnimation)
         viewModel.perform(animation.action)
         #expect(viewModel.panel == .textStyle)
@@ -146,10 +146,25 @@ struct QuickEditToolbarTests {
         let media = MediaOverlay(kind: .photo, fileName: "p.jpg", aspect: 1, mediaDuration: nil, span: TimeSpan(start: 2, end: 5))
         viewModel.edit.media = [media]
         viewModel.selection = .media(media.id)
-        #expect(ids(viewModel) == ["editMedia", "track", "duplicate", "replaceMedia", "delete"])
+        #expect(ids(viewModel) == ["editMedia", "track", "duplicate", "replaceMedia", "lock", "delete"])
         viewModel.perform(.duplicateMedia)
         #expect(viewModel.edit.media.count == 2)
         #expect(viewModel.selection != .media(media.id))
+    }
+
+    @Test func lockKeepsAPickedLayerInPlaceUntilItIsUnlockedAndIsSaved() async throws {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.addText(.title))
+        viewModel.closePanel()
+        let id = try #require(viewModel.selection?.textID)
+        viewModel.perform(.toggleLock)
+        #expect(viewModel.edit.lockedLayers == [id])
+        #expect(viewModel.toolbarItems.contains { $0.id == "unlock" })
+        let saved = try JSONDecoder().decode(TakeEdit.self, from: JSONEncoder().encode(viewModel.edit))
+        #expect(saved.lockedLayers == [id])
+        viewModel.perform(.toggleLock)
+        #expect(viewModel.edit.lockedLayers.isEmpty)
+        #expect(viewModel.toolbarItems.contains { $0.id == "lock" })
     }
 
     @Test func textAndAudioMenus() async {

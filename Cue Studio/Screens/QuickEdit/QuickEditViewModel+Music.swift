@@ -69,7 +69,7 @@ extension QuickEditViewModel {
         selectedMusicID = clip.id
         player.pause()
         player.seek(to: slot.start)
-        toast.show(String(localized: "Music added at 40%"))
+        sayUndoable(String(localized: "Music added at \(DurationText.editor(slot.start)) · 40%"))
     }
 
     /// "Replace": the clip keeps its place, volume and fades, and plays the new file from its
@@ -127,7 +127,7 @@ extension QuickEditViewModel {
             selectedMusicID = clip.id
             player.pause()
             player.seek(to: start)
-            toast.show(String(localized: "\(effect.label) added"))
+            sayUndoable(String(localized: "\(effect.label) added at \(DurationText.editor(start))"))
         } catch {
             toast.show(String(localized: "Can't add this sound"))
         }

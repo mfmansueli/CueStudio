@@ -37,7 +37,7 @@ nonisolated struct FontCredit: Identifiable, Hashable, Sendable {
             copyright: "Copyright 2020 The Space Grotesk Project Authors", licenseFile: "spacegrotesk-OFL"
         ),
         FontCredit(
-            name: "Anton", use: String(localized: "Captions on the video"),
+            name: "Anton", use: String(localized: "Texts and captions on the video"),
             copyright: "Copyright 2020 The Anton Project Authors", licenseFile: "anton-OFL"
         ),
         FontCredit(
@@ -45,7 +45,7 @@ nonisolated struct FontCredit: Identifiable, Hashable, Sendable {
             copyright: "Copyright 2020 The Inter Project Authors", licenseFile: "inter-OFL"
         ),
         FontCredit(
-            name: "Poppins", use: String(localized: "Captions on the video"),
+            name: "Poppins", use: String(localized: "Texts and captions on the video"),
             copyright: "Copyright 2020 The Poppins Project Authors", licenseFile: "poppins-OFL"
         ),
         FontCredit(
@@ -53,24 +53,40 @@ nonisolated struct FontCredit: Identifiable, Hashable, Sendable {
             copyright: "Copyright 2018 The Manrope Project Authors", licenseFile: "manrope-OFL"
         ),
         FontCredit(
-            name: "Unbounded", use: String(localized: "Texts on the video"),
+            name: "Unbounded", use: String(localized: "Texts and captions on the video"),
             copyright: "Copyright 2022 The Unbounded Project Authors", licenseFile: "unbounded-OFL"
         ),
         FontCredit(
-            name: "Instrument Serif", use: String(localized: "Texts on the video"),
+            name: "Instrument Serif", use: String(localized: "Texts and captions on the video"),
             copyright: "Copyright 2022 The Instrument Serif Project Authors", licenseFile: "instrumentserif-OFL"
         ),
         FontCredit(
-            name: "Space Mono", use: String(localized: "Texts on the video"),
+            name: "Space Mono", use: String(localized: "Texts and captions on the video"),
             copyright: "Copyright 2016 The Space Mono Project Authors", licenseFile: "spacemono-OFL"
         ),
         FontCredit(
-            name: "Syne", use: String(localized: "Texts on the video"),
+            name: "Syne", use: String(localized: "Texts and captions on the video"),
             copyright: "Copyright 2017 The Syne Project Authors", licenseFile: "syne-OFL"
         ),
         FontCredit(
-            name: "Caveat", use: String(localized: "Texts on the video"),
+            name: "Caveat", use: String(localized: "Texts and captions on the video"),
             copyright: "Copyright 2014 The Caveat Project Authors", licenseFile: "caveat-OFL"
+        ),
+        FontCredit(
+            name: "Montserrat", use: String(localized: "Texts and captions on the video"),
+            copyright: "Copyright 2024 The Montserrat.Git Project Authors", licenseFile: "montserrat-OFL"
+        ),
+        FontCredit(
+            name: "TikTok Sans", use: String(localized: "Texts and captions on the video"),
+            copyright: "Copyright 2024 TikTok Inc.", licenseFile: "tiktoksans-OFL"
+        ),
+        FontCredit(
+            name: "Rubik", use: String(localized: "Texts and captions on the video"),
+            copyright: "Copyright 2015 The Rubik Project Authors", licenseFile: "rubik-OFL"
+        ),
+        FontCredit(
+            name: "Bangers", use: String(localized: "Texts and captions on the video"),
+            copyright: "Copyright 2010 The Bangers Project Authors", licenseFile: "bangers-OFL"
         ),
         FontCredit(
             name: "Lexend", use: String(localized: "The teleprompter's text"),

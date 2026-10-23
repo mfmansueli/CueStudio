@@ -11,6 +11,7 @@ import Foundation
 final class FakeTextStyleStore: TextStyleStoring {
     var myStyle: TextLook?
     var myCoverStyle: CoverStyle?
+    var myCaptionStyle: MyCaptionStyle?
 
     init(myStyle: TextLook? = nil) {
         self.myStyle = myStyle

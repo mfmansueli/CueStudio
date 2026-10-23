@@ -24,9 +24,11 @@ struct AdjustPanel: View {
     }
 
     @State private var current: Pick = .dial(.exposure)
+    /// A setting's name on its chip, growing with the text size.
+    @ScaledMetric(relativeTo: .subheadline) private var chipTitleSize: CGFloat = 14
 
     var body: some View {
-        PanelFrame(viewModel: viewModel, panel: .adjust, onReset: reset) {
+        PanelFrame(viewModel: viewModel, panel: .adjust, onReset: reset, compare: viewModel.pictureCompare) {
             dials
             readout
             ruler
@@ -97,12 +99,12 @@ struct AdjustPanel: View {
     /// white with black text, like every chosen chip.
     private func chipLabel(_ title: String, valueText: String?, picked isPicked: Bool, isMeasuring: Bool = false) -> some View {
         HStack(spacing: 6) {
-            Text(title).font(.system(size: 14, weight: isPicked ? .semibold : .medium))
+            Text(title).font(.system(size: chipTitleSize, weight: isPicked ? .semibold : .medium))
             if isMeasuring {
                 ProgressView().controlSize(.mini).tint(isPicked ? Palette.chipOnInk : Palette.ink)
             } else if let valueText {
                 Text(valueText)
-                    .font(.system(size: 12, weight: .bold).monospacedDigit())
+                    .font(.system(.caption, weight: .bold).monospacedDigit())
                     .foregroundStyle(isPicked ? Palette.chipOnInk : Palette.accText)
             }
         }
@@ -154,7 +156,7 @@ struct AdjustPanel: View {
         .accessibilityIdentifier("edit.adjust.\(adjustment.rawValue)")
     }
 
-    /// "Exposure  +10" with its own Reset once it is off zero; Compare and Auto at the other end. All on one line when it fits;
+    /// "Exposure  +10" with its own Reset once it is off zero; Auto at the other end (◐ is in the header). All on one line when it fits;
     /// otherwise the note goes under the name in the same line's height, and with large text the name, the note and the buttons
     /// each have a line of their own. A word never breaks and no label is cut.
     private var readout: some View {
@@ -164,11 +166,10 @@ struct AdjustPanel: View {
                 if let note = inheritedNote { noteText(note, lines: 1) }
                 resetButton
                 Spacer(minLength: 0)
-                compareButton
                 autoButton
             }
             .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-            // Narrower (a clip's "From the whole take" on an iPhone): the note under the name, in the same 44 pt line, so the
+            // Narrower (a clip's "From the whole video" on an iPhone): the note under the name, in the same 44 pt line, so the
             // ruler stays where it was and shows whole.
             HStack(alignment: .center, spacing: 10) {
                 VStack(alignment: .leading, spacing: 0) {
@@ -177,7 +178,6 @@ struct AdjustPanel: View {
                 }
                 resetButton
                 Spacer(minLength: 0)
-                compareButton
                 autoButton
             }
             .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
@@ -189,8 +189,7 @@ struct AdjustPanel: View {
                 HStack(alignment: .center, spacing: 10) {
                     resetButton
                     Spacer(minLength: 0)
-                    compareButton
-                    autoButton
+                        autoButton
                 }
                 .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
             }
@@ -263,33 +262,9 @@ struct AdjustPanel: View {
     private var inheritedNote: String? {
         guard viewModel.lookClip != nil else { return nil }
         switch current {
-        case .auto: return viewModel.clipOverridesAuto || !viewModel.hasAuto ? nil : String(localized: "From the whole take")
-        case .dial(let adjustment): return viewModel.clipOverrides(adjustment) ? nil : String(localized: "From the whole take")
+        case .auto: return viewModel.clipOverridesAuto || !viewModel.hasAuto ? nil : String(localized: "From the whole video")
+        case .dial(let adjustment): return viewModel.clipOverrides(adjustment) ? nil : String(localized: "From the whole video")
         }
-    }
-
-    /// ◐: hold it to see the picture as recorded, let go to come back to the edit. (VoiceOver toggles it.)
-    private var compareButton: some View {
-        let isOn = viewModel.comparesPicture
-        return Image(systemName: "circle.lefthalf.filled")
-            .font(.system(size: 17, weight: .semibold))
-            .foregroundStyle(isOn ? Palette.accInk : Palette.ink)
-            .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
-            .background(isOn ? Palette.acc : Palette.fill, in: Circle())
-            .contentShape(Circle())
-            .gesture(
-                DragGesture(minimumDistance: 0)
-                    .onChanged { _ in viewModel.holdPictureComparison(true) }
-                    .onEnded { _ in viewModel.holdPictureComparison(false) }
-            )
-            .opacity(viewModel.edit.hasPictureLook || isOn ? 1 : 0.4)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel(Text("Compare with original"))
-            .accessibilityHint(Text("Hold to show the picture as recorded"))
-            .accessibilityValue(isOn ? Text("Showing the original") : Text("Showing your edit"))
-            .accessibilityAddTraits(isOn ? [.isButton, .isSelected] : .isButton)
-            .accessibilityAction { viewModel.togglePictureComparison() }
-            .accessibilityIdentifier("edit.adjust.compare")
     }
 
     /// Measures the picture (the take's, or the picked clip's) and applies a correction.

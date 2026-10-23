@@ -57,7 +57,7 @@ extension QuickEditViewModel {
         Haptics.selection()
         toast.show(
             String(localized: "Replaced \(count) times"),
-            action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
+            action: undoAction
         )
         return count
     }

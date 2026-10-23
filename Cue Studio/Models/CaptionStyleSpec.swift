@@ -59,6 +59,9 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
     /// cut ignores it).
     var fontName: String
     var fontWeight: Double
+    /// A family picked over the preset (`CaptionSettings.face`), drawn at the weight nearest `fontWeight` instead of
+    /// `fontName`.
+    var face: TextOverlayFont?
     /// The weight of the system font that stands in when the font lacks a glyph (a script it
     /// doesn't cover): 600 semibold, 700 bold, 800 heavy.
     var fallbackWeight: Double

@@ -31,12 +31,13 @@ extension QuickEditViewModel {
         input.texts = edit.editedTexts(in: timeline).map { text, span in
             TimelineGeometry.ItemInput(
                 id: text.id, span: span, label: text.isEmpty ? text.role.label : text.displayText,
-                keyframes: text.keyframes.map { span.start + $0.time }.filter { $0 <= span.end + 0.001 }
+                keyframes: text.keyframes.map { span.start + $0.time }.filter { $0 <= span.end + 0.001 },
+                isLocked: edit.lockedLayers.contains(text.id)
             )
         }
         input.media = edit.editedMedia(in: timeline).map { item, span in
             TimelineGeometry.ItemInput(
-                id: item.id, span: span, label: Self.label(of: item)
+                id: item.id, span: span, label: Self.label(of: item), isLocked: edit.lockedLayers.contains(item.id)
             )
         }
         input.captions = edit.editedCaptionInstances.map { line, cueID in
@@ -45,12 +46,18 @@ extension QuickEditViewModel {
         input.showsCaptions = edit.showsCaptions
         input.music = edit.music.compactMap { clip in
             clip.span(inEditOf: edit.editedDuration).map {
-                TimelineGeometry.ItemInput(id: clip.id, span: $0, label: clip.title, beats: musicBeats(of: clip))
+                TimelineGeometry.ItemInput(
+                    id: clip.id, span: $0, label: clip.title, beats: musicBeats(of: clip), isLocked: edit.lockedLayers.contains(clip.id)
+                )
             }
         }
         if edit.snapsToBeats { input.beatSnaps = editedBeats }
         input.voiceOvers = edit.voiceOvers.compactMap { clip in
-            clip.editedSpan(in: timeline).map { TimelineGeometry.ItemInput(id: clip.id, span: $0, label: String(localized: "Voice-over")) }
+            clip.editedSpan(in: timeline).map {
+                TimelineGeometry.ItemInput(
+                    id: clip.id, span: $0, label: String(localized: "Voice-over"), isLocked: edit.lockedLayers.contains(clip.id)
+                )
+            }
         }
         if let recordingStart {
             input.recording = TimeSpan(start: recordingStart, end: max(recordingStart, player.currentTime))
@@ -73,8 +80,8 @@ extension QuickEditViewModel {
         return "\(kind) · \(media.layout.label)"
     }
 
-    /// "1.5×", "Push in", "Muted", the clip's own filter and "Adjusted", and the background's style
-    /// (the clip's, or its recording's), joined: the yellow badge on a clip. A clip that plays with
+    /// "1.5×", "Push in", "Stabilized", "Muted" or "Volume 150%", the clip's own filter and "Adjusted", and the background's style
+    /// (the clip's, or its recording's), joined: the yellow badge on a clip, so every effect shows where it is. A clip that plays with
     /// the take's look says nothing of it.
     static func badge(of segment: EditSegment, background: BackgroundEffect? = nil) -> String? {
         var parts: [String] = []
@@ -84,7 +91,12 @@ extension QuickEditViewModel {
             parts.append(SpeedScale.label(forMultiple: segment.speed))
         }
         if let zoom = segment.zoom { parts.append(zoom.label) }
-        if segment.isMuted { parts.append(String(localized: "Muted")) }
+        if segment.stabilization != nil { parts.append(String(localized: "Stabilized")) }
+        if segment.isMuted {
+            parts.append(String(localized: "Muted"))
+        } else if abs(segment.volume - 1) > 0.001 {
+            parts.append(String(localized: "Volume \(PanelValueFormat.percent.text(segment.volume * 100))"))
+        }
         if let filter = segment.look?.filter { parts.append(filter.label) }
         if segment.look?.overridesAdjustment == true { parts.append(String(localized: "Adjusted")) }
         if let background { parts.append(background.style.label) }
@@ -249,7 +261,7 @@ extension QuickEditViewModel {
                 snapTimes: snapTimes.filter { time in !own.contains { abs($0 - time) < 0.000_1 } }
             )
         case .move(let kind, let id):
-            guard let bar = layerBar(kind, id) ?? (kind == .music ? musicBars.first { $0.id == id } : nil) else { return }
+            guard let bar = layerBar(kind, id) else { return }
             let own = [bar.span.start, bar.span.end]
             handleDrag = TimelineHandleDrag(
                 target: target, playhead: playhead, edgeTime: bar.span.start, clipSpan: nil, clipSpeed: 1, bar: bar,
@@ -349,7 +361,9 @@ extension QuickEditViewModel {
         case .text: textBars.first { $0.id == id }
         case .media: mediaBars.first { $0.id == id }
         case .caption: captionBars.first { captionCueID(forLine: $0.id) == id }
-        case .music, .voiceOver, .recording: nil
+        case .music: musicBars.first { $0.id == id }
+        case .voiceOver: voiceOverBars.first { $0.id == id }
+        case .recording: nil
         }
     }
 
@@ -361,7 +375,7 @@ extension QuickEditViewModel {
         case .caption:
             captionBars.first { captionCueID(forLine: $0.id) == captionCueID(forLine: bar.id) }
         case .music: musicBars.first { $0.id == bar.id }
-        default: nil
+        case .voiceOver: voiceOverBars.first { $0.id == bar.id }
         }
     }
 }

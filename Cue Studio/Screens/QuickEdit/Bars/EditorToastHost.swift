@@ -12,6 +12,8 @@ import SwiftUI
 struct EditorToastHost: ViewModifier {
     @Environment(ToastService.self) private var toast
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// The message and its action, growing with the text size.
+    @ScaledMetric(relativeTo: .footnote) private var messageSize: CGFloat = 13.5
 
     func body(content: Content) -> some View {
         content
@@ -24,7 +26,7 @@ struct EditorToastHost: ViewModifier {
                                 .foregroundStyle(Palette.accText)
                                 .accessibilityHidden(true)
                             Text(message)
-                                .font(.system(size: 13.5, weight: .semibold))
+                                .font(.system(size: messageSize, weight: .semibold))
                                 .lineLimit(1)
                                 .minimumScaleFactor(0.75)
                         }
@@ -36,7 +38,7 @@ struct EditorToastHost: ViewModifier {
                                 toast.dismiss()
                             } label: {
                                 Text(action.title)
-                                    .font(.system(size: 13.5, weight: .semibold))
+                                    .font(.system(size: messageSize, weight: .semibold))
                                     .foregroundStyle(Palette.accText)
                                     .padding(.horizontal, 10)
                                     .frame(height: 26)
@@ -50,7 +52,7 @@ struct EditorToastHost: ViewModifier {
                     }
                     .padding(.leading, 14)
                     .padding(.trailing, toast.action == nil ? 14 : 4)
-                    .frame(height: 34)
+                    .frame(minHeight: 34)
                     .background(Palette.Editor.toast, in: Capsule())
                     .padding(.horizontal, 16)
                     .padding(.top, 10)

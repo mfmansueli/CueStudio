@@ -55,12 +55,12 @@ struct CoverDesignRendererTests {
 
     @Test func eachTypefaceAndEffectChangesThePicture() {
         var fonts = Set<Data>()
-        for font in CoverFont.allCases {
+        for face in TextOverlayFont.editorFonts {
             var design = CoverDesign()
-            design.font = font
+            design.font = CoverFont(face)
             if let data = render(design) { fonts.insert(data) }
         }
-        #expect(fonts.count >= 3)
+        #expect(fonts.count >= 10)
         var dim = CoverDesign()
         dim.effect = .dim
         #expect(render(dim) != render(CoverDesign()))
@@ -91,8 +91,8 @@ struct CoverDesignRendererTests {
     }
 
     @Test func theTypefacesExistAtAnySize() {
-        for font in CoverFont.allCases {
-            #expect(CoverDesignRenderer.words(font, size: 40).pointSize == 40)
+        for face in TextOverlayFont.editorFonts {
+            #expect(CoverDesignRenderer.words(CoverFont(face), size: 40).pointSize == 40)
         }
     }
 }
