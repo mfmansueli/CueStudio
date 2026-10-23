@@ -1457,7 +1457,7 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Desativado:** 40% em todo controle (`Metrics.disabledOpacity`), linhas com chave incluídas, sempre com o motivo escrito (Paste look: "Turn on
   a part to paste it.").
 - **Timeline:** o clipe e o item escolhidos com contorno **amarelo** (como no vídeo e na capa); alças pegas a 44 pt; a etiqueta do clipe diz
-  também "Steady" e "Volume 150%".
+  também "Stabilized" e "Volume 150%".
 - **Barra do player:** ‹ › ao lado do Play andam **um quadro** (pausado; segurar repete), para dividir e aparar no ponto exato
   (`QuickEditViewModel+FrameStep`); somem com texto muito grande.
 - **Barra de ferramentas:** principal com **Adjust** (vídeo inteiro) ao lado de Filters; o esmaecido só no lado onde há mais ferramentas; "Add
