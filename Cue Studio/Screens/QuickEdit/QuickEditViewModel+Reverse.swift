@@ -26,7 +26,7 @@ extension QuickEditViewModel {
             let span = written.reversal.map { TimeSpan(start: $0.span.end - clip.sourceEnd, end: $0.span.end - clip.sourceStart) }
                 ?? TimeSpan(start: 0, end: clip.sourceLength)
             replace(clip, at: index, with: written.id, duration: written.duration, span: span, adding: nil)
-            toast.show(String(localized: "Reversed"), action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() })
+            toast.show(String(localized: "Reversed"), action: undoAction)
             return
         }
         guard clip.sourceLength <= Self.longestReverse + 0.001 else {
@@ -61,7 +61,7 @@ extension QuickEditViewModel {
         replace(clip, at: index, with: source.id, duration: source.duration, span: TimeSpan(start: 0, end: clip.sourceLength), adding: source)
         toast.show(
             String(localized: "Reversed"),
-            action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
+            action: undoAction
         )
     }
 

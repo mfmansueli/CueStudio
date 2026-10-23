@@ -379,7 +379,7 @@ extension QuickEditViewModel {
         let before = Set(edit.captions.map(\.id))
         splitCaption(id, beforeWord: index)
         if let second = edit.captions.first(where: { !before.contains($0.id) }) { selection = .caption(second.id) }
-        toast.show(String(localized: "Line split"))
+        sayUndoable(String(localized: "Line split"))
     }
 
     /// Caption › Join next.
@@ -389,7 +389,7 @@ extension QuickEditViewModel {
             return
         }
         mergeCaptionWithNext(id)
-        toast.show(String(localized: "Joined with next line"))
+        sayUndoable(String(localized: "Joined with next line"))
     }
 
     /// Caption › Delete.
@@ -397,7 +397,7 @@ extension QuickEditViewModel {
         selection = nil
         deleteCaption(id)
         Haptics.delete()
-        toast.show(String(localized: "Line deleted"))
+        sayUndoable(String(localized: "Line deleted"))
     }
 
     /// What was heard in a recording (nil: the take itself).

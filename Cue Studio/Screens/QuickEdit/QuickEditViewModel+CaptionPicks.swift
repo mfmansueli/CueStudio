@@ -171,7 +171,7 @@ extension QuickEditViewModel {
         Haptics.delete()
         toast.show(
             String(localized: "\(count) lines deleted"),
-            action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
+            action: undoAction
         )
     }
 }

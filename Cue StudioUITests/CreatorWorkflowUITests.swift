@@ -205,7 +205,7 @@ final class CreatorWorkflowUITests: XCTestCase {
 
         flow.step("Duplicate")
         flow.tool("duplicate")
-        XCTAssertTrue(flow.toastSays("Clip duplicated"), "No toast after Duplicate")
+        XCTAssertTrue(flow.toastSays("duplicated"), "No toast after Duplicate")
 
         flow.step("Reorder")
         flow.tool("reorder")

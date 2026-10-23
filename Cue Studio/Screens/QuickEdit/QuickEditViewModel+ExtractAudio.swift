@@ -136,6 +136,6 @@ extension QuickEditViewModel {
     private func finishExtracting(_ clip: MusicClip, message: String) {
         selection = .music(clip.id)
         player.seek(to: clip.start)
-        toast.show(message, action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() })
+        toast.show(message, action: undoAction)
     }
 }

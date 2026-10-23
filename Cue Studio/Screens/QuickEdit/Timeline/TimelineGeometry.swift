@@ -17,7 +17,7 @@ import Foundation
 /// - With a panel open the timeline is compact: the video track shrinks to 40 pt and the track the
 ///   panel is about (if any) comes up under the ruler, alone with the video.
 /// - The picked item has a yellow outline and handles (16 pt on a clip, 12 on a track item, held
-///   from 32 pt); its track grows; everything else dims.
+///   from 44 pt); its track grows; everything else dims.
 /// - The cover sits before the start, and a "+" after the end adds a clip.
 nonisolated struct TimelineGeometry: Equatable, Sendable {
     /// What the timeline shows, read from the edit.
@@ -200,8 +200,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     static let zoomRange: ClosedRange<CGFloat> = 0.35...5
     static let clipHandleWidth: CGFloat = 16
     static let itemHandleWidth: CGFloat = 12
-    /// The least a handle can be held from.
-    static let handleReach: CGFloat = 32
+    /// The least a handle can be held from: a full 44 pt touch target, so trimming doesn't need a fingertip's precision.
+    static let handleReach: CGFloat = 44
     /// The gutter with each track's icon, and where its strip starts and ends (from the right
     /// edge of the timeline). Items scroll under the gutter.
     static let gutterWidth: CGFloat = 38

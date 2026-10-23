@@ -60,7 +60,8 @@ struct QuickEditSoundTests {
         #expect(clip.length == 54)
         #expect(viewModel.selectedMusicID == clip.id)
         #expect(viewModel.musicBars.first?.span == TimeSpan(start: 10, end: 64))
-        #expect(scenario.toast.message == "Music added at 40%")
+        #expect(scenario.toast.message == "Music added at \(DurationText.editor(10)) · 40%")
+        #expect(scenario.toast.action?.title == "Undo")
         viewModel.undo()
         #expect(viewModel.edit.music.isEmpty)
     }

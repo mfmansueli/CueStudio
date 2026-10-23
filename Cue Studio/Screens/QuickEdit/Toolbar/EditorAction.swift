@@ -51,6 +51,8 @@ enum EditorAction: Hashable {
     case openTextAnimation
     case deleteText
     // Captions menu
+    /// A new line at the playhead, in the Captions panel.
+    case addCaptionLine
     case writeCaptionsByHand
     /// Edit by text: cut words out of the video.
     case editByText

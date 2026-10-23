@@ -53,7 +53,7 @@ extension QuickEditViewModel {
         }
         commit(next)
         selection = .clip(edit.timeline.segments[index + 1].id)
-        toast.show(String(localized: "Split at \(DurationText.editor(time))"))
+        sayUndoable(String(localized: "Split at \(DurationText.editor(time))"))
     }
 
     /// Copies a clip right after itself, with what plays on it, and picks the copy.
@@ -62,7 +62,7 @@ extension QuickEditViewModel {
         duplicateSection(id)
         let segments = edit.timeline.segments
         if segments.indices.contains(index + 1) { selection = .clip(segments[index + 1].id) }
-        toast.show(String(localized: "Clip duplicated"))
+        sayUndoable(String(localized: "\(clipName(at: index)) duplicated after it"))
     }
 
     /// Takes a clip out of the video (never out of the recording). The last clip stays.
@@ -73,11 +73,12 @@ extension QuickEditViewModel {
             return
         }
         var next = edit.timeline
+        let name = clipName(at: edit.timeline.index(ofSegment: id) ?? 0)
         guard next.removeSegment(id: id) else { return }
         selection = nil
         commit(next)
         Haptics.delete()
-        toast.show(String(localized: "Clip deleted · Tap Undo"))
+        sayUndoable(String(localized: "\(name) deleted"))
     }
 
     // MARK: - Private

@@ -93,6 +93,6 @@ extension QuickEditViewModel {
 
     func deleteVoiceOver(_ id: UUID) {
         change { $0.voiceOvers.removeAll { $0.id == id } }
-        toast.show(String(localized: "Voice-over deleted"))
+        sayUndoable(String(localized: "Voice-over deleted"))
     }
 }

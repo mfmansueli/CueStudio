@@ -52,7 +52,7 @@ extension QuickEditViewModel {
         change { CaptionStyleCopy.apply(look, to: &$0) }
         toast.show(
             String(localized: "Captions use this style"),
-            action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
+            action: undoAction
         )
     }
 

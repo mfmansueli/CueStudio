@@ -78,7 +78,7 @@ extension QuickEditViewModel {
         Haptics.delete()
         toast.show(
             String(localized: "\(picked.count) words cut · \(DurationText.tenths(removed))"),
-            action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
+            action: undoAction
         )
     }
 

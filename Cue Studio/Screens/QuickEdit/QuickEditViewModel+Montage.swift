@@ -131,7 +131,7 @@ extension QuickEditViewModel {
         next.sources.append(source)
         commit(EditSnapshot(next))
         player.seek(to: next.timeline.editedStart(ofSegmentAt: next.timeline.index(ofSegment: id) ?? 0))
-        toast.show(String(localized: "\(source.title) added"))
+        sayUndoable(String(localized: "\(source.title) added"))
     }
 
     /// Reorder: the clips in a list to drag, from the clip's tools or holding a clip on the timeline. One clip: nothing to order.
@@ -200,7 +200,7 @@ extension QuickEditViewModel {
         player.seek(to: next.timeline.editedStart(ofSegmentAt: inserted))
         toast.show(
             String(localized: "Frame frozen for \(Int(Self.freezeLength)) seconds · drag its end to hold longer"),
-            action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
+            action: undoAction
         )
     }
 

@@ -148,7 +148,7 @@ struct TimelineGeometryTests {
         let start = geometry.handles[0]
         #expect(start.target == .clip(first, .start))
         #expect(start.frame.width == 16)
-        #expect(start.hitFrame.width >= 32)
+        #expect(start.hitFrame.width >= 44)
         // The hit area grows outward, so the clip itself stays tappable.
         #expect(start.hitFrame.maxX == start.frame.maxX)
     }

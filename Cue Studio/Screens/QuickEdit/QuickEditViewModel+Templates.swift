@@ -50,7 +50,7 @@ extension QuickEditViewModel {
         player.pause()
         toast.show(
             String(localized: "\(template.label) on the whole video"),
-            action: ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
+            action: undoAction
         )
     }
 }

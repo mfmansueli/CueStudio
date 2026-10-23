@@ -73,8 +73,8 @@ extension QuickEditViewModel {
         return "\(kind) · \(media.layout.label)"
     }
 
-    /// "1.5×", "Push in", "Muted", the clip's own filter and "Adjusted", and the background's style
-    /// (the clip's, or its recording's), joined: the yellow badge on a clip. A clip that plays with
+    /// "1.5×", "Push in", "Steady", "Muted" or "Volume 150%", the clip's own filter and "Adjusted", and the background's style
+    /// (the clip's, or its recording's), joined: the yellow badge on a clip, so every effect shows where it is. A clip that plays with
     /// the take's look says nothing of it.
     static func badge(of segment: EditSegment, background: BackgroundEffect? = nil) -> String? {
         var parts: [String] = []
@@ -84,7 +84,12 @@ extension QuickEditViewModel {
             parts.append(SpeedScale.label(forMultiple: segment.speed))
         }
         if let zoom = segment.zoom { parts.append(zoom.label) }
-        if segment.isMuted { parts.append(String(localized: "Muted")) }
+        if segment.stabilization != nil { parts.append(String(localized: "Steady")) }
+        if segment.isMuted {
+            parts.append(String(localized: "Muted"))
+        } else if abs(segment.volume - 1) > 0.001 {
+            parts.append(String(localized: "Volume \(PanelValueFormat.percent.text(segment.volume * 100))"))
+        }
         if let filter = segment.look?.filter { parts.append(filter.label) }
         if segment.look?.overridesAdjustment == true { parts.append(String(localized: "Adjusted")) }
         if let background { parts.append(background.style.label) }
