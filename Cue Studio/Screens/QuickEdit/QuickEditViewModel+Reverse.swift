@@ -54,8 +54,8 @@ extension QuickEditViewModel {
             toast.show(String(localized: "Can’t reverse this clip"))
             return
         }
-        // Closed meanwhile: nothing will play it.
-        guard !isClosed else {
+        // Cancelled as it finished, or closed meanwhile: nothing will play it.
+        guard !Task.isCancelled, !isClosed else {
             EditMediaFiles.remove([name])
             return
         }

@@ -53,6 +53,29 @@ struct EditorJobsTests {
         #expect(!ran)
     }
 
+    @Test func whatAJobMakesAsItIsCancelledIsDiscarded() async {
+        let jobs = EditorJobs()
+        let kind = EditorJobs.Kind.importing(UUID())
+        var discarded: [Int] = []
+        var thrown: (any Error)?
+        let running = Task {
+            do {
+                // Work that finishes whatever happens (a file already copied).
+                _ = try await jobs.run(kind, discard: { discarded.append($0) }, work: {
+                    try? await Task.sleep(for: .milliseconds(50))
+                    return 42
+                })
+            } catch {
+                thrown = error
+            }
+        }
+        await Wait.until { jobs.isRunning(kind) }
+        jobs.close()
+        await running.value
+        #expect(thrown is CancellationError)
+        #expect(discarded == [42])
+    }
+
     @Test func cancellingOneKindLeavesTheOthers() async {
         let jobs = EditorJobs()
         var cancelled: [String] = []

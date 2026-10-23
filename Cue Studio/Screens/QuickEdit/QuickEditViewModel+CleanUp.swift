@@ -46,6 +46,8 @@ extension QuickEditViewModel {
                 }
                 listened.append(source)
             } catch {
+                // Stopped by leaving the editor: not a failure to report.
+                guard !Task.isCancelled, !isClosed else { return }
                 noteFailure(error, "cleanUp")
                 failed = true
             }

@@ -75,22 +75,39 @@ final class EditorJobs {
     }
 
     /// Runs `work` as the job of `kind` (cancelling the one running) and hands back what it makes: the caller waits for it,
-    /// and `cancel(kind)` or closing the editor stops it (`CancellationError`).
-    func run<Value: Sendable>(_ kind: Kind, _ work: @escaping @MainActor () async throws -> Value) async throws -> Value {
+    /// and `cancel(kind)` or closing the editor stops it (`CancellationError`), even when the work had already made its value
+    /// as Cancel came: that value is handed to `discard` (a file copied in is deleted) instead.
+    func run<Value: Sendable>(
+        _ kind: Kind, discard: @escaping @MainActor (Value) -> Void = { _ in }, work: @escaping @MainActor () async throws -> Value
+    ) async throws -> Value {
         guard !isClosed else { throw CancellationError() }
         cancel(kind)
         let ticket = Ticket(kind: kind)
+        let stopped = Stopped()
         let inner = Task { try await work() }
         let task = Task { [weak self] in
             _ = await inner.result
             self?.finished(ticket)
         }
-        running[kind] = Running(ticket: ticket, task: task) { inner.cancel() }
-        return try await withTaskCancellationHandler {
+        running[kind] = Running(ticket: ticket, task: task) {
+            stopped.isStopped = true
+            inner.cancel()
+        }
+        let value = try await withTaskCancellationHandler {
             try await inner.value
         } onCancel: {
             inner.cancel()
         }
+        guard !stopped.isStopped, !isClosed else {
+            discard(value)
+            throw CancellationError()
+        }
+        return value
+    }
+
+    /// Whether a job run with `run` was stopped.
+    private final class Stopped {
+        var isStopped = false
     }
 
     /// Starts a tool's work, side by side with any other tool's.

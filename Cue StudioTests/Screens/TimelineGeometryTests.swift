@@ -139,6 +139,17 @@ struct TimelineGeometryTests {
         #expect(geometry.clips[1].frame.minX == CGFloat(10 * 220 + 1))
     }
 
+    /// A picked cut is between clips: nothing dims, no lane rises, its mark shows picked.
+    @Test func aPickedCutDimsNothing() {
+        let geometry = TimelineGeometry(input { input in
+            input.selection = .join(second)
+            input.selectedJoin = second
+        })
+        #expect(geometry.clips.allSatisfy { !$0.isDimmed })
+        #expect(geometry.handles.isEmpty)
+        #expect(geometry.joins.first?.isSelected == true)
+    }
+
     @Test func aPickedClipHasHandlesAndTheRestDims() {
         let geometry = TimelineGeometry(input { $0.selection = .clip(first) })
         #expect(geometry.clips[0].isSelected)

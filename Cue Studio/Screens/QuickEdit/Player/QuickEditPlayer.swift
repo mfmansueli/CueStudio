@@ -457,7 +457,10 @@ final class QuickEditPlayer: EditPlayback {
         let speeds: [Double]
         /// One per span: a curved piece's curve (its timing is new pieces).
         let curves: [SpeedCurve?]
+        /// Where the transitions and each clip's zoom play, measured on the edit as made (`EditedComposition`): trimming a
+        /// short first or last clip next to a transition, or a zoomed one, changes them though the pieces stay.
         let transitions: [TransitionWindow]
+        let zooms: [ZoomWindow?]
         /// Each piece's sound, zoom and steadiness (its volume, mute, pitch, zoom and strength, Stabilize): they change
         /// the item like a look does.
         let pieceSettings: [[Double]]
@@ -501,7 +504,8 @@ final class QuickEditPlayer: EditPlayback {
             self.sources = sources
             self.speeds = speeds
             self.curves = curves
-            transitions = TransitionWindow.windows(in: reachable)
+            transitions = EditedComposition.transitionWindows(of: edit.timeline, reachesWholeRecording: true)
+            zooms = EditedComposition.zoomWindows(of: edit.timeline, reachesWholeRecording: true)
             pieceSettings = edit.timeline.segments.map { segment in
                 [
                     segment.volume, segment.isMuted ? 1 : 0, segment.keepsPitch ? 1 : 0,

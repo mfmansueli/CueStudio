@@ -54,7 +54,7 @@ final class EditMediaImporter: EditMediaImporting {
             if Task.isCancelled { throw CancellationError() }
             throw error
         }
-        try Task.checkCancellation()
+        // Made even if Cancel came meanwhile: the caller deletes a copy it no longer wants.
         return value
     }
 

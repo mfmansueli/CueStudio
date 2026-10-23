@@ -48,10 +48,28 @@ actor RecordingSoundCache {
     private let fixedBudget: Int64?
     /// How long a file just used stays, whatever the limits (`inUse`; tests make it 0).
     private let keepsInUse: TimeInterval
+    /// Preparations running now (`RecordingSounds.prepare`), the files they handed out so far, and those the last one finished
+    /// handed out: kept whatever the limits, so a long montage's first treatment isn't deleted before its last one is made, nor a
+    /// file the preview plays now.
+    private var preparations = 0
+    private var handingOut: Set<Key> = []
+    private var handedOut: Set<Key> = []
 
     init(byteBudget: Int64? = nil, keepsInUse: TimeInterval = RecordingSoundCache.inUse) {
         fixedBudget = byteBudget
         self.keepsInUse = keepsInUse
+    }
+
+    /// A preparation of an edit's sounds begins: what it is handed is kept until the next one finishes.
+    func beginPreparation() {
+        preparations += 1
+    }
+
+    func endPreparation() {
+        preparations = max(0, preparations - 1)
+        guard preparations == 0 else { return }
+        handedOut = handingOut
+        handingOut = []
     }
 
     /// A quarter of the space free on the iPhone, between 512 MB and 3 GB: a few treatments of an hour-long take, never the
@@ -133,7 +151,9 @@ actor RecordingSoundCache {
         let now = Date()
         while order.count > Self.fileLimit || sizes.values.reduce(0, +) > budget {
             // The least recently used that nothing used just now; none such: the cache grows for a while.
-            guard let index = order.firstIndex(where: { now.timeIntervalSince(lastUsed[$0] ?? .distantPast) > keepsInUse }) else { break }
+            guard let index = order.firstIndex(where: { key in
+                now.timeIntervalSince(lastUsed[key] ?? .distantPast) > keepsInUse && !handingOut.contains(key) && !handedOut.contains(key)
+            }) else { break }
             let oldest = order.remove(at: index)
             lastUsed[oldest] = nil
             sizes[oldest] = nil
@@ -153,6 +173,7 @@ actor RecordingSoundCache {
     /// `key` was just used: the last to go.
     private func touch(_ key: Key) {
         if case .audio = key { return }
+        if preparations > 0 { handingOut.insert(key) }
         order.removeAll { $0 == key }
         order.append(key)
         lastUsed[key] = Date()

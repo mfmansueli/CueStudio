@@ -17,9 +17,12 @@ extension QuickEditViewModel {
         work = EditorWork(kind: .importing, job: job)
         defer { if work?.job == job { work = nil } }
         let importer = mediaImporter
-        return try await jobs.run(job) { [weak self] in
-            try await importer.importMedia(item) { fraction in self?.reportWork(job, fraction) }
-        }
+        // Brought in as Cancel came: the copy goes.
+        return try await jobs.run(
+            job,
+            discard: { EditMediaFiles.remove([$0.fileName]) },
+            work: { [weak self] in try await importer.importMedia(item) { fraction in self?.reportWork(job, fraction) } }
+        )
     }
 
     /// How far the work run as `job` is, unless it was cancelled meanwhile.

@@ -64,6 +64,22 @@ struct QuickEditPlayerItemKeyTests {
         #expect(QuickEditPlayer.ItemKey(edit) != before)
     }
 
+    /// A trim usually only moves the window the item plays (the handles scrub without a rebuild), but a zoomed first clip's
+    /// zoom runs over the clip as made, so trimming it is a new item; and the transitions are measured on the edit as made.
+    @Test func trimmingAZoomedFirstClipMakesANewItemAndAPlainOneDoesnt() throws {
+        var plain = TakeEdit(sourceDuration: 20, aspect: .portrait)
+        let before = QuickEditPlayer.ItemKey(plain)
+        plain.timeline.trimStart(to: 2)
+        #expect(QuickEditPlayer.ItemKey(plain) == before)
+        var zoomed = TakeEdit(sourceDuration: 20, aspect: .portrait)
+        var clip = try #require(zoomed.timeline.segments.first)
+        clip.zoom = .pushIn
+        _ = zoomed.timeline.replaceSegment(clip)
+        let zoomedBefore = QuickEditPlayer.ItemKey(zoomed)
+        zoomed.timeline.trimStart(to: 2)
+        #expect(QuickEditPlayer.ItemKey(zoomed) != zoomedBefore)
+    }
+
     /// The take, then the same seconds (2 to 8, with room around them for a transition) of three other recordings; the
     /// third clip, the one changed, comes in with a dissolve.
     private static func montage() -> TakeEdit {

@@ -24,6 +24,19 @@ nonisolated struct RecordingSounds: Hashable, Sendable {
     /// The sounds `edit` plays with: each treated recording's treatment, then, when the edit evens levels out, each brought to
     /// the take's level. `takeURL` is the take's video; the other recordings are read from the edit's media.
     static func prepare(for edit: TakeEdit, takeURL: URL, cache: RecordingSoundCache = .shared) async throws -> RecordingSounds {
+        // What this preparation is handed stays in the cache until the next one finishes (`RecordingSoundCache`).
+        await cache.beginPreparation()
+        do {
+            let sounds = try await made(for: edit, takeURL: takeURL, cache: cache)
+            await cache.endPreparation()
+            return sounds
+        } catch {
+            await cache.endPreparation()
+            throw error
+        }
+    }
+
+    private static func made(for edit: TakeEdit, takeURL: URL, cache: RecordingSoundCache) async throws -> RecordingSounds {
         let urls = Dictionary(uniqueKeysWithValues: edit.playedSources.map { ($0.id as UUID?, EditMediaFiles.url(for: $0.fileName)) })
         func video(_ id: UUID?) -> URL? { id == nil ? takeURL : urls[id] }
         let levels = edit.evensOutLevels

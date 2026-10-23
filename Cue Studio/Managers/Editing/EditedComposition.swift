@@ -130,9 +130,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             takeTracks.append((varispeed, levels(for: edit.timeline, plays: playsVarispeed), .varispeed))
         }
 
-        // Measured on the edit as made (the clips grown for the preview would give a transition more room than the export
-        // has), then moved to where the edit plays.
-        let windows = TransitionWindow.windows(in: made.timeline).map { $0.shifted(by: leadIn, pieces: leadPieces) }
+        let windows = transitionWindows(of: made.timeline, reachesWholeRecording: options.reachesWholeRecording)
+        let zooms = zoomWindows(of: made.timeline, reachesWholeRecording: options.reachesWholeRecording)
         var dissolves = windows.filter { $0.transition.showsBothSides }
         var blendTrack = dissolves.isEmpty ? nil : composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
         if let track = blendTrack, (try? insertOtherSides(of: dissolves, from: recording, into: track)) == nil {
@@ -170,18 +169,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             let middle = CMTimeMultiplyByRatio(stretch.range.start + stretch.range.end, multiplier: 1, divisor: 2).seconds
             let index = timeline.segmentIndex(atEdited: middle)
             let playedSegment = timeline.segments[index]
-            // A clip's zoom runs over the clip as made (the preview's grown first and last clips are longer), where it plays.
+            // The piece of the edit as made this one plays (the grown timeline may put one before it).
             let shownIndex = index - leadPieces
-            let zoom: ZoomWindow? = if timeline.segments[index].zoom != nil, made.timeline.segments.indices.contains(shownIndex) {
-                made.timeline.segments[shownIndex].zoom.map {
-                    ZoomWindow(
-                        zoom: $0, start: leadIn + made.timeline.editedStart(ofSegmentAt: shownIndex),
-                        duration: made.timeline.segments[shownIndex].duration, amount: made.timeline.segments[shownIndex].zoomAmount
-                    )
-                }
-            } else {
-                nil
-            }
+            let zoom = zooms.indices.contains(shownIndex) ? zooms[shownIndex] : nil
             // Before the cut the blend track holds the incoming piece; after it, the outgoing one.
             let blendSegment = stretch.dissolve.map { timeline.segments[middle < $0.cut ? $0.join : $0.join - 1] }
             // The media tracks with a video in this stretch.
@@ -360,6 +350,26 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             }
         }
         return result
+    }
+
+    /// The transitions of the edit as made, where the item plays them: measured on the edit itself (clips grown to the whole
+    /// recording for the editor's preview would give a transition more room than the export has), then moved by the lead-in
+    /// and the pieces the growing put before them. The player keys its item on these too (`QuickEditPlayer.ItemKey`).
+    static func transitionWindows(of made: EditTimeline, reachesWholeRecording: Bool) -> [TransitionWindow] {
+        let windows = TransitionWindow.windows(in: made)
+        guard reachesWholeRecording else { return windows }
+        return windows.map { $0.shifted(by: made.reachableLeadIn, pieces: made.reachableLeadPieces) }
+    }
+
+    /// Each piece's zoom (by its index in the edit as made), over the piece as made and where the item plays it.
+    static func zoomWindows(of made: EditTimeline, reachesWholeRecording: Bool) -> [ZoomWindow?] {
+        let leadIn = reachesWholeRecording ? made.reachableLeadIn : 0
+        return made.segments.indices.map { index in
+            let segment = made.segments[index]
+            return segment.zoom.map {
+                ZoomWindow(zoom: $0, start: leadIn + made.editedStart(ofSegmentAt: index), duration: segment.duration, amount: segment.zoomAmount)
+            }
+        }
     }
 
     /// The crop at the requested quality, with even dimensions. Never upscaled.

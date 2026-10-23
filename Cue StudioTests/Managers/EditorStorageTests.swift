@@ -79,6 +79,21 @@ struct EditorStorageTests {
         #expect(RecordingSoundCache.byteBudget(freeSpace: 1_000_000_000) == 512_000_000)
     }
 
+    /// A long montage's treatments, handed out by one preparation, all stay while it runs and until the next one finishes, even
+    /// past the budget and long after they were made.
+    @Test func whatAPreparationIsHandedStaysPastTheBudget() async throws {
+        let input = try TestTone.make(seconds: 2)
+        defer { try? FileManager.default.removeItem(at: input) }
+        let size = Int64(try #require(try input.resourceValues(forKeys: [.fileSizeKey]).fileSize))
+        let cache = RecordingSoundCache(byteBudget: size * 3 / 2, keepsInUse: 0)
+        await cache.beginPreparation()
+        var made: [URL] = []
+        for step in 1...3 { made.append(try await cache.leveled(input, gain: -Float(step))) }
+        await cache.endPreparation()
+        defer { made.forEach { try? FileManager.default.removeItem(at: $0) } }
+        #expect(made.allSatisfy { FileManager.default.fileExists(atPath: $0.path(percentEncoded: false)) })
+    }
+
     @Test func aDiagnosticCarriesItsKindSizeAndACutStack() {
         let stack = Data(repeating: UInt8(ascii: "a"), count: DeviceDiagnosticReport.callStackLimit + 500)
         let report = DeviceDiagnosticReport(kind: .hang, amount: 1_200, build: "42", system: "iPhone OS 27.0", callStack: stack)
