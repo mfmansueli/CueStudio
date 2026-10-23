@@ -41,7 +41,9 @@ struct QuickEditView: View {
         let languages = services.languages
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
-            editing: services.editing, drafts: services.drafts, toast: services.toast, motion: services.motion,
+            editing: services.editing, drafts: services.drafts, toast: services.toast,
+            editorPreferences: EditorPreferencesStore(defaults: services.defaults), prompterLook: services.preferences.prompter,
+            motion: services.motion,
             speechLanguage: { languages.captionRequest(for: $0) },
             likelySpokenLanguages: { languages.likelySpokenLanguages(for: $0) },
             languageConflict: { languages.languageConflict(for: $0) }
@@ -221,6 +223,12 @@ struct QuickEditView: View {
                 .frame(width: width, height: layout.preview)
                 .contentShape(Rectangle())
                 .onTapGesture { viewModel.tapOutsideVideo() }
+                .overlay(alignment: .top) {
+                    // Voice-over's "Show script": across the preview's whole width (wider than a vertical video), under REC.
+                    if viewModel.showsNarrationScriptOverlay {
+                        NarrationScriptOverlay(viewModel: viewModel, size: CGSize(width: width, height: layout.preview))
+                    }
+                }
             EditorPlayerBar(viewModel: viewModel)
                 .frame(height: layout.playerBar)
             timeline(layout)

@@ -42,6 +42,8 @@ extension QuickEditViewModel {
             return
         }
         recordingStart = start
+        // The script on screen starts with the recording (`QuickEditViewModel+NarrationScript`).
+        narrationPace.start(at: .now)
         Haptics.record()
         player.isMuted = true
         player.play()
@@ -51,6 +53,7 @@ extension QuickEditViewModel {
     func stopVoiceOver() {
         let start = recordingStart
         recordingStart = nil
+        narrationPace.reset()
         player.pause()
         player.isMuted = false
         guard let recorded = recorder.stop(), let start else { return }
@@ -75,6 +78,7 @@ extension QuickEditViewModel {
     func cancelVoiceOver() {
         recorder.cancel()
         recordingStart = nil
+        narrationPace.reset()
         player.pause()
         player.isMuted = false
     }

@@ -15,10 +15,12 @@ extension QuickEditViewModel {
     var isPickingCaptions: Bool { captionPicks != nil }
 
     /// How tall the open panel is: Captions grows to the styling panels' height while lines are picked, so the list, its
-    /// header and its actions all have room.
+    /// header and its actions all have room; Voice-over is medium when the take has a script to show.
     var openPanelSize: EditorPanelSize? {
         guard let panel else { return nil }
-        return panel == .captions && isPickingCaptions ? .full : panel.size
+        if panel == .captions && isPickingCaptions { return .full }
+        if panel == .voiceOver && offersNarrationScript { return .medium }
+        return panel.size
     }
 
     /// Starts picking lines, with `first` picked (a line held in the list), or none.

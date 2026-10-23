@@ -40,7 +40,8 @@ struct QuickEditPreview: View {
                 if isFullScreen { playBadge }
             }
             .overlay {
-                if !isFullScreen, viewModel.panel != .crop {
+                // Under Voice-over's script (`NarrationScriptOverlay`) the handles would only draw over the words.
+                if !isFullScreen, viewModel.panel != .crop, !viewModel.showsNarrationScriptOverlay {
                     OverlayEditingLayer(viewModel: viewModel, size: size)
                 }
             }
