@@ -12,11 +12,6 @@ extension QuickEditViewModel {
     /// Shortest part a split leaves on either side.
     static let minimumSplitPart: TimeInterval = 0.1
 
-    /// The clip under the playhead.
-    var clipIndexAtPlayhead: Int {
-        edit.timeline.segmentIndex(atEdited: player.currentTime)
-    }
-
     /// Whether the playhead is inside the picked clip, far enough from its ends to split it.
     var canSplitSelectedClip: Bool {
         guard let id = selection?.clipID, let index = edit.timeline.index(ofSegment: id) else { return false }

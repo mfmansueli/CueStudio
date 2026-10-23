@@ -22,7 +22,7 @@ import Foundation
 /// (`QuickEditViewModel+Text`, `+Media`, `+VoiceOver`, `+ClipSettings`, `+PausesPanel`, `+Style`, `+CleanUp`).
 @MainActor
 @Observable
-final class QuickEditViewModel: EditorHost {
+final class QuickEditViewModel: EditorHost, EditorPart {
     /// Whether the recording could be opened.
     enum Source: Equatable {
         case loading, ready, unavailable
@@ -86,9 +86,6 @@ final class QuickEditViewModel: EditorHost {
     var focusesTextField = false
     /// The edit and its undo steps (`EditDocument`): the edit changes only there, and this hears each change.
     let document: EditDocument
-    /// The recipe being edited. It changes only through the document: as an undo step (`changeEdit`, `change`, `commit`),
-    /// by Undo and Redo, or with what listening found (`updateFindings`).
-    var edit: TakeEdit { document.edit }
     private(set) var source: Source = .loading
     /// The clip tapped on the timeline. Separate from the playhead: scrubbing doesn't change it.
     var selectedSegmentID: UUID? {
@@ -257,11 +254,6 @@ final class QuickEditViewModel: EditorHost {
     let captions: CaptionsViewModel
     /// The cover: Cover Studio over the editor, and the cover drawn for the timeline's block (`CoverViewModel`).
     let cover: CoverViewModel
-    /// Media files copied in while Quick edit is open, so what the edit doesn't keep is removed (`EditorSession`).
-    var importedFiles: Set<String> {
-        get { session.importedFiles }
-        set { session.importedFiles = newValue }
-    }
     /// Opens Cue's page in the Settings app (a toast's "Settings" when the microphone is off for Cue); tests count it.
     @ObservationIgnored var opensSettings: @MainActor () -> Void = { AppSettingsLink.open() }
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
@@ -269,8 +261,6 @@ final class QuickEditViewModel: EditorHost {
     /// Everything the editor started and waits for (`EditorJobs`): Auto, captions, Track, the cover, a short preview, the
     /// sound compared, the draft, beats, Clean Up and tools' work. Closing cancels it all.
     @ObservationIgnored let jobs: EditorJobs
-    /// The editor closed: what a job hands back after is dropped.
-    var isClosed: Bool { jobs.isClosed }
 
     init(
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
@@ -556,44 +546,6 @@ final class QuickEditViewModel: EditorHost {
         guard canRedo, document.redo() else { return }
         transcriptSelection = nil
         AccessibilityNotification.Announcement(String(localized: "Redone")).post()
-    }
-
-    /// What undo keeps of the edit (`EditDocument.snapshot`).
-    var snapshot: EditSnapshot { document.snapshot }
-
-    /// A new timeline (and decisions about suggestions) as an undo step (`EditDocument.commit`).
-    func commit(_ timeline: EditTimeline, suggestions: [CleanUpSuggestion]? = nil, key: String? = nil) {
-        document.commit(timeline, suggestions: suggestions, key: key)
-    }
-
-    /// What undo keeps, changed as an undo step (`EditDocument.commit`).
-    func commit(_ next: EditSnapshot, key: String? = nil) {
-        document.commit(next, key: key)
-    }
-
-    /// Texts, media, voice-overs, the cover or the style changed as an undo step (`EditDocument.change`).
-    func change(key: String? = nil, _ update: (inout EditSnapshot) -> Void) {
-        document.change(key: key, update)
-    }
-
-    /// Anything the creator decides on the edit, changed as an undo step (`EditDocument.changeEdit`).
-    func changeEdit(key: String? = nil, _ update: (inout TakeEdit) -> Void) {
-        document.changeEdit(key: key, update)
-    }
-
-    /// What listening found, laid on without an undo step (`EditDocument.updateFindings`).
-    func updateFindings(_ update: (inout TakeEdit) -> Void) {
-        document.updateFindings(update)
-    }
-
-    /// A gesture or a sheet starts changing something: all of it is one undo step (`EditDocument.beginChange`).
-    func beginChange() {
-        document.beginChange()
-    }
-
-    /// The gesture or sheet is over (`EditDocument.endChange`).
-    func endChange() {
-        document.endChange()
     }
 
     /// Old takes use a matching version only; a newer script is never an alignment reference.

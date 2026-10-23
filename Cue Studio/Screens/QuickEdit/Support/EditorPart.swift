@@ -13,7 +13,8 @@ protocol EditorPart: AnyObject {
 }
 
 extension EditorPart {
-    /// The recipe being edited.
+    /// The recipe being edited. It changes only through the document: as an undo step (`changeEdit`, `change`, `commit`), by
+    /// Undo and Redo, or with what listening found (`updateFindings`).
     var edit: TakeEdit { session.document.edit }
     /// What undo keeps of the edit.
     var snapshot: EditSnapshot { session.document.snapshot }

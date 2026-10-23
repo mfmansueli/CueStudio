@@ -72,16 +72,6 @@ extension QuickEditViewModel {
         }
     }
 
-    /// Which clip a clip panel changes: "This clip" while the video is one clip, else "Clip 2 of 3", so the creator always knows
-    /// where the change lands.
-    var clipScope: String {
-        let segments = edit.timeline.segments
-        guard segments.count > 1, let id = targetClip?.id, let index = segments.firstIndex(where: { $0.id == id }) else {
-            return String(localized: "This clip")
-        }
-        return String(localized: "Clip \(index + 1) of \(segments.count)")
-    }
-
     private func captionSubtitle(_ panel: EditorPanel) -> String {
         switch panel {
         case .autoCaptions: return String(localized: "Cue drafts the lines. Fix any word.")
@@ -113,12 +103,5 @@ extension QuickEditViewModel {
     private var transitionSubtitle: String {
         guard let index = selectedJoinIndex else { return "" }
         return String(localized: "Cut at \(DurationText.editor(edit.timeline.editedStart(ofSegmentAt: index)))")
-    }
-
-    /// The clip a clip panel works on: the picked one, else the one under the playhead.
-    var targetClip: EditSegment? {
-        if let id = selection?.clipID, let segment = edit.timeline.segment(id: id) { return segment }
-        let segments = edit.timeline.segments
-        return segments.indices.contains(clipIndexAtPlayhead) ? segments[clipIndexAtPlayhead] : segments.first
     }
 }

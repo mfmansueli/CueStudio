@@ -156,12 +156,4 @@ extension QuickEditViewModel {
         guard comparesPicture || edit.hasPictureLook else { return }
         comparesPicture.toggle()
     }
-
-    // MARK: - Recordings
-
-    /// The file a recording is read from: the take's own (nil), or a montage's other recording.
-    func recordingURL(of sourceID: UUID?) -> URL? {
-        guard let sourceID else { return videoURL }
-        return edit.sources.first { $0.id == sourceID }.map { EditMediaFiles.url(for: $0.fileName) }
-    }
 }

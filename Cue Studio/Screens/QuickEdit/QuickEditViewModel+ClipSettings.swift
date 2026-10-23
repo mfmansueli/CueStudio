@@ -87,20 +87,4 @@ extension QuickEditViewModel {
     func setClipMuted(_ muted: Bool) {
         updateClip { $0.isMuted = muted }
     }
-
-    // MARK: - Private
-
-    /// Changes the picked clip (or the one under the playhead) as an undo step.
-    func updateClip(key: String? = nil, _ update: (inout EditSegment) -> Void) {
-        guard var clip = targetClip else { return }
-        update(&clip)
-        var timeline = edit.timeline
-        guard timeline.replaceSegment(clip), timeline != edit.timeline else { return }
-        commit(timeline, key: key.map { "\($0).\(clip.id)" })
-    }
-
-    /// Plays `range` (edited seconds) once, then puts the playhead back where it was (or at `back`).
-    func previewPart(_ range: ClosedRange<TimeInterval>, back: TimeInterval? = nil) {
-        session.previewPart(range, back: back)
-    }
 }
