@@ -14,7 +14,7 @@ struct CaptionPlayheadWatcher: View {
     var body: some View {
         Color.clear
             .frame(width: 0, height: 0)
-            .onChange(of: viewModel.activeCaptionCueID, initial: true) { _, id in onChange(id) }
+            .onChange(of: viewModel.captions.activeCaptionCueID, initial: true) { _, id in onChange(id) }
             .accessibilityHidden(true)
     }
 }

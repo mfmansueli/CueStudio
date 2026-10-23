@@ -43,30 +43,30 @@ struct QuickEditCaptionPanelTests {
 
     @Test func aLineTappedInTheListIsPickedAndShown() async {
         let scenario = await makeScenario(lines: [(0.3, 2.3, "Comidas de SP"), (2.3, 4, "que são só pra turista.")])
-        let line = scenario.viewModel.captionListLines[1]
-        scenario.viewModel.pickCaptionLine(line.cueID, at: line.line.start)
+        let line = scenario.viewModel.captions.captionListLines[1]
+        scenario.viewModel.captions.pickCaptionLine(line.cueID, at: line.line.start)
         #expect(scenario.viewModel.selection == .caption(line.cueID))
         #expect(abs(scenario.player.currentTime - 2.31) < 0.001)
-        #expect(scenario.viewModel.activeCaptionCueID == line.cueID)
+        #expect(scenario.viewModel.captions.activeCaptionCueID == line.cueID)
     }
 
     @Test func nudgingAnEdgeNeverCrossesTheNeighborAndShowsIt() async {
         let scenario = await makeScenario(lines: [(0, 2, "First"), (2.5, 4, "Second")])
         let viewModel = scenario.viewModel
-        let first = viewModel.captionListLines[0].cueID
+        let first = viewModel.captions.captionListLines[0].cueID
         let steps = viewModel.document.history.past.count
-        for _ in 0..<10 { viewModel.nudgeCaptionLine(first, edge: .end, by: 0.1) }
-        let end = viewModel.editedSpan(ofCaption: first)?.end ?? 0
+        for _ in 0..<10 { viewModel.captions.nudgeCaptionLine(first, edge: .end, by: 0.1) }
+        let end = viewModel.captions.editedSpan(ofCaption: first)?.end ?? 0
         #expect(abs(end - 2.5) < 0.001)
         // The playhead shows the line's last moments.
         #expect(abs(scenario.player.currentTime - 2.2) < 0.001)
         // Quick taps are one undo step.
         #expect(viewModel.document.history.past.count == steps + 1)
-        let second = viewModel.captionListLines[1].cueID
-        viewModel.nudgeCaptionLine(second, edge: .start, by: -0.1)
-        #expect(abs((viewModel.editedSpan(ofCaption: second)?.start ?? 0) - 2.5) < 0.001)
-        viewModel.nudgeCaptionLine(second, edge: .start, by: 0.1)
-        #expect(abs((viewModel.editedSpan(ofCaption: second)?.start ?? 0) - 2.6) < 0.001)
+        let second = viewModel.captions.captionListLines[1].cueID
+        viewModel.captions.nudgeCaptionLine(second, edge: .start, by: -0.1)
+        #expect(abs((viewModel.captions.editedSpan(ofCaption: second)?.start ?? 0) - 2.5) < 0.001)
+        viewModel.captions.nudgeCaptionLine(second, edge: .start, by: 0.1)
+        #expect(abs((viewModel.captions.editedSpan(ofCaption: second)?.start ?? 0) - 2.6) < 0.001)
         #expect(abs(scenario.player.currentTime - 2.61) < 0.001)
     }
 
@@ -74,35 +74,35 @@ struct QuickEditCaptionPanelTests {
         let scenario = await makeScenario(lines: [(0, 2, "First"), (3, 5, "Second"), (5.2, 6, "Third")])
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 1)
-        viewModel.addCaptionAtPlayhead()
+        viewModel.captions.addCaptionAtPlayhead()
         #expect(viewModel.edit.captions.count == 3)
         #expect(scenario.toast.message == "Line here · Move to a gap")
         scenario.player.seek(to: 5.05)
-        viewModel.addCaptionAtPlayhead()
+        viewModel.captions.addCaptionAtPlayhead()
         #expect(viewModel.edit.captions.count == 3)
         #expect(scenario.toast.message == "Not enough room here")
         scenario.player.seek(to: 2.2)
-        viewModel.addCaptionAtPlayhead()
+        viewModel.captions.addCaptionAtPlayhead()
         #expect(viewModel.edit.captions.count == 4)
-        let added = viewModel.editedCaptionLines.first { abs($0.start - 2.2) < 0.001 }
+        let added = viewModel.captions.editedCaptionLines.first { abs($0.start - 2.2) < 0.001 }
         // Up to the next line, shorter than the usual 1.6 s.
         #expect(abs((added?.end ?? 0) - 3) < 0.001)
         #expect(added?.text == "New line")
         #expect(viewModel.selection == added.map { .caption($0.id) })
-        #expect(viewModel.focusesCaptionField)
+        #expect(viewModel.captions.focusesCaptionField)
     }
 
     @Test func theSwitchHidesAndShowsTheLines() async {
         let scenario = await makeScenario(lines: [(0, 2, "First")])
-        scenario.viewModel.toggleCaptions()
+        scenario.viewModel.captions.toggleCaptions()
         #expect(!scenario.viewModel.edit.showsCaptions)
-        scenario.viewModel.toggleCaptions()
+        scenario.viewModel.captions.toggleCaptions()
         #expect(scenario.viewModel.edit.showsCaptions)
     }
 
     @Test func withoutLinesTheSwitchOpensAutoCaptions() async {
         let scenario = await makeScenario(lines: [])
-        scenario.viewModel.toggleCaptions()
+        scenario.viewModel.captions.toggleCaptions()
         #expect(scenario.viewModel.panel == .autoCaptions)
     }
 
@@ -110,84 +110,84 @@ struct QuickEditCaptionPanelTests {
         let scenario = await makeScenario(lines: [(0, 2, "First")])
         let viewModel = scenario.viewModel
         #expect(viewModel.edit.captionCollection != nil)
-        viewModel.pickCaptionReveal(.line)
-        #expect(viewModel.captionReveal == .line)
+        viewModel.captions.pickCaptionReveal(.line)
+        #expect(viewModel.captions.captionReveal == .line)
         #expect(viewModel.edit.captionCollection?.followsWords == false)
-        viewModel.pickCaptionReveal(.fade)
-        #expect(viewModel.captionReveal == .fade)
-        viewModel.pickCaptionReveal(.box)
-        #expect(viewModel.captionReveal == .box)
+        viewModel.captions.pickCaptionReveal(.fade)
+        #expect(viewModel.captions.captionReveal == .fade)
+        viewModel.captions.pickCaptionReveal(.box)
+        #expect(viewModel.captions.captionReveal == .box)
         #expect(viewModel.edit.captionCollection?.followsWords == true)
-        viewModel.pickCaptionReveal(.groups)
-        #expect(viewModel.captionReveal == .groups)
+        viewModel.captions.pickCaptionReveal(.groups)
+        #expect(viewModel.captions.captionReveal == .groups)
         // A preset is a complete recipe: it brings its own reveal, which Reveal can change after.
-        viewModel.pickCaptionTheme(.pop)
-        #expect(viewModel.captionTheme == .pop)
-        #expect(viewModel.captionReveal == .highlight)
-        viewModel.pickCaptionReveal(.groups)
-        #expect(viewModel.captionReveal == .groups)
+        viewModel.captions.pickCaptionTheme(.pop)
+        #expect(viewModel.captions.captionTheme == .pop)
+        #expect(viewModel.captions.captionReveal == .highlight)
+        viewModel.captions.pickCaptionReveal(.groups)
+        #expect(viewModel.captions.captionReveal == .groups)
     }
 
     @Test func eachCompletePresetBringsItsOwnWayOfShowingWords() async {
         let scenario = await makeScenario(lines: [(0, 2, "First")])
         let viewModel = scenario.viewModel
-        viewModel.pickCaptionTheme(.interview)
-        #expect(viewModel.captionTheme == .interview && viewModel.captionReveal == .line)
+        viewModel.captions.pickCaptionTheme(.interview)
+        #expect(viewModel.captions.captionTheme == .interview && viewModel.captions.captionReveal == .line)
         #expect(viewModel.edit.captionCollection?.followsWords == false)
-        viewModel.pickCaptionTheme(.educational)
-        #expect(viewModel.captionReveal == .highlight && viewModel.edit.captionCollection?.followsWords == true)
+        viewModel.captions.pickCaptionTheme(.educational)
+        #expect(viewModel.captions.captionReveal == .highlight && viewModel.edit.captionCollection?.followsWords == true)
         #expect(viewModel.edit.captionCollection?.styleVersion == CaptionStyleSpec.currentVersion)
         viewModel.undo()
-        #expect(viewModel.captionTheme == .interview)
+        #expect(viewModel.captions.captionTheme == .interview)
     }
 
     @Test func aPresetKeepsWhereTheCaptionsSit() async {
         let scenario = await makeScenario(lines: [(0, 2, "First")])
         let viewModel = scenario.viewModel
-        viewModel.setCaptionPositionStop(.top)
-        viewModel.pickCaptionTheme(.editorial)
-        #expect(viewModel.captionPositionStop == .top)
+        viewModel.captions.setCaptionPositionStop(.top)
+        viewModel.captions.pickCaptionTheme(.editorial)
+        #expect(viewModel.captions.captionPositionStop == .top)
     }
 
     /// Caption style › Font over a preset: the lines take the family and keep the preset; picking a preset brings its own.
     @Test func aFamilyOverAPresetIsOneUndoStepAndAPresetBringsItsOwn() async {
         let scenario = await makeScenario(lines: [(0, 2, "First")])
         let viewModel = scenario.viewModel
-        viewModel.pickCaptionTheme(.impact)
-        viewModel.setCaptionFace(.tiktokSans)
-        #expect(viewModel.captionFace == .tiktokSans)
-        #expect(viewModel.captionTheme == .impact)
+        viewModel.captions.pickCaptionTheme(.impact)
+        viewModel.captions.setCaptionFace(.tiktokSans)
+        #expect(viewModel.captions.captionFace == .tiktokSans)
+        #expect(viewModel.captions.captionTheme == .impact)
         viewModel.undo()
-        #expect(viewModel.captionFace == nil)
+        #expect(viewModel.captions.captionFace == nil)
         viewModel.redo()
-        #expect(viewModel.captionFace == .tiktokSans)
-        viewModel.pickCaptionTheme(.pop)
-        #expect(viewModel.captionFace == nil)
+        #expect(viewModel.captions.captionFace == .tiktokSans)
+        viewModel.captions.pickCaptionTheme(.pop)
+        #expect(viewModel.captions.captionFace == nil)
     }
 
     @Test func positionAndSizeChangeEveryLine() async {
         let scenario = await makeScenario(lines: [(0, 2, "First")])
         let viewModel = scenario.viewModel
-        viewModel.setCaptionPositionStop(.top)
-        #expect(viewModel.captionY == 0.16)
-        #expect(viewModel.captionPositionStop == .top)
-        viewModel.setCaptionPositionStop(.middle)
-        #expect(viewModel.captionPositionStop == .middle)
-        viewModel.setCaptionPointSize(20)
-        #expect(viewModel.captionPointSize == 20)
-        viewModel.setCaptionPointSize(40)
-        #expect(viewModel.captionPointSize == 28)
+        viewModel.captions.setCaptionPositionStop(.top)
+        #expect(viewModel.captions.captionY == 0.16)
+        #expect(viewModel.captions.captionPositionStop == .top)
+        viewModel.captions.setCaptionPositionStop(.middle)
+        #expect(viewModel.captions.captionPositionStop == .middle)
+        viewModel.captions.setCaptionPointSize(20)
+        #expect(viewModel.captions.captionPointSize == 20)
+        viewModel.captions.setCaptionPointSize(40)
+        #expect(viewModel.captions.captionPointSize == 28)
     }
 
     @Test func aTranslationAlreadyMadeShowsAtOnce() async {
         let scenario = await makeScenario(lines: [(0, 2, "Primeiro")])
         let viewModel = scenario.viewModel
-        viewModel.writeTranslation(.english)
-        await viewModel.pickCaptionTranslation(.english)
+        viewModel.captions.writeTranslation(.english)
+        await viewModel.captions.pickCaptionTranslation(.english)
         #expect(viewModel.edit.captionDisplay == .translation(.english))
-        #expect(viewModel.captionTranslationLabel == CueLanguage.english.nativeName)
-        await viewModel.pickCaptionTranslation(nil)
+        #expect(viewModel.captions.captionTranslationLabel == CueLanguage.english.nativeName)
+        await viewModel.captions.pickCaptionTranslation(nil)
         #expect(viewModel.edit.captionDisplay == .original)
-        #expect(viewModel.captionTranslationLabel == "Translate")
+        #expect(viewModel.captions.captionTranslationLabel == "Translate")
     }
 }

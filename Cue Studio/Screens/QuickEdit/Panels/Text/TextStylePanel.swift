@@ -58,16 +58,16 @@ struct TextStylePanel: View {
             .alert(
                 "Apply this style to captions?",
                 isPresented: Binding(
-                    get: { viewModel.captionStyleCopySourceID != nil },
-                    set: { if !$0 { viewModel.cancelCopyingStyleToCaptions() } }
+                    get: { viewModel.captions.captionStyleCopySourceID != nil },
+                    set: { if !$0 { viewModel.captions.cancelCopyingStyleToCaptions() } }
                 )
             ) {
-                Button("Cancel", role: .cancel) { viewModel.cancelCopyingStyleToCaptions() }
+                Button("Cancel", role: .cancel) { viewModel.captions.cancelCopyingStyleToCaptions() }
                     .accessibilityIdentifier("edit.style.copyToCaptions.cancel")
-                Button("Apply") { viewModel.copyStyleToCaptions() }
+                Button("Apply") { viewModel.captions.copyStyleToCaptions() }
                     .accessibilityIdentifier("edit.style.copyToCaptions.apply")
             } message: {
-                Text(viewModel.captionStyleCopyMessage)
+                Text(viewModel.captions.captionStyleCopyMessage)
             }
         }
     }
@@ -83,7 +83,7 @@ struct TextStylePanel: View {
         default: presets(text)
         }
         if viewModel.textStyleTabChangesLook, isLarge { scope }
-        if viewModel.textStyleTabChangesLook, viewModel.canCopyStyleToCaptions { copyToCaptions }
+        if viewModel.textStyleTabChangesLook, viewModel.captions.canCopyStyleToCaptions { copyToCaptions }
     }
 
     /// The words are being typed (the keyboard is up for the field).
@@ -139,7 +139,7 @@ struct TextStylePanel: View {
             Rectangle().fill(Palette.Editor.separator).frame(height: 0.5)
             PanelButton(
                 label: String(localized: "Apply this style to captions"), systemImage: "captions.bubble",
-                identifier: "edit.style.copyToCaptions", action: viewModel.askToCopyStyleToCaptions
+                identifier: "edit.style.copyToCaptions", action: viewModel.captions.askToCopyStyleToCaptions
             )
         }
         .padding(.top, 4)

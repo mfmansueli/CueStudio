@@ -82,7 +82,7 @@ struct QuickEditUndoPathTests {
             $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
             $0.showsCaptions = true
         }
-        viewModel.toggleCaptions()
+        viewModel.captions.toggleCaptions()
         #expect(!viewModel.edit.showsCaptions)
         viewModel.undo()
         #expect(viewModel.edit.showsCaptions)
@@ -104,7 +104,7 @@ struct QuickEditUndoPathTests {
 
     @Test func theCaptionsLanguageIsAnUndoStep() async {
         let viewModel = await makeViewModel()
-        viewModel.setCaptionLanguage(.spanish)
+        viewModel.captions.setCaptionLanguage(.spanish)
         #expect(viewModel.edit.captionLanguage == .spanish)
         viewModel.undo()
         #expect(viewModel.edit.captionLanguage == nil)

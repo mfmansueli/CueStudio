@@ -44,13 +44,13 @@ struct QuickEditPreviewTests {
     }
 
     @Test func captionsStickToTopMiddleAndBottom() {
-        #expect(QuickEditViewModel.snappedCaption(0.18).y == 0.16)
-        #expect(QuickEditViewModel.snappedCaption(0.52).stop == 0.5)
-        #expect(QuickEditViewModel.snappedCaption(0.74).y == 0.76)
-        #expect(QuickEditViewModel.snappedCaption(0.62).stop == nil)
-        #expect(QuickEditViewModel.snappedCaption(0.99).y == 0.9)
+        #expect(CaptionsViewModel.snappedCaption(0.18).y == 0.16)
+        #expect(CaptionsViewModel.snappedCaption(0.52).stop == 0.5)
+        #expect(CaptionsViewModel.snappedCaption(0.74).y == 0.76)
+        #expect(CaptionsViewModel.snappedCaption(0.62).stop == nil)
+        #expect(CaptionsViewModel.snappedCaption(0.99).y == 0.9)
         // The stops are where Position puts the captions: a drag and the control agree.
-        #expect(QuickEditViewModel.captionStops == CaptionPosition.allCases.map(\.verticalFraction))
+        #expect(CaptionsViewModel.captionStops == CaptionPosition.allCases.map(\.verticalFraction))
         #expect(CaptionPosition.middle.verticalFraction == 0.5)
     }
 
@@ -78,12 +78,12 @@ struct QuickEditPreviewTests {
             $0.captions = [cue]
             $0.showsCaptions = true
         }
-        viewModel.tapCaption(cue.id)
+        viewModel.captions.tapCaption(cue.id)
         #expect(viewModel.selection == .caption(cue.id))
         #expect(viewModel.panel == nil)
-        viewModel.tapCaption(cue.id)
+        viewModel.captions.tapCaption(cue.id)
         #expect(viewModel.panel == .captions)
-        #expect(viewModel.focusesCaptionField)
+        #expect(viewModel.captions.focusesCaptionField)
     }
 
     @Test func draggingCaptionsMovesThemAllInOneStep() async {
@@ -93,10 +93,10 @@ struct QuickEditPreviewTests {
             $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
             $0.showsCaptions = true
         }
-        viewModel.moveCaptions(toY: 0.17)
-        #expect(viewModel.captionY == 0.16)
+        viewModel.captions.moveCaptions(toY: 0.17)
+        #expect(viewModel.captions.captionY == 0.16)
         viewModel.undo()
-        #expect(viewModel.captionY != 0.16)
+        #expect(viewModel.captions.captionY != 0.16)
     }
 
     @Test func theCornerHandleScalesTheText() async throws {

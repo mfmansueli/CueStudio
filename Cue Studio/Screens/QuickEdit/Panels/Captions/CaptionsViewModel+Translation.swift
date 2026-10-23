@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Translation.swift
+//  CaptionsViewModel+Translation.swift
 //  Cue Studio
 //
 
@@ -9,7 +9,7 @@ import Foundation
 /// sent anywhere, nothing paid per use): sentence by sentence for context, kept apart from the
 /// original, corrected by hand, and marked outdated when the original changes. Whether a pair can
 /// be translated is asked each time; when it can't, the translation can still be written by hand.
-extension QuickEditViewModel {
+extension CaptionsViewModel {
     /// The language the captions are in: what speech recognition heard, the language picked for
     /// them, or what their text reads as.
     var captionSourceLanguage: Locale.Language? {

@@ -46,7 +46,7 @@ extension QuickEditViewModel {
 
     /// Caption lines where they play, for the shared timeline.
     var captionBars: [LayerBar] {
-        captionMap.instances.map { line, cueID in
+        captions.captionMap.instances.map { line, cueID in
             LayerBar(
                 id: line.id, kind: .caption, span: line.span,
                 title: line.text.isEmpty ? String(localized: "Empty line") : line.text, isSelected: cueID == selectedCaptionID
@@ -112,7 +112,7 @@ extension QuickEditViewModel {
     private func room(for bar: LayerBar) -> TimeSpan {
         let whole = TimeSpan(start: 0, end: edit.editedDuration)
         guard bar.kind == .caption else { return whole }
-        let lines = editedCaptionLines
+        let lines = captions.editedCaptionLines
         guard let index = lines.firstIndex(where: { $0.id == bar.id }) else { return whole }
         let floor = index > 0 ? lines[index - 1].end : 0
         let ceiling = index + 1 < lines.count ? lines[index + 1].start : edit.editedDuration
@@ -149,13 +149,13 @@ extension QuickEditViewModel {
             }
         case .caption:
             // A line stays with its recording: only its time on it changes, and only over a clip of that recording.
-            let cueID = captionCueID(forLine: bar.id)
+            let cueID = captions.captionCueID(forLine: bar.id)
             let target = edit.timeline.anchoredSpan(forEdited: span)
             guard target.anchor.sourceID == edit.captions.first(where: { $0.id == cueID })?.sourceID else {
                 toast.show(String(localized: "A line stays on its own clip"))
                 return
             }
-            moveCaption(cueID, to: target.span)
+            captions.moveCaption(cueID, to: target.span)
         case .voiceOver:
             change { snapshot in
                 guard let index = snapshot.voiceOvers.firstIndex(where: { $0.id == bar.id }) else { return }

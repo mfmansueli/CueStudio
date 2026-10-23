@@ -20,7 +20,7 @@ extension QuickEditViewModel {
             openCaptions()
         case .captionTranslation:
             openCaptions()
-            if !edit.captions.isEmpty { showsTranslation = true }
+            if !edit.captions.isEmpty { captions.showsTranslation = true }
         case .studioVoice:
             panel = .voice
         case .skinSmoothing:

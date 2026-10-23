@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+CaptionLines.swift
+//  CaptionsViewModel+LineByLine.swift
 //  Cue Studio
 //
 
@@ -7,7 +7,7 @@ import Foundation
 
 /// Working through the captions line by line (Previous, Next, Return on the keyboard) and
 /// clearing them all at once. Every change is an undo step, and clearing says so with an Undo.
-extension QuickEditViewModel {
+extension CaptionsViewModel {
     // MARK: - Line by line
 
     /// "Line 3 of 12": where the line is among the lines in the order they play.

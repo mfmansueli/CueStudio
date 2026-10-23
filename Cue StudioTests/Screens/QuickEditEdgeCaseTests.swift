@@ -69,9 +69,9 @@ struct QuickEditEdgeCaseTests {
             ]
             $0.showsCaptions = true
         }
-        for line in viewModel.captionListLines { viewModel.deleteCaptionLine(line.cueID) }
+        for line in viewModel.captions.captionListLines { viewModel.captions.deleteCaptionLine(line.cueID) }
         #expect(viewModel.edit.captions.isEmpty)
-        #expect(viewModel.captionListLines.isEmpty)
+        #expect(viewModel.captions.captionListLines.isEmpty)
         #expect(viewModel.panelSubtitle(.captions) == "0 lines · tap one to jump there")
         // Captions now open on Auto captions.
         viewModel.openCaptions()

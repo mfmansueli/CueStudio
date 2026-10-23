@@ -118,16 +118,16 @@ struct QuickEditView: View {
         }
         .confirmationDialog(
             "Replace your edited captions?",
-            isPresented: $viewModel.confirmsCaptionReplacement,
+            isPresented: Bindable(viewModel.captions).confirmsCaptionReplacement,
             titleVisibility: .visible
         ) {
-            Button("Replace", role: .destructive) { viewModel.makeCaptions(replacingRevised: true) }
+            Button("Replace", role: .destructive) { viewModel.captions.makeCaptions(replacingRevised: true) }
                 .accessibilityIdentifier("edit.captionsReplaceButton")
             Button("Keep mine", role: .cancel) {}
         } message: {
             Text("New captions from your voice replace the lines you corrected or wrote.")
         }
-        .sheet(isPresented: $viewModel.showsTranslation) {
+        .sheet(isPresented: Bindable(viewModel.captions).showsTranslation) {
             CaptionTranslationSheet(viewModel: viewModel)
         }
         .sheet(isPresented: $viewModel.showsPasteLook) {

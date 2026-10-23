@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Captions.swift
+//  CaptionsViewModel+Lines.swift
 //  Cue Studio
 //
 
@@ -9,13 +9,13 @@ import Foundation
 /// spelling), then read and corrected line by line. Making them can be stopped; a failure or a stop
 /// leaves the lines as they were, and lines the creator corrected are only replaced after asking.
 /// Every change to the lines is an undo step.
-extension QuickEditViewModel {
+extension CaptionsViewModel {
     // MARK: - Making captions
 
     /// The language captions listen in: the one picked for this take, else the script's (its own,
     /// or read from its text). Never Voice Following's or the interface's.
     var captionSpeechLanguage: SpeechLanguageRequest {
-        edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguage
+        edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(session.captionScript)
     }
 
     /// Lines the creator corrected or wrote, which new captions would replace.
@@ -90,7 +90,8 @@ extension QuickEditViewModel {
     /// plays (a library take with its own script, a video with none).
     private var captionRecordings: [CaptionRecording] {
         let take = CaptionRecording(
-            source: nil, url: videoURL, script: scriptText, language: captionSpeechLanguage, candidates: spokenCandidates(for: captionScript)
+            source: nil, url: session.videoURL, script: scriptText, language: captionSpeechLanguage,
+            candidates: spokenCandidates(for: session.captionScript)
         )
         var result = [take]
         for source in edit.sources where edit.timeline.segments.contains(where: { $0.sourceID == source.id }) {
@@ -187,7 +188,7 @@ extension QuickEditViewModel {
     }
 
     var captionSafeMargins: SafeZoneMargins {
-        Self.captionSafeMargins(for: take, aspect: edit.aspect)
+        Self.captionSafeMargins(for: session.take, aspect: edit.aspect)
     }
 
     static func captionSafeMargins(for take: Take, aspect: AspectRatio) -> SafeZoneMargins {

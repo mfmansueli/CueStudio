@@ -71,23 +71,23 @@ struct QuickEditCaptionStyleCopyTests {
 
     @Test func theActionShowsOnlyForAPickedTextWithCaptions() async {
         let withCaptions = await makeScenario()
-        #expect(!withCaptions.viewModel.canCopyStyleToCaptions)
+        #expect(!withCaptions.viewModel.captions.canCopyStyleToCaptions)
         _ = styledTexts(withCaptions.viewModel)
-        #expect(withCaptions.viewModel.canCopyStyleToCaptions)
+        #expect(withCaptions.viewModel.captions.canCopyStyleToCaptions)
         let without = await makeScenario(captions: false)
         _ = styledTexts(without.viewModel)
-        #expect(!without.viewModel.canCopyStyleToCaptions)
-        without.viewModel.askToCopyStyleToCaptions()
-        #expect(without.viewModel.captionStyleCopySourceID == nil)
+        #expect(!without.viewModel.captions.canCopyStyleToCaptions)
+        without.viewModel.captions.askToCopyStyleToCaptions()
+        #expect(without.viewModel.captions.captionStyleCopySourceID == nil)
     }
 
     @Test func askingSaysWhatIsReplacedAndWhatStays() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let ids = styledTexts(viewModel)
-        viewModel.askToCopyStyleToCaptions()
-        #expect(viewModel.captionStyleCopySourceID == ids.title)
-        let message = viewModel.captionStyleCopyMessage
+        viewModel.captions.askToCopyStyleToCaptions()
+        #expect(viewModel.captions.captionStyleCopySourceID == ids.title)
+        let message = viewModel.captions.captionStyleCopyMessage
         #expect(message.contains("Your captions use the Cue preset."))
         #expect(message.contains("Words, timing, translations, position, size and how lines appear stay the same. Other texts don’t change."))
         #expect(!message.contains("highlight color changes"))
@@ -99,9 +99,9 @@ struct QuickEditCaptionStyleCopyTests {
         _ = styledTexts(viewModel)
         let edit = viewModel.edit
         let steps = viewModel.document.history.past.count
-        viewModel.askToCopyStyleToCaptions()
-        viewModel.cancelCopyingStyleToCaptions()
-        #expect(viewModel.captionStyleCopySourceID == nil)
+        viewModel.captions.askToCopyStyleToCaptions()
+        viewModel.captions.cancelCopyingStyleToCaptions()
+        #expect(viewModel.captions.captionStyleCopySourceID == nil)
         #expect(viewModel.edit == edit)
         #expect(viewModel.document.history.past.count == steps)
     }
@@ -113,24 +113,24 @@ struct QuickEditCaptionStyleCopyTests {
         let viewModel = scenario.viewModel
         let ids = styledTexts(viewModel)
         // The captions moved up, made bigger, with words appearing as they're said.
-        viewModel.moveCaptions(toY: 0.3)
-        viewModel.setCaptionPointSize(22)
-        viewModel.pickCaptionReveal(.groups)
+        viewModel.captions.moveCaptions(toY: 0.3)
+        viewModel.captions.setCaptionPointSize(22)
+        viewModel.captions.pickCaptionReveal(.groups)
         let before = viewModel.edit
-        let reveal = viewModel.captionReveal
+        let reveal = viewModel.captions.captionReveal
         let steps = viewModel.document.history.past.count
 
-        viewModel.askToCopyStyleToCaptions()
-        viewModel.copyStyleToCaptions()
+        viewModel.captions.askToCopyStyleToCaptions()
+        viewModel.captions.copyStyleToCaptions()
 
         let title = text(ids.title, in: viewModel)
         let look = viewModel.edit.captionCollection?.customLook
         #expect(look?.font == .dmSerif && look?.color == .lavender && look?.background == .pill && look?.glow == 0.4)
         // The captions' own size, not the title's 80 pt.
-        #expect(viewModel.captionPointSize == 22)
+        #expect(viewModel.captions.captionPointSize == 22)
         #expect(viewModel.edit.captionCollection?.center == before.captionCollection?.center)
         #expect(viewModel.edit.captionCollection?.theme == before.captionCollection?.theme)
-        #expect(viewModel.captionReveal == reveal)
+        #expect(viewModel.captions.captionReveal == reveal)
         #expect(viewModel.edit.captions == before.captions)
         #expect(viewModel.edit.captionTranslations == before.captionTranslations)
         #expect(viewModel.edit.captionDisplay == before.captionDisplay)
@@ -141,7 +141,7 @@ struct QuickEditCaptionStyleCopyTests {
         #expect(title?.size == 80)
         // One undo step; the question is answered.
         #expect(viewModel.document.history.past.count == steps + 1)
-        #expect(viewModel.captionStyleCopySourceID == nil)
+        #expect(viewModel.captions.captionStyleCopySourceID == nil)
         #expect(scenario.toast.message == "Captions use this style")
         #expect(scenario.toast.action?.title == "Undo")
     }
@@ -151,15 +151,15 @@ struct QuickEditCaptionStyleCopyTests {
         let viewModel = scenario.viewModel
         _ = styledTexts(viewModel)
         let before = viewModel.edit
-        viewModel.askToCopyStyleToCaptions()
-        viewModel.copyStyleToCaptions()
+        viewModel.captions.askToCopyStyleToCaptions()
+        viewModel.captions.copyStyleToCaptions()
         let after = viewModel.edit
         viewModel.undo()
         #expect(viewModel.edit == before)
-        #expect(viewModel.captionTheme == .cue)
+        #expect(viewModel.captions.captionTheme == .cue)
         viewModel.redo()
         #expect(viewModel.edit == after)
-        #expect(viewModel.captionTheme == nil)
+        #expect(viewModel.captions.captionTheme == nil)
         // The toast's Undo is the same step.
         scenario.toast.action?.perform()
         #expect(viewModel.edit == before)
@@ -169,8 +169,8 @@ struct QuickEditCaptionStyleCopyTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let ids = styledTexts(viewModel)
-        viewModel.askToCopyStyleToCaptions()
-        viewModel.copyStyleToCaptions()
+        viewModel.captions.askToCopyStyleToCaptions()
+        viewModel.captions.copyStyleToCaptions()
         let copied = viewModel.edit.captionCollection
         viewModel.restyleText(.color(.mint))
         viewModel.textStyleScope = .allTexts
@@ -185,10 +185,10 @@ struct QuickEditCaptionStyleCopyTests {
         _ = styledTexts(viewModel)
         viewModel.restyleText(.background(.none))
         viewModel.restyleText(.color(.yellow))
-        viewModel.askToCopyStyleToCaptions()
-        #expect(viewModel.captionStyleCopyMessage.contains("The highlight color changes so the word being said stands out: White."))
-        viewModel.copyStyleToCaptions()
-        #expect(viewModel.captionAccent == .white)
+        viewModel.captions.askToCopyStyleToCaptions()
+        #expect(viewModel.captions.captionStyleCopyMessage.contains("The highlight color changes so the word being said stands out: White."))
+        viewModel.captions.copyStyleToCaptions()
+        #expect(viewModel.captions.captionAccent == .white)
     }
 
     @Test func allTextsStillCopiesOnlyThePickedTextsLook() async {
@@ -197,8 +197,8 @@ struct QuickEditCaptionStyleCopyTests {
         let ids = styledTexts(viewModel)
         viewModel.textStyleScope = .allTexts
         let subtitle = text(ids.subtitle, in: viewModel)
-        viewModel.askToCopyStyleToCaptions()
-        viewModel.copyStyleToCaptions()
+        viewModel.captions.askToCopyStyleToCaptions()
+        viewModel.captions.copyStyleToCaptions()
         #expect(viewModel.edit.captionCollection?.customLook?.font == .dmSerif)
         #expect(text(ids.subtitle, in: viewModel) == subtitle)
     }
@@ -209,40 +209,40 @@ struct QuickEditCaptionStyleCopyTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         _ = styledTexts(viewModel)
-        viewModel.askToCopyStyleToCaptions()
-        viewModel.copyStyleToCaptions()
+        viewModel.captions.askToCopyStyleToCaptions()
+        viewModel.captions.copyStyleToCaptions()
         viewModel.selection = nil
         viewModel.panel = .captionStyle
-        #expect(viewModel.captionTheme == nil)
-        #expect(viewModel.captionCustomLook?.font == .dmSerif)
-        #expect(viewModel.captionCustomLookName == "Custom")
-        #expect(viewModel.captionEditableLook?.font == .dmSerif)
-        viewModel.updateCaptionLook { $0.color = .cyan }
+        #expect(viewModel.captions.captionTheme == nil)
+        #expect(viewModel.captions.captionCustomLook?.font == .dmSerif)
+        #expect(viewModel.captions.captionCustomLookName == "Custom")
+        #expect(viewModel.captions.captionEditableLook?.font == .dmSerif)
+        viewModel.captions.updateCaptionLook { $0.color = .cyan }
         #expect(viewModel.edit.captionCollection?.customLook?.color == .cyan)
         // The highlight stays the collection's to pick.
-        viewModel.setCaptionAccent(.peach)
-        #expect(viewModel.captionAccent == .peach)
+        viewModel.captions.setCaptionAccent(.peach)
+        #expect(viewModel.captions.captionAccent == .peach)
     }
 
     @Test func aPresetAfterwardsReplacesTheCopyOnTheCaptionsOnly() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         _ = styledTexts(viewModel)
-        viewModel.askToCopyStyleToCaptions()
-        viewModel.copyStyleToCaptions()
+        viewModel.captions.askToCopyStyleToCaptions()
+        viewModel.captions.copyStyleToCaptions()
         let texts = viewModel.edit.texts
         let textLook = viewModel.edit.textLook
-        viewModel.moveCaptions(toY: 0.3)
+        viewModel.captions.moveCaptions(toY: 0.3)
         viewModel.panel = .captionStyle
-        viewModel.pickCaptionTheme(.cue)
-        #expect(viewModel.captionTheme == .cue)
-        #expect(viewModel.captionCustomLook == nil)
+        viewModel.captions.pickCaptionTheme(.cue)
+        #expect(viewModel.captions.captionTheme == .cue)
+        #expect(viewModel.captions.captionCustomLook == nil)
         #expect(viewModel.edit.captionCollection?.center?.y == 0.3)
         #expect(viewModel.edit.texts == texts)
         #expect(viewModel.edit.textLook == textLook)
         // One step back is the copied look again.
         viewModel.undo()
-        #expect(viewModel.captionCustomLook?.font == .dmSerif)
+        #expect(viewModel.captions.captionCustomLook?.font == .dmSerif)
     }
 
     @Test func captionsFromBeforeTheCollectionTakeTheLookAsTheirs() async {
@@ -257,15 +257,15 @@ struct QuickEditCaptionStyleCopyTests {
             $0.captionPreset = .soft
             $0.captionAnimation = .fade
         }
-        viewModel.askToCopyStyleToCaptions()
-        #expect(viewModel.captionStyleCopyMessage.contains("Your captions use the \(TypePreset.soft.label) preset."))
-        viewModel.copyStyleToCaptions()
+        viewModel.captions.askToCopyStyleToCaptions()
+        #expect(viewModel.captions.captionStyleCopyMessage.contains("Your captions use the \(TypePreset.soft.label) preset."))
+        viewModel.captions.copyStyleToCaptions()
         #expect(viewModel.edit.captionCollection == nil)
         #expect(viewModel.edit.captionLook?.font == .dmSerif)
         #expect(viewModel.edit.captionLook?.sizeScale == 1.2)
         #expect(viewModel.edit.captionPreset == nil)
         #expect(viewModel.edit.captionAnimation == .fade)
-        #expect(viewModel.captionCustomLookName == "Custom")
+        #expect(viewModel.captions.captionCustomLookName == "Custom")
     }
 
     // MARK: - Kept
@@ -275,15 +275,15 @@ struct QuickEditCaptionStyleCopyTests {
         let first = await makeScenario(drafts: drafts)
         _ = styledTexts(first.viewModel)
         let before = first.viewModel.edit.captionCollection
-        first.viewModel.askToCopyStyleToCaptions()
-        first.viewModel.copyStyleToCaptions()
+        first.viewModel.captions.askToCopyStyleToCaptions()
+        first.viewModel.captions.copyStyleToCaptions()
         let copied = first.viewModel.edit.captionCollection
         first.viewModel.cancel()
         #expect(drafts.drafts.count == 1)
 
         let second = await makeScenario(drafts: drafts, takes: first.takes)
         #expect(second.viewModel.edit.captionCollection == copied)
-        #expect(second.viewModel.captionTheme == nil)
+        #expect(second.viewModel.captions.captionTheme == nil)
         second.viewModel.undo()
         #expect(second.viewModel.edit.captionCollection == before)
     }
@@ -292,8 +292,8 @@ struct QuickEditCaptionStyleCopyTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         _ = styledTexts(viewModel)
-        viewModel.askToCopyStyleToCaptions()
-        viewModel.copyStyleToCaptions()
+        viewModel.captions.askToCopyStyleToCaptions()
+        viewModel.captions.copyStyleToCaptions()
         let copied = viewModel.edit.captionCollection
         viewModel.done()
         let saved = scenario.takes.takes[0].edit?.captionCollection

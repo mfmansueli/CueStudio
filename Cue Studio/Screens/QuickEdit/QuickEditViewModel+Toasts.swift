@@ -9,13 +9,11 @@ import Foundation
 /// right there, so a tap in the wrong place costs one more tap and never a hunt for the undo button.
 extension QuickEditViewModel {
     /// Undo, as the toast's button.
-    var undoAction: ToastAction {
-        ToastAction(title: String(localized: "Undo")) { [weak self] in self?.undo() }
-    }
+    var undoAction: ToastAction { session.undoAction }
 
     /// The toast for a change that can be taken back.
     func sayUndoable(_ message: String) {
-        toast.show(message, action: undoAction)
+        session.sayUndoable(message)
     }
 
     /// "Clip 2" in a montage, "The clip" while the video is one clip.

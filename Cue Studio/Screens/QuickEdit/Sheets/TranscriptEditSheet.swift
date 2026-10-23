@@ -134,7 +134,7 @@ struct TranscriptEditSheet: View {
                 .font(.system(.subheadline))
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
-            let state = viewModel.captionState
+            let state = viewModel.captions.captionState
             if state.isWorking {
                 HStack(spacing: 10) {
                     ProgressView().tint(Palette.ink)

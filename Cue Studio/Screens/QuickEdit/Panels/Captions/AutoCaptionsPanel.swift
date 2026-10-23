@@ -23,24 +23,24 @@ struct AutoCaptionsPanel: View {
                         + CueLanguage.allCases.map { PanelOption(Optional($0), $0.nativeName, key: $0.rawValue) },
                     selection: viewModel.edit.captionLanguage, identifier: "edit.autoCaptions.language"
                 ) { language in
-                    viewModel.setCaptionLanguage(language)
+                    viewModel.captions.setCaptionLanguage(language)
                     showsLanguages = false
                 }
             }
-            if let conflict = viewModel.captionLanguageConflict {
+            if let conflict = viewModel.captions.captionLanguageConflict {
                 PanelNote(text: conflict.message, tint: Palette.warnText)
                     .accessibilityIdentifier("edit.captionsLanguageNote")
             }
             CaptionStatusRow(viewModel: viewModel)
             PanelButton(
-                label: viewModel.captionState.isWorking ? String(localized: "Listening…") : String(localized: "Generate captions"),
-                systemImage: "sparkles", isPrimary: true, isEnabled: !viewModel.captionState.isWorking && viewModel.isReady,
+                label: viewModel.captions.captionState.isWorking ? String(localized: "Listening…") : String(localized: "Generate captions"),
+                systemImage: "sparkles", isPrimary: true, isEnabled: !viewModel.captions.captionState.isWorking && viewModel.isReady,
                 identifier: "edit.captionsMakeButton"
-            ) { viewModel.makeCaptions() }
+            ) { viewModel.captions.makeCaptions() }
             if showsWriteByHand {
                 PanelButton(
                     label: String(localized: "Write them myself"), systemImage: "pencil",
-                    identifier: "edit.captionsWriteButton", action: viewModel.writeCaptionsByHand
+                    identifier: "edit.captionsWriteButton", action: viewModel.captions.writeCaptionsByHand
                 )
             }
         }
@@ -77,7 +77,7 @@ struct AutoCaptionsPanel: View {
 
     /// Nothing could be heard: the lines can still be written.
     private var showsWriteByHand: Bool {
-        switch viewModel.captionState {
+        switch viewModel.captions.captionState {
         case .noAudio, .noSpeech, .unavailable, .failed: true
         default: false
         }

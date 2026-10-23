@@ -26,27 +26,27 @@ struct CaptionPickTools: View {
 
     private var header: some View {
         HStack(spacing: 8) {
-            Text("\(viewModel.captionPicks?.count ?? 0) selected")
+            Text("\(viewModel.captions.captionPicks?.count ?? 0) selected")
                 .font(.system(.subheadline, weight: .semibold))
                 .foregroundStyle(Palette.ink)
                 .lineLimit(1)
                 .accessibilityIdentifier("edit.captionPicks.count")
             Spacer(minLength: 4)
-            textButton(viewModel.picksEveryCaption ? String(localized: "Deselect all") : String(localized: "Select all"),
-                       identifier: "edit.captionPicks.all") { viewModel.togglePickAllCaptions() }
-            textButton(String(localized: "Done"), identifier: "edit.captionPicks.done") { viewModel.stopPickingCaptions() }
+            textButton(viewModel.captions.picksEveryCaption ? String(localized: "Deselect all") : String(localized: "Select all"),
+                       identifier: "edit.captionPicks.all") { viewModel.captions.togglePickAllCaptions() }
+            textButton(String(localized: "Done"), identifier: "edit.captionPicks.done") { viewModel.captions.stopPickingCaptions() }
         }
         .padding(.horizontal, 16)
     }
 
     private var actions: some View {
-        let count = viewModel.captionPicks?.count ?? 0
+        let count = viewModel.captions.captionPicks?.count ?? 0
         return VStack(alignment: .leading, spacing: 4) {
             if count == 0 {
                 PanelNote(text: String(localized: "Tap the lines to change together."))
                     .frame(minHeight: Metrics.hitTarget, alignment: .leading)
             } else {
-                if !viewModel.canStyleCaptionLines {
+                if !viewModel.captions.canStyleCaptionLines {
                     PanelNote(text: String(localized: "Pick a look in Style to style lines on their own."))
                 }
                 // On one row when it fits; with large text, the style on one row and moving and deleting on the next.
@@ -65,9 +65,9 @@ struct CaptionPickTools: View {
 
     @ViewBuilder
     private var style: some View {
-        if viewModel.canStyleCaptionLines {
-            let emphasized = viewModel.pickedCaptionsAreEmphasized
-            Button { viewModel.setPickedCaptionsEmphasized(!emphasized) } label: {
+        if viewModel.captions.canStyleCaptionLines {
+            let emphasized = viewModel.captions.pickedCaptionsAreEmphasized
+            Button { viewModel.captions.setPickedCaptionsEmphasized(!emphasized) } label: {
                 chipLabel(String(localized: "Emphasis"), systemImage: "highlighter", isOn: emphasized)
             }
             .buttonStyle(.plain)
@@ -77,18 +77,18 @@ struct CaptionPickTools: View {
             .accessibilityIdentifier("edit.captionPicks.emphasis")
             Menu {
                 Picker(String(localized: "Size"), selection: Binding(
-                    get: { viewModel.pickedCaptionSize },
-                    set: { if let size = $0 { viewModel.setPickedCaptionSize(size) } }
+                    get: { viewModel.captions.pickedCaptionSize },
+                    set: { if let size = $0 { viewModel.captions.setPickedCaptionSize(size) } }
                 )) {
                     ForEach(CaptionLineStyle.Size.allCases) { size in
                         Text(size.label).tag(Optional(size))
                     }
                 }
             } label: {
-                chipLabel(viewModel.pickedCaptionSize?.label ?? String(localized: "Size"), systemImage: "textformat.size", isOn: false)
+                chipLabel(viewModel.captions.pickedCaptionSize?.label ?? String(localized: "Size"), systemImage: "textformat.size", isOn: false)
             }
             .accessibilityLabel(Text("Size"))
-            .accessibilityValue(Text(viewModel.pickedCaptionSize?.label ?? ""))
+            .accessibilityValue(Text(viewModel.captions.pickedCaptionSize?.label ?? ""))
             .accessibilityIdentifier("edit.captionPicks.size")
         }
     }
@@ -97,12 +97,12 @@ struct CaptionPickTools: View {
         // Earlier on the left in every language, like the timeline.
         HStack(spacing: 4) {
             iconButton("chevron.left", label: Text("Move earlier"), identifier: "edit.captionPicks.earlier") {
-                viewModel.movePickedCaptions(by: -QuickEditViewModel.captionGroupStep)
+                viewModel.captions.movePickedCaptions(by: -CaptionsViewModel.captionGroupStep)
             }
             iconButton("chevron.right", label: Text("Move later"), identifier: "edit.captionPicks.later") {
-                viewModel.movePickedCaptions(by: QuickEditViewModel.captionGroupStep)
+                viewModel.captions.movePickedCaptions(by: CaptionsViewModel.captionGroupStep)
             }
-            Button { viewModel.deletePickedCaptions() } label: {
+            Button { viewModel.captions.deletePickedCaptions() } label: {
                 Image(systemName: "trash")
                     .font(.editorGlyph(EditorGlyph.row, weight: .semibold))
                     .foregroundStyle(Palette.dangerText)

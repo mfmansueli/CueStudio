@@ -230,7 +230,7 @@ extension QuickEditViewModel {
         case .openCaptions: openCaptions()
         case .addCaptionLine:
             openCaptions()
-            addCaptionAtPlayhead()
+            captions.addCaptionAtPlayhead()
         case .open(let panel):
             // From a picked clip, Adjust, Filters and Background change that clip only.
             lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
@@ -239,8 +239,8 @@ extension QuickEditViewModel {
             mediaInsertMode = .overlay
             sheet = .media
         case .addText, .addGraphic, .addCommentCard, .styleAllTexts, .editText: performTextAction(action)
-        case .deleteAllCaptions: deleteAllCaptions()
-        case .findInCaptions: openCaptionFind()
+        case .deleteAllCaptions: captions.deleteAllCaptions()
+        case .findInCaptions: captions.openCaptionFind()
         case .editByText:
             toolMenu = nil
             panel = nil
@@ -248,7 +248,7 @@ extension QuickEditViewModel {
             sheet = .transcript
         case .writeCaptionsByHand:
             toolMenu = nil
-            writeCaptionsByHand()
+            captions.writeCaptionsByHand()
         case .openMusic, .replaceMusic: openMusicSheet(replacing: action == .replaceMusic)
         case .openCoverStudio: openCoverStudio()
         default: break
@@ -286,10 +286,10 @@ extension QuickEditViewModel {
         case .deleteText: selection?.textID.map(deleteText)
         case .editCaption:
             panel = .captions
-            focusesCaptionField = true
-        case .splitCaption: selection?.captionID.map(splitCaptionAtPlayhead)
-        case .joinCaption: selection?.captionID.map(joinCaption)
-        case .deleteCaption: selection?.captionID.map(deleteCaptionLine)
+            captions.focusesCaptionField = true
+        case .splitCaption: selection?.captionID.map(captions.splitCaptionAtPlayhead)
+        case .joinCaption: selection?.captionID.map(captions.joinCaption)
+        case .deleteCaption: selection?.captionID.map(captions.deleteCaptionLine)
         case .deleteMusic: selection?.musicID.map(deleteMusic)
         case .reRecordVoiceOver: selection?.voiceOverID.map(reRecordVoiceOver)
         case .deleteVoiceOver: selection?.voiceOverID.map(deleteVoiceOver)

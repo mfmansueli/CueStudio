@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+CaptionPicks.swift
+//  CaptionsViewModel+Picks.swift
 //  Cue Studio
 //
 
@@ -8,20 +8,11 @@ import Foundation
 /// Captions › Select: several lines picked at once, then styled, moved or deleted together, as CapCut's caption batch edit
 /// does. Each action is one undo step. A line's style (`CaptionLineStyle`) is the whole line lit in the highlight color and
 /// bigger type; moving keeps every picked line inside its clip and off the lines that weren't picked.
-extension QuickEditViewModel {
+extension CaptionsViewModel {
     /// How far one Earlier or Later moves the picked lines.
     static let captionGroupStep: TimeInterval = 0.1
 
     var isPickingCaptions: Bool { captionPicks != nil }
-
-    /// How tall the open panel is: Captions grows to the styling panels' height while lines are picked, so the list, its
-    /// header and its actions all have room; Voice-over is medium when the take has a script to show.
-    var openPanelSize: EditorPanelSize? {
-        guard let panel else { return nil }
-        if panel == .captions && isPickingCaptions { return .full }
-        if panel == .voiceOver && offersNarrationScript { return .medium }
-        return panel.size
-    }
 
     /// Starts picking lines, with `first` picked (a line held in the list), or none.
     func startPickingCaptions(with first: UUID? = nil) {

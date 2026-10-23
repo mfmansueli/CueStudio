@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+CaptionPanels.swift
+//  CaptionsViewModel+Panels.swift
 //  Cue Studio
 //
 
@@ -10,7 +10,7 @@ import Foundation
 /// running into its neighbors), a line added in a free gap at the playhead, the language spoken,
 /// a translation picked inline, and the look of every line at once (the collection's presets, how
 /// lines appear, where they sit and how big).
-extension QuickEditViewModel {
+extension CaptionsViewModel {
     /// Sizes Caption style offers, in points on the design's frame.
     static let captionSizeRange: ClosedRange<Double> = 12...28
     /// The size every collection look is drawn at when its scale is 1.
@@ -264,7 +264,7 @@ extension QuickEditViewModel {
     }
 }
 
-extension QuickEditViewModel {
+extension CaptionsViewModel {
     /// Captions drawn with a text's look (copied with "Apply this style to captions", or an edit from
     /// before the collection): Font changes it for every line (one undo step).
     func updateCaptionLook(_ update: (inout TextLook) -> Void) {

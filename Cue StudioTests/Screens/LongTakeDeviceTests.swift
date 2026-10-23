@@ -51,21 +51,21 @@ struct LongTakeDeviceTests {
 
         // What every caption read used to cost: mapping all the lines again.
         let mapping = try await Self.time { _ = viewModel.edit.editedCaptionInstances }
-        viewModel.captionMapStore = nil
-        let mapBuilt = try await Self.time { _ = viewModel.captionMap }
+        viewModel.captions.captionMapStore = nil
+        let mapBuilt = try await Self.time { _ = viewModel.captions.captionMap }
         // The line under the playhead, asked every frame while playing.
         let frames = 1800
         let perFrame = try await Self.time {
             for frame in 0..<frames {
                 player.seek(to: Double(frame))
-                _ = viewModel.activeCaptionCueID
+                _ = viewModel.captions.activeCaptionCueID
             }
         } / Double(frames)
         let timeline = try await Self.time { _ = viewModel.timelineInput(heightClass: .regular) }
         // A line corrected twenty times, each an undo step.
         let lineIDs = viewModel.edit.captions.prefix(20).map(\.id)
         let corrected = try await Self.time {
-            for (index, id) in lineIDs.enumerated() { viewModel.setCaptionText(id, "Corrected line \(index)") }
+            for (index, id) in lineIDs.enumerated() { viewModel.captions.setCaptionText(id, "Corrected line \(index)") }
         } / Double(lineIDs.count)
         let draft = QuickEditDraft(takeID: take.id, edit: viewModel.edit, playhead: 600, history: viewModel.document.history, savedAt: .now)
         var bytes = 0

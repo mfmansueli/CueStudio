@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+CaptionStyleCopy.swift
+//  CaptionsViewModel+StyleCopy.swift
 //  Cue Studio
 //
 
@@ -9,7 +9,7 @@ import Foundation
 /// preset, or the look they had) and what stays, then copies the picked text's look onto them as one
 /// undo step (`CaptionStyleCopy`). Once: the text and the captions aren't linked afterwards, and no
 /// other text changes.
-extension QuickEditViewModel {
+extension CaptionsViewModel {
     /// The action shows for a picked text when the take has captions to style.
     var canCopyStyleToCaptions: Bool {
         selectedText != nil && !edit.captions.isEmpty
@@ -22,7 +22,7 @@ extension QuickEditViewModel {
 
     /// "Apply this style to captions": the question, about the picked text.
     func askToCopyStyleToCaptions() {
-        guard isReady, canCopyStyleToCaptions, let id = selectedTextID else { return }
+        guard isReady, canCopyStyleToCaptions, let id = selection?.textID else { return }
         player.pause()
         captionStyleCopySourceID = id
     }

@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+MyCaptionStyle.swift
+//  CaptionsViewModel+MyStyle.swift
 //  Cue Studio
 //
 
@@ -7,7 +7,7 @@ import Foundation
 
 /// The captions' "My style", like the texts' and the cover's: saved from Caption style, one tap puts it on every line, and the
 /// next videos' captions start in it, so a creator's look carries from one video to the next without redoing it.
-extension QuickEditViewModel {
+extension CaptionsViewModel {
     /// Keeps the captions' look now as "My style".
     func saveMyCaptionStyle() {
         guard let style = MyCaptionStyle(of: edit) else { return }

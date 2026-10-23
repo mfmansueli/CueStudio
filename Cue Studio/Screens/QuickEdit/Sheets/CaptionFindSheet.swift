@@ -21,7 +21,7 @@ struct CaptionFindSheet: View {
     }
 
     private var matches: [CaptionFindReplace.Match] {
-        viewModel.captionMatches(for: query)
+        viewModel.captions.captionMatches(for: query)
     }
 
     var body: some View {
@@ -50,7 +50,7 @@ struct CaptionFindSheet: View {
                 label: String(localized: "Replace all"), systemImage: "text.badge.checkmark", isPrimary: true,
                 isEnabled: !matches.isEmpty, identifier: "edit.captionFind.replaceAll"
             ) {
-                viewModel.replaceAllCaptionMatches(query, with: replacement)
+                viewModel.captions.replaceAllCaptionMatches(query, with: replacement)
                 focused = nil
             }
             .padding(.bottom, 8)
@@ -130,8 +130,8 @@ struct CaptionFindSheet: View {
         HStack(spacing: 10) {
             Button {
                 focused = nil
-                if let line = viewModel.captionListLines.first(where: { $0.cueID == match.cueID }) {
-                    viewModel.pickCaptionLine(line.cueID, at: line.line.start)
+                if let line = viewModel.captions.captionListLines.first(where: { $0.cueID == match.cueID }) {
+                    viewModel.captions.pickCaptionLine(line.cueID, at: line.line.start)
                 }
             } label: {
                 marked(match)
@@ -143,7 +143,7 @@ struct CaptionFindSheet: View {
             .buttonStyle(.plain)
             .accessibilityHint(Text("Shows this line in the video"))
             Button {
-                viewModel.replaceCaptionMatch(match, query: query, with: replacement)
+                viewModel.captions.replaceCaptionMatch(match, query: query, with: replacement)
             } label: {
                 Text("Replace")
                     .font(.system(.footnote, weight: .semibold))

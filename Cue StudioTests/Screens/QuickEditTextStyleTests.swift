@@ -138,7 +138,7 @@ struct QuickEditTextStyleTests {
         viewModel.panelTab = .font
         #expect(viewModel.textStyleTab == .font)
         viewModel.panelTab = .motion
-        #expect(viewModel.captionStyleTab == .presets)
+        #expect(viewModel.captions.captionStyleTab == .presets)
     }
 
     @Test func theExpandedPanelIsKeptBetweenTheStylingPanels() async {

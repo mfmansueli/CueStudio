@@ -41,7 +41,7 @@ extension QuickEditViewModel {
                 id: item.id, span: span, label: Self.label(of: item), isLocked: edit.lockedLayers.contains(item.id)
             )
         }
-        input.captions = captionMap.instances.map { line, cueID in
+        input.captions = captions.captionMap.instances.map { line, cueID in
             TimelineGeometry.ItemInput(id: cueID, span: line.span, label: line.text)
         }
         input.showsCaptions = edit.showsCaptions
@@ -370,7 +370,7 @@ extension QuickEditViewModel {
         switch kind {
         case .text: textBars.first { $0.id == id }
         case .media: mediaBars.first { $0.id == id }
-        case .caption: captionBars.first { captionCueID(forLine: $0.id) == id }
+        case .caption: captionBars.first { captions.captionCueID(forLine: $0.id) == id }
         case .music: musicBars.first { $0.id == id }
         case .voiceOver: voiceOverBars.first { $0.id == id }
         case .recording: nil
@@ -383,7 +383,7 @@ extension QuickEditViewModel {
         case .text: textBars.first { $0.id == bar.id }
         case .media: mediaBars.first { $0.id == bar.id }
         case .caption:
-            captionBars.first { captionCueID(forLine: $0.id) == captionCueID(forLine: bar.id) }
+            captionBars.first { captions.captionCueID(forLine: $0.id) == captions.captionCueID(forLine: bar.id) }
         case .music: musicBars.first { $0.id == bar.id }
         case .voiceOver: voiceOverBars.first { $0.id == bar.id }
         }

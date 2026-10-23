@@ -159,7 +159,7 @@ struct QuickEditMontageTests {
         await viewModel.addClip(from: scenario.other)
         let source = try #require(viewModel.edit.sources.first)
         defer { EditMediaFiles.remove([source.fileName]) }
-        viewModel.makeCaptions()
+        viewModel.captions.makeCaptions()
         await viewModel.jobs.finished(.captions)
         #expect(editor.captionRequests == 2)
         #expect(Set(viewModel.edit.captions.map(\.sourceID)) == [nil, source.id])
@@ -171,7 +171,7 @@ struct QuickEditMontageTests {
     @Test func aCopiedSectionShowsItsCaptionsAgain() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.makeCaptions()
+        viewModel.captions.makeCaptions()
         await viewModel.jobs.finished(.captions)
         viewModel.duplicateSection(viewModel.edit.timeline.segments[0].id)
         let instances = viewModel.edit.editedCaptionInstances

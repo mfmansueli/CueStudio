@@ -57,7 +57,7 @@ struct QuickEditMontageCaptionTests {
     @Test func joinNextJoinsTheNextThingSaidInTheSameRecording() async throws {
         let (viewModel, _, _) = await makeViewModel()
         let first = try #require(line("Hello there", in: viewModel))
-        viewModel.joinCaption(first.id)
+        viewModel.captions.joinCaption(first.id)
         let joined = try #require(line("Hello there my friends", in: viewModel))
         #expect(joined.start == 7 && joined.end == 9.9)
         #expect(joined.sourceID == nil)
@@ -69,14 +69,14 @@ struct QuickEditMontageCaptionTests {
         // What plays after "my friends" is the other take's "Over here".
         #expect(CaptionJoin.next(after: second.id, in: viewModel.edit) == .otherRecording)
         let before = viewModel.edit.captions
-        viewModel.joinCaption(second.id)
+        viewModel.captions.joinCaption(second.id)
         #expect(viewModel.edit.captions == before)
         #expect(toast.message == "The next line is from another clip")
         // The other take's line is said at 0.5 s of its recording but plays last: before, it was joined with the take's
         // "Hello there" (7 s of another recording), mixing their times.
         let theirs = try #require(line("Over here", in: viewModel))
         #expect(CaptionJoin.next(after: theirs.id, in: viewModel.edit) == .lastLine)
-        viewModel.joinCaption(theirs.id)
+        viewModel.captions.joinCaption(theirs.id)
         #expect(viewModel.edit.captions == before)
     }
 
@@ -90,7 +90,7 @@ struct QuickEditMontageCaptionTests {
         let second = try #require(line("my friends", in: viewModel))
         #expect(CaptionJoin.next(after: second.id, in: viewModel.edit) == .earlierInTheRecording)
         let before = viewModel.edit.captions
-        viewModel.joinCaption(second.id)
+        viewModel.captions.joinCaption(second.id)
         #expect(viewModel.edit.captions == before)
     }
 
@@ -98,7 +98,7 @@ struct QuickEditMontageCaptionTests {
         let (viewModel, _, _) = await makeViewModel()
         let second = try #require(line("my friends", in: viewModel))
         // Its end is 0.1 s before the take ends; pushing it on stops at the end of the take, never in the other recording.
-        for _ in 0..<5 { viewModel.nudgeCaption(second.id, edge: .end, by: 0.1) }
+        for _ in 0..<5 { viewModel.captions.nudgeCaption(second.id, edge: .end, by: 0.1) }
         let nudged = try #require(viewModel.edit.captions.first { $0.id == second.id })
         #expect(nudged.end <= 10.000_1)
         #expect(nudged.end > 9.9)
@@ -124,7 +124,7 @@ struct QuickEditMontageCaptionTests {
         let theirs = try #require(line("Over here", in: viewModel))
         // In the copy (16–22 s), 1.2 s in is "Over | here".
         player.currentTime = 17.25
-        viewModel.splitCaptionAtPlayhead(theirs.id)
+        viewModel.captions.splitCaptionAtPlayhead(theirs.id)
         #expect(viewModel.edit.captions.filter { $0.sourceID == other }.count == 2)
     }
 }

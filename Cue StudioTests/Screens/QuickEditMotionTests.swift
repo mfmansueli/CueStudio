@@ -152,7 +152,7 @@ struct QuickEditMotionTests {
     @Test func anAnimationIsOneStepAndDrawsWithAPreset() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.setCaptionAnimation(.highlight)
+        viewModel.captions.setCaptionAnimation(.highlight)
         #expect(viewModel.edit.captionAnimation == .highlight)
         #expect(viewModel.edit.captionPreset == .cue)
         viewModel.undo()
@@ -163,15 +163,15 @@ struct QuickEditMotionTests {
     @Test func linesWithoutWordTimesAreCounted() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.makeCaptions()
+        viewModel.captions.makeCaptions()
         await viewModel.jobs.finished(.captions)
-        #expect(viewModel.linesWithoutWordTiming == 0)
+        #expect(viewModel.captions.linesWithoutWordTiming == 0)
         let id = viewModel.edit.captions[0].id
         // A word slipped in takes the room the word before it leaves: the line still follows the voice.
-        viewModel.setCaptionText(id, "Okay, so real talk.")
-        #expect(viewModel.linesWithoutWordTiming == 0)
+        viewModel.captions.setCaptionText(id, "Okay, so real talk.")
+        #expect(viewModel.captions.linesWithoutWordTiming == 0)
         // Words where the voice left no room at all are a guess: the line is counted ("Check timing").
-        viewModel.setCaptionText(id, "Okay, so let's be real talk.")
-        #expect(viewModel.linesWithoutWordTiming == 1)
+        viewModel.captions.setCaptionText(id, "Okay, so let's be real talk.")
+        #expect(viewModel.captions.linesWithoutWordTiming == 1)
     }
 }

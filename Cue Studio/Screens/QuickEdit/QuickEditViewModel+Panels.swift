@@ -14,6 +14,15 @@ extension QuickEditViewModel {
         panel = nil
     }
 
+    /// How tall the open panel is: Captions grows to the styling panels' height while lines are picked, so the list, its
+    /// header and its actions all have room; Voice-over is medium when the take has a script to show.
+    var openPanelSize: EditorPanelSize? {
+        guard let panel else { return nil }
+        if panel == .captions && captions.isPickingCaptions { return .full }
+        if panel == .voiceOver && offersNarrationScript { return .medium }
+        return panel.size
+    }
+
     /// Space plays and pauses, except while a panel with a text field is open.
     var acceptsSpaceToPlay: Bool {
         guard sheet == nil else { return false }
@@ -76,10 +85,10 @@ extension QuickEditViewModel {
     private func captionSubtitle(_ panel: EditorPanel) -> String {
         switch panel {
         case .autoCaptions: return String(localized: "Cue drafts the lines. Fix any word.")
-        case .captionStyle: return String(localized: "Applies to all \(editedCaptionLines.count) lines")
+        case .captionStyle: return String(localized: "Applies to all \(captions.editedCaptionLines.count) lines")
         default:
             guard edit.showsCaptions else { return String(localized: "Hidden in the video") }
-            return String(localized: "\(editedCaptionLines.count) lines · tap one to jump there")
+            return String(localized: "\(captions.editedCaptionLines.count) lines · tap one to jump there")
         }
     }
 

@@ -112,15 +112,15 @@ extension QuickEditViewModel {
             return
         }
         panel = .captions
-        pickCaptionLine(line.id, at: start)
-        focusesCaptionField = true
+        captions.pickCaptionLine(line.id, at: start)
+        captions.focusesCaptionField = true
     }
 
     /// Listens to the video for its words (as captions do), when there is no transcript yet. Captions that weren't showing stay
     /// hidden: listening for Edit by text doesn't turn them on.
     func listenForTranscript() {
-        keepsCaptionsHiddenAfterListening = !edit.showsCaptions
-        makeCaptions()
+        captions.keepsCaptionsHiddenAfterListening = !edit.showsCaptions
+        captions.makeCaptions()
     }
 
     /// The picked words split where they change recording or skip a word of it: each run is one stretch of one recording.

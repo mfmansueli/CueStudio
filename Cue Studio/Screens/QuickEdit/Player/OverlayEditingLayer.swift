@@ -41,7 +41,7 @@ struct OverlayEditingLayer: View {
         ZStack(alignment: .topLeading) {
             Color.clear.allowsHitTesting(false)
             if drag != nil { dragGuides }
-            if !viewModel.player.isPlaying, let caption = viewModel.previewCaption(in: size) {
+            if !viewModel.player.isPlaying, let caption = viewModel.captions.previewCaption(in: size) {
                 captionHandle(caption.id, frame: caption.frame)
             }
             ForEach(handledMedia) { media in
@@ -225,13 +225,13 @@ struct OverlayEditingLayer: View {
     private func captionHandle(_ id: UUID, frame: CGRect) -> some View {
         let isSelected = viewModel.selection == .caption(id)
         let draggedY: Double? = if case .caption(id, let y) = drag { y } else { nil }
-        let offset = draggedY.map { CGFloat($0 - viewModel.captionY) * size.height } ?? 0
+        let offset = draggedY.map { CGFloat($0 - viewModel.captions.captionY) * size.height } ?? 0
         return ZStack {
             Rectangle()
                 .fill(Color.clear)
                 .contentShape(Rectangle())
                 .frame(width: max(frame.width, Metrics.hitTarget), height: max(frame.height, Metrics.hitTarget))
-                .onTapGesture { viewModel.tapCaption(id) }
+                .onTapGesture { viewModel.captions.tapCaption(id) }
                 .gesture(captionGesture(id))
             if isSelected || draggedY != nil {
                 RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
@@ -255,13 +255,13 @@ struct OverlayEditingLayer: View {
                     viewModel.player.pause()
                     if viewModel.selection != .caption(id) { viewModel.selection = .caption(id) }
                 }
-                let placed = QuickEditViewModel.snappedCaption(viewModel.captionY + Double(value.translation.height / max(1, size.height)))
+                let placed = CaptionsViewModel.snappedCaption(viewModel.captions.captionY + Double(value.translation.height / max(1, size.height)))
                 if placed.stop != nil, !guides.horizontal { Haptics.snap() }
                 guides = (false, placed.stop == 0.5)
                 drag = .caption(id, y: placed.y)
             }
             .onEnded { value in
-                viewModel.moveCaptions(toY: viewModel.captionY + Double(value.translation.height / max(1, size.height)))
+                viewModel.captions.moveCaptions(toY: viewModel.captions.captionY + Double(value.translation.height / max(1, size.height)))
                 endDrag()
             }
     }
