@@ -5,11 +5,12 @@
 
 import SwiftUI
 
-/// Under the preview: "00:01.2 / 00:21.6", play / pause in the middle, and undo, redo and full
-/// screen, always within reach (also space, ⌘Z and ⇧⌘Z on a keyboard). It reads the player's
+/// Under the preview: "00:01.2 / 00:21.6", play / pause in the middle between ‹ › (one frame back or forward, held to repeat),
+/// and undo, redo and full screen, always within reach (also space, ⌘Z and ⇧⌘Z on a keyboard). It reads the player's
 /// clock, so it redraws while the video plays and the rest of the screen doesn't.
 struct EditorPlayerBar: View {
     let viewModel: QuickEditViewModel
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         let isPlaying = viewModel.player.isPlaying
@@ -32,24 +33,47 @@ struct EditorPlayerBar: View {
                     viewModel.toggleFullScreen()
                 }
             }
-            Button(action: viewModel.togglePlayback) {
-                Image(systemName: isPlaying ? "pause.fill" : "play.fill")
-                    .symbolSwap(value: isPlaying)
-                    .font(.system(size: 22))
-                    .foregroundStyle(Palette.ink)
-                    .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
-                    .contentShape(Rectangle())
+            HStack(spacing: 0) {
+                if showsFrameSteps { frameStep(-1) }
+                Button(action: viewModel.togglePlayback) {
+                    Image(systemName: isPlaying ? "pause.fill" : "play.fill")
+                        .symbolSwap(value: isPlaying)
+                        .font(.system(size: 22))
+                        .foregroundStyle(Palette.ink)
+                        .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                .disabled(!viewModel.isReady || viewModel.isRecordingVoiceOver)
+                // Space plays, unless a field could be taking the keyboard.
+                .keyboardShortcut(viewModel.acceptsSpaceToPlay ? KeyboardShortcut(.space, modifiers: []) : nil)
+                .accessibilityLabel(isPlaying ? Text("Pause") : Text("Play"))
+                .accessibilityIdentifier("edit.playButton")
+                if showsFrameSteps { frameStep(1) }
             }
-            .buttonStyle(.plain)
-            .disabled(!viewModel.isReady || viewModel.isRecordingVoiceOver)
-            // Space plays, unless a field could be taking the keyboard.
-            .keyboardShortcut(viewModel.acceptsSpaceToPlay ? KeyboardShortcut(.space, modifiers: []) : nil)
-            .accessibilityLabel(isPlaying ? Text("Pause") : Text("Play"))
-            .accessibilityIdentifier("edit.playButton")
         }
         .padding(.leading, 16)
         .padding(.trailing, 10)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+    }
+
+    /// ‹ › one frame (`QuickEditViewModel.stepFrame`), while there is room beside the time and the undo buttons.
+    private var showsFrameSteps: Bool { typeSize < .xxLarge }
+
+    private func frameStep(_ direction: Int) -> some View {
+        Button { viewModel.stepFrame(direction) } label: {
+            Image(systemName: direction < 0 ? "chevron.left" : "chevron.right")
+                .font(.system(size: 15, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .opacity(viewModel.isReady ? 1 : 0.4)
+                .frame(width: 34, height: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .buttonRepeatBehavior(.enabled)
+        .disabled(!viewModel.isReady || viewModel.isRecordingVoiceOver)
+        .accessibilityLabel(direction < 0 ? Text("Previous frame") : Text("Next frame"))
+        .accessibilityIdentifier(direction < 0 ? "edit.previousFrame" : "edit.nextFrame")
     }
 
     /// The playhead bright, the length dimmed.

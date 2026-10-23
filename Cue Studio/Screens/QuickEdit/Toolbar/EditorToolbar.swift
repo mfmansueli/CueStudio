@@ -7,7 +7,7 @@ import SwiftUI
 
 /// The toolbar under the timeline. With something picked (or the Text, Captions or Audio menu
 /// open), it swaps its whole content for that context's tools, with a yellow "‹ Clip" back to the
-/// main ones. It scrolls sideways, with a fade on the right while more tools wait there; Delete,
+/// main ones. It scrolls sideways, with a fade on each side where more tools wait; Delete,
 /// in red, stays at the right end whatever the scroll. On the smallest screens it keeps only the
 /// icons; their labels stay for VoiceOver and a long press.
 struct EditorToolbar: View {
@@ -18,6 +18,13 @@ struct EditorToolbar: View {
     /// The label shown by a long press when labels are hidden.
     @State private var tooltip: String?
     @State private var tooltipTask: Task<Void, Never>?
+    /// Where the tools are scrolled: whether some wait on the left, and on the right.
+    @State private var scrollEdges = ScrollEdges()
+
+    private struct ScrollEdges: Equatable {
+        var hidesLeading = false
+        var hidesTrailing = true
+    }
 
     var body: some View {
         let context = viewModel.toolbarContextLabel
@@ -28,6 +35,8 @@ struct EditorToolbar: View {
         }
         // A short crossfade when the tools change.
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.15), value: context)
+        // New tools start from their first one.
+        .onChange(of: context) { scrollEdges = ScrollEdges() }
         .background(Palette.bg)
         .overlay(alignment: .top) {
             Rectangle().fill(Palette.Editor.separator).frame(height: 0.5)
@@ -71,16 +80,25 @@ struct EditorToolbar: View {
                     .frame(minHeight: proxy.size.height)
                 }
                 .scrollIndicators(.hidden)
+                .onScrollGeometryChange(for: ScrollEdges.self) { geometry in
+                    ScrollEdges(
+                        hidesLeading: geometry.contentOffset.x > 4,
+                        hidesTrailing: geometry.contentOffset.x + geometry.containerSize.width < geometry.contentSize.width - 4
+                    )
+                } action: { _, edges in
+                    scrollEdges = edges
+                }
                 .mask {
-                    if overflows {
-                        // A fade on the right says more tools wait there.
-                        LinearGradient(
-                            stops: [.init(color: .black, location: 0.86), .init(color: .clear, location: 1)],
-                            startPoint: .leading, endPoint: .trailing
-                        )
-                    } else {
-                        Rectangle()
-                    }
+                    // A fade on the side where more tools wait, and only there: at the end of the row the last tool shows whole.
+                    LinearGradient(
+                        stops: [
+                            .init(color: overflows && scrollEdges.hidesLeading ? .clear : .black, location: 0),
+                            .init(color: .black, location: overflows && scrollEdges.hidesLeading ? 0.1 : 0),
+                            .init(color: .black, location: overflows && scrollEdges.hidesTrailing ? 0.84 : 1),
+                            .init(color: overflows && scrollEdges.hidesTrailing ? .clear : .black, location: 1),
+                        ],
+                        startPoint: .leading, endPoint: .trailing
+                    )
                 }
             }
             ForEach(pinned) { item in
