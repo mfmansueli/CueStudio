@@ -24,11 +24,11 @@ final class ToolAuditCaptureTests: XCTestCase {
     }
 
     /// Opens the editor on the demo take; each part starts here.
-    private func start() {
+    private func start(arguments: [String] = []) {
         let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] ?? NSTemporaryDirectory()
         directory = URL(fileURLWithPath: folder, isDirectory: true)
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
-        app = EditorApp.open(demo: true)
+        app = EditorApp.open(demo: true, arguments: arguments)
         sleep(2)
     }
 
@@ -326,6 +326,40 @@ final class ToolAuditCaptureTests: XCTestCase {
     /// The demo's other tracks (`SampleEdit.demo`: two clips, music with a beat, a B-roll window, a voice-over): Reorder on its own
     /// clips, the music's tools and Beats, the voice-over's and a caption's tools, the B-roll's tools and its panel, and Voice-over
     /// with the script over the preview.
+    /// The type, color and notice changes of 23 Oct at the default text size and at the largest before the accessibility sizes:
+    /// the Low Power notice, Text style's Font and Color, Caption style's Font over a preset, the cover's Title, Adjust and Smart.
+    func test11TypeColorAndNotices() throws {
+        for (size, arguments) in [("default", []), ("xxxl", ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryXXXL"])] {
+            start(arguments: ["-uiTestLowPower"] + arguments)
+            try capture("\(size)-lowpower")
+            tap("edit.lowPowerNotice.close", within: 2)
+            EditorApp.tapTool(app, "text")
+            if tap("edit.toolbar.title") {
+                dismissKeyboard()
+                for tab in ["font", "color"] where tap("edit.panel.tab.\(tab)") { try capture("\(size)-text-\(tab)") }
+                apply()
+            }
+            tap("edit.toolbar.back", within: 2)
+            EditorApp.tapTool(app, "captions")
+            if tap("edit.captionsStyleButton"), tap("edit.panel.tab.font") {
+                try captureScrolling("\(size)-caption-font")
+                apply()
+            }
+            tap("edit.toolbar.back", within: 2)
+            EditorApp.tapTool(app, "adjustVideo")
+            try capture("\(size)-adjust")
+            apply()
+            EditorApp.tapTool(app, "smart")
+            try capture("\(size)-smart")
+            apply()
+            EditorApp.tapTool(app, "cover")
+            if app.buttons["cover.done"].exists(within: 8), tap("cover.step.text") {
+                try captureScrolling("\(size)-cover-text")
+            }
+            app.terminate()
+        }
+    }
+
     func test10DemoTracks() throws {
         start()
         EditorApp.tapTool(app, "edit")

@@ -340,7 +340,7 @@ struct QuickEditView: View {
                 .accessibilityIdentifier("edit.exitFullScreen")
             QuickEditPreview(viewModel: viewModel, size: fullScreenSize(in: screen), isFullScreen: true)
             Text("Tap video to play · tap outside to exit")
-                .font(.system(size: 13, weight: .semibold))
+                .font(.system(.footnote, weight: .semibold))
                 .padding(.horizontal, 14)
                 .frame(height: 30)
                 .background(Palette.Takes.durationBadge, in: Capsule())

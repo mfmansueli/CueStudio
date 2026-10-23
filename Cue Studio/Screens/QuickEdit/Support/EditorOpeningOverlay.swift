@@ -47,7 +47,7 @@ struct EditorOpeningOverlay: View {
             HStack(spacing: 8) {
                 Text("✦").foregroundStyle(Palette.aiText)
                 Text("Getting your take ready")
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(.callout, weight: .semibold))
                     .foregroundStyle(Palette.aiTextStrong)
             }
             AmbientTimeline { ambient in

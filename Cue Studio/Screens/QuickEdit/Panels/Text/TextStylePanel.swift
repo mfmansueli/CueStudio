@@ -190,7 +190,7 @@ struct TextStylePanel: View {
     private func font(_ text: TextOverlay) -> some View {
         PanelChips(
             options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: text.font,
-            font: { CueStudioFont.chip($0) }, identifier: "edit.textFont",
+            font: { CueStudioFont.chip($0, size: $1) }, identifier: "edit.textFont",
             onSelect: { viewModel.restyleText(.font($0)) }
         )
         PanelSegmented(

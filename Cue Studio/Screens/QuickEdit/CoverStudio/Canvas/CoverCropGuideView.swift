@@ -29,7 +29,7 @@ struct CoverCropGuideView: View {
                 .frame(width: rect.width, height: rect.height)
                 .offset(x: rect.minX, y: rect.minY)
             Text(label)
-                .font(.system(size: 11, weight: .semibold))
+                .font(.system(.caption2, weight: .semibold))
                 .foregroundStyle(Palette.ink)
                 .padding(.horizontal, 7)
                 .padding(.vertical, 3)

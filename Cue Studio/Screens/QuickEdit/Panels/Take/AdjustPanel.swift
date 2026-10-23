@@ -24,6 +24,8 @@ struct AdjustPanel: View {
     }
 
     @State private var current: Pick = .dial(.exposure)
+    /// A setting's name on its chip, growing with the text size.
+    @ScaledMetric(relativeTo: .subheadline) private var chipTitleSize: CGFloat = 14
 
     var body: some View {
         PanelFrame(viewModel: viewModel, panel: .adjust, onReset: reset, compare: viewModel.pictureCompare) {
@@ -97,12 +99,12 @@ struct AdjustPanel: View {
     /// white with black text, like every chosen chip.
     private func chipLabel(_ title: String, valueText: String?, picked isPicked: Bool, isMeasuring: Bool = false) -> some View {
         HStack(spacing: 6) {
-            Text(title).font(.system(size: 14, weight: isPicked ? .semibold : .medium))
+            Text(title).font(.system(size: chipTitleSize, weight: isPicked ? .semibold : .medium))
             if isMeasuring {
                 ProgressView().controlSize(.mini).tint(isPicked ? Palette.chipOnInk : Palette.ink)
             } else if let valueText {
                 Text(valueText)
-                    .font(.system(size: 12, weight: .bold).monospacedDigit())
+                    .font(.system(.caption, weight: .bold).monospacedDigit())
                     .foregroundStyle(isPicked ? Palette.chipOnInk : Palette.accText)
             }
         }

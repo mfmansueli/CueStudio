@@ -63,10 +63,10 @@ enum CueStudioFont {
         .system(size: size, design: .rounded)
     }
 
-    /// A family's chip in Text style and Caption style, drawn in that family (the only place the
-    /// interface shows the fonts made for the video).
-    static func chip(_ face: TextOverlayFont) -> Font {
-        Font(TextFont.font(face, weight: face == .dmSerif ? .regular : .semibold, size: 15, text: face.label))
+    /// A family's chip in Text style, Caption style and the cover's Title, drawn in that family (the only place the
+    /// interface shows the fonts made for the video), at `size` (15 at the default text size).
+    static func chip(_ face: TextOverlayFont, size: CGFloat = 15) -> Font {
+        Font(TextFont.font(face, weight: face == .dmSerif ? .regular : .semibold, size: size, text: face.label))
     }
 
     /// HUD signals (counters, time, status lines): small, monospaced, in capitals where the caller

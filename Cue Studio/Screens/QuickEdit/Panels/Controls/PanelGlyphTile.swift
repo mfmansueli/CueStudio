@@ -20,6 +20,9 @@ struct PanelGlyphTile: View {
     let identifier: String
     let action: () -> Void
 
+    /// The small capitals under the title, growing with the text size.
+    @ScaledMetric(relativeTo: .caption2) private var captionSize: CGFloat = 9
+
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
         Button {
@@ -35,14 +38,14 @@ struct PanelGlyphTile: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Spacer(minLength: 0)
                 Text(title)
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(.caption, weight: .semibold))
                     .foregroundStyle(isSuggestion ? Palette.aiText : Palette.ink)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
                 if let caption {
                     Text(caption)
                         .textCase(.uppercase)
-                        .font(.system(size: 9, weight: .heavy, design: .monospaced))
+                        .font(.system(size: captionSize, weight: .heavy, design: .monospaced))
                         .tracking(0.4)
                         .foregroundStyle(isOn ? Palette.accText : captionTint)
                         .lineLimit(1)

@@ -131,6 +131,8 @@ struct EditorToolbar: View {
         .overlay(alignment: .trailing) {
             Rectangle().fill(Palette.Editor.separator).frame(width: 0.5)
         }
+        // A fixed-height bar: with the largest text sizes a long press shows the label large, as the system's tab bars do.
+        .accessibilityShowsLargeContentViewer { Label(context, systemImage: "chevron.left") }
         .accessibilityLabel(Text("Back to all tools"))
         .accessibilityValue(Text(context))
         .accessibilityIdentifier("edit.toolbar.back")
@@ -188,6 +190,7 @@ struct EditorToolbar: View {
             guard !heightClass.toolbarShowsLabels else { return }
             show(tooltip: item.label)
         })
+        .accessibilityShowsLargeContentViewer { Label(item.label, systemImage: item.systemImage) }
         .accessibilityLabel(item.scopeBadge == nil ? Text(item.label) : Text("\(item.label), whole video"))
         .accessibilityHint(item.style == .dimmed ? Text("Not available here") : Text(""))
         .accessibilityIdentifier("edit.toolbar.\(item.id)")

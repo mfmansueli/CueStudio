@@ -151,14 +151,15 @@ struct CaptionStylePanel: View {
             PanelChips(
                 options: [PanelOption(nil, String(localized: "Preset"), key: "preset")]
                     + TextOverlayFont.editorFonts.map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },
-                selection: viewModel.captionFace, font: { $0.map(CueStudioFont.chip) ?? .system(size: 15, weight: .semibold) },
+                selection: viewModel.captionFace,
+                font: { face, size in face.map { CueStudioFont.chip($0, size: size) } ?? .system(size: size, weight: .semibold) },
                 identifier: "edit.captionFace", onSelect: viewModel.setCaptionFace
             )
         }
         if let look = viewModel.captionEditableLook {
             PanelChips(
                 options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: look.font,
-                font: { CueStudioFont.chip($0) }, identifier: "edit.captionFont",
+                font: { CueStudioFont.chip($0, size: $1) }, identifier: "edit.captionFont",
                 onSelect: { family in
                     viewModel.updateCaptionLook { look in
                         look.font = family

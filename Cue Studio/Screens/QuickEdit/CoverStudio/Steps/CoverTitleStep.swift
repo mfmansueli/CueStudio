@@ -12,6 +12,8 @@ struct CoverTitleStep: View {
     let viewModel: CoverStudioViewModel
 
     @FocusState private var isTyping: Bool
+    /// A word of the title to highlight, growing with the text size.
+    @ScaledMetric(relativeTo: .subheadline) private var wordSize: CGFloat = 14
 
     private var style: CoverTitleStyle { viewModel.composition.title }
 
@@ -27,7 +29,7 @@ struct CoverTitleStep: View {
                 // The same families as the texts and captions on the video, each chip in its own face.
                 PanelChips(
                     options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: style.font.face,
-                    font: { CueStudioFont.chip($0) }, identifier: "cover.font",
+                    font: { CueStudioFont.chip($0, size: $1) }, identifier: "cover.font",
                     onSelect: { face in viewModel.updateTitle { $0.font = CoverFont(face, weight: $0.font.weight) } }
                 )
                 if style.font.face.weights.count > 1 {
@@ -145,7 +147,7 @@ struct CoverTitleStep: View {
                         let isOn = style.highlights.contains(index)
                         Button { viewModel.toggleHighlight(index) } label: {
                             Text(style.uppercase ? word.localizedUppercase : word)
-                                .font(.system(size: 14, weight: .semibold))
+                                .font(.system(size: wordSize, weight: .semibold))
                                 .foregroundStyle(isOn ? Palette.chipOnInk : Palette.ink)
                                 .padding(.horizontal, 11)
                                 .frame(height: 32)

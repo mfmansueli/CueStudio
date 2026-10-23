@@ -17,8 +17,11 @@ struct EditorPlayerBar: View {
         ZStack {
             HStack(spacing: 2) {
                 Text(timeText)
-                    .font(.system(size: 13, weight: .semibold).monospacedDigit())
+                    .font(.system(.footnote, weight: .semibold).monospacedDigit())
                     .lineLimit(1)
+                    .minimumScaleFactor(0.8)
+                    // The bar keeps its height: the time grows up to the largest size it fits.
+                    .dynamicTypeSize(...DynamicTypeSize.xxLarge)
                     .accessibilityLabel(Text("Time"))
                     .accessibilityValue(Text(viewModel.timeLabel))
                     .accessibilityIdentifier("edit.timeLabel")

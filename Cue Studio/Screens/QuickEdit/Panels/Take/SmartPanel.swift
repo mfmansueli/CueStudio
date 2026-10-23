@@ -13,6 +13,10 @@ import SwiftUI
 struct SmartPanel: View {
     let viewModel: QuickEditViewModel
     @State private var section: SmartPanelSection = .tools
+    /// A tile's status line ("4 found"), growing with the text size.
+    @ScaledMetric(relativeTo: .caption2) private var statusSize: CGFloat = 9.5
+    /// A tile's side, so its name keeps its two lines at any text size.
+    @ScaledMetric(relativeTo: .footnote) private var tileSide: CGFloat = 100
 
     var body: some View {
         EditorPanelContainer(
@@ -127,7 +131,8 @@ struct SmartPanel: View {
         .accessibilityIdentifier("edit.template.\(template.rawValue)")
     }
 
-    /// A 100 × 100 tile: the icon at the top, the name and, in mono capitals, what is on.
+    /// A square tile (100 pt at the default text size, growing with it): the icon at the top, the name and, in mono
+    /// capitals, what is on.
     private func tile(
         id: String, title: LocalizedStringKey, systemImage: String, status: String?, action: @escaping () -> Void
     ) -> some View {
@@ -143,21 +148,21 @@ struct SmartPanel: View {
                     .foregroundStyle(Palette.aiText)
                 Spacer(minLength: 4)
                 Text(title)
-                    .font(.system(size: 13, weight: .semibold))
+                    .font(.system(.footnote, weight: .semibold))
                     .foregroundStyle(Palette.aiTextStrong)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
                     .minimumScaleFactor(0.85)
                 Text(status ?? " ")
                     .textCase(.uppercase)
-                    .font(.system(size: 9.5, weight: .heavy, design: .monospaced))
+                    .font(.system(size: statusSize, weight: .heavy, design: .monospaced))
                     .tracking(0.5)
                     .foregroundStyle(Palette.aiText)
                     .lineLimit(1)
                     .padding(.top, 2)
             }
             .padding(10)
-            .frame(width: 100, height: 100, alignment: .topLeading)
+            .frame(width: tileSide, height: tileSide, alignment: .topLeading)
             .background(Palette.aiFill, in: shape)
             .overlay(shape.strokeBorder(isOn ? Palette.acc : Palette.aiBorder, lineWidth: isOn ? 1.5 : 0.5))
             .contentShape(shape)

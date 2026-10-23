@@ -16,6 +16,9 @@ struct EditorDoneSheet: View {
     var onMeasure: (CGFloat) -> Void = { _ in }
     let onAnswer: (EditorOutcome) -> Void
 
+    /// An answer's small capitals line, growing with the text size.
+    @ScaledMetric(relativeTo: .caption2) private var smallLabelSize: CGFloat = 10
+
     var body: some View {
         // With the largest text sizes the answers are taller than the screen: the sheet stops at its
         // full height and they scroll, starting at the top ("EDIT SAVED" and the question under the grabber).
@@ -35,7 +38,7 @@ struct EditorDoneSheet: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text("Edit saved · \(duration)")
                     .textCase(.uppercase)
-                    .font(.system(size: 11, weight: .heavy, design: .monospaced))
+                    .font(.system(.caption2, design: .monospaced, weight: .heavy))
                     .tracking(1)
                     .foregroundStyle(Palette.accText)
                 Text("Is it ready to post?")
@@ -91,7 +94,7 @@ struct EditorDoneSheet: View {
             Circle().fill(tint).frame(width: 5, height: 5)
             Text(label).textCase(.uppercase).lineLimit(1)
         }
-        .font(.system(size: 10, weight: .heavy, design: .monospaced))
+        .font(.system(size: smallLabelSize, weight: .heavy, design: .monospaced))
         .tracking(0.5)
         .foregroundStyle(tint)
         .padding(.horizontal, 8)

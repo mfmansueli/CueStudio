@@ -6,13 +6,16 @@
 import SwiftUI
 
 /// Choices as chips in a sideways row; each chip can show its label in its own font (the
-/// families in Text style).
+/// families in Text style), at a size that grows with the text size.
 struct PanelChips<Value: Hashable>: View {
     let options: [PanelOption<Value>]
     let selection: Value?
-    var font: (Value) -> Font = { _ in .system(size: 15, weight: .semibold) }
+    /// The chip's font for a value, at a size.
+    var font: (Value, CGFloat) -> Font = { _, size in .system(size: size, weight: .semibold) }
     let identifier: String
     let onSelect: (Value) -> Void
+
+    @ScaledMetric(relativeTo: .subheadline) private var textSize: CGFloat = 15
 
     var body: some View {
         ScrollView(.horizontal) {
@@ -24,12 +27,13 @@ struct PanelChips<Value: Hashable>: View {
                         onSelect(option.value)
                     } label: {
                         Text(option.label)
-                            .font(font(option.value))
+                            .font(font(option.value, textSize))
                             .lineLimit(1)
                             .fixedSize()
                             .foregroundStyle(isOn ? Palette.chipOnInk : Palette.ink)
                             .padding(.horizontal, 14)
-                            .frame(height: 38)
+                            .padding(.vertical, 6)
+                            .frame(minHeight: 38)
                             .background(isOn ? Palette.chipOn : Palette.fill, in: Capsule())
                             .frame(minHeight: Metrics.hitTarget)
                             .contentShape(Rectangle())
