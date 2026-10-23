@@ -55,6 +55,15 @@ extension EditorPart {
         set { session.sheet = newValue }
     }
 
+    /// The take's script as captions, Clean Up and the narration read it; nil for a freestyle take.
+    var captionScript: Script? { session.captionScript }
+
+    /// A file is being brought in or written: one at a time (`EditorSession.isImportingMedia`).
+    var isImportingMedia: Bool {
+        get { session.isImportingMedia }
+        set { session.isImportingMedia = newValue }
+    }
+
     /// Media files copied in while the editor is open (`EditorSession.importedFiles`).
     var importedFiles: Set<String> {
         get { session.importedFiles }

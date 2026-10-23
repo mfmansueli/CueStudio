@@ -218,7 +218,7 @@ struct QuickEditToolbarTests {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.openMusic)
         #expect(viewModel.sheet == .music)
-        #expect(viewModel.musicReplacementID == nil)
+        #expect(viewModel.audio.musicReplacementID == nil)
         viewModel.sheet = nil
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
         viewModel.changeEdit { $0.music = [music] }
@@ -234,9 +234,9 @@ struct QuickEditToolbarTests {
         viewModel.selection = .music(music.id)
         viewModel.perform(.replaceMusic)
         #expect(viewModel.sheet == .music)
-        #expect(viewModel.musicReplacementID == music.id)
+        #expect(viewModel.audio.musicReplacementID == music.id)
         viewModel.sheet = nil
-        #expect(viewModel.musicReplacementID == nil)
+        #expect(viewModel.audio.musicReplacementID == nil)
     }
 
     @Test func theCaptionsMenuMakesOrManagesTheLines() async {

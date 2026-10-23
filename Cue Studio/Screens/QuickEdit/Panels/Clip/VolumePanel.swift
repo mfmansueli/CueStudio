@@ -64,7 +64,7 @@ struct VolumePanel: View {
         PanelToggleRow(
             label: String(localized: "Lower under voice"), detail: String(localized: "Quieter while someone speaks"),
             isOn: music.ducksUnderVoice, identifier: "edit.musicDucks"
-        ) { viewModel.setMusicDucks(music.id, !music.ducksUnderVoice) }
+        ) { viewModel.audio.setMusicDucks(music.id, !music.ducksUnderVoice) }
     }
 
     @ViewBuilder
@@ -77,11 +77,11 @@ struct VolumePanel: View {
             PanelSlider(
                 label: String(localized: "Fade in"), value: music.fadeIn, range: 0...MusicClip.fadeRange.upperBound, step: 0.1,
                 format: .seconds, identifier: "edit.musicFadeIn"
-            ) { viewModel.setMusicFadeIn(music.id, $0) }
+            ) { viewModel.audio.setMusicFadeIn(music.id, $0) }
             PanelSlider(
                 label: String(localized: "Fade out"), value: music.fadeOut, range: 0...MusicClip.fadeRange.upperBound, step: 0.1,
                 format: .seconds, identifier: "edit.musicFadeOut"
-            ) { viewModel.setMusicFadeOut(music.id, $0) }
+            ) { viewModel.audio.setMusicFadeOut(music.id, $0) }
         }
     }
 }

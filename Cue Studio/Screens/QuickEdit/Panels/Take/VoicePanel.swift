@@ -14,14 +14,14 @@ struct VoicePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
     var body: some View {
-        PanelFrame(viewModel: viewModel, panel: .voice, compare: viewModel.soundCompare) {
+        PanelFrame(viewModel: viewModel, panel: .voice, compare: viewModel.audio.soundCompare) {
             strength(
                 String(localized: "Enhance voice"), viewModel.edit.voiceEnhancement, "edit.enhanceVoice"
-            ) { viewModel.setVoiceEnhancement($0) }
+            ) { viewModel.audio.setVoiceEnhancement($0) }
             strength(
                 String(localized: "Reduce noise"), viewModel.edit.noiseReduction, "edit.reduceNoise"
-            ) { viewModel.setNoiseReduction($0) }
-            if !viewModel.voiceRecordings.isEmpty { recordings }
+            ) { viewModel.audio.setNoiseReduction($0) }
+            if !viewModel.audio.voiceRecordings.isEmpty { recordings }
         }
     }
 
@@ -33,14 +33,14 @@ struct VoicePanel: View {
                 .foregroundStyle(Palette.ink2)
                 .accessibilityAddTraits(.isHeader)
                 .padding(.top, 4)
-            ForEach(viewModel.voiceRecordings) { recording in
+            ForEach(viewModel.audio.voiceRecordings) { recording in
                 PanelToggleRow(
                     label: recording.title,
                     detail: recording.isPickedClip ? String(localized: "The clip you picked") : (recording.canChange ? nil : String(localized: "Always")),
                     isOn: recording.isTreated, identifier: "edit.voice.recording.\(recording.id)"
                 ) {
                     guard recording.canChange, let id = recording.sourceID else { return }
-                    viewModel.setTreatsVoice(of: id, !recording.isTreated)
+                    viewModel.audio.setTreatsVoice(of: id, !recording.isTreated)
                 }
                 .disabled(!recording.canChange)
             }
@@ -48,7 +48,7 @@ struct VoicePanel: View {
                 label: String(localized: "Even out volume between clips"),
                 detail: String(localized: "Brings each clip's voice to this take's level, without clipping."),
                 isOn: viewModel.edit.evensOutVoices, identifier: "edit.voice.evenOut"
-            ) { viewModel.setEvensOutVoices(!viewModel.edit.evensOutVoices) }
+            ) { viewModel.audio.setEvensOutVoices(!viewModel.edit.evensOutVoices) }
             PanelNote(text: String(localized: "Music and the sound of photos or videos on top stay as they are."))
         }
     }

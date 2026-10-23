@@ -48,7 +48,7 @@ struct QuickEditClosingTests {
         let viewModel = await makeViewModel(editor: editor)
         viewModel.selectClipAtPlayhead()
         editor.whileExtracting = { viewModel.cancel() }
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         #expect(editor.extractions.count == 1)
         #expect(viewModel.edit.music.isEmpty)
     }

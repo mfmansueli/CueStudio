@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+ExtractAudio.swift
+//  AudioViewModel+ExtractAudio.swift
 //  Cue Studio
 //
 
@@ -10,7 +10,7 @@ import Foundation
 /// it did and can be moved, trimmed, faded and turned up or down; the clip or the video is muted, so nothing plays twice. Like
 /// a sound effect, it follows its moment when something before it is cut. One undo step brings both back; the recording is
 /// never touched.
-extension QuickEditViewModel {
+extension AudioViewModel {
     /// Whether the picked item has a sound to extract: a clip, or a video over the take with a sound of its own.
     var canExtractAudio: Bool {
         if selection?.clipID != nil { return true }

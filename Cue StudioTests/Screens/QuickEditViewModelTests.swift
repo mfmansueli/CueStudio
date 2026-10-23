@@ -432,7 +432,7 @@ struct QuickEditViewModelTests {
         let scenario = await makeScenario()
         dragHandle(.start, to: 4, on: scenario.viewModel)
         scenario.viewModel.look.setAdjustment(.exposure, 30)
-        scenario.viewModel.setVoiceEnhancement(.strong)
+        scenario.viewModel.audio.setVoiceEnhancement(.strong)
         scenario.viewModel.undo()
         #expect(scenario.viewModel.edit.exposure == 30)
         #expect(scenario.viewModel.edit.voiceEnhancement != .strong)

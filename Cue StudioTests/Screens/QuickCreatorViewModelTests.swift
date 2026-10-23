@@ -491,14 +491,14 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 12)
-        await viewModel.startVoiceOver()
-        #expect(viewModel.isRecordingVoiceOver)
+        await viewModel.audio.startVoiceOver()
+        #expect(viewModel.audio.isRecordingVoiceOver)
         #expect(scenario.player.isMuted)
         #expect(scenario.player.isPlaying)
         #expect(!viewModel.canUndo)
 
-        viewModel.stopVoiceOver()
-        #expect(!viewModel.isRecordingVoiceOver)
+        viewModel.audio.stopVoiceOver()
+        #expect(!viewModel.audio.isRecordingVoiceOver)
         #expect(!scenario.player.isMuted)
         let clip = try #require(viewModel.edit.voiceOvers.first)
         #expect(clip.anchor == 12)
@@ -517,26 +517,26 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 8)
-        await viewModel.startVoiceOver()
-        viewModel.stopVoiceOver()
+        await viewModel.audio.startVoiceOver()
+        viewModel.audio.stopVoiceOver()
         scenario.player.seek(to: 30)
-        viewModel.reRecordVoiceOver(try #require(viewModel.edit.voiceOvers.first?.id))
+        viewModel.audio.reRecordVoiceOver(try #require(viewModel.edit.voiceOvers.first?.id))
         #expect(viewModel.edit.voiceOvers.isEmpty)
         #expect(scenario.player.currentTime == 8)
         #expect(viewModel.panel == .voiceOver)
-        await viewModel.startVoiceOver()
-        #expect(viewModel.recordingStart == 8)
-        viewModel.stopVoiceOver()
+        await viewModel.audio.startVoiceOver()
+        #expect(viewModel.audio.recordingStart == 8)
+        viewModel.audio.stopVoiceOver()
         #expect(viewModel.edit.voiceOvers.map(\.anchor) == [8])
     }
 
     @Test func withoutTheMicrophoneNothingRecordsAndSettingsIsOneTapAway() async throws {
         let scenario = await makeScenario()
         var opened = 0
-        scenario.viewModel.opensSettings = { opened += 1 }
+        scenario.viewModel.audio.opensSettings = { opened += 1 }
         scenario.recorder.allowed = false
-        await scenario.viewModel.startVoiceOver()
-        #expect(!scenario.viewModel.isRecordingVoiceOver)
+        await scenario.viewModel.audio.startVoiceOver()
+        #expect(!scenario.viewModel.audio.isRecordingVoiceOver)
         #expect(scenario.toast.message == "Mic is off for Cue")
         let settings = try #require(scenario.toast.action)
         #expect(settings.title == "Settings")
@@ -547,8 +547,8 @@ struct QuickCreatorViewModelTests {
     @Test func aVoiceOverKeepsItsVolumeAndCanBeDeleted() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        await viewModel.startVoiceOver()
-        viewModel.stopVoiceOver()
+        await viewModel.audio.startVoiceOver()
+        viewModel.audio.stopVoiceOver()
         let id = viewModel.edit.voiceOvers[0].id
         #expect(viewModel.selection == .voiceOver(id))
         viewModel.setTargetVolume(3)
@@ -556,7 +556,7 @@ struct QuickCreatorViewModelTests {
         viewModel.setTargetVolume(0.4)
         #expect(viewModel.edit.voiceOvers[0].volume == 0.4)
         #expect(viewModel.targetVolume == 0.4)
-        viewModel.deleteVoiceOver(id)
+        viewModel.audio.deleteVoiceOver(id)
         #expect(viewModel.edit.voiceOvers.isEmpty)
     }
 
@@ -566,8 +566,8 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 12)
-        await viewModel.startVoiceOver()
-        viewModel.stopVoiceOver()
+        await viewModel.audio.startVoiceOver()
+        viewModel.audio.stopVoiceOver()
         viewModel.moveBar(try #require(viewModel.voiceOverBars.first), toStart: 20)
         #expect(viewModel.voiceOverBars.map(\.span) == [TimeSpan(start: 20, end: 24)])
 
@@ -589,7 +589,7 @@ struct QuickCreatorViewModelTests {
     /// Cancel keeps every change in the draft, a narration being recorded too.
     @Test func cancelKeepsARecordingInProgressInTheDraft() async {
         let scenario = await makeScenario()
-        await scenario.viewModel.startVoiceOver()
+        await scenario.viewModel.audio.startVoiceOver()
         scenario.viewModel.cancel()
         #expect(!scenario.recorder.cancelled)
         #expect(scenario.viewModel.edit.voiceOvers.count == 1)

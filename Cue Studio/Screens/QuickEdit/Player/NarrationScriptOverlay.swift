@@ -25,13 +25,13 @@ struct NarrationScriptOverlay: View {
     private static let inset: CGFloat = 10
 
     var body: some View {
-        let look = viewModel.narrationLook
-        let paragraphs = CueParser.paragraphs(in: viewModel.narrationScriptText ?? "")
-        let wordCount = ReadTime.wordCount(in: viewModel.narrationScriptText ?? "")
+        let look = viewModel.audio.narrationLook
+        let paragraphs = CueParser.paragraphs(in: viewModel.audio.narrationScriptText ?? "")
+        let wordCount = ReadTime.wordCount(in: viewModel.audio.narrationScriptText ?? "")
         let fontSize = NarrationScriptPace.fontSize(forPreview: size, prompterSize: look.size)
         let lineHeight = fontSize * look.lineSpacing
-        let pace = viewModel.narrationPace
-        let isRecording = viewModel.isRecordingVoiceOver
+        let pace = viewModel.audio.narrationPace
+        let isRecording = viewModel.audio.isRecordingVoiceOver
         TimelineView(.animation(minimumInterval: reduceMotion ? 0.2 : nil, paused: !pace.isReading)) { context in
             let offset = NarrationScriptPace.offset(
                 wordsRead: pace.wordsRead(at: context.date), wordCount: wordCount, contentHeight: contentHeight,
@@ -49,13 +49,13 @@ struct NarrationScriptOverlay: View {
                     LinearGradient(stops: [.init(color: .black, location: 0.8), .init(color: .clear, location: 1)], startPoint: .top, endPoint: .bottom)
                 }
         }
-        .environment(\.layoutDirection, viewModel.narrationReadsRightToLeft ? .rightToLeft : .leftToRight)
+        .environment(\.layoutDirection, viewModel.audio.narrationReadsRightToLeft ? .rightToLeft : .leftToRight)
         .overlay(alignment: .bottomTrailing) {
             if pace.isPaused { pausedBadge }
         }
         .background(Palette.Editor.narrationScrim, in: RoundedRectangle(cornerRadius: Metrics.tileRadius, style: .continuous))
         .contentShape(RoundedRectangle(cornerRadius: Metrics.tileRadius, style: .continuous))
-        .onTapGesture { viewModel.toggleNarrationPause() }
+        .onTapGesture { viewModel.audio.toggleNarrationPause() }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Script"))
         .accessibilityValue(pace.isPaused ? Text("Paused") : Text(""))

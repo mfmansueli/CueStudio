@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Music.swift
+//  AudioViewModel+Music.swift
 //  Cue Studio
 //
 
@@ -10,7 +10,7 @@ import Foundation
 /// track, with its volume, fades, mute and whether it goes down while someone speaks. Music is
 /// placed on the edit's own seconds: cutting something before it doesn't move it. Every change is
 /// an undo step; a slider is one.
-extension QuickEditViewModel {
+extension AudioViewModel {
     /// New music goes in at 40%, under the voice.
     static let newMusicVolume: Double = 0.4
 
@@ -27,7 +27,7 @@ extension QuickEditViewModel {
         isImportingMusic = true
         defer { isImportingMusic = false }
         do {
-            let imported = try await mediaImporter.importAudio(from: url)
+            let imported = try await importer.importAudio(from: url)
             guard !isClosed else {
                 EditMediaFiles.remove([imported.fileName])
                 return

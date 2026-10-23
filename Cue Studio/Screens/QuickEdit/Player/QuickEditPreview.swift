@@ -53,7 +53,7 @@ struct QuickEditPreview: View {
             .gesture(cropDrag, isEnabled: viewModel.panel == .crop && !isFullScreen)
             .onTapGesture {
                 if isFullScreen {
-                    if !viewModel.isRecordingVoiceOver { viewModel.togglePlayback() }
+                    if !viewModel.audio.isRecordingVoiceOver { viewModel.togglePlayback() }
                 } else if viewModel.panel != .crop {
                     viewModel.tapOutsideVideo()
                 }
@@ -89,10 +89,10 @@ struct QuickEditPreview: View {
     /// "Original" while ◐ shows the picture as recorded.
     @ViewBuilder
     private var recordingBadge: some View {
-        if viewModel.isRecordingVoiceOver {
+        if viewModel.audio.isRecordingVoiceOver {
             HStack(spacing: 6) {
                 Circle().fill(Palette.record).frame(width: 8, height: 8)
-                Text("REC \(viewModel.recordingElapsedLabel)")
+                Text("REC \(viewModel.audio.recordingElapsedLabel)")
                     .font(.footnote.weight(.semibold).monospacedDigit())
             }
             .padding(.horizontal, 12)
@@ -102,7 +102,7 @@ struct QuickEditPreview: View {
             .padding(.top, 12)
             .allowsHitTesting(false)
             .accessibilityIdentifier("edit.recordingBadge")
-        } else if viewModel.comparesOriginal {
+        } else if viewModel.audio.comparesOriginal {
             // Voice › Compare with original: what plays is the untreated sound.
             HStack(spacing: 6) {
                 Image(systemName: "ear").font(.editorGlyph(EditorGlyph.small, weight: .bold)).foregroundStyle(Palette.accText)

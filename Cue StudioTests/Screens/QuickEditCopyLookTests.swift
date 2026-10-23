@@ -181,10 +181,10 @@ struct QuickEditSoundEffectTests {
         )
         await viewModel.prepare()
         // Music fills the whole edit.
-        viewModel.addMusic(ImportedAudio(fileName: "song-\(UUID().uuidString).m4a", title: "Song", duration: 60))
+        viewModel.audio.addMusic(ImportedAudio(fileName: "song-\(UUID().uuidString).m4a", title: "Song", duration: 60))
         player.currentTime = 12
         let steps = viewModel.document.history.past.count
-        viewModel.addSoundEffect(.whoosh)
+        viewModel.audio.addSoundEffect(.whoosh)
         let effect = try #require(viewModel.edit.music.first { $0.effect == .whoosh })
         defer { EditMediaFiles.remove([effect.fileName]) }
         #expect(abs(effect.start - 12) < 0.001)

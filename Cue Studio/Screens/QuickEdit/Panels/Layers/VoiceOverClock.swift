@@ -11,7 +11,7 @@ struct VoiceOverClock: View {
     let viewModel: QuickEditViewModel
 
     var body: some View {
-        Text(viewModel.voiceOverTimeLabel)
+        Text(viewModel.audio.voiceOverTimeLabel)
             .font(.system(.footnote).monospacedDigit())
             .foregroundStyle(Palette.ink2)
             .accessibilityIdentifier("edit.voiceOverTime")

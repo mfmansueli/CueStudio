@@ -94,9 +94,4 @@ final class CaptionsViewModel: EditorPart {
         guard edit.captionLanguage == nil else { return nil }
         return languageConflictFor(session.captionScript)
     }
-
-    /// The text picked on the preview or its track.
-    var selectedText: TextOverlay? {
-        selection?.textID.flatMap { id in edit.texts.first { $0.id == id } }
-    }
 }

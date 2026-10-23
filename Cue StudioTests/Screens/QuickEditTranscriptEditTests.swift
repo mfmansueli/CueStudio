@@ -382,7 +382,7 @@ struct QuickEditAuditFixTests {
     @Test func aSoundEffectComesBackToItsPlaceAfterATrimGoesPastItAndBack() async throws {
         let (viewModel, player) = await makeViewModel()
         player.seek(to: 20)
-        viewModel.addSoundEffect(.ding)
+        viewModel.audio.addSoundEffect(.ding)
         let effect = try #require(viewModel.edit.music.first { $0.effect == .ding })
         let clip = viewModel.edit.timeline.segments[0].id
         viewModel.beginTimelineHandle(.clip(clip, .end), snapTimes: [])
@@ -433,7 +433,7 @@ struct QuickEditAuditFixTests {
     @Test func aSoundEffectFollowsItsMomentThroughACut() async throws {
         let (viewModel, player) = await makeViewModel()
         player.seek(to: 20)
-        viewModel.addSoundEffect(.ding)
+        viewModel.audio.addSoundEffect(.ding)
         let effect = try #require(viewModel.edit.music.first { $0.effect == .ding })
         #expect(abs(effect.start - 20) < 0.000_1)
         // Five seconds earlier in the video go: the ding plays five seconds earlier, still on its moment.

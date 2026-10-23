@@ -203,7 +203,7 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
             ]
             // Only a video with a sound of its own has one to take out.
-            if canExtractAudio {
+            if audio.canExtractAudio {
                 items.append(EditorToolbarItem(
                     id: "extractAudio", label: String(localized: "Extract audio"), systemImage: "waveform.badge.plus", action: .extractAudio
                 ))
@@ -272,7 +272,7 @@ extension QuickEditViewModel {
     /// Always adds: a clip already there is picked on its track, and "Replace" swaps it.
     private func openMusicSheet(replacing: Bool) {
         guard !replacing || selection?.musicID != nil else { return }
-        musicReplacementID = replacing ? selection?.musicID : nil
+        audio.musicReplacementID = replacing ? selection?.musicID : nil
         sheet = .music
     }
 
@@ -290,9 +290,9 @@ extension QuickEditViewModel {
         case .splitCaption: selection?.captionID.map(captions.splitCaptionAtPlayhead)
         case .joinCaption: selection?.captionID.map(captions.joinCaption)
         case .deleteCaption: selection?.captionID.map(captions.deleteCaptionLine)
-        case .deleteMusic: selection?.musicID.map(deleteMusic)
-        case .reRecordVoiceOver: selection?.voiceOverID.map(reRecordVoiceOver)
-        case .deleteVoiceOver: selection?.voiceOverID.map(deleteVoiceOver)
+        case .deleteMusic: selection?.musicID.map(audio.deleteMusic)
+        case .reRecordVoiceOver: selection?.voiceOverID.map(audio.reRecordVoiceOver)
+        case .deleteVoiceOver: selection?.voiceOverID.map(audio.deleteVoiceOver)
         case .replaceMedia: replaceSelectedMedia()
         case .deleteMedia: selection?.mediaID.map(deleteMedia)
         default: return false
@@ -325,7 +325,7 @@ extension QuickEditViewModel {
             // One at a time: a second tap never stops the first.
             if !jobs.isRunning(.reverse) { jobs.start(.reverse) { [weak self] _ in await self?.reverseClip() } }
         case .replaceClip: askToReplaceClip()
-        case .extractAudio: startJob { await self.extractAudio() }
+        case .extractAudio: startJob { await self.audio.extractAudio() }
         case .copyLook: look.copyClipLook()
         case .pasteLook: look.askToPasteLook()
         case .deleteClip: selection?.clipID.map(deleteClip)

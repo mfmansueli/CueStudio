@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Beats.swift
+//  AudioViewModel+Beats.swift
 //  Cue Studio
 //
 
@@ -9,7 +9,7 @@ import Foundation
 /// when the file comes in (`BeatDetector`, kept next to the file), show as ticks on the music track, and the playhead and the
 /// handles stick to them (Snap to beats). Move cuts to the beats puts each cut on the nearest beat; Cut on the beats cuts the
 /// video on every beat (or every second or fourth). Each is one undo step.
-extension QuickEditViewModel {
+extension AudioViewModel {
     /// The beats of a music file, when they've been found (an empty list: the file has no steady beat).
     func beats(ofFile name: String) -> BeatTracker.Result? {
         if let cached = beatCache[name] { return cached }

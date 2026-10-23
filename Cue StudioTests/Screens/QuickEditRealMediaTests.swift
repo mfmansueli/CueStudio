@@ -119,7 +119,7 @@ extension RealMedia {
             try await settle(viewModel)
 
             viewModel.selection = .clip(viewModel.edit.timeline.segments[2].id)
-            await viewModel.extractAudio()
+            await viewModel.audio.extractAudio()
             let sound = try #require(viewModel.edit.music.first)
             #expect(FileManager.default.fileExists(atPath: EditMediaFiles.url(for: sound.fileName).path(percentEncoded: false)))
             #expect(viewModel.edit.timeline.segments[2].isMuted)

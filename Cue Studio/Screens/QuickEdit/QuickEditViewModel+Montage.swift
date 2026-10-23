@@ -37,11 +37,6 @@ extension QuickEditViewModel {
         }
     }
 
-    /// The montage's other recordings' files, by source.
-    var clipSourceURLs: [UUID: URL] {
-        Dictionary(edit.sources.map { ($0.id, EditMediaFiles.url(for: $0.fileName)) }) { first, _ in first }
-    }
-
     // MARK: - Arranging
 
     /// Copies a section right after it, with what plays on it.

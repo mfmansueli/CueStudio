@@ -48,11 +48,11 @@ extension QuickEditViewModel {
         input.music = edit.music.compactMap { clip in
             clip.span(inEditOf: edit.editedDuration).map {
                 TimelineGeometry.ItemInput(
-                    id: clip.id, span: $0, label: clip.title, beats: musicBeats(of: clip), isLocked: edit.lockedLayers.contains(clip.id)
+                    id: clip.id, span: $0, label: clip.title, beats: audio.musicBeats(of: clip), isLocked: edit.lockedLayers.contains(clip.id)
                 )
             }
         }
-        if edit.snapsToBeats { input.beatSnaps = editedBeats }
+        if edit.snapsToBeats { input.beatSnaps = audio.editedBeats }
         input.voiceOvers = edit.voiceOvers.compactMap { clip in
             clip.editedSpan(in: timeline).map {
                 TimelineGeometry.ItemInput(
@@ -60,8 +60,8 @@ extension QuickEditViewModel {
                 )
             }
         }
-        if let recordingStart {
-            input.recording = TimeSpan(start: recordingStart, end: max(recordingStart, player.currentTime))
+        if let start = audio.recordingStart {
+            input.recording = TimeSpan(start: start, end: max(start, player.currentTime))
         }
         if panel == .pauses { input.pauses = timelinePauses }
         input.selection = selection
@@ -125,7 +125,7 @@ extension QuickEditViewModel {
     /// lets go on empty space. A track's strip opens (or closes) that track's tools. While Pauses
     /// is open only the pauses answer.
     func tapTimeline(_ hit: TimelineGeometry.Hit?) {
-        guard isReady, !recorder.isRecording else { return }
+        guard isReady, !audio.isRecordingVoiceOver else { return }
         if panel == .pauses {
             if case .pause(let id) = hit { togglePauseMark(id) }
             return
@@ -235,7 +235,7 @@ extension QuickEditViewModel {
 
     /// The content moved under the playhead: the player follows, paused.
     func scrubTimeline(to time: TimeInterval) {
-        guard isReady, !recorder.isRecording else { return }
+        guard isReady, !audio.isRecordingVoiceOver else { return }
         player.scrub(to: min(max(0, time), edit.editedDuration))
     }
 
@@ -371,7 +371,7 @@ extension QuickEditViewModel {
         case .text: textBars.first { $0.id == id }
         case .media: mediaBars.first { $0.id == id }
         case .caption: captionBars.first { captions.captionCueID(forLine: $0.id) == id }
-        case .music: musicBars.first { $0.id == id }
+        case .music: audio.musicBars.first { $0.id == id }
         case .voiceOver: voiceOverBars.first { $0.id == id }
         case .recording: nil
         }
@@ -384,7 +384,7 @@ extension QuickEditViewModel {
         case .media: mediaBars.first { $0.id == bar.id }
         case .caption:
             captionBars.first { captions.captionCueID(forLine: $0.id) == captions.captionCueID(forLine: bar.id) }
-        case .music: musicBars.first { $0.id == bar.id }
+        case .music: audio.musicBars.first { $0.id == bar.id }
         case .voiceOver: voiceOverBars.first { $0.id == bar.id }
         }
     }

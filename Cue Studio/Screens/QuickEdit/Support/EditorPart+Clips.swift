@@ -39,6 +39,11 @@ extension EditorPart {
         commit(timeline, key: key.map { "\($0).\(clip.id)" })
     }
 
+    /// The montage's other recordings' files, by source.
+    var clipSourceURLs: [UUID: URL] {
+        Dictionary(edit.sources.map { ($0.id, EditMediaFiles.url(for: $0.fileName)) }) { first, _ in first }
+    }
+
     /// The file a recording is read from: the take's own (nil), or a montage's other recording.
     func recordingURL(of sourceID: UUID?) -> URL? {
         guard let sourceID else { return session.videoURL }

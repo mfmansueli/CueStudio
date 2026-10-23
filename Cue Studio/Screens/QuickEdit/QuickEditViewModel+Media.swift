@@ -13,10 +13,6 @@ import SwiftUI
 /// time), shown for 3 seconds (a photo) or its length (a video), then moved or stretched on the
 /// media track. The picked file is copied into the app, so the edit never depends on the library.
 extension QuickEditViewModel {
-    var selectedMedia: MediaOverlay? {
-        selectedMediaID.flatMap { id in edit.media.first { $0.id == id } }
-    }
-
     /// Copies the picked photo or video in and adds it at the playhead.
     func importMedia(_ item: PhotosPickerItem) async {
         guard isReady, !isImportingMedia else { return }

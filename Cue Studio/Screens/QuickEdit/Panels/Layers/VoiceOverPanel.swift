@@ -15,7 +15,7 @@ struct VoiceOverPanel: View {
 
     var body: some View {
         PanelFrame(viewModel: viewModel, panel: .voiceOver) {
-            if viewModel.offersNarrationScript {
+            if viewModel.audio.offersNarrationScript {
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 14) {
                         recordButton
@@ -28,12 +28,12 @@ struct VoiceOverPanel: View {
                     PanelToggleRow(
                         label: String(localized: "Show script"),
                         detail: String(localized: "On your screen while you record · not in the video"),
-                        isOn: viewModel.showsNarrationScript,
+                        isOn: viewModel.audio.showsNarrationScript,
                         identifier: "edit.voiceOverScriptToggle",
-                        onToggle: viewModel.toggleNarrationScript
+                        onToggle: viewModel.audio.toggleNarrationScript
                     )
-                    if viewModel.showsNarrationScript {
-                        SpeedSlider(speed: viewModel.narrationPace.speed) { viewModel.setNarrationSpeed($0) }
+                    if viewModel.audio.showsNarrationScript {
+                        SpeedSlider(speed: viewModel.audio.narrationPace.speed) { viewModel.audio.setNarrationSpeed($0) }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -50,12 +50,12 @@ struct VoiceOverPanel: View {
     }
 
     private var recordButton: some View {
-        let isRecording = viewModel.isRecordingVoiceOver
+        let isRecording = viewModel.audio.isRecordingVoiceOver
         return Button {
             if isRecording {
-                viewModel.stopVoiceOver()
+                viewModel.audio.stopVoiceOver()
             } else {
-                Task { await viewModel.startVoiceOver() }
+                Task { await viewModel.audio.startVoiceOver() }
             }
         } label: {
             ZStack {
@@ -76,6 +76,6 @@ struct VoiceOverPanel: View {
     }
 
     private var recordLabel: some View {
-        Text(viewModel.isRecordingVoiceOver ? "Stop" : "Record").font(.system(.subheadline, weight: .semibold))
+        Text(viewModel.audio.isRecordingVoiceOver ? "Stop" : "Record").font(.system(.subheadline, weight: .semibold))
     }
 }

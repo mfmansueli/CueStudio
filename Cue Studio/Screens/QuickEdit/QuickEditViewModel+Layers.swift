@@ -57,13 +57,13 @@ extension QuickEditViewModel {
     /// The bar picked on the timeline: a text, a caption line, a photo or video, a voice-over or
     /// music.
     var selectedLayer: LayerBar? {
-        (textBars + captionBars + mediaBars + voiceOverBars + musicBars).first(where: \.isSelected)
+        (textBars + captionBars + mediaBars + voiceOverBars + audio.musicBars).first(where: \.isSelected)
     }
 
     /// Moves a bar so it starts at `start` (edited seconds), keeping its length.
     func moveBar(_ bar: LayerBar, toStart start: TimeInterval) {
         guard bar.kind != .music else {
-            moveMusic(bar.id, toStart: start)
+            audio.moveMusic(bar.id, toStart: start)
             return
         }
         let length = bar.span.duration
@@ -78,10 +78,10 @@ extension QuickEditViewModel {
     func resizeBar(_ bar: LayerBar, edge: LayerEdge, to time: TimeInterval) {
         switch bar.kind {
         case .music:
-            resizeMusic(bar.id, edge: edge, to: time)
+            audio.resizeMusic(bar.id, edge: edge, to: time)
             return
         case .voiceOver:
-            resizeVoiceOver(bar.id, edge: edge, to: time)
+            audio.resizeVoiceOver(bar.id, edge: edge, to: time)
             return
         default: break
         }
@@ -163,7 +163,7 @@ extension QuickEditViewModel {
                 snapshot.voiceOvers[index].clipAnchor = pinned.anchor
             }
         case .music:
-            moveMusic(bar.id, toStart: span.start)
+            audio.moveMusic(bar.id, toStart: span.start)
         }
     }
 }

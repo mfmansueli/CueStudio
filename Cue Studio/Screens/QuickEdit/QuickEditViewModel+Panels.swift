@@ -19,8 +19,13 @@ extension QuickEditViewModel {
     var openPanelSize: EditorPanelSize? {
         guard let panel else { return nil }
         if panel == .captions && captions.isPickingCaptions { return .full }
-        if panel == .voiceOver && offersNarrationScript { return .medium }
+        if panel == .voiceOver && audio.offersNarrationScript { return .medium }
         return panel.size
+    }
+
+    /// The narration's script is over the preview now: Voice-over open, a script, the switch on, the preview not full screen.
+    var showsNarrationScriptOverlay: Bool {
+        panel == .voiceOver && audio.showsNarrationScript && !isFullScreen && audio.offersNarrationScript
     }
 
     /// Space plays and pauses, except while a panel with a text field is open.
@@ -40,14 +45,14 @@ extension QuickEditViewModel {
     func panelSubtitle(_ panel: EditorPanel) -> String {
         switch panel {
         case .speed, .zoom, .volume, .stabilize: clipSubtitle(panel)
-        case .voice: voiceScopeLabel
+        case .voice: audio.voiceScopeLabel
         case .adjust, .filters, .background: look.lookSubtitle(for: panel)
         case .pauses: String(localized: "Marked in yellow on the timeline")
         case .crop: String(localized: "Whole video · format for where you post")
         case .captions, .autoCaptions, .captionStyle: captionSubtitle(panel)
         case .textStyle: textStyleSubtitle
         case .voiceOver: String(localized: "Records from the playhead · the video plays muted")
-        case .beats: beatsSubtitle
+        case .beats: audio.beatsSubtitle
         case .media: String(localized: "On top of the video")
         case .transition: transitionSubtitle
         case .smart: String(localized: "Quick fixes, made on your iPhone")

@@ -15,6 +15,7 @@ import SwiftUI
 /// The editor is held weakly: it owns its parts, and a part's job that finishes after the editor has gone still finds its
 /// document, jobs and player (closed, so its result is dropped) and nothing to pick.
 @MainActor
+@Observable
 final class EditorSession {
     /// The edit and its undo steps: the one way the edit changes.
     let document: EditDocument
@@ -26,9 +27,11 @@ final class EditorSession {
     let take: Take
     /// The take's recording.
     let videoURL: URL
-    weak var host: (any EditorHost)?
+    @ObservationIgnored weak var host: (any EditorHost)?
     /// Media files copied in while the editor is open, so what the edit doesn't keep is removed when it closes.
-    var importedFiles: Set<String> = []
+    @ObservationIgnored var importedFiles: Set<String> = []
+    /// A file is being brought in or written (a photo or video, a clip replaced or reversed, a sound pulled out): one at a time.
+    var isImportingMedia = false
     /// The creator's handle, for the "@handle" graphic and the cover's series (set by the screen).
     var creatorHandle = ""
 

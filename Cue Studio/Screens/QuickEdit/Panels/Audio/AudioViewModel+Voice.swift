@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Voice.swift
+//  AudioViewModel+Voice.swift
 //  Cue Studio
 //
 
@@ -10,20 +10,7 @@ import Foundation
 /// recordings to the take's level. An edit from before the levels keeps its first treatment until one of them is
 /// touched. "Compare with original" plays the untreated sound as loud as the treated one, so the
 /// difference heard is the treatment, not the volume. Each change is an undo step.
-extension QuickEditViewModel {
-    /// What the preview plays: the edit (without what a finger is dragging), or while comparing, the take's sound untreated at
-    /// the same loudness.
-    var playedEdit: TakeEdit {
-        let shown = hidingDraggedOverlay(in: look.comparesPicture ? edit.withoutPictureLook() : edit)
-        guard comparesOriginal, let volume = originalVolume else { return shown }
-        var played = shown
-        played.audioVersion = VoiceProcessing.currentVersion
-        played.voiceEnhancement = .off
-        played.noiseReduction = .off
-        played.volume = volume
-        return played
-    }
-
+extension AudioViewModel {
     /// Whether there's a treatment to compare with.
     var canCompareOriginal: Bool {
         edit.voiceProcessing.isNeeded && edit.voiceProcessing != edit.voiceProcessing.untreated
@@ -115,7 +102,7 @@ extension QuickEditViewModel {
                 return
             }
             originalVolume = volume
-            player.show(playedEdit)
+            session.showPlayedEdit()
         }
     }
 
@@ -148,7 +135,7 @@ extension QuickEditViewModel {
         comparesOriginal = false
         originalVolume = nil
         comparedProcessing = nil
-        player.show(edit)
+        session.showPlayedEdit()
     }
 
     /// An older edit moves to the current treatment once a level is touched: from before the

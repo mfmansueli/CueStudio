@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+NarrationScript.swift
+//  AudioViewModel+NarrationScript.swift
 //  Cue Studio
 //
 
@@ -8,7 +8,7 @@ import Foundation
 /// Voice-over's "Show script": while a narration records, the take's script shows over the top of the preview, drawn like the
 /// creator's teleprompter, scrolling at a steady pace from the moment the recording starts (a tap holds it and goes on). Before
 /// recording it shows the start. Only on screen: nothing of it goes into the video. A take without a script offers nothing.
-extension QuickEditViewModel {
+extension AudioViewModel {
     /// The script the take was recorded with, without its cues; nil for a freestyle take or an empty script.
     var narrationScriptText: String? {
         guard let text = captionScript?.text else { return nil }
@@ -18,11 +18,6 @@ extension QuickEditViewModel {
 
     /// Voice-over offers "Show script".
     var offersNarrationScript: Bool { narrationScriptText != nil }
-
-    /// The script is over the preview now: Voice-over open, a script, the switch on.
-    var showsNarrationScriptOverlay: Bool {
-        panel == .voiceOver && showsNarrationScript && !isFullScreen && offersNarrationScript
-    }
 
     /// The prompter's look for the narration: its font, colour, spacing and alignment, with the margins of a preview and the
     /// spoken words only (cues aren't read aloud).

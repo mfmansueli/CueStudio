@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+VoiceOver.swift
+//  AudioViewModel+VoiceOver.swift
 //  Cue Studio
 //
 
@@ -8,7 +8,7 @@ import Foundation
 /// Voice-over: Record plays the edit from the playhead (muted, so the take's sound doesn't leak
 /// into the mic) while the narration records; Stop adds it where it started and plays it back;
 /// then Re-record or Delete. Each narration has its own volume. Recorded on the device.
-extension QuickEditViewModel {
+extension AudioViewModel {
     var isRecordingVoiceOver: Bool { recorder.isRecording }
 
     /// "● 00:04.2"
@@ -46,7 +46,7 @@ extension QuickEditViewModel {
             return
         }
         recordingStart = start
-        // The script on screen starts with the recording (`QuickEditViewModel+NarrationScript`).
+        // The script on screen starts with the recording (`AudioViewModel+NarrationScript`).
         narrationPace.start(at: .now)
         Haptics.record()
         player.isMuted = true

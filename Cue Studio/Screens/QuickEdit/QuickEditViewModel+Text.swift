@@ -12,10 +12,6 @@ import UIKit
 /// dragged on the preview and moved or stretched on the text track. Every change is an undo step;
 /// a drag or the text sheet is one.
 extension QuickEditViewModel {
-    var selectedText: TextOverlay? {
-        selectedTextID.flatMap { id in edit.texts.first { $0.id == id } }
-    }
-
     /// Adds a text at the playhead, selects it and opens it for writing.
     func addText(_ role: TextOverlayRole) {
         guard isReady else { return }
