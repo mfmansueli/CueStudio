@@ -4,6 +4,7 @@
 //
 
 import AVFoundation
+import ImageIO
 import PhotosUI
 import SwiftUI
 import UIKit
@@ -64,19 +65,22 @@ final class EditMediaImporter: EditMediaImporting {
         }
     }
 
-    nonisolated private static func storePhoto(_ data: Data) throws -> ImportedMedia {
-        guard let image = UIImage(data: data), image.size.width > 0, image.size.height > 0 else { throw EditMediaImportError.unreadable }
-        let scale = min(1, maxPhotoSide / max(image.size.width, image.size.height))
-        let size = CGSize(width: (image.size.width * scale).rounded(), height: (image.size.height * scale).rounded())
-        let format = UIGraphicsImageRendererFormat()
-        format.scale = 1
-        // Drawing turns it upright, whatever the camera wrote in its metadata.
-        let upright = UIGraphicsImageRenderer(size: size, format: format).image { _ in
-            image.draw(in: CGRect(origin: .zero, size: size))
-        }
-        guard let jpeg = upright.jpegData(compressionQuality: 0.9) else { throw EditMediaImportError.unreadable }
+    /// The photo upright, its longest side at most `maxPhotoSide`, read straight from the file at that size (`CGImageSource`):
+    /// a 48 MP photo is never decoded whole (about 190 MB) just to be made smaller.
+    nonisolated static func storePhoto(_ data: Data) throws -> ImportedMedia {
+        let options: [CFString: Any] = [
+            kCGImageSourceCreateThumbnailFromImageAlways: true,
+            // Upright, whatever the camera wrote in its metadata.
+            kCGImageSourceCreateThumbnailWithTransform: true,
+            kCGImageSourceThumbnailMaxPixelSize: maxPhotoSide,
+            kCGImageSourceShouldCacheImmediately: true,
+        ]
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
+              let image = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary),
+              image.width > 0, image.height > 0,
+              let jpeg = UIImage(cgImage: image).jpegData(compressionQuality: 0.9) else { throw EditMediaImportError.unreadable }
         let file = try EditMediaFiles.newFile(pathExtension: "jpg")
         try jpeg.write(to: file.url, options: .atomic)
-        return ImportedMedia(kind: .photo, fileName: file.name, aspect: Double(size.width / size.height), duration: nil)
+        return ImportedMedia(kind: .photo, fileName: file.name, aspect: Double(image.width) / Double(image.height), duration: nil)
     }
 }
