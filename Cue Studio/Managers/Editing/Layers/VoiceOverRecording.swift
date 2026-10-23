@@ -18,4 +18,7 @@ protocol VoiceOverRecording: AnyObject {
     func stop() -> (fileName: String, duration: TimeInterval)?
     /// Stops and throws the recording away.
     func cancel()
+    /// Told when the recording stops without `stop` or `cancel`: a call or another app took the microphone, or the file
+    /// couldn't be written. Set by the screen recording.
+    var stoppedByItself: (@MainActor (VoiceOverStop) -> Void)? { get set }
 }

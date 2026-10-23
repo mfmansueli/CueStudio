@@ -75,6 +75,21 @@ extension QuickEditViewModel {
         player.play()
     }
 
+    /// The narration stopped without Stop. A call or another app took the microphone: what was recorded is added, like Stop
+    /// would, and the creator is told why it stopped. The file couldn't be written: nothing usable is left, it goes, and the
+    /// creator is told to record again.
+    func voiceOverStoppedByItself(_ reason: VoiceOverStop) {
+        switch reason {
+        case .interrupted:
+            stopVoiceOver()
+            toast.show(String(localized: "Recording stopped · Another app took the microphone"))
+        case .failed:
+            noteFailure(VoiceOverError.couldNotWrite, "voiceOverRecord")
+            cancelVoiceOver()
+            toast.show(String(localized: "Couldn't record the voice-over · Try again"))
+        }
+    }
+
     /// Stops and drops what was being recorded.
     func cancelVoiceOver() {
         recorder.cancel()

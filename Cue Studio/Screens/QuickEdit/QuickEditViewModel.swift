@@ -365,6 +365,7 @@ final class QuickEditViewModel {
         self.edit = edit
         frameRate = Double(take.frameRate.rawValue)
         self.player = player ?? QuickEditPlayer(videoURL: takes.videoURL(for: take), editing: editing)
+        self.recorder.stoppedByItself = { [weak self] reason in self?.voiceOverStoppedByItself(reason) }
     }
 
     /// Opens the recording, picks up a draft left behind and starts the player.
@@ -718,7 +719,8 @@ final class QuickEditViewModel {
     /// "Not yet, I'll come back": the draft stays even if nothing changed, so the video is in edit.
     private func keepForLater() {
         endChange()
-        if recorder.isRecording { cancelVoiceOver() }
+        // A narration being recorded is kept with the draft.
+        if recorder.isRecording { stopVoiceOver() }
         let kept = saveDraft(forced: true)
         close(keepingDraft: true)
         if !kept { toast.show(Self.notSaved) }
@@ -728,7 +730,8 @@ final class QuickEditViewModel {
     /// is as it was.
     func cancel() {
         endChange()
-        if recorder.isRecording { cancelVoiceOver() }
+        // A narration being recorded is kept with the draft, like every other change.
+        if recorder.isRecording { stopVoiceOver() }
         guard source == .ready, hasUnsavedChanges else {
             removeUnusedImports(keeping: original.mediaFileNames)
             close(keepingDraft: false)
