@@ -93,12 +93,7 @@ nonisolated enum CoverDesignRenderer {
 
     /// The words' typeface at `size`.
     static func words(_ font: CoverFont, size: CGFloat) -> UIFont {
-        switch font {
-        case .anton: UIFont(name: "Anton-Regular", size: size) ?? .systemFont(ofSize: size, weight: .heavy)
-        case .grotesk: TextFont.font(.spaceGrotesk, weight: .bold, size: size, text: "A")
-        case .serif: TextFont.font(.dmSerif, weight: .regular, size: size, text: "A")
-        case .system: .systemFont(ofSize: size, weight: .heavy)
-        }
+        TextFont.font(font.face, weight: font.weight, size: size, text: "A")
     }
 
     /// A line of word boxes side by side, `gap` apart.

@@ -25,6 +25,13 @@ enum CueStudioFont {
         "SpaceMono-Bold",
         "Syne-Variable",
         "Caveat-Variable",
+        "Montserrat-Variable",
+        "TikTokSans-Variable",
+        "Poppins-Regular",
+        "Poppins-Medium",
+        "Poppins-Bold",
+        "Rubik-Variable",
+        "Bangers-Regular",
     ]
 
     /// Registers the bundled fonts for this process. Call once at launch.

@@ -24,6 +24,11 @@ nonisolated enum TextOverlayWeight: String, Codable, CaseIterable, Identifiable,
 
     var id: String { rawValue }
 
+    /// The one of `weights` closest to `value` (a heavier one when two are as close).
+    static func nearest(to value: Double, in weights: [TextOverlayWeight]) -> TextOverlayWeight {
+        weights.min { abs($0.value - value) - $0.value / 10_000 < abs($1.value - value) - $1.value / 10_000 } ?? .regular
+    }
+
     var label: String {
         switch self {
         case .regular: String(localized: "Regular")

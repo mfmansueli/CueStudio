@@ -5,25 +5,29 @@
 
 import Foundation
 
-/// Typefaces for texts on the video. The editor offers the bundled DM Sans, Space Grotesk and DM
-/// Serif Display (SIL OFL 1.1) and SF Pro; the system designs before them (classic, rounded, serif,
-/// mono) stay for edits that used them. Letters a bundled font lacks (Arabic, Hindi, Thai, CJK…)
-/// fall back to the system's (`TextFont`).
+/// Typefaces for words on the video: texts, captions and the cover share one list (`editorFonts`), all bundled under
+/// the SIL OFL 1.1 but SF Pro; the system designs before them (classic, rounded, serif, mono) stay for edits that used
+/// them. Letters a bundled font lacks (Arabic, Hindi, Thai, CJK; Vietnamese in some) fall back to the system's (`TextFont`).
 nonisolated enum TextOverlayFont: String, Codable, CaseIterable, Identifiable, Sendable {
     case classic, rounded, serif, mono
     case dmSans, spaceGrotesk, dmSerif, sfPro
     /// The faces of the v27 text styles: Orbit, Logbook, Signal, Launch, Nebula and Postcard.
     case unbounded, instrumentSerif, spaceMono, anton, syne, caveat
+    /// What creators caption with most (2025–26): Montserrat (Hormozi-style captions), TikTok's own TikTok Sans,
+    /// Poppins, Rubik, and Bangers (MrBeast-style comic captions).
+    case montserrat, tiktokSans, poppins, rubik, bangers
 
-    /// The families Text style offers, each chip drawn in its own face.
+    /// The families Text style, Caption style and the cover's Title offer, each chip drawn in its own face: the caption
+    /// favourites first, then the clean sans, the display faces, the serifs, handwriting and mono.
     static let editorFonts: [TextOverlayFont] = [
-        .unbounded, .instrumentSerif, .spaceMono, .anton, .syne, .spaceGrotesk, .caveat, .dmSans, .dmSerif, .sfPro,
+        .montserrat, .tiktokSans, .poppins, .rubik, .dmSans, .sfPro, .spaceGrotesk, .unbounded, .syne, .anton, .bangers,
+        .dmSerif, .instrumentSerif, .caveat, .spaceMono,
     ]
 
     /// The weights it comes in: DM Serif Display has only its regular.
     var weights: [TextOverlayWeight] {
         switch self {
-        case .dmSerif, .instrumentSerif, .anton: [.regular]
+        case .dmSerif, .instrumentSerif, .anton, .bangers: [.regular]
         case .spaceMono: [.bold]
         default: TextOverlayWeight.editorWeights
         }
@@ -47,6 +51,11 @@ nonisolated enum TextOverlayFont: String, Codable, CaseIterable, Identifiable, S
         case .anton: "Anton"
         case .syne: "Syne"
         case .caveat: "Caveat"
+        case .montserrat: "Montserrat"
+        case .tiktokSans: "TikTok Sans"
+        case .poppins: "Poppins"
+        case .rubik: "Rubik"
+        case .bangers: "Bangers"
         }
     }
 }

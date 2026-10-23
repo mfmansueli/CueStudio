@@ -147,6 +147,22 @@ struct QuickEditCaptionPanelTests {
         #expect(viewModel.captionPositionStop == .top)
     }
 
+    /// Caption style › Font over a preset: the lines take the family and keep the preset; picking a preset brings its own.
+    @Test func aFamilyOverAPresetIsOneUndoStepAndAPresetBringsItsOwn() async {
+        let scenario = await makeScenario(lines: [(0, 2, "First")])
+        let viewModel = scenario.viewModel
+        viewModel.pickCaptionTheme(.impact)
+        viewModel.setCaptionFace(.tiktokSans)
+        #expect(viewModel.captionFace == .tiktokSans)
+        #expect(viewModel.captionTheme == .impact)
+        viewModel.undo()
+        #expect(viewModel.captionFace == nil)
+        viewModel.redo()
+        #expect(viewModel.captionFace == .tiktokSans)
+        viewModel.pickCaptionTheme(.pop)
+        #expect(viewModel.captionFace == nil)
+    }
+
     @Test func positionAndSizeChangeEveryLine() async {
         let scenario = await makeScenario(lines: [(0, 2, "First")])
         let viewModel = scenario.viewModel

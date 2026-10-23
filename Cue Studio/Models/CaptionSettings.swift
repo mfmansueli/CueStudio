@@ -25,6 +25,9 @@ nonisolated struct CaptionSettings: Codable, Hashable, Sendable {
     /// come and go (the preset's own way, `spec`). Nil draws the preset; picking a preset clears it.
     /// Settings saved before it read as nil.
     var customLook: TextLook?
+    /// A family picked over the preset (Caption style › Font): the lines are drawn in it at the weight nearest the
+    /// preset's, and everything else stays the preset's. Nil draws the preset's own font; picking a preset clears it.
+    var face: TextOverlayFont?
 
     init(theme: CaptionTheme = .cue) {
         self.theme = theme
@@ -32,8 +35,12 @@ nonisolated struct CaptionSettings: Codable, Hashable, Sendable {
         followsWords = CaptionStyleSpec.spec(for: theme, version: CaptionStyleSpec.currentVersion).animation.followsWords
     }
 
-    /// The recipe the preset is drawn with.
-    var spec: CaptionStyleSpec { CaptionStyleSpec.spec(for: theme, version: styleVersion ?? 1) }
+    /// The recipe the preset is drawn with, in the family picked over it if any.
+    var spec: CaptionStyleSpec {
+        var spec = CaptionStyleSpec.spec(for: theme, version: styleVersion ?? 1)
+        spec.face = face
+        return spec
+    }
 
     var highlightColor: CaptionAccent { accent ?? spec.defaultAccent }
     var clampedScale: Double {

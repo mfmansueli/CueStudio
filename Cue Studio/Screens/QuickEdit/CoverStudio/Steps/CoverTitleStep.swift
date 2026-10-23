@@ -24,11 +24,18 @@ struct CoverTitleStep: View {
             if !viewModel.suggestions.isEmpty, viewModel.cover.title.isEmpty || isTyping { suggestions }
             if viewModel.titleWords.count > 1 { highlights }
             group(String(localized: "Type")) {
+                // The same families as the texts and captions on the video, each chip in its own face.
                 PanelChips(
-                    options: CoverFont.allCases.map { PanelOption($0, $0.label) }, selection: style.font,
-                    font: { Font(CoverDesignRenderer.words($0, size: 17)) }, identifier: "cover.font",
-                    onSelect: { font in viewModel.updateTitle { $0.font = font } }
+                    options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: style.font.face,
+                    font: { CueStudioFont.chip($0) }, identifier: "cover.font",
+                    onSelect: { face in viewModel.updateTitle { $0.font = CoverFont(face, weight: $0.font.weight) } }
                 )
+                if style.font.face.weights.count > 1 {
+                    PanelSegmented(
+                        label: String(localized: "Weight"), options: style.font.face.weights.map { PanelOption($0, $0.label) },
+                        selection: style.font.weight, height: 38, identifier: "cover.weight"
+                    ) { weight in viewModel.updateTitle { $0.font = CoverFont($0.font.face, weight: weight) } }
+                }
                 PanelSlider(
                     label: String(localized: "Size"), value: style.size * 1000,
                     range: CoverTitleStyle.sizeRange.lowerBound * 1000...CoverTitleStyle.sizeRange.upperBound * 1000, step: 5,

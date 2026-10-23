@@ -142,9 +142,19 @@ struct CaptionStylePanel: View {
         PanelNote(text: String(localized: "You can also drag the caption in the video."))
     }
 
-    /// A preset's highlight color; for a custom look, its family, weight and color too.
+    /// A preset's family (its own, or one of the video's over it) and highlight color; for a custom look, its family,
+    /// weight and color.
     @ViewBuilder
     private var font: some View {
+        if viewModel.captionEditableLook == nil, viewModel.edit.captionCollection != nil {
+            // Over a preset only the family changes: the rest stays the preset's.
+            PanelChips(
+                options: [PanelOption(nil, String(localized: "Preset"), key: "preset")]
+                    + TextOverlayFont.editorFonts.map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },
+                selection: viewModel.captionFace, font: { $0.map(CueStudioFont.chip) ?? .system(size: 15, weight: .semibold) },
+                identifier: "edit.captionFace", onSelect: viewModel.setCaptionFace
+            )
+        }
         if let look = viewModel.captionEditableLook {
             PanelChips(
                 options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: look.font,

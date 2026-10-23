@@ -129,7 +129,7 @@ nonisolated struct CoverTextLayout {
     /// system's heavy type first, so a title in another script is as bold as the template; emoji come from the system's.
     static func font(_ font: CoverFont, size: CGFloat) -> UIFont {
         let base = CoverDesignRenderer.words(font, size: size)
-        let heavy = UIFont.systemFont(ofSize: size, weight: font == .serif ? .semibold : .heavy).fontDescriptor
+        let heavy = UIFont.systemFont(ofSize: size, weight: font.isSerif ? .semibold : .heavy).fontDescriptor
         // The system's own fallbacks are regular weight for some scripts (Thai): their bold faces come first.
         let bold = boldFallbacks.map { UIFontDescriptor(name: $0, size: size) }
         let descriptor = base.fontDescriptor.addingAttributes([
@@ -193,7 +193,7 @@ nonisolated struct CoverTextLayout {
 
         /// Condensed type sits tighter.
         static func lineSpacing(_ font: CoverFont) -> CGFloat {
-            font == .anton ? 0.9 : 1.02
+            font.isCondensed ? 0.9 : 1.02
         }
 
         static func width(of text: NSAttributedString) -> CGFloat {
