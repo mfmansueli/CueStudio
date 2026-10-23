@@ -139,7 +139,7 @@ struct QuickEditMotionTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.makeCaptions()
-        await viewModel.captionTask?.value
+        await viewModel.jobs.finished(.captions)
         #expect(viewModel.linesWithoutWordTiming == 0)
         let id = viewModel.edit.captions[0].id
         // A word slipped in takes the room the word before it leaves: the line still follows the voice.

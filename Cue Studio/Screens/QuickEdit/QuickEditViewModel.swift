@@ -130,12 +130,6 @@ final class QuickEditViewModel {
             player.show(playedEdit)
         }
     }
-    @ObservationIgnored var autoTask: Task<Void, Never>?
-    /// The measuring whose result is still wanted: an older one finishing late is dropped.
-    @ObservationIgnored var autoRequest: UUID?
-    @ObservationIgnored var captionTask: Task<Void, Never>?
-    /// The captions request whose result is still wanted: an older one finishing late is dropped.
-    @ObservationIgnored var captionRequest: UUID?
     /// Frames per second of the recording: read from the file when it opens, the take's setting
     /// until then. The timeline puts every edit on a frame (`FrameGrid`).
     private(set) var frameRate: Double
@@ -218,7 +212,6 @@ final class QuickEditViewModel {
     var showsSpeedCurves = false
     /// Track: how far following the picked item's object is, 0 to 1; nil when it isn't (`QuickEditViewModel+Track`).
     var trackingProgress: Double?
-    @ObservationIgnored var trackingTask: Task<Void, Never>?
     /// The recordings whose motion analysis was last asked for while the edit used it (`requestMotionAnalysisIfNeeded`).
     @ObservationIgnored var motionRequestedURLs: [URL] = []
     /// A point of the speed curve is being dragged (`QuickEditViewModel+SpeedCurve`).
@@ -249,7 +242,6 @@ final class QuickEditViewModel {
     var originalVolume: Double?
     /// The treatment being compared; changing it ends the comparison.
     @ObservationIgnored var comparedProcessing: VoiceProcessing?
-    @ObservationIgnored var comparisonTask: Task<Void, Never>?
 
     let take: Take
     let player: EditPlayback
@@ -285,19 +277,17 @@ final class QuickEditViewModel {
     private let languageConflictFor: (Script?) -> SpeechLanguageConflict?
     /// Media files copied in while Quick edit is open, so what the edit doesn't keep is removed.
     @ObservationIgnored var importedFiles: Set<String> = []
-    @ObservationIgnored var coverTask: Task<Void, Never>?
     /// `TakeEdit.coverDrawingKey` of the cover block's drawing.
     @ObservationIgnored var drawnCoverKey: Int?
-    /// A short part playing to show a change (a zoom, a reveal, a pause heard).
-    @ObservationIgnored var previewTask: Task<Void, Never>?
-    @ObservationIgnored private var draftTask: Task<Void, Never>?
     /// Opens Cue's page in the Settings app (a toast's "Settings" when the microphone is off for Cue); tests count it.
     @ObservationIgnored var opensSettings: @MainActor () -> Void = { AppSettingsLink.open() }
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
     @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
-    /// Work started from a tool that the editor waits for (`startJob`).
-    @ObservationIgnored private var jobs: [UUID: Task<Void, Never>] = [:]
-    @ObservationIgnored private(set) var isClosed = false
+    /// Everything the editor started and waits for (`EditorJobs`): Auto, captions, Track, the cover, a short preview, the
+    /// sound compared, the draft, beats, Clean Up and tools' work. Closing cancels it all.
+    @ObservationIgnored let jobs = EditorJobs()
+    /// The editor closed: what a job hands back after is dropped.
+    var isClosed: Bool { jobs.isClosed }
 
     init(
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
@@ -441,7 +431,11 @@ final class QuickEditViewModel {
         if recorder.isRecording { stopVoiceOver() }
         // A cut is picked only while its Transition panel is open.
         if previous == .transition, picked?.joinID != nil { picked = nil }
-        if next == .pauses { cleanUpMarks = [:] }
+        if next == .pauses {
+            cleanUpMarks = [:]
+            // Not tied to the panel: leaving Pauses doesn't stop it listening.
+            listenForCleanUp()
+        }
         if next == nil { lookScopeIsClip = false }
         // Picking several lines belongs to the list of lines.
         if next != .captions { captionPicks = nil }
@@ -722,22 +716,13 @@ final class QuickEditViewModel {
         EditMediaFiles.remove(unused)
     }
 
-    /// Nothing started here outlives the editor: every task is cancelled, and what a slow one hands back after is dropped
-    /// (each checks `isClosed` after its await).
+    /// Nothing started here outlives the editor: every job is cancelled, and what a slow one hands back after is dropped
+    /// (its ticket is no longer current; work awaited elsewhere checks `isClosed`).
     private func close(keepingDraft: Bool) {
-        isClosed = true
-        draftTask?.cancel()
-        coverTask?.cancel()
-        captionTask?.cancel()
-        captionRequest = nil
         cancelAuto()
-        trackingTask?.cancel()
-        trackingTask = nil
-        previewTask?.cancel()
-        comparisonTask?.cancel()
+        trackingProgress = nil
+        jobs.close()
         translationRequest = nil
-        for job in jobs.values { job.cancel() }
-        jobs = [:]
         if !keepingDraft { drafts.discard(takeID: take.id) }
         player.stop()
     }
@@ -751,20 +736,13 @@ final class QuickEditViewModel {
 
     /// Starts work a tool waits for (a freeze frame, a reverse, a sound pulled out): leaving the editor cancels it.
     func startJob(_ work: @escaping @MainActor () async -> Void) {
-        guard !isClosed else { return }
-        let id = UUID()
-        jobs[id] = Task { [weak self] in
-            await work()
-            self?.jobs[id] = nil
-        }
+        jobs.startTool(work)
     }
 
     // MARK: - Draft
 
     private func scheduleDraftSave() {
-        guard !isClosed else { return }
-        draftTask?.cancel()
-        draftTask = Task { [weak self] in
+        jobs.start(.draft) { [weak self] _ in
             try? await Task.sleep(for: .milliseconds(600))
             guard !Task.isCancelled else { return }
             self?.autosaveDraft()

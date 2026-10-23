@@ -37,7 +37,7 @@ struct QuickEditTranslationTests {
         )
         await viewModel.prepare()
         viewModel.makeCaptions()
-        await viewModel.captionTask?.value
+        await viewModel.jobs.finished(.captions)
         return Scenario(viewModel: viewModel, availability: availability, toast: toast)
     }
 

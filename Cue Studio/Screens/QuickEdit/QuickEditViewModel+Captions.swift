@@ -32,16 +32,15 @@ extension QuickEditViewModel {
             confirmsCaptionReplacement = true
             return
         }
-        let request = UUID()
-        captionRequest = request
         let recordings = captionRecordings
         let isAuto = edit.captionLanguage == nil
         captionState = .working(.preparing)
-        // Progress arrives from the recognizer's own tasks; it only lands while this request is on.
-        let report: @Sendable (CaptionProgress) -> Void = { [weak self] progress in
-            Task { @MainActor in self?.receiveCaptionProgress(progress, for: request) }
-        }
-        captionTask = Task { [editing] in
+        jobs.start(.captions) { [weak self, editing] request in
+            guard let self else { return }
+            // Progress arrives from the recognizer's own tasks; it only lands while this request is on.
+            let report: @Sendable (CaptionProgress) -> Void = { [weak self] progress in
+                Task { @MainActor in self?.receiveCaptionProgress(progress, for: request) }
+            }
             var outcomes: [(source: UUID?, outcome: CaptionOutcome)] = []
             do {
                 for recording in recordings {
@@ -121,8 +120,7 @@ extension QuickEditViewModel {
     /// Stops listening. The lines stay as they were.
     func cancelCaptions() {
         guard captionState.isWorking else { return }
-        captionRequest = nil
-        captionTask?.cancel()
+        jobs.cancel(.captions)
         captionState = .cancelled
     }
 
@@ -196,22 +194,22 @@ extension QuickEditViewModel {
         CaptionSafeArea.margins(for: take, aspect: aspect)
     }
 
-    private func receiveCaptionProgress(_ progress: CaptionProgress, for request: UUID) {
-        guard captionRequest == request, captionState.isWorking else { return }
+    private func receiveCaptionProgress(_ progress: CaptionProgress, for request: EditorJobs.Ticket) {
+        guard jobs.isCurrent(request), captionState.isWorking else { return }
         captionState = .working(progress)
     }
 
-    private func finishCaptions(_ request: UUID, with state: CaptionState) {
+    private func finishCaptions(_ request: EditorJobs.Ticket, with state: CaptionState) {
         // A newer request, a stop or a closed editor: this result is no longer wanted.
-        guard captionRequest == request, !isClosed else { return }
-        captionRequest = nil
+        guard jobs.isCurrent(request) else { return }
         captionState = state
     }
 
     /// Lines from every recording that gave some; when none did, the take's own reason.
-    private func finishCaptions(_ request: UUID, outcomes: [(source: UUID?, outcome: CaptionOutcome)], takeCandidates: [CueLanguage]) {
-        guard captionRequest == request, !isClosed else { return }
-        captionRequest = nil
+    private func finishCaptions(
+        _ request: EditorJobs.Ticket, outcomes: [(source: UUID?, outcome: CaptionOutcome)], takeCandidates: [CueLanguage]
+    ) {
+        guard jobs.isCurrent(request) else { return }
         var lines: [CaptionCue] = []
         var takeTranscript: CaptionTranscript?
         var others: [CaptionTranscript] = []

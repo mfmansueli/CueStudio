@@ -38,7 +38,7 @@ struct QuickEditLanguageTests {
         await viewModel.prepare()
         if makesCaptions {
             viewModel.makeCaptions()
-            await viewModel.captionTask?.value
+            await viewModel.jobs.finished(.captions)
         }
         return Scenario(viewModel: viewModel, editor: editor, availability: availability)
     }
@@ -62,12 +62,12 @@ struct QuickEditLanguageTests {
         let viewModel = scenario.viewModel
         viewModel.setCaptionLanguage(.portugueseBrazil)
         viewModel.makeCaptions()
-        await viewModel.captionTask?.value
+        await viewModel.jobs.finished(.captions)
         #expect(editor.captionCandidates == [.english, .portugueseBrazil])
         #expect(viewModel.edit.captionLanguage == .english)
         // Now picked like the script's: what was heard is used again, nothing is compared.
         viewModel.makeCaptions(replacingRevised: true)
-        await viewModel.captionTask?.value
+        await viewModel.jobs.finished(.captions)
         #expect(editor.captionRequests == 1)
     }
 

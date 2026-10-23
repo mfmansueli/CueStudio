@@ -80,10 +80,6 @@ struct QuickEditView: View {
             if let opening { viewModel.open(opening) }
         }
         .onChange(of: services.motion.completed) { viewModel.motionAnalysisDidChange() }
-        .onChange(of: viewModel.panel) { _, panel in
-            // Not tied to the panel: leaving Pauses doesn't stop it listening.
-            if panel == .pauses { Task { await viewModel.analyzeIfNeeded() } }
-        }
         .sheet(item: $viewModel.sheet) { sheet in
             switch sheet {
             case .music: AddMusicSheet(viewModel: viewModel)

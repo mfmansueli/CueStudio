@@ -30,7 +30,6 @@ struct PausesPanel: View {
                 footer
             }
         }
-        .task { await viewModel.analyzeIfNeeded() }
     }
 
     /// The stepper and the cards right under it (8 pt apart, not the panel's 16), so the cards show whole on an iPhone SE.
@@ -54,7 +53,7 @@ struct PausesPanel: View {
         case .failed:
             VStack(spacing: 8) {
                 Text("Couldn't listen to this take").font(.system(.subheadline, weight: .semibold))
-                Button("Try again") { Task { await viewModel.analyzeIfNeeded() } }
+                Button("Try again") { viewModel.listenForCleanUp() }
                     .font(.system(.subheadline, weight: .semibold))
                     .foregroundStyle(Palette.accText)
                     .frame(minHeight: Metrics.hitTarget)

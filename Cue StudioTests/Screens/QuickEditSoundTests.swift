@@ -217,7 +217,7 @@ struct QuickEditSoundTests {
         viewModel.panel = .voice
         viewModel.setVoiceEnhancement(.strong)
         viewModel.setComparesOriginal(true)
-        await viewModel.comparisonTask?.value
+        await viewModel.jobs.finished(.comparison)
         #expect(viewModel.comparesOriginal)
         let played = try #require(scenario.player.shown.last)
         #expect(played.voiceEnhancement == .off && played.noiseReduction == .off)
@@ -235,7 +235,7 @@ struct QuickEditSoundTests {
         let viewModel = scenario.viewModel
         viewModel.panel = .voice
         viewModel.setComparesOriginal(true)
-        await viewModel.comparisonTask?.value
+        await viewModel.jobs.finished(.comparison)
         viewModel.panel = nil
         #expect(!viewModel.comparesOriginal)
         #expect(scenario.player.shown.last == viewModel.edit)
@@ -247,7 +247,7 @@ struct QuickEditSoundTests {
         let viewModel = scenario.viewModel
         viewModel.panel = .voice
         viewModel.setComparesOriginal(true)
-        await viewModel.comparisonTask?.value
+        await viewModel.jobs.finished(.comparison)
         #expect(!viewModel.comparesOriginal)
         #expect(scenario.toast.message == "There's no speech to compare")
     }

@@ -542,7 +542,7 @@ struct QuickEditViewModelTests {
     @Test func captionsComeFromTheScript() async {
         let scenario = await makeScenario()
         scenario.viewModel.makeCaptions()
-        await scenario.viewModel.captionTask?.value
+        await scenario.viewModel.jobs.finished(.captions)
         #expect(scenario.viewModel.edit.showsCaptions)
         #expect(scenario.editor.captionScript == "Okay, real talk.")
         #expect(scenario.viewModel.edit.captions.count == 1)

@@ -37,7 +37,7 @@ extension QuickEditViewModel {
     /// A line tapped in the list: the playhead goes to its start and the timeline picks it too.
     func pickCaptionLine(_ cueID: UUID, at start: TimeInterval) {
         guard isReady else { return }
-        previewTask?.cancel()
+        jobs.cancel(.preview)
         player.pause()
         player.seek(to: start + 0.01)
         if selection != .caption(cueID) { Haptics.selection() }

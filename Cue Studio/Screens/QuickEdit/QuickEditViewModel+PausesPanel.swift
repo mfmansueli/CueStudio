@@ -120,9 +120,8 @@ extension QuickEditViewModel {
         let back = max(0, span.start - 0.3)
         listeningID = id
         toast.show(isMarked(suggestion) ? String(localized: "Playing without this pause") : String(localized: "Hearing the pause as it is"))
-        previewTask?.cancel()
         let parts = isMarked(suggestion) ? [before, after] : [before.lowerBound...after.upperBound]
-        previewTask = Task { [weak self] in
+        jobs.start(.preview) { [weak self] _ in
             for part in parts {
                 guard let self, !Task.isCancelled else { return }
                 player.pause()

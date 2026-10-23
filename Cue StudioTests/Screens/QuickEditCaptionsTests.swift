@@ -75,7 +75,7 @@ struct QuickEditCaptionsTests {
 
     /// Waits for the listening started by `makeCaptions`.
     private func finish(_ viewModel: QuickEditViewModel) async {
-        await viewModel.captionTask?.value
+        await viewModel.jobs.finished(.captions)
     }
 
     // MARK: - Making captions

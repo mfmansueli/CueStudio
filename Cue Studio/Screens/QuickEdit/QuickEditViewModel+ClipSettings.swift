@@ -103,12 +103,12 @@ extension QuickEditViewModel {
     /// `back`).
     func previewPart(_ range: ClosedRange<TimeInterval>, back: TimeInterval? = nil) {
         let back = back ?? player.currentTime
-        previewTask?.cancel()
+        jobs.cancel(.preview)
         player.pause()
         player.reviewedPart = range
         player.seek(to: range.lowerBound)
         player.play()
-        previewTask = Task { [weak self] in
+        jobs.start(.preview) { [weak self] _ in
             try? await Task.sleep(for: .seconds(range.upperBound - range.lowerBound + 0.3))
             guard !Task.isCancelled, let self else { return }
             if player.reviewedPart == range { player.reviewedPart = nil }

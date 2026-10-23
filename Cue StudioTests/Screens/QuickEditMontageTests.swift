@@ -160,7 +160,7 @@ struct QuickEditMontageTests {
         let source = try #require(viewModel.edit.sources.first)
         defer { EditMediaFiles.remove([source.fileName]) }
         viewModel.makeCaptions()
-        await viewModel.captionTask?.value
+        await viewModel.jobs.finished(.captions)
         #expect(editor.captionRequests == 2)
         #expect(Set(viewModel.edit.captions.map(\.sourceID)) == [nil, source.id])
         #expect(viewModel.edit.sourceTranscripts.first?.sourceID == source.id)
@@ -172,7 +172,7 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.makeCaptions()
-        await viewModel.captionTask?.value
+        await viewModel.jobs.finished(.captions)
         viewModel.duplicateSection(viewModel.edit.timeline.segments[0].id)
         let instances = viewModel.edit.editedCaptionInstances
         #expect(instances.count == 2)

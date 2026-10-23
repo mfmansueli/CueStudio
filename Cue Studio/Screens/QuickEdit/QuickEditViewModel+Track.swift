@@ -40,9 +40,9 @@ extension QuickEditViewModel {
         let edit = edit
         trackingProgress = 0
         Haptics.selection()
-        trackingTask = Task { [weak self, tracker] in
+        jobs.start(.tracking) { [weak self, tracker] ticket in
             guard let placement = await Self.placement(for: url, in: edit, steadiedBy: segment.stabilization) else {
-                self?.trackingFinished(nil, item: item, span: span, timeline: timeline)
+                self?.trackingFinished(ticket, nil, item: item, span: span, timeline: timeline)
                 return
             }
             let sourceAt = segment.sourceStart + segment.sourceOffset(forEdited: playhead - clipStart)
@@ -51,7 +51,7 @@ extension QuickEditViewModel {
             let box = NormalizedBox(center: start, width: size.width, height: size.height)
             let report: @Sendable (Double, Bool) -> Void = { done, forward in
                 Task { @MainActor in
-                    guard let self, self.trackingProgress != nil else { return }
+                    guard let self, self.jobs.isCurrent(ticket) else { return }
                     // Forwards first (to the item's end), then backwards: each half of the bar.
                     self.trackingProgress = min(1, (forward ? 0 : 0.5) + done / 2)
                 }
@@ -68,17 +68,18 @@ extension QuickEditViewModel {
                         center: placement.videoPoint(for: sample.box.center, at: sample.time)
                     )
                 }
-                self?.trackingFinished(points, item: item, span: span, timeline: timeline, reached: (from - span.start)...(until - span.start))
+                self?.trackingFinished(
+                    ticket, points, item: item, span: span, timeline: timeline, reached: (from - span.start)...(until - span.start)
+                )
             } catch {
                 self?.noteFailure(error, "track")
-                self?.trackingFinished(nil, item: item, span: span, timeline: timeline)
+                self?.trackingFinished(ticket, nil, item: item, span: span, timeline: timeline)
             }
         }
     }
 
     func cancelTracking() {
-        trackingTask?.cancel()
-        trackingTask = nil
+        jobs.cancel(.tracking)
         trackingProgress = nil
     }
 
@@ -86,12 +87,11 @@ extension QuickEditViewModel {
     /// others stay. Dropped when the run was cancelled (a new one may have started meanwhile), the editor closed, or the
     /// video or the item moved while it ran (the path was measured on what they were).
     private func trackingFinished(
-        _ points: [TrackedMotion.Point]?, item: MotionItem, span: TimeSpan, timeline: EditTimeline, reached: ClosedRange<TimeInterval> = 0...0
+        _ ticket: EditorJobs.Ticket, _ points: [TrackedMotion.Point]?, item: MotionItem, span: TimeSpan, timeline: EditTimeline,
+        reached: ClosedRange<TimeInterval> = 0...0
     ) {
-        guard !Task.isCancelled, trackingProgress != nil else { return }
+        guard jobs.isCurrent(ticket) else { return }
         trackingProgress = nil
-        trackingTask = nil
-        guard !isClosed else { return }
         guard edit.timeline == timeline, editedSpan(of: item) == span else {
             toast.show(String(localized: "The video changed meanwhile · Track it again"))
             return

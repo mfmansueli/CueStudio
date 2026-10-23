@@ -35,8 +35,10 @@ extension QuickEditViewModel {
             let name = clip.fileName
             guard beats(ofFile: name) == nil, !findingBeats.contains(name) else { continue }
             findingBeats.insert(name)
-            Task { [weak self] in
+            jobs.start(.beats(name)) { [weak self] _ in
                 let found = await BeatDetector.beats(inSoundAt: EditMediaFiles.url(for: name)) ?? BeatTracker.Result(beats: [], tempo: 0)
+                // Stopped by leaving the editor: nothing is kept as found.
+                guard !Task.isCancelled else { return }
                 BeatStore.save(found, forSound: name)
                 guard let self else { return }
                 beatCache[name] = found

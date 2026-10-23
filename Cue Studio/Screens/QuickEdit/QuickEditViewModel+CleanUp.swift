@@ -13,6 +13,12 @@ extension QuickEditViewModel {
 
     // MARK: - Analysis
 
+    /// Starts listening for Clean Up (`analyzeIfNeeded`) unless it already is: opening Pauses, and its Try again.
+    func listenForCleanUp() {
+        guard !jobs.isRunning(.cleanUp) else { return }
+        jobs.start(.cleanUp) { [weak self] _ in await self?.analyzeIfNeeded() }
+    }
+
     /// Listens to each recording the edit plays the first time Clean Up opens on it (the take, then a montage's other takes
     /// and videos): loudness for pauses, the transcript (in the Voice Following language, or the script's) for filler words and
     /// retakes. Nothing is removed. A recording that can't be listened to leaves the others' suggestions in.

@@ -38,7 +38,7 @@ struct QuickEditAutoLookTests {
     }
 
     private func finish(_ viewModel: QuickEditViewModel) async {
-        await viewModel.autoTask?.value
+        await viewModel.jobs.finished(.auto)
     }
 
     private func split(_ scenario: Scenario) {
