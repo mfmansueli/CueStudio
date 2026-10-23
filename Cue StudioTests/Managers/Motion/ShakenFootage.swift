@@ -43,7 +43,7 @@ enum ShakenFootage {
             let (image, time): (CIImage?, CMTime) = ready.withUnsafeSampleBuffer { sample in
                 guard let pixels = sample.imageBuffer else { return (nil, sample.presentationTimeStamp) }
                 var image = CIImage(cvPixelBuffer: pixels)
-                    .transformed(by: CueVideoCompositor.uprightTransform(transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(pixels))))
+                    .transformed(by: FramePipeline.uprightTransform(transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(pixels))))
                 image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
                 return (shaken(image, at: sample.presentationTimeStamp.seconds, size: size), sample.presentationTimeStamp)
             }

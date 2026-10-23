@@ -79,7 +79,7 @@ struct ObjectTrackerTests {
         var placement = FramePlacement(uprightSize: size, crop: crop)
         placement.steady = StabilizationPath(times: [0, 1], dx: [0.02, 0.02], dy: [-0.01, -0.01], angles: [0.01, 0.01], zoom: 1.05)
         let point = CGPoint(x: 0.3, y: 0.45)
-        // `CueVideoCompositor.steadied`'s transform, in Core Image's coordinates (y up), then the crop.
+        // `FramePipeline.steadied`'s transform, in Core Image's coordinates (y up), then the crop.
         let center = CGPoint(x: size.width / 2, y: size.height / 2)
         let transform = CGAffineTransform(translationX: -center.x, y: -center.y)
             .concatenating(CGAffineTransform(rotationAngle: -0.01))

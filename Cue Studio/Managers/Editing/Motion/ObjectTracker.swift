@@ -124,7 +124,7 @@ nonisolated final class ObjectTracker: ObjectTracking, @unchecked Sendable {
                     guard let pixels = sample.imageBuffer else { return false }
                     autoreleasepool {
                         var image = CIImage(cvPixelBuffer: pixels).transformed(
-                            by: CueVideoCompositor.uprightTransform(transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(pixels)))
+                            by: FramePipeline.uprightTransform(transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(pixels)))
                         )
                         image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
                             .transformed(by: CGAffineTransform(scaleX: scale, y: scale))

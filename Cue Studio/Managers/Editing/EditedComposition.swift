@@ -135,44 +135,16 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             dissolves = []
         }
 
-        // The take's upright frame, its crop and the output size; other recordings are cropped the
-        // same way and scaled to the take's crop.
-        let crop = cropRect(for: take, edit: edit)
-        let renderSize = outputSize(for: crop.size, shortSide: options.shortSide)
-        // Each recording's background, prepared once; masks of this build are kept apart from others'.
-        let build = UUID().uuidString
-        var backgrounds: [UUID?: BackgroundRender] = [:]
-        for id in [nil] + edit.playedSources.map(\.id) as [UUID?] {
-            guard let effect = edit.background(for: id) else { continue }
-            backgrounds[id] = BackgroundRender.prepare(effect, cacheKey: build + (id?.uuidString ?? "take"))
-        }
-        let ownBackgrounds = clipBackgrounds(of: edit.timeline, build: build)
+        // How each recording lands on the take's frame (`EditFraming`, which frames the cover too): its crop, the scale that
+        // brings another recording to the take's crop, backgrounds (masks of this build are kept apart from others'), Follow
+        // face and Stabilize.
         let analyses = try await motionAnalyses(take: source, edit: edit, analyzesMissing: options.analyzesMissingMotion)
-        var follows: [UUID?: FaceFollowPath] = [:]
-        func frame(_ id: UUID?) -> SourceFrame {
-            guard let played = recording(id) else { return SourceFrame(transform: .identity, crop: crop, scale: 1) }
-            let own = id == nil ? crop : cropRect(for: played, edit: edit)
-            var result = SourceFrame(
-                transform: played.transform, crop: own, scale: own.width > 0 ? crop.width / own.width : 1, background: backgrounds[id] ?? nil
-            )
-            result.uprightSize = played.uprightSize
-            if follows[id] == nil { follows[id] = followPath(for: edit, analysis: analyses[id], crop: own, size: played.uprightSize) }
-            result.follow = follows[id]
-            return result
-        }
-        var steadyPaths: [String: StabilizationPath] = [:]
-        func frame(of segment: EditSegment) -> SourceFrame {
-            var result = frame(segment.sourceID)
-            if let own = ownBackgrounds[segment.id] { result.background = own }
-            if let level = segment.stabilization, let analysis = analyses[segment.sourceID] {
-                let key = (segment.sourceID?.uuidString ?? "take") + level.rawValue
-                if steadyPaths[key] == nil {
-                    steadyPaths[key] = steadyPath(for: segment.sourceID, of: edit, take: source, analysis: analysis, level: level)
-                }
-                result.steady = steadyPaths[key]
-            }
-            return result
-        }
+        var framing = EditFraming(
+            edit: edit, take: source, takeShape: take.shape, shapes: recordings.mapValues(\.shape), analyses: analyses,
+            cacheKey: UUID().uuidString
+        )
+        let crop = framing.crop
+        let renderSize = outputSize(for: crop.size, shortSide: options.shortSide)
         var overlays = TextOverlayRenderer.overlays(edit.editedTexts(in: edit.timeline), frame: crop.size)
         if options.burnsInCaptions, edit.showsCaptions {
             overlays += captionOverlays(for: edit, frame: crop.size)
@@ -211,8 +183,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 trackID: video.trackID,
                 blendTrackID: stretch.dissolve == nil ? nil : blendTrack?.trackID,
                 mediaTrackIDs: mediaTrackIDs,
-                frame: frame(of: playedSegment),
-                blendFrame: blendSegment.map { frame(of: $0) },
+                frame: framing.frame(of: playedSegment),
+                blendFrame: blendSegment.map { framing.frame(of: $0) },
                 edit: edit,
                 look: edit.lookSettings(for: playedSegment),
                 blendLook: blendSegment.map { edit.lookSettings(for: $0) },
@@ -236,17 +208,6 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             videoComposition: AVVideoComposition(configuration: configuration),
             audioMix: audioMix(for: takeTracks, voices: voices + mediaSounds, music: music)
         )
-    }
-
-    /// The backgrounds clips set for themselves, prepared once, by clip. A clip with one is drawn with
-    /// it instead of its recording's; an Original one is a choice too (no effect: `nil`).
-    private static func clipBackgrounds(of timeline: EditTimeline, build: String) -> [UUID: BackgroundRender?] {
-        var result: [UUID: BackgroundRender?] = [:]
-        for segment in timeline.segments {
-            guard let effect = segment.look?.background else { continue }
-            result.updateValue(BackgroundRender.prepare(effect, cacheKey: build + "clip-" + segment.id.uuidString), forKey: segment.id)
-        }
-        return result
     }
 
     /// Lays the timeline's pieces one after the other: picture on `video`, sound on the track
@@ -346,6 +307,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let uprightSize: CGSize
         let frameRate: Float
 
+        var shape: EditFraming.Shape { EditFraming.Shape(transform: transform, uprightSize: uprightSize) }
+
         static func load(_ asset: AVURLAsset) async throws -> Recording {
             guard let video = try await asset.loadTracks(withMediaType: .video).first else { throw BuildError.noVideoTrack }
             let (naturalSize, transform, frameRate) = try await video.load(.naturalSize, .preferredTransform, .nominalFrameRate)
@@ -355,14 +318,6 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 uprightSize: CGSize(width: abs(upright.width), height: abs(upright.height)), frameRate: frameRate
             )
         }
-    }
-
-    /// The part of `recording`'s upright frame the edit keeps (Core Image coordinates, y from the
-    /// bottom).
-    private static func cropRect(for recording: Recording, edit: TakeEdit) -> CGRect {
-        let size = recording.uprightSize
-        let topLeft = CropMath.crop(in: size, aspect: edit.aspect.widthOverHeight, offset: edit.cropOffset)
-        return CGRect(x: topLeft.minX, y: size.height - topLeft.maxY, width: topLeft.width, height: topLeft.height)
     }
 
     /// Stretches cut again where the main track moves to another recording (and, in a dissolve
