@@ -183,11 +183,7 @@ extension QuickEditViewModel {
             return
         }
         Haptics.selection()
-        selection = nil
-        toolMenu = nil
-        if panel != .transition { panel = nil }
-        selectedJoinID = id
-        panel = .transition
+        selection = .join(id)
     }
 
     /// VoiceOver: the playhead to the next cut (or the one before), said with where it landed; the end and the start are

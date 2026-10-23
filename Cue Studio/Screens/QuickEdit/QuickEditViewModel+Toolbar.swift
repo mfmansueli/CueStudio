@@ -211,6 +211,9 @@ extension QuickEditViewModel {
             items.append(lockItem)
             items.append(EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMedia))
             return items
+        case .join:
+            // A cut is picked only with its Transition panel open, which takes the toolbar's place.
+            return []
         }
     }
 

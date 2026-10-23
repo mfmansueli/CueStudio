@@ -36,34 +36,19 @@ final class QuickEditViewModel {
 
     // MARK: Editor
     /// The panel open under the timeline, in place of the toolbar. Its ✓ closes it; changes show
-    /// live in the preview.
+    /// live in the preview. Setting it is `show(_:)`.
     var panel: EditorPanel? {
-        didSet {
-            guard panel != oldValue else { return }
-            showsAdvanced = false
-            panelTab = .presets
-            if oldValue == .voice { endComparison() }
-            // Leaving Adjust (or opening it again) never leaves a measurement running or the picture compared.
-            if panel != .adjust { cancelAuto() }
-            comparesPicture = false
-            endChange()
-            if recorder.isRecording { stopVoiceOver() }
-            if oldValue == .transition { selectedJoinID = nil }
-            if panel == .pauses { cleanUpMarks = [:] }
-            if panel == nil { lookScopeIsClip = false }
-            // Picking several lines belongs to the list of lines.
-            if panel != .captions { captionPicks = nil }
-        }
+        get { shownPanel }
+        set { show(newValue) }
     }
-    /// The one thing picked on the timeline or in the preview; its tools replace the toolbar's.
+    /// The one thing picked on the timeline or in the preview (a cut included); its tools replace the toolbar's. Setting it
+    /// is `pick(_:)`.
     var selection: EditorSelection? {
-        didSet {
-            guard selection != oldValue else { return }
-            if selection != nil { toolMenu = nil }
-            selectedJoinID = nil
-            if let panel, followsSelection(panel), !(selection.map { accepts($0, in: panel) } ?? false) { self.panel = nil }
-        }
+        get { picked }
+        set { pick(newValue) }
     }
+    private var shownPanel: EditorPanel?
+    private var picked: EditorSelection?
     /// The Text or Audio toolbar, opened from the main one with nothing selected.
     var toolMenu: EditorToolMenu?
     /// The open panel's tab (Text style and Caption style).
@@ -113,11 +98,10 @@ final class QuickEditViewModel {
         set { select(newValue.map(EditorSelection.clip), replacing: \.clipID) }
     }
     /// The cut tapped on the timeline, named by the section that starts there: its transition can
-    /// be picked. Never at the same time as a selection.
+    /// be picked (`EditorSelection.join`).
     var selectedJoinID: UUID? {
-        didSet {
-            if selectedJoinID == nil, panel == .transition { panel = nil }
-        }
+        get { selection?.joinID }
+        set { select(newValue.map(EditorSelection.join), replacing: \.joinID) }
     }
     /// Captions listening to the take (see `QuickEditViewModel+Captions`).
     var captionState: CaptionState = .idle
@@ -358,6 +342,7 @@ final class QuickEditViewModel {
         frameRate = Double(take.frameRate.rawValue)
         self.player = player ?? QuickEditPlayer(videoURL: takes.videoURL(for: take), editing: editing)
         self.recorder.stoppedByItself = { [weak self] reason in self?.voiceOverStoppedByItself(reason) }
+        self.player.playingStopped = { [weak self] in self?.playingStopped() }
         document.onChange = { [weak self] previous in self?.editChanged(from: previous) }
     }
 
@@ -413,6 +398,53 @@ final class QuickEditViewModel {
         requestMotionAnalysisIfNeeded()
         if edit.coverDrawingKey != drawnCoverKey { drawCover() }
         scheduleDraftSave()
+    }
+
+    // MARK: - Panels and picking
+
+    /// Opens `next` under the timeline (nil closes the panel). Leaving a panel ends what went on in it: its undo step, a
+    /// narration being recorded, a comparison, Auto measuring, the lines picked in Captions, and Transition's cut.
+    func show(_ next: EditorPanel?) {
+        guard next != shownPanel else { return }
+        leavePanel(for: next, endingChange: true)
+    }
+
+    /// Picks `next` (nil lets go). The Text or Audio menu gives way to it; a cut opens its Transition panel; a panel that
+    /// works on the picked item closes when it can't work on `next`. Picking never ends an undo step: a gesture that picks
+    /// (or lets go of what it removed) keeps its one step.
+    func pick(_ next: EditorSelection?) {
+        guard next != picked else { return }
+        picked = next
+        if next != nil { toolMenu = nil }
+        if next?.joinID != nil {
+            if shownPanel != .transition {
+                leavePanel(for: nil, endingChange: true)
+                leavePanel(for: .transition, endingChange: true)
+            }
+        } else if let panel = shownPanel, followsSelection(panel), !(next.map { accepts($0, in: panel) } ?? false) {
+            leavePanel(for: nil, endingChange: false)
+        }
+    }
+
+    /// The one way the panel changes: what the panel left behind ends, in this order, once.
+    private func leavePanel(for next: EditorPanel?, endingChange: Bool) {
+        let previous = shownPanel
+        guard next != previous else { return }
+        shownPanel = next
+        showsAdvanced = false
+        panelTab = .presets
+        if previous == .voice { endComparison() }
+        // Leaving Adjust (or opening it again) never leaves a measurement running or the picture compared.
+        if next != .adjust { cancelAuto() }
+        comparesPicture = false
+        if endingChange { endChange() }
+        if recorder.isRecording { stopVoiceOver() }
+        // A cut is picked only while its Transition panel is open.
+        if previous == .transition, picked?.joinID != nil { picked = nil }
+        if next == .pauses { cleanUpMarks = [:] }
+        if next == nil { lookScopeIsClip = false }
+        // Picking several lines belongs to the list of lines.
+        if next != .captions { captionPicks = nil }
     }
 
     /// Sets the selection from one of the per-kind ids: a new id selects that item, and nil lets

@@ -25,6 +25,8 @@ protocol EditPlayback: AnyObject {
     /// A finger is shaping a speed curve or dragging a handle: curved clips' sound is stretched in steps (instant) instead of
     /// rendered along the curve; turned off, the edit is drawn again with the rendered sound.
     var stepsCurveSound: Bool { get set }
+    /// Told each time playing stops, whatever stopped it (Pause, the end of the video, a scrub, closing).
+    var playingStopped: (@MainActor () -> Void)? { get set }
 
     /// Plays `edit` from now on, keeping the playhead on the same moment of the recording (or
     /// where the edit picks up, when that moment was cut).

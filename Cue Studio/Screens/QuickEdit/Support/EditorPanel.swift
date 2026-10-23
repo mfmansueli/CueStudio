@@ -77,7 +77,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .textStyle: selection.textID != nil
         case .media: selection.mediaID != nil
         case .beats: selection.musicID != nil
-        case .transition: false
+        case .transition: selection.joinID != nil
         default: true
         }
     }

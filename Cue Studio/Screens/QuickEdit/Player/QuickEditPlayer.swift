@@ -23,7 +23,12 @@ import Foundation
 final class QuickEditPlayer: EditPlayback {
     /// Edited seconds.
     private(set) var currentTime: TimeInterval = 0
-    private(set) var isPlaying = false
+    private(set) var isPlaying = false {
+        didSet {
+            if oldValue, !isPlaying { playingStopped?() }
+        }
+    }
+    @ObservationIgnored var playingStopped: (@MainActor () -> Void)?
     private(set) var state: EditPlaybackState = .loading
     private(set) var isProcessing = false
     var reviewedPart: ClosedRange<TimeInterval>? {

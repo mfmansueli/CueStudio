@@ -47,10 +47,6 @@ struct VoiceOverPanel: View {
                 .padding(.top, 4)
             }
         }
-        .onChange(of: viewModel.player.isPlaying) { _, isPlaying in
-            // The end of the video ends the recording.
-            if !isPlaying, viewModel.isRecordingVoiceOver { viewModel.stopVoiceOver() }
-        }
     }
 
     private var recordButton: some View {

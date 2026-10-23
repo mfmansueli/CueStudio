@@ -7,9 +7,9 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// A narration that stops without Stop never leaves the screen recording: a call or another app taking the microphone keeps
-/// what was recorded and says why; a file that can't be written is dropped and said. Leaving the editor while recording keeps
-/// the narration in the draft.
+/// A narration that stops without Stop never leaves the screen recording: the video stopping under it (its end, Pause) or a
+/// call or another app taking the microphone keeps what was recorded (and says why); a file that can't be written is dropped
+/// and said. Leaving the editor while recording keeps the narration in the draft.
 @MainActor
 @Suite("Quick edit: a voice-over stopping on its own")
 struct QuickEditVoiceOverStopTests {
@@ -59,6 +59,29 @@ struct QuickEditVoiceOverStopTests {
         #expect(scenario.viewModel.edit.voiceOvers.isEmpty)
         #expect(scenario.viewModel.toast.message == "Couldn't record the voice-over · Try again")
         #expect(failures.map(\.operation) == ["voiceOverRecord"])
+    }
+
+    @Test func theVideoStoppingStopsTheNarrationAndKeepsIt() async throws {
+        let scenario = await makeScenario()
+        let player = try #require(scenario.viewModel.player as? FakeEditPlayback)
+        await scenario.viewModel.startVoiceOver()
+        #expect(player.isPlaying)
+        player.playToTheEnd()
+        #expect(!scenario.viewModel.isRecordingVoiceOver)
+        #expect(scenario.viewModel.edit.voiceOvers.count == 1)
+        // Pause does it too.
+        await scenario.viewModel.startVoiceOver()
+        scenario.viewModel.togglePlayback()
+        #expect(!scenario.viewModel.isRecordingVoiceOver)
+        #expect(scenario.viewModel.edit.voiceOvers.count == 2)
+    }
+
+    @Test func stopAddsTheNarrationOnce() async {
+        let scenario = await makeScenario()
+        await scenario.viewModel.startVoiceOver()
+        scenario.viewModel.stopVoiceOver()
+        #expect(scenario.viewModel.edit.voiceOvers.count == 1)
+        #expect(!scenario.viewModel.isRecordingVoiceOver)
     }
 
     @Test func leavingWhileRecordingKeepsTheNarrationInTheDraft() async throws {
