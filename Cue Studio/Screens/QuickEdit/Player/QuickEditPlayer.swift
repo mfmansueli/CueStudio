@@ -297,15 +297,13 @@ final class QuickEditPlayer: EditPlayback {
         rebuildsAfterBuild = false
         generation += 1
         let generation = generation
-        var playable = edit
-        playable.timeline = edit.timeline.reachable
-        let window = ItemKey.musicWindow(of: edit)
-        let rendersCurveSound = !stepsCurveSound
+        // Grown to the whole recording (`EditRenderPurpose.editorPreview`): a handle scrubs real frames without a rebuild.
+        let purpose = EditRenderPurpose.editorPreview(rendersCurveSound: !stepsCurveSound)
         itemHasSteppedSound = stepsCurveSound && edit.timeline.segments.contains { $0.speedCurve != nil }
         buildTask = Task { [weak self, editing, videoURL] in
             self?.showProcessingIfSlow(generation)
             do {
-                let item = try await editing.previewItem(forVideoAt: videoURL, edit: playable, window: window, rendersCurveSound: rendersCurveSound)
+                let item = try await editing.previewItem(forVideoAt: videoURL, edit: edit, purpose: purpose)
                 self?.install(item, generation: generation)
             } catch {
                 EditorFailureReport.make(error, operation: "preview", edit: edit)?.send()

@@ -24,8 +24,6 @@ final class TakeEditService: TakeEditing {
     }
     /// What was heard in a take, for captions and Clean Up, so it is transcribed once.
     private var transcripts: [TranscriptKey: TakeTranscript] = [:]
-    /// Where someone speaks in each recording, for music that ducks.
-    private var speech: [URL: [TimeSpan]] = [:]
     /// The language each recording was found to be spoken in, among the candidates asked (nil: couldn't tell).
     private var spoken: [SpokenKey: CueLanguage?] = [:]
 
@@ -120,15 +118,8 @@ final class TakeEditService: TakeEditing {
         )
     }
 
-    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?, rendersCurveSound: Bool) async throws -> AVPlayerItem {
-        let treated = try await RecordingSounds.prepare(for: edit, takeURL: url, cache: sounds)
-        let composition = try await EditedComposition.build(
-            source: url, edit: edit, sound: treated, speech: await voiceActivity(for: url, edit: edit),
-            options: .init(
-                burnsInCaptions: true, shortSide: 1080, window: window, analyzesMissingMotion: false,
-                rendersCurveSound: rendersCurveSound
-            )
-        )
+    func previewItem(forVideoAt url: URL, edit: TakeEdit, purpose: EditRenderPurpose) async throws -> AVPlayerItem {
+        let composition = try await EditRenderRequest.prepare(source: url, edit: edit, purpose: purpose, sounds: sounds).build()
         let item = AVPlayerItem(asset: composition.asset)
         item.videoComposition = composition.videoComposition
         item.audioMix = composition.audioMix
@@ -175,26 +166,6 @@ final class TakeEditService: TakeEditing {
         let processing = edit.voiceProcessing
         guard processing.isNeeded else { return nil }
         return try await sounds.treated(url, processing: processing)
-    }
-
-    /// Where someone speaks in the take and the other recordings the edit plays; nothing when no
-    /// music ducks.
-    private func voiceActivity(for url: URL, edit: TakeEdit) async -> VoiceActivity {
-        guard edit.ducksMusic else { return .none }
-        var activity = VoiceActivity()
-        activity.take = await speechSpans(in: url)
-        for source in edit.playedSources {
-            activity.sources[source.id] = await speechSpans(in: EditMediaFiles.url(for: source.fileName))
-        }
-        return activity
-    }
-
-    private func speechSpans(in video: URL) async -> [TimeSpan] {
-        if let cached = speech[video] { return cached }
-        guard let audio = try? await audioFile(for: video) else { return [] }
-        let spans = await Task.detached { (try? VoiceActivity.spans(inAudio: audio)) ?? [] }.value
-        speech[video] = spans
-        return spans
     }
 
     /// The language the take is spoken in among `candidates`, found once per recording and list.

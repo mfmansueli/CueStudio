@@ -8,7 +8,7 @@ import Foundation
 
 /// The sound files Quick edit makes from recordings, made once and shared by the preview, the export, Clean Up and captions:
 /// a recording's sound on its own (`audio(of:)`), treated by Studio Voice (`treated`), brought to another level (`leveled`),
-/// and how loud its speech is (`speechLevel`). A file asked for while it's being made waits for the same work.
+/// how loud its speech is (`speechLevel`) and where someone speaks in it (`speechSpans`). A file asked for while it's being made waits for the same work.
 ///
 /// Infrastructure shared by two services (`TakeEditService`, `VideoExportService`), so a singleton (`ARCHITECTURE.md` §2.2).
 /// Treated and leveled files are the length of a take: only the `fileLimit` used most recently are kept, the others deleted
@@ -36,6 +36,16 @@ actor RecordingSoundCache {
     private var lastUsed: [Key: Date] = [:]
     static let inUse: TimeInterval = 120
     private var levels: [URL: Float?] = [:]
+    private var speech: [URL: [TimeSpan]] = [:]
+
+    /// Where someone speaks in the recording (for music that ducks), found once per file; none without a sound.
+    func speechSpans(in video: URL) async -> [TimeSpan] {
+        if let found = speech[video] { return found }
+        guard let audio = try? await audio(of: video) else { return [] }
+        let found = await Task.detached { (try? VoiceActivity.spans(inAudio: audio)) ?? [] }.value
+        speech[video] = found
+        return found
+    }
 
     /// The recording's sound as an audio file; nil when it has none.
     func audio(of video: URL) async throws -> URL? {

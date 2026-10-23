@@ -203,6 +203,12 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         segments[0].speedCurve == nil ? trimStart / segments[0].speed : Self.lead(of: segments[0]).duration
     }
 
+    /// Pieces `reachable` puts before the first one (what the start handle reaches before a curved first piece): the index of
+    /// a piece of the edit in `reachable` is this much higher.
+    var reachableLeadPieces: Int {
+        segments[0].speedCurve != nil && segments[0].sourceStart > 0.000_1 ? 1 : 0
+    }
+
     /// Whether any piece plays at another speed than filmed.
     var hasSpeedChanges: Bool {
         segments.contains(where: \.changesSpeed)

@@ -36,6 +36,20 @@ nonisolated struct TransitionWindow: Hashable, Sendable {
     var incomingSource: UUID?
 
     var start: TimeInterval { cut - halfDuration }
+
+    /// The same window in a timeline that plays `leadIn` seconds and `pieces` pieces before the edit (the preview's
+    /// `EditTimeline.reachable`): measured on the edit, so it is exactly as long as the export's.
+    func shifted(by leadIn: TimeInterval, pieces: Int) -> TransitionWindow {
+        var shifted = TransitionWindow(
+            transition: transition, join: join + pieces, cut: cut + leadIn, halfDuration: halfDuration,
+            outgoingEnd: outgoingEnd, incomingStart: incomingStart
+        )
+        shifted.outgoingSpeed = outgoingSpeed
+        shifted.incomingSpeed = incomingSpeed
+        shifted.outgoingSource = outgoingSource
+        shifted.incomingSource = incomingSource
+        return shifted
+    }
     var end: TimeInterval { cut + halfDuration }
 
     /// 0 at the start of the window, 1 at its end.

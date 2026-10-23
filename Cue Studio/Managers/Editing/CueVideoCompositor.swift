@@ -153,7 +153,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             source,
             as: Framing(
                 frame: instruction.frame, cropFit: instruction.edit.cropFit, look: instruction.look, key: "main-\(moment)",
-                moment: SmoothingMoment(stream: .main, stretch: stretch, time: time), sourceTime: instruction.sourceTime(at: time)
+                moment: SmoothingMoment(stream: .main, stretch: stretch, time: time), sourceTime: instruction.sourceTime(at: time),
+                lookTime: time - instruction.timeOrigin
             ),
             faces: faces
         )
@@ -166,7 +167,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 as: Framing(
                     frame: instruction.blendFrame ?? instruction.frame, cropFit: instruction.edit.cropFit,
                     look: instruction.blendLook ?? instruction.look, key: "blend-\(moment)",
-                    moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time), sourceTime: dissolve.otherSideSourceTime(at: time)
+                    moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time), sourceTime: dissolve.otherSideSourceTime(at: time),
+                    lookTime: time - instruction.timeOrigin
                 ),
                 faces: faces
             )

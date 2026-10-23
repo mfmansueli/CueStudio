@@ -39,10 +39,10 @@ final class CountingTakeEditor: TakeEditing {
         try await editing.captions(forVideoAt: url, script: script, language: language, spokenAmong: candidates, progress: progress)
     }
 
-    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?, rendersCurveSound: Bool) async throws -> AVPlayerItem {
+    func previewItem(forVideoAt url: URL, edit: TakeEdit, purpose: EditRenderPurpose) async throws -> AVPlayerItem {
         previewItems += 1
-        self.rendersCurveSound.append(rendersCurveSound)
-        return try await editing.previewItem(forVideoAt: url, edit: edit, window: window, rendersCurveSound: rendersCurveSound)
+        if case .editorPreview(let rendersCurveSound) = purpose { self.rendersCurveSound.append(rendersCurveSound) }
+        return try await editing.previewItem(forVideoAt: url, edit: edit, purpose: purpose)
     }
 
     func matchedOriginalVolume(forVideoAt url: URL, edit: TakeEdit) async -> Double? {

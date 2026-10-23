@@ -41,9 +41,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         var shortSide: CGFloat?
         /// Frames per second of the output; nil keeps the recording's.
         var frameRate: Double?
-        /// Where the edit itself is in `edit.timeline`: the preview plays the timeline grown to the
-        /// whole recording and holds playback here. Nil when the timeline is the edit.
-        var window: TimeSpan?
+        /// The editor's preview: the first and last clips grown to the whole recording (`EditTimeline.reachable`), so a handle
+        /// scrubs real frames without a rebuild; the player holds playback where the edit itself is.
+        var reachesWholeRecording = false
         /// Makes the motion analyses Follow face and stabilization need when they're missing (an export); the preview draws
         /// with the ones ready.
         var analyzesMissingMotion = true
@@ -73,8 +73,13 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     /// handle, a slider or the frame, and the screen keeps following the finger meanwhile.
     @concurrent
     static func build(
-        source: URL, edit: TakeEdit, sound: RecordingSounds = .none, speech: VoiceActivity = .none, options: Options
+        source: URL, edit made: TakeEdit, sound: RecordingSounds = .none, speech: VoiceActivity = .none, options: Options
     ) async throws -> EditedComposition {
+        // The edit as made; the preview plays it grown to the whole recording, from `leadIn` on.
+        var edit = made
+        if options.reachesWholeRecording { edit.timeline = made.timeline.reachable }
+        let leadIn = options.reachesWholeRecording ? made.timeline.reachableLeadIn : 0
+        let leadPieces = options.reachesWholeRecording ? made.timeline.reachableLeadPieces : 0
         let take = try await Recording.load(AVURLAsset(url: source))
         // A track can't be read once its asset is gone, so the treated sounds' assets are kept
         // until the composition is built (like each `Recording`'s).
@@ -125,7 +130,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             takeTracks.append((varispeed, levels(for: edit.timeline, plays: playsVarispeed), .varispeed))
         }
 
-        let windows = TransitionWindow.windows(in: edit.timeline)
+        // Measured on the edit as made (the clips grown for the preview would give a transition more room than the export
+        // has), then moved to where the edit plays.
+        let windows = TransitionWindow.windows(in: made.timeline).map { $0.shifted(by: leadIn, pieces: leadPieces) }
         var dissolves = windows.filter { $0.transition.showsBothSides }
         var blendTrack = dissolves.isEmpty ? nil : composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
         if let track = blendTrack, (try? insertOtherSides(of: dissolves, from: recording, into: track)) == nil {
@@ -152,7 +159,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let (mediaTracks, mediaFrames, mediaSounds) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
         let videoMedia = mediaFrames.filter(\.isVideo).map(\.span)
         let voices = await placeVoiceOvers(of: edit, in: composition)
-        let window = options.window ?? TimeSpan(start: 0, end: cursor.seconds)
+        let window = options.reachesWholeRecording ? TimeSpan(start: leadIn, end: leadIn + made.editedDuration) : TimeSpan(start: 0, end: cursor.seconds)
         let spoken = speech.editedSpans(in: edit.timeline) + edit.voiceOvers.compactMap { $0.editedSpan(in: edit.timeline) }
         let music = await placeMusic(of: edit, window: window, speech: spoken, in: composition)
         let fadeWindows = windows.filter { $0.transition == .fade }
@@ -163,11 +170,17 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             let middle = CMTimeMultiplyByRatio(stretch.range.start + stretch.range.end, multiplier: 1, divisor: 2).seconds
             let index = timeline.segmentIndex(atEdited: middle)
             let playedSegment = timeline.segments[index]
-            let zoom = timeline.segments[index].zoom.map {
-                ZoomWindow(
-                    zoom: $0, start: timeline.editedStart(ofSegmentAt: index), duration: timeline.segments[index].duration,
-                    amount: timeline.segments[index].zoomAmount
-                )
+            // A clip's zoom runs over the clip as made (the preview's grown first and last clips are longer), where it plays.
+            let shownIndex = index - leadPieces
+            let zoom: ZoomWindow? = if timeline.segments[index].zoom != nil, made.timeline.segments.indices.contains(shownIndex) {
+                made.timeline.segments[shownIndex].zoom.map {
+                    ZoomWindow(
+                        zoom: $0, start: leadIn + made.timeline.editedStart(ofSegmentAt: shownIndex),
+                        duration: made.timeline.segments[shownIndex].duration, amount: made.timeline.segments[shownIndex].zoomAmount
+                    )
+                }
+            } else {
+                nil
             }
             // Before the cut the blend track holds the incoming piece; after it, the outgoing one.
             let blendSegment = stretch.dissolve.map { timeline.segments[middle < $0.cut ? $0.join : $0.join - 1] }
@@ -193,7 +206,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 outputScale: outputScale,
                 dissolve: stretch.dissolve,
                 zoom: zoom,
-                fades: fadeWindows
+                fades: fadeWindows,
+                timeOrigin: leadIn
             )
         }
         let configuration = AVVideoComposition.Configuration(
