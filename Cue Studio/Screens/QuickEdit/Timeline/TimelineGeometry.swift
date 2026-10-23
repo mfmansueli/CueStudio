@@ -371,12 +371,10 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                     beatOffsets: item.beats.map { CGFloat($0 - item.span.start) * pps },
                     isLocked: item.isLocked
                 ))
-                // A locked item keeps its place: no handle to trim it, no body to drag it.
-                if isSelected, !item.isLocked, kind != .music, kind != .voiceOver {
+                // A picked item trims by its handles and moves by its body; a locked one keeps its place.
+                if isSelected, !item.isLocked {
                     handles.append(Self.handle(.item(kind, id, .start), x: x - Self.itemHandleWidth, width: Self.itemHandleWidth, lane: lane))
                     handles.append(Self.handle(.item(kind, id, .end), x: x + width, width: Self.itemHandleWidth, lane: lane))
-                }
-                if isSelected, !item.isLocked, kind != .voiceOver, kind != .recording {
                     let body = CGRect(x: x, y: lane.y, width: width, height: lane.height)
                     bodies.append(Handle(target: .move(kind, id), frame: body, hitFrame: body))
                 }
@@ -475,12 +473,13 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     // MARK: - Snapping
 
     /// Edited seconds the playhead and the handles stick to: cuts between clips, the start and end
-    /// of the video, of every caption and text, keyframes, and the music's beats when they snap.
+    /// of the video, of every caption, text, photo or video, music and voice-over, keyframes, and the music's beats when they snap.
     var snapTimes: [TimeInterval] {
         var times: [TimeInterval] = [0, input.duration]
         times += input.clips.map(\.start)
         times += input.captions.flatMap { [$0.span.start, $0.span.end] }
         times += input.texts.flatMap { [$0.span.start, $0.span.end] + $0.keyframes }
+        times += (input.media + input.music + input.voiceOvers).flatMap { [$0.span.start, $0.span.end] }
         times += input.beatSnaps
         return Array(Set(times)).sorted()
     }

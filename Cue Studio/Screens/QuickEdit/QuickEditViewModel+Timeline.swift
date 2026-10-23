@@ -261,7 +261,7 @@ extension QuickEditViewModel {
                 snapTimes: snapTimes.filter { time in !own.contains { abs($0 - time) < 0.000_1 } }
             )
         case .move(let kind, let id):
-            guard let bar = layerBar(kind, id) ?? (kind == .music ? musicBars.first { $0.id == id } : nil) else { return }
+            guard let bar = layerBar(kind, id) else { return }
             let own = [bar.span.start, bar.span.end]
             handleDrag = TimelineHandleDrag(
                 target: target, playhead: playhead, edgeTime: bar.span.start, clipSpan: nil, clipSpeed: 1, bar: bar,
@@ -361,7 +361,9 @@ extension QuickEditViewModel {
         case .text: textBars.first { $0.id == id }
         case .media: mediaBars.first { $0.id == id }
         case .caption: captionBars.first { captionCueID(forLine: $0.id) == id }
-        case .music, .voiceOver, .recording: nil
+        case .music: musicBars.first { $0.id == id }
+        case .voiceOver: voiceOverBars.first { $0.id == id }
+        case .recording: nil
         }
     }
 
@@ -373,7 +375,7 @@ extension QuickEditViewModel {
         case .caption:
             captionBars.first { captionCueID(forLine: $0.id) == captionCueID(forLine: bar.id) }
         case .music: musicBars.first { $0.id == bar.id }
-        default: nil
+        case .voiceOver: voiceOverBars.first { $0.id == bar.id }
         }
     }
 }

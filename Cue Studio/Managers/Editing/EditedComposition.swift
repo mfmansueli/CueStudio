@@ -623,7 +623,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         return placed
     }
 
-    /// Each voice-over on its own sound track, from where it starts, cut at the end of the edit.
+    /// Each voice-over on its own sound track, from where it starts (and from its trimmed start in the recording), cut at the
+    /// end of the edit.
     private static func placeVoiceOvers(
         of edit: TakeEdit, in composition: AVMutableComposition
     ) async -> [(track: AVMutableCompositionTrack, volume: Float)] {
@@ -634,7 +635,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             guard let source = try? await asset.loadTracks(withMediaType: .audio).first,
                   let track = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
             else { continue }
-            let range = CMTimeRange(start: .zero, duration: CMTime(seconds: span.duration, preferredTimescale: 600))
+            let range = CMTimeRange(
+                start: CMTime(seconds: clip.offset ?? 0, preferredTimescale: 600), duration: CMTime(seconds: span.duration, preferredTimescale: 600)
+            )
             do {
                 try track.insertTimeRange(range, of: source, at: CMTime(seconds: span.start, preferredTimescale: 600))
             } catch {

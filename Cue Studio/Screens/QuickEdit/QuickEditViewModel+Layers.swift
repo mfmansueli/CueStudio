@@ -6,8 +6,8 @@
 import Foundation
 
 /// The tracks under Text, Media, Voice-over and Music: one bar per item where it plays in the edit.
-/// Dragging a bar moves it; dragging an end changes when it starts or stops (a voice-over only
-/// moves). Up to three photos or videos overlap. Positions are kept on the recording (see
+/// Dragging a bar moves it; dragging an end changes when it starts or stops (a voice-over's or a
+/// music clip's start takes its recording along). Up to three photos or videos overlap. Positions are kept on the recording (see
 /// `TextOverlay`), so the bars land where the finger left them; music is kept on the edit's own
 /// seconds.
 extension QuickEditViewModel {
@@ -76,10 +76,14 @@ extension QuickEditViewModel {
 
     /// Moves one end of a bar to `time` (edited seconds).
     func resizeBar(_ bar: LayerBar, edge: LayerEdge, to time: TimeInterval) {
-        guard bar.canResize else { return }
-        guard bar.kind != .music else {
+        switch bar.kind {
+        case .music:
             resizeMusic(bar.id, edge: edge, to: time)
             return
+        case .voiceOver:
+            resizeVoiceOver(bar.id, edge: edge, to: time)
+            return
+        default: break
         }
         let limits = room(for: bar)
         let shortest = switch bar.kind {

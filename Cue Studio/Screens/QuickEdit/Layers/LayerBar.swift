@@ -15,6 +15,4 @@ struct LayerBar: Identifiable, Equatable {
     let isSelected: Bool
     /// Where its keyframes are, in seconds from its start.
     var keyframes: [TimeInterval] = []
-    /// Voice-overs keep their length: they only move.
-    var canResize: Bool { kind != .voiceOver }
 }

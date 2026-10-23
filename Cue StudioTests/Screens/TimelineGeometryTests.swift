@@ -252,13 +252,15 @@ struct TimelineGeometryTests {
         #expect(!geometry.input.activeLanes.contains(.text))
     }
 
-    @Test func musicAndVoiceOverHaveNoHandles() {
-        let music = UUID()
+    /// A picked voice-over trims by its handles and moves by its body, like a text.
+    @Test func aPickedVoiceOverTrimsAndMoves() {
+        let voice = UUID()
         let geometry = TimelineGeometry(input { input in
-            input.music = [TimelineGeometry.ItemInput(id: music, span: TimeSpan(start: 0, end: 21.6), label: "Morning loop")]
-            input.selection = .music(music)
+            input.voiceOvers = [TimelineGeometry.ItemInput(id: voice, span: TimeSpan(start: 2, end: 6), label: "Voice-over")]
+            input.selection = .voiceOver(voice)
         })
-        #expect(geometry.handles.isEmpty)
+        #expect(geometry.handles.map(\.target) == [.item(.voiceOver, voice, .start), .item(.voiceOver, voice, .end)])
+        #expect(geometry.bodies.map(\.target) == [.move(.voiceOver, voice)])
     }
 
     @Test func aRecordingGrowsOnTheVoiceOverTrack() throws {
@@ -326,14 +328,20 @@ struct TimelineGeometryTests {
         #expect(none.dragTarget(at: CGPoint(x: 2.5 * 44, y: lane.y + lane.height / 2)) == nil)
     }
 
-    @Test func aPickedMusicClipMovesByItsBodyWithoutTrimHandles() throws {
+    @Test func aPickedMusicClipTrimsByItsHandlesAndMovesByItsBody() throws {
         let music = UUID()
         let geometry = TimelineGeometry(input { input in
             input.music = [TimelineGeometry.ItemInput(id: music, span: TimeSpan(start: 2, end: 12), label: "Morning loop")]
             input.selection = .music(music)
         })
-        #expect(geometry.handles.isEmpty)
+        #expect(geometry.handles.map(\.target) == [.item(.music, music, .start), .item(.music, music, .end)])
         #expect(geometry.bodies.map(\.target) == [.move(.music, music)])
+        // A locked one keeps its place.
+        let locked = TimelineGeometry(input { input in
+            input.music = [TimelineGeometry.ItemInput(id: music, span: TimeSpan(start: 2, end: 12), label: "Morning loop", isLocked: true)]
+            input.selection = .music(music)
+        })
+        #expect(locked.handles.isEmpty && locked.bodies.isEmpty)
     }
 
     // MARK: - Snapping
@@ -344,5 +352,15 @@ struct TimelineGeometryTests {
             input.captions = [TimelineGeometry.ItemInput(id: caption, span: TimeSpan(start: 5.2, end: 7.1), label: "Line")]
         })
         #expect(geometry.snapTimes == [0, 1, 2.5, 4, 5.2, 7.1, 10, 21.6])
+    }
+
+    /// Photos and videos, music and voice-overs are edges a handle sticks to too.
+    @Test func snapTimesTakeTheAudioAndMediaEdges() {
+        let geometry = TimelineGeometry(input { input in
+            input.media = [TimelineGeometry.ItemInput(id: UUID(), span: TimeSpan(start: 3, end: 5), label: "Photo")]
+            input.music = [TimelineGeometry.ItemInput(id: UUID(), span: TimeSpan(start: 6, end: 12), label: "Morning loop")]
+            input.voiceOvers = [TimelineGeometry.ItemInput(id: UUID(), span: TimeSpan(start: 13, end: 15), label: "Voice-over")]
+        })
+        #expect(geometry.snapTimes == [0, 3, 5, 6, 10, 12, 13, 15, 21.6])
     }
 }
