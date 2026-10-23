@@ -35,7 +35,7 @@ extension QuickEditViewModel {
             addMusic(imported)
         } catch {
             noteFailure(error, "importMusic")
-            toast.show(error.localizedDescription)
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
         }
     }
 

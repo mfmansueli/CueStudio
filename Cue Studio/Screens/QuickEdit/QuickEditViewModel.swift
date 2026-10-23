@@ -316,6 +316,8 @@ final class QuickEditViewModel {
     /// A short part playing to show a change (a zoom, a reveal, a pause heard).
     @ObservationIgnored var previewTask: Task<Void, Never>?
     @ObservationIgnored private var draftTask: Task<Void, Never>?
+    /// Opens Cue's page in the Settings app (a toast's "Settings" when the microphone is off for Cue); tests count it.
+    @ObservationIgnored var opensSettings: @MainActor () -> Void = { AppSettingsLink.open() }
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
     @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
     /// Work started from a tool that the editor waits for (`startJob`).

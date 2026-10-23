@@ -26,7 +26,10 @@ extension QuickEditViewModel {
     func startVoiceOver() async {
         guard isReady, !recorder.isRecording else { return }
         guard await recorder.requestPermission() else {
-            toast.show(String(localized: "Mic is off · See Settings"))
+            toast.show(
+                String(localized: "Mic is off for Cue"),
+                action: ToastAction(title: String(localized: "Settings")) { [weak self] in self?.opensSettings() }
+            )
             return
         }
         guard !isClosed else { return }
@@ -39,7 +42,7 @@ extension QuickEditViewModel {
             try await recorder.start()
         } catch {
             noteFailure(error, "voiceOverStart")
-            toast.show(error.localizedDescription)
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Couldn't start recording")))
             return
         }
         recordingStart = start

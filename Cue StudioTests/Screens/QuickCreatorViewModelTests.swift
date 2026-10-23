@@ -530,12 +530,18 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.edit.voiceOvers.map(\.anchor) == [8])
     }
 
-    @Test func withoutTheMicrophoneNothingRecords() async {
+    @Test func withoutTheMicrophoneNothingRecordsAndSettingsIsOneTapAway() async throws {
         let scenario = await makeScenario()
+        var opened = 0
+        scenario.viewModel.opensSettings = { opened += 1 }
         scenario.recorder.allowed = false
         await scenario.viewModel.startVoiceOver()
         #expect(!scenario.viewModel.isRecordingVoiceOver)
-        #expect(scenario.toast.message == "Mic is off · See Settings")
+        #expect(scenario.toast.message == "Mic is off for Cue")
+        let settings = try #require(scenario.toast.action)
+        #expect(settings.title == "Settings")
+        settings.perform()
+        #expect(opened == 1)
     }
 
     @Test func aVoiceOverKeepsItsVolumeAndCanBeDeleted() async {
@@ -632,12 +638,13 @@ struct QuickCreatorViewModelTests {
         #expect(scenario.player.isPlaying)
     }
 
-    @Test func cancelDropsARecordingInProgress() async {
+    /// Cancel keeps every change in the draft, a narration being recorded too.
+    @Test func cancelKeepsARecordingInProgressInTheDraft() async {
         let scenario = await makeScenario()
         await scenario.viewModel.startVoiceOver()
         scenario.viewModel.cancel()
-        #expect(scenario.recorder.cancelled)
-        #expect(scenario.viewModel.edit.voiceOvers.isEmpty)
+        #expect(!scenario.recorder.cancelled)
+        #expect(scenario.viewModel.edit.voiceOvers.count == 1)
     }
 
     // MARK: - Cover

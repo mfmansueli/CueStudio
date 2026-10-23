@@ -137,7 +137,7 @@ extension QuickEditViewModel {
             setBackgroundImage(imported.fileName)
         } catch {
             noteFailure(error, "importBackground")
-            toast.show(error.localizedDescription)
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
         }
     }
 
