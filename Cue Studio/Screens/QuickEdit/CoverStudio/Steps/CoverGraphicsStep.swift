@@ -16,12 +16,12 @@ struct CoverGraphicsStep: View {
                 ForEach(CoverItemKind.allCases) { kind in
                     Button { viewModel.addItem(kind) } label: {
                         VStack(spacing: 4) {
-                            Image(systemName: kind.systemImage).font(.system(size: 18, weight: .semibold))
+                            Image(systemName: kind.systemImage).font(.editorGlyph(EditorGlyph.tool, weight: .semibold))
                             Text(kind.label).font(.system(.caption, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.8)
                         }
                         .foregroundStyle(Palette.ink)
                         .frame(maxWidth: .infinity, minHeight: 58)
-                        .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                        .editorCard()
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(.cuePressCard)
@@ -41,7 +41,7 @@ struct CoverGraphicsStep: View {
         VStack(alignment: .leading, spacing: 12) {
             if item.kind.hasText {
                 TextField(item.kind == .handle ? String(localized: "yourname") : String(localized: "Tag"), text: Binding(
-                    get: { item.text }, set: { text in viewModel.updateItem(item.id) { $0.text = String(text.prefix(28)) } }
+                    get: { item.text }, set: { text in viewModel.updateItem(item.id, key: "cover.item.\(item.id)") { $0.text = String(text.prefix(28)) } }
                 ))
                 .font(.system(.callout, weight: .semibold))
                 .submitLabel(.done)
@@ -81,13 +81,13 @@ struct CoverGraphicsStep: View {
     ) -> some View {
         Button(action: perform) {
             VStack(spacing: 3) {
-                Image(systemName: symbol).font(.system(size: 16, weight: .semibold))
+                Image(systemName: symbol).font(.editorGlyph(EditorGlyph.tile, weight: .semibold))
                 Text(title).font(.system(.caption2, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.75)
             }
             .foregroundStyle(isDestructive ? Palette.dangerText : Palette.ink)
             .opacity(isEnabled ? 1 : Metrics.disabledOpacity)
             .frame(maxWidth: .infinity, minHeight: 52)
-            .background(Palette.fill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(Palette.fill, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

@@ -104,7 +104,7 @@ struct CaptionPickTools: View {
             }
             Button { viewModel.deletePickedCaptions() } label: {
                 Image(systemName: "trash")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.editorGlyph(EditorGlyph.row, weight: .semibold))
                     .foregroundStyle(Palette.dangerText)
                     .frame(width: 40, height: 32)
                     .background(Palette.Editor.dangerWash, in: Capsule())
@@ -120,7 +120,7 @@ struct CaptionPickTools: View {
 
     private func chipLabel(_ label: String, systemImage: String, isOn: Bool) -> some View {
         HStack(spacing: 5) {
-            Image(systemName: systemImage).font(.system(size: 12, weight: .semibold))
+            Image(systemName: systemImage).font(.editorGlyph(EditorGlyph.chip, weight: .semibold))
             Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1)
         }
         .foregroundStyle(isOn ? Palette.accText : Palette.ink)
@@ -147,7 +147,7 @@ struct CaptionPickTools: View {
     private func iconButton(_ symbol: String, label: Text, identifier: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 13, weight: .bold))
+                .font(.editorGlyph(EditorGlyph.compact, weight: .bold))
                 .foregroundStyle(Palette.ink)
                 .frame(width: 40, height: 32)
                 .background(Palette.fill, in: Capsule())

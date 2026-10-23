@@ -156,7 +156,7 @@ struct CoverPictureStep: View {
     private func stepButton(_ symbol: String, label: Text, id: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.editorGlyph(EditorGlyph.button, weight: .semibold))
                 .foregroundStyle(Palette.ink)
                 .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                 .background(Palette.fill, in: Circle())

@@ -38,9 +38,9 @@ struct PanelPresetCard: View {
                     }
                 }
                 .frame(width: 96, height: 74)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
                 .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous)
                         .strokeBorder(isSelected ? Palette.acc : Palette.Editor.presetCardBorder, lineWidth: 2)
                 )
                 Text(name)

@@ -31,7 +31,7 @@ struct PanelAdvancedButton: View {
                     Text(detail).foregroundStyle(Palette.accText)
                 }
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 11, weight: .bold))
+                    .font(.editorGlyph(EditorGlyph.small, weight: .bold))
                     .rotationEffect(.degrees(isOpen ? 180 : 0))
             }
             .font(.system(.footnote, weight: .semibold))

@@ -50,3 +50,21 @@ cyclomatic_complexity:
 function_parameter_count:
   warning: 7
   error: 9
+
+# The editor's corners and symbol sizes come from the Design System (Metrics' editor radii, EditorGlyph): a number written
+# in a view is a value nothing else will match, so new ones are flagged (0, no corners, is fine).
+custom_rules:
+  editor_loose_radius:
+    name: "Editor radius"
+    included: ".*/Screens/QuickEdit/.*\\.swift"
+    regex: "cornerRadius:\\s*([^,()\\n]*[?:]\\s*)?[1-9]"
+    excluded_match_kinds: [comment, doccomment, string]
+    message: "Use a Metrics radius (editorCardRadius, fieldRadius, editorInsetRadius…), not a number."
+    severity: warning
+  editor_loose_font_size:
+    name: "Editor font size"
+    included: ".*/Screens/QuickEdit/.*\\.swift"
+    regex: "\\.system\\(size:\\s*[0-9]"
+    excluded_match_kinds: [comment, doccomment, string]
+    message: "Use a text style, @ScaledMetric or an EditorGlyph size, not a number."
+    severity: warning

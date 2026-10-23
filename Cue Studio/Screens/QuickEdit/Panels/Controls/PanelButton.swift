@@ -19,7 +19,7 @@ struct PanelButton: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 8) {
-                if let systemImage { Image(systemName: systemImage).font(.system(size: 15, weight: .semibold)) }
+                if let systemImage { Image(systemName: systemImage).font(.editorGlyph(EditorGlyph.button, weight: .semibold)) }
                 Text(label).font(.system(.subheadline, weight: .semibold)).lineLimit(2).multilineTextAlignment(.center)
             }
             .foregroundStyle(isPrimary ? Palette.accInk : (isDestructive ? Palette.dangerText : Palette.ink))

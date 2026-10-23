@@ -117,7 +117,7 @@ struct EditorToolbar: View {
             VStack(spacing: 4) {
                 // Back points where back is: left, and right in Arabic.
                 Image(systemName: "chevron.backward")
-                    .font(.system(size: 19, weight: .semibold))
+                    .font(.editorGlyph(EditorGlyph.toolbar, weight: .semibold))
                 Text(context)
                     .font(.system(size: heightClass.toolbarLabelSize, weight: .semibold))
                     .lineLimit(1)
@@ -157,13 +157,13 @@ struct EditorToolbar: View {
         } label: {
             VStack(spacing: 5) {
                 Image(systemName: item.systemImage)
-                    .font(.system(size: 21, weight: .light))
+                    .font(.editorGlyph(EditorGlyph.add, weight: .light))
                     .foregroundStyle(tint)
                     .frame(height: 24)
                     .overlay(alignment: .topTrailing) {
                         if let badge = item.scopeBadge {
                             Text(badge)
-                                .font(.system(size: 8.5, weight: .heavy))
+                                .font(.editorGlyph(EditorGlyph.badge, weight: .heavy))
                                 .textCase(.uppercase)
                                 .foregroundStyle(Palette.accInk)
                                 .padding(.horizontal, 3.5)

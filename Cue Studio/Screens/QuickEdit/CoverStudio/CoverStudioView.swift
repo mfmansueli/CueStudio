@@ -21,7 +21,6 @@ struct CoverStudioView: View {
     /// While the keyboard is up the steps hide, so the cover keeps as much room as it can.
     @State private var isKeyboardUp = false
     @Environment(\.dynamicTypeSize) private var typeSize
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         NavigationStack {
@@ -29,7 +28,10 @@ struct CoverStudioView: View {
                 let panel = panelHeight(for: proxy.size.height)
                 let bar: CGFloat = isKeyboardUp ? 0 : 50
                 VStack(spacing: 0) {
+                    // Its messages as the editor's toasts, over the top of the cover.
                     canvasArea(height: proxy.size.height - panel - bar)
+                        .modifier(EditorToastHost())
+                        .environment(viewModel.toast)
                     stepPanel.frame(height: panel)
                     if !isKeyboardUp { CoverStepBar(viewModel: viewModel) }
                 }
@@ -47,7 +49,6 @@ struct CoverStudioView: View {
         .task {
             for await _ in NotificationCenter.default.notifications(named: UIResponder.keyboardWillHideNotification) { isKeyboardUp = false }
         }
-        .overlay(alignment: .top) { notice }
         .confirmationDialog(Text("Discard this cover's changes?"), isPresented: $confirmsDiscard, titleVisibility: .visible) {
             Button("Discard changes", role: .destructive) { onCancel(viewModel) }
             Button("Keep editing", role: .cancel) {}
@@ -101,7 +102,7 @@ struct CoverStudioView: View {
                                 "coverStudio.next", defaultValue: "Next: \(next.label)",
                                 comment: "Cover studio: the button that goes on to the next step, naming it. An action, not a status."
                             ))) }
-                            Image(systemName: "chevron.right").font(.system(size: 12, weight: .bold))
+                            Image(systemName: "chevron.right").font(.editorGlyph(EditorGlyph.chip, weight: .bold))
                         }
                         .font(.system(.subheadline, weight: .semibold))
                         .foregroundStyle(Palette.ink)
@@ -188,25 +189,6 @@ struct CoverStudioView: View {
             .buttonStyle(.glassProminent)
             .tint(Palette.acc)
             .accessibilityIdentifier("cover.done")
-        }
-    }
-
-    @ViewBuilder
-    private var notice: some View {
-        if let notice = viewModel.notice {
-            Text(notice)
-                .font(.system(.subheadline, weight: .semibold))
-                .foregroundStyle(Palette.ink)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 10)
-                .background(Palette.Editor.toast, in: Capsule())
-                .padding(.top, 60)
-                .transition(.toast(reduceMotion: reduceMotion))
-                .task(id: notice) {
-                    try? await Task.sleep(for: .seconds(2.2))
-                    viewModel.notice = nil
-                }
-                .accessibilityIdentifier("cover.notice")
         }
     }
 }

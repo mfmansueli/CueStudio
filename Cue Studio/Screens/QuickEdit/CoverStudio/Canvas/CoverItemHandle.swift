@@ -28,7 +28,7 @@ struct CoverItemHandle: View {
                 .frame(width: box.width, height: box.height)
                 .overlay {
                     if isSelected {
-                        RoundedRectangle(cornerRadius: 4, style: .continuous)
+                        RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
                             .strokeBorder(Palette.acc, lineWidth: 2)
                             .shadow(color: Palette.Editor.overlayOutlineHalo, radius: 1)
                             .allowsHitTesting(false)
@@ -65,7 +65,7 @@ struct CoverItemHandle: View {
     private func knob(_ symbol: String, label: Text, id: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 11, weight: .bold))
+                .font(.editorGlyph(EditorGlyph.small, weight: .bold))
                 .foregroundStyle(Palette.accInk)
                 .frame(width: 24, height: 24)
                 .background(Palette.Editor.overlayOutline, in: Circle())

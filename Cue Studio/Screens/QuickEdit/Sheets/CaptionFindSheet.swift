@@ -72,7 +72,7 @@ struct CaptionFindSheet: View {
     ) -> some View {
         HStack(spacing: 8) {
             Image(systemName: systemImage)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.editorGlyph(EditorGlyph.row, weight: .semibold))
                 .foregroundStyle(Palette.ink2)
                 .accessibilityHidden(true)
             // The prompt in `ink2`, as `SearchField`: `inkHint` is 4.3:1 on the field's fill over the sheet.
@@ -89,7 +89,7 @@ struct CaptionFindSheet: View {
             if !text.wrappedValue.isEmpty {
                 Button { text.wrappedValue = "" } label: {
                     Image(systemName: "xmark.circle.fill")
-                        .font(.system(size: 15))
+                        .font(.editorGlyph(EditorGlyph.button))
                         .foregroundStyle(Palette.ink2)
                         .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                         .contentShape(Rectangle())
@@ -100,9 +100,9 @@ struct CaptionFindSheet: View {
         }
         .padding(.leading, 12)
         .frame(minHeight: Metrics.hitTarget)
-        .background(Palette.fill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .background(Palette.fill, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
         .overlay(
-            RoundedRectangle(cornerRadius: 12, style: .continuous)
+            RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous)
                 .strokeBorder(focused == field ? Palette.acc : Color.clear, lineWidth: 1.5)
         )
     }

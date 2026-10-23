@@ -60,13 +60,13 @@ struct AutoCaptionsPanel: View {
                     .foregroundStyle(Palette.ink2)
                     .lineLimit(1)
                 Image(systemName: "chevron.down")
-                    .font(.system(size: 12, weight: .bold))
+                    .font(.editorGlyph(EditorGlyph.chip, weight: .bold))
                     .foregroundStyle(Palette.ink2)
                     .rotationEffect(.degrees(showsLanguages ? 180 : 0))
             }
             .padding(.horizontal, 14)
             .frame(minHeight: Metrics.hitTarget)
-            .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .editorCard()
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

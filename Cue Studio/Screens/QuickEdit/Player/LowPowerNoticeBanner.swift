@@ -45,7 +45,7 @@ struct LowPowerNoticeBanner: View {
         .padding(.leading, 14)
         .padding(.trailing, 12)
         .padding(.vertical, 12)
-        .background(Palette.Editor.toast, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .background(Palette.Editor.toast, in: RoundedRectangle(cornerRadius: Metrics.editorNoticeRadius, style: .continuous))
         .accessibilityElement(children: .contain)
     }
 }

@@ -151,7 +151,7 @@ struct CaptionsPanel: View {
             viewModel.panel = .captionStyle
         } label: {
             HStack(spacing: 5) {
-                Image(systemName: "textformat").font(.system(size: 12, weight: .bold))
+                Image(systemName: "textformat").font(.editorGlyph(EditorGlyph.chip, weight: .bold))
                 Text("Style").font(.system(.footnote, weight: .bold)).lineLimit(1)
             }
             .foregroundStyle(Palette.chipOnInk)
@@ -171,7 +171,7 @@ struct CaptionsPanel: View {
     ) -> some View {
         Button(action: action) {
             HStack(spacing: 5) {
-                Image(systemName: systemImage).font(.system(size: 12, weight: .semibold))
+                Image(systemName: systemImage).font(.editorGlyph(EditorGlyph.chip, weight: .semibold))
                 Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1)
             }
             .foregroundStyle(tinted ? Palette.accText : Palette.ink)

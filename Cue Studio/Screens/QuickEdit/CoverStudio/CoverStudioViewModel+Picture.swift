@@ -47,13 +47,13 @@ extension CoverStudioViewModel {
             let imported = try await importing.importMedia(item)
             remember(imported: imported.fileName)
             guard imported.kind == .photo else {
-                notice = String(localized: "Pick a photo for the cover")
+                toast.show(String(localized: "Pick a photo for the cover"))
                 return
             }
             setSource(.photo(fileName: imported.fileName))
         } catch {
             EditorFailureReport.make(error, operation: "coverPicture")?.send()
-            notice = EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file"))
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
         }
     }
 
@@ -120,7 +120,8 @@ extension CoverStudioViewModel {
     }
 
     func setSplitLabels(before: String? = nil, after: String? = nil) {
-        changeComposition { composition in
+        // Typed: a quick row of letters is one undo step.
+        changeComposition(key: before != nil ? "cover.beforeLabel" : "cover.afterLabel") { composition in
             if let before { composition.split?.beforeLabel = before }
             if let after { composition.split?.afterLabel = after }
         }

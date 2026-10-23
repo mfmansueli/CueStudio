@@ -47,7 +47,7 @@ struct PanelRulerSlider: View {
                     .frame(width: max(0, abs(fraction - zero) * width), height: 6)
                     .offset(x: min(fraction, zero) * width, y: 32)
                 if bipolar {
-                    RoundedRectangle(cornerRadius: 1, style: .continuous)
+                    RoundedRectangle(cornerRadius: Metrics.editorTickRadius, style: .continuous)
                         .fill(Palette.ink2)
                         .frame(width: 2, height: 16)
                         .offset(x: width * zero - 1, y: 27)

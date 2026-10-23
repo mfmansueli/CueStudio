@@ -52,10 +52,10 @@ struct AddMusicSheet: View {
         Button { picksFile = true } label: {
             HStack(spacing: 12) {
                 Image(systemName: viewModel.isImportingMusic ? "hourglass" : "music.note")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.editorGlyph(EditorGlyph.control, weight: .semibold))
                     .foregroundStyle(Palette.Editor.laneMusicInk)
                     .frame(width: 38, height: 38)
-                    .background(Palette.Editor.laneMusic, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                    .background(Palette.Editor.laneMusic, in: RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous))
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Browse Files")
                         .font(.system(.subheadline, weight: .semibold))
@@ -68,13 +68,13 @@ struct AddMusicSheet: View {
                     ProgressView().tint(Palette.ink)
                 } else {
                     Image(systemName: "plus")
-                        .font(.system(size: 17, weight: .semibold))
+                        .font(.editorGlyph(EditorGlyph.control, weight: .semibold))
                         .foregroundStyle(Palette.accText)
                 }
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .editorCard()
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -146,6 +146,6 @@ struct AddMusicSheet: View {
         }
         .foregroundStyle(Palette.ink)
         .frame(maxHeight: .infinity)
-        .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .editorCard()
     }
 }

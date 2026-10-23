@@ -18,7 +18,7 @@ struct ClipOrderThumbnail: View {
             if let image { Image(uiImage: image).resizable().scaledToFill() }
         }
         .frame(width: 36, height: 64)
-        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+        .clipShape(RoundedRectangle(cornerRadius: Metrics.editorThumbnailRadius, style: .continuous))
         .accessibilityHidden(true)
         .task(id: "\(url.path(percentEncoded: false))-\(time)") {
             image = await thumbnails.frames(for: url, at: [time], tolerance: 0.5).first ?? nil

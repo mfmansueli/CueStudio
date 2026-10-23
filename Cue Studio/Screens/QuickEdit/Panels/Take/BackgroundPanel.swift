@@ -42,7 +42,7 @@ struct BackgroundPanel: View {
     private func scopeNote(_ note: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Image(systemName: viewModel.lookClip == nil ? "film" : "rectangle.split.3x1")
-                .font(.system(size: 13, weight: .semibold))
+                .font(.editorGlyph(EditorGlyph.compact, weight: .semibold))
                 .foregroundStyle(Palette.ink2)
                 .accessibilityHidden(true)
             Text(note)
@@ -132,7 +132,7 @@ struct BackgroundPanel: View {
             }
         }
         .padding(12)
-        .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .editorCard()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("edit.backgroundCutoutCard")
     }

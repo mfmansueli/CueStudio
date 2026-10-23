@@ -27,7 +27,7 @@ struct CoverTitleHandle: View {
                     .frame(width: touch.width, height: touch.height)
                     .overlay {
                         if isSelected {
-                            RoundedRectangle(cornerRadius: 4, style: .continuous)
+                            RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
                                 .strokeBorder(Palette.acc, lineWidth: 2)
                                 .shadow(color: Palette.Editor.overlayOutlineHalo, radius: 1)
                                 .allowsHitTesting(false)

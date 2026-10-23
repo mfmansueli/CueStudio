@@ -38,9 +38,9 @@ struct CoverTemplateStep: View {
                     }
                 }
                 .frame(width: width, height: min(height, 164))
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous))
                 .overlay {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                    RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous)
                         .strokeBorder(isOn ? Palette.acc : Palette.separator, lineWidth: isOn ? 2.5 : 1)
                 }
                 Text(template.label)

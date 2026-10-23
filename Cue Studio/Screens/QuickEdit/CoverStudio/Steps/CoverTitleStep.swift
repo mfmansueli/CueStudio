@@ -86,7 +86,7 @@ struct CoverTitleStep: View {
             }
             group(String(localized: "Line above")) {
                 TextField(String(localized: "EP 03, HOW TO, PART 2…"), text: Binding(
-                    get: { style.kicker }, set: { text in viewModel.updateTitle { $0.kicker = String(text.prefix(24)) } }
+                    get: { style.kicker }, set: { text in viewModel.updateTitle(key: "cover.kicker") { $0.kicker = String(text.prefix(24)) } }
                 ))
                 .font(.system(.callout))
                 .submitLabel(.done)
@@ -175,7 +175,7 @@ struct CoverTitleStep: View {
             content()
         }
         .padding(12)
-        .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .editorCard()
     }
 
     private func gesture(_ editing: Bool) {

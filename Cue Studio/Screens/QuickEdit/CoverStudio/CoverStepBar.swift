@@ -19,7 +19,7 @@ struct CoverStepBar: View {
                     viewModel.step = step
                 } label: {
                     VStack(spacing: 3) {
-                        Image(systemName: step.systemImage).font(.system(size: 17, weight: .semibold))
+                        Image(systemName: step.systemImage).font(.editorGlyph(EditorGlyph.control, weight: .semibold))
                         // With the largest text sizes only the icons: five names never fit, and the panel above names the open step.
                         if !typeSize.isAccessibilitySize {
                             Text(step.label).font(.system(.caption2, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.7)

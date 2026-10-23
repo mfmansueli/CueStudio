@@ -18,7 +18,7 @@ struct PanelCompareButton: View {
 
     var body: some View {
         Image(systemName: "circle.lefthalf.filled")
-            .font(.system(size: 17, weight: .semibold))
+            .font(.editorGlyph(EditorGlyph.control, weight: .semibold))
             .foregroundStyle(compare.isOn ? Palette.accInk : Palette.ink)
             .frame(width: Metrics.applyButtonSize, height: Metrics.applyButtonSize)
             .background(compare.isOn ? Palette.acc : Palette.fill, in: Circle())

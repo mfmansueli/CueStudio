@@ -114,7 +114,7 @@ struct TextStylePanel: View {
         .submitLabel(.done)
         .padding(.horizontal, 14)
         .frame(minHeight: Metrics.buttonHeight)
-        .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
         .accessibilityIdentifier("edit.textField")
     }
 

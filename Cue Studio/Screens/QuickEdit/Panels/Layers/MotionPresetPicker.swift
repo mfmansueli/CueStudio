@@ -46,15 +46,12 @@ struct MotionPresetPicker: View {
     private func tile(_ preset: MotionPreset?, label: String, systemImage: String, isOn: Bool) -> some View {
         Button { viewModel.setMotionPreset(preset) } label: {
             VStack(spacing: 6) {
-                Image(systemName: systemImage).font(.system(size: 18, weight: .semibold))
+                Image(systemName: systemImage).font(.editorGlyph(EditorGlyph.tool, weight: .semibold))
                 Text(label).font(.system(.caption, weight: .semibold)).lineLimit(2).multilineTextAlignment(.center).minimumScaleFactor(0.8)
             }
             .foregroundStyle(isOn ? Palette.accText : Palette.ink)
             .frame(width: 76, height: 70)
-            .background(isOn ? Palette.Editor.accTile : Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .overlay {
-                if isOn { RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Palette.acc, lineWidth: 2) }
-            }
+            .editorCard(isOn ? .picked : .plain)
             .contentShape(Rectangle())
         }
         .buttonStyle(.cuePressCard)

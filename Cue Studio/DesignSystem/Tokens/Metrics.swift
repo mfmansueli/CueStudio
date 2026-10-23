@@ -65,6 +65,28 @@ enum Metrics {
     static let editorPreviewRadius: CGFloat = 6
     /// The ✓ that applies and closes a panel.
     static let applyButtonSize: CGFloat = 40
+    /// The cards in the panels and sheets (`editorCard`), Cover Studio's included.
+    static let editorCardRadius: CGFloat = 14
+    /// The accent ring of a picked or marked card.
+    static let editorCardRing: CGFloat = 1.5
+    /// What sits inside a card or a list: a thumbnail, a small field, a filter's picture.
+    static let editorInsetRadius: CGFloat = 10
+    /// The inner pill of a segmented control or a stepper, inside a `fieldRadius` track.
+    static let editorSegmentRadius: CGFloat = 9
+    /// A small strip or bar inside a panel (a trim strip, a placeholder line).
+    static let editorStripRadius: CGFloat = 8
+    /// A thumbnail in a list (a clip to reorder, a word picked in Edit by text).
+    static let editorThumbnailRadius: CGFloat = 6
+    /// A mark on the timeline drawn by hand (a pause to remove).
+    static let editorMarkRadius: CGFloat = 5
+    /// The frame and handles around what is picked on the preview or the cover.
+    static let editorHandleRadius: CGFloat = 4
+    /// A slider's tick.
+    static let editorTickRadius: CGFloat = 1
+    /// The editor's toasts and notices over the preview (a line, two when a language needs them).
+    static let editorNoticeRadius: CGFloat = 17
+    /// The corners of a record button's stop square.
+    static let recordStopRadius: CGFloat = 7
 
     // MARK: - v29
 

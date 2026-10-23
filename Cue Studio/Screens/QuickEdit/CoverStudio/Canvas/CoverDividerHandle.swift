@@ -17,7 +17,7 @@ struct CoverDividerHandle: View {
         Capsule()
             .fill(Palette.Editor.overlayOutline)
             .frame(width: 22, height: 56)
-            .overlay(Image(systemName: "arrow.left.and.right").font(.system(size: 11, weight: .bold)).foregroundStyle(Palette.accInk))
+            .overlay(Image(systemName: "arrow.left.and.right").font(.editorGlyph(EditorGlyph.small, weight: .bold)).foregroundStyle(Palette.accInk))
             .shadow(color: Palette.Editor.overlayOutlineHalo, radius: 2)
             .frame(width: Metrics.hitTarget, height: CoverStudioViewModel.dividerKnobHeight)
             .contentShape(Rectangle())

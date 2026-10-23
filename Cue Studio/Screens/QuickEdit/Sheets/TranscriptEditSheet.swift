@@ -43,16 +43,19 @@ struct TranscriptEditSheet: View {
                     let isEnd = picked.map { $0.upperBound == index && $0.lowerBound != index } ?? false
                     Button { viewModel.tapTranscriptWord(at: index) } label: {
                         HStack(spacing: 3) {
-                            if isStart { Image(systemName: "arrow.right.to.line").font(.system(size: 11, weight: .bold)) }
+                            if isStart { Image(systemName: "arrow.right.to.line").font(.editorGlyph(EditorGlyph.small, weight: .bold)) }
                             Text(word.text)
-                            if isEnd { Image(systemName: "arrow.left.to.line").font(.system(size: 11, weight: .bold)) }
+                            if isEnd { Image(systemName: "arrow.left.to.line").font(.editorGlyph(EditorGlyph.small, weight: .bold)) }
                         }
                             .font(.system(.body, weight: isPicked ? .semibold : .regular))
                             .strikethrough(word.isRemoved, color: Palette.ink2)
                             .foregroundStyle(isPicked ? Palette.accInk : (word.isRemoved ? Palette.ink2 : Palette.ink))
                             .padding(.horizontal, 5)
                             .padding(.vertical, 3)
-                            .background(isPicked ? Palette.acc : Color.clear, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
+                            .background(
+                                isPicked ? Palette.acc : Color.clear,
+                                in: RoundedRectangle(cornerRadius: Metrics.editorThumbnailRadius, style: .continuous)
+                            )
                             // Each word is a 44 pt target (HIG), rows touching.
                             .frame(minHeight: Metrics.hitTarget)
                             .contentShape(Rectangle())

@@ -69,7 +69,7 @@ struct OverlayEditingLayer: View {
     @ViewBuilder
     private var dragGuides: some View {
         let safe = viewModel.safeArea(in: size)
-        RoundedRectangle(cornerRadius: 6, style: .continuous)
+        RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
             .strokeBorder(Palette.Camera.safeZoneLine, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
             .frame(width: safe.width, height: safe.height)
             .offset(x: safe.minX, y: safe.minY)
@@ -120,7 +120,7 @@ struct OverlayEditingLayer: View {
                 .accessibilityActions { placingActions(.text(text.id)) }
                 .accessibilityIdentifier("edit.textHandle")
             if isSelected {
-                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
                     .strokeBorder(Palette.acc, lineWidth: 2)
                     .frame(width: rect.width * scale + 10, height: rect.height * scale + 10)
                     .allowsHitTesting(false)
@@ -153,7 +153,7 @@ struct OverlayEditingLayer: View {
     private func cornerButton(_ symbol: String, label: Text, id: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 11, weight: .bold))
+                .font(.editorGlyph(EditorGlyph.small, weight: .bold))
                 .foregroundStyle(Color.black)
                 .frame(width: 24, height: 24)
                 .background(Color.white, in: Circle())
@@ -234,7 +234,7 @@ struct OverlayEditingLayer: View {
                 .onTapGesture { viewModel.tapCaption(id) }
                 .gesture(captionGesture(id))
             if isSelected || draggedY != nil {
-                RoundedRectangle(cornerRadius: 4, style: .continuous)
+                RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
                     .strokeBorder(Palette.acc, lineWidth: 2)
                     .frame(width: frame.width + 8, height: frame.height + 8)
                     .allowsHitTesting(false)
@@ -284,7 +284,7 @@ struct OverlayEditingLayer: View {
                     .clipped()
                     .allowsHitTesting(false)
             }
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
+            RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
                 .strokeBorder(isSelected ? Palette.acc : Palette.Editor.overlayOutline, style: StrokeStyle(lineWidth: 2, dash: isSelected ? [] : [5, 4]))
                 .shadow(color: Palette.Editor.overlayOutlineHalo, radius: 1.5)
                 .frame(width: rect.width * scale, height: rect.height * scale)

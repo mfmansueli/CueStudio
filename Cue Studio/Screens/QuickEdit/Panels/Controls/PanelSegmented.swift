@@ -37,7 +37,7 @@ struct PanelSegmented<Value: Hashable>: View {
                 }
             }
             .padding(.horizontal, 3)
-            .background(Palette.fill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(Palette.fill, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
         }
     }
 
@@ -56,7 +56,7 @@ struct PanelSegmented<Value: Hashable>: View {
                 .frame(maxWidth: .infinity, minHeight: height)
                 .background(
                     isOn ? (accent ? Palette.acc : Palette.segmentOn) : .clear,
-                    in: RoundedRectangle(cornerRadius: 9, style: .continuous)
+                    in: RoundedRectangle(cornerRadius: Metrics.editorSegmentRadius, style: .continuous)
                 )
                 // Each choice is reached from the whole height of the well: 44 pt.
                 .padding(.vertical, max(3, (Metrics.hitTarget - height) / 2))

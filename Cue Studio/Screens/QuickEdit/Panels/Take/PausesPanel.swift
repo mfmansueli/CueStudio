@@ -48,7 +48,7 @@ struct PausesPanel: View {
                 Text("Listening for pauses…").font(.system(.subheadline, weight: .semibold))
             }
             .frame(maxWidth: .infinity, minHeight: 92)
-            .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .editorCard()
             .accessibilityIdentifier("edit.pauses.listening")
         case .failed:
             VStack(spacing: 8) {
@@ -59,7 +59,7 @@ struct PausesPanel: View {
                     .frame(minHeight: Metrics.hitTarget)
             }
             .frame(maxWidth: .infinity, minHeight: 92)
-            .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .editorCard()
         case .done:
             if viewModel.pauseCandidates.isEmpty {
                 VStack(spacing: 4) {
@@ -67,7 +67,7 @@ struct PausesPanel: View {
                     Text("Your take flows. Try a shorter length.").font(.system(.footnote)).foregroundStyle(Palette.ink2)
                 }
                 .frame(maxWidth: .infinity, minHeight: 92)
-                .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .editorCard()
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("edit.pauses.empty")
             } else {

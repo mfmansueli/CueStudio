@@ -41,7 +41,7 @@ struct EditorPlayerBar: View {
                 Button(action: viewModel.togglePlayback) {
                     Image(systemName: isPlaying ? "pause.fill" : "play.fill")
                         .symbolSwap(value: isPlaying)
-                        .font(.system(size: 22))
+                        .font(.editorGlyph(EditorGlyph.player))
                         .foregroundStyle(Palette.ink)
                         .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                         .contentShape(Rectangle())
@@ -68,7 +68,7 @@ struct EditorPlayerBar: View {
     private func frameStep(_ direction: Int) -> some View {
         Button { viewModel.stepFrame(direction) } label: {
             Image(systemName: direction < 0 ? "chevron.left" : "chevron.right")
-                .font(.system(size: 15, weight: .semibold))
+                .font(.editorGlyph(EditorGlyph.button, weight: .semibold))
                 .foregroundStyle(Palette.ink)
                 .opacity(viewModel.isReady ? 1 : Metrics.disabledOpacity)
                 .frame(width: 34, height: Metrics.hitTarget)
@@ -93,7 +93,7 @@ struct EditorPlayerBar: View {
     private func iconButton(_ systemImage: String, label: Text, id: String, enabled: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: systemImage)
-                .font(.system(size: 18, weight: .medium))
+                .font(.editorGlyph(EditorGlyph.tool, weight: .medium))
                 .foregroundStyle(Palette.ink)
                 .opacity(enabled ? 1 : Metrics.disabledOpacity)
                 .frame(width: 40, height: Metrics.hitTarget)

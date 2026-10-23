@@ -20,7 +20,7 @@ struct CoverFinishStep: View {
                     ForEach(CoverEffect.allCases) { effect in
                         let needsPerson = effect.needsPersonMask && viewModel.personFound == false
                         PanelGlyphTile(
-                            glyph: effect.glyph, glyphFont: .system(size: 18, weight: .heavy, design: .monospaced), title: effect.label,
+                            glyph: effect.glyph, glyphFont: .editorGlyph(EditorGlyph.tool, weight: .heavy, design: .monospaced), title: effect.label,
                             caption: needsPerson ? String(localized: "No person found") : effect.purpose,
                             captionTint: needsPerson ? Palette.warnText : Palette.ink2,
                             isOn: viewModel.composition.effect == effect, width: 98, identifier: "cover.effect.\(effect.rawValue)"
