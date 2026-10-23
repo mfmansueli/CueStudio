@@ -184,12 +184,15 @@ struct QuickEditPreview: View {
         DragGesture()
             .onChanged { value in
                 let start = dragStartOffset ?? viewModel.edit.cropOffset
-                if dragStartOffset == nil { viewModel.cropMovedByHand() }
+                if dragStartOffset == nil { viewModel.beginCropMove() }
                 dragStartOffset = start
                 let wide = viewModel.edit.aspect.widthOverHeight > 9.0 / 16.0
                 let travel = wide ? value.translation.width / max(1, size.width) : value.translation.height / max(1, size.height)
-                viewModel.edit.cropOffset = min(1, max(-1, start - Double(travel) * 2))
+                viewModel.moveCrop(to: start - Double(travel) * 2)
             }
-            .onEnded { _ in dragStartOffset = nil }
+            .onEnded { _ in
+                dragStartOffset = nil
+                viewModel.endChange()
+            }
     }
 }

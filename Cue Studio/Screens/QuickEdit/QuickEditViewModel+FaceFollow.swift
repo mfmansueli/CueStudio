@@ -25,20 +25,27 @@ extension QuickEditViewModel {
 
     func setFollowsFace(_ follows: Bool) {
         guard follows != (edit.faceFollow != nil) else { return }
-        changeLook { $0.faceFollow = follows ? FaceFollow() : nil }
+        changeEdit { $0.faceFollow = follows ? FaceFollow() : nil }
         if follows { requestMotionAnalysis() }
     }
 
     func setFollowPace(_ pace: FollowPace) {
         guard edit.faceFollow != nil, edit.faceFollow?.pace != pace else { return }
-        changeLook { $0.faceFollow = FaceFollow(pace: pace) }
+        changeEdit { $0.faceFollow = FaceFollow(pace: pace) }
     }
 
-    /// The crop was moved by hand: following the face would undo it, so it stops (once, with a word).
-    func cropMovedByHand() {
+    /// A finger starts moving the frame on the preview: the whole drag is one undo step (`moveCrop(to:)`, `endChange`), and
+    /// following the face would undo it, so it stops (once, with a word).
+    func beginCropMove() {
+        beginChange()
         guard edit.faceFollow != nil else { return }
-        edit.faceFollow = nil
+        changeEdit { $0.faceFollow = nil }
         toast.show(String(localized: "Follow face is off · You moved the frame"))
+    }
+
+    /// Where the dragged frame sits, -1 (top or left) to 1 (bottom or right).
+    func moveCrop(to offset: Double) {
+        changeEdit { $0.cropOffset = min(1, max(-1, offset)) }
     }
 
     /// The line under Follow face: why it can't, how far the analysis is, or that no face was found.

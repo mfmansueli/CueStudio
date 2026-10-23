@@ -33,7 +33,7 @@ struct QuickEditTranscriptEditTests {
         let words = Self.said.enumerated().map { index, text in
             CaptionWord(text: text, start: Double(index) * 0.5, end: Double(index) * 0.5 + 0.35)
         }
-        viewModel.edit.captionTranscript = CaptionTranscript(words: words, languageCode: "en")
+        viewModel.updateFindings { $0.captionTranscript = CaptionTranscript(words: words, languageCode: "en") }
         viewModel.change { $0.captions = [CaptionCue(words: words)] }
         return (viewModel, player)
     }
@@ -125,7 +125,7 @@ struct QuickEditTranscriptEditTests {
         theirs.sourceID = other
         next.sourceTranscripts = [theirs]
         viewModel.commit(EditSnapshot(next))
-        viewModel.edit.sourceTranscripts = [theirs]
+        viewModel.updateFindings { $0.sourceTranscripts = [theirs] }
         let words = viewModel.transcriptWords
         let hello = try #require(words.firstIndex { $0.text == "Hello" })
         viewModel.tapTranscriptWord(at: hello)
@@ -364,7 +364,7 @@ struct QuickEditAuditFixTests {
         let words = Self.said.enumerated().map { index, text in
             CaptionWord(text: text, start: Double(index) * 0.5, end: Double(index) * 0.5 + 0.35)
         }
-        viewModel.edit.captionTranscript = CaptionTranscript(words: words, languageCode: "en")
+        viewModel.updateFindings { $0.captionTranscript = CaptionTranscript(words: words, languageCode: "en") }
         viewModel.change { $0.captions = [CaptionCue(words: words)] }
         viewModel.duplicateSection(viewModel.edit.timeline.segments[0].id)
         #expect(abs(viewModel.edit.editedDuration - 20) < 0.000_1)
@@ -401,7 +401,7 @@ struct QuickEditAuditFixTests {
         let words = Self.said.enumerated().map { index, text in
             CaptionWord(text: text, start: Double(index) * 0.5, end: Double(index) * 0.5 + 0.35)
         }
-        viewModel.edit.captionTranscript = CaptionTranscript(words: words, languageCode: "en")
+        viewModel.updateFindings { $0.captionTranscript = CaptionTranscript(words: words, languageCode: "en") }
         viewModel.change { $0.captions = [CaptionCue(words: words)] }
         viewModel.tapTranscriptWord(at: 2)
         viewModel.tapTranscriptWord(at: 4)

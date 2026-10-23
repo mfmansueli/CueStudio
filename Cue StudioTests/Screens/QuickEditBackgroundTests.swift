@@ -60,10 +60,10 @@ struct QuickEditBackgroundTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let source = ClipSource(fileName: "walk.mov", duration: 10, title: "Walk")
-        var changed = viewModel.edit
-        changed.sources = [source]
-        changed.timeline.insertClip(source: source.id, duration: 10)
-        viewModel.edit = changed
+        viewModel.changeEdit {
+            $0.sources = [source]
+            $0.timeline.insertClip(source: source.id, duration: 10)
+        }
         scenario.player.currentTime = 70
         #expect(viewModel.backgroundSourceID == source.id)
         viewModel.setBackgroundCutout(.colorKey)

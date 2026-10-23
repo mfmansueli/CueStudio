@@ -111,7 +111,7 @@ extension QuickEditViewModel {
                 $0.autoAmount = 1
             }
         } else {
-            changeLook(key: "auto") {
+            changeEdit(key: "auto") {
                 $0.autoCorrection = correction
                 $0.autoAmount = 1
             }
@@ -127,7 +127,7 @@ extension QuickEditViewModel {
         if lookClip != nil {
             updateClipLook(key: "auto.amount") { $0.autoAmount = amount }
         } else {
-            changeLook(key: "auto.amount") { $0.autoAmount = amount }
+            changeEdit(key: "auto.amount") { $0.autoAmount = amount }
         }
     }
 
@@ -137,7 +137,7 @@ extension QuickEditViewModel {
         if lookClip != nil {
             updateClipLook { $0.removeAuto() }
         } else {
-            changeLook {
+            changeEdit {
                 $0.autoCorrection = nil
                 $0.autoAmount = 1
             }

@@ -90,7 +90,7 @@ extension QuickEditViewModel {
     private var voiceReset: (() -> Void)? {
         guard edit.voiceEnhancement != .soft || edit.noiseReduction != .off else { return nil }
         return { [weak self] in
-            self?.changeLook {
+            self?.changeEdit {
                 $0.audioVersion = VoiceProcessing.currentVersion
                 $0.voiceEnhancement = .soft
                 $0.noiseReduction = .off

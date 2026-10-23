@@ -32,14 +32,14 @@ struct QuickEditMyCaptionStyleTests {
     @Test func savedOnceItGoesOnAnotherVideoInOneUndoStep() async {
         let styles = FakeTextStyleStore()
         let first = await makeViewModel(styles: styles)
-        first.edit.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
+        first.changeEdit { $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)] }
         first.pickCaptionTheme(.pop)
         first.saveMyCaptionStyle()
         #expect(styles.myCaptionStyle?.settings.theme == .pop)
         #expect(first.captionsWearMyStyle)
 
         let second = await makeViewModel(styles: styles)
-        second.edit.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
+        second.changeEdit { $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)] }
         let margins = second.edit.captionCollection?.safeMargins
         #expect(!second.captionsWearMyStyle)
         second.applyMyCaptionStyle()

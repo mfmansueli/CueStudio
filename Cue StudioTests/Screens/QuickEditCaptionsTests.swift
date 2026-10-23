@@ -281,7 +281,7 @@ struct QuickEditCaptionsTests {
         viewModel.makeCaptions(replacingRevised: true)
         await finish(viewModel)
         #expect(editor.captionRequests == 1)
-        viewModel.edit.captionTranscript?.version = nil
+        viewModel.updateFindings { $0.captionTranscript?.version = nil }
         viewModel.makeCaptions(replacingRevised: true)
         await finish(viewModel)
         #expect(editor.captionRequests == 2)

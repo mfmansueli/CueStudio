@@ -63,10 +63,12 @@ struct QuickEditEdgeCaseTests {
 
     @Test func deletingEveryCaptionLeavesAnEmptyListThatCanBeRemade() async {
         let (viewModel, _) = await makeViewModel(seconds: 20)
-        viewModel.edit.captions = [
-            CaptionCue(text: "One", start: 0, end: 2), CaptionCue(text: "Two", start: 2, end: 4),
-        ]
-        viewModel.edit.showsCaptions = true
+        viewModel.changeEdit {
+            $0.captions = [
+                CaptionCue(text: "One", start: 0, end: 2), CaptionCue(text: "Two", start: 2, end: 4),
+            ]
+            $0.showsCaptions = true
+        }
         for line in viewModel.captionListLines { viewModel.deleteCaptionLine(line.cueID) }
         #expect(viewModel.edit.captions.isEmpty)
         #expect(viewModel.captionListLines.isEmpty)

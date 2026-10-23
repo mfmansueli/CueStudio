@@ -114,16 +114,16 @@ struct QuickEditToolbarTests {
         #expect(viewModel.toolbarContextLabel == "Text")
         #expect(ids(viewModel) == ["editText", "style", "animation", "keyframe", "track", "duplicate", "lock", "delete"])
         let line = CaptionCue(text: "Massa fina, muito recheio", start: 12.4, end: 14.6, origin: .manual)
-        viewModel.edit.captions = [line]
+        viewModel.changeEdit { $0.captions = [line] }
         viewModel.selection = .caption(line.id)
         #expect(viewModel.toolbarContextLabel == "Caption")
         #expect(ids(viewModel) == ["editCaption", "split", "join", "style", "delete"])
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
-        viewModel.edit.music = [music]
+        viewModel.changeEdit { $0.music = [music] }
         viewModel.selection = .music(music.id)
         #expect(ids(viewModel) == ["volume", "beats", "replace", "lock", "delete"])
         let voice = VoiceOverClip(fileName: "v.m4a", duration: 2, anchor: 1)
-        viewModel.edit.voiceOvers = [voice]
+        viewModel.changeEdit { $0.voiceOvers = [voice] }
         viewModel.selection = .voiceOver(voice.id)
         #expect(ids(viewModel) == ["volume", "reRecord", "lock", "delete"])
     }
@@ -144,7 +144,7 @@ struct QuickEditToolbarTests {
     @Test func aPickedMediaCanBeDuplicatedFromItsTools() async throws {
         let viewModel = await makeScenario().viewModel
         let media = MediaOverlay(kind: .photo, fileName: "p.jpg", aspect: 1, mediaDuration: nil, span: TimeSpan(start: 2, end: 5))
-        viewModel.edit.media = [media]
+        viewModel.changeEdit { $0.media = [media] }
         viewModel.selection = .media(media.id)
         #expect(ids(viewModel) == ["editMedia", "track", "duplicate", "replaceMedia", "lock", "delete"])
         viewModel.perform(.duplicateMedia)
@@ -209,7 +209,7 @@ struct QuickEditToolbarTests {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.openCaptions)
         #expect(viewModel.panel == .autoCaptions)
-        viewModel.edit.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
+        viewModel.changeEdit { $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)] }
         viewModel.perform(.openCaptions)
         #expect(viewModel.panel == .captions)
     }
@@ -221,7 +221,7 @@ struct QuickEditToolbarTests {
         #expect(viewModel.musicReplacementID == nil)
         viewModel.sheet = nil
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
-        viewModel.edit.music = [music]
+        viewModel.changeEdit { $0.music = [music] }
         viewModel.perform(.openMusic)
         #expect(viewModel.sheet == .music)
         #expect(viewModel.selection == nil)
@@ -230,7 +230,7 @@ struct QuickEditToolbarTests {
     @Test func replaceAsksForAFileForThePickedClipOnly() async {
         let viewModel = await makeScenario().viewModel
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
-        viewModel.edit.music = [music]
+        viewModel.changeEdit { $0.music = [music] }
         viewModel.selection = .music(music.id)
         viewModel.perform(.replaceMusic)
         #expect(viewModel.sheet == .music)
@@ -244,7 +244,7 @@ struct QuickEditToolbarTests {
         viewModel.perform(.openMenu(.captions))
         #expect(viewModel.toolbarContextLabel == "Captions")
         #expect(ids(viewModel) == ["autoCaptions", "writeCaptions", "editByText"])
-        viewModel.edit.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
+        viewModel.changeEdit { $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)] }
         #expect(ids(viewModel) == ["addLine", "allLines", "style", "findReplace", "editByText", "deleteAll"])
         #expect(viewModel.toolbarItems.last?.action == .deleteAllCaptions)
         #expect(viewModel.toolbarItems.last?.isPinned == true)
@@ -408,7 +408,7 @@ struct QuickEditToolbarTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let line = CaptionCue(text: "Massa fina, muito recheio", start: 12.4, end: 14.6, origin: .manual)
-        viewModel.edit.captions = [line]
+        viewModel.changeEdit { $0.captions = [line] }
         viewModel.selection = .caption(line.id)
         scenario.player.seek(to: 13.5)
         viewModel.perform(.splitCaption)
@@ -423,7 +423,7 @@ struct QuickEditToolbarTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let line = CaptionCue(text: "Segue pra ver os outros quatro.", start: 17.8, end: 20.6, origin: .manual)
-        viewModel.edit.captions = [line]
+        viewModel.changeEdit { $0.captions = [line] }
         viewModel.selection = .caption(line.id)
         viewModel.perform(.joinCaption)
         #expect(scenario.toast.message == "This is the last line")
@@ -433,7 +433,7 @@ struct QuickEditToolbarTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let voice = VoiceOverClip(fileName: "v.m4a", duration: 2, anchor: 4)
-        viewModel.edit.voiceOvers = [voice]
+        viewModel.changeEdit { $0.voiceOvers = [voice] }
         viewModel.selection = .voiceOver(voice.id)
         scenario.player.seek(to: 12)
         viewModel.perform(.reRecordVoiceOver)

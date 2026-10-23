@@ -6,7 +6,8 @@
 import Foundation
 
 /// Lock (Edits' clip lock): a text, photo or video, music or voice-over lined up where it belongs is locked in place on the
-/// timeline, so a drag meant for something else can't move or trim it. It is still picked, styled and deleted on purpose.
+/// timeline, so a drag meant for something else can't move or trim it. It is still picked, styled and deleted on purpose, and
+/// locking is an undo step.
 extension QuickEditViewModel {
     /// The layer the toolbar's Lock works on.
     private var lockableID: UUID? {
@@ -21,10 +22,10 @@ extension QuickEditViewModel {
     func toggleLockOfSelection() {
         guard let id = lockableID else { return }
         if edit.lockedLayers.contains(id) {
-            edit.lockedLayers.remove(id)
+            changeEdit { $0.lockedLayers.remove(id) }
             toast.show(String(localized: "Unlocked · It moves and trims again"))
         } else {
-            edit.lockedLayers.insert(id)
+            changeEdit { $0.lockedLayers.insert(id) }
             toast.show(String(localized: "Locked in place on the timeline"))
         }
         Haptics.selection()

@@ -100,7 +100,9 @@ final class QuickEditViewModel {
     var focusesTextField = false
     /// The picked caption line's field takes the keyboard (a line was just added).
     var focusesCaptionField = false
-    var edit: TakeEdit {
+    /// The recipe being edited. It changes only here: as an undo step (`changeEdit`, `change`, `commit`), by Undo and Redo
+    /// (`restore`), or with what listening found (`updateFindings`).
+    private(set) var edit: TakeEdit {
         didSet {
             // Edit by text picks words by their place in the list, which any change of the cuts moves (the sheet lets the
             // timeline be used behind it).
@@ -164,7 +166,7 @@ final class QuickEditViewModel {
     /// edit).
     var pauseThreshold: TimeInterval {
         get { edit.pauseThreshold }
-        set { changeLook(key: "pauseThreshold") { $0.pauseThreshold = newValue } }
+        set { changeEdit(key: "pauseThreshold") { $0.pauseThreshold = newValue } }
     }
     /// Pauses, filler words and retakes marked differently from their default while Pauses is
     /// open (by default pauses and sure words are marked to go).
@@ -577,6 +579,33 @@ final class QuickEditViewModel {
         var next = snapshot
         update(&next)
         commit(next, key: key)
+    }
+
+    /// Changes anything the creator decides on the edit (light, frame, sound, captions shown, what is locked…) as one undo
+    /// step; with a `key`, quick changes of the same kind join one step. What listening found isn't the creator's to change
+    /// here (`updateFindings`).
+    func changeEdit(key: String? = nil, _ update: (inout TakeEdit) -> Void) {
+        var changed = edit
+        update(&changed)
+        assert(Self.findings(of: changed) == Self.findings(of: edit), "What listening found changes with updateFindings")
+        commit(EditSnapshot(changed), key: key)
+    }
+
+    /// Puts what listening found on the edit (transcripts, Clean Up's suggestions, which recordings were heard): never an
+    /// undo step, and Undo leaves it (`restore` keeps new suggestions waiting for review). Everything the creator decides
+    /// stays as it is.
+    func updateFindings(_ update: (inout TakeEdit) -> Void) {
+        var changed = edit
+        update(&changed)
+        var decided = EditSnapshot(changed)
+        decided.suggestions = snapshot.suggestions
+        assert(decided == snapshot, "A decision of the creator changes with changeEdit, as an undo step")
+        edit = changed
+    }
+
+    /// What listening found: the part of the edit no undo step keeps.
+    private static func findings(of edit: TakeEdit) -> [AnyHashable] {
+        [edit.cleanUpAnalyzed, edit.cleanUpAnalyzedSources, edit.captionTranscript, edit.sourceTranscripts]
     }
 
     /// A gesture or a sheet starts changing something, maybe many times: all of it is one undo
