@@ -812,7 +812,8 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`). Em tamanhos de acessibilidade só as abas ficam fixas: o campo rola com o resto
   e os controles da aba vêm antes de "Style applies to". Cores (`PanelSwatches`) de 34 pt, segmentos de 38 pt.
 - **Digitando** (teclado no campo): só cabeçalho, campo e abas sobre o teclado (`EditorLayout.typingPanelHeight`, 180 pt); o vídeo fica com o resto
-  e mostra o texto mudando. Tocar numa aba guarda o teclado e mostra os controles dela (como no CapCut).
+  e mostra o texto mudando. Tocar numa aba guarda o teclado e mostra os controles dela (como no CapCut). Com texto grande (xxLarge ou
+  mais) isso não caberia: os controles ficam e rolam sobre o teclado (`TextStylePanel.hidesControlsWhileTyping`).
 - **Presets do Caption style em grade** (colunas de 104 pt: três por linha no iPhone), todos à vista, sem rolar de lado.
 - **Escopo só do visual:** "Style applies to" **This title | All texts · N** só em Presets, Font e Color ("Words, timing and motion stay with each text.");
   em Motion: "Motion and timing change only this text".

@@ -47,7 +47,7 @@ struct TextStylePanel: View {
                 }
             } content: {
                 if isLarge { field(text) }
-                if !typing || isLarge { lookControls(text, tab: tab, isLarge: isLarge) }
+                if !typing || !Self.hidesControlsWhileTyping(typeSize) { lookControls(text, tab: tab, isLarge: isLarge) }
             }
             .task {
                 guard frame == nil else { return }
@@ -88,6 +88,12 @@ struct TextStylePanel: View {
 
     /// The words are being typed (the keyboard is up for the field).
     private var typing: Bool { writes }
+
+    /// While typing, only the field and the tabs show (`EditorLayout.typingPanelHeight`). With large text they wouldn't fit that
+    /// room, so the controls stay and scroll over the keyboard as before.
+    static func hidesControlsWhileTyping(_ typeSize: DynamicTypeSize) -> Bool {
+        typeSize < .xxLarge
+    }
 
     private func focusIfAsked() {
         guard viewModel.focusesTextField else { return }

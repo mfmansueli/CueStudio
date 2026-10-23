@@ -215,6 +215,7 @@ struct QuickEditView: View {
             largeText: dynamicTypeSize >= .xxLarge,
             panelIsExpanded: viewModel.stylePanelIsExpanded && viewModel.panel?.isExpandable == true,
             typesInHeaderField: viewModel.panel == .textStyle && viewModel.selectedText?.graphic == nil
+                && TextStylePanel.hidesControlsWhileTyping(dynamicTypeSize)
         )
     }
 
