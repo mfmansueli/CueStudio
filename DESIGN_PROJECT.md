@@ -1565,4 +1565,3 @@ O editor por dentro, para milhares de criadores: nada se perde, nada some, nada 
 - **Ainda não feito (Fases B e C):** documento de edição separado, seleção única com transições, `EditorJobs`, pipeline compartilhado com a capa, uma
   requisição de render com testes de paridade, registro de versões de leitura, divisão do `QuickEditViewModel`, `RenderPlan`, reuso das camadas da
   timeline, e os itens de vídeos longos.
-
