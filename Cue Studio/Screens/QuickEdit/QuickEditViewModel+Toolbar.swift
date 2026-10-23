@@ -317,10 +317,10 @@ extension QuickEditViewModel {
         case .splitClip: splitClip()
         case .duplicateClip: selection?.clipID.map(duplicateClip)
         case .reorderClips: openClipOrder()
-        case .freezeFrame: Task { await freezeFrame() }
-        case .reverseClip: Task { await reverseClip() }
+        case .freezeFrame: startJob { await self.freezeFrame() }
+        case .reverseClip: startJob { await self.reverseClip() }
         case .replaceClip: askToReplaceClip()
-        case .extractAudio: Task { await extractAudio() }
+        case .extractAudio: startJob { await self.extractAudio() }
         case .copyLook: copyClipLook()
         case .pasteLook: askToPasteLook()
         case .deleteClip: selection?.clipID.map(deleteClip)

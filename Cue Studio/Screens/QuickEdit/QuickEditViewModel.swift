@@ -316,6 +316,8 @@ final class QuickEditViewModel {
     /// A short part playing to show a change (a zoom, a reveal, a pause heard).
     @ObservationIgnored var previewTask: Task<Void, Never>?
     @ObservationIgnored private var draftTask: Task<Void, Never>?
+    /// Work started from a tool that the editor waits for (`startJob`).
+    @ObservationIgnored private var jobs: [UUID: Task<Void, Never>] = [:]
     @ObservationIgnored private(set) var isClosed = false
 
     init(
@@ -748,6 +750,8 @@ final class QuickEditViewModel {
         EditMediaFiles.remove(unused)
     }
 
+    /// Nothing started here outlives the editor: every task is cancelled, and what a slow one hands back after is dropped
+    /// (each checks `isClosed` after its await).
     private func close(keepingDraft: Bool) {
         isClosed = true
         draftTask?.cancel()
@@ -757,8 +761,23 @@ final class QuickEditViewModel {
         cancelAuto()
         trackingTask?.cancel()
         trackingTask = nil
+        previewTask?.cancel()
+        comparisonTask?.cancel()
+        translationRequest = nil
+        for job in jobs.values { job.cancel() }
+        jobs = [:]
         if !keepingDraft { drafts.discard(takeID: take.id) }
         player.stop()
+    }
+
+    /// Starts work a tool waits for (a freeze frame, a reverse, a sound pulled out): leaving the editor cancels it.
+    func startJob(_ work: @escaping @MainActor () async -> Void) {
+        guard !isClosed else { return }
+        let id = UUID()
+        jobs[id] = Task { [weak self] in
+            await work()
+            self?.jobs[id] = nil
+        }
     }
 
     // MARK: - Draft

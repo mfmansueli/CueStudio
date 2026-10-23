@@ -59,7 +59,8 @@ extension QuickEditViewModel {
     private func sayAfterSheet(_ message: String) {
         Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(350))
-            self?.toast.show(message)
+            guard let self, !isClosed else { return }
+            toast.show(message)
         }
     }
 

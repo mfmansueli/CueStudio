@@ -92,6 +92,7 @@ extension QuickEditViewModel {
         let file = takes.videoURL(for: take)
         do {
             let duration = try await editing.sourceDuration(ofVideoAt: file)
+            guard !isClosed else { return }
             let name = try EditMediaFiles.link(file)
             importedFiles.insert(name)
             let title = String(localized: "\(take.scriptTitle) · Take \(take.number)")
@@ -110,6 +111,10 @@ extension QuickEditViewModel {
         defer { isImportingMedia = false }
         do {
             let imported = try await mediaImporter.importMedia(item)
+            guard !isClosed else {
+                EditMediaFiles.remove([imported.fileName])
+                return
+            }
             importedFiles.insert(imported.fileName)
             guard imported.kind == .video, let duration = imported.duration else {
                 toast.show(String(localized: "Pick a video first"))
@@ -169,6 +174,10 @@ extension QuickEditViewModel {
             name = try await editing.stillClip(ofVideoAt: url, at: timeline.sourceTime(forEdited: time), length: Self.freezeFileLength)
         } catch {
             toast.show(String(localized: "Can't freeze this frame"))
+            return
+        }
+        guard !isClosed else {
+            EditMediaFiles.remove([name])
             return
         }
         // The frame took a moment (about 2 s in 4K): if the cuts changed meanwhile, the place it was for may be gone.
