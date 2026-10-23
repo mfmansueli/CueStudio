@@ -28,7 +28,7 @@ nonisolated enum OverlayRenderer {
     }
 
     private static func captionImage(_ text: String, style: CaptionStyle, unit: CGFloat, maxWidth: CGFloat) -> CIImage? {
-        let string = style == .bold ? text.uppercased() : text
+        let string = style == .bold ? TextShaping.uppercased(text) : text
         let font: UIFont
         let foreground: UIColor
         var background: UIColor?

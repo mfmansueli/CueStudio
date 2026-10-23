@@ -155,7 +155,8 @@ nonisolated enum TextOverlayRenderer {
         var attributes: [NSAttributedString.Key: Any] = [
             .font: font, .foregroundColor: color(text.color), .paragraphStyle: paragraph,
         ]
-        if abs(text.tracking) > 0.000_1 {
+        // Letters spaced out only where the writing allows it (never Arabic, Hindi or Thai).
+        if abs(text.tracking) > 0.000_1, TextShaping.allowsLetterSpacing(in: text.displayText) {
             attributes[.kern] = CGFloat(text.tracking) * pointSize
         }
         if text.glow > 0.001 {

@@ -180,7 +180,10 @@ nonisolated struct CoverTextLayout {
             }
             if !kicker.isEmpty {
                 let kickerFont = UIFont.systemFont(ofSize: max(coverWidth * 0.032, fontSize * 0.34), weight: .heavy)
-                let text = NSAttributedString(string: kicker.localizedUppercase, attributes: [.font: kickerFont, .kern: kickerFont.pointSize * 0.06])
+                let shown = TextShaping.uppercased(kicker)
+                var attributes: [NSAttributedString.Key: Any] = [.font: kickerFont]
+                if TextShaping.allowsLetterSpacing(in: shown) { attributes[.kern] = kickerFont.pointSize * 0.06 }
+                let text = NSAttributedString(string: shown, attributes: attributes)
                 attempt.kickerText = text
                 attempt.kickerSize = CGSize(
                     width: Self.width(of: text) + kickerFont.pointSize * 1.1, height: (kickerFont.ascender - kickerFont.descender) * 1.45

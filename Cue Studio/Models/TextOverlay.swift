@@ -92,7 +92,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
     /// What is drawn: the text, in capitals when the style asks for them.
     var displayText: String {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        return isUppercase ? trimmed.uppercased() : trimmed
+        return isUppercase ? TextShaping.uppercased(trimmed) : trimmed
     }
 
     /// Nothing to draw.

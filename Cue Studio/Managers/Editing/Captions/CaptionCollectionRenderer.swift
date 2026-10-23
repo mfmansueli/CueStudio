@@ -112,7 +112,7 @@ nonisolated enum CaptionCollectionRenderer {
         }
         guard let layout = layout(text, settings: settings, frame: frame) else { return nil }
         let spec = settings.spec
-        let display = spec.uppercase ? text.uppercased() : text
+        let display = spec.uppercase ? TextShaping.uppercased(text) : text
         let range = emphasis?.range(in: display, uppercased: spec.uppercase)
         let all = layout.manager.glyphRange(for: layout.container)
         let format = UIGraphicsImageRendererFormat()
@@ -242,7 +242,7 @@ nonisolated enum CaptionCollectionRenderer {
     private static func layout(_ text: String, settings: CaptionSettings, frame: CGSize) -> Layout? {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, min(frame.width, frame.height) > 0 else { return nil }
         let spec = settings.spec
-        let display = spec.uppercase ? text.uppercased() : text
+        let display = spec.uppercase ? TextShaping.uppercased(text) : text
         let unit = min(frame.width, frame.height) / TextOverlayRenderer.referenceWidth
         let base = CGFloat(spec.baseSize)
         let padding = CGSize(width: 14 * unit, height: 9 * unit)
@@ -254,7 +254,7 @@ nonisolated enum CaptionCollectionRenderer {
         paragraph.lineBreakMode = .byWordWrapping
         paragraph.baseWritingDirection = ScriptDirection.isRightToLeft(language: nil, text: display) ? .rightToLeft : .leftToRight
         // Letters spaced out only where the writing allows it.
-        let kern = spec.tracking > 0 && CaptionFont.allowsTracking(in: display) ? CGFloat(spec.tracking) * unit : 0
+        let kern = spec.tracking > 0 && TextShaping.allowsLetterSpacing(in: display) ? CGFloat(spec.tracking) * unit : 0
         func measure(_ string: String, font: UIFont) -> CGFloat {
             (string as NSString).size(withAttributes: kern > 0 ? [.font: font, .kern: kern] : [.font: font]).width
         }
