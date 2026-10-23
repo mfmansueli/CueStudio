@@ -21,8 +21,8 @@ struct CaptureWatermark: View {
                 Image(systemName: "sparkle")
                     .font(.system(size: 12, weight: .bold))
                 Text(verbatim: "CUE STUDIO")
-                    .font(.system(size: 13, weight: .semibold, design: .monospaced))
-                    .tracking(2)
+                    .monoFont(size: 13, weight: .semibold)
+                    .interfaceTracking(2)
             }
             .foregroundStyle(.white.opacity(0.7))
             .shadow(color: .black.opacity(0.45), radius: 3, y: 1)

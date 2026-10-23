@@ -22,7 +22,7 @@ struct EditorToastHost: ViewModifier {
                     HStack(spacing: 6) {
                         HStack(spacing: 6) {
                             Image(systemName: "star.fill")
-                                .font(.system(size: 10, weight: .bold))
+                                .font(.editorGlyph(EditorGlyph.mark, weight: .bold))
                                 .foregroundStyle(Palette.accText)
                                 .accessibilityHidden(true)
                             Text(message)
@@ -56,7 +56,7 @@ struct EditorToastHost: ViewModifier {
                     .padding(.vertical, 4)
                     .frame(minHeight: 34)
                     // A pill on one line; on two, the same round ends.
-                    .background(Palette.Editor.toast, in: RoundedRectangle(cornerRadius: 17, style: .continuous))
+                    .background(Palette.Editor.toast, in: RoundedRectangle(cornerRadius: Metrics.editorNoticeRadius, style: .continuous))
                     .padding(.horizontal, 16)
                     .padding(.top, 10)
                     .id(message)

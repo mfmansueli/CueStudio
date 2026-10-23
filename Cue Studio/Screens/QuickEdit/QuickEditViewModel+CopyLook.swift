@@ -57,9 +57,9 @@ extension QuickEditViewModel {
 
     /// The paste's toast once the sheet has gone (about 0.35 s), so it's seen over the editor, not under a closing sheet.
     private func sayAfterSheet(_ message: String) {
-        Task { [weak self] in
+        jobs.start(.notice) { [weak self] ticket in
             try? await Task.sleep(for: .milliseconds(350))
-            guard let self, !isClosed else { return }
+            guard let self, jobs.isCurrent(ticket) else { return }
             toast.show(message)
         }
     }

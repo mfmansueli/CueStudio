@@ -29,7 +29,7 @@ struct LastTakeButton: View {
             .overlay(alignment: .bottomTrailing) {
                 if count > 0 {
                     Text(count.formatted())
-                        .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                        .monoFont(size: 10, weight: .heavy)
                         .foregroundStyle(Palette.accInk)
                         .padding(.horizontal, 4)
                         .frame(minWidth: 16, minHeight: 16)

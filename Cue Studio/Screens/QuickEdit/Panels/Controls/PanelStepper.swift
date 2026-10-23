@@ -44,10 +44,10 @@ struct PanelStepper: View {
     private func button(_ symbol: String, label: Text, enabled: Bool, id: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.editorGlyph(EditorGlyph.row, weight: .semibold))
                 .foregroundStyle(enabled ? Palette.ink : Palette.ink3)
                 .frame(width: 36, height: 32)
-                .background(Palette.fill, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                .background(Palette.fill, in: RoundedRectangle(cornerRadius: Metrics.editorSegmentRadius, style: .continuous))
                 .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
                 .contentShape(Rectangle())
         }

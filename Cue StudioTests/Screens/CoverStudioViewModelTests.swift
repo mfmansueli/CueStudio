@@ -54,6 +54,20 @@ struct CoverStudioViewModelTests {
         #expect(studio.composition.title.center.y > start.y)
     }
 
+    @Test func typingIsOneUndoStepAndTheHistoryKeepsSixty() async {
+        let studio = makeStudio()
+        await studio.start()
+        let before = studio.cover.title
+        for count in 1..."Morning".count { studio.setTitle(String("Morning".prefix(count))) }
+        #expect(studio.cover.title == "Morning")
+        studio.undo()
+        #expect(studio.cover.title == before)
+        #expect(!studio.canUndo)
+        // Like the editor's: the oldest steps go past 60.
+        for step in 0..<70 { studio.setZoom(1 + Double(step % 2) * 0.2) }
+        #expect(studio.history.past.count == EditHistory<VideoCover>.limit)
+    }
+
     @Test func aDraggedTitleSticksToTheMiddleAndTheThirds() async {
         let studio = makeStudio()
         await studio.start()

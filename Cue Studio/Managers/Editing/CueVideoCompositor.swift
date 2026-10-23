@@ -153,12 +153,13 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             source,
             as: Framing(
                 frame: instruction.frame, cropFit: instruction.edit.cropFit, look: instruction.look, key: "main-\(moment)",
-                moment: SmoothingMoment(stream: .main, stretch: stretch, time: time), sourceTime: instruction.sourceTime(at: time)
+                moment: SmoothingMoment(stream: .main, stretch: stretch, time: time), sourceTime: instruction.sourceTime(at: time),
+                lookTime: time - instruction.timeOrigin
             ),
             faces: faces
         )
         if let zoom = instruction.zoom {
-            image = zoomed(image, by: CGFloat(zoom.scale(at: time)))
+            image = FramePipeline.zoomed(image, by: CGFloat(zoom.scale(at: time)))
         }
         if let other, let dissolve = instruction.dissolve {
             let otherSide = framed(
@@ -166,7 +167,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 as: Framing(
                     frame: instruction.blendFrame ?? instruction.frame, cropFit: instruction.edit.cropFit,
                     look: instruction.blendLook ?? instruction.look, key: "blend-\(moment)",
-                    moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time), sourceTime: dissolve.otherSideSourceTime(at: time)
+                    moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time), sourceTime: dissolve.otherSideSourceTime(at: time),
+                    lookTime: time - instruction.timeOrigin
                 ),
                 faces: faces
             )
@@ -185,17 +187,6 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             image = laid(shown, frame: shown.trackID.flatMap { media[$0] }, over: image, at: time)
         }
         return decorated(image, instruction: instruction, at: time, cache: cache)
-    }
-
-    /// `image` scaled around its center, cropped back to its frame (a section's slow zoom).
-    nonisolated private static func zoomed(_ image: CIImage, by scale: CGFloat) -> CIImage {
-        guard abs(scale - 1) > 0.000_1 else { return image }
-        let extent = image.extent
-        return image
-            .transformed(by: CGAffineTransform(translationX: -extent.midX, y: -extent.midY)
-                .concatenating(CGAffineTransform(scaleX: scale, y: scale))
-                .concatenating(CGAffineTransform(translationX: extent.midX, y: extent.midY)))
-            .cropped(to: extent)
     }
 
     /// Fades, texts and captions over `image`, then the output scale.
@@ -218,65 +209,13 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     }
 
     /// A frame of a recording upright, steadied, cropped and scaled to the take's frame, with its background effect, Adjust
-    /// and Filters, as `framing` says.
+    /// and Filters, as `framing` says (`FramePipeline`, which frames the cover too).
     nonisolated private static func framed(
         _ source: CVPixelBuffer, as framing: Framing, faces: (masker: PersonMasker, skin: SkinSmoother)
     ) -> CIImage {
-        let frame = framing.frame, look = framing.look, moment = framing.moment, sourceTime = framing.sourceTime
-        var image = CIImage(cvPixelBuffer: source)
-        image = image.transformed(by: uprightTransform(frame.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(source))))
-        image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
-        if let steady = frame.steady {
-            image = steadied(image, by: steady, at: sourceTime)
+        FramePipeline.framed(FramePipeline.upright(source, transform: framing.frame.transform), as: framing, skin: faces.skin) { image, key in
+            faces.masker.mask(for: image, key: key)
         }
-        if framing.cropFit == .fit {
-            image = fitted(image, into: frame.crop.size)
-        } else {
-            let crop = frame.cropRect(at: sourceTime)
-            image = image.cropped(to: crop)
-                .transformed(by: CGAffineTransform(translationX: -crop.minX, y: -crop.minY))
-        }
-        if abs(frame.scale - 1) > 0.000_1 {
-            image = image.transformed(by: CGAffineTransform(scaleX: frame.scale, y: frame.scale))
-        }
-        // The faces of the frame as recorded (before a background is put behind the creator), found only when the dial is above 0.
-        let smoothing = faces.skin.pass(for: image, value: look.skinSmoothing, stream: moment.stream, epoch: moment.stretch, time: moment.time)
-        if let background = frame.background {
-            image = BackgroundCompositing.apply(image, render: background) { image in
-                faces.masker.mask(for: image, key: background.cacheKey + framing.key)
-            }
-        }
-        return FrameLook.apply(look, to: image, skin: smoothing, time: moment.time)
-    }
-
-    /// Stabilize: the upright frame moved and turned onto the smooth path, zoomed in to hide its edges, cut back to its size.
-    nonisolated static func steadied(_ image: CIImage, by path: StabilizationPath, at time: TimeInterval) -> CIImage {
-        let extent = image.extent
-        let correction = path.correction(at: time)
-        let center = CGPoint(x: extent.midX, y: extent.midY)
-        let zoom = CGFloat(path.zoom)
-        // Down on screen is −y in Core Image, clockwise is a negative angle.
-        let transform = CGAffineTransform(translationX: -center.x, y: -center.y)
-            .concatenating(CGAffineTransform(rotationAngle: -CGFloat(correction.angle)))
-            .concatenating(CGAffineTransform(scaleX: zoom, y: zoom))
-            .concatenating(CGAffineTransform(
-                translationX: center.x + CGFloat(correction.dx) * extent.width, y: center.y - CGFloat(correction.dy) * extent.height
-            ))
-        return image.clampedToExtent().transformed(by: transform).cropped(to: extent)
-    }
-
-    /// Crop › Fit: the whole upright frame scaled to fit in `size`, centered on black.
-    nonisolated static func fitted(_ image: CIImage, into size: CGSize) -> CIImage {
-        let extent = image.extent
-        guard extent.width > 0, extent.height > 0, size.width > 0, size.height > 0 else { return image }
-        let scale = min(size.width / extent.width, size.height / extent.height)
-        let width = extent.width * scale
-        let height = extent.height * scale
-        let placed = image
-            .transformed(by: CGAffineTransform(scaleX: scale, y: scale))
-            .transformed(by: CGAffineTransform(translationX: (size.width - width) / 2, y: (size.height - height) / 2))
-        let black = CIImage(color: .black).cropped(to: CGRect(origin: .zero, size: size))
-        return placed.composited(over: black)
     }
 
     /// A photo or video over the take: filling its place (cropped, centered), on top of `image`,
@@ -288,7 +227,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             picture = photo
         } else if let frame {
             picture = CIImage(cvPixelBuffer: frame)
-                .transformed(by: uprightTransform(item.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(frame))))
+                .transformed(by: FramePipeline.uprightTransform(item.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(frame))))
         } else {
             return image
         }
@@ -330,12 +269,5 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         filter.targetImage = to
         filter.time = Float(min(max(0, amount), 1))
         return filter.outputImage?.cropped(to: from.extent) ?? from
-    }
-
-    /// The track transform is in UIKit coordinates (origin top left); Core Image's origin is at the
-    /// bottom left, so the rotation is flipped around the frame.
-    nonisolated static func uprightTransform(_ transform: CGAffineTransform, sourceHeight: CGFloat) -> CGAffineTransform {
-        let flip = CGAffineTransform(scaleX: 1, y: -1).translatedBy(x: 0, y: -sourceHeight)
-        return flip.concatenating(transform).concatenating(CGAffineTransform(scaleX: 1, y: -1))
     }
 }

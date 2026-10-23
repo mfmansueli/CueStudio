@@ -24,7 +24,7 @@ struct StageBar: View {
                 let isReached = current.map { index <= $0 } ?? false
                 VStack(spacing: 5) {
                     Text(label)
-                        .font(CueStudioFont.hud)
+                        .hudFont()
                         .textCase(.uppercase)
                         .tracking(0.6)
                         .lineLimit(1)

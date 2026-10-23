@@ -32,7 +32,9 @@ extension QuickEditViewModel {
         isImportingMedia = true
         defer { isImportingMedia = false }
         do {
-            replaceMedia(id, with: try await mediaImporter.importMedia(item))
+            replaceMedia(id, with: try await importPicked(item))
+        } catch is CancellationError {
+            // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
             noteFailure(error, "replaceMedia")
             toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))

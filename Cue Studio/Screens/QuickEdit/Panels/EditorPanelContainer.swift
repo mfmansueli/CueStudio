@@ -114,7 +114,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                 onApply()
             } label: {
                 Image(systemName: "checkmark")
-                    .font(.system(size: 17, weight: .bold))
+                    .font(.editorGlyph(EditorGlyph.control, weight: .bold))
                     .foregroundStyle(Palette.accInk)
                     .frame(width: Metrics.applyButtonSize, height: Metrics.applyButtonSize)
                     .background(Palette.acc, in: Circle())
@@ -150,7 +150,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
             expansion.wrappedValue.toggle()
         } label: {
             Image(systemName: isExpanded ? "arrow.down.right.and.arrow.up.left" : "arrow.up.left.and.arrow.down.right")
-                .font(.system(size: 15, weight: .semibold))
+                .font(.editorGlyph(EditorGlyph.button, weight: .semibold))
                 .foregroundStyle(Palette.ink)
                 .frame(width: Metrics.applyButtonSize, height: Metrics.applyButtonSize)
                 .background(Palette.fill, in: Circle())

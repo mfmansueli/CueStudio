@@ -88,9 +88,9 @@ struct QuickEditMontageTests {
         viewModel.splitClip()
         scenario.player.currentTime = 5
         viewModel.addText(.title)
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.duplicateClip(viewModel.edit.timeline.segments[0].id)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.edit.timeline.segments.count == 3)
         #expect(viewModel.edit.texts.count == 2)
         let ids = Set(viewModel.edit.texts.map(\.id))
@@ -160,7 +160,7 @@ struct QuickEditMontageTests {
         let source = try #require(viewModel.edit.sources.first)
         defer { EditMediaFiles.remove([source.fileName]) }
         viewModel.makeCaptions()
-        await viewModel.captionTask?.value
+        await viewModel.jobs.finished(.captions)
         #expect(editor.captionRequests == 2)
         #expect(Set(viewModel.edit.captions.map(\.sourceID)) == [nil, source.id])
         #expect(viewModel.edit.sourceTranscripts.first?.sourceID == source.id)
@@ -172,7 +172,7 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.makeCaptions()
-        await viewModel.captionTask?.value
+        await viewModel.jobs.finished(.captions)
         viewModel.duplicateSection(viewModel.edit.timeline.segments[0].id)
         let instances = viewModel.edit.editedCaptionInstances
         #expect(instances.count == 2)

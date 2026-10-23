@@ -99,8 +99,8 @@ struct TakeVideoRow: View {
             Circle().fill(video.stage.tint).frame(width: 5, height: 5)
             Text(video.stage.badgeLabel).textCase(.uppercase)
         }
-        .font(.system(size: 10, weight: .heavy, design: .monospaced))
-        .tracking(0.5)
+        .monoFont(size: 10, weight: .heavy)
+        .interfaceTracking(0.5)
         .foregroundStyle(video.stage.tint)
         .padding(.horizontal, 8)
         .frame(minHeight: 22)

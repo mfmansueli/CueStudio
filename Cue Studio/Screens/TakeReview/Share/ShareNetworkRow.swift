@@ -31,7 +31,7 @@ struct ShareNetworkRow: View {
                             Text("· from your script").font(.system(size: 14)).foregroundStyle(Palette.ink2)
                         }
                     }
-                    Text(line).font(.system(size: 10.5, weight: .medium, design: .monospaced)).tracking(0.6).foregroundStyle(Palette.ink2)
+                    Text(line).monoFont(size: 10.5, weight: .medium).interfaceTracking(0.6).foregroundStyle(Palette.ink2)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }

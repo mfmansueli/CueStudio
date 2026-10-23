@@ -41,9 +41,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         var shortSide: CGFloat?
         /// Frames per second of the output; nil keeps the recording's.
         var frameRate: Double?
-        /// Where the edit itself is in `edit.timeline`: the preview plays the timeline grown to the
-        /// whole recording and holds playback here. Nil when the timeline is the edit.
-        var window: TimeSpan?
+        /// The editor's preview: the first and last clips grown to the whole recording (`EditTimeline.reachable`), so a handle
+        /// scrubs real frames without a rebuild; the player holds playback where the edit itself is.
+        var reachesWholeRecording = false
         /// Makes the motion analyses Follow face and stabilization need when they're missing (an export); the preview draws
         /// with the ones ready.
         var analyzesMissingMotion = true
@@ -73,8 +73,13 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     /// handle, a slider or the frame, and the screen keeps following the finger meanwhile.
     @concurrent
     static func build(
-        source: URL, edit: TakeEdit, sound: RecordingSounds = .none, speech: VoiceActivity = .none, options: Options
+        source: URL, edit made: TakeEdit, sound: RecordingSounds = .none, speech: VoiceActivity = .none, options: Options
     ) async throws -> EditedComposition {
+        // The edit as made; the preview plays it grown to the whole recording, from `leadIn` on.
+        var edit = made
+        if options.reachesWholeRecording { edit.timeline = made.timeline.reachable }
+        let leadIn = options.reachesWholeRecording ? made.timeline.reachableLeadIn : 0
+        let leadPieces = options.reachesWholeRecording ? made.timeline.reachableLeadPieces : 0
         let take = try await Recording.load(AVURLAsset(url: source))
         // A track can't be read once its asset is gone, so the treated sounds' assets are kept
         // until the composition is built (like each `Recording`'s).
@@ -125,7 +130,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             takeTracks.append((varispeed, levels(for: edit.timeline, plays: playsVarispeed), .varispeed))
         }
 
-        let windows = TransitionWindow.windows(in: edit.timeline)
+        let windows = transitionWindows(of: made.timeline, reachesWholeRecording: options.reachesWholeRecording)
+        let zooms = zoomWindows(of: made.timeline, reachesWholeRecording: options.reachesWholeRecording)
         var dissolves = windows.filter { $0.transition.showsBothSides }
         var blendTrack = dissolves.isEmpty ? nil : composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
         if let track = blendTrack, (try? insertOtherSides(of: dissolves, from: recording, into: track)) == nil {
@@ -135,44 +141,16 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             dissolves = []
         }
 
-        // The take's upright frame, its crop and the output size; other recordings are cropped the
-        // same way and scaled to the take's crop.
-        let crop = cropRect(for: take, edit: edit)
-        let renderSize = outputSize(for: crop.size, shortSide: options.shortSide)
-        // Each recording's background, prepared once; masks of this build are kept apart from others'.
-        let build = UUID().uuidString
-        var backgrounds: [UUID?: BackgroundRender] = [:]
-        for id in [nil] + edit.playedSources.map(\.id) as [UUID?] {
-            guard let effect = edit.background(for: id) else { continue }
-            backgrounds[id] = BackgroundRender.prepare(effect, cacheKey: build + (id?.uuidString ?? "take"))
-        }
-        let ownBackgrounds = clipBackgrounds(of: edit.timeline, build: build)
+        // How each recording lands on the take's frame (`EditFraming`, which frames the cover too): its crop, the scale that
+        // brings another recording to the take's crop, backgrounds (masks of this build are kept apart from others'), Follow
+        // face and Stabilize.
         let analyses = try await motionAnalyses(take: source, edit: edit, analyzesMissing: options.analyzesMissingMotion)
-        var follows: [UUID?: FaceFollowPath] = [:]
-        func frame(_ id: UUID?) -> SourceFrame {
-            guard let played = recording(id) else { return SourceFrame(transform: .identity, crop: crop, scale: 1) }
-            let own = id == nil ? crop : cropRect(for: played, edit: edit)
-            var result = SourceFrame(
-                transform: played.transform, crop: own, scale: own.width > 0 ? crop.width / own.width : 1, background: backgrounds[id] ?? nil
-            )
-            result.uprightSize = played.uprightSize
-            if follows[id] == nil { follows[id] = followPath(for: edit, analysis: analyses[id], crop: own, size: played.uprightSize) }
-            result.follow = follows[id]
-            return result
-        }
-        var steadyPaths: [String: StabilizationPath] = [:]
-        func frame(of segment: EditSegment) -> SourceFrame {
-            var result = frame(segment.sourceID)
-            if let own = ownBackgrounds[segment.id] { result.background = own }
-            if let level = segment.stabilization, let analysis = analyses[segment.sourceID] {
-                let key = (segment.sourceID?.uuidString ?? "take") + level.rawValue
-                if steadyPaths[key] == nil {
-                    steadyPaths[key] = steadyPath(for: segment.sourceID, of: edit, take: source, analysis: analysis, level: level)
-                }
-                result.steady = steadyPaths[key]
-            }
-            return result
-        }
+        var framing = EditFraming(
+            edit: edit, take: source, takeShape: take.shape, shapes: recordings.mapValues(\.shape), analyses: analyses,
+            cacheKey: UUID().uuidString
+        )
+        let crop = framing.crop
+        let renderSize = outputSize(for: crop.size, shortSide: options.shortSide)
         var overlays = TextOverlayRenderer.overlays(edit.editedTexts(in: edit.timeline), frame: crop.size)
         if options.burnsInCaptions, edit.showsCaptions {
             overlays += captionOverlays(for: edit, frame: crop.size)
@@ -180,7 +158,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let (mediaTracks, mediaFrames, mediaSounds) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
         let videoMedia = mediaFrames.filter(\.isVideo).map(\.span)
         let voices = await placeVoiceOvers(of: edit, in: composition)
-        let window = options.window ?? TimeSpan(start: 0, end: cursor.seconds)
+        let window = options.reachesWholeRecording ? TimeSpan(start: leadIn, end: leadIn + made.editedDuration) : TimeSpan(start: 0, end: cursor.seconds)
         let spoken = speech.editedSpans(in: edit.timeline) + edit.voiceOvers.compactMap { $0.editedSpan(in: edit.timeline) }
         let music = await placeMusic(of: edit, window: window, speech: spoken, in: composition)
         let fadeWindows = windows.filter { $0.transition == .fade }
@@ -191,12 +169,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             let middle = CMTimeMultiplyByRatio(stretch.range.start + stretch.range.end, multiplier: 1, divisor: 2).seconds
             let index = timeline.segmentIndex(atEdited: middle)
             let playedSegment = timeline.segments[index]
-            let zoom = timeline.segments[index].zoom.map {
-                ZoomWindow(
-                    zoom: $0, start: timeline.editedStart(ofSegmentAt: index), duration: timeline.segments[index].duration,
-                    amount: timeline.segments[index].zoomAmount
-                )
-            }
+            // The piece of the edit as made this one plays (the grown timeline may put one before it).
+            let shownIndex = index - leadPieces
+            let zoom = zooms.indices.contains(shownIndex) ? zooms[shownIndex] : nil
             // Before the cut the blend track holds the incoming piece; after it, the outgoing one.
             let blendSegment = stretch.dissolve.map { timeline.segments[middle < $0.cut ? $0.join : $0.join - 1] }
             // The media tracks with a video in this stretch.
@@ -211,8 +186,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 trackID: video.trackID,
                 blendTrackID: stretch.dissolve == nil ? nil : blendTrack?.trackID,
                 mediaTrackIDs: mediaTrackIDs,
-                frame: frame(of: playedSegment),
-                blendFrame: blendSegment.map { frame(of: $0) },
+                frame: framing.frame(of: playedSegment),
+                blendFrame: blendSegment.map { framing.frame(of: $0) },
                 edit: edit,
                 look: edit.lookSettings(for: playedSegment),
                 blendLook: blendSegment.map { edit.lookSettings(for: $0) },
@@ -221,7 +196,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 outputScale: outputScale,
                 dissolve: stretch.dissolve,
                 zoom: zoom,
-                fades: fadeWindows
+                fades: fadeWindows,
+                timeOrigin: leadIn
             )
         }
         let configuration = AVVideoComposition.Configuration(
@@ -236,17 +212,6 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             videoComposition: AVVideoComposition(configuration: configuration),
             audioMix: audioMix(for: takeTracks, voices: voices + mediaSounds, music: music)
         )
-    }
-
-    /// The backgrounds clips set for themselves, prepared once, by clip. A clip with one is drawn with
-    /// it instead of its recording's; an Original one is a choice too (no effect: `nil`).
-    private static func clipBackgrounds(of timeline: EditTimeline, build: String) -> [UUID: BackgroundRender?] {
-        var result: [UUID: BackgroundRender?] = [:]
-        for segment in timeline.segments {
-            guard let effect = segment.look?.background else { continue }
-            result.updateValue(BackgroundRender.prepare(effect, cacheKey: build + "clip-" + segment.id.uuidString), forKey: segment.id)
-        }
-        return result
     }
 
     /// Lays the timeline's pieces one after the other: picture on `video`, sound on the track
@@ -346,6 +311,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let uprightSize: CGSize
         let frameRate: Float
 
+        var shape: EditFraming.Shape { EditFraming.Shape(transform: transform, uprightSize: uprightSize) }
+
         static func load(_ asset: AVURLAsset) async throws -> Recording {
             guard let video = try await asset.loadTracks(withMediaType: .video).first else { throw BuildError.noVideoTrack }
             let (naturalSize, transform, frameRate) = try await video.load(.naturalSize, .preferredTransform, .nominalFrameRate)
@@ -355,14 +322,6 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 uprightSize: CGSize(width: abs(upright.width), height: abs(upright.height)), frameRate: frameRate
             )
         }
-    }
-
-    /// The part of `recording`'s upright frame the edit keeps (Core Image coordinates, y from the
-    /// bottom).
-    private static func cropRect(for recording: Recording, edit: TakeEdit) -> CGRect {
-        let size = recording.uprightSize
-        let topLeft = CropMath.crop(in: size, aspect: edit.aspect.widthOverHeight, offset: edit.cropOffset)
-        return CGRect(x: topLeft.minX, y: size.height - topLeft.maxY, width: topLeft.width, height: topLeft.height)
     }
 
     /// Stretches cut again where the main track moves to another recording (and, in a dissolve
@@ -391,6 +350,26 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             }
         }
         return result
+    }
+
+    /// The transitions of the edit as made, where the item plays them: measured on the edit itself (clips grown to the whole
+    /// recording for the editor's preview would give a transition more room than the export has), then moved by the lead-in
+    /// and the pieces the growing put before them. The player keys its item on these too (`QuickEditPlayer.ItemKey`).
+    static func transitionWindows(of made: EditTimeline, reachesWholeRecording: Bool) -> [TransitionWindow] {
+        let windows = TransitionWindow.windows(in: made)
+        guard reachesWholeRecording else { return windows }
+        return windows.map { $0.shifted(by: made.reachableLeadIn, pieces: made.reachableLeadPieces) }
+    }
+
+    /// Each piece's zoom (by its index in the edit as made), over the piece as made and where the item plays it.
+    static func zoomWindows(of made: EditTimeline, reachesWholeRecording: Bool) -> [ZoomWindow?] {
+        let leadIn = reachesWholeRecording ? made.reachableLeadIn : 0
+        return made.segments.indices.map { index in
+            let segment = made.segments[index]
+            return segment.zoom.map {
+                ZoomWindow(zoom: $0, start: leadIn + made.editedStart(ofSegmentAt: index), duration: segment.duration, amount: segment.zoomAmount)
+            }
+        }
     }
 
     /// The crop at the requested quality, with even dimensions. Never upscaled.

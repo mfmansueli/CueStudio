@@ -133,11 +133,11 @@ struct QuickEditMotionPresetTests {
         viewModel.selection = .text(id)
         viewModel.toggleKeyframe()
         let keyframes = viewModel.edit.texts[0].keyframes
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.setMotionPreset(.slideUp)
         #expect(viewModel.edit.texts[0].animation?.preset == .slideUp)
         #expect(viewModel.edit.texts[0].keyframes == keyframes)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         viewModel.setMotionDuration(1.2)
         viewModel.setMotionPreset(.pop)
         #expect(viewModel.edit.texts[0].animation?.duration == 1.2)

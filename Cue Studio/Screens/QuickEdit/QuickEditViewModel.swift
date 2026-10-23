@@ -36,34 +36,19 @@ final class QuickEditViewModel {
 
     // MARK: Editor
     /// The panel open under the timeline, in place of the toolbar. Its ✓ closes it; changes show
-    /// live in the preview.
+    /// live in the preview. Setting it is `show(_:)`.
     var panel: EditorPanel? {
-        didSet {
-            guard panel != oldValue else { return }
-            showsAdvanced = false
-            panelTab = .presets
-            if oldValue == .voice { endComparison() }
-            // Leaving Adjust (or opening it again) never leaves a measurement running or the picture compared.
-            if panel != .adjust { cancelAuto() }
-            comparesPicture = false
-            endChange()
-            if recorder.isRecording { stopVoiceOver() }
-            if oldValue == .transition { selectedJoinID = nil }
-            if panel == .pauses { cleanUpMarks = [:] }
-            if panel == nil { lookScopeIsClip = false }
-            // Picking several lines belongs to the list of lines.
-            if panel != .captions { captionPicks = nil }
-        }
+        get { shownPanel }
+        set { show(newValue) }
     }
-    /// The one thing picked on the timeline or in the preview; its tools replace the toolbar's.
+    /// The one thing picked on the timeline or in the preview (a cut included); its tools replace the toolbar's. Setting it
+    /// is `pick(_:)`.
     var selection: EditorSelection? {
-        didSet {
-            guard selection != oldValue else { return }
-            if selection != nil { toolMenu = nil }
-            selectedJoinID = nil
-            if let panel, followsSelection(panel), !(selection.map { accepts($0, in: panel) } ?? false) { self.panel = nil }
-        }
+        get { picked }
+        set { pick(newValue) }
     }
+    private var shownPanel: EditorPanel?
+    private var picked: EditorSelection?
     /// The Text or Audio toolbar, opened from the main one with nothing selected.
     var toolMenu: EditorToolMenu?
     /// The open panel's tab (Text style and Caption style).
@@ -101,29 +86,22 @@ final class QuickEditViewModel {
     var focusesTextField = false
     /// The picked caption line's field takes the keyboard (a line was just added).
     var focusesCaptionField = false
-    /// The recipe being edited. It changes only here: as an undo step (`changeEdit`, `change`, `commit`), by Undo and Redo
-    /// (`restore`), or with what listening found (`updateFindings`).
-    private(set) var edit: TakeEdit {
-        didSet {
-            // Edit by text picks words by their place in the list, which any change of the cuts moves (the sheet lets the
-            // timeline be used behind it).
-            if oldValue.timeline != edit.timeline { transcriptSelection = nil }
-            editDidChange()
-        }
-    }
+    /// The edit and its undo steps (`EditDocument`): the edit changes only there, and this hears each change.
+    let document: EditDocument
+    /// The recipe being edited. It changes only through the document: as an undo step (`changeEdit`, `change`, `commit`),
+    /// by Undo and Redo, or with what listening found (`updateFindings`).
+    var edit: TakeEdit { document.edit }
     private(set) var source: Source = .loading
-    private(set) var history = EditHistory<EditSnapshot>()
     /// The clip tapped on the timeline. Separate from the playhead: scrubbing doesn't change it.
     var selectedSegmentID: UUID? {
         get { selection?.clipID }
         set { select(newValue.map(EditorSelection.clip), replacing: \.clipID) }
     }
     /// The cut tapped on the timeline, named by the section that starts there: its transition can
-    /// be picked. Never at the same time as a selection.
+    /// be picked (`EditorSelection.join`).
     var selectedJoinID: UUID? {
-        didSet {
-            if selectedJoinID == nil, panel == .transition { panel = nil }
-        }
+        get { selection?.joinID }
+        set { select(newValue.map(EditorSelection.join), replacing: \.joinID) }
     }
     /// Captions listening to the take (see `QuickEditViewModel+Captions`).
     var captionState: CaptionState = .idle
@@ -152,12 +130,6 @@ final class QuickEditViewModel {
             player.show(playedEdit)
         }
     }
-    @ObservationIgnored var autoTask: Task<Void, Never>?
-    /// The measuring whose result is still wanted: an older one finishing late is dropped.
-    @ObservationIgnored var autoRequest: UUID?
-    @ObservationIgnored var captionTask: Task<Void, Never>?
-    /// The captions request whose result is still wanted: an older one finishing late is dropped.
-    @ObservationIgnored var captionRequest: UUID?
     /// Frames per second of the recording: read from the file when it opens, the take's setting
     /// until then. The timeline puts every edit on a frame (`FrameGrid`).
     private(set) var frameRate: Double
@@ -194,6 +166,8 @@ final class QuickEditViewModel {
         set { select(newValue.map(EditorSelection.caption), replacing: \.captionID) }
     }
     var isImportingMedia = false
+    /// A reverse or an import the creator waits for, over the preview with Cancel (`QuickEditViewModel+Work`).
+    var work: EditorWork?
     /// The voice-over picked on its track (or just recorded).
     var reviewedVoiceOverID: UUID? {
         get { selection?.voiceOverID }
@@ -240,11 +214,14 @@ final class QuickEditViewModel {
     var showsSpeedCurves = false
     /// Track: how far following the picked item's object is, 0 to 1; nil when it isn't (`QuickEditViewModel+Track`).
     var trackingProgress: Double?
-    @ObservationIgnored var trackingTask: Task<Void, Never>?
     /// The recordings whose motion analysis was last asked for while the edit used it (`requestMotionAnalysisIfNeeded`).
     @ObservationIgnored var motionRequestedURLs: [URL] = []
+    /// The take's upright frame in pixels, read when the recording opens (Follow face needs a format other than it).
+    @ObservationIgnored var recordingUprightSize: CGSize?
     /// A point of the speed curve is being dragged (`QuickEditViewModel+SpeedCurve`).
     @ObservationIgnored var shapesCurve = false
+    /// The lines timed to the edit, kept until the lines or the cuts change (`captionMap`).
+    @ObservationIgnored var captionMapStore: CaptionMap?
 
     // MARK: Background
     /// Whether this iPhone can find people in video; nil until checked.
@@ -271,7 +248,6 @@ final class QuickEditViewModel {
     var originalVolume: Double?
     /// The treatment being compared; changing it ends the comparison.
     @ObservationIgnored var comparedProcessing: VoiceProcessing?
-    @ObservationIgnored var comparisonTask: Task<Void, Never>?
 
     let take: Take
     let player: EditPlayback
@@ -305,25 +281,19 @@ final class QuickEditViewModel {
     let likelySpokenLanguagesFor: (Script?) -> [CueLanguage]
     /// Voice Following's language when it differs from the captions' (`LanguageService.languageConflict(for:)`).
     private let languageConflictFor: (Script?) -> SpeechLanguageConflict?
-    /// The take's edit when Quick edit opened.
-    private var original: TakeEdit
-    /// The undo step a gesture or a sheet started from (see `beginChange`).
-    @ObservationIgnored private(set) var changeBase: EditSnapshot?
     /// Media files copied in while Quick edit is open, so what the edit doesn't keep is removed.
     @ObservationIgnored var importedFiles: Set<String> = []
-    @ObservationIgnored var coverTask: Task<Void, Never>?
     /// `TakeEdit.coverDrawingKey` of the cover block's drawing.
     @ObservationIgnored var drawnCoverKey: Int?
-    /// A short part playing to show a change (a zoom, a reveal, a pause heard).
-    @ObservationIgnored var previewTask: Task<Void, Never>?
-    @ObservationIgnored private var draftTask: Task<Void, Never>?
     /// Opens Cue's page in the Settings app (a toast's "Settings" when the microphone is off for Cue); tests count it.
     @ObservationIgnored var opensSettings: @MainActor () -> Void = { AppSettingsLink.open() }
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
     @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
-    /// Work started from a tool that the editor waits for (`startJob`).
-    @ObservationIgnored private var jobs: [UUID: Task<Void, Never>] = [:]
-    @ObservationIgnored private(set) var isClosed = false
+    /// Everything the editor started and waits for (`EditorJobs`): Auto, captions, Track, the cover, a short preview, the
+    /// sound compared, the draft, beats, Clean Up and tools' work. Closing cancels it all.
+    @ObservationIgnored let jobs = EditorJobs()
+    /// The editor closed: what a job hands back after is dropped.
+    var isClosed: Bool { jobs.isClosed }
 
     init(
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
@@ -364,11 +334,12 @@ final class QuickEditViewModel {
         var edit = take.edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
         if take.edit == nil { edit.captionCollection?.safeMargins = Self.captionSafeMargins(for: take, aspect: take.aspect) }
         edit.captions = edit.captions.map(CaptionRevision.withoutContinuation)
-        original = edit
-        self.edit = edit
+        document = EditDocument(edit)
         frameRate = Double(take.frameRate.rawValue)
         self.player = player ?? QuickEditPlayer(videoURL: takes.videoURL(for: take), editing: editing)
         self.recorder.stoppedByItself = { [weak self] reason in self?.voiceOverStoppedByItself(reason) }
+        self.player.playingStopped = { [weak self] in self?.playingStopped() }
+        document.onChange = { [weak self] previous in self?.editChanged(from: previous) }
     }
 
     /// Opens the recording, picks up a draft left behind and starts the player.
@@ -383,30 +354,32 @@ final class QuickEditViewModel {
             return
         }
         if let rate = await editing.frameRate(ofVideoAt: videoURL) { frameRate = FrameGrid(rate: rate).rate }
+        recordingUprightSize = await EditFraming.shape(of: videoURL)?.uprightSize
         guard !isClosed else { return }
-        // The file's own length wins over the take's saved one.
-        original.timeline = original.timeline.fitted(toSourceDuration: duration)
-        var start = original
+        // The file's own length wins over the take's saved one; a draft left behind comes back with its undo steps.
         var playhead: TimeInterval = 0
-        if let draft = drafts.draft(for: take.id), draft.edit != original {
-            start = draft.edit
-            start.captions = start.captions.map(CaptionRevision.withoutContinuation)
-            start.timeline = start.timeline.fitted(toSourceDuration: duration)
-            history = draft.history
+        let draft = drafts.draft(for: take.id)
+        if document.open(sourceDuration: duration, draft: draft), let draft {
             playhead = draft.playhead
             toast.show(String(localized: "Draft restored"))
         }
-        edit = start
         if edit.cleanUpAnalyzed, edit.recordingsToCleanUp.isEmpty { analysis = .done }
         source = .ready
         player.show(edit)
         player.seek(to: playhead)
         drawCover()
-        requestMotionAnalysis()
+        // Only an edit that uses Follow face or Stabilize has its recordings analyzed now; the others when Format or
+        // Stabilize opens (an hour of video is a lot to analyze for nothing).
+        requestMotionAnalysisIfNeeded()
         findBeatsIfNeeded()
     }
 
-    private func editDidChange() {
+    /// The edit changed: what was picked and is gone is let go, and the preview, the draft and the cover follow.
+    private func editChanged(from previous: TakeEdit) {
+        // Edit by text picks words by their place in the list, which any change of the cuts moves (the sheet lets the
+        // timeline be used behind it).
+        if previous.timeline != edit.timeline { transcriptSelection = nil }
+        if previous.captions != edit.captions || previous.timeline != edit.timeline { captionMapStore = nil }
         guard source == .ready else { return }
         if let id = selectedSegmentID, edit.timeline.segment(id: id) == nil { selectedSegmentID = nil }
         if let id = selectedTextID, !edit.texts.contains(where: { $0.id == id }) { selectedTextID = nil }
@@ -425,6 +398,58 @@ final class QuickEditViewModel {
         requestMotionAnalysisIfNeeded()
         if edit.coverDrawingKey != drawnCoverKey { drawCover() }
         scheduleDraftSave()
+    }
+
+    // MARK: - Panels and picking
+
+    /// Opens `next` under the timeline (nil closes the panel). Leaving a panel ends what went on in it: its undo step, a
+    /// narration being recorded, a comparison, Auto measuring, the lines picked in Captions, and Transition's cut.
+    func show(_ next: EditorPanel?) {
+        guard next != shownPanel else { return }
+        leavePanel(for: next, endingChange: true)
+    }
+
+    /// Picks `next` (nil lets go). The Text or Audio menu gives way to it; a cut opens its Transition panel; a panel that
+    /// works on the picked item closes when it can't work on `next`. Picking never ends an undo step: a gesture that picks
+    /// (or lets go of what it removed) keeps its one step.
+    func pick(_ next: EditorSelection?) {
+        guard next != picked else { return }
+        picked = next
+        if next != nil { toolMenu = nil }
+        if next?.joinID != nil {
+            if shownPanel != .transition {
+                leavePanel(for: nil, endingChange: true)
+                leavePanel(for: .transition, endingChange: true)
+            }
+        } else if let panel = shownPanel, followsSelection(panel), !(next.map { accepts($0, in: panel) } ?? false) {
+            leavePanel(for: nil, endingChange: false)
+        }
+    }
+
+    /// The one way the panel changes: what the panel left behind ends, in this order, once.
+    private func leavePanel(for next: EditorPanel?, endingChange: Bool) {
+        let previous = shownPanel
+        guard next != previous else { return }
+        shownPanel = next
+        showsAdvanced = false
+        panelTab = .presets
+        if previous == .voice { endComparison() }
+        // Leaving Adjust (or opening it again) never leaves a measurement running or the picture compared.
+        if next != .adjust { cancelAuto() }
+        comparesPicture = false
+        if endingChange { endChange() }
+        if recorder.isRecording { stopVoiceOver() }
+        // A cut is picked only while its Transition panel is open.
+        if previous == .transition, picked?.joinID != nil { picked = nil }
+        if next == .crop || next == .stabilize { requestMotionAnalysis() }
+        if next == .pauses {
+            cleanUpMarks = [:]
+            // Not tied to the panel: leaving Pauses doesn't stop it listening.
+            listenForCleanUp()
+        }
+        if next == nil { lookScopeIsClip = false }
+        // Picking several lines belongs to the list of lines.
+        if next != .captions { captionPicks = nil }
     }
 
     /// Sets the selection from one of the per-kind ids: a new id selects that item, and nil lets
@@ -458,9 +483,9 @@ final class QuickEditViewModel {
     /// "00:04.1 / 00:11.0"
     var timeLabel: String { currentTimeLabel + " / " + durationLabel }
 
-    var canUndo: Bool { history.canUndo && !recorder.isRecording }
-    var canRedo: Bool { history.canRedo && !recorder.isRecording }
-    var hasUnsavedChanges: Bool { edit != original }
+    var canUndo: Bool { document.canUndo && !recorder.isRecording }
+    var canRedo: Bool { document.canRedo && !recorder.isRecording }
+    var hasUnsavedChanges: Bool { document.hasUnsavedChanges }
 
     var selectedSegmentIndex: Int? {
         selectedSegmentID.flatMap { edit.timeline.index(ofSegment: $0) }
@@ -536,10 +561,7 @@ final class QuickEditViewModel {
     // MARK: - Undo
 
     func undo() {
-        guard canUndo else { return }
-        endChange()
-        guard let previous = history.undo(from: snapshot) else { return }
-        restore(previous)
+        guard canUndo, document.undo() else { return }
         // Edit by text picks words by their place in the list, which an undone cut changes.
         transcriptSelection = nil
         // VoiceOver hears it happen, as a sighted creator sees the edit change.
@@ -547,111 +569,47 @@ final class QuickEditViewModel {
     }
 
     func redo() {
-        guard canRedo else { return }
-        endChange()
-        guard let next = history.redo(from: snapshot) else { return }
-        restore(next)
+        guard canRedo, document.redo() else { return }
         transcriptSelection = nil
         AccessibilityNotification.Announcement(String(localized: "Redone")).post()
     }
 
-    /// What undo keeps of the edit: the timeline, the suggestions' decisions, what was added on top
-    /// and the look a style sets.
-    var snapshot: EditSnapshot {
-        EditSnapshot(edit)
-    }
+    /// What undo keeps of the edit (`EditDocument.snapshot`).
+    var snapshot: EditSnapshot { document.snapshot }
 
-    /// A change undo can take back: a new timeline, and new decisions about suggestions.
+    /// A new timeline (and decisions about suggestions) as an undo step (`EditDocument.commit`).
     func commit(_ timeline: EditTimeline, suggestions: [CleanUpSuggestion]? = nil, key: String? = nil) {
-        var next = snapshot
-        next.timeline = timeline
-        if let suggestions { next.suggestions = suggestions }
-        commit(next, key: key)
+        document.commit(timeline, suggestions: suggestions, key: key)
     }
 
-    /// A change undo can take back. Inside a gesture or a sheet (`beginChange`), the step was
-    /// already taken when it began. Changes with the same `key` in a quick row (a slider, typing)
-    /// are one step (`EditHistory.coalescingInterval`).
+    /// What undo keeps, changed as an undo step (`EditDocument.commit`).
     func commit(_ next: EditSnapshot, key: String? = nil) {
-        var next = next
-        // Sound effects and extracted sounds follow the moment they were put on when the cuts change (and nothing moved them in
-        // this step). Inside a gesture, from where the gesture began, so dragging a handle out and back leaves them where they were.
-        let current = snapshot
-        let origin = changeBase ?? current
-        if next.timeline != current.timeline, next.music == current.music, let music = origin.music, music.contains(where: \.followsTheVideo) {
-            let followed = MusicClip.following(music, from: origin.timeline, to: next.timeline)
-            next.music = current.music?.map { clip in
-                clip.followsTheVideo ? (followed.first { $0.id == clip.id } ?? clip) : clip
-            }
-        }
-        guard next != current else { return }
-        if changeBase == nil { history.record(current, key: key, at: .now) }
-        var changed = edit
-        changed.apply(next)
-        edit = changed
+        document.commit(next, key: key)
     }
 
-    /// Changes what undo keeps (texts, media, voice-overs, the cover, the style) as one step;
-    /// with a `key`, quick changes of the same kind join one step.
+    /// Texts, media, voice-overs, the cover or the style changed as an undo step (`EditDocument.change`).
     func change(key: String? = nil, _ update: (inout EditSnapshot) -> Void) {
-        var next = snapshot
-        update(&next)
-        commit(next, key: key)
+        document.change(key: key, update)
     }
 
-    /// Changes anything the creator decides on the edit (light, frame, sound, captions shown, what is locked…) as one undo
-    /// step; with a `key`, quick changes of the same kind join one step. What listening found isn't the creator's to change
-    /// here (`updateFindings`).
+    /// Anything the creator decides on the edit, changed as an undo step (`EditDocument.changeEdit`).
     func changeEdit(key: String? = nil, _ update: (inout TakeEdit) -> Void) {
-        var changed = edit
-        update(&changed)
-        assert(Self.findings(of: changed) == Self.findings(of: edit), "What listening found changes with updateFindings")
-        commit(EditSnapshot(changed), key: key)
+        document.changeEdit(key: key, update)
     }
 
-    /// Puts what listening found on the edit (transcripts, Clean Up's suggestions, which recordings were heard): never an
-    /// undo step, and Undo leaves it (`restore` keeps new suggestions waiting for review). Everything the creator decides
-    /// stays as it is.
+    /// What listening found, laid on without an undo step (`EditDocument.updateFindings`).
     func updateFindings(_ update: (inout TakeEdit) -> Void) {
-        var changed = edit
-        update(&changed)
-        var decided = EditSnapshot(changed)
-        decided.suggestions = snapshot.suggestions
-        assert(decided == snapshot, "A decision of the creator changes with changeEdit, as an undo step")
-        edit = changed
+        document.updateFindings(update)
     }
 
-    /// What listening found: the part of the edit no undo step keeps.
-    private static func findings(of edit: TakeEdit) -> [AnyHashable] {
-        [edit.cleanUpAnalyzed, edit.cleanUpAnalyzedSources, edit.captionTranscript, edit.sourceTranscripts]
-    }
-
-    /// A gesture or a sheet starts changing something, maybe many times: all of it is one undo
-    /// step, taken when it ends (`endChange`).
+    /// A gesture or a sheet starts changing something: all of it is one undo step (`EditDocument.beginChange`).
     func beginChange() {
-        guard changeBase == nil else { return }
-        changeBase = snapshot
+        document.beginChange()
     }
 
-    /// The gesture or sheet is over: one undo step back to where it began, when anything changed.
+    /// The gesture or sheet is over (`EditDocument.endChange`).
     func endChange() {
-        guard let base = changeBase else { return }
-        changeBase = nil
-        if base != snapshot { history.record(base) }
-    }
-
-    /// Goes back (or forward) to a step. Suggestions found since keep their place and take the
-    /// step's decision, or wait for review when the step didn't know them yet.
-    func restore(_ step: EditSnapshot) {
-        let decisions = Dictionary(step.suggestions.map { ($0.id, $0.status) }, uniquingKeysWith: { first, _ in first })
-        var changed = edit
-        changed.apply(step)
-        changed.suggestions = edit.suggestions.map { suggestion in
-            var restored = suggestion
-            restored.status = decisions[suggestion.id] ?? .pending
-            return restored
-        }
-        edit = changed
+        document.endChange()
     }
 
     /// The take's script, or nothing for a freestyle take.
@@ -745,7 +703,7 @@ final class QuickEditViewModel {
         // A narration being recorded is kept with the draft, like every other change.
         if recorder.isRecording { stopVoiceOver() }
         guard source == .ready, hasUnsavedChanges else {
-            removeUnusedImports(keeping: original.mediaFileNames)
+            removeUnusedImports(keeping: document.original.mediaFileNames)
             close(keepingDraft: false)
             return
         }
@@ -764,27 +722,18 @@ final class QuickEditViewModel {
     /// Files copied in during this visit that nothing kept names: the take's saved edit (and the
     /// one it had) still point at theirs.
     private func removeUnusedImports(keeping names: Set<String>) {
-        let unused = importedFiles.subtracting(names).subtracting(original.mediaFileNames)
+        let unused = importedFiles.subtracting(names).subtracting(document.original.mediaFileNames)
         importedFiles = []
         EditMediaFiles.remove(unused)
     }
 
-    /// Nothing started here outlives the editor: every task is cancelled, and what a slow one hands back after is dropped
-    /// (each checks `isClosed` after its await).
+    /// Nothing started here outlives the editor: every job is cancelled, and what a slow one hands back after is dropped
+    /// (its ticket is no longer current; work awaited elsewhere checks `isClosed`).
     private func close(keepingDraft: Bool) {
-        isClosed = true
-        draftTask?.cancel()
-        coverTask?.cancel()
-        captionTask?.cancel()
-        captionRequest = nil
         cancelAuto()
-        trackingTask?.cancel()
-        trackingTask = nil
-        previewTask?.cancel()
-        comparisonTask?.cancel()
+        trackingProgress = nil
+        jobs.close()
         translationRequest = nil
-        for job in jobs.values { job.cancel() }
-        jobs = [:]
         if !keepingDraft { drafts.discard(takeID: take.id) }
         player.stop()
     }
@@ -798,20 +747,13 @@ final class QuickEditViewModel {
 
     /// Starts work a tool waits for (a freeze frame, a reverse, a sound pulled out): leaving the editor cancels it.
     func startJob(_ work: @escaping @MainActor () async -> Void) {
-        guard !isClosed else { return }
-        let id = UUID()
-        jobs[id] = Task { [weak self] in
-            await work()
-            self?.jobs[id] = nil
-        }
+        jobs.startTool(work)
     }
 
     // MARK: - Draft
 
     private func scheduleDraftSave() {
-        guard !isClosed else { return }
-        draftTask?.cancel()
-        draftTask = Task { [weak self] in
+        jobs.start(.draft) { [weak self] _ in
             try? await Task.sleep(for: .milliseconds(600))
             guard !Task.isCancelled else { return }
             self?.autosaveDraft()
@@ -822,8 +764,8 @@ final class QuickEditViewModel {
     /// nothing is changed any more.
     private func autosaveDraft() {
         guard source == .ready, !isClosed else { return }
-        if edit != original {
-            drafts.saveSoon(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: history, savedAt: .now))
+        if hasUnsavedChanges {
+            drafts.saveSoon(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.history, savedAt: .now))
         } else {
             drafts.discard(takeID: take.id)
         }
@@ -834,9 +776,9 @@ final class QuickEditViewModel {
     @discardableResult
     func saveDraft(forced: Bool = false) -> Bool {
         guard source == .ready, !isClosed else { return true }
-        if edit != original || forced {
+        if hasUnsavedChanges || forced {
             do {
-                try drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: history, savedAt: .now))
+                try drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.history, savedAt: .now))
             } catch {
                 noteFailure(error, "draft")
                 return false

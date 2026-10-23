@@ -218,7 +218,7 @@ struct DesignCatalogueView: View {
                 ForEach([12.0, 16, 20, 22, 26, 30, 44], id: \.self) { size in
                     VStack(spacing: 4) {
                         CueIconView(.editCut, size: size).foregroundStyle(Palette.ink)
-                        Text("\(Int(size))").font(.system(size: 9, design: .monospaced)).foregroundStyle(Palette.inkHint)
+                        Text("\(Int(size))").monoFont(size: 9).foregroundStyle(Palette.inkHint)
                     }
                 }
             }
@@ -440,7 +440,7 @@ struct DesignCatalogueView: View {
     }
 
     private func heading(_ text: String) -> some View {
-        Text(text).font(CueStudioFont.hud).textCase(.uppercase).foregroundStyle(Palette.accText)
+        Text(text).hudFont().textCase(.uppercase).foregroundStyle(Palette.accText)
     }
 }
 

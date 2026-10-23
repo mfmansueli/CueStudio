@@ -15,13 +15,13 @@ struct EditorOpeningOverlay: View {
             Palette.bg.ignoresSafeArea()
             VStack(spacing: 0) {
                 Text("OPENING YOUR EDIT")
-                    .font(CueStudioFont.hud)
+                    .hudFont()
                     .interfaceTracking(1.5)
                     .foregroundStyle(Palette.ink2)
                     .padding(.top, 20)
-                RoundedRectangle(cornerRadius: 28, style: .continuous)
+                RoundedRectangle(cornerRadius: Metrics.editorSheetRadius, style: .continuous)
                     .fill(Palette.surface)
-                    .overlay(RoundedRectangle(cornerRadius: 28, style: .continuous).strokeBorder(Palette.aiBorder, lineWidth: 0.5))
+                    .overlay(RoundedRectangle(cornerRadius: Metrics.editorSheetRadius, style: .continuous).strokeBorder(Palette.aiBorder, lineWidth: 0.5))
                     .aspectRatio(9.0 / 16.0, contentMode: .fit)
                     .padding(.top, 18)
                     .padding(.horizontal, 60)
@@ -42,7 +42,7 @@ struct EditorOpeningOverlay: View {
     }
 
     private var card: some View {
-        let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
+        let shape = RoundedRectangle(cornerRadius: Metrics.editorPanelRadius, style: .continuous)
         return VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
                 Text("✦").foregroundStyle(Palette.aiText)
@@ -74,11 +74,11 @@ struct EditorOpeningOverlay: View {
     private var skeleton: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 10) {
-                RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Palette.surface2).frame(width: 44, height: 56)
-                RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Palette.surface2).frame(height: 56)
+                RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous).fill(Palette.surface2).frame(width: 44, height: 56)
+                RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous).fill(Palette.surface2).frame(height: 56)
             }
-            RoundedRectangle(cornerRadius: 8, style: .continuous).fill(Palette.surface).frame(width: 150, height: 26)
-            RoundedRectangle(cornerRadius: 8, style: .continuous).fill(Palette.surface).frame(width: 220, height: 26)
+            RoundedRectangle(cornerRadius: Metrics.editorStripRadius, style: .continuous).fill(Palette.surface).frame(width: 150, height: 26)
+            RoundedRectangle(cornerRadius: Metrics.editorStripRadius, style: .continuous).fill(Palette.surface).frame(width: 220, height: 26)
         }
         .padding(.horizontal, 16)
     }

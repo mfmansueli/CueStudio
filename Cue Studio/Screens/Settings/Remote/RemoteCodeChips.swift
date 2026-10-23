@@ -33,7 +33,7 @@ struct RemoteCodeChips: View {
     private func tile(_ character: Character, index: Int) -> some View {
         let isShown = shown == code
         return Text(String(character))
-            .font(.system(size: 24, weight: .bold, design: .monospaced))
+            .monoFont(size: 24, weight: .bold)
             .foregroundStyle(Palette.ink)
             .frame(width: 40, height: 50)
             .background(Palette.Remote.codeTile, in: RoundedRectangle(cornerRadius: 12, style: .continuous))

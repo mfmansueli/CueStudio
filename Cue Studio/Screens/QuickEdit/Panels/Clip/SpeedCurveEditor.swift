@@ -52,7 +52,7 @@ struct SpeedCurveEditor: View {
         .overlay(alignment: .topLeading) {
             ForEach([4.0, 1, 0.25], id: \.self) { speed in
                 Text(SpeedScale.label(forMultiple: speed))
-                    .font(.system(.caption2, design: .monospaced))
+                    .monoFont(.caption2)
                     .foregroundStyle(Palette.ink2)
                     .fixedSize()
                     .position(x: 22, y: Self.y(forSpeed: speed, height: size.height) - 8)

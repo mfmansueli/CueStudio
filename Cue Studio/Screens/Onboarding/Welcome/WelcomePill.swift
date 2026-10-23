@@ -22,8 +22,8 @@ struct WelcomePill: View {
         let ring = WelcomeScript.wordRing(hit: hit).pose(at: time)
         let glow = WelcomeScript.pillGlow(hit: hit).pose(at: time).opacity
         Text(text)
-            .font(.system(size: 10, weight: .semibold, design: .monospaced))
-            .tracking(0.8)
+            .monoFont(size: 10, weight: .semibold)
+            .interfaceTracking(0.8)
             .lineLimit(1)
             .foregroundStyle((isAI ? Palette.aiTextStrong : Palette.ink2).mix(with: Palette.accInk, by: lit))
             .padding(.horizontal, 9)

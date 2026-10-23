@@ -15,12 +15,12 @@ struct VoiceMeter: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack {
                 Text("VOICE STRENGTH \(strength)%")
-                    .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
-                    .tracking(1)
+                    .monoFont(size: 10.5, weight: .semibold)
+                    .interfaceTracking(1)
                     .foregroundStyle(Palette.ink)
                 Spacer(minLength: 8)
                 Text(level.label)
-                    .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
+                    .monoFont(size: 10.5, weight: .semibold)
                     .textCase(.uppercase)
                     .tracking(1)
                     .foregroundStyle(Palette.inkHint)

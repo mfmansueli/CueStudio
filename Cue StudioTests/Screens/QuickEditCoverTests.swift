@@ -49,12 +49,12 @@ struct QuickEditCoverTests {
         studio.setTitle("3 morning habits")
         studio.applyTemplate(.opinion)
         studio.addItem(.arrow)
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.finishCoverStudio(studio)
         #expect(viewModel.coverStudio == nil)
         #expect(viewModel.edit.cover?.title == "3 morning habits")
         #expect(viewModel.edit.cover?.composition?.template == .opinion)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
 
         viewModel.openCoverStudio()
         let again = try #require(viewModel.coverStudio)

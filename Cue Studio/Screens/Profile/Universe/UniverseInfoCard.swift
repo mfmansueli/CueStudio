@@ -23,7 +23,7 @@ struct UniverseInfoCard: View {
                     .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous)).accessibilityHidden(true)
             }
             VStack(alignment: .leading, spacing: 4) {
-                Text(eyebrow).font(.system(size: 10.5, weight: .semibold, design: .monospaced)).tracking(1).foregroundStyle(Palette.accText)
+                Text(eyebrow).monoFont(size: 10.5, weight: .semibold).interfaceTracking(1).foregroundStyle(Palette.accText)
                 Text(title).font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.ink)
                 if !detail.isEmpty { Text(detail).font(.system(size: 13.5)).foregroundStyle(Palette.ink2) }
                 ProgressView(value: min(1, max(0, progress))).tint(Palette.acc).padding(.top, 4)

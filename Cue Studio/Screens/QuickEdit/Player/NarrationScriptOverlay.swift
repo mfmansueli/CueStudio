@@ -77,7 +77,7 @@ struct NarrationScriptOverlay: View {
 
     private var pausedBadge: some View {
         HStack(spacing: 4) {
-            Image(systemName: "pause.fill").font(.system(size: 10, weight: .bold))
+            Image(systemName: "pause.fill").font(.editorGlyph(EditorGlyph.mark, weight: .bold))
             Text("Paused").font(.caption.weight(.semibold))
         }
         .foregroundStyle(Palette.ink)

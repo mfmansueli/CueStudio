@@ -41,7 +41,7 @@ struct CoverFrameStrip: View {
                 }
                 if let shown {
                     let x = min(max(18, CGFloat(shown / total) * width), width - 18)
-                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                    RoundedRectangle(cornerRadius: Metrics.clipRadius, style: .continuous)
                         .strokeBorder(Palette.Editor.overlayOutline, lineWidth: 2.5)
                         .shadow(color: Palette.Editor.overlayOutlineHalo, radius: 1.5)
                         .frame(width: 36, height: 56)
@@ -49,7 +49,7 @@ struct CoverFrameStrip: View {
                 }
             }
             .frame(height: 56)
-            .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: Metrics.editorSegmentRadius, style: .continuous))
             .contentShape(Rectangle())
             .gesture(
                 DragGesture(minimumDistance: 0)

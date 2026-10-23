@@ -31,7 +31,7 @@ struct ProPlanCard: View {
             .overlay(alignment: .topTrailing) {
                 if let badge {
                     Text(badge)
-                        .font(.system(size: 9.5, weight: .semibold, design: .monospaced))
+                        .monoFont(size: 9.5, weight: .semibold)
                         .foregroundStyle(Palette.accInk)
                         .padding(.horizontal, 7)
                         .frame(height: 20)

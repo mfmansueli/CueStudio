@@ -321,7 +321,7 @@ struct ScriptsDock: View {
         let used = ideaDraft.text.count
         let limit = IdeaPromptDraft.maxCharacters
         return Text(verbatim: "\(used.formatted()) / \(limit.formatted())")
-            .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
+            .monoFont(size: 10.5, weight: .semibold)
             .foregroundStyle(ideaDraft.draft.isAtLimit ? Palette.warnText : Palette.ink)
             .frame(maxWidth: .infinity, alignment: .trailing)
             .padding(.bottom, 4)

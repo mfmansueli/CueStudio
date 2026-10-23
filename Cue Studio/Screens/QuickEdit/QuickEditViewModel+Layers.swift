@@ -46,7 +46,7 @@ extension QuickEditViewModel {
 
     /// Caption lines where they play, for the shared timeline.
     var captionBars: [LayerBar] {
-        edit.editedCaptionInstances.map { line, cueID in
+        captionMap.instances.map { line, cueID in
             LayerBar(
                 id: line.id, kind: .caption, span: line.span,
                 title: line.text.isEmpty ? String(localized: "Empty line") : line.text, isSelected: cueID == selectedCaptionID

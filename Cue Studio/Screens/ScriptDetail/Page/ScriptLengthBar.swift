@@ -76,7 +76,7 @@ struct ScriptLengthBar: View {
                     ideal
                 }
             }
-            .font(CueStudioFont.hud)
+            .hudFont()
             .textCase(.uppercase)
             .tracking(0.6)
             .lineLimit(1)

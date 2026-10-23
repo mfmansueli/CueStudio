@@ -126,7 +126,7 @@ nonisolated final class MotionAnalyzer: MotionAnalyzing, @unchecked Sendable {
     /// The frame upright and reduced into `buffer`.
     private func draw(_ pixels: CVPixelBuffer, transform: CGAffineTransform, scale: CGFloat, into buffer: CVPixelBuffer) {
         var image = CIImage(cvPixelBuffer: pixels)
-            .transformed(by: CueVideoCompositor.uprightTransform(transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(pixels))))
+            .transformed(by: FramePipeline.uprightTransform(transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(pixels))))
         image = image.transformed(by: CGAffineTransform(translationX: -image.extent.minX, y: -image.extent.minY))
         image = image.transformed(by: CGAffineTransform(scaleX: scale, y: scale))
         context.render(image, to: buffer)

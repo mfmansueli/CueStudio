@@ -28,12 +28,19 @@ nonisolated struct AutoCorrection: Codable, Hashable, Sendable {
         var warmth: Double
     }
 
-    /// Bumped when the numbers mean something else, so a saved correction is never read wrong.
-    static let currentVersion = 1
+    /// Bumped when the numbers mean something else, so a saved correction is never read wrong (`readable`).
+    static var currentVersion: Int { ReadingVersion.autoCorrection.current }
     /// The tone curve's neutral points (`CIToneCurve` takes five).
     static let neutralTone = (0...4).map { Point(x: Double($0) / 4, y: Double($0) / 4) }
 
     var version = AutoCorrection.currentVersion
+
+    /// This correction as drawn: nil when a newer version of Cue measured it, whose numbers may mean something else (the
+    /// saved edit keeps it as it was).
+    var readable: AutoCorrection? {
+        ReadingVersion.autoCorrection.knows(version) ? self : nil
+    }
+
     /// `CIVibrance`, −1…1.
     var vibrance: Double = 0
     /// `CIHighlightShadowAdjust` highlights, 0…1 (1 leaves them).

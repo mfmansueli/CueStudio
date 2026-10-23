@@ -42,8 +42,9 @@ final class CoverStudioViewModel: Identifiable {
     private(set) var isImporting = false
     /// A guide shows while something is dragged: the middle across, and which height it stuck to.
     private(set) var guides: (vertical: Bool, horizontal: Double?) = (false, nil)
-    /// A message for a moment (a photo that couldn't be read).
-    var notice: String?
+    /// A message for a moment (a photo that couldn't be read, a style saved), as the editor's toasts say them (over the canvas,
+    /// read by VoiceOver).
+    let toast = ToastService()
     /// The editor had a cover when the studio opened: Finish offers Remove cover.
     let hadCover: Bool
     /// Remove cover was asked: Done takes the cover away.
@@ -51,12 +52,12 @@ final class CoverStudioViewModel: Identifiable {
 
     // MARK: History
 
-    private var past: [VideoCover] = []
-    private var future: [VideoCover] = []
+    /// Undo and redo, like the editor's (`EditHistory`: up to 60 steps, typing in a quick row is one).
+    private(set) var history = EditHistory<VideoCover>()
     /// The cover when a gesture began: the gesture is one undo step.
     @ObservationIgnored private var gestureBase: VideoCover?
-    var canUndo: Bool { !past.isEmpty }
-    var canRedo: Bool { !future.isEmpty }
+    var canUndo: Bool { history.canUndo }
+    var canRedo: Bool { history.canRedo }
 
     // MARK: Context
 
@@ -169,22 +170,19 @@ final class CoverStudioViewModel: Identifiable {
 
     // MARK: - Changes
 
-    /// A change undo takes back in one step.
-    func change(_ update: (inout VideoCover) -> Void) {
+    /// A change undo takes back in one step; with a `key`, changes of the same kind in a quick row (typing) are one step.
+    func change(key: String? = nil, _ update: (inout VideoCover) -> Void) {
         var next = cover
         update(&next)
         guard next != cover else { return }
-        if gestureBase == nil {
-            past.append(cover)
-            future = []
-        }
+        if gestureBase == nil { history.record(cover, key: key, at: .now) }
         cover = next
         coverDidChange()
     }
 
-    /// A change of the composition, one undo step.
-    func changeComposition(_ update: (inout CoverComposition) -> Void) {
-        change { cover in
+    /// A change of the composition, one undo step (with a `key`, a quick row of them is one).
+    func changeComposition(key: String? = nil, _ update: (inout CoverComposition) -> Void) {
+        change(key: key) { cover in
             var composition = cover.composition ?? CoverComposition.make(.educational, title: cover.title)
             update(&composition)
             cover.composition = composition
@@ -201,10 +199,7 @@ final class CoverStudioViewModel: Identifiable {
         guard let base = gestureBase else { return }
         gestureBase = nil
         guides = (false, nil)
-        if base != cover {
-            past.append(base)
-            future = []
-        }
+        if base != cover { history.record(base) }
         // Drawn again in full (with the person cut out) now that it stands still.
         scheduleRender()
     }
@@ -212,15 +207,13 @@ final class CoverStudioViewModel: Identifiable {
     var isGesturing: Bool { gestureBase != nil }
 
     func undo() {
-        guard let previous = past.popLast() else { return }
-        future.append(cover)
+        guard let previous = history.undo(from: cover) else { return }
         cover = previous
         coverDidChange(reloadsPictures: true)
     }
 
     func redo() {
-        guard let next = future.popLast() else { return }
-        past.append(cover)
+        guard let next = history.redo(from: cover) else { return }
         cover = next
         coverDidChange(reloadsPictures: true)
     }

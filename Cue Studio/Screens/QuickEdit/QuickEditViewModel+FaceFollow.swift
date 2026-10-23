@@ -9,9 +9,12 @@ import Foundation
 /// needs room: a format narrower or wider than the recording, in Fill. Each change is an undo step; moving the crop by hand
 /// turns it off.
 extension QuickEditViewModel {
-    /// The recording's upright width over height: the take's analysis has it; recordings are filmed upright at 9:16.
+    /// The recording's upright width over height: its analysis has it, or the file read when the editor opened; recordings are
+    /// filmed upright at 9:16.
     private var recordingAspect: Double {
-        takeMotionAnalysis?.aspect ?? 9.0 / 16.0
+        if let aspect = takeMotionAnalysis?.aspect { return aspect }
+        if let size = recordingUprightSize, size.height > 0 { return size.width / size.height }
+        return 9.0 / 16.0
     }
 
     /// Whether the crop has room to follow a face: Fill, and a format other than the recording's (or a montage, whose other

@@ -100,7 +100,7 @@ struct VoiceExamplesField: View {
         HStack(alignment: .top, spacing: 10) {
             VStack(alignment: .leading, spacing: 3) {
                 if let source = example.source {
-                    Text(source.uppercased()).font(CueStudioFont.hud).tracking(0.6).foregroundStyle(Palette.inkHint)
+                    Text(source.uppercased()).hudFont().interfaceTracking(0.6).foregroundStyle(Palette.inkHint)
                 }
                 Text("“\(example.text)”")
                     .font(.subheadline)

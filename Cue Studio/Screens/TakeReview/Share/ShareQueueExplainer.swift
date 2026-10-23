@@ -21,7 +21,7 @@ struct ShareQueueExplainer: View {
                 ForEach(Array(networks.enumerated()), id: \.element) { index, network in
                     if index > 0 { Image(systemName: "chevron.forward").font(.caption2.weight(.bold)).foregroundStyle(Palette.ink3) }
                     Text(network.platform.label.uppercased())
-                        .font(.system(size: 10.5, weight: .semibold, design: .monospaced)).tracking(0.8).foregroundStyle(Palette.ink)
+                        .monoFont(size: 10.5, weight: .semibold).interfaceTracking(0.8).foregroundStyle(Palette.ink)
                         .padding(.horizontal, 12).frame(height: 28)
                         .background(Palette.surface3, in: Capsule())
                 }
@@ -43,7 +43,7 @@ struct ShareQueueExplainer: View {
     private func point(_ number: Int, title: LocalizedStringKey, detail: LocalizedStringKey) -> some View {
         HStack(alignment: .top, spacing: 14) {
             Text("\(number)")
-                .font(.system(size: 13, weight: .bold, design: .monospaced)).foregroundStyle(Palette.accText)
+                .monoFont(size: 13, weight: .bold).foregroundStyle(Palette.accText)
                 .frame(width: 32, height: 32)
                 .background(Palette.accWashFaint, in: Circle())
             VStack(alignment: .leading, spacing: 2) {

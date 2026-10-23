@@ -151,7 +151,7 @@ struct CaptionsPanel: View {
             viewModel.panel = .captionStyle
         } label: {
             HStack(spacing: 5) {
-                Image(systemName: "textformat").font(.system(size: 12, weight: .bold))
+                Image(systemName: "textformat").font(.editorGlyph(EditorGlyph.chip, weight: .bold))
                 Text("Style").font(.system(.footnote, weight: .bold)).lineLimit(1)
             }
             .foregroundStyle(Palette.chipOnInk)
@@ -171,7 +171,7 @@ struct CaptionsPanel: View {
     ) -> some View {
         Button(action: action) {
             HStack(spacing: 5) {
-                Image(systemName: systemImage).font(.system(size: 12, weight: .semibold))
+                Image(systemName: systemImage).font(.editorGlyph(EditorGlyph.chip, weight: .semibold))
                 Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1)
             }
             .foregroundStyle(tinted ? Palette.accText : Palette.ink)
@@ -231,19 +231,32 @@ struct CaptionsPanel: View {
         ) { viewModel.showsTranslation = true }
     }
 
+    /// The lines, each a card. A long take's hundreds are made as they scroll into view (the few of a short video all at once,
+    /// so the next line's field is there to take the keyboard).
     private var lines: some View {
         VStack(spacing: 8) {
             let lines = viewModel.captionListLines
-            ForEach(Array(lines.enumerated()), id: \.element.line.id) { index, instance in
-                CaptionLineCard(
-                    viewModel: viewModel, line: instance.line, cueID: instance.cueID,
-                    isSelected: viewModel.selection == .caption(instance.cueID),
-                    isActive: activeID == instance.cueID, index: index, focusesField: $focusesField,
-                    isPicked: viewModel.captionPicks.map { $0.contains(instance.cueID) }
-                )
-                .id(instance.cueID)
+            if lines.count > Self.linesMadeAtOnce {
+                LazyVStack(spacing: 8) { lineCards(lines) }
+            } else {
+                lineCards(lines)
             }
             if !viewModel.isPickingCaptions { addAndDeleteAll(hasLines: !lines.isEmpty) }
+        }
+    }
+
+    /// More lines than this are made only as they show.
+    static let linesMadeAtOnce = 60
+
+    private func lineCards(_ lines: [(line: CaptionCue, cueID: UUID)]) -> some View {
+        ForEach(Array(lines.enumerated()), id: \.element.line.id) { index, instance in
+            CaptionLineCard(
+                viewModel: viewModel, line: instance.line, cueID: instance.cueID,
+                isSelected: viewModel.selection == .caption(instance.cueID),
+                isActive: activeID == instance.cueID, index: index, focusesField: $focusesField,
+                isPicked: viewModel.captionPicks.map { $0.contains(instance.cueID) }
+            )
+            .id(instance.cueID)
         }
     }
 

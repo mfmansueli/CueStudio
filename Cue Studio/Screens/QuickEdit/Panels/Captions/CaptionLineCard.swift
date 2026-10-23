@@ -32,7 +32,7 @@ struct CaptionLineCard: View {
         HStack(alignment: .top, spacing: 10) {
             if let isPicked {
                 Image(systemName: isPicked ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 20, weight: .semibold))
+                    .font(.editorGlyph(EditorGlyph.large, weight: .semibold))
                     .foregroundStyle(isPicked ? Palette.accText : Palette.ink2)
                     .accessibilityHidden(true)
             }
@@ -51,8 +51,8 @@ struct CaptionLineCard: View {
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
-        .background(background, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .contentShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .editorCard(.filled(background))
+        .contentShape(.editorCard)
         .onTapGesture {
             if isPicked != nil {
                 viewModel.toggleCaptionPick(cueID)
@@ -79,7 +79,11 @@ struct CaptionLineCard: View {
 
     private var header: some View {
         HStack(spacing: 8) {
-            Text(verbatim: "\(DurationText.editor(line.start)) → \(DurationText.editor(line.end))")
+            // The arrow follows the reading ("←" in Arabic).
+            Text(String(
+                localized: "\(DurationText.editor(line.start)) → \(DurationText.editor(line.end))",
+                comment: "Two moments of the video, from → to: a caption line's start and end, the length before and after Clean Up"
+            ))
             Spacer(minLength: 4)
             if let style = line.lineStyle, style.size != .regular {
                 Text(style.size.label)
@@ -110,8 +114,8 @@ struct CaptionLineCard: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
             .frame(minHeight: 42)
-            .background(Palette.surface, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Palette.acc, lineWidth: 1.5))
+            .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous).strokeBorder(Palette.acc, lineWidth: 1.5))
             .accessibilityIdentifier("edit.captionField")
             // On one row when it fits; with large text, More goes under the others so "3/12" and its name read whole.
             ViewThatFits(in: .horizontal) {
@@ -160,7 +164,7 @@ struct CaptionLineCard: View {
     private var deleteButton: some View {
         Button { viewModel.deleteCaptionLine(cueID) } label: {
             Image(systemName: "trash")
-                .font(.system(size: 14, weight: .semibold))
+                .font(.editorGlyph(EditorGlyph.row, weight: .semibold))
                 .foregroundStyle(Palette.dangerText)
                 .frame(width: 36, height: 32)
                 .background(Palette.Editor.dangerWash, in: Capsule())
@@ -210,7 +214,7 @@ struct CaptionLineCard: View {
             viewModel.goToCaptionLine(from: cueID, by: step, keepsTyping: focusesField.wrappedValue)
         } label: {
             Image(systemName: symbol)
-                .font(.system(size: 13, weight: .bold))
+                .font(.editorGlyph(EditorGlyph.compact, weight: .bold))
                 .frame(width: 34, height: 32)
                 .opacity(isAvailable ? 1 : Metrics.disabledOpacity)
                 .frame(minHeight: Metrics.hitTarget)
@@ -241,13 +245,13 @@ struct CaptionLineCard: View {
         .padding(.leading, 10)
         .padding(.trailing, 2)
         .frame(height: Metrics.hitTarget)
-        .background(Palette.fill, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+        .background(Palette.fill, in: RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous))
     }
 
     private func nudge(_ symbol: String, label: Text, identifier: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 14, weight: .semibold))
+                .font(.editorGlyph(EditorGlyph.row, weight: .semibold))
                 .frame(width: 38, height: Metrics.hitTarget)
                 .contentShape(Rectangle())
         }
@@ -259,7 +263,7 @@ struct CaptionLineCard: View {
     private func chip(_ label: String, systemImage: String? = nil, identifier: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 5) {
-                if let systemImage { Image(systemName: systemImage).font(.system(size: 10, weight: .bold)) }
+                if let systemImage { Image(systemName: systemImage).font(.editorGlyph(EditorGlyph.mark, weight: .bold)) }
                 Text(label).font(.system(.footnote, weight: .semibold)).lineLimit(1)
             }
             .padding(.horizontal, 12)
@@ -276,7 +280,7 @@ struct CaptionLineCard: View {
     private func iconChip(_ symbol: String, label: Text, identifier: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 12, weight: .bold))
+                .font(.editorGlyph(EditorGlyph.chip, weight: .bold))
                 .frame(width: 40, height: 32)
                 .background(Palette.fill, in: Capsule())
                 .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)

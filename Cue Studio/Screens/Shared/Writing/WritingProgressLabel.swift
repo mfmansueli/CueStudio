@@ -38,7 +38,7 @@ struct WritingProgressLabel: View {
     meter.record(.drafting)
     meter.record(.wrote(words: 64))
     return WritingProgressLabel(meter: meter)
-        .font(CueStudioFont.hud)
+        .hudFont()
         .foregroundStyle(Palette.ink2)
         .padding()
         .background(Palette.Scripts.transitionCover)

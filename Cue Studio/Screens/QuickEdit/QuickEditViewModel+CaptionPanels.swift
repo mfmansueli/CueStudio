@@ -25,19 +25,18 @@ extension QuickEditViewModel {
     /// The lines in the order they play: each instance in the edit (a copied section shows a line
     /// again), with the line it comes from.
     var captionListLines: [(line: CaptionCue, cueID: UUID)] {
-        edit.editedCaptionInstances.sorted { $0.line.start < $1.line.start }
+        captionMap.instances
     }
 
     /// The line playing under the playhead (the line it comes from).
     var activeCaptionCueID: UUID? {
-        let time = player.currentTime
-        return edit.editedCaptionInstances.first { $0.line.start <= time && time < $0.line.end }?.cueID
+        captionMap.instance(at: player.currentTime)?.cueID
     }
 
     /// A line tapped in the list: the playhead goes to its start and the timeline picks it too.
     func pickCaptionLine(_ cueID: UUID, at start: TimeInterval) {
         guard isReady else { return }
-        previewTask?.cancel()
+        jobs.cancel(.preview)
         player.pause()
         player.seek(to: start + 0.01)
         if selection != .caption(cueID) { Haptics.selection() }

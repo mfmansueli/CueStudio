@@ -13,7 +13,12 @@ import Foundation
 final class FakeEditPlayback: EditPlayback {
     let avPlayer = AVPlayer()
     var currentTime: TimeInterval = 0
-    var isPlaying = false
+    var isPlaying = false {
+        didSet {
+            if oldValue, !isPlaying { playingStopped?() }
+        }
+    }
+    var playingStopped: (@MainActor () -> Void)?
     var state: EditPlaybackState = .ready
     var isProcessing = false
     var reviewedPart: ClosedRange<TimeInterval>?
@@ -63,6 +68,12 @@ final class FakeEditPlayback: EditPlayback {
     }
 
     func endScrub() { isScrubbing = false }
+
+    /// Plays on to the end of the edit, where playing stops by itself.
+    func playToTheEnd() {
+        currentTime = duration
+        isPlaying = false
+    }
 
     func stop() {
         isStopped = true

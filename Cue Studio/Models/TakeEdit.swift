@@ -347,7 +347,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         enhancesVoice = try container.decodeIfPresent(Bool.self, forKey: .enhancesVoice) ?? true
         reducesNoise = try container.decodeIfPresent(Bool.self, forKey: .reducesNoise) ?? false
         // Edits saved before the levels keep the first treatment.
-        audioVersion = (try? container.decodeIfPresent(Int.self, forKey: .audioVersion)) ?? 1
+        audioVersion = ReadingVersion.audio.read(try? container.decodeIfPresent(Int.self, forKey: .audioVersion))
         voiceEnhancement = (try? container.decodeIfPresent(AudioStrength.self, forKey: .voiceEnhancement)) ?? (enhancesVoice ? .soft : .off)
         noiseReduction = (try? container.decodeIfPresent(AudioStrength.self, forKey: .noiseReduction)) ?? (reducesNoise ? .soft : .off)
         // Edits saved before montages could be treated keep their other recordings as they were.
@@ -403,7 +403,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         textPreset = try? container.decodeIfPresent(TypePreset.self, forKey: .textPreset)
         cover = container.decodeLenient(VideoCover.self, forKey: .cover, report: report)
         // An edit saved before the calibrated dials reads them the first way, unless it never used them.
-        lookVersion = (try? container.decodeIfPresent(Int.self, forKey: .lookVersion)) ?? (usesAdjustDials ? 1 : LookSettings.currentVersion)
+        lookVersion = ReadingVersion.look.read(try? container.decodeIfPresent(Int.self, forKey: .lookVersion), usedOldNumbers: usesAdjustDials)
     }
 
     /// The same pieces an old edit played, and its silences as pause suggestions.

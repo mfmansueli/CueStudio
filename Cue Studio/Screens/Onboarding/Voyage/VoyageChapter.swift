@@ -130,8 +130,8 @@ struct VoyageChapter: View {
         }
         // One line for VoiceOver: the one that shows.
         .accessibilityElement(children: .combine)
-        .font(.system(size: 12, weight: .semibold, design: .monospaced))
-        .tracking(1.2)
+        .monoFont(size: 12, weight: .semibold)
+        .interfaceTracking(1.2)
         .lineLimit(1)
         .minimumScaleFactor(0.7)
         .frame(height: 18)
@@ -146,8 +146,8 @@ struct VoyageChapter: View {
         let text = hintText
         let revealed = age.map { 1 - (pose("L82", $0 + VoyageScene.pickClock).clipRight ?? 1) } ?? 0
         return Text(text)
-            .font(.system(size: 10, weight: .semibold, design: .monospaced))
-            .tracking(1)
+            .monoFont(size: 10, weight: .semibold)
+            .interfaceTracking(1)
             .foregroundStyle(Palette.ink2)
             .lineLimit(1)
             .minimumScaleFactor(0.7)

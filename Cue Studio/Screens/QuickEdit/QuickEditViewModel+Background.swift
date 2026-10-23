@@ -128,13 +128,15 @@ extension QuickEditViewModel {
         isImportingBackground = true
         defer { isImportingBackground = false }
         do {
-            let imported = try await mediaImporter.importMedia(item)
+            let imported = try await importPicked(item)
             guard imported.kind == .photo, !isClosed else {
                 EditMediaFiles.remove([imported.fileName])
                 if !isClosed { toast.show(String(localized: "Can't add this file")) }
                 return
             }
             setBackgroundImage(imported.fileName)
+        } catch is CancellationError {
+            // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
             noteFailure(error, "importBackground")
             toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))

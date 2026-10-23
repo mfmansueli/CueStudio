@@ -25,7 +25,7 @@ extension CoverStudioViewModel {
     /// Typing the title: one undo step per pause in typing; the key word is highlighted when nothing is yet.
     func setTitle(_ title: String) {
         let words = CoverWords.words(in: title).count
-        change { cover in
+        change(key: "cover.title") { cover in
             let hadNoWords = CoverWords.words(in: cover.title).isEmpty
             cover.title = title
             guard var style = cover.composition?.title else { return }
@@ -48,8 +48,8 @@ extension CoverStudioViewModel {
         }
     }
 
-    func updateTitle(_ update: (inout CoverTitleStyle) -> Void) {
-        changeComposition { composition in
+    func updateTitle(key: String? = nil, _ update: (inout CoverTitleStyle) -> Void) {
+        changeComposition(key: key) { composition in
             update(&composition.title)
             composition.title = composition.title.clamped
         }
@@ -84,7 +84,7 @@ extension CoverStudioViewModel {
     /// "Save as my style": this cover's look (never its words or picture) for the next covers.
     func saveMyStyle() {
         setMyStyle(composition.style)
-        notice = String(localized: "Saved · Used for new covers")
+        toast.show(String(localized: "Saved · Used for new covers"))
     }
 
     /// "Apply my style": the saved look on this cover; its words, picture and graphics stay.

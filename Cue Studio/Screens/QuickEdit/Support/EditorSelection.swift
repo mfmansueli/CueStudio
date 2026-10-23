@@ -6,7 +6,7 @@
 import Foundation
 
 /// The one thing picked in the editor, on the timeline or in the preview. Picking it swaps the
-/// toolbar for its own tools.
+/// toolbar for its own tools; a cut's opens its Transition panel instead.
 nonisolated enum EditorSelection: Hashable, Sendable {
     case clip(UUID)
     case text(UUID)
@@ -14,11 +14,13 @@ nonisolated enum EditorSelection: Hashable, Sendable {
     case music(UUID)
     case voiceOver(UUID)
     case media(UUID)
+    /// A cut between two clips, named by the clip that starts there: its transition is picked in Transition.
+    case join(UUID)
 
     /// The track it sits on.
     var lane: TimelineLane {
         switch self {
-        case .clip: .main
+        case .clip, .join: .main
         case .text, .media: .text
         case .caption: .captions
         case .music: .music
@@ -35,6 +37,7 @@ nonisolated enum EditorSelection: Hashable, Sendable {
         case .music: String(localized: "Music")
         case .voiceOver: String(localized: "Voice-over")
         case .media: String(localized: "Media")
+        case .join: String(localized: "Transition")
         }
     }
 
@@ -44,4 +47,5 @@ nonisolated enum EditorSelection: Hashable, Sendable {
     var musicID: UUID? { if case .music(let id) = self { id } else { nil } }
     var voiceOverID: UUID? { if case .voiceOver(let id) = self { id } else { nil } }
     var mediaID: UUID? { if case .media(let id) = self { id } else { nil } }
+    var joinID: UUID? { if case .join(let id) = self { id } else { nil } }
 }

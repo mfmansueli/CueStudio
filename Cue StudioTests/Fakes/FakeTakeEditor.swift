@@ -110,7 +110,7 @@ final class FakeTakeEditor: TakeEditing {
         return captionOutcome ?? .captions(captions, transcript: CaptionTranscript(words: captions.flatMap(\.words), languageCode: "en"))
     }
 
-    func previewItem(forVideoAt url: URL, edit: TakeEdit, window: TimeSpan?, rendersCurveSound: Bool) async throws -> AVPlayerItem {
+    func previewItem(forVideoAt url: URL, edit: TakeEdit, purpose: EditRenderPurpose) async throws -> AVPlayerItem {
         AVPlayerItem(url: url)
     }
 

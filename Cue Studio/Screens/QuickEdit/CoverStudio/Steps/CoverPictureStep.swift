@@ -64,7 +64,7 @@ struct CoverPictureStep: View {
                         viewModel.stepFrame(by: -1, frameRate: frameRate)
                     }
                     Text(timeLabel)
-                        .font(.system(.footnote, design: .monospaced).weight(.semibold))
+                        .monoFont(.footnote, weight: .semibold)
                         .foregroundStyle(Palette.ink2)
                         .frame(maxWidth: .infinity)
                     stepButton("chevron.right", label: Text("One frame forward"), id: "cover.frameForward") {
@@ -156,7 +156,7 @@ struct CoverPictureStep: View {
     private func stepButton(_ symbol: String, label: Text, id: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.editorGlyph(EditorGlyph.button, weight: .semibold))
                 .foregroundStyle(Palette.ink)
                 .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                 .background(Palette.fill, in: Circle())

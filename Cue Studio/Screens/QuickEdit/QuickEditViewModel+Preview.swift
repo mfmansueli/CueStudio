@@ -77,7 +77,7 @@ extension QuickEditViewModel {
     func previewCaption(in size: CGSize) -> (id: UUID, frame: CGRect)? {
         guard edit.showsCaptions, size.width > 0 else { return nil }
         let time = player.currentTime
-        guard let instance = edit.editedCaptionInstances.first(where: { $0.line.span.contains(time) }) else { return nil }
+        guard let instance = captionMap.instance(at: time) else { return nil }
         var shown = edit
         // Only that line, measured the way the export draws it.
         shown.captions = edit.captions.filter { $0.id == instance.cueID }

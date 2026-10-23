@@ -21,7 +21,7 @@ struct ScriptsLogbookSection: View {
         if !waiting.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
                 Text("Logbook · \(waiting.count) waiting")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .monoFont(size: 10, weight: .semibold)
                     .textCase(.uppercase)
                     .tracking(1.2)
                     .foregroundStyle(Palette.aiText)

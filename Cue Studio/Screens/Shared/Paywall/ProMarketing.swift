@@ -17,8 +17,8 @@ struct ProMarketing: View {
         VStack(alignment: .leading, spacing: 22) {
             VStack(alignment: .leading, spacing: 6) {
                 Text(verbatim: PaywallCopy.eyebrow(for: context))
-                    .font(.system(size: 12, weight: .semibold, design: .monospaced))
-                    .tracking(1.5)
+                    .monoFont(size: 12, weight: .semibold)
+                    .interfaceTracking(1.5)
                     .foregroundStyle(Palette.accText)
                 Text(PaywallCopy.title(for: context))
                     .font(.system(size: 28, weight: .bold))
@@ -57,8 +57,8 @@ struct ProMarketing: View {
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Text(benefit.tag)
-                        .font(.system(size: 10.5, weight: .bold, design: .monospaced))
-                        .tracking(0.6)
+                        .monoFont(size: 10.5, weight: .bold)
+                        .interfaceTracking(0.6)
                         .foregroundStyle(tint(benefit.tone))
                 }
                 .padding(.vertical, 8)

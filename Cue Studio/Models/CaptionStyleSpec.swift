@@ -93,7 +93,7 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
     // MARK: - The presets
 
     /// The version 2 of every preset: what a new look is made from.
-    static let currentVersion = 2
+    static var currentVersion: Int { ReadingVersion.captionStyle.current }
 
     static func spec(for theme: CaptionTheme, version: Int) -> CaptionStyleSpec {
         version >= 2 ? current(theme) : original(theme)

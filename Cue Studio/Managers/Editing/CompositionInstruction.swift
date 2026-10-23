@@ -43,15 +43,19 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
     let zoom: ZoomWindow?
     /// Every fade in the edit: a frame inside one darkens.
     let fades: [TransitionWindow]
+    /// Where the edit starts in the composition (the preview's lead-in): what the look draws over time counts from here.
+    let timeOrigin: TimeInterval
 
     init(
         timeRange: CMTimeRange, trackID: CMPersistentTrackID, blendTrackID: CMPersistentTrackID? = nil,
         mediaTrackIDs: [CMPersistentTrackID] = [],
         frame: SourceFrame, blendFrame: SourceFrame? = nil, edit: TakeEdit, look: LookSettings? = nil, blendLook: LookSettings? = nil,
         overlays: [FrameOverlay], media: [MediaFrame] = [],
-        outputScale: CGFloat, dissolve: TransitionWindow? = nil, zoom: ZoomWindow? = nil, fades: [TransitionWindow] = []
+        outputScale: CGFloat, dissolve: TransitionWindow? = nil, zoom: ZoomWindow? = nil, fades: [TransitionWindow] = [],
+        timeOrigin: TimeInterval = 0
     ) {
         self.zoom = zoom
+        self.timeOrigin = timeOrigin
         self.timeRange = timeRange
         self.trackID = trackID
         self.blendTrackID = blendTrackID

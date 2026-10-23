@@ -21,8 +21,8 @@ struct MessageCapsule: View {
         HStack(spacing: 10) {
             star
             Text(label)
-                .font(.system(size: 11.5, weight: .semibold, design: .monospaced))
-                .tracking(1.15)
+                .monoFont(size: 11.5, weight: .semibold)
+                .interfaceTracking(1.15)
                 .foregroundStyle(Palette.Universe.starGold)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)

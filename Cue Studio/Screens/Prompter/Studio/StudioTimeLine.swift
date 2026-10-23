@@ -24,7 +24,7 @@ struct StudioTimeLine: View {
                 .foregroundStyle(Palette.ink2)
                 .accessibilityIdentifier("studio.timeTotal")
         }
-        .font(CueStudioFont.hud)
+        .hudFont()
         .monospacedDigit()
         .tracking(0.6)
         .lineLimit(1)

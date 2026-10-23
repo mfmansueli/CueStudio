@@ -26,7 +26,7 @@ struct MotionKeyframeControls: View {
                 }
                 Button(action: viewModel.toggleKeyframe) {
                     HStack(spacing: 8) {
-                        Image(systemName: "diamond.fill").font(.system(size: 12))
+                        Image(systemName: "diamond.fill").font(.editorGlyph(EditorGlyph.chip))
                         Text(here ? "Remove keyframe" : "Add keyframe").font(.system(.subheadline, weight: .semibold))
                     }
                     .foregroundStyle(here ? Palette.accInk : Palette.ink)
@@ -96,7 +96,7 @@ struct MotionKeyframeControls: View {
     private func arrow(_ symbol: String, label: Text, enabled: Bool, identifier: String, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(.system(size: 15, weight: .bold))
+                .font(.editorGlyph(EditorGlyph.button, weight: .bold))
                 .frame(width: 40, height: 40)
                 .background(Palette.fill, in: Circle())
                 .opacity(enabled ? 1 : Metrics.disabledOpacity)

@@ -52,7 +52,7 @@ struct QuickEditExtractAudioTests {
         timeline.replaceSegment(second)
         viewModel.commit(timeline)
         viewModel.selection = .clip(second.id)
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         let unmuted = viewModel.edit.timeline
         await viewModel.extractAudio()
         let request = try #require(scenario.editor.extractions.first)
@@ -66,7 +66,7 @@ struct QuickEditExtractAudioTests {
         #expect(clip.title == "Sound · Clip 2")
         #expect(viewModel.edit.timeline.segment(id: second.id)?.isMuted == true)
         #expect(viewModel.selection == .music(clip.id))
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(scenario.toast.message == "Sound on its own track · the clip is muted")
         viewModel.undo()
         #expect(viewModel.edit.music.isEmpty)

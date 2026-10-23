@@ -93,14 +93,13 @@ struct SmartPanel: View {
     }
 
     private func templateCard(_ template: VideoTemplate, isOn: Bool) -> some View {
-        let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
-        return Button {
+        Button {
             Haptics.selection()
             viewModel.applyVideoTemplate(template)
         } label: {
             HStack(spacing: 12) {
                 Image(systemName: template.systemImage)
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.editorGlyph(EditorGlyph.control, weight: .semibold))
                     .foregroundStyle(Palette.accText)
                     .frame(width: 36, height: 36)
                     .background(Palette.Editor.accTile, in: Circle())
@@ -112,7 +111,7 @@ struct SmartPanel: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 if isOn {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 20))
+                        .font(.editorGlyph(EditorGlyph.large))
                         .foregroundStyle(Palette.accText)
                         .accessibilityHidden(true)
                 }
@@ -120,9 +119,8 @@ struct SmartPanel: View {
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
             .frame(minHeight: Metrics.hitTarget)
-            .background(isOn ? Palette.Editor.accTile : Palette.Editor.panelCard, in: shape)
-            .overlay(shape.strokeBorder(isOn ? Palette.acc : Color.clear, lineWidth: 1.5))
-            .contentShape(shape)
+            .editorCard(isOn ? .picked : .plain)
+            .contentShape(.editorCard)
         }
         .buttonStyle(.cuePressCard)
         .accessibilityElement(children: .combine)
@@ -136,7 +134,7 @@ struct SmartPanel: View {
     private func tile(
         id: String, title: LocalizedStringKey, systemImage: String, status: String?, action: @escaping () -> Void
     ) -> some View {
-        let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
+        let shape = RoundedRectangle(cornerRadius: Metrics.tileRadius, style: .continuous)
         let isOn = status != nil
         return Button {
             Haptics.selection()
@@ -144,7 +142,7 @@ struct SmartPanel: View {
         } label: {
             VStack(alignment: .leading, spacing: 0) {
                 Image(systemName: systemImage)
-                    .font(.system(size: 20, weight: .medium))
+                    .font(.editorGlyph(EditorGlyph.large, weight: .medium))
                     .foregroundStyle(Palette.aiText)
                 Spacer(minLength: 4)
                 Text(title)
@@ -155,7 +153,7 @@ struct SmartPanel: View {
                     .minimumScaleFactor(0.85)
                 Text(status ?? " ")
                     .textCase(.uppercase)
-                    .font(.system(size: statusSize, weight: .heavy, design: .monospaced))
+                    .monoFont(size: statusSize, weight: .heavy)
                     .interfaceTracking(0.5)
                     .foregroundStyle(Palette.aiText)
                     .lineLimit(1)

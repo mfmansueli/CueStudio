@@ -48,8 +48,8 @@ struct TakePipelineCard: View {
             VStack(spacing: 6) {
                 circle(stage, count: count, isOn: isOn)
                 Text(label(stage, count: count))
-                    .font(.system(size: 9.5, weight: .semibold, design: .monospaced))
-                    .tracking(0.76)
+                    .monoFont(size: 9.5, weight: .semibold)
+                    .interfaceTracking(0.76)
                     .foregroundStyle(isOn ? Palette.accText : labelColor(stage))
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
@@ -103,7 +103,7 @@ struct TakePipelineCard: View {
     private func disc(fill: Color, ring: Color, text: String, ink: Color) -> some View {
         Circle().fill(fill)
             .overlay(Circle().strokeBorder(ring, lineWidth: 1))
-            .overlay { Text(verbatim: text).font(.system(size: 12, weight: .semibold, design: .monospaced)).foregroundStyle(ink) }
+            .overlay { Text(verbatim: text).monoFont(size: 12, weight: .semibold).foregroundStyle(ink) }
     }
 
     /// Filled green, black number, and a ring of green that goes out to 6 pt and back every 2 s (`pulse`; still with Reduce Motion).
@@ -113,7 +113,7 @@ struct TakePipelineCard: View {
             let eased = 1 - pow(1 - (phase < 0.5 ? phase * 2 : (1 - phase) * 2), 2)
             let spread = reduceMotion ? 0 : 6 * eased
             Circle().fill(Palette.success)
-                .overlay { Text(verbatim: "\(count)").font(.system(size: 12, weight: .semibold, design: .monospaced)).foregroundStyle(.black) }
+                .overlay { Text(verbatim: "\(count)").monoFont(size: 12, weight: .semibold).foregroundStyle(.black) }
                 .background {
                     Circle().fill(Palette.success.opacity(reduceMotion ? 0 : 0.5 * (1 - eased)))
                         .frame(width: 28 + spread * 2, height: 28 + spread * 2)

@@ -106,8 +106,8 @@ struct UniverseMap: View {
                 if onDot != nil { dotTaps(scale: scale, origin: origin) }
                 if let caption { captionText(caption, scale: scale, origin: origin) }
                 Text("YOU")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
-                    .tracking(1)
+                    .monoFont(size: 10, weight: .semibold)
+                    .interfaceTracking(1)
                     .foregroundStyle(Palette.inkSoft)
                     .position(x: center.x, y: center.y + 40 * scale)
                 if onCore != nil || onSeeInTakes != nil || onDot != nil {
@@ -497,7 +497,7 @@ struct UniverseMap: View {
         let distance = PlanetPainter.labelDistance(diameter: diameter, detail: detail)
         let side: CGFloat = node.labelAnchor == .trailing ? -1 : 1
         let name = showsCounts ? "\(platform.label.uppercased()) · \(count)" : platform.label.uppercased()
-        let label = Text(name).font(.system(size: 9.5, weight: .semibold, design: .monospaced))
+        let label = Text(name).font(.mono(size: 9.5, weight: .semibold, locale: canvas.environment.locale))
         var named = canvas
         named.opacity = min(1, birth.scale)
         named.draw(

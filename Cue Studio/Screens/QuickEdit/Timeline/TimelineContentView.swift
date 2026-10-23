@@ -262,7 +262,7 @@ final class TimelineContentView: UIView {
             mark.borderColor = UIColor(Palette.acc).cgColor
         } else {
             let dash = CAShapeLayer()
-            dash.path = UIBezierPath(roundedRect: mark.bounds.insetBy(dx: 0.75, dy: 0.75), cornerRadius: 5).cgPath
+            dash.path = UIBezierPath(roundedRect: mark.bounds.insetBy(dx: 0.75, dy: 0.75), cornerRadius: Metrics.editorMarkRadius).cgPath
             dash.fillColor = nil
             dash.strokeColor = UIColor(Palette.Editor.pauseKeepBorder).cgColor
             dash.lineWidth = 1.5

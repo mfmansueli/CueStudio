@@ -13,7 +13,7 @@ import Foundation
 /// never changes.
 nonisolated struct VoiceProcessing: Hashable, Sendable {
     /// What new edits get: 3, Reduce noise through Apple's voice isolation.
-    static let currentVersion = 3
+    static var currentVersion: Int { ReadingVersion.audio.current }
 
     /// The treatment's version: 1 for edits made before the levels, 2 for the equalizer and
     /// expander alone, 3 with Apple's voice isolation for Reduce noise.

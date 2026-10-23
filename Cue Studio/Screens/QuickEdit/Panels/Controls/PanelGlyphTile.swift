@@ -10,7 +10,7 @@ import SwiftUI
 /// the yellow wash; a suggestion from Cue is violet.
 struct PanelGlyphTile: View {
     let glyph: String
-    var glyphFont: Font = .system(size: 22, weight: .heavy)
+    var glyphFont: Font = .editorGlyph(EditorGlyph.player, weight: .heavy)
     let title: String
     var caption: String?
     var captionTint: Color = Palette.ink2
@@ -24,7 +24,6 @@ struct PanelGlyphTile: View {
     @ScaledMetric(relativeTo: .caption2) private var captionSize: CGFloat = 9
 
     var body: some View {
-        let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
         Button {
             Haptics.selection()
             action()
@@ -45,7 +44,7 @@ struct PanelGlyphTile: View {
                 if let caption {
                     Text(caption)
                         .textCase(.uppercase)
-                        .font(.system(size: captionSize, weight: .heavy, design: .monospaced))
+                        .monoFont(size: captionSize, weight: .heavy)
                         .interfaceTracking(0.4)
                         .foregroundStyle(isOn ? Palette.accText : captionTint)
                         .lineLimit(1)
@@ -54,9 +53,8 @@ struct PanelGlyphTile: View {
             }
             .padding(10)
             .frame(width: width, height: 90, alignment: .topLeading)
-            .background(isOn ? Palette.Editor.accTile : (isSuggestion ? Palette.aiFill : Palette.Editor.panelCard), in: shape)
-            .overlay(shape.strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
-            .contentShape(shape)
+            .editorCard(isOn ? .picked : (isSuggestion ? .filled(Palette.aiFill) : .plain))
+            .contentShape(.editorCard)
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)

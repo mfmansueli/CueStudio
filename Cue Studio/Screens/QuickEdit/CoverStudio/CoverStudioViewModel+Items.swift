@@ -28,8 +28,8 @@ extension CoverStudioViewModel {
         step = .elements
     }
 
-    func updateItem(_ id: UUID, _ update: (inout CoverItem) -> Void) {
-        changeComposition { composition in
+    func updateItem(_ id: UUID, key: String? = nil, _ update: (inout CoverItem) -> Void) {
+        changeComposition(key: key) { composition in
             guard let index = composition.items.firstIndex(where: { $0.id == id }) else { return }
             update(&composition.items[index])
             composition.items[index].isFromTemplate = false

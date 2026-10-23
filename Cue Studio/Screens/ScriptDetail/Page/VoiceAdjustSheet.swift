@@ -37,8 +37,8 @@ struct VoiceAdjustSheet: View {
                 VStack(alignment: .leading, spacing: 4) {
                     ForEach(picked) { adjustment in
                         Text(adjustment.change)
-                            .font(CueStudioFont.hud)
-                            .tracking(0.4)
+                            .hudFont()
+                            .interfaceTracking(0.4)
                             .foregroundStyle(Palette.ink2)
                     }
                 }

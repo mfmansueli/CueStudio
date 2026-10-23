@@ -22,8 +22,8 @@ struct VoiceSendsSheet: View {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(String(localized: "Apple Intelligence · on this iPhone").uppercased())
-                            .font(.system(size: 10.5, weight: .bold, design: .monospaced))
-                            .tracking(1)
+                            .monoFont(size: 10.5, weight: .bold)
+                            .interfaceTracking(1)
                             .foregroundStyle(Palette.aiText)
                         Text("What Cue sends")
                             .font(.system(size: 28, weight: .bold))
@@ -67,7 +67,7 @@ struct VoiceSendsSheet: View {
     private var briefCard: some View {
         let text = brief.text
         return Text(text.isEmpty ? String(localized: "Nothing yet. Set up the first questions and it shows here.") : text)
-            .font(.system(size: 11.5, design: .monospaced))
+            .monoFont(size: 11.5)
             .lineSpacing(3)
             .foregroundStyle(text.isEmpty ? Palette.inkHint : Palette.ink)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -92,8 +92,8 @@ struct VoiceSendsSheet: View {
                 Text(isLong ? "LONG · CUE TRIMS EXAMPLES FIRST" : "✓ ROOM FOR YOUR IDEA")
                     .foregroundStyle(isLong ? Palette.warnText : Palette.successText)
             }
-            .font(.system(size: 10.5, weight: .semibold, design: .monospaced))
-            .tracking(0.5)
+            .monoFont(size: 10.5, weight: .semibold)
+            .interfaceTracking(0.5)
             ProgressView(value: min(1, Double(count) / Double(VoiceBrief.budget)))
                 .tint(isLong ? Palette.warn : Palette.acc)
         }

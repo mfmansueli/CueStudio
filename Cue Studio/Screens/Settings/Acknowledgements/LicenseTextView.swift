@@ -16,7 +16,7 @@ struct LicenseTextView: View {
             VStack(alignment: .leading, spacing: 12) {
                 Text(verbatim: copyright).font(.footnote.weight(.semibold))
                 Text(verbatim: text)
-                    .font(.system(.caption, design: .monospaced))
+                    .monoFont(.caption)
                     .foregroundStyle(Palette.ink2)
                     .textSelection(.enabled)
             }

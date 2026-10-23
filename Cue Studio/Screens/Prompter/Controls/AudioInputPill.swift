@@ -23,8 +23,8 @@ struct AudioInputPill: View {
                     .textCase(.uppercase)
                     .lineLimit(1)
             }
-            .font(CueStudioFont.hud)
-            .tracking(0.6)
+            .hudFont()
+            .interfaceTracking(0.6)
             .foregroundStyle(Palette.ink)
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Rectangle())

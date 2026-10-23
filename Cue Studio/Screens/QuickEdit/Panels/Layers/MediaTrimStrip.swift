@@ -40,13 +40,13 @@ struct MediaTrimStrip: View {
                         }
                     }
                     .overlay { Palette.Editor.coverDim }
-                    RoundedRectangle(cornerRadius: 6, style: .continuous)
+                    RoundedRectangle(cornerRadius: Metrics.editorThumbnailRadius, style: .continuous)
                         .strokeBorder(Palette.acc, lineWidth: 2.5)
                         .frame(width: max(14, window), height: 48)
                         .offset(x: min(x, width - max(14, window)))
                 }
                 .frame(height: 48)
-                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: Metrics.editorStripRadius, style: .continuous))
                 .contentShape(Rectangle())
                 .gesture(
                     DragGesture(minimumDistance: 2)

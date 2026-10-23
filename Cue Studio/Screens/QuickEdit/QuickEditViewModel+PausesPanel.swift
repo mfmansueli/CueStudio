@@ -65,9 +65,11 @@ extension QuickEditViewModel {
         "−" + DurationText.tenths(cleanUpSaving)
     }
 
-    /// "00:21.6 → 00:17.5"
+    /// "00:21.6 → 00:17.5" (the arrow follows the reading: "←" in Arabic).
     var cleanUpResultLabel: String {
-        DurationText.editor(edit.editedDuration) + " → " + DurationText.editor(max(0, edit.editedDuration - cleanUpSaving))
+        let before = DurationText.editor(edit.editedDuration)
+        let after = DurationText.editor(max(0, edit.editedDuration - cleanUpSaving))
+        return String(localized: "\(before) → \(after)", comment: "Two moments of the video, from → to: a caption line's start and end, the length before and after Clean Up")
     }
 
     /// "Remove 3 pauses", "Remove 1 pause" (plural forms in the catalog), "Remove 4" with words in it, or "Nothing selected".
@@ -120,9 +122,8 @@ extension QuickEditViewModel {
         let back = max(0, span.start - 0.3)
         listeningID = id
         toast.show(isMarked(suggestion) ? String(localized: "Playing without this pause") : String(localized: "Hearing the pause as it is"))
-        previewTask?.cancel()
         let parts = isMarked(suggestion) ? [before, after] : [before.lowerBound...after.upperBound]
-        previewTask = Task { [weak self] in
+        jobs.start(.preview) { [weak self] _ in
             for part in parts {
                 guard let self, !Task.isCancelled else { return }
                 player.pause()

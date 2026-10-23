@@ -99,15 +99,15 @@ final class VideoExportService: VideoExporting {
         let duration = try await asset.load(.duration).seconds
         var edit = options.edit ?? TakeEdit(sourceDuration: duration, aspect: options.aspect)
         edit.aspect = options.aspect
-        let treated = options.edit == nil ? RecordingSounds.none : try await RecordingSounds.prepare(for: edit, takeURL: source, cache: sounds)
+        // The preview's preparation (`EditRenderRequest`): a take never edited plays its own sound.
+        let request = try await EditRenderRequest.prepare(
+            source: source, edit: edit,
+            purpose: .export(burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide, frameRate: options.frameRate),
+            treatsSound: options.edit != nil, sounds: sounds
+        )
         let composition: EditedComposition
         do {
-            composition = try await EditedComposition.build(
-                source: source, edit: edit, sound: treated, speech: await voiceActivity(for: source, edit: edit),
-                options: .init(
-                    burnsInCaptions: options.burnsInCaptions, shortSide: options.shortSide, frameRate: options.frameRate
-                )
-            )
+            composition = try await request.build()
         } catch EditedComposition.BuildError.tooWarm {
             throw VideoExportError.tooWarm
         }
@@ -125,21 +125,5 @@ final class VideoExportService: VideoExporting {
         let output = URL.temporaryDirectory.appending(path: "Cue-\(UUID().uuidString.prefix(8)).mov")
         try await Self.run(session, to: output, progress: progress, from: 0.1)
         return output
-    }
-
-    /// Where someone speaks in the recordings the edit plays; nothing when no music ducks.
-    private func voiceActivity(for source: URL, edit: TakeEdit) async -> VoiceActivity {
-        guard edit.ducksMusic else { return .none }
-        var activity = VoiceActivity()
-        activity.take = await speechSpans(in: source)
-        for clip in edit.playedSources {
-            activity.sources[clip.id] = await speechSpans(in: EditMediaFiles.url(for: clip.fileName))
-        }
-        return activity
-    }
-
-    private func speechSpans(in video: URL) async -> [TimeSpan] {
-        guard let audio = try? await sounds.audio(of: video) else { return [] }
-        return await Task.detached { (try? VoiceActivity.spans(inAudio: audio)) ?? [] }.value
     }
 }

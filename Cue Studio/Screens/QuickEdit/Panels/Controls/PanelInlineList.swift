@@ -34,7 +34,7 @@ struct PanelInlineList<Value: Hashable>: View {
                         Spacer(minLength: 8)
                         if isOn {
                             Image(systemName: "checkmark")
-                                .font(.system(size: 14, weight: .bold))
+                                .font(.editorGlyph(EditorGlyph.row, weight: .bold))
                                 .foregroundStyle(Palette.accText)
                         }
                     }
@@ -48,7 +48,6 @@ struct PanelInlineList<Value: Hashable>: View {
                 .accessibilityIdentifier("\(identifier).\(option.key)")
             }
         }
-        .background(Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+        .editorCard(clips: true)
     }
 }

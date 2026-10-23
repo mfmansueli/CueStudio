@@ -69,7 +69,7 @@ struct QuickEditReplaceClipTests {
         let id = middleClip(scenario)
         let before = try #require(viewModel.edit.timeline.segment(id: id))
         let length = viewModel.edit.editedDuration
-        let steps = viewModel.history.past.count
+        let steps = viewModel.document.history.past.count
         viewModel.replaceClip(id, with: video(30))
         let after = try #require(viewModel.edit.timeline.segment(id: id))
         #expect(viewModel.edit.timeline.index(ofSegment: id) == 1)
@@ -79,7 +79,7 @@ struct QuickEditReplaceClipTests {
         #expect(after.speed == 2 && after.zoom == .punchIn && after.volume == 1.5 && after.transitionIn == .dissolve)
         #expect(after.look == before.look)
         #expect(abs(viewModel.edit.editedDuration - length) < 0.000_1)
-        #expect(viewModel.history.past.count == steps + 1)
+        #expect(viewModel.document.history.past.count == steps + 1)
         #expect(scenario.toast.message == "Clip replaced")
         viewModel.undo()
         #expect(viewModel.edit.timeline.segment(id: id) == before)

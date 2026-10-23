@@ -104,7 +104,7 @@ struct NewScriptSheet: View {
                         Text(title).font(.body.weight(.semibold))
                         if let badge {
                             Text(badge)
-                                .font(.system(size: 10, weight: .heavy, design: .monospaced))
+                                .monoFont(size: 10, weight: .heavy)
                                 .foregroundStyle(Palette.accText)
                                 .padding(.horizontal, 7).frame(height: 20)
                                 .background(Palette.accSoft, in: Capsule())

@@ -31,8 +31,8 @@ struct TopicCounter: View {
                 ForEach(0..<OnboardingTopic.limit, id: \.self) { index in bar(index) }
             }
             Text(text)
-                .font(.system(size: 12, weight: .semibold, design: .monospaced))
-                .tracking(1.2)
+                .monoFont(size: 12, weight: .semibold)
+                .interfaceTracking(1.2)
                 .foregroundStyle(isFull ? Palette.Universe.starGold : Palette.Flight.quietInk)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)

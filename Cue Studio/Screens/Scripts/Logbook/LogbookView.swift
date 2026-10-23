@@ -276,8 +276,8 @@ struct LogbookView: View {
     /// "TODAY", "YESTERDAY", "MONDAY"…: a day's ideas start under it.
     private func dayHeader(_ title: String) -> some View {
         Text(verbatim: title)
-            .font(CueStudioFont.hud)
-            .tracking(1.2)
+            .hudFont()
+            .interfaceTracking(1.2)
             .foregroundStyle(Palette.ink2)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.top, 14)
@@ -317,7 +317,7 @@ struct LogbookView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(entry.text).font(.system(size: 18, weight: .medium)).foregroundStyle(Palette.ink).lineLimit(3)
                 HStack(spacing: 6) {
-                    Text(verbatim: LogbookDays.meta(for: entry)).font(CueStudioFont.hud).tracking(0.8).foregroundStyle(Palette.ink2)
+                    Text(verbatim: LogbookDays.meta(for: entry)).hudFont().interfaceTracking(0.8).foregroundStyle(Palette.ink2)
                     if let color = color(for: entry) { Circle().fill(color).frame(width: 9, height: 9) }
                 }
             }

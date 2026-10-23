@@ -22,7 +22,7 @@ struct InspirationCardSkeleton: View {
                     Text("Finding ideas from your topics…")
                 }
             }
-            .font(CueStudioFont.hud)
+            .hudFont()
             .textCase(.uppercase)
             .tracking(0.8)
             .foregroundStyle(Palette.aiText)

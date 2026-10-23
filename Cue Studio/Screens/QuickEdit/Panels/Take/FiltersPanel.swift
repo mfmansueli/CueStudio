@@ -74,8 +74,8 @@ struct FiltersPanel: View {
                     }
                 }
                 .frame(width: cardWidth, height: 88)
-                .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
+                .clipShape(RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
                 Text(filter.label)
                     .font(.system(.caption, weight: .semibold))
                     .foregroundStyle(isOn ? Palette.accText : Palette.ink2)

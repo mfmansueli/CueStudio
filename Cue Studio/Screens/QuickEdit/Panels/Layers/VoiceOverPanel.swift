@@ -47,10 +47,6 @@ struct VoiceOverPanel: View {
                 .padding(.top, 4)
             }
         }
-        .onChange(of: viewModel.player.isPlaying) { _, isPlaying in
-            // The end of the video ends the recording.
-            if !isPlaying, viewModel.isRecordingVoiceOver { viewModel.stopVoiceOver() }
-        }
     }
 
     private var recordButton: some View {
@@ -64,9 +60,11 @@ struct VoiceOverPanel: View {
         } label: {
             ZStack {
                 Circle().strokeBorder(Palette.ink, lineWidth: 4).frame(width: 72, height: 72)
-                RoundedRectangle(cornerRadius: isRecording ? 7 : 27, style: .continuous)
+                // A dot that turns into a stop square while recording.
+                let side: CGFloat = isRecording ? 26 : 54
+                RoundedRectangle(cornerRadius: isRecording ? Metrics.recordStopRadius : side / 2, style: .continuous)
                     .fill(Palette.danger)
-                    .frame(width: isRecording ? 26 : 54, height: isRecording ? 26 : 54)
+                    .frame(width: side, height: side)
             }
             .frame(width: 80, height: 80)
             .contentShape(Circle())

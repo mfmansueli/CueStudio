@@ -33,7 +33,7 @@ struct IdeaCardChip: View {
             if let dotColor { PlatformDot(color: dotColor) }
             if let isTag {
                 Text(verbatim: isTag)
-                    .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                    .monoFont(size: 9.5, weight: .bold)
                     .foregroundStyle(Palette.Scripts.adTagInk)
                     .padding(.horizontal, 4).padding(.vertical, 1)
                     .background(Palette.Scripts.adTagFill, in: RoundedRectangle(cornerRadius: 4, style: .continuous))
@@ -43,7 +43,7 @@ struct IdeaCardChip: View {
             Text(label).lineLimit(typeSize.isAccessibilitySize ? nil : 1)
             if let trailingMono {
                 Text(verbatim: trailingMono)
-                    .font(.system(size: 10, design: .monospaced))
+                    .monoFont(size: 10)
                     .foregroundStyle(Palette.aiText)
             }
             if showsChevron { Text(verbatim: "⌄").foregroundStyle(Palette.inkHint) }

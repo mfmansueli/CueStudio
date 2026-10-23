@@ -21,7 +21,7 @@ struct TakeStageBadge: View {
                 .textCase(.uppercase)
                 .lineLimit(1)
         }
-        .font(.system(size: 10, weight: .semibold, design: .monospaced))
+        .monoFont(size: 10, weight: .semibold)
         .foregroundStyle(stage.boardTint)
         .padding(.horizontal, 7)
         .frame(height: 22)

@@ -63,37 +63,29 @@ extension QuickEditViewModel {
             return
         }
         comparesPicture = false
-        let request = UUID()
-        autoRequest = request
         autoState = .analyzing
-        autoTask = Task { [editing] in
+        jobs.start(.auto) { [weak self, editing] ticket in
             do {
                 let found = try await editing.autoCorrection(forVideoAt: target.url, spans: target.spans)
-                finishAuto(request, target: target, found: found)
+                self?.finishAuto(ticket, target: target, found: found)
             } catch is CancellationError {
-                if autoRequest == request {
-                    autoRequest = nil
-                    autoState = .idle
-                }
+                guard let self, jobs.isCurrent(ticket) else { return }
+                autoState = .idle
             } catch {
-                noteFailure(error, "autoLook")
-                finishAuto(request, target: target, found: nil)
+                self?.noteFailure(error, "autoLook")
+                self?.finishAuto(ticket, target: target, found: nil)
             }
         }
     }
 
     /// Stops measuring; whatever it finds later is dropped.
     func cancelAuto() {
-        autoTask?.cancel()
-        autoTask = nil
-        autoRequest = nil
+        jobs.cancel(.auto)
         if autoState != .idle { autoState = .idle }
     }
 
-    private func finishAuto(_ request: UUID, target: AutoTarget, found: AutoCorrection?) {
-        guard autoRequest == request, !isClosed else { return }
-        autoRequest = nil
-        autoTask = nil
+    private func finishAuto(_ ticket: EditorJobs.Ticket, target: AutoTarget, found: AutoCorrection?) {
+        guard jobs.isCurrent(ticket) else { return }
         autoState = .idle
         // The picked clip (or the whole take) is still what it was measured for.
         guard panel == .adjust, target.clipID == lookClip?.id else { return }

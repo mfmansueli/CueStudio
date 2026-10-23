@@ -203,7 +203,7 @@ struct ScriptsView: View {
     private var logbookBadge: some View {
         if !logbook.waiting.isEmpty {
             Text(verbatim: "\(logbook.waiting.count)")
-                .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+                .monoFont(size: 9.5, weight: .bold)
                 .foregroundStyle(Palette.bg)
                 .padding(.horizontal, 4)
                 .frame(minWidth: 16, minHeight: 16)
@@ -430,7 +430,7 @@ struct ScriptsView: View {
     private func groupHeader(_ group: ScriptGroup, showsSelect: Bool) -> some View {
         HStack(alignment: .center, spacing: 10) {
             Text(groupTitle(group))
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .monoFont(size: 10, weight: .semibold)
                 .textCase(.uppercase)
                 .tracking(1.2)
                 .foregroundStyle(group.state == .ready ? Palette.successText : Palette.inkHint)
@@ -441,7 +441,7 @@ struct ScriptsView: View {
                 Button(viewModel.isSelecting ? "Done" : "Select") {
                     viewModel.toggleSelecting()
                 }
-                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .monoFont(size: 10, weight: .semibold)
                 .textCase(.uppercase)
                 .tracking(1.2)
                 .foregroundStyle(Palette.inkHint)

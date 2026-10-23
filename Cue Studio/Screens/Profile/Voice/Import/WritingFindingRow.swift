@@ -17,8 +17,8 @@ struct WritingFindingRow: View {
         Toggle(isOn: Binding(get: { finding.isOn }, set: { _ in onToggle() })) {
             VStack(alignment: .leading, spacing: 3) {
                 Text(finding.id.title.uppercased())
-                    .font(CueStudioFont.hud)
-                    .tracking(0.6)
+                    .hudFont()
+                    .interfaceTracking(0.6)
                     .foregroundStyle(Palette.inkHint)
                 Text(finding.value.display)
                     .font(.subheadline.weight(.semibold))

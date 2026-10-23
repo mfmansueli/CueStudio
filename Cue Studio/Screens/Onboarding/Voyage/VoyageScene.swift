@@ -113,8 +113,8 @@ struct VoyageScene: View {
             var layer = context
             layer.opacity = visible
             layer.draw(
-                Text(galaxy.platform.label.uppercased()).font(.system(size: galaxy.nameSize, weight: .semibold, design: .monospaced))
-                    .tracking(galaxy.nameSize * 0.12).foregroundStyle(nameColor(of: galaxy)),
+                Text(galaxy.platform.label.uppercased()).font(.mono(size: galaxy.nameSize, weight: .semibold, locale: layer.environment.locale))
+                    .interfaceTracking(galaxy.nameSize * 0.12, locale: layer.environment.locale).foregroundStyle(nameColor(of: galaxy)),
                 at: nameCentre(of: galaxy)
             )
         }
@@ -284,7 +284,7 @@ struct VoyageScene: View {
             if letter.blur > 0.1 { layer.addFilter(.blur(radius: letter.blur)) }
             if letter.glowRadius > 0.1, let glow = letter.glow { layer.addFilter(.shadow(color: glow, radius: letter.glowRadius)) }
             layer.draw(
-                Text(["Y", "O", "U"][index]).font(.system(size: 38, weight: .bold, design: .monospaced))
+                Text(["Y", "O", "U"][index]).font(.mono(size: 38, weight: .bold, locale: layer.environment.locale))
                     .foregroundStyle(letter.color ?? Palette.Universe.starLilac),
                 at: .zero
             )

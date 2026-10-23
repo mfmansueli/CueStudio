@@ -34,7 +34,7 @@ struct InspirationCard: View {
                         .alignmentGuide(.firstTextBaseline) { $0[.bottom] - 2 }
                 }
                 Text(content.category)
-                    .font(CueStudioFont.hud)
+                    .hudFont()
                     .textCase(.uppercase)
                     .tracking(0.8)
                     .foregroundStyle(Palette.aiText)
@@ -126,7 +126,7 @@ struct InspirationCard: View {
             // VoiceOver reads the label with its text, as one line ("Your point of view, …").
             VStack(alignment: .leading, spacing: 6) {
                 Text(label)
-                    .font(.system(.caption2, design: .monospaced, weight: .semibold))
+                    .monoFont(.caption2, weight: .semibold)
                     .textCase(.uppercase)
                     .tracking(1)
                     // `ink2`, not `inkHint`: under the card's light, `inkHint` falls to about 4.2:1.

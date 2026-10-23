@@ -40,7 +40,7 @@ struct StateChip: View {
 
     var body: some View {
         Text(kind.title)
-            .font(.system(size: 9.5, weight: .bold, design: .monospaced))
+            .monoFont(size: 9.5, weight: .bold)
             .textCase(.uppercase)
             .tracking(9.5 * 0.08)
             .foregroundStyle(kind.ink)

@@ -53,7 +53,7 @@ struct TakeVideoCard: View {
             Spacer(minLength: 0)
             if video.takes.count > 1 {
                 Text("×\(video.takes.count)")
-                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .monoFont(size: 10, weight: .semibold)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 7)
                     .frame(height: 22)
@@ -77,7 +77,7 @@ struct TakeVideoCard: View {
                     .textCase(.uppercase)
                     .lineLimit(1)
             }
-            .font(.system(size: 10, weight: .semibold, design: .monospaced))
+            .monoFont(size: 10, weight: .semibold)
             .foregroundStyle(Palette.inkSoft)
         }
         .padding(10)

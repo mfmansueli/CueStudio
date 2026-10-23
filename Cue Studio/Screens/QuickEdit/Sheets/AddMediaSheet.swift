@@ -50,7 +50,7 @@ struct AddMediaSheet: View {
                 .photosPickerStyle(.inline)
                 .photosPickerDisabledCapabilities([.selectionActions, .stagingArea])
                 .photosPickerAccessoryVisibility(.hidden, edges: .all)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: Metrics.editorCardRadius, style: .continuous))
                 if viewModel.isImportingMedia {
                     ProgressView().tint(Palette.ink)
                         .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -112,13 +112,13 @@ extension AddMediaSheet {
                     .foregroundStyle(Palette.ink)
                     .lineLimit(1)
                 Text(verbatim: "\(String(localized: "Take \(take.number)")) · \(DurationText.clock(take.duration))")
-                    .font(.system(.caption, design: .monospaced))
+                    .monoFont(.caption)
                     .foregroundStyle(Palette.ink2)
             }
             .frame(width: 150, alignment: .leading)
             .padding(.horizontal, 12)
             .padding(.vertical, 10)
-            .background(Palette.fill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .background(Palette.fill, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
             .frame(minHeight: Metrics.hitTarget)
         }
     }

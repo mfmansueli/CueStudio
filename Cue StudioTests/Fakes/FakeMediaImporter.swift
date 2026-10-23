@@ -13,9 +13,18 @@ import SwiftUI
 @MainActor
 final class FakeMediaImporter: EditMediaImporting {
     var media = ImportedMedia(kind: .photo, fileName: "photo.jpg", aspect: 1, duration: nil)
+    /// How far it says it got before handing `media` back.
+    var progressSteps: [Double] = []
+    /// Waits (like a video coming from iCloud) until the import is cancelled, then throws `CancellationError`.
+    var waitsUntilCancelled = false
 
-    func importMedia(_ item: PhotosPickerItem) async throws -> ImportedMedia {
-        media
+    func importMedia(_ item: PhotosPickerItem, progress: @escaping @MainActor (Double) -> Void) async throws -> ImportedMedia {
+        for step in progressSteps { progress(step) }
+        if waitsUntilCancelled {
+            while !Task.isCancelled { try? await Task.sleep(for: .milliseconds(5)) }
+            throw CancellationError()
+        }
+        return media
     }
 
     /// What `importAudio` hands back; nil throws, like a file that can't be read.

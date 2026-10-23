@@ -21,7 +21,7 @@ nonisolated struct CaptionTranscript: Codable, Hashable, Sendable {
     var unheardLanguages: [String]?
 
     /// 2: a script in more than one language is heard in each of them (`MixedLanguageMerge`).
-    static let currentVersion = 2
+    static var currentVersion: Int { ReadingVersion.captionTranscript.current }
 
-    var isCurrent: Bool { (version ?? 1) >= Self.currentVersion }
+    var isCurrent: Bool { ReadingVersion.captionTranscript.isCurrent(version) }
 }

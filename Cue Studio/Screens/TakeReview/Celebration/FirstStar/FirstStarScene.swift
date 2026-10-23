@@ -297,8 +297,8 @@ struct FirstStarScene: View {
     private var label: some View {
         let pose = FirstStarScript.label(at: story)
         return Text("FIRST TAKE · TODAY")
-            .font(.system(size: 9.5, weight: .semibold, design: .monospaced))
-            .tracking(1.33)
+            .monoFont(size: 9.5, weight: .semibold)
+            .interfaceTracking(1.33)
             .foregroundStyle(Palette.Universe.starGold)
             .fixedSize()
             .frame(width: 160)

@@ -20,8 +20,8 @@ struct VoiceFlowProgress: View {
                 }
             }
             Text("\((step + 1).formatted(.number.precision(.integerLength(2...)))) / \(count.formatted(.number.precision(.integerLength(2...))))")
-                .font(CueStudioFont.hud)
-                .tracking(0.6)
+                .hudFont()
+                .interfaceTracking(0.6)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize()
         }

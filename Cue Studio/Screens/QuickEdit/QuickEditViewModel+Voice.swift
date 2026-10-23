@@ -103,13 +103,12 @@ extension QuickEditViewModel {
             return
         }
         guard canCompareOriginal, !comparesOriginal else { return }
-        comparisonTask?.cancel()
         comparesOriginal = true
         comparedProcessing = edit.voiceProcessing
         let edit = edit
-        comparisonTask = Task { [weak self, editing, videoURL] in
+        jobs.start(.comparison) { [weak self, editing, videoURL] ticket in
             let volume = await editing.matchedOriginalVolume(forVideoAt: videoURL, edit: edit)
-            guard let self, !Task.isCancelled, comparesOriginal else { return }
+            guard let self, jobs.isCurrent(ticket), comparesOriginal else { return }
             guard let volume else {
                 endComparison()
                 toast.show(String(localized: "There's no speech to compare"))
@@ -144,8 +143,7 @@ extension QuickEditViewModel {
 
     /// Back to the treated sound.
     func endComparison() {
-        comparisonTask?.cancel()
-        comparisonTask = nil
+        jobs.cancel(.comparison)
         guard comparesOriginal else { return }
         comparesOriginal = false
         originalVolume = nil

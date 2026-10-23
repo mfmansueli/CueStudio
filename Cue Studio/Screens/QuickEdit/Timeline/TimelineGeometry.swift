@@ -273,7 +273,9 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         } else {
             [.main] + others
         }
-        let selectedLane = input.selection?.lane
+        // A picked cut is between clips: it raises no lane and dims nothing.
+        let selection = input.selection?.joinID == nil ? input.selection : nil
+        let selectedLane = selection?.lane
         var lanes: [LaneFrame] = []
         var y: CGFloat = compact ? 22 : heightClass.rulerHeight
         for lane in order {
@@ -294,7 +296,6 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         let main = lanes.first { $0.lane == .main } ?? LaneFrame(lane: .main, y: 0, height: 0)
         let waveform: CGFloat = compact ? 10 : 14
         var handles: [Handle] = []
-        let selection = input.selection
 
         clips = input.clips.map { clip in
             let x = CGFloat(clip.start) * pps

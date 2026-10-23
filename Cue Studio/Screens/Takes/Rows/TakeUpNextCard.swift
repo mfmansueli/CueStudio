@@ -48,8 +48,8 @@ struct TakeUpNextCard: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("takes.next.action")
         }
-        .font(.system(size: 10, weight: .semibold, design: .monospaced))
-        .tracking(1)
+        .monoFont(size: 10, weight: .semibold)
+        .interfaceTracking(1)
         .foregroundStyle(Palette.acc)
         .padding(.horizontal, 12)
         .frame(height: 76)

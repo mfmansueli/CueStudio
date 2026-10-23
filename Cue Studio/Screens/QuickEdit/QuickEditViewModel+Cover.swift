@@ -64,7 +64,7 @@ extension QuickEditViewModel {
     func drawCover() {
         let key = edit.coverDrawingKey
         guard drawnCoverKey != key || coverImage == nil else { return }
-        coverTask?.cancel()
+        jobs.cancel(.cover)
         guard let cover = edit.cover else {
             coverImage = nil
             drawnCoverKey = nil
@@ -73,11 +73,11 @@ extension QuickEditViewModel {
         }
         isDrawingCover = true
         let current = self.edit
-        coverTask = Task { [weak self] in
+        jobs.start(.cover) { [weak self] ticket in
             try? await Task.sleep(for: .milliseconds(150))
-            guard let self, !Task.isCancelled else { return }
+            guard let self, jobs.isCurrent(ticket), !Task.isCancelled else { return }
             let image = await self.editing.coverImage(cover, forVideoAt: self.videoURL, edit: current)
-            guard !Task.isCancelled else { return }
+            guard jobs.isCurrent(ticket) else { return }
             self.coverImage = image
             self.drawnCoverKey = key
             self.isDrawingCover = false

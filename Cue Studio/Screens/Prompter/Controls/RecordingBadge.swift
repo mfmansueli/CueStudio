@@ -24,8 +24,8 @@ struct RecordingBadge: View {
                 .monospacedDigit()
                 .fixedSize()
         }
-        .font(.system(size: 19, weight: .bold, design: .monospaced))
-        .tracking(0.5)
+        .monoFont(size: 19, weight: .bold)
+        .interfaceTracking(0.5)
         .foregroundStyle(.white)
         .padding(.horizontal, 16)
         .frame(height: 40)

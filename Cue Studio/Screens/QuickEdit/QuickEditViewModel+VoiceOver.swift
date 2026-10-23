@@ -58,9 +58,11 @@ extension QuickEditViewModel {
         let start = recordingStart
         recordingStart = nil
         narrationPace.reset()
+        // The microphone stops first: the video stopping under it is then no recording to stop again (`playingStopped`).
+        let recorded = recorder.stop()
         player.pause()
         player.isMuted = false
-        guard let recorded = recorder.stop(), let start else { return }
+        guard let recorded, let start else { return }
         Haptics.record()
         importedFiles.insert(recorded.fileName)
         guard recorded.duration >= 0.3 else {
@@ -76,6 +78,13 @@ extension QuickEditViewModel {
         reviewedVoiceOverID = clip.id
         player.seek(to: start)
         player.play()
+    }
+
+    /// The video stopped playing under a narration being recorded (its end, Pause): the narration stops with it and is
+    /// added. Recording the screen or mirroring it leaves both going.
+    func playingStopped() {
+        guard recorder.isRecording, recordingStart != nil else { return }
+        stopVoiceOver()
     }
 
     /// The narration stopped without Stop. A call or another app took the microphone: what was recorded is added, like Stop

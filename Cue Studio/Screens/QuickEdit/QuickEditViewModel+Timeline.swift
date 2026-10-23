@@ -41,7 +41,7 @@ extension QuickEditViewModel {
                 id: item.id, span: span, label: Self.label(of: item), isLocked: edit.lockedLayers.contains(item.id)
             )
         }
-        input.captions = edit.editedCaptionInstances.map { line, cueID in
+        input.captions = captionMap.instances.map { line, cueID in
             TimelineGeometry.ItemInput(id: cueID, span: line.span, label: line.text)
         }
         input.showsCaptions = edit.showsCaptions
@@ -183,11 +183,7 @@ extension QuickEditViewModel {
             return
         }
         Haptics.selection()
-        selection = nil
-        toolMenu = nil
-        if panel != .transition { panel = nil }
-        selectedJoinID = id
-        panel = .transition
+        selection = .join(id)
     }
 
     /// VoiceOver: the playhead to the next cut (or the one before), said with where it landed; the end and the start are

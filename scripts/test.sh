@@ -99,6 +99,7 @@ case "$mode" in
             LanguageModelDeviceTests* | ScriptGenerationFlowDeviceTests* | VoicePersonaDeviceTests* | PromptBudgetDeviceTests* | WritingImportDeviceTests* | PlatformLengthDeviceTests* | LengthVariantsDeviceTests* | ScriptToolsDeviceTests* | IdeaRelevanceDeviceTests* | IdeaSuggestionsDeviceTests* | CreatorDayDeviceTests* | InspirationDeviceTests* | ScriptQualityDeviceTests*)
                 export TEST_RUNNER_CUE_AI_E2E=1 ;;
             QuickEditPreviewLatencyTests*) export TEST_RUNNER_CUE_PREVIEW_LATENCY=1 ;;
+            LongTakeDeviceTests*) export TEST_RUNNER_CUE_LONG_TAKE=1 ;;
             ContinuedTaskDeviceTests*) export TEST_RUNNER_CUE_CONTINUED_TASK=1 ;;
             EditorExportDeviceTests*) export TEST_RUNNER_CUE_EDITOR_EXPORT=1 ;;
             # Motion (analysis, face follow, tracking, stabilization, speed curves, beats) on COPIES of this iPhone's newest takes.

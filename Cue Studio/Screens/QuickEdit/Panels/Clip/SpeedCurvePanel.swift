@@ -46,7 +46,7 @@ struct SpeedCurvePanel: View {
                     if let curve {
                         SpeedCurveGlyph(curve: curve, color: isOn ? Palette.accText : Palette.ink)
                     } else {
-                        Image(systemName: symbol).font(.system(size: 19, weight: .medium))
+                        Image(systemName: symbol).font(.editorGlyph(EditorGlyph.toolbar, weight: .medium))
                     }
                 }
                 .frame(width: 56, height: 28)
@@ -58,8 +58,7 @@ struct SpeedCurvePanel: View {
             .foregroundStyle(isOn ? Palette.accText : Palette.ink)
             .padding(.horizontal, 10)
             .frame(minWidth: 76, minHeight: 68)
-            .background(isOn ? Palette.Editor.accTile : Palette.Editor.panelCard, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 1.5))
+            .editorCard(isOn ? .picked : .plain)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)

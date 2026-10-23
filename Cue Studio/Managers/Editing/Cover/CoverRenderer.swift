@@ -7,8 +7,8 @@ import AVFoundation
 import CoreImage
 import UIKit
 
-/// Draws a take's cover: a frame of one of the edit's recordings (cropped to the take's frame, with the look of the clip it was
-/// picked on) or a photo filling that frame, then the Cover Studio composition (`CoverCompositionRenderer`), the v26 design or
+/// Draws a take's cover: a frame of one of the edit's recordings (framed exactly as the video shows it there, `FramePipeline`)
+/// or a photo filling that frame, then the Cover Studio composition (`CoverCompositionRenderer`), the v26 design or
 /// the plain title of covers made before them. All on the device.
 nonisolated enum CoverRenderer {
     /// Width of the cover image in pixels.
@@ -78,15 +78,15 @@ nonisolated enum CoverRenderer {
         }
     }
 
-    /// The picture `source` shows: a frame of one of the edit's recordings (cropped to the take's frame, with its clip's look),
-    /// or a photo, upright. Nil when it can't be read.
+    /// The picture `source` shows: a frame of one of the edit's recordings (as the video shows it), or a photo, upright. Nil
+    /// when it can't be read.
     /// Off the main actor: Vision (skin, the person) and the full frame's look are heavy.
     @concurrent
     static func picture(for source: CoverSource, videoURL: URL, edit: TakeEdit) async -> UIImage? {
         switch source {
         case .frame, .clipFrame:
             guard let frame = source.frame, let url = recordingURL(of: frame, videoURL: videoURL, edit: edit) else { return nil }
-            return await self.frame(of: url, frame: frame, edit: edit).map { UIImage(cgImage: $0) }
+            return await self.frame(of: url, frame: frame, edit: edit, videoURL: videoURL).map { UIImage(cgImage: $0) }
         case .photo(let fileName):
             // Drawing a UIImage honors its orientation.
             return UIImage(contentsOfFile: EditMediaFiles.url(for: fileName).path(percentEncoded: false))
@@ -100,42 +100,47 @@ nonisolated enum CoverRenderer {
         return edit.sources.first { $0.id == id }.map { EditMediaFiles.url(for: $0.fileName) }
     }
 
-    /// `frame` of the recording at `url`, upright, cropped like the edit and with the look of the clip showing it.
-    private static func frame(of url: URL, frame picked: CoverFrame, edit: TakeEdit) async -> CGImage? {
+    /// `frame` of the recording at `url` as the video shows it (`FramePipeline`, `EditFraming`): steadied, cropped where Follow
+    /// face has it (or fitted), brought to the take's frame, with the background, Skin Smoothing and look of the clip showing
+    /// it and that clip's zoom at that moment. A frame no clip shows any more is drawn with its recording's own background
+    /// and the take's look. Transitions, B-roll, texts and captions stay off the cover: it has a title of its own.
+    private static func frame(of url: URL, frame picked: CoverFrame, edit: TakeEdit, videoURL: URL) async -> CGImage? {
         let time = picked.time
         let generator = AVAssetImageGenerator(asset: AVURLAsset(url: url))
         generator.appliesPreferredTrackTransform = true
         generator.requestedTimeToleranceBefore = .zero
         generator.requestedTimeToleranceAfter = .zero
         guard let result = try? await generator.image(at: CMTime(seconds: max(0, time), preferredTimescale: 600)) else { return nil }
-        let context = CIContext(options: [.cacheIntermediates: false])
         let full = result.image
-        let size = CGSize(width: full.width, height: full.height)
-        var crop = CropMath.crop(in: size, aspect: edit.aspect.widthOverHeight, offset: edit.cropOffset)
-        // Follow face: the crop where it is at that moment of the video.
-        if edit.faceFollow != nil, edit.cropFit == .fill {
-            let coreImageCrop = CGRect(x: crop.minX, y: size.height - crop.maxY, width: crop.width, height: crop.height)
-            let follow = EditedComposition.followPath(
-                for: edit, analysis: MotionAnalysisStore.complete(forRecording: url), crop: coreImageCrop, size: size
+        // Upright already: the generator applies the track's transform.
+        let shape = EditFraming.Shape(transform: .identity, uprightSize: CGSize(width: full.width, height: full.height))
+        // The take's frame decides the crop and the scale another recording of a montage is brought to.
+        let takeShape = picked.sourceID == nil ? shape : (await EditFraming.shape(of: videoURL) ?? shape)
+        let analyses = (try? await EditedComposition.motionAnalyses(take: videoURL, edit: edit, analyzesMissing: false)) ?? [:]
+        var framing = EditFraming(
+            edit: edit, take: videoURL, takeShape: takeShape, shapes: picked.sourceID.map { [$0: shape] } ?? [:], analyses: analyses,
+            cacheKey: "cover"
+        )
+        let shown = edit.clip(showing: picked)
+        let editedTime = edit.editedTime(of: picked) ?? 0
+        let context = CIContext(options: [.cacheIntermediates: false])
+        var image = FramePipeline.framed(
+            CIImage(cgImage: full),
+            as: Framing(
+                frame: shown.map { framing.frame(of: $0.segment) } ?? framing.frame(forRecording: picked.sourceID), cropFit: edit.cropFit,
+                look: shown.map { edit.lookSettings(for: $0.segment) } ?? LookSettings(edit), key: "cover",
+                moment: SmoothingMoment(stream: .main, stretch: 0, time: editedTime), sourceTime: time
+            ),
+            skin: SkinSmoother(context: context)
+        ) { image, _ in
+            PersonMasker.mask(for: image)
+        }
+        if let (index, segment) = shown, let zoom = segment.zoom {
+            let window = ZoomWindow(
+                zoom: zoom, start: edit.timeline.editedStart(ofSegmentAt: index), duration: segment.duration, amount: segment.zoomAmount
             )
-            crop = FramePlacement(uprightSize: size, crop: crop, follow: follow).crop(at: time).integral
+            image = FramePipeline.zoomed(image, by: CGFloat(window.scale(at: editedTime)))
         }
-        guard let cropped = full.cropping(to: crop) else { return full }
-        var image = CIImage(cgImage: cropped)
-        if edit.cropFit == .fit {
-            // Fit: the whole frame on black, like the video.
-            image = CueVideoCompositor.fitted(CIImage(cgImage: full), into: crop.size)
-        }
-        // The background and look of the clip showing it, like the video; the recording's own once no clip does.
-        let clip = edit.clip(showing: picked)?.segment
-        let effect = clip.map { edit.background(for: $0) } ?? edit.background(for: picked.sourceID)
-        let look = clip.map { edit.lookSettings(for: $0) } ?? LookSettings(edit)
-        // Skin Smoothing like the video's: the faces of this frame, found on the frame as recorded (before a background goes behind the creator).
-        let skin = SkinSmoother(context: context).pass(for: image, value: look.skinSmoothing, stream: .main, epoch: 0, time: time)
-        if let effect, let render = BackgroundRender.prepare(effect, cacheKey: "cover") {
-            image = BackgroundCompositing.apply(image, render: render) { PersonMasker.mask(for: $0) }
-        }
-        let looked = FrameLook.apply(look, to: image, skin: skin)
-        return context.createCGImage(looked, from: looked.extent) ?? cropped
+        return context.createCGImage(image, from: image.extent) ?? full
     }
 }

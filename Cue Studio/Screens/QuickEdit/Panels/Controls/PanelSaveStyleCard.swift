@@ -14,7 +14,7 @@ struct PanelSaveStyleCard: View {
         Button(action: action) {
             VStack(spacing: 6) {
                 VStack(spacing: 4) {
-                    Image(systemName: "plus").font(.system(size: 15, weight: .bold))
+                    Image(systemName: "plus").font(.editorGlyph(EditorGlyph.button, weight: .bold))
                     Text("Save as my style")
                         .font(.system(.caption, weight: .semibold))
                         .multilineTextAlignment(.center)
@@ -25,7 +25,7 @@ struct PanelSaveStyleCard: View {
                 .padding(.horizontal, 6)
                 .frame(width: 84, height: 74)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous)
                         .strokeBorder(Palette.Editor.laneGhostBorder, style: StrokeStyle(lineWidth: 1.5, dash: [4, 3]))
                 )
                 // Lines up with the names under the preset cards.

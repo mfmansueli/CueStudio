@@ -72,7 +72,7 @@ nonisolated struct FramePlacement: Sendable {
     // MARK: - Stabilize
 
     /// Where `point` (pixels of the upright recording, from the top left) is once Stabilize moved, turned (clockwise positive)
-    /// and zoomed the frame around its center at `time`, as `CueVideoCompositor.steadied` draws it.
+    /// and zoomed the frame around its center at `time`, as `FramePipeline.steadied` draws it.
     private func steadied(_ point: CGPoint, at time: TimeInterval) -> CGPoint {
         guard let steady else { return point }
         let correction = steady.correction(at: time)
