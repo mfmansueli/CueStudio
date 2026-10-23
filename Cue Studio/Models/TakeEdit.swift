@@ -49,6 +49,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var music: [MusicClip] = []
     /// Beats › Snap to beats: the playhead and the handles stick to the music's beats.
     var snapsToBeats = true
+    /// Texts, photos or videos, music and voice-overs locked in place on the timeline (Edits' clip lock): no handles, so a
+    /// drag can't move or trim what was lined up. Still picked, styled and deleted on purpose.
+    var lockedLayers: Set<UUID> = []
     /// Backgrounds blurred or replaced, per recording.
     var backgrounds: [RecordingBackground] = []
 
@@ -313,7 +316,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case timeline, sources, suggestions, cleanUpAnalyzed, cleanUpAnalyzedSources, volume, enhancesVoice, reducesNoise,
         audioVersion, voiceEnhancement, noiseReduction, voiceReach, evensOutVoices, music, backgrounds, exposure, contrast, warmth, filter
-        case snapsToBeats
+        case snapsToBeats, lockedLayers
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold
         case vibrance, tint, autoCorrection, autoAmount, lookVersion, skinSmoothing, faceFollow
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
@@ -351,6 +354,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         evensOutVoices = (try? container.decodeIfPresent(Bool.self, forKey: .evensOutVoices)) ?? false
         music = container.decodeLossy([MusicClip].self, forKey: .music)
         snapsToBeats = (try? container.decodeIfPresent(Bool.self, forKey: .snapsToBeats)) ?? true
+        lockedLayers = (try? container.decodeIfPresent(Set<UUID>.self, forKey: .lockedLayers)) ?? []
         backgrounds = container.decodeLossy([RecordingBackground].self, forKey: .backgrounds)
         exposure = try container.decodeIfPresent(Double.self, forKey: .exposure) ?? 0
         contrast = try container.decodeIfPresent(Double.self, forKey: .contrast) ?? 0

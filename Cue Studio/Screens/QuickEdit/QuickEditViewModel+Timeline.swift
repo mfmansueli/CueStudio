@@ -31,12 +31,13 @@ extension QuickEditViewModel {
         input.texts = edit.editedTexts(in: timeline).map { text, span in
             TimelineGeometry.ItemInput(
                 id: text.id, span: span, label: text.isEmpty ? text.role.label : text.displayText,
-                keyframes: text.keyframes.map { span.start + $0.time }.filter { $0 <= span.end + 0.001 }
+                keyframes: text.keyframes.map { span.start + $0.time }.filter { $0 <= span.end + 0.001 },
+                isLocked: edit.lockedLayers.contains(text.id)
             )
         }
         input.media = edit.editedMedia(in: timeline).map { item, span in
             TimelineGeometry.ItemInput(
-                id: item.id, span: span, label: Self.label(of: item)
+                id: item.id, span: span, label: Self.label(of: item), isLocked: edit.lockedLayers.contains(item.id)
             )
         }
         input.captions = edit.editedCaptionInstances.map { line, cueID in
@@ -45,12 +46,18 @@ extension QuickEditViewModel {
         input.showsCaptions = edit.showsCaptions
         input.music = edit.music.compactMap { clip in
             clip.span(inEditOf: edit.editedDuration).map {
-                TimelineGeometry.ItemInput(id: clip.id, span: $0, label: clip.title, beats: musicBeats(of: clip))
+                TimelineGeometry.ItemInput(
+                    id: clip.id, span: $0, label: clip.title, beats: musicBeats(of: clip), isLocked: edit.lockedLayers.contains(clip.id)
+                )
             }
         }
         if edit.snapsToBeats { input.beatSnaps = editedBeats }
         input.voiceOvers = edit.voiceOvers.compactMap { clip in
-            clip.editedSpan(in: timeline).map { TimelineGeometry.ItemInput(id: clip.id, span: $0, label: String(localized: "Voice-over")) }
+            clip.editedSpan(in: timeline).map {
+                TimelineGeometry.ItemInput(
+                    id: clip.id, span: $0, label: String(localized: "Voice-over"), isLocked: edit.lockedLayers.contains(clip.id)
+                )
+            }
         }
         if let recordingStart {
             input.recording = TimeSpan(start: recordingStart, end: max(recordingStart, player.currentTime))

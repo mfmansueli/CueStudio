@@ -108,6 +108,13 @@ extension QuickEditViewModel {
         ]
     }
 
+    /// Lock or Unlock for the picked layer.
+    private var lockItem: EditorToolbarItem {
+        selectionIsLocked
+            ? EditorToolbarItem(id: "unlock", label: String(localized: "Unlock"), systemImage: "lock.open", action: .toggleLock)
+            : EditorToolbarItem(id: "lock", label: String(localized: "Lock"), systemImage: "lock", action: .toggleLock)
+    }
+
     private func items(for selection: EditorSelection) -> [EditorToolbarItem] {
         let delete = String(localized: "Delete")
         switch selection {
@@ -156,6 +163,7 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "keyframe", label: String(localized: "Keyframe"), systemImage: "diamond", action: .toggleKeyframe),
                 EditorToolbarItem(id: "track", label: String(localized: "Track"), systemImage: "scope", action: .trackItem),
                 EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateText),
+                lockItem,
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteText),
             ]
         case .caption:
@@ -177,12 +185,14 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
             ] + (isMusic ? [EditorToolbarItem(id: "beats", label: String(localized: "Beats"), systemImage: "metronome", action: .open(.beats))] : []) + [
                 EditorToolbarItem(id: "replace", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMusic),
+                lockItem,
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMusic),
             ]
         case .voiceOver:
             return [
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
                 EditorToolbarItem(id: "reRecord", label: String(localized: "Re-record"), systemImage: "mic.badge.plus", action: .reRecordVoiceOver),
+                lockItem,
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteVoiceOver),
             ]
         case .media:
@@ -198,6 +208,7 @@ extension QuickEditViewModel {
                     id: "extractAudio", label: String(localized: "Extract audio"), systemImage: "waveform.badge.plus", action: .extractAudio
                 ))
             }
+            items.append(lockItem)
             items.append(EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMedia))
             return items
         }
@@ -267,6 +278,7 @@ extension QuickEditViewModel {
         if performOnClip(action) || performOnMotion(action) { return true }
         switch action {
         case .duplicateText: selection?.textID.map(duplicateText)
+        case .toggleLock: toggleLockOfSelection()
         case .duplicateMedia: selection?.mediaID.map(duplicateMedia)
         case .deleteText: selection?.textID.map(deleteText)
         case .editCaption:

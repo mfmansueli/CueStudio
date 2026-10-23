@@ -49,6 +49,8 @@ enum EditorAction: Hashable {
     case duplicateText
     /// The picked text's Style › Motion, where its ready animations are.
     case openTextAnimation
+    /// Locks the picked text, photo or video, music or voice-over in place on the timeline, or unlocks it.
+    case toggleLock
     case deleteText
     // Captions menu
     /// A new line at the playhead, in the Captions panel.

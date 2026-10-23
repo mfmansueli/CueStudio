@@ -153,6 +153,25 @@ struct TimelineGeometryTests {
         #expect(start.hitFrame.maxX == start.frame.maxX)
     }
 
+    /// A locked text keeps its place: picked, it shows a lock and no handle or body to drag.
+    @Test func aLockedItemHasNoHandles() {
+        let text = UUID()
+        let unlocked = TimelineGeometry(input { input in
+            input.texts = [TimelineGeometry.ItemInput(id: text, span: TimeSpan(start: 2, end: 6), label: "Hi")]
+            input.selection = .text(text)
+        })
+        #expect(unlocked.handles.count == 2)
+        #expect(unlocked.bodies.count == 1)
+        let locked = TimelineGeometry(input { input in
+            input.texts = [TimelineGeometry.ItemInput(id: text, span: TimeSpan(start: 2, end: 6), label: "Hi", isLocked: true)]
+            input.selection = .text(text)
+        })
+        #expect(locked.handles.isEmpty)
+        #expect(locked.bodies.isEmpty)
+        #expect(locked.items.first?.isLocked == true)
+        #expect(locked.items.first?.isSelected == true)
+    }
+
     @Test func coverBeforeTheStartAndAddAfterTheEnd() {
         let geometry = TimelineGeometry(input())
         #expect(geometry.coverFrame.maxX == -20)

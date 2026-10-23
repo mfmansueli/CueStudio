@@ -74,6 +74,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var keyframes: [TimeInterval] = []
         /// Edited seconds of its beats (music from Files).
         var beats: [TimeInterval] = []
+        /// Locked in place (`TakeEdit.lockedLayers`): no handles, a lock drawn on it.
+        var isLocked = false
     }
 
     struct PauseInput: Equatable, Sendable {
@@ -131,6 +133,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var keyframeOffsets: [CGFloat]
         /// Beat ticks (music), from the item's left edge.
         var beatOffsets: [CGFloat] = []
+        var isLocked = false
     }
 
     struct Pause: Equatable, Sendable {
@@ -362,13 +365,15 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                     isSelected: isSelected,
                     isDimmed: selection != nil && !isSelected,
                     keyframeOffsets: item.keyframes.map { CGFloat($0 - item.span.start) * pps },
-                    beatOffsets: item.beats.map { CGFloat($0 - item.span.start) * pps }
+                    beatOffsets: item.beats.map { CGFloat($0 - item.span.start) * pps },
+                    isLocked: item.isLocked
                 ))
-                if isSelected, kind != .music, kind != .voiceOver {
+                // A locked item keeps its place: no handle to trim it, no body to drag it.
+                if isSelected, !item.isLocked, kind != .music, kind != .voiceOver {
                     handles.append(Self.handle(.item(kind, id, .start), x: x - Self.itemHandleWidth, width: Self.itemHandleWidth, lane: lane))
                     handles.append(Self.handle(.item(kind, id, .end), x: x + width, width: Self.itemHandleWidth, lane: lane))
                 }
-                if isSelected, kind != .voiceOver, kind != .recording {
+                if isSelected, !item.isLocked, kind != .voiceOver, kind != .recording {
                     let body = CGRect(x: x, y: lane.y, width: width, height: lane.height)
                     bodies.append(Handle(target: .move(kind, id), frame: body, hitFrame: body))
                 }
