@@ -18,44 +18,10 @@ extension RealExports {
     @MainActor
     @Suite("The preview is the export, tool by tool", .serialized, .timeLimit(.minutes(10)))
     struct PreviewMatchesExportTests {
-        enum Feature: String, CaseIterable, CustomTestStringConvertible {
-            case look, crop, fit, clipZoom, shortClipTransition, slide, zoomTransition, flash, fade, push, wipe, blur, punch, speed,
-                 text, captions, stabilize, followFace
-
-            var testDescription: String { rawValue }
-
-            /// Edited seconds compared.
-            var times: [TimeInterval] {
-                switch self {
-                case .shortClipTransition: [0.2, 0.27, 0.36]
-                // Around the cut at 0.95 s, never on it: exactly there, which side shows depends on the last bit of a sum.
-                case .slide, .zoomTransition, .flash, .fade, .push, .wipe, .blur, .punch: [0.85, 0.92, 1.0]
-                // Sped up, the edit is 2 s.
-                case .speed: [0.4, 1.2, 1.8]
-                default: [0.4, 1.4, 2.6]
-                }
-            }
-
-            var transition: EditTransition? {
-                switch self {
-                case .slide: .slide
-                case .zoomTransition: .zoom
-                case .flash: .flash
-                case .fade: .fade
-                case .push: .push
-                case .wipe: .wipe
-                case .blur: .blur
-                case .punch: .punch
-                case .shortClipTransition: .dissolve
-                default: nil
-                }
-            }
-        }
-
         private let size = CGSize(width: 180, height: 320)
 
-        @Test(arguments: Feature.allCases)
-        func thePreviewIsTheExport(_ feature: Feature) async throws {
+        @Test(arguments: RenderFeature.allCases)
+        func thePreviewIsTheExport(_ feature: RenderFeature) async throws {
             let take = try await footage(for: feature)
             defer {
                 MotionAnalysisStore.remove(forRecording: take)
@@ -80,7 +46,7 @@ extension RealExports {
         }
 
         /// Grain sliding a little every frame; a camera shaking for Stabilize; a square walking down for Follow face.
-        private func footage(for feature: Feature) async throws -> URL {
+        private func footage(for feature: RenderFeature) async throws -> URL {
             let motion: MovingFootage.Motion = switch feature {
             case .stabilize:
                 .init(background: { index in (CGPoint(x: 9 * sin(Double(index) * 1.7), y: 6 * cos(Double(index) * 2.1)), 0) })
@@ -95,7 +61,7 @@ extension RealExports {
         private static let facePath: @Sendable (Int) -> CGPoint = { index in CGPoint(x: 180, y: 140 + Double(min(index, 90)) * 3) }
 
         /// An edit with both ends trimmed (0.6 s off the start, 0.4 s off the end) and the tool on.
-        private func edit(for feature: Feature, take: URL) async throws -> TakeEdit {
+        private func edit(for feature: RenderFeature, take: URL) async throws -> TakeEdit {
             var edit = TakeEdit(sourceDuration: 4, aspect: .portrait)
             edit.voiceEnhancement = .off
             edit.timeline.trimStart(to: 0.6)
@@ -158,6 +124,41 @@ extension RealExports {
                 MotionAnalysisStore.save(analysis, forRecording: take)
             }
             return edit
+        }
+    }
+}
+
+/// The tools `PreviewMatchesExportTests` compares.
+enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
+    case look, crop, fit, clipZoom, shortClipTransition, slide, zoomTransition, flash, fade, push, wipe, blur, punch, speed,
+         text, captions, stabilize, followFace
+
+    var testDescription: String { rawValue }
+
+    /// Edited seconds compared.
+    var times: [TimeInterval] {
+        switch self {
+        case .shortClipTransition: [0.2, 0.27, 0.36]
+        // Around the cut at 0.95 s, never on it: exactly there, which side shows depends on the last bit of a sum.
+        case .slide, .zoomTransition, .flash, .fade, .push, .wipe, .blur, .punch: [0.85, 0.92, 1.0]
+        // Sped up, the edit is 2 s.
+        case .speed: [0.4, 1.2, 1.8]
+        default: [0.4, 1.4, 2.6]
+        }
+    }
+
+    var transition: EditTransition? {
+        switch self {
+        case .slide: .slide
+        case .zoomTransition: .zoom
+        case .flash: .flash
+        case .fade: .fade
+        case .push: .push
+        case .wipe: .wipe
+        case .blur: .blur
+        case .punch: .punch
+        case .shortClipTransition: .dissolve
+        default: nil
         }
     }
 }
