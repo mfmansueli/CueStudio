@@ -78,9 +78,6 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// The edit and its undo steps (`EditDocument`): the edit changes only there, and this hears each change.
     let document: EditDocument
     private(set) var source: Source = .loading
-    /// Frames per second of the recording: read from the file when it opens, the take's setting
-    /// until then. The timeline puts every edit on a frame (`FrameGrid`).
-    private(set) var frameRate: Double
     /// Clean Up listening to the take (see `QuickEditViewModel+CleanUp`).
     var analysis: Analysis = .idle
     /// "Pauses longer than": shorter pauses aren't listed and stay as natural ones (kept with the
@@ -95,8 +92,6 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// The pause or word being listened to in Pauses.
     var listeningID: UUID?
 
-    /// A reverse or an import the creator waits for, over the preview with Cancel (`QuickEditViewModel+Work`).
-    var work: EditorWork?
     /// The Low Power Mode notice over the preview (`QuickEditViewModel+LowPower`).
     var showsLowPowerNotice = false
     /// Edit by text: the picked words (indices in `transcriptWords`).
@@ -174,12 +169,14 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         if take.edit == nil { edit.captionCollection?.safeMargins = CaptionsViewModel.captionSafeMargins(for: take, aspect: take.aspect) }
         edit.captions = edit.captions.map(CaptionRevision.withoutContinuation)
         document = EditDocument(edit)
-        frameRate = Double(take.frameRate.rawValue)
         let player = player ?? QuickEditPlayer(videoURL: takes.videoURL(for: take), editing: editing)
         self.player = player
         let jobs = EditorJobs()
         self.jobs = jobs
-        session = EditorSession(document: document, player: player, jobs: jobs, toast: toast, take: take, videoURL: takes.videoURL(for: take))
+        session = EditorSession(
+            document: document, player: player, jobs: jobs, toast: toast, take: take, videoURL: takes.videoURL(for: take),
+            importer: self.mediaImporter
+        )
         captions = CaptionsViewModel(
             session: session, editing: editing, takes: takes, library: library, styles: self.styles, translations: translations,
             speechLanguage: speechLanguage, likelySpokenLanguages: likelySpokenLanguages, languageConflict: languageConflict
@@ -210,7 +207,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             source = .unavailable
             return
         }
-        if let rate = await editing.frameRate(ofVideoAt: videoURL) { frameRate = FrameGrid(rate: rate).rate }
+        if let rate = await editing.frameRate(ofVideoAt: videoURL) { session.frameRate = FrameGrid(rate: rate).rate }
         look.recordingUprightSize = await EditFraming.shape(of: videoURL)?.uprightSize
         guard !isClosed else { return }
         // The file's own length wins over the take's saved one; a draft left behind comes back with its undo steps.
@@ -328,21 +325,6 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     var canUndo: Bool { document.canUndo && !audio.isRecordingVoiceOver }
     var canRedo: Bool { document.canRedo && !audio.isRecordingVoiceOver }
     var hasUnsavedChanges: Bool { document.hasUnsavedChanges }
-
-    var selectedSegmentIndex: Int? {
-        selectedSegmentID.flatMap { edit.timeline.index(ofSegment: $0) }
-    }
-
-    /// Where the selected cut is: the index of the section that starts there (never the first).
-    var selectedJoinIndex: Int? {
-        guard let index = selectedJoinID.flatMap({ edit.timeline.index(ofSegment: $0) }), index > 0 else { return nil }
-        return index
-    }
-
-    /// The selected cut's transition, or nil when no cut is selected.
-    var selectedTransition: EditTransition? {
-        selectedJoinIndex.map { edit.timeline.transition(atJoin: $0) }
-    }
 
     /// "Clip 2 of 3, 4.2 seconds, playhead at 00:07.1": what VoiceOver reads on the timeline.
     var timelineAccessibilityValue: String {

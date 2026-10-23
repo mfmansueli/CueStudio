@@ -84,9 +84,27 @@ extension EditorPart {
         session.noteFailure(error, operation)
     }
 
+    /// Frames per second of the recording (`EditorSession.frameRate`).
+    var frameRate: Double { session.frameRate }
+
+    /// A reverse or an import the creator waits for (`EditorSession.work`).
+    var work: EditorWork? {
+        get { session.work }
+        set { session.work = newValue }
+    }
+
     /// The picked photo or video copied in, with its progress over the preview.
     func importPicked(_ item: PhotosPickerItem) async throws -> ImportedMedia {
         try await session.importPicked(item)
+    }
+
+    func reportWork(_ job: EditorJobs.Kind, _ fraction: Double) {
+        session.reportWork(job, fraction)
+    }
+
+    /// Cancel, on the pill: the work stops and the edit stays as it was.
+    func cancelWork() {
+        session.cancelWork()
     }
 
     // MARK: - Changing the edit (`EditDocument`)

@@ -61,6 +61,22 @@ extension EditorPart {
         selectedMediaID.flatMap { id in edit.media.first { $0.id == id } }
     }
 
+    /// Where the picked clip is.
+    var selectedSegmentIndex: Int? {
+        selectedSegmentID.flatMap { edit.timeline.index(ofSegment: $0) }
+    }
+
+    /// Where the selected cut is: the index of the section that starts there (never the first).
+    var selectedJoinIndex: Int? {
+        guard let index = selectedJoinID.flatMap({ edit.timeline.index(ofSegment: $0) }), index > 0 else { return nil }
+        return index
+    }
+
+    /// The selected cut's transition, or nil when no cut is selected.
+    var selectedTransition: EditTransition? {
+        selectedJoinIndex.map { edit.timeline.transition(atJoin: $0) }
+    }
+
     private func select(_ new: EditorSelection?, replacing id: KeyPath<EditorSelection, UUID?>) {
         if let new {
             selection = new

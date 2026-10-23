@@ -32,11 +32,22 @@ final class EditorSession {
     @ObservationIgnored var importedFiles: Set<String> = []
     /// A file is being brought in or written (a photo or video, a clip replaced or reversed, a sound pulled out): one at a time.
     var isImportingMedia = false
+    /// A reverse or an import the creator waits for, over the preview with how far it is and Cancel.
+    var work: EditorWork?
+    /// Frames per second of the recording: read from the file when it opens, the take's setting until then.
+    var frameRate: Double
+    /// Copies a picked photo or video into the edit's media.
+    let importer: EditMediaImporting
     /// The creator's handle, for the "@handle" graphic and the cover's series (set by the screen).
     var creatorHandle = ""
 
-    init(document: EditDocument, player: EditPlayback, jobs: EditorJobs, toast: ToastService, take: Take, videoURL: URL) {
+    init(
+        document: EditDocument, player: EditPlayback, jobs: EditorJobs, toast: ToastService, take: Take, videoURL: URL,
+        importer: EditMediaImporting
+    ) {
         self.document = document
+        self.importer = importer
+        frameRate = Double(take.frameRate.rawValue)
         self.player = player
         self.jobs = jobs
         self.toast = toast
@@ -94,10 +105,32 @@ final class EditorSession {
         host?.showPlayedEdit()
     }
 
-    /// The picked photo or video copied in, with its progress over the preview; the editor gone, it is cancelled.
+    // MARK: - Work the creator waits for
+
+    /// The picked photo or video copied in (from iCloud first when it isn't on the iPhone), with how far it got said over the
+    /// preview; Cancel (or leaving) stops it with `CancellationError`, and a copy that lands as Cancel comes goes.
     func importPicked(_ item: PhotosPickerItem) async throws -> ImportedMedia {
-        guard let host else { throw CancellationError() }
-        return try await host.importPicked(item)
+        let job = EditorJobs.Kind.importing(UUID())
+        work = EditorWork(kind: .importing, job: job)
+        defer { if work?.job == job { work = nil } }
+        return try await jobs.run(
+            job,
+            discard: { EditMediaFiles.remove([$0.fileName]) },
+            work: { [weak self, importer] in try await importer.importMedia(item) { fraction in self?.reportWork(job, fraction) } }
+        )
+    }
+
+    /// How far the work run as `job` is, unless it was cancelled meanwhile.
+    func reportWork(_ job: EditorJobs.Kind, _ fraction: Double) {
+        guard work?.job == job else { return }
+        work?.fraction = min(max(fraction, 0), 1)
+    }
+
+    /// Cancel, on the pill: the work stops and the edit stays as it was.
+    func cancelWork() {
+        guard let work else { return }
+        jobs.cancel(work.job)
+        self.work = nil
     }
 
     /// Undo, as the toast's button.

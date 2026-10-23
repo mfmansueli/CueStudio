@@ -4,13 +4,10 @@
 //
 
 import Foundation
-import PhotosUI
-import SwiftUI
 @testable import Cue_Studio
 
 /// An editor that is only a host (`EditorHost`): a part of the editor (`EditorPart`) tested on its own, with what is picked
-/// and the panels as plain values, Undo going to the document, failures and the preview shown again counted, and photos
-/// brought in through `importer`. Keep it alive for the test: its session
+/// and the panels as plain values, Undo going to the document, and failures and the preview shown again counted. Keep it alive for the test: its session
 /// holds it weakly, the way the editor is held.
 @MainActor
 final class FakeEditorHost: EditorHost {
@@ -22,15 +19,17 @@ final class FakeEditorHost: EditorHost {
     var toolMenu: EditorToolMenu?
     var sheet: EditorSheet?
     var captionScript: Script?
-    var importer: EditMediaImporting = FakeMediaImporter()
     private(set) var failures: [String] = []
     private(set) var playedEditShown = 0
 
-    init(take: Take = TestData.take(scriptID: nil), edit: TakeEdit? = nil, player: EditPlayback = FakeEditPlayback()) {
+    init(
+        take: Take = TestData.take(scriptID: nil), edit: TakeEdit? = nil, player: EditPlayback = FakeEditPlayback(),
+        importer: EditMediaImporting = FakeMediaImporter()
+    ) {
         let document = EditDocument(edit ?? TakeEdit(sourceDuration: take.duration, aspect: take.aspect))
         session = EditorSession(
             document: document, player: player, jobs: EditorJobs(), toast: ToastService(), take: take,
-            videoURL: URL.temporaryDirectory.appending(path: take.fileName)
+            videoURL: URL.temporaryDirectory.appending(path: take.fileName), importer: importer
         )
         session.host = self
         // Ready, as the editor is once the recording opens: the player shows the edit.
@@ -51,7 +50,4 @@ final class FakeEditorHost: EditorHost {
         playedEditShown += 1
     }
 
-    func importPicked(_ item: PhotosPickerItem) async throws -> ImportedMedia {
-        try await importer.importMedia(item) { _ in }
-    }
 }
