@@ -24395,6 +24395,125 @@
         }
       }
     },
+    "%lld%% across, %lld%% down" : {
+      "comment" : "VoiceOver, after a text or photo is moved a step on the preview: where it is now, as a share of the frame from the left and from the top",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% أفقيًا، %lld%% رأسيًا"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld %% vandret, %lld %% lodret"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld %% waagerecht, %lld %% senkrecht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld %% en horizontal, %lld %% en vertical"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld %% à l’horizontale, %lld %% à la verticale"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% बाएँ से, %lld%% ऊपर से"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% dari kiri, %lld%% dari atas"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% in orizzontale, %lld%% in verticale"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "横 %lld%%、縦 %lld%%"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "가로 %lld%%, 세로 %lld%%"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld %% vannrett, %lld %% loddrett"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% horizontaal, %lld%% verticaal"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% na horizontal, %lld%% na vertical"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld %% vågrätt, %lld %% lodrätt"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แนวนอน %lld%% แนวตั้ง %lld%%"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yatayda %%%lld, dikeyde %%%lld"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld%% theo chiều ngang, %lld%% theo chiều dọc"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水平 %lld%%，垂直 %lld%%"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "水平 %lld%%，垂直 %lld%%"
+          }
+        }
+      }
+    },
     "%llds" : {
       "localizations" : {
         "ar" : {
@@ -49192,6 +49311,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "匿名使用資料，絕不包含影片或腳本"
+          }
+        }
+      }
+    },
+    "Another app is using the microphone · Close it and try again" : {
+      "comment" : "Toast when a voice-over can't start because another app holds the microphone",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تطبيق آخر يستخدم الميكروفون · أغلقه وحاول مرة أخرى"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En anden app bruger mikrofonen · Luk den, og prøv igen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine andere App nutzt das Mikrofon · Schließe sie und versuche es erneut"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Otra app está usando el micrófono · Ciérrala e inténtalo de nuevo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une autre app utilise le micro · Fermez-la et réessayez"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कोई दूसरा ऐप माइक इस्तेमाल कर रहा है · उसे बंद करके फिर कोशिश करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App lain sedang memakai mikrofon · Tutup app itu lalu coba lagi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un’altra app sta usando il microfono · Chiudila e riprova"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "別のアプリがマイクを使用中です · 閉じてからもう一度お試しください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다른 앱이 마이크를 사용 중이에요 · 앱을 닫고 다시 시도하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En annen app bruker mikrofonen · Lukk den og prøv igjen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een andere app gebruikt de microfoon · Sluit die en probeer het opnieuw"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Outro app está usando o microfone · Feche-o e tente de novo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En annan app använder mikrofonen · Stäng den och försök igen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แอปอื่นกำลังใช้ไมโครโฟน · ปิดแอปนั้นแล้วลองอีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mikrofonu başka bir uygulama kullanıyor · Onu kapatıp tekrar dene"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một ứng dụng khác đang dùng micrô · Hãy đóng nó rồi thử lại"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "另一个 App 正在使用麦克风 · 请关闭它后重试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "另一個 App 正在使用麥克風 · 請關閉後再試一次"
           }
         }
       }
@@ -95278,6 +95516,125 @@
         }
       }
     },
+    "Couldn't record the voice-over · Try again" : {
+      "comment" : "Toast when a voice-over's file couldn't be written while recording",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر تسجيل التعليق الصوتي · حاول مرة أخرى"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voiceoveren kunne ikke optages · Prøv igen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Voice-over ließ sich nicht aufnehmen · Versuche es erneut"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No se pudo grabar la voz en off · Inténtalo de nuevo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossible d’enregistrer la voix off · Réessayez"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वॉइस-ओवर रिकॉर्ड नहीं हो सका · फिर कोशिश करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sulih suara tidak bisa direkam · Coba lagi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Impossibile registrare la voce fuori campo · Riprova"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ボイスオーバーを録音できませんでした · もう一度お試しください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보이스오버를 녹음할 수 없어요 · 다시 시도하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voiceoveren kunne ikke tas opp · Prøv igjen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De voice-over kon niet worden opgenomen · Probeer het opnieuw"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Não deu para gravar a narração · Tente de novo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voiceovern kunde inte spelas in · Försök igen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อัดเสียงพากย์ไม่ได้ · ลองอีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seslendirme kaydedilemedi · Tekrar dene"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không thể ghi lồng tiếng · Hãy thử lại"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无法录制配音 · 请重试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無法錄製旁白 · 請再試一次"
+          }
+        }
+      }
+    },
     "Couldn't save · Try again" : {
       "localizations" : {
         "ar" : {
@@ -117159,121 +117516,121 @@
         }
       }
     },
-    "Drag to move, pinch to resize. Tap where another overlaps to pick it." : {
-      "comment" : "VoiceOver hint of a picked photo or video on the preview",
+    "Drag to move, pinch to resize, or use the actions. Tap where another overlaps to pick it." : {
+      "comment" : "VoiceOver hint on a picked photo or video over the video",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "اسحب للتحريك، واضغط بإصبعين لتغيير الحجم. اضغط حيث يتداخل عنصر آخر لاختياره."
+            "value" : "اسحب للتحريك، واضغط بإصبعين لتغيير الحجم، أو استخدم الإجراءات. اضغط حيث يتداخل عنصر آخر لاختياره."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Træk for at flytte, knib for at ændre størrelse. Tryk hvor et andet overlapper for at vælge det."
+            "value" : "Træk for at flytte, knib for at ændre størrelse, eller brug handlingerne. Tryk hvor et andet overlapper for at vælge det."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ziehen zum Bewegen, Zusammenziehen zum Skalieren. Tippe, wo ein anderes überlappt, um es zu wählen."
+            "value" : "Ziehen zum Bewegen, Zusammenziehen zum Skalieren oder die Aktionen nutzen. Tippe, wo ein anderes überlappt, um es zu wählen."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Arrastra para mover, pellizca para cambiar el tamaño. Toca donde se superpone otro para elegirlo."
+            "value" : "Arrastra para mover, pellizca para cambiar el tamaño o usa las acciones. Toca donde se superpone otro para elegirlo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Faites glisser pour déplacer, pincez pour redimensionner. Touchez là où un autre chevauche pour le choisir."
+            "value" : "Faites glisser pour déplacer, pincez pour redimensionner ou utilisez les actions. Touchez là où un autre chevauche pour le choisir."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "हिलाने के लिए खींचें, आकार बदलने के लिए पिंच करें। दूसरा जहाँ ओवरलैप हो, उसे चुनने के लिए वहाँ टैप करें।"
+            "value" : "हिलाने के लिए खींचें, आकार बदलने के लिए पिंच करें या ऐक्शन इस्तेमाल करें। दूसरा जहाँ ओवरलैप हो, उसे चुनने के लिए वहाँ टैप करें।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seret untuk memindahkan, cubit untuk mengubah ukuran. Ketuk di bagian yang tumpang tindih untuk memilih yang lain."
+            "value" : "Seret untuk memindahkan, cubit untuk mengubah ukuran, atau pakai tindakan. Ketuk di bagian yang tumpang tindih untuk memilih yang lain."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trascina per spostare, pizzica per ridimensionare. Tocca dove se ne sovrappone un altro per sceglierlo."
+            "value" : "Trascina per spostare, pizzica per ridimensionare o usa le azioni. Tocca dove se ne sovrappone un altro per sceglierlo."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ドラッグで移動、ピンチでサイズ変更。重なっている場所をタップすると下のものを選べます。"
+            "value" : "ドラッグで移動、ピンチでサイズ変更、またはアクションを使用。重なっている場所をタップすると下のものを選べます。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "드래그해 이동하고 핀치해 크기를 바꿔요. 겹친 곳을 탭하면 아래 것을 골라요."
+            "value" : "드래그해 이동하고 핀치해 크기를 바꾸거나 동작을 사용하세요. 겹친 곳을 탭하면 아래 것을 골라요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dra for å flytte, knip for å endre størrelse. Trykk der et annet overlapper for å velge det."
+            "value" : "Dra for å flytte, knip for å endre størrelse, eller bruk handlingene. Trykk der et annet overlapper for å velge det."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Sleep om te verplaatsen, knijp om het formaat te wijzigen. Tik waar een ander overlapt om dat te kiezen."
+            "value" : "Sleep om te verplaatsen, knijp om het formaat te wijzigen of gebruik de acties. Tik waar een ander overlapt om dat te kiezen."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Arraste para mover, faça pinça para redimensionar. Toque onde outro se sobrepõe para escolhê-lo."
+            "value" : "Arraste para mover, faça pinça para redimensionar ou use as ações. Toque onde outro se sobrepõe para escolhê-lo."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dra för att flytta, nyp för att ändra storlek. Tryck där ett annat överlappar för att välja det."
+            "value" : "Dra för att flytta, nyp för att ändra storlek eller använd åtgärderna. Tryck där ett annat överlappar för att välja det."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ลากเพื่อย้าย จีบนิ้วเพื่อปรับขนาด แตะตรงที่ซ้อนกันเพื่อเลือกอีกอัน"
+            "value" : "ลากเพื่อย้าย จีบนิ้วเพื่อปรับขนาด หรือใช้การทำงาน แตะตรงที่ซ้อนกันเพื่อเลือกอีกอัน"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Taşımak için sürükle, boyutlandırmak için sıkıştır. Başkasıyla çakıştığı yere dokunarak onu seç."
+            "value" : "Taşımak için sürükle, boyutlandırmak için sıkıştır veya eylemleri kullan. Başkasıyla çakıştığı yere dokunarak onu seç."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kéo để di chuyển, chụm để đổi cỡ. Chạm vào chỗ chồng lên nhau để chọn cái bên dưới."
+            "value" : "Kéo để di chuyển, chụm để đổi cỡ hoặc dùng các tác vụ. Chạm vào chỗ chồng lên nhau để chọn cái bên dưới."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拖动可移动，捏合可调整大小。轻点重叠处可选中下面的那个。"
+            "value" : "拖动可移动，捏合可调整大小，也可使用操作。轻点重叠处可选中下面的那个。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "拖移可移動，捏合可調整大小。點一下重疊處可選取下面的那個。"
+            "value" : "拖移可移動，捏合可調整大小，也可使用動作。點一下重疊處可選取下面的那個。"
           }
         }
       }
@@ -200320,120 +200677,121 @@
         }
       }
     },
-    "Mic is off · See Settings" : {
+    "Mic is off for Cue" : {
+      "comment" : "Toast when Voice-over can't record because the microphone is off for Cue; it has a Settings button",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الميكروفون متوقف · راجع الإعدادات"
+            "value" : "الميكروفون متوقف لـ Cue"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofon slået fra · Se Indstillinger"
+            "value" : "Mikrofonen er slået fra for Cue"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofon aus · Siehe Einstellungen"
+            "value" : "Mikrofon ist für Cue aus"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Micrófono desactivado · Revisa Ajustes"
+            "value" : "El micrófono está desactivado para Cue"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Micro désactivé · Voir Réglages"
+            "value" : "Le micro est désactivé pour Cue"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "माइक बंद है · सेटिंग्ज़ देखें"
+            "value" : "Cue के लिए माइक बंद है"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofon nonaktif · Lihat Pengaturan"
+            "value" : "Mikrofon nonaktif untuk Cue"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Microfono disattivato · Vedi Impostazioni"
+            "value" : "Il microfono è disattivato per Cue"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "マイクがオフです · 設定を確認"
+            "value" : "Cueのマイクがオフです"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "마이크가 꺼져 있어요 · 설정 확인"
+            "value" : "Cue의 마이크가 꺼져 있어요"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofonen er av · Se Innstillinger"
+            "value" : "Mikrofonen er av for Cue"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Microfoon staat uit · Zie Instellingen"
+            "value" : "Microfoon staat uit voor Cue"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Microfone desligado · Veja Ajustes"
+            "value" : "Microfone desligado para o Cue"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofonen är av · Se Inställningar"
+            "value" : "Mikrofonen är av för Cue"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ไมโครโฟนปิดอยู่ · ดูการตั้งค่า"
+            "value" : "ไมโครโฟนของ Cue ปิดอยู่"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Mikrofon kapalı · Ayarlar’a bak"
+            "value" : "Cue için mikrofon kapalı"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Micrô đang tắt · Xem Cài đặt"
+            "value" : "Micrô đang tắt với Cue"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "麦克风已关闭 · 请查看设置"
+            "value" : "Cue 的麦克风已关闭"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "麥克風已關閉 · 請查看「設定」"
+            "value" : "Cue 的麥克風已關閉"
           }
         }
       }
@@ -206379,6 +206737,125 @@
         }
       }
     },
+    "Move down" : {
+      "comment" : "VoiceOver action on a text or photo over the video",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحريك لأسفل"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flyt ned"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach unten"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover abajo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déplacer vers le bas"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "नीचे ले जाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindah ke bawah"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sposta giù"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下へ移動"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아래로 이동"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytt ned"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omlaag"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover para baixo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytta ned"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ย้ายลง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aşağı taşı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di chuyển xuống"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下移"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下移"
+          }
+        }
+      }
+    },
     "Move later" : {
       "comment" : "Captions › Select: moves the picked lines a tenth of a second later",
       "localizations" : {
@@ -206613,6 +207090,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提前"
+          }
+        }
+      }
+    },
+    "Move left" : {
+      "comment" : "VoiceOver action on a text or photo over the video",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحريك لليسار"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flyt til venstre"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach links"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover a la izquierda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déplacer vers la gauche"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बाएँ ले जाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindah ke kiri"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sposta a sinistra"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "左へ移動"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "왼쪽으로 이동"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytt til venstre"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naar links"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover para a esquerda"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytta åt vänster"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ย้ายไปทางซ้าย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sola taşı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di chuyển sang trái"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "左移"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "左移"
           }
         }
       }
@@ -206971,6 +207567,125 @@
         }
       }
     },
+    "Move right" : {
+      "comment" : "VoiceOver action on a text or photo over the video",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحريك لليمين"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flyt til højre"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach rechts"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover a la derecha"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déplacer vers la droite"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "दाएँ ले जाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindah ke kanan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sposta a destra"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右へ移動"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "오른쪽으로 이동"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytt til høyre"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naar rechts"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover para a direita"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytta åt höger"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ย้ายไปทางขวา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sağa taşı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di chuyển sang phải"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右移"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "右移"
+          }
+        }
+      }
+    },
     "Move through the script" : {
       "comment" : "Settings › Remote: capability tile (short)",
       "localizations" : {
@@ -207204,6 +207919,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "移到資料夾"
+          }
+        }
+      }
+    },
+    "Move up" : {
+      "comment" : "VoiceOver action on a text or photo over the video",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحريك لأعلى"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flyt op"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nach oben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover arriba"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Déplacer vers le haut"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ऊपर ले जाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pindah ke atas"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sposta su"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上へ移動"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "위로 이동"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytt opp"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omhoog"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mover para cima"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytta upp"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ย้ายขึ้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yukarı taşı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di chuyển lên"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上移"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上移"
           }
         }
       }
@@ -216444,6 +217278,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "下一步 · %@"
+          }
+        }
+      }
+    },
+    "Next cut" : {
+      "comment" : "VoiceOver action on the timeline: the playhead to the next cut between clips",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "القطع التالي"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Næste klip"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nächster Schnitt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguiente corte"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coupe suivante"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अगला कट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Potongan berikutnya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taglio successivo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次のカット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다음 컷"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neste klipp"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volgende knip"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Próximo corte"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nästa klipp"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "จุดตัดถัดไป"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sonraki kesme"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Điểm cắt tiếp theo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一个剪切点"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "下一個剪接點"
           }
         }
       }
@@ -225815,6 +226768,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "這裡空間不足"
+          }
+        }
+      }
+    },
+    "Not enough space on this iPhone · Free some and try again" : {
+      "comment" : "Toast when a photo, video or sound couldn't be added because the iPhone is full",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا توجد مساحة كافية على هذا الـ iPhone · حرّر بعض المساحة وحاول مرة أخرى"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikke nok plads på denne iPhone · Frigør noget, og prøv igen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nicht genug Platz auf diesem iPhone · Gib etwas frei und versuche es erneut"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No hay espacio suficiente en este iPhone · Libera algo e inténtalo de nuevo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Espace insuffisant sur cet iPhone · Libérez-en un peu et réessayez"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस iPhone पर जगह कम है · कुछ जगह खाली करके फिर कोशिश करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ruang di iPhone ini tidak cukup · Kosongkan sedikit lalu coba lagi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Spazio insufficiente su questo iPhone · Liberane un po’ e riprova"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このiPhoneの空き容量が足りません · 少し空けてからもう一度お試しください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 iPhone의 공간이 부족해요 · 공간을 확보한 후 다시 시도하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ikke nok plass på denne iPhonen · Frigjør litt og prøv igjen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Niet genoeg ruimte op deze iPhone · Maak wat vrij en probeer het opnieuw"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Falta espaço neste iPhone · Libere um pouco e tente de novo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inte tillräckligt med utrymme på den här iPhonen · Frigör lite och försök igen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "พื้นที่ใน iPhone นี้ไม่พอ · เพิ่มพื้นที่แล้วลองอีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu iPhone’da yeterli alan yok · Biraz boşaltıp tekrar dene"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "iPhone này không đủ dung lượng · Hãy giải phóng bớt rồi thử lại"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此 iPhone 空间不足 · 请释放一些空间后重试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這部 iPhone 空間不足 · 請清出一些空間後再試一次"
           }
         }
       }
@@ -247263,6 +248335,125 @@
         }
       }
     },
+    "Photos couldn't hand this over · Check your connection and try again" : {
+      "comment" : "Toast when the photo library couldn't give a picked photo or video (often still in iCloud)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر على الصور تسليم هذا الملف · تحقّق من الاتصال وحاول مرة أخرى"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos kunne ikke levere den · Tjek forbindelsen, og prøv igen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos konnte das nicht übergeben · Prüfe die Verbindung und versuche es erneut"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotos no pudo entregarlo · Revisa tu conexión e inténtalo de nuevo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos n’a pas pu le transmettre · Vérifiez votre connexion et réessayez"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Photos इसे दे नहीं सका · कनेक्शन जाँचकर फिर कोशिश करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto tidak bisa memberikannya · Periksa koneksi lalu coba lagi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto non è riuscita a consegnarlo · Controlla la connessione e riprova"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真アプリから受け取れませんでした · 接続を確認してもう一度お試しください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "사진 앱에서 받을 수 없었어요 · 연결을 확인하고 다시 시도하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilder kunne ikke levere den · Sjekk tilkoblingen og prøv igjen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Foto’s kon dit niet doorgeven · Controleer je verbinding en probeer het opnieuw"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Fotos não conseguiu entregar este arquivo · Confira a conexão e tente de novo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bilder kunde inte lämna över den · Kontrollera anslutningen och försök igen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แอปรูปภาพส่งไฟล์นี้ไม่ได้ · ตรวจสอบการเชื่อมต่อแล้วลองอีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotoğraflar bunu aktaramadı · Bağlantını kontrol edip tekrar dene"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ảnh không thể chuyển tệp này · Hãy kiểm tra kết nối rồi thử lại"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“照片”无法提供此项目 · 请检查网络连接后重试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「照片」無法提供此項目 · 請檢查網路連線後再試一次"
+          }
+        }
+      }
+    },
     "Photos is off · the video wasn't saved there" : {
       "comment" : "Message shown when the user has not allowed Photos to save the exported video.",
       "isCommentAutoGenerated" : true,
@@ -260885,6 +262076,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "宇宙卡片預覽"
+          }
+        }
+      }
+    },
+    "Previous cut" : {
+      "comment" : "VoiceOver action on the timeline: the playhead to the cut before",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "القطع السابق"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forrige klip"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorheriger Schnitt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corte anterior"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Coupe précédente"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पिछला कट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Potongan sebelumnya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Taglio precedente"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "前のカット"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전 컷"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forrige klipp"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vorige knip"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corte anterior"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Föregående klipp"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "จุดตัดก่อนหน้า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önceki kesme"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Điểm cắt trước"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上一个剪切点"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "上一個剪接點"
           }
         }
       }
@@ -276285,6 +277595,125 @@
         }
       }
     },
+    "Recording stopped · Another app took the microphone" : {
+      "comment" : "Toast when a call, Siri or another app takes the microphone during a voice-over; what was recorded is kept",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "توقف التسجيل · استخدم تطبيق آخر الميكروفون"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Optagelsen stoppede · En anden app tog mikrofonen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aufnahme beendet · Eine andere App hat das Mikrofon übernommen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se detuvo la grabación · Otra app tomó el micrófono"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enregistrement arrêté · Une autre app a pris le micro"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "रिकॉर्डिंग रुक गई · किसी दूसरे ऐप ने माइक ले लिया"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perekaman berhenti · App lain memakai mikrofon"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Registrazione interrotta · Un’altra app ha preso il microfono"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "録音が止まりました · 別のアプリがマイクを使用しました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "녹음이 멈췄어요 · 다른 앱이 마이크를 가져갔어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opptaket stoppet · En annen app tok mikrofonen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opname gestopt · Een andere app nam de microfoon over"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A gravação parou · Outro app usou o microfone"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inspelningen stoppades · En annan app tog mikrofonen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การอัดหยุดแล้ว · แอปอื่นใช้ไมโครโฟน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kayıt durdu · Mikrofonu başka bir uygulama aldı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã dừng ghi · Một ứng dụng khác đã dùng micrô"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "录制已停止 · 另一个 App 占用了麦克风"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "錄製已停止 · 另一個 App 使用了麥克風"
+          }
+        }
+      }
+    },
     "Recording stopped · Take saved" : {
       "localizations" : {
         "ar" : {
@@ -276990,6 +278419,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "想重來幾次都行。發哪個鏡頭由你選。"
+          }
+        }
+      }
+    },
+    "Redone" : {
+      "comment" : "VoiceOver announcement after Redo in the editor",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تمت الإعادة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gentaget"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wiederholt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rehecho"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rétabli"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फिर से किया गया"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Diulangi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ripristinato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "やり直しました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "다시 실행됨"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjort om"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opnieuw gedaan"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refeito"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjort om"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ทำซ้ำแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yinelendi"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã làm lại"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已重做"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已重做"
           }
         }
       }
@@ -319799,6 +321347,125 @@
         }
       }
     },
+    "Smaller" : {
+      "comment" : "VoiceOver action on a text or photo over the video: makes it smaller",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أصغر"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindre"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kleiner"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Más pequeño"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Plus petit"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "छोटा"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lebih kecil"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Più piccolo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "小さく"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "작게"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindre"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kleiner"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menor"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mindre"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เล็กลง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha küçük"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nhỏ hơn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "较小"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "較小"
+          }
+        }
+      }
+    },
     "smile" : {
       "localizations" : {
         "ar" : {
@@ -332838,125 +334505,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "停止錄影"
-          }
-        }
-      }
-    },
-    "Stop screen recording or mirroring to view this preview." : {
-      "comment" : "Shown in place of a video preview (take review, Quick edit, the recorder's camera) while the screen is being recorded, mirrored or AirPlayed. Uses the system's names for Screen Recording and Screen Mirroring.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أوقِف تسجيل الشاشة أو النسخ المطابق للشاشة لعرض هذه المعاينة."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stop skærmoptagelsen eller skærmdubleringen for at se denne forhåndsvisning."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Beende die Bildschirmaufnahme oder die Bildschirmsynchronisierung, um diese Vorschau zu sehen."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Detén la grabación o la duplicación de pantalla para ver esta vista previa."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Arrêtez l’enregistrement ou la recopie de l’écran pour voir cet aperçu."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "यह प्रीव्यू देखने के लिए स्क्रीन रिकॉर्डिंग या स्क्रीन मिररिंग बंद करें।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hentikan rekam layar atau pencerminan layar untuk melihat pratinjau ini."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Interrompi la registrazione o la duplicazione dello schermo per vedere questa anteprima."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "このプレビューを見るには、画面収録または画面ミラーリングを停止してください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "이 미리보기를 보려면 화면 기록이나 화면 미러링을 멈춰 주세요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stopp skjermopptaket eller skjermspeilingen for å se denne forhåndsvisningen."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stop de schermopname of synchrone weergave om deze voorvertoning te zien."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pare a gravação ou o espelhamento da tela para ver esta prévia."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stoppa skärminspelningen eller skärmdubbleringen för att se den här förhandsvisningen."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "หยุดการบันทึกหน้าจอหรือการสะท้อนหน้าจอเพื่อดูพรีวิวนี้"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bu önizlemeyi görmek için ekran kaydını veya ekran yansıtmayı durdur."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dừng ghi màn hình hoặc phản chiếu màn hình để xem phần xem trước này."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "停止屏幕录制或屏幕镜像后即可查看此预览。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "停止螢幕錄製或螢幕鏡像輸出後即可檢視此預覽。"
           }
         }
       }
@@ -372553,124 +374101,6 @@
         }
       }
     },
-    "Try another change, or cancel and open the take again." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "جرّب تغييرًا آخر، أو ألغِ وافتح اللقطة مرة أخرى."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prøv en anden ændring, eller annuller og åbn optagelsen igen."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Versuch eine andere Änderung oder brich ab und öffne den Take erneut."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prueba otro cambio, o cancela y vuelve a abrir la toma."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Essayez un autre changement, ou annulez et rouvrez la prise."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कोई और बदलाव आज़माएँ, या रद्द करके टेक फिर से खोलें।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coba perubahan lain, atau batalkan dan buka take-nya lagi."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prova un’altra modifica, oppure annulla e riapri la ripresa."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "別の変更を試すか、キャンセルしてテイクを開き直してください。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "다른 변경을 시도하거나, 취소하고 테이크를 다시 여세요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prøv en annen endring, eller avbryt og åpne opptaket på nytt."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Probeer een andere wijziging, of annuleer en open de opname opnieuw."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tente outra mudança, ou cancele e abra o take de novo."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prova en annan ändring, eller avbryt och öppna tagningen igen."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ลองเปลี่ยนแบบอื่น หรือยกเลิกแล้วเปิดเทคอีกครั้ง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Başka bir değişiklik dene veya vazgeçip çekimi yeniden aç."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Thử thay đổi khác, hoặc hủy và mở lại cảnh quay."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "换一种修改，或取消后重新打开镜头。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "試試其他變更，或取消後重新開啟鏡頭。"
-          }
-        }
-      }
-    },
     "Try another topic, or type your own idea in the composer." : {
       "comment" : "Find inspiration: nothing to show for the chosen topic (no Apple Intelligence)",
       "localizations" : {
@@ -410585,6 +412015,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的 Cue 資料已刪除"
+          }
+        }
+      }
+    },
+    "Your edit is safe. Try again, or cancel and open the take again." : {
+      "comment" : "Under 'The preview couldn't be built', above the Try again button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعديلك محفوظ. حاول مرة أخرى، أو ألغِ وافتح اللقطة من جديد."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din redigering er i sikkerhed. Prøv igen, eller annuller og åbn optagelsen igen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Bearbeitung ist sicher. Versuche es erneut oder brich ab und öffne den Take neu."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu edición está a salvo. Inténtalo de nuevo, o cancela y vuelve a abrir la toma."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre montage est en sécurité. Réessayez, ou annulez et rouvrez la prise."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपकी एडिटिंग सुरक्षित है। फिर कोशिश करें, या रद्द करके टेक दोबारा खोलें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Editanmu aman. Coba lagi, atau batalkan lalu buka take-nya lagi."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua modifica è al sicuro. Riprova, oppure annulla e riapri la ripresa."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "編集内容は保存されています。もう一度試すか、キャンセルしてテイクを開き直してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "편집 내용은 안전해요. 다시 시도하거나 취소하고 테이크를 다시 여세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Redigeringen din er trygg. Prøv igjen, eller avbryt og åpne opptaket på nytt."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je bewerking is veilig. Probeer het opnieuw, of annuleer en open de opname opnieuw."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua edição está salva. Tente de novo, ou cancele e abra a take outra vez."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din redigering är i säkerhet. Försök igen, eller avbryt och öppna tagningen igen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การแก้ไขของคุณปลอดภัย ลองอีกครั้ง หรือยกเลิกแล้วเปิดเทคใหม่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Düzenlemen güvende. Tekrar dene ya da iptal edip çekimi yeniden aç."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bản chỉnh sửa của bạn vẫn an toàn. Hãy thử lại, hoặc hủy rồi mở lại cảnh quay."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的编辑很安全。请重试，或取消后重新打开这个镜头。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的編輯很安全。請再試一次，或取消後重新開啟這個鏡頭。"
           }
         }
       }
