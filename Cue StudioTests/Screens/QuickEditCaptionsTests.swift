@@ -70,7 +70,7 @@ struct QuickEditCaptionsTests {
         let script = TestData.script(text: "Esses são três hábitos.", language: .portugueseBrazil)
         let scenario = await makeScenario(script: script, languages: languages)
         #expect(scenario.viewModel.captions.captionLanguageConflict == nil)
-        #expect(scenario.viewModel.speechLanguage == .language(.portugueseBrazil))
+        #expect(scenario.viewModel.captions.captionSpeechLanguage == .language(.portugueseBrazil))
     }
 
     /// Waits for the listening started by `makeCaptions`.

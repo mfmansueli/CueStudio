@@ -86,15 +86,11 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     let editing: TakeEditing
     let library: ScriptLibraryService
     let toast: ToastService
-    let mediaImporter: EditMediaImporting
-    let styles: TextStyleStoring
     /// Quick edit's own switches, kept between edits.
     let editorPreferences: EditorPreferencesStoring
     /// The library of takes (a montage adds others from it).
     let takes: TakeLibraryService
     private let drafts: QuickEditDraftStoring
-    /// What a script is heard in for captions and Clean Up (`LanguageService.captionRequest(for:)`).
-    let speechLanguageFor: (Script?) -> SpeechLanguageRequest
     /// What the editor's parts work through: the document, the player, the jobs and the toasts, and this editor as their host.
     let session: EditorSession
     /// Captions: made, corrected, picked, styled, translated and moved on the preview (`CaptionsViewModel`).
@@ -130,9 +126,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         languageConflict: @escaping (Script?) -> SpeechLanguageConflict? = { _ in nil }
     ) {
         self.take = take
-        self.styles = styles ?? TextStyleStore()
-        speechLanguageFor = speechLanguage
-        self.mediaImporter = mediaImporter ?? EditMediaImporter()
+        let styles = styles ?? TextStyleStore()
+        let mediaImporter = mediaImporter ?? EditMediaImporter()
         let preferences = editorPreferences ?? EditorPreferencesStore()
         self.editorPreferences = preferences
         self.takes = takes
@@ -150,21 +145,21 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         self.jobs = jobs
         session = EditorSession(
             document: document, player: player, jobs: jobs, toast: toast, take: take, videoURL: takes.videoURL(for: take),
-            importer: self.mediaImporter
+            importer: mediaImporter
         )
         captions = CaptionsViewModel(
-            session: session, editing: editing, takes: takes, library: library, styles: self.styles, translations: translations,
+            session: session, editing: editing, takes: takes, library: library, styles: styles, translations: translations,
             speechLanguage: speechLanguage, likelySpokenLanguages: likelySpokenLanguages, languageConflict: languageConflict
         )
         cover = CoverViewModel(
-            session: session, editing: editing, pictures: coverPictures ?? CoverPictureService(), importer: self.mediaImporter,
-            styles: self.styles
+            session: session, editing: editing, pictures: coverPictures ?? CoverPictureService(), importer: mediaImporter,
+            styles: styles
         )
         look = LookViewModel(session: session, editing: editing, motion: motion)
         clips = ClipsViewModel(session: session, editing: editing, takes: takes, library: library, speechLanguage: speechLanguage)
-        overlays = OverlaysViewModel(session: session, importer: self.mediaImporter, styles: self.styles, library: library, tracker: tracker)
+        overlays = OverlaysViewModel(session: session, importer: mediaImporter, styles: styles, library: library, tracker: tracker)
         audio = AudioViewModel(
-            session: session, editing: editing, importer: self.mediaImporter, recorder: recorder ?? VoiceOverRecorder(),
+            session: session, editing: editing, importer: mediaImporter, recorder: recorder ?? VoiceOverRecorder(),
             editorPreferences: preferences, prompterLook: prompterLook, soundPreviews: soundPreviews ?? SoundEffectPreviewPlayer()
         )
         session.host = self
@@ -385,12 +380,6 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// Old takes use a matching version only; a newer script is never an alignment reference.
     var captionScript: Script? { take.captionScript(current: library.script(id: take.scriptID)) }
-
-    /// The language the take is heard in, for captions and Clean Up: the script's (never Voice
-    /// Following's or the interface's).
-    var speechLanguage: SpeechLanguageRequest {
-        speechLanguageFor(captionScript)
-    }
 
     // MARK: - Leaving
 

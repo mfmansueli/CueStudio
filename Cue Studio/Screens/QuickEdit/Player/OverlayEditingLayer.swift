@@ -137,7 +137,7 @@ struct OverlayEditingLayer: View {
         .accessibilityElement(children: .contain)
     }
 
-    /// VoiceOver's drag and pinch: a step up, down, left or right, bigger or smaller (`QuickEditViewModel+OverlayAccessibility`).
+    /// VoiceOver's drag and pinch: a step up, down, left or right, bigger or smaller (`OverlaysViewModel+Accessibility`).
     @ViewBuilder
     private func placingActions(_ item: OverlaysViewModel.MotionItem) -> some View {
         let step = OverlaysViewModel.overlayStep
