@@ -211,7 +211,8 @@ struct QuickEditView: View {
             panel: viewModel.openPanelSize,
             panelFocusesLane: viewModel.panel?.focusedLane != nil,
             largeText: dynamicTypeSize >= .xxLarge,
-            panelIsExpanded: viewModel.stylePanelIsExpanded && viewModel.panel?.isExpandable == true
+            panelIsExpanded: viewModel.stylePanelIsExpanded && viewModel.panel?.isExpandable == true,
+            typesInHeaderField: viewModel.panel == .textStyle && viewModel.selectedText?.graphic == nil
         )
     }
 

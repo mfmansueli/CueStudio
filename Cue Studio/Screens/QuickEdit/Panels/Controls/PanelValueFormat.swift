@@ -19,6 +19,8 @@ enum PanelValueFormat {
     case speed
     /// "26 pt".
     case points
+    /// "−15°", "0°", "90°": a turn.
+    case degrees
 
     func text(_ value: Double) -> String {
         switch self {
@@ -28,6 +30,7 @@ enum PanelValueFormat {
         case .seconds: DurationText.tenths(value)
         case .speed: SpeedScale.label(forMultiple: value)
         case .points: String(localized: "\(Int(value.rounded())) pt")
+        case .degrees: "\(Int(value.rounded()))°"
         }
     }
 }

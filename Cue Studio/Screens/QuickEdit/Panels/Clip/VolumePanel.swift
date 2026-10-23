@@ -54,9 +54,10 @@ struct VolumePanel: View {
         }
     }
 
+    /// A voice for a clip or a voice-over (a note is for music); the speaker for music.
     private var volumeIcon: CueIcon {
         if case .music = viewModel.selection { return .volume }
-        return .audio
+        return .cleanVoice
     }
 
     private func ducking(_ music: MusicClip) -> some View {

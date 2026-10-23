@@ -12,4 +12,6 @@ protocol TextStyleStoring: AnyObject {
     var myStyle: TextLook? { get set }
     /// Cover Studio's "My cover style": new covers start in it.
     var myCoverStyle: CoverStyle? { get set }
+    /// The captions' "My style": new captions start in it.
+    var myCaptionStyle: MyCaptionStyle? { get set }
 }

@@ -66,6 +66,16 @@ struct CaptionStylePanel: View {
             columns: [GridItem(.adaptive(minimum: Self.presetCell), spacing: 8, alignment: .top)],
             spacing: 12
         ) {
+            // "My style" first, as in Text style: saved once, worn by the next videos' captions.
+            if viewModel.edit.captionCollection != nil {
+                PanelSaveStyleCard(identifier: "edit.captionStyle.saveMine", action: viewModel.saveMyCaptionStyle)
+            }
+            if let mine = viewModel.myCaptionStyle {
+                PanelPresetCard(
+                    name: String(localized: "My style"), sample: CaptionThemePreview.image(mine.settings), frame: frame,
+                    isSelected: viewModel.captionsWearMyStyle, identifier: "edit.captionPreset.mine"
+                ) { viewModel.applyMyCaptionStyle() }
+            }
             if let look = viewModel.captionCustomLook { customCard(look) }
             ForEach(shownThemes) { theme in
                 PanelPresetCard(
@@ -123,16 +133,12 @@ struct CaptionStylePanel: View {
             options: CaptionPosition.allCases.map { PanelOption($0, $0.label) },
             selection: viewModel.captionPositionStop, height: 38, identifier: "edit.captionPosition"
         ) { viewModel.setCaptionPositionStop($0) }
-        CueSlider(
-            value: Binding(
-                get: { Double(CaptionSize.nearest(to: viewModel.captionPointSize).rawValue) },
-                set: { viewModel.setCaptionPointSize((CaptionSize(rawValue: Int($0.rounded())) ?? .medium).points) }
-            ),
-            range: CueSliderSpec.captionSize.range, step: CueSliderSpec.captionSize.step, defaultValue: CueSliderSpec.captionSize.defaultValue,
-            style: .full,
-            label: String(localized: "Size"), valueText: CaptionSize.nearest(to: viewModel.captionPointSize).label, systemIcon: .textSize,
-            minCaption: CaptionSize.small.label, maxCaption: CaptionSize.extraLarge.label, accessibilityIdentifier: "edit.captionSize"
-        )
+        // S · M · L · XL: four words, so a segmented control, like Position above it.
+        PanelSegmented(
+            label: String(localized: "Size"),
+            options: CaptionSize.allCases.map { PanelOption($0, $0.label, key: "\($0.rawValue)") },
+            selection: CaptionSize.nearest(to: viewModel.captionPointSize), height: 38, identifier: "edit.captionSize"
+        ) { viewModel.setCaptionPointSize($0.points) }
         PanelNote(text: String(localized: "You can also drag the caption in the video."))
     }
 

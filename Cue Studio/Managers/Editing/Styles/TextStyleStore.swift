@@ -53,4 +53,17 @@ final class TextStyleStore: TextStyleStoring {
             }
         }
     }
+
+    var myCaptionStyle: MyCaptionStyle? {
+        get {
+            defaults.data(forKey: DefaultsKey.myCaptionStyle).flatMap { try? JSONDecoder().decode(MyCaptionStyle.self, from: $0) }
+        }
+        set {
+            if let newValue, let data = try? JSONEncoder().encode(newValue) {
+                defaults.set(data, forKey: DefaultsKey.myCaptionStyle)
+            } else {
+                defaults.removeObject(forKey: DefaultsKey.myCaptionStyle)
+            }
+        }
+    }
 }

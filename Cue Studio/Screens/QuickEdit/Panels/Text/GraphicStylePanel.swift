@@ -39,7 +39,7 @@ struct GraphicStylePanel: View {
                 )
                 PanelSlider(
                     label: String(localized: "Turn"), value: graphic.rotation * 180 / .pi, range: -180...180, step: 1, defaultValue: 0,
-                    bipolar: true, format: .plain, identifier: "edit.graphic.turn",
+                    bipolar: true, format: .degrees, identifier: "edit.graphic.turn",
                     onChange: { viewModel.setGraphicRotation(text.id, degrees: $0) }
                 )
                 MotionKeyframeControls(viewModel: viewModel)

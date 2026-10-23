@@ -62,7 +62,7 @@ struct CoverGraphicsStep: View {
             )
             PanelSlider(
                 label: String(localized: "Turn"), value: item.rotation * 180 / .pi, range: -180...180, step: 1, defaultValue: 0,
-                bipolar: true, format: .plain, identifier: "cover.itemTurn",
+                bipolar: true, format: .degrees, identifier: "cover.itemTurn",
                 onChange: { value in viewModel.updateItem(item.id) { $0.rotation = value * .pi / 180 } }, onEditingChanged: gesture
             )
             HStack(spacing: 8) {

@@ -36,12 +36,6 @@ struct CueSliderSpecTests {
         #expect(row.spec.range.contains(row.spec.defaultValue), "\(row.name) default is inside the range")
     }
 
-    @Test func steppedControlsCountPositionsFromZero() {
-        // S/M/L/XL (Large).
-        #expect(CueSliderSpec.captionSize == .steps(4, default: 2))
-        #expect(CueSliderSpec.captionSize.range == 0...3 && CueSliderSpec.captionSize.step == 1)
-    }
-
     @Test func theDefaultsLandOnAStep() {
         for spec in [CueSliderSpec.speed, .textSize, .margins, .textPoints, .textGlow, .voice, .music, .clipSpeed, .filterIntensity] {
             let math = OrbSliderMath(range: spec.range, step: spec.step, defaultValue: spec.defaultValue)

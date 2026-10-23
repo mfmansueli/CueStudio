@@ -75,6 +75,10 @@ nonisolated struct EditorLayout: Equatable, Sendable {
         max(0.22 * usable, 130)
     }
 
+    /// A panel showing only its header and the field being typed in (Text style while the keyboard is up): the header, the
+    /// field and the room above the keyboard. On a 6.1-inch iPhone the video then keeps about twice the height it had.
+    static let typingPanelHeight: CGFloat = 136
+
     /// The timeline with nothing open.
     static func restingTimeline(for usable: CGFloat) -> CGFloat {
         EditorPanelSize.clamp(0.32 * usable, 184, 300)
@@ -88,9 +92,11 @@ nonisolated struct EditorLayout: Equatable, Sendable {
     ///     then shows under the ruler too.
     ///   - largeText: Dynamic Type is large enough to make a regular screen compact.
     ///   - panelIsExpanded: a full panel takes all the room but the smallest preview's.
+    ///   - typesInHeaderField: while the keyboard is up the panel shows only its header and the field being typed in (Text
+    ///     style), so it takes just that and the video gets the rest.
     init(
         usableHeight: CGFloat, stableHeight: CGFloat? = nil, panel: EditorPanelSize? = nil,
-        panelFocusesLane: Bool = false, largeText: Bool = false, panelIsExpanded: Bool = false
+        panelFocusesLane: Bool = false, largeText: Bool = false, panelIsExpanded: Bool = false, typesInHeaderField: Bool = false
     ) {
         let usable = max(0, usableHeight)
         let stable = max(usable, stableHeight ?? usable)
@@ -138,7 +144,8 @@ nonisolated struct EditorLayout: Equatable, Sendable {
             // timeline steps aside, and the panel sits over the keyboard with what it needs to type.
             let room = max(0, usable - bars)
             let floor = min(Self.previewMinimumWithKeyboard(for: usable), room)
-            let fitting = min(panelHeight, max(0, room - floor))
+            let needed = typesInHeaderField ? min(panelHeight, Self.typingPanelHeight) : panelHeight
+            let fitting = min(needed, max(0, room - floor))
             self.panel = fitting
             preview = room - fitting
             timeline = 0

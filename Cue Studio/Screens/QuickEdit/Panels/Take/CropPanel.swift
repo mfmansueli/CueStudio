@@ -40,10 +40,11 @@ struct CropPanel: View {
 
     private static func symbol(_ aspect: AspectRatio) -> String {
         switch aspect {
-        case .portrait: "rectangle.portrait"
-        case .vertical: "rectangle.portrait"
+        // Each shape its own symbol, drawn in its proportion (9:16 taller than 4:5).
+        case .portrait: "rectangle.ratio.9.to.16"
+        case .vertical: "rectangle.ratio.3.to.4"
         case .square: "square"
-        case .landscape: "rectangle"
+        case .landscape: "rectangle.ratio.16.to.9"
         }
     }
 }

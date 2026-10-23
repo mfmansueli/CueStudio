@@ -167,7 +167,7 @@ struct AdjustPanel: View {
                 autoButton
             }
             .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-            // Narrower (a clip's "From the whole take" on an iPhone): the note under the name, in the same 44 pt line, so the
+            // Narrower (a clip's "From the whole video" on an iPhone): the note under the name, in the same 44 pt line, so the
             // ruler stays where it was and shows whole.
             HStack(alignment: .center, spacing: 10) {
                 VStack(alignment: .leading, spacing: 0) {
@@ -260,8 +260,8 @@ struct AdjustPanel: View {
     private var inheritedNote: String? {
         guard viewModel.lookClip != nil else { return nil }
         switch current {
-        case .auto: return viewModel.clipOverridesAuto || !viewModel.hasAuto ? nil : String(localized: "From the whole take")
-        case .dial(let adjustment): return viewModel.clipOverrides(adjustment) ? nil : String(localized: "From the whole take")
+        case .auto: return viewModel.clipOverridesAuto || !viewModel.hasAuto ? nil : String(localized: "From the whole video")
+        case .dial(let adjustment): return viewModel.clipOverrides(adjustment) ? nil : String(localized: "From the whole video")
         }
     }
 

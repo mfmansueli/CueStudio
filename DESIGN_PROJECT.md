@@ -1140,11 +1140,11 @@ auditoria: `reports/editor-award-checklist.md`.
   deleted", "Found 1 pause", "Cut 1 word from the video", "1 word cut · 0.8 s", "Frame frozen for 2 seconds", "3 matches"…) escolhem a forma
   de cada idioma (árabe com as seis); o botão de Edit by text diz "Cut N words from the video" e o toast "N words cut · 0,8 s".
 - **Barras como um editor de celular (decisão do dono, 16/10/2026, depois de comparar com CapCut, Edits e InShot; diverge da ordem do quadro
-  v29 · 7.2).** Principal: **Edit · Captions · Text · ✦ Smart · Media · Audio · Format · Filters · Cover** — a ordem em que um vídeo falado é feito, as
+  v29 · 7.2).** Principal: **Edit · Captions · Text · ✦ Smart · Media · Audio · Format · Adjust · Filters · Cover** (Adjust e Filters do vídeo inteiro, §44) — a ordem em que um vídeo falado é feito, as
   cinco primeiras na tela do iPhone. **Format** (antes Crop, só na barra do clipe) abre o painel "Format" ("Whole video · format for where you post").
   Clipe: **Split · Speed · Zoom · Volume · Stabilize · Duplicate · Freeze frame · Reverse · Replace · Extract audio · Reorder · Adjust · Filters ·
   Background · Copy look · Paste look · Delete** (Stabilize e Reverse: §39): só o que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro
-  (Format, Studio Voice, Media) fica na principal. Texto ganha **Animation** (Style › Motion); mídia ganha **Track** (§39), **Duplicate** (por cima,
+  (Format, Studio Voice, Media) fica na principal. Texto ganha **Motion** (Style › Motion); mídia ganha **Track** (§39), **Duplicate** (por cima,
   mesmo arquivo) e, num vídeo com som, **Extract audio**.
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
   clipes com quadro, número, origem e duração, arrastados pela alça; cada mudança é um passo de desfazer e o que toca no clipe vai junto. Um clipe só:
@@ -1348,7 +1348,7 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   e **Cut on** Every beat · Every 2 · Every 4 › **Cut the video on the beats**. Subtítulo: "112 BPM · 48 beats in the video", "Finding the
   beats…" ou "No steady beat in this music". Cada ação é um passo de desfazer.
 - **Barras:** Clipe: Split · Speed · Zoom · Volume · **Stabilize** · Duplicate · Freeze frame · **Reverse** · Reorder · Adjust · Filters · Background ·
-  Copy look · Paste look · Delete. Texto: Edit · Style · Animation · Keyframe · **Track** · Duplicate · Delete. Mídia: Edit · **Track** · Duplicate ·
+  Copy look · Paste look · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Mídia: Edit · **Track** · Duplicate ·
   Replace · Delete. Música: Volume · **Beats** · Replace · Delete (efeitos sonoros e sons extraídos sem Beats).
 - **Comparação com CapCut, Edits e InShot** (17/10/2026): Follow face é o "Auto reframe" do CapCut (formato + velocidade do acompanhamento), no
   painel de formato; Stabilize tem três níveis como o do CapCut, por clipe, e ganha "Use on every clip"; Track: no CapCut se arrasta uma caixa
@@ -1422,3 +1422,38 @@ de tela e os 25 estados). O relógio é **companion**: grava, encerra, ensaia e 
   canvas, exceto "Voice Following", que segue o glossário do app (Seguir voz).
 - **Testes:** `WatchScreenRuleTests` (todos os estados, esperas, sem resposta, estado antigo), `WatchMessageTests`, `PrompterWatchTests` (gravar,
   encerrar e salvar, gravar outro, câmera que não começa, ensaio, velocidade, Studio indisponível, gravação livre).
+
+## 44. Quick edit: um sistema para todas as ferramentas (23 de outubro de 2026; pedido do dono)
+
+O editor segue o canvas "Cue: um sistema para todas as ferramentas" (aprovado pelo dono; regras 01–17), mantendo o que já fazia bem: o
+Excluir fixo no canto da barra, o ✓ amarelo, o ‹ do contexto, as marcas no clipe e os ícones de hoje. Captions e ✦ Smart ficam na estrutura de
+antes (o dono achou a versão redesenhada pior). Comparado com CapCut, Edits e InShot (página "Referências" do canvas): 11 de 13 convenções
+iguais ou melhores; o fundo e o recorte num painel só, de propósito.
+- **Cabeçalho de painel** (`EditorPanelContainer`): título, **escopo** na linha de baixo ("Clip 2 of 3" numa montagem, "This clip" com um
+  clipe, "Whole video"), **Reset** à esquerda de ◐ e ✓ assim que algo mudou (`QuickEditViewModel+PanelReset`: Speed, Zoom, Volume, Stabilize,
+  Transition e Studio Voice; Adjust, Filters, Background e Caption style com o seu), num passo de desfazer.
+- **◐ Compare with original** (`PanelCompare`, `PanelCompareButton`) no cabeçalho de Adjust, Filters, Background e Studio Voice: toque mostra
+  o original até o próximo toque; segurar mostra só enquanto o dedo está; esmaecido quando não há o que comparar. A prévia diz "Original" (a
+  imagem como gravada: sem Auto, Adjust, filtro **nem fundo**, `TakeEdit.withoutPictureLook`) ou "Original audio".
+- **Escolhas de 2 a 4 palavras são segmentados:** Studio Voice (Off · Light · Strong) e o tamanho da legenda (S · M · L · XL). "None" para
+  "sem efeito" (Zoom, Stabilize); o giro em graus ("15°"); 9:16 e 4:5 com símbolos na proporção.
+- **Advanced** diz quantos ajustes estão mudados lá dentro ("· 1 changed": Speed, Zoom, fades da música).
+- **Desativado:** 40% em todo controle (`Metrics.disabledOpacity`), linhas com chave incluídas, sempre com o motivo escrito (Paste look: "Turn on
+  a part to paste it.").
+- **Timeline:** o clipe e o item escolhidos com contorno **amarelo** (como no vídeo e na capa); alças pegas a 44 pt; a etiqueta do clipe diz
+  também "Steady" e "Volume 150%".
+- **Barra do player:** ‹ › ao lado do Play andam **um quadro** (pausado; segurar repete), para dividir e aparar no ponto exato
+  (`QuickEditViewModel+FrameStep`); somem com texto muito grande.
+- **Barra de ferramentas:** principal com **Adjust** (vídeo inteiro) ao lado de Filters; o esmaecido só no lado onde há mais ferramentas; "Add
+  line" adiciona uma linha na agulha; Text › **Motion** (antes "Animation"); Subtitle e Hook com o símbolo do papel.
+- **Avisos** (`QuickEditViewModel+Toasts`): dividir, duplicar, apagar e adicionar dizem o quê e onde ("Clip 2 deleted", "Photo added at
+  00:07.0") e trazem **Undo**.
+- **Dois toques** num texto ou legenda no vídeo abrem as palavras com o teclado (Text style ou a linha em Captions).
+- **Folhas:** Translate captions fecha com o X do sistema e escolhe o idioma numa lista com check; Auto captions escolhe o idioma falado numa
+  linha que abre a lista no lugar (Automatic primeiro).
+- **My style das legendas** (`MyCaptionStyle`, `DefaultsKey.myCaptionStyle`): "Save as my style" e o cartão "My style" no topo de Caption style
+  › Presets; um toque põe em todas as linhas (um Undo); legendas novas num vídeo nunca estilizado já nascem nele. Guarda o preset, o look
+  copiado, tamanho, destaque, posição e revelação; nunca as palavras nem as margens da plataforma.
+- **Testes:** `QuickEditFrameStepTests`, `QuickEditMyCaptionStyleTests`, `LookVersionTests.theOriginalPictureHasNoBackground`,
+  `QuickEditPreviewTests` (dois toques), `QuickEditClipLookTests`/`QuickEditBackgroundPanelTests` (escopo), `EditorUITests` (◐ toque e
+  segurar); `ToolAuditCaptureTests` (opt-in, `TEST_RUNNER_CUE_SCREENSHOT_DIR`) fotografa cada ferramenta.

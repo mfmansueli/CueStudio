@@ -234,7 +234,10 @@ extension QuickEditViewModel {
             }
             return
         }
-        change { $0.captions = lines.sorted { $0.start < $1.start } }
+        change { snapshot in
+            startsCaptionsInMyStyle(&snapshot)
+            snapshot.captions = lines.sorted { $0.start < $1.start }
+        }
         edit.captionTranscript = takeTranscript
         // A language picked unlike the one spoken: the picker now says the one the captions were heard in.
         if edit.captionLanguage != nil, let code = takeTranscript?.languageCode,

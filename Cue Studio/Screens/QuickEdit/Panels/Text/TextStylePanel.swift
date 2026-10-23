@@ -37,19 +37,13 @@ struct TextStylePanel: View {
             PanelFrame(viewModel: viewModel, panel: .textStyle) {
                 VStack(spacing: 0) {
                     if !isLarge { field(text).padding(.horizontal, 16).padding(.bottom, 4) }
-                    PanelTabs(tabs: EditorPanelTab.textStyle, selection: tab) { viewModel.panelTab = $0 }
+                    // While typing, only the words: the video above gets the room (`EditorLayout.typingPanelHeight`), and
+                    // the tabs come back with the keyboard's Done.
+                    if !typing { PanelTabs(tabs: EditorPanelTab.textStyle, selection: tab) { viewModel.panelTab = $0 } }
                 }
             } content: {
                 if isLarge { field(text) }
-                if viewModel.textStyleTabChangesLook, !isLarge { scope }
-                switch tab {
-                case .font: font(text)
-                case .color: color(text)
-                case .motion: MotionKeyframeControls(viewModel: viewModel)
-                default: presets(text)
-                }
-                if viewModel.textStyleTabChangesLook, isLarge { scope }
-                if viewModel.textStyleTabChangesLook, viewModel.canCopyStyleToCaptions { copyToCaptions }
+                if !typing || isLarge { lookControls(text, tab: tab, isLarge: isLarge) }
             }
             .task {
                 guard frame == nil else { return }
@@ -73,6 +67,23 @@ struct TextStylePanel: View {
             }
         }
     }
+
+    /// The look's controls under the tabs: the scope, the tab's own controls, and copying the look to the captions.
+    @ViewBuilder
+    private func lookControls(_ text: TextOverlay, tab: EditorPanelTab, isLarge: Bool) -> some View {
+        if viewModel.textStyleTabChangesLook, !isLarge { scope }
+        switch tab {
+        case .font: font(text)
+        case .color: color(text)
+        case .motion: MotionKeyframeControls(viewModel: viewModel)
+        default: presets(text)
+        }
+        if viewModel.textStyleTabChangesLook, isLarge { scope }
+        if viewModel.textStyleTabChangesLook, viewModel.canCopyStyleToCaptions { copyToCaptions }
+    }
+
+    /// The words are being typed (the keyboard is up for the field).
+    private var typing: Bool { writes }
 
     private func focusIfAsked() {
         guard viewModel.focusesTextField else { return }

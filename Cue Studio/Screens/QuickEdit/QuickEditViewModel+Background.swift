@@ -65,8 +65,8 @@ extension QuickEditViewModel {
     var backgroundScopeNote: String? {
         if lookClip != nil {
             return clipOverridesBackground
-                ? String(localized: "This clip has its own background. Reset gives it the whole take's again.")
-                : String(localized: "Shows the whole take's background. A change here is for this clip only.")
+                ? String(localized: "This clip has its own background. Reset gives it the whole video's again.")
+                : String(localized: "Shows the whole video's background. A change here is for this clip only.")
         }
         return someClipKeepsItsOwn(for: .background) ? String(localized: "Clips with their own background keep it.") : nil
     }

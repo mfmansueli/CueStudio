@@ -253,6 +253,19 @@ struct EditorLayoutTests {
         }
     }
 
+    /// Typing a text's words: Text style shows only its header and field, so the video keeps the rest, about twice what it had
+    /// with the whole panel over the keyboard.
+    @Test func typingATextLeavesTheVideoTheRoomThePanelDoesNotNeed() {
+        for screen in Screen.allCases where screen != .iPhoneSE {
+            let usable = screen.rawValue - keyboard
+            let whole = EditorLayout(usableHeight: usable, stableHeight: screen.rawValue, panel: .full)
+            let typing = EditorLayout(usableHeight: usable, stableHeight: screen.rawValue, panel: .full, typesInHeaderField: true)
+            #expect(typing.panel <= EditorLayout.typingPanelHeight, "\(screen)")
+            #expect(typing.preview > whole.preview, "\(screen)")
+            #expect(abs(typing.preview + typing.playerBar + typing.timeline + typing.panel - usable) < 0.5, "\(screen)")
+        }
+    }
+
     @Test func withTheKeyboardUpTheHeightIsSharedWithoutOverlapAndKeepsTheFieldRoom() {
         for screen in Screen.allCases where screen != .iPhoneSE {
             let usable = screen.rawValue - keyboard

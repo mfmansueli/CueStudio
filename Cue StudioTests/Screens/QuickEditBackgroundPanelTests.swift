@@ -95,10 +95,10 @@ struct QuickEditBackgroundPanelTests {
         #expect(viewModel.backgroundScopeNote == nil)
         viewModel.setBackgroundStyle(.blur)
         openFromClip(viewModel, 1)
-        #expect(viewModel.backgroundScopeNote == "Shows the whole take's background. A change here is for this clip only.")
+        #expect(viewModel.backgroundScopeNote == "Shows the whole video's background. A change here is for this clip only.")
         viewModel.setBackgroundStyle(.color)
         #expect(viewModel.clipOverridesBackground)
-        #expect(viewModel.backgroundScopeNote == "This clip has its own background. Reset gives it the whole take's again.")
+        #expect(viewModel.backgroundScopeNote == "This clip has its own background. Reset gives it the whole video's again.")
         viewModel.panel = nil
         viewModel.selection = nil
         viewModel.perform(.open(.background))
@@ -106,7 +106,7 @@ struct QuickEditBackgroundPanelTests {
         // Reset gives the clip the take's again, and the note goes with it.
         openFromClip(viewModel, 1)
         viewModel.resetClipBackground()
-        #expect(viewModel.backgroundScopeNote == "Shows the whole take's background. A change here is for this clip only.")
+        #expect(viewModel.backgroundScopeNote == "Shows the whole video's background. A change here is for this clip only.")
     }
 
     @Test func theFoldedSettingsSayWhenTheyWereChanged() async {

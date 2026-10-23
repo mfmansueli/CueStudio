@@ -86,6 +86,8 @@ extension QuickEditViewModel {
     /// What the tab on show changes: the look on the scope (Presets, Font, Color), or the picked text's
     /// motion and timing whatever the scope (Motion).
     private var textStyleSubtitle: String {
+        // A graphic (arrow, circle, tag) has its own panel and is always changed alone.
+        if selectedText?.graphic != nil { return String(localized: "Only this graphic changes") }
         guard textStyleTabChangesLook else { return String(localized: "Motion and timing change only this text") }
         switch textStyleScope {
         case .selected, .allCaptions:

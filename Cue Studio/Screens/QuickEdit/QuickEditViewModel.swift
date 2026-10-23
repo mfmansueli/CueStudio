@@ -214,6 +214,8 @@ final class QuickEditViewModel {
     var keepsCaptionsHiddenAfterListening = false
     /// The type the creator saved as "My style" (see `QuickEditViewModel+Style`).
     var myStyle: TextLook?
+    /// The captions' saved "My style" (`QuickEditViewModel+MyCaptionStyle`).
+    var myCaptionStyle: MyCaptionStyle?
     /// The creator's handle, for the cover's "@handle" graphic and series (set by the screen).
     var creatorHandle = ""
     /// The beats found in the music files, by file (`QuickEditViewModel+Beats`); bumped `beatsFound` when one comes in.
@@ -316,6 +318,7 @@ final class QuickEditViewModel {
         self.styles = styles ?? TextStyleStore()
         self.translations = translations
         myStyle = self.styles.myStyle
+        myCaptionStyle = self.styles.myCaptionStyle
         self.coverPictures = coverPictures ?? CoverPictureService()
         self.soundPreviews = soundPreviews ?? SoundEffectPreviewPlayer()
         speechLanguageFor = speechLanguage
