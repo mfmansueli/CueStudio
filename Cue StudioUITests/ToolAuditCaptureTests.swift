@@ -360,6 +360,42 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
     }
 
+    /// Arabic (right to left) and German (long words): the toolbar's back arrow, the keyframe arrows and the caption line steps
+    /// (time stays left to right), Speed's segments, a toast and Cover Studio's frame steps.
+    func test12RightToLeftAndLongWords() throws {
+        for language in ["ar", "de"] {
+            start(arguments: ["-uiTestAppLanguage", language])
+            EditorApp.tapTool(app, "text")
+            try capture("\(language)-text-menu")
+            if tap("edit.toolbar.title") {
+                dismissKeyboard()
+                if tap("edit.panel.tab.motion") { try captureScrolling("\(language)-text-motion") }
+                apply()
+                if tap("edit.toolbar.delete", within: 2) { try capture("\(language)-toast") }
+            }
+            tap("edit.toolbar.back", within: 2)
+            EditorApp.tapTool(app, "captions")
+            try captureScrolling("\(language)-captions")
+            apply()
+            EditorApp.tapTool(app, "edit")
+            if tap("edit.toolbar.speed", within: 2) { try captureScrolling("\(language)-speed") }
+            apply()
+            EditorApp.tapTool(app, "cover")
+            if app.buttons["cover.done"].exists(within: 8), tap("cover.step.picture") {
+                try capture("\(language)-cover-picture")
+            }
+            app.terminate()
+        }
+    }
+
+    /// The free plan's mark while the screen is recorded (`CaptureWatermark`): the editor and its full screen.
+    func test13CaptureWatermark() throws {
+        start(arguments: ["-uiTestSceneCapture", "on"])
+        try capture("watermark-editor")
+        if tap("edit.fullScreenButton") { try capture("watermark-fullscreen") }
+        app.terminate()
+    }
+
     func test10DemoTracks() throws {
         start()
         EditorApp.tapTool(app, "edit")

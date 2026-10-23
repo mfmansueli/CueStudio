@@ -7,8 +7,7 @@ import AVFoundation
 import Foundation
 
 /// The review's player: the take opens paused, a tap plays or pauses it, the scrubber seeks it, and the screen reads where
-/// it is. While the scene is recorded or mirrored it is held (`isPlaybackBlocked`): paused, and nothing plays or moves it until
-/// that ends, when it waits paused where it was for the creator to play it again.
+/// it is.
 @MainActor
 @Observable
 final class ReviewPlayback {
@@ -16,14 +15,6 @@ final class ReviewPlayback {
     private(set) var isPlaying = false
     /// How much of the take has played, 0...1.
     private(set) var progress: Double = 0
-    /// The scene is recorded or mirrored (`SceneCaptured`). Turning it on pauses; turning it off doesn't play.
-    var isPlaybackBlocked = false {
-        didSet {
-            guard isPlaybackBlocked, !oldValue else { return }
-            pause()
-        }
-    }
-
     @ObservationIgnored let player = AVPlayer()
     @ObservationIgnored private let audioSession: PlaybackAudioSession
     /// Readies the audio session, then plays; anything that stops playback cancels it.
@@ -44,13 +35,12 @@ final class ReviewPlayback {
     }
 
     func play() {
-        guard !isPlaybackBlocked else { return }
         startTask?.cancel()
         isPlaying = true
         startTask = Task { [weak self, audioSession] in
             await audioSession.prepareForPlayback()
-            // Paused, left or captured while the audio session got ready.
-            guard !Task.isCancelled, let self, !self.isPlaybackBlocked else { return }
+            // Paused or left while the audio session got ready.
+            guard !Task.isCancelled, let self else { return }
             self.startTask = nil
             self.player.play()
         }
@@ -63,9 +53,8 @@ final class ReviewPlayback {
         isPlaying = false
     }
 
-    /// Jumps to `fraction` of a take `duration` seconds long. Held, the take stays where it was.
+    /// Jumps to `fraction` of a take `duration` seconds long.
     func seek(to fraction: Double, of duration: TimeInterval) {
-        guard !isPlaybackBlocked else { return }
         progress = fraction
         player.seek(to: CMTime(seconds: duration * fraction, preferredTimescale: 600), toleranceBefore: .zero, toleranceAfter: .zero)
     }
@@ -74,8 +63,6 @@ final class ReviewPlayback {
     /// to the end.
     func follow(duration: () -> TimeInterval) async {
         while !Task.isCancelled {
-            // Held, whatever started the player anyway (the system, a route change) is stopped.
-            if isPlaybackBlocked, player.rate != 0 { player.pause() }
             let length = duration()
             let seconds = player.currentTime().seconds
             progress = length > 0 && seconds.isFinite ? min(1, seconds / length) : 0

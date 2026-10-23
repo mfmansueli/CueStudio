@@ -80,25 +80,23 @@ extension QuickEditViewModel {
         let pinned = edit.timeline.anchoredSpan(forEdited: TimeSpan(start: time, end: end))
         var cue = CaptionCue(text: String(localized: "New line"), start: pinned.span.start, end: pinned.span.end, origin: .manual)
         cue.sourceID = pinned.anchor.sourceID
-        change { snapshot in
-            var lines = snapshot.captions ?? []
-            lines.append(cue)
-            snapshot.captions = lines.sorted { $0.start < $1.start }
+        changeEdit { edit in
+            edit.captions = (edit.captions + [cue]).sorted { $0.start < $1.start }
+            edit.showsCaptions = true
         }
-        edit.showsCaptions = true
         selection = .caption(cue.id)
         focusesCaptionField = true
         player.seek(to: time + 0.01)
     }
 
-    /// Captions › the switch: shows or hides every line. Showing them when there are none makes
-    /// them (Auto captions). Hidden while new lines are being made, they stay hidden when the lines come.
+    /// Captions › the switch: shows or hides every line (an undo step). Showing them when there are none makes them (Auto
+    /// captions). Hidden while new lines are being made, they stay hidden when the lines come.
     func toggleCaptions() {
         if edit.captions.isEmpty {
             panel = .autoCaptions
             return
         }
-        edit.showsCaptions.toggle()
+        changeEdit { $0.showsCaptions.toggle() }
         if captionState.isWorking { keepsCaptionsHiddenAfterListening = !edit.showsCaptions }
     }
 

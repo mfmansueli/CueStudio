@@ -49,11 +49,14 @@ struct EditorTopBar: ToolbarContent {
                 .lineLimit(1)
         }
         .font(.system(.caption2, design: .monospaced, weight: .heavy))
-        .tracking(0.6)
+        .interfaceTracking(0.6)
         .foregroundStyle(changed ? Palette.ink : Palette.ink2)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(changed ? "In edit · Autosaved" : "No changes yet"))
+        // Words to read, not a control (the bar would otherwise offer it like one of its buttons).
+        .accessibilityAddTraits(.isStaticText)
+        .accessibilityRemoveTraits(.isButton)
         .accessibilityIdentifier("edit.statusChip")
     }
 }

@@ -9,7 +9,10 @@ import Foundation
 /// into the export, so they are content, not interface tokens. Every color picker of the editor and
 /// the cover offers the same palette, in the same order; black, green, pink and purple stay for
 /// edits that picked them before.
-nonisolated enum OverlayColor: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum OverlayColor: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = OverlayColor.white
+
     case white, black, yellow, red, blue, green, pink
     case offBlack, orange, cyan, purple, paper
     /// The v27 swatches: lavender (the AI's violet), blush and mint (the worlds' pink and green).

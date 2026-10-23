@@ -34,6 +34,10 @@ struct RootView: View {
             // Dark only: the night is the identity.
             .preferredColorScheme(.dark)
             .environment(\.layoutDirection, LayoutDirection(rightToLeft: languages.interfaceLanguage.isRightToLeft))
+            // And for UIKit, which lays out sheets, covers and navigation stacks.
+            .onChange(of: languages.interfaceLanguage, initial: true) { _, language in
+                InterfaceDirection.apply(rightToLeft: language.isRightToLeft)
+            }
             .task {
                 await services.store.start()
             }

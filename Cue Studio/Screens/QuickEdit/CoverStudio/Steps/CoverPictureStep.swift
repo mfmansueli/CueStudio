@@ -71,6 +71,8 @@ struct CoverPictureStep: View {
                         viewModel.stepFrame(by: 1, frameRate: frameRate)
                     }
                 }
+                // Time runs left to right in every language, like the strip above.
+                .environment(\.layoutDirection, .leftToRight)
             }
             PanelSlider(
                 label: String(localized: "Zoom"), value: viewModel.framing.zoom * 100,

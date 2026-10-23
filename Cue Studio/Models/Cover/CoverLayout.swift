@@ -6,7 +6,10 @@
 import Foundation
 
 /// How a cover's words are laid out (v26 Cover › Text).
-nonisolated enum CoverLayout: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum CoverLayout: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = CoverLayout.hook
+
     /// Big words with one highlighted.
     case hook
     /// A big number from the title, then the rest (a listicle).

@@ -7,7 +7,10 @@ import Foundation
 
 /// How quickly the frame catches up with the face it follows: a calm operator lets the face wander further and glides slowly;
 /// a quick one stays on it.
-nonisolated enum FollowPace: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum FollowPace: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = FollowPace.natural
+
     case calm, natural, quick
 
     var id: String { rawValue }

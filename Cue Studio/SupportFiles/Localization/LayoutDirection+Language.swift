@@ -18,4 +18,20 @@ extension View {
     func keepsLeftToRight() -> some View {
         environment(\.layoutDirection, .leftToRight)
     }
+
+    /// A label's letter spacing, left out in a language whose letters join or stack (Arabic, Hindi, Thai): added space
+    /// breaks their writing apart (`TextShaping`).
+    func interfaceTracking(_ value: CGFloat) -> some View {
+        modifier(InterfaceTracking(value: value))
+    }
+}
+
+/// `interfaceTracking(_:)`.
+private struct InterfaceTracking: ViewModifier {
+    let value: CGFloat
+    @Environment(\.locale) private var locale
+
+    func body(content: Content) -> some View {
+        content.tracking(TextShaping.allowsLetterSpacing(in: locale.language) ? value : 0)
+    }
 }

@@ -111,6 +111,14 @@ struct OverlayEditingLayer: View {
                 .frame(width: max(rect.width, Metrics.hitTarget), height: max(rect.height, Metrics.hitTarget))
                 .onTapGesture { viewModel.tapText(text.id) }
                 .gesture(moveGesture(text))
+                // VoiceOver: the text itself, activated like a tap, placed with its actions; Delete and Scale stay apart.
+                .accessibilityElement()
+                .accessibilityLabel(Text(text.isEmpty ? text.role.label : text.displayText))
+                .accessibilityHint(isSelected ? Text("Tap to style") : Text("Tap to select"))
+                .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
+                .accessibilityAction { viewModel.tapText(text.id) }
+                .accessibilityActions { placingActions(.text(text.id)) }
+                .accessibilityIdentifier("edit.textHandle")
             if isSelected {
                 RoundedRectangle(cornerRadius: 4, style: .continuous)
                     .strokeBorder(Palette.acc, lineWidth: 2)
@@ -127,10 +135,18 @@ struct OverlayEditingLayer: View {
         }
         .position(x: rect.midX + offset.width, y: rect.midY + offset.height)
         .accessibilityElement(children: .contain)
-        .accessibilityLabel(Text(text.isEmpty ? text.role.label : text.displayText))
-        .accessibilityHint(isSelected ? Text("Tap to style") : Text("Tap to select"))
-        .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
-        .accessibilityIdentifier("edit.textHandle")
+    }
+
+    /// VoiceOver's drag and pinch: a step up, down, left or right, bigger or smaller (`QuickEditViewModel+OverlayAccessibility`).
+    @ViewBuilder
+    private func placingActions(_ item: QuickEditViewModel.MotionItem) -> some View {
+        let step = QuickEditViewModel.overlayStep
+        Button("Move up") { viewModel.nudgeOverlay(item, x: 0, y: -step) }
+        Button("Move down") { viewModel.nudgeOverlay(item, x: 0, y: step) }
+        Button("Move left") { viewModel.nudgeOverlay(item, x: -step, y: 0) }
+        Button("Move right") { viewModel.nudgeOverlay(item, x: step, y: 0) }
+        Button("Bigger") { viewModel.resizeOverlay(item, bigger: true) }
+        Button("Smaller") { viewModel.resizeOverlay(item, bigger: false) }
     }
 
     /// White, 24 pt, held from 44 pt.
@@ -318,9 +334,12 @@ struct OverlayEditingLayer: View {
         .position(x: rect.midX + offset.width, y: rect.midY + offset.height)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(media.kind == .photo ? Text("Photo") : Text("Video"))
-        .accessibilityHint(isSelected ? Text("Drag to move, pinch to resize. Tap where another overlaps to pick it.") : Text("Tap to select"))
+        .accessibilityHint(
+            isSelected ? Text("Drag to move, pinch to resize, or use the actions. Tap where another overlaps to pick it.") : Text("Tap to select")
+        )
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
         .accessibilityAction { viewModel.tapMedia(at: CGPoint(x: rect.midX, y: rect.midY), in: size) }
+        .accessibilityActions { placingActions(.media(media.id)) }
         .accessibilityIdentifier("edit.mediaHandle")
     }
 

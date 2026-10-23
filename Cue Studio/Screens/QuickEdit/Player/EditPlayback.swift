@@ -22,10 +22,6 @@ protocol EditPlayback: AnyObject {
     var reviewedPart: ClosedRange<TimeInterval>? { get set }
     /// Silent while a voice-over is recorded, so the take's sound doesn't leak into it.
     var isMuted: Bool { get set }
-    /// The scene is recorded or mirrored (`SceneCaptured`): turning it on pauses, and while it is on nothing plays (a tap, an
-    /// audio session coming ready, a seek or rebuild landing, a preview of a change). Turning it off leaves the playhead where
-    /// it was, paused: playback never starts on its own. Seeking still moves the playhead (the timeline edits around it).
-    var isPlaybackBlocked: Bool { get set }
     /// A finger is shaping a speed curve or dragging a handle: curved clips' sound is stretched in steps (instant) instead of
     /// rendered along the curve; turned off, the edit is drawn again with the rendered sound.
     var stepsCurveSound: Bool { get set }
@@ -35,6 +31,9 @@ protocol EditPlayback: AnyObject {
     func show(_ edit: TakeEdit)
     /// Draws the edit shown again (something it reads besides the edit changed: a recording's motion analysis came in).
     func redraw()
+    /// Builds the edit shown from scratch, after the preview failed (`state == .failed`): Try again, or Cue coming back to the
+    /// front after iOS reset its media services.
+    func retry()
     func play()
     func pause()
     func togglePlayback()

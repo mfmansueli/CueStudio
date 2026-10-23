@@ -21,11 +21,13 @@
 # After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests);
 # --parallel N spreads the test classes over N simulator clones (ui and full use 2 unless given; --parallel 1 runs one at a time);
 # the clones are deleted when the run ends.
+# CUE_SWIFT_OPTIMIZATION=-O builds the Swift code optimized, as Release does (still the Debug configuration, so tests and launch
+# arguments work): to measure on a device what the App Store build does. It rebuilds everything, and the next run rebuilds back.
 
 source "$(dirname "$0")/_xcode.sh"
 
 usage() {
-    sed -n '2,23p' "$0"
+    sed -n '2,25p' "$0"
     exit 64
 }
 
@@ -49,6 +51,7 @@ action="test"
 workers=""
 ids=()
 extra=()
+if [ -n "${CUE_SWIFT_OPTIMIZATION:-}" ]; then extra+=(SWIFT_OPTIMIZATION_LEVEL="$CUE_SWIFT_OPTIMIZATION"); fi
 while [ $# -gt 0 ]; do
     case "$1" in
         --no-build) action="test-without-building" ;;

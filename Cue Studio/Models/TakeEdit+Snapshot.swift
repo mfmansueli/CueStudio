@@ -32,5 +32,7 @@ extension TakeEdit {
         if let music = step.music { self.music = music }
         if let backgrounds = step.backgrounds { self.backgrounds = backgrounds }
         step.look?.apply(to: &self)
+        if let locked = step.lockedLayers { lockedLayers = locked }
+        if step.captionLanguageKnown == true { captionLanguage = step.captionLanguage }
     }
 }

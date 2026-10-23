@@ -40,18 +40,20 @@ extension QuickEditViewModel {
                 }
                 listened.append(source)
             } catch {
+                noteFailure(error, "cleanUp")
                 failed = true
             }
             guard !isClosed else { return }
         }
-        var analyzed = edit
-        // Only the recordings listened to now get fresh suggestions; the others keep theirs.
-        let kept = edit.suggestions.filter { !listened.contains($0.sourceID) }
-        analyzed.suggestions = kept + CleanUpAnalyzer.merged(found, into: edit.suggestions.filter { listened.contains($0.sourceID) })
-        for source in listened {
-            if let source { analyzed.cleanUpAnalyzedSources.append(source) } else { analyzed.cleanUpAnalyzed = true }
+        updateFindings { analyzed in
+            // Only the recordings listened to now get fresh suggestions; the others keep theirs.
+            let kept = analyzed.suggestions.filter { !listened.contains($0.sourceID) }
+            let heard = analyzed.suggestions.filter { listened.contains($0.sourceID) }
+            analyzed.suggestions = kept + CleanUpAnalyzer.merged(found, into: heard)
+            for source in listened {
+                if let source { analyzed.cleanUpAnalyzedSources.append(source) } else { analyzed.cleanUpAnalyzed = true }
+            }
         }
-        edit = analyzed
         if failed, listened.isEmpty {
             analysis = .failed
             toast.show(String(localized: "Couldn't listen to this take"))

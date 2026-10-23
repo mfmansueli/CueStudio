@@ -39,8 +39,10 @@ struct QuickEditCaptionStyleCopyTests {
         )
         await viewModel.prepare()
         if captions, viewModel.edit.captions.isEmpty {
-            viewModel.edit.captions = [CaptionCue(text: "Comidas de SP", start: 0.3, end: 2.3), CaptionCue(text: "que são só pra turista.", start: 2.3, end: 4)]
-            viewModel.edit.showsCaptions = true
+            viewModel.changeEdit {
+                $0.captions = [CaptionCue(text: "Comidas de SP", start: 0.3, end: 2.3), CaptionCue(text: "que são só pra turista.", start: 2.3, end: 4)]
+                $0.showsCaptions = true
+            }
         }
         return Scenario(viewModel: viewModel, takes: takes, drafts: drafts, toast: toast)
     }
@@ -249,10 +251,12 @@ struct QuickEditCaptionStyleCopyTests {
         _ = styledTexts(viewModel)
         var old = TypePreset.soft.look(for: .caption)
         old.sizeScale = 1.2
-        viewModel.edit.captionCollection = nil
-        viewModel.edit.captionLook = old
-        viewModel.edit.captionPreset = .soft
-        viewModel.edit.captionAnimation = .fade
+        viewModel.changeEdit {
+            $0.captionCollection = nil
+            $0.captionLook = old
+            $0.captionPreset = .soft
+            $0.captionAnimation = .fade
+        }
         viewModel.askToCopyStyleToCaptions()
         #expect(viewModel.captionStyleCopyMessage.contains("Your captions use the \(TypePreset.soft.label) preset."))
         viewModel.copyStyleToCaptions()

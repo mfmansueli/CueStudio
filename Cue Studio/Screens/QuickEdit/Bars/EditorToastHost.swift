@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// The editor's toasts: one line on a dark pill with a small yellow star, at the top of the
-/// preview, for 2 s. They confirm an action or say why one can't happen ("Move the playhead
+/// The editor's toasts: a line (two when a language needs them, so an instruction is never cut) on a dark pill with a small
+/// yellow star, at the top of the preview, for 2 s. They confirm an action or say why one can't happen ("Move the playhead
 /// inside the clip"); a tap lets one go early. One with an action ("8 lines deleted" · Undo) shows
 /// its button at the end of the pill and stays 4 s (`ToastService`).
 struct EditorToastHost: ViewModifier {
@@ -27,8 +27,9 @@ struct EditorToastHost: ViewModifier {
                                 .accessibilityHidden(true)
                             Text(message)
                                 .font(.system(size: messageSize, weight: .semibold))
-                                .lineLimit(1)
-                                .minimumScaleFactor(0.75)
+                                .lineLimit(2)
+                                .minimumScaleFactor(0.85)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                         .accessibilityElement(children: .combine)
                         .accessibilityIdentifier("toast")
@@ -52,8 +53,10 @@ struct EditorToastHost: ViewModifier {
                     }
                     .padding(.leading, 14)
                     .padding(.trailing, toast.action == nil ? 14 : 4)
+                    .padding(.vertical, 4)
                     .frame(minHeight: 34)
-                    .background(Palette.Editor.toast, in: Capsule())
+                    // A pill on one line; on two, the same round ends.
+                    .background(Palette.Editor.toast, in: RoundedRectangle(cornerRadius: 17, style: .continuous))
                     .padding(.horizontal, 16)
                     .padding(.top, 10)
                     .id(message)

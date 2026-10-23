@@ -31,6 +31,8 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         var selectClipAtPlayhead: () -> Void = {}
         /// VoiceOver: the transition of the cut nearest to the playhead.
         var pickNearestCut: () -> Void = {}
+        /// VoiceOver: the playhead to the next cut (true) or the one before.
+        var jumpToCut: (Bool) -> Void = { _ in }
         var accessibilityValue: () -> String = { "" }
     }
 
@@ -124,6 +126,14 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         accessibilityIdentifier = "edit.timeline"
         accessibilityLabel = String(localized: "Timeline")
         accessibilityCustomActions = [
+            UIAccessibilityCustomAction(name: String(localized: "Next cut")) { [weak self] _ in
+                self?.actions.jumpToCut(true)
+                return true
+            },
+            UIAccessibilityCustomAction(name: String(localized: "Previous cut")) { [weak self] _ in
+                self?.actions.jumpToCut(false)
+                return true
+            },
             UIAccessibilityCustomAction(name: String(localized: "Select this clip")) { [weak self] _ in
                 self?.actions.selectClipAtPlayhead()
                 return true
@@ -402,11 +412,13 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         set { _ = newValue }
     }
 
+    /// A swipe up or down moves the playhead a second (a frame's precision is ‹ › under the preview); Next cut and Previous
+    /// cut jump between clips.
     override func accessibilityIncrement() {
-        actions.nudge(0.1)
+        actions.nudge(1)
     }
 
     override func accessibilityDecrement() {
-        actions.nudge(-0.1)
+        actions.nudge(-1)
     }
 }

@@ -89,6 +89,7 @@ extension QuickEditViewModel {
             translationState = .unsupported(source: Self.name(of: request.source), target: request.target)
         } catch {
             guard translationRequest == request else { return }
+            noteFailure(error, "translate")
             translationRequest = nil
             translationState = .failed
         }

@@ -21,6 +21,22 @@ nonisolated struct CoverDesign: Codable, Hashable, Sendable {
 
     init() {}
 
+    private enum CodingKeys: String, CodingKey {
+        case layout, font, highlightIndex, effect, elements, episode, handle
+    }
+
+    /// A part that can't be read keeps where a new design starts, and an element a newer version added is left out.
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        layout = (try? container.decodeIfPresent(CoverLayout.self, forKey: .layout)) ?? .hook
+        font = (try? container.decodeIfPresent(CoverFont.self, forKey: .font)) ?? .anton
+        highlightIndex = (try? container.decodeIfPresent(Int.self, forKey: .highlightIndex)) ?? 1
+        effect = (try? container.decodeIfPresent(CoverEffect.self, forKey: .effect)) ?? .clean
+        elements = Set(container.decodeLossy([CoverElement].self, forKey: .elements))
+        episode = (try? container.decodeIfPresent(Int.self, forKey: .episode)) ?? 3
+        handle = (try? container.decodeIfPresent(String.self, forKey: .handle)) ?? ""
+    }
+
     /// What Save as my style keeps: how it looks, not what it says.
     var look: CoverLook {
         CoverLook(layout: layout, font: font, effect: effect, series: elements.contains(.series))

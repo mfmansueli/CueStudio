@@ -146,22 +146,19 @@ struct ExportAccountingTests {
 
     // MARK: - Screen capture
 
-    /// Hiding the preview and holding its player while the screen is recorded or mirrored is not an export; a save made
-    /// meanwhile is one, counted like any other.
+    /// Watching a take while the screen is recorded or mirrored is not an export (on the free plan the preview carries Cue's
+    /// mark, `CaptureWatermark`); a save made meanwhile is one, counted like any other.
     @Test func screenCaptureNeverCountsAnExportAndASaveMeanwhileCountsOnce() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         let playback = ReviewPlayback(audioSession: FakePlaybackAudioSession())
-        playback.isPlaybackBlocked = true
         playback.play()
-        playback.isPlaybackBlocked = false
+        playback.pause()
         #expect(scenario.used == 0)
         #expect(scenario.ledger.operations.isEmpty)
         #expect(scenario.exporter.exports.isEmpty)
 
-        playback.isPlaybackBlocked = true
         await scenario.viewModel.save()
-        playback.isPlaybackBlocked = false
         #expect(scenario.used == 1)
         #expect(scenario.ledger.operations.count == 1)
     }

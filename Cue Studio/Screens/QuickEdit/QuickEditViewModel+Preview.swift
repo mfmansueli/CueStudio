@@ -51,7 +51,11 @@ extension QuickEditViewModel {
     /// The corner handle dragged by `translation` (points): the text grows or shrinks; with
     /// keyframes, its keyframe at the playhead does.
     func scaleText(_ id: UUID, by translation: CGSize) {
-        let factor = Self.scaleFactor(for: translation)
+        scaleText(id, factor: Self.scaleFactor(for: translation))
+    }
+
+    /// The text `factor` times as big (or its keyframe at the playhead, with keyframes).
+    func scaleText(_ id: UUID, factor: Double) {
         guard let text = edit.texts.first(where: { $0.id == id }) else { return }
         if text.keyframes.isEmpty {
             let size = min(max(text.size * factor, TextOverlay.sizeRange.lowerBound), TextOverlay.sizeRange.upperBound)

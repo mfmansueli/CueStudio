@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import Accessibility
 import CoreGraphics
 import Foundation
 
@@ -187,6 +188,19 @@ extension QuickEditViewModel {
         if panel != .transition { panel = nil }
         selectedJoinID = id
         panel = .transition
+    }
+
+    /// VoiceOver: the playhead to the next cut (or the one before), said with where it landed; the end and the start are
+    /// the last stops.
+    func jumpToCut(forward: Bool) {
+        guard isReady else { return }
+        let time = player.currentTime
+        let stops = [0] + cuts.map(\.time) + [edit.editedDuration]
+        let target = forward ? stops.first { $0 > time + 0.05 } : stops.last { $0 < time - 0.05 }
+        guard let target else { return }
+        player.pause()
+        player.seek(to: target)
+        AccessibilityNotification.Announcement(timelineAccessibilityValue).post()
     }
 
     /// VoiceOver: the transitions of the cut nearest to the playhead.

@@ -29,15 +29,4 @@ nonisolated enum CaptionFont {
     private static func systemWeight(_ weight: Double) -> UIFont.Weight {
         weight >= 800 ? .heavy : weight >= 700 ? .bold : .semibold
     }
-
-    /// Whether letters can be spaced out: not in scripts whose letters join (Arabic) or stack
-    /// (Devanagari, Thai), where added space breaks the writing.
-    static func allowsTracking(in text: String) -> Bool {
-        !text.unicodeScalars.contains { scalar in
-            switch scalar.value {
-            case 0x0600...0x06FF, 0x0750...0x077F, 0x08A0...0x08FF, 0xFB50...0xFDFF, 0xFE70...0xFEFF, 0x0900...0x097F, 0x0E00...0x0E7F: true
-            default: false
-            }
-        }
-    }
 }

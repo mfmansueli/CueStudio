@@ -6,7 +6,10 @@
 import Foundation
 
 /// How a photo or video laid over the take (B-roll) takes the frame.
-nonisolated enum MediaLayout: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum MediaLayout: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = MediaLayout.fullFrame
+
     /// Covers the whole frame, cropped to fill it: the classic cutaway.
     case fullFrame
     /// A window over the take, placed and sized by the creator.

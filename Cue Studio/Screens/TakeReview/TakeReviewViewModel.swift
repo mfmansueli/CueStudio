@@ -91,6 +91,8 @@ final class TakeReviewViewModel {
     private let background: BackgroundExportRunning
     /// Bytes free on the iPhone (`StorageSpace.available`); a test gives its own.
     private let freeSpace: () -> Int64?
+    /// Where an export failure the creator saw is written down (Console and Crashlytics, `EditorFailureReport`); tests read it.
+    @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
     /// What a script is heard in for captions (`LanguageService.captionRequest(for:)`).
     private let speechLanguageFor: (Script?) -> SpeechLanguageRequest
     /// The languages a take without a script is likely spoken in (`LanguageService.likelySpokenLanguages(for:)`).
@@ -327,6 +329,9 @@ final class TakeReviewViewModel {
     /// A refused Photos permission is a card with the way out; anything else is "Couldn't export · Try again" and the export
     /// count stays where it was (04 · F6).
     private func report(_ error: Error) {
+        if !(error is PhotoLibraryError), let failure = EditorFailureReport.make(error, operation: "export", edit: take?.edit) {
+            reportFailure(failure)
+        }
         switch error {
         case PhotoLibraryError.notAuthorized:
             photosDenied = true

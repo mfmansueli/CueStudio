@@ -5,7 +5,8 @@ Este arquivo diz **como o app está hoje** e as decisões do dono que divergem d
 visual). Pacotes antigos só no git (commit `bb39f35`). **Como manter:** ao mudar uma tela, reescreva a seção dela no estado atual; o que saiu do app sai
 daqui (o histórico fica no git). Os números das seções são citados no código: não renumere.
 
-O app é **só escuro**. Regras de negócio: 5 exportações grátis (contador no Keychain), 7 dias de teste, preço da StoreKit, cota de IA, pipeline das
+O app é **só iPhone** no lançamento (`TARGETED_DEVICE_FAMILY = 1`, retrato, sem o Mac "Designed for iPad"; decisão do dono, 23/10/2026: o iPad vem
+depois; num iPad ele roda no modo de compatibilidade de iPhone). O app é **só escuro**. Regras de negócio: 5 exportações grátis (contador no Keychain), 7 dias de teste, preço da StoreKit, cota de IA, pipeline das
 takes (`TakeStage`). **Movimento:** o Modo de Baixo Consumo não tira nem encurta nenhuma animação (decisão do dono, 6/10/2026; a regra do `09` §7 foi
 removida); só o **Reduzir Movimento** mostra o estado final. `speed` só serve para encurtar nos testes de UI.
 
@@ -750,26 +751,23 @@ linha, 5 pt acima do fundo.
   characters".
 - Testes: `IdeaPromptDraftTests`, `DockGrowthUITests`.
 
-## 26. Gravação e espelhamento da tela escondem as prévias
+## 26. Gravação e espelhamento da tela: a marca do Cue no plano grátis
 
-Gravar a tela com uma prévia tocando daria o vídeo sem exportar. Com a cena gravada, espelhada ou em AirPlay, toda superfície de vídeo vira um cartão
-opaco e o player para. Grátis e Pro, sem interruptor.
+Decisão do dono (23/10/2026): **Pro** não muda nada (já pagou); no **grátis**, a prévia continua visível e tocando, com a marca do Cue por cima,
+para que uma gravação de tela saia assinada (a exportação é o vídeo limpo). Nenhum player para.
 - **Detecção** (`SceneCaptured`): o `isSceneCaptured` do SwiftUI (traço `sceneCaptureState` da cena; `UIScreen.isCaptured` será descontinuado), lido ao
-  aparecer (`onChange(initial: true)`). A gravação do próprio Cue não marca a cena.
-- **Onde:** revisão da take, prévia e tela cheia do Quick edit, câmera do Selfie e da prática. Pôsteres, capas e quadros da linha do tempo ficam.
-- **Cartão** (`CaptureShield`, `captureShielded(_:)`): `Palette.surface` opaco, `eye.slash` em `ink2`, "Stop screen recording or mirroring to view this
-  preview." em `ink`. Sem animação. A superfície fica na árvore com opacidade 0 e sem toques (o player guarda item e posição; a prévia da câmera continua
-  dando a rotação). Na câmera, moldura, grade e zonas seguras somem; teleprompter e controles ficam.
-- **Player** (`ReviewPlayback`, `QuickEditPlayer`/`EditPlayback.isPlaybackBlocked`): ligar pausa no quadro; enquanto vale nada toca (botão, sessão de áudio,
-  busca, reconstrução, voice-over), e um player ligado por fora é parado. No editor a agulha ainda se move. Desligar **não toca**. Sem AirPlay de vídeo
-  (`allowsExternalPlayback = false`, que não marcaria a cena).
-- **Gravações:** take e voice-over continuam (relógio do voice-over é `recorder.elapsed`). **Exportações:** nada muda.
-- **Limites:** é detecção, não bloqueio; o primeiro quadro pode entrar; tela escondida atrás de outra só atualiza ao voltar; câmera apontada para a tela não
-  é detectável.
-- **Testes:** `ReviewPlaybackTests`, `QuickEditPlayerTests`, `QuickCreatorViewModelTests`, `ExportAccountingTests`, `ScreenCaptureUITests`;
-  `-uiTestSceneCapture` + `SimulatedSceneCapture` (o Simulator não marca a cena). **Falta no aparelho:** Gravação de Tela durante a revisão (tocando e
-  parada), começada antes de abrir o Cue, editor e tela cheia, voltar ao primeiro plano, Espelhamento para Apple TV/Mac, gravação no meio de uma take e de
-  um voice-over.
+  aparecer. A gravação do próprio Cue não marca a cena.
+- **Onde:** revisão da take, prévia e tela cheia do Quick edit, câmera do Selfie e da prática (a área inteira da câmera). Pôsteres, capas e quadros da
+  linha do tempo ficam como estão.
+- **Marca** (`CaptureWatermark`, `captureWatermarked(_:markY:)`, lê o plano no `StoreManager`): "✦ CUE STUDIO" em SF Mono 13 semibold, branco a 70%
+  com sombra, centrada a três quartos da altura; na câmera, no meio do espaço livre entre o texto e os controles (`captureMarkY`). Sem animação, sem
+  toques. É o nome da marca: como logotipo, não tem mínimo de contraste (WCAG 1.4.3), e a sombra a deixa visível em imagem clara.
+- **AirPlay de vídeo** continua desligado (`allowsExternalPlayback = false`): ele não marcaria a cena, e a marca não apareceria.
+- **Gravações e exportações:** nada muda.
+- **Limites:** é detecção, não bloqueio; o primeiro quadro pode entrar sem a marca; câmera apontada para a tela não é detectável.
+- **Testes:** `ScreenCaptureUITests` (grátis assina e toca na revisão, no editor e na tela cheia e na câmera durante uma take; Pro não muda),
+  `ExportAccountingTests`; `-uiTestSceneCapture` + `SimulatedSceneCapture` (o Simulator não marca a cena). **Falta no aparelho:** Gravação de Tela e
+  Espelhamento de verdade, no grátis e no Pro.
 
 ## 27. Notificações, lembretes e introdução de ferramentas
 
@@ -799,7 +797,9 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
 
 - A última linha de uma página fica "tocável" atrás da tab bar e o toque cai na aba: role antes (`XCUIApplication.scrollAboveTabBar`).
 - A prévia do Quick edit não toca no Simulator (a composição falha com -12784): os testes de UI conferem Play/Pause; o tempo andando só no aparelho
-  (`EditorUITests.testPlayPlaysAndPauseHoldsThePlayhead`).
+  (`EditorUITests.testPlayPlaysAndPauseHoldsThePlayhead`). O Simulator do iOS 27 não toca **nenhuma** composição de vídeo, nem a do próprio AVFoundation
+  (-11800 com -12784 por baixo; o item toca sem ela e exporta), por isso o vigia de falha do item (`QuickEditPlayer.watch`) fica desligado ali: no
+  aparelho, um item que falha mostra "Try again"; no Simulator a prévia segue em branco e as ferramentas ficam acesas.
 
 ## 29. Text style e Caption style (Quick edit)
 
@@ -1408,6 +1408,18 @@ iPhone 15 Pro, média de 5:
   pico 144 MB.
 - **Universo** (Profile e de volta a Scripts): 3,7 s, 75 MB.
 
+**Prévia do Quick edit** (`QuickEditPreviewLatencyTests`, `CUE_DEVICE=… scripts/test.sh device QuickEditPreviewLatencyTests`; 23/10/2026, iPhone
+15 Pro, take de 22 s com título, subtítulo e 8 legendas, 10 mudanças por cenário). A composição da prévia (e da exportação) é montada fora da
+linha principal (`EditedComposition.build` é `@concurrent`): enquanto ela se monta, a tela segue o dedo numa alça, num slider ou no
+enquadramento.
+- **Linha principal ocupada por mudança** (o que o dedo sente): antes ~40 ms (filtro, texto, desfoque em 1080p), 44 ms (4K), 52 ms (corte);
+  agora ~9 ms em todos (o passo da medida) e 14 ms no corte.
+- **Da mudança ao quadro novo na tela:** 45–63 ms (filtro, texto, 4K), ~120 ms num corte (item novo, com o quadro antigo segurado; nunca em
+  branco). Igual antes e depois.
+- **Debug × código otimizado** (`CUE_SWIFT_OPTIMIZATION=-O`, como o Release): a mudança aparece no mesmo tempo (o trabalho é do AVFoundation e
+  da GPU); montar a prévia ao abrir fica ~35% mais rápido (285 → 191 ms com texto, 282 → 183 ms em 4K, 277 → 173 ms no corte). O app instalado
+  pelo `scripts/build.sh install` é Debug: para julgar a fluidez como na App Store, `CUE_CONFIGURATION=Release`.
+
 ## 43. Apple Watch: o gravador no pulso (22 de outubro de 2026; pedido do dono)
 
 Referência: canvas **Cue Studio v31 · Apple Watch** (claude.ai/artifact/2vSQB5yQS7rw4m7LfDSmi4: mapa de navegação, protótipo de 40 mm, componente
@@ -1514,3 +1526,42 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   `FilterEvaluationCaptureTests` (opt-in, `TEST_RUNNER_CUE_FILTER_PORTRAITS`/`_OUTPUT`) desenha cada filtro em retratos.
 - **Contraste:** `PaletteContrastTests.theOriginalBadgesReadOverAnyPicture` ("Original" e o ◐ sobre vídeo branco e preto),
   `theNarrationScriptReadsOverAnyPicture` (roteiro do voice-over), `theLowPowerNoticeReadsOverAnyPicture` (título, frase, ✕ e bateria).
+
+## 45. Quick edit: sólido para o lançamento (Fase A, 23 de outubro de 2026; pedido do dono)
+
+O editor por dentro, para milhares de criadores: nada se perde, nada some, nada trava a tela, e o que falha se explica.
+- **Desfazer cobre tudo:** a edição só muda por um caminho (`edit` é `private(set)`; `changeEdit`, `change`, `commit` fazem um passo; `restore` é
+  Desfazer/Refazer; `updateFindings` põe o que a escuta achou, transcrições e Clean Up, fora do histórico). O enquadramento arrastado é um passo (o
+  Follow face para dentro dele), e o botão de legendas, o cadeado e o idioma das legendas entram no desfazer; um Desfazer em outra coisa nunca os leva
+  junto. `EditSnapshotCompletenessTests` falha quando um campo novo de `TakeEdit` não volta num passo nem é listado como achado.
+- **Edições salvas por uma versão mais nova abrem:** filtros, fontes, cores, pesos, transições, temas de legenda, formato… desconhecidos viram um padrão
+  seguro (`LenientChoice`); um som, adesivo ou tipo de mídia que não dá para mostrar sai sozinho da lista; uma edição ilegível abre a take como gravada; um
+  rascunho com passos ilegíveis mantém a edição. O que ficou de fora é anotado (`DecodingReport`), vai ao Console e o `takes.json` é guardado ao lado
+  antes de ser salvo de novo. `Fixtures/SavedEdits/saved-takes-1.0.json` é congelado: toda versão futura tem de lê-lo inteiro.
+- **Prévia:** a composição é montada fora da linha principal (§42). Dois clipes dos mesmos segundos de gravações diferentes trocados reconstroem a prévia
+  (`ItemKey.sources`; teste Mirror de `EditSegment`). Um item que falha depois de tocar mostra "The preview couldn't be built · Your edit is safe" com
+  **Try again**, e o Cue tenta sozinho ao voltar para a frente.
+- **Sair do editor** cancela tudo que ele começou (`startJob`, prévias curtas, comparação, tradução); o que termina depois é descartado.
+- **Rascunho:** gravado 600 ms depois de cada mudança numa fila em segundo plano, com os passos de desfazer finos (legendas e traduções iguais às do passo
+  seguinte ficam de fora; ~5× menor num vídeo longo). Leituras, descartes e o rascunho guardado ao sair esperam a fila.
+- **Falhas que o criador vê** (exportar, salvar, rascunho, prévia, importar, congelar, inverter, extrair, legendas, Clean Up, Track, traduzir, voice-over)
+  vão ao Crashlytics como non-fatal `Editor.<operação>.<motivo>` com contagens e o estado do aparelho, nunca conteúdo (`EditorFailureReport`).
+- **Robustez:** mídia de edição que nada cita há 7 dias é apagada no lançamento (busca do nome em todo JSON do app; um arquivo ilegível cancela a
+  varredura); voice-over interrompido por ligação ou outro app para e guarda o que gravou ("Recording stopped · Another app took the microphone"), e um
+  arquivo que não grava é descartado com aviso; Cancel e "Not yet" durante a gravação guardam a narração no rascunho; foto importada já reduzida a 2160
+  px pelo `CGImageSource`; erros do sistema viram frases (iPhone cheio, microfone ocupado, Fotos sem conexão; `EditorErrorMessage`), e "Mic is off for
+  Cue" tem o botão Settings.
+- **Idiomas:** espaço entre letras só onde a escrita permite (nunca árabe, hindi, tailandês…; textos, legendas, capa e rótulos `interfaceTracking`);
+  maiúsculas no idioma do texto (turco "İ"); com árabe escolhido no Cue num iPhone em outro idioma, folhas, capas e pilhas de navegação também ficam da
+  direita para a esquerda (`InterfaceDirection`, o traço da janela); o tempo corre da esquerda para a direita em todo idioma (recorte, curva de
+  velocidade, quadros da capa, passos de linha, keyframe e quadro); voltar é `chevron.backward`; toasts e escolhas segmentadas usam duas linhas antes de
+  cortar.
+- **VoiceOver:** textos e fotos sobre o vídeo são ativados como um toque e têm Move up/down/left/right, Bigger, Smaller; a linha do tempo anda 1 s por
+  gesto e tem Next cut / Previous cut; Desfazer e Refazer são anunciados; o título do painel recebe o foco e o escape (Z com dois dedos) fecha o painel;
+  um contador é um valor ajustável. `EditorUITests.testTheEditorPassesTheAccessibilityAudit` roda a auditoria do Xcode (tamanhos de texto limitados de
+  propósito e o esmaecimento da borda da barra à parte).
+- **Testes:** `RealMedia` (tag `.realMedia`, fora do Fast): o editor numa gravação real, com o serviço, o player e os arquivos de verdade, pelos passos de
+  um criador.
+- **Ainda não feito (Fases B e C):** documento de edição separado, seleção única com transições, `EditorJobs`, pipeline compartilhado com a capa, uma
+  requisição de render com testes de paridade, registro de versões de leitura, divisão do `QuickEditViewModel`, `RenderPlan`, reuso das camadas da
+  timeline, e os itens de vídeos longos.

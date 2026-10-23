@@ -68,6 +68,7 @@ extension QuickEditViewModel {
                 finishCaptions(request, with: .cancelled)
                 return
             } catch {
+                noteFailure(error, "captions")
                 finishCaptions(request, with: .failed)
                 return
             }
@@ -125,12 +126,12 @@ extension QuickEditViewModel {
         captionState = .cancelled
     }
 
-    /// Picks the language spoken in the take (nil: the script's). Listening in another language
-    /// stops, so its result can't land on this choice.
+    /// Picks the language spoken in the take (nil: the script's), as an undo step. Listening in another language stops, so
+    /// its result can't land on this choice.
     func setCaptionLanguage(_ language: CueLanguage?) {
         guard language != edit.captionLanguage else { return }
         if captionState.isWorking { cancelCaptions() }
-        edit.captionLanguage = language
+        changeEdit { $0.captionLanguage = language }
         captionState = .idle
     }
 
@@ -234,19 +235,23 @@ extension QuickEditViewModel {
             }
             return
         }
-        change { snapshot in
-            startsCaptionsInMyStyle(&snapshot)
-            snapshot.captions = lines.sorted { $0.start < $1.start }
+        updateFindings { edit in
+            edit.captionTranscript = takeTranscript
+            edit.sourceTranscripts = others
         }
-        edit.captionTranscript = takeTranscript
-        // A language picked unlike the one spoken: the picker now says the one the captions were heard in.
-        if edit.captionLanguage != nil, let code = takeTranscript?.languageCode,
-           let spoken = takeCandidates.first(where: { CueLanguage.matching(languageCode: code) == $0 }), spoken != edit.captionLanguage {
-            edit.captionLanguage = spoken
-        }
-        edit.sourceTranscripts = others
-        edit.showsCaptions = !keepsCaptionsHiddenAfterListening
+        // One undo step: the lines, shown (unless hidden while they were made) and, for a language picked unlike the one
+        // spoken, the picker saying the one they were heard in.
+        let spoken = (takeTranscript?.languageCode).flatMap { code in takeCandidates.first { CueLanguage.matching(languageCode: code) == $0 } }
+        let shows = !keepsCaptionsHiddenAfterListening
         keepsCaptionsHiddenAfterListening = false
+        var made = snapshot
+        startsCaptionsInMyStyle(&made)
+        changeEdit { edit in
+            edit.apply(made)
+            edit.captions = lines.sorted { $0.start < $1.start }
+            edit.showsCaptions = shows
+            if edit.captionLanguage != nil, let spoken { edit.captionLanguage = spoken }
+        }
         // Lines made, but a language they should have had was left out: the creator is told, never left to find out.
         captionState = unheard.isEmpty ? .idle : .missingLanguages(unheard)
         // Auto captions turns into the list of the new lines.

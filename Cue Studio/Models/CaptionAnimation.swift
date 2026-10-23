@@ -8,7 +8,10 @@ import Foundation
 /// How caption lines come and go. Effects that follow each word go by the words' own times from
 /// speech recognition when a line has them (`CaptionCue.hasWordTiming`); a line without them gets
 /// the same effects over its words shared across its time, and Captions says how many do.
-nonisolated enum CaptionAnimation: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum CaptionAnimation: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = CaptionAnimation.line
+
     /// The whole line while it is said: no animation (how every edit before this drew captions).
     case line
     /// The whole line, fading in and out.

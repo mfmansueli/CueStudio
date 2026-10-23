@@ -6,7 +6,6 @@
 import Foundation
 import FoundationModels
 import os
-import UIKit
 
 /// One Apple Intelligence request that failed, as the log and the crash reports keep it: what was asked, on which model, the
 /// framework's own reason ("guardrailViolation", "timeout", "concurrentRequests"…) and the iPhone at that moment (whether the model
@@ -48,25 +47,10 @@ nonisolated struct AIFailureReport: Equatable, Sendable {
 
         /// Now, with the app's state as the caller (on the main actor) sees it.
         static func current(appState: String) -> Conditions {
-            let process = ProcessInfo.processInfo
-            let version = process.operatingSystemVersion
-            return Conditions(
-                device: deviceModel,
-                system: "\(version.majorVersion).\(version.minorVersion).\(version.patchVersion)",
-                model: modelAvailability,
-                thermal: name(of: process.thermalState),
-                lowPower: process.isLowPowerModeEnabled,
-                freeMemoryMB: Int(os_proc_available_memory() / 1_048_576),
-                appState: appState
+            Conditions(
+                device: DeviceFacts.model, system: DeviceFacts.system, model: modelAvailability, thermal: DeviceFacts.thermal,
+                lowPower: DeviceFacts.lowPower, freeMemoryMB: DeviceFacts.freeMemoryMB, appState: appState
             )
-        }
-
-        private static var deviceModel: String {
-            if let simulated = ProcessInfo.processInfo.environment["SIMULATOR_MODEL_IDENTIFIER"] { return "\(simulated) (Simulator)" }
-            var info = utsname()
-            uname(&info)
-            let bytes = withUnsafeBytes(of: info.machine) { Array($0.prefix { $0 != 0 }) }
-            return String(bytes: bytes, encoding: .utf8) ?? "unknown"
         }
 
         private static var modelAvailability: String {
@@ -76,16 +60,6 @@ nonisolated struct AIFailureReport: Equatable, Sendable {
             case .unavailable(.appleIntelligenceNotEnabled): "appleIntelligenceNotEnabled"
             case .unavailable(.modelNotReady): "modelNotReady"
             case .unavailable: "unavailable"
-            }
-        }
-
-        private static func name(of state: ProcessInfo.ThermalState) -> String {
-            switch state {
-            case .nominal: "nominal"
-            case .fair: "fair"
-            case .serious: "serious"
-            case .critical: "critical"
-            @unknown default: "unknown"
             }
         }
     }
@@ -223,19 +197,9 @@ extension AIFailureReport {
         let (reason, detail) = reason(of: error)
         let report = AIFailureReport(
             operation: operation, route: route, reason: reason, detail: detail, language: language, seconds: seconds, isFinal: isFinal,
-            conditions: .current(appState: appState)
+            conditions: .current(appState: DeviceFacts.appState)
         )
         report.log()
         if isFinal { TelemetryManager.record(report) }
-    }
-
-    @MainActor
-    private static var appState: String {
-        switch UIApplication.shared.applicationState {
-        case .active: "active"
-        case .inactive: "inactive"
-        case .background: "background"
-        @unknown default: "unknown"
-        }
     }
 }

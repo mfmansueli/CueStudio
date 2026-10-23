@@ -74,8 +74,10 @@ struct QuickEditPreviewTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let cue = CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)
-        viewModel.edit.captions = [cue]
-        viewModel.edit.showsCaptions = true
+        viewModel.changeEdit {
+            $0.captions = [cue]
+            $0.showsCaptions = true
+        }
         viewModel.tapCaption(cue.id)
         #expect(viewModel.selection == .caption(cue.id))
         #expect(viewModel.panel == nil)
@@ -87,8 +89,10 @@ struct QuickEditPreviewTests {
     @Test func draggingCaptionsMovesThemAllInOneStep() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.edit.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
-        viewModel.edit.showsCaptions = true
+        viewModel.changeEdit {
+            $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
+            $0.showsCaptions = true
+        }
         viewModel.moveCaptions(toY: 0.17)
         #expect(viewModel.captionY == 0.16)
         viewModel.undo()

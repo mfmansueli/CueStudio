@@ -6,7 +6,10 @@
 import Foundation
 
 /// How the recording fills the format picked in Crop.
-nonisolated enum CropFit: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum CropFit: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = CropFit.fill
+
     /// The whole frame filled: what doesn't fit is cropped (as before Fit existed).
     case fill
     /// The whole recording shows, with black bars where the format is wider or taller.

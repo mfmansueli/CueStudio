@@ -24,6 +24,16 @@ struct PanelStepper: View {
                 Text(value)
                     .font(.system(.subheadline, weight: .semibold).monospacedDigit())
                     .frame(minWidth: 56)
+                    // VoiceOver: one adjustable value ("Starts, 00:05.2", swipe up or down), beside the − and + buttons.
+                    .accessibilityLabel(Text(label))
+                    .accessibilityValue(Text(value))
+                    .accessibilityAdjustableAction { direction in
+                        switch direction {
+                        case .increment: if canIncrease { onIncrease() }
+                        case .decrement: if canDecrease { onDecrease() }
+                        @unknown default: break
+                        }
+                    }
                     .accessibilityIdentifier("\(identifier).value")
                 button("plus", label: Text("More"), enabled: canIncrease, id: "\(identifier).plus", action: onIncrease)
             }

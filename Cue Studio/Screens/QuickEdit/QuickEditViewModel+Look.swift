@@ -42,15 +42,6 @@ extension QuickEditViewModel {
         var isBipolar: Bool { self != .sharpness && self != .skinSmoothing }
     }
 
-    /// Changes light, color, frame or sound (`EditLook`) as an undo step.
-    func changeLook(key: String? = nil, _ update: (inout TakeEdit) -> Void) {
-        var changed = edit
-        update(&changed)
-        var next = snapshot
-        next.look = EditLook(changed)
-        commit(next, key: key)
-    }
-
     // MARK: - Adjust
 
     /// The value the dial shows: the clip's (or the take's, where the clip sets none) when Adjust
@@ -90,7 +81,7 @@ extension QuickEditViewModel {
             updateClipLook(key: "adjust.\(adjustment.rawValue)") { Self.setOverride(of: adjustment, to: clamped, in: &$0) }
             return
         }
-        changeLook(key: "adjust.\(adjustment.rawValue)") { edit in
+        changeEdit(key: "adjust.\(adjustment.rawValue)") { edit in
             switch adjustment {
             case .exposure: edit.exposure = clamped
             case .contrast: edit.contrast = clamped
@@ -122,7 +113,7 @@ extension QuickEditViewModel {
             updateClipLook { $0.removeAdjustment() }
             return
         }
-        changeLook { edit in
+        changeEdit { edit in
             edit.autoCorrection = nil
             edit.autoAmount = 1
             for adjustment in Adjustment.allCases {
@@ -225,7 +216,7 @@ extension QuickEditViewModel {
         if lookClip != nil {
             updateClipLook(key: "filter.amount") { $0.filterAmount = clamped }
         } else {
-            changeLook(key: "filter.amount") { $0.filterAmount = clamped }
+            changeEdit(key: "filter.amount") { $0.filterAmount = clamped }
         }
     }
 
@@ -237,13 +228,13 @@ extension QuickEditViewModel {
     // MARK: - Crop
 
     func setAspect(_ aspect: AspectRatio) {
-        changeLook { edit in
+        changeEdit { edit in
             edit.aspect = aspect
             edit.cropOffset = 0
         }
     }
 
     func setCropFit(_ fit: CropFit) {
-        changeLook { $0.cropFit = fit }
+        changeEdit { $0.cropFit = fit }
     }
 }

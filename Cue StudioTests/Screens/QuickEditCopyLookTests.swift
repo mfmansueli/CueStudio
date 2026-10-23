@@ -72,10 +72,10 @@ struct QuickEditCopyLookTests {
     @Test func everyClipTakesItAndTheTakesLookShowsThrough() async throws {
         let (viewModel, _) = await makeViewModel()
         // The take is warm; the first clip copies as warm even without its own.
-        viewModel.changeLook { $0.warmth = 40 }
+        viewModel.changeEdit { $0.warmth = 40 }
         viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
         viewModel.copyClipLook()
-        viewModel.changeLook { $0.warmth = 0 }
+        viewModel.changeEdit { $0.warmth = 0 }
         // A clip with a look of its own loses it for the pasted parts.
         var third = viewModel.edit.timeline.segments[2]
         var own = ClipLook()
@@ -118,7 +118,7 @@ struct QuickEditCopyLookTests {
 
     @Test func aPasteOnOneClipKeepsOnlyWhatDiffersFromTheVideo() async throws {
         let (viewModel, _) = await makeViewModel()
-        viewModel.changeLook { $0.filter = .film }
+        viewModel.changeEdit { $0.filter = .film }
         var first = viewModel.edit.timeline.segments[0]
         var look = ClipLook()
         look.exposure = 25

@@ -8,7 +8,10 @@ import Foundation
 /// Typefaces for words on the video: texts, captions and the cover share one list (`editorFonts`), all bundled under
 /// the SIL OFL 1.1 but SF Pro; the system designs before them (classic, rounded, serif, mono) stay for edits that used
 /// them. Letters a bundled font lacks (Arabic, Hindi, Thai, CJK; Vietnamese in some) fall back to the system's (`TextFont`).
-nonisolated enum TextOverlayFont: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum TextOverlayFont: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = TextOverlayFont.sfPro
+
     case classic, rounded, serif, mono
     case dmSans, spaceGrotesk, dmSerif, sfPro
     /// The faces of the v27 text styles: Orbit, Logbook, Signal, Launch, Nebula and Postcard.

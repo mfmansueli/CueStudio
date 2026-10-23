@@ -92,7 +92,7 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
     /// What is drawn: the text, in capitals when the style asks for them.
     var displayText: String {
         let trimmed = text.trimmingCharacters(in: .whitespacesAndNewlines)
-        return isUppercase ? trimmed.uppercased() : trimmed
+        return isUppercase ? TextShaping.uppercased(trimmed) : trimmed
     }
 
     /// Nothing to draw.
@@ -135,7 +135,8 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         alignment = try container.decodeIfPresent(LineAlignment.self, forKey: .alignment) ?? .center
         color = try container.decodeIfPresent(OverlayColor.self, forKey: .color) ?? .white
         background = try container.decodeIfPresent(TextOverlayBackground.self, forKey: .background) ?? .none
-        backgroundColor = try container.decodeIfPresent(OverlayColor.self, forKey: .backgroundColor) ?? .black
+        // A colour a newer version wrote reads black here (white, the colours' general stand-in, would be a white box).
+        backgroundColor = container.decodeChoice(OverlayColor.self, forKey: .backgroundColor, unknown: .black, report: decoder.decodingReport) ?? .black
         backgroundOpacity = min(max((try? container.decodeIfPresent(Double.self, forKey: .backgroundOpacity)) ?? 1, 0), 1)
         hasShadow = try container.decodeIfPresent(Bool.self, forKey: .hasShadow) ?? true
         hasOutline = try container.decodeIfPresent(Bool.self, forKey: .hasOutline) ?? false

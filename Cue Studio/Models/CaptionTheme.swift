@@ -6,7 +6,10 @@
 import Foundation
 
 /// The video caption collection. Separate identities keep saved TypePreset looks unchanged.
-nonisolated enum CaptionTheme: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum CaptionTheme: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = CaptionTheme.cue
+
     case cue, impact, clean, pop, editorial
     /// Added with the complete presets (`CaptionStyleSpec` version 2).
     case educational, interview

@@ -66,4 +66,24 @@ nonisolated struct EditHistory<State: Codable & Hashable & Sendable>: Codable, H
         past.append(current)
         return next
     }
+
+    /// The same steps, each written relative to the state it is applied on (`thin(step, newer)`; the newest undo and redo
+    /// steps are applied on `current`), so a saved history doesn't hold the same big part once per step.
+    func thinned(current: State, _ thin: (_ step: State, _ newer: State) -> State) -> EditHistory {
+        var copy = self
+        copy.past = Self.thinned(past, current: current, thin)
+        copy.future = Self.thinned(future, current: current, thin)
+        return copy
+    }
+
+    /// The last step is applied on `current`, each one before it on the step after it.
+    private static func thinned(_ steps: [State], current: State, _ thin: (State, State) -> State) -> [State] {
+        var newer = current
+        var thinned = steps
+        for index in steps.indices.reversed() {
+            thinned[index] = thin(steps[index], newer)
+            newer = steps[index]
+        }
+        return thinned
+    }
 }

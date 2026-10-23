@@ -42,6 +42,7 @@ extension QuickEditViewModel {
         do {
             name = try await ReversedClipWriter.write(url, span: clip.span) { _ in }
         } catch {
+            noteFailure(error, "reverse")
             toast.show(String(localized: "Can’t reverse this clip"))
             return
         }

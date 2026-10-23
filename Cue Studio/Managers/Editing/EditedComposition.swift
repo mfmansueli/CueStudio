@@ -69,7 +69,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     /// `sound` replaces the sound of the recordings Studio Voice treated (`RecordingSounds`). A montage's
     /// other recordings (`TakeEdit.sources`) are read from the edit's media; one that can't be read
     /// plays black and silent for its length. `speech` is where someone speaks in the recordings,
-    /// for music that ducks.
+    /// for music that ducks. Built off the main thread (`@concurrent`): the preview rebuilds while a finger drags a
+    /// handle, a slider or the frame, and the screen keeps following the finger meanwhile.
+    @concurrent
     static func build(
         source: URL, edit: TakeEdit, sound: RecordingSounds = .none, speech: VoiceActivity = .none, options: Options
     ) async throws -> EditedComposition {

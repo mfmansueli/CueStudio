@@ -1,0 +1,340 @@
+[
+  {
+    "aspect" : "9:16",
+    "duration" : 20,
+    "edit" : {
+      "aspect" : "1:1",
+      "audioVersion" : 1,
+      "autoAmount" : 0.5,
+      "autoCorrection" : {
+        "highlights" : 1,
+        "shadows" : 0,
+        "tone" : [
+          {
+            "x" : 0,
+            "y" : 0
+          },
+          {
+            "x" : 0.25,
+            "y" : 0.25
+          },
+          {
+            "x" : 0.5,
+            "y" : 0.5
+          },
+          {
+            "x" : 0.75,
+            "y" : 0.75
+          },
+          {
+            "x" : 1,
+            "y" : 1
+          }
+        ],
+        "version" : 1,
+        "vibrance" : 0
+      },
+      "backgrounds" : [
+        {
+          "effect" : {
+            "blur" : 0.5,
+            "color" : "black",
+            "cutout" : "person",
+            "key" : {
+              "blue" : 0.25,
+              "green" : 0.69,
+              "red" : 0,
+              "softness" : 0.15,
+              "spill" : 0.5,
+              "tolerance" : 0.3
+            },
+            "style" : "original"
+          }
+        }
+      ],
+      "captionAnimation" : "fade",
+      "captionCollection" : {
+        "followsWords" : true,
+        "safeMargins" : {
+          "bottom" : 22,
+          "left" : 6,
+          "right" : 11,
+          "top" : 11
+        },
+        "sizeScale" : 1,
+        "styleVersion" : 2,
+        "theme" : "pop"
+      },
+      "captionDisplay" : {
+        "translation" : {
+          "_0" : "en-US"
+        }
+      },
+      "captionLanguage" : "es-ES",
+      "captionLook" : {
+        "alignment" : "center",
+        "background" : "box",
+        "backgroundColor" : "yellow",
+        "backgroundOpacity" : 1,
+        "color" : "black",
+        "font" : "dmSans",
+        "glow" : 0,
+        "hasOutline" : false,
+        "hasShadow" : false,
+        "isUppercase" : false,
+        "sizeScale" : 1,
+        "tracking" : -0.01,
+        "verticalOffset" : 0,
+        "weight" : "bold"
+      },
+      "captionPosition" : "top",
+      "captionPreset" : "cue",
+      "captionStyle" : "classic",
+      "captionTranscript" : {
+        "languageCode" : "pt",
+        "version" : 2,
+        "words" : [
+
+        ]
+      },
+      "captionTranslations" : [
+        {
+          "language" : "en-US",
+          "lines" : [
+
+          ]
+        }
+      ],
+      "captions" : [
+        {
+          "end" : 2,
+          "id" : "84E9DB56-2379-4C87-91AE-BC926EB0A5C8",
+          "isRevised" : false,
+          "needsTimingReview" : false,
+          "origin" : "speech",
+          "start" : 1,
+          "text" : "Oi",
+          "words" : [
+
+          ]
+        }
+      ],
+      "cleanUpAnalyzed" : true,
+      "cleanUpAnalyzedSources" : [
+        "8FDBA862-8C8D-4531-BE91-84DB81A0689E"
+      ],
+      "contrast" : 11,
+      "cover" : {
+        "source" : {
+          "frame" : {
+            "_0" : 0
+          }
+        },
+        "style" : "bold",
+        "title" : "",
+        "titleY" : 0.2
+      },
+      "creatorStyle" : "clean",
+      "cropFit" : "fit",
+      "cropOffset" : 0.3,
+      "enhancesVoice" : false,
+      "evensOutVoices" : false,
+      "exposure" : 10,
+      "faceFollow" : {
+        "pace" : "natural"
+      },
+      "filter" : "warmFilm",
+      "filterAmount" : 0.4,
+      "highlights" : 14,
+      "lockedLayers" : [
+        "8FDBA862-8C8D-4531-BE91-84DB81A0689E"
+      ],
+      "lookVersion" : 1,
+      "media" : [
+        {
+          "aspect" : 1,
+          "center" : {
+            "x" : 0.5,
+            "y" : 0.5
+          },
+          "fileName" : "p.jpg",
+          "id" : "03024CFF-3154-45A7-8571-5F88BDE62E95",
+          "kind" : "photo",
+          "layout" : "fullFrame",
+          "shape" : "original",
+          "span" : {
+            "end" : 5,
+            "start" : 2
+          },
+          "width" : 0.6
+        }
+      ],
+      "music" : [
+        {
+          "ducksUnderVoice" : true,
+          "fadeIn" : 1,
+          "fadeOut" : 1.5,
+          "fileDuration" : 60,
+          "fileName" : "m.m4a",
+          "id" : "78028B1C-7CF3-45EB-BE17-8CF8FB74E477",
+          "isMuted" : false,
+          "length" : 10,
+          "offset" : 0,
+          "start" : 0,
+          "title" : "Loop",
+          "volume" : 0.5
+        }
+      ],
+      "noiseReduction" : "strong",
+      "pauseThreshold" : 1.2,
+      "reducesNoise" : true,
+      "saturation" : 13,
+      "shadows" : 15,
+      "sharpness" : 16,
+      "showsCaptions" : true,
+      "skinSmoothing" : 19,
+      "snapsToBeats" : false,
+      "sourceTranscripts" : [
+        {
+          "languageCode" : "en",
+          "version" : 2,
+          "words" : [
+
+          ]
+        }
+      ],
+      "sources" : [
+        {
+          "duration" : 10,
+          "fileName" : "walk.mov",
+          "id" : "8FDBA862-8C8D-4531-BE91-84DB81A0689E",
+          "title" : "Walk"
+        }
+      ],
+      "suggestions" : [
+        {
+          "confidence" : 0.9,
+          "id" : "104AF2FC-5FA4-45DB-80D3-FFAFE46051BA",
+          "kind" : "pause",
+          "span" : {
+            "end" : 2,
+            "start" : 1
+          },
+          "status" : "pending"
+        }
+      ],
+      "textLook" : {
+        "alignment" : "center",
+        "background" : "box",
+        "backgroundColor" : "yellow",
+        "backgroundOpacity" : 1,
+        "color" : "black",
+        "font" : "dmSans",
+        "glow" : 0,
+        "hasOutline" : false,
+        "hasShadow" : false,
+        "isUppercase" : false,
+        "sizeScale" : 1,
+        "tracking" : -0.01,
+        "verticalOffset" : 0,
+        "weight" : "heavy"
+      },
+      "textPreset" : "cue",
+      "texts" : [
+        {
+          "alignment" : "center",
+          "background" : "box",
+          "backgroundColor" : "yellow",
+          "backgroundOpacity" : 1,
+          "center" : {
+            "x" : 0.5,
+            "y" : 0.22
+          },
+          "color" : "peach",
+          "customized" : [
+
+          ],
+          "font" : "montserrat",
+          "hasOutline" : false,
+          "hasShadow" : false,
+          "id" : "BF7A0286-B0DC-4ADC-8E11-94E4E27D5C95",
+          "isUppercase" : false,
+          "preset" : "cue",
+          "role" : "title",
+          "size" : 53.326530612244895,
+          "span" : {
+            "end" : 2,
+            "start" : 0
+          },
+          "text" : "Comidas de SP",
+          "tracking" : -0.01,
+          "weight" : "heavy"
+        }
+      ],
+      "timeline" : {
+        "isArranged" : true,
+        "otherSources" : [
+          "8FDBA862-8C8D-4531-BE91-84DB81A0689E",
+          10
+        ],
+        "segments" : [
+          {
+            "id" : "B962F583-314F-47A8-AFE5-0E2E60F2C406",
+            "isMuted" : false,
+            "keepsPitch" : true,
+            "sourceEnd" : 20,
+            "sourceStart" : 0,
+            "speed" : 1,
+            "transitionIn" : "hardCut",
+            "volume" : 1,
+            "zoomAmount" : 0.5
+          },
+          {
+            "id" : "4805CDC2-3900-4C1F-AD73-204C04C227AA",
+            "isMuted" : false,
+            "keepsPitch" : true,
+            "sourceEnd" : 10,
+            "sourceID" : "8FDBA862-8C8D-4531-BE91-84DB81A0689E",
+            "sourceStart" : 0,
+            "speed" : 1,
+            "transitionIn" : "push",
+            "volume" : 1,
+            "zoomAmount" : 0.5
+          }
+        ],
+        "sourceDuration" : 20
+      },
+      "tint" : 18,
+      "vibrance" : 17,
+      "voiceEnhancement" : "strong",
+      "voiceOvers" : [
+        {
+          "anchor" : 1,
+          "duration" : 2,
+          "fileName" : "v.m4a",
+          "id" : "F2B73456-253D-43DB-BC8E-2B21B156273B",
+          "volume" : 1
+        }
+      ],
+      "voiceReach" : {
+        "takeOnly" : {
+
+        }
+      },
+      "volume" : 0.5,
+      "warmth" : 12
+    },
+    "fileName" : "take-96382A25-A011-4159-B88C-DB186F8FC462.mov",
+    "frameRate" : 30,
+    "id" : "735E1872-2677-4AD3-91C5-DDC40B245A2D",
+    "isBest" : false,
+    "isEdited" : true,
+    "isExported" : false,
+    "number" : 1,
+    "platform" : "tiktok",
+    "recordedAt" : "2027-01-15T08:00:00Z",
+    "resolution" : "1080p",
+    "scriptTitle" : "Test script",
+    "scriptVersion" : 1
+  }
+]

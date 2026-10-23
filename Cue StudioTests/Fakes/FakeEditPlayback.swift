@@ -18,9 +18,6 @@ final class FakeEditPlayback: EditPlayback {
     var isProcessing = false
     var reviewedPart: ClosedRange<TimeInterval>?
     var isMuted = false
-    var isPlaybackBlocked = false {
-        didSet { if isPlaybackBlocked { isPlaying = false } }
-    }
     var stepsCurveSound = false
     private(set) var shown: [TakeEdit] = []
     private(set) var isScrubbing = false
@@ -35,6 +32,14 @@ final class FakeEditPlayback: EditPlayback {
         redraws += 1
     }
 
+    /// How many times the edit was built again after a failure.
+    private(set) var retries = 0
+
+    func retry() {
+        retries += 1
+        state = .ready
+    }
+
     func show(_ edit: TakeEdit) {
         if let previous = shown.last, previous.timeline != edit.timeline {
             currentTime = edit.timeline.editedTime(matching: currentTime, in: previous.timeline)
@@ -43,7 +48,7 @@ final class FakeEditPlayback: EditPlayback {
         currentTime = min(max(0, currentTime), duration)
     }
 
-    func play() { isPlaying = !isPlaybackBlocked }
+    func play() { isPlaying = true }
     func pause() { isPlaying = false }
     func togglePlayback() { if isPlaying { pause() } else { play() } }
 

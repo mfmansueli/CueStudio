@@ -10,8 +10,7 @@ import UIKit
 /// never the whole screen: the preview is the recorded image, and the rest of the screen stays black.
 /// With a background effect on, its frames cover the feed (the recording keeps the camera's image;
 /// the effect goes with the take). The practice run records nothing, so there the feed fills the screen.
-/// While the screen is recorded or mirrored the feed hides behind `CaptureShield`; the camera keeps
-/// running and a take keeps recording.
+/// While the screen is recorded or mirrored the feed carries Cue's mark on the free plan (`CaptureWatermark`).
 struct CameraBackdrop: View {
     /// Where the sensor image goes on screen (`FrameGeometry.sensorRect(in:)`).
     let sensorRect: CGRect
@@ -19,8 +18,9 @@ struct CameraBackdrop: View {
     var onVideoRectChange: (CGRect) -> Void = { _ in }
     /// The practice run: the feed covers the whole screen instead of showing the recorded frame.
     var fillsScreen = false
-    /// Where the shield's message goes (its centre, from the top of the screen), clear of the text window.
-    var captureMessageY: CGFloat?
+    /// Where the free plan's mark goes while the screen is recorded (its centre, from the top of the screen), clear of the
+    /// text window and the controls.
+    var captureMarkY: CGFloat?
 
     @Environment(CameraManager.self) private var camera
     @Environment(\.openURL) private var openURL
@@ -51,6 +51,8 @@ struct CameraBackdrop: View {
                 message(title: String(localized: "The camera stopped"), detail: reason, showsSettings: false)
             }
         }
+        // The whole camera area is signed on the free plan while the screen is recorded, whatever it shows.
+        .captureWatermarked(isSceneCaptured, markY: captureMarkY)
         .ignoresSafeArea()
         .animation(.easeOut(duration: 0.3), value: camera.status)
     }
@@ -79,7 +81,6 @@ struct CameraBackdrop: View {
                     .accessibilityHidden(true)
             }
         }
-        .captureShielded(isSceneCaptured, messageY: captureMessageY)
     }
 
     private func message(title: String, detail: String, showsSettings: Bool) -> some View {

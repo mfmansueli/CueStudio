@@ -65,7 +65,7 @@ extension QuickEditViewModel {
     var hasBeats: Bool { pickedMusic.map { !musicBeats(of: $0).isEmpty } ?? !editedBeats.isEmpty }
 
     func setSnapsToBeats(_ snaps: Bool) {
-        changeLook { $0.snapsToBeats = snaps }
+        changeEdit { $0.snapsToBeats = snaps }
     }
 
     func moveCutsToBeats() {

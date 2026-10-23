@@ -9,4 +9,6 @@ import Testing
 extension Tag {
     /// The suites inside `RealExports`: real encoding, the slowest and least steady part of the unit run.
     @Tag static var realExports: Self
+    /// The suites inside `RealMedia`: the editor on a real recording, with the real editing service and player.
+    @Tag static var realMedia: Self
 }

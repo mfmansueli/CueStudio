@@ -7,7 +7,10 @@ import Foundation
 
 /// What a text on the video is for. Each starts with its own size, place and length; a creator
 /// style decides the rest.
-nonisolated enum TextOverlayRole: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum TextOverlayRole: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = TextOverlayRole.title
+
     case title, subtitle, hook, callout
 
     var id: String { rawValue }

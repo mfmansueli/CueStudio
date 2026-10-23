@@ -27,6 +27,7 @@ extension QuickEditViewModel {
         do {
             replaceClip(id, with: try await mediaImporter.importMedia(item))
         } catch {
+            noteFailure(error, "replaceClip")
             toast.show(String(localized: "Can't add this file"))
         }
     }

@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import Accessibility
 import CoreGraphics
 import Foundation
 
@@ -100,7 +101,9 @@ final class QuickEditViewModel {
     var focusesTextField = false
     /// The picked caption line's field takes the keyboard (a line was just added).
     var focusesCaptionField = false
-    var edit: TakeEdit {
+    /// The recipe being edited. It changes only here: as an undo step (`changeEdit`, `change`, `commit`), by Undo and Redo
+    /// (`restore`), or with what listening found (`updateFindings`).
+    private(set) var edit: TakeEdit {
         didSet {
             // Edit by text picks words by their place in the list, which any change of the cuts moves (the sheet lets the
             // timeline be used behind it).
@@ -164,7 +167,7 @@ final class QuickEditViewModel {
     /// edit).
     var pauseThreshold: TimeInterval {
         get { edit.pauseThreshold }
-        set { changeLook(key: "pauseThreshold") { $0.pauseThreshold = newValue } }
+        set { changeEdit(key: "pauseThreshold") { $0.pauseThreshold = newValue } }
     }
     /// Pauses, filler words and retakes marked differently from their default while Pauses is
     /// open (by default pauses and sure words are marked to go).
@@ -314,6 +317,12 @@ final class QuickEditViewModel {
     /// A short part playing to show a change (a zoom, a reveal, a pause heard).
     @ObservationIgnored var previewTask: Task<Void, Never>?
     @ObservationIgnored private var draftTask: Task<Void, Never>?
+    /// Opens Cue's page in the Settings app (a toast's "Settings" when the microphone is off for Cue); tests count it.
+    @ObservationIgnored var opensSettings: @MainActor () -> Void = { AppSettingsLink.open() }
+    /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
+    @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
+    /// Work started from a tool that the editor waits for (`startJob`).
+    @ObservationIgnored private var jobs: [UUID: Task<Void, Never>] = [:]
     @ObservationIgnored private(set) var isClosed = false
 
     init(
@@ -359,6 +368,7 @@ final class QuickEditViewModel {
         self.edit = edit
         frameRate = Double(take.frameRate.rawValue)
         self.player = player ?? QuickEditPlayer(videoURL: takes.videoURL(for: take), editing: editing)
+        self.recorder.stoppedByItself = { [weak self] reason in self?.voiceOverStoppedByItself(reason) }
     }
 
     /// Opens the recording, picks up a draft left behind and starts the player.
@@ -368,6 +378,7 @@ final class QuickEditViewModel {
         do {
             duration = try await editing.sourceDuration(ofVideoAt: videoURL)
         } catch {
+            noteFailure(error, "open")
             source = .unavailable
             return
         }
@@ -490,11 +501,17 @@ final class QuickEditViewModel {
         player.seek(to: player.currentTime + seconds)
     }
 
-    /// The scene started or stopped being recorded or mirrored (`SceneCaptured`): the preview pauses and nothing plays it until
-    /// capture ends, then it waits paused on the same frame. The edit, the draft and the mute stay as they are, and a voice-over
-    /// being recorded keeps recording (only the video under it stops).
-    func sceneCaptureChanged(_ isCaptured: Bool) {
-        player.isPlaybackBlocked = isCaptured
+    /// Try again, under a preview that couldn't be built: the edit is built from scratch.
+    func retryPreview() {
+        guard source == .ready else { return }
+        player.retry()
+    }
+
+    /// Cue is in front again: a preview that failed meanwhile (iOS resets its media services in the background) is built
+    /// again on its own.
+    func becameActive() {
+        guard source == .ready, player.state == .failed else { return }
+        player.retry()
     }
 
     // MARK: - Screen
@@ -525,6 +542,8 @@ final class QuickEditViewModel {
         restore(previous)
         // Edit by text picks words by their place in the list, which an undone cut changes.
         transcriptSelection = nil
+        // VoiceOver hears it happen, as a sighted creator sees the edit change.
+        AccessibilityNotification.Announcement(String(localized: "Undone")).post()
     }
 
     func redo() {
@@ -533,6 +552,7 @@ final class QuickEditViewModel {
         guard let next = history.redo(from: snapshot) else { return }
         restore(next)
         transcriptSelection = nil
+        AccessibilityNotification.Announcement(String(localized: "Redone")).post()
     }
 
     /// What undo keeps of the edit: the timeline, the suggestions' decisions, what was added on top
@@ -577,6 +597,33 @@ final class QuickEditViewModel {
         var next = snapshot
         update(&next)
         commit(next, key: key)
+    }
+
+    /// Changes anything the creator decides on the edit (light, frame, sound, captions shown, what is locked…) as one undo
+    /// step; with a `key`, quick changes of the same kind join one step. What listening found isn't the creator's to change
+    /// here (`updateFindings`).
+    func changeEdit(key: String? = nil, _ update: (inout TakeEdit) -> Void) {
+        var changed = edit
+        update(&changed)
+        assert(Self.findings(of: changed) == Self.findings(of: edit), "What listening found changes with updateFindings")
+        commit(EditSnapshot(changed), key: key)
+    }
+
+    /// Puts what listening found on the edit (transcripts, Clean Up's suggestions, which recordings were heard): never an
+    /// undo step, and Undo leaves it (`restore` keeps new suggestions waiting for review). Everything the creator decides
+    /// stays as it is.
+    func updateFindings(_ update: (inout TakeEdit) -> Void) {
+        var changed = edit
+        update(&changed)
+        var decided = EditSnapshot(changed)
+        decided.suggestions = snapshot.suggestions
+        assert(decided == snapshot, "A decision of the creator changes with changeEdit, as an undo step")
+        edit = changed
+    }
+
+    /// What listening found: the part of the edit no undo step keeps.
+    private static func findings(of edit: TakeEdit) -> [AnyHashable] {
+        [edit.cleanUpAnalyzed, edit.cleanUpAnalyzedSources, edit.captionTranscript, edit.sourceTranscripts]
     }
 
     /// A gesture or a sheet starts changing something, maybe many times: all of it is one undo
@@ -642,6 +689,7 @@ final class QuickEditViewModel {
             do {
                 try takes.applyEdit(saved, to: take.id)
             } catch {
+                noteFailure(error, "save")
                 // Not on disk: the edit stays a draft (and its files with it) that Edit opens again, or, when even that
                 // can't be written, the creator hears it wasn't saved.
                 let kept = saveDraft(forced: true)
@@ -683,7 +731,8 @@ final class QuickEditViewModel {
     /// "Not yet, I'll come back": the draft stays even if nothing changed, so the video is in edit.
     private func keepForLater() {
         endChange()
-        if recorder.isRecording { cancelVoiceOver() }
+        // A narration being recorded is kept with the draft.
+        if recorder.isRecording { stopVoiceOver() }
         let kept = saveDraft(forced: true)
         close(keepingDraft: true)
         if !kept { toast.show(Self.notSaved) }
@@ -693,7 +742,8 @@ final class QuickEditViewModel {
     /// is as it was.
     func cancel() {
         endChange()
-        if recorder.isRecording { cancelVoiceOver() }
+        // A narration being recorded is kept with the draft, like every other change.
+        if recorder.isRecording { stopVoiceOver() }
         guard source == .ready, hasUnsavedChanges else {
             removeUnusedImports(keeping: original.mediaFileNames)
             close(keepingDraft: false)
@@ -719,6 +769,8 @@ final class QuickEditViewModel {
         EditMediaFiles.remove(unused)
     }
 
+    /// Nothing started here outlives the editor: every task is cancelled, and what a slow one hands back after is dropped
+    /// (each checks `isClosed` after its await).
     private func close(keepingDraft: Bool) {
         isClosed = true
         draftTask?.cancel()
@@ -728,8 +780,30 @@ final class QuickEditViewModel {
         cancelAuto()
         trackingTask?.cancel()
         trackingTask = nil
+        previewTask?.cancel()
+        comparisonTask?.cancel()
+        translationRequest = nil
+        for job in jobs.values { job.cancel() }
+        jobs = [:]
         if !keepingDraft { drafts.discard(takeID: take.id) }
         player.stop()
+    }
+
+    /// Writes down a failure the creator was told about (`EditorFailureReport`): what was being done, the error and the
+    /// edit's size. A cancellation isn't one.
+    func noteFailure(_ error: any Error, _ operation: String) {
+        guard let report = EditorFailureReport.make(error, operation: operation, edit: edit) else { return }
+        reportFailure(report)
+    }
+
+    /// Starts work a tool waits for (a freeze frame, a reverse, a sound pulled out): leaving the editor cancels it.
+    func startJob(_ work: @escaping @MainActor () async -> Void) {
+        guard !isClosed else { return }
+        let id = UUID()
+        jobs[id] = Task { [weak self] in
+            await work()
+            self?.jobs[id] = nil
+        }
     }
 
     // MARK: - Draft
@@ -740,12 +814,23 @@ final class QuickEditViewModel {
         draftTask = Task { [weak self] in
             try? await Task.sleep(for: .milliseconds(600))
             guard !Task.isCancelled else { return }
-            self?.saveDraft()
+            self?.autosaveDraft()
         }
     }
 
-    /// Keeps the edit, the playhead and the undo steps, or drops the draft when nothing changed. False when the draft
-    /// couldn't be written (the store logs why).
+    /// 600 ms after a change: the draft written off the main thread (`QuickEditDraftStoring.saveSoon`), or dropped when
+    /// nothing is changed any more.
+    private func autosaveDraft() {
+        guard source == .ready, !isClosed else { return }
+        if edit != original {
+            drafts.saveSoon(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: history, savedAt: .now))
+        } else {
+            drafts.discard(takeID: take.id)
+        }
+    }
+
+    /// Keeps the edit, the playhead and the undo steps now (on leaving, or the app going away), or drops the draft when
+    /// nothing changed. False when the draft couldn't be written (the store logs why).
     @discardableResult
     func saveDraft(forced: Bool = false) -> Bool {
         guard source == .ready, !isClosed else { return true }
@@ -753,6 +838,7 @@ final class QuickEditViewModel {
             do {
                 try drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: history, savedAt: .now))
             } catch {
+                noteFailure(error, "draft")
                 return false
             }
         } else {

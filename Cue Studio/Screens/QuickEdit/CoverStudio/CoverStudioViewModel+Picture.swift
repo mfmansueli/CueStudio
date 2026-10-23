@@ -52,7 +52,8 @@ extension CoverStudioViewModel {
             }
             setSource(.photo(fileName: imported.fileName))
         } catch {
-            notice = error.localizedDescription
+            EditorFailureReport.make(error, operation: "coverPicture")?.send()
+            notice = EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file"))
         }
     }
 

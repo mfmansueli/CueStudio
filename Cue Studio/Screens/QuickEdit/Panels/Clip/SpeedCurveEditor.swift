@@ -35,6 +35,8 @@ struct SpeedCurveEditor: View {
         }
         .frame(height: Self.height)
         .padding(.vertical, 6)
+        // Time runs left to right in every language (media never mirrors), like the timeline.
+        .environment(\.layoutDirection, .leftToRight)
     }
 
     private func grid(size: CGSize) -> some View {

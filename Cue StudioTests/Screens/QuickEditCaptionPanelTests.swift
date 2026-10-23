@@ -34,8 +34,10 @@ struct QuickEditCaptionPanelTests {
             mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore()
         )
         await viewModel.prepare()
-        viewModel.edit.captions = lines.map { CaptionCue(text: $0.2, start: $0.0, end: $0.1) }
-        viewModel.edit.showsCaptions = true
+        viewModel.changeEdit {
+            $0.captions = lines.map { CaptionCue(text: $0.2, start: $0.0, end: $0.1) }
+            $0.showsCaptions = true
+        }
         return Scenario(viewModel: viewModel, player: player, toast: toast)
     }
 

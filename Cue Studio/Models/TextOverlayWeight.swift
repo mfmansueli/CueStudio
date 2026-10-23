@@ -5,7 +5,12 @@
 
 import Foundation
 
-nonisolated enum TextOverlayWeight: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum TextOverlayWeight: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+
+    static let fallback = TextOverlayWeight.bold
+
     case regular, medium, semibold, bold, heavy
 
     /// The weights Text style offers (400, 500, 700, 800).

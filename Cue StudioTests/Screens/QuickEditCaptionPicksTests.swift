@@ -26,8 +26,10 @@ struct QuickEditCaptionPicksTests {
             mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore()
         )
         await viewModel.prepare()
-        viewModel.edit.captions = lines.map { CaptionCue(text: $0.2, start: $0.0, end: $0.1) }
-        viewModel.edit.showsCaptions = true
+        viewModel.changeEdit {
+            $0.captions = lines.map { CaptionCue(text: $0.2, start: $0.0, end: $0.1) }
+            $0.showsCaptions = true
+        }
         viewModel.panel = .captions
         return (viewModel, toast)
     }
@@ -83,7 +85,7 @@ struct QuickEditCaptionPicksTests {
 
     @Test func oldCaptionsWithoutACollectionCantBeStyledApart() async {
         let (viewModel, _) = await makeViewModel(lines: [(0, 1, "a")])
-        viewModel.edit.captionCollection = nil
+        viewModel.changeEdit { $0.captionCollection = nil }
         viewModel.startPickingCaptions(with: viewModel.edit.captions[0].id)
         #expect(!viewModel.canStyleCaptionLines)
         viewModel.setPickedCaptionsEmphasized(true)
@@ -118,7 +120,7 @@ struct QuickEditCaptionPicksTests {
     @Test func linesKeepTheirWordsWhenMoved() async {
         let (viewModel, _) = await makeViewModel(lines: [])
         let heard = CaptionCue(words: [CaptionWord(text: "hi", start: 1, end: 1.2), CaptionWord(text: "there", start: 1.3, end: 1.6)])
-        viewModel.edit.captions = [heard]
+        viewModel.changeEdit { $0.captions = [heard] }
         viewModel.startPickingCaptions(with: heard.id)
         viewModel.movePickedCaptions(by: -0.5)
         let moved = viewModel.edit.captions[0]

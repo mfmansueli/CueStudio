@@ -7,7 +7,10 @@ import Foundation
 
 /// How strongly Stabilize smooths the camera's shake out of a clip: more smoothing takes out slower sways too, and needs a
 /// tighter crop to hide the moving edges.
-nonisolated enum StabilizationLevel: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum StabilizationLevel: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = StabilizationLevel.standard
+
     /// Only the quick jitters; the least cropped.
     case gentle
     case standard

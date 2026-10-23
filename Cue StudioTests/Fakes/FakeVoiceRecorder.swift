@@ -14,6 +14,12 @@ final class FakeVoiceRecorder: VoiceOverRecording {
     var allowed = true
     var length: TimeInterval = 4
     private(set) var cancelled = false
+    var stoppedByItself: (@MainActor (VoiceOverStop) -> Void)?
+
+    /// Like a call or another app taking the microphone (`.interrupted`), or a file that can't be written (`.failed`).
+    func stopOnItsOwn(_ reason: VoiceOverStop) {
+        stoppedByItself?(reason)
+    }
 
     func requestPermission() async -> Bool { allowed }
 

@@ -5,11 +5,11 @@
 
 import Foundation
 
-/// One undo step of Quick edit: the timeline, what was decided about Clean Up's suggestions, what
-/// was added on top (texts, media, voice-overs, cover), the type of texts and captions (presets,
-/// "My style"), the filter, and (since the v10 editor) light, color, frame and sound (`EditLook`),
-/// so undoing a "Remove" brings back both the piece and the suggestion to review, and undoing a
-/// preset brings back every text as it was.
+/// One undo step of Quick edit: the timeline, what was decided about Clean Up's suggestions, what was added on top (texts,
+/// media, voice-overs, cover), the type of texts and captions (presets, "My style"), the filter, light, color, frame and sound
+/// (`EditLook`), what is locked and the captions' language: everything the creator decides, so undoing a "Remove" brings back
+/// both the piece and the suggestion to review, and undoing a preset brings back every text as it was. Only what listening
+/// found (transcripts, which recordings Clean Up heard) stays out (`QuickEditViewModel.updateFindings`).
 nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     var timeline: EditTimeline
     var suggestions: [CleanUpSuggestion]
@@ -44,16 +44,32 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     var captionPosition: CaptionPosition?
     /// Light, color, frame and sound; nil in steps saved before the v10 editor.
     var look: EditLook?
+    /// What is locked in place on the timeline; nil in steps saved before Lock was undoable, which leave it as it is.
+    var lockedLayers: Set<UUID>?
+    /// The language picked for captions (nil: Auto). `captionLanguageKnown` is set in every step that has it (nil in steps
+    /// saved before, which leave it).
+    var captionLanguage: CueLanguage?
+    var captionLanguageKnown: Bool?
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, texts, media, voiceOvers, cover, creatorStyle, captionStyle, filter
         case textLook, textPreset, captionLook, captionPreset, captions, sources, captionAnimation
         case captionTranslations, captionDisplay, music, backgrounds
         case captionCollection, captionCollectionVersion, captionPosition, look
+        case lockedLayers, captionLanguage, captionLanguageKnown
     }
 }
 
 nonisolated extension EditSnapshot {
+    /// `step` as a saved draft keeps it: its caption lines and translations left out when they are the same as in `newer`,
+    /// the state it is applied on, which an undo step without them leaves as they are (`TakeEdit.apply`).
+    static func thinned(_ step: EditSnapshot, onto newer: EditSnapshot) -> EditSnapshot {
+        var thin = step
+        if step.captions != nil, step.captions == newer.captions { thin.captions = nil }
+        if step.captionTranslations != nil, step.captionTranslations == newer.captionTranslations { thin.captionTranslations = nil }
+        return thin
+    }
+
     /// What undo keeps of `edit`.
     init(_ edit: TakeEdit) {
         self.init(
@@ -64,7 +80,8 @@ nonisolated extension EditSnapshot {
             captions: edit.captions, sources: edit.sources, captionAnimation: edit.captionAnimation,
             captionTranslations: edit.captionTranslations, captionDisplay: edit.captionDisplay, music: edit.music,
             backgrounds: edit.backgrounds, captionCollection: edit.captionCollection,
-            captionCollectionVersion: 1, captionPosition: edit.captionPosition, look: EditLook(edit)
+            captionCollectionVersion: 1, captionPosition: edit.captionPosition, look: EditLook(edit),
+            lockedLayers: edit.lockedLayers, captionLanguage: edit.captionLanguage, captionLanguageKnown: true
         )
     }
 
@@ -95,7 +112,10 @@ nonisolated extension EditSnapshot {
             captionCollection: try container.decodeIfPresent(CaptionSettings.self, forKey: .captionCollection),
             captionCollectionVersion: try container.decodeIfPresent(Int.self, forKey: .captionCollectionVersion),
             captionPosition: try container.decodeIfPresent(CaptionPosition.self, forKey: .captionPosition),
-            look: try? container.decodeIfPresent(EditLook.self, forKey: .look)
+            look: try? container.decodeIfPresent(EditLook.self, forKey: .look),
+            lockedLayers: try? container.decodeIfPresent(Set<UUID>.self, forKey: .lockedLayers),
+            captionLanguage: try? container.decodeIfPresent(CueLanguage.self, forKey: .captionLanguage),
+            captionLanguageKnown: try? container.decodeIfPresent(Bool.self, forKey: .captionLanguageKnown)
         )
     }
 }

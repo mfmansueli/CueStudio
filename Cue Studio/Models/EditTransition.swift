@@ -11,7 +11,10 @@ import Foundation
 ///
 /// Each kind is rendered in `CueVideoCompositor` from a `TransitionWindow`, so a new way to smooth
 /// a cut (a punch-in zoom, a "Smooth Cut") is a new case here and a new branch there.
-nonisolated enum EditTransition: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum EditTransition: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = EditTransition.hardCut
+
     /// A hard cut: "None".
     case hardCut
     /// The outgoing section blends into the incoming one.

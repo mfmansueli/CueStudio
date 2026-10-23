@@ -36,7 +36,7 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
 - Scheme compartilhado `Cue Studio` (app + `Cue StudioTests` + `Cue StudioUITests`), Swift 6, iOS 27. O app do Apple Watch (`Cue Studio Watch`,
   watchOS 10, `Config/Watch.xcconfig`) compila junto com o do iPhone, mas ainda não vai embutido nele (é uma base; DESIGN_PROJECT §43); código dos
   dois em `Cue Watch Shared/`. Testes por planos
-  (`TestPlans/`): **Full** (o padrão do ⌘U: unidade + UI), **Fast** (unidade sem as exportações reais, tag `.realExports`) e
+  (`TestPlans/`): **Full** (o padrão do ⌘U: unidade + UI), **Fast** (unidade sem as exportações reais nem o editor numa gravação real, tags `.realExports` e `.realMedia`) e
   **UISmoke** (um teste de UI por fluxo).
 - **Build e testes pelos scripts** (`scripts/`), não por `xcodebuild` solto: um derivedData por checkout (`build/`), pacotes
   compartilhados, **um `xcodebuild` por vez no Mac** (o próximo espera o que está rodando, de outra sessão ou worktree) e só
@@ -66,7 +66,9 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   `Managers/Telemetry/TelemetryManager.swift`, o único arquivo que importa o SDK. Testes, `-uiTestInMemory` e previews não enviam nada
   (`TelemetryPolicy`). Upload dos dSYMs só em archive. DebugView: `-FIRAnalyticsDebugEnabled`. Falhas do Apple Intelligence (`AIFailureReport`):
   cada uma vai ao Console (`studio.cue` / `ScriptAI`) com o motivo do framework e as condições do aparelho; a que chega ao criador vira non-fatal
-  (`AppleIntelligence.<operação>.<motivo>`). Nunca o texto.
+  (`AppleIntelligence.<operação>.<motivo>`). Nunca o texto. Falhas do editor e da exportação que o criador vê (`EditorFailureReport`:
+  `noteFailure` no Quick edit, `reportFailure` na revisão) vão ao Console (`studio.cue` / `Editor`) e viram non-fatal
+  `Editor.<operação>.<motivo>`, com o tamanho da edição em contagens e as condições do aparelho (`DeviceFacts`). Nunca nomes, textos ou imagens.
 - O build Release também precisa compilar: previews usam dados de `SupportFiles/Debug/` e ficam em `#if DEBUG`.
 - **Launch arguments** (só Debug; a lista completa e o que cada um faz está em `SupportFiles/LaunchOptions.swift`). Os mais usados:
   - Estado: `-uiTestInMemory`, `-uiTestSeedSamples`, `-uiTestPro`, `-uiTestSampleVideo`, `-uiTestAppLanguage <lproj>`, `-uiTestExportsLeft <0…5>`,

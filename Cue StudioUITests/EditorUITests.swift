@@ -449,4 +449,43 @@ final class EditorUITests: XCTestCase {
         close.tap()
         XCTAssertTrue(notice.waitForNonExistence(timeout: 3))
     }
+
+    /// Xcode's accessibility audit on the editor and an open panel. Text sizes aren't audited: the editor's are capped on purpose
+    /// (panels grow to AX Medium and then scroll; the toolbar's fixed labels show large on a long press, `DESIGN_PROJECT` §44). The
+    /// toolbar's last tool fades under its edge on purpose, to show the bar scrolls on: its contrast isn't counted there.
+    func testTheEditorPassesTheAccessibilityAudit() throws {
+        let app = EditorApp.open()
+        let screen = app.windows.firstMatch.frame
+        var found: [String] = []
+        let audit: (XCUIAccessibilityAuditIssue) -> Bool = { issue in
+            if issue.auditType == .contrast, let element = issue.element, element.frame.maxX > screen.maxX - 64,
+               app.descendants(matching: .any)["edit.toolbar"].frame.intersects(element.frame) {
+                return true
+            }
+            found.append("\(issue.compactDescription) · \(issue.element?.identifier ?? "") · \(issue.element?.label ?? "")")
+            return true
+        }
+        let types: XCUIAccessibilityAuditType = .all.subtracting(.dynamicType)
+        try app.performAccessibilityAudit(for: types, audit)
+        EditorApp.tapTool(app, "adjustVideo")
+        try app.performAccessibilityAudit(for: types, audit)
+        XCTAssertTrue(found.isEmpty, found.joined(separator: "\n"))
+    }
+
+    /// Arabic chosen in Cue on an iPhone in English: the editor and its panels lay out right to left (the window's trait,
+    /// `InterfaceDirection`), while the frame steps keep time left to right.
+    func testArabicLaysTheEditorOutRightToLeft() {
+        let app = EditorApp.open(arguments: ["-uiTestAppLanguage", "ar"])
+        EditorApp.tapTool(app, "edit")
+        let speed = app.buttons["edit.toolbar.speed"]
+        XCTAssertTrue(speed.exists(within: 5))
+        speed.tap()
+        let apply = app.buttons["edit.panel.apply"]
+        let title = app.staticTexts["edit.panel.subtitle"]
+        XCTAssertTrue(apply.exists(within: 5))
+        XCTAssertTrue(title.exists(within: 2))
+        XCTAssertLessThan(apply.frame.midX, title.frame.midX, "The panel’s ✓ is on the left in Arabic")
+        let back = app.buttons["edit.previousFrame"], forward = app.buttons["edit.nextFrame"]
+        if back.exists, forward.exists { XCTAssertLessThan(back.frame.midX, forward.frame.midX, "Time runs left to right") }
+    }
 }

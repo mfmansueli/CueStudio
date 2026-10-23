@@ -34,7 +34,8 @@ extension QuickEditViewModel {
         do {
             replaceMedia(id, with: try await mediaImporter.importMedia(item))
         } catch {
-            toast.show(error.localizedDescription)
+            noteFailure(error, "replaceMedia")
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
         }
     }
 

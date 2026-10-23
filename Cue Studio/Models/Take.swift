@@ -86,7 +86,8 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
         platform = try container.decodeIfPresent(Platform.self, forKey: .platform)
         isEdited = try container.decodeIfPresent(Bool.self, forKey: .isEdited) ?? false
         isExported = try container.decodeIfPresent(Bool.self, forKey: .isExported) ?? false
-        edit = try container.decodeIfPresent(TakeEdit.self, forKey: .edit)
+        // An edit that can't be read never hides the take: it opens as recorded, and the store keeps the file as it was.
+        edit = container.decodeLenient(TakeEdit.self, forKey: .edit, report: decoder.decodingReport)
     }
 
     func captionScript(current: Script?) -> Script? {

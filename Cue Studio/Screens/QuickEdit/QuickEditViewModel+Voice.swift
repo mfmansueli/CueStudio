@@ -30,14 +30,14 @@ extension QuickEditViewModel {
     }
 
     func setVoiceEnhancement(_ strength: AudioStrength) {
-        changeLook { changed in
+        changeEdit { changed in
             Self.upgradeSound(&changed)
             changed.voiceEnhancement = strength
         }
     }
 
     func setNoiseReduction(_ strength: AudioStrength) {
-        changeLook { changed in
+        changeEdit { changed in
             Self.upgradeSound(&changed)
             changed.noiseReduction = strength
         }
@@ -78,12 +78,12 @@ extension QuickEditViewModel {
     /// Treats another recording of the montage, or leaves it as recorded (a video with music in it). One undo step.
     func setTreatsVoice(of sourceID: UUID, _ treated: Bool) {
         let sources = edit.playedSources.map(\.id)
-        changeLook { $0.voiceReach = $0.voiceReach.setting(sourceID, treated: treated, among: sources) }
+        changeEdit { $0.voiceReach = $0.voiceReach.setting(sourceID, treated: treated, among: sources) }
     }
 
     /// "Even out volume between clips".
     func setEvensOutVoices(_ evens: Bool) {
-        changeLook { $0.evensOutVoices = evens }
+        changeEdit { $0.evensOutVoices = evens }
     }
 
     /// "All 3 recordings", "2 of 3 recordings" or "Whole video": what Studio Voice changes, in its header.

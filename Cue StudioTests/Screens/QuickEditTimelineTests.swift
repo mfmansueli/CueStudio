@@ -57,7 +57,7 @@ struct QuickEditTimelineTests {
         middle.zoom = .pushIn
         middle.isMuted = true
         timeline.replaceSegment(middle)
-        viewModel.edit.timeline = timeline
+        viewModel.changeEdit { $0.timeline = timeline }
         let input = viewModel.timelineInput(heightClass: .regular)
         #expect(input.clips.map(\.start) == [0, 7.1, 9.1])
         let speed = 1.5.formatted(.number.precision(.fractionLength(0...2)).locale(.interface)) + "×"
@@ -77,7 +77,7 @@ struct QuickEditTimelineTests {
 
     @Test func pausesShowOnlyWhilePausesIsOpen() async {
         let viewModel = await makeScenario().viewModel
-        viewModel.edit.suggestions = [CleanUpSuggestion(kind: .pause, span: TimeSpan(start: 4.1, end: 5), confidence: 1)]
+        viewModel.changeEdit { $0.suggestions = [CleanUpSuggestion(kind: .pause, span: TimeSpan(start: 4.1, end: 5), confidence: 1)] }
         #expect(viewModel.timelineInput(heightClass: .regular).pauses.isEmpty)
         viewModel.panel = .pauses
         let pauses = viewModel.timelineInput(heightClass: .regular).pauses
@@ -143,7 +143,7 @@ struct QuickEditTimelineTests {
     @Test func whilePausesIsOpenOnlyPausesAnswer() async {
         let viewModel = await makeScenario().viewModel
         let pause = CleanUpSuggestion(kind: .pause, span: TimeSpan(start: 4.1, end: 5), confidence: 1)
-        viewModel.edit.suggestions = [pause]
+        viewModel.changeEdit { $0.suggestions = [pause] }
         viewModel.panel = .pauses
         viewModel.tapTimeline(.clip(viewModel.edit.timeline.segments[0].id))
         #expect(viewModel.selection == nil)
@@ -283,8 +283,10 @@ struct QuickEditTimelineTests {
         let viewModel = scenario.viewModel
         let line = CaptionCue(text: "e caudo de cana do lado.", start: 14.6, end: 16.2, origin: .manual)
         let next = CaptionCue(text: "Segue pra ver os outros quatro.", start: 17.8, end: 20.6, origin: .manual)
-        viewModel.edit.captions = [line, next]
-        viewModel.edit.showsCaptions = true
+        viewModel.changeEdit {
+            $0.captions = [line, next]
+            $0.showsCaptions = true
+        }
         viewModel.selection = .caption(line.id)
         viewModel.beginTimelineHandle(.item(.caption, line.id, .end), snapTimes: [])
         viewModel.moveTimelineHandle(by: 0.2)

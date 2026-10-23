@@ -115,7 +115,8 @@ struct EditorToolbar: View {
     private func backButton(_ context: String) -> some View {
         Button(action: viewModel.leaveToolbarContext) {
             VStack(spacing: 4) {
-                Image(systemName: "chevron.left")
+                // Back points where back is: left, and right in Arabic.
+                Image(systemName: "chevron.backward")
                     .font(.system(size: 19, weight: .semibold))
                 Text(context)
                     .font(.system(size: heightClass.toolbarLabelSize, weight: .semibold))
@@ -132,7 +133,7 @@ struct EditorToolbar: View {
             Rectangle().fill(Palette.Editor.separator).frame(width: 0.5)
         }
         // A fixed-height bar: with the largest text sizes a long press shows the label large, as the system's tab bars do.
-        .accessibilityShowsLargeContentViewer { Label(context, systemImage: "chevron.left") }
+        .accessibilityShowsLargeContentViewer { Label(context, systemImage: "chevron.backward") }
         .accessibilityLabel(Text("Back to all tools"))
         .accessibilityValue(Text(context))
         .accessibilityIdentifier("edit.toolbar.back")

@@ -26,8 +26,10 @@ struct QuickEditCaptionFindTests {
             mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore()
         )
         await viewModel.prepare()
-        viewModel.edit.captions = lines
-        viewModel.edit.showsCaptions = true
+        viewModel.changeEdit {
+            $0.captions = lines
+            $0.showsCaptions = true
+        }
         return (viewModel, toast)
     }
 

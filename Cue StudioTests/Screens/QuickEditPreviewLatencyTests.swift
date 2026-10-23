@@ -20,7 +20,9 @@ import UIKit
 ///   item's frame at the playhead drawn again; a cut: the new item's picture on screen and the
 ///   held one let go);
 /// - blank: changes during which the layer had no picture and nothing was held over it;
-/// - swapped / held: changes that swapped the item, and that held the old picture meanwhile.
+/// - swapped / held: changes that swapped the item, and that held the old picture meanwhile;
+/// - main stall: the longest the main thread was kept busy while the change was built (what a finger dragging a handle or the
+///   frame feels: the screen can't follow it meanwhile).
 ///
 /// Opt-in and on a device:
 /// `TEST_RUNNER_CUE_PREVIEW_LATENCY=1 xcodebuild … -only-testing:"Cue StudioTests/QuickEditPreviewLatencyTests" test`.
@@ -44,6 +46,8 @@ struct QuickEditPreviewLatencyTests {
     /// What one change did on screen.
     private struct Change {
         var shown: TimeInterval?
+        /// The longest gap between two looks of the waiting loop, which asks every millisecond.
+        var mainStall: TimeInterval = 0
         var wentBlank = false
         var swapped = false
         var held = false
@@ -117,14 +121,18 @@ struct QuickEditPreviewLatencyTests {
             var result = Change()
             let started = uptime
             player.show(edit)
+            var lastLook = started
             while result.shown == nil, uptime - started < 5 {
+                result.mainStall = max(result.mainStall, uptime - lastLook)
+                lastLook = uptime
                 let ready = layer.isReadyForDisplay
                 if view.isHoldingFrame { result.held = true }
                 if !ready, !view.isHoldingFrame { result.wentBlank = true }
                 if player.avPlayer.currentItem !== item {
                     result.swapped = true
                     if ready, !view.isHoldingFrame { result.shown = uptime - started }
-                } else if let time = Self.newFrame(in: output, at: target), Self.isFrame(time, at: target) {
+                } else if scenario != .cut, let time = Self.newFrame(in: output, at: target), Self.isFrame(time, at: target) {
+                    // A cut is new pieces: only the new item's picture shows it, never the old item drawing its frame again.
                     result.shown = uptime - started
                 }
                 if result.shown == nil { try await Task.sleep(for: .milliseconds(1)) }
@@ -140,6 +148,7 @@ struct QuickEditPreviewLatencyTests {
                 + " · blank \(results.filter(\.wentBlank).count)/\(Self.changes)"
                 + " · swapped \(results.filter(\.swapped).count)/\(Self.changes)"
                 + " · held \(results.filter(\.held).count)/\(Self.changes)"
+                + " · main stall \(Self.stats(results.map(\.mainStall)))"
         )
         #expect(shown.count == Self.changes, "Every change should show")
         #expect(results.allSatisfy { !$0.wentBlank }, "The picture should never leave the screen")

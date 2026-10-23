@@ -200,6 +200,8 @@ struct CaptionLineCard: View {
         .frame(height: 32)
         .background(Palette.fill, in: Capsule())
         .frame(minHeight: Metrics.hitTarget)
+        // Lines go by time: earlier on the left in every language, like the timeline.
+        .environment(\.layoutDirection, .leftToRight)
     }
 
     private func stepButton(_ symbol: String, label: Text, identifier: String, step: Int) -> some View {

@@ -38,13 +38,6 @@ final class QuickEditPlayer: EditPlayback {
         didSet { avPlayer.isMuted = isMuted }
     }
 
-    var isPlaybackBlocked = false {
-        didSet {
-            guard isPlaybackBlocked, !oldValue else { return }
-            pause()
-        }
-    }
-
     var stepsCurveSound = false {
         didSet {
             // The finger lifted: the sound the item has in steps is rendered along the curves now.
@@ -71,6 +64,8 @@ final class QuickEditPlayer: EditPlayback {
     /// The views showing the preview, which hold its picture while the item is swapped.
     @ObservationIgnored private var frameHolders: [FrameHolder] = []
     @ObservationIgnored private var timeObserver: Any?
+    /// The item on screen failing after it played (iOS reset its media services in the background, a decoder lost).
+    @ObservationIgnored private var itemStatus: NSKeyValueObservation?
     @ObservationIgnored private var pendingSeek: TimeInterval?
     @ObservationIgnored private var isSeeking = false
     @ObservationIgnored private var isScrubbing = false
@@ -91,8 +86,8 @@ final class QuickEditPlayer: EditPlayback {
         self.editing = editing
         self.audioSession = audioSession
         avPlayer.actionAtItemEnd = .pause
-        // Never sent to an AirPlay receiver as video: that doesn't mark the scene as captured, so nothing would hide it
-        // (`isPlaybackBlocked`). The sound still follows the audio route.
+        // Never sent to an AirPlay receiver as video: that doesn't mark the scene as captured, so the free plan's mark
+        // (`CaptureWatermark`) wouldn't show. The sound still follows the audio route.
         avPlayer.allowsExternalPlayback = false
         timeObserver = avPlayer.addPeriodicTimeObserver(forInterval: CMTime(value: 1, timescale: 60), queue: .main) { [weak self] time in
             MainActor.assumeIsolated { self?.playerDidTick(time) }
@@ -123,8 +118,8 @@ final class QuickEditPlayer: EditPlayback {
         if key != itemKey {
             // New pieces: the item on screen can't play them, so it holds still until the new one is
             // in, and a build still running for the old ones is dropped.
-            let newPieces = itemKey?.spans != key.spans || itemKey?.speeds != key.speeds || itemKey?.curves != key.curves
-                || itemKey?.transitions != key.transitions
+            let newPieces = itemKey?.spans != key.spans || itemKey?.sources != key.sources || itemKey?.speeds != key.speeds
+                || itemKey?.curves != key.curves || itemKey?.transitions != key.transitions
             itemKey = key
             if newPieces, avPlayer.currentItem != nil {
                 awaitsItem = true
@@ -142,10 +137,38 @@ final class QuickEditPlayer: EditPlayback {
         rebuild(restarting: false)
     }
 
+    func retry() {
+        guard edit != nil, state == .failed || avPlayer.currentItem?.status == .failed else { return }
+        itemKey = nil
+        state = .loading
+        rebuild(restarting: true)
+    }
+
+    /// Watches the item now on screen: one that fails later leaves the preview failed (with Try again), never frozen. Not in
+    /// the Simulator: iOS 27's plays no video composition at all, not even AVFoundation's own (-11800, -12784 under it; measured
+    /// 23/10/2026, while the same item plays on an iPhone and exports in the Simulator), so there the preview stays blank as it
+    /// always was there, and the UI tests keep their tools.
+    private func watch(_ item: AVPlayerItem) {
+        #if !targetEnvironment(simulator)
+        itemStatus = item.observe(\.status) { [weak self] item, _ in
+            guard item.status == .failed else { return }
+            let error = item.error
+            Task { @MainActor [weak self] in self?.itemFailed(item, error: error) }
+        }
+        #endif
+    }
+
+    private func itemFailed(_ item: AVPlayerItem, error: (any Error)?) {
+        guard avPlayer.currentItem === item, state != .failed else { return }
+        if let error, let edit { EditorFailureReport.make(error, operation: "previewItem", edit: edit)?.send() }
+        pause()
+        state = .failed
+    }
+
     // MARK: - Transport
 
     func play() {
-        guard state == .ready, duration > 0, !isPlaybackBlocked else { return }
+        guard state == .ready, duration > 0 else { return }
         isPlaying = true
         var from = currentTime
         if let part = reviewedPart, abs(currentTime - part.upperBound) < 0.02 {
@@ -215,6 +238,7 @@ final class QuickEditPlayer: EditPlayback {
             avPlayer.removeTimeObserver(timeObserver)
             self.timeObserver = nil
         }
+        itemStatus = nil
         avPlayer.replaceCurrentItem(with: nil)
     }
 
@@ -223,7 +247,6 @@ final class QuickEditPlayer: EditPlayback {
     private func startPlayback() {
         playbackTask?.cancel()
         playbackTask = nil
-        guard !isPlaybackBlocked else { return }
         // Voice-over records while this player runs silently. Do not replace its recording
         // session with an output-only category, or the microphone would stop recording.
         guard !isMuted else {
@@ -233,7 +256,7 @@ final class QuickEditPlayer: EditPlayback {
         playbackTask = Task { [weak self, audioSession] in
             await audioSession.prepareForPlayback()
             // Capture may have started while the audio session got ready.
-            guard !Task.isCancelled, let self, self.isPlaying, !self.isSeeking, !self.awaitsItem, !self.isPlaybackBlocked else { return }
+            guard !Task.isCancelled, let self, self.isPlaying, !self.isSeeking, !self.awaitsItem else { return }
             self.playbackTask = nil
             self.avPlayer.play()
         }
@@ -280,6 +303,7 @@ final class QuickEditPlayer: EditPlayback {
                 let item = try await editing.previewItem(forVideoAt: videoURL, edit: playable, window: window, rendersCurveSound: rendersCurveSound)
                 self?.install(item, generation: generation)
             } catch {
+                EditorFailureReport.make(error, operation: "preview", edit: edit)?.send()
                 self?.buildFailed(generation: generation)
             }
         }
@@ -310,6 +334,7 @@ final class QuickEditPlayer: EditPlayback {
             avPlayer.pause()
             resumesAfterSeek = isPlaying
             avPlayer.replaceCurrentItem(with: item)
+            watch(item)
             state = .ready
             applyWindow()
             requestSeek(to: currentTime)
@@ -383,9 +408,6 @@ final class QuickEditPlayer: EditPlayback {
     }
 
     private func playerDidTick(_ time: CMTime) {
-        // The safety net while capture holds the preview: whatever started the player (the system, a route change) is stopped
-        // on its first tick.
-        if isPlaybackBlocked, avPlayer.rate != 0 { avPlayer.pause() }
         guard state == .ready, !isSeeking, !isScrubbing, !awaitsItem, time.isNumeric else { return }
         let edited = time.seconds - windowStart
         let end = playbackEnd
@@ -422,9 +444,12 @@ final class QuickEditPlayer: EditPlayback {
 
     /// What an item depends on: the look, the sound, what is laid on top, where the pieces join,
     /// how and at what speed. Not where the handles are, which only moves the playback window.
-    private struct ItemKey: Equatable {
+    struct ItemKey: Equatable {
         let recipe: TakeEdit
         let spans: [TimeSpan]
+        /// One per span: the recording it is of (nil: the take). Two clips of the same seconds of different recordings,
+        /// swapped, are new pieces.
+        let sources: [UUID?]
         /// One per span: pieces at different speeds never join.
         let speeds: [Double]
         /// One per span: a curved piece's curve (its timing is new pieces).
@@ -456,6 +481,7 @@ final class QuickEditPlayer: EditPlayback {
             self.recipe = recipe
             let reachable = edit.timeline.reachable
             var spans: [TimeSpan] = []
+            var sources: [UUID?] = []
             var speeds: [Double] = []
             var curves: [SpeedCurve?] = []
             for (index, segment) in reachable.segments.enumerated() {
@@ -463,11 +489,13 @@ final class QuickEditPlayer: EditPlayback {
                     spans[spans.count - 1].end = segment.sourceEnd
                 } else {
                     spans.append(segment.span)
+                    sources.append(segment.sourceID)
                     speeds.append(segment.speed)
                     curves.append(segment.speedCurve)
                 }
             }
             self.spans = spans
+            self.sources = sources
             self.speeds = speeds
             self.curves = curves
             transitions = TransitionWindow.windows(in: reachable)

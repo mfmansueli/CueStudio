@@ -44,8 +44,10 @@ nonisolated struct WordEmphasis: Hashable, Sendable {
         var line = ""
         var start: Int?
         var end = 0
+        // The capitals the whole line is drawn in (Turkish "İ"), word by word.
+        let locale = uppercased ? TextShaping.capitalsLocale(for: words.joined(separator: " ")) : nil
         for (position, word) in words.enumerated() {
-            let shown = uppercased ? word.uppercased() : word
+            let shown = uppercased ? TextShaping.uppercased(word, locale: locale) : word
             if let previous = line.unicodeScalars.last, let first = shown.unicodeScalars.first,
                !(WordSegmenter.isUnspaced(previous) && WordSegmenter.isUnspaced(first)) {
                 line += " "

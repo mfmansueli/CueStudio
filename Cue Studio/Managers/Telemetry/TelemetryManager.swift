@@ -40,6 +40,16 @@ enum TelemetryManager {
         crashlytics.record(error: NSError(domain: "AppleIntelligence.\(failure.operation).\(failure.reason)", code: 0, userInfo: failure.keys))
     }
 
+    /// An editor or export failure the creator saw, as a non-fatal report (sent with the next launch): one issue per operation and
+    /// reason, the conditions and the edit's size as keys, the log line before it. Never the creator's words, files or pictures.
+    /// Nothing when Firebase isn't running (tests, previews).
+    static func record(_ failure: EditorFailureReport) {
+        guard FirebaseApp.app() != nil else { return }
+        let crashlytics = Crashlytics.crashlytics()
+        crashlytics.log(failure.line)
+        crashlytics.record(error: NSError(domain: failure.issue, code: 0, userInfo: failure.keys))
+    }
+
     /// That a script had to be written once more because it broke what the creator asked (My Cue Voice), as a line in the next report: the kinds of
     /// rule and how much of the voice was sent, never the words. Nothing when Firebase isn't running (tests, previews).
     static func record(_ check: VoiceCheckReport) {

@@ -117,8 +117,9 @@ nonisolated enum CoverDesignRenderer {
 
         if layout == .kicker {
             let font = UIFont.monospacedSystemFont(ofSize: width * 0.044, weight: .heavy)
-            let text = design.kicker(firstWord: parts.words.first?.uppercased()).uppercased()
-            let attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: UIColor.white, .kern: width * 0.004]
+            let text = TextShaping.uppercased(design.kicker(firstWord: parts.words.first))
+            var attributes: [NSAttributedString.Key: Any] = [.font: font, .foregroundColor: UIColor.white]
+            if TextShaping.allowsLetterSpacing(in: text) { attributes[.kern] = width * 0.004 }
             let measured = (text as NSString).size(withAttributes: attributes)
             let pad = CGSize(width: width * 0.03, height: size.height * 0.006)
             let box = CGRect(x: center - measured.width / 2 - pad.width, y: y, width: measured.width + pad.width * 2, height: measured.height + pad.height * 2)
@@ -139,7 +140,8 @@ nonisolated enum CoverDesignRenderer {
         // Lay the words out in lines that fit, then draw each line centered.
         let font = words(design.font, size: width * layout.wordSize)
         let padX = width * 0.02, gapX = width * 0.024, gapY = size.height * 0.014, padY = size.height * 0.003
-        let upper = parts.words.map { $0.uppercased() }
+        let locale = TextShaping.capitalsLocale(for: parts.words.joined(separator: " "))
+        let upper = parts.words.map { TextShaping.uppercased($0, locale: locale) }
         let boxes = upper.map { word -> CGSize in
             let measured = (word as NSString).size(withAttributes: [.font: font])
             return CGSize(width: measured.width + padX * 2, height: measured.height * 1.05 + padY * 2)

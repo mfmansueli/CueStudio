@@ -162,10 +162,10 @@ struct CaptionStyleSpecTests {
 
     @Test func letterSpacingIsLeftOutWhereLettersJoinOrStack() {
         for text in ["فكرتك تستحق الحياة", "आपका विचार", "ความคิดของคุณ"] {
-            #expect(!CaptionFont.allowsTracking(in: text), "\(text)")
+            #expect(!TextShaping.allowsLetterSpacing(in: text), "\(text)")
         }
         for text in ["Your idea", "Ação, você, três", "İstanbul güzel", "Ý tưởng", "今日は晴れです", "你的想法", "당신의 아이디어", "Ваша идея"] {
-            #expect(CaptionFont.allowsTracking(in: text), "\(text)")
+            #expect(TextShaping.allowsLetterSpacing(in: text), "\(text)")
         }
     }
 

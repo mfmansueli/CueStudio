@@ -9,7 +9,10 @@ import Foundation
 /// background, place), the caption style and the filter. Applying it to one text only sets that
 /// text; applying it to the project sets every text, the captions and the filter, and new texts
 /// start from it.
-nonisolated enum CreatorStyle: String, Codable, CaseIterable, Identifiable, Sendable {
+nonisolated enum CreatorStyle: String, LenientChoice, CaseIterable, Identifiable, Sendable {
+    /// Read in place of a value a newer version of Cue added (`LenientChoice`).
+    static let fallback = CreatorStyle.bold
+
     /// Clear and neutral: white semibold with a soft shadow.
     case clean
     /// Big, heavy capitals with an outline.
