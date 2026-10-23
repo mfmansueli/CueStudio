@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+ReplaceClip.swift
+//  ClipsViewModel+ReplaceClip.swift
 //  Cue Studio
 //
 
@@ -11,7 +11,7 @@ import _PhotosUI_SwiftUI
 /// lasted, in the same place and with the same speed, zoom, volume, transition and look. Texts, photos and voice-overs on
 /// the clip stay on it, at the same moment of the clip. The old recording is never touched, and one Undo brings it back.
 /// A shorter video makes the clip as long as the video is.
-extension QuickEditViewModel {
+extension ClipsViewModel {
     /// Clip › Replace: asks Photos for a video.
     func askToReplaceClip() {
         guard isReady, let id = selection?.clipID else { return }

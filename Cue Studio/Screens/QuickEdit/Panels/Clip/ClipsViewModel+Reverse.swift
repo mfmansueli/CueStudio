@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Reverse.swift
+//  ClipsViewModel+Reverse.swift
 //  Cue Studio
 //
 
@@ -11,7 +11,7 @@ import Foundation
 /// it again puts the original back; reversing it once more plays the reversed video already written (it covers the clip), so
 /// going back and forth never writes another file. One undo step; the recording is never touched. Reversed videos the edit no
 /// longer plays leave it on Done (`QuickEditViewModel.done`).
-extension QuickEditViewModel {
+extension ClipsViewModel {
     /// Longest clip Reverse writes.
     static var longestReverse: TimeInterval { ReversedClipWriter.longest }
 

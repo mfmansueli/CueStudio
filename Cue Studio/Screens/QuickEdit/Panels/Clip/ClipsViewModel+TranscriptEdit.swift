@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+TranscriptEdit.swift
+//  ClipsViewModel+TranscriptEdit.swift
 //  Cue Studio
 //
 
@@ -9,7 +9,7 @@ import Foundation
 /// there, tap another to take every word between; Cut from video takes those words out of the video (picture, sound, captions
 /// and what is pinned to them move together, with a natural pause kept), one undo step; Put back brings cut words of the take
 /// back. Fix caption text changes the words a caption shows and never cuts anything: they are kept apart on purpose.
-extension QuickEditViewModel {
+extension ClipsViewModel {
     var transcriptWords: [TranscriptWord] {
         TranscriptEditing.words(in: edit)
     }
@@ -97,30 +97,6 @@ extension QuickEditViewModel {
         commit(timeline)
         transcriptSelection = nil
         toast.show(String(localized: "Words put back"))
-    }
-
-    /// "Fix caption text": the caption line with the first picked word, open for writing; nothing is cut.
-    func fixCaptionOfSelectedWords() {
-        guard let word = selectedTranscriptWords.first(where: { !$0.isRemoved }), let start = word.editedStart else { return }
-        let line = edit.captions.first { cue in
-            cue.sourceID == word.sourceID && cue.start <= word.span.end && word.span.start < cue.end
-        }
-        sheet = nil
-        transcriptSelection = nil
-        guard let line else {
-            toast.show(String(localized: "No caption line for these words"))
-            return
-        }
-        panel = .captions
-        captions.pickCaptionLine(line.id, at: start)
-        captions.focusesCaptionField = true
-    }
-
-    /// Listens to the video for its words (as captions do), when there is no transcript yet. Captions that weren't showing stay
-    /// hidden: listening for Edit by text doesn't turn them on.
-    func listenForTranscript() {
-        captions.keepsCaptionsHiddenAfterListening = !edit.showsCaptions
-        captions.makeCaptions()
     }
 
     /// The picked words split where they change recording or skip a word of it: each run is one stretch of one recording.

@@ -21,7 +21,7 @@ struct ZoomPanel: View {
                     PanelOption(SectionZoom?.some(.punchIn), SectionZoom.punchIn.label, systemImage: "plus.viewfinder", key: "punchIn"),
                 ],
                 selection: clip?.zoom, identifier: "edit.zoom"
-            ) { viewModel.setClipZoom($0) }
+            ) { viewModel.clips.setClipZoom($0) }
             PanelAdvancedButton(
                 isOpen: viewModel.showsAdvanced,
                 detail: (clip?.zoomAmount ?? EditSegment.defaultZoomAmount) != EditSegment.defaultZoomAmount ? PanelAdvancedButton.changed(1) : nil
@@ -30,7 +30,7 @@ struct ZoomPanel: View {
                 PanelSlider(
                     label: String(localized: "Intensity"), value: (clip?.zoomAmount ?? 0.5) * 100, range: 0...100,
                     format: .percent, identifier: "edit.zoom.intensity"
-                ) { viewModel.setZoomIntensity($0) }
+                ) { viewModel.clips.setZoomIntensity($0) }
             }
         }
     }

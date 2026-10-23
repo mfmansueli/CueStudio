@@ -38,10 +38,10 @@ struct QuickEditClipLookTests {
     /// Three clips: 0–7.1, 7.1–10.1, 10.1–21.6.
     private func split(_ scenario: Scenario) {
         scenario.player.seek(to: 7.1)
-        scenario.viewModel.selectClipAtPlayhead()
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.selectClipAtPlayhead()
+        scenario.viewModel.clips.splitClip()
         scenario.player.seek(to: 10.1)
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.splitClip()
         scenario.viewModel.selection = nil
     }
 
@@ -213,7 +213,7 @@ struct QuickEditClipLookTests {
         #expect(viewModel.edit.timeline.segments[0].look?.filter == .mono)
         scenario.player.seek(to: 3)
         pick(viewModel, clip: 0)
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         let segments = viewModel.edit.timeline.segments
         #expect(segments.count == 4)
         #expect(segments[0].look?.filter == .mono && segments[1].look?.filter == .mono)

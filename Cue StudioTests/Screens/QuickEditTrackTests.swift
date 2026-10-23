@@ -83,7 +83,7 @@ struct QuickEditTrackTests {
         // The video changed while it ran: the path, measured on what it was, is dropped.
         viewModel.perform(.trackItem)
         scenario.player.seek(to: 2)
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         await Wait.until(timeout: .seconds(120)) { !viewModel.overlays.isTracking }
         #expect(viewModel.edit.texts.first { $0.id == id }?.keyframes.isEmpty == true)
         #expect(scenario.toast.message == "The video changed meanwhile · Track it again")

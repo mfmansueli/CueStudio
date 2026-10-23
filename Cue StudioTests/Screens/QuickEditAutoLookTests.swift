@@ -43,10 +43,10 @@ struct QuickEditAutoLookTests {
 
     private func split(_ scenario: Scenario) {
         scenario.player.seek(to: 7.1)
-        scenario.viewModel.selectClipAtPlayhead()
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.selectClipAtPlayhead()
+        scenario.viewModel.clips.splitClip()
         scenario.player.seek(to: 10.1)
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.splitClip()
         scenario.viewModel.selection = nil
     }
 

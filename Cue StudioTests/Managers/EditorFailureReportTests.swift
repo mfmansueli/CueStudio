@@ -58,7 +58,7 @@ struct EditorFailureReportTests {
         await viewModel.prepare()
         var failures: [EditorFailureReport] = []
         viewModel.reportFailure = { failures.append($0) }
-        await viewModel.freezeFrame()
+        await viewModel.clips.freezeFrame()
         #expect(failures.map(\.operation) == ["freezeFrame"])
         #expect(failures.first?.size?.clips == 1)
     }

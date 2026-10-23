@@ -101,7 +101,7 @@ struct QuickEditSoundTests {
         viewModel.audio.addMusic(song())
         let original = try #require(viewModel.edit.music.first)
         viewModel.selection = .music(original.id)
-        viewModel.setTargetVolume(0.8)
+        viewModel.clips.setTargetVolume(0.8)
         viewModel.audio.musicReplacementID = original.id
         let other = ImportedAudio(fileName: "other.m4a", title: "Other loop", duration: 30)
         viewModel.audio.addMusic(other)
@@ -169,13 +169,13 @@ struct QuickEditSoundTests {
         viewModel.selection = .music(id)
         let steps = viewModel.document.history.past.count
         viewModel.beginChange()
-        for volume in stride(from: 0.5, through: 0.9, by: 0.1) { viewModel.setTargetVolume(volume) }
+        for volume in stride(from: 0.5, through: 0.9, by: 0.1) { viewModel.clips.setTargetVolume(volume) }
         viewModel.endChange()
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect(abs((viewModel.edit.music.first?.volume ?? 0) - 0.9) < 0.001)
-        #expect(abs(viewModel.targetVolume - 0.9) < 0.001)
+        #expect(abs(viewModel.clips.targetVolume - 0.9) < 0.001)
         // Volume never goes past 200%.
-        viewModel.setTargetVolume(5)
+        viewModel.clips.setTargetVolume(5)
         #expect(viewModel.edit.music.first?.volume == 2)
         viewModel.audio.setMusicDucks(id, false)
         viewModel.audio.setMusicFadeIn(id, 9)

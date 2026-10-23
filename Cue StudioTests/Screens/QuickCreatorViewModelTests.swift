@@ -265,16 +265,16 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 32)
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         let right = viewModel.edit.timeline.segments[1].id
         #expect(viewModel.selection == .clip(right))
         let steps = viewModel.document.history.past.count
-        viewModel.setClipSpeed(0.5)
+        viewModel.clips.setClipSpeed(0.5)
         #expect(viewModel.edit.timeline.segments.map(\.speed) == [1, 0.5])
         #expect(viewModel.edit.editedDuration == 96)
         #expect(viewModel.document.history.past.count == steps + 1)
         // Quick moves of the slider on the same clip are one step, on the twentieths.
-        viewModel.setClipSpeed(1.52)
+        viewModel.clips.setClipSpeed(1.52)
         #expect(viewModel.edit.timeline.segments[1].speed == 1.5)
         #expect(viewModel.document.history.past.count == steps + 1)
         viewModel.undo()
@@ -283,7 +283,7 @@ struct QuickCreatorViewModelTests {
 
     @Test func withOneClipSpeedChangesTheWholeVideo() async {
         let scenario = await makeScenario()
-        scenario.viewModel.setClipSpeed(2)
+        scenario.viewModel.clips.setClipSpeed(2)
         #expect(scenario.viewModel.edit.editedDuration == 32)
         scenario.viewModel.undo()
         #expect(scenario.viewModel.edit.editedDuration == 64)
@@ -293,16 +293,16 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 32)
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         scenario.player.seek(to: 40)
-        viewModel.setClipZoom(.pushIn)
+        viewModel.clips.setClipZoom(.pushIn)
         #expect(viewModel.edit.timeline.segments.map(\.zoom) == [nil, .pushIn])
         // The first seconds of the clip play to show it.
-        #expect(scenario.player.reviewedPart == 32...(32 + QuickEditViewModel.zoomPreviewLength))
+        #expect(scenario.player.reviewedPart == 32...(32 + ClipsViewModel.zoomPreviewLength))
         #expect(scenario.player.isPlaying)
-        viewModel.setZoomIntensity(150)
+        viewModel.clips.setZoomIntensity(150)
         #expect(viewModel.edit.timeline.segments[1].zoomAmount == 1)
-        viewModel.setClipZoom(nil)
+        viewModel.clips.setClipZoom(nil)
         #expect(viewModel.edit.timeline.segments[1].zoom == nil)
         viewModel.undo()
         viewModel.undo()
@@ -317,14 +317,14 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         for time in [20.0, 40] {
             scenario.player.seek(to: time)
-            viewModel.splitClip()
+            viewModel.clips.splitClip()
         }
-        #expect(viewModel.cuts.map(\.index) == [1, 2])
+        #expect(viewModel.clips.cuts.map(\.index) == [1, 2])
         let steps = viewModel.document.history.past.count
-        viewModel.setTransitionOnEveryCut(.slide)
+        viewModel.clips.setTransitionOnEveryCut(.slide)
         #expect(viewModel.edit.timeline.segments.map(\.transitionIn) == [.hardCut, .slide, .slide])
         #expect(viewModel.document.history.past.count == steps + 1)
-        viewModel.setTransition(.fade, atJoin: 2)
+        viewModel.clips.setTransition(.fade, atJoin: 2)
         #expect(viewModel.edit.timeline.transition(atJoin: 2) == .fade)
     }
 
@@ -551,11 +551,11 @@ struct QuickCreatorViewModelTests {
         viewModel.audio.stopVoiceOver()
         let id = viewModel.edit.voiceOvers[0].id
         #expect(viewModel.selection == .voiceOver(id))
-        viewModel.setTargetVolume(3)
+        viewModel.clips.setTargetVolume(3)
         #expect(viewModel.edit.voiceOvers[0].volume == 2)
-        viewModel.setTargetVolume(0.4)
+        viewModel.clips.setTargetVolume(0.4)
         #expect(viewModel.edit.voiceOvers[0].volume == 0.4)
-        #expect(viewModel.targetVolume == 0.4)
+        #expect(viewModel.clips.targetVolume == 0.4)
         viewModel.audio.deleteVoiceOver(id)
         #expect(viewModel.edit.voiceOvers.isEmpty)
     }
@@ -614,7 +614,7 @@ struct QuickCreatorViewModelTests {
         viewModel.overlays.addText(.title)
         viewModel.overlays.addMedia(photo("kept.jpg"))
         viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
-        viewModel.setClipSpeed(1.5)
+        viewModel.clips.setClipSpeed(1.5)
         try makeCover(viewModel)
         viewModel.done()
         let saved = scenario.takes.takes[0]

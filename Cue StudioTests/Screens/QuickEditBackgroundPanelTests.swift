@@ -38,8 +38,8 @@ struct QuickEditBackgroundPanelTests {
     /// Two clips: 0–7.1 and 7.1–21.6.
     private func split(_ scenario: Scenario) {
         scenario.player.seek(to: 7.1)
-        scenario.viewModel.selectClipAtPlayhead()
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.selectClipAtPlayhead()
+        scenario.viewModel.clips.splitClip()
         scenario.viewModel.selection = nil
     }
 

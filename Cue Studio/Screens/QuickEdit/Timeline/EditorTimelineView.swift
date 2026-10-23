@@ -62,14 +62,14 @@ struct EditorTimelineView: UIViewRepresentable {
                 endHandle: { viewModel.endTimelineHandle() },
                 holdClip: { id in
                     viewModel.selection = .clip(id)
-                    viewModel.openClipOrder()
+                    viewModel.clips.openClipOrder()
                 },
                 zoom: { viewModel.setTimelineZoom($0) },
                 nudge: { viewModel.nudgePlayhead(by: $0) },
-                selectClipAtPlayhead: { viewModel.selectClipAtPlayhead() },
+                selectClipAtPlayhead: { viewModel.clips.selectClipAtPlayhead() },
                 pickNearestCut: { viewModel.pickNearestJoin() },
                 jumpToCut: { viewModel.jumpToCut(forward: $0) },
-                accessibilityValue: { viewModel.timelineAccessibilityValue }
+                accessibilityValue: { viewModel.clips.timelineAccessibilityValue }
             )
             view.show(time: viewModel.player.currentTime)
             followClock()

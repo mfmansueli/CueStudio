@@ -68,7 +68,7 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 32
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         viewModel.perform(.selectClipAtPlayhead)
         #expect(viewModel.toolbarItems.first { $0.id == "reorder" }?.style == .normal)
         scenario.player.play()
@@ -77,7 +77,7 @@ struct QuickEditMontageTests {
         #expect(!scenario.player.isPlaying)
         // Holding a clip on the timeline opens the same list.
         viewModel.sheet = nil
-        viewModel.openClipOrder()
+        viewModel.clips.openClipOrder()
         #expect(viewModel.sheet == .clipOrder)
     }
 
@@ -85,11 +85,11 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 32
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         scenario.player.currentTime = 5
         viewModel.overlays.addText(.title)
         let steps = viewModel.document.history.past.count
-        viewModel.duplicateClip(viewModel.edit.timeline.segments[0].id)
+        viewModel.clips.duplicateClip(viewModel.edit.timeline.segments[0].id)
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.edit.timeline.segments.count == 3)
         #expect(viewModel.edit.texts.count == 2)
@@ -108,10 +108,10 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 32
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         scenario.player.currentTime = 40
         viewModel.overlays.addText(.hook)
-        viewModel.moveSection(from: 1, to: 0)
+        viewModel.clips.moveSection(from: 1, to: 0)
         // The section that started at 32 s now starts the edit: the text is 8 s in.
         #expect(abs((viewModel.textBars.first?.span.start ?? 0) - 8) < 0.001)
         #expect(viewModel.edit.timeline.isArranged)
@@ -122,7 +122,7 @@ struct QuickEditMontageTests {
     /// Add photo or video › Insert as clip offers the creator's other takes, never the one being edited.
     @Test func theOtherTakesAreOfferedAsClips() async {
         let scenario = await makeScenario()
-        let offered = scenario.viewModel.addableTakes.map(\.id)
+        let offered = scenario.viewModel.clips.addableTakes.map(\.id)
         #expect(offered.contains(scenario.other.id))
         #expect(!offered.contains(scenario.viewModel.take.id))
     }
@@ -134,17 +134,17 @@ struct QuickEditMontageTests {
         let viewModel = scenario.viewModel
         let original = try writeVideo(of: scenario.other, in: viewModel)
         defer { try? FileManager.default.removeItem(at: original) }
-        await viewModel.addClip(from: scenario.other)
+        await viewModel.clips.addClip(from: scenario.other)
         let source = try #require(viewModel.edit.sources.first)
         defer { EditMediaFiles.remove([source.fileName]) }
         #expect(source.takeID == scenario.other.id)
         #expect(EditMediaFiles.exists(source.fileName))
         #expect(viewModel.edit.timeline.segments.last?.sourceID == source.id)
         #expect(viewModel.edit.mediaFileNames.contains(source.fileName))
-        #expect(viewModel.clips.last?.title == "B-roll walk · Take 1")
+        #expect(viewModel.clips.clipList.last?.title == "B-roll walk · Take 1")
 
         let section = try #require(viewModel.edit.timeline.segments.last?.id)
-        viewModel.deleteClip(section)
+        viewModel.clips.deleteClip(section)
         #expect(viewModel.edit.timeline.segments.count == 1)
         #expect(FileManager.default.fileExists(atPath: original.path(percentEncoded: false)))
     }
@@ -156,7 +156,7 @@ struct QuickEditMontageTests {
         let viewModel = scenario.viewModel
         let original = try writeVideo(of: scenario.other, in: viewModel)
         defer { try? FileManager.default.removeItem(at: original) }
-        await viewModel.addClip(from: scenario.other)
+        await viewModel.clips.addClip(from: scenario.other)
         let source = try #require(viewModel.edit.sources.first)
         defer { EditMediaFiles.remove([source.fileName]) }
         viewModel.captions.makeCaptions()
@@ -173,7 +173,7 @@ struct QuickEditMontageTests {
         let viewModel = scenario.viewModel
         viewModel.captions.makeCaptions()
         await viewModel.jobs.finished(.captions)
-        viewModel.duplicateSection(viewModel.edit.timeline.segments[0].id)
+        viewModel.clips.duplicateSection(viewModel.edit.timeline.segments[0].id)
         let instances = viewModel.edit.editedCaptionInstances
         #expect(instances.count == 2)
         #expect(Set(instances.map(\.line.id)).count == 2)

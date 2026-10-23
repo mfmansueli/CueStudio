@@ -137,14 +137,14 @@ struct QuickEditCoverTests {
     @Test func aCutsMarkOpensItsTransitions() async {
         let (viewModel, player, _) = await makeViewModel()
         player.seek(to: 20)
-        viewModel.selectClipAtPlayhead()
-        viewModel.splitClip()
+        viewModel.clips.selectClipAtPlayhead()
+        viewModel.clips.splitClip()
         viewModel.selection = nil
         let second = viewModel.edit.timeline.segments[1].id
         viewModel.tapTimeline(.join(second))
         #expect(viewModel.panel == .transition)
         #expect(viewModel.selectedJoinID == second)
-        viewModel.setTransition(.dissolve)
+        viewModel.clips.setTransition(.dissolve)
         #expect(viewModel.edit.timeline.segments[1].transitionIn == .dissolve)
         viewModel.tapTimeline(.join(second))
         #expect(viewModel.panel == nil)

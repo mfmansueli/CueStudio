@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+ClipSettings.swift
+//  ClipsViewModel+Settings.swift
 //  Cue Studio
 //
 
@@ -7,7 +7,7 @@ import Foundation
 
 /// Speed, Zoom and Volume of the picked clip (or of the music or voice-over picked). Each change
 /// shows live and is an undo step; a slider's quick moves are one.
-extension QuickEditViewModel {
+extension ClipsViewModel {
     /// The speeds Speed offers as one tap.
     static let quickSpeeds: [Double] = [0.5, 0.75, 1, 1.25, 1.5, 2]
     /// How long Zoom plays the clip when a move is picked, to show it.

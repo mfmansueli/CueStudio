@@ -31,10 +31,10 @@ struct AddMediaSheet: View {
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("edit.mediaModeExplanation")
-            if viewModel.overlays.mediaInsertMode == .clip, !viewModel.addableTakes.isEmpty {
-                TakeRow(takes: viewModel.addableTakes) { take in
+            if viewModel.overlays.mediaInsertMode == .clip, !viewModel.clips.addableTakes.isEmpty {
+                TakeRow(takes: viewModel.clips.addableTakes) { take in
                     Task {
-                        await viewModel.addClip(from: take)
+                        await viewModel.clips.addClip(from: take)
                         dismiss()
                     }
                 }
@@ -65,7 +65,7 @@ struct AddMediaSheet: View {
             Task {
                 switch viewModel.overlays.mediaInsertMode {
                 case .overlay: await viewModel.overlays.importMedia(item)
-                case .clip: await viewModel.addClip(importing: item)
+                case .clip: await viewModel.clips.addClip(importing: item)
                 }
                 picked = nil
                 dismiss()

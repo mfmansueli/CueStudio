@@ -37,10 +37,10 @@ struct QuickEditTimelineTests {
     /// Three clips: 0–7.1, 7.1–10.1 ("não, pera"), 10.1–21.6.
     private func split(_ scenario: Scenario) {
         scenario.player.seek(to: 7.1)
-        scenario.viewModel.selectClipAtPlayhead()
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.selectClipAtPlayhead()
+        scenario.viewModel.clips.splitClip()
         scenario.player.seek(to: 10.1)
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.splitClip()
         scenario.viewModel.selection = nil
     }
 
@@ -171,8 +171,8 @@ struct QuickEditTimelineTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 7.1)
-        viewModel.selectClipAtPlayhead()
-        viewModel.splitClip()
+        viewModel.clips.selectClipAtPlayhead()
+        viewModel.clips.splitClip()
         let right = viewModel.edit.timeline.segments[1].id
         scenario.player.seek(to: 2)
         viewModel.beginTimelineHandle(.clip(right, .start), snapTimes: [])

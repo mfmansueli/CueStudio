@@ -137,11 +137,11 @@ struct QuickEditMotionTests {
     @Test func aZoomStaysOnBothHalvesOfASplitAndOneHalfCanChange() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.setClipZoom(.pushIn)
+        viewModel.clips.setClipZoom(.pushIn)
         #expect(viewModel.edit.timeline.segments.allSatisfy { $0.zoom == .pushIn })
         scenario.player.currentTime = 30
-        viewModel.splitClip()
-        viewModel.setClipZoom(.punchIn)
+        viewModel.clips.splitClip()
+        viewModel.clips.setClipZoom(.punchIn)
         #expect(viewModel.edit.timeline.segments.map(\.zoom) == [.pushIn, .punchIn])
         viewModel.undo()
         #expect(viewModel.edit.timeline.segments.map(\.zoom) == [.pushIn, .pushIn])

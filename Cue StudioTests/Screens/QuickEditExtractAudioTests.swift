@@ -43,7 +43,7 @@ struct QuickEditExtractAudioTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         var timeline = viewModel.edit.timeline
         var second = timeline.segments[1]
         second.speed = 2
@@ -77,7 +77,7 @@ struct QuickEditExtractAudioTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         var timeline = viewModel.edit.timeline
         var second = timeline.segments[1]
         second.speedCurve = SpeedCurvePreset.hero.curve
@@ -100,7 +100,7 @@ struct QuickEditExtractAudioTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 30
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         viewModel.selection = .clip(viewModel.edit.timeline.segments[1].id)
         await viewModel.audio.extractAudio()
         #expect(abs((viewModel.edit.music.first?.start ?? 0) - 30) < 0.000_1)
@@ -182,7 +182,7 @@ struct QuickEditExtractAudioTests {
         viewModel.perform(.selectClipAtPlayhead)
         scenario.editor.whileExtracting = {
             scenario.player.currentTime = 20
-            viewModel.splitClip()
+            viewModel.clips.splitClip()
         }
         await viewModel.audio.extractAudio()
         #expect(viewModel.edit.music.isEmpty)

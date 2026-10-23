@@ -32,7 +32,7 @@ extension QuickEditViewModel {
             plain.keepsPitch = true
             _ = timeline.replaceSegment(plain)
             _ = timeline.setSpeed(1, forSegmentAt: index)
-            showsSpeedCurves = false
+            clips.showsSpeedCurves = false
             commit(timeline)
         }
     }
@@ -53,8 +53,8 @@ extension QuickEditViewModel {
         case .music:
             return nil
         case .voiceOver:
-            guard targetVolume != 1 else { return nil }
-            return { [weak self] in self?.setTargetVolume(1) }
+            guard clips.targetVolume != 1 else { return nil }
+            return { [weak self] in self?.clips.setTargetVolume(1) }
         default:
             guard let clip = targetClip, clip.volume != 1 || clip.isMuted else { return nil }
             return { [weak self] in

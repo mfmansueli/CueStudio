@@ -317,7 +317,7 @@ struct QuickEditToolbarTests {
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 7.1)
         viewModel.perform(.selectClipAtPlayhead)
-        #expect(viewModel.canSplitSelectedClip)
+        #expect(viewModel.clips.canSplitSelectedClip)
         viewModel.perform(.splitClip)
         let segments = viewModel.edit.timeline.segments
         #expect(segments.count == 2)

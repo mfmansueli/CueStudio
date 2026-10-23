@@ -39,10 +39,10 @@ struct QuickEditSkinSmoothingTests {
     /// Three clips: 0–7.1, 7.1–10.1, 10.1–21.6.
     private func split(_ scenario: Scenario) {
         scenario.player.seek(to: 7.1)
-        scenario.viewModel.selectClipAtPlayhead()
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.selectClipAtPlayhead()
+        scenario.viewModel.clips.splitClip()
         scenario.player.seek(to: 10.1)
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.splitClip()
         scenario.viewModel.selection = nil
     }
 
@@ -188,8 +188,8 @@ struct QuickEditSkinSmoothingTests {
         viewModel.look.setAdjustment(.skinSmoothing, 40)
         viewModel.panel = nil
         scenario.player.seek(to: 15)
-        viewModel.selectClipAtPlayhead()
-        viewModel.splitClip()
+        viewModel.clips.selectClipAtPlayhead()
+        viewModel.clips.splitClip()
         let segments = viewModel.edit.timeline.segments
         #expect(segments.count == 4)
         #expect(segments[2].look?.skinSmoothing == 40 && segments[3].look?.skinSmoothing == 40)

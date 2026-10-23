@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Montage.swift
+//  ClipsViewModel+Montage.swift
 //  Cue Studio
 //
 
@@ -12,7 +12,7 @@ import SwiftUI
 /// voice-overs are pinned to the section they play on, so they travel with it; a copied section
 /// gets copies of its own (new identities). Removing a section never touches the take or the video
 /// it came from. Each change is one undo step.
-extension QuickEditViewModel {
+extension ClipsViewModel {
     /// A section of the edit as the Clips sheet lists it.
     struct Clip: Identifiable, Equatable {
         let id: UUID
@@ -27,7 +27,7 @@ extension QuickEditViewModel {
     }
 
     /// Every section, in play order.
-    var clips: [Clip] {
+    var clipList: [Clip] {
         let timeline = edit.timeline
         return timeline.segments.enumerated().map { index, segment in
             Clip(

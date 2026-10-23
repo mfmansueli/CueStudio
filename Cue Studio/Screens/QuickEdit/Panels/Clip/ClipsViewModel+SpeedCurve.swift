@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+SpeedCurve.swift
+//  ClipsViewModel+SpeedCurve.swift
 //  Cue Studio
 //
 
@@ -9,7 +9,7 @@ import Foundation
 /// Flash out, or a curve of the creator's own, shaped by dragging its points). Picking a curve plays the clip to show it; a
 /// drag of a point is one undo step. Picking a speed in Normal takes the curve away. While a point or a handle is dragged, the
 /// preview stretches curved clips' sound in steps (instant) and renders it along the curve when the finger lifts.
-extension QuickEditViewModel {
+extension ClipsViewModel {
     /// Slowest and fastest a point can be dragged to.
     static let curveSpeedRange = SpeedCurve.speedRange
 
@@ -67,8 +67,6 @@ extension QuickEditViewModel {
 
     /// Curved clips' sound in steps while a finger shapes the timing (a curve's point, a clip's handle), rendered once it lifts.
     func updateCurveSoundStepping() {
-        var holdsClipHandle = false
-        if case .clip? = handleDrag?.target { holdsClipHandle = true }
         let steps = shapesCurve || holdsClipHandle
         if player.stepsCurveSound != steps { player.stepsCurveSound = steps }
     }

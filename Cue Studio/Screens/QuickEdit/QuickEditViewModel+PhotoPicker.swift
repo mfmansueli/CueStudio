@@ -11,10 +11,6 @@ import _PhotosUI_SwiftUI
 /// shows the picker once (`EditorPhotoPicker`), and the pick comes back here to be put where it was
 /// asked for.
 extension QuickEditViewModel {
-    func requestPhoto(_ purpose: PhotoRequest.Purpose) {
-        photoRequest = PhotoRequest(purpose: purpose)
-    }
-
     /// The photo or video picked for the request that opened the library.
     func importPickedPhoto(_ item: PhotosPickerItem) async {
         guard let request = photoRequest else { return }
@@ -22,7 +18,7 @@ extension QuickEditViewModel {
         switch request.purpose {
         case .background: await look.importBackgroundImage(item)
         case .replaceMedia(let id, _): await overlays.replaceMedia(id, importing: item)
-        case .replaceClip(let id): await replaceClip(id, importing: item)
+        case .replaceClip(let id): await clips.replaceClip(id, importing: item)
         }
     }
 }

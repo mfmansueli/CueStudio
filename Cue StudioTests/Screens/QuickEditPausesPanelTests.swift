@@ -34,22 +34,22 @@ struct QuickEditPausesPanelTests {
 
     @Test func everyPauseStartsMarkedWithTheTimeItSaves() async {
         let viewModel = await makeViewModel()
-        #expect(viewModel.pauseCandidates.count == 4)
-        #expect(viewModel.markedCleanUp.count == 4)
-        #expect(viewModel.cleanUpApplyLabel == "Remove 4 pauses")
+        #expect(viewModel.clips.pauseCandidates.count == 4)
+        #expect(viewModel.clips.markedCleanUp.count == 4)
+        #expect(viewModel.clips.cleanUpApplyLabel == "Remove 4 pauses")
         // 0.96 + 0.86 + 1.36 + 0.88 s.
-        #expect(viewModel.cleanUpSavingLabel == "−\(TestData.decimal("4.1"))s")
-        #expect(viewModel.cleanUpResultLabel == "00:21.6 → 00:17.5")
+        #expect(viewModel.clips.cleanUpSavingLabel == "−\(TestData.decimal("4.1"))s")
+        #expect(viewModel.clips.cleanUpResultLabel == "00:21.6 → 00:17.5")
     }
 
     @Test func oneKeptTheOthersRemovedInOneStep() async {
         let viewModel = await makeViewModel()
-        let kept = viewModel.pauseCandidates[1]
-        viewModel.tapCleanUpCard(kept.id)
-        #expect(!viewModel.isMarked(kept))
-        #expect(viewModel.cleanUpApplyLabel == "Remove 3 pauses")
+        let kept = viewModel.clips.pauseCandidates[1]
+        viewModel.clips.tapCleanUpCard(kept.id)
+        #expect(!viewModel.clips.isMarked(kept))
+        #expect(viewModel.clips.cleanUpApplyLabel == "Remove 3 pauses")
         let steps = viewModel.document.history.past.count
-        viewModel.applyCleanUp()
+        viewModel.clips.applyCleanUp()
         #expect(abs(viewModel.edit.editedDuration - 18.4) < 0.001)
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.panel == nil)
@@ -62,21 +62,21 @@ struct QuickEditPausesPanelTests {
     @Test func aLongerThresholdListsFewerPauses() async {
         let viewModel = await makeViewModel()
         // 1.2, 1.1, 1.6 and 1.12 s of silence.
-        for _ in 0..<5 { viewModel.raisePauseThreshold() }
-        #expect(abs(viewModel.pauseThreshold - 1.2) < 0.001)
-        #expect(viewModel.pauseCandidates.count == 2)
-        viewModel.lowerPauseThreshold()
-        #expect(viewModel.pauseCandidates.count == 4)
-        for _ in 0..<10 { viewModel.lowerPauseThreshold() }
-        #expect(abs(viewModel.pauseThreshold - QuickEditViewModel.pauseThresholdRange.lowerBound) < 0.001)
-        #expect(viewModel.pauseCandidates.count == 4)
+        for _ in 0..<5 { viewModel.clips.raisePauseThreshold() }
+        #expect(abs(viewModel.clips.pauseThreshold - 1.2) < 0.001)
+        #expect(viewModel.clips.pauseCandidates.count == 2)
+        viewModel.clips.lowerPauseThreshold()
+        #expect(viewModel.clips.pauseCandidates.count == 4)
+        for _ in 0..<10 { viewModel.clips.lowerPauseThreshold() }
+        #expect(abs(viewModel.clips.pauseThreshold - ClipsViewModel.pauseThresholdRange.lowerBound) < 0.001)
+        #expect(viewModel.clips.pauseCandidates.count == 4)
     }
 
     @Test func nothingMarkedRemovesNothing() async {
         let viewModel = await makeViewModel()
-        for pause in viewModel.pauseCandidates { viewModel.toggleMark(pause.id) }
-        #expect(viewModel.cleanUpApplyLabel == "Nothing selected")
-        viewModel.applyCleanUp()
+        for pause in viewModel.clips.pauseCandidates { viewModel.clips.toggleMark(pause.id) }
+        #expect(viewModel.clips.cleanUpApplyLabel == "Nothing selected")
+        viewModel.clips.applyCleanUp()
         #expect(abs(viewModel.edit.editedDuration - 21.6) < 0.001)
     }
 }

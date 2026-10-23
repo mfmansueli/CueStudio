@@ -84,6 +84,17 @@ extension EditorPart {
         session.noteFailure(error, operation)
     }
 
+    /// Why the photo library is open, if it is (`EditorSession.photoRequest`).
+    var photoRequest: PhotoRequest? {
+        get { session.photoRequest }
+        set { session.photoRequest = newValue }
+    }
+
+    /// Opens the photo library for `purpose`.
+    func requestPhoto(_ purpose: PhotoRequest.Purpose) {
+        photoRequest = PhotoRequest(purpose: purpose)
+    }
+
     /// Frames per second of the recording (`EditorSession.frameRate`).
     var frameRate: Double { session.frameRate }
 

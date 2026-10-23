@@ -45,9 +45,9 @@ struct QuickEditReplaceClipTests {
     private func middleClip(_ scenario: Scenario) -> UUID {
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         scenario.player.currentTime = 20
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         var timeline = viewModel.edit.timeline
         var middle = timeline.segments[1]
         middle.speed = 2
@@ -70,7 +70,7 @@ struct QuickEditReplaceClipTests {
         let before = try #require(viewModel.edit.timeline.segment(id: id))
         let length = viewModel.edit.editedDuration
         let steps = viewModel.document.history.past.count
-        viewModel.replaceClip(id, with: video(30))
+        viewModel.clips.replaceClip(id, with: video(30))
         let after = try #require(viewModel.edit.timeline.segment(id: id))
         #expect(viewModel.edit.timeline.index(ofSegment: id) == 1)
         let source = try #require(viewModel.edit.sources.first { $0.id == after.sourceID })
@@ -89,7 +89,7 @@ struct QuickEditReplaceClipTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let id = middleClip(scenario)
-        viewModel.replaceClip(id, with: video(4))
+        viewModel.clips.replaceClip(id, with: video(4))
         let after = try #require(viewModel.edit.timeline.segment(id: id))
         #expect(after.sourceEnd == 4)
         #expect(abs(after.duration - 2) < 0.000_1)
@@ -101,9 +101,9 @@ struct QuickEditReplaceClipTests {
         let viewModel = scenario.viewModel
         let id = middleClip(scenario)
         let timeline = viewModel.edit.timeline
-        viewModel.replaceClip(id, with: ImportedMedia(kind: .photo, fileName: "p.jpg", aspect: 1, duration: nil))
+        viewModel.clips.replaceClip(id, with: ImportedMedia(kind: .photo, fileName: "p.jpg", aspect: 1, duration: nil))
         #expect(scenario.toast.message == "Pick a video first")
-        viewModel.replaceClip(id, with: video(0.1))
+        viewModel.clips.replaceClip(id, with: video(0.1))
         #expect(scenario.toast.message == "Video too short to add")
         #expect(viewModel.edit.timeline == timeline)
         #expect(viewModel.edit.sources.isEmpty)
@@ -121,7 +121,7 @@ struct QuickEditReplaceClipTests {
         text.text = "Hello"
         viewModel.change { $0.texts = [text] }
         let shown = try #require(viewModel.edit.editedTexts(in: viewModel.edit.timeline).first?.span)
-        viewModel.replaceClip(id, with: video(30))
+        viewModel.clips.replaceClip(id, with: video(30))
         let moved = try #require(viewModel.edit.texts.first)
         let source = try #require(viewModel.edit.timeline.segment(id: id)?.sourceID)
         #expect(moved.clipAnchor == ClipAnchor(segmentID: id, sourceID: source))
@@ -135,7 +135,7 @@ struct QuickEditReplaceClipTests {
         let viewModel = scenario.viewModel
         let id = middleClip(scenario)
         // Replacing the first clip arranges the edit, so a text placed now is pinned to its clip.
-        viewModel.replaceClip(viewModel.edit.timeline.segments[0].id, with: video(30))
+        viewModel.clips.replaceClip(viewModel.edit.timeline.segments[0].id, with: video(30))
         // A text 3 s into the middle clip (the take from 10 s, at 2×: the take's 16 s), then the clip cut 1 s in: the text
         // plays on the right part, still pinned to the left one (a cut keeps the left part's identity).
         let start = viewModel.edit.timeline.editedStart(ofSegmentAt: 1)
@@ -146,9 +146,9 @@ struct QuickEditReplaceClipTests {
         text.text = "Hello"
         viewModel.change { $0.texts = [text] }
         scenario.player.currentTime = start + 1
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         let shown = try #require(viewModel.edit.editedTexts(in: viewModel.edit.timeline).first?.span)
-        viewModel.replaceClip(id, with: video(30))
+        viewModel.clips.replaceClip(id, with: video(30))
         #expect(viewModel.edit.texts.first?.clipAnchor == pinned.anchor)
         let after = try #require(viewModel.edit.editedTexts(in: viewModel.edit.timeline).first?.span)
         #expect(abs(after.start - shown.start) < 0.000_1 && abs(after.end - shown.end) < 0.000_1)

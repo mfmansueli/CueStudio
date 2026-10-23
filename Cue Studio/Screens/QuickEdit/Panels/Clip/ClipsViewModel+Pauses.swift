@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+PausesPanel.swift
+//  ClipsViewModel+Pauses.swift
 //  Cue Studio
 //
 
@@ -11,7 +11,7 @@ import Foundation
 /// one out in one undo step and keeps the rest; the time saved shows first. The pauses come from
 /// the take's loudness and the words from its transcript (`CleanUpAnalyzer`), each cut keeping a
 /// short breath on both sides (`SilenceDetector.padding`).
-extension QuickEditViewModel {
+extension ClipsViewModel {
     /// Played around a pause when listening to it.
     static let listenMargin: TimeInterval = 1.2
 

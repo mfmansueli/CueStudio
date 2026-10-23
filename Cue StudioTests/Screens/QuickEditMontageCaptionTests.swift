@@ -120,7 +120,7 @@ struct QuickEditMontageCaptionTests {
 
     @Test func splitWorksOnACopiedClip() async throws {
         let (viewModel, player, _) = await makeViewModel()
-        viewModel.duplicateSection(viewModel.edit.timeline.segments[1].id)
+        viewModel.clips.duplicateSection(viewModel.edit.timeline.segments[1].id)
         let theirs = try #require(line("Over here", in: viewModel))
         // In the copy (16–22 s), 1.2 s in is "Over | here".
         player.currentTime = 17.25

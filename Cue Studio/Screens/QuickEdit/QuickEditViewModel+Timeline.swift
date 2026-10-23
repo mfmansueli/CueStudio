@@ -106,9 +106,9 @@ extension QuickEditViewModel {
 
     /// The pauses on the video track while Pauses is open, marked to go or kept.
     var timelinePauses: [TimelineGeometry.PauseInput] {
-        pauseCandidates.compactMap { pause in
+        clips.pauseCandidates.compactMap { pause in
             guard let span = edit.timeline.editedSpan(of: pause) else { return nil }
-            return TimelineGeometry.PauseInput(id: pause.id, span: span, isMarked: isMarked(pause))
+            return TimelineGeometry.PauseInput(id: pause.id, span: span, isMarked: clips.isMarked(pause))
         }
     }
 
@@ -191,18 +191,18 @@ extension QuickEditViewModel {
     func jumpToCut(forward: Bool) {
         guard isReady else { return }
         let time = player.currentTime
-        let stops = [0] + cuts.map(\.time) + [edit.editedDuration]
+        let stops = [0] + clips.cuts.map(\.time) + [edit.editedDuration]
         let target = forward ? stops.first { $0 > time + 0.05 } : stops.last { $0 < time - 0.05 }
         guard let target else { return }
         player.pause()
         player.seek(to: target)
-        AccessibilityNotification.Announcement(timelineAccessibilityValue).post()
+        AccessibilityNotification.Announcement(clips.timelineAccessibilityValue).post()
     }
 
     /// VoiceOver: the transitions of the cut nearest to the playhead.
     func pickNearestJoin() {
         let time = player.currentTime
-        guard let nearest = cuts.min(by: { abs($0.time - time) < abs($1.time - time) }) else {
+        guard let nearest = clips.cuts.min(by: { abs($0.time - time) < abs($1.time - time) }) else {
             toast.show(String(localized: "No cuts yet"))
             return
         }
@@ -228,7 +228,7 @@ extension QuickEditViewModel {
 
     /// Marks a pause to go, or to stay.
     func togglePauseMark(_ id: UUID) {
-        toggleMark(id)
+        clips.toggleMark(id)
     }
 
     // MARK: - Scrubbing
@@ -335,7 +335,7 @@ extension QuickEditViewModel {
         guard let drag = handleDrag else { return }
         handleDrag = nil
         lastHandleSnap = nil
-        updateCurveSoundStepping()
+        clips.updateCurveSoundStepping()
         endChange()
         player.endScrub()
         player.seek(to: min(drag.playhead, edit.editedDuration))

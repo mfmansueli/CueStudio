@@ -1,14 +1,14 @@
 //
-//  QuickEditViewModel+CleanUp.swift
+//  ClipsViewModel+CleanUp.swift
 //  Cue Studio
 //
 
 import Foundation
 
 /// Clean Up: pauses, filler words and possible retakes found in the take and, in a montage, in every other recording it
-/// plays, as suggestions Pauses marks and removes (`QuickEditViewModel+PausesPanel`). Each suggestion stays with its
+/// plays, as suggestions Pauses marks and removes (`ClipsViewModel+Pauses`). Each suggestion stays with its
 /// recording: cuts, a new order, copies and speed move where it plays, never what it is.
-extension QuickEditViewModel {
+extension ClipsViewModel {
     static let pauseThresholdRange: ClosedRange<TimeInterval> = 0.3...3
 
     // MARK: - Analysis

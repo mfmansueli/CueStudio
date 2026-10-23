@@ -77,7 +77,7 @@ struct QuickEditWorkTests {
     @Test func aReverseCancelledBeforeItStartsLeavesTheClip() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.selectClipAtPlayhead()
+        viewModel.clips.selectClipAtPlayhead()
         let timeline = viewModel.edit.timeline
         viewModel.perform(.reverseClip)
         viewModel.work = EditorWork(kind: .reversing, job: .reverse)

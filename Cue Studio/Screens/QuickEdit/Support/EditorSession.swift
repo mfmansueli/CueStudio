@@ -34,6 +34,8 @@ final class EditorSession {
     var isImportingMedia = false
     /// A reverse or an import the creator waits for, over the preview with how far it is and Cancel.
     var work: EditorWork?
+    /// Why the photo library is open, if it is (`EditorPhotoPicker`); the editor puts the pick where it was asked for.
+    var photoRequest: PhotoRequest?
     /// Frames per second of the recording: read from the file when it opens, the take's setting until then.
     var frameRate: Double
     /// Copies a picked photo or video into the edit's media.

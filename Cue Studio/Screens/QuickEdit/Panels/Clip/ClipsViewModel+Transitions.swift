@@ -1,12 +1,12 @@
 //
-//  QuickEditViewModel+Transitions.swift
+//  ClipsViewModel+Transitions.swift
 //  Cue Studio
 //
 
 import Foundation
 
 /// The cuts between clips and their transitions. Each change is one undo step.
-extension QuickEditViewModel {
+extension ClipsViewModel {
     // MARK: - Transitions
 
     /// How the selected cut plays: a hard cut ("None"), a dissolve or a fade. An undo step; the

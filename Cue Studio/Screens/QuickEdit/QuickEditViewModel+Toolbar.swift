@@ -124,7 +124,7 @@ extension QuickEditViewModel {
             return [
                 EditorToolbarItem(
                     id: "split", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right",
-                    style: canSplitSelectedClip ? .normal : .dimmed, action: .splitClip
+                    style: clips.canSplitSelectedClip ? .normal : .dimmed, action: .splitClip
                 ),
                 EditorToolbarItem(id: "speed", label: String(localized: "Speed"), systemImage: "gauge.with.dots.needle.67percent", action: .open(.speed)),
                 EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
@@ -223,7 +223,7 @@ extension QuickEditViewModel {
         guard isReady else { return }
         if performOnSelection(action) { return }
         switch action {
-        case .selectClipAtPlayhead: selectClipAtPlayhead()
+        case .selectClipAtPlayhead: clips.selectClipAtPlayhead()
         case .openMenu(let menu):
             selection = nil
             toolMenu = menu
@@ -244,7 +244,7 @@ extension QuickEditViewModel {
         case .editByText:
             toolMenu = nil
             panel = nil
-            transcriptSelection = nil
+            clips.transcriptSelection = nil
             sheet = .transcript
         case .writeCaptionsByHand:
             toolMenu = nil
@@ -317,18 +317,18 @@ extension QuickEditViewModel {
     /// The actions on a picked clip. False when `action` isn't one of them.
     private func performOnClip(_ action: EditorAction) -> Bool {
         switch action {
-        case .splitClip: splitClip()
-        case .duplicateClip: selection?.clipID.map(duplicateClip)
-        case .reorderClips: openClipOrder()
-        case .freezeFrame: startJob { await self.freezeFrame() }
+        case .splitClip: clips.splitClip()
+        case .duplicateClip: selection?.clipID.map(clips.duplicateClip)
+        case .reorderClips: clips.openClipOrder()
+        case .freezeFrame: startJob { await self.clips.freezeFrame() }
         case .reverseClip:
             // One at a time: a second tap never stops the first.
-            if !jobs.isRunning(.reverse) { jobs.start(.reverse) { [weak self] _ in await self?.reverseClip() } }
-        case .replaceClip: askToReplaceClip()
+            if !jobs.isRunning(.reverse) { jobs.start(.reverse) { [weak self] _ in await self?.clips.reverseClip() } }
+        case .replaceClip: clips.askToReplaceClip()
         case .extractAudio: startJob { await self.audio.extractAudio() }
         case .copyLook: look.copyClipLook()
         case .pasteLook: look.askToPasteLook()
-        case .deleteClip: selection?.clipID.map(deleteClip)
+        case .deleteClip: selection?.clipID.map(clips.deleteClip)
         default: return false
         }
         return true

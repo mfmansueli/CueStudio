@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Clips.swift
+//  ClipsViewModel+Cutting.swift
 //  Cue Studio
 //
 
@@ -8,7 +8,7 @@ import Foundation
 /// The clips of the video track: pick one, split it at the playhead (the right part stays
 /// picked), duplicate it right after itself or delete it. A video always keeps one clip. Each is
 /// one undo step, and a toast says what happened or why it didn't.
-extension QuickEditViewModel {
+extension ClipsViewModel {
     /// Shortest part a split leaves on either side.
     static let minimumSplitPart: TimeInterval = 0.1
 
