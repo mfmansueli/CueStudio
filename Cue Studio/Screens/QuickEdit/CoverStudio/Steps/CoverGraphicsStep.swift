@@ -51,7 +51,7 @@ struct CoverGraphicsStep: View {
                 .accessibilityIdentifier("cover.itemText")
             }
             PanelSwatches(
-                label: String(localized: "Color"), colors: [.yellow, .red, .white, .black, .cyan, .mint, .blush], selection: item.color,
+                label: String(localized: "Color"), colors: OverlayColor.palette, selection: item.color,
                 identifier: "cover.itemColor"
             ) { color in viewModel.updateItem(item.id) { $0.color = color } }
             PanelSlider(

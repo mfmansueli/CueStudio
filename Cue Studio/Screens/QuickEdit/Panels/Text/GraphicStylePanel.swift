@@ -28,7 +28,7 @@ struct GraphicStylePanel: View {
                     .accessibilityIdentifier("edit.graphic.text")
                 }
                 PanelSwatches(
-                    label: String(localized: "Color"), colors: [.yellow, .red, .white, .black, .cyan, .mint, .blush], selection: text.color,
+                    label: String(localized: "Color"), colors: OverlayColor.palette, selection: text.color,
                     identifier: "edit.graphic.color"
                 ) { color in viewModel.updateText(text.id) { $0.color = color } }
                 PanelSlider(

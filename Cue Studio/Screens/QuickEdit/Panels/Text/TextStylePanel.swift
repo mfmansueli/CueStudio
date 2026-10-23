@@ -202,7 +202,7 @@ struct TextStylePanel: View {
     @ViewBuilder
     private func color(_ text: TextOverlay) -> some View {
         PanelSwatches(
-            label: String(localized: "Text"), colors: OverlayColor.textSwatches, selection: text.color,
+            label: String(localized: "Text"), colors: OverlayColor.palette, selection: text.color,
             diameter: Self.swatchDiameter, identifier: "edit.textColor"
         ) { viewModel.restyleText(.color($0)) }
         PanelSegmented(
@@ -211,7 +211,7 @@ struct TextStylePanel: View {
         ) { viewModel.restyleText(.background($0)) }
         if text.background != .none {
             PanelSwatches(
-                label: String(localized: "Background color"), colors: OverlayColor.backgroundSwatches,
+                label: String(localized: "Background color"), colors: OverlayColor.palette,
                 selection: text.backgroundColor, diameter: Self.swatchDiameter, identifier: "edit.textBackgroundColor"
             ) { viewModel.restyleText(.backgroundColor($0)) }
         }

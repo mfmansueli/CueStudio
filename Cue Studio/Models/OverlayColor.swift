@@ -5,20 +5,23 @@
 
 import Foundation
 
-/// Colors a text (or its background) can take on the video. They are burned into the export, so
-/// they are content, not interface tokens.
+/// Colors words, boxes, graphics, highlights and the video's background can take. They are burned
+/// into the export, so they are content, not interface tokens. Every color picker of the editor and
+/// the cover offers the same palette, in the same order; black, green, pink and purple stay for
+/// edits that picked them before.
 nonisolated enum OverlayColor: String, Codable, CaseIterable, Identifiable, Sendable {
     case white, black, yellow, red, blue, green, pink
     case offBlack, orange, cyan, purple, paper
     /// The v27 swatches: lavender (the AI's violet), blush and mint (the worlds' pink and green).
     case lavender, blush, mint
+    /// The captions' highlights before the palette.
+    case peach, lime
 
-    /// Text colors in Text style and Caption style.
-    static let textSwatches: [OverlayColor] = [.white, .yellow, .lavender, .cyan, .blush, .mint, .offBlack]
-    /// Behind a text (Box or Pill).
-    static let backgroundSwatches: [OverlayColor] = [.yellow, .black, .white, .red, .blue, .paper]
-    /// Background › Color.
-    static let backdropSwatches: [OverlayColor] = [.white, .offBlack, .yellow, .red, .blue, .green, .purple]
+    /// The palette: text, its box, graphics, the captions and their highlight, the cover's words and the video's
+    /// background all pick from it.
+    static let palette: [OverlayColor] = [
+        .white, .paper, .offBlack, .yellow, .peach, .orange, .red, .blush, .lavender, .blue, .cyan, .mint, .lime,
+    ]
 
     var id: String { rawValue }
 
@@ -40,6 +43,8 @@ nonisolated enum OverlayColor: String, Codable, CaseIterable, Identifiable, Send
         case .lavender: (0.706, 0.655, 1)
         case .blush: (1, 0.608, 0.824)
         case .mint: (0.494, 0.878, 0.722)
+        case .peach: (1, 0.729, 0.588)
+        case .lime: (0.749, 1, 0.161)
         }
     }
 
@@ -60,6 +65,8 @@ nonisolated enum OverlayColor: String, Codable, CaseIterable, Identifiable, Send
         case .lavender: String(localized: "Lavender")
         case .blush: String(localized: "Blush")
         case .mint: String(localized: "Mint")
+        case .peach: String(localized: "Peach")
+        case .lime: String(localized: "Lime")
         }
     }
 }

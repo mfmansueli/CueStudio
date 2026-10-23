@@ -58,11 +58,11 @@ struct CoverTitleStep: View {
             }
             group(String(localized: "Color")) {
                 PanelSwatches(
-                    label: String(localized: "Text"), colors: OverlayColor.textSwatches, selection: style.textColor, identifier: "cover.textColor"
+                    label: String(localized: "Text"), colors: OverlayColor.palette, selection: style.textColor, identifier: "cover.textColor"
                 ) { color in
                     viewModel.updateTitle { $0.textColor = color }
                 }
-                PanelSwatches(label: String(localized: "Highlight"), colors: Self.accents, selection: style.accent, identifier: "cover.accent") { color in
+                PanelSwatches(label: String(localized: "Highlight"), colors: OverlayColor.palette, selection: style.accent, identifier: "cover.accent") { color in
                     viewModel.updateTitle { $0.accent = color }
                 }
                 PanelSegmented(
@@ -78,7 +78,7 @@ struct CoverTitleStep: View {
                 ) { background in viewModel.updateTitle { $0.background = background } }
                 if style.background == .box {
                     PanelSwatches(
-                        label: String(localized: "Box"), colors: OverlayColor.backgroundSwatches, selection: style.boxColor, identifier: "cover.boxColor"
+                        label: String(localized: "Box"), colors: OverlayColor.palette, selection: style.boxColor, identifier: "cover.boxColor"
                     ) { color in viewModel.updateTitle { $0.boxColor = color } }
                 }
             }
@@ -95,8 +95,6 @@ struct CoverTitleStep: View {
             }
         }
     }
-
-    static let accents: [OverlayColor] = [.yellow, .red, .cyan, .mint, .blush, .white, .orange]
 
     private var field: some View {
         TextField(String(localized: "Title on the cover"), text: Binding(get: { viewModel.cover.title }, set: { viewModel.setTitle($0) }))

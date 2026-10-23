@@ -82,7 +82,7 @@ struct BackgroundPanel: View {
                 }
             case .color:
                 PanelSwatches(
-                    label: String(localized: "Color"), colors: OverlayColor.backdropSwatches, selection: effect.color,
+                    label: String(localized: "Color"), colors: OverlayColor.palette, selection: effect.color,
                     identifier: "edit.backgroundColor"
                 ) { color in viewModel.updateBackground { $0.color = color } }
             case .image:

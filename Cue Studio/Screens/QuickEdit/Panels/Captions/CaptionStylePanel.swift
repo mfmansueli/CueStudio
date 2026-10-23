@@ -171,7 +171,7 @@ struct CaptionStylePanel: View {
                 selection: look.weight, height: 38, identifier: "edit.captionWeight"
             ) { weight in viewModel.updateCaptionLook { $0.weight = weight } }
             PanelSwatches(
-                label: String(localized: "Color"), colors: OverlayColor.textSwatches, selection: look.color,
+                label: String(localized: "Color"), colors: OverlayColor.palette, selection: look.color,
                 diameter: Self.swatchDiameter, identifier: "edit.captionColor"
             ) { color in viewModel.updateCaptionLook { $0.color = color } }
         }
@@ -180,32 +180,11 @@ struct CaptionStylePanel: View {
         }
     }
 
-    /// The collection's highlight: the color the word being said takes.
+    /// The collection's highlight: the color the word being said takes, from the palette.
     private func accents(_ current: CaptionAccent) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text("Highlight color").font(.system(.subheadline, weight: .semibold))
-            HStack(spacing: 4) {
-                ForEach(CaptionAccent.allCases) { accent in
-                    let parts = accent.components
-                    let isOn = accent == current
-                    Button {
-                        Haptics.selection()
-                        viewModel.setCaptionAccent(accent)
-                    } label: {
-                        Circle()
-                            .fill(Color(red: parts.red, green: parts.green, blue: parts.blue))
-                            .frame(width: Self.swatchDiameter, height: Self.swatchDiameter)
-                            .padding(3)
-                            .overlay(Circle().strokeBorder(isOn ? Palette.acc : .clear, lineWidth: 2))
-                            .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
-                            .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(Text(accent.label))
-                    .accessibilityAddTraits(isOn ? .isSelected : [])
-                    .accessibilityIdentifier("edit.captionAccent.\(accent.rawValue)")
-                }
-            }
-        }
+        PanelSwatches(
+            label: String(localized: "Highlight color"), colors: OverlayColor.palette, selection: current,
+            diameter: Self.swatchDiameter, identifier: "edit.captionAccent"
+        ) { viewModel.setCaptionAccent($0) }
     }
 }
