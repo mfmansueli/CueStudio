@@ -25,7 +25,7 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     var captionLook: TextLook?
     var captionPreset: TypePreset?
     /// The caption lines; nil in steps saved before captions could be corrected, which leave them
-    /// as they are.
+    /// as they are, and in a saved draft's steps that write them as a change (`captionChanges`) or not at all.
     var captions: [CaptionCue]?
     /// The montage's other recordings; nil in steps saved before montages.
     var sources: [ClipSource]?
@@ -50,23 +50,42 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     /// saved before, which leave it).
     var captionLanguage: CueLanguage?
     var captionLanguageKnown: Bool?
+    /// A saved draft's step: its caption lines, and its translations' lines, as a change of the ones of the state it is applied
+    /// on (`thinned`).
+    var captionChanges: LinesChange<CaptionCue>?
+    var translationChanges: [CueLanguage: LinesChange<TranslatedCaptionLine>]?
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, texts, media, voiceOvers, cover, creatorStyle, captionStyle, filter
         case textLook, textPreset, captionLook, captionPreset, captions, sources, captionAnimation
         case captionTranslations, captionDisplay, music, backgrounds
         case captionCollection, captionCollectionVersion, captionPosition, look
-        case lockedLayers, captionLanguage, captionLanguageKnown
+        case lockedLayers, captionLanguage, captionLanguageKnown, captionChanges, translationChanges
     }
 }
 
 nonisolated extension EditSnapshot {
     /// `step` as a saved draft keeps it: its caption lines and translations left out when they are the same as in `newer`,
-    /// the state it is applied on, which an undo step without them leaves as they are (`TakeEdit.apply`).
+    /// the state it is applied on, which an undo step without them leaves as they are (`TakeEdit.apply`); lines of which only a
+    /// few changed are written as that change (`CaptionLinesChange`).
     static func thinned(_ step: EditSnapshot, onto newer: EditSnapshot) -> EditSnapshot {
         var thin = step
-        if step.captions != nil, step.captions == newer.captions { thin.captions = nil }
-        if step.captionTranslations != nil, step.captionTranslations == newer.captionTranslations { thin.captionTranslations = nil }
+        if let lines = step.captions, let newerLines = newer.captions, lines != newerLines {
+            if let change = captionChange(lines, onto: newerLines) {
+                thin.captions = nil
+                thin.captionChanges = change
+            }
+        } else if step.captions != nil, step.captions == newer.captions {
+            thin.captions = nil
+        }
+        if let translations = step.captionTranslations, let newerTranslations = newer.captionTranslations, translations != newerTranslations {
+            if let change = translationChange(translations, onto: newerTranslations) {
+                thin.captionTranslations = nil
+                thin.translationChanges = change
+            }
+        } else if step.captionTranslations != nil, step.captionTranslations == newer.captionTranslations {
+            thin.captionTranslations = nil
+        }
         return thin
     }
 
@@ -115,7 +134,9 @@ nonisolated extension EditSnapshot {
             look: try? container.decodeIfPresent(EditLook.self, forKey: .look),
             lockedLayers: try? container.decodeIfPresent(Set<UUID>.self, forKey: .lockedLayers),
             captionLanguage: try? container.decodeIfPresent(CueLanguage.self, forKey: .captionLanguage),
-            captionLanguageKnown: try? container.decodeIfPresent(Bool.self, forKey: .captionLanguageKnown)
+            captionLanguageKnown: try? container.decodeIfPresent(Bool.self, forKey: .captionLanguageKnown),
+            captionChanges: try? container.decodeIfPresent(LinesChange<CaptionCue>.self, forKey: .captionChanges),
+            translationChanges: try? container.decodeIfPresent([CueLanguage: LinesChange<TranslatedCaptionLine>].self, forKey: .translationChanges)
         )
     }
 }

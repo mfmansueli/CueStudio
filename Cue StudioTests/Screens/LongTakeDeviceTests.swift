@@ -69,7 +69,8 @@ struct LongTakeDeviceTests {
         } / Double(lineIDs.count)
         let draft = QuickEditDraft(takeID: take.id, edit: viewModel.edit, playhead: 600, history: viewModel.document.history, savedAt: .now)
         var bytes = 0
-        let written = try await Self.time { bytes = try JSONEncoder.library.encode(draft).count }
+        // As the store writes it: undo steps thinned to what changes (`QuickEditDraft.thinned`).
+        let written = try await Self.time { bytes = try JSONEncoder.library.encode(draft.thinned()).count }
         let after = MotionAnalysisDeviceTests.footprint()
         print(
             "LONG TAKE editor · \(Self.minutes) min, \(Self.lines) lines"

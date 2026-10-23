@@ -24,10 +24,18 @@ extension TakeEdit {
         captionPreset = step.captionPreset
         if step.captionCollectionVersion != nil { captionCollection = step.captionCollection }
         if let position = step.captionPosition { captionPosition = position }
-        if let captions = step.captions { self.captions = captions }
+        if let captions = step.captions {
+            self.captions = captions
+        } else if let lines = step.captionChanges?.applied(to: captions) {
+            self.captions = lines
+        }
         if let sources = step.sources { self.sources = sources }
         if let animation = step.captionAnimation { captionAnimation = animation }
-        if let translations = step.captionTranslations { captionTranslations = translations }
+        if let translations = step.captionTranslations {
+            captionTranslations = translations
+        } else if let changes = step.translationChanges, let translations = EditSnapshot.applying(changes, to: captionTranslations) {
+            captionTranslations = translations
+        }
         if let display = step.captionDisplay { captionDisplay = display }
         if let music = step.music { self.music = music }
         if let backgrounds = step.backgrounds { self.backgrounds = backgrounds }
