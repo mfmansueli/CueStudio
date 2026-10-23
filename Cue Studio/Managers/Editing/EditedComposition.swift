@@ -35,7 +35,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     /// Nil when the take has no sound.
     let audioMix: AVAudioMix?
 
-    struct Options: Sendable {
+    struct Options: Equatable, Sendable {
         var burnsInCaptions: Bool
         /// Height of the output's short side in pixels (720, 1080 or 2160); nil keeps the recording's.
         var shortSide: CGFloat?
@@ -71,15 +71,22 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     /// plays black and silent for its length. `speech` is where someone speaks in the recordings,
     /// for music that ducks. Built off the main thread (`@concurrent`): the preview rebuilds while a finger drags a
     /// handle, a slider or the frame, and the screen keeps following the finger meanwhile.
+    static func build(
+        source: URL, edit: TakeEdit, sound: RecordingSounds = .none, speech: VoiceActivity = .none, options: Options
+    ) async throws -> EditedComposition {
+        try await build(source: source, plan: RenderPlan(edit, options: options), sound: sound, speech: speech)
+    }
+
+    /// The composition of `plan` (`RenderPlan`), which is all it reads of the edit.
     @concurrent
     static func build(
-        source: URL, edit made: TakeEdit, sound: RecordingSounds = .none, speech: VoiceActivity = .none, options: Options
+        source: URL, plan: RenderPlan, sound: RecordingSounds = .none, speech: VoiceActivity = .none
     ) async throws -> EditedComposition {
-        // The edit as made; the preview plays it grown to the whole recording, from `leadIn` on.
-        var edit = made
-        if options.reachesWholeRecording { edit.timeline = made.timeline.reachable }
-        let leadIn = options.reachesWholeRecording ? made.timeline.reachableLeadIn : 0
-        let leadPieces = options.reachesWholeRecording ? made.timeline.reachableLeadPieces : 0
+        // The edit as drawn; the preview plays the edit as made in it from `leadIn` on.
+        let edit = plan.drawn
+        let options = plan.options
+        let leadIn = plan.leadIn
+        let leadPieces = plan.leadPieces
         let take = try await Recording.load(AVURLAsset(url: source))
         // A track can't be read once its asset is gone, so the treated sounds' assets are kept
         // until the composition is built (like each `Recording`'s).
@@ -130,8 +137,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             takeTracks.append((varispeed, levels(for: edit.timeline, plays: playsVarispeed), .varispeed))
         }
 
-        let windows = transitionWindows(of: made.timeline, reachesWholeRecording: options.reachesWholeRecording)
-        let zooms = zoomWindows(of: made.timeline, reachesWholeRecording: options.reachesWholeRecording)
+        let windows = plan.transitions
+        let zooms = plan.zooms
         var dissolves = windows.filter { $0.transition.showsBothSides }
         var blendTrack = dissolves.isEmpty ? nil : composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
         if let track = blendTrack, (try? insertOtherSides(of: dissolves, from: recording, into: track)) == nil {
@@ -158,7 +165,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let (mediaTracks, mediaFrames, mediaSounds) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
         let videoMedia = mediaFrames.filter(\.isVideo).map(\.span)
         let voices = await placeVoiceOvers(of: edit, in: composition)
-        let window = options.reachesWholeRecording ? TimeSpan(start: leadIn, end: leadIn + made.editedDuration) : TimeSpan(start: 0, end: cursor.seconds)
+        let window = plan.window ?? TimeSpan(start: 0, end: cursor.seconds)
         let spoken = speech.editedSpans(in: edit.timeline) + edit.voiceOvers.compactMap { $0.editedSpan(in: edit.timeline) }
         let music = await placeMusic(of: edit, window: window, speech: spoken, in: composition)
         let fadeWindows = windows.filter { $0.transition == .fade }
@@ -354,7 +361,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
     /// The transitions of the edit as made, where the item plays them: measured on the edit itself (clips grown to the whole
     /// recording for the editor's preview would give a transition more room than the export has), then moved by the lead-in
-    /// and the pieces the growing put before them. The player keys its item on these too (`QuickEditPlayer.ItemKey`).
+    /// and the pieces the growing put before them (`RenderPlan`).
     static func transitionWindows(of made: EditTimeline, reachesWholeRecording: Bool) -> [TransitionWindow] {
         let windows = TransitionWindow.windows(in: made)
         guard reachesWholeRecording else { return windows }
