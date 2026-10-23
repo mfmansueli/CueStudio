@@ -5,7 +5,8 @@ Este arquivo diz **como o app está hoje** e as decisões do dono que divergem d
 visual). Pacotes antigos só no git (commit `bb39f35`). **Como manter:** ao mudar uma tela, reescreva a seção dela no estado atual; o que saiu do app sai
 daqui (o histórico fica no git). Os números das seções são citados no código: não renumere.
 
-O app é **só escuro**. Regras de negócio: 5 exportações grátis (contador no Keychain), 7 dias de teste, preço da StoreKit, cota de IA, pipeline das
+O app é **só iPhone** no lançamento (`TARGETED_DEVICE_FAMILY = 1`, retrato, sem o Mac "Designed for iPad"; decisão do dono, 23/10/2026: o iPad vem
+depois; num iPad ele roda no modo de compatibilidade de iPhone). O app é **só escuro**. Regras de negócio: 5 exportações grátis (contador no Keychain), 7 dias de teste, preço da StoreKit, cota de IA, pipeline das
 takes (`TakeStage`). **Movimento:** o Modo de Baixo Consumo não tira nem encurta nenhuma animação (decisão do dono, 6/10/2026; a regra do `09` §7 foi
 removida); só o **Reduzir Movimento** mostra o estado final. `speed` só serve para encurtar nos testes de UI.
 
