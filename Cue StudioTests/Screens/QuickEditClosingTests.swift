@@ -77,3 +77,34 @@ struct QuickEditClosingTests {
         #expect(!ran)
     }
 }
+
+/// A preview that failed builds again: from Try again, and on its own when Cue comes back to the front.
+@MainActor
+@Suite("Quick edit: a failed preview")
+struct QuickEditPreviewRetryTests {
+    @Test func tryAgainAndComingBackBuildTheFailedPreview() async {
+        var take = TestData.take(scriptID: nil, number: 1)
+        take.duration = 20
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
+        takes.load()
+        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: []))
+        library.load()
+        let editor = FakeTakeEditor()
+        editor.duration = 20
+        let player = FakeEditPlayback()
+        let viewModel = QuickEditViewModel(
+            take: takes.takes[0], takes: takes, library: library, editing: editor, drafts: FakeDraftStore(), toast: ToastService(),
+            player: player, mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore()
+        )
+        await viewModel.prepare()
+        viewModel.becameActive()
+        #expect(player.retries == 0)
+        player.state = .failed
+        viewModel.retryPreview()
+        #expect(player.retries == 1)
+        player.state = .failed
+        viewModel.becameActive()
+        #expect(player.retries == 2)
+        #expect(viewModel.isReady)
+    }
+}

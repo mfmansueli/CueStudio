@@ -148,10 +148,15 @@ struct QuickEditPreview: View {
                 detail: Text("It may have been deleted or damaged. The original take isn't changed.")
             )
         } else if viewModel.player.state == .failed {
-            message(
-                title: Text("The preview couldn't be built"),
-                detail: Text("Try another change, or cancel and open the take again.")
-            )
+            VStack(spacing: 4) {
+                message(
+                    title: Text("The preview couldn't be built"),
+                    detail: Text("Your edit is safe. Try again, or cancel and open the take again.")
+                )
+                Button("Try again", action: viewModel.retryPreview)
+                    .buttonStyle(CueStudioButtonStyle(variant: .glass, size: .compact))
+                    .accessibilityIdentifier("edit.previewRetry")
+            }
         } else if viewModel.source == .loading || viewModel.player.state == .loading {
             ProgressView().tint(Palette.ink)
         } else if viewModel.player.isProcessing {

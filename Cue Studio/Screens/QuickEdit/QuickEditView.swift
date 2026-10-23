@@ -146,7 +146,7 @@ struct QuickEditView: View {
             )
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase != .active { viewModel.pauseAndKeepDraft() }
+            if phase == .active { viewModel.becameActive() } else { viewModel.pauseAndKeepDraft() }
         }
         // On appear too: a recording that started before the editor opened holds it before anything can play.
         .onChange(of: isSceneCaptured, initial: true) { _, captured in viewModel.sceneCaptureChanged(captured) }

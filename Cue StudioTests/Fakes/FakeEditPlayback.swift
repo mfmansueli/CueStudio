@@ -35,6 +35,14 @@ final class FakeEditPlayback: EditPlayback {
         redraws += 1
     }
 
+    /// How many times the edit was built again after a failure.
+    private(set) var retries = 0
+
+    func retry() {
+        retries += 1
+        state = .ready
+    }
+
     func show(_ edit: TakeEdit) {
         if let previous = shown.last, previous.timeline != edit.timeline {
             currentTime = edit.timeline.editedTime(matching: currentTime, in: previous.timeline)

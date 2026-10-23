@@ -71,6 +71,8 @@ final class QuickEditPlayer: EditPlayback {
     /// The views showing the preview, which hold its picture while the item is swapped.
     @ObservationIgnored private var frameHolders: [FrameHolder] = []
     @ObservationIgnored private var timeObserver: Any?
+    /// The item on screen failing after it played (iOS reset its media services in the background, a decoder lost).
+    @ObservationIgnored private var itemStatus: NSKeyValueObservation?
     @ObservationIgnored private var pendingSeek: TimeInterval?
     @ObservationIgnored private var isSeeking = false
     @ObservationIgnored private var isScrubbing = false
@@ -140,6 +142,29 @@ final class QuickEditPlayer: EditPlayback {
     func redraw() {
         guard edit != nil else { return }
         rebuild(restarting: false)
+    }
+
+    func retry() {
+        guard edit != nil, state == .failed || avPlayer.currentItem?.status == .failed else { return }
+        itemKey = nil
+        state = .loading
+        rebuild(restarting: true)
+    }
+
+    /// Watches the item now on screen: one that fails later leaves the preview failed (with Try again), never frozen.
+    private func watch(_ item: AVPlayerItem) {
+        itemStatus = item.observe(\.status) { [weak self] item, _ in
+            guard item.status == .failed else { return }
+            let error = item.error
+            Task { @MainActor [weak self] in self?.itemFailed(item, error: error) }
+        }
+    }
+
+    private func itemFailed(_ item: AVPlayerItem, error: (any Error)?) {
+        guard avPlayer.currentItem === item, state != .failed else { return }
+        if let error, let edit { EditorFailureReport.make(error, operation: "previewItem", edit: edit)?.send() }
+        pause()
+        state = .failed
     }
 
     // MARK: - Transport
@@ -215,6 +240,7 @@ final class QuickEditPlayer: EditPlayback {
             avPlayer.removeTimeObserver(timeObserver)
             self.timeObserver = nil
         }
+        itemStatus = nil
         avPlayer.replaceCurrentItem(with: nil)
     }
 
@@ -311,6 +337,7 @@ final class QuickEditPlayer: EditPlayback {
             avPlayer.pause()
             resumesAfterSeek = isPlaying
             avPlayer.replaceCurrentItem(with: item)
+            watch(item)
             state = .ready
             applyWindow()
             requestSeek(to: currentTime)

@@ -498,6 +498,19 @@ final class QuickEditViewModel {
         player.seek(to: player.currentTime + seconds)
     }
 
+    /// Try again, under a preview that couldn't be built: the edit is built from scratch.
+    func retryPreview() {
+        guard source == .ready else { return }
+        player.retry()
+    }
+
+    /// Cue is in front again: a preview that failed meanwhile (iOS resets its media services in the background) is built
+    /// again on its own.
+    func becameActive() {
+        guard source == .ready, player.state == .failed else { return }
+        player.retry()
+    }
+
     /// The scene started or stopped being recorded or mirrored (`SceneCaptured`): the preview pauses and nothing plays it until
     /// capture ends, then it waits paused on the same frame. The edit, the draft and the mute stay as they are, and a voice-over
     /// being recorded keeps recording (only the video under it stops).
