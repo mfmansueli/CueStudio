@@ -259,21 +259,32 @@ extension QuickEditViewModel {
 
     // MARK: - Reading
 
+    /// The lines timed to the edit (`CaptionMap`), worked out once per change of the lines or the cuts: a take of an hour has
+    /// hundreds, read every frame and every move of a finger.
+    var captionMap: CaptionMap {
+        // Read here, so a view showing lines draws again when the edit changes.
+        let edit = edit
+        if let map = captionMapStore { return map }
+        let map = CaptionMap(edit)
+        captionMapStore = map
+        return map
+    }
+
     /// The lines in the order they play, with where (edited seconds); lines said in cut pieces are
     /// left out.
     var editedCaptionLines: [CaptionCue] {
-        edit.editedCaptions.sorted { $0.start < $1.start }
+        captionMap.lines
     }
 
     /// The line a caption shown in the edit comes from (a copy of a section shows it again under
     /// another identity).
     func captionCueID(forLine id: UUID) -> UUID {
-        edit.editedCaptionInstances.first { $0.line.id == id }?.cueID ?? id
+        captionMap.cueID(forLine: id)
     }
 
     /// Where the line plays in the edit (edited seconds); nil when it was cut.
     func editedSpan(ofCaption id: UUID) -> TimeSpan? {
-        edit.editedCaptions.first { $0.id == id }?.span
+        captionMap.line(id)?.span
     }
 
     // MARK: - Correcting
@@ -369,7 +380,7 @@ extension QuickEditViewModel {
         guard let cue = edit.captions.first(where: { $0.id == id }) else { return }
         let time = player.currentTime
         // The part of the line under the playhead (a copied clip shows it again).
-        let instances = edit.editedCaptionInstances.filter { $0.cueID == id }
+        let instances = captionMap.instances.filter { $0.cueID == id }
         guard let span = (instances.first { $0.line.span.contains(time) } ?? instances.first)?.line.span else { return }
         guard time > span.start + 0.15, time < span.end - 0.15 else {
             toast.show(String(localized: "Move playhead into the line"))

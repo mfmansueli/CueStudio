@@ -41,7 +41,7 @@ extension QuickEditViewModel {
                 id: item.id, span: span, label: Self.label(of: item), isLocked: edit.lockedLayers.contains(item.id)
             )
         }
-        input.captions = edit.editedCaptionInstances.map { line, cueID in
+        input.captions = captionMap.instances.map { line, cueID in
             TimelineGeometry.ItemInput(id: cueID, span: line.span, label: line.text)
         }
         input.showsCaptions = edit.showsCaptions

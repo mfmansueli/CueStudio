@@ -36,6 +36,31 @@ struct QuickEditMotionTests {
         return Scenario(viewModel: viewModel, player: player, toast: toast)
     }
 
+    // MARK: - Analysis
+
+    /// An hour of video is a lot to analyze for nothing: an edit without Follow face or Stabilize waits until Format (or
+    /// Stabilize) opens.
+    @Test func recordingsAreAnalyzedWhenFormatOrStabilizeOpens() async {
+        var take = TestData.take(scriptID: nil, number: 1)
+        take.duration = 20
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
+        takes.load()
+        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: []))
+        library.load()
+        let motion = MotionAnalysisService(analyzer: FakeMotionAnalyzer(step: .milliseconds(1)))
+        let viewModel = QuickEditViewModel(
+            take: takes.takes[0], takes: takes, library: library, editing: FakeTakeEditor(), drafts: FakeDraftStore(),
+            toast: ToastService(), player: FakeEditPlayback(), mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(),
+            styles: FakeTextStyleStore(), motion: motion
+        )
+        defer { MotionAnalysisStore.remove(forRecording: viewModel.videoURL) }
+        await viewModel.prepare()
+        #expect(motion.status(of: viewModel.videoURL) == nil)
+        viewModel.panel = .crop
+        #expect(motion.status(of: viewModel.videoURL) != nil)
+        viewModel.cancel()
+    }
+
     // MARK: - Keyframes
 
     @Test func aKeyframeStartsWhereTheTextIsAndMovesItOverTime() async throws {

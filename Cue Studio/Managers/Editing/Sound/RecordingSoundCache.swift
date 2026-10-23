@@ -11,8 +11,9 @@ import Foundation
 /// how loud its speech is (`speechLevel`) and where someone speaks in it (`speechSpans`). A file asked for while it's being made waits for the same work.
 ///
 /// Infrastructure shared by two services (`TakeEditService`, `VideoExportService`), so a singleton (`ARCHITECTURE.md` §2.2).
-/// Treated and leveled files are the length of a take: only the `fileLimit` used most recently are kept, the others deleted
-/// (never one another key still points at: a level that changed nothing is its input file).
+/// Treated and leveled files are the length of a take (uncompressed: about 23 MB a minute, 1.4 GB for an hour): only the
+/// `fileLimit` used most recently are kept, and only as many as fit in `byteBudget`, the others deleted (never one another key
+/// still points at: a level that changed nothing is its input file, nor one used in the last `inUse` seconds).
 /// Everything is in the temporary folder, made on the device.
 actor RecordingSoundCache {
     static let shared = RecordingSoundCache()
@@ -25,6 +26,11 @@ actor RecordingSoundCache {
         case audio(URL)
         case treated(URL, VoiceProcessing)
         case leveled(URL, Int)
+
+        /// A recording's sound as it is, kept apart from the limits (it is made once and is short-lived only with the take).
+        var isRecordingSound: Bool {
+            if case .audio = self { true } else { false }
+        }
     }
 
     private var files: [Key: URL] = [:]
@@ -36,6 +42,23 @@ actor RecordingSoundCache {
     private var lastUsed: [Key: Date] = [:]
     static let inUse: TimeInterval = 120
     private var levels: [URL: Float?] = [:]
+    /// The size of each treated or leveled file.
+    private var sizes: [Key: Int64] = [:]
+    /// Bytes the treated and leveled files may take together; nil: `byteBudget(freeSpace:)` of the space free now.
+    private let fixedBudget: Int64?
+    /// How long a file just used stays, whatever the limits (`inUse`; tests make it 0).
+    private let keepsInUse: TimeInterval
+
+    init(byteBudget: Int64? = nil, keepsInUse: TimeInterval = RecordingSoundCache.inUse) {
+        fixedBudget = byteBudget
+        self.keepsInUse = keepsInUse
+    }
+
+    /// A quarter of the space free on the iPhone, between 512 MB and 3 GB: a few treatments of an hour-long take, never the
+    /// room the creator needs to record.
+    static func byteBudget(freeSpace: Int64) -> Int64 {
+        min(3_000_000_000, max(512_000_000, freeSpace / 4))
+    }
     private var speech: [URL: [TimeSpan]] = [:]
 
     /// Where someone speaks in the recording (for music that ducks), found once per file; none without a sound.
@@ -103,17 +126,28 @@ actor RecordingSoundCache {
     private func remember(_ file: URL, for key: Key) {
         files[key] = file
         touch(key)
+        if !key.isRecordingSound {
+            sizes[key] = (try? file.resourceValues(forKeys: [.fileSizeKey]).fileSize).map(Int64.init) ?? 0
+        }
+        let budget = fixedBudget ?? Self.byteBudget(freeSpace: Self.freeSpace())
         let now = Date()
-        while order.count > Self.fileLimit {
+        while order.count > Self.fileLimit || sizes.values.reduce(0, +) > budget {
             // The least recently used that nothing used just now; none such: the cache grows for a while.
-            guard let index = order.firstIndex(where: { now.timeIntervalSince(lastUsed[$0] ?? .distantPast) > Self.inUse }) else { break }
+            guard let index = order.firstIndex(where: { now.timeIntervalSince(lastUsed[$0] ?? .distantPast) > keepsInUse }) else { break }
             let oldest = order.remove(at: index)
             lastUsed[oldest] = nil
+            sizes[oldest] = nil
             // A file another key still names (a level that changed nothing returns its input) stays.
             guard let stale = files.removeValue(forKey: oldest), !files.values.contains(stale) else { continue }
             levels[stale] = nil
             try? FileManager.default.removeItem(at: stale)
         }
+    }
+
+    /// Space free on the iPhone for files the app makes.
+    private static func freeSpace() -> Int64 {
+        (try? URL.temporaryDirectory.resourceValues(forKeys: [.volumeAvailableCapacityForImportantUsageKey]))?
+            .volumeAvailableCapacityForImportantUsage ?? 0
     }
 
     /// `key` was just used: the last to go.

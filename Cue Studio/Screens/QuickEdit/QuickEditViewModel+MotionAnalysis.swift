@@ -5,9 +5,10 @@
 
 import Foundation
 
-/// The recordings' motion analysis (`MotionAnalysisService`): asked for every recording the edit plays when the editor opens
-/// (so Follow face and Stabilize are ready by the time they're wanted) and for each new one it plays while it uses them (a clip
-/// reversed or replaced, a new clip of a montage), and the preview drawn again when one is ready.
+/// The recordings' motion analysis (`MotionAnalysisService`): asked for every recording the edit plays when Format or Stabilize
+/// opens (so Follow face and Stabilize are ready by the time they're turned on), when the editor opens on an edit that uses
+/// them, and for each new one it plays while it uses them (a clip reversed or replaced, a new clip of a montage); the preview is
+/// drawn again when one is ready.
 extension QuickEditViewModel {
     /// The take's recording and the other recordings the edit plays.
     var playedRecordingURLs: [URL] {

@@ -214,8 +214,12 @@ final class QuickEditViewModel {
     var trackingProgress: Double?
     /// The recordings whose motion analysis was last asked for while the edit used it (`requestMotionAnalysisIfNeeded`).
     @ObservationIgnored var motionRequestedURLs: [URL] = []
+    /// The take's upright frame in pixels, read when the recording opens (Follow face needs a format other than it).
+    @ObservationIgnored var recordingUprightSize: CGSize?
     /// A point of the speed curve is being dragged (`QuickEditViewModel+SpeedCurve`).
     @ObservationIgnored var shapesCurve = false
+    /// The lines timed to the edit, kept until the lines or the cuts change (`captionMap`).
+    @ObservationIgnored var captionMapStore: CaptionMap?
 
     // MARK: Background
     /// Whether this iPhone can find people in video; nil until checked.
@@ -348,6 +352,7 @@ final class QuickEditViewModel {
             return
         }
         if let rate = await editing.frameRate(ofVideoAt: videoURL) { frameRate = FrameGrid(rate: rate).rate }
+        recordingUprightSize = await EditFraming.shape(of: videoURL)?.uprightSize
         guard !isClosed else { return }
         // The file's own length wins over the take's saved one; a draft left behind comes back with its undo steps.
         var playhead: TimeInterval = 0
@@ -361,7 +366,9 @@ final class QuickEditViewModel {
         player.show(edit)
         player.seek(to: playhead)
         drawCover()
-        requestMotionAnalysis()
+        // Only an edit that uses Follow face or Stabilize has its recordings analyzed now; the others when Format or
+        // Stabilize opens (an hour of video is a lot to analyze for nothing).
+        requestMotionAnalysisIfNeeded()
         findBeatsIfNeeded()
     }
 
@@ -370,6 +377,7 @@ final class QuickEditViewModel {
         // Edit by text picks words by their place in the list, which any change of the cuts moves (the sheet lets the
         // timeline be used behind it).
         if previous.timeline != edit.timeline { transcriptSelection = nil }
+        if previous.captions != edit.captions || previous.timeline != edit.timeline { captionMapStore = nil }
         guard source == .ready else { return }
         if let id = selectedSegmentID, edit.timeline.segment(id: id) == nil { selectedSegmentID = nil }
         if let id = selectedTextID, !edit.texts.contains(where: { $0.id == id }) { selectedTextID = nil }
@@ -431,6 +439,7 @@ final class QuickEditViewModel {
         if recorder.isRecording { stopVoiceOver() }
         // A cut is picked only while its Transition panel is open.
         if previous == .transition, picked?.joinID != nil { picked = nil }
+        if next == .crop || next == .stabilize { requestMotionAnalysis() }
         if next == .pauses {
             cleanUpMarks = [:]
             // Not tied to the panel: leaving Pauses doesn't stop it listening.
