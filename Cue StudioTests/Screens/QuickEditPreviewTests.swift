@@ -51,7 +51,7 @@ struct QuickEditPreviewTests {
         #expect(QuickEditViewModel.snappedCaption(0.99).y == 0.9)
     }
 
-    @Test func tappingATextPicksItThenOpensTextStyle() async throws {
+    @Test func tappingATextPicksItThenOpensItsWordsToEdit() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.perform(.addText(.title))
@@ -61,8 +61,24 @@ struct QuickEditPreviewTests {
         viewModel.tapText(id)
         #expect(viewModel.selection == .text(id))
         #expect(viewModel.panel == nil)
+        viewModel.focusesTextField = false
         viewModel.tapText(id)
         #expect(viewModel.panel == .textStyle)
+        #expect(viewModel.focusesTextField)
+    }
+
+    @Test func tappingACaptionTwiceOpensItsLineWithTheKeyboard() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        let cue = CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)
+        viewModel.edit.captions = [cue]
+        viewModel.edit.showsCaptions = true
+        viewModel.tapCaption(cue.id)
+        #expect(viewModel.selection == .caption(cue.id))
+        #expect(viewModel.panel == nil)
+        viewModel.tapCaption(cue.id)
+        #expect(viewModel.panel == .captions)
+        #expect(viewModel.focusesCaptionField)
     }
 
     @Test func draggingCaptionsMovesThemAllInOneStep() async {

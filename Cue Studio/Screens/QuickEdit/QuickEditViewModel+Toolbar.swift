@@ -269,7 +269,9 @@ extension QuickEditViewModel {
         case .duplicateText: selection?.textID.map(duplicateText)
         case .duplicateMedia: selection?.mediaID.map(duplicateMedia)
         case .deleteText: selection?.textID.map(deleteText)
-        case .editCaption: panel = .captions
+        case .editCaption:
+            panel = .captions
+            focusesCaptionField = true
         case .splitCaption: selection?.captionID.map(splitCaptionAtPlayhead)
         case .joinCaption: selection?.captionID.map(joinCaption)
         case .deleteCaption: selection?.captionID.map(deleteCaptionLine)
