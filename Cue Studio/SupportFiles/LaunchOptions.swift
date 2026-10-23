@@ -17,7 +17,8 @@ import Foundation
 /// - `-uiTestSlowExport`: the review's exports take a few seconds, so its progress can be seen; `-uiTestStoppedExport`: Take 3's
 ///   export stopped with Cue the last time, and its review says so.
 /// - `-uiTestDemoEdit`: "3 morning habits" Take 3 opens in the editor as the v10 design's demo
-///   (`SampleEdit`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text.
+///   (`SampleEdit.demo`: two clips, captions, texts, music with a beat, a B-roll window and a voice-over, their files made by
+///   `SampleEditMedia`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text.
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
@@ -221,7 +222,8 @@ struct LaunchOptions {
             }) {
                 takes[index].duration = SampleEdit.duration
                 takes[index].fileName = "sample-demo-edit.mov"
-                takes[index].edit = SampleEdit.make(aspect: takes[index].aspect, heard: arguments.contains("-uiTestDemoTranscript"))
+                takes[index].edit = SampleEdit.demo(aspect: takes[index].aspect, heard: arguments.contains("-uiTestDemoTranscript"))
+                SampleEditMedia.writeMissing()
             }
             let repository = InMemoryTakeRepository(takes: takes)
             options.takeRepository = repository

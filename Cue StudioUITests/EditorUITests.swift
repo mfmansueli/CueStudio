@@ -324,6 +324,29 @@ final class EditorUITests: XCTestCase {
         XCTAssertEqual(app.state, .runningForeground)
     }
 
+    // MARK: - Voice-over
+
+    /// Audio › Voice-over on a take with a script offers "Show script" (on): the script shows over the preview with the
+    /// teleprompter's speed under the switch; turning it off takes both away. Recording isn't run (no microphone in the Simulator).
+    func testVoiceOverShowsTheScriptOverThePreviewUntilItsSwitchIsOff() {
+        let app = EditorApp.open(demo: true)
+        EditorApp.tapTool(app, "audio")
+        let voiceOver = app.buttons["edit.toolbar.voiceOver"]
+        XCTAssertTrue(voiceOver.exists(within: 5))
+        voiceOver.tap()
+        let toggle = app.descendants(matching: .any)["edit.voiceOverScriptToggle"]
+        XCTAssertTrue(toggle.exists(within: 5), "No Show script in Voice-over")
+        XCTAssertEqual(toggle.value as? String, "On")
+        let script = app.descendants(matching: .any)["edit.narrationScript"]
+        XCTAssertTrue(script.exists(within: 5), "The script isn't over the preview")
+        XCTAssertTrue(app.descendants(matching: .any)["prompter.speedSlider"].exists)
+        XCTAssertTrue(app.buttons["edit.recordVoiceOverButton"].exists)
+        toggle.tap()
+        XCTAssertTrue(script.isGone(within: 5), "The script stayed after Show script was turned off")
+        XCTAssertEqual(toggle.value as? String, "Off")
+        XCTAssertFalse(app.descendants(matching: .any)["prompter.speedSlider"].exists)
+    }
+
     // MARK: - Timeline
 
     /// ✦ Smart keeps its tools and its templates apart: Templates is a tab of its own; a template applies to the whole video,

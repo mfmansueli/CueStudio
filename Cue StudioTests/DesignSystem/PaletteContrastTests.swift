@@ -426,6 +426,23 @@ struct PaletteContrastTests {
         }
     }
 
+    /// Voice-over's script over the preview: every colour the teleprompter offers on its scrim, and the "Paused" badge (ink on a
+    /// second scrim), over the worst picture (white) and a black one.
+    @Test func theNarrationScriptReadsOverAnyPicture() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            let scrim = rgb(Palette.Editor.narrationScrim, in: .dark, over: picture)
+            for color in PrompterTextColor.allCases {
+                let measured = ColorContrast.ratio(rgb(color.color, in: .dark, over: scrim), scrim)
+                #expect(measured >= ColorContrast.textMinimum, "\(color.label) over the scrim: \(measured)")
+            }
+            let badge = rgb(Palette.Editor.narrationScrim, in: .dark, over: scrim)
+            for appearance in Appearance.allCases {
+                let paused = ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: badge), badge)
+                #expect(paused >= ColorContrast.textMinimum, "Paused, \(appearance): \(paused)")
+            }
+        }
+    }
+
     /// The star's words over its cover (84% of `transitionCover`, 09 §8) on whatever the screen behind it shows: black, and at worst white.
     @Test func theStarsWordsReadOverItsCoverOnAnyScreen() {
         let words: [(name: String, color: Color)] = [

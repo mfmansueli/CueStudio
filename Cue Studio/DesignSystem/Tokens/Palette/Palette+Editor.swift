@@ -24,6 +24,10 @@ extension Palette {
         static let cropShade = Color.black.opacity(0.45)
         static let cropLabel = Color.black.opacity(0.72)
 
+        /// Behind the script shown over the preview while a voice-over records: dark enough that every prompter text colour
+        /// reads at 4.5:1 or more even over a white frame (`PaletteContrastTests.theNarrationScriptReadsOverAnyPicture`).
+        static let narrationScrim = Color.black.opacity(0.72)
+
         /// Behind the preview before the video loads.
         static let previewWell = Color(hex: 0x0E101C)
 
