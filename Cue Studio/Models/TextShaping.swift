@@ -23,6 +23,18 @@ nonisolated enum TextShaping {
         }
     }
 
+    /// Writing systems whose letters join or stack (ISO 15924), for a language rather than a text: the interface's labels.
+    private static let joinedScripts: Set<String> = [
+        "Arab", "Syrc", "Thaa", "Nkoo", "Mong", "Deva", "Beng", "Guru", "Gujr", "Orya", "Taml", "Telu", "Knda", "Mlym", "Sinh",
+        "Thai", "Laoo", "Tibt", "Mymr", "Khmr",
+    ]
+
+    /// Whether `language`'s letters can be spaced out (`allowsLetterSpacing(in:)`, for a label whose words aren't known yet).
+    static func allowsLetterSpacing(in language: Locale.Language) -> Bool {
+        let script = Locale.Language(identifier: language.maximalIdentifier).script?.identifier
+        return script.map { !joinedScripts.contains($0) } ?? true
+    }
+
     /// `text` in capitals, as its language writes them: Turkish and Azerbaijani "i" becomes "İ", never "I".
     static func uppercased(_ text: String) -> String {
         uppercased(text, locale: capitalsLocale(for: text))

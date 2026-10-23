@@ -94,6 +94,7 @@ struct CaptionPickTools: View {
     }
 
     private var moveAndDelete: some View {
+        // Earlier on the left in every language, like the timeline.
         HStack(spacing: 4) {
             iconButton("chevron.left", label: Text("Move earlier"), identifier: "edit.captionPicks.earlier") {
                 viewModel.movePickedCaptions(by: -QuickEditViewModel.captionGroupStep)
@@ -114,6 +115,7 @@ struct CaptionPickTools: View {
             .accessibilityLabel(Text("Delete the selected lines"))
             .accessibilityIdentifier("edit.captionPicks.delete")
         }
+        .environment(\.layoutDirection, .leftToRight)
     }
 
     private func chipLabel(_ label: String, systemImage: String, isOn: Bool) -> some View {

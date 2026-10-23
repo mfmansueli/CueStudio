@@ -39,7 +39,7 @@ struct EditorDoneSheet: View {
                 Text("Edit saved · \(duration)")
                     .textCase(.uppercase)
                     .font(.system(.caption2, design: .monospaced, weight: .heavy))
-                    .tracking(1)
+                    .interfaceTracking(1)
                     .foregroundStyle(Palette.accText)
                 Text("Is it ready to post?")
                     .font(.title2.bold())
@@ -95,7 +95,7 @@ struct EditorDoneSheet: View {
             Text(label).textCase(.uppercase).lineLimit(1)
         }
         .font(.system(size: smallLabelSize, weight: .heavy, design: .monospaced))
-        .tracking(0.5)
+        .interfaceTracking(0.5)
         .foregroundStyle(tint)
         .padding(.horizontal, 8)
         .frame(height: 22)

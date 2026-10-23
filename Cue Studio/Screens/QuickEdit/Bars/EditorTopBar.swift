@@ -49,7 +49,7 @@ struct EditorTopBar: ToolbarContent {
                 .lineLimit(1)
         }
         .font(.system(.caption2, design: .monospaced, weight: .heavy))
-        .tracking(0.6)
+        .interfaceTracking(0.6)
         .foregroundStyle(changed ? Palette.ink : Palette.ink2)
         .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .accessibilityElement(children: .ignore)

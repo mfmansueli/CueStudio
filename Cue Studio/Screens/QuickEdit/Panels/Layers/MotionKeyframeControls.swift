@@ -10,6 +10,8 @@ import SwiftUI
 /// work.
 struct MotionKeyframeControls: View {
     let viewModel: QuickEditViewModel
+    /// The language's direction, for the words between the arrows (which stay left to right).
+    @Environment(\.layoutDirection) private var direction
 
     var body: some View {
         let here = viewModel.hasKeyframeAtPlayhead
@@ -34,11 +36,14 @@ struct MotionKeyframeControls: View {
                     .contentShape(Capsule())
                 }
                 .buttonStyle(.plain)
+                .environment(\.layoutDirection, direction)
                 .accessibilityIdentifier("edit.keyframe.toggle")
                 arrow("chevron.right", label: Text("Next keyframe"), enabled: viewModel.hasKeyframe(forward: true), identifier: "edit.keyframe.next") {
                     viewModel.jumpToKeyframe(forward: true)
                 }
             }
+            // Keyframes go by time: the earlier one on the left in every language, like the timeline.
+            .environment(\.layoutDirection, .leftToRight)
             Text(viewModel.keyframeCountLabel)
                 .font(.system(.caption))
                 .foregroundStyle(Palette.ink2)

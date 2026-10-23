@@ -74,6 +74,8 @@ struct MediaTrimStrip: View {
                 .accessibilityIdentifier("edit.mediaPart")
             }
             .frame(height: 48)
+            // Time runs left to right in every language (media never mirrors), like the timeline.
+            .environment(\.layoutDirection, .leftToRight)
             PanelStepper(
                 label: String(localized: "Plays for"), value: DurationText.tenths(shown), identifier: "edit.mediaLength",
                 onDecrease: { viewModel.setMediaLength(media.id, shown - 0.5) },

@@ -51,7 +51,9 @@ enum EditorApp {
         let screen = app.windows.firstMatch.frame
         var swipes = 0
         while !screen.contains(button.frame), swipes < 4 {
-            app.descendants(matching: .any)["edit.toolbar"].swipeLeft()
+            // The tools run on past the screen's trailing edge: the right, and the left in Arabic.
+            let toolbar = app.descendants(matching: .any)["edit.toolbar"]
+            if button.frame.minX < screen.minX { toolbar.swipeRight() } else { toolbar.swipeLeft() }
             swipes += 1
         }
         button.tap()

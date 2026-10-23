@@ -151,13 +151,18 @@ final class QuickEditPlayer: EditPlayback {
         rebuild(restarting: true)
     }
 
-    /// Watches the item now on screen: one that fails later leaves the preview failed (with Try again), never frozen.
+    /// Watches the item now on screen: one that fails later leaves the preview failed (with Try again), never frozen. Not in
+    /// the Simulator: iOS 27's plays no video composition at all, not even AVFoundation's own (-11800, -12784 under it; measured
+    /// 23/10/2026, while the same item plays on an iPhone and exports in the Simulator), so there the preview stays blank as it
+    /// always was there, and the UI tests keep their tools.
     private func watch(_ item: AVPlayerItem) {
+        #if !targetEnvironment(simulator)
         itemStatus = item.observe(\.status) { [weak self] item, _ in
             guard item.status == .failed else { return }
             let error = item.error
             Task { @MainActor [weak self] in self?.itemFailed(item, error: error) }
         }
+        #endif
     }
 
     private func itemFailed(_ item: AVPlayerItem, error: (any Error)?) {

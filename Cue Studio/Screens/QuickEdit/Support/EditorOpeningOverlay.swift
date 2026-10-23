@@ -16,7 +16,7 @@ struct EditorOpeningOverlay: View {
             VStack(spacing: 0) {
                 Text("OPENING YOUR EDIT")
                     .font(CueStudioFont.hud)
-                    .tracking(1.5)
+                    .interfaceTracking(1.5)
                     .foregroundStyle(Palette.ink2)
                     .padding(.top, 20)
                 RoundedRectangle(cornerRadius: 28, style: .continuous)

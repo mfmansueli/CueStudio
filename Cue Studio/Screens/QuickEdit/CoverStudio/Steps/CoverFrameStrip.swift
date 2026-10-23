@@ -73,6 +73,8 @@ struct CoverFrameStrip: View {
             .accessibilityIdentifier("cover.frameStrip")
         }
         .frame(height: 56)
+        // Time runs left to right in every language (media never mirrors), like the timeline.
+        .environment(\.layoutDirection, .leftToRight)
         .task(id: edit.timeline) { await load() }
     }
 

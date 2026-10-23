@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// A row of choices in a rounded well: the picked one gray (or yellow when it's the panel's main
-/// choice, like a speed). With five or six, the labels shrink down to 12 pt before they'd wrap; with the largest text sizes
-/// more than three choices go in rows of three, so a label like "0,75×" is never cut.
+/// choice, like a speed). With five or six, the labels shrink down to 12 pt, then take a second line (a long word in
+/// German or Russian); with the largest text sizes more than three choices go in rows of three, so a label is never cut.
 struct PanelSegmented<Value: Hashable>: View {
     var label: String?
     var detail: String?
@@ -49,8 +49,9 @@ struct PanelSegmented<Value: Hashable>: View {
         } label: {
             Text(option.label)
                 .font(.system(.footnote, weight: .semibold))
-                .lineLimit(1)
+                .lineLimit(2)
                 .minimumScaleFactor(12 / 13.5)
+                .multilineTextAlignment(.center)
                 .foregroundStyle(isOn ? (accent ? Palette.accInk : Palette.ink) : Palette.ink2)
                 .frame(maxWidth: .infinity, minHeight: height)
                 .background(

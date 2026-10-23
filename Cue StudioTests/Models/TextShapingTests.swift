@@ -21,6 +21,15 @@ struct TextShapingTests {
         }
     }
 
+    @Test func labelsAreSpacedOnlyInLanguagesWhoseLettersStandApart() {
+        for joined in ["ar", "hi", "th"] {
+            #expect(!TextShaping.allowsLetterSpacing(in: Locale.Language(identifier: joined)), "\(joined)")
+        }
+        for apart in ["en", "pt-BR", "de", "ja", "zh-Hant", "ko", "tr", "vi"] {
+            #expect(TextShaping.allowsLetterSpacing(in: Locale.Language(identifier: apart)), "\(apart)")
+        }
+    }
+
     @Test func turkishCapitalsKeepTheDot() {
         #expect(TextShaping.uppercased("istanbul'da bir gün nasıl geçer") == "İSTANBUL'DA BİR GÜN NASIL GEÇER")
         #expect(TextShaping.uppercased("five things in istanbul you should see") == "FIVE THINGS IN ISTANBUL YOU SHOULD SEE")

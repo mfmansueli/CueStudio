@@ -156,7 +156,7 @@ struct SmartPanel: View {
                 Text(status ?? " ")
                     .textCase(.uppercase)
                     .font(.system(size: statusSize, weight: .heavy, design: .monospaced))
-                    .tracking(0.5)
+                    .interfaceTracking(0.5)
                     .foregroundStyle(Palette.aiText)
                     .lineLimit(1)
                     .padding(.top, 2)

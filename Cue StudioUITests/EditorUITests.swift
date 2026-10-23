@@ -449,4 +449,21 @@ final class EditorUITests: XCTestCase {
         close.tap()
         XCTAssertTrue(notice.waitForNonExistence(timeout: 3))
     }
+
+    /// Arabic chosen in Cue on an iPhone in English: the editor and its panels lay out right to left (the window's trait,
+    /// `InterfaceDirection`), while the frame steps keep time left to right.
+    func testArabicLaysTheEditorOutRightToLeft() {
+        let app = EditorApp.open(arguments: ["-uiTestAppLanguage", "ar"])
+        EditorApp.tapTool(app, "edit")
+        let speed = app.buttons["edit.toolbar.speed"]
+        XCTAssertTrue(speed.exists(within: 5))
+        speed.tap()
+        let apply = app.buttons["edit.panel.apply"]
+        let title = app.staticTexts["edit.panel.subtitle"]
+        XCTAssertTrue(apply.exists(within: 5))
+        XCTAssertTrue(title.exists(within: 2))
+        XCTAssertLessThan(apply.frame.midX, title.frame.midX, "The panel’s ✓ is on the left in Arabic")
+        let back = app.buttons["edit.previousFrame"], forward = app.buttons["edit.nextFrame"]
+        if back.exists, forward.exists { XCTAssertLessThan(back.frame.midX, forward.frame.midX, "Time runs left to right") }
+    }
 }
