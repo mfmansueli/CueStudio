@@ -20,7 +20,8 @@
       "parallelizable" : true,
       "skippedTags" : {
         "tags" : [
-          "realExports"
+          "realExports",
+          "realMedia"
         ]
       },
       "target" : {

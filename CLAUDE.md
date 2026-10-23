@@ -36,7 +36,7 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
 - Scheme compartilhado `Cue Studio` (app + `Cue StudioTests` + `Cue StudioUITests`), Swift 6, iOS 27. O app do Apple Watch (`Cue Studio Watch`,
   watchOS 10, `Config/Watch.xcconfig`) compila junto com o do iPhone, mas ainda não vai embutido nele (é uma base; DESIGN_PROJECT §43); código dos
   dois em `Cue Watch Shared/`. Testes por planos
-  (`TestPlans/`): **Full** (o padrão do ⌘U: unidade + UI), **Fast** (unidade sem as exportações reais, tag `.realExports`) e
+  (`TestPlans/`): **Full** (o padrão do ⌘U: unidade + UI), **Fast** (unidade sem as exportações reais nem o editor numa gravação real, tags `.realExports` e `.realMedia`) e
   **UISmoke** (um teste de UI por fluxo).
 - **Build e testes pelos scripts** (`scripts/`), não por `xcodebuild` solto: um derivedData por checkout (`build/`), pacotes
   compartilhados, **um `xcodebuild` por vez no Mac** (o próximo espera o que está rodando, de outra sessão ou worktree) e só
