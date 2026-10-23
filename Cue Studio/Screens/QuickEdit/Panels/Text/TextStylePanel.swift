@@ -31,7 +31,7 @@ struct TextStylePanel: View {
         if let text = viewModel.selectedText, let graphic = text.graphic {
             GraphicStylePanel(viewModel: viewModel, text: text, graphic: graphic)
         } else if let text = viewModel.selectedText {
-            let tab = viewModel.textStyleTab
+            let tab = viewModel.overlays.textStyleTab
             // With the largest text sizes only the tabs stay fixed: the words scroll with the rest, and
             // the tab's own controls come before the scope, so Font and Color show what they are for.
             let isLarge = typeSize.isAccessibilitySize
@@ -54,7 +54,7 @@ struct TextStylePanel: View {
                 frame = await thumbnails.thumbnail(for: viewModel.videoURL, maxPixelSize: 240)
             }
             .onAppear(perform: focusIfAsked)
-            .onChange(of: viewModel.focusesTextField) { _, _ in focusIfAsked() }
+            .onChange(of: viewModel.overlays.focusesTextField) { _, _ in focusIfAsked() }
             .alert(
                 "Apply this style to captions?",
                 isPresented: Binding(
@@ -75,15 +75,15 @@ struct TextStylePanel: View {
     /// The look's controls under the tabs: the scope, the tab's own controls, and copying the look to the captions.
     @ViewBuilder
     private func lookControls(_ text: TextOverlay, tab: EditorPanelTab, isLarge: Bool) -> some View {
-        if viewModel.textStyleTabChangesLook, !isLarge { scope }
+        if viewModel.overlays.textStyleTabChangesLook, !isLarge { scope }
         switch tab {
         case .font: font(text)
         case .color: color(text)
         case .motion: MotionKeyframeControls(viewModel: viewModel)
         default: presets(text)
         }
-        if viewModel.textStyleTabChangesLook, isLarge { scope }
-        if viewModel.textStyleTabChangesLook, viewModel.captions.canCopyStyleToCaptions { copyToCaptions }
+        if viewModel.overlays.textStyleTabChangesLook, isLarge { scope }
+        if viewModel.overlays.textStyleTabChangesLook, viewModel.captions.canCopyStyleToCaptions { copyToCaptions }
     }
 
     /// The words are being typed (the keyboard is up for the field).
@@ -96,8 +96,8 @@ struct TextStylePanel: View {
     }
 
     private func focusIfAsked() {
-        guard viewModel.focusesTextField else { return }
-        viewModel.focusesTextField = false
+        guard viewModel.overlays.focusesTextField else { return }
+        viewModel.overlays.focusesTextField = false
         writes = true
     }
 
@@ -105,9 +105,9 @@ struct TextStylePanel: View {
 
     /// The words: over the tabs, in reach over the keyboard and while the content scrolls.
     private func field(_ text: TextOverlay) -> some View {
-        TextField(viewModel.textFieldPlaceholder, text: Binding(
+        TextField(viewModel.overlays.textFieldPlaceholder, text: Binding(
             get: { text.text },
-            set: { viewModel.setTextContent(text.id, $0) }
+            set: { viewModel.overlays.setTextContent(text.id, $0) }
         ))
         .font(.system(.body))
         .focused($writes)
@@ -123,10 +123,10 @@ struct TextStylePanel: View {
         VStack(alignment: .leading, spacing: 6) {
             PanelSegmented(
                 label: String(localized: "Style applies to"),
-                options: QuickEditViewModel.textStyleScopes.map { PanelOption($0, viewModel.textStyleScopeLabel($0)) },
-                selection: viewModel.textStyleScope, height: 38, identifier: "edit.style.scope"
-            ) { viewModel.textStyleScope = $0 }
-            if viewModel.textStyleScope == .allTexts {
+                options: OverlaysViewModel.textStyleScopes.map { PanelOption($0, viewModel.overlays.textStyleScopeLabel($0)) },
+                selection: viewModel.overlays.textStyleScope, height: 38, identifier: "edit.style.scope"
+            ) { viewModel.overlays.textStyleScope = $0 }
+            if viewModel.overlays.textStyleScope == .allTexts {
                 PanelNote(text: String(localized: "Words, timing and motion stay with each text."))
                     .accessibilityIdentifier("edit.style.scopeNote")
             }
@@ -152,31 +152,31 @@ struct TextStylePanel: View {
     private func presets(_ text: TextOverlay) -> some View {
         styleCards
         PanelSlider(
-            label: String(localized: "Size"), value: viewModel.pickedTextPointSize, range: CueSliderSpec.textPoints.range,
+            label: String(localized: "Size"), value: viewModel.overlays.pickedTextPointSize, range: CueSliderSpec.textPoints.range,
             step: CueSliderSpec.textPoints.step ?? 2, defaultValue: CueSliderSpec.textPoints.defaultValue, format: .points, identifier: "edit.textSize"
-        ) { viewModel.restyleText(.size($0), key: "textSize") }
+        ) { viewModel.overlays.restyleText(.size($0), key: "textSize") }
         PanelSlider(
             label: String(localized: "Glow"), value: text.glow * 100, range: CueSliderSpec.textGlow.range,
             step: CueSliderSpec.textGlow.step ?? 5, defaultValue: CueSliderSpec.textGlow.defaultValue, format: .percent,
             identifier: "edit.textGlow"
-        ) { viewModel.restyleText(.glow($0 / 100), key: "textGlow") }
+        ) { viewModel.overlays.restyleText(.glow($0 / 100), key: "textGlow") }
     }
 
     private var styleCards: some View {
         ScrollView(.horizontal) {
             HStack(alignment: .top, spacing: 8) {
-                PanelSaveStyleCard(action: viewModel.saveMyStyle)
-                if let mine = viewModel.myStyle {
+                PanelSaveStyleCard(action: viewModel.overlays.saveMyStyle)
+                if let mine = viewModel.overlays.myStyle {
                     PanelPresetCard(
                         name: String(localized: "My style"), sample: TypeLookPreview.image(mine, use: .title, sample: Self.sample),
-                        frame: frame, isSelected: viewModel.pickedTextIsMyStyle, identifier: "edit.style.mine"
-                    ) { viewModel.pickTextPreset(nil) }
+                        frame: frame, isSelected: viewModel.overlays.pickedTextIsMyStyle, identifier: "edit.style.mine"
+                    ) { viewModel.overlays.pickTextPreset(nil) }
                 }
                 ForEach(TypePreset.editorPresets) { preset in
                     PanelPresetCard(
                         name: preset.label, sample: TypeLookPreview.image(preset.look(for: .title), use: .title, sample: Self.sample),
-                        frame: frame, isSelected: viewModel.pickedTextPreset == preset, identifier: "edit.style.\(preset.rawValue)"
-                    ) { viewModel.pickTextPreset(preset) }
+                        frame: frame, isSelected: viewModel.overlays.pickedTextPreset == preset, identifier: "edit.style.\(preset.rawValue)"
+                    ) { viewModel.overlays.pickTextPreset(preset) }
                 }
             }
             .padding(.horizontal, 16)
@@ -191,12 +191,12 @@ struct TextStylePanel: View {
         PanelChips(
             options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: text.font,
             font: { CueStudioFont.chip($0, size: $1) }, identifier: "edit.textFont",
-            onSelect: { viewModel.restyleText(.font($0)) }
+            onSelect: { viewModel.overlays.restyleText(.font($0)) }
         )
         PanelSegmented(
             label: String(localized: "Weight"), options: text.font.weights.map { PanelOption($0, $0.label) },
             selection: text.weight, height: 38, identifier: "edit.textWeight"
-        ) { viewModel.restyleText(.weight($0)) }
+        ) { viewModel.overlays.restyleText(.weight($0)) }
     }
 
     @ViewBuilder
@@ -204,20 +204,20 @@ struct TextStylePanel: View {
         PanelSwatches(
             label: String(localized: "Text"), colors: OverlayColor.palette, selection: text.color,
             diameter: Self.swatchDiameter, identifier: "edit.textColor"
-        ) { viewModel.restyleText(.color($0)) }
+        ) { viewModel.overlays.restyleText(.color($0)) }
         PanelSegmented(
             label: String(localized: "Background"), options: TextOverlayBackground.allCases.map { PanelOption($0, $0.label) },
             selection: text.background, height: 38, identifier: "edit.textBackground"
-        ) { viewModel.restyleText(.background($0)) }
+        ) { viewModel.overlays.restyleText(.background($0)) }
         if text.background != .none {
             PanelSwatches(
                 label: String(localized: "Background color"), colors: OverlayColor.palette,
                 selection: text.backgroundColor, diameter: Self.swatchDiameter, identifier: "edit.textBackgroundColor"
-            ) { viewModel.restyleText(.backgroundColor($0)) }
+            ) { viewModel.overlays.restyleText(.backgroundColor($0)) }
         }
         PanelSegmented(
             label: String(localized: "Shadow"), options: TextShadowStyle.allCases.map { PanelOption($0, $0.label) },
             selection: TextShadowStyle(hasShadow: text.hasShadow, hasOutline: text.hasOutline), height: 38, identifier: "edit.textShadow"
-        ) { viewModel.restyleText(.shadow($0)) }
+        ) { viewModel.overlays.restyleText(.shadow($0)) }
     }
 }

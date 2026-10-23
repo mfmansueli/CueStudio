@@ -85,21 +85,21 @@ struct QuickEditEdgeCaseTests {
     @Test func cuttingATextWithKeyframesHidesItAndUndoBringsItBack() async {
         let (viewModel, player) = await makeViewModel(seconds: 20)
         player.seek(to: 5)
-        viewModel.addStyledText(.title)
+        viewModel.overlays.addStyledText(.title)
         let id = viewModel.edit.texts[0].id
-        viewModel.toggleKeyframe()
+        viewModel.overlays.toggleKeyframe()
         player.seek(to: 7)
-        viewModel.toggleKeyframe()
+        viewModel.overlays.toggleKeyframe()
         #expect(viewModel.edit.texts[0].keyframes.count == 2)
         // Seconds 4 to 9 go: the whole text with them.
         var timeline = viewModel.edit.timeline
         _ = timeline.removeEdited(4...9)
         viewModel.commit(timeline)
-        #expect(viewModel.editedSpan(ofText: id) == nil)
+        #expect(viewModel.overlays.editedSpan(ofText: id) == nil)
         #expect(viewModel.edit.texts.count == 1)
         #expect(!viewModel.textBars.contains { $0.id == id })
         viewModel.undo()
-        #expect(viewModel.editedSpan(ofText: id) != nil)
+        #expect(viewModel.overlays.editedSpan(ofText: id) != nil)
         #expect(viewModel.edit.texts[0].keyframes.count == 2)
     }
 

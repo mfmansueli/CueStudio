@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Motion.swift
+//  OverlaysViewModel+Motion.swift
 //  Cue Studio
 //
 
@@ -10,7 +10,7 @@ import Foundation
 /// and how opaque. Once an item has keyframes, moving or resizing it on the preview sets the one at
 /// the playhead (adding it when there's none). Keyframe times count from the item's start, so moving
 /// the item takes its motion along. Every change is an undo step; a slider is one.
-extension QuickEditViewModel {
+extension OverlaysViewModel {
     /// What keyframes apply to.
     enum MotionItem: Equatable {
         case text(UUID)

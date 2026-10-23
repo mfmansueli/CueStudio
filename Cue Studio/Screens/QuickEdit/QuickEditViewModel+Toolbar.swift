@@ -68,7 +68,7 @@ extension QuickEditViewModel {
                 startsGroup: kind == .arrow
             )
         }
-        if commentForCard != nil {
+        if overlays.commentForCard != nil {
             items.append(EditorToolbarItem(id: "comment", label: String(localized: "Comment"), systemImage: "text.bubble.fill", action: .addCommentCard))
         }
         if !edit.texts.isEmpty {
@@ -236,7 +236,7 @@ extension QuickEditViewModel {
             look.lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
             self.panel = panel
         case .addMedia, .addMediaChoice:
-            mediaInsertMode = .overlay
+            overlays.mediaInsertMode = .overlay
             sheet = .media
         case .addText, .addGraphic, .addCommentCard, .styleAllTexts, .editText: performTextAction(action)
         case .deleteAllCaptions: captions.deleteAllCaptions()
@@ -258,13 +258,13 @@ extension QuickEditViewModel {
     /// The Text menu's actions and Edit on a picked text.
     private func performTextAction(_ action: EditorAction) {
         switch action {
-        case .addText(let role): addStyledText(role)
-        case .addGraphic(let kind): addGraphic(kind)
-        case .addCommentCard: addCommentCard()
+        case .addText(let role): overlays.addStyledText(role)
+        case .addGraphic(let kind): overlays.addGraphic(kind)
+        case .addCommentCard: overlays.addCommentCard()
         case .styleAllTexts: styleAllTexts()
         case .editText:
             panel = .textStyle
-            focusesTextField = true
+            overlays.focusesTextField = true
         default: break
         }
     }
@@ -280,10 +280,10 @@ extension QuickEditViewModel {
     private func performOnSelection(_ action: EditorAction) -> Bool {
         if performOnClip(action) || performOnMotion(action) { return true }
         switch action {
-        case .duplicateText: selection?.textID.map(duplicateText)
+        case .duplicateText: selection?.textID.map(overlays.duplicateText)
         case .toggleLock: toggleLockOfSelection()
-        case .duplicateMedia: selection?.mediaID.map(duplicateMedia)
-        case .deleteText: selection?.textID.map(deleteText)
+        case .duplicateMedia: selection?.mediaID.map(overlays.duplicateMedia)
+        case .deleteText: selection?.textID.map(overlays.deleteText)
         case .editCaption:
             panel = .captions
             captions.focusesCaptionField = true
@@ -294,7 +294,7 @@ extension QuickEditViewModel {
         case .reRecordVoiceOver: selection?.voiceOverID.map(audio.reRecordVoiceOver)
         case .deleteVoiceOver: selection?.voiceOverID.map(audio.deleteVoiceOver)
         case .replaceMedia: replaceSelectedMedia()
-        case .deleteMedia: selection?.mediaID.map(deleteMedia)
+        case .deleteMedia: selection?.mediaID.map(overlays.deleteMedia)
         default: return false
         }
         return true
@@ -303,10 +303,10 @@ extension QuickEditViewModel {
     /// How the picked text or photo moves: keyframes, Track, ready animations. False when `action` isn't one of them.
     private func performOnMotion(_ action: EditorAction) -> Bool {
         switch action {
-        case .toggleKeyframe: toggleKeyframe()
-        case .trackItem: trackSelectedItem()
+        case .toggleKeyframe: overlays.toggleKeyframe()
+        case .trackItem: overlays.trackSelectedItem()
         case .openTextAnimation:
-            textStyleScope = .selected
+            overlays.textStyleScope = .selected
             panel = .textStyle
             panelTab = .motion
         default: return false
@@ -350,7 +350,7 @@ extension QuickEditViewModel {
     func styleAllTexts() {
         guard let first = edit.texts.first else { return }
         selection = .text(first.id)
-        textStyleScope = .allTexts
+        overlays.textStyleScope = .allTexts
         panel = .textStyle
     }
 }

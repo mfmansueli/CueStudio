@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+OverlayAccessibility.swift
+//  OverlaysViewModel+Accessibility.swift
 //  Cue Studio
 //
 
@@ -8,7 +8,7 @@ import Foundation
 
 /// VoiceOver's way to place what lies on the video, where a finger drags and pinches: a step up, down, left or right, bigger
 /// or smaller (the actions of a text's or a photo's handle), each an undo step, and where it landed said aloud.
-extension QuickEditViewModel {
+extension OverlaysViewModel {
     /// One step: a twentieth of the frame.
     static let overlayStep = 0.05
     /// Bigger or smaller by this much.

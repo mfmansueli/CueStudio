@@ -17,17 +17,17 @@ struct MediaPanel: View {
                 PanelSegmented(
                     label: String(localized: "Layout"), options: MediaLayout.allCases.map { PanelOption($0, $0.label) },
                     selection: media.layout, identifier: "edit.mediaLayout"
-                ) { layout in viewModel.updateMedia(media.id) { $0.layout = layout } }
+                ) { layout in viewModel.overlays.updateMedia(media.id) { $0.layout = layout } }
                 if media.layout == .window {
                     PanelSegmented(
                         label: String(localized: "Ratio"), options: MediaShape.allCases.map { PanelOption($0, $0.label) },
                         selection: media.shape, identifier: "edit.mediaShape"
-                    ) { shape in viewModel.updateMedia(media.id) { $0.shape = shape } }
+                    ) { shape in viewModel.overlays.updateMedia(media.id) { $0.shape = shape } }
                     PanelSlider(
                         label: String(localized: "Size"), value: media.width * 100,
                         range: MediaOverlay.widthRange.lowerBound * 100...MediaOverlay.widthRange.upperBound * 100,
                         format: .percent, identifier: "edit.mediaSize",
-                        onChange: { width in viewModel.updateMedia(media.id) { $0.width = width / 100 } },
+                        onChange: { width in viewModel.overlays.updateMedia(media.id) { $0.width = width / 100 } },
                         onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
                     )
                 }
@@ -38,12 +38,12 @@ struct MediaPanel: View {
                     HStack(spacing: 8) {
                         PanelButton(
                             label: String(localized: "Bring forward"), systemImage: "square.2.layers.3d.top.filled",
-                            isEnabled: viewModel.canRestack(media.id, up: true), identifier: "edit.mediaForwardButton"
-                        ) { viewModel.restack(media.id, up: true) }
+                            isEnabled: viewModel.overlays.canRestack(media.id, up: true), identifier: "edit.mediaForwardButton"
+                        ) { viewModel.overlays.restack(media.id, up: true) }
                         PanelButton(
                             label: String(localized: "Send backward"), systemImage: "square.2.layers.3d.bottom.filled",
-                            isEnabled: viewModel.canRestack(media.id, up: false), identifier: "edit.mediaBackwardButton"
-                        ) { viewModel.restack(media.id, up: false) }
+                            isEnabled: viewModel.overlays.canRestack(media.id, up: false), identifier: "edit.mediaBackwardButton"
+                        ) { viewModel.overlays.restack(media.id, up: false) }
                     }
                 }
                 PanelAdvancedButton(isOpen: viewModel.showsAdvanced) { viewModel.showsAdvanced.toggle() }
@@ -52,7 +52,7 @@ struct MediaPanel: View {
                         PanelSlider(
                             label: String(localized: "Sound"), value: (media.audioVolume ?? 0) * 100, range: 0...100,
                             format: .percent, identifier: "edit.mediaSound",
-                            onChange: { viewModel.setMediaSoundVolume(media.id, $0 / 100) },
+                            onChange: { viewModel.overlays.setMediaSoundVolume(media.id, $0 / 100) },
                             onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
                         )
                     }

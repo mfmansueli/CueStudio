@@ -267,20 +267,20 @@ struct QuickEditSoundTests {
     @Test func aVideoWithSoundAsksAndStaysMutedUntilKept() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(ImportedMedia(kind: .video, fileName: "walk-\(UUID().uuidString).mov", aspect: 1, duration: 4, hasSound: true))
+        viewModel.overlays.addMedia(ImportedMedia(kind: .video, fileName: "walk-\(UUID().uuidString).mov", aspect: 1, duration: 4, hasSound: true))
         let id = try #require(viewModel.edit.media.first?.id)
-        #expect(viewModel.soundChoiceMediaID == id)
+        #expect(viewModel.overlays.soundChoiceMediaID == id)
         #expect(viewModel.edit.media.first?.audioVolume == nil)
-        viewModel.chooseSound(for: id, keeps: true)
-        #expect(viewModel.soundChoiceMediaID == nil)
+        viewModel.overlays.chooseSound(for: id, keeps: true)
+        #expect(viewModel.overlays.soundChoiceMediaID == nil)
         #expect(viewModel.edit.media.first?.audioVolume == 1)
-        viewModel.setMediaSoundVolume(id, 0)
+        viewModel.overlays.setMediaSoundVolume(id, 0)
         #expect(viewModel.edit.media.first?.audioVolume == nil)
     }
 
     @Test func aSilentVideoDoesNotAsk() async {
         let scenario = await makeScenario()
-        scenario.viewModel.addMedia(ImportedMedia(kind: .video, fileName: "quiet-\(UUID().uuidString).mov", aspect: 1, duration: 4))
-        #expect(scenario.viewModel.soundChoiceMediaID == nil)
+        scenario.viewModel.overlays.addMedia(ImportedMedia(kind: .video, fileName: "quiet-\(UUID().uuidString).mov", aspect: 1, duration: 4))
+        #expect(scenario.viewModel.overlays.soundChoiceMediaID == nil)
     }
 }

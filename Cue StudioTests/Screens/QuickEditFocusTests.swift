@@ -103,7 +103,7 @@ struct QuickEditFocusTests {
         viewModel.beginChange()
         viewModel.changeEdit { $0.cropOffset = 0.3 }
         // Something else is picked meanwhile: Speed can't work on it and closes, the gesture's step goes on.
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         #expect(viewModel.panel != .speed)
         viewModel.changeEdit { $0.cropOffset = 0.6 }
         viewModel.endChange()

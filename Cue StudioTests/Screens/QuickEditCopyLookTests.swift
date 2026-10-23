@@ -157,7 +157,7 @@ struct QuickEditCopyLookTests {
         #expect(media != nil)
         viewModel.perform(.addMediaChoice)
         #expect(viewModel.sheet == .media)
-        #expect(viewModel.mediaInsertMode == .overlay)
+        #expect(viewModel.overlays.mediaInsertMode == .overlay)
     }
 }
 
@@ -230,7 +230,7 @@ struct QuickEditGraphicsTests {
         #expect(viewModel.panelTitle(.textStyle) == CoverItemKind.tag.label)
         let image = try #require(TextOverlayRenderer.image(for: tag, frameWidth: 360))
         #expect(image.size.width > 20)
-        viewModel.setGraphicRotation(tag.id, degrees: 90)
+        viewModel.overlays.setGraphicRotation(tag.id, degrees: 90)
         #expect(abs((viewModel.edit.texts[0].graphic?.rotation ?? 0) - .pi / 2) < 0.000_1)
         // Turned a quarter, its box turns with it.
         let turned = TextOverlayRenderer.size(for: viewModel.edit.texts[0], frameWidth: 360)
@@ -240,9 +240,9 @@ struct QuickEditGraphicsTests {
 
     @Test func aTypePresetForEveryTextLeavesGraphicsAlone() async throws {
         let viewModel = await makeViewModel()
-        viewModel.addGraphic(.circle)
-        viewModel.addText(.title)
-        viewModel.applyPreset(.editorial, to: .allTexts)
+        viewModel.overlays.addGraphic(.circle)
+        viewModel.overlays.addText(.title)
+        viewModel.overlays.applyPreset(.editorial, to: .allTexts)
         let circle = try #require(viewModel.edit.texts.first { $0.graphic != nil })
         #expect(circle.color == CoverItemKind.circle.defaultColor)
         #expect(circle.preset != .editorial)

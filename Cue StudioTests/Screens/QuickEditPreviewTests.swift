@@ -35,10 +35,10 @@ struct QuickEditPreviewTests {
     }
 
     @Test func aTextSticksToTheMiddle() {
-        let near = QuickEditViewModel.snapped(OverlayPoint(x: 0.51, y: 0.48))
+        let near = OverlaysViewModel.snapped(OverlayPoint(x: 0.51, y: 0.48))
         #expect(near.center == OverlayPoint(x: 0.5, y: 0.5))
         #expect(near.vertical && near.horizontal)
-        let far = QuickEditViewModel.snapped(OverlayPoint(x: 0.6, y: 0.3))
+        let far = OverlaysViewModel.snapped(OverlayPoint(x: 0.6, y: 0.3))
         #expect(far.center == OverlayPoint(x: 0.6, y: 0.3))
         #expect(!far.vertical && !far.horizontal)
     }
@@ -61,13 +61,13 @@ struct QuickEditPreviewTests {
         let id = try #require(viewModel.selectedTextID)
         viewModel.closePanel()
         viewModel.selection = nil
-        viewModel.tapText(id)
+        viewModel.overlays.tapText(id)
         #expect(viewModel.selection == .text(id))
         #expect(viewModel.panel == nil)
-        viewModel.focusesTextField = false
-        viewModel.tapText(id)
+        viewModel.overlays.focusesTextField = false
+        viewModel.overlays.tapText(id)
         #expect(viewModel.panel == .textStyle)
-        #expect(viewModel.focusesTextField)
+        #expect(viewModel.overlays.focusesTextField)
     }
 
     @Test func tappingACaptionTwiceOpensItsLineWithTheKeyboard() async {
@@ -105,10 +105,10 @@ struct QuickEditPreviewTests {
         viewModel.perform(.addText(.title))
         let id = try #require(viewModel.selectedTextID)
         let before = try #require(viewModel.selectedText).size
-        viewModel.scaleText(id, by: CGSize(width: 35, height: 35))
+        viewModel.overlays.scaleText(id, by: CGSize(width: 35, height: 35))
         let after = try #require(viewModel.selectedText).size
         #expect(abs(after - before * 1.5) < 0.001)
-        #expect(QuickEditViewModel.scaleFactor(for: CGSize(width: -500, height: 0)) == 0.4)
+        #expect(OverlaysViewModel.scaleFactor(for: CGSize(width: -500, height: 0)) == 0.4)
     }
 
     @Test func aTextWithKeyframesMovesItsKeyframe() async throws {
@@ -117,9 +117,9 @@ struct QuickEditPreviewTests {
         scenario.player.seek(to: 1)
         viewModel.perform(.addText(.title))
         let id = try #require(viewModel.selectedTextID)
-        viewModel.toggleKeyframe()
+        viewModel.overlays.toggleKeyframe()
         scenario.player.seek(to: 2)
-        viewModel.moveText(id, to: OverlayPoint(x: 0.3, y: 0.7))
+        viewModel.overlays.moveText(id, to: OverlayPoint(x: 0.3, y: 0.7))
         let text = try #require(viewModel.selectedText)
         #expect(text.keyframes.count == 2)
         #expect(text.keyframes.last?.center == OverlayPoint(x: 0.3, y: 0.7))
@@ -127,7 +127,7 @@ struct QuickEditPreviewTests {
 
     @Test func theSafeAreaFitsInsideThePreview() async {
         let viewModel = await makeScenario().viewModel
-        let area = viewModel.safeArea(in: CGSize(width: 200, height: 356))
+        let area = viewModel.overlays.safeArea(in: CGSize(width: 200, height: 356))
         #expect(area.minX > 0 && area.maxX < 200)
         #expect(area.minY > 0 && area.maxY < 356)
     }

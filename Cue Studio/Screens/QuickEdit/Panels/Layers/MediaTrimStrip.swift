@@ -56,7 +56,7 @@ struct MediaTrimStrip: View {
                                 dragBase = media.startInFile
                             }
                             let moved = (dragBase ?? 0) + Double(value.translation.width / max(1, width)) * length
-                            viewModel.slipMedia(media.id, toStart: moved)
+                            viewModel.overlays.slipMedia(media.id, toStart: moved)
                             viewModel.player.pause()
                             if let bar = viewModel.mediaBars.first(where: { $0.id == media.id }) { viewModel.player.seek(to: bar.span.start) }
                         }
@@ -69,7 +69,7 @@ struct MediaTrimStrip: View {
                 .accessibilityLabel(Text("Part of the video"))
                 .accessibilityValue(Text(DurationText.editor(media.startInFile)))
                 .accessibilityAdjustableAction { direction in
-                    viewModel.slipMedia(media.id, toStart: media.startInFile + (direction == .increment ? 0.5 : -0.5))
+                    viewModel.overlays.slipMedia(media.id, toStart: media.startInFile + (direction == .increment ? 0.5 : -0.5))
                 }
                 .accessibilityIdentifier("edit.mediaPart")
             }
@@ -78,8 +78,8 @@ struct MediaTrimStrip: View {
             .environment(\.layoutDirection, .leftToRight)
             PanelStepper(
                 label: String(localized: "Plays for"), value: DurationText.tenths(shown), identifier: "edit.mediaLength",
-                onDecrease: { viewModel.setMediaLength(media.id, shown - 0.5) },
-                onIncrease: { viewModel.setMediaLength(media.id, shown + 0.5) }
+                onDecrease: { viewModel.overlays.setMediaLength(media.id, shown - 0.5) },
+                onIncrease: { viewModel.overlays.setMediaLength(media.id, shown + 0.5) }
             )
         }
         .task(id: media.fileName) { await load(length: length) }

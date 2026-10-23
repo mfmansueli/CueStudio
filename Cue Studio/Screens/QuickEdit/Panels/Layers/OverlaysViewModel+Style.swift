@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Style.swift
+//  OverlaysViewModel+Style.swift
 //  Cue Studio
 //
 
@@ -8,7 +8,7 @@ import Foundation
 /// Type presets and "My style": the look of texts, applied to one text or every text (and, from older
 /// flows, to the captions' type look). Only the type changes: filters, Adjust and the cover are left
 /// alone, and each application is one undo step.
-extension QuickEditViewModel {
+extension OverlaysViewModel {
     /// The text a scope of "This text" means: the one picked, or the one open in its sheet.
     var styledTextID: UUID? { selectedTextID ?? editingTextID }
 

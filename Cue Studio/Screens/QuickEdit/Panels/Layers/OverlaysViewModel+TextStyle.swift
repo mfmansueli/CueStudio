@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+TextStyle.swift
+//  OverlaysViewModel+TextStyle.swift
 //  Cue Studio
 //
 
@@ -9,7 +9,7 @@ import Foundation
 /// every text); its keyframes and when it starts and ends, always the picked text's. Every change
 /// is an undo step; typing and a slider's drag are one. The captions are styled in Caption style
 /// (a text's look reaches them only through "Apply this style to captions").
-extension QuickEditViewModel {
+extension OverlaysViewModel {
     /// The scopes Text style offers.
     static let textStyleScopes: [TextStyleScope] = [.selected, .allTexts]
 
@@ -117,11 +117,5 @@ extension QuickEditViewModel {
         guard let item = motionItem, let span = editedSpan(of: item) else { return false }
         let local = player.currentTime - span.start
         return keyframes(of: item).contains { forward ? $0.time > local + OverlayKeyframe.sameMoment : $0.time < local - OverlayKeyframe.sameMoment }
-    }
-
-    /// Starts or Ends −/+: the picked text (or photo or video) a tenth earlier or later.
-    func nudgeLayerEdge(_ edge: LayerEdge, by seconds: TimeInterval) {
-        guard let bar = selectedLayer, bar.kind == .text || bar.kind == .media else { return }
-        resizeBar(bar, edge: edge, to: (edge == .start ? bar.span.start : bar.span.end) + seconds)
     }
 }

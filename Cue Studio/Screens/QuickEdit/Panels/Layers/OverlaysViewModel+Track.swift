@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Track.swift
+//  OverlaysViewModel+Track.swift
 //  Cue Studio
 //
 
@@ -10,7 +10,7 @@ import Foundation
 /// playhead is followed through the clip under the playhead (forwards and backwards, as long as the item shows there) with
 /// Vision (`ObjectTracking`), and the path becomes keyframes the creator can edit (`TrackedMotion`), in one undo step. Where the
 /// object is lost (it left the frame, something covered it), the item holds from there.
-extension QuickEditViewModel {
+extension OverlaysViewModel {
     /// How big the followed box is, as a share of the video's width.
     static let trackedBoxSide = 0.14
 

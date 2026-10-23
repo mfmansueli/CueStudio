@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+OverlayPicking.swift
+//  OverlaysViewModel+Picking.swift
 //  Cue Studio
 //
 
@@ -11,7 +11,7 @@ import Foundation
 /// one under it, so a photo half hidden by another is still reachable. Tapping the picked one alone opens its panel. While a
 /// text or a photo or video is dragged, the video draws it nowhere (`draggedOverlay`) and the copy under the finger is the only
 /// one, so it never shows twice.
-extension QuickEditViewModel {
+extension OverlaysViewModel {
     /// The photos and videos showing at the playhead, bottom to top, as the video stacks them (`CueVideoCompositor`).
     var visibleMediaStack: [MediaOverlay] {
         let time = player.currentTime
@@ -58,14 +58,14 @@ extension QuickEditViewModel {
     func beginOverlayDrag(_ item: EditorSelection) {
         guard draggedOverlay != item else { return }
         draggedOverlay = item
-        player.show(playedEdit)
+        session.showPlayedEdit()
     }
 
     /// The finger lifted: the item is drawn by the video again, where the change put it. Call after the change.
     func endOverlayDrag() {
         guard draggedOverlay != nil else { return }
         draggedOverlay = nil
-        player.show(playedEdit)
+        session.showPlayedEdit()
     }
 
     /// `edit` without the item being dragged: a text left out, a photo or video kept (its track stays, so the picture doesn't

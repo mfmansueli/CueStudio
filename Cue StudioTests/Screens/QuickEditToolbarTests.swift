@@ -138,7 +138,7 @@ struct QuickEditToolbarTests {
         viewModel.perform(animation.action)
         #expect(viewModel.panel == .textStyle)
         #expect(viewModel.panelTab == .motion)
-        #expect(viewModel.textStyleScope == .selected)
+        #expect(viewModel.overlays.textStyleScope == .selected)
     }
 
     @Test func aPickedMediaCanBeDuplicatedFromItsTools() async throws {
@@ -188,9 +188,9 @@ struct QuickEditToolbarTests {
         viewModel.perform(.openMenu(.text))
         viewModel.perform(.addText(.title))
         #expect(viewModel.panel == .textStyle)
-        #expect(viewModel.focusesTextField)
-        #expect(viewModel.textStyleScope == .selected)
-        #expect(viewModel.editingTextID == nil)
+        #expect(viewModel.overlays.focusesTextField)
+        #expect(viewModel.overlays.textStyleScope == .selected)
+        #expect(viewModel.overlays.editingTextID == nil)
         #expect(viewModel.panelSubtitle(.textStyle) == "Only this title changes")
     }
 
@@ -200,7 +200,7 @@ struct QuickEditToolbarTests {
         viewModel.perform(.addText(.hook))
         viewModel.leaveToolbarContext()
         viewModel.perform(.styleAllTexts)
-        #expect(viewModel.textStyleScope == .allTexts)
+        #expect(viewModel.overlays.textStyleScope == .allTexts)
         #expect(viewModel.panel == .textStyle)
         #expect(viewModel.panelSubtitle(.textStyle) == "All 2 texts change together")
     }

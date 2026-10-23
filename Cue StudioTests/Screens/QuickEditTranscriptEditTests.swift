@@ -158,7 +158,7 @@ struct QuickEditVideoTemplateTests {
         )
         await viewModel.prepare()
         viewModel.change { $0.captions = [CaptionCue(text: "Real talk", start: 1, end: 2)] }
-        viewModel.addGraphic(.arrow)
+        viewModel.overlays.addGraphic(.arrow)
         let before = viewModel.edit
         let steps = viewModel.document.history.past.count
         viewModel.applyVideoTemplate(.boldHook)
@@ -323,7 +323,7 @@ struct QuickEditAuditFixTests {
 
     @Test func aTemplateLeavesTextsWhereTheCreatorPutThem() async throws {
         let (viewModel, _) = await makeViewModel()
-        viewModel.addText(.callout)
+        viewModel.overlays.addText(.callout)
         let id = try #require(viewModel.edit.texts.first?.id)
         viewModel.change { snapshot in
             if let index = snapshot.texts.firstIndex(where: { $0.id == id }) {
@@ -339,7 +339,7 @@ struct QuickEditAuditFixTests {
 
     @Test func aTagsWordNeverTitlesTheCover() async {
         let (viewModel, _) = await makeViewModel()
-        viewModel.addGraphic(.tag)
+        viewModel.overlays.addGraphic(.tag)
         #expect(!viewModel.cover.coverSuggestions.contains("NEW"))
     }
 
@@ -407,7 +407,7 @@ struct QuickEditAuditFixTests {
         viewModel.tapTranscriptWord(at: 4)
         #expect(viewModel.transcriptSelection != nil)
         // A change that leaves the cuts alone keeps the pick.
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         #expect(viewModel.transcriptSelection != nil)
         var timeline = viewModel.edit.timeline
         timeline.split(atEdited: 6)

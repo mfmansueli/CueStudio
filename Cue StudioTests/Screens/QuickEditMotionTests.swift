@@ -67,21 +67,21 @@ struct QuickEditMotionTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        viewModel.addText(.title)
-        viewModel.editingTextID = nil
+        viewModel.overlays.addText(.title)
+        viewModel.overlays.editingTextID = nil
         let id = viewModel.edit.texts[0].id
         let start = viewModel.edit.texts[0].center
-        viewModel.toggleKeyframe()
+        viewModel.overlays.toggleKeyframe()
         #expect(viewModel.edit.texts[0].keyframes.map(\.time) == [0])
         #expect(viewModel.edit.texts[0].keyframes[0].center == start)
 
         // Later on, moving it on the preview sets a second keyframe there.
         scenario.player.currentTime = 12
-        viewModel.moveText(id, to: OverlayPoint(x: 0.3, y: 0.6))
+        viewModel.overlays.moveText(id, to: OverlayPoint(x: 0.3, y: 0.6))
         #expect(viewModel.edit.texts[0].keyframes.map(\.time) == [0, 2])
         #expect(viewModel.edit.texts[0].center == start)
         scenario.player.currentTime = 11
-        let halfway = viewModel.motionState(of: .text(id))
+        let halfway = viewModel.overlays.motionState(of: .text(id))
         #expect(halfway.center.x < start.x && halfway.center.x > 0.3)
         #expect(viewModel.textBars[0].keyframes == [0, 2])
 
@@ -92,9 +92,9 @@ struct QuickEditMotionTests {
     @Test func withoutKeyframesMovingATextMovesIt() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         let id = viewModel.edit.texts[0].id
-        viewModel.moveText(id, to: OverlayPoint(x: 0.3, y: 0.6))
+        viewModel.overlays.moveText(id, to: OverlayPoint(x: 0.3, y: 0.6))
         #expect(viewModel.edit.texts[0].center == OverlayPoint(x: 0.3, y: 0.6))
         #expect(viewModel.edit.texts[0].keyframes.isEmpty)
     }
@@ -103,21 +103,21 @@ struct QuickEditMotionTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 5
-        viewModel.addText(.subtitle)
-        viewModel.editingTextID = nil
-        viewModel.toggleKeyframe()
+        viewModel.overlays.addText(.subtitle)
+        viewModel.overlays.editingTextID = nil
+        viewModel.overlays.toggleKeyframe()
         scenario.player.currentTime = 7
-        viewModel.toggleKeyframe()
-        viewModel.setKeyframeOpacity(0.25)
-        viewModel.setKeyframeEasing(.linear)
+        viewModel.overlays.toggleKeyframe()
+        viewModel.overlays.setKeyframeOpacity(0.25)
+        viewModel.overlays.setKeyframeEasing(.linear)
         let keyframes = viewModel.edit.texts[0].keyframes
         #expect(keyframes[1].opacity == 0.25)
         #expect(keyframes[1].easing == .linear)
-        viewModel.jumpToKeyframe(forward: false)
+        viewModel.overlays.jumpToKeyframe(forward: false)
         #expect(scenario.player.currentTime == 5)
-        viewModel.jumpToKeyframe(forward: true)
+        viewModel.overlays.jumpToKeyframe(forward: true)
         #expect(scenario.player.currentTime == 7)
-        viewModel.toggleKeyframe()
+        viewModel.overlays.toggleKeyframe()
         #expect(viewModel.edit.texts[0].keyframes.count == 1)
     }
 
@@ -125,9 +125,9 @@ struct QuickEditMotionTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 5
-        viewModel.addText(.hook)
+        viewModel.overlays.addText(.hook)
         scenario.player.currentTime = 40
-        viewModel.toggleKeyframe()
+        viewModel.overlays.toggleKeyframe()
         #expect(viewModel.edit.texts[0].keyframes.isEmpty)
         #expect(scenario.toast.message == "Move playhead onto it first")
     }

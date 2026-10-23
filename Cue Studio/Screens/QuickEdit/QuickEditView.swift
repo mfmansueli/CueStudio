@@ -105,14 +105,14 @@ struct QuickEditView: View {
         .confirmationDialog(
             "This video has its own sound",
             isPresented: Binding(
-                get: { viewModel.soundChoiceMediaID != nil },
-                set: { if !$0 { viewModel.soundChoiceMediaID = nil } }
+                get: { viewModel.overlays.soundChoiceMediaID != nil },
+                set: { if !$0 { viewModel.overlays.soundChoiceMediaID = nil } }
             ),
             titleVisibility: .visible,
-            presenting: viewModel.soundChoiceMediaID
+            presenting: viewModel.overlays.soundChoiceMediaID
         ) { id in
-            Button("Keep its sound") { viewModel.chooseSound(for: id, keeps: true) }
-            Button("Mute it") { viewModel.chooseSound(for: id, keeps: false) }
+            Button("Keep its sound") { viewModel.overlays.chooseSound(for: id, keeps: true) }
+            Button("Mute it") { viewModel.overlays.chooseSound(for: id, keeps: false) }
         } message: { _ in
             Text("You can change it later in Media › Advanced.")
         }

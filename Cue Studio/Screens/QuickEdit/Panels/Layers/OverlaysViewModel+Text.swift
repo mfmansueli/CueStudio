@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Text.swift
+//  OverlaysViewModel+Text.swift
 //  Cue Studio
 //
 
@@ -11,7 +11,7 @@ import UIKit
 /// until one is picked). Added at the playhead for the role's length, then written, restyled,
 /// dragged on the preview and moved or stretched on the text track. Every change is an undo step;
 /// a drag or the text sheet is one.
-extension QuickEditViewModel {
+extension OverlaysViewModel {
     /// Adds a text at the playhead, selects it and opens it for writing.
     func addText(_ role: TextOverlayRole) {
         guard isReady else { return }
@@ -53,7 +53,7 @@ extension QuickEditViewModel {
         text.center = .center
         text.text = switch kind {
         case .tag: String(localized: "NEW", comment: "Default words of a tag on a cover")
-        case .handle: creatorHandle
+        case .handle: session.creatorHandle
         case .arrow, .circle: ""
         }
         text.isUppercase = false
@@ -153,7 +153,7 @@ extension QuickEditViewModel {
 
 // MARK: - Comment card
 
-extension QuickEditViewModel {
+extension OverlaysViewModel {
     /// The audience comment the take's script answers, if it does.
     var commentForCard: ScriptComment? { library.script(id: take.scriptID)?.comment }
 

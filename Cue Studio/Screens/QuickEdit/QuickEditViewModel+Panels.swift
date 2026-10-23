@@ -92,8 +92,8 @@ extension QuickEditViewModel {
     private var textStyleSubtitle: String {
         // A graphic (arrow, circle, tag) has its own panel and is always changed alone.
         if selectedText?.graphic != nil { return String(localized: "Only this graphic changes") }
-        guard textStyleTabChangesLook else { return String(localized: "Motion and timing change only this text") }
-        switch textStyleScope {
+        guard overlays.textStyleTabChangesLook else { return String(localized: "Motion and timing change only this text") }
+        switch overlays.textStyleScope {
         case .selected, .allCaptions:
             switch selectedText?.role ?? .title {
             case .title: return String(localized: "Only this title changes")

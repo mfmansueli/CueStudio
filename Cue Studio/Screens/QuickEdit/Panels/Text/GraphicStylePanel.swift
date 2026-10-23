@@ -18,7 +18,7 @@ struct GraphicStylePanel: View {
                 if graphic.kind.hasText {
                     TextField(String(localized: "Tag"), text: Binding(
                         get: { text.text },
-                        set: { words in viewModel.updateText(text.id, key: "graphicText.\(text.id)") { $0.text = String(words.prefix(28)) } }
+                        set: { words in viewModel.overlays.updateText(text.id, key: "graphicText.\(text.id)") { $0.text = String(words.prefix(28)) } }
                     ))
                     .font(.system(.callout, weight: .semibold))
                     .submitLabel(.done)
@@ -30,17 +30,19 @@ struct GraphicStylePanel: View {
                 PanelSwatches(
                     label: String(localized: "Color"), colors: OverlayColor.palette, selection: text.color,
                     identifier: "edit.graphic.color"
-                ) { color in viewModel.updateText(text.id) { $0.color = color } }
+                ) { color in viewModel.overlays.updateText(text.id) { $0.color = color } }
                 PanelSlider(
                     label: String(localized: "Size"), value: text.size / TextGraphic.baseSize * 100,
                     range: CoverItem.scaleRange.lowerBound * 100...CoverItem.scaleRange.upperBound * 100, step: 5, defaultValue: 100,
                     format: .percent, identifier: "edit.graphic.size",
-                    onChange: { value in viewModel.updateText(text.id, key: "graphicSize.\(text.id)") { $0.size = value / 100 * TextGraphic.baseSize } }
+                    onChange: { value in
+                        viewModel.overlays.updateText(text.id, key: "graphicSize.\(text.id)") { $0.size = value / 100 * TextGraphic.baseSize }
+                    }
                 )
                 PanelSlider(
                     label: String(localized: "Turn"), value: graphic.rotation * 180 / .pi, range: -180...180, step: 1, defaultValue: 0,
                     bipolar: true, format: .degrees, identifier: "edit.graphic.turn",
-                    onChange: { viewModel.setGraphicRotation(text.id, degrees: $0) }
+                    onChange: { viewModel.overlays.setGraphicRotation(text.id, degrees: $0) }
                 )
                 MotionKeyframeControls(viewModel: viewModel)
             }

@@ -40,10 +40,10 @@ struct QuickEditTrackTests {
         )
         await viewModel.prepare()
         player.seek(to: 0.5)
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         let id = try #require(viewModel.selectedTextID)
         let square = ObjectTrackerTests.path(15)
-        viewModel.moveText(id, to: OverlayPoint(x: square.x / 360, y: square.y / 640))
+        viewModel.overlays.moveText(id, to: OverlayPoint(x: square.x / 360, y: square.y / 640))
         return Scenario(viewModel: viewModel, player: player, toast: toast, footage: footage, textID: id)
     }
 
@@ -53,14 +53,14 @@ struct QuickEditTrackTests {
         let viewModel = scenario.viewModel, player = scenario.player, id = scenario.textID
         let steps = viewModel.document.history.past.count
         viewModel.perform(.trackItem)
-        #expect(viewModel.isTracking)
-        await Wait.until(timeout: .seconds(120)) { !viewModel.isTracking }
+        #expect(viewModel.overlays.isTracking)
+        await Wait.until(timeout: .seconds(120)) { !viewModel.overlays.isTracking }
         let keyframes = viewModel.edit.texts.first { $0.id == id }?.keyframes ?? []
         #expect(keyframes.count >= 2 && keyframes.count <= 30, "\(keyframes.count) keyframes")
         #expect(viewModel.document.history.past.count == steps + 1)
         // At 2.5 s (frame 75) the text is on the square.
         player.seek(to: 2.5)
-        let center = viewModel.motionState(of: .text(id)).center
+        let center = viewModel.overlays.motionState(of: .text(id)).center
         let truth = ObjectTrackerTests.path(75)
         #expect(abs(center.x - truth.x / 360) < 0.04 && abs(center.y - truth.y / 640) < 0.03, "\(center) vs \(truth)")
         viewModel.undo()
@@ -74,9 +74,9 @@ struct QuickEditTrackTests {
         let steps = viewModel.document.history.past.count
         // Cancelled, then again at once: only the second run lands, in one step.
         viewModel.perform(.trackItem)
-        viewModel.cancelTracking()
+        viewModel.overlays.cancelTracking()
         viewModel.perform(.trackItem)
-        await Wait.until(timeout: .seconds(120)) { !viewModel.isTracking }
+        await Wait.until(timeout: .seconds(120)) { !viewModel.overlays.isTracking }
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect((viewModel.edit.texts.first { $0.id == id }?.keyframes.count ?? 0) >= 2)
         viewModel.undo()
@@ -84,7 +84,7 @@ struct QuickEditTrackTests {
         viewModel.perform(.trackItem)
         scenario.player.seek(to: 2)
         viewModel.splitClip()
-        await Wait.until(timeout: .seconds(120)) { !viewModel.isTracking }
+        await Wait.until(timeout: .seconds(120)) { !viewModel.overlays.isTracking }
         #expect(viewModel.edit.texts.first { $0.id == id }?.keyframes.isEmpty == true)
         #expect(scenario.toast.message == "The video changed meanwhile · Track it again")
     }

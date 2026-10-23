@@ -87,7 +87,7 @@ struct QuickEditMontageTests {
         scenario.player.currentTime = 32
         viewModel.splitClip()
         scenario.player.currentTime = 5
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         let steps = viewModel.document.history.past.count
         viewModel.duplicateClip(viewModel.edit.timeline.segments[0].id)
         #expect(viewModel.document.history.past.count == steps + 1)
@@ -110,7 +110,7 @@ struct QuickEditMontageTests {
         scenario.player.currentTime = 32
         viewModel.splitClip()
         scenario.player.currentTime = 40
-        viewModel.addText(.hook)
+        viewModel.overlays.addText(.hook)
         viewModel.moveSection(from: 1, to: 0)
         // The section that started at 32 s now starts the edit: the text is 8 s in.
         #expect(abs((viewModel.textBars.first?.span.start ?? 0) - 8) < 0.001)
@@ -189,10 +189,10 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        for _ in 0..<3 { viewModel.addMedia(photo()) }
+        for _ in 0..<3 { viewModel.overlays.addMedia(photo()) }
         #expect(viewModel.edit.media.count == 3)
         #expect(viewModel.edit.media.map(\.stackOrder) == [0, 1, 2])
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         #expect(viewModel.edit.media.count == 3)
         #expect(scenario.toast.message == "Max 3 photos or videos")
     }
@@ -200,11 +200,11 @@ struct QuickEditMontageTests {
     @Test func thePickedOneMovesUpOrDownTheStack() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(photo())
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         let bottom = viewModel.edit.media[0].id
-        #expect(!viewModel.canRestack(bottom, up: false))
-        viewModel.restack(bottom, up: true)
+        #expect(!viewModel.overlays.canRestack(bottom, up: false))
+        viewModel.overlays.restack(bottom, up: true)
         #expect(viewModel.edit.media.first { $0.id == bottom }?.stackOrder == 1)
         viewModel.undo()
         #expect(viewModel.edit.media.first { $0.id == bottom }?.stackOrder == 0)
@@ -237,19 +237,19 @@ struct QuickEditBrollPartTests {
         )
         await viewModel.prepare()
         player.currentTime = 5
-        viewModel.addMedia(ImportedMedia(kind: .video, fileName: "v-\(UUID().uuidString).mov", aspect: 1, duration: 8))
+        viewModel.overlays.addMedia(ImportedMedia(kind: .video, fileName: "v-\(UUID().uuidString).mov", aspect: 1, duration: 8))
         let id = try #require(viewModel.edit.media.first?.id)
-        viewModel.setMediaLength(id, 3)
+        viewModel.overlays.setMediaLength(id, 3)
         let place = viewModel.mediaBars.first { $0.id == id }?.span
         #expect(place?.duration == 3)
-        viewModel.slipMedia(id, toStart: 4)
+        viewModel.overlays.slipMedia(id, toStart: 4)
         #expect(viewModel.edit.media.first?.startInFile == 4)
         #expect(viewModel.mediaBars.first { $0.id == id }?.span == place)
         // 8 s of video, 3 s shown: it can start at 5 at most.
-        viewModel.slipMedia(id, toStart: 7)
+        viewModel.overlays.slipMedia(id, toStart: 7)
         #expect(viewModel.edit.media.first?.startInFile == 5)
         // From 5 s there are 3 s left: it can't play longer.
-        viewModel.setMediaLength(id, 6)
+        viewModel.overlays.setMediaLength(id, 6)
         #expect(viewModel.mediaBars.first { $0.id == id }?.span.duration == 3)
         viewModel.undo()
         #expect(viewModel.edit.media.first?.startInFile == 4)

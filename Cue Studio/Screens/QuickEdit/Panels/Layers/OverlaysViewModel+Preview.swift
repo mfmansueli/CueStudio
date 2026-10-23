@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Preview.swift
+//  OverlaysViewModel+Preview.swift
 //  Cue Studio
 //
 
@@ -9,7 +9,7 @@ import Foundation
 /// Editing right on the preview: tap a text to pick it (again: Text style opens), drag it (with
 /// guides through the middle and the platform's safe area showing), drag its corner to scale it,
 /// ✕ to delete it. The caption on the preview is the Captions part's (`CaptionsViewModel+Preview`).
-extension QuickEditViewModel {
+extension OverlaysViewModel {
     /// A text or the caption sticks to the middle within this share of the frame.
     static let centerSnap: Double = 0.025
     /// How much the corner handle scales per point dragged (down and right grows).
@@ -70,7 +70,7 @@ extension QuickEditViewModel {
 
     /// The platform's safe area on a preview of `size`: what shows dashed while a text moves.
     func safeArea(in size: CGSize) -> CGRect {
-        let unit = (edit.captionCollection?.safeMargins ?? captions.captionSafeMargins).unitContentRect
+        let unit = (edit.captionCollection?.safeMargins ?? CaptionsViewModel.captionSafeMargins(for: take, aspect: edit.aspect)).unitContentRect
         return CGRect(x: unit.minX * size.width, y: unit.minY * size.height, width: unit.width * size.width, height: unit.height * size.height)
     }
 }

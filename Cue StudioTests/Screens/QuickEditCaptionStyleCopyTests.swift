@@ -49,17 +49,17 @@ struct QuickEditCaptionStyleCopyTests {
 
     /// A subtitle, then a title restyled by hand (serif, yellow, on a pill), picked.
     private func styledTexts(_ viewModel: QuickEditViewModel) -> (title: UUID, subtitle: UUID) {
-        viewModel.addStyledText(.subtitle)
+        viewModel.overlays.addStyledText(.subtitle)
         let subtitle = viewModel.edit.texts[0].id
-        viewModel.addStyledText(.title)
+        viewModel.overlays.addStyledText(.title)
         let title = viewModel.edit.texts[1].id
-        viewModel.setTextContent(title, "5 comidas de SP")
-        viewModel.restyleText(.font(.dmSerif))
-        viewModel.restyleText(.color(.lavender))
-        viewModel.restyleText(.background(.pill))
-        viewModel.restyleText(.backgroundColor(.black))
-        viewModel.restyleText(.glow(0.4))
-        viewModel.restyleText(.size(80))
+        viewModel.overlays.setTextContent(title, "5 comidas de SP")
+        viewModel.overlays.restyleText(.font(.dmSerif))
+        viewModel.overlays.restyleText(.color(.lavender))
+        viewModel.overlays.restyleText(.background(.pill))
+        viewModel.overlays.restyleText(.backgroundColor(.black))
+        viewModel.overlays.restyleText(.glow(0.4))
+        viewModel.overlays.restyleText(.size(80))
         return (title, subtitle)
     }
 
@@ -172,9 +172,9 @@ struct QuickEditCaptionStyleCopyTests {
         viewModel.captions.askToCopyStyleToCaptions()
         viewModel.captions.copyStyleToCaptions()
         let copied = viewModel.edit.captionCollection
-        viewModel.restyleText(.color(.mint))
-        viewModel.textStyleScope = .allTexts
-        viewModel.pickTextPreset(.pop)
+        viewModel.overlays.restyleText(.color(.mint))
+        viewModel.overlays.textStyleScope = .allTexts
+        viewModel.overlays.pickTextPreset(.pop)
         #expect(viewModel.edit.captionCollection == copied)
         #expect(text(ids.title, in: viewModel)?.color != copied?.customLook?.color)
     }
@@ -183,8 +183,8 @@ struct QuickEditCaptionStyleCopyTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         _ = styledTexts(viewModel)
-        viewModel.restyleText(.background(.none))
-        viewModel.restyleText(.color(.yellow))
+        viewModel.overlays.restyleText(.background(.none))
+        viewModel.overlays.restyleText(.color(.yellow))
         viewModel.captions.askToCopyStyleToCaptions()
         #expect(viewModel.captions.captionStyleCopyMessage.contains("The highlight color changes so the word being said stands out: White."))
         viewModel.captions.copyStyleToCaptions()
@@ -195,7 +195,7 @@ struct QuickEditCaptionStyleCopyTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let ids = styledTexts(viewModel)
-        viewModel.textStyleScope = .allTexts
+        viewModel.overlays.textStyleScope = .allTexts
         let subtitle = text(ids.subtitle, in: viewModel)
         viewModel.captions.askToCopyStyleToCaptions()
         viewModel.captions.copyStyleToCaptions()

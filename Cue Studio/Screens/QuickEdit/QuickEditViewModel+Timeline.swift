@@ -144,7 +144,7 @@ extension QuickEditViewModel {
         case .cover:
             cover.openCoverStudio()
         case .addClip:
-            mediaInsertMode = .clip
+            overlays.mediaInsertMode = .clip
             sheet = .media
         case .pause(let id): togglePauseMark(id)
         case .join(let id): pickJoin(id)

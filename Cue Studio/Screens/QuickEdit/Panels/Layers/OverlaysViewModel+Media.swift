@@ -1,5 +1,5 @@
 //
-//  QuickEditViewModel+Media.swift
+//  OverlaysViewModel+Media.swift
 //  Cue Studio
 //
 
@@ -12,7 +12,7 @@ import SwiftUI
 /// the creator places, sizes and crops. Added at the playhead in the free room there (one at a
 /// time), shown for 3 seconds (a photo) or its length (a video), then moved or stretched on the
 /// media track. The picked file is copied into the app, so the edit never depends on the library.
-extension QuickEditViewModel {
+extension OverlaysViewModel {
     /// Copies the picked photo or video in and adds it at the playhead.
     func importMedia(_ item: PhotosPickerItem) async {
         guard isReady, !isImportingMedia else { return }
@@ -178,5 +178,51 @@ extension QuickEditViewModel {
             y: CGFloat(state.center.clamped.y) * size.height - height / 2,
             width: width, height: height
         )
+    }
+
+    // MARK: - Replacing
+
+    /// Copies the picked file in and swaps it for the one on the media track.
+    func replaceMedia(_ id: UUID, importing item: PhotosPickerItem) async {
+        guard isReady, !isImportingMedia else { return }
+        isImportingMedia = true
+        defer { isImportingMedia = false }
+        do {
+            replaceMedia(id, with: try await importPicked(item))
+        } catch is CancellationError {
+            // Cancel on the pill, or the editor closed: nothing to say.
+        } catch {
+            noteFailure(error, "replaceMedia")
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
+        }
+    }
+
+    /// Puts `imported` in the place of a photo or video: where it shows, for how long, in which
+    /// window and with which keyframes stay; only the picture (or the video) changes. A photo is
+    /// replaced by a photo and a video by a video, and a video that is shorter than the stretch it
+    /// fills shows for its own length.
+    func replaceMedia(_ id: UUID, with imported: ImportedMedia) {
+        guard !isClosed, let old = edit.media.first(where: { $0.id == id }) else {
+            EditMediaFiles.remove([imported.fileName])
+            return
+        }
+        guard imported.kind == old.kind else {
+            EditMediaFiles.remove([imported.fileName])
+            toast.show(String(localized: "Can't add this file"))
+            return
+        }
+        importedFiles.insert(imported.fileName)
+        updateMedia(id) { media in
+            media.fileName = imported.fileName
+            media.aspect = imported.aspect.isFinite && imported.aspect > 0 ? imported.aspect : 1
+            media.mediaDuration = imported.duration
+            media.mediaStart = nil
+            if media.kind == .video {
+                media.hasSound = imported.hasSound
+                media.audioVolume = nil
+                media.span.end = min(media.span.end, media.span.start + media.longestDuration)
+            }
+        }
+        toast.show(old.kind == .photo ? String(localized: "Photo replaced") : String(localized: "Video replaced"))
     }
 }
