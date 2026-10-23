@@ -37,7 +37,7 @@ nonisolated struct CaptionSettings: Codable, Hashable, Sendable {
 
     /// The recipe the preset is drawn with, in the family picked over it if any.
     var spec: CaptionStyleSpec {
-        var spec = CaptionStyleSpec.spec(for: theme, version: styleVersion ?? 1)
+        var spec = CaptionStyleSpec.spec(for: theme, version: ReadingVersion.captionStyle.read(styleVersion))
         spec.face = face
         return spec
     }

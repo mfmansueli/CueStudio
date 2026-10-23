@@ -29,7 +29,7 @@ nonisolated struct LookSettings: Hashable, Sendable {
     /// kept for edits saved with them so they look the same).
     var version = LookSettings.currentVersion
 
-    static let currentVersion = 2
+    static var currentVersion: Int { ReadingVersion.look.current }
 
     init() {}
 
@@ -45,7 +45,7 @@ nonisolated struct LookSettings: Hashable, Sendable {
         vibrance = edit.vibrance
         tint = edit.tint
         skinSmoothing = edit.skinSmoothing
-        auto = edit.autoCorrection
+        auto = edit.autoCorrection?.readable
         autoAmount = edit.autoAmount
         filter = edit.filter
         filterAmount = edit.filterAmount
@@ -75,7 +75,8 @@ nonisolated struct LookSettings: Hashable, Sendable {
         result.vibrance = override.vibrance ?? vibrance
         result.tint = override.tint ?? tint
         result.skinSmoothing = override.skinSmoothing ?? skinSmoothing
-        result.auto = override.auto ?? auto
+        // A clip's own measurement this version can't read leaves the clip without Auto (never the take's in its place).
+        result.auto = override.auto.map(\.readable) ?? auto
         result.autoAmount = override.autoAmount ?? autoAmount
         result.filter = override.filter ?? filter
         result.filterAmount = override.filterAmount ?? filterAmount

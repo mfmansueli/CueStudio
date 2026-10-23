@@ -34,7 +34,7 @@ nonisolated enum CaptionTheme: String, LenientChoice, CaseIterable, Identifiable
 
     /// The first reading of the preset (`CaptionStyleSpec`); what a new look is drawn with is
     /// `CaptionSettings.spec`.
-    private var firstReading: CaptionStyleSpec { CaptionStyleSpec.spec(for: self, version: 1) }
+    private var firstReading: CaptionStyleSpec { CaptionStyleSpec.spec(for: self, version: ReadingVersion.captionStyle.first) }
 
     var fontName: String { firstReading.fontName }
 
