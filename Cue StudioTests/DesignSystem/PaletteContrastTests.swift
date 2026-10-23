@@ -473,6 +473,22 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The work pill over the preview (`EditorWorkPill`): "Reversing · 40%" and Cancel are words on the toast's fill, the
+    /// spinning ring a control part (3:1), over a white or a black picture.
+    @Test func theWorkPillReadsOverAnyPicture() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            for appearance in Appearance.allCases {
+                let fill = rgb(Palette.Editor.toast, in: appearance, over: picture)
+                for (name, color) in [("label", Palette.ink), ("Cancel", Palette.accText)] {
+                    let words = ColorContrast.ratio(rgb(color, in: appearance, over: fill), fill)
+                    #expect(words >= ColorContrast.textMinimum, "\(name), \(appearance): \(words)")
+                }
+                let ring = ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: fill), fill)
+                #expect(ring >= 3, "ring, \(appearance): \(ring)")
+            }
+        }
+    }
+
     /// The star's words over its cover (84% of `transitionCover`, 09 §8) on whatever the screen behind it shows: black, and at worst white.
     @Test func theStarsWordsReadOverItsCoverOnAnyScreen() {
         let words: [(name: String, color: Color)] = [

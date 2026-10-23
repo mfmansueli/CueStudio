@@ -197,7 +197,9 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
         if tap("cover.step.image"), tap("cover.photo") {
             try capture("cover-image-photo")
-            if app.buttons["Cancel"].exists(within: 3) { app.buttons["Cancel"].tap() }
+            // The photo library's Cancel: the last one, over Cover Studio's own.
+            let cancel = app.buttons.matching(identifier: "Cancel")
+            if cancel.firstMatch.exists(within: 3) { cancel.element(boundBy: cancel.count - 1).tap() }
         }
         if tap("cover.step.text"), tap("cover.titleField") {
             try capture("cover-text-keyboard")
@@ -380,8 +382,10 @@ final class ToolAuditCaptureTests: XCTestCase {
             EditorApp.tapTool(app, "edit")
             if tap("edit.toolbar.speed", within: 2) { try captureScrolling("\(language)-speed") }
             apply()
+            // Back from the clip's tools to the main ones, where Cover is.
+            tap("edit.toolbar.back", within: 2)
             EditorApp.tapTool(app, "cover")
-            if app.buttons["cover.done"].exists(within: 8), tap("cover.step.picture") {
+            if app.buttons["cover.done"].exists(within: 8), tap("cover.step.image") {
                 try capture("\(language)-cover-picture")
             }
             app.terminate()
