@@ -301,8 +301,8 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
             actions.tap(lane)
             return
         }
-        // A tap on a handle does nothing (the handle is for dragging).
-        guard geometry.handle(at: point) == nil else { return }
+        // A tap on a handle does nothing (the handle is for dragging); beside it, on the neighbour, the tap picks the neighbour.
+        guard !geometry.tapIsOnHandle(point) else { return }
         actions.tap(geometry.hit(at: point) ?? lane)
     }
 

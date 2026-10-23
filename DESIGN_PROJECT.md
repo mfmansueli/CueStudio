@@ -811,6 +811,8 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
 - **Abas na largura toda** (Presets · Font · Color · Motion), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
   fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`). Em tamanhos de acessibilidade só as abas ficam fixas: o campo rola com o resto
   e os controles da aba vêm antes de "Style applies to". Cores (`PanelSwatches`) de 34 pt, segmentos de 38 pt.
+- **Digitando** (teclado no campo): só cabeçalho, campo e abas sobre o teclado (`EditorLayout.typingPanelHeight`, 180 pt); o vídeo fica com o resto
+  e mostra o texto mudando. Tocar numa aba guarda o teclado e mostra os controles dela (como no CapCut).
 - **Presets do Caption style em grade** (colunas de 104 pt: três por linha no iPhone), todos à vista, sem rolar de lado.
 - **Escopo só do visual:** "Style applies to" **This title | All texts · N** só em Presets, Font e Color ("Words, timing and motion stay with each text.");
   em Motion: "Motion and timing change only this text".
@@ -1456,8 +1458,8 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Advanced** diz quantos ajustes estão mudados lá dentro ("· 1 changed": Speed, Zoom, fades da música).
 - **Desativado:** 40% em todo controle (`Metrics.disabledOpacity`), linhas com chave incluídas, sempre com o motivo escrito (Paste look: "Turn on
   a part to paste it.").
-- **Timeline:** o clipe e o item escolhidos com contorno **amarelo** (como no vídeo e na capa); alças pegas a 44 pt; a etiqueta do clipe diz
-  também "Stabilized" e "Volume 150%".
+- **Timeline:** o clipe e o item escolhidos com contorno **amarelo** (como no vídeo e na capa); alças pegas a 44 pt (o alcance a mais fica
+  sobre o vizinho: arrastar ali apara, tocar escolhe o vizinho); a etiqueta do clipe diz também "Stabilized" e "Volume 150%".
 - **Barra do player:** ‹ › ao lado do Play andam **um quadro** (pausado; segurar repete), para dividir e aparar no ponto exato
   (`QuickEditViewModel+FrameStep`); somem com texto muito grande.
 - **Barra de ferramentas:** principal com **Adjust** (vídeo inteiro) ao lado de Filters; o esmaecido só no lado onde há mais ferramentas; "Add

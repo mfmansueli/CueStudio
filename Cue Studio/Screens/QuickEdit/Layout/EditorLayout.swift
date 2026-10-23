@@ -75,9 +75,9 @@ nonisolated struct EditorLayout: Equatable, Sendable {
         max(0.22 * usable, 130)
     }
 
-    /// A panel showing only its header and the field being typed in (Text style while the keyboard is up): the header, the
-    /// field and the room above the keyboard. On a 6.1-inch iPhone the video then keeps about twice the height it had.
-    static let typingPanelHeight: CGFloat = 136
+    /// A panel showing only its header, the field being typed in and its tabs (Text style while the keyboard is up), and the room
+    /// above the keyboard. The video keeps the room the look's controls would have taken.
+    static let typingPanelHeight: CGFloat = 180
 
     /// The timeline with nothing open.
     static func restingTimeline(for usable: CGFloat) -> CGFloat {
@@ -92,8 +92,8 @@ nonisolated struct EditorLayout: Equatable, Sendable {
     ///     then shows under the ruler too.
     ///   - largeText: Dynamic Type is large enough to make a regular screen compact.
     ///   - panelIsExpanded: a full panel takes all the room but the smallest preview's.
-    ///   - typesInHeaderField: while the keyboard is up the panel shows only its header and the field being typed in (Text
-    ///     style), so it takes just that and the video gets the rest.
+    ///   - typesInHeaderField: while the keyboard is up the panel shows only its header, the field being typed in and its tabs
+    ///     (Text style), so it takes just that and the video gets the rest.
     init(
         usableHeight: CGFloat, stableHeight: CGFloat? = nil, panel: EditorPanelSize? = nil,
         panelFocusesLane: Bool = false, largeText: Bool = false, panelIsExpanded: Bool = false, typesInHeaderField: Bool = false

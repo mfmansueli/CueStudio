@@ -433,7 +433,7 @@ struct QuickCreatorViewModelTests {
         viewModel.addMedia(photo())
         let id = viewModel.edit.media[0].id
         viewModel.selection = .media(id)
-        #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "track", "duplicate", "replaceMedia", "delete"])
+        #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "track", "duplicate", "replaceMedia", "lock", "delete"])
         viewModel.perform(.replaceMedia)
         #expect(viewModel.photoRequest?.purpose == .replaceMedia(id, kind: .photo))
         #expect(viewModel.photoRequest?.offersVideos == false)

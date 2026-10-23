@@ -153,6 +153,17 @@ struct TimelineGeometryTests {
         #expect(start.hitFrame.maxX == start.frame.maxX)
     }
 
+    /// The handle's wider reach lies over the clip before: a drag there trims, a tap there picks that clip.
+    @Test func besideAHandleADragTrimsAndATapPicksTheNeighbour() throws {
+        let geometry = TimelineGeometry(input { $0.selection = .clip(second) })
+        let start = try #require(geometry.handles.first { $0.target == .clip(second, .start) })
+        let beside = CGPoint(x: start.hitFrame.minX + 2, y: start.frame.midY)
+        #expect(geometry.dragTarget(at: beside)?.target == .clip(second, .start))
+        #expect(!geometry.tapIsOnHandle(beside))
+        #expect(geometry.hit(at: beside) == .clip(first))
+        #expect(geometry.tapIsOnHandle(CGPoint(x: start.frame.midX, y: start.frame.midY)))
+    }
+
     /// A locked text keeps its place: picked, it shows a lock and no handle or body to drag.
     @Test func aLockedItemHasNoHandles() {
         let text = UUID()

@@ -253,7 +253,7 @@ struct EditorLayoutTests {
         }
     }
 
-    /// Typing a text's words: Text style shows only its header and field, so the video keeps the rest, about twice what it had
+    /// Typing a text's words: Text style shows only its header, field and tabs, so the video keeps the rest, more than it had
     /// with the whole panel over the keyboard.
     @Test func typingATextLeavesTheVideoTheRoomThePanelDoesNotNeed() {
         for screen in Screen.allCases where screen != .iPhoneSE {

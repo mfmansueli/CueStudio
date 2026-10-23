@@ -12,7 +12,8 @@ import UIKit
 /// what the look changes ("This title" or "All texts · 3": the words, timing and motion are always
 /// this text's), the controls, and "Apply this style to captions", which copies the look onto the
 /// captions once, after asking. Motion is the picked text's alone. The panel expands (the header's
-/// button, or a drag) to give the controls the room the video gives up.
+/// button, or a drag) to give the controls the room the video gives up. While the words are typed only
+/// the field and the tabs show, so the video stays big; a tab puts the keyboard away.
 struct TextStylePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -37,9 +38,12 @@ struct TextStylePanel: View {
             PanelFrame(viewModel: viewModel, panel: .textStyle) {
                 VStack(spacing: 0) {
                     if !isLarge { field(text).padding(.horizontal, 16).padding(.bottom, 4) }
-                    // While typing, only the words: the video above gets the room (`EditorLayout.typingPanelHeight`), and
-                    // the tabs come back with the keyboard's Done.
-                    if !typing { PanelTabs(tabs: EditorPanelTab.textStyle, selection: tab) { viewModel.panelTab = $0 } }
+                    // While typing, the words and the tabs (as in CapCut): the video above gets the room the controls
+                    // would take (`EditorLayout.typingPanelHeight`); a tab puts the keyboard away and shows its controls.
+                    PanelTabs(tabs: EditorPanelTab.textStyle, selection: tab) { picked in
+                        writes = false
+                        viewModel.panelTab = picked
+                    }
                 }
             } content: {
                 if isLarge { field(text) }

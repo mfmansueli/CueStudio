@@ -166,9 +166,9 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertEqual(subtitle.label, "All 2 texts change together")
     }
 
-    /// With the keyboard up the field, the tabs and ✓ stay over it, and the controls under them scroll into
-    /// reach: the last one of Presets (the captions action) and of Color (Shadow).
-    func testEveryControlIsReachableWithTheKeyboardUp() {
+    /// Typing shows the words and the tabs over the keyboard, so the video keeps the room the controls would take; a tab puts
+    /// the keyboard away and shows its controls.
+    func testTypingKeepsTheTabsOverTheKeyboardAndATabBringsItsControls() {
         let app = EditorApp.open(demo: true)
         _ = openTextStyle(app)
         let field = app.textFields["edit.textField"]
@@ -183,15 +183,12 @@ final class TextStyleUITests: XCTestCase {
         for id in ["edit.panel.apply", "edit.panel.tab.presets", "edit.panel.tab.color"] {
             XCTAssertLessThanOrEqual(app.buttons[id].frame.maxY, top + 1, id)
         }
-        let copy = app.buttons["edit.style.copyToCaptions"]
-        scrollPanel(app, to: copy)
-        XCTAssertTrue(copy.isHittable)
-        XCTAssertLessThanOrEqual(copy.frame.maxY, top + 1)
+        XCTAssertFalse(app.buttons["edit.style.copyToCaptions"].exists)
         app.buttons["edit.panel.tab.color"].tap()
+        XCTAssertTrue(waitFor { !keyboard.exists })
         let outline = app.buttons["edit.textShadow.outline"]
         scrollPanel(app, to: outline)
         XCTAssertTrue(outline.isHittable)
-        XCTAssertLessThanOrEqual(outline.frame.maxY, top + 1)
         outline.tap()
         XCTAssertTrue(outline.isSelected)
     }

@@ -438,6 +438,11 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         handles.first { $0.hitFrame.contains(point) }
     }
 
+    /// Whether a tap at `point` is on a handle as drawn. Its wider reach lies over the neighbour, which a tap there still picks.
+    func tapIsOnHandle(_ point: CGPoint) -> Bool {
+        handles.contains { $0.frame.insetBy(dx: 0, dy: -4).contains(point) }
+    }
+
     /// What a drag starting at `point` holds: a handle (trims), else the picked item's body (moves it).
     func dragTarget(at point: CGPoint) -> Handle? {
         handle(at: point) ?? bodies.first { $0.hitFrame.contains(point) }
