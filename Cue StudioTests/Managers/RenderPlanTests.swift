@@ -80,19 +80,14 @@ struct RenderPlanTests {
         #expect(Self.item(zoomed) != zoomedBefore)
     }
 
-    /// Trimming the start only moves the window the item plays, unless a look counts its grain from there: then the grain
-    /// would run from the wrong moment, so the item is new.
-    @Test func trimmingTheStartUnderAGrainyFilterMakesANewItem() {
-        var clean = TakeEdit(sourceDuration: 20, aspect: .portrait)
-        clean.filter = .cinema
-        let cleanBefore = Self.item(clean)
-        clean.timeline.trimStart(to: 2)
-        #expect(Self.item(clean) == cleanBefore)
+    /// Trimming the start only moves the window the item plays, even under a filter with grain (grain is noise: counted from an
+    /// earlier start it looks the same, and a dragged handle mustn't rebuild the item at every move).
+    @Test func trimmingTheStartUnderAGrainyFilterOnlyMovesTheWindow() {
         var grainy = TakeEdit(sourceDuration: 20, aspect: .portrait)
         grainy.filter = .warmFilm
-        let grainyBefore = Self.item(grainy)
+        let before = Self.item(grainy)
         grainy.timeline.trimStart(to: 2)
-        #expect(Self.item(grainy) != grainyBefore)
+        #expect(Self.item(grainy) == before)
     }
 
     /// The preview draws the edit grown to the whole recording and plays it from where the edit starts; an export draws the

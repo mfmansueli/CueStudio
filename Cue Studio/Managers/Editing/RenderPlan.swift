@@ -45,9 +45,10 @@ nonisolated struct RenderPlan: Equatable, Sendable {
     var item: Item { Item(self) }
 
     /// A preview item's identity: the drawn edit without its timeline, the pieces it plays (seamless ones as one), each clip's
-    /// sound, zoom, steadiness and look, the transitions and zooms where they play, and, only when they read it, where the
-    /// edit starts: music (placed on the edit's own seconds) and a look that moves with time (grain counts from the edit's
-    /// start). Not the curved sound's rendering, which the player switches on its own.
+    /// sound, zoom, steadiness and look, the transitions and zooms where they play, and where the edit plays in the drawing
+    /// when music is placed on it. Not the curved sound's rendering, which the player switches on its own; and not where
+    /// the edit starts for a filter's grain, which counts from there: grain is noise, drawn from an earlier start it looks
+    /// the same, and a handle dragged under a grainy filter would otherwise rebuild the item at every move.
     struct Item: Equatable, Sendable {
         let recipe: TakeEdit
         let spans: [TimeSpan]
@@ -66,8 +67,6 @@ nonisolated struct RenderPlan: Equatable, Sendable {
         let clipLooks: [ClipLook?]
         /// Where the edit plays in the drawing, when music is placed on it.
         let musicWindow: TimeSpan?
-        /// Where the edit starts in the drawing, when a look counts its grain from there.
-        let lookClock: TimeInterval?
 
         init(_ plan: RenderPlan) {
             var recipe = plan.drawn
@@ -106,15 +105,8 @@ nonisolated struct RenderPlan: Equatable, Sendable {
             }
             clipLooks = drawn.segments.map(\.look)
             musicWindow = plan.drawn.music.isEmpty ? nil : plan.window
-            lookClock = Self.movesWithTime(plan.drawn) ? plan.leadIn : nil
         }
 
         private static let blankTimeline = EditTimeline(sourceDuration: 0)
-
-        /// Whether a look the edit draws changes from frame to frame (a filter's grain).
-        private static func movesWithTime(_ edit: TakeEdit) -> Bool {
-            let filters = [edit.filter] + edit.timeline.segments.compactMap { $0.look?.filter }
-            return filters.contains { (FilterTexture.texture(for: $0)?.grain ?? 0) > 0 }
-        }
     }
 }

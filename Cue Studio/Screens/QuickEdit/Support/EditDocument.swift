@@ -128,6 +128,14 @@ final class EditDocument {
         changeBase = snapshot
     }
 
+    /// The undo steps as a draft keeps them: a gesture or sheet still going (the app left in the middle of a drag) is a step of
+    /// its own, back to where it began, so the edit saved with it and its steps agree.
+    var draftHistory: EditHistory<EditSnapshot> {
+        var steps = history
+        if let base = changeBase, base != snapshot { steps.record(base) }
+        return steps
+    }
+
     /// The gesture or sheet is over: one undo step back to where it began, when anything changed.
     func endChange() {
         guard let base = changeBase else { return }

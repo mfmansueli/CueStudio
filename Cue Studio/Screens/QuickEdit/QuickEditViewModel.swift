@@ -513,7 +513,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     private func autosaveDraft() {
         guard source == .ready, !isClosed else { return }
         if hasUnsavedChanges {
-            drafts.saveSoon(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.history, savedAt: .now))
+            drafts.saveSoon(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.draftHistory, savedAt: .now))
         } else {
             drafts.discard(takeID: take.id)
         }
@@ -526,7 +526,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         guard source == .ready, !isClosed else { return true }
         if hasUnsavedChanges || forced {
             do {
-                try drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.history, savedAt: .now))
+                try drafts.save(QuickEditDraft(takeID: take.id, edit: edit, playhead: player.currentTime, history: document.draftHistory, savedAt: .now))
             } catch {
                 noteFailure(error, "draft")
                 return false

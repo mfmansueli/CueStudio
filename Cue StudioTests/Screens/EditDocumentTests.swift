@@ -68,6 +68,23 @@ struct EditDocumentTests {
         #expect(!document.canUndo)
     }
 
+    /// The app left in the middle of a drag: the draft's steps take the gesture as a step of its own, so the edit saved with
+    /// them goes back to where the gesture began on Undo, even after the draft is read twice.
+    @Test func aDraftSavedMidGestureKeepsTheGestureAsAStep() {
+        let document = EditDocument(EditFixtures.blank())
+        document.changeEdit { $0.exposure = 10 }
+        document.beginChange()
+        document.changeEdit { $0.exposure = 40 }
+        #expect(document.history.past.count == 1)
+        let saved = document.draftHistory
+        #expect(saved.past.count == 2)
+        var history = saved
+        let undone = history.undo(from: document.snapshot)
+        var edit = document.edit
+        if let undone { edit.apply(undone) }
+        #expect(edit.exposure == 10)
+    }
+
     @Test func whatListeningFoundIsNoStepAndUndoKeepsIt() {
         let document = EditDocument(EditFixtures.blank())
         document.change { $0.texts.append(Self.text("Hook")) }
