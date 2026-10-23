@@ -12,6 +12,10 @@ import UIKit
 /// empty tracks, the "+" and the handles. Lives inside the scroll view, so it scrolls with it. The
 /// track strips and their gutter are not here: they stay on screen (`TimelineLaneBackdropView`,
 /// `TimelineLaneGutterView`).
+///
+/// Each piece keeps its layer while what it was drawn from is the same (`Piece`): a redraw (another clip picked, a handle
+/// moved, a new window while scrolling) builds only the pieces that changed, and a frame arriving fills the tiles still
+/// waiting for it in place.
 @MainActor
 final class TimelineContentView: UIView {
     /// What the clips' frames and waveforms come from.
@@ -37,13 +41,49 @@ final class TimelineContentView: UIView {
     private var visible: CGRect = .zero
     private var ghostLayers: [CALayer] = []
     private let layersRoot = CALayer()
+    /// What is drawn now, by what it is.
+    private var pieces: [PieceKey: Piece] = [:]
+
+    /// One drawn thing of the timeline (a tick, the cover, a clip, a pause, a cut, an item, a hint, the "+", a handle).
+    private enum PieceKey: Hashable {
+        case tick(Int)
+        case cover
+        case clip(UUID)
+        case pause(UUID)
+        case join(UUID)
+        case item(TimelineGeometry.ItemKind, UUID)
+        case ghost(Int)
+        case add
+        case handle(Int)
+    }
+
+    /// A piece's layer, with what it was drawn from and the frames it still shows a stand-in for.
+    private struct Piece {
+        let spec: any Equatable
+        let layer: CALayer
+        var waiting: [WaitingTile]
+    }
+
+    /// A tile showing the nearest frame read until its own arrives.
+    private struct WaitingTile {
+        let layer: CALayer
+        let url: URL
+        let time: TimeInterval
+        let grid: TimeInterval
+    }
 
     override init(frame: CGRect) {
         super.init(frame: frame)
         clipsToBounds = false
         layer.addSublayer(layersRoot)
-        frames.onChange = { [weak self] in self?.redraw() }
+        frames.onChange = { [weak self] in self?.fillWaitingTiles() }
         waveforms.onChange = { [weak self] in self?.redraw() }
+        // Colors and text are drawn for the screen's scale and appearance: when they change, everything is drawn again.
+        let traits: [UITrait] = [UITraitUserInterfaceStyle.self, UITraitDisplayScale.self, UITraitAccessibilityContrast.self]
+        registerForTraitChanges(traits) { (view: TimelineContentView, _: UITraitCollection) in
+            view.pieces = [:]
+            view.redraw()
+        }
     }
 
     @available(*, unavailable)
@@ -85,58 +125,159 @@ final class TimelineContentView: UIView {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         defer { CATransaction.commit() }
-        layersRoot.sublayers?.forEach { $0.removeFromSuperlayer() }
-        ghostLayers = []
         let width = max(visible.width, 320)
         drawn = visible.insetBy(dx: -width, dy: 0)
-        drawRuler(geometry)
-        drawCover(geometry, sources: sources)
-        for clip in geometry.clips where clip.frame.maxX >= drawn.minX && clip.frame.minX <= drawn.maxX {
-            drawClip(clip, geometry: geometry, url: sources.url(for: clip.sourceID))
+        var next: [PieceKey: Piece] = [:]
+        var order: [CALayer] = []
+        var ghosts: [CALayer] = []
+        /// Keeps the piece's layer while its spec is the same, else draws it again.
+        func place(_ key: PieceKey, _ spec: some Equatable, draw: (inout [WaitingTile]) -> CALayer?) {
+            var piece: Piece
+            if let old = pieces[key], Self.same(old.spec, spec) {
+                piece = old
+            } else {
+                var waiting: [WaitingTile] = []
+                guard let layer = draw(&waiting) else { return }
+                piece = Piece(spec: spec, layer: layer, waiting: waiting)
+            }
+            next[key] = piece
+            order.append(piece.layer)
         }
-        for pause in geometry.pauses where pause.frame.intersects(drawn) {
-            drawPause(pause)
-        }
-        for join in geometry.joins where join.frame.intersects(drawn) {
-            drawJoin(join)
-        }
-        for item in geometry.items where item.frame.maxX >= drawn.minX - 4 && item.frame.minX <= drawn.maxX {
-            drawItem(item)
-        }
-        for ghost in geometry.ghosts {
-            drawGhost(ghost)
-        }
-        drawAdd(geometry)
-        for handle in geometry.handles where handle.frame.intersects(drawn.insetBy(dx: -40, dy: -40)) {
-            drawHandle(handle)
-        }
-        layoutGhosts()
-    }
-
-    private func drawRuler(_ geometry: TimelineGeometry) {
-        let pps = geometry.pointsPerSecond
-        let ticks = TimelineRuler.ticks(
-            from: geometry.time(for: drawn.minX), to: geometry.time(for: drawn.maxX),
-            duration: geometry.input.duration, pointsPerSecond: pps
-        )
         let top: CGFloat = geometry.isCompact ? 4 : 2
-        for tick in ticks {
+        for tick in Self.ticks(in: drawn, geometry: geometry) {
             let x = geometry.x(for: tick.time)
-            let line = CALayer()
-            line.frame = CGRect(x: x, y: top + 13, width: 1, height: tick.isMajor ? 5 : 3)
-            line.backgroundColor = UIColor.white.withAlphaComponent(tick.isMajor ? 0.6 : 0.3).cgColor
-            layersRoot.addSublayer(line)
-            if let label = tick.label, !geometry.isCompact || tick.isMajor {
-                let text = textLayer(label, size: 10, weight: .medium, color: UIColor(Palette.Editor.rulerLabel), monospaced: true)
-                text.frame.origin = CGPoint(x: x - text.frame.width / 2, y: top)
-                layersRoot.addSublayer(text)
+            let shows = !geometry.isCompact || tick.isMajor
+            place(.tick(Int((tick.time * 1000).rounded())), TickSpec(tick: tick, x: x, top: top, showsLabel: shows)) { _ in
+                drawTick(tick, x: x, top: top, showsLabel: shows)
             }
         }
+        if geometry.coverFrame.maxX >= drawn.minX {
+            let spec = CoverSpec(
+                frame: geometry.coverFrame, take: sources.take, time: sources.coverTime,
+                image: sources.coverImage.map(ObjectIdentifier.init)
+            )
+            place(.cover, spec) { waiting in drawCover(geometry, sources: sources, waiting: &waiting) }
+        }
+        for clip in geometry.clips where clip.frame.maxX >= drawn.minX && clip.frame.minX <= drawn.maxX {
+            let url = sources.url(for: clip.sourceID)
+            let visibleFrame = clip.frame.intersection(drawn.insetBy(dx: -Metrics.clipRadius * 2, dy: -200))
+            guard !visibleFrame.isNull, visibleFrame.width > 0 else { continue }
+            let spec = ClipSpec(
+                clip: clip, visibleFrame: visibleFrame, url: url, pointsPerSecond: geometry.pointsPerSecond,
+                hasWaveform: waveforms.levels(for: url)?.isEmpty == false,
+                badgeEdges: clip.badge != nil || clip.isSelected ? [visible.minX, visible.maxX] : []
+            )
+            place(.clip(clip.id), spec) { waiting in
+                drawClip(clip, visibleFrame: visibleFrame, geometry: geometry, url: url, waiting: &waiting)
+            }
+        }
+        for pause in geometry.pauses where pause.frame.intersects(drawn) {
+            place(.pause(pause.id), pause) { _ in drawPause(pause) }
+        }
+        for join in geometry.joins where join.frame.intersects(drawn) {
+            place(.join(join.id), join) { _ in drawJoin(join) }
+        }
+        for item in geometry.items where item.frame.maxX >= drawn.minX - 4 && item.frame.minX <= drawn.maxX {
+            let inset = max(0, visible.minX - item.frame.minX)
+            place(.item(item.kind, item.id), ItemSpec(item: item, labelInset: inset)) { _ in drawItem(item, labelInset: inset) }
+        }
+        for (index, ghost) in geometry.ghosts.enumerated() {
+            place(.ghost(index), ghost) { _ in drawGhost(ghost) }
+            if let layer = next[.ghost(index)]?.layer { ghosts.append(layer) }
+        }
+        if geometry.addFrame.minX <= drawn.maxX {
+            place(.add, geometry.addFrame) { _ in drawAdd(geometry.addFrame) }
+        }
+        for (index, handle) in geometry.handles.enumerated() where handle.frame.intersects(drawn.insetBy(dx: -40, dy: -40)) {
+            place(.handle(index), handle) { _ in drawHandle(handle) }
+        }
+        pieces = next
+        if layersRoot.sublayers?.elementsEqual(order, by: ===) != true { layersRoot.sublayers = order }
+        ghostLayers = ghosts
+        layoutGhosts()
+        fillWaitingTiles()
     }
 
-    private func drawCover(_ geometry: TimelineGeometry, sources: Sources) {
+    /// Frames came in: the tiles showing a stand-in take theirs, and stop waiting once it is their own.
+    private func fillWaitingTiles() {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        defer { CATransaction.commit() }
+        for (key, piece) in pieces where !piece.waiting.isEmpty {
+            var still: [WaitingTile] = []
+            for tile in piece.waiting {
+                if let image = frames.image(for: tile.url, at: tile.time, grid: tile.grid) {
+                    tile.layer.contents = image.cgImage
+                    tile.layer.backgroundColor = nil
+                }
+                if !frames.hasExactImage(for: tile.url, at: tile.time, grid: tile.grid) { still.append(tile) }
+            }
+            pieces[key]?.waiting = still
+        }
+    }
+
+    /// Whether two specs are the same drawing.
+    private static func same(_ old: any Equatable, _ new: some Equatable) -> Bool {
+        func equal<T: Equatable>(_ new: T) -> Bool { (old as? T) == new }
+        return equal(new)
+    }
+
+    private static func ticks(in drawn: CGRect, geometry: TimelineGeometry) -> [TimelineRuler.Tick] {
+        TimelineRuler.ticks(
+            from: geometry.time(for: drawn.minX), to: geometry.time(for: drawn.maxX),
+            duration: geometry.input.duration, pointsPerSecond: geometry.pointsPerSecond
+        )
+    }
+
+    // MARK: - What each piece is drawn from
+
+    private struct TickSpec: Equatable {
+        let tick: TimelineRuler.Tick
+        let x: CGFloat
+        let top: CGFloat
+        let showsLabel: Bool
+    }
+
+    private struct CoverSpec: Equatable {
+        let frame: CGRect
+        let take: URL
+        let time: TimeInterval
+        let image: ObjectIdentifier?
+    }
+
+    private struct ClipSpec: Equatable {
+        let clip: TimelineGeometry.Clip
+        let visibleFrame: CGRect
+        let url: URL
+        let pointsPerSecond: CGFloat
+        let hasWaveform: Bool
+        /// The visible part's edges, where the badges sit (only for a clip with badges).
+        let badgeEdges: [CGFloat]
+    }
+
+    private struct ItemSpec: Equatable {
+        let item: TimelineGeometry.Item
+        /// How far the item's start is scrolled away: its label keeps clear of it.
+        let labelInset: CGFloat
+    }
+
+    /// A tick of the ruler, with its "mm:ss" on major ones.
+    private func drawTick(_ tick: TimelineRuler.Tick, x: CGFloat, top: CGFloat, showsLabel: Bool) -> CALayer {
+        let group = CALayer()
+        let line = CALayer()
+        line.frame = CGRect(x: x, y: top + 13, width: 1, height: tick.isMajor ? 5 : 3)
+        line.backgroundColor = UIColor.white.withAlphaComponent(tick.isMajor ? 0.6 : 0.3).cgColor
+        group.addSublayer(line)
+        if let label = tick.label, showsLabel {
+            let text = textLayer(label, size: 10, weight: .medium, color: UIColor(Palette.Editor.rulerLabel), monospaced: true)
+            text.frame.origin = CGPoint(x: x - text.frame.width / 2, y: top)
+            group.addSublayer(text)
+        }
+        return group
+    }
+
+    private func drawCover(_ geometry: TimelineGeometry, sources: Sources, waiting: inout [WaitingTile]) -> CALayer {
         let frame = geometry.coverFrame
-        guard frame.maxX >= drawn.minX else { return }
         let cover = CALayer()
         cover.frame = frame
         cover.cornerRadius = 8
@@ -145,7 +286,10 @@ final class TimelineContentView: UIView {
         let grid = TimelineFrameCache.grids[2]
         if let image = sources.coverImage ?? frames.image(for: sources.take, at: sources.coverTime, grid: grid) {
             cover.contents = image.cgImage
-            cover.contentsGravity = .resizeAspectFill
+        }
+        cover.contentsGravity = .resizeAspectFill
+        if sources.coverImage == nil, !frames.hasExactImage(for: sources.take, at: sources.coverTime, grid: grid) {
+            waiting.append(WaitingTile(layer: cover, url: sources.take, time: sources.coverTime, grid: grid))
         }
         // The label reads on any cover: a dark shade, lighter over a drawn cover so it can be recognized.
         let dim = CALayer()
@@ -162,13 +306,13 @@ final class TimelineContentView: UIView {
         }
         label.frame.origin = CGPoint(x: (frame.width - label.frame.width) / 2, y: (frame.height - total) / 2 + iconHeight + 2)
         cover.addSublayer(label)
-        layersRoot.addSublayer(cover)
+        return cover
     }
 
-    private func drawClip(_ clip: TimelineGeometry.Clip, geometry: TimelineGeometry, url: URL) {
+    private func drawClip(
+        _ clip: TimelineGeometry.Clip, visibleFrame: CGRect, geometry: TimelineGeometry, url: URL, waiting: inout [WaitingTile]
+    ) -> CALayer {
         let pps = geometry.pointsPerSecond
-        let visibleFrame = clip.frame.intersection(drawn.insetBy(dx: -Metrics.clipRadius * 2, dy: -200))
-        guard !visibleFrame.isNull, visibleFrame.width > 0 else { return }
         let container = CALayer()
         container.frame = visibleFrame
         container.cornerRadius = Metrics.clipRadius
@@ -195,10 +339,14 @@ final class TimelineContentView: UIView {
                 tile.frame = CGRect(x: x - originX, y: 0, width: tileWidth, height: clip.thumbnailHeight)
                 tile.contentsGravity = .resizeAspectFill
                 tile.masksToBounds = true
-                if let image = frames.image(for: url, at: sourceTime + tileSeconds / 2, grid: grid) {
+                let frameTime = sourceTime + tileSeconds / 2
+                if let image = frames.image(for: url, at: frameTime, grid: grid) {
                     tile.contents = image.cgImage
                 } else {
                     tile.backgroundColor = UIColor(Palette.Takes.thumbnailBottom).cgColor
+                }
+                if !frames.hasExactImage(for: url, at: frameTime, grid: grid) {
+                    waiting.append(WaitingTile(layer: tile, url: url, time: frameTime, grid: grid))
                 }
                 container.addSublayer(tile)
             }
@@ -248,10 +396,10 @@ final class TimelineContentView: UIView {
             container.borderWidth = 2
             container.borderColor = UIColor.white.cgColor
         }
-        layersRoot.addSublayer(container)
+        return container
     }
 
-    private func drawPause(_ pause: TimelineGeometry.Pause) {
+    private func drawPause(_ pause: TimelineGeometry.Pause) -> CALayer {
         let mark = CALayer()
         mark.frame = pause.frame
         mark.cornerRadius = 5
@@ -269,11 +417,11 @@ final class TimelineContentView: UIView {
             dash.lineDashPattern = [4, 3]
             mark.addSublayer(dash)
         }
-        layersRoot.addSublayer(mark)
+        return mark
     }
 
     /// A cut's mark: "+" on dark for a hard cut, the transition's icon on yellow otherwise.
-    private func drawJoin(_ join: TimelineGeometry.Join) {
+    private func drawJoin(_ join: TimelineGeometry.Join) -> CALayer {
         let hasTransition = join.transition != .hardCut
         let mark = CALayer()
         mark.frame = join.frame
@@ -294,18 +442,19 @@ final class TimelineContentView: UIView {
             ring.borderColor = UIColor(Palette.acc).cgColor
             mark.addSublayer(ring)
         }
-        layersRoot.addSublayer(mark)
+        return mark
     }
 
-    private func drawItem(_ item: TimelineGeometry.Item) {
+    private func drawItem(_ item: TimelineGeometry.Item, labelInset inset: CGFloat) -> CALayer {
         let style = Self.style(of: item.kind, selected: item.isSelected)
+        let group = CALayer()
         if item.isSelected {
             let ring = CALayer()
             ring.frame = item.frame.insetBy(dx: -2, dy: -2)
             ring.cornerRadius = Metrics.laneItemRadius + 2
             ring.borderWidth = 2
             ring.borderColor = UIColor.white.cgColor
-            layersRoot.addSublayer(ring)
+            group.addSublayer(ring)
         }
         let box = CALayer()
         box.frame = item.frame
@@ -315,7 +464,6 @@ final class TimelineContentView: UIView {
         box.backgroundColor = style.fill.cgColor
         box.opacity = item.isDimmed ? 0.5 : 1
         // The label stays readable while the item's start is scrolled away.
-        let inset = max(0, visible.minX - item.frame.minX)
         var x: CGFloat = 7 + min(inset, max(0, item.frame.width - 60))
         // A locked item says so where its kind's symbol was.
         if let icon = symbolLayer(item.isLocked ? "lock.fill" : style.symbol, size: 10, color: style.ink) {
@@ -344,16 +492,16 @@ final class TimelineContentView: UIView {
             diamond.setAffineTransform(CGAffineTransform(rotationAngle: .pi / 4))
             box.addSublayer(diamond)
         }
-        layersRoot.addSublayer(box)
+        group.addSublayer(box)
+        return group
     }
 
     /// What an empty track says: plain text, since a tap anywhere on the track does the job.
-    private func drawGhost(_ ghost: TimelineGeometry.Ghost) {
+    private func drawGhost(_ ghost: TimelineGeometry.Ghost) -> CALayer {
         let label = textLayer(ghost.label, size: 12, weight: .medium, color: UIColor(Palette.Editor.laneHintInk))
         label.frame.origin = CGPoint(x: 0, y: ghost.lane.y + (ghost.lane.height - label.frame.height) / 2)
         label.zPosition = 2
-        layersRoot.addSublayer(label)
-        ghostLayers.append(label)
+        return label
     }
 
     /// Hints stay at a fixed place on screen, past the gutter, whatever the scroll.
@@ -366,9 +514,7 @@ final class TimelineContentView: UIView {
         CATransaction.commit()
     }
 
-    private func drawAdd(_ geometry: TimelineGeometry) {
-        let frame = geometry.addFrame
-        guard frame.minX <= drawn.maxX else { return }
+    private func drawAdd(_ frame: CGRect) -> CALayer {
         let add = CALayer()
         add.frame = frame
         add.cornerRadius = 8
@@ -377,10 +523,10 @@ final class TimelineContentView: UIView {
             icon.frame.origin = CGPoint(x: (frame.width - icon.frame.width) / 2, y: (frame.height - icon.frame.height) / 2)
             add.addSublayer(icon)
         }
-        layersRoot.addSublayer(add)
+        return add
     }
 
-    private func drawHandle(_ handle: TimelineGeometry.Handle) {
+    private func drawHandle(_ handle: TimelineGeometry.Handle) -> CALayer {
         let tab = CALayer()
         tab.frame = handle.frame
         tab.backgroundColor = UIColor(Palette.acc).cgColor
@@ -395,7 +541,7 @@ final class TimelineContentView: UIView {
         grip.cornerRadius = 1.25
         grip.backgroundColor = UIColor.black.withAlphaComponent(0.55).cgColor
         tab.addSublayer(grip)
-        layersRoot.addSublayer(tab)
+        return tab
     }
 
     // MARK: - Pieces
