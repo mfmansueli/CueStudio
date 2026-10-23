@@ -17,7 +17,7 @@ import Foundation
 /// - With a panel open the timeline is compact: the video track shrinks to 40 pt and the track the
 ///   panel is about (if any) comes up under the ruler, alone with the video.
 /// - The picked item has a yellow outline and handles (16 pt on a clip, 12 on a track item, held
-///   from 44 pt); its track grows; everything else dims.
+///   from 32 pt; a clip's reach grows into the clip, never over its neighbour); its track grows; everything else dims.
 /// - The cover sits before the start, and a "+" after the end adds a clip.
 nonisolated struct TimelineGeometry: Equatable, Sendable {
     /// What the timeline shows, read from the edit.
@@ -203,8 +203,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     static let zoomRange: ClosedRange<CGFloat> = 0.35...5
     static let clipHandleWidth: CGFloat = 16
     static let itemHandleWidth: CGFloat = 12
-    /// The least a handle can be held from: a full 44 pt touch target, so trimming doesn't need a fingertip's precision.
-    static let handleReach: CGFloat = 44
+    /// The least a handle can be held from.
+    static let handleReach: CGFloat = 32
     /// The gutter with each track's icon, and where its strip starts and ends (from the right
     /// edge of the timeline). Items scroll under the gutter.
     static let gutterWidth: CGFloat = 38
@@ -301,8 +301,11 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
             let width = CGFloat(clip.duration) * pps
             let isSelected = selection == .clip(clip.id)
             if isSelected {
-                handles.append(Self.handle(.clip(clip.id, .start), x: x - Self.clipHandleWidth + 1, width: Self.clipHandleWidth, lane: main))
-                handles.append(Self.handle(.clip(clip.id, .end), x: x + width - 1, width: Self.clipHandleWidth, lane: main))
+                let inward = (width - 2) / 2
+                handles.append(Self.handle(
+                    .clip(clip.id, .start), x: x - Self.clipHandleWidth + 1, width: Self.clipHandleWidth, lane: main, inward: inward
+                ))
+                handles.append(Self.handle(.clip(clip.id, .end), x: x + width - 1, width: Self.clipHandleWidth, lane: main, inward: inward))
             }
             return Clip(
                 id: clip.id,
@@ -422,11 +425,15 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         }
     }
 
-    private static func handle(_ target: HandleTarget, x: CGFloat, width: CGFloat, lane: LaneFrame) -> Handle {
+    /// A handle reached from at least `handleReach`. A track item's grows outward, so the item itself stays tappable and draggable.
+    /// A clip's sits on the cut, over the neighbour: it grows into the picked clip (up to `inward`, half of it), so over the
+    /// neighbour a finger finds only the handle it sees, and the rest of the neighbour is the neighbour's.
+    private static func handle(_ target: HandleTarget, x: CGFloat, width: CGFloat, lane: LaneFrame, inward: CGFloat? = nil) -> Handle {
         let frame = CGRect(x: x, y: lane.y, width: width, height: lane.height)
-        // Reached from at least `handleReach`, growing outward so the item itself stays tappable.
-        let extra = max(0, handleReach - width)
-        let hitX = target.edge == .start ? x - extra : x
+        var extra = max(0, handleReach - width)
+        if let inward { extra = min(extra, max(0, inward)) }
+        let growsLeft = (target.edge == .start) == (inward == nil)
+        let hitX = growsLeft ? x - extra : x
         let hit = CGRect(x: hitX, y: lane.y - 4, width: width + extra, height: lane.height + 8)
         return Handle(target: target, frame: frame, hitFrame: hit)
     }
@@ -436,11 +443,6 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     /// The handle under `point`, if any: handles come first.
     func handle(at point: CGPoint) -> Handle? {
         handles.first { $0.hitFrame.contains(point) }
-    }
-
-    /// Whether a tap at `point` is on a handle as drawn. Its wider reach lies over the neighbour, which a tap there still picks.
-    func tapIsOnHandle(_ point: CGPoint) -> Bool {
-        handles.contains { $0.frame.insetBy(dx: 0, dy: -4).contains(point) }
     }
 
     /// What a drag starting at `point` holds: a handle (trims), else the picked item's body (moves it).

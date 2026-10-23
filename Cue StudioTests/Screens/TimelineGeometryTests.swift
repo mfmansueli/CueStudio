@@ -148,20 +148,32 @@ struct TimelineGeometryTests {
         let start = geometry.handles[0]
         #expect(start.target == .clip(first, .start))
         #expect(start.frame.width == 16)
-        #expect(start.hitFrame.width >= 44)
-        // The hit area grows outward, so the clip itself stays tappable.
-        #expect(start.hitFrame.maxX == start.frame.maxX)
+        #expect(start.hitFrame.width >= 32)
+        // The reach grows into the picked clip: over the clip before, a finger finds only the handle it sees.
+        #expect(start.hitFrame.minX == start.frame.minX)
     }
 
-    /// The handle's wider reach lies over the clip before: a drag there trims, a tap there picks that clip.
-    @Test func besideAHandleADragTrimsAndATapPicksTheNeighbour() throws {
+    /// Beside a picked clip's handle the clip before is its own: a touch there never reaches the handle. Inside the picked
+    /// clip's edge the handle is still held.
+    @Test func overTheNeighbourOnlyTheHandleItSeesIsThePickedClips() throws {
         let geometry = TimelineGeometry(input { $0.selection = .clip(second) })
         let start = try #require(geometry.handles.first { $0.target == .clip(second, .start) })
-        let beside = CGPoint(x: start.hitFrame.minX + 2, y: start.frame.midY)
-        #expect(geometry.dragTarget(at: beside)?.target == .clip(second, .start))
-        #expect(!geometry.tapIsOnHandle(beside))
+        let beside = CGPoint(x: start.frame.minX - 2, y: start.frame.midY)
+        #expect(geometry.dragTarget(at: beside) == nil)
         #expect(geometry.hit(at: beside) == .clip(first))
-        #expect(geometry.tapIsOnHandle(CGPoint(x: start.frame.midX, y: start.frame.midY)))
+        #expect(geometry.dragTarget(at: CGPoint(x: start.frame.maxX + 12, y: start.frame.midY))?.target == .clip(second, .start))
+    }
+
+    /// On a short picked clip the two handles reach its middle and never cross.
+    @Test func aShortClipsHandlesMeetInItsMiddle() throws {
+        let geometry = TimelineGeometry(input { input in
+            input.pointsPerSecond = 2
+            input.selection = .clip(first)
+        })
+        let start = try #require(geometry.handles.first { $0.target == .clip(first, .start) })
+        let end = try #require(geometry.handles.first { $0.target == .clip(first, .end) })
+        #expect(start.hitFrame.maxX <= end.hitFrame.minX)
+        #expect(start.hitFrame.maxX == geometry.clips[0].frame.midX)
     }
 
     /// A locked text keeps its place: picked, it shows a lock and no handle or body to drag.

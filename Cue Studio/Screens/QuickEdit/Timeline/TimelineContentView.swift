@@ -244,9 +244,9 @@ final class TimelineContentView: UIView {
             let right = min(clip.frame.maxX, visible.maxX) - originX
             label.frame.origin = CGPoint(x: right - label.frame.width - 5, y: 5)
             container.addSublayer(label)
-            // A picked clip is framed in yellow, like a picked text or photo on the video and on the cover.
+            // A picked clip is framed in white; its handles are the yellow part.
             container.borderWidth = 2
-            container.borderColor = UIColor(Palette.acc).cgColor
+            container.borderColor = UIColor.white.cgColor
         }
         layersRoot.addSublayer(container)
     }
@@ -304,7 +304,7 @@ final class TimelineContentView: UIView {
             ring.frame = item.frame.insetBy(dx: -2, dy: -2)
             ring.cornerRadius = Metrics.laneItemRadius + 2
             ring.borderWidth = 2
-            ring.borderColor = UIColor(Palette.acc).cgColor
+            ring.borderColor = UIColor.white.cgColor
             layersRoot.addSublayer(ring)
         }
         let box = CALayer()

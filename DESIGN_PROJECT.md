@@ -1459,8 +1459,9 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Advanced** diz quantos ajustes estão mudados lá dentro ("· 1 changed": Speed, Zoom, fades da música).
 - **Desativado:** 40% em todo controle (`Metrics.disabledOpacity`), linhas com chave incluídas, sempre com o motivo escrito (Paste look: "Turn on
   a part to paste it.").
-- **Timeline:** o clipe e o item escolhidos com contorno **amarelo** (como no vídeo e na capa); alças pegas a 44 pt (o alcance a mais fica
-  sobre o vizinho: arrastar ali apara, tocar escolhe o vizinho); a etiqueta do clipe diz também "Stabilized" e "Volume 150%".
+- **Timeline:** o clipe e o item escolhidos seguem com contorno branco e alças amarelas pegas a 32 pt. A alça do clipe fica sobre o corte e o
+  alcance a mais cresce **para dentro do clipe escolhido**, nunca sobre o vizinho: ali só a alça que se vê é dele, o resto do vizinho é do
+  vizinho (alças de 44 pt sobre o vizinho confundiam qual clipe o dedo pegava). A etiqueta do clipe diz também "Stabilized" e "Volume 150%".
 - **Barra do player:** ‹ › ao lado do Play andam **um quadro** (pausado; segurar repete), para dividir e aparar no ponto exato
   (`QuickEditViewModel+FrameStep`); somem com texto muito grande.
 - **Barra de ferramentas:** principal com **Adjust** (vídeo inteiro) ao lado de Filters; o esmaecido só no lado onde há mais ferramentas; "Add
@@ -1475,7 +1476,7 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   copiado, tamanho, destaque, posição e revelação; nunca as palavras nem as margens da plataforma.
 - **Testes:** `QuickEditFrameStepTests`, `QuickEditMyCaptionStyleTests`, `LookVersionTests.theOriginalPictureHasNoBackground`,
   `QuickEditPreviewTests` (dois toques), `QuickEditClipLookTests`/`QuickEditBackgroundPanelTests` (escopo), `EditorUITests` (◐ toque e
-  segurar), `QuickEditToolbarTests` (Lock), `TimelineGeometryTests` (alças de 44 pt, toque ao lado); `ToolAuditCaptureTests` (opt-in,
+  segurar), `QuickEditToolbarTests` (Lock), `TimelineGeometryTests` (alcance da alça dentro do clipe, item travado sem alças); `ToolAuditCaptureTests` (opt-in,
   `TEST_RUNNER_CUE_SCREENSHOT_DIR`) fotografa cada ferramenta.
 - **Contraste:** `PaletteContrastTests.theOriginalBadgesReadOverAnyPicture` ("Original" e o ◐ sobre vídeo branco e preto),
   `theNarrationScriptReadsOverAnyPicture` (roteiro do voice-over).
