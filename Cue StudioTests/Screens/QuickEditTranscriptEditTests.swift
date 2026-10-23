@@ -340,7 +340,7 @@ struct QuickEditAuditFixTests {
     @Test func aTagsWordNeverTitlesTheCover() async {
         let (viewModel, _) = await makeViewModel()
         viewModel.addGraphic(.tag)
-        #expect(!viewModel.coverSuggestions.contains("NEW"))
+        #expect(!viewModel.cover.coverSuggestions.contains("NEW"))
     }
 
     @Test func everyCutGetsTheTransitionAndItsLength() async throws {

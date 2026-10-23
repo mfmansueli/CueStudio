@@ -50,8 +50,8 @@ struct QuickCreatorViewModelTests {
 
     /// A cover from the frame under the playhead, made in Cover Studio and kept with Done.
     private func makeCover(_ viewModel: QuickEditViewModel) throws {
-        viewModel.openCoverStudio()
-        viewModel.finishCoverStudio(try #require(viewModel.coverStudio))
+        viewModel.cover.openCoverStudio()
+        viewModel.cover.finishCoverStudio(try #require(viewModel.cover.coverStudio))
     }
 
     // MARK: - Text

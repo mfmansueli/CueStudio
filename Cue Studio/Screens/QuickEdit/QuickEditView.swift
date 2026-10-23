@@ -133,10 +133,10 @@ struct QuickEditView: View {
         .sheet(isPresented: $viewModel.showsPasteLook) {
             PasteLookSheet(viewModel: viewModel)
         }
-        .fullScreenCover(item: $viewModel.coverStudio) { studio in
+        .fullScreenCover(item: Bindable(viewModel.cover).coverStudio) { studio in
             CoverStudioView(
                 viewModel: studio, frameRate: Double(viewModel.take.frameRate.rawValue),
-                onDone: { viewModel.finishCoverStudio($0) }, onCancel: { viewModel.cancelCoverStudio($0) }
+                onDone: { viewModel.cover.finishCoverStudio($0) }, onCancel: { viewModel.cover.cancelCoverStudio($0) }
             )
         }
         .onChange(of: scenePhase) { _, phase in

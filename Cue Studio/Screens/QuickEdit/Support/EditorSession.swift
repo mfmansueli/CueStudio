@@ -25,6 +25,10 @@ final class EditorSession {
     /// The take's recording.
     let videoURL: URL
     weak var host: (any EditorHost)?
+    /// Media files copied in while the editor is open, so what the edit doesn't keep is removed when it closes.
+    var importedFiles: Set<String> = []
+    /// The creator's handle, for the "@handle" graphic and the cover's series (set by the screen).
+    var creatorHandle = ""
 
     init(document: EditDocument, player: EditPlayback, jobs: EditorJobs, toast: ToastService, take: Take, videoURL: URL) {
         self.document = document

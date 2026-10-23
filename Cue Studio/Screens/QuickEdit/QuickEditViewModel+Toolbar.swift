@@ -250,7 +250,7 @@ extension QuickEditViewModel {
             toolMenu = nil
             captions.writeCaptionsByHand()
         case .openMusic, .replaceMusic: openMusicSheet(replacing: action == .replaceMusic)
-        case .openCoverStudio: openCoverStudio()
+        case .openCoverStudio: cover.openCoverStudio()
         default: break
         }
     }

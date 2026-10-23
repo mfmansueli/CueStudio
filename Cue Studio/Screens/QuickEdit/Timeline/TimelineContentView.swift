@@ -20,7 +20,7 @@ final class TimelineContentView: UIView {
         var others: [UUID: URL] = [:]
         /// Seconds of the take shown on the cover block until the cover is drawn.
         var coverTime: TimeInterval = 0.5
-        /// The cover as drawn (`QuickEditViewModel.coverImage`): what the cover block shows once there is one.
+        /// The cover as drawn (`CoverViewModel.coverImage`): what the cover block shows once there is one.
         var coverImage: UIImage?
 
         func url(for source: UUID?) -> URL { source.flatMap { others[$0] } ?? take }

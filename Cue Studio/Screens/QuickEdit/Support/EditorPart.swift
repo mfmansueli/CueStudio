@@ -49,6 +49,12 @@ extension EditorPart {
         set { session.sheet = newValue }
     }
 
+    /// Media files copied in while the editor is open (`EditorSession.importedFiles`).
+    var importedFiles: Set<String> {
+        get { session.importedFiles }
+        set { session.importedFiles = newValue }
+    }
+
     var undoAction: ToastAction { session.undoAction }
 
     func sayUndoable(_ message: String) {

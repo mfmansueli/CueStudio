@@ -16,10 +16,10 @@ import Foundation
 /// one undo step (`beginChange` / `endChange`). A draft is kept while editing and when leaving
 /// with Cancel; Done saves the edit on the take.
 ///
-/// The editor coordinates its parts (`EditorPart`: `CaptionsViewModel`), each with its own state, working on the edit
+/// The editor coordinates its parts (`EditorPart`: `CaptionsViewModel`, `CoverViewModel`), each with its own state, working on the edit
 /// through the session (`EditorSession`) the editor hosts (`EditorHost`): it wires what one part's change means for another
 /// (a panel left, the edit changed, the editor closed). The tools not in a part yet are in their own extensions
-/// (`QuickEditViewModel+Text`, `+Media`, `+VoiceOver`, `+ClipSettings`, `+PausesPanel`, `+Style`, `+Cover`, `+CleanUp`).
+/// (`QuickEditViewModel+Text`, `+Media`, `+VoiceOver`, `+ClipSettings`, `+PausesPanel`, `+Style`, `+CleanUp`).
 @MainActor
 @Observable
 final class QuickEditViewModel: EditorHost {
@@ -169,11 +169,6 @@ final class QuickEditViewModel: EditorHost {
     var showsLowPowerNotice = false
     /// How far that script has been read, at a steady pace from the start of the recording.
     var narrationPace: NarrationScriptPace
-    /// The cover as drawn, for the timeline's cover block; nil until drawn or without a cover.
-    var coverImage: Data?
-    var isDrawingCover = false
-    /// Cover Studio, while it's open over the editor.
-    var coverStudio: CoverStudioViewModel?
     /// "Copy look": what a clip's look was when copied; nil until one is.
     var copiedLook: CopiedClipLook?
     /// "Paste look": which parts go, and whether its sheet is open.
@@ -183,8 +178,11 @@ final class QuickEditViewModel: EditorHost {
     var transcriptSelection: ClosedRange<Int>?
     /// The type the creator saved as "My style" (see `QuickEditViewModel+Style`).
     var myStyle: TextLook?
-    /// The creator's handle, for the cover's "@handle" graphic and series (set by the screen).
-    var creatorHandle = ""
+    /// The creator's handle, for the "@handle" graphic and the cover's series (set by the screen).
+    var creatorHandle: String {
+        get { session.creatorHandle }
+        set { session.creatorHandle = newValue }
+    }
     /// The beats found in the music files, by file (`QuickEditViewModel+Beats`); bumped `beatsFound` when one comes in.
     @ObservationIgnored var beatCache: [String: BeatTracker.Result] = [:]
     @ObservationIgnored var findingBeats: Set<String> = []
@@ -241,8 +239,6 @@ final class QuickEditViewModel: EditorHost {
     /// How the creator's teleprompter draws a script (font, colour, spacing, speed): the script shown while a narration records
     /// is drawn the same way.
     let prompterLook: PrompterSettings
-    /// Cover Studio's pictures.
-    let coverPictures: CoverPicturing
     /// Hears a sound effect before it's added.
     let soundPreviews: SoundEffectPreviewing
     /// The library of takes (a montage adds others from it).
@@ -259,10 +255,13 @@ final class QuickEditViewModel: EditorHost {
     let session: EditorSession
     /// Captions: made, corrected, picked, styled, translated and moved on the preview (`CaptionsViewModel`).
     let captions: CaptionsViewModel
-    /// Media files copied in while Quick edit is open, so what the edit doesn't keep is removed.
-    @ObservationIgnored var importedFiles: Set<String> = []
-    /// `TakeEdit.coverDrawingKey` of the cover block's drawing.
-    @ObservationIgnored var drawnCoverKey: Int?
+    /// The cover: Cover Studio over the editor, and the cover drawn for the timeline's block (`CoverViewModel`).
+    let cover: CoverViewModel
+    /// Media files copied in while Quick edit is open, so what the edit doesn't keep is removed (`EditorSession`).
+    var importedFiles: Set<String> {
+        get { session.importedFiles }
+        set { session.importedFiles = newValue }
+    }
     /// Opens Cue's page in the Settings app (a toast's "Settings" when the microphone is off for Cue); tests count it.
     @ObservationIgnored var opensSettings: @MainActor () -> Void = { AppSettingsLink.open() }
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
@@ -293,7 +292,6 @@ final class QuickEditViewModel: EditorHost {
         self.prompterLook = prompterLook
         showsNarrationScript = preferences.showsNarrationScript
         narrationPace = NarrationScriptPace(speed: preferences.narrationScriptSpeed ?? prompterLook.speed)
-        self.coverPictures = coverPictures ?? CoverPictureService()
         self.soundPreviews = soundPreviews ?? SoundEffectPreviewPlayer()
         speechLanguageFor = speechLanguage
         self.mediaImporter = mediaImporter ?? EditMediaImporter()
@@ -318,6 +316,10 @@ final class QuickEditViewModel: EditorHost {
         captions = CaptionsViewModel(
             session: session, editing: editing, takes: takes, library: library, styles: self.styles, translations: translations,
             speechLanguage: speechLanguage, likelySpokenLanguages: likelySpokenLanguages, languageConflict: languageConflict
+        )
+        cover = CoverViewModel(
+            session: session, editing: editing, pictures: coverPictures ?? CoverPictureService(), importer: self.mediaImporter,
+            styles: self.styles
         )
         session.host = self
         self.recorder.stoppedByItself = { [weak self] reason in self?.voiceOverStoppedByItself(reason) }
@@ -350,7 +352,7 @@ final class QuickEditViewModel: EditorHost {
         source = .ready
         player.show(edit)
         player.seek(to: playhead)
-        drawCover()
+        cover.drawCover()
         // Only an edit that uses Follow face or Stabilize has its recordings analyzed now; the others when Format or
         // Stabilize opens (an hour of video is a lot to analyze for nothing).
         requestMotionAnalysisIfNeeded()
@@ -379,7 +381,7 @@ final class QuickEditViewModel: EditorHost {
         updateCurveSoundStepping()
         player.show(playedEdit)
         requestMotionAnalysisIfNeeded()
-        if edit.coverDrawingKey != drawnCoverKey { drawCover() }
+        cover.editChanged()
         scheduleDraftSave()
     }
 
