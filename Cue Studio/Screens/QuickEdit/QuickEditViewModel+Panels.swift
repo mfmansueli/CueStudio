@@ -39,6 +39,7 @@ extension QuickEditViewModel {
 
     func panelTitle(_ panel: EditorPanel) -> String {
         if panel == .textStyle, let text = selectedText { return text.graphic?.kind.label ?? text.role.label }
+        if panel == .media, selectedMedia?.layout == .split { return String(localized: "Split screen") }
         return panel.title
     }
 
@@ -53,7 +54,7 @@ extension QuickEditViewModel {
         case .textStyle: textStyleSubtitle
         case .voiceOver: String(localized: "Records from the playhead · the video plays muted")
         case .beats: audio.beatsSubtitle
-        case .media: String(localized: "On top of the video")
+        case .media: selectedMedia?.layout == .split ? splitSubtitle : String(localized: "On top of the video")
         case .transition: transitionSubtitle
         case .smart: String(localized: "Quick fixes, made on your iPhone")
         }
@@ -108,5 +109,12 @@ extension QuickEditViewModel {
     private var transitionSubtitle: String {
         guard let index = selectedJoinIndex else { return "" }
         return String(localized: "Cut at \(DurationText.editor(edit.timeline.editedStart(ofSegmentAt: index)))")
+    }
+
+    /// What the split screen panel's tab changes: the layout of every split screen, or this support's framing, sound or part.
+    private var splitSubtitle: String {
+        if overlays.splitTab == .layout { return String(localized: "Every split screen in the video") }
+        if overlays.splitTab == .framing, overlays.selectedArea == .main { return String(localized: "Main video · its recording") }
+        return String(localized: "This support")
     }
 }

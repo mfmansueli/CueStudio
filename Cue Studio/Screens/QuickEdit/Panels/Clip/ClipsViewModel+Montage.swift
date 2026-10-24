@@ -81,7 +81,7 @@ extension ClipsViewModel {
         takes.takes.filter { $0.id != take.id }
     }
 
-    /// Adds another take from the library after the picked clip, else after the one at the playhead (`addSource`).
+    /// Adds another take from the library at the playhead (`addSource`).
     func addClip(from take: Take) async {
         guard isReady else { return }
         let file = takes.videoURL(for: take)
@@ -100,7 +100,19 @@ extension ClipsViewModel {
         }
     }
 
-    /// Adds a video from Photos after the picked clip, else after the one at the playhead (`addSource`).
+    /// Adds a video from Photos at the playhead (`addSource`), from the part picked (`pick`).
+    func addClip(_ pick: MediaPick) {
+        guard isReady, !isClosed else { return }
+        importedFiles.insert(pick.imported.fileName)
+        guard pick.imported.kind == .video, let duration = pick.imported.duration else {
+            toast.show(String(localized: "Pick a video first"))
+            return
+        }
+        let part = TimeSpan(start: pick.start, end: min(duration, pick.start + pick.wanted))
+        addSource(ClipSource(fileName: pick.imported.fileName, duration: duration, title: String(localized: "Video")), part: part)
+    }
+
+    /// Copies a video from Photos in and adds it at the playhead, whole.
     func addClip(importing item: PhotosPickerItem) async {
         guard isReady else { return }
         isImportingMedia = true
@@ -111,12 +123,7 @@ extension ClipsViewModel {
                 EditMediaFiles.remove([imported.fileName])
                 return
             }
-            importedFiles.insert(imported.fileName)
-            guard imported.kind == .video, let duration = imported.duration else {
-                toast.show(String(localized: "Pick a video first"))
-                return
-            }
-            addSource(ClipSource(fileName: imported.fileName, duration: duration, title: String(localized: "Video")))
+            addClip(MediaPick(imported))
         } catch is CancellationError {
             // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
@@ -125,22 +132,37 @@ extension ClipsViewModel {
         }
     }
 
-    /// Where an added clip goes, as "Add photo or video" says: right after the picked clip, else after the one at the playhead.
-    var insertionIndex: Int {
-        (selectedSegmentIndex ?? min(clipIndexAtPlayhead, edit.timeline.segments.count - 1)) + 1
+    /// Where a clip added to the sequence goes: at the playhead, the clip there split in two around it; closer to a cut than
+    /// a split can leave, at that cut. `index` is its place among the clips once it's in.
+    var sequenceInsertion: (index: Int, splits: Bool, time: TimeInterval) {
+        let timeline = edit.timeline
+        let time = min(max(0, player.currentTime), timeline.editedDuration)
+        let index = timeline.segmentIndex(atEdited: time)
+        let start = timeline.editedStart(ofSegmentAt: index)
+        let end = start + timeline.segments[index].duration
+        if time - start < EditTimeline.minimumDuration { return (index, false, start) }
+        if end - time < EditTimeline.minimumDuration { return (index + 1, false, end) }
+        return (index + 1, true, time)
     }
 
-    /// "Goes after clip 2, at 00:12.4": where an added clip will start, under the choice.
+    /// "Goes in at 00:07.2 · splits clip 2", "Goes in at 00:12.4, before clip 3": where an added clip will start, under the
+    /// choice.
     var insertionNote: String {
-        let index = insertionIndex
-        return String(localized: "Goes after clip \(index), at \(DurationText.editor(edit.timeline.editedStart(ofSegmentAt: index)))")
+        let place = sequenceInsertion
+        let at = DurationText.editor(place.time)
+        if place.splits { return String(localized: "Goes in at \(at) · splits clip \(place.index)") }
+        if place.index >= edit.timeline.segments.count { return String(localized: "Goes in at the end, at \(at)") }
+        return String(localized: "Goes in at \(at), before clip \(place.index + 1)")
     }
 
-    /// The new clip goes where `insertionIndex` says, is picked (its tools and outline show where it went) and the playhead
-    /// moves to its start; the toast says which clip it became.
-    private func addSource(_ source: ClipSource) {
+    /// The new clip goes where `sequenceInsertion` says (playing `part` of its recording, the whole of it by default), is
+    /// picked (its tools and outline show where it went) and the playhead moves to its start; the toast says how much longer
+    /// the video got.
+    private func addSource(_ source: ClipSource, part: TimeSpan? = nil) {
+        let place = sequenceInsertion
         var next = arranged(edit)
-        guard let id = next.timeline.insertClip(source: source.id, duration: source.duration, at: insertionIndex) else {
+        if place.splits { next.timeline.split(atEdited: place.time) }
+        guard let id = next.timeline.insertClip(source: source.id, duration: source.duration, span: part, at: place.index) else {
             toast.show(String(localized: "Video too short to add"))
             return
         }
@@ -148,9 +170,10 @@ extension ClipsViewModel {
         commit(EditSnapshot(next))
         let index = next.timeline.index(ofSegment: id) ?? 0
         let start = next.timeline.editedStart(ofSegmentAt: index)
+        let longer = next.timeline.segments[index].duration
         player.seek(to: start)
         selection = .clip(id)
-        sayUndoable(String(localized: "\(source.title) added as clip \(index + 1), at \(DurationText.editor(start))"))
+        sayUndoable(String(localized: "\(source.title) added as clip \(index + 1), at \(DurationText.editor(start)) · the video is \(DurationText.tenths(longer)) longer"))
     }
 
     /// Reorder: the clips in a list to drag, from the clip's tools or holding a clip on the timeline. One clip: nothing to order.

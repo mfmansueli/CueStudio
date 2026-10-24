@@ -33,7 +33,7 @@ extension QuickEditViewModel {
         case .cover:
             cover.openCoverStudio()
         case .media:
-            overlays.mediaInsertMode = .overlay
+            overlays.mediaInsertMode = overlays.lastOverlayMode
             sheet = .media
         case .voiceOver:
             panel = .voiceOver

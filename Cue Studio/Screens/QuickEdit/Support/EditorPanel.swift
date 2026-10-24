@@ -48,6 +48,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .textStyle: .text
         case .captions, .captionStyle, .autoCaptions: .captions
         case .voiceOver: .voiceOver
+        case .media: .media
         default: nil
         }
     }

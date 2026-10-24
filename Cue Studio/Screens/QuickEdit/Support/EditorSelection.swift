@@ -21,7 +21,8 @@ nonisolated enum EditorSelection: Hashable, Sendable {
     var lane: TimelineLane {
         switch self {
         case .clip, .join: .main
-        case .text, .media: .text
+        case .text: .text
+        case .media: .media
         case .caption: .captions
         case .music: .music
         case .voiceOver: .voiceOver

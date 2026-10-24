@@ -90,6 +90,12 @@ extension EditorPart {
         set { session.photoRequest = newValue }
     }
 
+    /// A video picked to replace something, waiting for its part (`EditorSession.partChoice`).
+    var partChoice: MediaPartChoice? {
+        get { session.partChoice }
+        set { session.partChoice = newValue }
+    }
+
     /// Opens the photo library for `purpose`.
     func requestPhoto(_ purpose: PhotoRequest.Purpose) {
         photoRequest = PhotoRequest(purpose: purpose)

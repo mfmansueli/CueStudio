@@ -10,8 +10,9 @@ import Foundation
 /// `pointsPerSecond` (zero is the start of the video, under the playhead when it's at the start),
 /// y is from the top of the timeline. Pure, so the layout is tested without a screen.
 ///
-/// - The ruler on top, then the video track (frames over a waveform), then the tracks under it:
-///   texts (and photos or videos over the take), captions, music and voice-over. Each track sits
+/// - The ruler on top, then the video track (frames over a waveform), then the tracks under it: photos and videos over the
+///   take (with their frames, when there are any; short spaces between supports marked), texts, captions, music and
+///   voice-over. Each track sits
 ///   on a strip that stays on screen, with its icon in a gutter on the left; an empty one says
 ///   what a tap on it does ("Tap to add text"). Tapping a track opens its tools.
 /// - With a panel open the timeline is compact: the video track shrinks to 40 pt and the track the
@@ -76,7 +77,27 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var beats: [TimeInterval] = []
         /// Locked in place (`TakeEdit.lockedLayers`): no handles, a lock drawn on it.
         var isLocked = false
+        /// A photo or video: what its frames are drawn from.
+        var strip: MediaStrip?
     }
+
+    /// What a photo's or video's bar shows: its frames, piece by piece (each starting at its second of the file), how it shows.
+    struct MediaStrip: Equatable, Sendable {
+        var fileName: String
+        var isVideo: Bool
+        var pieces: [MediaPiece]
+        var layout: MediaLayout
+    }
+
+    /// A short space between two supports of the split screen (the main video has the whole frame there for a moment), marked
+    /// on the media track: a tap picks the support after it, whose tools close it.
+    struct Gap: Equatable, Sendable {
+        var id: UUID
+        var frame: CGRect
+    }
+
+    /// Spaces shorter than this between two supports are marked: longer ones are plainly on purpose.
+    static let markedGap: TimeInterval = 0.5
 
     struct PauseInput: Equatable, Sendable {
         var id: UUID
@@ -91,7 +112,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
 
         var lane: TimelineLane {
             switch self {
-            case .text, .media: .text
+            case .media: .media
+            case .text: .text
             case .caption: .captions
             case .music: .music
             case .voiceOver, .recording: .voiceOver
@@ -134,6 +156,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         /// Beat ticks (music), from the item's left edge.
         var beatOffsets: [CGFloat] = []
         var isLocked = false
+        /// A photo or video's frames.
+        var strip: MediaStrip?
     }
 
     struct Pause: Equatable, Sendable {
@@ -159,6 +183,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         case item(ItemKind, UUID)
         case pause(UUID)
         case join(UUID)
+        /// A short space before the support `UUID` (`Gap`).
+        case gap(UUID)
         case cover
         case addClip
         /// A track's strip or gutter, or its hint: opens the track's tools.
@@ -230,6 +256,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     let items: [Item]
     let pauses: [Pause]
     let joins: [Join]
+    let gaps: [Gap]
     let handles: [Handle]
     /// The picked track item's body, held to move it (never drawn: the item itself shows).
     let bodies: [Handle]
@@ -264,27 +291,21 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         let hasMusic = !input.music.isEmpty
         let hasVoice = !input.voiceOvers.isEmpty || input.recording != nil
 
-        var others: [TimelineLane] = [.text, .captions]
-        if hasMusic { others.append(.music) }
-        if hasVoice { others.append(.voiceOver) }
-        if !hasMusic, !hasVoice { others.append(.audio) }
-        let order: [TimelineLane] = if compact, let focus = input.focusedLane {
-            [focus, .main]
-        } else {
-            [.main] + others
-        }
+        let order = Self.laneOrder(input)
         // A picked cut is between clips: it raises no lane and dims nothing.
         let selection = input.selection?.joinID == nil ? input.selection : nil
         let selectedLane = selection?.lane
         var lanes: [LaneFrame] = []
         var y: CGFloat = compact ? 22 : heightClass.rulerHeight
         for lane in order {
+            // The media track is a little taller, for its frames.
+            let extra: CGFloat = lane == .media ? 6 : 0
             let height: CGFloat = if lane == .main {
                 compact ? heightClass.panelMainTrackHeight : heightClass.mainTrackHeight
             } else if !compact, lane == selectedLane {
-                heightClass.selectedLaneHeight
+                heightClass.selectedLaneHeight + extra
             } else {
-                heightClass.laneHeight
+                heightClass.laneHeight + extra
             }
             lanes.append(LaneFrame(lane: lane, y: y, height: height))
             y += height + (compact ? 6 : 8)
@@ -370,7 +391,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                     isDimmed: selection != nil && !isSelected,
                     keyframeOffsets: item.keyframes.map { CGFloat($0 - item.span.start) * pps },
                     beatOffsets: item.beats.map { CGFloat($0 - item.span.start) * pps },
-                    isLocked: item.isLocked
+                    isLocked: item.isLocked,
+                    strip: item.strip
                 ))
                 // A picked item trims by its handles and moves by its body; a locked one keeps its place.
                 if isSelected, !item.isLocked {
@@ -398,8 +420,10 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         self.handles = handles
         self.bodies = bodies
 
+        gaps = lanes.first { $0.lane == .media }.map { Self.gaps(between: input.media, on: $0, pointsPerSecond: pps) } ?? []
+
         var ghosts: [Ghost] = []
-        if input.texts.isEmpty, input.media.isEmpty, let lane = lanes.first(where: { $0.lane == .text }) {
+        if input.texts.isEmpty, let lane = lanes.first(where: { $0.lane == .text }) {
             ghosts.append(Ghost(lane: lane, label: String(localized: "Tap to add text"), target: .lane(.text)))
         }
         if !input.showsCaptions || input.captions.isEmpty, let lane = lanes.first(where: { $0.lane == .captions }) {
@@ -413,6 +437,31 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
 
         coverFrame = CGRect(x: -(Self.coverWidth + Self.coverGap), y: main.y, width: Self.coverWidth, height: main.height)
         addFrame = CGRect(x: contentWidth + Self.addGap, y: main.y + (main.height - Self.addSize) / 2, width: Self.addSize, height: Self.addSize)
+    }
+
+    /// The short spaces between supports of the split screen (`markedGap`), on the media track.
+    private static func gaps(between media: [ItemInput], on lane: LaneFrame, pointsPerSecond pps: CGFloat) -> [Gap] {
+        let supports = media.filter { $0.strip?.layout == .split }.sorted { $0.span.start < $1.span.start }
+        return zip(supports, supports.dropFirst()).compactMap { before, after in
+            let gap = after.span.start - before.span.end
+            guard gap > 0.01, gap < markedGap else { return nil }
+            let middle = CGFloat(before.span.end + gap / 2) * pps
+            let width = max(10, CGFloat(gap) * pps)
+            return Gap(id: after.id, frame: CGRect(x: middle - width / 2, y: lane.y, width: width, height: lane.height))
+        }
+    }
+
+    /// The tracks, top to bottom: with a panel about one track open, that track over the video; else the video, then photos
+    /// and videos (when there are any), texts, captions, and music and voice-over (or the shortcut to add them).
+    private static func laneOrder(_ input: Input) -> [TimelineLane] {
+        let hasMusic = !input.music.isEmpty
+        let hasVoice = !input.voiceOvers.isEmpty || input.recording != nil
+        var others: [TimelineLane] = input.media.isEmpty ? [.text, .captions] : [.media, .text, .captions]
+        if hasMusic { others.append(.music) }
+        if hasVoice { others.append(.voiceOver) }
+        if !hasMusic, !hasVoice { others.append(.audio) }
+        if input.panelIsOpen, let focus = input.focusedLane { return [focus, .main] }
+        return [.main] + others
     }
 
     private static func isSelected(_ kind: ItemKind, _ id: UUID, _ selection: EditorSelection?) -> Bool {
@@ -455,6 +504,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         if coverFrame.contains(point) { return .cover }
         if addFrame.insetBy(dx: -6, dy: -6).contains(point) { return .addClip }
         if let pause = pauses.first(where: { $0.frame.contains(point) }) { return .pause(pause.id) }
+        if let gap = gaps.first(where: { $0.frame.insetBy(dx: -6, dy: 0).contains(point) }) { return .gap(gap.id) }
         if let join = joins.first(where: { $0.hitFrame.contains(point) }) { return .join(join.id) }
         // The picked item first, then from the top layer down.
         if let item = items.last(where: { $0.isSelected && $0.frame.contains(point) }) { return .item(item.kind, item.id) }

@@ -121,9 +121,69 @@ struct MediaPiecesTests {
         let first = timeline.segments[0].id
         let didInsert = timeline.insertClip(source: UUID(), duration: 6) != nil
         #expect(didInsert)
-        var support = Self.video(span: TimeSpan(start: 8, end: 12))
+        var support = Self.video(span: TimeSpan(start: 8, end: 10))
         support.clipAnchor = ClipAnchor(segmentID: first, sourceID: nil)
+        support.tail = 2
         #expect(support.pieces(in: timeline) == [MediaPiece(edited: TimeSpan(start: 8, end: 12), fileStart: 0)])
+    }
+
+    // MARK: - Pinning what is laid on the edit
+
+    /// Media laid over `edited` shows exactly there, whatever the edit is like.
+    private func expectPinnedShowsWhereLaid(_ edited: TimeSpan, in timeline: EditTimeline, sourceLocation: SourceLocation = #_sourceLocation) {
+        var edit = TakeEdit(sourceDuration: timeline.sourceDuration, aspect: .portrait)
+        edit.timeline = timeline
+        let pinned = edit.pinMedia(edited)
+        var media = Self.video(span: pinned.span, length: 60)
+        media.clipAnchor = pinned.anchor
+        media.tail = pinned.tail
+        let span = media.editedSpan(in: timeline)
+        #expect(span.map { abs($0.start - edited.start) < 0.001 && abs($0.end - edited.end) < 0.001 } == true,
+                "laid over \(edited), shows over \(String(describing: span))", sourceLocation: sourceLocation)
+    }
+
+    @Test func mediaLaidOnTheEditShowsWhereItWasLaid() throws {
+        let cut = EditTimeline(sourceDuration: 12, keeping: [TimeSpan(start: 0, end: 5), TimeSpan(start: 7, end: 12)])
+        expectPinnedShowsWhereLaid(TimeSpan(start: 2, end: 8), in: cut)
+        expectPinnedShowsWhereLaid(TimeSpan(start: 5, end: 9), in: cut)
+        var faster = EditTimeline(sourceDuration: 10)
+        _ = faster.split(atEdited: 4)
+        _ = faster.setSpeed(2, forSegmentAt: 1)
+        expectPinnedShowsWhereLaid(TimeSpan(start: 3, end: 6), in: faster)
+        // A montage: the take split at 6 s with another recording's 4 s in between.
+        var montage = EditTimeline(sourceDuration: 20)
+        _ = montage.split(atEdited: 6)
+        _ = montage.insertClip(source: UUID(), duration: 4, at: 1)
+        expectPinnedShowsWhereLaid(TimeSpan(start: 4, end: 9), in: montage)
+        expectPinnedShowsWhereLaid(TimeSpan(start: 7, end: 12), in: montage)
+        expectPinnedShowsWhereLaid(TimeSpan(start: 11, end: 15), in: montage)
+    }
+
+    @Test func aLaterInsertSplitsWhatWasLaidAcrossItsPlace() throws {
+        // Laid from 4 to 9 s on the take alone; then a clip goes in at 6 s.
+        var edit = TakeEdit(sourceDuration: 20, aspect: .portrait)
+        let pinned = edit.pinMedia(TimeSpan(start: 4, end: 9))
+        var support = Self.video(span: pinned.span)
+        support.clipAnchor = pinned.anchor
+        edit.media = [support]
+        edit.anchorOverlays()
+        let didSplit = edit.timeline.split(atEdited: 6)
+        #expect(didSplit)
+        let didInsert = edit.timeline.insertClip(source: UUID(), duration: 4, at: 1) != nil
+        #expect(didInsert)
+        let pieces = try #require(edit.media.first).pieces(in: edit.timeline)
+        #expect(pieces.map(\.edited) == [TimeSpan(start: 4, end: 6), TimeSpan(start: 10, end: 13)])
+        #expect(abs(pieces[1].fileStart - 2) < 0.001)
+    }
+
+    @Test func anchoringKeepsTheGapsOfMediaThatFollowsTheCuts() throws {
+        var edit = TakeEdit(sourceDuration: 12, aspect: .portrait)
+        edit.timeline = EditTimeline(sourceDuration: 12, keeping: [TimeSpan(start: 0, end: 5), TimeSpan(start: 7, end: 12)])
+        edit.media = [Self.video(span: TimeSpan(start: 2, end: 10))]
+        let before = edit.media[0].pieces(in: edit.timeline)
+        edit.anchorOverlays()
+        #expect(edit.media[0].clipAnchor != nil)
+        #expect(edit.media[0].pieces(in: edit.timeline) == before)
     }
 
     @Test func thePartPickedStartsTheFile() throws {

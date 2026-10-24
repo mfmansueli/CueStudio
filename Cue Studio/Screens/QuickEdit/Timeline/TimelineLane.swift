@@ -9,7 +9,10 @@ import Foundation
 nonisolated enum TimelineLane: String, CaseIterable, Hashable, Sendable {
     /// The clips, with their frames and waveform.
     case main
-    /// Texts and photos or videos laid over the take.
+    /// Photos and videos laid over the take (B-roll, windows, the split screen's supports), each with its frames; shown only
+    /// when there is one.
+    case media
+    /// Texts and graphics.
     case text
     case captions
     case music
@@ -21,6 +24,7 @@ nonisolated enum TimelineLane: String, CaseIterable, Hashable, Sendable {
     var gutterSymbol: String? {
         switch self {
         case .main: nil
+        case .media: "photo.on.rectangle"
         case .text: "textformat"
         case .captions: "captions.bubble"
         case .music, .audio: "music.note"

@@ -214,6 +214,14 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
             texts[index].span = pinned.span
         }
         for index in media.indices where media[index].clipAnchor == nil {
+            // Media that follows the cuts keeps its stretch of the speech, cut-out gaps and all: only the clip holding its
+            // start is named, so it shows exactly as before.
+            if media[index].followsCuts == true {
+                let start = media[index].span.start
+                guard let piece = timeline.segments.first(where: { $0.sourceID == nil && $0.sourceEnd > start + 0.000_1 }) else { continue }
+                media[index].clipAnchor = ClipAnchor(segmentID: piece.id, sourceID: nil)
+                continue
+            }
             guard let span = timeline.editedSpan(forSource: media[index].span) else { continue }
             let pinned = timeline.anchoredSpan(forEdited: span)
             media[index].clipAnchor = pinned.anchor
@@ -225,6 +233,53 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
             let pinned = timeline.anchoredSpan(forEdited: TimeSpan(start: start, end: start + 0.05))
             voiceOvers[index].clipAnchor = pinned.anchor
             voiceOvers[index].anchor = pinned.span.start
+        }
+    }
+
+    /// How media that follows the cuts (`MediaOverlay.followsCuts`) laid over `edited` (edited seconds) is pinned, so its
+    /// pieces show exactly there (`MediaOverlay.pieces`): the stretch of the speech under it (in an arranged edit, from the
+    /// clip at its start through the clips of the same recording that follow it), and, laid on into another recording's
+    /// clip, how long it plays on over it (`tail`).
+    func pinMedia(_ edited: TimeSpan) -> (anchor: ClipAnchor?, span: TimeSpan, tail: TimeInterval?) {
+        guard timeline.isArranged else { return (nil, timeline.sourceSpan(forEdited: edited), nil) }
+        let segments = timeline.segments
+        let first = timeline.segmentIndex(atEdited: edited.start)
+        let anchor = segments[first]
+        var pieceStart = timeline.editedStart(ofSegmentAt: first)
+        let start = min(anchor.sourceEnd, anchor.sourceStart + anchor.sourceOffset(forEdited: max(0, edited.start - pieceStart)))
+        let pin = ClipAnchor(segmentID: anchor.id, sourceID: anchor.sourceID)
+        var end = start
+        var reached = edited.start
+        for index in first..<segments.count {
+            let segment = segments[index]
+            // Only clips going on with the same recording carry the speech on.
+            guard segment.sourceID == anchor.sourceID, index == first || segment.sourceStart >= end - 0.000_1 else { break }
+            let segmentEnd = pieceStart + segment.duration
+            if edited.end <= segmentEnd + 0.000_1 {
+                end = segment.sourceStart + segment.sourceOffset(forEdited: max(0, edited.end - pieceStart))
+                return (pin, TimeSpan(start: start, end: max(start, min(segment.sourceEnd, end))), nil)
+            }
+            end = segment.sourceEnd
+            reached = segmentEnd
+            pieceStart = segmentEnd
+        }
+        let tail = edited.end - reached
+        return (pin, TimeSpan(start: start, end: end), tail > MediaOverlay.shortestPiece ? tail : nil)
+    }
+
+    /// Lays the photo or video at `index` over `edited` (edited seconds), pinned the way it goes with the speech: following
+    /// the cuts (`pinMedia`) or, media added before, to the recording as it always was (`pin`).
+    mutating func layMedia(at index: Int, over edited: TimeSpan) {
+        guard media.indices.contains(index) else { return }
+        if media[index].followsCuts == true {
+            let pinned = pinMedia(edited)
+            media[index].clipAnchor = pinned.anchor
+            media[index].span = pinned.span
+            media[index].tail = pinned.tail
+        } else {
+            let pinned = pin(edited)
+            media[index].clipAnchor = pinned.anchor
+            media[index].span = pinned.span
         }
     }
 

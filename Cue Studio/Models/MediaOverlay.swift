@@ -70,6 +70,9 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     /// Whether a cut in the speech under it cuts the same stretch out of it (`pieces`): set on everything added since; nil
     /// (media added before) plays straight on from where it starts, as it always did.
     var followsCuts: Bool?
+    /// Edited seconds it plays on after the speech it's laid over, over another recording's clip it was laid across into
+    /// (`TakeEdit.pinMedia`); nil: it ends with that speech.
+    var tail: TimeInterval?
 
     init(kind: MediaKind, fileName: String, aspect: Double, mediaDuration: TimeInterval?, span: TimeSpan) {
         self.kind = kind

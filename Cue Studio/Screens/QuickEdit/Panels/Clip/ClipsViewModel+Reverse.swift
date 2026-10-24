@@ -119,9 +119,7 @@ extension ClipsViewModel {
             next.texts[position].span = pinned.span
         }
         for (position, span) in media {
-            let pinned = next.pin(span)
-            next.media[position].clipAnchor = pinned.anchor
-            next.media[position].span = pinned.span
+            next.layMedia(at: position, over: span)
         }
         for (position, start) in voices {
             let pinned = next.pin(TimeSpan(start: start, end: start + 0.05))

@@ -103,6 +103,12 @@ struct QuickEditView: View {
                 .presentationDragIndicator(.visible)
             }
         }
+        .background {
+            // Replace with a longer video: which part fills the place.
+            Color.clear.sheet(item: Binding(get: { viewModel.session.partChoice }, set: { viewModel.session.partChoice = $0 })) { choice in
+                MediaPartSheet(viewModel: viewModel, choice: choice)
+            }
+        }
         .confirmationDialog(
             "This video has its own sound",
             isPresented: Binding(

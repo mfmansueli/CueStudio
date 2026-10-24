@@ -16,8 +16,8 @@ nonisolated extension MediaOverlay {
     /// 7 s of the main video under a support removes those 2 s of the support, and what plays after stays in step). A clip of
     /// another recording put in between (Insert in sequence) plays without it, and it picks up after, where the speech does.
     /// Splitting a clip changes nothing. The media keeps its own speed: under a faster clip it shows less of its file, under
-    /// a slower one more, never past its end. Past the last clip of its recording (laid across into another recording's
-    /// clip) it plays straight on, as long as it was laid.
+    /// a slower one more, never past its end. Laid across into another recording's clip, it plays straight on over it for
+    /// as long as it was laid there (`tail`).
     ///
     /// Media added before (`followsCuts` nil) plays straight on from its start for as long as it shows, as it always did.
     func pieces(in timeline: EditTimeline) -> [MediaPiece] {
@@ -63,7 +63,7 @@ nonisolated extension MediaOverlay {
         // speed, so only what was cut out of the speech is skipped in it.
         var cursor = span.start
         var saved: TimeInterval = 0
-        var lastPlayed: Int?
+        var hasPlayed = false
         var index = firstIndex
         while index < segments.count, cursor < span.end - 0.000_1 {
             let segment = segments[index]
@@ -74,7 +74,7 @@ nonisolated extension MediaOverlay {
             guard segment.sourceID == recording else { continue }
             if segment.sourceEnd <= cursor + 0.000_1 {
                 // The recording goes back (a copy, another order): what follows isn't the speech it was laid over.
-                if lastPlayed != nil { break }
+                if hasPlayed { break }
                 continue
             }
             if segment.sourceStart >= span.end - 0.000_1 { break }
@@ -87,16 +87,12 @@ nonisolated extension MediaOverlay {
             }
             saved += (until - from) - (end - start)
             cursor = until
-            lastPlayed = index - 1
+            hasPlayed = true
         }
-        // Laid across into another recording's clip: on past its own recording, straight on, as long as it was laid.
-        if cursor < span.end - 0.000_1, let lastPlayed, let last = pieces.last, lastPlayed + 1 < segments.count,
-           segments[lastPlayed + 1].sourceID != recording {
-            let speed = max(0.000_1, segments[lastPlayed].edgeSpeed(atStart: false))
-            let end = min(timeline.editedDuration, last.edited.end + (span.end - cursor) / speed)
-            if end - last.edited.end >= Self.shortestPiece {
-                pieces[pieces.count - 1].edited.end = end
-            }
+        // Laid across into another recording's clip: on over it, straight on, as long as it was laid there.
+        if let tail, tail > 0, let last = pieces.last {
+            let end = min(timeline.editedDuration, last.edited.end + tail)
+            if end - last.edited.end >= Self.shortestPiece { pieces[pieces.count - 1].edited.end = end }
         }
         return pieces
     }

@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import CoreGraphics
 import Foundation
 
 /// What lies on the video (`EditorPart`): texts and graphics with their type styles and "My style", photos and videos over the
@@ -15,7 +16,14 @@ import Foundation
 @Observable
 final class OverlaysViewModel: EditorPart {
     /// Where "Add photo or video" puts what is picked.
-    var mediaInsertMode: MediaInsertMode = .overlay
+    var mediaInsertMode: MediaInsertMode = .split
+    /// The overlay picked last, which Media opens on again (the "+" after the clips opens the sequence).
+    var lastOverlayMode: MediaInsertMode = .split
+    /// The area of the picked support's split screen its panel and the preview's gestures change.
+    var selectedArea: SplitArea = .support
+    /// Upright sizes of the recordings the main video plays (nil: the take), for the main area's gestures; read when a split
+    /// screen is edited (`loadRecordingSizes`).
+    var recordingSizes: [UUID?: CGSize] = [:]
     /// What Text style's look changes: this text or every text. The words, timing and motion are always the picked text's.
     var textStyleScope: TextStyleScope = .selected
     /// The Text style panel's field takes the keyboard (a text was just added, or Edit was tapped).
@@ -40,15 +48,19 @@ final class OverlaysViewModel: EditorPart {
     let library: ScriptLibraryService
     /// Follows an object through a recording for Track.
     let tracker: ObjectTracking
+    /// Finds the face a split-screen area is framed on when it's made.
+    let faces: FaceFinding
 
     init(
-        session: EditorSession, importer: EditMediaImporting, styles: TextStyleStoring, library: ScriptLibraryService, tracker: ObjectTracking
+        session: EditorSession, importer: EditMediaImporting, styles: TextStyleStoring, library: ScriptLibraryService, tracker: ObjectTracking,
+        faces: FaceFinding = FaceFinder()
     ) {
         self.session = session
         self.importer = importer
         self.styles = styles
         self.library = library
         self.tracker = tracker
+        self.faces = faces
         textStyles = styles.textStyles
     }
 

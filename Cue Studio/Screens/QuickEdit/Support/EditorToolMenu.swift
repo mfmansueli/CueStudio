@@ -34,7 +34,7 @@ enum EditorToolMenu: Hashable {
     /// What tapping a track on the timeline opens (nothing for the video track).
     init?(lane: TimelineLane) {
         switch lane {
-        case .main: return nil
+        case .main, .media: return nil
         case .text: self = .text
         case .captions: self = .captions
         case .music, .voiceOver, .audio: self = .audio

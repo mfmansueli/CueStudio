@@ -36,10 +36,12 @@ extension QuickEditViewModel {
                 isLocked: edit.lockedLayers.contains(text.id)
             )
         }
-        input.media = edit.editedMedia(in: timeline).map { item, span in
-            TimelineGeometry.ItemInput(
+        input.media = edit.placedMedia(in: timeline).map { item, span, pieces in
+            var input = TimelineGeometry.ItemInput(
                 id: item.id, span: span, label: Self.label(of: item), isLocked: edit.lockedLayers.contains(item.id)
             )
+            input.strip = TimelineGeometry.MediaStrip(fileName: item.fileName, isVideo: item.kind == .video, pieces: pieces, layout: item.layout)
+            return input
         }
         input.captions = captions.captionMap.instances.map { line, cueID in
             TimelineGeometry.ItemInput(id: cueID, span: line.span, label: line.text)
@@ -144,9 +146,10 @@ extension QuickEditViewModel {
         case .cover:
             cover.openCoverStudio()
         case .addClip:
-            overlays.mediaInsertMode = .clip
+            overlays.mediaInsertMode = .sequence
             sheet = .media
         case .pause(let id): togglePauseMark(id)
+        case .gap(let id): pick(.media(id))
         case .join(let id): pickJoin(id)
         case .clip(let id): pick(.clip(id))
         case .item(let kind, let id): Self.selection(of: kind, id).map(pick)
@@ -156,6 +159,15 @@ extension QuickEditViewModel {
 
     /// A track's strip: its tools replace the toolbar's, and a second tap puts the toolbar back.
     private func tapLane(_ lane: TimelineLane) {
+        if lane == .media {
+            // The media track: add another photo or video, the way it was last added.
+            player.pause()
+            selection = nil
+            panel = nil
+            overlays.mediaInsertMode = overlays.lastOverlayMode
+            sheet = .media
+            return
+        }
         guard let menu = EditorToolMenu(lane: lane) else { return }
         player.pause()
         selection = nil

@@ -76,4 +76,8 @@ enum EditorAction: Hashable {
     case replaceMedia
     case duplicateMedia
     case deleteMedia
+    /// Split a photo or video in two at the playhead.
+    case splitMedia
+    /// A support moved back to meet the one before it.
+    case closeGap
 }
