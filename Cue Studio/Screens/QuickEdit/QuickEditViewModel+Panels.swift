@@ -47,7 +47,7 @@ extension QuickEditViewModel {
         case .speed, .zoom, .volume, .stabilize: clipSubtitle(panel)
         case .voice: audio.voiceScopeLabel
         case .adjust, .filters, .background: look.lookSubtitle(for: panel)
-        case .pauses: String(localized: "Marked in yellow on the timeline")
+        case .pauses: String(localized: "Whole video · marked in yellow on the timeline")
         case .crop: String(localized: "Whole video · format for where you post")
         case .captions, .autoCaptions, .captionStyle: captionSubtitle(panel)
         case .textStyle: textStyleSubtitle
@@ -97,7 +97,7 @@ extension QuickEditViewModel {
         case .selected, .allCaptions:
             switch selectedText?.role ?? .title {
             case .title: return String(localized: "Only this title changes")
-            case .subtitle: return String(localized: "Only this subtitle changes")
+            case .subtitle: return String(localized: "Only this subheading changes")
             case .hook: return String(localized: "Only this hook changes")
             case .callout: return String(localized: "Only this callout changes")
             }

@@ -1059,7 +1059,8 @@ O dono revisou no iPhone, tela a tela, o primeiro voo, a primeira estrela, o Pro
 O editor trata cada gravação de uma montagem (o take, outros takes, vídeos do Fotos) como a dona do que foi achado ou escolhido nela. Progresso e
 auditoria: `reports/editor-award-checklist.md`.
 - **Outra take na montagem:** Media › **Insert as clip** mostra "Your takes" (as outras takes do criador, a mais nova primeiro; script, número e
-  duração) antes do Fotos; tocar uma a põe como clipe depois do clipe no cursor (`addableTakes`, `addClip(from:)`, `AddMediaSheet`).
+  duração) antes do Fotos; tocar uma a põe como clipe depois do clipe escolhido, senão do que está na agulha, e ela fica escolhida (§48;
+  `addableTakes`, `addClip(from:)`, `AddMediaSheet`).
 - **Capa de qualquer gravação** (`CoverSource.clipFrame`, `CoverFrame`: gravação, clipe e segundo da gravação; `TakeEdit+Cover`). O quadro é sempre o
   da gravação onde foi escolhido, enquadrado como o vídeo o mostra ali (`FramePipeline`, `EditFraming`: Stabilize, o zoom do clipe naquele momento,
   Follow face, Fit, a escala da montagem, o fundo e o look do clipe que o mostra; uma cópia pode ter o seu); trocar a ordem, duplicar, dividir ou mudar a
@@ -1160,9 +1161,11 @@ auditoria: `reports/editor-award-checklist.md`.
   escolhido a cedem às alças. **Use on every cut** fica num rodapé fixo do painel de transição (sempre visível, mesmo no SE).
 - **Nada termina em silêncio:** Paste look que não muda nada diz "Every clip already looks like this" / "This clip already looks like this";
   Edit by text que não ouviu palavras mostra o motivo (`CaptionState.message`, em `warnText`) e só oferece **Try again** quando pode ajudar.
-- **Edit by text à vista:** primeiro bloco de ✦ Smart › Tools, botão "Edit by text · cut words from the video" no painel de legendas e o menu da faixa.
-- **Mídia na barra principal** (**Media**, `.addMediaChoice`): a folha explica cada caminho — **Over the video** (B-roll: "Plays over your video…
-  Move and resize it on the preview") e **As a clip** ("Becomes a clip of its own in the sequence, after the clip at the playhead. Videos only.").
+- **Edit by text à vista:** primeiro bloco de ✦ Smart › Tools, botão "Edit by text · cut words from the video" no painel de legendas, o menu da faixa
+  e as ferramentas do clipe (Edit, logo depois de Split, com Remove pauses; §48).
+- **Mídia na barra principal** (**Media**, `.addMediaChoice`): a folha explica cada caminho — **On top of video** (B-roll: "Plays over your video…
+  Move and resize it on the preview") e **Insert as clip** ("Becomes a clip of its own in the sequence, after the clip at the playhead. Videos
+  only.") — e diz, antes de escolher, onde e por quanto tempo (§48).
 - **Animações prontas** (`MotionPreset`, `OverlayAnimation`, `MotionPresetPicker` no topo do painel de movimento de textos, gráficos e mídias):
   Fade, Slide up, Slide in, Gentle zoom, Pop e In and out, com **Duration** (0,2–1,5 s) e **Strength**, e **Play it**. A animação é calculada por
   cima dos keyframes (base + animação), então a edição manual em **Keyframes** ("To move it your own way") continua valendo junto.
@@ -1521,7 +1524,7 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Barra do player:** ‹ › ao lado do Play andam **um quadro** (pausado; segurar repete), para dividir e aparar no ponto exato
   (`QuickEditViewModel+FrameStep`); somem com texto muito grande.
 - **Barra de ferramentas:** principal com **Adjust** (vídeo inteiro) ao lado de Filters; o esmaecido só no lado onde há mais ferramentas; "Add
-  line" adiciona uma linha na agulha; Text › **Motion** (antes "Animation"); Subtitle e Hook com o símbolo do papel.
+  line" adiciona uma linha na agulha; Text › **Motion** (antes "Animation"); Subheading e Hook com o símbolo do papel.
 - **Avisos** (`EditorPart+Toasts`): dividir, duplicar, apagar e adicionar dizem o quê e onde ("Clip 2 deleted", "Photo added at
   00:07.0") e trazem **Undo**.
 - **Dois toques** num texto ou legenda no vídeo abrem as palavras com o teclado (Text style ou a linha em Captions).
@@ -1641,3 +1644,37 @@ O editor dividido em partes que crescem sem esbarrar uma na outra, a prévia dec
 - **Legendas diagramadas uma vez**: o tamanho de cada linha fica guardado por estilo (`CaptionLineSizes`); uma montagem que não muda linha nenhuma (um
   ajuste, um corte, um som) não diagrama nenhuma de novo, e uma linha corrigida é a única refeita. As linhas de um vídeo longo ainda não diagramadas são
   feitas lado a lado em todos os núcleos. Medido no iPhone: §42.
+
+## 48. Quick edit: claro do começo ao fim (Fase 1 do refinamento, 24 de outubro de 2026; pedido do dono)
+
+Refinamento, não redesenho: a estrutura de hoje fica (barra principal, ferramentas do item escolhido com ‹, painéis com escopo e ✓, timeline com
+encaixe, Desfazer, rascunho automático, a grade de presets das legendas). O que mudou é o que deixava a pessoa adivinhando. Comparado com CapCut,
+InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza da fala junto das legendas ou logo depois de importar; o iMovie pergunta
+"por cima ou na sequência" a partir da agulha; o Edits deixa dúvida se o trabalho foi salvo ao sair).
+- **Cortar erros sem saber do ✦ Smart:** as ferramentas do clipe (Edit, a tesoura) trazem, logo depois de Split, **Edit by text** e **Remove
+  pauses**, as mesmas que ✦ Smart abre (a mesma folha e o mesmo painel). Pauses diz o escopo: "Whole video · marked in yellow on the timeline", e
+  o clipe continua escolhido (✓ devolve as ferramentas dele).
+- **O ‹ diz o que está escolhido** (`toolbarContextName`): "Clip 2" numa montagem ("Clip" com um só), "Photo" ou "Video", o tipo do texto ("Title",
+  "Subheading", "Hook", "Callout") ou do gráfico ("Arrow", "Circle", "Tag"); "Caption", "Music", "Voice-over", "Transition"; o menu aberto. O tipo
+  continua sendo a identidade das ferramentas (`toolbarContextLabel`): escolher outro clipe não volta a barra para o começo.
+- **Inserir mídia diz onde e quanto tempo, antes de escolher** (`AddMediaSheet`, linha com ↧): por cima do vídeo, "Starts at 00:07.0 · a photo
+  stays 3 s, a video plays its length" (a agulha; `OverlaysViewModel.insertionNote`); como clipe, "Goes after clip 2, at 00:12.4"
+  (`ClipsViewModel.insertionNote`). O clipe entra **depois do clipe escolhido, senão do que está na agulha** (antes ia para o fim quando nada estava
+  escolhido, contra o que a folha dizia), fica escolhido, a agulha vai para o começo dele e o aviso diz "Morning habits · Take 2 added as clip 2, at
+  00:12.4" com Undo. A foto ou o vídeo por cima já entrava na agulha, escolhido, com "Photo added at 00:07.0".
+- **Palavras que não se confundem:** **Captions** são as linhas da fala (Auto captions, ou **Write captions** à mão, no tempo da fala); **Text** é o
+  que se põe em qualquer lugar (Title, **Subheading**, Hook, Callout). "Subtitle" virou "Subheading": em espanhol e francês o texto e a legenda eram a
+  mesma palavra (Subtítulo, Sous-titre); agora "Texto secundario", "Texte secondaire", "Subkop" (nl), "Underoverskrift" (da, nb), "उपशीर्षक" (hi). Em
+  português continua "Subtítulo" × "Legenda".
+- **Concluir:** a folha de Done já separava as quatro saídas (compartilhar, baixar, publicar depois, continuar editando), cada uma com o destino; o de
+  Download video dizia "SAVED", que se confundia com o "EDIT SAVED" de cima: agora "IN PHOTOS". A organização dos projetos (Takes: To pick, In edit,
+  Ready, Shared) fica igual.
+- **De propósito, igual:** apagar um clipe volta às ferramentas principais (escolher o seguinte faria um segundo toque no Excluir fixo apagar outro).
+  A fileira de filtros fica onde o dedo a deixa, no vídeo inteiro e num clipe (a suspeita de que voltava ao começo era do teste: o XCUITest chama os
+  cartões de "não tocáveis" depois de rolar, enquanto um toque de verdade os escolhe).
+- **Cinco tarefas conferidas** (`CreatorWorkflowUITests`): Reel falado (pausas, legenda corrigida, gancho, B-roll, capa, Done), tutorial (B-roll e
+  música do demo, gráficos no menu Text), react em janela (escolhido na prévia, painel com Window, tamanho e som; ✓ mantém), anúncio (outra take
+  como clipe onde a folha diz, Style all, capa), retomada (corte, ‹, Edit de novo: o corte volta e o Undo ainda o desfaz). São testes de interface
+  com o vídeo de demonstração, não testes com criadores.
+- **Testes:** `QuickEditToolbarTests` (atalhos de corte, nome no ‹), `QuickEditMontageTests` (clipe depois do da agulha, escolhido, aviso; onde a
+  mídia por cima começa), `EditorUITests.testTheFilterRowStaysWhereItIsDragged`, `CreatorWorkflowUITests` 6–8.

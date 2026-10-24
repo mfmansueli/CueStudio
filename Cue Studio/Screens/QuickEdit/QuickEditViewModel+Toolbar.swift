@@ -10,9 +10,29 @@ import Foundation
 /// Captions and Audio menus, which a tap on their track opens too. Speed and Zoom stay two
 /// separate tools. Delete is always the last tool and stays put (see `EditorToolbarItem.isPinned`).
 extension QuickEditViewModel {
-    /// The name next to the back button; nil on the main toolbar.
+    /// The kind of tools showing (the picked item's kind or the open menu); nil on the main toolbar. Picking another item of
+    /// the same kind keeps the tools where they were scrolled.
     var toolbarContextLabel: String? {
         selection?.contextLabel ?? toolMenu?.contextLabel
+    }
+
+    /// The name next to the back button: which item the tools change ("Clip 2" in a montage, "Photo", "Hook", "Arrow"), or
+    /// the open menu.
+    var toolbarContextName: String? {
+        guard let selection else { return toolMenu?.contextLabel }
+        switch selection {
+        case .clip(let id):
+            guard edit.timeline.segments.count > 1, let index = edit.timeline.index(ofSegment: id) else { return selection.contextLabel }
+            return String(localized: "Clip \(index + 1)")
+        case .text:
+            guard let text = selectedText else { return selection.contextLabel }
+            return text.graphic?.kind.label ?? text.role.label
+        case .media:
+            guard let media = selectedMedia else { return selection.contextLabel }
+            return media.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
+        case .caption, .music, .voiceOver, .join:
+            return selection.contextLabel
+        }
     }
 
     var toolbarItems: [EditorToolbarItem] {
@@ -57,7 +77,7 @@ extension QuickEditViewModel {
         var items = [
             EditorToolbarItem(id: "title", label: String(localized: "Title"), systemImage: "textformat.size.larger", action: .addText(.title)),
             EditorToolbarItem(
-                id: "subtitle", label: String(localized: "Subtitle"), systemImage: TextOverlayRole.subtitle.systemImage, action: .addText(.subtitle)
+                id: "subtitle", label: TextOverlayRole.subtitle.label, systemImage: TextOverlayRole.subtitle.systemImage, action: .addText(.subtitle)
             ),
             EditorToolbarItem(id: "hook", label: String(localized: "Hook"), systemImage: TextOverlayRole.hook.systemImage, action: .addText(.hook)),
             EditorToolbarItem(id: "callout", label: String(localized: "Callout"), systemImage: "text.bubble", action: .addText(.callout)),
@@ -82,7 +102,9 @@ extension QuickEditViewModel {
         if edit.captions.isEmpty {
             return [
                 EditorToolbarItem(id: "autoCaptions", label: String(localized: "Auto captions"), systemImage: "captions.bubble", action: .openCaptions),
-                EditorToolbarItem(id: "writeCaptions", label: String(localized: "Write them"), systemImage: "pencil", action: .writeCaptionsByHand),
+                EditorToolbarItem(
+                    id: "writeCaptions", label: String(localized: "Write captions"), systemImage: "pencil", action: .writeCaptionsByHand
+                ),
                 EditorToolbarItem(id: "editByText", label: String(localized: "Edit by text"), systemImage: "text.badge.minus", action: .editByText),
             ]
         }
@@ -120,12 +142,15 @@ extension QuickEditViewModel {
         switch selection {
         case .clip:
             // The clip's own tools, most used first (Split, Speed, the punch-in Zoom, Volume) so they're the ones on screen;
-            // what changes the whole video lives on the main bar (Format, Audio › Studio Voice, Media).
+            // what changes the whole video lives on the main bar (Format, Audio › Studio Voice, Media). Right after Split, the
+            // other ways to cut mistakes: by the words (Edit by text) and the pauses, the same tools ✦ Smart opens.
             return [
                 EditorToolbarItem(
                     id: "split", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right",
                     style: clips.canSplitSelectedClip ? .normal : .dimmed, action: .splitClip
                 ),
+                EditorToolbarItem(id: "editByText", label: String(localized: "Edit by text"), systemImage: "text.badge.minus", action: .editByText),
+                EditorToolbarItem(id: "pauses", label: String(localized: "Remove pauses"), systemImage: "waveform", action: .open(.pauses)),
                 EditorToolbarItem(id: "speed", label: String(localized: "Speed"), systemImage: "gauge.with.dots.needle.67percent", action: .open(.speed)),
                 EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),

@@ -6,10 +6,10 @@
 import PhotosUI
 import SwiftUI
 
-/// "Add photo or video": the photo library right in the sheet, and where the pick goes: on top of
-/// the video (on the text track, for 3 s; a video for its length) or as a clip after the one at
-/// the playhead (videos only: the video track plays recordings). As a clip, the creator's other
-/// takes come first, for a montage of several takes.
+/// "Add photo or video": the photo library right in the sheet, and where the pick goes, said with the place and length
+/// before picking: on top of the video from the playhead (on the text track, for 3 s; a video for its length) or as a clip
+/// after the picked one or the one at the playhead (videos only: the video track plays recordings). As a clip, the
+/// creator's other takes come first, for a montage of several takes.
 struct AddMediaSheet: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -26,11 +26,20 @@ struct AddMediaSheet: View {
             }
             .pickerStyle(.segmented)
             .accessibilityIdentifier("edit.mediaMode")
-            Text(viewModel.overlays.mediaInsertMode.explanation)
-                .font(.system(.footnote))
-                .foregroundStyle(Palette.ink2)
-                .fixedSize(horizontal: false, vertical: true)
-                .accessibilityIdentifier("edit.mediaModeExplanation")
+            VStack(alignment: .leading, spacing: 4) {
+                Text(viewModel.overlays.mediaInsertMode.explanation)
+                    .font(.system(.footnote))
+                    .foregroundStyle(Palette.ink2)
+                    .accessibilityIdentifier("edit.mediaModeExplanation")
+                // Where it lands and for how long, before picking.
+                Label(insertionNote, systemImage: "arrow.down.to.line")
+                    .font(.system(.footnote, weight: .semibold))
+                    .foregroundStyle(Palette.ink)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(Text(insertionNote))
+                    .accessibilityIdentifier("edit.mediaInsertionNote")
+            }
+            .fixedSize(horizontal: false, vertical: true)
             if viewModel.overlays.mediaInsertMode == .clip, !viewModel.clips.addableTakes.isEmpty {
                 TakeRow(takes: viewModel.clips.addableTakes) { take in
                     Task {
@@ -78,6 +87,13 @@ struct AddMediaSheet: View {
 }
 
 extension AddMediaSheet {
+    private var insertionNote: String {
+        switch viewModel.overlays.mediaInsertMode {
+        case .overlay: viewModel.overlays.insertionNote
+        case .clip: viewModel.clips.insertionNote
+        }
+    }
+
     /// "Your takes": the other takes in a sideways row, each with its script, number and length; a tap adds it as a clip.
     private struct TakeRow: View {
         let takes: [Take]

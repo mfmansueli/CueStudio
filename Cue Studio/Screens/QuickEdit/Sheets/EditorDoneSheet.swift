@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// "Is it ready to post?": asked every time the creator taps Done. Four answers, each saying where
-/// the video goes (SHARED, SAVED, READY, IN EDIT). The first, the way most videos end, is yellow.
+/// the video goes (SHARED, IN PHOTOS, READY, IN EDIT). The first, the way most videos end, is yellow.
 /// No platform names: sharing is generic, the app is picked in the share sheet. Swiping the sheet
 /// down goes back to the editor.
 struct EditorDoneSheet: View {
@@ -85,10 +85,11 @@ struct EditorDoneSheet: View {
         .accessibilityIdentifier("edit.done.\(outcome.rawValue)")
     }
 
-    /// "● SHARED", "● SAVED", "● READY", "● IN EDIT": where the answer leaves the video.
+    /// "● SHARED", "● IN PHOTOS", "● READY", "● IN EDIT": where the answer leaves the video (the edit itself is saved in every
+    /// case, as the line above the question says).
     @ViewBuilder
     private func pill(_ stage: TakeStage?, isPrimary: Bool) -> some View {
-        let label: String = stage?.badgeLabel ?? String(localized: "Saved")
+        let label: String = stage?.badgeLabel ?? String(localized: "In Photos")
         let tint: Color = isPrimary ? Palette.accInk : (stage?.tint ?? Palette.ink2)
         HStack(spacing: 5) {
             Circle().fill(tint).frame(width: 5, height: 5)

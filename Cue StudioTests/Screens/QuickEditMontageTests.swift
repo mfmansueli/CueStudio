@@ -149,6 +149,42 @@ struct QuickEditMontageTests {
         #expect(FileManager.default.fileExists(atPath: original.path(percentEncoded: false)))
     }
 
+    /// Insert as clip goes where the sheet says before the pick: after the clip at the playhead (not at the end), picked, with the
+    /// playhead on its start and a toast that says which clip it became.
+    @Test func anAddedClipGoesAfterTheClipAtThePlayheadAndIsPicked() async throws {
+        let editor = FakeTakeEditor()
+        editor.duration = 12
+        let scenario = await makeScenario(editor: editor)
+        let viewModel = scenario.viewModel
+        let original = try writeVideo(of: scenario.other, in: viewModel)
+        defer { try? FileManager.default.removeItem(at: original) }
+        // The take is 12 s here (the fake editor's length): cut at 6 s, the playhead back in the first clip.
+        scenario.player.seek(to: 6)
+        viewModel.perform(.selectClipAtPlayhead)
+        viewModel.perform(.splitClip)
+        viewModel.selection = nil
+        scenario.player.seek(to: 3)
+        #expect(viewModel.clips.insertionNote == "Goes after clip 1, at 00:06.0")
+        await viewModel.clips.addClip(from: scenario.other)
+        let source = try #require(viewModel.edit.sources.first)
+        defer { EditMediaFiles.remove([source.fileName]) }
+        let segments = viewModel.edit.timeline.segments
+        #expect(segments.count == 3)
+        #expect(segments[1].sourceID == source.id)
+        #expect(viewModel.selection == .clip(segments[1].id))
+        #expect(scenario.player.currentTime == 6)
+        #expect(scenario.toast.message == "B-roll walk · Take 1 added as clip 2, at 00:06.0")
+    }
+
+    /// A photo or video laid over the video starts at the playhead: the sheet says so, and how long, before the pick.
+    @Test func theSheetSaysWhereAnOverlayLandsBeforeThePick() async {
+        let scenario = await makeScenario()
+        scenario.player.currentTime = 7
+        #expect(scenario.viewModel.overlays.insertionNote == "Starts at 00:07.0 · a photo stays 3 s, a video plays its length")
+        scenario.viewModel.overlays.addMedia(photo())
+        #expect(scenario.toast.message == "Photo added at 00:07.0")
+    }
+
     @Test func captionsListenToEveryRecordingTheMontagePlays() async throws {
         let editor = FakeTakeEditor()
         editor.duration = 12

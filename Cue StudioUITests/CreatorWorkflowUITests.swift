@@ -353,4 +353,107 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(flow.isOnMainTools())
         flow.report()
     }
+
+    // MARK: - 6. React in a window
+
+    /// The video reacted to plays in a window over the creator (the demo's B-roll, 4.2–8 s): picked on the preview, the back
+    /// button says a video is picked, and its panel has the window, its size and its sound; ✓ keeps it picked.
+    func testReactVideoInAWindowIsPickedAndAdjusted() {
+        let app = EditorApp.open(demo: true)
+        let flow = CreatorWorkflow("react-window", app: app)
+
+        flow.step("Scrub into the window and pick it on the preview")
+        flow.scrub()
+        flow.tap(app.buttons["edit.mediaHandle"], "the video in a window")
+        let back = app.buttons["edit.toolbar.back"]
+        XCTAssertTrue(flow.waits(for: back, "the video's tools"))
+        XCTAssertEqual(back.value as? String, "Video", "The back button doesn't say a video is picked")
+
+        flow.step("Its panel: window, size, sound")
+        flow.tool("editMedia")
+        XCTAssertTrue(flow.waits(for: app.buttons["edit.mediaLayout.window"], "the Media panel"))
+        XCTAssertTrue(app.buttons["edit.mediaLayout.window"].isSelected, "The react video isn't in a window")
+        XCTAssertTrue(flow.element("edit.mediaSize").exists, "No size for the window")
+        flow.tap(app.buttons["edit.panel.apply"], "✓ on Media")
+        XCTAssertEqual(back.value as? String, "Video", "✓ let go of the picked video")
+        flow.backToMainTools()
+        flow.report()
+    }
+
+    // MARK: - 7. Ad
+
+    /// Another take joins the sequence where the sheet says before the tap (after the clip at the playhead), picked and named;
+    /// the texts already there are styled together; the cover.
+    func testAdCombinesTakesTextsAndTheCover() {
+        let app = EditorApp.open(demo: true)
+        let flow = CreatorWorkflow("ad", app: app)
+
+        flow.step("Media › Insert as clip › one of your takes")
+        flow.tool("addMedia")
+        let clipMode = app.descendants(matching: .any)["edit.mediaMode"].buttons["Insert as clip"]
+        flow.tap(clipMode, "Insert as clip")
+        let note = flow.element("edit.mediaInsertionNote")
+        XCTAssertTrue(flow.waits(for: note, "where the clip goes"))
+        XCTAssertEqual(note.label, "Goes after clip 1, at 00:12.4", "The sheet doesn't say where the clip goes")
+        let take = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.addTake.'")).firstMatch
+        flow.tap(take, "another take")
+        XCTAssertTrue(flow.toastSays("added as clip 2, at 00:12.4", timeout: 10), "No word of where the take went")
+        let back = app.buttons["edit.toolbar.back"]
+        XCTAssertTrue(flow.waits(for: back, "the new clip's tools"), "The new clip isn't picked")
+        XCTAssertEqual(back.value as? String, "Clip 2")
+        flow.backToMainTools()
+
+        flow.step("Text › Style all")
+        flow.tool("text")
+        flow.tool("styleAll")
+        XCTAssertTrue(flow.waits(for: app.buttons["edit.panel.apply"], "Text style"), "Style all didn't open Text style")
+        flow.tap(app.buttons["edit.panel.apply"], "✓ on Text style")
+        flow.backToMainTools()
+
+        flow.step("Cover")
+        flow.tool("cover")
+        let coverDone = app.buttons["cover.done"]
+        XCTAssertTrue(flow.waits(for: coverDone, "Cover Studio"), "Cover didn't open Cover Studio")
+        flow.tap(coverDone, "Cover Studio's Done")
+        XCTAssertTrue(flow.isOnMainTools())
+        flow.report()
+    }
+
+    // MARK: - 8. Coming back
+
+    /// A mistake cut out, the editor left with ‹, opened again: the cut is there, the playhead and Undo still work on it.
+    func testLeavingAndComingBackKeepsTheCutsAndUndo() {
+        let app = EditorApp.open(demo: true)
+        let flow = CreatorWorkflow("coming-back", app: app)
+        let full = EditorApp.length(app)
+
+        flow.step("Cut a mistake: Edit › Split twice › Delete")
+        flow.scrub(points: 120)
+        flow.tool("edit")
+        flow.tool("split")
+        XCTAssertTrue(flow.toastSays("Split at"))
+        flow.scrub(points: 90)
+        flow.tool("split")
+        XCTAssertTrue(flow.toastSays("Split at"))
+        let back = app.buttons["edit.toolbar.back"]
+        XCTAssertTrue(flow.waits(for: back, "the clip's tools"))
+        let picked = back.value as? String ?? ""
+        flow.tool("delete")
+        XCTAssertTrue(flow.toastSays("deleted"), "No toast after deleting \(picked)")
+        let cut = EditorApp.length(app)
+        XCTAssertNotEqual(cut, full, "Deleting the clip didn't shorten the video")
+
+        flow.step("‹ out of the editor, Edit again")
+        flow.tap(app.buttons["edit.backButton"], "‹ out of the editor")
+        let edit = app.buttons["review.editButton"]
+        XCTAssertTrue(flow.waits(for: edit, timeout: 10, "the review"), "‹ didn't leave the editor")
+        flow.tap(edit, "Edit")
+        EditorApp.waitUntilReady(app)
+        XCTAssertEqual(EditorApp.length(app), cut, "The cut didn't come back with the draft")
+
+        flow.step("Undo still knows the cut")
+        flow.tap(app.buttons["edit.undoButton"], "Undo")
+        XCTAssertEqual(EditorApp.length(app), full, "Undo after coming back didn't bring the clip back")
+        flow.report()
+    }
 }

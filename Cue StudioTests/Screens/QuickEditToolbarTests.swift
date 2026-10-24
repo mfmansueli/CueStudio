@@ -95,10 +95,45 @@ struct QuickEditToolbarTests {
         #expect(viewModel.selection == .clip(viewModel.edit.timeline.segments[0].id))
         #expect(viewModel.toolbarContextLabel == "Clip")
         #expect(ids(viewModel) == [
-            "split", "speed", "zoom", "volume", "stabilize", "duplicate", "freeze", "reverse", "replace", "extractAudio", "reorder", "adjust",
-            "filters", "background", "copyLook", "pasteLook", "delete",
+            "split", "editByText", "pauses", "speed", "zoom", "volume", "stabilize", "duplicate", "freeze", "reverse", "replace", "extractAudio",
+            "reorder", "adjust", "filters", "background", "copyLook", "pasteLook", "delete",
         ])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
+    }
+
+    /// Edit (the scissors) is where a creator goes to cut a mistake: right after Split, the other ways to cut, the same tools ✦ Smart
+    /// opens, over the whole video.
+    @Test func theClipToolsOfferTheOtherWaysToCutRightAfterSplit() async {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.selectClipAtPlayhead)
+        #expect(viewModel.toolbarItems.first { $0.id == "editByText" }?.action == .editByText)
+        #expect(viewModel.toolbarItems.first { $0.id == "pauses" }?.action == .open(.pauses))
+        viewModel.perform(.open(.pauses))
+        #expect(viewModel.panel == .pauses)
+        // The clip stays picked: ✓ brings its tools back.
+        #expect(viewModel.selection?.clipID != nil)
+        viewModel.perform(.editByText)
+        #expect(viewModel.sheet == .transcript)
+    }
+
+    /// The back button says which item the tools change: the clip's number in a montage, a photo or a video, a text's kind.
+    @Test func theBackButtonNamesThePickedItem() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.perform(.selectClipAtPlayhead)
+        #expect(viewModel.toolbarContextName == "Clip")
+        scenario.player.seek(to: 7.1)
+        viewModel.perform(.splitClip)
+        #expect(viewModel.toolbarContextName == "Clip 2")
+        // The kind stays the tools' identity: picking another clip keeps them where they were scrolled.
+        #expect(viewModel.toolbarContextLabel == "Clip")
+        viewModel.perform(.addText(.hook))
+        #expect(viewModel.toolbarContextName == "Hook")
+        viewModel.overlays.addMedia(ImportedMedia(kind: .photo, fileName: "photo-\(UUID().uuidString).jpg", aspect: 1, duration: nil))
+        #expect(viewModel.toolbarContextName == "Photo")
+        viewModel.selection = nil
+        viewModel.perform(.openMenu(.audio))
+        #expect(viewModel.toolbarContextName == "Audio")
     }
 
     @Test func speedAndZoomStaySeparateTools() async {
