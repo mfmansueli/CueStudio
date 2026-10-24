@@ -36,28 +36,28 @@ struct QuickEditTranslationTests {
             translations: availability
         )
         await viewModel.prepare()
-        viewModel.makeCaptions()
+        viewModel.captions.makeCaptions()
         await viewModel.jobs.finished(.captions)
         return Scenario(viewModel: viewModel, availability: availability, toast: toast)
     }
 
     /// Lines of the Spanish translation whose original changed since (what the Translate sheet marks).
     private func outdatedSpanish(_ viewModel: QuickEditViewModel) -> [TranslatedCaptionLine] {
-        viewModel.translation(.spanish)?.outdatedLines(against: viewModel.edit.captions) ?? []
+        viewModel.captions.translation(.spanish)?.outdatedLines(against: viewModel.edit.captions) ?? []
     }
 
     @Test func captionsAreTranslatedSentenceBySentenceAsOneStep() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let steps = viewModel.document.history.past.count
-        await viewModel.translateCaptions(to: .portugueseBrazil)
-        #expect(viewModel.translationState == .translating)
-        let request = try #require(viewModel.translationRequest)
+        await viewModel.captions.translateCaptions(to: .portugueseBrazil)
+        #expect(viewModel.captions.translationState == .translating)
+        let request = try #require(viewModel.captions.translationRequest)
         let session = FakeTranslationSession()
-        await viewModel.performTranslation(request, with: session)
+        await viewModel.captions.performTranslation(request, with: session)
         #expect(session.asked == ["Okay, real talk."])
-        #expect(viewModel.translation(.portugueseBrazil)?.lines.map(\.text) == ["EN Okay, real talk."])
-        #expect(viewModel.translationState == .idle)
+        #expect(viewModel.captions.translation(.portugueseBrazil)?.lines.map(\.text) == ["EN Okay, real talk."])
+        #expect(viewModel.captions.translationState == .idle)
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect(scenario.toast.message?.hasPrefix("Translated to") == true)
         // The original lines are untouched.
@@ -68,76 +68,76 @@ struct QuickEditTranslationTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.availability.support = .unsupported
-        await viewModel.translateCaptions(to: .thai)
-        #expect(viewModel.translationRequest == nil)
-        if case .unsupported(_, let target) = viewModel.translationState {
+        await viewModel.captions.translateCaptions(to: .thai)
+        #expect(viewModel.captions.translationRequest == nil)
+        if case .unsupported(_, let target) = viewModel.captions.translationState {
             #expect(target == .thai)
         } else {
-            Issue.record("Expected unsupported, got \(viewModel.translationState)")
+            Issue.record("Expected unsupported, got \(viewModel.captions.translationState)")
         }
-        viewModel.writeTranslation(.thai)
-        let lines = viewModel.translation(.thai)?.lines ?? []
+        viewModel.captions.writeTranslation(.thai)
+        let lines = viewModel.captions.translation(.thai)?.lines ?? []
         #expect(lines.count == 1)
         #expect(lines[0].text.isEmpty)
-        viewModel.setTranslatedText(.thai, line: lines[0].id, "เอาล่ะ พูดกันตรงๆ")
-        #expect(viewModel.translation(.thai)?.lines[0].isRevised == true)
+        viewModel.captions.setTranslatedText(.thai, line: lines[0].id, "เอาล่ะ พูดกันตรงๆ")
+        #expect(viewModel.captions.translation(.thai)?.lines[0].isRevised == true)
     }
 
     @Test func aStoppedOrReplacedRequestLeavesNothingBehind() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        await viewModel.translateCaptions(to: .french)
-        let request = try #require(viewModel.translationRequest)
-        viewModel.cancelTranslation()
-        await viewModel.performTranslation(request, with: FakeTranslationSession())
-        #expect(viewModel.translation(.french) == nil)
-        #expect(viewModel.translationState == .idle)
+        await viewModel.captions.translateCaptions(to: .french)
+        let request = try #require(viewModel.captions.translationRequest)
+        viewModel.captions.cancelTranslation()
+        await viewModel.captions.performTranslation(request, with: FakeTranslationSession())
+        #expect(viewModel.captions.translation(.french) == nil)
+        #expect(viewModel.captions.translationState == .idle)
     }
 
     @Test func aFailedTranslationCanBeTriedAgain() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        await viewModel.translateCaptions(to: .german)
+        await viewModel.captions.translateCaptions(to: .german)
         let session = FakeTranslationSession()
         session.fails = true
-        await viewModel.performTranslation(try #require(viewModel.translationRequest), with: session)
-        #expect(viewModel.translationState == .failed)
-        #expect(viewModel.translation(.german) == nil)
+        await viewModel.captions.performTranslation(try #require(viewModel.captions.translationRequest), with: session)
+        #expect(viewModel.captions.translationState == .failed)
+        #expect(viewModel.captions.translation(.german) == nil)
     }
 
     @Test func changingTheOriginalMarksTheTranslationOutdated() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        await viewModel.translateCaptions(to: .spanish)
-        await viewModel.performTranslation(try #require(viewModel.translationRequest), with: FakeTranslationSession())
+        await viewModel.captions.translateCaptions(to: .spanish)
+        await viewModel.captions.performTranslation(try #require(viewModel.captions.translationRequest), with: FakeTranslationSession())
         #expect(outdatedSpanish(viewModel).isEmpty)
-        viewModel.setCaptionText(viewModel.edit.captions[0].id, "Okay, so real talk.")
+        viewModel.captions.setCaptionText(viewModel.edit.captions[0].id, "Okay, so real talk.")
         let outdated = outdatedSpanish(viewModel)
         #expect(outdated.count == 1)
         // The correction isn't thrown away: the line is still there, marked.
-        #expect(viewModel.translation(.spanish)?.lines.count == 1)
-        viewModel.markTranslationCurrent(.spanish, line: outdated[0].id)
+        #expect(viewModel.captions.translation(.spanish)?.lines.count == 1)
+        viewModel.captions.markTranslationCurrent(.spanish, line: outdated[0].id)
         #expect(outdatedSpanish(viewModel).isEmpty)
     }
 
     @Test func theDisplayChoosesWhatShowsAndGoesBackWithItsTranslation() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        await viewModel.translateCaptions(to: .italian)
-        await viewModel.performTranslation(try #require(viewModel.translationRequest), with: FakeTranslationSession())
-        viewModel.setCaptionDisplay(.bilingual(.italian))
+        await viewModel.captions.translateCaptions(to: .italian)
+        await viewModel.captions.performTranslation(try #require(viewModel.captions.translationRequest), with: FakeTranslationSession())
+        viewModel.captions.setCaptionDisplay(.bilingual(.italian))
         #expect(viewModel.edit.shownCaptions.second.count == 1)
-        viewModel.deleteTranslation(.italian)
+        viewModel.captions.deleteTranslation(.italian)
         #expect(viewModel.edit.captionDisplay == .original)
         viewModel.undo()
         #expect(viewModel.edit.captionDisplay == .bilingual(.italian))
-        #expect(viewModel.translation(.italian) != nil)
+        #expect(viewModel.captions.translation(.italian) != nil)
     }
 
     @Test func theCaptionsOwnLanguageIsNotATarget() async {
         let scenario = await makeScenario()
         // The fake heard English.
-        #expect(!scenario.viewModel.translationTargets.contains(.english))
-        #expect(scenario.viewModel.translationTargets.contains(.japanese))
+        #expect(!scenario.viewModel.captions.translationTargets.contains(.english))
+        #expect(scenario.viewModel.captions.translationTargets.contains(.japanese))
     }
 }

@@ -19,22 +19,22 @@ struct AddMediaSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             SheetHeader(title: String(localized: "Add photo or video"))
-            Picker("Where it goes", selection: $viewModel.mediaInsertMode) {
+            Picker("Where it goes", selection: Bindable(viewModel.overlays).mediaInsertMode) {
                 ForEach(MediaInsertMode.allCases) { mode in
                     Text(mode.label).tag(mode)
                 }
             }
             .pickerStyle(.segmented)
             .accessibilityIdentifier("edit.mediaMode")
-            Text(viewModel.mediaInsertMode.explanation)
+            Text(viewModel.overlays.mediaInsertMode.explanation)
                 .font(.system(.footnote))
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("edit.mediaModeExplanation")
-            if viewModel.mediaInsertMode == .clip, !viewModel.addableTakes.isEmpty {
-                TakeRow(takes: viewModel.addableTakes) { take in
+            if viewModel.overlays.mediaInsertMode == .clip, !viewModel.clips.addableTakes.isEmpty {
+                TakeRow(takes: viewModel.clips.addableTakes) { take in
                     Task {
-                        await viewModel.addClip(from: take)
+                        await viewModel.clips.addClip(from: take)
                         dismiss()
                     }
                 }
@@ -42,7 +42,7 @@ struct AddMediaSheet: View {
             ZStack {
                 PhotosPicker(
                     selection: $picked,
-                    matching: viewModel.mediaInsertMode == .clip ? .videos : .any(of: [.images, .videos]),
+                    matching: viewModel.overlays.mediaInsertMode == .clip ? .videos : .any(of: [.images, .videos]),
                     photoLibrary: .shared()
                 ) {
                     EmptyView()
@@ -63,9 +63,9 @@ struct AddMediaSheet: View {
         .onChange(of: picked) { _, item in
             guard let item else { return }
             Task {
-                switch viewModel.mediaInsertMode {
-                case .overlay: await viewModel.importMedia(item)
-                case .clip: await viewModel.addClip(importing: item)
+                switch viewModel.overlays.mediaInsertMode {
+                case .overlay: await viewModel.overlays.importMedia(item)
+                case .clip: await viewModel.clips.addClip(importing: item)
                 }
                 picked = nil
                 dismiss()

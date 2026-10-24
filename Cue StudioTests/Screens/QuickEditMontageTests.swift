@@ -68,7 +68,7 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 32
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         viewModel.perform(.selectClipAtPlayhead)
         #expect(viewModel.toolbarItems.first { $0.id == "reorder" }?.style == .normal)
         scenario.player.play()
@@ -77,7 +77,7 @@ struct QuickEditMontageTests {
         #expect(!scenario.player.isPlaying)
         // Holding a clip on the timeline opens the same list.
         viewModel.sheet = nil
-        viewModel.openClipOrder()
+        viewModel.clips.openClipOrder()
         #expect(viewModel.sheet == .clipOrder)
     }
 
@@ -85,11 +85,11 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 32
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         scenario.player.currentTime = 5
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         let steps = viewModel.document.history.past.count
-        viewModel.duplicateClip(viewModel.edit.timeline.segments[0].id)
+        viewModel.clips.duplicateClip(viewModel.edit.timeline.segments[0].id)
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.edit.timeline.segments.count == 3)
         #expect(viewModel.edit.texts.count == 2)
@@ -108,10 +108,10 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 32
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         scenario.player.currentTime = 40
-        viewModel.addText(.hook)
-        viewModel.moveSection(from: 1, to: 0)
+        viewModel.overlays.addText(.hook)
+        viewModel.clips.moveSection(from: 1, to: 0)
         // The section that started at 32 s now starts the edit: the text is 8 s in.
         #expect(abs((viewModel.textBars.first?.span.start ?? 0) - 8) < 0.001)
         #expect(viewModel.edit.timeline.isArranged)
@@ -122,7 +122,7 @@ struct QuickEditMontageTests {
     /// Add photo or video › Insert as clip offers the creator's other takes, never the one being edited.
     @Test func theOtherTakesAreOfferedAsClips() async {
         let scenario = await makeScenario()
-        let offered = scenario.viewModel.addableTakes.map(\.id)
+        let offered = scenario.viewModel.clips.addableTakes.map(\.id)
         #expect(offered.contains(scenario.other.id))
         #expect(!offered.contains(scenario.viewModel.take.id))
     }
@@ -134,17 +134,17 @@ struct QuickEditMontageTests {
         let viewModel = scenario.viewModel
         let original = try writeVideo(of: scenario.other, in: viewModel)
         defer { try? FileManager.default.removeItem(at: original) }
-        await viewModel.addClip(from: scenario.other)
+        await viewModel.clips.addClip(from: scenario.other)
         let source = try #require(viewModel.edit.sources.first)
         defer { EditMediaFiles.remove([source.fileName]) }
         #expect(source.takeID == scenario.other.id)
         #expect(EditMediaFiles.exists(source.fileName))
         #expect(viewModel.edit.timeline.segments.last?.sourceID == source.id)
         #expect(viewModel.edit.mediaFileNames.contains(source.fileName))
-        #expect(viewModel.clips.last?.title == "B-roll walk · Take 1")
+        #expect(viewModel.clips.clipList.last?.title == "B-roll walk · Take 1")
 
         let section = try #require(viewModel.edit.timeline.segments.last?.id)
-        viewModel.deleteClip(section)
+        viewModel.clips.deleteClip(section)
         #expect(viewModel.edit.timeline.segments.count == 1)
         #expect(FileManager.default.fileExists(atPath: original.path(percentEncoded: false)))
     }
@@ -156,10 +156,10 @@ struct QuickEditMontageTests {
         let viewModel = scenario.viewModel
         let original = try writeVideo(of: scenario.other, in: viewModel)
         defer { try? FileManager.default.removeItem(at: original) }
-        await viewModel.addClip(from: scenario.other)
+        await viewModel.clips.addClip(from: scenario.other)
         let source = try #require(viewModel.edit.sources.first)
         defer { EditMediaFiles.remove([source.fileName]) }
-        viewModel.makeCaptions()
+        viewModel.captions.makeCaptions()
         await viewModel.jobs.finished(.captions)
         #expect(editor.captionRequests == 2)
         #expect(Set(viewModel.edit.captions.map(\.sourceID)) == [nil, source.id])
@@ -171,9 +171,9 @@ struct QuickEditMontageTests {
     @Test func aCopiedSectionShowsItsCaptionsAgain() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.makeCaptions()
+        viewModel.captions.makeCaptions()
         await viewModel.jobs.finished(.captions)
-        viewModel.duplicateSection(viewModel.edit.timeline.segments[0].id)
+        viewModel.clips.duplicateSection(viewModel.edit.timeline.segments[0].id)
         let instances = viewModel.edit.editedCaptionInstances
         #expect(instances.count == 2)
         #expect(Set(instances.map(\.line.id)).count == 2)
@@ -189,10 +189,10 @@ struct QuickEditMontageTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        for _ in 0..<3 { viewModel.addMedia(photo()) }
+        for _ in 0..<3 { viewModel.overlays.addMedia(photo()) }
         #expect(viewModel.edit.media.count == 3)
         #expect(viewModel.edit.media.map(\.stackOrder) == [0, 1, 2])
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         #expect(viewModel.edit.media.count == 3)
         #expect(scenario.toast.message == "Max 3 photos or videos")
     }
@@ -200,11 +200,11 @@ struct QuickEditMontageTests {
     @Test func thePickedOneMovesUpOrDownTheStack() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(photo())
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         let bottom = viewModel.edit.media[0].id
-        #expect(!viewModel.canRestack(bottom, up: false))
-        viewModel.restack(bottom, up: true)
+        #expect(!viewModel.overlays.canRestack(bottom, up: false))
+        viewModel.overlays.restack(bottom, up: true)
         #expect(viewModel.edit.media.first { $0.id == bottom }?.stackOrder == 1)
         viewModel.undo()
         #expect(viewModel.edit.media.first { $0.id == bottom }?.stackOrder == 0)
@@ -237,19 +237,19 @@ struct QuickEditBrollPartTests {
         )
         await viewModel.prepare()
         player.currentTime = 5
-        viewModel.addMedia(ImportedMedia(kind: .video, fileName: "v-\(UUID().uuidString).mov", aspect: 1, duration: 8))
+        viewModel.overlays.addMedia(ImportedMedia(kind: .video, fileName: "v-\(UUID().uuidString).mov", aspect: 1, duration: 8))
         let id = try #require(viewModel.edit.media.first?.id)
-        viewModel.setMediaLength(id, 3)
+        viewModel.overlays.setMediaLength(id, 3)
         let place = viewModel.mediaBars.first { $0.id == id }?.span
         #expect(place?.duration == 3)
-        viewModel.slipMedia(id, toStart: 4)
+        viewModel.overlays.slipMedia(id, toStart: 4)
         #expect(viewModel.edit.media.first?.startInFile == 4)
         #expect(viewModel.mediaBars.first { $0.id == id }?.span == place)
         // 8 s of video, 3 s shown: it can start at 5 at most.
-        viewModel.slipMedia(id, toStart: 7)
+        viewModel.overlays.slipMedia(id, toStart: 7)
         #expect(viewModel.edit.media.first?.startInFile == 5)
         // From 5 s there are 3 s left: it can't play longer.
-        viewModel.setMediaLength(id, 6)
+        viewModel.overlays.setMediaLength(id, 6)
         #expect(viewModel.mediaBars.first { $0.id == id }?.span.duration == 3)
         viewModel.undo()
         #expect(viewModel.edit.media.first?.startInFile == 4)

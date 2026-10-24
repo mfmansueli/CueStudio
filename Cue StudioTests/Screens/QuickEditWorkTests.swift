@@ -44,7 +44,7 @@ struct QuickEditWorkTests {
         let viewModel = scenario.viewModel
         scenario.importer.progressSteps = [0.1, 0.4]
         scenario.importer.waitsUntilCancelled = true
-        let importing = Task { await viewModel.importMedia(PhotosPickerItem(itemIdentifier: "in-icloud")) }
+        let importing = Task { await viewModel.overlays.importMedia(PhotosPickerItem(itemIdentifier: "in-icloud")) }
         await Wait.until { viewModel.work?.fraction == 0.4 }
         #expect(viewModel.work?.label == "Importing · 40%")
         viewModel.cancelWork()
@@ -58,7 +58,7 @@ struct QuickEditWorkTests {
     @Test func anImportThatFinishesIsAddedAndThePillGoes() async {
         let scenario = await makeScenario()
         scenario.importer.progressSteps = [0.5, 1]
-        await scenario.viewModel.importMedia(PhotosPickerItem(itemIdentifier: "on-the-iphone"))
+        await scenario.viewModel.overlays.importMedia(PhotosPickerItem(itemIdentifier: "on-the-iphone"))
         #expect(scenario.viewModel.edit.media.count == 1)
         #expect(scenario.viewModel.work == nil)
     }
@@ -66,7 +66,7 @@ struct QuickEditWorkTests {
     @Test func leavingStopsAnImport() async {
         let scenario = await makeScenario()
         scenario.importer.waitsUntilCancelled = true
-        let importing = Task { await scenario.viewModel.importMedia(PhotosPickerItem(itemIdentifier: "in-icloud")) }
+        let importing = Task { await scenario.viewModel.overlays.importMedia(PhotosPickerItem(itemIdentifier: "in-icloud")) }
         await Wait.until { scenario.viewModel.work != nil }
         scenario.viewModel.cancel()
         await importing.value
@@ -77,7 +77,7 @@ struct QuickEditWorkTests {
     @Test func aReverseCancelledBeforeItStartsLeavesTheClip() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.selectClipAtPlayhead()
+        viewModel.clips.selectClipAtPlayhead()
         let timeline = viewModel.edit.timeline
         viewModel.perform(.reverseClip)
         viewModel.work = EditorWork(kind: .reversing, job: .reverse)

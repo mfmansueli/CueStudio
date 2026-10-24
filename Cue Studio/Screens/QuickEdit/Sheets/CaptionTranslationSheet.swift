@@ -22,16 +22,16 @@ struct CaptionTranslationSheet: View {
                 Section {
                     Picker("Translate to", selection: $target) {
                         Text("Choose").tag(CueLanguage?.none)
-                        ForEach(viewModel.translationTargets) { language in
+                        ForEach(viewModel.captions.translationTargets) { language in
                             Text(verbatim: language.nativeName).tag(Optional(language))
                         }
                     }
                     // The languages as a list with a check at the right, the way every other language is picked.
                     .pickerStyle(.navigationLink)
                     .accessibilityIdentifier("translation.language")
-                    if let message = viewModel.translationState.message {
+                    if let message = viewModel.captions.translationState.message {
                         HStack(spacing: 10) {
-                            if viewModel.translationState.isWorking { ProgressView().controlSize(.small) }
+                            if viewModel.captions.translationState.isWorking { ProgressView().controlSize(.small) }
                             Text(message)
                                 .font(.footnote)
                                 .foregroundStyle(Palette.ink2)
@@ -44,11 +44,11 @@ struct CaptionTranslationSheet: View {
                 } footer: {
                     Text("Translated on your iPhone with Apple’s Translation. Nothing is sent anywhere.")
                 }
-                if let target, let translation = viewModel.translation(target) {
+                if let target, let translation = viewModel.captions.translation(target) {
                     Section("Show and export") {
                         Picker("Show", selection: Binding(
                             get: { viewModel.edit.captionDisplay },
-                            set: { viewModel.setCaptionDisplay($0) }
+                            set: { viewModel.captions.setCaptionDisplay($0) }
                         )) {
                             Text("Original").tag(CaptionDisplay.original)
                             Text(verbatim: target.nativeName).tag(CaptionDisplay.translation(target))
@@ -85,7 +85,7 @@ struct CaptionTranslationSheet: View {
 
     @ViewBuilder
     private func actions(_ target: CueLanguage) -> some View {
-        let existing = viewModel.translation(target)
+        let existing = viewModel.captions.translation(target)
         Button(existing == nil ? String(localized: "Translate") : String(localized: "Translate again")) {
             if existing?.lines.contains(where: \.isRevised) == true {
                 confirmsReplacing = true
@@ -93,13 +93,13 @@ struct CaptionTranslationSheet: View {
                 start(replacingRevised: false)
             }
         }
-        .disabled(viewModel.translationState.isWorking || viewModel.edit.captions.isEmpty)
+        .disabled(viewModel.captions.translationState.isWorking || viewModel.edit.captions.isEmpty)
         .accessibilityIdentifier("translation.translateButton")
         if existing == nil {
-            Button("Write it myself") { viewModel.writeTranslation(target) }
+            Button("Write it myself") { viewModel.captions.writeTranslation(target) }
                 .accessibilityIdentifier("translation.writeButton")
         } else {
-            Button("Delete this translation", role: .destructive) { viewModel.deleteTranslation(target) }
+            Button("Delete this translation", role: .destructive) { viewModel.captions.deleteTranslation(target) }
                 .accessibilityIdentifier("translation.deleteButton")
         }
     }
@@ -113,8 +113,8 @@ struct CaptionTranslationSheet: View {
                     original: line.cueIDs.compactMap { originals[$0] }.joined(separator: " "),
                     text: line.text,
                     isOutdated: outdated.contains(line.id),
-                    onCommit: { viewModel.setTranslatedText(translation.language, line: line.id, $0) },
-                    onKeep: { viewModel.markTranslationCurrent(translation.language, line: line.id) }
+                    onCommit: { viewModel.captions.setTranslatedText(translation.language, line: line.id, $0) },
+                    onKeep: { viewModel.captions.markTranslationCurrent(translation.language, line: line.id) }
                 )
             }
         } header: {
@@ -128,6 +128,6 @@ struct CaptionTranslationSheet: View {
 
     private func start(replacingRevised: Bool) {
         guard let target else { return }
-        Task { await viewModel.translateCaptions(to: target, replacingRevised: replacingRevised) }
+        Task { await viewModel.captions.translateCaptions(to: target, replacingRevised: replacingRevised) }
     }
 }

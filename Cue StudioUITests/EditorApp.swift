@@ -29,13 +29,15 @@ enum EditorApp {
         return app
     }
 
-    /// The tools stay off until the video is ready (`isReady`), and the timeline then takes its place: a tap before that is lost.
+    /// The tools stay off until the video is ready (`isReady`), and the timeline then takes its place: a tap before that is lost,
+    /// and so is one while "Opening your edit" fades away over the editor.
     static func waitUntilReady(_ app: XCUIApplication, file: StaticString = #filePath, line: UInt = #line) {
         let tools = app.buttons["edit.toolbar.edit"]
         XCTAssertTrue(tools.exists(within: 10), "No editor", file: file, line: line)
         let deadline = Date().addingTimeInterval(10)
         while !tools.isEnabled, Date() < deadline { Thread.sleep(forTimeInterval: 0.1) }
         XCTAssertTrue(tools.isEnabled, "The editor's tools never turned on", file: file, line: line)
+        XCTAssertTrue(app.descendants(matching: .any)["edit.opening"].isGone(within: 5), "Opening your edit stayed", file: file, line: line)
     }
 
     /// Taps a toolbar tool, scrolling the toolbar to it first when it's off screen.

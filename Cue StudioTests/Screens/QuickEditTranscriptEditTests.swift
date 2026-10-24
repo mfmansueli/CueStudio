@@ -61,25 +61,25 @@ struct QuickEditTranscriptEditTests {
 
     @Test func cuttingWordsCutsTheVideoAndTheirCaptionsInOneStep() async throws {
         let (viewModel, player) = await makeViewModel()
-        #expect(viewModel.hasTranscript)
-        #expect(viewModel.transcriptWords.map(\.text) == Self.said)
-        viewModel.tapTranscriptWord(at: 2)
+        #expect(viewModel.clips.hasTranscript)
+        #expect(viewModel.clips.transcriptWords.map(\.text) == Self.said)
+        viewModel.clips.tapTranscriptWord(at: 2)
         #expect(player.currentTime == 1)
-        viewModel.tapTranscriptWord(at: 4)
-        #expect(viewModel.selectedTranscriptWords.map(\.text) == ["I", "want", "to"])
+        viewModel.clips.tapTranscriptWord(at: 4)
+        #expect(viewModel.clips.selectedTranscriptWords.map(\.text) == ["I", "want", "to"])
         let steps = viewModel.document.history.past.count
-        viewModel.cutSelectedWords()
+        viewModel.clips.cutSelectedWords()
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect(abs(viewModel.edit.editedDuration - 8.5) < 0.000_1)
-        #expect(viewModel.transcriptSelection == nil)
+        #expect(viewModel.clips.transcriptSelection == nil)
         // Listed crossed out, and gone from the caption.
-        #expect(viewModel.transcriptWords.filter(\.isRemoved).map(\.text) == ["I", "want", "to"])
+        #expect(viewModel.clips.transcriptWords.filter(\.isRemoved).map(\.text) == ["I", "want", "to"])
         // The line shows on both sides of the cut, without the cut words.
         #expect(viewModel.edit.editedCaptions.map(\.text).joined(separator: " ") == "So today show you three habits")
         // Put back.
-        viewModel.tapTranscriptWord(at: 2)
-        viewModel.tapTranscriptWord(at: 4)
-        viewModel.restoreSelectedWords()
+        viewModel.clips.tapTranscriptWord(at: 2)
+        viewModel.clips.tapTranscriptWord(at: 4)
+        viewModel.clips.restoreSelectedWords()
         #expect(abs(viewModel.edit.editedDuration - 10) < 0.000_1)
         viewModel.undo()
         #expect(abs(viewModel.edit.editedDuration - 8.5) < 0.000_1)
@@ -88,22 +88,22 @@ struct QuickEditTranscriptEditTests {
     /// The pick has a start and an end: the first tap is the start, the next the end (in either order), and Pick again starts over.
     @Test func thePickHasAStartAndAnEndAndStartsOver() async throws {
         let (viewModel, _) = await makeViewModel()
-        viewModel.tapTranscriptWord(at: 5)
-        #expect(viewModel.selectedTranscriptWords.map(\.text) == ["show"])
+        viewModel.clips.tapTranscriptWord(at: 5)
+        #expect(viewModel.clips.selectedTranscriptWords.map(\.text) == ["show"])
         // The end tapped before the start: still every word between them.
-        viewModel.tapTranscriptWord(at: 3)
-        #expect(viewModel.selectedTranscriptWords.map(\.text) == ["want", "to", "show"])
-        viewModel.clearTranscriptSelection()
-        #expect(viewModel.transcriptSelection == nil)
-        #expect(viewModel.selectedTranscriptWords.isEmpty)
-        viewModel.tapTranscriptWord(at: 7)
-        #expect(viewModel.selectedTranscriptWords.map(\.text) == ["three"])
+        viewModel.clips.tapTranscriptWord(at: 3)
+        #expect(viewModel.clips.selectedTranscriptWords.map(\.text) == ["want", "to", "show"])
+        viewModel.clips.clearTranscriptSelection()
+        #expect(viewModel.clips.transcriptSelection == nil)
+        #expect(viewModel.clips.selectedTranscriptWords.isEmpty)
+        viewModel.clips.tapTranscriptWord(at: 7)
+        #expect(viewModel.clips.selectedTranscriptWords.map(\.text) == ["three"])
     }
 
     @Test func fixingCaptionTextNeverCuts() async throws {
         let (viewModel, _) = await makeViewModel()
         viewModel.sheet = .transcript
-        viewModel.tapTranscriptWord(at: 7)
+        viewModel.clips.tapTranscriptWord(at: 7)
         let duration = viewModel.edit.editedDuration
         viewModel.fixCaptionOfSelectedWords()
         #expect(viewModel.edit.editedDuration == duration)
@@ -126,10 +126,10 @@ struct QuickEditTranscriptEditTests {
         next.sourceTranscripts = [theirs]
         viewModel.commit(EditSnapshot(next))
         viewModel.updateFindings { $0.sourceTranscripts = [theirs] }
-        let words = viewModel.transcriptWords
+        let words = viewModel.clips.transcriptWords
         let hello = try #require(words.firstIndex { $0.text == "Hello" })
-        viewModel.tapTranscriptWord(at: hello)
-        viewModel.cutSelectedWords()
+        viewModel.clips.tapTranscriptWord(at: hello)
+        viewModel.clips.cutSelectedWords()
         let pieces = viewModel.edit.timeline.segments.filter { $0.sourceID == other }
         #expect(pieces.allSatisfy { !$0.span.overlaps(TimeSpan(start: 1.05, end: 1.5)) })
         // The take is untouched.
@@ -158,7 +158,7 @@ struct QuickEditVideoTemplateTests {
         )
         await viewModel.prepare()
         viewModel.change { $0.captions = [CaptionCue(text: "Real talk", start: 1, end: 2)] }
-        viewModel.addGraphic(.arrow)
+        viewModel.overlays.addGraphic(.arrow)
         let before = viewModel.edit
         let steps = viewModel.document.history.past.count
         viewModel.applyVideoTemplate(.boldHook)
@@ -225,16 +225,16 @@ struct QuickEditFreezeFrameTests {
         }
         viewModel.player.seek(to: 4)
         let before = viewModel.edit
-        await viewModel.freezeFrame()
+        await viewModel.clips.freezeFrame()
         let timeline = viewModel.edit.timeline
         #expect(timeline.segments.count == 3)
         #expect(abs((editor.stillClips.first?.time ?? 0) - 4) < 0.001)
         let frozen = timeline.segments[1]
         #expect(frozen.sourceID == viewModel.edit.sources.first?.id)
         #expect(viewModel.edit.sources.first?.fileName == "still-1.mov")
-        #expect(abs(frozen.duration - QuickEditViewModel.freezeLength) < 0.001)
+        #expect(abs(frozen.duration - ClipsViewModel.freezeLength) < 0.001)
         #expect(frozen.look == before.timeline.segments[0].look)
-        #expect(abs(timeline.editedDuration - (10 + QuickEditViewModel.freezeLength)) < 0.001)
+        #expect(abs(timeline.editedDuration - (10 + ClipsViewModel.freezeLength)) < 0.001)
         #expect(abs(timeline.segments[2].sourceStart - 4) < 0.001)
         viewModel.undo()
         #expect(viewModel.edit.timeline == before.timeline)
@@ -253,7 +253,7 @@ struct QuickEditFreezeFrameTests {
             viewModel.commit(timeline)
             changed = viewModel.edit
         }
-        await viewModel.freezeFrame()
+        await viewModel.clips.freezeFrame()
         let after = try #require(changed)
         #expect(editor.stillClips.count == 1)
         #expect(viewModel.edit == after)
@@ -272,7 +272,7 @@ struct QuickEditFreezeFrameTests {
         let viewModel = makeViewModel(editor: editor)
         await viewModel.prepare()
         let before = viewModel.edit
-        await viewModel.freezeFrame()
+        await viewModel.clips.freezeFrame()
         #expect(viewModel.edit == before)
     }
 }
@@ -313,7 +313,7 @@ struct QuickEditAuditFixTests {
         let second = viewModel.edit.timeline.segments[1].id
         // Just after the cut: too close to split, so the frame goes before the clip it opens.
         player.seek(to: 10.03)
-        await viewModel.freezeFrame()
+        await viewModel.clips.freezeFrame()
         let segments = viewModel.edit.timeline.segments
         #expect(segments.count == 3)
         #expect(segments[1].sourceID == viewModel.edit.sources.first?.id)
@@ -323,7 +323,7 @@ struct QuickEditAuditFixTests {
 
     @Test func aTemplateLeavesTextsWhereTheCreatorPutThem() async throws {
         let (viewModel, _) = await makeViewModel()
-        viewModel.addText(.callout)
+        viewModel.overlays.addText(.callout)
         let id = try #require(viewModel.edit.texts.first?.id)
         viewModel.change { snapshot in
             if let index = snapshot.texts.firstIndex(where: { $0.id == id }) {
@@ -339,8 +339,8 @@ struct QuickEditAuditFixTests {
 
     @Test func aTagsWordNeverTitlesTheCover() async {
         let (viewModel, _) = await makeViewModel()
-        viewModel.addGraphic(.tag)
-        #expect(!viewModel.coverSuggestions.contains("NEW"))
+        viewModel.overlays.addGraphic(.tag)
+        #expect(!viewModel.cover.coverSuggestions.contains("NEW"))
     }
 
     @Test func everyCutGetsTheTransitionAndItsLength() async throws {
@@ -350,12 +350,12 @@ struct QuickEditAuditFixTests {
         timeline.split(atEdited: 20)
         viewModel.commit(timeline)
         viewModel.selectedJoinID = viewModel.edit.timeline.segments[1].id
-        viewModel.setTransition(.zoom)
-        viewModel.setTransitionDuration(1.2)
-        viewModel.setTransitionOnEveryCut(.zoom)
+        viewModel.clips.setTransition(.zoom)
+        viewModel.clips.setTransitionDuration(1.2)
+        viewModel.clips.setTransitionOnEveryCut(.zoom)
         #expect(viewModel.edit.timeline.segments.dropFirst().allSatisfy { $0.transitionIn == .zoom && $0.transitionDuration == 1.2 })
         let steps = viewModel.document.history.past.count
-        viewModel.setTransitionOnEveryCut(.zoom)
+        viewModel.clips.setTransitionOnEveryCut(.zoom)
         #expect(viewModel.document.history.past.count == steps)
     }
 
@@ -366,15 +366,15 @@ struct QuickEditAuditFixTests {
         }
         viewModel.updateFindings { $0.captionTranscript = CaptionTranscript(words: words, languageCode: "en") }
         viewModel.change { $0.captions = [CaptionCue(words: words)] }
-        viewModel.duplicateSection(viewModel.edit.timeline.segments[0].id)
+        viewModel.clips.duplicateSection(viewModel.edit.timeline.segments[0].id)
         #expect(abs(viewModel.edit.editedDuration - 20) < 0.000_1)
-        viewModel.tapTranscriptWord(at: 2)
-        viewModel.tapTranscriptWord(at: 4)
-        viewModel.cutSelectedWords()
+        viewModel.clips.tapTranscriptWord(at: 2)
+        viewModel.clips.tapTranscriptWord(at: 4)
+        viewModel.clips.cutSelectedWords()
         // "I want to" (1.5 s) leaves the first clip; its copy keeps them.
         #expect(abs(viewModel.edit.editedDuration - 18.5) < 0.000_1)
         viewModel.undo()
-        #expect(viewModel.transcriptSelection == nil)
+        #expect(viewModel.clips.transcriptSelection == nil)
     }
 
     /// A trim drag that goes out past an effect's moment and back leaves the effect exactly where it was: every step of the drag
@@ -382,7 +382,7 @@ struct QuickEditAuditFixTests {
     @Test func aSoundEffectComesBackToItsPlaceAfterATrimGoesPastItAndBack() async throws {
         let (viewModel, player) = await makeViewModel()
         player.seek(to: 20)
-        viewModel.addSoundEffect(.ding)
+        viewModel.audio.addSoundEffect(.ding)
         let effect = try #require(viewModel.edit.music.first { $0.effect == .ding })
         let clip = viewModel.edit.timeline.segments[0].id
         viewModel.beginTimelineHandle(.clip(clip, .end), snapTimes: [])
@@ -403,16 +403,16 @@ struct QuickEditAuditFixTests {
         }
         viewModel.updateFindings { $0.captionTranscript = CaptionTranscript(words: words, languageCode: "en") }
         viewModel.change { $0.captions = [CaptionCue(words: words)] }
-        viewModel.tapTranscriptWord(at: 2)
-        viewModel.tapTranscriptWord(at: 4)
-        #expect(viewModel.transcriptSelection != nil)
+        viewModel.clips.tapTranscriptWord(at: 2)
+        viewModel.clips.tapTranscriptWord(at: 4)
+        #expect(viewModel.clips.transcriptSelection != nil)
         // A change that leaves the cuts alone keeps the pick.
-        viewModel.addText(.title)
-        #expect(viewModel.transcriptSelection != nil)
+        viewModel.overlays.addText(.title)
+        #expect(viewModel.clips.transcriptSelection != nil)
         var timeline = viewModel.edit.timeline
         timeline.split(atEdited: 6)
         viewModel.commit(timeline)
-        #expect(viewModel.transcriptSelection == nil)
+        #expect(viewModel.clips.transcriptSelection == nil)
     }
 
     /// A handle held on something that isn't there leaves no change open: the next change is an undo step of its own.
@@ -433,7 +433,7 @@ struct QuickEditAuditFixTests {
     @Test func aSoundEffectFollowsItsMomentThroughACut() async throws {
         let (viewModel, player) = await makeViewModel()
         player.seek(to: 20)
-        viewModel.addSoundEffect(.ding)
+        viewModel.audio.addSoundEffect(.ding)
         let effect = try #require(viewModel.edit.music.first { $0.effect == .ding })
         #expect(abs(effect.start - 20) < 0.000_1)
         // Five seconds earlier in the video go: the ding plays five seconds earlier, still on its moment.

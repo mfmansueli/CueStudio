@@ -55,16 +55,16 @@ struct CaptionLineCard: View {
         .contentShape(.editorCard)
         .onTapGesture {
             if isPicked != nil {
-                viewModel.toggleCaptionPick(cueID)
+                viewModel.captions.toggleCaptionPick(cueID)
             } else if !isSelected {
-                viewModel.pickCaptionLine(cueID, at: line.start)
+                viewModel.captions.pickCaptionLine(cueID, at: line.start)
             }
         }
         .contextMenu {
             if isPicked == nil {
-                Button("Play", systemImage: "play.fill") { viewModel.playCaptionLine(start: line.start, end: line.end) }
-                Button("Select lines", systemImage: "checkmark.circle") { viewModel.startPickingCaptions(with: cueID) }
-                Button("Delete line", systemImage: "trash", role: .destructive) { viewModel.deleteCaptionLine(cueID) }
+                Button("Play", systemImage: "play.fill") { viewModel.captions.playCaptionLine(start: line.start, end: line.end) }
+                Button("Select lines", systemImage: "checkmark.circle") { viewModel.captions.startPickingCaptions(with: cueID) }
+                Button("Delete line", systemImage: "trash", role: .destructive) { viewModel.captions.deleteCaptionLine(cueID) }
             }
         }
         .accessibilityElement(children: isSelected && isPicked == nil ? .contain : .combine)
@@ -142,8 +142,8 @@ struct CaptionLineCard: View {
                     nudger(String(localized: "End"), edge: .end)
                 }
                 HStack(spacing: 6) {
-                    chip(String(localized: "Split"), identifier: "edit.captionSplit") { viewModel.splitCaptionAtPlayhead(cueID) }
-                    chip(String(localized: "Join next"), identifier: "edit.captionJoin") { viewModel.joinCaption(cueID) }
+                    chip(String(localized: "Split"), identifier: "edit.captionSplit") { viewModel.captions.splitCaptionAtPlayhead(cueID) }
+                    chip(String(localized: "Join next"), identifier: "edit.captionJoin") { viewModel.captions.joinCaption(cueID) }
                 }
             }
         }
@@ -151,7 +151,7 @@ struct CaptionLineCard: View {
 
     private var playChip: some View {
         iconChip("play.fill", label: Text("Play"), identifier: "edit.captionPlay") {
-            viewModel.playCaptionLine(start: line.start, end: line.end)
+            viewModel.captions.playCaptionLine(start: line.start, end: line.end)
         }
     }
 
@@ -162,7 +162,7 @@ struct CaptionLineCard: View {
     }
 
     private var deleteButton: some View {
-        Button { viewModel.deleteCaptionLine(cueID) } label: {
+        Button { viewModel.captions.deleteCaptionLine(cueID) } label: {
             Image(systemName: "trash")
                 .font(.editorGlyph(EditorGlyph.row, weight: .semibold))
                 .foregroundStyle(Palette.dangerText)
@@ -180,16 +180,16 @@ struct CaptionLineCard: View {
     /// keyboard still up, and at the last line puts the keyboard away.
     private func write(_ typed: String) {
         guard typed.contains("\n") else {
-            viewModel.setCaptionText(cueID, typed)
+            viewModel.captions.setCaptionText(cueID, typed)
             return
         }
-        viewModel.setCaptionText(cueID, typed.replacingOccurrences(of: "\n", with: ""))
-        if !viewModel.goToCaptionLine(from: cueID, by: 1, keepsTyping: true) { focusesField.wrappedValue = false }
+        viewModel.captions.setCaptionText(cueID, typed.replacingOccurrences(of: "\n", with: ""))
+        if !viewModel.captions.goToCaptionLine(from: cueID, by: 1, keepsTyping: true) { focusesField.wrappedValue = false }
     }
 
     /// "‹ 3/12 ›": the line before and the one after.
     private var stepper: some View {
-        let position = viewModel.captionPosition(of: cueID)
+        let position = viewModel.captions.captionPosition(of: cueID)
         return HStack(spacing: 0) {
             stepButton("chevron.left", label: Text("Previous line"), identifier: "edit.captionPrev", step: -1)
             Text(verbatim: position.map { "\($0.number)/\($0.total)" } ?? "·")
@@ -209,9 +209,9 @@ struct CaptionLineCard: View {
     }
 
     private func stepButton(_ symbol: String, label: Text, identifier: String, step: Int) -> some View {
-        let isAvailable = viewModel.neighborCaptionLine(of: cueID, by: step) != nil
+        let isAvailable = viewModel.captions.neighborCaptionLine(of: cueID, by: step) != nil
         return Button {
-            viewModel.goToCaptionLine(from: cueID, by: step, keepsTyping: focusesField.wrappedValue)
+            viewModel.captions.goToCaptionLine(from: cueID, by: step, keepsTyping: focusesField.wrappedValue)
         } label: {
             Image(systemName: symbol)
                 .font(.editorGlyph(EditorGlyph.compact, weight: .bold))
@@ -235,11 +235,11 @@ struct CaptionLineCard: View {
             Spacer(minLength: 4)
             nudge("minus", label: edge == .start ? Text("Start earlier") : Text("End earlier"),
                   identifier: "edit.caption\(edge == .start ? "Start" : "End").minus") {
-                viewModel.nudgeCaptionLine(cueID, edge: edge, by: -0.1)
+                viewModel.captions.nudgeCaptionLine(cueID, edge: edge, by: -0.1)
             }
             nudge("plus", label: edge == .start ? Text("Start later") : Text("End later"),
                   identifier: "edit.caption\(edge == .start ? "Start" : "End").plus") {
-                viewModel.nudgeCaptionLine(cueID, edge: edge, by: 0.1)
+                viewModel.captions.nudgeCaptionLine(cueID, edge: edge, by: 0.1)
             }
         }
         .padding(.leading, 10)

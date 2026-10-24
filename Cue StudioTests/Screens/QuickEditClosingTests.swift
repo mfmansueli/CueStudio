@@ -35,7 +35,7 @@ struct QuickEditClosingTests {
         let viewModel = await makeViewModel(editor: editor, drafts: drafts)
         viewModel.player.seek(to: 4)
         editor.whileFreezing = { viewModel.cancel() }
-        await viewModel.freezeFrame()
+        await viewModel.clips.freezeFrame()
         #expect(editor.stillClips.count == 1)
         #expect(viewModel.isClosed)
         #expect(viewModel.edit.sources.isEmpty)
@@ -46,9 +46,9 @@ struct QuickEditClosingTests {
     @Test func aSoundPulledOutAfterLeavingIsDropped() async {
         let editor = FakeTakeEditor()
         let viewModel = await makeViewModel(editor: editor)
-        viewModel.selectClipAtPlayhead()
+        viewModel.clips.selectClipAtPlayhead()
         editor.whileExtracting = { viewModel.cancel() }
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         #expect(editor.extractions.count == 1)
         #expect(viewModel.edit.music.isEmpty)
     }

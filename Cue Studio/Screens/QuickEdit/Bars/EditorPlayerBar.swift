@@ -47,7 +47,7 @@ struct EditorPlayerBar: View {
                         .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .disabled(!viewModel.isReady || viewModel.isRecordingVoiceOver)
+                .disabled(!viewModel.isReady || viewModel.audio.isRecordingVoiceOver)
                 // Space plays, unless a field could be taking the keyboard.
                 .keyboardShortcut(viewModel.acceptsSpaceToPlay ? KeyboardShortcut(.space, modifiers: []) : nil)
                 .accessibilityLabel(isPlaying ? Text("Pause") : Text("Play"))
@@ -76,7 +76,7 @@ struct EditorPlayerBar: View {
         }
         .buttonStyle(.plain)
         .buttonRepeatBehavior(.enabled)
-        .disabled(!viewModel.isReady || viewModel.isRecordingVoiceOver)
+        .disabled(!viewModel.isReady || viewModel.audio.isRecordingVoiceOver)
         .accessibilityLabel(direction < 0 ? Text("Previous frame") : Text("Next frame"))
         .accessibilityIdentifier(direction < 0 ? "edit.previousFrame" : "edit.nextFrame")
     }

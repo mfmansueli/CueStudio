@@ -34,14 +34,14 @@ struct QuickEditEdgeCaseTests {
     @Test func aOneSecondTakeSplitsAndKeepsAClip() async {
         let (viewModel, player) = await makeViewModel(seconds: 1)
         player.seek(to: 0.5)
-        viewModel.selectClipAtPlayhead()
-        viewModel.splitClip()
+        viewModel.clips.selectClipAtPlayhead()
+        viewModel.clips.splitClip()
         #expect(viewModel.edit.timeline.segments.count == 2)
         let first = viewModel.edit.timeline.segments[0].id
-        viewModel.deleteClip(first)
+        viewModel.clips.deleteClip(first)
         #expect(viewModel.edit.timeline.segments.count == 1)
         // The last clip can't go.
-        viewModel.deleteClip(viewModel.edit.timeline.segments[0].id)
+        viewModel.clips.deleteClip(viewModel.edit.timeline.segments[0].id)
         #expect(viewModel.edit.timeline.segments.count == 1)
         #expect(abs(viewModel.edit.editedDuration - 0.5) < 0.001)
         let geometry = TimelineGeometry(viewModel.timelineInput(heightClass: .veryCompact))
@@ -69,9 +69,9 @@ struct QuickEditEdgeCaseTests {
             ]
             $0.showsCaptions = true
         }
-        for line in viewModel.captionListLines { viewModel.deleteCaptionLine(line.cueID) }
+        for line in viewModel.captions.captionListLines { viewModel.captions.deleteCaptionLine(line.cueID) }
         #expect(viewModel.edit.captions.isEmpty)
-        #expect(viewModel.captionListLines.isEmpty)
+        #expect(viewModel.captions.captionListLines.isEmpty)
         #expect(viewModel.panelSubtitle(.captions) == "0 lines · tap one to jump there")
         // Captions now open on Auto captions.
         viewModel.openCaptions()
@@ -85,21 +85,21 @@ struct QuickEditEdgeCaseTests {
     @Test func cuttingATextWithKeyframesHidesItAndUndoBringsItBack() async {
         let (viewModel, player) = await makeViewModel(seconds: 20)
         player.seek(to: 5)
-        viewModel.addStyledText(.title)
+        viewModel.overlays.addStyledText(.title)
         let id = viewModel.edit.texts[0].id
-        viewModel.toggleKeyframe()
+        viewModel.overlays.toggleKeyframe()
         player.seek(to: 7)
-        viewModel.toggleKeyframe()
+        viewModel.overlays.toggleKeyframe()
         #expect(viewModel.edit.texts[0].keyframes.count == 2)
         // Seconds 4 to 9 go: the whole text with them.
         var timeline = viewModel.edit.timeline
         _ = timeline.removeEdited(4...9)
         viewModel.commit(timeline)
-        #expect(viewModel.editedSpan(ofText: id) == nil)
+        #expect(viewModel.overlays.editedSpan(ofText: id) == nil)
         #expect(viewModel.edit.texts.count == 1)
         #expect(!viewModel.textBars.contains { $0.id == id })
         viewModel.undo()
-        #expect(viewModel.editedSpan(ofText: id) != nil)
+        #expect(viewModel.overlays.editedSpan(ofText: id) != nil)
         #expect(viewModel.edit.texts[0].keyframes.count == 2)
     }
 

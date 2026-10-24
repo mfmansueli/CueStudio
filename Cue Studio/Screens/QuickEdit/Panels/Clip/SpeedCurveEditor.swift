@@ -21,7 +21,7 @@ struct SpeedCurveEditor: View {
             ZStack(alignment: .topLeading) {
                 grid(size: size)
                 SpeedCurveGlyph(curve: curve, color: Palette.acc)
-                if let position = viewModel.curvePlayheadPosition {
+                if let position = viewModel.clips.curvePlayheadPosition {
                     Rectangle()
                         .fill(Palette.ink)
                         .frame(width: 2, height: size.height)
@@ -75,14 +75,14 @@ struct SpeedCurveEditor: View {
                     .onChanged { value in
                         if dragged == nil {
                             dragged = index
-                            viewModel.beginCurveDrag()
+                            viewModel.clips.beginCurveDrag()
                         }
                         let speed = Self.speed(forY: value.location.y, height: size.height)
-                        viewModel.moveCurvePoint(index, to: speed, position: Double(value.location.x / max(1, size.width)))
+                        viewModel.clips.moveCurvePoint(index, to: speed, position: Double(value.location.x / max(1, size.width)))
                     }
                     .onEnded { _ in
                         dragged = nil
-                        viewModel.endCurveDrag()
+                        viewModel.clips.endCurveDrag()
                     }
             )
             .accessibilityElement()
@@ -90,7 +90,7 @@ struct SpeedCurveEditor: View {
             .accessibilityValue(Text(SpeedScale.label(forMultiple: point.speed)))
             .accessibilityAdjustableAction { direction in
                 let factor = direction == .increment ? 1.25 : 0.8
-                viewModel.moveCurvePoint(index, to: point.speed * factor)
+                viewModel.clips.moveCurvePoint(index, to: point.speed * factor)
             }
             .accessibilityIdentifier("edit.speed.curvePoint.\(index)")
     }

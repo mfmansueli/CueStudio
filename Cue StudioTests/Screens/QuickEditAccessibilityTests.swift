@@ -33,11 +33,11 @@ struct QuickEditAccessibilityTests {
     @Test func thePlayheadJumpsFromCutToCut() async {
         let (viewModel, player) = await makeViewModel()
         player.seek(to: 6)
-        viewModel.selectClipAtPlayhead()
-        viewModel.splitClip()
+        viewModel.clips.selectClipAtPlayhead()
+        viewModel.clips.splitClip()
         player.seek(to: 12)
-        viewModel.selectClipAtPlayhead()
-        viewModel.splitClip()
+        viewModel.clips.selectClipAtPlayhead()
+        viewModel.clips.splitClip()
         player.seek(to: 2)
         viewModel.jumpToCut(forward: true)
         #expect(abs(player.currentTime - 6) < 0.05)
@@ -53,13 +53,13 @@ struct QuickEditAccessibilityTests {
         let (viewModel, _) = await makeViewModel()
         viewModel.perform(.addText(.title))
         let text = try #require(viewModel.edit.texts.first)
-        viewModel.nudgeOverlay(.text(text.id), x: 0, y: -QuickEditViewModel.overlayStep)
+        viewModel.overlays.nudgeOverlay(.text(text.id), x: 0, y: -OverlaysViewModel.overlayStep)
         let moved = try #require(viewModel.edit.texts.first)
-        #expect(abs(moved.center.y - (text.center.y - QuickEditViewModel.overlayStep)) < 0.000_1)
+        #expect(abs(moved.center.y - (text.center.y - OverlaysViewModel.overlayStep)) < 0.000_1)
         #expect(moved.center.x == text.center.x)
-        viewModel.resizeOverlay(.text(text.id), bigger: true)
+        viewModel.overlays.resizeOverlay(.text(text.id), bigger: true)
         let bigger = try #require(viewModel.edit.texts.first)
-        #expect(abs(bigger.size - text.size * QuickEditViewModel.overlayScaleStep) < 0.01)
+        #expect(abs(bigger.size - text.size * OverlaysViewModel.overlayScaleStep) < 0.01)
         viewModel.undo()
         viewModel.undo()
         #expect(viewModel.edit.texts.first?.center == text.center)
@@ -70,7 +70,7 @@ struct QuickEditAccessibilityTests {
         let (viewModel, _) = await makeViewModel()
         viewModel.perform(.addText(.title))
         let text = try #require(viewModel.edit.texts.first)
-        for _ in 0..<40 { viewModel.nudgeOverlay(.text(text.id), x: -QuickEditViewModel.overlayStep, y: 0) }
+        for _ in 0..<40 { viewModel.overlays.nudgeOverlay(.text(text.id), x: -OverlaysViewModel.overlayStep, y: 0) }
         #expect(viewModel.edit.texts.first?.center.x == 0)
     }
 }

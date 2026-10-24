@@ -41,18 +41,18 @@ extension QuickEditViewModel {
                 id: item.id, span: span, label: Self.label(of: item), isLocked: edit.lockedLayers.contains(item.id)
             )
         }
-        input.captions = captionMap.instances.map { line, cueID in
+        input.captions = captions.captionMap.instances.map { line, cueID in
             TimelineGeometry.ItemInput(id: cueID, span: line.span, label: line.text)
         }
         input.showsCaptions = edit.showsCaptions
         input.music = edit.music.compactMap { clip in
             clip.span(inEditOf: edit.editedDuration).map {
                 TimelineGeometry.ItemInput(
-                    id: clip.id, span: $0, label: clip.title, beats: musicBeats(of: clip), isLocked: edit.lockedLayers.contains(clip.id)
+                    id: clip.id, span: $0, label: clip.title, beats: audio.musicBeats(of: clip), isLocked: edit.lockedLayers.contains(clip.id)
                 )
             }
         }
-        if edit.snapsToBeats { input.beatSnaps = editedBeats }
+        if edit.snapsToBeats { input.beatSnaps = audio.editedBeats }
         input.voiceOvers = edit.voiceOvers.compactMap { clip in
             clip.editedSpan(in: timeline).map {
                 TimelineGeometry.ItemInput(
@@ -60,8 +60,8 @@ extension QuickEditViewModel {
                 )
             }
         }
-        if let recordingStart {
-            input.recording = TimeSpan(start: recordingStart, end: max(recordingStart, player.currentTime))
+        if let start = audio.recordingStart {
+            input.recording = TimeSpan(start: start, end: max(start, player.currentTime))
         }
         if panel == .pauses { input.pauses = timelinePauses }
         input.selection = selection
@@ -106,9 +106,9 @@ extension QuickEditViewModel {
 
     /// The pauses on the video track while Pauses is open, marked to go or kept.
     var timelinePauses: [TimelineGeometry.PauseInput] {
-        pauseCandidates.compactMap { pause in
+        clips.pauseCandidates.compactMap { pause in
             guard let span = edit.timeline.editedSpan(of: pause) else { return nil }
-            return TimelineGeometry.PauseInput(id: pause.id, span: span, isMarked: isMarked(pause))
+            return TimelineGeometry.PauseInput(id: pause.id, span: span, isMarked: clips.isMarked(pause))
         }
     }
 
@@ -125,7 +125,7 @@ extension QuickEditViewModel {
     /// lets go on empty space. A track's strip opens (or closes) that track's tools. While Pauses
     /// is open only the pauses answer.
     func tapTimeline(_ hit: TimelineGeometry.Hit?) {
-        guard isReady, !recorder.isRecording else { return }
+        guard isReady, !audio.isRecordingVoiceOver else { return }
         if panel == .pauses {
             if case .pause(let id) = hit { togglePauseMark(id) }
             return
@@ -142,9 +142,9 @@ extension QuickEditViewModel {
         }
         switch hit {
         case .cover:
-            openCoverStudio()
+            cover.openCoverStudio()
         case .addClip:
-            mediaInsertMode = .clip
+            overlays.mediaInsertMode = .clip
             sheet = .media
         case .pause(let id): togglePauseMark(id)
         case .join(let id): pickJoin(id)
@@ -191,18 +191,18 @@ extension QuickEditViewModel {
     func jumpToCut(forward: Bool) {
         guard isReady else { return }
         let time = player.currentTime
-        let stops = [0] + cuts.map(\.time) + [edit.editedDuration]
+        let stops = [0] + clips.cuts.map(\.time) + [edit.editedDuration]
         let target = forward ? stops.first { $0 > time + 0.05 } : stops.last { $0 < time - 0.05 }
         guard let target else { return }
         player.pause()
         player.seek(to: target)
-        AccessibilityNotification.Announcement(timelineAccessibilityValue).post()
+        AccessibilityNotification.Announcement(clips.timelineAccessibilityValue).post()
     }
 
     /// VoiceOver: the transitions of the cut nearest to the playhead.
     func pickNearestJoin() {
         let time = player.currentTime
-        guard let nearest = cuts.min(by: { abs($0.time - time) < abs($1.time - time) }) else {
+        guard let nearest = clips.cuts.min(by: { abs($0.time - time) < abs($1.time - time) }) else {
             toast.show(String(localized: "No cuts yet"))
             return
         }
@@ -228,14 +228,14 @@ extension QuickEditViewModel {
 
     /// Marks a pause to go, or to stay.
     func togglePauseMark(_ id: UUID) {
-        toggleMark(id)
+        clips.toggleMark(id)
     }
 
     // MARK: - Scrubbing
 
     /// The content moved under the playhead: the player follows, paused.
     func scrubTimeline(to time: TimeInterval) {
-        guard isReady, !recorder.isRecording else { return }
+        guard isReady, !audio.isRecordingVoiceOver else { return }
         player.scrub(to: min(max(0, time), edit.editedDuration))
     }
 
@@ -335,7 +335,7 @@ extension QuickEditViewModel {
         guard let drag = handleDrag else { return }
         handleDrag = nil
         lastHandleSnap = nil
-        updateCurveSoundStepping()
+        clips.updateCurveSoundStepping()
         endChange()
         player.endScrub()
         player.seek(to: min(drag.playhead, edit.editedDuration))
@@ -370,8 +370,8 @@ extension QuickEditViewModel {
         switch kind {
         case .text: textBars.first { $0.id == id }
         case .media: mediaBars.first { $0.id == id }
-        case .caption: captionBars.first { captionCueID(forLine: $0.id) == id }
-        case .music: musicBars.first { $0.id == id }
+        case .caption: captionBars.first { captions.captionCueID(forLine: $0.id) == id }
+        case .music: audio.musicBars.first { $0.id == id }
         case .voiceOver: voiceOverBars.first { $0.id == id }
         case .recording: nil
         }
@@ -383,8 +383,8 @@ extension QuickEditViewModel {
         case .text: textBars.first { $0.id == bar.id }
         case .media: mediaBars.first { $0.id == bar.id }
         case .caption:
-            captionBars.first { captionCueID(forLine: $0.id) == captionCueID(forLine: bar.id) }
-        case .music: musicBars.first { $0.id == bar.id }
+            captionBars.first { captions.captionCueID(forLine: $0.id) == captions.captionCueID(forLine: bar.id) }
+        case .music: audio.musicBars.first { $0.id == bar.id }
         case .voiceOver: voiceOverBars.first { $0.id == bar.id }
         }
     }

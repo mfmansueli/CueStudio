@@ -11,19 +11,19 @@ struct SpeedCurvePanel: View {
     let viewModel: QuickEditViewModel
 
     var body: some View {
-        let curve = viewModel.targetCurve
+        let curve = viewModel.clips.targetCurve
         ScrollView(.horizontal) {
             HStack(spacing: 8) {
-                card(label: String(localized: "None"), curve: nil, isOn: curve == nil, key: "none") { viewModel.setSpeedCurve(nil) }
+                card(label: String(localized: "None"), curve: nil, isOn: curve == nil, key: "none") { viewModel.clips.setSpeedCurve(nil) }
                 ForEach(SpeedCurvePreset.allCases) { preset in
                     card(label: preset.label, curve: preset.curve, isOn: curve?.preset == preset, key: preset.rawValue) {
-                        viewModel.setSpeedCurve(preset)
+                        viewModel.clips.setSpeedCurve(preset)
                     }
                 }
                 card(
                     label: String(localized: "Custom"), curve: nil, symbol: "point.topleft.down.to.point.bottomright.curvepath",
                     isOn: curve != nil && curve?.preset == nil, key: "custom"
-                ) { viewModel.shapeOwnCurve() }
+                ) { viewModel.clips.shapeOwnCurve() }
             }
             .padding(.horizontal, 1)
         }

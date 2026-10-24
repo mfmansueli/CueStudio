@@ -14,17 +14,17 @@ struct MotionKeyframeControls: View {
     @Environment(\.layoutDirection) private var direction
 
     var body: some View {
-        let here = viewModel.hasKeyframeAtPlayhead
+        let here = viewModel.overlays.hasKeyframeAtPlayhead
         MotionPresetPicker(viewModel: viewModel)
         trackRow
         PanelRowLabel(label: String(localized: "Keyframes"), detail: String(localized: "To move it your own way"))
             .padding(.top, 4)
         VStack(spacing: 6) {
             HStack(spacing: 8) {
-                arrow("chevron.left", label: Text("Previous keyframe"), enabled: viewModel.hasKeyframe(forward: false), identifier: "edit.keyframe.previous") {
-                    viewModel.jumpToKeyframe(forward: false)
+                arrow("chevron.left", label: Text("Previous keyframe"), enabled: viewModel.overlays.hasKeyframe(forward: false), identifier: "edit.keyframe.previous") {
+                    viewModel.overlays.jumpToKeyframe(forward: false)
                 }
-                Button(action: viewModel.toggleKeyframe) {
+                Button(action: viewModel.overlays.toggleKeyframe) {
                     HStack(spacing: 8) {
                         Image(systemName: "diamond.fill").font(.editorGlyph(EditorGlyph.chip))
                         Text(here ? "Remove keyframe" : "Add keyframe").font(.system(.subheadline, weight: .semibold))
@@ -38,18 +38,18 @@ struct MotionKeyframeControls: View {
                 .buttonStyle(.plain)
                 .environment(\.layoutDirection, direction)
                 .accessibilityIdentifier("edit.keyframe.toggle")
-                arrow("chevron.right", label: Text("Next keyframe"), enabled: viewModel.hasKeyframe(forward: true), identifier: "edit.keyframe.next") {
-                    viewModel.jumpToKeyframe(forward: true)
+                arrow("chevron.right", label: Text("Next keyframe"), enabled: viewModel.overlays.hasKeyframe(forward: true), identifier: "edit.keyframe.next") {
+                    viewModel.overlays.jumpToKeyframe(forward: true)
                 }
             }
             // Keyframes go by time: the earlier one on the left in every language, like the timeline.
             .environment(\.layoutDirection, .leftToRight)
-            Text(viewModel.keyframeCountLabel)
+            Text(viewModel.overlays.keyframeCountLabel)
                 .font(.system(.caption))
                 .foregroundStyle(Palette.ink2)
                 .accessibilityIdentifier("edit.keyframe.count")
         }
-        if let item = viewModel.motionItem, let span = viewModel.editedSpan(of: item) {
+        if let item = viewModel.overlays.motionItem, let span = viewModel.overlays.editedSpan(of: item) {
             PanelStepper(
                 label: String(localized: "Starts"), value: DurationText.editor(span.start), identifier: "edit.text.starts",
                 onDecrease: { viewModel.nudgeLayerEdge(.start, by: -0.1) }, onIncrease: { viewModel.nudgeLayerEdge(.start, by: 0.1) }
@@ -69,16 +69,16 @@ struct MotionKeyframeControls: View {
     private var trackRow: some View {
         PanelRowLabel(label: String(localized: "Track"), detail: String(localized: "Follows what’s under it in the video"))
             .padding(.top, 4)
-        if let label = viewModel.trackingLabel {
+        if let label = viewModel.overlays.trackingLabel {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(label)
                         .font(.system(.subheadline, weight: .semibold))
                         .foregroundStyle(Palette.ink)
                         .accessibilityIdentifier("edit.track.progress")
-                    ProgressView(value: viewModel.trackingProgress ?? 0).tint(Palette.acc)
+                    ProgressView(value: viewModel.overlays.trackingProgress ?? 0).tint(Palette.acc)
                 }
-                Button(String(localized: "Cancel"), action: viewModel.cancelTracking)
+                Button(String(localized: "Cancel"), action: viewModel.overlays.cancelTracking)
                     .font(.system(.subheadline, weight: .semibold))
                     .foregroundStyle(Palette.ink)
                     .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
@@ -87,7 +87,7 @@ struct MotionKeyframeControls: View {
         } else {
             PanelButton(
                 label: String(localized: "Track what’s under it"), systemImage: "scope", identifier: "edit.track",
-                action: viewModel.trackSelectedItem
+                action: viewModel.overlays.trackSelectedItem
             )
             PanelNote(text: String(localized: "Put it on what it should follow at the playhead, then tap Track. Cue makes keyframes you can adjust."))
         }

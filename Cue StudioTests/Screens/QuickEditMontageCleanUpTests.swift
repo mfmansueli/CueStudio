@@ -38,7 +38,7 @@ struct QuickEditMontageCleanUpTests {
         await viewModel.prepare()
         let file = viewModel.takes.videoURL(for: other)
         try Data("video".utf8).write(to: file)
-        await viewModel.addClip(from: other)
+        await viewModel.clips.addClip(from: other)
         let source = try #require(viewModel.edit.sources.first)
         return Scenario(viewModel: viewModel, editor: editor, source: source) {
             try? FileManager.default.removeItem(at: file)
@@ -49,25 +49,25 @@ struct QuickEditMontageCleanUpTests {
     /// Pauses with only `id` marked to go, then "Remove": what the creator does to take out one pause.
     private func removeOnly(_ id: UUID, in viewModel: QuickEditViewModel) {
         viewModel.panel = .pauses
-        for other in viewModel.pauseCandidates + viewModel.wordCandidates where other.id != id && viewModel.isMarked(other) {
-            viewModel.toggleMark(other.id)
+        for other in viewModel.clips.pauseCandidates + viewModel.clips.wordCandidates where other.id != id && viewModel.clips.isMarked(other) {
+            viewModel.clips.toggleMark(other.id)
         }
-        viewModel.applyCleanUp()
+        viewModel.clips.applyCleanUp()
     }
 
     @Test func everyRecordingIsListenedToAndKeepsItsSuggestions() async throws {
         let scenario = try await makeScenario()
         defer { scenario.cleanUp() }
         let viewModel = scenario.viewModel
-        await viewModel.analyzeIfNeeded()
+        await viewModel.clips.analyzeIfNeeded()
         #expect(scenario.editor.cleanUpVideos.count == 2)
-        let pauses = viewModel.pauseCandidates
+        let pauses = viewModel.clips.pauseCandidates
         #expect(Set(pauses.map(\.sourceID)) == [nil, scenario.source.id])
         // In the order they play: the take's at 10 s, the other take's at 22 s.
         #expect(pauses.compactMap { viewModel.edit.timeline.editedSpan(of: $0)?.start } == [10, 22])
-        #expect(viewModel.cardTime(pauses[1]).hasPrefix("Interview · "))
+        #expect(viewModel.clips.cardTime(pauses[1]).hasPrefix("Interview · "))
         // Opening it again listens to nothing new.
-        await viewModel.analyzeIfNeeded()
+        await viewModel.clips.analyzeIfNeeded()
         #expect(scenario.editor.cleanUpVideos.count == 2)
     }
 
@@ -75,14 +75,14 @@ struct QuickEditMontageCleanUpTests {
         let scenario = try await makeScenario()
         defer { scenario.cleanUp() }
         let viewModel = scenario.viewModel
-        await viewModel.analyzeIfNeeded()
-        let theirs = try #require(viewModel.pauseCandidates.first { $0.sourceID == scenario.source.id })
+        await viewModel.clips.analyzeIfNeeded()
+        let theirs = try #require(viewModel.clips.pauseCandidates.first { $0.sourceID == scenario.source.id })
         removeOnly(theirs.id, in: viewModel)
         let timeline = viewModel.edit.timeline
         // The take plays whole; the other take loses its pause (the cut keeps a breath on both sides).
         #expect(timeline.segments.filter { $0.sourceID == nil }.map(\.span) == [TimeSpan(start: 0, end: 12)])
         #expect(timeline.isRemoved(theirs))
-        #expect(!timeline.isRemoved(try #require(viewModel.pauseCandidates.first { $0.sourceID == nil })))
+        #expect(!timeline.isRemoved(try #require(viewModel.clips.pauseCandidates.first { $0.sourceID == nil })))
         viewModel.undo()
         #expect(!viewModel.edit.timeline.isRemoved(theirs))
     }
@@ -91,11 +91,11 @@ struct QuickEditMontageCleanUpTests {
         let scenario = try await makeScenario()
         defer { scenario.cleanUp() }
         let viewModel = scenario.viewModel
-        await viewModel.analyzeIfNeeded()
-        let theirs = try #require(viewModel.pauseCandidates.first { $0.sourceID == scenario.source.id })
-        viewModel.moveSection(from: 1, to: 0)
+        await viewModel.clips.analyzeIfNeeded()
+        let theirs = try #require(viewModel.clips.pauseCandidates.first { $0.sourceID == scenario.source.id })
+        viewModel.clips.moveSection(from: 1, to: 0)
         #expect(viewModel.edit.timeline.editedSpan(of: theirs)?.start == 10)
-        viewModel.duplicateSection(viewModel.edit.timeline.segments[0].id)
+        viewModel.clips.duplicateSection(viewModel.edit.timeline.segments[0].id)
         var faster = viewModel.edit.timeline
         faster.setSpeed(2, forSegmentAt: 0)
         viewModel.commit(faster)
@@ -112,13 +112,13 @@ struct QuickEditMontageCleanUpTests {
         defer { scenario.cleanUp() }
         scenario.editor.cleanUpFailsFor = EditMediaFiles.url(for: scenario.source.fileName)
         let viewModel = scenario.viewModel
-        await viewModel.analyzeIfNeeded()
-        #expect(viewModel.analysis == .done)
-        #expect(viewModel.pauseCandidates.map(\.sourceID) == [nil])
+        await viewModel.clips.analyzeIfNeeded()
+        #expect(viewModel.clips.analysis == .done)
+        #expect(viewModel.clips.pauseCandidates.map(\.sourceID) == [nil])
         // It's tried again next time.
         scenario.editor.cleanUpFailsFor = nil
-        await viewModel.analyzeIfNeeded()
-        #expect(Set(viewModel.pauseCandidates.map(\.sourceID)) == [nil, scenario.source.id])
+        await viewModel.clips.analyzeIfNeeded()
+        #expect(Set(viewModel.clips.pauseCandidates.map(\.sourceID)) == [nil, scenario.source.id])
     }
 
     @Test func suggestionsSavedBeforeMontagesAreTheTakes() throws {

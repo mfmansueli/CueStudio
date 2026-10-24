@@ -27,6 +27,7 @@ nonisolated enum CaptionCollectionRenderer {
         _ cues: [CaptionCue], settings: CaptionSettings, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation = .line
     ) -> [FrameOverlay] {
         let reveal = effectiveAnimation(settings: settings, animation: animation)
+        layOutAhead(cues, settings: settings, position: position, frame: frame)
         return cues.flatMap { cue in
             let settings = styled(settings, for: cue.lineStyle)
             let words = cue.lineWords
@@ -47,8 +48,12 @@ nonisolated enum CaptionCollectionRenderer {
             } else {
                 text = TextOverlay.caption(line, look: TypePreset.cue.look(for: .caption), position: position, span: cue.span)
                 widthFraction = 0.8
-                guard let layout = layout(text.text, settings: settings, frame: frame) else { return [FrameOverlay]() }
-                size = layout.size
+                // Laid out once per line and look (`CaptionLineSizes`): a build that changes no line lays none out again.
+                let laidOut = CaptionLineSizes.size(text.text, settings: settings, frame: frame) {
+                    layout(text.text, settings: settings, frame: frame)?.size
+                }
+                guard let laidOut else { return [FrameOverlay]() }
+                size = laidOut
             }
             let safe = contentRect(settings, frame: frame)
             let requested = settings.center ?? OverlayPoint(x: Double(safe.midX / frame.width), y: position.verticalFraction)
@@ -103,6 +108,27 @@ nonisolated enum CaptionCollectionRenderer {
             }
             if cursor < cue.end { states.append(overlay(TimeSpan(start: cursor, end: cue.end), index: nil)) }
             return entered(states.isEmpty ? [overlay(cue.span, index: nil)] : states)
+        }
+    }
+
+    /// A long take's lines not laid out yet are laid out side by side, on every core (each layout is its own TextKit
+    /// objects), before the overlays are made from them: the first build of an hour of captions waits for the slowest core,
+    /// not for every line in turn.
+    private static func layOutAhead(_ cues: [CaptionCue], settings: CaptionSettings, position: CaptionPosition, frame: CGSize) {
+        guard cues.count > 24, settings.customLook == nil else { return }
+        var seen = Set<CaptionLineSizes.Key>()
+        let missing = cues.compactMap { cue -> CaptionLineSizes.Key? in
+            let line = CaptionText.joined(cue.lineWords.map(\.text))
+            let text = TextOverlay.caption(line, look: TypePreset.cue.look(for: .caption), position: position, span: cue.span).text
+            let key = CaptionLineSizes.Key(text: text, settings: styled(settings, for: cue.lineStyle), frame: frame)
+            guard !CaptionLineSizes.isKnown(key), seen.insert(key).inserted else { return nil }
+            return key
+        }
+        DispatchQueue.concurrentPerform(iterations: missing.count) { index in
+            let key = missing[index]
+            _ = CaptionLineSizes.size(key.text, settings: key.settings, frame: key.frame) {
+                layout(key.text, settings: key.settings, frame: key.frame)?.size
+            }
         }
     }
 

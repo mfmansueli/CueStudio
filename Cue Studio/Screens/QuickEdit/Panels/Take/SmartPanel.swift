@@ -54,11 +54,11 @@ struct SmartPanel: View {
                 }
                 tile(id: "autoAdjust", title: "Auto adjust", systemImage: "wand.and.stars", status: viewModel.smartAdjustStatus) {
                     viewModel.panel = .adjust
-                    viewModel.autoAdjust()
+                    viewModel.look.autoAdjust()
                 }
                 tile(id: "background", title: "Background", systemImage: "person.and.background.dotted", status: nil) {
                     // The whole take's background; a picked clip's own is in its tools.
-                    viewModel.lookScopeIsClip = false
+                    viewModel.look.lookScopeIsClip = false
                     viewModel.panel = .background
                 }
             }

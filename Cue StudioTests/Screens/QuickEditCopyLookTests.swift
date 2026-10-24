@@ -51,14 +51,14 @@ struct QuickEditCopyLookTests {
 
         viewModel.selection = .clip(first.id)
         viewModel.perform(.copyLook)
-        #expect(viewModel.canPasteLook)
+        #expect(viewModel.look.canPasteLook)
         let second = viewModel.edit.timeline.segments[1].id
         viewModel.selection = .clip(second)
         viewModel.perform(.pasteLook)
-        #expect(viewModel.showsPasteLook)
-        viewModel.togglePasteLookPart(.zoom)
+        #expect(viewModel.look.showsPasteLook)
+        viewModel.look.togglePasteLookPart(.zoom)
         let steps = viewModel.document.history.past.count
-        viewModel.pasteLook(on: false)
+        viewModel.look.pasteLook(on: false)
         let pasted = try #require(viewModel.edit.timeline.segment(id: second))
         #expect(pasted.look?.exposure == 30)
         #expect(pasted.look?.filter == .film)
@@ -74,7 +74,7 @@ struct QuickEditCopyLookTests {
         // The take is warm; the first clip copies as warm even without its own.
         viewModel.changeEdit { $0.warmth = 40 }
         viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
-        viewModel.copyClipLook()
+        viewModel.look.copyClipLook()
         viewModel.changeEdit { $0.warmth = 0 }
         // A clip with a look of its own loses it for the pasted parts.
         var third = viewModel.edit.timeline.segments[2]
@@ -84,7 +84,7 @@ struct QuickEditCopyLookTests {
         var timeline = viewModel.edit.timeline
         timeline.replaceSegment(third)
         viewModel.commit(timeline)
-        viewModel.pasteLook(on: true)
+        viewModel.look.pasteLook(on: true)
         // Every clip warm through the video's own setting, so Adjust on the whole video still reaches every clip.
         #expect(viewModel.edit.warmth == 40)
         #expect(viewModel.edit.timeline.segments.allSatisfy { $0.look?.warmth == nil })
@@ -97,14 +97,14 @@ struct QuickEditCopyLookTests {
     @Test func aPasteThatChangesNothingSaysSo() async throws {
         let (viewModel, _) = await makeViewModel()
         viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
-        viewModel.copyClipLook()
+        viewModel.look.copyClipLook()
         let steps = viewModel.document.history.past.count
-        viewModel.pasteLook(on: true)
+        viewModel.look.pasteLook(on: true)
         #expect(viewModel.document.history.past.count == steps)
         // Said once the sheet has gone (0.35 s later; a busy simulator can take longer, so wait for it rather than a fixed time).
         #expect(try await toast(of: viewModel, becomes: "Every clip already looks like this"))
         viewModel.selection = .clip(viewModel.edit.timeline.segments[1].id)
-        viewModel.pasteLook(on: false)
+        viewModel.look.pasteLook(on: false)
         #expect(try await toast(of: viewModel, becomes: "This clip already looks like this"))
     }
 
@@ -127,10 +127,10 @@ struct QuickEditCopyLookTests {
         timeline.replaceSegment(first)
         viewModel.commit(timeline)
         viewModel.selection = .clip(first.id)
-        viewModel.copyClipLook()
+        viewModel.look.copyClipLook()
         let second = viewModel.edit.timeline.segments[1].id
         viewModel.selection = .clip(second)
-        viewModel.pasteLook(on: false)
+        viewModel.look.pasteLook(on: false)
         let pasted = try #require(viewModel.edit.timeline.segment(id: second)?.look)
         #expect(pasted.exposure == 25)
         // The filter is the video's: the clip doesn't own a copy, so Filters on the whole video still changes it.
@@ -147,7 +147,7 @@ struct QuickEditCopyLookTests {
         #expect(items.allSatisfy { $0.scopeBadge == nil })
         #expect(items.first { $0.id == "pasteLook" }?.style == .dimmed)
         viewModel.perform(.pasteLook)
-        #expect(!viewModel.showsPasteLook)
+        #expect(!viewModel.look.showsPasteLook)
     }
 
     @Test func mediaIsOnTheMainToolbar() async {
@@ -157,7 +157,7 @@ struct QuickEditCopyLookTests {
         #expect(media != nil)
         viewModel.perform(.addMediaChoice)
         #expect(viewModel.sheet == .media)
-        #expect(viewModel.mediaInsertMode == .overlay)
+        #expect(viewModel.overlays.mediaInsertMode == .overlay)
     }
 }
 
@@ -181,10 +181,10 @@ struct QuickEditSoundEffectTests {
         )
         await viewModel.prepare()
         // Music fills the whole edit.
-        viewModel.addMusic(ImportedAudio(fileName: "song-\(UUID().uuidString).m4a", title: "Song", duration: 60))
+        viewModel.audio.addMusic(ImportedAudio(fileName: "song-\(UUID().uuidString).m4a", title: "Song", duration: 60))
         player.currentTime = 12
         let steps = viewModel.document.history.past.count
-        viewModel.addSoundEffect(.whoosh)
+        viewModel.audio.addSoundEffect(.whoosh)
         let effect = try #require(viewModel.edit.music.first { $0.effect == .whoosh })
         defer { EditMediaFiles.remove([effect.fileName]) }
         #expect(abs(effect.start - 12) < 0.001)
@@ -230,7 +230,7 @@ struct QuickEditGraphicsTests {
         #expect(viewModel.panelTitle(.textStyle) == CoverItemKind.tag.label)
         let image = try #require(TextOverlayRenderer.image(for: tag, frameWidth: 360))
         #expect(image.size.width > 20)
-        viewModel.setGraphicRotation(tag.id, degrees: 90)
+        viewModel.overlays.setGraphicRotation(tag.id, degrees: 90)
         #expect(abs((viewModel.edit.texts[0].graphic?.rotation ?? 0) - .pi / 2) < 0.000_1)
         // Turned a quarter, its box turns with it.
         let turned = TextOverlayRenderer.size(for: viewModel.edit.texts[0], frameWidth: 360)
@@ -240,9 +240,9 @@ struct QuickEditGraphicsTests {
 
     @Test func aTypePresetForEveryTextLeavesGraphicsAlone() async throws {
         let viewModel = await makeViewModel()
-        viewModel.addGraphic(.circle)
-        viewModel.addText(.title)
-        viewModel.applyPreset(.editorial, to: .allTexts)
+        viewModel.overlays.addGraphic(.circle)
+        viewModel.overlays.addText(.title)
+        viewModel.overlays.applyPreset(.editorial, to: .allTexts)
         let circle = try #require(viewModel.edit.texts.first { $0.graphic != nil })
         #expect(circle.color == CoverItemKind.circle.defaultColor)
         #expect(circle.preset != .editorial)

@@ -53,7 +53,7 @@ struct QuickEditPreview: View {
             .gesture(cropDrag, isEnabled: viewModel.panel == .crop && !isFullScreen)
             .onTapGesture {
                 if isFullScreen {
-                    if !viewModel.isRecordingVoiceOver { viewModel.togglePlayback() }
+                    if !viewModel.audio.isRecordingVoiceOver { viewModel.togglePlayback() }
                 } else if viewModel.panel != .crop {
                     viewModel.tapOutsideVideo()
                 }
@@ -89,10 +89,10 @@ struct QuickEditPreview: View {
     /// "Original" while ◐ shows the picture as recorded.
     @ViewBuilder
     private var recordingBadge: some View {
-        if viewModel.isRecordingVoiceOver {
+        if viewModel.audio.isRecordingVoiceOver {
             HStack(spacing: 6) {
                 Circle().fill(Palette.record).frame(width: 8, height: 8)
-                Text("REC \(viewModel.recordingElapsedLabel)")
+                Text("REC \(viewModel.audio.recordingElapsedLabel)")
                     .font(.footnote.weight(.semibold).monospacedDigit())
             }
             .padding(.horizontal, 12)
@@ -102,7 +102,7 @@ struct QuickEditPreview: View {
             .padding(.top, 12)
             .allowsHitTesting(false)
             .accessibilityIdentifier("edit.recordingBadge")
-        } else if viewModel.comparesOriginal {
+        } else if viewModel.audio.comparesOriginal {
             // Voice › Compare with original: what plays is the untreated sound.
             HStack(spacing: 6) {
                 Image(systemName: "ear").font(.editorGlyph(EditorGlyph.small, weight: .bold)).foregroundStyle(Palette.accText)
@@ -115,7 +115,7 @@ struct QuickEditPreview: View {
             .padding(.top, 12)
             .allowsHitTesting(false)
             .accessibilityIdentifier("edit.originalAudioBadge")
-        } else if viewModel.comparesPicture {
+        } else if viewModel.look.comparesPicture {
             // ◐ in Adjust, Filters or Background: the picture as recorded.
             HStack(spacing: 6) {
                 Image(systemName: "circle.lefthalf.filled").font(.editorGlyph(EditorGlyph.small, weight: .bold)).foregroundStyle(Palette.accText)
@@ -188,11 +188,11 @@ struct QuickEditPreview: View {
         DragGesture()
             .onChanged { value in
                 let start = dragStartOffset ?? viewModel.edit.cropOffset
-                if dragStartOffset == nil { viewModel.beginCropMove() }
+                if dragStartOffset == nil { viewModel.look.beginCropMove() }
                 dragStartOffset = start
                 let wide = viewModel.edit.aspect.widthOverHeight > 9.0 / 16.0
                 let travel = wide ? value.translation.width / max(1, size.width) : value.translation.height / max(1, size.height)
-                viewModel.moveCrop(to: start - Double(travel) * 2)
+                viewModel.look.moveCrop(to: start - Double(travel) * 2)
             }
             .onEnded { _ in
                 dragStartOffset = nil

@@ -105,38 +105,38 @@ struct QuickEditView: View {
         .confirmationDialog(
             "This video has its own sound",
             isPresented: Binding(
-                get: { viewModel.soundChoiceMediaID != nil },
-                set: { if !$0 { viewModel.soundChoiceMediaID = nil } }
+                get: { viewModel.overlays.soundChoiceMediaID != nil },
+                set: { if !$0 { viewModel.overlays.soundChoiceMediaID = nil } }
             ),
             titleVisibility: .visible,
-            presenting: viewModel.soundChoiceMediaID
+            presenting: viewModel.overlays.soundChoiceMediaID
         ) { id in
-            Button("Keep its sound") { viewModel.chooseSound(for: id, keeps: true) }
-            Button("Mute it") { viewModel.chooseSound(for: id, keeps: false) }
+            Button("Keep its sound") { viewModel.overlays.chooseSound(for: id, keeps: true) }
+            Button("Mute it") { viewModel.overlays.chooseSound(for: id, keeps: false) }
         } message: { _ in
             Text("You can change it later in Media › Advanced.")
         }
         .confirmationDialog(
             "Replace your edited captions?",
-            isPresented: $viewModel.confirmsCaptionReplacement,
+            isPresented: Bindable(viewModel.captions).confirmsCaptionReplacement,
             titleVisibility: .visible
         ) {
-            Button("Replace", role: .destructive) { viewModel.makeCaptions(replacingRevised: true) }
+            Button("Replace", role: .destructive) { viewModel.captions.makeCaptions(replacingRevised: true) }
                 .accessibilityIdentifier("edit.captionsReplaceButton")
             Button("Keep mine", role: .cancel) {}
         } message: {
             Text("New captions from your voice replace the lines you corrected or wrote.")
         }
-        .sheet(isPresented: $viewModel.showsTranslation) {
+        .sheet(isPresented: Bindable(viewModel.captions).showsTranslation) {
             CaptionTranslationSheet(viewModel: viewModel)
         }
-        .sheet(isPresented: $viewModel.showsPasteLook) {
+        .sheet(isPresented: Bindable(viewModel.look).showsPasteLook) {
             PasteLookSheet(viewModel: viewModel)
         }
-        .fullScreenCover(item: $viewModel.coverStudio) { studio in
+        .fullScreenCover(item: Bindable(viewModel.cover).coverStudio) { studio in
             CoverStudioView(
                 viewModel: studio, frameRate: Double(viewModel.take.frameRate.rawValue),
-                onDone: { viewModel.finishCoverStudio($0) }, onCancel: { viewModel.cancelCoverStudio($0) }
+                onDone: { viewModel.cover.finishCoverStudio($0) }, onCancel: { viewModel.cover.cancelCoverStudio($0) }
             )
         }
         .onChange(of: scenePhase) { _, phase in

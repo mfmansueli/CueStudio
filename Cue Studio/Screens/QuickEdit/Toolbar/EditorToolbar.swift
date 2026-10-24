@@ -53,7 +53,7 @@ struct EditorToolbar: View {
                     .transition(.opacity)
             }
         }
-        .disabled(!viewModel.isReady || viewModel.isRecordingVoiceOver)
+        .disabled(!viewModel.isReady || viewModel.audio.isRecordingVoiceOver)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("edit.toolbar")
     }

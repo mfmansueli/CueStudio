@@ -31,9 +31,9 @@ struct QuickEditTextStyleTests {
 
     /// A title and a subtitle, the title picked.
     private func twoTexts(_ viewModel: QuickEditViewModel) -> (title: UUID, subtitle: UUID) {
-        viewModel.addStyledText(.subtitle)
+        viewModel.overlays.addStyledText(.subtitle)
         let subtitle = viewModel.edit.texts[0].id
-        viewModel.addStyledText(.title)
+        viewModel.overlays.addStyledText(.title)
         let title = viewModel.edit.texts[1].id
         #expect(viewModel.selectedTextID == title)
         return (title, subtitle)
@@ -41,19 +41,19 @@ struct QuickEditTextStyleTests {
 
     @Test func aNewTextOpensTextStyleWithTheKeyboard() async {
         let viewModel = await makeViewModel()
-        viewModel.addStyledText(.hook)
+        viewModel.overlays.addStyledText(.hook)
         #expect(viewModel.panel == .textStyle)
-        #expect(viewModel.focusesTextField)
-        #expect(viewModel.textStyleScope == .selected)
+        #expect(viewModel.overlays.focusesTextField)
+        #expect(viewModel.overlays.textStyleScope == .selected)
         #expect(viewModel.edit.texts[0].preset == .pop)
-        #expect(viewModel.textStyleScopeLabel(.selected) == "This hook")
-        #expect(viewModel.textFieldPlaceholder == "Type your hook")
+        #expect(viewModel.overlays.textStyleScopeLabel(.selected) == "This hook")
+        #expect(viewModel.overlays.textFieldPlaceholder == "Type your hook")
     }
 
     @Test func thisTitleChangesOnlyThePickedText() async {
         let viewModel = await makeViewModel()
         let ids = twoTexts(viewModel)
-        viewModel.restyleText(.font(.dmSerif))
+        viewModel.overlays.restyleText(.font(.dmSerif))
         let title = viewModel.edit.texts.first { $0.id == ids.title }
         let subtitle = viewModel.edit.texts.first { $0.id == ids.subtitle }
         #expect(title?.font == .dmSerif)
@@ -66,13 +66,13 @@ struct QuickEditTextStyleTests {
     @Test func allTextsChangeTogether() async {
         let viewModel = await makeViewModel()
         _ = twoTexts(viewModel)
-        viewModel.textStyleScope = .allTexts
-        #expect(viewModel.textStyleScopeLabel(.allTexts) == "All texts · 2")
+        viewModel.overlays.textStyleScope = .allTexts
+        #expect(viewModel.overlays.textStyleScopeLabel(.allTexts) == "All texts · 2")
         #expect(viewModel.panelSubtitle(.textStyle) == "All 2 texts change together")
-        viewModel.restyleText(.color(.yellow))
+        viewModel.overlays.restyleText(.color(.yellow))
         #expect(viewModel.edit.texts.allSatisfy { $0.color == .yellow })
         let captions = viewModel.edit.captionCollection
-        viewModel.restyleText(.shadow(.outline))
+        viewModel.overlays.restyleText(.shadow(.outline))
         #expect(viewModel.edit.texts.allSatisfy { $0.hasOutline })
         // The captions keep their own look.
         #expect(viewModel.edit.captionCollection == captions)
@@ -81,9 +81,9 @@ struct QuickEditTextStyleTests {
     @Test func textStyleOffersOnlyThisTextAndAllTexts() async {
         let viewModel = await makeViewModel()
         _ = twoTexts(viewModel)
-        #expect(QuickEditViewModel.textStyleScopes == [.selected, .allTexts])
-        #expect(viewModel.textStyleScopeLabel(.selected) == "This title")
-        #expect(viewModel.textStyleScopeLabel(.allTexts) == "All texts · 2")
+        #expect(OverlaysViewModel.textStyleScopes == [.selected, .allTexts])
+        #expect(viewModel.overlays.textStyleScopeLabel(.selected) == "This title")
+        #expect(viewModel.overlays.textStyleScopeLabel(.allTexts) == "All texts · 2")
     }
 
     @Test func noScopeChangesTheCaptions() async {
@@ -91,13 +91,13 @@ struct QuickEditTextStyleTests {
         _ = twoTexts(viewModel)
         let captions = viewModel.edit.captionCollection
         let look = viewModel.edit.captionLook
-        for scope in QuickEditViewModel.textStyleScopes {
-            viewModel.textStyleScope = scope
-            viewModel.restyleText(.shadow(.outline))
-            viewModel.restyleText(.font(.dmSerif))
-            viewModel.pickTextPreset(.pop)
-            viewModel.saveMyStyle()
-            viewModel.pickTextPreset(nil)
+        for scope in OverlaysViewModel.textStyleScopes {
+            viewModel.overlays.textStyleScope = scope
+            viewModel.overlays.restyleText(.shadow(.outline))
+            viewModel.overlays.restyleText(.font(.dmSerif))
+            viewModel.overlays.pickTextPreset(.pop)
+            viewModel.overlays.saveMyStyle()
+            viewModel.overlays.pickTextPreset(nil)
         }
         #expect(viewModel.edit.captionCollection == captions)
         #expect(viewModel.edit.captionLook == look)
@@ -106,12 +106,12 @@ struct QuickEditTextStyleTests {
     @Test func wordsTimingAndMotionStayWithThePickedTextUnderAllTexts() async {
         let viewModel = await makeViewModel()
         let ids = twoTexts(viewModel)
-        viewModel.textStyleScope = .allTexts
+        viewModel.overlays.textStyleScope = .allTexts
         let subtitle = viewModel.edit.texts.first { $0.id == ids.subtitle }
-        viewModel.setTextContent(ids.title, "Só o título")
+        viewModel.overlays.setTextContent(ids.title, "Só o título")
         viewModel.nudgeLayerEdge(.end, by: 0.1)
-        viewModel.player.seek(to: (viewModel.editedSpan(ofText: ids.title)?.start ?? 0) + 0.05)
-        viewModel.toggleKeyframe()
+        viewModel.player.seek(to: (viewModel.overlays.editedSpan(ofText: ids.title)?.start ?? 0) + 0.05)
+        viewModel.overlays.toggleKeyframe()
         #expect(viewModel.edit.texts.first { $0.id == ids.subtitle } == subtitle)
         let title = viewModel.edit.texts.first { $0.id == ids.title }
         #expect(title?.text == "Só o título")
@@ -121,11 +121,11 @@ struct QuickEditTextStyleTests {
     @Test func motionSaysItIsThePickedTextsWhateverTheScope() async {
         let viewModel = await makeViewModel()
         _ = twoTexts(viewModel)
-        viewModel.textStyleScope = .allTexts
-        #expect(viewModel.textStyleTabChangesLook)
+        viewModel.overlays.textStyleScope = .allTexts
+        #expect(viewModel.overlays.textStyleTabChangesLook)
         #expect(viewModel.panelSubtitle(.textStyle) == "All 2 texts change together")
         viewModel.panelTab = .motion
-        #expect(!viewModel.textStyleTabChangesLook)
+        #expect(!viewModel.overlays.textStyleTabChangesLook)
         #expect(viewModel.panelSubtitle(.textStyle) == "Motion and timing change only this text")
     }
 
@@ -133,12 +133,12 @@ struct QuickEditTextStyleTests {
         let viewModel = await makeViewModel()
         _ = twoTexts(viewModel)
         viewModel.panelTab = .reveal
-        #expect(viewModel.textStyleTab == .presets)
-        #expect(viewModel.textStyleTabChangesLook)
+        #expect(viewModel.overlays.textStyleTab == .presets)
+        #expect(viewModel.overlays.textStyleTabChangesLook)
         viewModel.panelTab = .font
-        #expect(viewModel.textStyleTab == .font)
+        #expect(viewModel.overlays.textStyleTab == .font)
         viewModel.panelTab = .motion
-        #expect(viewModel.captionStyleTab == .presets)
+        #expect(viewModel.captions.captionStyleTab == .presets)
     }
 
     @Test func theExpandedPanelIsKeptBetweenTheStylingPanels() async {
@@ -156,21 +156,21 @@ struct QuickEditTextStyleTests {
     @Test func editorialOnTheTitleThenOnEveryText() async {
         let viewModel = await makeViewModel()
         let ids = twoTexts(viewModel)
-        viewModel.pickTextPreset(.editorial)
+        viewModel.overlays.pickTextPreset(.editorial)
         #expect(viewModel.edit.texts.first { $0.id == ids.title }?.preset == .editorial)
         #expect(viewModel.edit.texts.first { $0.id == ids.subtitle }?.preset == .minimal)
-        #expect(viewModel.pickedTextPreset == .editorial)
-        viewModel.textStyleScope = .allTexts
-        viewModel.pickTextPreset(.editorial)
+        #expect(viewModel.overlays.pickedTextPreset == .editorial)
+        viewModel.overlays.textStyleScope = .allTexts
+        viewModel.overlays.pickTextPreset(.editorial)
         #expect(viewModel.edit.texts.allSatisfy { $0.preset == .editorial && $0.font == .dmSerif })
     }
 
     @Test func typingIsOneUndoStep() async {
         let viewModel = await makeViewModel()
-        viewModel.addStyledText(.title)
+        viewModel.overlays.addStyledText(.title)
         let id = viewModel.edit.texts[0].id
         let steps = viewModel.document.history.past.count
-        for text in ["5", "5 c", "5 co", "5 comidas de SP"] { viewModel.setTextContent(id, text) }
+        for text in ["5", "5 c", "5 co", "5 comidas de SP"] { viewModel.overlays.setTextContent(id, text) }
         #expect(viewModel.edit.texts[0].text == "5 comidas de SP")
         #expect(viewModel.document.history.past.count == steps + 1)
         viewModel.undo()
@@ -179,23 +179,23 @@ struct QuickEditTextStyleTests {
 
     @Test func aTextsStartAndEndMoveByTenths() async {
         let viewModel = await makeViewModel()
-        viewModel.addStyledText(.title)
+        viewModel.overlays.addStyledText(.title)
         let id = viewModel.edit.texts[0].id
-        let before = viewModel.editedSpan(ofText: id)
+        let before = viewModel.overlays.editedSpan(ofText: id)
         viewModel.nudgeLayerEdge(.end, by: 0.1)
         viewModel.nudgeLayerEdge(.start, by: 0.1)
-        let after = viewModel.editedSpan(ofText: id)
+        let after = viewModel.overlays.editedSpan(ofText: id)
         #expect(abs((after?.end ?? 0) - ((before?.end ?? 0) + 0.1)) < 0.001)
         #expect(abs((after?.start ?? 0) - ((before?.start ?? 0) + 0.1)) < 0.001)
     }
 
     @Test func keyframesAreCountedForThePickedText() async {
         let viewModel = await makeViewModel()
-        viewModel.addStyledText(.title)
-        #expect(viewModel.keyframeCountLabel == "No keyframes yet")
-        #expect(!viewModel.hasKeyframeAtPlayhead)
-        viewModel.toggleKeyframe()
-        #expect(viewModel.keyframeCountLabel == "1 keyframe")
-        #expect(viewModel.hasKeyframeAtPlayhead)
+        viewModel.overlays.addStyledText(.title)
+        #expect(viewModel.overlays.keyframeCountLabel == "No keyframes yet")
+        #expect(!viewModel.overlays.hasKeyframeAtPlayhead)
+        viewModel.overlays.toggleKeyframe()
+        #expect(viewModel.overlays.keyframeCountLabel == "1 keyframe")
+        #expect(viewModel.overlays.hasKeyframeAtPlayhead)
     }
 }

@@ -54,12 +54,12 @@ struct QuickEditSoundTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        viewModel.addMusic(song())
+        viewModel.audio.addMusic(song())
         let clip = try #require(viewModel.edit.music.first)
         #expect(clip.start == 10)
         #expect(clip.length == 54)
         #expect(viewModel.selectedMusicID == clip.id)
-        #expect(viewModel.musicBars.first?.span == TimeSpan(start: 10, end: 64))
+        #expect(viewModel.audio.musicBars.first?.span == TimeSpan(start: 10, end: 64))
         #expect(scenario.toast.message == "Music added at \(DurationText.editor(10)) · 40%")
         #expect(scenario.toast.action?.title == "Undo")
         viewModel.undo()
@@ -68,16 +68,16 @@ struct QuickEditSoundTests {
 
     @Test func aShortSongPlaysOnce() async throws {
         let scenario = await makeScenario()
-        scenario.viewModel.addMusic(song(12))
+        scenario.viewModel.audio.addMusic(song(12))
         #expect(scenario.viewModel.edit.music.first?.length == 12)
     }
 
     @Test func aSecondSongGoesAfterTheFirstInsteadOfOnTopOfIt() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMusic(song(20))
+        viewModel.audio.addMusic(song(20))
         scenario.player.currentTime = 5
-        viewModel.addMusic(song(20))
+        viewModel.audio.addMusic(song(20))
         let second = try #require(viewModel.edit.music.last)
         #expect(viewModel.edit.music.count == 2)
         #expect(second.start == 20)
@@ -87,9 +87,9 @@ struct QuickEditSoundTests {
     @Test func withNoFreeRoomAtThePlayheadNothingIsAdded() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMusic(song(95))
+        viewModel.audio.addMusic(song(95))
         scenario.player.currentTime = 30
-        viewModel.addMusic(song())
+        viewModel.audio.addMusic(song())
         #expect(viewModel.edit.music.count == 1)
         #expect(scenario.toast.message == "No room · Move the playhead")
     }
@@ -98,20 +98,20 @@ struct QuickEditSoundTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        viewModel.addMusic(song())
+        viewModel.audio.addMusic(song())
         let original = try #require(viewModel.edit.music.first)
         viewModel.selection = .music(original.id)
-        viewModel.setTargetVolume(0.8)
-        viewModel.musicReplacementID = original.id
+        viewModel.clips.setTargetVolume(0.8)
+        viewModel.audio.musicReplacementID = original.id
         let other = ImportedAudio(fileName: "other.m4a", title: "Other loop", duration: 30)
-        viewModel.addMusic(other)
+        viewModel.audio.addMusic(other)
         let clip = try #require(viewModel.edit.music.first)
         #expect(viewModel.edit.music.count == 1)
         #expect(clip.id == original.id)
         #expect(clip.title == "Other loop" && clip.fileName == "other.m4a")
         #expect(clip.start == 10 && clip.length == 30 && clip.offset == 0)
         #expect(abs(clip.volume - 0.8) < 0.001)
-        #expect(viewModel.musicReplacementID == nil)
+        #expect(viewModel.audio.musicReplacementID == nil)
         viewModel.undo()
         #expect(viewModel.edit.music.first?.title == "Morning song")
     }
@@ -119,11 +119,11 @@ struct QuickEditSoundTests {
     @Test func importingASoundFileGoesThroughTheImporter() async {
         let scenario = await makeScenario()
         let url = URL(filePath: "/tmp/song.m4a")
-        await scenario.viewModel.importMusic(from: url)
+        await scenario.viewModel.audio.importMusic(from: url)
         #expect(scenario.importer.importedAudio == [url])
         #expect(scenario.viewModel.edit.music.count == 1)
         scenario.importer.audio = nil
-        await scenario.viewModel.importMusic(from: url)
+        await scenario.viewModel.audio.importMusic(from: url)
         #expect(scenario.toast.message == "Can't add this file")
         #expect(scenario.viewModel.edit.music.count == 1)
     }
@@ -132,13 +132,13 @@ struct QuickEditSoundTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        viewModel.addMusic(song())
-        let bar = try #require(viewModel.musicBars.first)
+        viewModel.audio.addMusic(song())
+        let bar = try #require(viewModel.audio.musicBars.first)
         viewModel.resizeBar(bar, edge: .start, to: 14)
         var clip = try #require(viewModel.edit.music.first)
         #expect(clip.start == 14 && clip.offset == 4 && clip.length == 50)
         // Back past where the file starts: it stops there.
-        viewModel.resizeBar(try #require(viewModel.musicBars.first), edge: .start, to: 2)
+        viewModel.resizeBar(try #require(viewModel.audio.musicBars.first), edge: .start, to: 2)
         clip = try #require(viewModel.edit.music.first)
         #expect(clip.start == 10 && clip.offset == 0)
     }
@@ -146,39 +146,39 @@ struct QuickEditSoundTests {
     @Test func theEndStopsAtTheFilesEnd() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMusic(song(20))
-        viewModel.resizeBar(try #require(viewModel.musicBars.first), edge: .end, to: 40)
+        viewModel.audio.addMusic(song(20))
+        viewModel.resizeBar(try #require(viewModel.audio.musicBars.first), edge: .end, to: 40)
         #expect(viewModel.edit.music.first?.length == 20)
-        viewModel.resizeBar(try #require(viewModel.musicBars.first), edge: .end, to: 8)
+        viewModel.resizeBar(try #require(viewModel.audio.musicBars.first), edge: .end, to: 8)
         #expect(viewModel.edit.music.first?.length == 8)
     }
 
     @Test func movingKeepsTheLengthWithinTheEdit() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMusic(song(20))
-        viewModel.moveBar(try #require(viewModel.musicBars.first), toStart: 60)
+        viewModel.audio.addMusic(song(20))
+        viewModel.moveBar(try #require(viewModel.audio.musicBars.first), toStart: 60)
         #expect(viewModel.edit.music.first?.start == 44)
     }
 
     @Test func aSliderIsOneUndoStep() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMusic(song())
+        viewModel.audio.addMusic(song())
         let id = try #require(viewModel.edit.music.first?.id)
         viewModel.selection = .music(id)
         let steps = viewModel.document.history.past.count
         viewModel.beginChange()
-        for volume in stride(from: 0.5, through: 0.9, by: 0.1) { viewModel.setTargetVolume(volume) }
+        for volume in stride(from: 0.5, through: 0.9, by: 0.1) { viewModel.clips.setTargetVolume(volume) }
         viewModel.endChange()
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect(abs((viewModel.edit.music.first?.volume ?? 0) - 0.9) < 0.001)
-        #expect(abs(viewModel.targetVolume - 0.9) < 0.001)
+        #expect(abs(viewModel.clips.targetVolume - 0.9) < 0.001)
         // Volume never goes past 200%.
-        viewModel.setTargetVolume(5)
+        viewModel.clips.setTargetVolume(5)
         #expect(viewModel.edit.music.first?.volume == 2)
-        viewModel.setMusicDucks(id, false)
-        viewModel.setMusicFadeIn(id, 9)
+        viewModel.audio.setMusicDucks(id, false)
+        viewModel.audio.setMusicFadeIn(id, 9)
         let clip = try #require(viewModel.edit.music.first)
         #expect(!clip.ducksUnderVoice && clip.fadeIn == MusicClip.fadeRange.upperBound)
     }
@@ -186,9 +186,9 @@ struct QuickEditSoundTests {
     @Test func musicIsOnTheSharedTimelineAndCanBeDeleted() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMusic(song())
+        viewModel.audio.addMusic(song())
         viewModel.selection = nil
-        let bar = try #require(viewModel.musicBars.first)
+        let bar = try #require(viewModel.audio.musicBars.first)
         viewModel.tapTimeline(.item(.music, bar.id))
         #expect(viewModel.selectedLayer?.kind == .music)
         viewModel.perform(.deleteMusic)
@@ -205,7 +205,7 @@ struct QuickEditSoundTests {
         let scenario = await makeScenario(edit: old)
         let viewModel = scenario.viewModel
         #expect(viewModel.edit.audioVersion == 1)
-        viewModel.setNoiseReduction(.strong)
+        viewModel.audio.setNoiseReduction(.strong)
         #expect(viewModel.edit.audioVersion == 3)
         #expect(viewModel.edit.voiceEnhancement == .soft)
         #expect(viewModel.edit.noiseReduction == .strong)
@@ -215,18 +215,18 @@ struct QuickEditSoundTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.panel = .voice
-        viewModel.setVoiceEnhancement(.strong)
-        viewModel.setComparesOriginal(true)
+        viewModel.audio.setVoiceEnhancement(.strong)
+        viewModel.audio.setComparesOriginal(true)
         await viewModel.jobs.finished(.comparison)
-        #expect(viewModel.comparesOriginal)
+        #expect(viewModel.audio.comparesOriginal)
         let played = try #require(scenario.player.shown.last)
         #expect(played.voiceEnhancement == .off && played.noiseReduction == .off)
         #expect(played.volume == 1.4)
         // The edit itself keeps its treatment.
         #expect(viewModel.edit.voiceEnhancement == .strong)
         // A new setting ends the comparison.
-        viewModel.setNoiseReduction(.soft)
-        #expect(!viewModel.comparesOriginal)
+        viewModel.audio.setNoiseReduction(.soft)
+        #expect(!viewModel.audio.comparesOriginal)
         #expect(scenario.player.shown.last?.voiceEnhancement == .strong)
     }
 
@@ -234,10 +234,10 @@ struct QuickEditSoundTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.panel = .voice
-        viewModel.setComparesOriginal(true)
+        viewModel.audio.setComparesOriginal(true)
         await viewModel.jobs.finished(.comparison)
         viewModel.panel = nil
-        #expect(!viewModel.comparesOriginal)
+        #expect(!viewModel.audio.comparesOriginal)
         #expect(scenario.player.shown.last == viewModel.edit)
     }
 
@@ -246,19 +246,19 @@ struct QuickEditSoundTests {
         scenario.editor.matchedVolume = nil
         let viewModel = scenario.viewModel
         viewModel.panel = .voice
-        viewModel.setComparesOriginal(true)
+        viewModel.audio.setComparesOriginal(true)
         await viewModel.jobs.finished(.comparison)
-        #expect(!viewModel.comparesOriginal)
+        #expect(!viewModel.audio.comparesOriginal)
         #expect(scenario.toast.message == "There's no speech to compare")
     }
 
     @Test func anUntreatedTakeHasNothingToCompare() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.setVoiceEnhancement(.off)
-        #expect(!viewModel.canCompareOriginal)
-        viewModel.setComparesOriginal(true)
-        #expect(!viewModel.comparesOriginal)
+        viewModel.audio.setVoiceEnhancement(.off)
+        #expect(!viewModel.audio.canCompareOriginal)
+        viewModel.audio.setComparesOriginal(true)
+        #expect(!viewModel.audio.comparesOriginal)
         #expect(scenario.editor.matchRequests == 0)
     }
 
@@ -267,20 +267,20 @@ struct QuickEditSoundTests {
     @Test func aVideoWithSoundAsksAndStaysMutedUntilKept() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(ImportedMedia(kind: .video, fileName: "walk-\(UUID().uuidString).mov", aspect: 1, duration: 4, hasSound: true))
+        viewModel.overlays.addMedia(ImportedMedia(kind: .video, fileName: "walk-\(UUID().uuidString).mov", aspect: 1, duration: 4, hasSound: true))
         let id = try #require(viewModel.edit.media.first?.id)
-        #expect(viewModel.soundChoiceMediaID == id)
+        #expect(viewModel.overlays.soundChoiceMediaID == id)
         #expect(viewModel.edit.media.first?.audioVolume == nil)
-        viewModel.chooseSound(for: id, keeps: true)
-        #expect(viewModel.soundChoiceMediaID == nil)
+        viewModel.overlays.chooseSound(for: id, keeps: true)
+        #expect(viewModel.overlays.soundChoiceMediaID == nil)
         #expect(viewModel.edit.media.first?.audioVolume == 1)
-        viewModel.setMediaSoundVolume(id, 0)
+        viewModel.overlays.setMediaSoundVolume(id, 0)
         #expect(viewModel.edit.media.first?.audioVolume == nil)
     }
 
     @Test func aSilentVideoDoesNotAsk() async {
         let scenario = await makeScenario()
-        scenario.viewModel.addMedia(ImportedMedia(kind: .video, fileName: "quiet-\(UUID().uuidString).mov", aspect: 1, duration: 4))
-        #expect(scenario.viewModel.soundChoiceMediaID == nil)
+        scenario.viewModel.overlays.addMedia(ImportedMedia(kind: .video, fileName: "quiet-\(UUID().uuidString).mov", aspect: 1, duration: 4))
+        #expect(scenario.viewModel.overlays.soundChoiceMediaID == nil)
     }
 }

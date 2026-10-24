@@ -11,42 +11,9 @@ import Foundation
 /// `TextOverlay`), so the bars land where the finger left them; music is kept on the edit's own
 /// seconds.
 extension QuickEditViewModel {
-    var textBars: [LayerBar] {
-        edit.texts.compactMap { text in
-            guard let span = TakeEdit.editedSpan(text.span, anchor: text.clipAnchor, in: edit.timeline) else { return nil }
-            let title = text.graphic.map { graphic in
-                graphic.kind.hasText && !text.isEmpty ? "\(graphic.kind.label) · \(text.displayText)" : graphic.kind.label
-            } ?? (text.isEmpty ? text.role.label : text.displayText)
-            return LayerBar(
-                id: text.id, kind: .text, span: span, title: title, isSelected: text.id == selectedTextID,
-                keyframes: text.keyframes.map(\.time).filter { $0 <= span.duration }
-            )
-        }
-    }
-
-    var mediaBars: [LayerBar] {
-        edit.editedMedia(in: edit.timeline).map { entry in
-            let title = entry.media.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
-            return LayerBar(
-                id: entry.media.id, kind: .media, span: entry.span, title: title, isSelected: entry.media.id == selectedMediaID,
-                keyframes: (entry.media.keyframes ?? []).map(\.time).filter { $0 <= entry.span.duration }
-            )
-        }
-    }
-
-    var voiceOverBars: [LayerBar] {
-        edit.voiceOvers.enumerated().compactMap { index, clip in
-            guard let span = clip.editedSpan(in: edit.timeline) else { return nil }
-            return LayerBar(
-                id: clip.id, kind: .voiceOver, span: span,
-                title: String(localized: "Voice-over \(index + 1)"), isSelected: clip.id == reviewedVoiceOverID
-            )
-        }
-    }
-
     /// Caption lines where they play, for the shared timeline.
     var captionBars: [LayerBar] {
-        captionMap.instances.map { line, cueID in
+        captions.captionMap.instances.map { line, cueID in
             LayerBar(
                 id: line.id, kind: .caption, span: line.span,
                 title: line.text.isEmpty ? String(localized: "Empty line") : line.text, isSelected: cueID == selectedCaptionID
@@ -57,13 +24,13 @@ extension QuickEditViewModel {
     /// The bar picked on the timeline: a text, a caption line, a photo or video, a voice-over or
     /// music.
     var selectedLayer: LayerBar? {
-        (textBars + captionBars + mediaBars + voiceOverBars + musicBars).first(where: \.isSelected)
+        (textBars + captionBars + mediaBars + voiceOverBars + audio.musicBars).first(where: \.isSelected)
     }
 
     /// Moves a bar so it starts at `start` (edited seconds), keeping its length.
     func moveBar(_ bar: LayerBar, toStart start: TimeInterval) {
         guard bar.kind != .music else {
-            moveMusic(bar.id, toStart: start)
+            audio.moveMusic(bar.id, toStart: start)
             return
         }
         let length = bar.span.duration
@@ -78,10 +45,10 @@ extension QuickEditViewModel {
     func resizeBar(_ bar: LayerBar, edge: LayerEdge, to time: TimeInterval) {
         switch bar.kind {
         case .music:
-            resizeMusic(bar.id, edge: edge, to: time)
+            audio.resizeMusic(bar.id, edge: edge, to: time)
             return
         case .voiceOver:
-            resizeVoiceOver(bar.id, edge: edge, to: time)
+            audio.resizeVoiceOver(bar.id, edge: edge, to: time)
             return
         default: break
         }
@@ -112,7 +79,7 @@ extension QuickEditViewModel {
     private func room(for bar: LayerBar) -> TimeSpan {
         let whole = TimeSpan(start: 0, end: edit.editedDuration)
         guard bar.kind == .caption else { return whole }
-        let lines = editedCaptionLines
+        let lines = captions.editedCaptionLines
         guard let index = lines.firstIndex(where: { $0.id == bar.id }) else { return whole }
         let floor = index > 0 ? lines[index - 1].end : 0
         let ceiling = index + 1 < lines.count ? lines[index + 1].start : edit.editedDuration
@@ -138,24 +105,24 @@ extension QuickEditViewModel {
         let pinned = edit.pin(span)
         switch bar.kind {
         case .text:
-            updateText(bar.id) { text in
+            overlays.updateText(bar.id) { text in
                 text.span = pinned.span
                 text.clipAnchor = pinned.anchor
             }
         case .media:
-            updateMedia(bar.id) { item in
+            overlays.updateMedia(bar.id) { item in
                 item.span = pinned.span
                 item.clipAnchor = pinned.anchor
             }
         case .caption:
             // A line stays with its recording: only its time on it changes, and only over a clip of that recording.
-            let cueID = captionCueID(forLine: bar.id)
+            let cueID = captions.captionCueID(forLine: bar.id)
             let target = edit.timeline.anchoredSpan(forEdited: span)
             guard target.anchor.sourceID == edit.captions.first(where: { $0.id == cueID })?.sourceID else {
                 toast.show(String(localized: "A line stays on its own clip"))
                 return
             }
-            moveCaption(cueID, to: target.span)
+            captions.moveCaption(cueID, to: target.span)
         case .voiceOver:
             change { snapshot in
                 guard let index = snapshot.voiceOvers.firstIndex(where: { $0.id == bar.id }) else { return }
@@ -163,7 +130,13 @@ extension QuickEditViewModel {
                 snapshot.voiceOvers[index].clipAnchor = pinned.anchor
             }
         case .music:
-            moveMusic(bar.id, toStart: span.start)
+            audio.moveMusic(bar.id, toStart: span.start)
         }
+    }
+
+    /// Starts or Ends −/+: the picked text (or photo or video) a tenth earlier or later.
+    func nudgeLayerEdge(_ edge: LayerEdge, by seconds: TimeInterval) {
+        guard let bar = selectedLayer, bar.kind == .text || bar.kind == .media else { return }
+        resizeBar(bar, edge: edge, to: (edge == .start ? bar.span.start : bar.span.end) + seconds)
     }
 }

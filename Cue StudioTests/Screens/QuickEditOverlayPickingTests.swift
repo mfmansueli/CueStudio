@@ -39,9 +39,9 @@ struct QuickEditOverlayPickingTests {
         player.currentTime = 2
         var ids: [UUID] = []
         for (x, y) in [(0.5, 0.5), (0.55, 0.52), (0.5, 0.12)] {
-            viewModel.addMedia(ImportedMedia(kind: .photo, fileName: "p-\(UUID().uuidString).jpg", aspect: 1, duration: nil))
+            viewModel.overlays.addMedia(ImportedMedia(kind: .photo, fileName: "p-\(UUID().uuidString).jpg", aspect: 1, duration: nil))
             let id = viewModel.edit.media.last!.id
-            viewModel.updateMedia(id) { media in
+            viewModel.overlays.updateMedia(id) { media in
                 media.layout = .window
                 media.width = 0.4
                 media.center = OverlayPoint(x: x, y: y)
@@ -56,9 +56,9 @@ struct QuickEditOverlayPickingTests {
     @Test func everyWindowShowingHasItsHandleInStackingOrder() async {
         let (viewModel, player) = await makeViewModel()
         let ids = addThree(to: viewModel, player: player)
-        #expect(viewModel.visibleMediaStack.map(\.id) == ids)
-        viewModel.restack(ids[0], up: true)
-        #expect(viewModel.visibleMediaStack.map(\.id) == [ids[1], ids[0], ids[2]])
+        #expect(viewModel.overlays.visibleMediaStack.map(\.id) == ids)
+        viewModel.overlays.restack(ids[0], up: true)
+        #expect(viewModel.overlays.visibleMediaStack.map(\.id) == [ids[1], ids[0], ids[2]])
     }
 
     @Test func aTapPicksTheTopOneThenTheOneUnderIt() async {
@@ -66,38 +66,38 @@ struct QuickEditOverlayPickingTests {
         let ids = addThree(to: viewModel, player: player)
         // Where A and B overlap.
         let overlap = CGPoint(x: 0.53 * size.width, y: 0.51 * size.height)
-        #expect(viewModel.mediaHits(at: overlap, in: size) == [ids[1], ids[0]])
-        viewModel.tapMedia(at: overlap, in: size)
+        #expect(viewModel.overlays.mediaHits(at: overlap, in: size) == [ids[1], ids[0]])
+        viewModel.overlays.tapMedia(at: overlap, in: size)
         #expect(viewModel.selection == .media(ids[1]))
-        viewModel.tapMedia(at: overlap, in: size)
+        viewModel.overlays.tapMedia(at: overlap, in: size)
         #expect(viewModel.selection == .media(ids[0]))
-        viewModel.tapMedia(at: overlap, in: size)
+        viewModel.overlays.tapMedia(at: overlap, in: size)
         #expect(viewModel.selection == .media(ids[1]))
         // A window alone under the finger, already picked: its panel opens.
         let alone = CGPoint(x: 0.5 * size.width, y: 0.12 * size.height)
-        viewModel.tapMedia(at: alone, in: size)
+        viewModel.overlays.tapMedia(at: alone, in: size)
         #expect(viewModel.selection == .media(ids[2]))
-        viewModel.tapMedia(at: alone, in: size)
+        viewModel.overlays.tapMedia(at: alone, in: size)
         #expect(viewModel.panel == .media)
     }
 
     @Test func aDraggedTextOrPhotoIsLeftOutOfTheVideoUntilItLands() async {
         let (viewModel, player) = await makeViewModel()
         let ids = addThree(to: viewModel, player: player)
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         let text = viewModel.edit.texts[0].id
-        viewModel.beginOverlayDrag(.text(text))
+        viewModel.overlays.beginOverlayDrag(.text(text))
         #expect(player.shown.last?.texts.isEmpty == true)
-        viewModel.moveText(text, to: OverlayPoint(x: 0.4, y: 0.4))
-        viewModel.endOverlayDrag()
+        viewModel.overlays.moveText(text, to: OverlayPoint(x: 0.4, y: 0.4))
+        viewModel.overlays.endOverlayDrag()
         #expect(player.shown.last?.texts.first?.center == OverlayPoint(x: 0.4, y: 0.4))
 
-        viewModel.beginOverlayDrag(.media(ids[0]))
+        viewModel.overlays.beginOverlayDrag(.media(ids[0]))
         // The photo keeps its place in the video (same tracks) but is fully transparent.
         let hidden = player.shown.last?.media.first { $0.id == ids[0] }
         #expect(hidden?.keyframes?.first?.opacity == 0)
-        viewModel.moveMedia(ids[0], to: OverlayPoint(x: 0.3, y: 0.7))
-        viewModel.endOverlayDrag()
+        viewModel.overlays.moveMedia(ids[0], to: OverlayPoint(x: 0.3, y: 0.7))
+        viewModel.overlays.endOverlayDrag()
         let landed = player.shown.last?.media.first { $0.id == ids[0] }
         #expect(landed?.keyframes == nil)
         #expect(landed?.center == OverlayPoint(x: 0.3, y: 0.7))
@@ -128,20 +128,20 @@ struct QuickEditMotionPresetTests {
         )
         await viewModel.prepare()
         player.currentTime = 2
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         let id = try #require(viewModel.edit.texts.first?.id)
         viewModel.selection = .text(id)
-        viewModel.toggleKeyframe()
+        viewModel.overlays.toggleKeyframe()
         let keyframes = viewModel.edit.texts[0].keyframes
         let steps = viewModel.document.history.past.count
-        viewModel.setMotionPreset(.slideUp)
+        viewModel.overlays.setMotionPreset(.slideUp)
         #expect(viewModel.edit.texts[0].animation?.preset == .slideUp)
         #expect(viewModel.edit.texts[0].keyframes == keyframes)
         #expect(viewModel.document.history.past.count == steps + 1)
-        viewModel.setMotionDuration(1.2)
-        viewModel.setMotionPreset(.pop)
+        viewModel.overlays.setMotionDuration(1.2)
+        viewModel.overlays.setMotionPreset(.pop)
         #expect(viewModel.edit.texts[0].animation?.duration == 1.2)
-        viewModel.setMotionPreset(nil)
+        viewModel.overlays.setMotionPreset(nil)
         #expect(viewModel.edit.texts[0].animation == nil)
         viewModel.undo()
         #expect(viewModel.edit.texts[0].animation?.preset == .pop)

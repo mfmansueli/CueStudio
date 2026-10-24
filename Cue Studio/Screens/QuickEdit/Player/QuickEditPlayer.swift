@@ -58,7 +58,7 @@ final class QuickEditPlayer: EditPlayback {
     @ObservationIgnored private var playbackTask: Task<Void, Never>?
     @ObservationIgnored private var edit: TakeEdit?
     /// What the current item (or the one being built) plays.
-    @ObservationIgnored private var itemKey: ItemKey?
+    @ObservationIgnored private var itemKey: RenderPlan.Item?
     /// Bumped by every rebuild, so a slow build never replaces a newer one.
     @ObservationIgnored private var generation = 0
     @ObservationIgnored private var buildTask: Task<Void, Never>?
@@ -83,8 +83,6 @@ final class QuickEditPlayer: EditPlayback {
     /// Where this playback stops short of the end: the end of the part under review, when it
     /// started before it. Set by `play()`, cleared when playback stops.
     @ObservationIgnored private var stopTime: TimeInterval?
-
-    private static let blankTimeline = EditTimeline(sourceDuration: 0)
 
     init(videoURL: URL, editing: TakeEditing, audioSession: PlaybackAudioSession = PlaybackAudioManager()) {
         self.videoURL = videoURL
@@ -119,7 +117,7 @@ final class QuickEditPlayer: EditPlayback {
         }
         currentTime = clamped(currentTime)
         applyWindow()
-        let key = ItemKey(edit)
+        let key = RenderPlan(edit, purpose: .editorPreview(rendersCurveSound: true)).item
         if key != itemKey {
             // New pieces: the item on screen can't play them, so it holds still until the new one is
             // in, and a build still running for the old ones is dropped.
@@ -443,78 +441,5 @@ final class QuickEditPlayer: EditPlayback {
     private struct FrameHolder {
         weak var owner: AnyObject?
         let hold: @MainActor (CGImage) -> Void
-    }
-
-    /// What an item depends on: the look, the sound, what is laid on top, where the pieces join,
-    /// how and at what speed. Not where the handles are, which only moves the playback window.
-    struct ItemKey: Equatable {
-        let recipe: TakeEdit
-        let spans: [TimeSpan]
-        /// One per span: the recording it is of (nil: the take). Two clips of the same seconds of different recordings,
-        /// swapped, are new pieces.
-        let sources: [UUID?]
-        /// One per span: pieces at different speeds never join.
-        let speeds: [Double]
-        /// One per span: a curved piece's curve (its timing is new pieces).
-        let curves: [SpeedCurve?]
-        /// Where the transitions and each clip's zoom play, measured on the edit as made (`EditedComposition`): trimming a
-        /// short first or last clip next to a transition, or a zoomed one, changes them though the pieces stay.
-        let transitions: [TransitionWindow]
-        let zooms: [ZoomWindow?]
-        /// Each piece's sound, zoom and steadiness (its volume, mute, pitch, zoom and strength, Stabilize): they change
-        /// the item like a look does.
-        let pieceSettings: [[Double]]
-        /// What each piece changes of the take's look (Adjust, Filters, Background): a clip's own
-        /// overrides change what the item draws, like the take's look does.
-        let clipLooks: [ClipLook?]
-        /// Music is placed on the edit's own seconds, so with music the item also depends on where
-        /// the edit starts and ends in it.
-        let musicWindow: TimeSpan?
-
-        /// Where the edit is in the item, when music needs it.
-        static func musicWindow(of edit: TakeEdit) -> TimeSpan? {
-            guard !edit.music.isEmpty else { return nil }
-            let leadIn = edit.timeline.reachableLeadIn
-            return TimeSpan(start: leadIn, end: leadIn + edit.editedDuration)
-        }
-
-        init(_ edit: TakeEdit) {
-            var recipe = edit
-            recipe.timeline = QuickEditPlayer.blankTimeline
-            recipe.suggestions = []
-            // The cover is drawn apart from the video.
-            recipe.cover = nil
-            self.recipe = recipe
-            let reachable = edit.timeline.reachable
-            var spans: [TimeSpan] = []
-            var sources: [UUID?] = []
-            var speeds: [Double] = []
-            var curves: [SpeedCurve?] = []
-            for (index, segment) in reachable.segments.enumerated() {
-                if reachable.isSeamless(index) {
-                    spans[spans.count - 1].end = segment.sourceEnd
-                } else {
-                    spans.append(segment.span)
-                    sources.append(segment.sourceID)
-                    speeds.append(segment.speed)
-                    curves.append(segment.speedCurve)
-                }
-            }
-            self.spans = spans
-            self.sources = sources
-            self.speeds = speeds
-            self.curves = curves
-            transitions = EditedComposition.transitionWindows(of: edit.timeline, reachesWholeRecording: true)
-            zooms = EditedComposition.zoomWindows(of: edit.timeline, reachesWholeRecording: true)
-            pieceSettings = edit.timeline.segments.map { segment in
-                [
-                    segment.volume, segment.isMuted ? 1 : 0, segment.keepsPitch ? 1 : 0,
-                    Double(SectionZoom.allCases.firstIndex { $0 == segment.zoom } ?? -1), segment.zoomAmount,
-                    Double(StabilizationLevel.allCases.firstIndex { $0 == segment.stabilization } ?? -1),
-                ]
-            }
-            clipLooks = edit.timeline.segments.map(\.look)
-            musicWindow = Self.musicWindow(of: edit)
-        }
     }
 }

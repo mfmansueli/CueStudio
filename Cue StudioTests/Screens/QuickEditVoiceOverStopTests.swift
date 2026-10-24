@@ -40,10 +40,10 @@ struct QuickEditVoiceOverStopTests {
 
     @Test func aCallKeepsWhatWasRecorded() async {
         let scenario = await makeScenario()
-        await scenario.viewModel.startVoiceOver()
-        #expect(scenario.viewModel.isRecordingVoiceOver)
+        await scenario.viewModel.audio.startVoiceOver()
+        #expect(scenario.viewModel.audio.isRecordingVoiceOver)
         scenario.recorder.stopOnItsOwn(.interrupted)
-        #expect(!scenario.viewModel.isRecordingVoiceOver)
+        #expect(!scenario.viewModel.audio.isRecordingVoiceOver)
         #expect(scenario.viewModel.edit.voiceOvers.count == 1)
         #expect(scenario.viewModel.toast.message == "Recording stopped · Another app took the microphone")
     }
@@ -52,9 +52,9 @@ struct QuickEditVoiceOverStopTests {
         let scenario = await makeScenario()
         var failures: [EditorFailureReport] = []
         scenario.viewModel.reportFailure = { failures.append($0) }
-        await scenario.viewModel.startVoiceOver()
+        await scenario.viewModel.audio.startVoiceOver()
         scenario.recorder.stopOnItsOwn(.failed)
-        #expect(!scenario.viewModel.isRecordingVoiceOver)
+        #expect(!scenario.viewModel.audio.isRecordingVoiceOver)
         #expect(scenario.recorder.cancelled)
         #expect(scenario.viewModel.edit.voiceOvers.isEmpty)
         #expect(scenario.viewModel.toast.message == "Couldn't record the voice-over · Try again")
@@ -64,29 +64,29 @@ struct QuickEditVoiceOverStopTests {
     @Test func theVideoStoppingStopsTheNarrationAndKeepsIt() async throws {
         let scenario = await makeScenario()
         let player = try #require(scenario.viewModel.player as? FakeEditPlayback)
-        await scenario.viewModel.startVoiceOver()
+        await scenario.viewModel.audio.startVoiceOver()
         #expect(player.isPlaying)
         player.playToTheEnd()
-        #expect(!scenario.viewModel.isRecordingVoiceOver)
+        #expect(!scenario.viewModel.audio.isRecordingVoiceOver)
         #expect(scenario.viewModel.edit.voiceOvers.count == 1)
         // Pause does it too.
-        await scenario.viewModel.startVoiceOver()
+        await scenario.viewModel.audio.startVoiceOver()
         scenario.viewModel.togglePlayback()
-        #expect(!scenario.viewModel.isRecordingVoiceOver)
+        #expect(!scenario.viewModel.audio.isRecordingVoiceOver)
         #expect(scenario.viewModel.edit.voiceOvers.count == 2)
     }
 
     @Test func stopAddsTheNarrationOnce() async {
         let scenario = await makeScenario()
-        await scenario.viewModel.startVoiceOver()
-        scenario.viewModel.stopVoiceOver()
+        await scenario.viewModel.audio.startVoiceOver()
+        scenario.viewModel.audio.stopVoiceOver()
         #expect(scenario.viewModel.edit.voiceOvers.count == 1)
-        #expect(!scenario.viewModel.isRecordingVoiceOver)
+        #expect(!scenario.viewModel.audio.isRecordingVoiceOver)
     }
 
     @Test func leavingWhileRecordingKeepsTheNarrationInTheDraft() async throws {
         let scenario = await makeScenario()
-        await scenario.viewModel.startVoiceOver()
+        await scenario.viewModel.audio.startVoiceOver()
         scenario.viewModel.cancel()
         #expect(!scenario.recorder.cancelled)
         let draft = try #require(scenario.drafts.drafts.values.first)

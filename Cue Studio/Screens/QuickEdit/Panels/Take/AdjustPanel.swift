@@ -20,7 +20,7 @@ struct AdjustPanel: View {
     /// What the ruler is for: the measured correction's intensity, or one dial.
     private enum Pick: Hashable {
         case auto
-        case dial(QuickEditViewModel.Adjustment)
+        case dial(LookViewModel.Adjustment)
     }
 
     @State private var current: Pick = .dial(.exposure)
@@ -28,7 +28,7 @@ struct AdjustPanel: View {
     @ScaledMetric(relativeTo: .subheadline) private var chipTitleSize: CGFloat = 14
 
     var body: some View {
-        PanelFrame(viewModel: viewModel, panel: .adjust, onReset: reset, compare: viewModel.pictureCompare) {
+        PanelFrame(viewModel: viewModel, panel: .adjust, onReset: reset, compare: viewModel.look.pictureCompare) {
             dials
             readout
             ruler
@@ -38,34 +38,34 @@ struct AdjustPanel: View {
     @ViewBuilder private var ruler: some View {
         switch current {
         case .auto:
-            if viewModel.hasAuto {
+            if viewModel.look.hasAuto {
                 PanelRulerSlider(
-                    label: String(localized: "Auto"), value: viewModel.autoAmount * 100, range: 0...100, bipolar: false,
+                    label: String(localized: "Auto"), value: viewModel.look.autoAmount * 100, range: 0...100, bipolar: false,
                     format: .percent, identifier: "edit.adjust.autoAmount",
-                    onChange: { viewModel.setAutoAmount($0) }
+                    onChange: { viewModel.look.setAutoAmount($0) }
                 )
             } else {
                 PanelNote(text: String(localized: "Auto fixes light and color · Your edits stay on top"))
             }
         case .dial(let adjustment):
             PanelRulerSlider(
-                label: adjustment.label, value: viewModel.adjustment(adjustment), range: range(of: adjustment), bipolar: adjustment.isBipolar,
+                label: adjustment.label, value: viewModel.look.adjustment(adjustment), range: range(of: adjustment), bipolar: adjustment.isBipolar,
                 format: format(of: adjustment), identifier: "edit.adjust.ruler", hint: adjustment.hint,
-                onChange: { viewModel.setAdjustment(adjustment, $0) }
+                onChange: { viewModel.look.setAdjustment(adjustment, $0) }
             )
         }
     }
 
     private var reset: (() -> Void)? {
-        guard viewModel.hasAdjustments else { return nil }
-        return { viewModel.resetAdjustments() }
+        guard viewModel.look.hasAdjustments else { return nil }
+        return { viewModel.look.resetAdjustments() }
     }
 
-    private func range(of adjustment: QuickEditViewModel.Adjustment) -> ClosedRange<Double> {
+    private func range(of adjustment: LookViewModel.Adjustment) -> ClosedRange<Double> {
         adjustment.isBipolar ? TakeEdit.adjustmentRange : 0...100
     }
 
-    private func format(of adjustment: QuickEditViewModel.Adjustment) -> PanelValueFormat {
+    private func format(of adjustment: LookViewModel.Adjustment) -> PanelValueFormat {
         adjustment.isBipolar ? .signed : .plain
     }
 
@@ -76,7 +76,7 @@ struct AdjustPanel: View {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
                     autoChip
-                    ForEach(QuickEditViewModel.Adjustment.allCases) { adjustment in
+                    ForEach(LookViewModel.Adjustment.allCases) { adjustment in
                         chip(adjustment).id(adjustment)
                     }
                 }
@@ -87,8 +87,8 @@ struct AdjustPanel: View {
             .contentMargins(.horizontal, 16, for: .scrollContent)
             .onAppear {
                 // Opened on one setting (a notification's "Try it" for Skin Smoothing): its chip is picked and in view; nothing changes.
-                guard let start = viewModel.adjustOpensOn else { return }
-                viewModel.adjustOpensOn = nil
+                guard let start = viewModel.look.adjustOpensOn else { return }
+                viewModel.look.adjustOpensOn = nil
                 current = .dial(start)
                 proxy.scrollTo(start, anchor: .trailing)
             }
@@ -121,27 +121,27 @@ struct AdjustPanel: View {
     /// The measured correction: its intensity once there is one.
     private var autoChip: some View {
         let isPicked = current == .auto
-        let hasAuto = viewModel.hasAuto
-        let text = PanelValueFormat.plain.text(viewModel.autoAmount * 100)
+        let hasAuto = viewModel.look.hasAuto
+        let text = PanelValueFormat.plain.text(viewModel.look.autoAmount * 100)
         return Button {
             current = .auto
         } label: {
             chipLabel(
-                String(localized: "Auto"), valueText: hasAuto && viewModel.autoAmount > 0 ? text : nil,
-                picked: isPicked, isMeasuring: viewModel.autoState == .analyzing
+                String(localized: "Auto"), valueText: hasAuto && viewModel.look.autoAmount > 0 ? text : nil,
+                picked: isPicked, isMeasuring: viewModel.look.autoState == .analyzing
             )
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Auto"))
-        .accessibilityValue(hasAuto ? Text(PanelValueFormat.percent.text(viewModel.autoAmount * 100)) : Text("Not measured"))
+        .accessibilityValue(hasAuto ? Text(PanelValueFormat.percent.text(viewModel.look.autoAmount * 100)) : Text("Not measured"))
         .accessibilityAddTraits(isPicked ? [.isButton, .isSelected] : .isButton)
         .accessibilityIdentifier("edit.adjust.autoDial")
     }
 
-    private func chip(_ adjustment: QuickEditViewModel.Adjustment) -> some View {
+    private func chip(_ adjustment: LookViewModel.Adjustment) -> some View {
         let isPicked = current == .dial(adjustment)
-        let value = viewModel.adjustment(adjustment)
+        let value = viewModel.look.adjustment(adjustment)
         return Button {
             current = .dial(adjustment)
         } label: {
@@ -239,40 +239,40 @@ struct AdjustPanel: View {
 
     private var currentValueText: String {
         switch current {
-        case .auto: viewModel.hasAuto ? PanelValueFormat.percent.text(viewModel.autoAmount * 100) : ""
-        case .dial(let adjustment): format(of: adjustment).text(viewModel.adjustment(adjustment))
+        case .auto: viewModel.look.hasAuto ? PanelValueFormat.percent.text(viewModel.look.autoAmount * 100) : ""
+        case .dial(let adjustment): format(of: adjustment).text(viewModel.look.adjustment(adjustment))
         }
     }
 
     private var canResetCurrent: Bool {
         switch current {
-        case .auto: viewModel.canResetAuto
-        case .dial(let adjustment): viewModel.canResetAdjustment(adjustment)
+        case .auto: viewModel.look.canResetAuto
+        case .dial(let adjustment): viewModel.look.canResetAdjustment(adjustment)
         }
     }
 
     private func resetCurrent() {
         switch current {
-        case .auto: viewModel.resetAuto()
-        case .dial(let adjustment): viewModel.resetAdjustment(adjustment)
+        case .auto: viewModel.look.resetAuto()
+        case .dial(let adjustment): viewModel.look.resetAdjustment(adjustment)
         }
     }
 
     /// For a clip, where the dial's value comes from while the clip hasn't set it.
     private var inheritedNote: String? {
-        guard viewModel.lookClip != nil else { return nil }
+        guard viewModel.look.lookClip != nil else { return nil }
         switch current {
-        case .auto: return viewModel.clipOverridesAuto || !viewModel.hasAuto ? nil : String(localized: "From the whole video")
-        case .dial(let adjustment): return viewModel.clipOverrides(adjustment) ? nil : String(localized: "From the whole video")
+        case .auto: return viewModel.look.clipOverridesAuto || !viewModel.look.hasAuto ? nil : String(localized: "From the whole video")
+        case .dial(let adjustment): return viewModel.look.clipOverrides(adjustment) ? nil : String(localized: "From the whole video")
         }
     }
 
     /// Measures the picture (the take's, or the picked clip's) and applies a correction.
     private var autoButton: some View {
-        let isWorking = viewModel.autoState == .analyzing
+        let isWorking = viewModel.look.autoState == .analyzing
         return Button {
             current = .auto
-            viewModel.autoAdjust()
+            viewModel.look.autoAdjust()
         } label: {
             Label(isWorking ? String(localized: "Measuring…") : String(localized: "Auto"), systemImage: "sparkles")
                 .font(.system(.subheadline, weight: .semibold))

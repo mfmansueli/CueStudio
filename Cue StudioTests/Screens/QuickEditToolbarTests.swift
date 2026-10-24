@@ -138,7 +138,7 @@ struct QuickEditToolbarTests {
         viewModel.perform(animation.action)
         #expect(viewModel.panel == .textStyle)
         #expect(viewModel.panelTab == .motion)
-        #expect(viewModel.textStyleScope == .selected)
+        #expect(viewModel.overlays.textStyleScope == .selected)
     }
 
     @Test func aPickedMediaCanBeDuplicatedFromItsTools() async throws {
@@ -188,9 +188,9 @@ struct QuickEditToolbarTests {
         viewModel.perform(.openMenu(.text))
         viewModel.perform(.addText(.title))
         #expect(viewModel.panel == .textStyle)
-        #expect(viewModel.focusesTextField)
-        #expect(viewModel.textStyleScope == .selected)
-        #expect(viewModel.editingTextID == nil)
+        #expect(viewModel.overlays.focusesTextField)
+        #expect(viewModel.overlays.textStyleScope == .selected)
+        #expect(viewModel.overlays.editingTextID == nil)
         #expect(viewModel.panelSubtitle(.textStyle) == "Only this title changes")
     }
 
@@ -200,7 +200,7 @@ struct QuickEditToolbarTests {
         viewModel.perform(.addText(.hook))
         viewModel.leaveToolbarContext()
         viewModel.perform(.styleAllTexts)
-        #expect(viewModel.textStyleScope == .allTexts)
+        #expect(viewModel.overlays.textStyleScope == .allTexts)
         #expect(viewModel.panel == .textStyle)
         #expect(viewModel.panelSubtitle(.textStyle) == "All 2 texts change together")
     }
@@ -218,7 +218,7 @@ struct QuickEditToolbarTests {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.openMusic)
         #expect(viewModel.sheet == .music)
-        #expect(viewModel.musicReplacementID == nil)
+        #expect(viewModel.audio.musicReplacementID == nil)
         viewModel.sheet = nil
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
         viewModel.changeEdit { $0.music = [music] }
@@ -234,9 +234,9 @@ struct QuickEditToolbarTests {
         viewModel.selection = .music(music.id)
         viewModel.perform(.replaceMusic)
         #expect(viewModel.sheet == .music)
-        #expect(viewModel.musicReplacementID == music.id)
+        #expect(viewModel.audio.musicReplacementID == music.id)
         viewModel.sheet = nil
-        #expect(viewModel.musicReplacementID == nil)
+        #expect(viewModel.audio.musicReplacementID == nil)
     }
 
     @Test func theCaptionsMenuMakesOrManagesTheLines() async {
@@ -317,7 +317,7 @@ struct QuickEditToolbarTests {
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 7.1)
         viewModel.perform(.selectClipAtPlayhead)
-        #expect(viewModel.canSplitSelectedClip)
+        #expect(viewModel.clips.canSplitSelectedClip)
         viewModel.perform(.splitClip)
         let segments = viewModel.edit.timeline.segments
         #expect(segments.count == 2)

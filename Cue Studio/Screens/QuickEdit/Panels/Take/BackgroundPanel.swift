@@ -20,28 +20,28 @@ struct BackgroundPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
     var body: some View {
-        let effect = viewModel.currentBackground
-        PanelFrame(viewModel: viewModel, panel: .background, onReset: reset, compare: viewModel.pictureCompare) {
-            if let note = viewModel.backgroundScopeNote { scopeNote(note) }
+        let effect = viewModel.look.currentBackground
+        PanelFrame(viewModel: viewModel, panel: .background, onReset: reset, compare: viewModel.look.pictureCompare) {
+            if let note = viewModel.look.backgroundScopeNote { scopeNote(note) }
             background(effect)
             cutout(effect)
             PanelNote(text: String(localized: "Changes show in the preview and are saved as you make them. ✓ closes the panel."))
                 .accessibilityIdentifier("edit.backgroundSaveNote")
         }
-        .task { await viewModel.checkBackgroundSupport() }
+        .task { await viewModel.look.checkBackgroundSupport() }
     }
 
     /// Only for a clip, and only once it sets its own background: back to its recording's.
     private var reset: (() -> Void)? {
-        guard viewModel.clipOverridesBackground else { return nil }
-        return { viewModel.resetClipBackground() }
+        guard viewModel.look.clipOverridesBackground else { return nil }
+        return { viewModel.look.resetClipBackground() }
     }
 
     // MARK: - Scope
 
     private func scopeNote(_ note: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
-            Image(systemName: viewModel.lookClip == nil ? "film" : "rectangle.split.3x1")
+            Image(systemName: viewModel.look.lookClip == nil ? "film" : "rectangle.split.3x1")
                 .font(.editorGlyph(EditorGlyph.compact, weight: .semibold))
                 .foregroundStyle(Palette.ink2)
                 .accessibilityHidden(true)
@@ -70,7 +70,7 @@ struct BackgroundPanel: View {
                 ],
                 selection: effect.style, identifier: "edit.background"
             ) { style in
-                viewModel.setBackgroundStyle(style)
+                viewModel.look.setBackgroundStyle(style)
                 if style == .image, effect.imageFileName == nil { viewModel.requestPhoto(.background) }
             }
             switch effect.style {
@@ -78,19 +78,19 @@ struct BackgroundPanel: View {
                 PanelNote(text: String(localized: "Your video as you recorded it. Pick Blur, Color or Image to change what's behind you."))
             case .blur:
                 slider(String(localized: "Blur strength"), value: effect.blur, range: BackgroundEffect.blurRange, identifier: "edit.backgroundBlur") { value in
-                    viewModel.updateBackground { $0.blur = value }
+                    viewModel.look.updateBackground { $0.blur = value }
                 }
             case .color:
                 PanelSwatches(
                     label: String(localized: "Color"), colors: OverlayColor.palette, selection: effect.color,
                     identifier: "edit.backgroundColor"
-                ) { color in viewModel.updateBackground { $0.color = color } }
+                ) { color in viewModel.look.updateBackground { $0.color = color } }
             case .image:
                 PanelButton(
-                    label: viewModel.isImportingBackground
+                    label: viewModel.look.isImportingBackground
                         ? String(localized: "Adding…")
                         : (effect.imageFileName == nil ? String(localized: "Choose a photo") : String(localized: "Change photo")),
-                    systemImage: "photo", isEnabled: !viewModel.isImportingBackground, identifier: "edit.backgroundPhotoButton"
+                    systemImage: "photo", isEnabled: !viewModel.look.isImportingBackground, identifier: "edit.backgroundPhotoButton"
                 ) { viewModel.requestPhoto(.background) }
             }
         }
@@ -112,11 +112,11 @@ struct BackgroundPanel: View {
                     PanelOption(BackgroundCutout.colorKey, String(localized: "Green or blue screen")),
                 ],
                 selection: effect.cutout, height: 38, identifier: "edit.backgroundCutout"
-            ) { cutout in viewModel.setBackgroundCutout(cutout) }
+            ) { cutout in viewModel.look.setBackgroundCutout(cutout) }
             switch effect.cutout {
             case .person:
                 PanelNote(text: String(localized: "Cue finds you in every frame, on this iPhone, and changes everything around you."))
-                if effect.style != .original, viewModel.canFindPeople == false {
+                if effect.style != .original, viewModel.look.canFindPeople == false {
                     PanelNote(text: String(localized: "Can't find people here · Use a green or blue screen"), tint: Palette.warnText)
                         .accessibilityIdentifier("edit.backgroundUnavailable")
                 }
@@ -125,7 +125,7 @@ struct BackgroundPanel: View {
                 screenColor(effect.key)
                 PanelAdvancedButton(
                     isOpen: viewModel.showsAdvanced, title: String(localized: "Fine-tune the cutout"),
-                    detail: viewModel.backgroundKeyIsAdjusted ? String(localized: "· adjusted") : nil,
+                    detail: viewModel.look.backgroundKeyIsAdjusted ? String(localized: "· adjusted") : nil,
                     identifier: "edit.backgroundFineTune"
                 ) { viewModel.showsAdvanced.toggle() }
                 if viewModel.showsAdvanced { fineTune(effect.key) }
@@ -147,13 +147,13 @@ struct BackgroundPanel: View {
             selection: Self.screen(of: key), identifier: "edit.keyColor"
         ) { name in
             let preset = name == "blue" ? ChromaKey.blue : ChromaKey.green
-            viewModel.setKeyColor(red: preset.red, green: preset.green, blue: preset.blue)
+            viewModel.look.setKeyColor(red: preset.red, green: preset.green, blue: preset.blue)
         }
         ColorPicker(selection: Binding(
             get: { Color(red: key.red, green: key.green, blue: key.blue) },
             set: { color in
                 let parts = Self.components(of: color)
-                viewModel.setKeyColor(red: parts.red, green: parts.green, blue: parts.blue)
+                viewModel.look.setKeyColor(red: parts.red, green: parts.green, blue: parts.blue)
             }
         ), supportsOpacity: false) {
             VStack(alignment: .leading, spacing: 2) {
@@ -170,17 +170,17 @@ struct BackgroundPanel: View {
         VStack(alignment: .leading, spacing: 14) {
             described(String(localized: "More removes shades of the screen that are further from its color.")) {
                 slider(String(localized: "Tolerance"), value: key.tolerance, range: 0...1, identifier: "edit.keyTolerance") { value in
-                    viewModel.updateBackground { $0.key.tolerance = value }
+                    viewModel.look.updateBackground { $0.key.tolerance = value }
                 }
             }
             described(String(localized: "How soft the outline between you and the new background is.")) {
                 slider(String(localized: "Edge"), value: key.softness, range: 0...1, identifier: "edit.keySoftness") { value in
-                    viewModel.updateBackground { $0.key.softness = value }
+                    viewModel.look.updateBackground { $0.key.softness = value }
                 }
             }
             described(String(localized: "Takes the screen's tint off you: the green or blue it reflects on skin, hair and clothes.")) {
                 slider(String(localized: "Spill"), value: key.spill, range: 0...1, identifier: "edit.keySpill") { value in
-                    viewModel.updateBackground { $0.key.spill = value }
+                    viewModel.look.updateBackground { $0.key.spill = value }
                 }
             }
         }

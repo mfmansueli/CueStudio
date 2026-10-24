@@ -26,7 +26,7 @@ struct PausesPanel: View {
         PanelFrame(viewModel: viewModel, panel: .pauses) {
             VStack(alignment: .leading, spacing: 8) { content }
         } footer: {
-            if viewModel.analysis == .done, !(viewModel.pauseCandidates + viewModel.wordCandidates).isEmpty {
+            if viewModel.clips.analysis == .done, !(viewModel.clips.pauseCandidates + viewModel.clips.wordCandidates).isEmpty {
                 footer
             }
         }
@@ -35,13 +35,13 @@ struct PausesPanel: View {
     /// The stepper and the cards right under it (8 pt apart, not the panel's 16), so the cards show whole on an iPhone SE.
     @ViewBuilder private var content: some View {
         PanelStepper(
-            label: String(localized: "Pauses longer than"), value: DurationText.tenths(viewModel.pauseThreshold),
-            canDecrease: viewModel.pauseThreshold > QuickEditViewModel.pauseThresholdRange.lowerBound + 0.001,
-            canIncrease: viewModel.pauseThreshold < QuickEditViewModel.pauseThresholdRange.upperBound - 0.001,
+            label: String(localized: "Pauses longer than"), value: DurationText.tenths(viewModel.clips.pauseThreshold),
+            canDecrease: viewModel.clips.pauseThreshold > ClipsViewModel.pauseThresholdRange.lowerBound + 0.001,
+            canIncrease: viewModel.clips.pauseThreshold < ClipsViewModel.pauseThresholdRange.upperBound - 0.001,
             identifier: "edit.pauses.threshold",
-            onDecrease: viewModel.lowerPauseThreshold, onIncrease: viewModel.raisePauseThreshold
+            onDecrease: viewModel.clips.lowerPauseThreshold, onIncrease: viewModel.clips.raisePauseThreshold
         )
-        switch viewModel.analysis {
+        switch viewModel.clips.analysis {
         case .idle, .running:
             HStack(spacing: 8) {
                 ProgressView().tint(Palette.ink)
@@ -53,7 +53,7 @@ struct PausesPanel: View {
         case .failed:
             VStack(spacing: 8) {
                 Text("Couldn't listen to this take").font(.system(.subheadline, weight: .semibold))
-                Button("Try again") { viewModel.listenForCleanUp() }
+                Button("Try again") { viewModel.clips.listenForCleanUp() }
                     .font(.system(.subheadline, weight: .semibold))
                     .foregroundStyle(Palette.accText)
                     .frame(minHeight: Metrics.hitTarget)
@@ -61,7 +61,7 @@ struct PausesPanel: View {
             .frame(maxWidth: .infinity, minHeight: 92)
             .editorCard()
         case .done:
-            if viewModel.pauseCandidates.isEmpty {
+            if viewModel.clips.pauseCandidates.isEmpty {
                 VStack(spacing: 4) {
                     Text("No long pauses").font(.system(.subheadline, weight: .semibold))
                     Text("Your take flows. Try a shorter length.").font(.system(.footnote)).foregroundStyle(Palette.ink2)
@@ -71,11 +71,11 @@ struct PausesPanel: View {
                 .accessibilityElement(children: .combine)
                 .accessibilityIdentifier("edit.pauses.empty")
             } else {
-                cards(viewModel.pauseCandidates, kind: "pause")
+                cards(viewModel.clips.pauseCandidates, kind: "pause")
             }
-            if !viewModel.wordCandidates.isEmpty {
+            if !viewModel.clips.wordCandidates.isEmpty {
                 Text("Filler words and retakes").font(.system(.subheadline, weight: .semibold)).padding(.top, 8)
-                cards(viewModel.wordCandidates, kind: "word")
+                cards(viewModel.clips.wordCandidates, kind: "word")
             }
         }
     }
@@ -94,14 +94,14 @@ struct PausesPanel: View {
             HStack(spacing: Self.cardSpacing) {
                 ForEach(suggestions) { suggestion in
                     CleanUpCard(
-                        title: suggestion.kind == .pause ? viewModel.cardLength(suggestion) : suggestion.title,
-                        time: viewModel.cardTime(suggestion),
-                        isMarked: viewModel.isMarked(suggestion),
-                        isListening: viewModel.listeningID == suggestion.id,
+                        title: suggestion.kind == .pause ? viewModel.clips.cardLength(suggestion) : suggestion.title,
+                        time: viewModel.clips.cardTime(suggestion),
+                        isMarked: viewModel.clips.isMarked(suggestion),
+                        isListening: viewModel.clips.listeningID == suggestion.id,
                         identifier: "edit.\(kind).\(suggestions.firstIndex { $0.id == suggestion.id } ?? 0)",
                         width: cardWidth,
-                        onToggle: { viewModel.tapCleanUpCard(suggestion.id) },
-                        onListen: { viewModel.listen(to: suggestion.id) }
+                        onToggle: { viewModel.clips.tapCleanUpCard(suggestion.id) },
+                        onListen: { viewModel.clips.listen(to: suggestion.id) }
                     )
                 }
             }
@@ -119,7 +119,7 @@ struct PausesPanel: View {
         ViewThatFits(in: .horizontal) {
             if typeSize.isAccessibilitySize {
                 HStack(spacing: 8) {
-                    savingText.accessibilityValue(Text(viewModel.cleanUpResultLabel))
+                    savingText.accessibilityValue(Text(viewModel.clips.cleanUpResultLabel))
                     Spacer(minLength: 0)
                     applyButton(fullWidth: false, inset: 14)
                 }
@@ -144,7 +144,7 @@ struct PausesPanel: View {
     }
 
     private var savingText: some View {
-        Text(viewModel.cleanUpSavingLabel)
+        Text(viewModel.clips.cleanUpSavingLabel)
             .font(.system(.body, weight: .bold).monospacedDigit())
             .foregroundStyle(Palette.accText)
             .lineLimit(1)
@@ -152,7 +152,7 @@ struct PausesPanel: View {
     }
 
     private var resultText: some View {
-        Text(viewModel.cleanUpResultLabel)
+        Text(viewModel.clips.cleanUpResultLabel)
             .font(.system(.caption).monospacedDigit())
             .foregroundStyle(Palette.ink2)
             .lineLimit(1)
@@ -160,9 +160,9 @@ struct PausesPanel: View {
     }
 
     private func applyButton(fullWidth: Bool, inset: CGFloat = 20) -> some View {
-        let hasMarks = !viewModel.markedCleanUp.isEmpty
-        return Button(action: viewModel.applyCleanUp) {
-            Text(viewModel.cleanUpApplyLabel)
+        let hasMarks = !viewModel.clips.markedCleanUp.isEmpty
+        return Button(action: viewModel.clips.applyCleanUp) {
+            Text(viewModel.clips.cleanUpApplyLabel)
                 .font(.system(.subheadline, weight: .bold))
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)

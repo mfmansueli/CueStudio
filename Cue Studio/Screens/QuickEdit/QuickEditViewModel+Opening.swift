@@ -20,20 +20,20 @@ extension QuickEditViewModel {
             openCaptions()
         case .captionTranslation:
             openCaptions()
-            if !edit.captions.isEmpty { showsTranslation = true }
+            if !edit.captions.isEmpty { captions.showsTranslation = true }
         case .studioVoice:
             panel = .voice
         case .skinSmoothing:
-            lookScopeIsClip = false
-            adjustOpensOn = .skinSmoothing
+            look.lookScopeIsClip = false
+            look.adjustOpensOn = .skinSmoothing
             panel = .adjust
         case .background:
-            lookScopeIsClip = false
+            look.lookScopeIsClip = false
             panel = .background
         case .cover:
-            openCoverStudio()
+            cover.openCoverStudio()
         case .media:
-            mediaInsertMode = .overlay
+            overlays.mediaInsertMode = .overlay
             sheet = .media
         case .voiceOver:
             panel = .voiceOver

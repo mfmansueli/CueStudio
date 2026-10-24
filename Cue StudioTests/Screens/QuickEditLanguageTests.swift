@@ -37,7 +37,7 @@ struct QuickEditLanguageTests {
         )
         await viewModel.prepare()
         if makesCaptions {
-            viewModel.makeCaptions()
+            viewModel.captions.makeCaptions()
             await viewModel.jobs.finished(.captions)
         }
         return Scenario(viewModel: viewModel, editor: editor, availability: availability)
@@ -60,13 +60,13 @@ struct QuickEditLanguageTests {
         editor.captionOutcome = .captions([CaptionCue(words: words)], transcript: CaptionTranscript(words: words, languageCode: "en"))
         let scenario = await makeScenario(editor: editor, makesCaptions: false)
         let viewModel = scenario.viewModel
-        viewModel.setCaptionLanguage(.portugueseBrazil)
-        viewModel.makeCaptions()
+        viewModel.captions.setCaptionLanguage(.portugueseBrazil)
+        viewModel.captions.makeCaptions()
         await viewModel.jobs.finished(.captions)
         #expect(editor.captionCandidates == [.english, .portugueseBrazil])
         #expect(viewModel.edit.captionLanguage == .english)
         // Now picked like the script's: what was heard is used again, nothing is compared.
-        viewModel.makeCaptions(replacingRevised: true)
+        viewModel.captions.makeCaptions(replacingRevised: true)
         await viewModel.jobs.finished(.captions)
         #expect(editor.captionRequests == 1)
     }
@@ -75,7 +75,7 @@ struct QuickEditLanguageTests {
 
     @Test func traditionalChineseCaptionsAreTranslatedFromTraditionalNotSimplified() async {
         let scenario = await makeScenario(editor: chineseEditor(code: "zh-Hant", text: "這是改變我早晨的三個習慣。"))
-        let source = scenario.viewModel.captionSourceLanguage
+        let source = scenario.viewModel.captions.captionSourceLanguage
         #expect(source?.languageCode?.identifier == "zh")
         #expect(source?.script?.identifier == "Hant")
     }
@@ -83,14 +83,14 @@ struct QuickEditLanguageTests {
     /// A transcript kept before Chinese carried its writing system says only "zh": the lines show it.
     @Test func anOlderChineseTranscriptTakesItsWritingSystemFromTheLines() async {
         let scenario = await makeScenario(editor: chineseEditor(code: "zh", text: "這是改變我早晨的三個習慣。第一，我在看手機之前先喝一杯水。"))
-        #expect(scenario.viewModel.captionSourceLanguage?.script?.identifier == "Hant")
+        #expect(scenario.viewModel.captions.captionSourceLanguage?.script?.identifier == "Hant")
         let simplified = await makeScenario(editor: chineseEditor(code: "zh", text: "这是改变我早晨的三个习惯。第一，我在看手机之前先喝一杯水。"))
-        #expect(simplified.viewModel.captionSourceLanguage?.script?.identifier == "Hans")
+        #expect(simplified.viewModel.captions.captionSourceLanguage?.script?.identifier == "Hans")
     }
 
     @Test func chineseIsNeverOfferedAsATargetForChineseCaptions() async {
         let scenario = await makeScenario(editor: chineseEditor(code: "zh-Hant", text: "這是改變我早晨的三個習慣。"))
-        let targets = scenario.viewModel.translationTargets
+        let targets = scenario.viewModel.captions.translationTargets
         #expect(!targets.contains(.chineseSimplified) && !targets.contains(.chineseTraditional))
         #expect(targets.contains(.english))
     }
@@ -100,25 +100,25 @@ struct QuickEditLanguageTests {
     @Test func aPairTheSystemRefusesMidwayIsSaidNotCalledAFailure() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        await viewModel.translateCaptions(to: .thai)
+        await viewModel.captions.translateCaptions(to: .thai)
         let session = FakeTranslationSession()
         session.error = CaptionTranslationError.unsupportedPair
-        await viewModel.performTranslation(try #require(viewModel.translationRequest), with: session)
-        guard case .unsupported(_, let target) = viewModel.translationState else {
-            Issue.record("Expected an unsupported pair, got \(viewModel.translationState)")
+        await viewModel.captions.performTranslation(try #require(viewModel.captions.translationRequest), with: session)
+        guard case .unsupported(_, let target) = viewModel.captions.translationState else {
+            Issue.record("Expected an unsupported pair, got \(viewModel.captions.translationState)")
             return
         }
         #expect(target == .thai)
-        #expect(viewModel.translation(.thai) == nil)
+        #expect(viewModel.captions.translation(.thai) == nil)
     }
 
     @Test func anotherFailureIsStillATryAgain() async throws {
         let scenario = await makeScenario()
-        await scenario.viewModel.translateCaptions(to: .german)
+        await scenario.viewModel.captions.translateCaptions(to: .german)
         let session = FakeTranslationSession()
         session.error = URLError(.notConnectedToInternet)
-        await scenario.viewModel.performTranslation(try #require(scenario.viewModel.translationRequest), with: session)
-        #expect(scenario.viewModel.translationState == .failed)
+        await scenario.viewModel.captions.performTranslation(try #require(scenario.viewModel.captions.translationRequest), with: session)
+        #expect(scenario.viewModel.captions.translationState == .failed)
     }
 
     // MARK: - Languages a take couldn't be heard in
@@ -131,9 +131,9 @@ struct QuickEditLanguageTests {
             transcript: CaptionTranscript(words: words, languageCode: "pt", unheardLanguages: ["en"])
         )
         let scenario = await makeScenario(editor: editor)
-        #expect(scenario.viewModel.captionState == .missingLanguages(["en"]))
-        #expect(scenario.viewModel.captionState.canRetry)
-        let message = scenario.viewModel.captionState.message
+        #expect(scenario.viewModel.captions.captionState == .missingLanguages(["en"]))
+        #expect(scenario.viewModel.captions.captionState.canRetry)
+        let message = scenario.viewModel.captions.captionState.message
         #expect(message?.contains(Locale.interface.localizedString(forLanguageCode: "en") ?? "English") == true)
         // The lines that were heard are still there.
         #expect(scenario.viewModel.edit.captions.count == 1)
@@ -141,8 +141,8 @@ struct QuickEditLanguageTests {
 
     @Test func captionsHeardInEveryLanguageSayNothingMore() async {
         let scenario = await makeScenario()
-        #expect(scenario.viewModel.captionState == .idle)
-        #expect(scenario.viewModel.captionState.message == nil)
+        #expect(scenario.viewModel.captions.captionState == .idle)
+        #expect(scenario.viewModel.captions.captionState.message == nil)
     }
 
     @Test func severalMissingLanguagesAreNamedTogether() {

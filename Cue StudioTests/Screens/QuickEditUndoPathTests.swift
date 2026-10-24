@@ -32,11 +32,11 @@ struct QuickEditUndoPathTests {
 
     @Test func theFrameDraggedOnThePreviewIsOneUndoStep() async {
         let viewModel = await makeViewModel()
-        viewModel.setAspect(.square)
-        viewModel.beginCropMove()
-        viewModel.moveCrop(to: 0.3)
-        viewModel.moveCrop(to: 0.6)
-        viewModel.moveCrop(to: 4)
+        viewModel.look.setAspect(.square)
+        viewModel.look.beginCropMove()
+        viewModel.look.moveCrop(to: 0.3)
+        viewModel.look.moveCrop(to: 0.6)
+        viewModel.look.moveCrop(to: 4)
         viewModel.endChange()
         #expect(viewModel.edit.cropOffset == 1)
         viewModel.undo()
@@ -48,16 +48,16 @@ struct QuickEditUndoPathTests {
 
     @Test func anUndoElsewhereNeverMovesTheFrameBack() async {
         let viewModel = await makeViewModel()
-        viewModel.setAspect(.square)
+        viewModel.look.setAspect(.square)
         viewModel.perform(.addText(.title))
-        viewModel.beginCropMove()
-        viewModel.moveCrop(to: 0.5)
+        viewModel.look.beginCropMove()
+        viewModel.look.moveCrop(to: 0.5)
         viewModel.endChange()
         viewModel.undo()
         #expect(viewModel.edit.cropOffset == 0)
         #expect(viewModel.edit.texts.count == 1)
         viewModel.redo()
-        viewModel.setCropFit(.fit)
+        viewModel.look.setCropFit(.fit)
         viewModel.undo()
         #expect(viewModel.edit.cropOffset == 0.5)
         #expect(viewModel.edit.cropFit == .fill)
@@ -65,11 +65,11 @@ struct QuickEditUndoPathTests {
 
     @Test func followFaceStopsInTheSameStepAsTheDrag() async {
         let viewModel = await makeViewModel()
-        viewModel.setAspect(.square)
-        viewModel.setFollowsFace(true)
-        viewModel.beginCropMove()
+        viewModel.look.setAspect(.square)
+        viewModel.look.setFollowsFace(true)
+        viewModel.look.beginCropMove()
         #expect(viewModel.edit.faceFollow == nil)
-        viewModel.moveCrop(to: -0.4)
+        viewModel.look.moveCrop(to: -0.4)
         viewModel.endChange()
         viewModel.undo()
         #expect(viewModel.edit.faceFollow != nil)
@@ -82,7 +82,7 @@ struct QuickEditUndoPathTests {
             $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)]
             $0.showsCaptions = true
         }
-        viewModel.toggleCaptions()
+        viewModel.captions.toggleCaptions()
         #expect(!viewModel.edit.showsCaptions)
         viewModel.undo()
         #expect(viewModel.edit.showsCaptions)
@@ -104,7 +104,7 @@ struct QuickEditUndoPathTests {
 
     @Test func theCaptionsLanguageIsAnUndoStep() async {
         let viewModel = await makeViewModel()
-        viewModel.setCaptionLanguage(.spanish)
+        viewModel.captions.setCaptionLanguage(.spanish)
         #expect(viewModel.edit.captionLanguage == .spanish)
         viewModel.undo()
         #expect(viewModel.edit.captionLanguage == nil)

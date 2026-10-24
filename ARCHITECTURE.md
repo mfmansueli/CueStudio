@@ -107,6 +107,12 @@ final class HomeViewModel {
   `SelfProfileView` e `ProfileEditView`).
 - Nem toda tela precisa de VM. Telas só de apresentação ficam com `@State` locais.
 - Seções internas separadas com `// MARK: -`.
+- **Tela grande em partes** (o editor, `Screens/QuickEdit`): quando um VM passa a reunir ferramentas independentes, cada uma vira uma
+  parte (`<Parte>ViewModel`, na pasta da sub-feature) que guarda o estado dos seus painéis e trabalha por uma sessão compartilhada
+  (`EditorSession`: documento, player, tarefas, avisos). A parte segura a sessão e vê a tela só por um protocolo fraco (`EditorHost`:
+  seleção, painel, Desfazer); nenhuma parte chama outra. O VM da tela vira o coordenador: cria as partes no `init` e diz a cada uma o
+  que mudou (`editChanged`, `panelChanged`). As Views falam com a parte (`viewModel.captions.…`), e cada parte tem testes com só um
+  host falso (`FakeEditorHost`).
 
 ### 2.2 Services e Managers
 

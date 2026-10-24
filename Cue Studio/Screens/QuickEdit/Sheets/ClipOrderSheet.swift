@@ -18,14 +18,14 @@ struct ClipOrderSheet: View {
                 // Lined up with the rows and with every other sheet's title.
                 .padding(.horizontal, 16)
             List {
-                ForEach(viewModel.clips) { clip in
+                ForEach(viewModel.clips.clipList) { clip in
                     row(clip)
                         .listRowBackground(clip.id == viewModel.selection?.clipID ? Palette.Editor.accTile : Palette.Editor.panelCard)
                         .accessibilityIdentifier("edit.reorder.clip.\(clip.index)")
                 }
                 .onMove { from, to in
                     guard let source = from.first else { return }
-                    viewModel.moveSection(from: source, to: to > source ? to - 1 : to)
+                    viewModel.clips.moveSection(from: source, to: to > source ? to - 1 : to)
                     Haptics.selection()
                 }
             }
@@ -40,7 +40,7 @@ struct ClipOrderSheet: View {
         .presentationDragIndicator(.visible)
     }
 
-    private func row(_ clip: QuickEditViewModel.Clip) -> some View {
+    private func row(_ clip: ClipsViewModel.Clip) -> some View {
         HStack(spacing: 12) {
             ClipOrderThumbnail(url: url(of: clip), time: clip.thumbnailTime, thumbnails: thumbnails)
             VStack(alignment: .leading, spacing: 2) {
@@ -53,7 +53,7 @@ struct ClipOrderSheet: View {
         .accessibilityElement(children: .combine)
     }
 
-    private func url(of clip: QuickEditViewModel.Clip) -> URL {
+    private func url(of clip: ClipsViewModel.Clip) -> URL {
         clip.sourceID.flatMap { viewModel.clipSourceURLs[$0] } ?? viewModel.videoURL
     }
 }

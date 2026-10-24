@@ -12,7 +12,7 @@ struct MotionPresetPicker: View {
     let viewModel: QuickEditViewModel
 
     var body: some View {
-        let current = viewModel.selectedAnimation
+        let current = viewModel.overlays.selectedAnimation
         VStack(alignment: .leading, spacing: 12) {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
@@ -30,21 +30,21 @@ struct MotionPresetPicker: View {
                 PanelSlider(
                     label: current.preset.spansTheWholeItem ? String(localized: "Ease in") : String(localized: "Duration"),
                     value: current.duration, range: OverlayAnimation.durationRange, step: 0.1, defaultValue: 0.5, format: .seconds,
-                    identifier: "edit.motion.duration", onChange: { viewModel.setMotionDuration($0) }
+                    identifier: "edit.motion.duration", onChange: { viewModel.overlays.setMotionDuration($0) }
                 )
                 PanelSlider(
                     label: String(localized: "Strength"), value: current.intensity * 100, range: 0...100, step: 5, defaultValue: 50,
-                    format: .percent, identifier: "edit.motion.intensity", onChange: { viewModel.setMotionIntensity($0 / 100) }
+                    format: .percent, identifier: "edit.motion.intensity", onChange: { viewModel.overlays.setMotionIntensity($0 / 100) }
                 )
                 PanelButton(label: String(localized: "Play it"), systemImage: "play.fill", identifier: "edit.motion.play") {
-                    viewModel.previewMotion()
+                    viewModel.overlays.previewMotion()
                 }
             }
         }
     }
 
     private func tile(_ preset: MotionPreset?, label: String, systemImage: String, isOn: Bool) -> some View {
-        Button { viewModel.setMotionPreset(preset) } label: {
+        Button { viewModel.overlays.setMotionPreset(preset) } label: {
             VStack(spacing: 6) {
                 Image(systemName: systemImage).font(.editorGlyph(EditorGlyph.tool, weight: .semibold))
                 Text(label).font(.system(.caption, weight: .semibold)).lineLimit(2).multilineTextAlignment(.center).minimumScaleFactor(0.8)

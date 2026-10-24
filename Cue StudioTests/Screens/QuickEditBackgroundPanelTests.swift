@@ -38,8 +38,8 @@ struct QuickEditBackgroundPanelTests {
     /// Two clips: 0–7.1 and 7.1–21.6.
     private func split(_ scenario: Scenario) {
         scenario.player.seek(to: 7.1)
-        scenario.viewModel.selectClipAtPlayhead()
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.selectClipAtPlayhead()
+        scenario.viewModel.clips.splitClip()
         scenario.viewModel.selection = nil
     }
 
@@ -64,13 +64,13 @@ struct QuickEditBackgroundPanelTests {
         effect.style = style
         effect.cutout = cutout
         effect.imageFileName = "beach.jpg"
-        #expect(QuickEditViewModel.backgroundSummary(of: effect) == expected)
+        #expect(LookViewModel.backgroundSummary(of: effect) == expected)
     }
 
     @Test func anImageWithoutItsPhotoAsksForOne() {
         var effect = BackgroundEffect()
         effect.style = .image
-        #expect(QuickEditViewModel.backgroundSummary(of: effect) == "No photo chosen yet")
+        #expect(LookViewModel.backgroundSummary(of: effect) == "No photo chosen yet")
     }
 
     @Test func theSubtitleSaysTheScopeAndTheBackground() async {
@@ -79,11 +79,11 @@ struct QuickEditBackgroundPanelTests {
         split(scenario)
         viewModel.perform(.open(.background))
         #expect(viewModel.panelSubtitle(.background) == "Whole video · As recorded")
-        viewModel.setBackgroundStyle(.blur)
+        viewModel.look.setBackgroundStyle(.blur)
         #expect(viewModel.panelSubtitle(.background) == "Whole video · Blur behind you")
         openFromClip(viewModel, 1)
         #expect(viewModel.panelSubtitle(.background) == "Clip 2 of 2 · Blur behind you")
-        viewModel.setBackgroundCutout(.colorKey)
+        viewModel.look.setBackgroundCutout(.colorKey)
         #expect(viewModel.panelSubtitle(.background) == "Clip 2 of 2 · Blur on the green or blue screen")
     }
 
@@ -92,50 +92,50 @@ struct QuickEditBackgroundPanelTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.background))
-        #expect(viewModel.backgroundScopeNote == nil)
-        viewModel.setBackgroundStyle(.blur)
+        #expect(viewModel.look.backgroundScopeNote == nil)
+        viewModel.look.setBackgroundStyle(.blur)
         openFromClip(viewModel, 1)
-        #expect(viewModel.backgroundScopeNote == "Shows the whole video's background. A change here is for this clip only.")
-        viewModel.setBackgroundStyle(.color)
-        #expect(viewModel.clipOverridesBackground)
-        #expect(viewModel.backgroundScopeNote == "This clip has its own background. Reset gives it the whole video's again.")
+        #expect(viewModel.look.backgroundScopeNote == "Shows the whole video's background. A change here is for this clip only.")
+        viewModel.look.setBackgroundStyle(.color)
+        #expect(viewModel.look.clipOverridesBackground)
+        #expect(viewModel.look.backgroundScopeNote == "This clip has its own background. Reset gives it the whole video's again.")
         viewModel.panel = nil
         viewModel.selection = nil
         viewModel.perform(.open(.background))
-        #expect(viewModel.backgroundScopeNote == "Clips with their own background keep it.")
+        #expect(viewModel.look.backgroundScopeNote == "Clips with their own background keep it.")
         // Reset gives the clip the take's again, and the note goes with it.
         openFromClip(viewModel, 1)
-        viewModel.resetClipBackground()
-        #expect(viewModel.backgroundScopeNote == "Shows the whole video's background. A change here is for this clip only.")
+        viewModel.look.resetClipBackground()
+        #expect(viewModel.look.backgroundScopeNote == "Shows the whole video's background. A change here is for this clip only.")
     }
 
     @Test func theFoldedSettingsSayWhenTheyWereChanged() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.setBackgroundCutout(.colorKey)
-        viewModel.setKeyColor(red: ChromaKey.blue.red, green: ChromaKey.blue.green, blue: ChromaKey.blue.blue)
-        #expect(!viewModel.backgroundKeyIsAdjusted, "the screen's color is shown, not folded")
-        viewModel.updateBackground { $0.key.spill = 0.8 }
-        #expect(viewModel.backgroundKeyIsAdjusted)
+        viewModel.look.setBackgroundCutout(.colorKey)
+        viewModel.look.setKeyColor(red: ChromaKey.blue.red, green: ChromaKey.blue.green, blue: ChromaKey.blue.blue)
+        #expect(!viewModel.look.backgroundKeyIsAdjusted, "the screen's color is shown, not folded")
+        viewModel.look.updateBackground { $0.key.spill = 0.8 }
+        #expect(viewModel.look.backgroundKeyIsAdjusted)
         viewModel.undo()
-        #expect(!viewModel.backgroundKeyIsAdjusted)
+        #expect(!viewModel.look.backgroundKeyIsAdjusted)
     }
 
     @Test func everyValueStaysWhileAnotherBackgroundOrCutoutIsPicked() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.setBackgroundStyle(.blur)
-        viewModel.updateBackground { $0.blur = 0.8 }
-        viewModel.setBackgroundStyle(.color)
-        viewModel.updateBackground { $0.color = .blue }
-        viewModel.setBackgroundCutout(.colorKey)
-        viewModel.setKeyColor(red: ChromaKey.blue.red, green: ChromaKey.blue.green, blue: ChromaKey.blue.blue)
-        viewModel.updateBackground { $0.key.tolerance = 0.6 }
-        viewModel.setBackgroundCutout(.person)
-        viewModel.setBackgroundStyle(.original)
-        viewModel.setBackgroundStyle(.blur)
-        viewModel.setBackgroundCutout(.colorKey)
-        let effect = viewModel.currentBackground
+        viewModel.look.setBackgroundStyle(.blur)
+        viewModel.look.updateBackground { $0.blur = 0.8 }
+        viewModel.look.setBackgroundStyle(.color)
+        viewModel.look.updateBackground { $0.color = .blue }
+        viewModel.look.setBackgroundCutout(.colorKey)
+        viewModel.look.setKeyColor(red: ChromaKey.blue.red, green: ChromaKey.blue.green, blue: ChromaKey.blue.blue)
+        viewModel.look.updateBackground { $0.key.tolerance = 0.6 }
+        viewModel.look.setBackgroundCutout(.person)
+        viewModel.look.setBackgroundStyle(.original)
+        viewModel.look.setBackgroundStyle(.blur)
+        viewModel.look.setBackgroundCutout(.colorKey)
+        let effect = viewModel.look.currentBackground
         #expect(effect.blur == 0.8)
         #expect(effect.color == .blue)
         #expect(effect.key.tolerance == 0.6)
@@ -145,8 +145,8 @@ struct QuickEditBackgroundPanelTests {
     @Test func pickingTheCutoutIsOneUndoStep() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.setBackgroundStyle(.color)
-        viewModel.setBackgroundCutout(.colorKey)
+        viewModel.look.setBackgroundStyle(.color)
+        viewModel.look.setBackgroundCutout(.colorKey)
         #expect(viewModel.edit.background(for: nil)?.cutout == .colorKey)
         viewModel.undo()
         #expect(viewModel.edit.background(for: nil)?.cutout == .person)

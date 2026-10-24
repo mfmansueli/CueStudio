@@ -37,10 +37,10 @@ struct QuickEditTimelineTests {
     /// Three clips: 0–7.1, 7.1–10.1 ("não, pera"), 10.1–21.6.
     private func split(_ scenario: Scenario) {
         scenario.player.seek(to: 7.1)
-        scenario.viewModel.selectClipAtPlayhead()
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.selectClipAtPlayhead()
+        scenario.viewModel.clips.splitClip()
         scenario.player.seek(to: 10.1)
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.splitClip()
         scenario.viewModel.selection = nil
     }
 
@@ -96,8 +96,8 @@ struct QuickEditTimelineTests {
         viewModel.tapTimeline(nil)
         #expect(viewModel.selection == nil)
         viewModel.tapTimeline(.cover)
-        #expect(viewModel.coverStudio != nil)
-        viewModel.coverStudio = nil
+        #expect(viewModel.cover.coverStudio != nil)
+        viewModel.cover.coverStudio = nil
         viewModel.tapTimeline(.lane(.text))
         #expect(viewModel.toolMenu == .text)
         #expect(viewModel.panel == nil)
@@ -105,7 +105,7 @@ struct QuickEditTimelineTests {
         #expect(viewModel.toolMenu == nil)
         viewModel.tapTimeline(.addClip)
         #expect(viewModel.sheet == .media)
-        #expect(viewModel.mediaInsertMode == .clip)
+        #expect(viewModel.overlays.mediaInsertMode == .clip)
     }
 
     @Test func aTrackOpensItsToolsAndASecondTapPutsTheMainOnesBack() async {
@@ -171,8 +171,8 @@ struct QuickEditTimelineTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 7.1)
-        viewModel.selectClipAtPlayhead()
-        viewModel.splitClip()
+        viewModel.clips.selectClipAtPlayhead()
+        viewModel.clips.splitClip()
         let right = viewModel.edit.timeline.segments[1].id
         scenario.player.seek(to: 2)
         viewModel.beginTimelineHandle(.clip(right, .start), snapTimes: [])
@@ -217,13 +217,13 @@ struct QuickEditTimelineTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 1)
-        viewModel.addStyledText(.title)
+        viewModel.overlays.addStyledText(.title)
         let id = try #require(viewModel.selectedTextID)
-        let span = try #require(viewModel.editedSpan(ofText: id))
+        let span = try #require(viewModel.overlays.editedSpan(ofText: id))
         viewModel.beginTimelineHandle(.item(.text, id, .end), snapTimes: [])
         let result = viewModel.moveTimelineHandle(by: 1)
         viewModel.endTimelineHandle()
-        let now = try #require(viewModel.editedSpan(ofText: id))
+        let now = try #require(viewModel.overlays.editedSpan(ofText: id))
         #expect(abs(now.end - (span.end + 1)) < 0.001)
         #expect(result.label.hasSuffix("s"))
     }
@@ -234,31 +234,31 @@ struct QuickEditTimelineTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 1)
-        viewModel.addStyledText(.title)
+        viewModel.overlays.addStyledText(.title)
         let id = try #require(viewModel.selectedTextID)
-        let span = try #require(viewModel.editedSpan(ofText: id))
+        let span = try #require(viewModel.overlays.editedSpan(ofText: id))
         let steps = viewModel.document.history.past.count
         // Within the snapping distance of a cut (6 pt at 44 pt a second: about 0.14 s).
         let reach = TimeInterval(TimelineSnapping.distance / TimelineGeometry.basePointsPerSecond)
         viewModel.beginTimelineHandle(.move(.text, id), snapTimes: [span.start, span.end, 10, 15])
         viewModel.moveTimelineHandle(by: 3)
-        var now = try #require(viewModel.editedSpan(ofText: id))
+        var now = try #require(viewModel.overlays.editedSpan(ofText: id))
         #expect(abs(now.start - (span.start + 3)) < 0.001)
         #expect(abs(now.duration - span.duration) < 0.001)
         // Its start comes near 10 s: it sticks there.
         let result = viewModel.moveTimelineHandle(by: 10 - span.start - reach / 2)
-        now = try #require(viewModel.editedSpan(ofText: id))
+        now = try #require(viewModel.overlays.editedSpan(ofText: id))
         #expect(abs(now.start - 10) < 0.001)
         #expect(result.label == DurationText.editor(10))
         // Its end comes near 15 s: it ends there.
         viewModel.moveTimelineHandle(by: 15 - span.end + reach / 2)
-        now = try #require(viewModel.editedSpan(ofText: id))
+        now = try #require(viewModel.overlays.editedSpan(ofText: id))
         #expect(abs(now.end - 15) < 0.001)
         #expect(abs(now.duration - span.duration) < 0.001)
         viewModel.endTimelineHandle()
         #expect(viewModel.document.history.past.count == steps + 1)
         viewModel.undo()
-        let back = try #require(viewModel.editedSpan(ofText: id))
+        let back = try #require(viewModel.overlays.editedSpan(ofText: id))
         #expect(abs(back.start - span.start) < 0.001)
     }
 
@@ -266,13 +266,13 @@ struct QuickEditTimelineTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 1)
-        viewModel.addStyledText(.title)
+        viewModel.overlays.addStyledText(.title)
         let id = try #require(viewModel.selectedTextID)
-        let span = try #require(viewModel.editedSpan(ofText: id))
+        let span = try #require(viewModel.overlays.editedSpan(ofText: id))
         viewModel.beginTimelineHandle(.move(.text, id), snapTimes: [])
         viewModel.moveTimelineHandle(by: 100)
         viewModel.endTimelineHandle()
-        let now = try #require(viewModel.editedSpan(ofText: id))
+        let now = try #require(viewModel.overlays.editedSpan(ofText: id))
         #expect(abs(now.end - viewModel.edit.editedDuration) < 0.001)
         #expect(abs(now.duration - span.duration) < 0.001)
     }

@@ -15,7 +15,7 @@ struct TranscriptEditSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             SheetHeader(title: String(localized: "Edit by text"), subtitle: String(localized: "Cut words, and the video goes with them."))
-            if viewModel.hasTranscript {
+            if viewModel.clips.hasTranscript {
                 words
                 actions
             } else {
@@ -32,8 +32,8 @@ struct TranscriptEditSheet: View {
     }
 
     private var words: some View {
-        let list = viewModel.transcriptWords
-        let picked = viewModel.transcriptSelection
+        let list = viewModel.clips.transcriptWords
+        let picked = viewModel.clips.transcriptSelection
         return ScrollView {
             FlowLayout(spacing: 4, lineSpacing: 0) {
                 ForEach(Array(list.enumerated()), id: \.element.id) { index, word in
@@ -41,7 +41,7 @@ struct TranscriptEditSheet: View {
                     // The two ends of the pick carry a mark: where the cut starts, and (once tapped) where it ends.
                     let isStart = picked?.lowerBound == index
                     let isEnd = picked.map { $0.upperBound == index && $0.lowerBound != index } ?? false
-                    Button { viewModel.tapTranscriptWord(at: index) } label: {
+                    Button { viewModel.clips.tapTranscriptWord(at: index) } label: {
                         HStack(spacing: 3) {
                             if isStart { Image(systemName: "arrow.right.to.line").font(.editorGlyph(EditorGlyph.small, weight: .bold)) }
                             Text(word.text)
@@ -74,7 +74,7 @@ struct TranscriptEditSheet: View {
 
     @ViewBuilder
     private var actions: some View {
-        let picked = viewModel.selectedTranscriptWords
+        let picked = viewModel.clips.selectedTranscriptWords
         if picked.isEmpty {
             // A montage's cut words leave the list (they may be from a copy of a clip): there, Undo brings them back.
             PanelNote(text: viewModel.edit.timeline.isArranged
@@ -87,7 +87,7 @@ struct TranscriptEditSheet: View {
                     PanelButton(
                         label: String(localized: "Cut \(picked.filter { !$0.isRemoved }.count) words from the video"), systemImage: "scissors",
                         isPrimary: true, identifier: "edit.transcript.cut"
-                    ) { viewModel.cutSelectedWords() }
+                    ) { viewModel.clips.cutSelectedWords() }
                     PanelButton(
                         label: String(localized: "Fix caption text"), systemImage: "character.cursor.ibeam", identifier: "edit.transcript.fix"
                     ) { viewModel.fixCaptionOfSelectedWords() }
@@ -95,7 +95,7 @@ struct TranscriptEditSheet: View {
                 if picked.contains(where: \.isRemoved), !viewModel.edit.timeline.isArranged {
                     PanelButton(
                         label: String(localized: "Put back"), systemImage: "arrow.uturn.backward", identifier: "edit.transcript.restore"
-                    ) { viewModel.restoreSelectedWords() }
+                    ) { viewModel.clips.restoreSelectedWords() }
                 }
                 PanelNote(text: String(localized: "Cut removes the words from the video. Fix caption text only changes what the caption says."))
             }
@@ -119,7 +119,7 @@ struct TranscriptEditSheet: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityIdentifier("edit.transcript.pickGuide")
-            Button(String(localized: "Pick again")) { viewModel.clearTranscriptSelection() }
+            Button(String(localized: "Pick again")) { viewModel.clips.clearTranscriptSelection() }
                 .font(.system(.subheadline, weight: .semibold))
                 .foregroundStyle(Palette.accText)
                 .frame(minHeight: Metrics.hitTarget)
@@ -134,7 +134,7 @@ struct TranscriptEditSheet: View {
                 .font(.system(.subheadline))
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
-            let state = viewModel.captionState
+            let state = viewModel.captions.captionState
             if state.isWorking {
                 HStack(spacing: 10) {
                     ProgressView().tint(Palette.ink)

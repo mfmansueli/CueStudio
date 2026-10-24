@@ -50,8 +50,8 @@ struct QuickCreatorViewModelTests {
 
     /// A cover from the frame under the playhead, made in Cover Studio and kept with Done.
     private func makeCover(_ viewModel: QuickEditViewModel) throws {
-        viewModel.openCoverStudio()
-        viewModel.finishCoverStudio(try #require(viewModel.coverStudio))
+        viewModel.cover.openCoverStudio()
+        viewModel.cover.finishCoverStudio(try #require(viewModel.cover.coverStudio))
     }
 
     // MARK: - Text
@@ -59,31 +59,31 @@ struct QuickCreatorViewModelTests {
     @Test func aTextIsAddedAtThePlayheadInTheProjectsStyle() async throws {
         let scenario = await makeScenario()
         scenario.player.seek(to: 10)
-        scenario.viewModel.addText(.title)
+        scenario.viewModel.overlays.addText(.title)
         let text = try #require(scenario.viewModel.edit.texts.first)
         #expect(text.span == TimeSpan(start: 10, end: 13))
         #expect(text.font == .dmSans)
         #expect(scenario.viewModel.selectedTextID == text.id)
-        #expect(scenario.viewModel.editingTextID == text.id)
+        #expect(scenario.viewModel.overlays.editingTextID == text.id)
         #expect(scenario.viewModel.textBars.map(\.span) == [TimeSpan(start: 10, end: 13)])
     }
 
     @Test func aTextNearTheEndStaysInsideTheEdit() async {
         let scenario = await makeScenario()
         scenario.player.seek(to: 63)
-        scenario.viewModel.addText(.subtitle)
+        scenario.viewModel.overlays.addText(.subtitle)
         #expect(scenario.viewModel.edit.texts.first?.span == TimeSpan(start: 60, end: 64))
     }
 
     @Test func writingInTheSheetIsOneUndoStep() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addText(.hook)
+        viewModel.overlays.addText(.hook)
         let id = viewModel.edit.texts[0].id
         let steps = viewModel.document.history.past.count
         viewModel.beginChange()
-        for text in ["S", "St", "Stop"] { viewModel.updateText(id) { $0.text = text } }
-        viewModel.updateText(id) { $0.color = .yellow }
+        for text in ["S", "St", "Stop"] { viewModel.overlays.updateText(id) { $0.text = text } }
+        viewModel.overlays.updateText(id) { $0.color = .yellow }
         viewModel.endChange()
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.edit.texts[0].text == "Stop")
@@ -101,7 +101,7 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 20)
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         // Seconds 4 to 6 go.
         var timeline = viewModel.edit.timeline
         _ = timeline.removeEdited(4...6)
@@ -112,7 +112,7 @@ struct QuickCreatorViewModelTests {
     @Test func dragsOnTheTrackMoveAndStretchATextInOneStep() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         let steps = viewModel.document.history.past.count
         let bar = viewModel.textBars[0]
         viewModel.beginChange()
@@ -130,9 +130,9 @@ struct QuickCreatorViewModelTests {
 
     @Test func aPresetRestylesOneText() async {
         let scenario = await makeScenario()
-        scenario.viewModel.addText(.title)
-        scenario.viewModel.addText(.subtitle)
-        scenario.viewModel.applyPreset(.label, to: .selected)
+        scenario.viewModel.overlays.addText(.title)
+        scenario.viewModel.overlays.addText(.subtitle)
+        scenario.viewModel.overlays.applyPreset(.label, to: .selected)
         let texts = scenario.viewModel.edit.texts
         #expect(texts[1].background == .box)
         #expect(texts[1].backgroundColor == .black)
@@ -145,9 +145,9 @@ struct QuickCreatorViewModelTests {
 
     @Test func deletingATextIsUndoable() async {
         let scenario = await makeScenario()
-        scenario.viewModel.addText(.title)
+        scenario.viewModel.overlays.addText(.title)
         let id = scenario.viewModel.edit.texts[0].id
-        scenario.viewModel.deleteText(id)
+        scenario.viewModel.overlays.deleteText(id)
         #expect(scenario.viewModel.edit.texts.isEmpty)
         #expect(scenario.viewModel.selectedTextID == nil)
         scenario.viewModel.undo()
@@ -158,7 +158,7 @@ struct QuickCreatorViewModelTests {
 
     @Test func newTextsStartInCuesPreset() async {
         let scenario = await makeScenario()
-        scenario.viewModel.addText(.title)
+        scenario.viewModel.overlays.addText(.title)
         let text = scenario.viewModel.edit.texts[0]
         #expect(text.preset == .cue)
         #expect(text.weight == .heavy)
@@ -167,12 +167,12 @@ struct QuickCreatorViewModelTests {
     @Test func aPresetOnEveryTextIsOneStepAndLeavesThePictureAlone() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addText(.title)
-        viewModel.pickFilter(.film)
+        viewModel.overlays.addText(.title)
+        viewModel.look.pickFilter(.film)
         try makeCover(viewModel)
         let cover = viewModel.edit.cover
         let steps = viewModel.document.history.past.count
-        viewModel.applyPreset(.impact, to: .allTexts)
+        viewModel.overlays.applyPreset(.impact, to: .allTexts)
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.edit.texts[0].isUppercase)
         #expect(viewModel.edit.texts[0].hasOutline)
@@ -183,7 +183,7 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.edit.cover == cover)
         #expect(viewModel.edit.captionLook == nil)
         // New texts start from it.
-        viewModel.addText(.hook)
+        viewModel.overlays.addText(.hook)
         #expect(viewModel.edit.texts[1].preset == .impact)
 
         viewModel.undo()
@@ -195,17 +195,17 @@ struct QuickCreatorViewModelTests {
     @Test func keepMyChangesKeepsWhatWasSetByHand() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         let id = viewModel.edit.texts[0].id
-        viewModel.customizeText(id, .color) { $0.color = .pink }
+        viewModel.overlays.customizeText(id, .color) { $0.color = .pink }
         #expect(viewModel.edit.texts[0].customized == [.color])
 
-        viewModel.applyPreset(.pop, to: .allTexts, keepingCustomizations: true)
+        viewModel.overlays.applyPreset(.pop, to: .allTexts, keepingCustomizations: true)
         #expect(viewModel.edit.texts[0].color == .pink)
         #expect(viewModel.edit.texts[0].hasOutline)
         #expect(viewModel.edit.texts[0].customized == [.color])
 
-        viewModel.applyPreset(.editorial, to: .allTexts, keepingCustomizations: false)
+        viewModel.overlays.applyPreset(.editorial, to: .allTexts, keepingCustomizations: false)
         #expect(viewModel.edit.texts[0].color == .white)
         #expect(viewModel.edit.texts[0].font == .dmSerif)
         #expect(viewModel.edit.texts[0].customized.isEmpty)
@@ -214,9 +214,9 @@ struct QuickCreatorViewModelTests {
     @Test func aPresetOnTheCaptionsLeavesTheTextsAlone() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         let text = viewModel.edit.texts[0]
-        viewModel.applyPreset(.pop, to: .allCaptions)
+        viewModel.overlays.applyPreset(.pop, to: .allCaptions)
         #expect(viewModel.edit.captionLook == TypePreset.pop.look(for: .caption))
         #expect(viewModel.edit.captionPreset == .pop)
         #expect(viewModel.edit.texts[0] == text)
@@ -228,18 +228,18 @@ struct QuickCreatorViewModelTests {
     @Test func myStyleIsSavedFromATextAndReused() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         let id = viewModel.edit.texts[0].id
-        viewModel.customizeText(id, .color) { $0.color = .green }
-        viewModel.customizeText(id, .tracking) { $0.tracking = 0.1 }
-        viewModel.saveMyStyle()
+        viewModel.overlays.customizeText(id, .color) { $0.color = .green }
+        viewModel.overlays.customizeText(id, .tracking) { $0.tracking = 0.1 }
+        viewModel.overlays.saveMyStyle()
         #expect(scenario.styles.myStyle?.color == .green)
         #expect(scenario.styles.myStyle?.tracking == 0.1)
-        #expect(viewModel.myStyle == scenario.styles.myStyle)
+        #expect(viewModel.overlays.myStyle == scenario.styles.myStyle)
         #expect(scenario.toast.message == "Saved as My style")
 
-        viewModel.addText(.hook)
-        viewModel.applyMyStyle(to: .allTexts)
+        viewModel.overlays.addText(.hook)
+        viewModel.overlays.applyMyStyle(to: .allTexts)
         #expect(viewModel.edit.texts.allSatisfy { $0.color == .green && $0.tracking == 0.1 })
         #expect(viewModel.edit.textPreset == nil)
         #expect(scenario.toast.message == "My style on every text")
@@ -254,7 +254,7 @@ struct QuickCreatorViewModelTests {
             mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: scenario.styles
         )
         await viewModel.prepare()
-        viewModel.applyMyStyle(to: .allCaptions)
+        viewModel.overlays.applyMyStyle(to: .allCaptions)
         #expect(viewModel.edit.captionLook?.color == .yellow)
         #expect(viewModel.edit.captionLook?.sizeScale == 1.3)
     }
@@ -265,16 +265,16 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 32)
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         let right = viewModel.edit.timeline.segments[1].id
         #expect(viewModel.selection == .clip(right))
         let steps = viewModel.document.history.past.count
-        viewModel.setClipSpeed(0.5)
+        viewModel.clips.setClipSpeed(0.5)
         #expect(viewModel.edit.timeline.segments.map(\.speed) == [1, 0.5])
         #expect(viewModel.edit.editedDuration == 96)
         #expect(viewModel.document.history.past.count == steps + 1)
         // Quick moves of the slider on the same clip are one step, on the twentieths.
-        viewModel.setClipSpeed(1.52)
+        viewModel.clips.setClipSpeed(1.52)
         #expect(viewModel.edit.timeline.segments[1].speed == 1.5)
         #expect(viewModel.document.history.past.count == steps + 1)
         viewModel.undo()
@@ -283,7 +283,7 @@ struct QuickCreatorViewModelTests {
 
     @Test func withOneClipSpeedChangesTheWholeVideo() async {
         let scenario = await makeScenario()
-        scenario.viewModel.setClipSpeed(2)
+        scenario.viewModel.clips.setClipSpeed(2)
         #expect(scenario.viewModel.edit.editedDuration == 32)
         scenario.viewModel.undo()
         #expect(scenario.viewModel.edit.editedDuration == 64)
@@ -293,16 +293,16 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 32)
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         scenario.player.seek(to: 40)
-        viewModel.setClipZoom(.pushIn)
+        viewModel.clips.setClipZoom(.pushIn)
         #expect(viewModel.edit.timeline.segments.map(\.zoom) == [nil, .pushIn])
         // The first seconds of the clip play to show it.
-        #expect(scenario.player.reviewedPart == 32...(32 + QuickEditViewModel.zoomPreviewLength))
+        #expect(scenario.player.reviewedPart == 32...(32 + ClipsViewModel.zoomPreviewLength))
         #expect(scenario.player.isPlaying)
-        viewModel.setZoomIntensity(150)
+        viewModel.clips.setZoomIntensity(150)
         #expect(viewModel.edit.timeline.segments[1].zoomAmount == 1)
-        viewModel.setClipZoom(nil)
+        viewModel.clips.setClipZoom(nil)
         #expect(viewModel.edit.timeline.segments[1].zoom == nil)
         viewModel.undo()
         viewModel.undo()
@@ -317,14 +317,14 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         for time in [20.0, 40] {
             scenario.player.seek(to: time)
-            viewModel.splitClip()
+            viewModel.clips.splitClip()
         }
-        #expect(viewModel.cuts.map(\.index) == [1, 2])
+        #expect(viewModel.clips.cuts.map(\.index) == [1, 2])
         let steps = viewModel.document.history.past.count
-        viewModel.setTransitionOnEveryCut(.slide)
+        viewModel.clips.setTransitionOnEveryCut(.slide)
         #expect(viewModel.edit.timeline.segments.map(\.transitionIn) == [.hardCut, .slide, .slide])
         #expect(viewModel.document.history.past.count == steps + 1)
-        viewModel.setTransition(.fade, atJoin: 2)
+        viewModel.clips.setTransition(.fade, atJoin: 2)
         #expect(viewModel.edit.timeline.transition(atJoin: 2) == .fade)
     }
 
@@ -334,11 +334,11 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 10)
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         #expect(viewModel.mediaBars.map(\.span) == [TimeSpan(start: 10, end: 13)])
         #expect(viewModel.selectedMediaID == viewModel.edit.media[0].id)
         scenario.player.seek(to: 11)
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         // Photos and videos can overlap now; the newer one stacks on top.
         #expect(viewModel.mediaBars.map(\.span) == [TimeSpan(start: 10, end: 13), TimeSpan(start: 11, end: 14)])
         #expect(viewModel.edit.media.map(\.stackOrder) == [0, 1])
@@ -349,7 +349,7 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         for start in [10.0, 20, 30] {
             scenario.player.seek(to: start)
-            viewModel.addMedia(photo())
+            viewModel.overlays.addMedia(photo())
         }
         viewModel.moveBar(viewModel.mediaBars[1], toStart: 11)
         #expect(viewModel.mediaBars[1].span == TimeSpan(start: 11, end: 14))
@@ -357,14 +357,14 @@ struct QuickCreatorViewModelTests {
         viewModel.moveBar(viewModel.mediaBars[2], toStart: 12)
         #expect(viewModel.mediaBars[2].span == TimeSpan(start: 12, end: 15))
         scenario.player.seek(to: 12.5)
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         #expect(viewModel.edit.media.count == 3)
     }
 
     @Test func aVideoIsntStretchedPastItsLength() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(ImportedMedia(kind: .video, fileName: "clip.mov", aspect: 9.0 / 16.0, duration: 4))
+        viewModel.overlays.addMedia(ImportedMedia(kind: .video, fileName: "clip.mov", aspect: 9.0 / 16.0, duration: 4))
         #expect(viewModel.mediaBars[0].span == TimeSpan(start: 0, end: 4))
         viewModel.resizeBar(viewModel.mediaBars[0], edge: .end, to: 10)
         #expect(viewModel.mediaBars[0].span == TimeSpan(start: 0, end: 4))
@@ -373,9 +373,9 @@ struct QuickCreatorViewModelTests {
     @Test func aWindowIsLaidOutAndUndone() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         let id = viewModel.edit.media[0].id
-        viewModel.updateMedia(id) {
+        viewModel.overlays.updateMedia(id) {
             $0.layout = .window
             $0.shape = .square
             $0.width = 0.4
@@ -383,21 +383,21 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.selectedMedia?.layout == .window)
         viewModel.undo()
         #expect(viewModel.edit.media[0].layout == .fullFrame)
-        viewModel.deleteMedia(id)
+        viewModel.overlays.deleteMedia(id)
         #expect(viewModel.edit.media.isEmpty)
     }
 
     @Test func replacingAPhotoKeepsWhereItShowsAndHowItIsLaidOut() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         let id = viewModel.edit.media[0].id
-        viewModel.updateMedia(id) {
+        viewModel.overlays.updateMedia(id) {
             $0.layout = .window
             $0.width = 0.4
         }
         let before = viewModel.edit.media[0]
-        viewModel.replaceMedia(id, with: ImportedMedia(kind: .photo, fileName: "other.jpg", aspect: 2, duration: nil))
+        viewModel.overlays.replaceMedia(id, with: ImportedMedia(kind: .photo, fileName: "other.jpg", aspect: 2, duration: nil))
         let after = viewModel.edit.media[0]
         #expect(after.fileName == "other.jpg" && after.aspect == 2)
         #expect(after.id == before.id && after.span == before.span && after.layout == .window && after.width == 0.4)
@@ -410,9 +410,9 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let original = photo()
-        viewModel.addMedia(original)
+        viewModel.overlays.addMedia(original)
         let id = viewModel.edit.media[0].id
-        viewModel.replaceMedia(id, with: ImportedMedia(kind: .video, fileName: "clip.mov", aspect: 1, duration: 2))
+        viewModel.overlays.replaceMedia(id, with: ImportedMedia(kind: .video, fileName: "clip.mov", aspect: 1, duration: 2))
         #expect(viewModel.edit.media[0].fileName == original.fileName)
         #expect(viewModel.edit.media[0].kind == .photo)
     }
@@ -420,9 +420,9 @@ struct QuickCreatorViewModelTests {
     @Test func aShorterVideoShowsForItsOwnLengthWhenItReplacesALongerOne() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(ImportedMedia(kind: .video, fileName: "long.mov", aspect: 1, duration: 8))
+        viewModel.overlays.addMedia(ImportedMedia(kind: .video, fileName: "long.mov", aspect: 1, duration: 8))
         let id = viewModel.edit.media[0].id
-        viewModel.replaceMedia(id, with: ImportedMedia(kind: .video, fileName: "short.mov", aspect: 1, duration: 3))
+        viewModel.overlays.replaceMedia(id, with: ImportedMedia(kind: .video, fileName: "short.mov", aspect: 1, duration: 3))
         #expect(viewModel.edit.media[0].span.duration == 3)
         #expect(viewModel.edit.media[0].mediaDuration == 3)
     }
@@ -430,7 +430,7 @@ struct QuickCreatorViewModelTests {
     @Test func aSelectedMediaOffersEditDuplicateReplaceAndDeleteAndReplaceAsksForTheLibrary() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         let id = viewModel.edit.media[0].id
         viewModel.selection = .media(id)
         #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "track", "duplicate", "replaceMedia", "lock", "delete"])
@@ -442,7 +442,7 @@ struct QuickCreatorViewModelTests {
     @Test func duplicatingAMediaPutsACopyOnTopThatSharesTheFile() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         let original = try #require(viewModel.edit.media.first)
         viewModel.selection = .media(original.id)
         let steps = viewModel.document.history.past.count
@@ -456,7 +456,7 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect(scenario.toast.message == "Media duplicated")
         // Deleting the copy keeps the file the original still shows.
-        viewModel.deleteMedia(copy.id)
+        viewModel.overlays.deleteMedia(copy.id)
         #expect(viewModel.edit.media.map(\.fileName) == [original.fileName])
         viewModel.undo()
         #expect(viewModel.edit.media.count == 2)
@@ -465,12 +465,12 @@ struct QuickCreatorViewModelTests {
     @Test func aDuplicateNeverMakesMoreThanThreeShowAtOnce() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         let original = try #require(viewModel.edit.media.first)
-        viewModel.duplicateMedia(original.id)
-        viewModel.duplicateMedia(original.id)
+        viewModel.overlays.duplicateMedia(original.id)
+        viewModel.overlays.duplicateMedia(original.id)
         #expect(viewModel.edit.media.count == 3)
-        viewModel.duplicateMedia(original.id)
+        viewModel.overlays.duplicateMedia(original.id)
         #expect(viewModel.edit.media.count == 3)
         #expect(scenario.toast.message == "Max 3 photos or videos")
     }
@@ -478,10 +478,10 @@ struct QuickCreatorViewModelTests {
     @Test func theMediaTrackSaysWhatItIsAndHowItShows() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addMedia(photo())
+        viewModel.overlays.addMedia(photo())
         let id = viewModel.edit.media[0].id
         #expect(viewModel.timelineInput(heightClass: .regular).media[0].label == "Photo · Full screen")
-        viewModel.updateMedia(id) { $0.layout = .window }
+        viewModel.overlays.updateMedia(id) { $0.layout = .window }
         #expect(viewModel.timelineInput(heightClass: .regular).media[0].label == "Photo · Window")
     }
 
@@ -491,14 +491,14 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 12)
-        await viewModel.startVoiceOver()
-        #expect(viewModel.isRecordingVoiceOver)
+        await viewModel.audio.startVoiceOver()
+        #expect(viewModel.audio.isRecordingVoiceOver)
         #expect(scenario.player.isMuted)
         #expect(scenario.player.isPlaying)
         #expect(!viewModel.canUndo)
 
-        viewModel.stopVoiceOver()
-        #expect(!viewModel.isRecordingVoiceOver)
+        viewModel.audio.stopVoiceOver()
+        #expect(!viewModel.audio.isRecordingVoiceOver)
         #expect(!scenario.player.isMuted)
         let clip = try #require(viewModel.edit.voiceOvers.first)
         #expect(clip.anchor == 12)
@@ -517,26 +517,26 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 8)
-        await viewModel.startVoiceOver()
-        viewModel.stopVoiceOver()
+        await viewModel.audio.startVoiceOver()
+        viewModel.audio.stopVoiceOver()
         scenario.player.seek(to: 30)
-        viewModel.reRecordVoiceOver(try #require(viewModel.edit.voiceOvers.first?.id))
+        viewModel.audio.reRecordVoiceOver(try #require(viewModel.edit.voiceOvers.first?.id))
         #expect(viewModel.edit.voiceOvers.isEmpty)
         #expect(scenario.player.currentTime == 8)
         #expect(viewModel.panel == .voiceOver)
-        await viewModel.startVoiceOver()
-        #expect(viewModel.recordingStart == 8)
-        viewModel.stopVoiceOver()
+        await viewModel.audio.startVoiceOver()
+        #expect(viewModel.audio.recordingStart == 8)
+        viewModel.audio.stopVoiceOver()
         #expect(viewModel.edit.voiceOvers.map(\.anchor) == [8])
     }
 
     @Test func withoutTheMicrophoneNothingRecordsAndSettingsIsOneTapAway() async throws {
         let scenario = await makeScenario()
         var opened = 0
-        scenario.viewModel.opensSettings = { opened += 1 }
+        scenario.viewModel.audio.opensSettings = { opened += 1 }
         scenario.recorder.allowed = false
-        await scenario.viewModel.startVoiceOver()
-        #expect(!scenario.viewModel.isRecordingVoiceOver)
+        await scenario.viewModel.audio.startVoiceOver()
+        #expect(!scenario.viewModel.audio.isRecordingVoiceOver)
         #expect(scenario.toast.message == "Mic is off for Cue")
         let settings = try #require(scenario.toast.action)
         #expect(settings.title == "Settings")
@@ -547,16 +547,16 @@ struct QuickCreatorViewModelTests {
     @Test func aVoiceOverKeepsItsVolumeAndCanBeDeleted() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        await viewModel.startVoiceOver()
-        viewModel.stopVoiceOver()
+        await viewModel.audio.startVoiceOver()
+        viewModel.audio.stopVoiceOver()
         let id = viewModel.edit.voiceOvers[0].id
         #expect(viewModel.selection == .voiceOver(id))
-        viewModel.setTargetVolume(3)
+        viewModel.clips.setTargetVolume(3)
         #expect(viewModel.edit.voiceOvers[0].volume == 2)
-        viewModel.setTargetVolume(0.4)
+        viewModel.clips.setTargetVolume(0.4)
         #expect(viewModel.edit.voiceOvers[0].volume == 0.4)
-        #expect(viewModel.targetVolume == 0.4)
-        viewModel.deleteVoiceOver(id)
+        #expect(viewModel.clips.targetVolume == 0.4)
+        viewModel.audio.deleteVoiceOver(id)
         #expect(viewModel.edit.voiceOvers.isEmpty)
     }
 
@@ -566,8 +566,8 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.seek(to: 12)
-        await viewModel.startVoiceOver()
-        viewModel.stopVoiceOver()
+        await viewModel.audio.startVoiceOver()
+        viewModel.audio.stopVoiceOver()
         viewModel.moveBar(try #require(viewModel.voiceOverBars.first), toStart: 20)
         #expect(viewModel.voiceOverBars.map(\.span) == [TimeSpan(start: 20, end: 24)])
 
@@ -589,7 +589,7 @@ struct QuickCreatorViewModelTests {
     /// Cancel keeps every change in the draft, a narration being recorded too.
     @Test func cancelKeepsARecordingInProgressInTheDraft() async {
         let scenario = await makeScenario()
-        await scenario.viewModel.startVoiceOver()
+        await scenario.viewModel.audio.startVoiceOver()
         scenario.viewModel.cancel()
         #expect(!scenario.recorder.cancelled)
         #expect(scenario.viewModel.edit.voiceOvers.count == 1)
@@ -601,8 +601,8 @@ struct QuickCreatorViewModelTests {
         let scenario = await makeScenario()
         try makeCover(scenario.viewModel)
         let style = scenario.viewModel.edit.cover?.style
-        scenario.viewModel.applyPreset(.soft, to: .allTexts)
-        scenario.viewModel.applyPreset(.soft, to: .allCaptions)
+        scenario.viewModel.overlays.applyPreset(.soft, to: .allTexts)
+        scenario.viewModel.overlays.applyPreset(.soft, to: .allCaptions)
         #expect(scenario.viewModel.edit.cover?.style == style)
     }
 
@@ -611,10 +611,10 @@ struct QuickCreatorViewModelTests {
     @Test func doneSavesEverythingOnTheTake() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
-        viewModel.addText(.title)
-        viewModel.addMedia(photo("kept.jpg"))
+        viewModel.overlays.addText(.title)
+        viewModel.overlays.addMedia(photo("kept.jpg"))
         viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
-        viewModel.setClipSpeed(1.5)
+        viewModel.clips.setClipSpeed(1.5)
         try makeCover(viewModel)
         viewModel.done()
         let saved = scenario.takes.takes[0]

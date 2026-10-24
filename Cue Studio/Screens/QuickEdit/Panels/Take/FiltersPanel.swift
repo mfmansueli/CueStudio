@@ -21,7 +21,7 @@ struct FiltersPanel: View {
     private var cardWidth: CGFloat { min(max(62, scaledCardWidth), 96) }
 
     var body: some View {
-        PanelFrame(viewModel: viewModel, panel: .filters, onReset: reset, compare: viewModel.pictureCompare) {
+        PanelFrame(viewModel: viewModel, panel: .filters, onReset: reset, compare: viewModel.look.pictureCompare) {
             ScrollView(.horizontal) {
                 // Top-aligned: a name on two lines doesn't push its thumbnail down.
                 HStack(alignment: .top, spacing: 8) {
@@ -34,12 +34,12 @@ struct FiltersPanel: View {
             }
             .scrollIndicators(.hidden)
             .padding(.horizontal, -16)
-            if viewModel.currentFilter != .original {
+            if viewModel.look.currentFilter != .original {
                 PanelSlider(
-                    label: String(localized: "Intensity"), value: viewModel.currentFilterAmount * 100, range: CueSliderSpec.filterIntensity.range,
+                    label: String(localized: "Intensity"), value: viewModel.look.currentFilterAmount * 100, range: CueSliderSpec.filterIntensity.range,
                     step: CueSliderSpec.filterIntensity.step ?? 1, defaultValue: CueSliderSpec.filterIntensity.defaultValue,
                     format: .percent, identifier: "edit.filter.intensity"
-                ) { viewModel.setFilterAmount($0 / 100) }
+                ) { viewModel.look.setFilterAmount($0 / 100) }
             }
         }
         .task(id: previewKey) { await loadPreviews() }
@@ -47,24 +47,24 @@ struct FiltersPanel: View {
 
     /// Original and the collection; a filter from before it, too, while it is the one picked.
     private var shownFilters: [VideoFilter] {
-        viewModel.currentFilter.isLegacy ? VideoFilter.editorFilters + [viewModel.currentFilter] : VideoFilter.editorFilters
+        viewModel.look.currentFilter.isLegacy ? VideoFilter.editorFilters + [viewModel.look.currentFilter] : VideoFilter.editorFilters
     }
 
     /// The frame the thumbnails are drawn from: it changes with the clip in scope.
     private var previewKey: String {
-        let source = viewModel.filterPreviewSource
+        let source = viewModel.look.filterPreviewSource
         return "\(source.url.path(percentEncoded: false))@\(Int(source.time * 10))"
     }
 
     /// Only for a clip, and only once it sets its own filter.
     private var reset: (() -> Void)? {
-        guard viewModel.clipOverridesFilter else { return nil }
-        return { viewModel.resetClipFilter() }
+        guard viewModel.look.clipOverridesFilter else { return nil }
+        return { viewModel.look.resetClipFilter() }
     }
 
     private func card(_ filter: VideoFilter) -> some View {
-        let isOn = viewModel.currentFilter == filter
-        return Button { viewModel.pickFilter(filter) } label: {
+        let isOn = viewModel.look.currentFilter == filter
+        return Button { viewModel.look.pickFilter(filter) } label: {
             VStack(spacing: 6) {
                 Group {
                     if let image = previews[filter] {
@@ -97,7 +97,7 @@ struct FiltersPanel: View {
             previews = kept
             return
         }
-        let source = viewModel.filterPreviewSource
+        let source = viewModel.look.filterPreviewSource
         let frame: UIImage?
         if source.time == 0.3 && source.url == viewModel.videoURL {
             frame = await thumbnails.thumbnail(for: source.url, maxPixelSize: 240)

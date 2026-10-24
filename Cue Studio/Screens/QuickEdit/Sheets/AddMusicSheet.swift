@@ -37,11 +37,11 @@ struct AddMusicSheet: View {
         .fileImporter(isPresented: $picksFile, allowedContentTypes: [.audio]) { result in
             guard case .success(let url) = result else { return }
             Task {
-                await viewModel.importMusic(from: url)
+                await viewModel.audio.importMusic(from: url)
                 if viewModel.selectedMusicID != nil { dismiss() }
             }
         }
-        .onDisappear { viewModel.soundPreviews.stop() }
+        .onDisappear { viewModel.audio.soundPreviews.stop() }
         .cueSheetChrome()
         .presentationDetents([.height(600 + Metrics.sheetBarHeight), .large])
         .presentationDragIndicator(.visible)
@@ -51,7 +51,7 @@ struct AddMusicSheet: View {
     private var filesButton: some View {
         Button { picksFile = true } label: {
             HStack(spacing: 12) {
-                Image(systemName: viewModel.isImportingMusic ? "hourglass" : "music.note")
+                Image(systemName: viewModel.audio.isImportingMusic ? "hourglass" : "music.note")
                     .font(.editorGlyph(EditorGlyph.control, weight: .semibold))
                     .foregroundStyle(Palette.Editor.laneMusicInk)
                     .frame(width: 38, height: 38)
@@ -64,7 +64,7 @@ struct AddMusicSheet: View {
                         .foregroundStyle(Palette.ink2)
                 }
                 Spacer()
-                if viewModel.isImportingMusic {
+                if viewModel.audio.isImportingMusic {
                     ProgressView().tint(Palette.ink)
                 } else {
                     Image(systemName: "plus")
@@ -78,7 +78,7 @@ struct AddMusicSheet: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .disabled(viewModel.isImportingMusic)
+        .disabled(viewModel.audio.isImportingMusic)
         .accessibilityIdentifier("edit.addMusicButton")
     }
 
@@ -104,7 +104,7 @@ struct AddMusicSheet: View {
     /// The name and what it's for (tap to hear) and a separate + (add at the playhead), as tall as the row's tallest.
     private func effectCell(_ effect: SoundEffect) -> some View {
         HStack(spacing: 0) {
-            Button { viewModel.soundPreviews.play(effect) } label: {
+            Button { viewModel.audio.soundPreviews.play(effect) } label: {
                 HStack(spacing: 10) {
                     Image(systemName: effect.systemImage)
                         .font(.system(.subheadline, weight: .semibold))
@@ -130,7 +130,7 @@ struct AddMusicSheet: View {
             .accessibilityLabel(Text("Hear \(effect.label)"))
             .accessibilityIdentifier("edit.effect.play.\(effect.rawValue)")
             Button {
-                viewModel.addSoundEffect(effect)
+                viewModel.audio.addSoundEffect(effect)
                 dismiss()
             } label: {
                 Image(systemName: "plus")

@@ -33,40 +33,40 @@ struct QuickEditReverseTests {
         await viewModel.prepare()
         // A clip from 1 s to 3 s, a title at 2.2 s on it.
         player.seek(to: 1)
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         player.seek(to: 3)
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         player.seek(to: 2.2)
-        viewModel.addText(.title)
+        viewModel.overlays.addText(.title)
         let textID = try #require(viewModel.selectedTextID)
-        let textStart = try #require(viewModel.editedSpan(ofText: textID)).start
+        let textStart = try #require(viewModel.overlays.editedSpan(ofText: textID)).start
         // A voice-over starting at 2.5 s, on the same clip.
         viewModel.change { $0.voiceOvers.append(VoiceOverClip(fileName: "voice.m4a", duration: 0.3, anchor: 2.5)) }
         let voiceStart = try #require(viewModel.edit.voiceOvers.first?.editedSpan(in: viewModel.edit.timeline)).start
         let clip = viewModel.edit.timeline.segments[1]
         viewModel.selection = .clip(clip.id)
         let steps = viewModel.document.history.past.count
-        await viewModel.reverseClip()
+        await viewModel.clips.reverseClip()
         let reversed = viewModel.edit.timeline.segments[1]
         let source = try #require(viewModel.edit.sources.first { $0.id == reversed.sourceID })
         defer { EditMediaFiles.remove([source.fileName]) }
         #expect(source.reversal == ClipReversal(sourceID: nil, span: clip.span))
         #expect(abs(reversed.duration - clip.duration) < 0.001)
         #expect(viewModel.document.history.past.count == steps + 1)
-        #expect(abs((viewModel.editedSpan(ofText: textID)?.start ?? -1) - textStart) < 0.01)
+        #expect(abs((viewModel.overlays.editedSpan(ofText: textID)?.start ?? -1) - textStart) < 0.01)
         #expect(abs((viewModel.edit.voiceOvers.first?.editedSpan(in: viewModel.edit.timeline)?.start ?? -1) - voiceStart) < 0.01)
         // Again: forward, the original stretch of the take.
-        await viewModel.reverseClip()
+        await viewModel.clips.reverseClip()
         let back = viewModel.edit.timeline.segments[1]
         #expect(back.sourceID == nil && abs(back.sourceStart - clip.sourceStart) < 0.001 && abs(back.sourceEnd - clip.sourceEnd) < 0.001)
-        #expect(abs((viewModel.editedSpan(ofText: textID)?.start ?? -1) - textStart) < 0.01)
+        #expect(abs((viewModel.overlays.editedSpan(ofText: textID)?.start ?? -1) - textStart) < 0.01)
         #expect(abs((viewModel.edit.voiceOvers.first?.editedSpan(in: viewModel.edit.timeline)?.start ?? -1) - voiceStart) < 0.01)
         // Once more: the reversed video already written plays again, no new file.
         let sources = viewModel.edit.sources.count
-        await viewModel.reverseClip()
+        await viewModel.clips.reverseClip()
         #expect(viewModel.edit.sources.count == sources)
         #expect(viewModel.edit.timeline.segments[1].sourceID == source.id)
         #expect(abs(viewModel.edit.timeline.segments[1].sourceStart - reversed.sourceStart) < 0.001)
-        #expect(abs((viewModel.editedSpan(ofText: textID)?.start ?? -1) - textStart) < 0.01)
+        #expect(abs((viewModel.overlays.editedSpan(ofText: textID)?.start ?? -1) - textStart) < 0.01)
     }
 }

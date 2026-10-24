@@ -51,25 +51,26 @@ struct LongTakeDeviceTests {
 
         // What every caption read used to cost: mapping all the lines again.
         let mapping = try await Self.time { _ = viewModel.edit.editedCaptionInstances }
-        viewModel.captionMapStore = nil
-        let mapBuilt = try await Self.time { _ = viewModel.captionMap }
+        viewModel.captions.captionMapStore = nil
+        let mapBuilt = try await Self.time { _ = viewModel.captions.captionMap }
         // The line under the playhead, asked every frame while playing.
         let frames = 1800
         let perFrame = try await Self.time {
             for frame in 0..<frames {
                 player.seek(to: Double(frame))
-                _ = viewModel.activeCaptionCueID
+                _ = viewModel.captions.activeCaptionCueID
             }
         } / Double(frames)
         let timeline = try await Self.time { _ = viewModel.timelineInput(heightClass: .regular) }
         // A line corrected twenty times, each an undo step.
         let lineIDs = viewModel.edit.captions.prefix(20).map(\.id)
         let corrected = try await Self.time {
-            for (index, id) in lineIDs.enumerated() { viewModel.setCaptionText(id, "Corrected line \(index)") }
+            for (index, id) in lineIDs.enumerated() { viewModel.captions.setCaptionText(id, "Corrected line \(index)") }
         } / Double(lineIDs.count)
         let draft = QuickEditDraft(takeID: take.id, edit: viewModel.edit, playhead: 600, history: viewModel.document.history, savedAt: .now)
         var bytes = 0
-        let written = try await Self.time { bytes = try JSONEncoder.library.encode(draft).count }
+        // As the store writes it: undo steps thinned to what changes (`QuickEditDraft.thinned`).
+        let written = try await Self.time { bytes = try JSONEncoder.library.encode(draft.thinned()).count }
         let after = MotionAnalysisDeviceTests.footprint()
         print(
             "LONG TAKE editor · \(Self.minutes) min, \(Self.lines) lines"
@@ -101,6 +102,19 @@ struct LongTakeDeviceTests {
         }
         let first = try await RenderParity.frame(try #require(built).asset, composition: built?.videoComposition, at: 905)
         let withPreview = MotionAnalysisDeviceTests.footprint()
+        // What every change after opening costs: the lines are laid out already (`CaptionLineSizes`), and a corrected line
+        // is the only one laid out again.
+        var adjusted = edit
+        adjusted.exposure = 20
+        let again = try await Self.time {
+            _ = try await EditRenderRequest.prepare(source: url, edit: adjusted, purpose: .editorPreview(rendersCurveSound: true), sounds: sounds)
+                .build()
+        }
+        adjusted.captions[300].text = "A corrected line in the middle"
+        let corrected = try await Self.time {
+            _ = try await EditRenderRequest.prepare(source: url, edit: adjusted, purpose: .editorPreview(rendersCurveSound: true), sounds: sounds)
+                .build()
+        }
 
         var treated = edit
         treated.voiceEnhancement = .strong
@@ -113,6 +127,7 @@ struct LongTakeDeviceTests {
         print(
             "LONG TAKE preview · \(Self.minutes) min, \(Self.lines) caption lines"
                 + " · built in \(Self.ms(preview)) · frame \(first.width)×\(first.height)"
+                + " · again after a look change \(Self.ms(again)) · after a corrected line \(Self.ms(corrected))"
                 + " · memory +\((withPreview - before) / 1_048_576) MB"
                 + " · Studio Voice \(String(format: "%.1f s", voice)) for \(size / 1_048_576) MB"
                 + " · budget \(RecordingSoundCache.byteBudget(freeSpace: free) / 1_048_576) MB of \(free / 1_073_741_824) GB free"

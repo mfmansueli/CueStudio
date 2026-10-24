@@ -33,19 +33,19 @@ struct QuickEditMyCaptionStyleTests {
         let styles = FakeTextStyleStore()
         let first = await makeViewModel(styles: styles)
         first.changeEdit { $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)] }
-        first.pickCaptionTheme(.pop)
-        first.saveMyCaptionStyle()
+        first.captions.pickCaptionTheme(.pop)
+        first.captions.saveMyCaptionStyle()
         #expect(styles.myCaptionStyle?.settings.theme == .pop)
-        #expect(first.captionsWearMyStyle)
+        #expect(first.captions.captionsWearMyStyle)
 
         let second = await makeViewModel(styles: styles)
         second.changeEdit { $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)] }
         let margins = second.edit.captionCollection?.safeMargins
-        #expect(!second.captionsWearMyStyle)
-        second.applyMyCaptionStyle()
+        #expect(!second.captions.captionsWearMyStyle)
+        second.captions.applyMyCaptionStyle()
         #expect(second.edit.captionCollection?.theme == .pop)
         #expect(second.edit.captionCollection?.safeMargins == margins)
-        #expect(second.captionsWearMyStyle)
+        #expect(second.captions.captionsWearMyStyle)
         second.undo()
         #expect(second.edit.captionCollection?.theme == .cue)
     }
@@ -59,13 +59,13 @@ struct QuickEditMyCaptionStyleTests {
         styles.myCaptionStyle = MyCaptionStyle(of: saved)
         let viewModel = await makeViewModel(styles: styles)
         var snapshot = EditSnapshot(viewModel.edit)
-        viewModel.startsCaptionsInMyStyle(&snapshot)
+        viewModel.captions.startsCaptionsInMyStyle(&snapshot)
         #expect(snapshot.captionCollection?.theme == .editorial)
         #expect(snapshot.captionCollection?.sizeScale == 1.2)
 
-        viewModel.pickCaptionTheme(.pop)
+        viewModel.captions.pickCaptionTheme(.pop)
         var styled = EditSnapshot(viewModel.edit)
-        viewModel.startsCaptionsInMyStyle(&styled)
+        viewModel.captions.startsCaptionsInMyStyle(&styled)
         #expect(styled.captionCollection?.theme == .pop)
     }
 }

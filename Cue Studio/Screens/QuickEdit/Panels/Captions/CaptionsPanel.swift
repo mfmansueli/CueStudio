@@ -23,7 +23,7 @@ struct CaptionsPanel: View {
 
     var body: some View {
         PanelFrame(viewModel: viewModel, panel: .captions, fixed: {
-            if viewModel.isPickingCaptions {
+            if viewModel.captions.isPickingCaptions {
                 CaptionPickTools(viewModel: viewModel, part: .header)
             } else {
                 controls
@@ -35,13 +35,13 @@ struct CaptionsPanel: View {
                         activeID = id
                         if viewModel.player.isPlaying, picker == nil, let id { scroll(proxy, to: id) }
                     }
-                    if let conflict = viewModel.captionLanguageConflict {
+                    if let conflict = viewModel.captions.captionLanguageConflict {
                         PanelNote(text: conflict.message, tint: Palette.warnText)
                             .accessibilityIdentifier("edit.captionsLanguageNote")
                     }
                     CaptionStatusRow(viewModel: viewModel)
                     // Edit by text from where the words are: cut the video by its words.
-                    if picker == nil, !viewModel.edit.captions.isEmpty, !viewModel.isPickingCaptions {
+                    if picker == nil, !viewModel.edit.captions.isEmpty, !viewModel.captions.isPickingCaptions {
                         PanelButton(
                             label: String(localized: "Edit by text · cut words from the video"), systemImage: "text.badge.minus",
                             identifier: "edit.captionsEditByText"
@@ -65,12 +65,12 @@ struct CaptionsPanel: View {
             }
         }, footer: {
             // Select's actions stay at hand while the lines scroll.
-            if viewModel.isPickingCaptions { CaptionPickTools(viewModel: viewModel, part: .actions) }
+            if viewModel.captions.isPickingCaptions { CaptionPickTools(viewModel: viewModel, part: .actions) }
         })
         // Also on opening: "Fix caption text" opens the panel already asking for the keyboard.
-        .onChange(of: viewModel.focusesCaptionField, initial: true) { _, focuses in
+        .onChange(of: viewModel.captions.focusesCaptionField, initial: true) { _, focuses in
             guard focuses else { return }
-            viewModel.focusesCaptionField = false
+            viewModel.captions.focusesCaptionField = false
             focusesField = true
         }
     }
@@ -115,7 +115,7 @@ struct CaptionsPanel: View {
 
     private var captionsSwitch: some View {
         Button {
-            viewModel.toggleCaptions()
+            viewModel.captions.toggleCaptions()
         } label: {
             PanelSwitch(isOn: viewModel.edit.showsCaptions && !viewModel.edit.captions.isEmpty)
                 .frame(minHeight: Metrics.hitTarget)
@@ -129,16 +129,16 @@ struct CaptionsPanel: View {
     }
 
     private var languageChip: some View {
-        chip(viewModel.captionLanguageLabel, systemImage: "globe", isOn: picker == .language, identifier: "edit.captionsLanguage") {
+        chip(viewModel.captions.captionLanguageLabel, systemImage: "globe", isOn: picker == .language, identifier: "edit.captionsLanguage") {
             picker = picker == .language ? nil : .language
         }
         .accessibilityLabel(Text("Spoken language"))
-        .accessibilityValue(Text(viewModel.captionLanguageLabel))
+        .accessibilityValue(Text(viewModel.captions.captionLanguageLabel))
     }
 
     private var translationChip: some View {
         chip(
-            viewModel.captionTranslationLabel, systemImage: "translate", isOn: picker == .translation,
+            viewModel.captions.captionTranslationLabel, systemImage: "translate", isOn: picker == .translation,
             tinted: viewModel.edit.captionDisplay != .original, identifier: "edit.captionsTranslateButton"
         ) {
             picker = picker == .translation ? nil : .translation
@@ -196,19 +196,19 @@ struct CaptionsPanel: View {
                 + CueLanguage.allCases.map { PanelOption(Optional($0), $0.nativeName, key: $0.rawValue) },
             selection: viewModel.edit.captionLanguage, identifier: "edit.captionsLanguage"
         ) { language in
-            viewModel.setCaptionLanguage(language)
+            viewModel.captions.setCaptionLanguage(language)
             picker = nil
         }
     }
 
     @ViewBuilder
     private var translationList: some View {
-        if let message = viewModel.translationState.message {
+        if let message = viewModel.captions.translationState.message {
             HStack(spacing: 10) {
-                if viewModel.translationState.isWorking { ProgressView().controlSize(.small).tint(Palette.ink) }
+                if viewModel.captions.translationState.isWorking { ProgressView().controlSize(.small).tint(Palette.ink) }
                 Text(message)
                     .font(.system(.footnote))
-                    .foregroundStyle(viewModel.translationState.isWorking ? Palette.ink2 : Palette.warnText)
+                    .foregroundStyle(viewModel.captions.translationState.isWorking ? Palette.ink2 : Palette.warnText)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("translation.status")
             }
@@ -216,32 +216,32 @@ struct CaptionsPanel: View {
         PanelInlineList(
             note: String(localized: "Translated on your iPhone · Nothing is sent"),
             options: [PanelOption(CueLanguage?.none, String(localized: "Off"), key: "off")]
-                + viewModel.translationTargets.map { PanelOption(Optional($0), $0.nativeName, key: $0.rawValue) },
+                + viewModel.captions.translationTargets.map { PanelOption(Optional($0), $0.nativeName, key: $0.rawValue) },
             selection: viewModel.edit.captionDisplay.language, identifier: "edit.captionsTranslation"
         ) { language in
             Task {
-                await viewModel.pickCaptionTranslation(language)
-                if !viewModel.translationState.isWorking, viewModel.translationState.message == nil { picker = nil }
+                await viewModel.captions.pickCaptionTranslation(language)
+                if !viewModel.captions.translationState.isWorking, viewModel.captions.translationState.message == nil { picker = nil }
             }
         }
-        .disabled(viewModel.translationState.isWorking)
+        .disabled(viewModel.captions.translationState.isWorking)
         PanelButton(
             label: String(localized: "Edit translations"), systemImage: "character.bubble",
             identifier: "edit.captionsEditTranslation"
-        ) { viewModel.showsTranslation = true }
+        ) { viewModel.captions.showsTranslation = true }
     }
 
     /// The lines, each a card. A long take's hundreds are made as they scroll into view (the few of a short video all at once,
     /// so the next line's field is there to take the keyboard).
     private var lines: some View {
         VStack(spacing: 8) {
-            let lines = viewModel.captionListLines
+            let lines = viewModel.captions.captionListLines
             if lines.count > Self.linesMadeAtOnce {
                 LazyVStack(spacing: 8) { lineCards(lines) }
             } else {
                 lineCards(lines)
             }
-            if !viewModel.isPickingCaptions { addAndDeleteAll(hasLines: !lines.isEmpty) }
+            if !viewModel.captions.isPickingCaptions { addAndDeleteAll(hasLines: !lines.isEmpty) }
         }
     }
 
@@ -254,7 +254,7 @@ struct CaptionsPanel: View {
                 viewModel: viewModel, line: instance.line, cueID: instance.cueID,
                 isSelected: viewModel.selection == .caption(instance.cueID),
                 isActive: activeID == instance.cueID, index: index, focusesField: $focusesField,
-                isPicked: viewModel.captionPicks.map { $0.contains(instance.cueID) }
+                isPicked: viewModel.captions.captionPicks.map { $0.contains(instance.cueID) }
             )
             .id(instance.cueID)
         }
@@ -262,7 +262,7 @@ struct CaptionsPanel: View {
 
     @ViewBuilder
     private func addAndDeleteAll(hasLines: Bool) -> some View {
-        Button(action: viewModel.addCaptionAtPlayhead) {
+        Button(action: viewModel.captions.addCaptionAtPlayhead) {
             Label("Add a line at the playhead", systemImage: "plus")
                 .font(.system(.subheadline, weight: .semibold))
                 .foregroundStyle(Palette.ink2)
@@ -274,7 +274,7 @@ struct CaptionsPanel: View {
         .accessibilityIdentifier("edit.captionsAddButton")
         if hasLines {
             // Every line at once; Undo in the toast brings them back.
-            Button(action: viewModel.deleteAllCaptions) {
+            Button(action: viewModel.captions.deleteAllCaptions) {
                 Label("Delete all captions", systemImage: "trash")
                     .font(.system(.subheadline, weight: .semibold))
                     .foregroundStyle(Palette.dangerText)
@@ -298,13 +298,13 @@ struct CaptionsPanel: View {
     private var findButton: some View {
         PanelButton(
             label: String(localized: "Find and replace"), systemImage: "text.magnifyingglass", identifier: "edit.captionsFind"
-        ) { viewModel.openCaptionFind() }
+        ) { viewModel.captions.openCaptionFind() }
     }
 
     private var selectButton: some View {
         PanelButton(
             label: String(localized: "Select lines"), systemImage: "checkmark.circle", identifier: "edit.captionsSelect"
-        ) { viewModel.startPickingCaptions() }
+        ) { viewModel.captions.startPickingCaptions() }
     }
 
     private func scroll(_ proxy: ScrollViewProxy, to id: UUID) {

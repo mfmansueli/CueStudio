@@ -53,6 +53,11 @@ final class TimelineFrameCache {
         return nearest(to: key)
     }
 
+    /// Whether the frame at `time` of `url` on `grid` itself is in (not a stand-in).
+    func hasExactImage(for url: URL, at time: TimeInterval, grid: TimeInterval) -> Bool {
+        images[Self.key(url, time, grid)] != nil
+    }
+
     func cancel() {
         worker?.cancel()
         notifyTask?.cancel()

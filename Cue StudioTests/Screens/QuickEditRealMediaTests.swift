@@ -88,11 +88,11 @@ extension RealMedia {
             defer { cleanUp(opened) }
             let viewModel = opened.viewModel
             viewModel.player.seek(to: 2)
-            viewModel.selectClipAtPlayhead()
-            viewModel.splitClip()
+            viewModel.clips.selectClipAtPlayhead()
+            viewModel.clips.splitClip()
             #expect(viewModel.edit.timeline.segments.count == 2)
             try await settle(viewModel)
-            viewModel.deleteClip(viewModel.edit.timeline.segments[0].id)
+            viewModel.clips.deleteClip(viewModel.edit.timeline.segments[0].id)
             try await settle(viewModel)
             #expect(abs(viewModel.edit.editedDuration - 4) < 0.05)
             viewModel.undo()
@@ -107,19 +107,19 @@ extension RealMedia {
             defer { cleanUp(opened) }
             let viewModel = opened.viewModel
             viewModel.player.seek(to: 2)
-            await viewModel.freezeFrame()
+            await viewModel.clips.freezeFrame()
             let frozen = try #require(viewModel.edit.sources.first)
             #expect(FileManager.default.fileExists(atPath: EditMediaFiles.url(for: frozen.fileName).path(percentEncoded: false)))
             #expect(viewModel.edit.timeline.segments.count == 3)
             try await settle(viewModel)
 
             viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
-            await viewModel.reverseClip()
+            await viewModel.clips.reverseClip()
             #expect(viewModel.edit.sources.contains { $0.reversal != nil })
             try await settle(viewModel)
 
             viewModel.selection = .clip(viewModel.edit.timeline.segments[2].id)
-            await viewModel.extractAudio()
+            await viewModel.audio.extractAudio()
             let sound = try #require(viewModel.edit.music.first)
             #expect(FileManager.default.fileExists(atPath: EditMediaFiles.url(for: sound.fileName).path(percentEncoded: false)))
             #expect(viewModel.edit.timeline.segments[2].isMuted)
@@ -133,9 +133,9 @@ extension RealMedia {
             let drafts = QuickEditDraftStore(directory: directory)
             let first = try await open(drafts: drafts)
             first.viewModel.player.seek(to: 2)
-            first.viewModel.selectClipAtPlayhead()
-            first.viewModel.splitClip()
-            first.viewModel.pickFilter(.warmFilm)
+            first.viewModel.clips.selectClipAtPlayhead()
+            first.viewModel.clips.splitClip()
+            first.viewModel.look.pickFilter(.warmFilm)
             first.viewModel.pauseAndKeepDraft()
             let left = first.viewModel.edit
 

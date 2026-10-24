@@ -112,6 +112,46 @@ struct QuickEditDraftStoreTests {
         }
     }
 
+    /// A long take proofread line by line: every undo step changes one line (one adds a line, one deletes one), and each is
+    /// written as the lines it changes (with the order when lines came or went), not as all of them; undoing reads them back.
+    @Test func lineByLineCorrectionsAreWrittenAsTheLinesTheyChange() throws {
+        let directory = temporaryDirectory()
+        defer { try? FileManager.default.removeItem(at: directory.deletingLastPathComponent()) }
+        var edit = TakeEdit(sourceDuration: 1800, aspect: .portrait)
+        edit.captions = (0..<600).map { index in
+            CaptionCue(text: "Line \(index) of a thirty-minute take", start: Double(index) * 3, end: Double(index) * 3 + 2.6)
+        }
+        var history = EditHistory<EditSnapshot>()
+        var wanted: [[CaptionCue]] = []
+        for step in 0..<20 {
+            history.record(EditSnapshot(edit))
+            wanted.append(edit.captions)
+            switch step {
+            case 7: edit.captions.insert(CaptionCue(text: "A new line", start: 1000.1, end: 1000.9, origin: .manual), at: 334)
+            case 13: edit.captions.remove(at: 40)
+            default: edit.captions[step * 25].text = "Corrected line \(step)"
+            }
+        }
+        let saved = QuickEditDraft(takeID: UUID(), edit: edit, playhead: 0, history: history, savedAt: TestData.now)
+        let store = QuickEditDraftStore(directory: directory)
+        try store.save(saved)
+        let size = try Data(contentsOf: directory.appending(path: "\(saved.takeID.uuidString).json")).count
+        let alone = QuickEditDraft(takeID: saved.takeID, edit: edit, playhead: 0, history: EditHistory(), savedAt: TestData.now)
+        let current = try JSONEncoder().encode(alone).count
+        let line = "DRAFT 600 lines, 20 line steps · \(size / 1024) KB written · the edit alone \(current / 1024) KB"
+        Attachment.record(line, named: "draft.txt")
+        // The steps add little to the edit itself.
+        #expect(size < current * 2, "\(size) bytes written, \(current) for the edit alone")
+        var loaded = try #require(store.draft(for: saved.takeID))
+        var now = loaded.edit
+        for lines in wanted.reversed() {
+            let undone = loaded.history.undo(from: EditSnapshot(now))
+            let step = try #require(undone)
+            now.apply(step)
+            #expect(now.captions == lines)
+        }
+    }
+
     @Test func anUnreadableDraftCountsAsNone() throws {
         let directory = temporaryDirectory()
         defer { try? FileManager.default.removeItem(at: directory.deletingLastPathComponent()) }

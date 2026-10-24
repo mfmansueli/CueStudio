@@ -41,13 +41,13 @@ struct OverlayEditingLayer: View {
         ZStack(alignment: .topLeading) {
             Color.clear.allowsHitTesting(false)
             if drag != nil { dragGuides }
-            if !viewModel.player.isPlaying, let caption = viewModel.previewCaption(in: size) {
+            if !viewModel.player.isPlaying, let caption = viewModel.captions.previewCaption(in: size) {
                 captionHandle(caption.id, frame: caption.frame)
             }
             ForEach(handledMedia) { media in
                 mediaHandle(media)
             }
-            ForEach(viewModel.visibleTexts) { text in
+            ForEach(viewModel.overlays.visibleTexts) { text in
                 textHandle(text)
             }
         }
@@ -59,7 +59,7 @@ struct OverlayEditingLayer: View {
 
     /// The windows showing at the playhead, bottom to top, with the picked one last (on top, so it stays reachable).
     private var handledMedia: [MediaOverlay] {
-        let windows = viewModel.visibleMediaStack.filter { $0.layout == .window }
+        let windows = viewModel.overlays.visibleMediaStack.filter { $0.layout == .window }
         let picked = viewModel.selection?.mediaID
         return windows.filter { $0.id != picked } + windows.filter { $0.id == picked }
     }
@@ -68,7 +68,7 @@ struct OverlayEditingLayer: View {
 
     @ViewBuilder
     private var dragGuides: some View {
-        let safe = viewModel.safeArea(in: size)
+        let safe = viewModel.overlays.safeArea(in: size)
         RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
             .strokeBorder(Palette.Camera.safeZoneLine, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
             .frame(width: safe.width, height: safe.height)
@@ -89,17 +89,17 @@ struct OverlayEditingLayer: View {
     // MARK: - Text
 
     private func textHandle(_ text: TextOverlay) -> some View {
-        let rect = viewModel.frame(ofText: text, in: size)
+        let rect = viewModel.overlays.frame(ofText: text, in: size)
         let isSelected = viewModel.selection == .text(text.id)
         let offset: CGSize = if case .text(text.id, let moved) = drag { moved } else { .zero }
         let scale: CGFloat = if case .scale(text.id, let translation) = drag {
-            CGFloat(QuickEditViewModel.scaleFactor(for: translation))
+            CGFloat(OverlaysViewModel.scaleFactor(for: translation))
         } else {
             1
         }
         let isDragged = offset != .zero || scale != 1
         return ZStack {
-            if isDragged, let image = viewModel.image(ofText: text, width: size.width) {
+            if isDragged, let image = viewModel.overlays.image(ofText: text, width: size.width) {
                 // The video leaves the text out while it moves: this is the only copy.
                 Image(uiImage: image)
                     .resizable()
@@ -109,14 +109,14 @@ struct OverlayEditingLayer: View {
                 .fill(Color.clear)
                 .contentShape(Rectangle())
                 .frame(width: max(rect.width, Metrics.hitTarget), height: max(rect.height, Metrics.hitTarget))
-                .onTapGesture { viewModel.tapText(text.id) }
+                .onTapGesture { viewModel.overlays.tapText(text.id) }
                 .gesture(moveGesture(text))
                 // VoiceOver: the text itself, activated like a tap, placed with its actions; Delete and Scale stay apart.
                 .accessibilityElement()
                 .accessibilityLabel(Text(text.isEmpty ? text.role.label : text.displayText))
                 .accessibilityHint(isSelected ? Text("Tap to style") : Text("Tap to select"))
                 .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
-                .accessibilityAction { viewModel.tapText(text.id) }
+                .accessibilityAction { viewModel.overlays.tapText(text.id) }
                 .accessibilityActions { placingActions(.text(text.id)) }
                 .accessibilityIdentifier("edit.textHandle")
             if isSelected {
@@ -125,7 +125,7 @@ struct OverlayEditingLayer: View {
                     .frame(width: rect.width * scale + 10, height: rect.height * scale + 10)
                     .allowsHitTesting(false)
                 cornerButton("xmark", label: Text("Delete text"), id: "edit.textDelete") {
-                    viewModel.deleteText(text.id)
+                    viewModel.overlays.deleteText(text.id)
                 }
                 .offset(x: -(rect.width * scale / 2 + 5), y: -(rect.height * scale / 2 + 5))
                 cornerButton("arrow.up.left.and.arrow.down.right", label: Text("Scale text"), id: "edit.textScale") {}
@@ -137,16 +137,16 @@ struct OverlayEditingLayer: View {
         .accessibilityElement(children: .contain)
     }
 
-    /// VoiceOver's drag and pinch: a step up, down, left or right, bigger or smaller (`QuickEditViewModel+OverlayAccessibility`).
+    /// VoiceOver's drag and pinch: a step up, down, left or right, bigger or smaller (`OverlaysViewModel+Accessibility`).
     @ViewBuilder
-    private func placingActions(_ item: QuickEditViewModel.MotionItem) -> some View {
-        let step = QuickEditViewModel.overlayStep
-        Button("Move up") { viewModel.nudgeOverlay(item, x: 0, y: -step) }
-        Button("Move down") { viewModel.nudgeOverlay(item, x: 0, y: step) }
-        Button("Move left") { viewModel.nudgeOverlay(item, x: -step, y: 0) }
-        Button("Move right") { viewModel.nudgeOverlay(item, x: step, y: 0) }
-        Button("Bigger") { viewModel.resizeOverlay(item, bigger: true) }
-        Button("Smaller") { viewModel.resizeOverlay(item, bigger: false) }
+    private func placingActions(_ item: OverlaysViewModel.MotionItem) -> some View {
+        let step = OverlaysViewModel.overlayStep
+        Button("Move up") { viewModel.overlays.nudgeOverlay(item, x: 0, y: -step) }
+        Button("Move down") { viewModel.overlays.nudgeOverlay(item, x: 0, y: step) }
+        Button("Move left") { viewModel.overlays.nudgeOverlay(item, x: -step, y: 0) }
+        Button("Move right") { viewModel.overlays.nudgeOverlay(item, x: step, y: 0) }
+        Button("Bigger") { viewModel.overlays.resizeOverlay(item, bigger: true) }
+        Button("Smaller") { viewModel.overlays.resizeOverlay(item, bigger: false) }
     }
 
     /// White, 24 pt, held from 44 pt.
@@ -172,14 +172,14 @@ struct OverlayEditingLayer: View {
                 if drag == nil {
                     viewModel.player.pause()
                     if viewModel.selection != .text(text.id) { viewModel.selection = .text(text.id) }
-                    viewModel.beginOverlayDrag(.text(text.id))
+                    viewModel.overlays.beginOverlayDrag(.text(text.id))
                 }
-                let shown = viewModel.motionState(of: .text(text.id)).center
+                let shown = viewModel.overlays.motionState(of: .text(text.id)).center
                 let proposed = OverlayPoint(
                     x: shown.x + Double(value.translation.width / max(1, size.width)),
                     y: shown.y + Double(value.translation.height / max(1, size.height))
                 )
-                let snapped = QuickEditViewModel.snapped(proposed)
+                let snapped = OverlaysViewModel.snapped(proposed)
                 if (snapped.vertical && !guides.vertical) || (snapped.horizontal && !guides.horizontal) { Haptics.snap() }
                 guides = (snapped.vertical, snapped.horizontal)
                 drag = .text(text.id, offset: CGSize(
@@ -188,14 +188,14 @@ struct OverlayEditingLayer: View {
                 ))
             }
             .onEnded { value in
-                let shown = viewModel.motionState(of: .text(text.id)).center
+                let shown = viewModel.overlays.motionState(of: .text(text.id)).center
                 let proposed = OverlayPoint(
                     x: shown.x + Double(value.translation.width / max(1, size.width)),
                     y: shown.y + Double(value.translation.height / max(1, size.height))
                 )
-                viewModel.moveText(text.id, to: QuickEditViewModel.snapped(proposed).center)
+                viewModel.overlays.moveText(text.id, to: OverlaysViewModel.snapped(proposed).center)
                 endDrag()
-                viewModel.endOverlayDrag()
+                viewModel.overlays.endOverlayDrag()
             }
     }
 
@@ -204,14 +204,14 @@ struct OverlayEditingLayer: View {
             .onChanged { value in
                 if drag == nil {
                     viewModel.player.pause()
-                    viewModel.beginOverlayDrag(.text(text.id))
+                    viewModel.overlays.beginOverlayDrag(.text(text.id))
                 }
                 drag = .scale(text.id, translation: value.translation)
             }
             .onEnded { value in
-                viewModel.scaleText(text.id, by: value.translation)
+                viewModel.overlays.scaleText(text.id, by: value.translation)
                 endDrag()
-                viewModel.endOverlayDrag()
+                viewModel.overlays.endOverlayDrag()
             }
     }
 
@@ -225,13 +225,13 @@ struct OverlayEditingLayer: View {
     private func captionHandle(_ id: UUID, frame: CGRect) -> some View {
         let isSelected = viewModel.selection == .caption(id)
         let draggedY: Double? = if case .caption(id, let y) = drag { y } else { nil }
-        let offset = draggedY.map { CGFloat($0 - viewModel.captionY) * size.height } ?? 0
+        let offset = draggedY.map { CGFloat($0 - viewModel.captions.captionY) * size.height } ?? 0
         return ZStack {
             Rectangle()
                 .fill(Color.clear)
                 .contentShape(Rectangle())
                 .frame(width: max(frame.width, Metrics.hitTarget), height: max(frame.height, Metrics.hitTarget))
-                .onTapGesture { viewModel.tapCaption(id) }
+                .onTapGesture { viewModel.captions.tapCaption(id) }
                 .gesture(captionGesture(id))
             if isSelected || draggedY != nil {
                 RoundedRectangle(cornerRadius: Metrics.editorHandleRadius, style: .continuous)
@@ -255,13 +255,13 @@ struct OverlayEditingLayer: View {
                     viewModel.player.pause()
                     if viewModel.selection != .caption(id) { viewModel.selection = .caption(id) }
                 }
-                let placed = QuickEditViewModel.snappedCaption(viewModel.captionY + Double(value.translation.height / max(1, size.height)))
+                let placed = CaptionsViewModel.snappedCaption(viewModel.captions.captionY + Double(value.translation.height / max(1, size.height)))
                 if placed.stop != nil, !guides.horizontal { Haptics.snap() }
                 guides = (false, placed.stop == 0.5)
                 drag = .caption(id, y: placed.y)
             }
             .onEnded { value in
-                viewModel.moveCaptions(toY: viewModel.captionY + Double(value.translation.height / max(1, size.height)))
+                viewModel.captions.moveCaptions(toY: viewModel.captions.captionY + Double(value.translation.height / max(1, size.height)))
                 endDrag()
             }
     }
@@ -269,7 +269,7 @@ struct OverlayEditingLayer: View {
     // MARK: - Media
 
     private func mediaHandle(_ media: MediaOverlay) -> some View {
-        let rect = viewModel.frame(ofMedia: media, in: size)
+        let rect = viewModel.overlays.frame(ofMedia: media, in: size)
         let isSelected = viewModel.selection == .media(media.id)
         let offset: CGSize = if case .media(media.id, let moved) = drag { moved } else { .zero }
         let scale: CGFloat = pinch?.id == media.id ? pinch?.scale ?? 1 : 1
@@ -290,7 +290,7 @@ struct OverlayEditingLayer: View {
                 .frame(width: rect.width * scale, height: rect.height * scale)
                 .contentShape(Rectangle())
         }
-        .onTapGesture(coordinateSpace: .named(Self.space)) { location in viewModel.tapMedia(at: location, in: size) }
+        .onTapGesture(coordinateSpace: .named(Self.space)) { location in viewModel.overlays.tapMedia(at: location, in: size) }
         .gesture(
             DragGesture(minimumDistance: 3, coordinateSpace: .named(Self.space))
                 .onChanged { value in
@@ -299,7 +299,7 @@ struct OverlayEditingLayer: View {
                         x: Double(rect.midX + value.translation.width) / Double(max(1, size.width)),
                         y: Double(rect.midY + value.translation.height) / Double(max(1, size.height))
                     )
-                    let snapped = QuickEditViewModel.snapped(proposed)
+                    let snapped = OverlaysViewModel.snapped(proposed)
                     if (snapped.vertical && !guides.vertical) || (snapped.horizontal && !guides.horizontal) { Haptics.snap() }
                     guides = (snapped.vertical, snapped.horizontal)
                     drag = .media(media.id, offset: CGSize(
@@ -312,10 +312,10 @@ struct OverlayEditingLayer: View {
                         x: Double(rect.midX + value.translation.width) / Double(max(1, size.width)),
                         y: Double(rect.midY + value.translation.height) / Double(max(1, size.height))
                     )
-                    viewModel.moveMedia(media.id, to: QuickEditViewModel.snapped(proposed).center)
+                    viewModel.overlays.moveMedia(media.id, to: OverlaysViewModel.snapped(proposed).center)
                     endDrag()
                     proxy = nil
-                    viewModel.endOverlayDrag()
+                    viewModel.overlays.endOverlayDrag()
                 }
         )
         .simultaneousGesture(
@@ -325,10 +325,10 @@ struct OverlayEditingLayer: View {
                     pinch = (media.id, value.magnification)
                 }
                 .onEnded { value in
-                    viewModel.resizeMedia(media.id, by: Double(value.magnification))
+                    viewModel.overlays.resizeMedia(media.id, by: Double(value.magnification))
                     pinch = nil
                     proxy = nil
-                    viewModel.endOverlayDrag()
+                    viewModel.overlays.endOverlayDrag()
                 }
         )
         .position(x: rect.midX + offset.width, y: rect.midY + offset.height)
@@ -338,7 +338,7 @@ struct OverlayEditingLayer: View {
             isSelected ? Text("Drag to move, pinch to resize, or use the actions. Tap where another overlaps to pick it.") : Text("Tap to select")
         )
         .accessibilityAddTraits(isSelected ? [.isButton, .isSelected] : .isButton)
-        .accessibilityAction { viewModel.tapMedia(at: CGPoint(x: rect.midX, y: rect.midY), in: size) }
+        .accessibilityAction { viewModel.overlays.tapMedia(at: CGPoint(x: rect.midX, y: rect.midY), in: size) }
         .accessibilityActions { placingActions(.media(media.id)) }
         .accessibilityIdentifier("edit.mediaHandle")
     }
@@ -347,13 +347,13 @@ struct OverlayEditingLayer: View {
     private func beginMoving(_ media: MediaOverlay) {
         viewModel.player.pause()
         if viewModel.selection != .media(media.id) { viewModel.selection = .media(media.id) }
-        viewModel.beginOverlayDrag(.media(media.id))
+        viewModel.overlays.beginOverlayDrag(.media(media.id))
         let local = max(0, viewModel.player.currentTime - (viewModel.mediaBars.first { $0.id == media.id }?.span.start ?? 0))
         Task {
             let image = await thumbnails.picture(
                 of: EditMediaFiles.url(for: media.fileName), isVideo: media.kind == .video, at: local, maxPixelSize: 720
             )
-            if let image, viewModel.draggedOverlay == .media(media.id) { proxy = (media.id, image) }
+            if let image, viewModel.overlays.draggedOverlay == .media(media.id) { proxy = (media.id, image) }
         }
     }
 }

@@ -38,10 +38,10 @@ struct QuickEditClipLookTests {
     /// Three clips: 0–7.1, 7.1–10.1, 10.1–21.6.
     private func split(_ scenario: Scenario) {
         scenario.player.seek(to: 7.1)
-        scenario.viewModel.selectClipAtPlayhead()
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.selectClipAtPlayhead()
+        scenario.viewModel.clips.splitClip()
         scenario.player.seek(to: 10.1)
-        scenario.viewModel.splitClip()
+        scenario.viewModel.clips.splitClip()
         scenario.viewModel.selection = nil
     }
 
@@ -57,14 +57,14 @@ struct QuickEditClipLookTests {
         split(scenario)
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.adjust))
-        #expect(viewModel.lookClip?.id == viewModel.edit.timeline.segments[1].id)
+        #expect(viewModel.look.lookClip?.id == viewModel.edit.timeline.segments[1].id)
         #expect(viewModel.panelSubtitle(.adjust) == "Clip 2 of 3 · the rest stays as it is")
-        viewModel.setAdjustment(.exposure, 40)
+        viewModel.look.setAdjustment(.exposure, 40)
         #expect(viewModel.edit.exposure == 0)
         #expect(viewModel.edit.timeline.segments[1].look?.exposure == 40)
         #expect(viewModel.edit.timeline.segments[0].look == nil)
         #expect(viewModel.edit.timeline.segments[2].look == nil)
-        #expect(viewModel.adjustment(.exposure) == 40)
+        #expect(viewModel.look.adjustment(.exposure) == 40)
     }
 
     @Test func openedFromTheMainToolbarChangesTheWholeTake() async {
@@ -72,8 +72,8 @@ struct QuickEditClipLookTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.adjust))
-        #expect(viewModel.lookClip == nil)
-        viewModel.setAdjustment(.exposure, 25)
+        #expect(viewModel.look.lookClip == nil)
+        viewModel.look.setAdjustment(.exposure, 25)
         #expect(viewModel.edit.exposure == 25)
         #expect(viewModel.edit.timeline.segments.allSatisfy { $0.look == nil })
         #expect(viewModel.panelSubtitle(.adjust) == "Whole video")
@@ -84,17 +84,17 @@ struct QuickEditClipLookTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.adjust))
-        viewModel.setAdjustment(.contrast, 30)
-        viewModel.setAdjustment(.warmth, 10)
+        viewModel.look.setAdjustment(.contrast, 30)
+        viewModel.look.setAdjustment(.warmth, 10)
         viewModel.panel = nil
         pick(viewModel, clip: 2)
         viewModel.perform(.open(.adjust))
-        #expect(viewModel.adjustment(.contrast) == 30)
-        #expect(!viewModel.clipOverrides(.contrast))
-        viewModel.setAdjustment(.warmth, -20)
-        #expect(viewModel.adjustment(.warmth) == -20)
-        #expect(viewModel.adjustment(.contrast) == 30)
-        #expect(viewModel.clipOverrides(.warmth) && !viewModel.clipOverrides(.contrast))
+        #expect(viewModel.look.adjustment(.contrast) == 30)
+        #expect(!viewModel.look.clipOverrides(.contrast))
+        viewModel.look.setAdjustment(.warmth, -20)
+        #expect(viewModel.look.adjustment(.warmth) == -20)
+        #expect(viewModel.look.adjustment(.contrast) == 30)
+        #expect(viewModel.look.clipOverrides(.warmth) && !viewModel.look.clipOverrides(.contrast))
         // The take keeps its own.
         #expect(viewModel.edit.warmth == 10)
     }
@@ -104,19 +104,19 @@ struct QuickEditClipLookTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.adjust))
-        viewModel.setAdjustment(.exposure, 20)
+        viewModel.look.setAdjustment(.exposure, 20)
         viewModel.panel = nil
         pick(viewModel, clip: 0)
         viewModel.perform(.open(.adjust))
-        viewModel.setAdjustment(.exposure, -30)
-        viewModel.setAdjustment(.shadows, 15)
-        #expect(viewModel.hasAdjustments)
-        viewModel.resetAdjustment(.exposure)
-        #expect(viewModel.adjustment(.exposure) == 20)
+        viewModel.look.setAdjustment(.exposure, -30)
+        viewModel.look.setAdjustment(.shadows, 15)
+        #expect(viewModel.look.hasAdjustments)
+        viewModel.look.resetAdjustment(.exposure)
+        #expect(viewModel.look.adjustment(.exposure) == 20)
         #expect(viewModel.edit.timeline.segments[0].look?.shadows == 15)
-        viewModel.resetAdjustments()
+        viewModel.look.resetAdjustments()
         #expect(viewModel.edit.timeline.segments[0].look == nil)
-        #expect(!viewModel.hasAdjustments)
+        #expect(!viewModel.look.hasAdjustments)
     }
 
     @Test func aWholeTakeSubtitleSaysWhenSomeClipsKeepTheirOwn() async {
@@ -125,7 +125,7 @@ struct QuickEditClipLookTests {
         split(scenario)
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.filters))
-        viewModel.pickFilter(.mono)
+        viewModel.look.pickFilter(.mono)
         viewModel.panel = nil
         viewModel.selection = nil
         viewModel.perform(.open(.filters))
@@ -141,21 +141,21 @@ struct QuickEditClipLookTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.filters))
-        viewModel.pickFilter(.warm)
+        viewModel.look.pickFilter(.warm)
         viewModel.panel = nil
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.filters))
-        #expect(viewModel.currentFilter == .warm)
-        #expect(!viewModel.clipOverridesFilter)
-        viewModel.pickFilter(.mono)
-        #expect(viewModel.currentFilter == .mono && viewModel.currentFilterAmount == 1)
+        #expect(viewModel.look.currentFilter == .warm)
+        #expect(!viewModel.look.clipOverridesFilter)
+        viewModel.look.pickFilter(.mono)
+        #expect(viewModel.look.currentFilter == .mono && viewModel.look.currentFilterAmount == 1)
         #expect(viewModel.edit.filter == .warm)
-        viewModel.setFilterAmount(0.4)
+        viewModel.look.setFilterAmount(0.4)
         #expect(viewModel.edit.timeline.segments[1].look?.filterAmount == 0.4)
         #expect(viewModel.edit.filterAmount == 1)
-        #expect(viewModel.clipOverridesFilter)
-        viewModel.resetClipFilter()
-        #expect(viewModel.currentFilter == .warm)
+        #expect(viewModel.look.clipOverridesFilter)
+        viewModel.look.resetClipFilter()
+        #expect(viewModel.look.currentFilter == .warm)
         #expect(viewModel.edit.timeline.segments[1].look == nil)
     }
 
@@ -164,13 +164,13 @@ struct QuickEditClipLookTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.filters))
-        viewModel.pickFilter(.warm)
+        viewModel.look.pickFilter(.warm)
         viewModel.panel = nil
         #expect(viewModel.timelineInput(heightClass: .regular).clips.allSatisfy { $0.badge == nil })
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.filters))
-        viewModel.pickFilter(.mono)
-        viewModel.setAdjustment(.exposure, 10)
+        viewModel.look.pickFilter(.mono)
+        viewModel.look.setAdjustment(.exposure, 10)
         let clips = viewModel.timelineInput(heightClass: .regular).clips
         #expect(clips[0].badge == nil && clips[2].badge == nil)
         #expect(clips[1].badge == "\(VideoFilter.mono.label) · Adjusted")
@@ -186,14 +186,14 @@ struct QuickEditClipLookTests {
         viewModel.perform(.open(.filters))
         pick(viewModel, clip: 2)
         #expect(viewModel.panel == .filters)
-        #expect(viewModel.lookClip?.id == viewModel.edit.timeline.segments[2].id)
+        #expect(viewModel.look.lookClip?.id == viewModel.edit.timeline.segments[2].id)
         viewModel.selection = nil
         #expect(viewModel.panel == nil)
-        #expect(!viewModel.lookScopeIsClip)
+        #expect(!viewModel.look.lookScopeIsClip)
         viewModel.perform(.open(.filters))
         viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
         #expect(viewModel.panel == .filters)
-        #expect(viewModel.lookClip == nil)
+        #expect(viewModel.look.lookClip == nil)
     }
 
     // MARK: - Undo and splitting
@@ -204,7 +204,7 @@ struct QuickEditClipLookTests {
         split(scenario)
         pick(viewModel, clip: 0)
         viewModel.perform(.open(.filters))
-        viewModel.pickFilter(.mono)
+        viewModel.look.pickFilter(.mono)
         viewModel.panel = nil
         #expect(viewModel.edit.timeline.segments[0].look?.filter == .mono)
         viewModel.undo()
@@ -213,7 +213,7 @@ struct QuickEditClipLookTests {
         #expect(viewModel.edit.timeline.segments[0].look?.filter == .mono)
         scenario.player.seek(to: 3)
         pick(viewModel, clip: 0)
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         let segments = viewModel.edit.timeline.segments
         #expect(segments.count == 4)
         #expect(segments[0].look?.filter == .mono && segments[1].look?.filter == .mono)
@@ -227,21 +227,21 @@ struct QuickEditClipLookTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.background))
-        viewModel.setBackgroundStyle(.blur)
+        viewModel.look.setBackgroundStyle(.blur)
         viewModel.panel = nil
         pick(viewModel, clip: 1)
         viewModel.perform(.open(.background))
-        #expect(viewModel.currentBackground.style == .blur)
-        #expect(!viewModel.clipOverridesBackground)
-        viewModel.setBackgroundStyle(.color)
+        #expect(viewModel.look.currentBackground.style == .blur)
+        #expect(!viewModel.look.clipOverridesBackground)
+        viewModel.look.setBackgroundStyle(.color)
         #expect(viewModel.edit.timeline.segments[1].look?.background?.style == .color)
         #expect(viewModel.edit.background(for: nil)?.style == .blur)
         #expect(viewModel.edit.background(for: viewModel.edit.timeline.segments[0])?.style == .blur)
         // Back to what its recording has: the clip inherits again.
-        viewModel.setBackgroundStyle(.blur)
+        viewModel.look.setBackgroundStyle(.blur)
         #expect(viewModel.edit.timeline.segments[1].look == nil)
-        viewModel.setBackgroundStyle(.color)
-        viewModel.resetClipBackground()
+        viewModel.look.setBackgroundStyle(.color)
+        viewModel.look.resetClipBackground()
         #expect(viewModel.edit.timeline.segments[1].look == nil)
     }
 
@@ -250,12 +250,12 @@ struct QuickEditClipLookTests {
         let viewModel = scenario.viewModel
         split(scenario)
         viewModel.perform(.open(.background))
-        viewModel.setBackgroundStyle(.blur)
+        viewModel.look.setBackgroundStyle(.blur)
         viewModel.panel = nil
         pick(viewModel, clip: 2)
         viewModel.perform(.open(.background))
-        viewModel.setBackgroundStyle(.original)
-        #expect(viewModel.clipOverridesBackground)
+        viewModel.look.setBackgroundStyle(.original)
+        #expect(viewModel.look.clipOverridesBackground)
         #expect(viewModel.edit.background(for: viewModel.edit.timeline.segments[2]) == nil)
         #expect(viewModel.edit.background(for: viewModel.edit.timeline.segments[0])?.style == .blur)
     }

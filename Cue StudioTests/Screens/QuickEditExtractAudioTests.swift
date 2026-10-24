@@ -43,7 +43,7 @@ struct QuickEditExtractAudioTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         var timeline = viewModel.edit.timeline
         var second = timeline.segments[1]
         second.speed = 2
@@ -54,7 +54,7 @@ struct QuickEditExtractAudioTests {
         viewModel.selection = .clip(second.id)
         let steps = viewModel.document.history.past.count
         let unmuted = viewModel.edit.timeline
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         let request = try #require(scenario.editor.extractions.first)
         #expect(request.span == second.span && request.speed == 2 && !request.keepsPitch)
         // The sound as the edit plays it: Studio Voice's treatment of the take.
@@ -77,14 +77,14 @@ struct QuickEditExtractAudioTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 10
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         var timeline = viewModel.edit.timeline
         var second = timeline.segments[1]
         second.speedCurve = SpeedCurvePreset.hero.curve
         timeline.replaceSegment(second)
         viewModel.commit(timeline)
         viewModel.selection = .clip(second.id)
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         let request = try #require(scenario.editor.extractions.first)
         #expect(request.curve == SpeedCurvePreset.hero.curve)
         let clip = try #require(viewModel.edit.music.first)
@@ -93,16 +93,16 @@ struct QuickEditExtractAudioTests {
         // A sound taken out of the video has no Beats (only music from Files does).
         #expect(viewModel.selection == .music(clip.id))
         #expect(!viewModel.toolbarItems.map(\.id).contains("beats"))
-        #expect(viewModel.musicBeats(of: clip).isEmpty)
+        #expect(viewModel.audio.musicBeats(of: clip).isEmpty)
     }
 
     @Test func theExtractedSoundFollowsACutBeforeIt() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         scenario.player.currentTime = 30
-        viewModel.splitClip()
+        viewModel.clips.splitClip()
         viewModel.selection = .clip(viewModel.edit.timeline.segments[1].id)
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         #expect(abs((viewModel.edit.music.first?.start ?? 0) - 30) < 0.000_1)
         // Five seconds cut from the first clip: the sound comes five seconds earlier, with its clip.
         var timeline = viewModel.edit.timeline
@@ -116,10 +116,10 @@ struct QuickEditExtractAudioTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.perform(.selectClipAtPlayhead)
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         #expect(viewModel.edit.music.count == 1)
         scenario.player.currentTime = 3
-        viewModel.addMusic(ImportedAudio(fileName: "song.m4a", title: "Song", duration: 20))
+        viewModel.audio.addMusic(ImportedAudio(fileName: "song.m4a", title: "Song", duration: 20))
         #expect(viewModel.edit.music.count == 2)
     }
 
@@ -133,7 +133,7 @@ struct QuickEditExtractAudioTests {
         viewModel.change { $0.media = [media] }
         viewModel.selection = .media(media.id)
         #expect(viewModel.toolbarItems.map(\.id).contains("extractAudio"))
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         let request = try #require(scenario.editor.extractions.first)
         #expect(request.span == TimeSpan(start: 2, end: 5) && request.treatment == nil)
         let clip = try #require(viewModel.edit.music.first)
@@ -151,7 +151,7 @@ struct QuickEditExtractAudioTests {
         #expect(!viewModel.toolbarItems.map(\.id).contains("extractAudio"))
         viewModel.perform(.selectClipAtPlayhead)
         scenario.editor.extractionHasNoSound = true
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         #expect(viewModel.edit.music.isEmpty)
         #expect(scenario.toast.message == "This clip has no sound")
     }
@@ -160,18 +160,18 @@ struct QuickEditExtractAudioTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.perform(.selectClipAtPlayhead)
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         #expect(viewModel.edit.music.count == 1)
         // A second time the clip is muted: its sound would play twice.
         viewModel.perform(.selectClipAtPlayhead)
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         #expect(viewModel.edit.music.count == 1 && scenario.editor.extractions.count == 1)
         #expect(scenario.toast.message == "This clip is muted · Turn its sound on to extract it")
         var video = MediaOverlay(kind: .video, fileName: "loud.mov", aspect: 1, mediaDuration: 8, span: TimeSpan(start: 4, end: 7))
         video.hasSound = true
         viewModel.change { $0.media = [video] }
         viewModel.selection = .media(video.id)
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         #expect(viewModel.edit.music.count == 1 && scenario.editor.extractions.count == 1)
         #expect(scenario.toast.message == "This video is muted · Turn its sound on to extract it")
     }
@@ -182,9 +182,9 @@ struct QuickEditExtractAudioTests {
         viewModel.perform(.selectClipAtPlayhead)
         scenario.editor.whileExtracting = {
             scenario.player.currentTime = 20
-            viewModel.splitClip()
+            viewModel.clips.splitClip()
         }
-        await viewModel.extractAudio()
+        await viewModel.audio.extractAudio()
         #expect(viewModel.edit.music.isEmpty)
         #expect(scenario.toast.message == "The video changed meanwhile · Extract the sound again")
     }

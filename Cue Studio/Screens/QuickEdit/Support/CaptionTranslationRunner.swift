@@ -17,10 +17,10 @@ struct CaptionTranslationRunner: ViewModifier {
     func body(content: Content) -> some View {
         content
             .translationTask(configuration) { session in
-                guard let request = viewModel.translationRequest else { return }
-                await viewModel.performTranslation(request, with: AppleTranslationSession(session))
+                guard let request = viewModel.captions.translationRequest else { return }
+                await viewModel.captions.performTranslation(request, with: AppleTranslationSession(session))
             }
-            .onChange(of: viewModel.translationRequest) { _, request in
+            .onChange(of: viewModel.captions.translationRequest) { _, request in
                 guard let request else { return }
                 configuration = TranslationSession.Configuration(source: request.source, target: request.target.locale.language)
             }

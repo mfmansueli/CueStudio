@@ -34,7 +34,7 @@ struct QuickEditCoverTests {
         let (viewModel, player, _) = await makeViewModel()
         player.seek(to: 12)
         viewModel.perform(.openCoverStudio)
-        let studio = try #require(viewModel.coverStudio)
+        let studio = try #require(viewModel.cover.coverStudio)
         #expect(studio.step == .image)
         #expect(studio.cover.source.frame?.time == 12)
         #expect(studio.cover.composition != nil)
@@ -44,23 +44,23 @@ struct QuickEditCoverTests {
 
     @Test func doneIsOneUndoStepAndCancelKeepsTheCover() async throws {
         let (viewModel, _, _) = await makeViewModel()
-        viewModel.openCoverStudio()
-        let studio = try #require(viewModel.coverStudio)
+        viewModel.cover.openCoverStudio()
+        let studio = try #require(viewModel.cover.coverStudio)
         studio.setTitle("3 morning habits")
         studio.applyTemplate(.opinion)
         studio.addItem(.arrow)
         let steps = viewModel.document.history.past.count
-        viewModel.finishCoverStudio(studio)
-        #expect(viewModel.coverStudio == nil)
+        viewModel.cover.finishCoverStudio(studio)
+        #expect(viewModel.cover.coverStudio == nil)
         #expect(viewModel.edit.cover?.title == "3 morning habits")
         #expect(viewModel.edit.cover?.composition?.template == .opinion)
         #expect(viewModel.document.history.past.count == steps + 1)
 
-        viewModel.openCoverStudio()
-        let again = try #require(viewModel.coverStudio)
+        viewModel.cover.openCoverStudio()
+        let again = try #require(viewModel.cover.coverStudio)
         #expect(again.step == .text)
         again.setTitle("Something else")
-        viewModel.cancelCoverStudio(again)
+        viewModel.cover.cancelCoverStudio(again)
         #expect(viewModel.edit.cover?.title == "3 morning habits")
 
         viewModel.undo()
@@ -69,14 +69,14 @@ struct QuickEditCoverTests {
 
     @Test func removeCoverTakesItAway() async throws {
         let (viewModel, _, _) = await makeViewModel()
-        viewModel.openCoverStudio()
-        viewModel.finishCoverStudio(try #require(viewModel.coverStudio))
+        viewModel.cover.openCoverStudio()
+        viewModel.cover.finishCoverStudio(try #require(viewModel.cover.coverStudio))
         #expect(viewModel.edit.cover != nil)
-        viewModel.openCoverStudio()
-        let studio = try #require(viewModel.coverStudio)
+        viewModel.cover.openCoverStudio()
+        let studio = try #require(viewModel.cover.coverStudio)
         #expect(studio.hadCover)
         studio.removeCover()
-        viewModel.finishCoverStudio(studio)
+        viewModel.cover.finishCoverStudio(studio)
         #expect(viewModel.edit.cover == nil)
     }
 
@@ -85,21 +85,21 @@ struct QuickEditCoverTests {
         let file = try EditMediaFiles.newFile(pathExtension: "jpg")
         try Data([0]).write(to: file.url)
         defer { EditMediaFiles.remove([file.name]) }
-        viewModel.openCoverStudio()
-        let studio = try #require(viewModel.coverStudio)
+        viewModel.cover.openCoverStudio()
+        let studio = try #require(viewModel.cover.coverStudio)
         studio.remember(imported: file.name)
         studio.change { $0.source = .photo(fileName: file.name) }
-        viewModel.cancelCoverStudio(studio)
+        viewModel.cover.cancelCoverStudio(studio)
         #expect(!EditMediaFiles.exists(file.name))
     }
 
     @Test func theTimelineAndANotificationOpenTheStudio() async {
         let (viewModel, _, _) = await makeViewModel()
         viewModel.tapTimeline(.cover)
-        #expect(viewModel.coverStudio != nil)
-        viewModel.coverStudio = nil
+        #expect(viewModel.cover.coverStudio != nil)
+        viewModel.cover.coverStudio = nil
         viewModel.open(.cover)
-        #expect(viewModel.coverStudio != nil)
+        #expect(viewModel.cover.coverStudio != nil)
     }
 
     @Test func aNewCoverStartsInMyStyle() async throws {
@@ -107,8 +107,8 @@ struct QuickEditCoverTests {
         var saved = CoverComposition.make(.series, title: "x", episode: 2)
         saved.title.accent = .cyan
         styles.myCoverStyle = saved.style
-        viewModel.openCoverStudio()
-        let studio = try #require(viewModel.coverStudio)
+        viewModel.cover.openCoverStudio()
+        let studio = try #require(viewModel.cover.coverStudio)
         #expect(studio.composition.template == .series)
         #expect(studio.composition.title.accent == .cyan)
     }
@@ -119,10 +119,10 @@ struct QuickEditCoverTests {
         old.title = "Hi there"
         old.design = CoverDesign()
         viewModel.change { $0.cover = old }
-        viewModel.openCoverStudio()
-        let studio = try #require(viewModel.coverStudio)
+        viewModel.cover.openCoverStudio()
+        let studio = try #require(viewModel.cover.coverStudio)
         #expect(studio.cover.composition?.template == .opinion)
-        viewModel.cancelCoverStudio(studio)
+        viewModel.cover.cancelCoverStudio(studio)
         #expect(viewModel.edit.cover == old)
     }
 
@@ -137,14 +137,14 @@ struct QuickEditCoverTests {
     @Test func aCutsMarkOpensItsTransitions() async {
         let (viewModel, player, _) = await makeViewModel()
         player.seek(to: 20)
-        viewModel.selectClipAtPlayhead()
-        viewModel.splitClip()
+        viewModel.clips.selectClipAtPlayhead()
+        viewModel.clips.splitClip()
         viewModel.selection = nil
         let second = viewModel.edit.timeline.segments[1].id
         viewModel.tapTimeline(.join(second))
         #expect(viewModel.panel == .transition)
         #expect(viewModel.selectedJoinID == second)
-        viewModel.setTransition(.dissolve)
+        viewModel.clips.setTransition(.dissolve)
         #expect(viewModel.edit.timeline.segments[1].transitionIn == .dissolve)
         viewModel.tapTimeline(.join(second))
         #expect(viewModel.panel == nil)

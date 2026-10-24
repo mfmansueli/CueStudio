@@ -39,9 +39,9 @@ struct QuickEditNarrationScriptTests {
 
     @Test func aTakeWithAScriptOffersItWithoutItsCues() async {
         let scenario = await makeScenario()
-        #expect(scenario.viewModel.offersNarrationScript)
-        #expect(scenario.viewModel.narrationScriptText?.contains("[pause]") == false)
-        #expect(scenario.viewModel.narrationScriptText?.hasPrefix("Okay, real talk.") == true)
+        #expect(scenario.viewModel.audio.offersNarrationScript)
+        #expect(scenario.viewModel.audio.narrationScriptText?.contains("[pause]") == false)
+        #expect(scenario.viewModel.audio.narrationScriptText?.hasPrefix("Okay, real talk.") == true)
         scenario.viewModel.panel = .voiceOver
         #expect(scenario.viewModel.showsNarrationScriptOverlay)
         // Record, the switch and the speed need the medium panel.
@@ -50,7 +50,7 @@ struct QuickEditNarrationScriptTests {
 
     @Test func aFreestyleTakeOffersNothingNew() async {
         let scenario = await makeScenario(script: nil)
-        #expect(!scenario.viewModel.offersNarrationScript)
+        #expect(!scenario.viewModel.audio.offersNarrationScript)
         scenario.viewModel.panel = .voiceOver
         #expect(!scenario.viewModel.showsNarrationScriptOverlay)
         #expect(scenario.viewModel.openPanelSize == .mini)
@@ -58,18 +58,18 @@ struct QuickEditNarrationScriptTests {
 
     @Test func anEmptyScriptOffersNothing() async {
         let scenario = await makeScenario(script: TestData.script(text: "  [smile]  \n\n"))
-        #expect(!scenario.viewModel.offersNarrationScript)
+        #expect(!scenario.viewModel.audio.offersNarrationScript)
     }
 
     @Test func theSwitchIsRememberedForTheNextEdit() async {
         let scenario = await makeScenario()
         scenario.viewModel.panel = .voiceOver
-        scenario.viewModel.toggleNarrationScript()
-        #expect(!scenario.viewModel.showsNarrationScript)
+        scenario.viewModel.audio.toggleNarrationScript()
+        #expect(!scenario.viewModel.audio.showsNarrationScript)
         #expect(!scenario.preferences.showsNarrationScript)
         #expect(!scenario.viewModel.showsNarrationScriptOverlay)
         let next = await makeScenario(preferences: scenario.preferences)
-        #expect(!next.viewModel.showsNarrationScript)
+        #expect(!next.viewModel.audio.showsNarrationScript)
     }
 
     @Test func onlyVoiceOverShowsIt() async {
@@ -84,17 +84,17 @@ struct QuickEditNarrationScriptTests {
         var look = PrompterSettings()
         look.speed = PrompterSettings.clampedSpeed(ReadTime.naturalSpeed * 1.5)
         let fromPrompter = await makeScenario(prompterLook: look)
-        #expect(fromPrompter.viewModel.narrationPace.speed == look.speed)
+        #expect(fromPrompter.viewModel.audio.narrationPace.speed == look.speed)
         let picked = PrompterSettings.clampedSpeed(ReadTime.naturalSpeed * 0.6)
         let fromEditor = await makeScenario(preferences: FakeEditorPreferencesStore(narrationScriptSpeed: picked), prompterLook: look)
-        #expect(fromEditor.viewModel.narrationPace.speed == picked)
+        #expect(fromEditor.viewModel.audio.narrationPace.speed == picked)
     }
 
     @Test func aNewSpeedIsRemembered() async {
         let scenario = await makeScenario()
         let faster = PrompterSettings.clampedSpeed(ReadTime.naturalSpeed * 1.4)
-        scenario.viewModel.setNarrationSpeed(faster)
-        #expect(scenario.viewModel.narrationPace.speed == faster)
+        scenario.viewModel.audio.setNarrationSpeed(faster)
+        #expect(scenario.viewModel.audio.narrationPace.speed == faster)
         #expect(scenario.preferences.narrationScriptSpeed == faster)
     }
 
@@ -103,16 +103,16 @@ struct QuickEditNarrationScriptTests {
         let viewModel = scenario.viewModel
         viewModel.panel = .voiceOver
         // Before recording a tap holds nothing.
-        viewModel.toggleNarrationPause()
-        #expect(viewModel.narrationPace.phase == .waiting)
-        await viewModel.startVoiceOver()
-        #expect(viewModel.narrationPace.isReading)
-        viewModel.toggleNarrationPause()
-        #expect(viewModel.narrationPace.isPaused)
-        viewModel.toggleNarrationPause()
-        #expect(viewModel.narrationPace.isReading)
-        viewModel.stopVoiceOver()
-        #expect(viewModel.narrationPace.phase == .waiting)
+        viewModel.audio.toggleNarrationPause()
+        #expect(viewModel.audio.narrationPace.phase == .waiting)
+        await viewModel.audio.startVoiceOver()
+        #expect(viewModel.audio.narrationPace.isReading)
+        viewModel.audio.toggleNarrationPause()
+        #expect(viewModel.audio.narrationPace.isPaused)
+        viewModel.audio.toggleNarrationPause()
+        #expect(viewModel.audio.narrationPace.isReading)
+        viewModel.audio.stopVoiceOver()
+        #expect(viewModel.audio.narrationPace.phase == .waiting)
         // Nothing of the script goes into the edit: only the narration.
         #expect(viewModel.edit.voiceOvers.count == 1)
         #expect(viewModel.edit.texts.isEmpty)
@@ -121,9 +121,9 @@ struct QuickEditNarrationScriptTests {
     @Test func cancellingARecordingResetsTheScript() async {
         let scenario = await makeScenario()
         scenario.viewModel.panel = .voiceOver
-        await scenario.viewModel.startVoiceOver()
-        scenario.viewModel.cancelVoiceOver()
-        #expect(scenario.viewModel.narrationPace.phase == .waiting)
+        await scenario.viewModel.audio.startVoiceOver()
+        scenario.viewModel.audio.cancelVoiceOver()
+        #expect(scenario.viewModel.audio.narrationPace.phase == .waiting)
         #expect(scenario.recorder.cancelled)
     }
 
@@ -133,8 +133,8 @@ struct QuickEditNarrationScriptTests {
         look.textColor = .yellow
         look.showsCues = true
         let scenario = await makeScenario(prompterLook: look)
-        #expect(scenario.viewModel.narrationLook.textColor == .yellow)
-        #expect(scenario.viewModel.narrationLook.font == .lexend)
-        #expect(!scenario.viewModel.narrationLook.showsCues)
+        #expect(scenario.viewModel.audio.narrationLook.textColor == .yellow)
+        #expect(scenario.viewModel.audio.narrationLook.font == .lexend)
+        #expect(!scenario.viewModel.audio.narrationLook.showsCues)
     }
 }

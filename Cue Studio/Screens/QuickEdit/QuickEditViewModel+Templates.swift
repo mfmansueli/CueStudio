@@ -19,10 +19,10 @@ extension QuickEditViewModel {
 
     func applyVideoTemplate(_ template: VideoTemplate) {
         guard isReady else { return }
-        let opening = coverSuggestions.first
+        let opening = cover.coverSuggestions.first
         let look = template.textPreset.look(for: .title)
-        let margins = captionSafeMargins
-        let hookSpan = edit.pin(placement(at: 0, length: template.openingRole.defaultDuration))
+        let margins = captions.captionSafeMargins
+        let hookSpan = edit.pin(overlays.placement(at: 0, length: template.openingRole.defaultDuration))
         var hook = edit.texts.contains(where: { $0.graphic == nil }) ? nil : opening.map { title in
             var text = TextOverlay(role: template.openingRole, look: look, preset: template.textPreset, span: hookSpan.span)
             text.text = title

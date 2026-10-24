@@ -68,7 +68,7 @@ extension QuickEditViewModel {
                 startsGroup: kind == .arrow
             )
         }
-        if commentForCard != nil {
+        if overlays.commentForCard != nil {
             items.append(EditorToolbarItem(id: "comment", label: String(localized: "Comment"), systemImage: "text.bubble.fill", action: .addCommentCard))
         }
         if !edit.texts.isEmpty {
@@ -124,7 +124,7 @@ extension QuickEditViewModel {
             return [
                 EditorToolbarItem(
                     id: "split", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right",
-                    style: canSplitSelectedClip ? .normal : .dimmed, action: .splitClip
+                    style: clips.canSplitSelectedClip ? .normal : .dimmed, action: .splitClip
                 ),
                 EditorToolbarItem(id: "speed", label: String(localized: "Speed"), systemImage: "gauge.with.dots.needle.67percent", action: .open(.speed)),
                 EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
@@ -151,7 +151,7 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "copyLook", label: String(localized: "Copy look"), systemImage: "doc.on.doc", action: .copyLook),
                 EditorToolbarItem(
                     id: "pasteLook", label: String(localized: "Paste look"), systemImage: "doc.on.clipboard",
-                    style: canPasteLook ? .normal : .dimmed, action: .pasteLook
+                    style: look.canPasteLook ? .normal : .dimmed, action: .pasteLook
                 ),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteClip),
             ]
@@ -203,7 +203,7 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
             ]
             // Only a video with a sound of its own has one to take out.
-            if canExtractAudio {
+            if audio.canExtractAudio {
                 items.append(EditorToolbarItem(
                     id: "extractAudio", label: String(localized: "Extract audio"), systemImage: "waveform.badge.plus", action: .extractAudio
                 ))
@@ -223,34 +223,34 @@ extension QuickEditViewModel {
         guard isReady else { return }
         if performOnSelection(action) { return }
         switch action {
-        case .selectClipAtPlayhead: selectClipAtPlayhead()
+        case .selectClipAtPlayhead: clips.selectClipAtPlayhead()
         case .openMenu(let menu):
             selection = nil
             toolMenu = menu
         case .openCaptions: openCaptions()
         case .addCaptionLine:
             openCaptions()
-            addCaptionAtPlayhead()
+            captions.addCaptionAtPlayhead()
         case .open(let panel):
             // From a picked clip, Adjust, Filters and Background change that clip only.
-            lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
+            look.lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
             self.panel = panel
         case .addMedia, .addMediaChoice:
-            mediaInsertMode = .overlay
+            overlays.mediaInsertMode = .overlay
             sheet = .media
         case .addText, .addGraphic, .addCommentCard, .styleAllTexts, .editText: performTextAction(action)
-        case .deleteAllCaptions: deleteAllCaptions()
-        case .findInCaptions: openCaptionFind()
+        case .deleteAllCaptions: captions.deleteAllCaptions()
+        case .findInCaptions: captions.openCaptionFind()
         case .editByText:
             toolMenu = nil
             panel = nil
-            transcriptSelection = nil
+            clips.transcriptSelection = nil
             sheet = .transcript
         case .writeCaptionsByHand:
             toolMenu = nil
-            writeCaptionsByHand()
+            captions.writeCaptionsByHand()
         case .openMusic, .replaceMusic: openMusicSheet(replacing: action == .replaceMusic)
-        case .openCoverStudio: openCoverStudio()
+        case .openCoverStudio: cover.openCoverStudio()
         default: break
         }
     }
@@ -258,13 +258,13 @@ extension QuickEditViewModel {
     /// The Text menu's actions and Edit on a picked text.
     private func performTextAction(_ action: EditorAction) {
         switch action {
-        case .addText(let role): addStyledText(role)
-        case .addGraphic(let kind): addGraphic(kind)
-        case .addCommentCard: addCommentCard()
+        case .addText(let role): overlays.addStyledText(role)
+        case .addGraphic(let kind): overlays.addGraphic(kind)
+        case .addCommentCard: overlays.addCommentCard()
         case .styleAllTexts: styleAllTexts()
         case .editText:
             panel = .textStyle
-            focusesTextField = true
+            overlays.focusesTextField = true
         default: break
         }
     }
@@ -272,7 +272,7 @@ extension QuickEditViewModel {
     /// Always adds: a clip already there is picked on its track, and "Replace" swaps it.
     private func openMusicSheet(replacing: Bool) {
         guard !replacing || selection?.musicID != nil else { return }
-        musicReplacementID = replacing ? selection?.musicID : nil
+        audio.musicReplacementID = replacing ? selection?.musicID : nil
         sheet = .music
     }
 
@@ -280,21 +280,21 @@ extension QuickEditViewModel {
     private func performOnSelection(_ action: EditorAction) -> Bool {
         if performOnClip(action) || performOnMotion(action) { return true }
         switch action {
-        case .duplicateText: selection?.textID.map(duplicateText)
+        case .duplicateText: selection?.textID.map(overlays.duplicateText)
         case .toggleLock: toggleLockOfSelection()
-        case .duplicateMedia: selection?.mediaID.map(duplicateMedia)
-        case .deleteText: selection?.textID.map(deleteText)
+        case .duplicateMedia: selection?.mediaID.map(overlays.duplicateMedia)
+        case .deleteText: selection?.textID.map(overlays.deleteText)
         case .editCaption:
             panel = .captions
-            focusesCaptionField = true
-        case .splitCaption: selection?.captionID.map(splitCaptionAtPlayhead)
-        case .joinCaption: selection?.captionID.map(joinCaption)
-        case .deleteCaption: selection?.captionID.map(deleteCaptionLine)
-        case .deleteMusic: selection?.musicID.map(deleteMusic)
-        case .reRecordVoiceOver: selection?.voiceOverID.map(reRecordVoiceOver)
-        case .deleteVoiceOver: selection?.voiceOverID.map(deleteVoiceOver)
+            captions.focusesCaptionField = true
+        case .splitCaption: selection?.captionID.map(captions.splitCaptionAtPlayhead)
+        case .joinCaption: selection?.captionID.map(captions.joinCaption)
+        case .deleteCaption: selection?.captionID.map(captions.deleteCaptionLine)
+        case .deleteMusic: selection?.musicID.map(audio.deleteMusic)
+        case .reRecordVoiceOver: selection?.voiceOverID.map(audio.reRecordVoiceOver)
+        case .deleteVoiceOver: selection?.voiceOverID.map(audio.deleteVoiceOver)
         case .replaceMedia: replaceSelectedMedia()
-        case .deleteMedia: selection?.mediaID.map(deleteMedia)
+        case .deleteMedia: selection?.mediaID.map(overlays.deleteMedia)
         default: return false
         }
         return true
@@ -303,10 +303,10 @@ extension QuickEditViewModel {
     /// How the picked text or photo moves: keyframes, Track, ready animations. False when `action` isn't one of them.
     private func performOnMotion(_ action: EditorAction) -> Bool {
         switch action {
-        case .toggleKeyframe: toggleKeyframe()
-        case .trackItem: trackSelectedItem()
+        case .toggleKeyframe: overlays.toggleKeyframe()
+        case .trackItem: overlays.trackSelectedItem()
         case .openTextAnimation:
-            textStyleScope = .selected
+            overlays.textStyleScope = .selected
             panel = .textStyle
             panelTab = .motion
         default: return false
@@ -317,18 +317,18 @@ extension QuickEditViewModel {
     /// The actions on a picked clip. False when `action` isn't one of them.
     private func performOnClip(_ action: EditorAction) -> Bool {
         switch action {
-        case .splitClip: splitClip()
-        case .duplicateClip: selection?.clipID.map(duplicateClip)
-        case .reorderClips: openClipOrder()
-        case .freezeFrame: startJob { await self.freezeFrame() }
+        case .splitClip: clips.splitClip()
+        case .duplicateClip: selection?.clipID.map(clips.duplicateClip)
+        case .reorderClips: clips.openClipOrder()
+        case .freezeFrame: startJob { await self.clips.freezeFrame() }
         case .reverseClip:
             // One at a time: a second tap never stops the first.
-            if !jobs.isRunning(.reverse) { jobs.start(.reverse) { [weak self] _ in await self?.reverseClip() } }
-        case .replaceClip: askToReplaceClip()
-        case .extractAudio: startJob { await self.extractAudio() }
-        case .copyLook: copyClipLook()
-        case .pasteLook: askToPasteLook()
-        case .deleteClip: selection?.clipID.map(deleteClip)
+            if !jobs.isRunning(.reverse) { jobs.start(.reverse) { [weak self] _ in await self?.clips.reverseClip() } }
+        case .replaceClip: clips.askToReplaceClip()
+        case .extractAudio: startJob { await self.audio.extractAudio() }
+        case .copyLook: look.copyClipLook()
+        case .pasteLook: look.askToPasteLook()
+        case .deleteClip: selection?.clipID.map(clips.deleteClip)
         default: return false
         }
         return true
@@ -350,7 +350,7 @@ extension QuickEditViewModel {
     func styleAllTexts() {
         guard let first = edit.texts.first else { return }
         selection = .text(first.id)
-        textStyleScope = .allTexts
+        overlays.textStyleScope = .allTexts
         panel = .textStyle
     }
 }
