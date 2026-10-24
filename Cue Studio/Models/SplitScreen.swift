@@ -13,11 +13,15 @@ nonisolated struct SplitScreen: Codable, Hashable, Sendable {
     var framings: [RecordingFraming] = []
     /// Silences every photo and video laid over the take, keeping each one's own volume for when it's turned back on.
     var mutesMedia = false
+    /// "On the seam": while a support shows (one over the other), the captions sit centered on the seam; the rest of the
+    /// video, where the creator put them.
+    var captionsOnSeam = false
 
-    init(layouts: [SplitLayout] = [], framings: [RecordingFraming] = [], mutesMedia: Bool = false) {
+    init(layouts: [SplitLayout] = [], framings: [RecordingFraming] = [], mutesMedia: Bool = false, captionsOnSeam: Bool = false) {
         self.layouts = layouts
         self.framings = framings
         self.mutesMedia = mutesMedia
+        self.captionsOnSeam = captionsOnSeam
     }
 
     /// The layout a support names, else the video's (the first), else the starting one: support on top, main below, 50/50.
@@ -54,7 +58,7 @@ nonisolated struct SplitScreen: Codable, Hashable, Sendable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case layouts, framings, mutesMedia
+        case layouts, framings, mutesMedia, captionsOnSeam
     }
 
     /// One layout or framing that can't be read never takes the others with it.
@@ -63,5 +67,6 @@ nonisolated struct SplitScreen: Codable, Hashable, Sendable {
         layouts = container.decodeLossy([SplitLayout].self, forKey: .layouts)
         framings = container.decodeLossy([RecordingFraming].self, forKey: .framings)
         mutesMedia = (try? container.decodeIfPresent(Bool.self, forKey: .mutesMedia)) ?? false
+        captionsOnSeam = (try? container.decodeIfPresent(Bool.self, forKey: .captionsOnSeam)) ?? false
     }
 }

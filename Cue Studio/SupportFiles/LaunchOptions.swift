@@ -18,7 +18,8 @@ import Foundation
 ///   export stopped with Cue the last time, and its review says so.
 /// - `-uiTestDemoEdit`: "3 morning habits" Take 3 opens in the editor as the v10 design's demo
 ///   (`SampleEdit.demo`: two clips, captions, texts, music with a beat, a B-roll window and a voice-over, their files made by
-///   `SampleEditMedia`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text.
+///   `SampleEditMedia`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text. `-uiTestDemoSplit` opens it with
+///   a split screen instead of the window (`SampleEdit.demoSplit`).
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
@@ -226,7 +227,10 @@ struct LaunchOptions {
             }) {
                 takes[index].duration = SampleEdit.duration
                 takes[index].fileName = "sample-demo-edit.mov"
-                takes[index].edit = SampleEdit.demo(aspect: takes[index].aspect, heard: arguments.contains("-uiTestDemoTranscript"))
+                let heard = arguments.contains("-uiTestDemoTranscript")
+                takes[index].edit = arguments.contains("-uiTestDemoSplit")
+                    ? SampleEdit.demoSplit(aspect: takes[index].aspect, heard: heard)
+                    : SampleEdit.demo(aspect: takes[index].aspect, heard: heard)
                 SampleEditMedia.writeMissing()
             }
             let repository = InMemoryTakeRepository(takes: takes)

@@ -53,9 +53,18 @@ extension CaptionsViewModel {
         return (clamped, nil)
     }
 
-    /// Every caption moves up or down to `y` (unit, from the top). One undo step.
+    /// Every caption moves up or down to `y` (unit, from the top). One undo step. Dragged off the split screen's seam, the
+    /// captions stop sitting on it: where the creator puts them is where they go.
     func moveCaptions(toY y: Double) {
         let placed = Self.snappedCaption(y).y
+        if seamAtPlayhead != nil, edit.captionCollection != nil {
+            changeEdit { edit in
+                edit.splitScreen.captionsOnSeam = false
+                let x = edit.captionCollection?.center?.x ?? 0.5
+                edit.captionCollection?.center = OverlayPoint(x: x, y: placed)
+            }
+            return
+        }
         if edit.captionCollection != nil {
             updateCaptionSettings { settings in
                 settings.center = OverlayPoint(x: settings.center?.x ?? 0.5, y: placed)
@@ -66,8 +75,14 @@ extension CaptionsViewModel {
         }
     }
 
-    /// The captions' height on the frame (unit, from the top).
+    /// The captions' height on the frame (unit, from the top): on the split screen's seam while they sit there.
     var captionY: Double {
-        edit.captionCollection?.center?.y ?? edit.captionPosition.verticalFraction
+        seamAtPlayhead ?? edit.captionCollection?.center?.y ?? edit.captionPosition.verticalFraction
+    }
+
+    /// The seam the captions sit on at the playhead (`SplitScreen.captionsOnSeam`), if they do.
+    private var seamAtPlayhead: Double? {
+        let time = player.currentTime
+        return EditedComposition.seamSpans(of: edit).first { $0.span.contains(time) }?.y
     }
 }

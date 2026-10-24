@@ -73,6 +73,9 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     /// Edited seconds it plays on after the speech it's laid over, over another recording's clip it was laid across into
     /// (`TakeEdit.pinMedia`); nil: it ends with that speech.
     var tail: TimeInterval?
+    /// A video whose own voice is captioned while it shows, in place of the main video's (heard on its own, never mixed with
+    /// it: one voice at a time); nil or false: the main video's.
+    var captionsItsVoice: Bool?
 
     init(kind: MediaKind, fileName: String, aspect: Double, mediaDuration: TimeInterval?, span: TimeSpan) {
         self.kind = kind

@@ -6,7 +6,8 @@
 import SwiftUI
 
 /// The two sounds while the support shows, each on its own: the main video (down to silent, to hear only the support) and the
-/// support's own sound (silent when it goes in); and every support muted at once, each keeping its level for later.
+/// support's own sound (silent when it goes in), with whose voice the captions show; and every support muted at once, each
+/// keeping its level for later.
 struct SplitSoundTab: View {
     let viewModel: QuickEditViewModel
     let media: MediaOverlay
@@ -30,6 +31,11 @@ struct SplitSoundTab: View {
                     onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
                 )
                 .disabled(mutesAll)
+                PanelToggleRow(
+                    label: String(localized: "Caption its voice"),
+                    detail: String(localized: "In place of the main video’s while it shows · heard on its own, one voice at a time"),
+                    isOn: media.captionsItsVoice == true, identifier: "edit.split.captionsItsVoice"
+                ) { viewModel.captions.setCaptionsItsVoice(media.id, media.captionsItsVoice != true) }
             } else {
                 PanelNote(text: media.kind == .photo ? String(localized: "A photo has no sound.") : String(localized: "This video has no sound."))
             }

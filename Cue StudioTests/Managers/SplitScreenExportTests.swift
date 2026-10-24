@@ -65,6 +65,47 @@ extension RealExports {
             }
         }
 
+        @Test func thePreviewDrawsWhatTheExportDoes() async throws {
+            // The editor's preview: the edit grown to the whole recording, played from the edit's start (`RenderPlan`).
+            let take = try await TwoToneClip.make(seconds: 4, top: TwoToneClip.red, bottom: TwoToneClip.blue)
+            let support = try await TwoToneClip.make(seconds: 4, top: TwoToneClip.green, bottom: TwoToneClip.green)
+            defer {
+                try? FileManager.default.removeItem(at: take)
+                try? FileManager.default.removeItem(at: support)
+            }
+            let name = try EditMediaFiles.link(support)
+            defer { EditMediaFiles.remove([name]) }
+            var edit = TakeEdit(sourceDuration: 4, aspect: .portrait)
+            edit.voiceEnhancement = .off
+            edit.timeline.trimStart(to: 0.5)
+            edit.splitScreen.setLayout(SplitLayout())
+            var media = MediaOverlay(kind: .video, fileName: name, aspect: 9.0 / 16, mediaDuration: 4, span: TimeSpan(start: 1, end: 3))
+            media.layout = .split
+            media.followsCuts = true
+            edit.media = [media]
+            let item = try await TakeEditService().previewItem(forVideoAt: take, edit: edit, purpose: .editorPreview(rendersCurveSound: true))
+            let generator = AVAssetImageGenerator(asset: item.asset)
+            generator.videoComposition = item.videoComposition
+            generator.requestedTimeToleranceBefore = .zero
+            generator.requestedTimeToleranceAfter = .zero
+            // 2 s of the recording: inside the support.
+            let image = try await generator.image(at: CMTime(seconds: 2, preferredTimescale: 600)).image
+            func color(_ x: CGFloat, _ y: CGFloat) throws -> [Int] {
+                let width = image.width, height = image.height
+                let context = try #require(CGContext(
+                    data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4,
+                    space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+                ))
+                context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
+                let data = try #require(context.data).assumingMemoryBound(to: UInt8.self)
+                let offset = Int(y * CGFloat(height)) * width * 4 + Int(x * CGFloat(width)) * 4
+                return [Int(data[offset]), Int(data[offset + 1]), Int(data[offset + 2])]
+            }
+            #expect(TwoToneClip.same(try color(0.5, 0.25), TwoToneClip.green))
+            #expect(TwoToneClip.same(try color(0.5, 0.6), TwoToneClip.red))
+            #expect(TwoToneClip.same(try color(0.5, 0.9), TwoToneClip.blue))
+        }
+
         @Test func swappingPutsTheMainVideoOnTop() async throws {
             let output = try await export(layout: SplitLayout().swapped)
             defer { try? FileManager.default.removeItem(at: output) }

@@ -105,7 +105,7 @@ struct QuickEditTimelineTests {
         #expect(viewModel.toolMenu == nil)
         viewModel.tapTimeline(.addClip)
         #expect(viewModel.sheet == .media)
-        #expect(viewModel.overlays.mediaInsertMode == .clip)
+        #expect(viewModel.overlays.mediaInsertMode == .sequence)
     }
 
     @Test func aTrackOpensItsToolsAndASecondTapPutsTheMainOnesBack() async {

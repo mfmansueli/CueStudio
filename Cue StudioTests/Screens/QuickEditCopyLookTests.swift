@@ -157,7 +157,7 @@ struct QuickEditCopyLookTests {
         #expect(media != nil)
         viewModel.perform(.addMediaChoice)
         #expect(viewModel.sheet == .media)
-        #expect(viewModel.overlays.mediaInsertMode == .overlay)
+        #expect(viewModel.overlays.mediaInsertMode == .split)
     }
 }
 

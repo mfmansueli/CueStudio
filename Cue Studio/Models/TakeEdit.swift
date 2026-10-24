@@ -177,7 +177,14 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
 
     /// Lines timed to the edit, each with the line it comes from.
     func editedInstances(of lines: [CaptionCue]) -> [(line: CaptionCue, cueID: UUID)] {
-        CaptionTimelineMapping.instances(lines, in: timeline)
+        CaptionTimelineMapping.instances(lines, in: timeline, voices: captionedVoices)
+    }
+
+    /// The videos laid over the take whose own voice is captioned, where they show (`MediaOverlay.captionsItsVoice`).
+    var captionedVoices: [CaptionTimelineMapping.Voice] {
+        media.filter { $0.captionsItsVoice == true && $0.kind == .video }.map { item in
+            CaptionTimelineMapping.Voice(mediaID: item.id, pieces: item.pieces(in: timeline))
+        }
     }
 
     /// Texts that show somewhere in `timeline`, with where (edited seconds), in order.
