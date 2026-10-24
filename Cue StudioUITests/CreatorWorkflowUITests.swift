@@ -456,4 +456,40 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertEqual(EditorApp.length(app), full, "Undo after coming back didn't bring the clip back")
         flow.report()
     }
+
+    // MARK: - 9. Captions in a format
+
+    /// An edit from before formats shows none picked; Short phrase cuts the lines again (one Undo puts them back); a line's More
+    /// breaks it where the cursor is (Return still goes on) and shows each word's time.
+    func testCaptionsInAShortPhraseALineBreakAndWordTiming() {
+        let app = EditorApp.open(demo: true)
+        let flow = CreatorWorkflow("caption-format", app: app)
+
+        flow.step("Captions › Style › Format › Short phrase")
+        flow.tool("captions")
+        flow.tap(app.buttons["edit.captionsStyleButton"], "Aa Style")
+        let phrase = app.buttons["edit.captionFormat.phrase"]
+        XCTAssertTrue(flow.waits(for: phrase, "the formats"), "No Format in Caption style")
+        XCTAssertFalse(phrase.isSelected, "An edit from before formats shows one picked")
+        flow.tap(phrase, "Short phrase")
+        XCTAssertTrue(flow.toastSays("Captions format: Short phrase"), "No word that the lines were cut again")
+        XCTAssertTrue(phrase.isSelected)
+        flow.capture("format-picked")
+        flow.tap(app.buttons["edit.panel.apply"], "✓ on Caption style")
+
+        flow.step("A line › More › Line break and Word timing")
+        let line = flow.element("edit.captionLine.0")
+        if !line.exists { flow.tap(app.buttons["edit.toolbar.captions"], "Captions") }
+        flow.tap(flow.element("edit.captionLine.0"), "the first line")
+        flow.tap(app.buttons["edit.captionMore"], "More")
+        let breakChip = app.buttons["edit.captionBreak"]
+        XCTAssertTrue(flow.waits(for: breakChip, "Line break"), "No Line break in More")
+        XCTAssertTrue(flow.element("edit.captionWordTiming").exists, "No word timing in More")
+        flow.capture("line-more")
+        flow.tap(breakChip, "Line break")
+        XCTAssertTrue(flow.toastSays("Line break added"), "No word of the line break")
+        let field = app.descendants(matching: .any).matching(identifier: "edit.captionField").firstMatch
+        XCTAssertTrue((field.value as? String)?.contains("\n") == true, "The line has no break: \(field.value ?? "")")
+        flow.report()
+    }
 }

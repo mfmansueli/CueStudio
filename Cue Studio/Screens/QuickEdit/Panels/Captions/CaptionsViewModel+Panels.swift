@@ -246,7 +246,12 @@ extension CaptionsViewModel {
         let clamped = min(max(size.rounded(), Self.captionSizeRange.lowerBound), Self.captionSizeRange.upperBound)
         let scale = clamped / Self.captionBaseSize
         if edit.captionCollection != nil {
-            change(key: "captionSize") { $0.captionCollection?.sizeScale = scale }
+            let aspect = edit.aspect
+            change(key: "captionSize") { snapshot in
+                let before = snapshot.captionCollection
+                snapshot.captionCollection?.sizeScale = scale
+                Self.refit(&snapshot, from: before, aspect: aspect)
+            }
         } else {
             change(key: "captionSize") { snapshot in
                 var look = snapshot.captionLook ?? TypePreset.cue.look(for: .caption)
@@ -268,12 +273,15 @@ extension CaptionsViewModel {
     /// Captions drawn with a text's look (copied with "Apply this style to captions", or an edit from
     /// before the collection): Font changes it for every line (one undo step).
     func updateCaptionLook(_ update: (inout TextLook) -> Void) {
+        let aspect = edit.aspect
         change { snapshot in
             if var settings = snapshot.captionCollection {
                 guard var look = settings.customLook else { return }
+                let before = settings
                 update(&look)
                 settings.customLook = look
                 snapshot.captionCollection = settings
+                Self.refit(&snapshot, from: before, aspect: aspect)
                 return
             }
             var look = snapshot.captionLook ?? TypePreset.cue.look(for: .caption)

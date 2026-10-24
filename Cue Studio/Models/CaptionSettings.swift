@@ -28,6 +28,9 @@ nonisolated struct CaptionSettings: Codable, Hashable, Sendable {
     /// A family picked over the preset (Caption style › Font): the lines are drawn in it at the weight nearest the
     /// preset's, and everything else stays the preset's. Nil draws the preset's own font; picking a preset clears it.
     var face: TextOverlayFont?
+    /// How the lines are cut into what shows at once (`CaptionFormat`, `CaptionBlocking`); the renderer keeps a block to the
+    /// format's lines. Nil: the lines as they were made, drawn as before formats (edits saved before them read as nil).
+    var format: CaptionFormat?
 
     init(theme: CaptionTheme = .cue) {
         self.theme = theme

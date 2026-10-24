@@ -814,7 +814,7 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
 - **Digitando** (teclado no campo): só cabeçalho, campo e abas sobre o teclado (`EditorLayout.typingPanelHeight`, 180 pt); o vídeo fica com o resto
   e mostra o texto mudando. Tocar numa aba guarda o teclado e mostra os controles dela (como no CapCut). Com texto grande (xxLarge ou
   mais) isso não caberia: os controles ficam e rolam sobre o teclado (`TextStylePanel.hidesControlsWhileTyping`).
-- **Presets do Caption style em grade** (colunas de 104 pt: três por linha no iPhone), todos à vista, sem rolar de lado.
+- **Presets do Caption style em grade** (colunas de 104 pt: três por linha no iPhone), todos à vista, sem rolar de lado; acima deles, **Format** (§49).
 - **Escopo só do visual:** "Style applies to" **This title | All texts · N** só em Presets, Font e Color ("Words, timing and motion stay with each text.");
   em Motion: "Motion and timing change only this text".
 - **Apply this style to captions** (`PanelButton` no fim de Presets, Font e Color, quando há legendas): pergunta antes (alerta: o que troca, o que fica, e
@@ -1678,3 +1678,48 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
   com o vídeo de demonstração, não testes com criadores.
 - **Testes:** `QuickEditToolbarTests` (atalhos de corte, nome no ‹), `QuickEditMontageTests` (clipe depois do da agulha, escolhido, aviso; onde a
   mídia por cima começa), `EditorUITests.testTheFilterRowStaysWhereItIsDragged`, `CreatorWorkflowUITests` 6–8.
+
+## 49. Legendas: formatos medidos, quebras à mão e o tempo de cada palavra (Fase 2 do refinamento, 24 de outubro de 2026; pedido do dono)
+
+O que a legenda **diz** (as palavras, as correções, os tempos de cada palavra, as marcas de revisão) fica separado de **como ela é cortada** no que aparece
+de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra transcrição nem apaga uma decisão do criador.
+- **Format** (Caption style › Presets, acima da grade; `CaptionFormat` em `CaptionSettings.format`): **One word** (só a palavra que está sendo dita, trocada
+  pela seguinte, no mesmo lugar), **Short phrase** (um grupo que faz sentido, numa linha; a segunda só para uma palavra não ficar sozinha; o padrão) e **Two lines** (blocos
+  de até duas linhas, quebradas por igual). Legendas novas nascem em Short phrase, ou no formato do My style salvo. Uma edição de antes dos formatos fica
+  como era ("Format · as they were made", nada marcado) até alguém escolher um: escolher corta as mesmas palavras de novo, num passo de desfazer, com o
+  aviso "Captions format: …" e Undo.
+- **Medido como o desenho mede** (`CaptionBlocking`, `CaptionCollectionRenderer.measure`): fonte, peso, tamanho, maiúsculas, espaçamento entre letras, o
+  contorno e a sobra das margens e da caixa, no formato do vídeo. Um bloco termina no fim de uma frase ("Dr." e iniciais não contam) ou numa pausa de
+  0,6 s; uma frase curta gosta de terminar numa vírgula ou numa pausa de 0,3 s; nunca termina numa palavra que se apoia na seguinte ("the", "de", "and",
+  em inglês, português, espanhol, francês, italiano e alemão) quando dá para evitar; e termina antes de pedir mais linhas do que o formato deixa. Por
+  isso nada encolhe para caber: o desenho só diminui um bloco que ainda não caiba (uma palavra mais larga que a tela inteira, que fica sozinha no bloco,
+  ou uma linha escrita à mão). Idiomas sem espaço (japonês, chinês, tailandês) são cortados pela largura de verdade; árabe e hebraico, igual.
+- **Tempo de leitura:** um bloco fica pelo menos 0,8 s e o tempo de ler a 20 caracteres por segundo, quando o silêncio depois dele deixa; entre dois
+  blocos da mesma fala um vão menor que meio segundo é fechado (a legenda não pisca); um bloco que fecha uma linha termina onde ela terminava.
+- **Tempos medidos ou estimados:** One word só vale para palavras com tempo medido pela voz; linhas com tempo estimado (escritas, corrigidas sem tempo)
+  ficam em frases curtas, sem fingir que acompanham a voz. Cortar de novo usa os tempos que a linha guarda (nunca redistribui uma estimativa).
+- **O que o criador decidiu fica:** linhas divididas (Split) ou juntadas (Join next) à mão (`CaptionCue.keepsBlock`) e linhas com uma quebra feita à mão
+  ficam como estão em qualquer formato; linhas de outra gravação da montagem e linhas com estilo próprio nunca se misturam com as outras. Trocar preset,
+  fonte, tamanho ou um look copiado corta de novo no mesmo passo de desfazer (o que cabia numa letra pode não caber em outra); cor e lugar não mexem.
+  Trocar o preset mantém o formato; um My style salvo antes dos formatos também.
+- **Line break** (Caption › More, `breakCaptionLine`): a legenda vai para a linha de baixo onde está o cursor (sem cursor, na palavra da agulha), na
+  mesma legenda; as palavras e os tempos ficam. A quebra mora no texto ("\n"), aparece no campo, e apagá-la no campo a tira. **Return continua indo
+  para a próxima legenda**: só a quebra recém-digitada é Return (`CaptionLineCard.withoutTypedReturn`). O desenho e o destaque palavra a palavra seguem
+  a quebra (`CaptionText.joined(_:breaks:)`, `WordEmphasis.breaks`).
+- **Word timing** (Caption › More, `WordTimingStrip`): as palavras da linha lado a lado, cada uma da largura do tempo em que é dita; a alça amarela entre
+  duas move onde uma acaba e a outra começa (nunca a menos de 0,1 s das outras pontas), um passo de desfazer por arraste. Tempo medido ou posto pelo
+  criador é sólido; estimado é tracejado. VoiceOver: cada alça se ajusta de 0,1 em 0,1 s. Quando nenhuma palavra fica estimada, "Check timing" sai.
+  Contraste medido nos três cartões da linha (`panelCard`, `accCard`, `surface2` sobre o painel), com e sem Aumentar Contraste: palavra medida `ink`
+  sobre `segmentOn`, palavra estimada e o tracejado em `ink2` (4,5:1), alça `acc` (3:1) (`PaletteContrastTests.theWordTimingStripReadsOnTheLineCard`).
+- **Traduções:** cada linha traduzida guarda o próprio texto e o próprio tempo (nunca é cortada palavra por palavra) e passa a apontar para os blocos sobre
+  os quais toca; a linha escolhida continua escolhida no bloco que contém o começo dela.
+- **Cortes, cópias, montagem e velocidade:** os blocos são cortados no tempo da gravação (como as linhas sempre foram), então o mapa das legendas na edição
+  (`CaptionMap`) os leva junto como levava as linhas.
+- **Limites desta entrega:** uma correção que deixa um bloco grande demais não o corta de novo sozinha (o desenho encolhe aquele bloco até o próximo Format
+  ou troca de letra); cortar de novo um vídeo de 30 minutos mede cada bloco na hora (alguns décimos de segundo).
+- **Testes:** `CaptionBlockingTests` (palavras em ordem, uma linha na frase curta, nunca três, frase e pausa, palavras que se apoiam, uma palavra só com
+  tempo medido, palavra larga sozinha, japonês, árabe, linhas feitas à mão, correções e marcas, cortar de novo não muda nada, outra gravação, quebra de
+  linha desenhada e acesa, Return), `QuickEditCaptionFormatTests` (Short phrase nas novas, edição antiga intacta, um passo de desfazer, traduções, linha
+  escolhida, Split à mão, `keepsBlock` gravado só quando há, Line break no cursor, Word timing: um arraste é um passo de desfazer),
+  `CreatorWorkflowUITests.testCaptionsInAShortPhraseALineBreakAndWordTiming` (o demo, de antes dos formatos, sem nada marcado; Short phrase corta as
+  8 linhas em 15; Line break; Word timing à vista).

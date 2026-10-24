@@ -5,13 +5,12 @@
 
 import SwiftUI
 
-/// A line in Captions: when it plays ("00:05.2 → 00:07.1 · 1.9s") and what it says, yellow while
-/// it plays. Picked, it opens for working line by line: the words in a field outlined in yellow
-/// (Return goes on to the next line, with the keyboard still up), ‹ 3/12 › to step between lines,
-/// Play and delete; More opens Start and End −/+ in tenths, Split and Join next, and opens by
-/// itself on a line whose timing needs a look. A long press on any line offers Play, Select and Delete. While lines are
-/// picked together (Captions › Select), a line shows a check circle and a tap puts it in or out; the field and its tools
-/// stay closed.
+/// A line in Captions: when it plays ("00:05.2 → 00:07.1 · 1.9s") and what it says, yellow while it plays. Picked, it opens for working
+/// line by line: the words in a field outlined in yellow (Return goes on to the next line, with the keyboard still up), ‹ 3/12 › to step
+/// between lines, Play and delete; More opens Start and End −/+ in tenths, Split, Join next, Line break (a new line where the cursor is, in
+/// the same caption) and each word's time (`WordTimingStrip`), and opens by itself on a line whose timing needs a look. A long press on any
+/// line offers Play, Select and Delete. While lines are picked together (Captions › Select), a line shows a check circle and a tap puts it
+/// in or out; the field and its tools stay closed.
 struct CaptionLineCard: View {
     let viewModel: QuickEditViewModel
     let line: CaptionCue
@@ -25,6 +24,8 @@ struct CaptionLineCard: View {
 
     /// The creator's choice for More; nil follows the line (open when its timing needs a look).
     @State private var moreOverride: Bool?
+    /// Where the cursor is in the field: Line break goes there.
+    @State private var cursor: TextSelection?
 
     private var showsMore: Bool { moreOverride ?? line.needsTimingReview }
 
@@ -106,7 +107,7 @@ struct CaptionLineCard: View {
             TextField(String(localized: "What's said here"), text: Binding(
                 get: { viewModel.edit.captions.first { $0.id == cueID }?.text ?? line.text },
                 set: { write($0) }
-            ), axis: .vertical)
+            ), selection: $cursor, axis: .vertical)
             .font(.system(.subheadline))
             .lineLimit(1...4)
             .submitLabel(.next)
@@ -144,7 +145,11 @@ struct CaptionLineCard: View {
                 HStack(spacing: 6) {
                     chip(String(localized: "Split"), identifier: "edit.captionSplit") { viewModel.captions.splitCaptionAtPlayhead(cueID) }
                     chip(String(localized: "Join next"), identifier: "edit.captionJoin") { viewModel.captions.joinCaption(cueID) }
+                    chip(String(localized: "Line break"), identifier: "edit.captionBreak") {
+                        viewModel.captions.breakCaptionLine(cueID, atCharacter: cursorOffset)
+                    }
                 }
+                WordTimingStrip(viewModel: viewModel, cueID: cueID)
             }
         }
     }
@@ -176,15 +181,36 @@ struct CaptionLineCard: View {
         .accessibilityIdentifier("edit.captionDelete")
     }
 
-    /// Typing goes to the line; Return (a new line in the field) goes on to the next one with the
-    /// keyboard still up, and at the last line puts the keyboard away.
+    /// The cursor's place in the line's text, in characters; nil when the field has none.
+    private var cursorOffset: Int? {
+        let text = viewModel.edit.captions.first { $0.id == cueID }?.text ?? line.text
+        guard case .selection(let range)? = cursor?.indices, range.lowerBound <= text.endIndex else { return nil }
+        return text.distance(from: text.startIndex, to: range.lowerBound)
+    }
+
+    /// Typing goes to the line; Return (a new line typed in the field) goes on to the next one with the keyboard still up,
+    /// and at the last line puts the keyboard away. A line break the line already has (Caption › Line break) stays: only the
+    /// one just typed is Return.
     private func write(_ typed: String) {
-        guard typed.contains("\n") else {
+        let stored = viewModel.edit.captions.first { $0.id == cueID }?.text ?? line.text
+        guard typed.count(where: { $0 == "\n" }) > stored.count(where: { $0 == "\n" }) else {
             viewModel.captions.setCaptionText(cueID, typed)
             return
         }
-        viewModel.captions.setCaptionText(cueID, typed.replacingOccurrences(of: "\n", with: ""))
+        viewModel.captions.setCaptionText(cueID, Self.withoutTypedReturn(typed, stored: stored))
         if !viewModel.captions.goToCaptionLine(from: cueID, by: 1, keepsTyping: true) { focusesField.wrappedValue = false }
+    }
+
+    /// `typed` without the new line just typed: the first one where it differs from `stored`, else its last.
+    static func withoutTypedReturn(_ typed: String, stored: String) -> String {
+        var text = Array(typed)
+        let shared = zip(text, stored).prefix { $0 == $1 }.count
+        if shared < text.count, text[shared] == "\n" {
+            text.remove(at: shared)
+        } else if let last = text.lastIndex(of: "\n") {
+            text.remove(at: last)
+        }
+        return String(text)
     }
 
     /// "‹ 3/12 ›": the line before and the one after.
