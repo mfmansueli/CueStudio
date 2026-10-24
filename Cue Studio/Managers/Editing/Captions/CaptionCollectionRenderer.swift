@@ -223,6 +223,20 @@ nonisolated enum CaptionCollectionRenderer {
         }
     }
 
+    /// Adds `room` points to every space between words (a style whose word being said pops); nothing with no room asked.
+    private static func spaceOut(_ storage: NSTextStorage, by room: CGFloat) {
+        guard room > 0 else { return }
+        let text = storage.string as NSString
+        var search = NSRange(location: 0, length: text.length)
+        while search.length > 0 {
+            let found = text.range(of: " ", options: [], range: search)
+            guard found.location != NSNotFound else { break }
+            let kern = (storage.attribute(.kern, at: found.location, effectiveRange: nil) as? CGFloat) ?? 0
+            storage.addAttribute(.kern, value: kern + room, range: found)
+            search = NSRange(location: NSMaxRange(found), length: text.length - NSMaxRange(found))
+        }
+    }
+
     /// The glyphs as `spec` draws them: a halo's passes over one another, so it is dense where the letters meet the picture;
     /// an outline outside the letters (`strokesOutside`) drawn first, twice as wide and under its shadow, the letters filled
     /// over it so it never eats into them.
@@ -243,9 +257,15 @@ nonisolated enum CaptionCollectionRenderer {
         storage.enumerateAttribute(.shadow, in: characters) { value, range, _ in
             if let value { shadows.append((range, value)) }
         }
-        // The outline alone (a positive width strokes without filling), with the shadow under it.
+        // The outline alone (a positive width strokes without filling), with the shadow under it, its corners round: a stroke
+        // this thick would otherwise end in spikes at the letters' sharp corners (the end of an "e", the points of a "w").
         for stroke in strokes { storage.addAttribute(.strokeWidth, value: abs(stroke.width) * 2, range: stroke.range) }
+        let context = UIGraphicsGetCurrentContext()
+        context?.saveGState()
+        context?.setLineJoin(.round)
+        context?.setLineCap(.round)
         for _ in 0..<passes { layout.manager.drawGlyphs(forGlyphRange: glyphs, at: layout.origin) }
+        context?.restoreGState()
         // The letters, filled, over it.
         storage.removeAttribute(.strokeWidth, range: characters)
         storage.removeAttribute(.shadow, range: characters)
@@ -359,6 +379,7 @@ nonisolated enum CaptionCollectionRenderer {
         attributes[.paragraphStyle] = paragraph
         let storage = NSTextStorage(string: display, attributes: attributes)
         for range in marked.values { storage.addAttribute(.font, value: bigger[.font] as Any, range: range) }
+        spaceOut(storage, by: CGFloat(spec.wordSpacing) * size)
         let manager = NSLayoutManager()
         storage.addLayoutManager(manager)
         let container = NSTextContainer(size: CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
@@ -438,10 +459,11 @@ nonisolated enum CaptionCollectionRenderer {
                     storage.addAttribute(.foregroundColor, value: color(spec.emphasisColor), range: range)
                 }
             }
+            spaceOut(storage, by: CGFloat(spec.wordSpacing) * pointSize)
             let manager = NSLayoutManager()
             storage.addLayoutManager(manager)
             // Favor two balanced lines for a short sentence, while keeping the longest word whole.
-            let fullWidth = marked.isEmpty ? measure(display, font: font) : storage.size().width
+            let fullWidth = marked.isEmpty && spec.wordSpacing == 0 ? measure(display, font: font) : storage.size().width
             let longest = marked.isEmpty ? (words.map { measure($0, font: font) }.max() ?? 0) : (wordWidths(pointSize).max() ?? 0)
             // A line broken by hand goes on a new line only where the creator put it.
             let balanced = display.contains("\n") ? maxWidth

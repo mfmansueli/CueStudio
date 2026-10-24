@@ -15,8 +15,8 @@ import Foundation
 ///
 /// What a creator decided stays: lines split or joined by hand (`CaptionCue.keepsBlock`) or broken onto a new line by hand
 /// (`CaptionCue.lineBreaks`) are left as they are, as are empty lines, and the lines of another recording or with a style of
-/// their own are never mixed with the rest. A run of lines with no measured word times is never shown one word at a time
-/// (that would pretend to follow the voice): it gets short phrases.
+/// their own are never mixed with the rest. A line whose words aren't all measured by the voice is never shown one word at a
+/// time (that would pretend to follow the voice): it gets short phrases, and only it.
 nonisolated enum CaptionBlocking {
     /// A silence this long always ends a block.
     static let pauseBreak: TimeInterval = 0.6
@@ -48,7 +48,10 @@ nonisolated enum CaptionBlocking {
                 result.append(line)
                 continue
             }
-            if let last = run.last, last.sourceID != line.sourceID || last.lineStyle != line.lineStyle || line.start < last.start {
+            // One word goes by the voice's own times: a line whose words aren't all measured (a correction's guess) stays in short
+            // phrases on its own, and the lines around it still go one word at a time.
+            let timingChanges = format == .oneWord && run.last.map { $0.hasWordTiming != line.hasWordTiming } == true
+            if let last = run.last, last.sourceID != line.sourceID || last.lineStyle != line.lineStyle || line.start < last.start || timingChanges {
                 flush()
             }
             run.append(line)

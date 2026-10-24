@@ -36,12 +36,16 @@ extension CaptionsViewModel {
         var motion = captionMotion
         update(&motion)
         guard motion != edit.captionCollection?.motion else { return }
+        let aspect = edit.aspect
         change { snapshot in
-            guard var settings = snapshot.captionCollection else { return }
+            guard let before = snapshot.captionCollection else { return }
+            var settings = before
             settings.motion = motion
             settings.followsWords = motion.followsWords
             snapshot.captionCollection = settings
             snapshot.captionAnimation = motion.nearestAnimation
+            // A pop leaves room between words: the lines of a format are cut again for it.
+            Self.refit(&snapshot, from: before, aspect: aspect)
         }
         previewCurrentCaptionLine()
     }

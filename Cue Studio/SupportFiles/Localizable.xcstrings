@@ -17208,6 +17208,311 @@
         }
       }
     },
+    "%lld lines stay as short phrases: their words aren't timed to the voice. Set them in a line's More › Word timing." : {
+      "comment" : "Caption style › Format with One word picked: lines whose words have guessed times (a correction) stay as short phrases; More and Word timing are names on screen.",
+      "localizations" : {
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld أسطر تبقى عبارات قصيرة: كلماتها غير موقّتة على الصوت. اضبطها في المزيد › توقيت الكلمات."
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld سطرًا تبقى عبارات قصيرة: كلماتها غير موقّتة على الصوت. اضبطها في المزيد › توقيت الكلمات."
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld سطر يبقى عبارة قصيرة: كلماته غير موقّتة على الصوت. اضبطها في المزيد › توقيت الكلمات."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld سطر تبقى عبارات قصيرة: كلماتها غير موقّتة على الصوت. اضبطها في المزيد › توقيت الكلمات."
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld سطر يبقيان عبارتين قصيرتين: كلماتهما غير موقّتة على الصوت. اضبطها في المزيد › توقيت الكلمات."
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld سطر يبقى عبارة قصيرة: كلماته غير موقّتة على الصوت. اضبطها في المزيد › توقيت الكلمات."
+                }
+              }
+            }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld linje forbliver en kort sætning: dens ord er ikke timet til stemmen. Indstil dem under Mere › Ordenes timing."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld linjer forbliver korte sætninger: deres ord er ikke timet til stemmen. Indstil dem under en linjes Mere › Ordenes timing."
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Zeile bleibt eine kurze Phrase: Ihre Wörter sind nicht auf die Stimme getimt. Stell sie unter Mehr › Wort-Timing ein."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld Zeilen bleiben kurze Phrasen: Ihre Wörter sind nicht auf die Stimme getimt. Stell sie unter Mehr › Wort-Timing einer Zeile ein."
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld line stays as a short phrase: its words aren't timed to the voice. Set them in its More › Word timing."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld lines stay as short phrases: their words aren't timed to the voice. Set them in a line's More › Word timing."
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld línea sigue como frase corta: sus palabras no tienen el tiempo de la voz. Ajústalas en Más › Tiempo de cada palabra."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld líneas siguen como frases cortas: sus palabras no tienen el tiempo de la voz. Ajústalas en Más › Tiempo de cada palabra de cada línea."
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ligne reste en phrase courte : ses mots ne sont pas calés sur la voix. Réglez-les dans Plus › Minutage des mots."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld lignes restent en phrases courtes : leurs mots ne sont pas calés sur la voix. Réglez-les dans Plus › Minutage des mots de chaque ligne."
+                }
+              }
+            }
+          }
+        },
+        "hi" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld लाइन छोटे वाक्यांश में रहती है: इसके शब्दों का समय आवाज़ से नहीं मिलाया गया। इन्हें और › शब्दों का समय में सेट करें।"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld लाइनें छोटे वाक्यांशों में रहती हैं: इनके शब्दों का समय आवाज़ से नहीं मिलाया गया। हर लाइन के और › शब्दों का समय में सेट करें।"
+                }
+              }
+            }
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld baris tetap berupa frasa pendek: waktu katanya belum mengikuti suara. Atur di Lainnya › Waktu kata pada baris itu."
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld riga resta una frase breve: le sue parole non hanno i tempi della voce. Impostali in Altro › Tempi delle parole."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld righe restano frasi brevi: le loro parole non hanno i tempi della voce. Impostali in Altro › Tempi delle parole di ogni riga."
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld行は短いフレーズのままです。単語が音声のタイミングに合っていません。その行のその他 › 単語のタイミングで設定してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld줄은 짧은 구절로 남아요. 단어가 음성 타이밍에 맞춰져 있지 않아요. 해당 줄의 더 보기 › 단어 타이밍에서 맞춰 주세요."
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld linje forblir en kort frase: ordene er ikke timet til stemmen. Still dem inn under Mer › Ordenes timing."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld linjer forblir korte fraser: ordene er ikke timet til stemmen. Still dem inn under en linjes Mer › Ordenes timing."
+                }
+              }
+            }
+          }
+        },
+        "nl" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld regel blijft een korte zin: de woorden zijn niet op de stem getimed. Stel ze in bij Meer › Woordtiming."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld regels blijven korte zinnen: de woorden zijn niet op de stem getimed. Stel ze in bij Meer › Woordtiming van een regel."
+                }
+              }
+            }
+          }
+        },
+        "pt" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld linha fica como frase curta: as palavras dela não têm o tempo da voz. Ajuste em Mais › Tempo das palavras."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld linhas ficam como frases curtas: as palavras delas não têm o tempo da voz. Ajuste em Mais › Tempo das palavras de cada linha."
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld rad blir kvar som en kort fras: orden är inte tajmade mot rösten. Ställ in dem under Mer › Ordens timing."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld rader blir kvar som korta fraser: orden är inte tajmade mot rösten. Ställ in dem under en rads Mer › Ordens timing."
+                }
+              }
+            }
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld บรรทัดยังคงเป็นวลีสั้น เพราะคำยังไม่ได้ตั้งจังหวะตามเสียง ตั้งได้ที่ เพิ่มเติม › จังหวะของคำ ของบรรทัดนั้น"
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld satır kısa ifade olarak kalıyor: kelimeleri sese göre zamanlanmamış. Diğer › Kelime zamanlaması bölümünden ayarlayın."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld satır kısa ifade olarak kalıyor: kelimeleri sese göre zamanlanmamış. Bir satırın Diğer › Kelime zamanlaması bölümünden ayarlayın."
+                }
+              }
+            }
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld dòng vẫn là cụm ngắn: các từ chưa khớp thời gian với giọng nói. Hãy chỉnh trong Thêm › Thời gian từng từ của dòng đó."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 行仍为短句：这些词还没有对上语音的时间。请在该行的“更多 › 逐词时间”中设置。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld 行仍為短句：這些詞還沒有對上語音的時間。請在該行的「更多 › 逐詞時間」中設定。"
+          }
+        }
+      }
+    },
     "%lld lines to check" : {
       "comment" : "Toast after captions are made: how many lines to read",
       "localizations" : {

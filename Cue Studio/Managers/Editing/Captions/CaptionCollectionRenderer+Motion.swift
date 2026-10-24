@@ -12,6 +12,8 @@ import UIKit
 nonisolated extension CaptionCollectionRenderer {
     /// How a popped word lands: a little past its size for an instant, then at it (seconds, scale), after `popScale` holds.
     private static let popSteps: [(length: TimeInterval, scale: Double)] = [(0.045, 1.05), (0.05, 1.17)]
+    /// The longest breath after which the sliding box still comes from the word before.
+    private static let glideBreath: TimeInterval = 0.3
 
     static func motionOverlays(
         _ cues: [CaptionCue], settings: CaptionSettings, motion: CaptionMotion, position: CaptionPosition, frame: CGSize
@@ -62,9 +64,10 @@ nonisolated extension CaptionCollectionRenderer {
                 let start = max(cursor, word.start, cue.start)
                 let end = min(cue.end, word.end, index + 1 < words.count ? words[index + 1].start : cue.end)
                 if start > cursor {
-                    // A breath between words: the words said so far stay, none is lit.
+                    // A breath between words: the words said so far stay, none is lit. After a short one the sliding box still
+                    // comes from the word before.
                     states.append(overlay(TimeSpan(start: cursor, end: start), CaptionMarkup(revealedThrough: reveals ? index - 1 : nil)))
-                    previous = nil
+                    if start - cursor >= Self.glideBreath { previous = nil }
                 }
                 if end > start {
                     let span = TimeSpan(start: start, end: end)
@@ -191,17 +194,52 @@ nonisolated extension CaptionCollectionRenderer {
             drawGlyphs(all, layout: layout, spec: spec)
             return
         }
-        // Every word but the popped one in place, then the popped one bigger around its own middle.
+        // Every word but the popped one in place, then the popped one bigger around its own middle, never into the words beside
+        // it: it grows only as far as the room on its line leaves, a space kept.
         let word = layout.manager.glyphRange(forCharacterRange: popped, actualCharacterRange: nil)
         drawGlyphs(NSRange(location: all.location, length: word.location - all.location), layout: layout, spec: spec)
         drawGlyphs(NSRange(location: NSMaxRange(word), length: NSMaxRange(all) - NSMaxRange(word)), layout: layout, spec: spec)
         let bounds = layout.manager.boundingRect(forGlyphRange: word, in: layout.container).offsetBy(dx: layout.origin.x, dy: layout.origin.y)
-        let scale = CGFloat(markup.popScale)
+        let neighbors = [markup.lit.map { $0 - 1 }, markup.lit.map { $0 + markup.litCount }].compactMap { $0 }.compactMap { range($0) }.map { characters in
+            layout.manager.boundingRect(
+                forGlyphRange: layout.manager.glyphRange(forCharacterRange: characters, actualCharacterRange: nil), in: layout.container
+            ).offsetBy(dx: layout.origin.x, dy: layout.origin.y)
+        }
+        let size = (storage.attribute(.font, at: popped.location, effectiveRange: nil) as? UIFont)?.pointSize ?? bounds.height
+        let room = Self.popRoom(for: bounds, beside: neighbors, in: layout.size, fontSize: size, spec: spec, asked: CGFloat(markup.popScale))
         context.saveGState()
-        context.translateBy(x: bounds.midX, y: bounds.midY)
-        context.scaleBy(x: scale, y: scale)
+        context.translateBy(x: bounds.midX + room.shift, y: bounds.midY)
+        context.scaleBy(x: room.scale, y: room.scale)
         context.translateBy(x: -bounds.midX, y: -bounds.midY)
         drawGlyphs(word, layout: layout, spec: spec)
         context.restoreGState()
+    }
+
+    /// How big a popped word (`bounds`) may grow toward `asked`, and how far it moves while growing: into the room on its line
+    /// up to the words beside it (`neighbors`, on the same line) and the drawing's edges, more toward the side that has more (the
+    /// last word of a line grows into the free end), always keeping about a space clear beside the outlines of both words. The
+    /// layout of a style that pops leaves the room (`CaptionStyleSpec.wordSpacing`).
+    static func popRoom(
+        for bounds: CGRect, beside neighbors: [CGRect], in size: CGSize, fontSize: CGFloat, spec: CaptionStyleSpec, asked: CGFloat
+    ) -> (scale: CGFloat, shift: CGFloat) {
+        guard bounds.width > 0, bounds.height > 0, asked > 1 else { return (max(1, asked), 0) }
+        let outline = spec.outline.map { CGFloat($0.width) / 100 * fontSize * (spec.strokesOutside ? 2 : 1) } ?? 0
+        let kept = fontSize * 0.18 + outline
+        var left = bounds.minX - 2
+        var right = size.width - bounds.maxX - 2
+        for neighbor in neighbors where abs(neighbor.midY - bounds.midY) < bounds.height / 2 {
+            if neighbor.maxX <= bounds.midX { left = min(left, bounds.minX - neighbor.maxX - kept) }
+            if neighbor.minX >= bounds.midX { right = min(right, neighbor.minX - bounds.maxX - kept) }
+        }
+        left = max(0, left)
+        right = max(0, right)
+        let vertical = max(0, min(bounds.minY, size.height - bounds.maxY))
+        let scale = max(1, min(asked, 1 + (left + right) / bounds.width, 1 + 2 * vertical / bounds.height))
+        // Half the growth to each side where there is room, the rest to the side that has it.
+        let growth = (scale - 1) * bounds.width
+        var leftward = min(left, growth / 2)
+        let rightward = min(right, growth - leftward)
+        leftward = growth - rightward
+        return (scale, (rightward - leftward) / 2)
     }
 }

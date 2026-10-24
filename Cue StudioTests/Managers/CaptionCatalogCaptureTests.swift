@@ -105,6 +105,50 @@ struct CaptionCatalogCaptureTests {
         }
     }
 
+    /// The styles whose word being said pops, at the instant it is biggest, on long words next to each other: it never touches
+    /// them (`pop-check.jpg`).
+    @Test func drawThePops() throws {
+        let folder = URL(fileURLWithPath: try #require(ProcessInfo.processInfo.environment["CUE_CAPTION_CATALOG"]))
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let words = ["Incredible", "transformations", "happen", "everywhere"]
+        var cue = CaptionCue(words: words.enumerated().map { index, word in
+            CaptionWord(text: word, start: 0.2 + Double(index) * 0.5, end: 0.2 + Double(index) * 0.5 + 0.45)
+        })
+        cue.emphasis = []
+        let themes: [CaptionTheme] = [.spotlight, .bold, .comic, .reveal]
+        // The landing's biggest step (after its first), for each word.
+        let moments = words.indices.map { 0.2 + Double($0) * 0.5 + 0.06 }
+        let picture = picture(light: true)
+        let tile = CGSize(width: 540, height: 280)
+        let size = CGSize(width: CGFloat(moments.count) * (tile.width + 6), height: CGFloat(themes.count) * (tile.height + 6))
+        let format = UIGraphicsImageRendererFormat()
+        format.scale = 1
+        let cells = try themes.map { theme in
+            try moments.map { time -> UIImage in
+                let states = CaptionCollectionRenderer.overlays([cue], settings: CaptionSettings(theme: theme), position: .bottom, frame: frame)
+                let state = try #require(states.first { $0.span?.contains(time) == true })
+                let image = try #require(state.lazyText.flatMap(OverlayImageCache().image(for:)))
+                let drawn = UIImage(cgImage: try #require(CIContext().createCGImage(image, from: image.extent)))
+                let rect = CGRect(x: state.origin.x, y: frame.height - state.origin.y - state.size.height, width: state.size.width, height: state.size.height)
+                let crop = CGRect(x: 0, y: 1120, width: 1080, height: 560)
+                return UIGraphicsImageRenderer(size: crop.size, format: format).image { _ in
+                    picture.draw(in: CGRect(origin: CGPoint(x: 0, y: -crop.minY), size: frame))
+                    drawn.draw(in: rect.offsetBy(dx: 0, dy: -crop.minY))
+                }
+            }
+        }
+        let sheet = UIGraphicsImageRenderer(size: size, format: format).image { context in
+            UIColor(white: 0.12, alpha: 1).setFill()
+            context.fill(CGRect(origin: .zero, size: size))
+            for (row, images) in cells.enumerated() {
+                for (column, image) in images.enumerated() {
+                    image.draw(in: CGRect(x: CGFloat(column) * (tile.width + 6), y: CGFloat(row) * (tile.height + 6), width: tile.width, height: tile.height))
+                }
+            }
+        }
+        try #require(sheet.jpegData(compressionQuality: 0.86)).write(to: folder.appending(path: "pop-check.jpg"))
+    }
+
     @Test func drawTheCatalogue() throws {
         let folder = URL(fileURLWithPath: try #require(ProcessInfo.processInfo.environment["CUE_CAPTION_CATALOG"]))
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)

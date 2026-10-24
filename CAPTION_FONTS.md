@@ -17,6 +17,30 @@ Nenhuma fonte nova entrou no bundle: os presets completos (`CaptionStyleSpec`, v
 cinco da coleção e a DM Serif Display, já incorporada para os textos. Os edits salvos antes (`styleVersion`
 ausente) continuam com os números e as fontes da primeira leitura.
 
+## O catálogo (versão 3)
+
+Os vinte estilos (`CaptionStyleSpec+Catalog`) usam só fontes já incorporadas: as da coleção (Space Grotesk,
+Inter, Manrope, Anton, Poppins ExtraBold, DM Serif Display) e as do editor (`TextOverlayFont.editorFonts`), pela
+família e pelo peso (`CaptionStyleSpec.face`):
+
+| Estilo | Família · peso | Estilo | Família · peso |
+| --- | --- | --- | --- |
+| Cue | Space Grotesk 700 | Condensed | Anton |
+| Glide | Rubik 800 | Bold | Montserrat 800 |
+| Spotlight | TikTok Sans 800 | Comic | Bangers |
+| Reveal | Poppins 700 | Punch | Unbounded 800 |
+| Clean | Inter 600 | Serif | DM Serif Display |
+| Dark box | Manrope 700 | Paper | Instrument Serif |
+| Outline | Montserrat 800 | Interview | DM Sans 500 |
+| Band | DM Sans 700 | Mono | Space Mono Bold |
+| Violet | Poppins ExtraBold | Light pill | Rubik 700 |
+| Coral | Syne 800 | Cyan night | Space Grotesk 700 |
+
+Caption style › Adjust oferece só os pesos que a família tem (`CaptionStyleSpec.availableWeights`: Inter, Manrope e
+Space Grotesk pelo eixo `wght`; as do editor pelos seus cortes; Anton, Bangers, DM Serif, Instrument Serif e Space
+Mono têm um só, e a linha de peso some). A mesma cobertura vale: um idioma que a família não tem sai na fonte do
+sistema, no peso de reserva do estilo, e o cartão do estilo mostra isso com as palavras do próprio vídeo.
+
 Distribuições oficiais do Google Fonts baixadas em 2026-09-30, sob SIL Open Font License 1.1,
 com os avisos de copyright preservados. Fontes anteriores não foram removidas: atendem ao
 teleprompter, textos e receitas de projetos anteriores.

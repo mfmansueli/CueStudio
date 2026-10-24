@@ -64,8 +64,13 @@ nonisolated struct CaptionSettings: Codable, Hashable, Sendable {
         adjustments?.apply(to: &spec)
         if let width { spec.widthFraction = width.fraction }
         if let alignment { spec.alignment = alignment }
+        // A word that pops needs room on its line: the spaces leave it, in the layout and in the measure lines are cut by.
+        if motion?.spoken == .pop { spec.wordSpacing = Self.popWordSpacing }
         return spec
     }
+
+    /// The room a popping word's line leaves in each space, as a share of the type size.
+    static let popWordSpacing = 0.22
 
     var highlightColor: CaptionAccent { accent ?? spec.defaultAccent }
     var clampedScale: Double {

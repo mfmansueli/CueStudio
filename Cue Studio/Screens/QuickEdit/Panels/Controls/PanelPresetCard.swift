@@ -81,6 +81,7 @@ struct PanelPresetCard<Menu: View>: View {
                     .foregroundStyle(Palette.accInk)
                     .frame(width: badgeSize, height: badgeSize)
                     .background(Palette.acc, in: Circle())
+                    .overlay(Circle().strokeBorder(Palette.Editor.presetCardBadge, lineWidth: 1.5))
                     .padding(4)
             }
         }

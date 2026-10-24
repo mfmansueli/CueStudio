@@ -20,6 +20,10 @@ struct CaptionFormatTab: View {
                 options: CaptionFormat.allCases.map { PanelOption($0, $0.label) },
                 selection: captions.captionFormat, height: 38, identifier: "edit.captionFormat"
             ) { captions.setCaptionFormat($0) }
+            if captions.captionFormat == .oneWord, captions.linesWithoutWordTiming > 0 {
+                PanelNote(text: String(localized: "\(captions.linesWithoutWordTiming) lines stay as short phrases: their words aren't timed to the voice. Set them in a line's More › Word timing."))
+                    .accessibilityIdentifier("edit.captionFormat.untimed")
+            }
             PanelSegmented(
                 label: String(localized: "Position"),
                 options: CaptionPosition.allCases.map { PanelOption($0, $0.label) },
