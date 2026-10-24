@@ -8,9 +8,10 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// Voice Following end to end, on the device's own speech recognition: a recording of each script
-/// (`Fixtures/Speech`, spoken by the system voices) goes through `SpeechRecognitionManager` exactly
-/// as the microphone does, and the tracker has to follow it to the end.
+/// Voice Following end to end, on the device's own speech recognition: each recording of the run's voice
+/// (`SpeechSample`: the system voice reading the script below, or four people reading FLEURS sentences, whose sentence is
+/// then the script) goes through `SpeechRecognitionManager` exactly as the microphone does, and the tracker has to follow it
+/// to the end.
 ///
 /// Opt-in, because the first run downloads each language's speech model, and on a device: the
 /// simulator lists speech models but can't run them (each language then reports no recognition).
@@ -24,7 +25,7 @@ import Testing
     .enabled(if: ProcessInfo.processInfo.environment["CUE_SPEECH_E2E"] != nil)
 )
 struct VoiceFollowingSpeechTests {
-    static let scripts: [CueLanguage: String] = [
+    nonisolated static let scripts: [CueLanguage: String] = [
         .english: "Here are three habits that changed my mornings. First, I drink a glass of water before I touch my phone. Second, I write down one thing I want to finish today.",
         .spanish: "Estos son tres hábitos que cambiaron mis mañanas. Primero, bebo un vaso de agua antes de mirar el móvil. Segundo, escribo una cosa que quiero terminar hoy.",
         .portugueseBrazil: "Esses são três hábitos que mudaram as minhas manhãs. Primeiro, eu bebo um copo de água antes de pegar no celular. Segundo, eu anoto uma coisa que quero terminar hoje.",
@@ -49,8 +50,6 @@ struct VoiceFollowingSpeechTests {
 
     /// Share of the script's words the reading has to reach.
     private static let required = 0.8
-
-    private final class BundleToken {}
 
     /// What the tracker saw, shared with the task reading the transcripts.
     private final class Reading {
@@ -83,9 +82,15 @@ struct VoiceFollowingSpeechTests {
     @Test(arguments: CueLanguage.allCases)
     func followsAReadingOfTheScript(in language: CueLanguage) async throws {
         KeepScreenAwake.enable()
-        let script = try #require(Self.scripts[language], "\(language.rawValue) has no script")
-        let resource = "speech-\(language.rawValue)"
-        let url = try #require(Bundle(for: BundleToken.self).url(forResource: resource, withExtension: "m4a"), "\(language.rawValue) has no recording")
+        for sample in try SpeechSample.samples(of: language) {
+            try await follow(sample)
+        }
+    }
+
+    private func follow(_ sample: SpeechSample) async throws {
+        let language = sample.language
+        let script = sample.script
+        let url = sample.url
         let speech = SpeechRecognitionManager()
         defer { speech.stop() }
 
@@ -123,13 +128,13 @@ struct VoiceFollowingSpeechTests {
         }
         let reached = Double(reading.tracker.position) / Double(max(1, words.count))
         print(
-            "VOICE FOLLOWING \(language.rawValue): \(reading.tracker.position)/\(words.count) words"
+            "VOICE FOLLOWING \(language.rawValue) \(sample.label): \(reading.tracker.position)/\(words.count) words"
                 + " · largest jump \(reading.maxJump) · backwards \(reading.backwards) · moved in silence \(reading.positionInLeadingSilence)"
                 + " · updates \(reading.updates) · heard “\(reading.lastHeard)”"
         )
-        #expect(reached >= Self.required, "\(language.rawValue) reached \(reading.tracker.position) of \(words.count) words; heard: \(reading.lastHeard)")
-        #expect(reading.positionInLeadingSilence == 0, "\(language.rawValue): the text moved during silence")
-        #expect(reading.backwards == 0)
+        #expect(reached >= Self.required, "\(sample.label) reached \(reading.tracker.position) of \(words.count) words; heard: \(reading.lastHeard)")
+        #expect(reading.positionInLeadingSilence == 0, "\(sample.label): the text moved during silence")
+        #expect(reading.backwards == 0, "\(sample.label): the text moved back \(reading.backwards) times")
         #expect(reading.tracker.position <= words.count)
     }
 

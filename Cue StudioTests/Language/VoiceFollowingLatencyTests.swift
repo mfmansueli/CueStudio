@@ -9,9 +9,10 @@ import Speech
 import Testing
 @testable import Cue_Studio
 
-/// How quickly Voice Following reacts, measured on this device's own speech recognition: a
-/// recording of the script (`Fixtures/Speech`) plays in real time through the camera's audio path
-/// into the real prompter, and the text is watched as it moves.
+/// How quickly Voice Following reacts, measured on this device's own speech recognition: each
+/// recording of the run's voice (`SpeechSample`: the system voice reading the script, or four people
+/// reading FLEURS sentences) plays in real time through the camera's audio path into the real
+/// prompter, and the text is watched as it moves.
 ///
 /// Reported, per language: how long listening takes to start (first time, after turning Voice
 /// Following off and on, after switching Selfie ⇄ Studio), how long after speech begins the
@@ -83,10 +84,17 @@ struct VoiceFollowingLatencyTests {
 
     private func follow(_ language: CueLanguage, tuning: Tuning) async throws {
         KeepScreenAwake.enable()
-        let script = try #require(VoiceFollowingSpeechTests.scripts[language])
+        for sample in try SpeechSample.samples(of: language) {
+            try await follow(sample, tuning: tuning)
+        }
+    }
+
+    private func follow(_ sample: SpeechSample, tuning: Tuning) async throws {
+        let language = sample.language
+        let script = sample.script
         let fixture: SpeechFixture
         do {
-            fixture = try await makeFixture(language, script: script)
+            fixture = try await makeFixture(sample)
         } catch let reason as SpeechUnavailableReason {
             print("VOICE LATENCY \(language.rawValue): NOT VALIDATED · \(reason.message)")
             try Test.cancel("\(language.rawValue) not validated: \(reason.message)")
@@ -129,24 +137,25 @@ struct VoiceFollowingLatencyTests {
         let restart = uptime - restartStart
         let restartProblem = viewModel.speechUnavailable?.message ?? "none"
         await viewModel.disappear()
-        #expect(restarted, "\(language.rawValue) didn't listen again after Voice Following was turned off and on: \(restartProblem)")
+        #expect(restarted, "\(sample.label) didn't listen again after Voice Following was turned off and on: \(restartProblem)")
 
         let callbacks = run.callbacks.sorted()
         print(
-            "VOICE LATENCY \(language.rawValue) selfie \(tuning.rawValue) · startup \(ms(startup)) · restart \(ms(restart))"
+            "VOICE LATENCY \(language.rawValue) \(sample.label) selfie \(tuning.rawValue) · startup \(ms(startup)) · restart \(ms(restart))"
                 + " · Selfie→Studio \(ms(toStudio)) · Studio→Selfie \(ms(toSelfie)) · \(metrics.summary)"
                 + " · audio callback p50 \(percentile(callbacks, 0.5).map(us) ?? "–") p95 \(percentile(callbacks, 0.95).map(us) ?? "–")"
                 + " max \(callbacks.last.map(us) ?? "–")"
         )
-        print("VOICE METRICS \(language.rawValue) \(tuning.rawValue) · \(appMetrics)")
-        #expect(metrics.reached >= 0.8, "\(language.rawValue) reached \(metrics.reached) of the words")
+        print("VOICE METRICS \(language.rawValue) \(sample.label) \(tuning.rawValue) · \(appMetrics)")
+        #expect(metrics.reached >= 0.8, "\(sample.label) reached \(metrics.reached) of the words")
     }
 
     /// Voice Following turned off and on again and again (or the prompter opened and closed) in one
     /// run of the app: every new recognition still hears the words.
     @Test func everyNewRecognitionStillListens() async throws {
-        let script = try #require(VoiceFollowingSpeechTests.scripts[.english])
-        let fixture = try await makeFixture(.english, script: script, lead: 0.2)
+        let sample = try SpeechSample.synthetic(of: .english)
+        let script = sample.script
+        let fixture = try await makeFixture(sample, lead: 0.2)
         var results: [String] = []
         for round in 1...12 {
             let speech = SpeechRecognitionManager()
@@ -208,8 +217,9 @@ struct VoiceFollowingLatencyTests {
     /// A room with steady noise: before anyone speaks, nothing should light up or move.
     @Test(arguments: [(CueLanguage.english, Float(-45)), (.english, -36), (.portugueseBrazil, -36)])
     func staysStillInANoisyRoom(language: CueLanguage, noise: Float) async throws {
-        let script = try #require(VoiceFollowingSpeechTests.scripts[language])
-        let fixture = try await makeFixture(language, script: script, lead: 3, noise: noise)
+        let sample = try SpeechSample.synthetic(of: language)
+        let script = sample.script
+        let fixture = try await makeFixture(sample, lead: 3, noise: noise)
         let scenario = makeScenario(script: script)
         defer { scenario.defaults.tearDown() }
         let viewModel = scenario.viewModel
@@ -230,19 +240,17 @@ struct VoiceFollowingLatencyTests {
 
     /// Word times of each recording, heard once: every transcription is one more recognizer, and
     /// the system allows only a few at a time.
-    private static var timedWords: [CueLanguage: [TimedWord]] = [:]
+    private static var timedWords: [String: [TimedWord]] = [:]
 
-    private func makeFixture(_ language: CueLanguage, script: String, lead: TimeInterval = 1.5, noise: Float? = nil) async throws -> SpeechFixture {
-        final class BundleToken {}
+    private func makeFixture(_ sample: SpeechSample, lead: TimeInterval = 1.5, noise: Float? = nil) async throws -> SpeechFixture {
         let words: [TimedWord]
-        if let heard = Self.timedWords[language] {
+        if let heard = Self.timedWords[sample.name] {
             words = heard
         } else {
-            let url = try #require(Bundle(for: BundleToken.self).url(forResource: "speech-\(language.rawValue)", withExtension: "m4a"))
-            words = try await CaptionTranscriber.transcript(in: url, language: .language(language), script: script).words
-            Self.timedWords[language] = words
+            words = try await CaptionTranscriber.transcript(in: sample.url, language: .language(sample.language), script: sample.script).words
+            Self.timedWords[sample.name] = words
         }
-        return try SpeechFixture.load(language, script: script, lead: lead, noise: noise, timedWords: words)
+        return try SpeechFixture.load(sample, lead: lead, noise: noise, timedWords: words)
     }
 
     /// The prompter as the app builds it, with the real speech recognition and a camera that

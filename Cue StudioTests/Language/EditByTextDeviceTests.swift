@@ -8,7 +8,7 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// Edit by text end to end on this device's speech recognition: a take made of a spoken recording (`Fixtures/Speech`) is
+/// Edit by text end to end on this device's speech recognition: a take made of each recording of the run's voice (`SpeechSample`) is
 /// transcribed like a take, three words in the middle are cut by text exactly as the sheet does it (`TranscriptEditing`), the
 /// edit is exported, and the export is listened to again: the three words are gone, the words around them stay, and the video
 /// is shorter by the cut. Opt-in, on a device (`CUE_DEVICE=… scripts/test.sh device EditByTextDeviceTests`); a language this
@@ -21,13 +21,18 @@ import Testing
 )
 @MainActor
 struct EditByTextDeviceTests {
-    private final class BundleToken {}
-
     @Test(arguments: [CueLanguage.portugueseBrazil, .english])
     func cuttingThreeWordsByTextRemovesThemFromTheExport(language: CueLanguage) async throws {
         KeepScreenAwake.enable()
-        let script = try #require(VoiceFollowingSpeechTests.scripts[language])
-        let speech = try #require(Bundle(for: BundleToken.self).url(forResource: "speech-\(language.rawValue)", withExtension: "m4a"))
+        for sample in try SpeechSample.samples(of: language) {
+            try await cutThreeWords(sample)
+        }
+    }
+
+    private func cutThreeWords(_ sample: SpeechSample) async throws {
+        let language = sample.language
+        let script = sample.script
+        let speech = sample.url
         let length = try await AVURLAsset(url: speech).load(.duration).seconds
         let take = try await Self.take(speaking: speech, seconds: Int(length.rounded(.up)))
         defer { try? FileManager.default.removeItem(at: take) }
@@ -40,7 +45,7 @@ struct EditByTextDeviceTests {
             try Test.cancel("\(language.rawValue) not validated: \(reason.captionMessage)")
         }
         let words = heard.words.map { CaptionWord(text: $0.text, start: $0.start, end: $0.end) }
-        try #require(words.count >= 9, "\(language.rawValue): only \(words.count) words heard")
+        try #require(words.count >= 9, "\(sample.label): only \(words.count) words heard")
 
         // Three words in the middle, picked as the sheet picks them (first, then last).
         let first = words.count / 2 - 1
@@ -64,7 +69,7 @@ struct EditByTextDeviceTests {
         let exportSeconds = ProcessInfo.processInfo.systemUptime - started
         defer { try? FileManager.default.removeItem(at: output) }
         let exported = try await AVURLAsset(url: output).load(.duration).seconds
-        #expect(abs(exported - (length - cut.duration)) < 0.15, "\(language.rawValue): \(exported) s vs \(length - cut.duration) s")
+        #expect(abs(exported - (length - cut.duration)) < 0.15, "\(sample.label): \(exported) s vs \(length - cut.duration) s")
 
         // Listened to again: the phrase is gone, its neighbours stay.
         let audio = try await AudioTrackExtractor.extract(from: output)
@@ -77,12 +82,12 @@ struct EditByTextDeviceTests {
         let phraseGone = !Self.contains(keys, run: cutKeys)
         let neighboursKept = before.allSatisfy(keys.contains) && after.allSatisfy(keys.contains)
         print(
-            "EDIT BY TEXT \(language.rawValue): cut “\(phrase.joined(separator: " "))” (\(String(format: "%.2f", cut.duration)) s)"
+            "EDIT BY TEXT \(language.rawValue) \(sample.label): cut “\(phrase.joined(separator: " "))” (\(String(format: "%.2f", cut.duration)) s)"
                 + " · video \(String(format: "%.1f", length)) → \(String(format: "%.1f", exported)) s · export \(String(format: "%.1f", exportSeconds)) s"
                 + " · phrase gone \(phraseGone) · neighbours kept \(neighboursKept)"
         )
-        #expect(phraseGone, "\(language.rawValue): “\(phrase.joined(separator: " "))” still heard in the export")
-        #expect(neighboursKept, "\(language.rawValue): a word next to the cut is missing from the export")
+        #expect(phraseGone, "\(sample.label): “\(phrase.joined(separator: " "))” still heard in the export")
+        #expect(neighboursKept, "\(sample.label): a word next to the cut is missing from the export")
     }
 
     /// The same on the creator's own takes on this iPhone, never touching them: each recording is COPIED to the temporary
