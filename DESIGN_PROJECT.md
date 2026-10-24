@@ -1723,8 +1723,8 @@ de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra tran
   ou uma linha escrita à mão). Idiomas sem espaço (japonês, chinês, tailandês) são cortados pela largura de verdade; árabe e hebraico, igual.
 - **Tempo de leitura:** um bloco fica pelo menos 0,8 s e o tempo de ler a 20 caracteres por segundo, quando o silêncio depois dele deixa; entre dois
   blocos da mesma fala um vão menor que meio segundo é fechado (a legenda não pisca); um bloco que fecha uma linha termina onde ela terminava.
-- **Tempos medidos ou estimados:** One word só vale para palavras com tempo medido pela voz; linhas com tempo estimado (escritas, corrigidas sem tempo)
-  ficam em frases curtas, sem fingir que acompanham a voz. Cortar de novo usa os tempos que a linha guarda (nunca redistribui uma estimativa).
+- **Tempos medidos ou estimados:** One word só vale para palavras com tempo medido pela voz; uma linha com tempo estimado (escrita, corrigida sem tempo)
+  fica em frases curtas, só ela, sem fingir que acompanha a voz, e Format diz quantas são e onde acertar (More › Word timing). Cortar de novo usa os tempos que a linha guarda (nunca redistribui uma estimativa).
 - **O que o criador decidiu fica:** linhas divididas (Split) ou juntadas (Join next) à mão (`CaptionCue.keepsBlock`) e linhas com uma quebra feita à mão
   ficam como estão em qualquer formato; linhas de outra gravação da montagem e linhas com estilo próprio nunca se misturam com as outras. Trocar preset,
   fonte, tamanho ou um look copiado corta de novo no mesmo passo de desfazer (o que cabia numa letra pode não caber em outra); cor e lugar não mexem.
@@ -1776,15 +1776,18 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   Cada um é uma receita inteira (família, maiúsculas, fundo, palavra dita, entrada; dois quaisquer diferem em pelo menos duas dessas,
   `CaptionCatalogTests`) e legível parado. Os sete de antes (Cue, Clean, Educational = Dark box, Interview, Impact = Condensed, Pop = Violet, Editorial =
   Serif) guardam as leituras 1 e 2 para as edições salvas com elas (`LegacyCaptionLookTests` compara 26 edições salvas com as imagens que tinham).
-  No catálogo, o contorno é desenhado inteiro por fora da letra (`strokesOutside`; nas leituras antigas, como era) e o Cue ganhou um halo escuro.
+  No catálogo, o contorno é desenhado inteiro por fora da letra, com cantos redondos (`strokesOutside`; nas leituras antigas, como era) e o Cue ganhou
+  um halo escuro.
 - **Contraste medido nos pixels** (`CaptionContrastProbe`): a cor das letras contra a mediana dos pixels a 1–2 px em volta delas, com a legenda sobre
   branco, preto e cinza (regra do WCAG: contorno fino é parte da letra, halo largo é o fundo). Os 20 passam: palavras ≥ 4,5:1, palavra dita e ênfase ≥ 3:1
   (`CaptionCatalogContrastTests`; números em `CaptionCatalogCaptureTests`). Adjust avisa "Hard to read on bright scenes…" quando um ajuste deixaria as
   palavras abaixo de 4,5:1 sobre branco; não muda nada sozinho.
 - **Animation** (`CaptionMotion`): **In and out** (None, Fade, Pop, Rise: sobe 10 pt enquanto aparece), **Reveal** (Whole line, Word by word; desligado
   com o formato One word, com o motivo) e **Word being said** (None, Color, Box, Sliding box: a caixa desliza de uma palavra à outra em dois estados de
-  30 ms, Pop: a palavra cresce 12% passando um pouco antes de assentar, em três estados). Caixa e pop são desenhados por cima, a diagramação nunca se
-  mexe; prévia e exportação tocam os mesmos estados. Edições de antes de `motion` tocam `captionAnimation` como sempre e mostram nas três escolhas o
+  30 ms, e desliza também depois de um respiro curto, Pop: a palavra cresce até 12% passando um pouco antes de assentar, em três estados). Caixa e pop
+  são desenhados por cima, a diagramação nunca se mexe; prévia e exportação tocam os mesmos estados. Um estilo com pop deixa espaço a mais entre as
+  palavras (`wordSpacing`, 0,22 do tamanho da letra, também na medição que corta as linhas) e a palavra cresce só no espaço que a linha tem, mais para o
+  lado livre, guardando quase um espaço até a vizinha e o contorno dela (`popRoom`): nunca encosta. Edições de antes de `motion` tocam `captionAnimation` como sempre e mostram nas três escolhas o
   que tocam; `captionAnimation` continua gravado com o mais próximo, para versões anteriores.
 - **Adjust** (`CaptionAdjustments`, cada campo nil até mudar): fonte (Style's font + as 15), peso (só os que a família tem; some com um), Case (Aa · AA ·
   aa, com o idioma da linha: turco "İ" e "ı"), Text color, Background (None, Box, Lines, Band, Pill, com cor e opacidade de 30 a 100%), Outline (None,
