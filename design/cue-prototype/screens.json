@@ -13,7 +13,9 @@
       "appFiles": [
         "Cue Studio/Screens/Onboarding/OnboardingView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "1.2",
@@ -25,7 +27,9 @@
       "appFiles": [
         "Cue Studio/Screens/Onboarding/OnboardingView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "1.3",
@@ -37,7 +41,9 @@
       "appFiles": [
         "Cue Studio/Screens/Onboarding/OnboardingView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "1.4",
@@ -49,7 +55,9 @@
       "appFiles": [
         "Cue Studio/Screens/Onboarding/OnboardingView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "1.4b",
@@ -61,7 +69,9 @@
       "appFiles": [
         "Cue Studio/Screens/Onboarding/OnboardingView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "1.5",
@@ -73,7 +83,9 @@
       "appFiles": [
         "Cue Studio/Screens/Onboarding/OnboardingView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "1.6",
@@ -85,7 +97,9 @@
       "appFiles": [
         "Cue Studio/Screens/Onboarding/OnboardingView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "1.7",
@@ -97,7 +111,9 @@
       "appFiles": [
         "Cue Studio/Screens/TakeReview/Celebration/FirstStar/FirstStarView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "2.1",
@@ -109,7 +125,9 @@
       "appFiles": [
         "Cue Studio/Screens/Profile/Voice/Editor/VoiceEditorSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "2.2",
@@ -121,7 +139,9 @@
       "appFiles": [
         "Cue Studio/Screens/Profile/Voice/Editor/VoiceEditorSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "2.3",
@@ -133,7 +153,9 @@
       "appFiles": [
         "Cue Studio/Screens/Profile/Voice/Editor/VoiceEditorSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "2.4",
@@ -145,7 +167,9 @@
       "appFiles": [
         "Cue Studio/Screens/Profile/Voice/Editor/VoiceEditorSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "3.1",
@@ -157,7 +181,9 @@
       "appFiles": [
         "Cue Studio/Screens/Scripts/Empty/EmptyLibraryView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "3.2",
@@ -169,7 +195,9 @@
       "appFiles": [
         "Cue Studio/Screens/Scripts/ScriptsView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "3.3",
@@ -181,7 +209,9 @@
       "appFiles": [
         "Cue Studio/Screens/Scripts/Inspiration/FindInspirationSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "3.4",
@@ -193,7 +223,9 @@
       "appFiles": [
         "Cue Studio/Screens/CreateScript/Format/FormatSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "3.5",
@@ -205,7 +237,9 @@
       "appFiles": [
         "Cue Studio/Screens/CreateScript/StartRecordingSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "3.6",
@@ -217,7 +251,9 @@
       "appFiles": [
         "Cue Studio/Screens/Scripts/Logbook/LogbookView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "4.1",
@@ -229,7 +265,9 @@
       "appFiles": [
         "Cue Studio/Screens/ScriptDetail/Page/ScriptPageView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "4.2",
@@ -241,7 +279,9 @@
       "appFiles": [
         "Cue Studio/Screens/ScriptDetail/Page/Editor/ScriptTextView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "4.3",
@@ -253,7 +293,9 @@
       "appFiles": [
         "Cue Studio/Screens/ScriptDetail/"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "4.4",
@@ -265,7 +307,9 @@
       "appFiles": [
         "Cue Studio/Screens/ScriptDetail/"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "5.1",
@@ -277,7 +321,9 @@
       "appFiles": [
         "Cue Studio/Screens/Prompter/PrompterView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "5.2",
@@ -289,7 +335,9 @@
       "appFiles": [
         "Cue Studio/Screens/Prompter/PrompterView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "5.3",
@@ -301,7 +349,9 @@
       "appFiles": [
         "Cue Studio/Screens/Prompter/Studio/StudioModeView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "6.1",
@@ -313,7 +363,9 @@
       "appFiles": [
         "Cue Studio/Screens/TakeReview/Pick/PickBestTakeView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "6.2",
@@ -325,7 +377,9 @@
       "appFiles": [
         "Cue Studio/Screens/Takes/TakesView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "6.3",
@@ -337,7 +391,9 @@
       "appFiles": [
         "Cue Studio/Screens/TakeReview/TakeReviewView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "7.1",
@@ -349,7 +405,9 @@
       "appFiles": [
         "Cue Studio/Screens/QuickEdit/QuickEditView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "7.2",
@@ -361,7 +419,9 @@
       "appFiles": [
         "Cue Studio/Screens/QuickEdit/QuickEditView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "7.3",
@@ -373,7 +433,9 @@
       "appFiles": [
         "Cue Studio/Screens/QuickEdit/Panels/EditorPanelView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "7.4",
@@ -385,7 +447,9 @@
       "appFiles": [
         "Cue Studio/Screens/QuickEdit/Panels/EditorPanelView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "7.5",
@@ -397,7 +461,9 @@
       "appFiles": [
         "Cue Studio/Screens/QuickEdit/Panels/EditorPanelView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "7.6",
@@ -409,7 +475,9 @@
       "appFiles": [
         "Cue Studio/Screens/QuickEdit/QuickEditView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "8.1",
@@ -421,7 +489,9 @@
       "appFiles": [
         "Cue Studio/Screens/TakeReview/Celebration/ReadyToTravelView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "8.2",
@@ -433,7 +503,9 @@
       "appFiles": [
         "Cue Studio/Screens/TakeReview/Celebration/SendOffView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "8.3",
@@ -445,7 +517,9 @@
       "appFiles": [
         "Cue Studio/Screens/TakeReview/Celebration/MilestoneView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "9.1",
@@ -457,7 +531,9 @@
       "appFiles": [
         "Cue Studio/Screens/Profile/ProfileView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "9.2",
@@ -469,7 +545,9 @@
       "appFiles": [
         "Cue Studio/Screens/Profile/Universe/YourUniverseView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "9.3",
@@ -481,7 +559,9 @@
       "appFiles": [
         "Cue Studio/Screens/Profile/Voice/MyCueVoicePage.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "9.4",
@@ -493,7 +573,9 @@
       "appFiles": [
         "Cue Studio/Screens/Profile/Voice/Question/VoiceQuestionSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "10.1",
@@ -505,7 +587,9 @@
       "appFiles": [
         "Cue Studio/Screens/CreateScript/Answer/AnswerCommentSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "10.2",
@@ -517,7 +601,9 @@
       "appFiles": [
         "Cue Studio/Screens/CreateScript/Answer/AnswerCommentSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "10.3",
@@ -529,7 +615,9 @@
       "appFiles": [
         "Cue Studio/Screens/CreateScript/Answer/AnswerCommentSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "10.4",
@@ -541,7 +629,9 @@
       "appFiles": [
         "Cue Studio/Screens/CreateScript/Answer/AnswerCommentSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "11.1",
@@ -553,7 +643,9 @@
       "appFiles": [
         "Cue Studio/Screens/Settings/SettingsView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "11.2",
@@ -565,7 +657,9 @@
       "appFiles": [
         "Cue Studio/Screens/Settings/Pages/SettingsPrompterView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "11.3",
@@ -577,7 +671,9 @@
       "appFiles": [
         "Cue Studio/Screens/Settings/Personalize/PersonalizeView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "11.4",
@@ -589,7 +685,9 @@
       "appFiles": [
         "Cue Studio/Screens/Shared/Paywall/ProPlansScreen.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "12.1",
@@ -600,7 +698,9 @@
       "appFiles": [
         "Cue Studio Watch/Screens/"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "12.2",
@@ -611,7 +711,9 @@
       "appFiles": [
         "Cue Studio Watch/Screens/"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "12.3",
@@ -622,7 +724,9 @@
       "appFiles": [
         "Cue Studio Watch/Screens/"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "12.4",
@@ -633,7 +737,9 @@
       "appFiles": [
         "Cue Studio Watch/Screens/"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "12.5",
@@ -644,7 +750,9 @@
       "appFiles": [
         "Cue Studio Watch/Screens/"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "12.6",
@@ -655,7 +763,9 @@
       "appFiles": [
         "Cue Studio Watch/Screens/"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "13.1",
@@ -702,7 +812,9 @@
       "appFiles": [
         "Cue Studio/Screens/Onboarding/OnboardingView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "2.5",
@@ -713,7 +825,9 @@
       "appFiles": [
         "Cue Studio/Screens/Profile/Voice/Preview/VoicePreviewSheet.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "622ce9617acb",
+      "drawnFromKind": "estimated"
     },
     {
       "id": "R1",
@@ -724,7 +838,9 @@
       "appFiles": [
         "Cue Studio/Screens/Prompter/Selfie/SelfieModeView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "R2",
@@ -735,7 +851,9 @@
       "appFiles": [
         "Cue Studio/Screens/Prompter/Studio/StudioModeView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     },
     {
       "id": "S1",
@@ -746,8 +864,11 @@
       "appFiles": [
         "Cue Studio/Screens/Scripts/ScriptsView.swift"
       ],
-      "appFilesStatus": "suggested, confirm in code"
+      "appFilesStatus": "suggested, confirm in code",
+      "drawnFrom": "879bee2e468a",
+      "drawnFromKind": "cited"
     }
   ],
-  "unlistedScreenFiles": []
+  "unlistedScreenFiles": [],
+  "drawnFromNote": "drawnFrom is the app commit a screen was drawn from. cited: the screen header says so. estimated: the day v31 was published (22 Oct 2026, 622ce96), nothing more precise is known. scripts/check-prototype.py --report lists the screens behind the app; --mark records a new commit."
 }

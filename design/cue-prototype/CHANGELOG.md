@@ -1,5 +1,9 @@
 # Prototype changelog
 
+## Unreleased (24 Oct 2026)
+
+- Each screen records `drawnFrom`, the app commit it was drawn from. `scripts/check-prototype.py --report` shows which screens are behind the app and `--mark` records a redrawn screen. `REFRESH.md` is the routine for redrawing them.
+
 ## v31 (24 Oct 2026)
 
 First version of the prototype kept in the repository, taken from the published "Cue App v31" (22 Oct 2026).

@@ -30,12 +30,23 @@ In the viewer:
 | `vendor/` | React 18.3.1, so nothing loads from unpkg |
 | `screens.json` | The screen map: id, title, group, file, status and the app files that implement it |
 | `CHANGELOG.md` | What changed in each version of the prototype |
+| `REFRESH.md` | The steps for Claude Code to bring the screens up to date with the app |
 
 `screens.json` is the index to start from. Each screen lists `appFiles`, the Swift files that implement it. Those paths are **suggestions** (`appFilesStatus: "suggested"`), made by name; confirm them in the code before relying on them, and fix the entry when you do.
 
 ## Keep it current
 
 When a PR changes a screen that is listed in `screens.json`, update that screen's HTML (and its entry, if the title or the files changed) in the same PR, and add a line to `CHANGELOG.md`. Tag a finished state `proto-vNN`.
+
+To know how far behind the prototype is:
+
+```sh
+scripts/check-prototype.py            # screens.json is consistent; warns when the app changed and the prototype did not
+scripts/check-prototype.py --report   # per screen, the app commits since it was drawn
+scripts/check-prototype.py --mark 7.1 # after redrawing a screen: it now matches HEAD
+```
+
+Each screen has `drawnFrom`, the app commit its drawing was made from (`drawnFromKind`: `cited` when the screen's own header says so, `estimated` when only the publication day is known). `--report` compares the screen's `appFiles` with that commit. A commit is not always a visible change, so read the subjects. To redraw the screens that are behind, follow `REFRESH.md`.
 
 Screens marked `proposal, awaiting owner approval` (Apple Watch 12.x, editor 13.x) are not decisions yet.
 
