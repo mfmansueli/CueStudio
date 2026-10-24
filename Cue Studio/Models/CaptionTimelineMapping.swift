@@ -64,18 +64,24 @@ nonisolated enum CaptionTimelineMapping {
             mapped.needsTimingReview = true
         }
         if !cue.words.isEmpty {
-            let words = cue.words.compactMap { word -> CaptionWord? in
+            let kept = cue.words.enumerated().compactMap { place, word -> (place: Int, word: CaptionWord)? in
                 let middle = (word.start + word.end) / 2
                 // Estimated words have only a segment interval: no invented word boundary.
                 guard word.isEstimated || window.span.contains(middle) else { return nil }
                 let from = max(start, word.start)
                 let until = min(end, word.end)
                 guard until > from else { return nil }
-                return CaptionWord(text: word.text, start: window.edited(from), end: window.edited(until), isEstimated: word.isEstimated)
+                return (place, CaptionWord(text: word.text, start: window.edited(from), end: window.edited(until), isEstimated: word.isEstimated))
             }
+            let words = kept.map(\.word)
             guard let first = words.first, let last = words.last else { return nil }
             mapped.words = words
-            if words.count != cue.words.count { mapped.text = CaptionText.joined(words.map(\.text)) }
+            if words.count != cue.words.count {
+                mapped.text = CaptionText.joined(words.map(\.text))
+                // The marked words that survive the cut keep their marks, counted among the words that are left.
+                let matchesText = cue.words.map(\.text) == CaptionText.words(in: cue.text)
+                mapped.emphasis = matchesText ? Set(kept.enumerated().filter { cue.emphasis.contains($0.element.place) }.map(\.offset)) : []
+            }
             mapped.start = max(mapped.start, first.start)
             mapped.end = min(mapped.end, last.end)
         }

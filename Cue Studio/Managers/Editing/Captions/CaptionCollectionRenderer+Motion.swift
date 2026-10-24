@@ -18,7 +18,8 @@ nonisolated extension CaptionCollectionRenderer {
     static func motionOverlays(
         _ cues: [CaptionCue], settings: CaptionSettings, motion: CaptionMotion, position: CaptionPosition, frame: CGSize
     ) -> [FrameOverlay] {
-        let styleEntry = settings.styleSpec.motion?.entry
+        // The style's own way in keeps its tuned numbers (a style from before the catalogue: the way its reading came in).
+        let styleEntry = (settings.styleSpec.motion ?? CaptionMotion(playing: .line, spec: settings.styleSpec)).entry
         let unit = min(frame.width, frame.height) / TextOverlayRenderer.referenceWidth
         return cues.flatMap { cue -> [FrameOverlay] in
             let settings = styled(settings, for: cue.lineStyle)
@@ -37,16 +38,21 @@ nonisolated extension CaptionCollectionRenderer {
                     size: placed.size, origin: placed.origin, span: span
                 )
             }
+            /// The line coming in and going out across its states, timed from its first and to its last.
             func entered(_ states: [FrameOverlay]) -> [FrameOverlay] {
-                var states = states
-                guard let first = states.indices.first, let last = states.indices.last else { return states }
-                states[first].fadeIn = entry.fade
-                states[first].popScale = entry.popScale
-                states[first].popDuration = entry.popDuration
-                states[first].riseDistance = CGFloat(entry.rise) * unit
-                states[first].riseDuration = entry.riseDuration
-                states[last].fadeOut = entry.fade
-                return states
+                guard let comesIn = states.first?.span?.start, let goesOut = states.last?.span?.end else { return states }
+                return states.map { state in
+                    var state = state
+                    state.fadeIn = entry.fade
+                    state.popScale = entry.popScale
+                    state.popDuration = entry.popDuration
+                    state.riseDistance = CGFloat(entry.rise) * unit
+                    state.riseDuration = entry.riseDuration
+                    state.fadeOut = entry.fade
+                    state.entryStart = comesIn
+                    state.exitEnd = goesOut
+                    return state
+                }
             }
             if cue.lineStyle?.isEmphasized == true, !words.isEmpty {
                 let lit = CaptionMarkup(lit: 0, litCount: words.count, spoken: motion.spoken.boxes ? .box : .color)

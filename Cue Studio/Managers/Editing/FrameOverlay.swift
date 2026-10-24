@@ -32,6 +32,10 @@ nonisolated struct FrameOverlay: @unchecked Sendable {
     /// A line rising as it comes in: it starts `riseDistance` lower and reaches its place over `riseDuration`, easing out.
     var riseDistance: CGFloat = 0
     var riseDuration: TimeInterval = 0
+    /// When the line this state belongs to comes in and goes out, so its way in and out runs across its states (a word lit in
+    /// the first 45 ms of a line doesn't cut its fade short); nil: this state's own edges.
+    var entryStart: TimeInterval?
+    var exitEnd: TimeInterval?
     /// Keyframed motion over its own time, on a frame of `frameSize`.
     var motion: OverlayMotion?
     var frameSize: CGSize = .zero
@@ -75,16 +79,18 @@ nonisolated struct FrameOverlay: @unchecked Sendable {
             alpha *= CGFloat(min(1, max(0, edge)))
         }
         if let span {
-            if fadeIn > 0 { alpha *= CGFloat(min(1, max(0, (time - span.start) / fadeIn))) }
-            if fadeOut > 0 { alpha *= CGFloat(min(1, max(0, (span.end - time) / fadeOut))) }
+            let comesIn = entryStart ?? span.start
+            let goesOut = exitEnd ?? span.end
+            if fadeIn > 0 { alpha *= CGFloat(min(1, max(0, (time - comesIn) / fadeIn))) }
+            if fadeOut > 0 { alpha *= CGFloat(min(1, max(0, (goesOut - time) / fadeOut))) }
             if riseDuration > 0, riseDistance != 0, motion == nil {
-                let progress = min(1, max(0, (time - span.start) / riseDuration))
+                let progress = min(1, max(0, (time - comesIn) / riseDuration))
                 let eased = 1 - pow(1 - progress, 3)
                 // Core Image's y grows upward: lower is a smaller y.
                 transform = transform.concatenating(CGAffineTransform(translationX: 0, y: -riseDistance * CGFloat(1 - eased)))
             }
             if popDuration > 0, popScale != 1, motion == nil {
-                let scale = CGFloat(PopEase.scale(from: popScale, elapsed: time - span.start, duration: popDuration))
+                let scale = CGFloat(PopEase.scale(from: popScale, elapsed: time - comesIn, duration: popDuration))
                 if scale != 1 {
                     transform = CGAffineTransform(translationX: -size.width / 2, y: -size.height / 2)
                         .concatenating(CGAffineTransform(scaleX: scale, y: scale))

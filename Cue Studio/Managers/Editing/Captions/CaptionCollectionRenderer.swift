@@ -38,7 +38,9 @@ nonisolated enum CaptionCollectionRenderer {
     ) -> [FrameOverlay] {
         layOutAhead(cues, settings: settings, position: position, frame: frame)
         if let motion = settings.motion {
-            return motionOverlays(cues, settings: settings, motion: motion, position: position, frame: frame)
+            // Motion is drawn by the collection: a look an earlier version copied from a text goes as changes over the style.
+            let drawn = settings.customLook == nil ? settings : settings.withoutCopiedLook
+            return motionOverlays(cues, settings: drawn, motion: motion, position: position, frame: frame)
         }
         let reveal = effectiveAnimation(settings: settings, animation: animation)
         return cues.flatMap { cue in

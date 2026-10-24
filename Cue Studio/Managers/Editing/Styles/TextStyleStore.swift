@@ -43,6 +43,8 @@ final class TextStyleStore: TextStyleStoring {
     /// identity stays).
     private func library<Look: Codable & Hashable & Sendable>(at key: String, legacy: Look?, isDefault: Bool) -> StyleLibrary<Look> {
         if let library = decoded(StyleLibrary<Look>.self, at: key) { return library }
+        // Saved styles this version can't read (a newer one wrote them) are never replaced by the old single style.
+        guard defaults.data(forKey: key) == nil else { return StyleLibrary() }
         var library = StyleLibrary<Look>()
         guard let legacy else { return library }
         let style = library.add(legacy, named: String(localized: "My style"))

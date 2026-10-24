@@ -75,7 +75,6 @@ extension CaptionsViewModel {
     /// as a word is marked by hand. Off also takes away the whole-line light lines had before.
     func setPickedCaptionsEmphasized(_ emphasized: Bool) {
         guard canStyleCaptionLines, let picks = captionPicks, !picks.isEmpty else { return }
-        let aspect = edit.aspect
         change { snapshot in
             guard var lines = snapshot.captions else { return }
             for index in lines.indices where picks.contains(lines[index].id) {
@@ -87,7 +86,6 @@ extension CaptionsViewModel {
             }
             snapshot.captions = lines
             Self.convertCopiedLook(&snapshot)
-            Self.refitMarked(&snapshot, aspect: aspect)
         }
         if !emphasized || edit.showsCaptions { previewFirstPickedLine() }
     }

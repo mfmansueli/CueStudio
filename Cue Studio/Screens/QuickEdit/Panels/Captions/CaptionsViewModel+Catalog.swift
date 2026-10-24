@@ -47,20 +47,33 @@ extension CaptionsViewModel {
         return nil
     }
 
-    private func card(_ theme: CaptionTheme) -> CaptionStyleCard {
-        let settings = CaptionSettings(theme: theme)
+    /// The one card the captions wear, when one does: the card just picked or saved while its look is still theirs, else the
+    /// saved style they were put in, else the catalogue's style with their look, else the first saved style with it. Never two
+    /// (a saved copy of a style looks like it).
+    private var wornCard: CaptionStyleCard.Kind? {
+        guard let worn = wornLook else { return nil }
+        switch lastPickedCaptionCard {
+        case .saved(let id)? where captionStyles.style(id)?.look.settings.look == worn: return .saved(id)
+        case .builtIn(let theme)? where CaptionSettings(theme: theme).look == worn: return .builtIn(theme)
+        default: break
+        }
+        if let id = edit.captionCollection?.savedStyleID, captionStyles.style(id)?.look.settings.look == worn { return .saved(id) }
+        if let theme = CaptionTheme.catalog.first(where: { CaptionSettings(theme: $0).look == worn }) { return .builtIn(theme) }
+        return captionStyles.styles.first { $0.look.settings.look == worn }.map { .saved($0.id) }
+    }
+
+    private func card(_ theme: CaptionTheme, worn: CaptionStyleCard.Kind?) -> CaptionStyleCard {
         let key = StyleKey.builtIn(theme.rawValue)
         return CaptionStyleCard(
-            kind: .builtIn(theme), name: theme.label, summary: theme.summary, settings: settings, isSelected: wornLook == settings.look,
+            kind: .builtIn(theme), name: theme.label, summary: theme.summary, settings: CaptionSettings(theme: theme), isSelected: worn == .builtIn(theme),
             isFavorite: captionStyles.isFavorite(key), isDefault: captionStyles.isDefault(key)
         )
     }
 
-    private func card(_ style: SavedStyle<MyCaptionStyle>) -> CaptionStyleCard {
+    private func card(_ style: SavedStyle<MyCaptionStyle>, worn: CaptionStyleCard.Kind?) -> CaptionStyleCard {
         CaptionStyleCard(
             kind: .saved(style.id), name: style.name, summary: style.look.settings.theme.summary, settings: style.look.settings,
-            isSelected: wornLook == style.look.settings.look, isFavorite: captionStyles.isFavorite(style.key),
-            isDefault: captionStyles.isDefault(style.key)
+            isSelected: worn == .saved(style.id), isFavorite: captionStyles.isFavorite(style.key), isDefault: captionStyles.isDefault(style.key)
         )
     }
 
@@ -68,13 +81,13 @@ extension CaptionsViewModel {
     var currentCaptionCard: CaptionStyleCard? {
         let settings: CaptionSettings
         if let collection = edit.captionCollection {
-            guard !CaptionTheme.catalog.contains(where: { CaptionSettings(theme: $0).look == collection.look }),
-                  !captionStyles.styles.contains(where: { $0.look.settings.look == collection.look }) else { return nil }
+            guard wornCard == nil else { return nil }
             settings = collection
         } else {
-            // Captions from before the collection: their type look, drawn as the collection draws a copied one.
+            // Captions from before the collection: their type look, drawn as the text renderer draws it (no motion).
             var legacy = CaptionSettings()
             legacy.customLook = edit.captionLook ?? TypePreset.cue.look(for: .caption)
+            legacy.motion = nil
             settings = legacy
         }
         return CaptionStyleCard(
@@ -85,7 +98,9 @@ extension CaptionsViewModel {
 
     /// The cards `filter` shows, grouped: in All, this video's look, the creator's styles and every group of the catalogue.
     func captionCardSections(_ filter: CaptionCatalogFilter) -> [CaptionCardSection] {
-        let mine = captionStyles.styles.map(card)
+        let worn = wornCard
+        let mine = captionStyles.styles.map { card($0, worn: worn) }
+        let card = { (theme: CaptionTheme) in self.card(theme, worn: worn) }
         switch filter {
         case .all:
             var sections: [CaptionCardSection] = []
@@ -142,7 +157,8 @@ extension CaptionsViewModel {
         switch picked {
         case .builtIn(let theme):
             guard current.theme == theme, current.look == CaptionSettings(theme: theme).look else { return nil }
-            return current.sitsLike(CaptionSettings(theme: theme)) ? nil : theme.label
+            // The style's own place is the bottom.
+            return current.sitsLike(CaptionSettings(theme: theme)) && edit.captionPosition == .bottom ? nil : theme.label
         case .saved(let id):
             guard let saved = captionStyles.style(id), current.look == saved.look.settings.look else { return nil }
             let sits = current.sitsLike(saved.look.settings) && (saved.look.settings.format == nil || saved.look.settings.format == current.format)

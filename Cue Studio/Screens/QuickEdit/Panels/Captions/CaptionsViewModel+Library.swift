@@ -17,6 +17,8 @@ extension CaptionsViewModel {
         guard let combination = MyCaptionStyle(of: edit) else { return }
         let style = captionStyles.add(combination, named: name)
         writeCaptionStyles()
+        // The style just saved is the one marked (the captions wear it).
+        lastPickedCaptionCard = .saved(style.id)
         toast.show(String(localized: "Saved as \(style.name)"))
     }
 
@@ -114,6 +116,11 @@ extension CaptionsViewModel {
         current.styleVersion = fresh.styleVersion
         // The format is how the lines are cut, not a look: an edit whose lines were deleted is still unstyled.
         current.format = fresh.format
+        // An edit made before motion had the same unstyled captions without it.
+        if current.motion == nil, current.styleVersion == nil || current.theme == fresh.theme {
+            current.motion = fresh.motion
+            current.followsWords = fresh.followsWords
+        }
         guard current == fresh else { return }
         var next: CaptionSettings
         var animation: CaptionAnimation

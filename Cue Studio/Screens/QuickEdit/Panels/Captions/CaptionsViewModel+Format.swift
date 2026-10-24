@@ -36,14 +36,21 @@ extension CaptionsViewModel {
     /// Format › Width: how wide a line may run (one undo step); the lines of a format are cut again for the new room.
     func setCaptionWidth(_ width: CaptionWidth) {
         guard isReady, edit.captionCollection?.width != width else { return }
-        updateCaptionSettings { $0.width = width }
+        updateCaptionSettings { settings in
+            // A look copied by an earlier version is drawn by the collection, which has a width.
+            settings = settings.withoutCopiedLook
+            settings.width = width
+        }
         previewCurrentCaptionLine()
     }
 
     /// Format › Alignment (one undo step).
     func setCaptionAlignment(_ alignment: LineAlignment) {
         guard isReady, edit.captionCollection?.spec.alignment != alignment else { return }
-        updateCaptionSettings { $0.alignment = alignment }
+        updateCaptionSettings { settings in
+            settings = settings.withoutCopiedLook
+            settings.alignment = alignment
+        }
         previewCurrentCaptionLine()
     }
 

@@ -6,8 +6,9 @@
 import Foundation
 
 /// Words the creator marks for emphasis (Caption › More › Emphasis, and Select's Emphasis for whole lines): they stay in the
-/// style's emphasis color and size for as long as the line shows, unlike the word being said, and the lines are cut again
-/// with them at that size. Each mark is one undo step.
+/// style's emphasis color and size for as long as the line shows, unlike the word being said. A mark never cuts the lines again
+/// (the line being worked on stays the same line): its line is drawn with the bigger word in its room, and the next cut (a
+/// format, a size, a style) measures it. Each mark is one undo step.
 extension CaptionsViewModel {
     /// How many marked words in a line still read as emphasis (Captions' own advice: one or two).
     static let emphasisPerLine = 2
@@ -25,13 +26,11 @@ extension CaptionsViewModel {
     /// Marks or unmarks the line's word at `index`, then shows the line.
     func toggleCaptionEmphasis(_ cueID: UUID, word index: Int) {
         guard isReady, canMarkCaptionEmphasis else { return }
-        let aspect = edit.aspect
         change { snapshot in
             guard var lines = snapshot.captions, let at = lines.firstIndex(where: { $0.id == cueID }) else { return }
             if lines[at].emphasis.contains(index) { lines[at].emphasis.remove(index) } else { lines[at].emphasis.insert(index) }
             snapshot.captions = lines
             Self.convertCopiedLook(&snapshot)
-            Self.refitMarked(&snapshot, aspect: aspect)
         }
         if let span = editedSpan(ofCaption: cueID) {
             player.pause()
@@ -50,12 +49,4 @@ extension CaptionsViewModel {
         snapshot.captionCollection = settings.withoutCopiedLook
     }
 
-    /// A mark makes its word bigger: the lines of a format are cut again around it.
-    static func refitMarked(_ snapshot: inout EditSnapshot, aspect: AspectRatio) {
-        guard let settings = snapshot.captionCollection, let format = settings.format, let lines = snapshot.captions,
-              settings.spec.emphasisScale > 1 else { return }
-        let blocks = blocked(lines, format: format, settings: settings, aspect: aspect)
-        snapshot.captions = blocks
-        snapshot.captionTranslations = snapshot.captionTranslations.map { pointing($0, at: blocks) }
-    }
 }

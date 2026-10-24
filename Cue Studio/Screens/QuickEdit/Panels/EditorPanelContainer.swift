@@ -64,9 +64,12 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                 action: { _, offset in keptOffset?.wrappedValue = max(0, offset) }
             )
             .task(id: contentKey) {
-                // After the content is laid out: the offset it was left at.
-                guard let kept = keptOffset?.wrappedValue, kept > 0 else { return }
-                position.scrollTo(y: kept)
+                // After the content is laid out: the offset it was left at, else its top.
+                if let kept = keptOffset?.wrappedValue, kept > 0 {
+                    position.scrollTo(y: kept)
+                } else {
+                    position.scrollTo(edge: .top)
+                }
             }
             .id(contentKey)
             .scrollIndicators(.hidden)

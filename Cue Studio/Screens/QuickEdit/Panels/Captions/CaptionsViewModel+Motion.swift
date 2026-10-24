@@ -45,13 +45,16 @@ extension CaptionsViewModel {
 
     private func changeCaptionMotion(_ update: (inout CaptionMotion) -> Void) {
         guard isReady, edit.captionCollection != nil else { return }
-        var motion = captionMotion
+        let current = captionMotion
+        var motion = current
         update(&motion)
-        guard motion != edit.captionCollection?.motion else { return }
+        // The choice already showing changes nothing (an edit from before motion keeps drawing as it was).
+        guard motion != current else { return }
         let aspect = edit.aspect
         change { snapshot in
             guard let before = snapshot.captionCollection else { return }
-            var settings = before
+            // Motion is drawn by the collection: a look an earlier version copied goes as changes over the style.
+            var settings = before.withoutCopiedLook
             settings.motion = motion
             settings.followsWords = motion.followsWords
             snapshot.captionCollection = settings

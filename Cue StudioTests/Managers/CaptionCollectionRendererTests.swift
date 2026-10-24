@@ -157,7 +157,8 @@ struct CaptionCollectionRendererTests {
 
     @Test(arguments: [CaptionTheme.cue, .educational, .interview, .impact])
     func aCopiedLookKeepsThePlaceTheTimingAndTheRevealOfTheCollection(_ theme: CaptionTheme) throws {
-        var settings = CaptionSettings(theme: theme)
+        // A look an earlier version copied, on captions from before motion: drawn by the text renderer as it was.
+        var settings = CaptionSettings.savedBeforeMotion(theme)
         settings.center = OverlayPoint(x: 0.5, y: 0.32)
         var copied = settings
         copied.customLook = copiedLook
@@ -248,6 +249,7 @@ struct CaptionCollectionRendererTests {
         var edit = TakeEdit(sourceDuration: 5, aspect: .portrait)
         edit.showsCaptions = true
         edit.captions = [cue]
+        edit.captionCollection = CaptionSettings.savedBeforeMotion()
         edit.captionCollection?.customLook = copiedLook
         let line = TranslatedCaptionLine(cueIDs: [cue.id], sourceText: cue.text, text: "Your idea deserves life.", start: cue.start, end: cue.end)
         edit.captionTranslations = [CaptionTranslation(language: .english, lines: [line])]
