@@ -95,7 +95,7 @@ aparelho não roda aparece como **não validado** (teste cancelado), nunca aprov
 
 | Assunto | Suítes | Onde ficam os resultados |
 |---|---|---|
-| Fala (o Simulator não roda o reconhecimento) | `VoiceFollowingSpeechTests` (inclui `availabilityOnThisDevice()`), `VoiceFollowingLatencyTests`, `CaptionSpeechTests`, `SpokenLanguageDeviceTests` (idioma falado num vídeo sem roteiro) | `LOCALIZATION.md` §5 |
+| Fala (o Simulator não roda o reconhecimento) | `VoiceFollowingSpeechTests` (inclui `availabilityOnThisDevice()`), `VoiceFollowingLatencyTests`, `CaptionSpeechTests`, `SpokenLanguageDeviceTests` (idioma falado num vídeo sem roteiro), `EditByTextDeviceTests`. Voz: `TEST_RUNNER_CUE_SPEECH_VOICE=synthetic` (padrão, vozes do sistema), `human` (4 leituras de pessoas por idioma, FLEURS, `Fixtures/Speech/Human`) ou `both`; `TEST_RUNNER_CUE_SPEECH_LANGUAGES=ko-KR,pt-BR` roda só esses | `LOCALIZATION.md` §5 |
 | Apple Intelligence | `LanguageModelDeviceTests`, `ScriptGenerationFlowDeviceTests` | `LOCALIZATION.md` §5 |
 | My Cue Voice e roteirista | `VoicePersonaDeviceTests` (`tools/voice/collect_runs.py`, `make_pairs.py`), `PromptBudgetDeviceTests`, `WritingImportDeviceTests`, `PlatformLengthDeviceTests`, `LengthVariantsDeviceTests`, `ScriptToolsDeviceTests`, `IdeaRelevanceDeviceTests`, `IdeaSuggestionsDeviceTests`, `CreatorDayDeviceTests`, `InspirationDeviceTests` | `DESIGN_PROJECT.md` §4, §23, §30 |
 | Qualidade de roteiros e ideias (PT/EN/ES, voz completa, meia e sem voz) | `ScriptQualityDeviceTests` (`TEST_RUNNER_CUE_QUALITY_RUN=<nome>`; `tools/quality/collect.py`, `report.py`; reaplicar a lógica pura nos textos: `QualityReplayTests`) | `DESIGN_PROJECT.md` §4.1 |

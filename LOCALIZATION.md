@@ -57,10 +57,16 @@ direction and whether it's written without spaces.
   in the guessed language. Its first 10 s of speech are heard in up to four likely languages
   (`LanguageService.likelySpokenLanguages`: the guess above, the iPhone's languages, the interface's, English) and the take is
   captioned in the one `SpeechTranscriber` understood best by its own word confidence (the guess keeps a tie within 0.02; another
-  language must reach 0.85 to win). A language **picked unlike the script's** is most likely a slip (the take was read in the
-  script's): the two are compared the same way, and the picker then shows the one heard. A take with a script on Auto is heard
-  in the script's language straight away. Only the guess may download its model; another language is compared only when its
-  model is on the iPhone. Dictation doesn't rate its words reliably (no confidence on some results, measured on an iPad Pro
+  language must reach 0.85 to win, or 0.80 and 0.30 ahead of every other). A recognizer writes what it hears in the language it
+  hears it in (Spanish's wrote English for an English reading it scored 0.92 against English's 0.91), so one whose text reads as
+  another language drops out; Hindi's writes Hindi in Latin letters, which can't be read, so it stays; when every one wrote
+  another language, the language spoken isn't among them and the guess stays. A language **picked unlike the script's** is most
+  likely a slip (the take was read in the script's): the two are compared the same way, and the picker then shows the one
+  heard. A take with a script on Auto is heard in the script's language straight away. Only the guess may download its model;
+  another language is compared only when its model is on the iPhone. The languages compared keep their places among the
+  system's five (`SpeechLocaleReservation`): room is made with the language used longest ago, never one being compared nor
+  another variant of the one taking the place (zh-CN and zh-TW share a model), because the system's own pick released the
+  language being judged and its model then read as not on the iPhone. Dictation doesn't rate its words reliably (no confidence on some results, measured on an iPad Pro
   A12Z), so a language only dictation hears (id, ar, tr, th, vi, nl, sv, da, nb on an iPhone; all of them on a device without
   `SpeechTranscriber`) is never judged: the take is heard in the guess, as before. The status line says "Finding the language
   you speak…" meanwhile.
@@ -444,13 +450,64 @@ no markdown, and the catchphrase present, in en, pt-BR, es, fr, de, ja, zh-TW an
 - *Off-script filler* ("so", "and", "the") put the text up to 47 words ahead of the reader in a simulated reading; common
   words now count for less (4 words, `VoiceFollowingRobustnessTests`).
 
+### People's voices (FLEURS, iPhone 15 Pro, iOS 27, 24 Oct 2026)
+
+The same suites, played four people's readings a language (two women, two men) from Google's FLEURS
+(`Fixtures/Speech/Human`, `human-speech.json`, CC BY 4.0: Conneau et al., 2022) next to the system voice, on the same build
+(`TEST_RUNNER_CUE_SPEECH_VOICE=both`). FLEURS is read speech with room noise, numbers and foreign names, not a creator talking
+freely; es-ES is read by Latin American speakers, ar-SA by Egyptian ones, zh-TW by Mainland ones (transcripts converted to
+Traditional characters). Captions are the share of the script heard (Korean, Japanese, Chinese and Thai by letters); latency is
+the shipping settings, word to text.
+
+| Language | Captions heard: system · people (worst) | Voice Following reached: system · people (worst) | Latency p50 / p95: system · people | Language spoken found: people |
+|---|---|---|---|---|
+| ar-SA | 77% · 82% (≥ 76%) | 100% · 95% (≥ 88%) | -275 / 347 ms · 71 / 450 ms | not judged (dictation) |
+| da-DK | 84% · 96% (≥ 91%) | 100% · 100% (≥ 100%) | 389 / 601 ms · 176 / 514 ms | not judged (dictation) |
+| de-DE | 93% · 91% (≥ 85%) | 100% · 100% (≥ 100%) | 212 / 623 ms · 302 / 598 ms | 4 of 4 |
+| en-US | 100% · 94% (≥ 90%) | 100% · 100% (≥ 100%) | 475 / 797 ms · 383 / 676 ms | 4 of 4 |
+| es-ES | 100% · 97% (≥ 95%) | 100% · 100% (≥ 100%) | 403 / 681 ms · 382 / 686 ms | 4 of 4 |
+| fr-FR | 100% · 87% (≥ 80%) | 100% · 100% (≥ 100%) | 476 / 777 ms · 508 / 924 ms | 4 of 4 |
+| hi-IN | 61% · 76% (≥ 70%) | 100% · 98% (≥ 92%) | 102 / 943 ms · -401 / 211 ms | 4 of 4 |
+| id-ID | 96% · 96% (≥ 91%) | 100% · 100% (≥ 100%) | 60 / 433 ms · 129 / 600 ms | not judged (dictation) |
+| it-IT | 100% · 99% (≥ 95%) | 100% · 100% (≥ 100%) | 484 / 777 ms · 381 / 609 ms | 4 of 4 |
+| ja-JP | 92% · 100% (≥ 100%) | 100% · 100% (≥ 100%) | 479 / 808 ms · 598 / 1048 ms | 4 of 4 |
+| ko-KR | 96% · 96% (≥ 92%) | 100% · 100% (≥ 100%) | 228 / 676 ms · -260 / 432 ms | 4 of 4 |
+| nb-NO | 94% · 92% (≥ 84%) | 100% · 98% (≥ 92%) | 281 / 462 ms · 241 / 434 ms | not judged (dictation) |
+| nl-NL | 100% · 90% (≥ 80%) | 100% · 100% (≥ 100%) | 261 / 434 ms · 248 / 564 ms | not judged (dictation) |
+| pt-BR | 100% · 91% (≥ 83%) | 100% · 100% (≥ 100%) | 327 / 665 ms · 324 / 638 ms | 4 of 4 |
+| sv-SE | 100% · 93% (≥ 87%) | 100% · 100% (≥ 100%) | 350 / 541 ms · -68 / 356 ms | not judged (dictation) |
+| th-TH | 90% · 96% (≥ 94%) | 100% · 100% (≥ 100%) | 284 / 564 ms · 197 / 504 ms | not judged (dictation) |
+| tr-TR | 95% · 91% (≥ 78%) | 100% · 100% (≥ 100%) | -26 / 309 ms · 157 / 990 ms | not judged (dictation) |
+| vi-VN | 100% · 95% (≥ 82%) | 100% · 100% (≥ 100%) | 54 / 279 ms · 320 / 517 ms | not judged (dictation) |
+| zh-CN | 100% · 88% (≥ 73%) | 100% · 99% (≥ 95%) | 446 / 692 ms · 537 / 986 ms | 4 of 4 |
+| zh-TW | 97% · 95% (≥ 90%) | 100% · 100% (≥ 100%) | 476 / 689 ms · 593 / 892 ms | 4 of 4 |
+
+- **Sync** (captions): no caption starts before the voice or ends after it in any of the 80 readings; the first word sits within
+  0.25 s of the voice in 75. The other five start later than the loudness reference only because the reading opens with noise
+  or a click as loud as speech (two Japanese, two Turkish: the reference fails there, not the captions) or a breath (one
+  Norwegian, 0.36 s).
+- **Found and fixed by these voices** (all in the app, measured again after): a room's hiss at −40 dBFS was taken for speech, so
+  measured times were spread over it and lost (English) and estimated ones started 2 s before anyone spoke (Hindi, Turkish,
+  Vietnamese); Korean's first word ran back to 0.00 s, up to 2.4 s before the voice (`TranscriptTimingCheck`). The spoken
+  language: German, then Traditional Chinese, were never judged (the system released the language being compared to make room;
+  `SpeechLocaleReservation`), and an English reading was taken for Spanish (0.92 against 0.91) until the recognizers' own
+  writing counted (`SpokenLanguageIdentifier`): 55 of 55 found, from 50. Edit by text: a word beside the cut was lost in natural
+  speech, where the recognizer gives touching words one shared edge; edges now move to the pause between them
+  (`WordBoundaries`): English 5 of 5 clean.
+- **Known limits**: Portuguese read by people: Edit by text clips the first sound of the word after the cut in every reading
+  (its word edges are up to ~150 ms off, "maneira" timed 0.18 s); a known issue in `EditByTextDeviceTests`. Voice Following's
+  first move waits for the first recognized word: 0.9–2.6 s after the voice with people (4.5 s on one Turkish reading opening
+  with a name; dictation is slower to its first word). One Arabic reading was followed to 62% in real time (its last words
+  came late from dictation; 88% given time). The speaking indicator lit on breaths before the voice in a few readings; the text
+  never moved before it.
+
 **Not validated** (do not read the table as "20 languages fully validated")
 - The iPhone 18 Pro Max (iOS 27.0): only its availability list (en, es, pt-BR ready; 17 download on first use; none unavailable) and
   Apple Intelligence writing (the same 16 languages written, the same 4 refused) were run; its Voice Following, captions and latency
   runs were cut because the phone locked, and the rest of its Apple Intelligence run by the model's rate limit.
 - Quality of the generated text to a native speaker, and the voice's fidelity: only language, structure and length are measured.
-- Real human speech and accents, background noise in languages other than English, and long readings: fixtures are
-  10 s of synthetic speech; the noise run is English only.
+- Spontaneous speech, music under the voice and long readings: people's readings (FLEURS) are read sentences of 6–16 s;
+  added noise is measured in English only.
 - Hindi recognition (61%) and Arabic by words (77%) are the models' own limits; they follow the script, but the text they hear
   is rough.
 - Apple Intelligence on other iPhones and OS versions, and Private Cloud Compute (off: no entitlement).

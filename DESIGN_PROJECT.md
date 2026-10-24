@@ -1184,7 +1184,10 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Edit by text** (`TranscriptEditSheet`, `TranscriptEditing`, menu de legendas): **Listen to the video** transcreve no aparelho (Speech, nada sai
   do iPhone); tocar uma palavra e outra escolhe o intervalo. **Cut N words from the video** corta o vídeo (com 0,05 s antes e 0,15 s depois, sem
   invadir as palavras vizinhas); **Fix caption text** muda só o texto da legenda; palavras cortadas aparecem riscadas, com **Put back**. A
-  explicação "Cut removes the words from the video. Fix caption text only changes what the caption says." fica na folha.
+  explicação "Cut removes the words from the video. Fix caption text only changes what the caption says." fica na folha. Na fala corrida o
+  reconhecedor dá a duas palavras coladas uma borda só; ao transcrever, essa borda vai para a pausa entre elas (12 dB mais baixa, até 80 ms;
+  `WordBoundaries`), e o corte não leva mais a palavra vizinha (inglês lido por pessoas: 5 de 5). Português lido por pessoas ainda perde o
+  primeiro som da palavra seguinte (as bordas do reconhecedor erram até ~150 ms; `LOCALIZATION.md` §5).
 - **✦ Smart em duas categorias** (`SmartPanelSection`, abas **Tools | Templates** no topo do painel): Tools são os blocos violeta (Edit by text, Auto captions,
   Remove pauses, Studio Voice, Auto adjust, Background); Templates é a lista de modelos, cada um num cartão com o que muda ("Big captions that light
   each word · a hook that pops in") e o ✓ amarelo no que a edição está usando (`appliedVideoTemplate`).
@@ -1396,11 +1399,20 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   engano provável: compara os dois, legenda no falado e o seletor passa a mostrar esse. Sem aviso (decisão do dono).
 - **Onde não julga:** idiomas que só o ditado ouve (id, ar, tr, th, vi, nl, sv, da, nb no iPhone; todos num aparelho sem
   `SpeechTranscriber`, como o iPad Pro A12Z) seguem no idioma de antes.
+- **Como decide:** além da confiança de cada reconhecedor, lê o texto que cada um escreveu. Um reconhecedor escreve o que ouve no
+  idioma em que ouve (o do espanhol escreveu inglês numa leitura em inglês), então quem escreveu outro idioma sai da disputa; o do
+  hindi escreve em letras latinas, que não dá para ler, e fica. Um idioma bem entendido e muito à frente dos outros vence mesmo
+  abaixo de 0,85. Os idiomas comparados guardam o lugar entre os cinco que o sistema reserva (`SpeechLocaleReservation`).
+  Medido com vozes de pessoas (FLEURS) num iPhone 15 Pro: 55 de 55 achados nos 11 idiomas que ele julga.
 - **Linhas:** palavras com horários redistribuídos (o reconhecedor errou os horários) formam linhas como as medidas, nunca uma palavra
   por linha.
-- **Testes:** `SpokenLanguageIdentifierTests`, `LanguageServiceTests/aTakeWithoutAScriptIsComparedInItsLikelyLanguages`,
+- **Horários:** o trecho falado é lido contra o ruído da própria sala (12 dB acima dele, nunca um chiado de −40 dBFS tomado por
+  fala), e nenhuma palavra começa no silêncio antes da voz (o coreano esticava a primeira palavra até 0,00 s, até 2,4 s antes de
+  alguém falar) (`TranscriptTimingCheck`).
+- **Testes:** `SpokenLanguageIdentifierTests`, `SpeechLocaleReservationTests`, `TranscriptTimingCheckTests`,
+  `LanguageServiceTests/aTakeWithoutAScriptIsComparedInItsLikelyLanguages`,
   `QuickEditLanguageTests/aLanguagePickedUnlikeTheScriptsIsCheckedAgainstIt`, `CaptionBuilderTests/wordsSpreadOverTheSpeechMakeWholeLines`;
-  aparelho `SpokenLanguageDeviceTests`.
+  aparelho `SpokenLanguageDeviceTests` e `CaptionSpeechTests`, com a voz do sistema ou de pessoas (`TEST_RUNNER_CUE_SPEECH_VOICE`).
 
 ## 42. Desempenho medido no iPhone (22 de outubro de 2026)
 
