@@ -26,7 +26,8 @@ struct SpokenLanguageDeviceTests {
         func score(of clip: URL, in language: CueLanguage, mayDownload: Bool) async throws -> SpokenLanguageScore? {
             do {
                 let score = try await inner.score(of: clip, in: language, mayDownload: mayDownload)
-                print("SPOKEN   \(language.rawValue): " + (score.map { String(format: "%.2f · %d words", $0.confidence, $0.words) } ?? "not judged"))
+                let written = score.map { " · written in \($0.writtenIn?.rawValue ?? "?")" } ?? ""
+                print("SPOKEN   \(language.rawValue): " + (score.map { String(format: "%.2f · %d words", $0.confidence, $0.words) } ?? "not judged") + written)
                 return score
             } catch {
                 print("SPOKEN   \(language.rawValue): failed · \(error.localizedDescription)")
@@ -46,8 +47,10 @@ struct SpokenLanguageDeviceTests {
         var candidates = [first, .portugueseBrazil, .english, .spanish, language]
         var seen = Set<CueLanguage>()
         candidates = candidates.filter { seen.insert($0).inserted }
-        // The language spoken is on this device, as on an iPhone set to it.
+        // The language spoken is on this device, as on an iPhone set to it (its place taken as the identifier takes the
+        // candidates', so taking it never releases one of them).
         let modules: [any SpeechModule] = [SpeechTranscriber(locale: route.locale, preset: .transcription)]
+        SpeechLocaleReservation.willUse(candidates.map(\.locale))
         await SpeechLocaleReservation.reserve(route.locale)
         if let request = try await AssetInventory.assetInstallationRequest(supporting: modules) { try await request.downloadAndInstall() }
         for sample in try SpeechSample.samples(of: language) {

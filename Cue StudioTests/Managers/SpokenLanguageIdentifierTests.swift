@@ -33,6 +33,65 @@ struct SpokenLanguageIdentifierTests {
         #expect(SpokenLanguageIdentifier.pick(scores, first: .portugueseBrazil) == nil)
     }
 
+    /// A Hindi reading on an iPhone in Portuguese: just under `minimumConfidence`, but far ahead of every other language.
+    @Test func aClearWinnerUnderstoodWellWins() {
+        let scores = [
+            CueLanguage.portugueseBrazil: score(0.31, 2), .english: score(0.26, 21), .spanish: score(0.38, 1), .hindi: score(0.849, 23),
+        ]
+        #expect(SpokenLanguageIdentifier.pick(scores, first: .portugueseBrazil) == .hindi)
+        // Close to another language isn't clear.
+        let close = [CueLanguage.portugueseBrazil: score(0.57), .english: score(0.6), .spanish: score(0.82)]
+        #expect(SpokenLanguageIdentifier.pick(close, first: .portugueseBrazil) == nil)
+    }
+
+    /// An English reading on an iPhone in Portuguese: Spanish understood it a hair better, but wrote it in English.
+    @Test func aLanguageThatWroteAnotherDropsOut() {
+        let scores = [
+            CueLanguage.portugueseBrazil: SpokenLanguageScore(confidence: 0.82, words: 15, writtenIn: .english),
+            .english: SpokenLanguageScore(confidence: 0.91, words: 14, writtenIn: .english),
+            .spanish: SpokenLanguageScore(confidence: 0.92, words: 15, writtenIn: .english),
+        ]
+        #expect(SpokenLanguageIdentifier.pick(scores, first: .portugueseBrazil) == .english)
+        // Spanish read by Portuguese's recognizer as Portuguese-ish: both wrote their own, the better understood wins.
+        let spanish = [
+            CueLanguage.portugueseBrazil: SpokenLanguageScore(confidence: 0.76, words: 27, writtenIn: .portugueseBrazil),
+            .english: SpokenLanguageScore(confidence: 0.33, words: 25, writtenIn: .spanish),
+            .spanish: SpokenLanguageScore(confidence: 0.95, words: 30, writtenIn: .spanish),
+        ]
+        #expect(SpokenLanguageIdentifier.pick(spanish, first: .portugueseBrazil) == .spanish)
+    }
+
+    /// A Hindi reading: English's recognizer wrote what Natural Language reads as German, Hindi's can't be read (Latin letters),
+    /// and Hindi is still found.
+    @Test func aRecognizerWhoseWritingCantBeReadStays() {
+        let scores = [
+            CueLanguage.portugueseBrazil: SpokenLanguageScore(confidence: 0.31, words: 2, writtenIn: .vietnamese),
+            .english: SpokenLanguageScore(confidence: 0.26, words: 21, writtenIn: .german),
+            .hindi: SpokenLanguageScore(confidence: 0.849, words: 23, writtenIn: nil),
+        ]
+        #expect(SpokenLanguageIdentifier.pick(scores, first: .portugueseBrazil) == .hindi)
+    }
+
+    /// Italian on an iPhone without Italian: every recognizer wrote Italian, so none of them is the language spoken.
+    @Test func noneWritingItsOwnLanguageChangesNothing() {
+        let scores = [
+            CueLanguage.portugueseBrazil: SpokenLanguageScore(confidence: 0.7, words: 20, writtenIn: .italian),
+            .english: SpokenLanguageScore(confidence: 0.4, words: 18, writtenIn: .italian),
+            .spanish: SpokenLanguageScore(confidence: 0.89, words: 20, writtenIn: .italian),
+        ]
+        #expect(SpokenLanguageIdentifier.pick(scores, first: .portugueseBrazil) == nil)
+    }
+
+    /// What the recognizers wrote on an iPhone: Spanish's for an English reading, Hindi's for a Hindi one (in Latin letters), and
+    /// Hindi in its own letters.
+    @Test func whatARecognizerWroteIsReadForItsLanguage() {
+        let english = "The Northern, Mariana's emergency management office, said there were no damages reported in the nation."
+        #expect(TranscriberLanguageListener.writtenIn(english, heardIn: .spanish) == .english)
+        let romanized = "apni sarkar ke Alawa anya desho ki sarkaron ki salaah le sakte hain halanki Unki salaah unke nagrikon ko dhyan mein"
+        #expect(TranscriberLanguageListener.writtenIn(romanized, heardIn: .hindi) == nil)
+        #expect(TranscriberLanguageListener.writtenIn("अपनी सरकार के अलावा आप अन्य देशों की सरकारों की सलाह ले सकते हैं", heardIn: .hindi) == .hindi)
+    }
+
     @Test func theFirstKeepsANearTie() {
         let scores = [CueLanguage.spanish: score(0.97), .english: score(0.98)]
         #expect(SpokenLanguageIdentifier.pick(scores, first: .spanish) == .spanish)

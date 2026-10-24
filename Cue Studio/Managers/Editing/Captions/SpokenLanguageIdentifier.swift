@@ -21,6 +21,11 @@ nonisolated struct SpokenLanguageIdentifier: Sendable {
     /// How well another language has to be understood to win at all: the language spoken scored 0.87 or more on an iPhone, while a
     /// wrong one that won only because the one spoken wasn't on the iPhone scored 0.75 at most (Spanish hearing French).
     static let minimumConfidence = 0.85
+    /// A language understood well, if not quite `minimumConfidence`, still wins when every other language heard it this much
+    /// worse: a Hindi reading scored 0.85 (just under) against English's 0.26 and was kept as Portuguese. Where the language
+    /// spoken wasn't among them, the best wrong one scored 0.73 at most (people's voices on an iPhone, FLEURS).
+    static let clearConfidence = 0.8
+    static let clearMargin = 0.3
 
     var listener: any SpokenLanguageListening = TranscriberLanguageListener()
 
@@ -30,6 +35,8 @@ nonisolated struct SpokenLanguageIdentifier: Sendable {
     func spokenLanguage(in audio: URL, among candidates: [CueLanguage]) async throws -> CueLanguage? {
         guard candidates.count > 1, let first = candidates.first, let clip = try Self.clip(of: audio) else { return nil }
         defer { try? FileManager.default.removeItem(at: clip) }
+        // Every candidate is about to take a place: none makes room for another.
+        SpeechLocaleReservation.willUse(candidates.map(\.locale))
         var scores: [CueLanguage: SpokenLanguageScore] = [:]
         for (index, language) in candidates.enumerated() {
             try Task.checkCancellation()
@@ -57,12 +64,19 @@ nonisolated struct SpokenLanguageIdentifier: Sendable {
     }
 
     /// The best understood language with enough words, unless the first is within `tieMargin` of it; nil when none heard enough,
-    /// or another one won without being understood well (`minimumConfidence`).
+    /// or another one won without being understood well (`minimumConfidence`) or clearly better than the rest (`clearMargin`).
+    ///
+    /// A recognizer writes what it hears in the language it hears it in: on an English reading, Spanish's and Portuguese's wrote
+    /// English, and Spanish scored 0.92 against English's 0.91 (people's voices on an iPhone). So one that wrote in another
+    /// language drops out; one whose writing can't be read (Hindi's, in Latin letters) stays. When every one wrote in another,
+    /// the language spoken isn't among them: nothing changes.
     static func pick(_ scores: [CueLanguage: SpokenLanguageScore], first: CueLanguage) -> CueLanguage? {
-        let heard = scores.filter { $0.value.words >= minimumWords }
+        let heard = scores.filter { $0.value.words >= minimumWords && ($0.value.writtenIn == nil || $0.value.writtenIn == $0.key) }
         guard let best = heard.max(by: { $0.value.confidence < $1.value.confidence }) else { return nil }
         if let kept = heard[first], kept.confidence + tieMargin >= best.value.confidence { return first }
-        return best.value.confidence >= minimumConfidence ? best.key : nil
+        let runnerUp = heard.filter { $0.key != best.key }.map(\.value.confidence).max() ?? 0
+        let clear = best.value.confidence >= clearConfidence && best.value.confidence - runnerUp >= clearMargin
+        return best.value.confidence >= minimumConfidence || clear ? best.key : nil
     }
 
     /// The first `sampleLength` seconds of speech in `audio`, as a file of their own; nil when there is no speech.
