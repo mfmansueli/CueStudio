@@ -91,6 +91,8 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
     /// The words after which the line goes on a new line: the line breaks the creator put in (Caption › Line break), never
     /// past its last word.
     var lineBreaks: Set<Int> {
+        // Most lines have none: the preview asks for every line it draws.
+        guard text.contains("\n") else { return [] }
         let count = CaptionText.words(in: text).count
         return CaptionText.breaks(in: text).filter { $0 < count - 1 }
     }
