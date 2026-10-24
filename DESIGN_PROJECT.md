@@ -1465,6 +1465,10 @@ rodadas): 30 minutos de vídeo 720p com 600 linhas de legenda (cinco palavras ca
 - **Studio Voice:** 49 s para tratar os 30 minutos; o arquivo tem 302 MB; o limite do cache era 2,8 GB com 26 GB livres.
 - Em duas das cinco rodadas (as duas primeiras da noite), o segundo dos dois testes passou dos 5 minutos sem dizer em que etapa; nas três seguintes,
   com marcas em cada etapa, os dois passaram em ~90 s e nenhuma etapa demorou. Causa não achada (provavelmente a tela do iPhone durante a rodada).
+- **Com o catálogo de legendas** (§50; 24/10/2026, mesmo iPhone 15 Pro, Debug, uma rodada, o teste com Violeta, que acende a palavra dita: cerca de
+  três estados por palavra em vez de um por linha): o editor abre em 12 ms; a linha sob o cursor, 1,1 µs a quadro; a timeline, 1 ms; corrigir uma
+  linha, 0,2 ms; rascunho de 324 KB em 20 ms; a prévia monta em 89 ms, de novo depois de um ajuste em 60 ms e depois de uma linha corrigida em
+  57 ms, +54 MB; Studio Voice, 51 s para 302 MB. Os dois testes passaram em 118 s.
 
 ## 43. Apple Watch: o gravador no pulso (22 de outubro de 2026; pedido do dono)
 
