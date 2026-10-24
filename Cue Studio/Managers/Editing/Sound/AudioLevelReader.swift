@@ -26,4 +26,14 @@ nonisolated enum AudioLevelReader {
         }
         return levels
     }
+
+    /// Readings `count` at a time, as one: the mean of their power, in dBFS (what reading every `count` times the interval gives).
+    static func combined(_ levels: [Float], every count: Int) -> [Float] {
+        guard count > 1 else { return levels }
+        return stride(from: 0, to: levels.count, by: count).map { start in
+            let slice = levels[start..<min(levels.count, start + count)]
+            let power = slice.reduce(0) { $0 + pow(10, $1 / 10) } / Float(slice.count)
+            return power > 0 ? 10 * log10(power) : -120
+        }
+    }
 }

@@ -59,11 +59,12 @@ nonisolated enum CaptionTranscriber {
             }
         }
         var words = MixedLanguageMerge.merge(heard, primary: code, reading: reading)
-        // No word starts in the silence before the voice, and times that don't fit the recording (a recognizer that finishes
-        // early) are never passed off as measured.
-        if let levels = try? AudioLevelReader.levels(of: audio, interval: 0.05) {
-            let spoken = TranscriptTimingCheck.spokenSpan(levels: levels, interval: 0.05)
+        // No word starts in the silence before the voice, times that don't fit the recording (a recognizer that finishes early)
+        // are never passed off as measured, and words that run into each other meet where the voice dips between them.
+        if let fine = try? AudioLevelReader.levels(of: audio, interval: 0.01) {
+            let spoken = TranscriptTimingCheck.spokenSpan(levels: AudioLevelReader.combined(fine, every: 5), interval: 0.05)
             words = TranscriptTimingCheck.reconciled(TranscriptTimingCheck.startingWithTheVoice(words, spoken: spoken), spoken: spoken)
+            words = WordBoundaries.atQuietestPoints(words, levels: fine, interval: 0.01)
         }
         return TakeTranscript(words: words, languageCode: Self.transcriptCode(for: route, code: code), unheardLanguages: unheard)
     }
