@@ -150,6 +150,36 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["edit.filter.intensity"].exists(within: 5))
     }
 
+    /// The filters past the screen's edge are a drag away, for the whole video and for one clip of a montage: the row stays
+    /// where the thumb leaves it.
+    func testTheFilterRowStaysWhereItIsDragged() {
+        let app = EditorApp.open()
+        EditorApp.tapTool(app, "filters")
+        XCTAssertTrue(dragsTheRowToItsEnd(app), "The whole video's filters slid back")
+        app.buttons["edit.panel.apply"].tap()
+        EditorApp.scrub(app)
+        EditorApp.tapTool(app, "edit")
+        EditorApp.tapTool(app, "split")
+        EditorApp.tapTool(app, "filters")
+        XCTAssertTrue(app.staticTexts["edit.panel.subtitle"].label.hasPrefix("Clip 2 of 2"))
+        XCTAssertTrue(dragsTheRowToItsEnd(app), "A clip's filters slid back")
+    }
+
+    /// Drags the filter row from its middle, twice, then waits: B&W Film, the last filter, is whole on screen and stays there,
+    /// with Original past the leading edge. (XCUITest calls the cards not hittable after the drag while a finger's tap picks
+    /// them: the frames, not `isHittable`, say where the row is.)
+    private func dragsTheRowToItsEnd(_ app: XCUIApplication) -> Bool {
+        let last = app.buttons["edit.filter.filmMono"]
+        let natural = app.buttons["edit.filter.natural"]
+        guard natural.exists(within: 5) else { return false }
+        for _ in 0..<2 {
+            let start = app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 330, dy: natural.frame.midY))
+            start.press(forDuration: 0.05, thenDragTo: start.withOffset(CGVector(dx: -280, dy: 0)), withVelocity: 500, thenHoldForDuration: 0.3)
+        }
+        Thread.sleep(forTimeInterval: 2)
+        return app.windows.firstMatch.frame.contains(last.frame) && app.buttons["edit.filter.original"].frame.maxX < 0
+    }
+
     /// The ruler is the panel's lowest control: it stays above the bottom safe area (the Home
     /// Indicator's strip) and the clearance the panel keeps under its controls, on any iPhone.
     func testAdjustRulerStaysAboveTheBottomEdge() {
