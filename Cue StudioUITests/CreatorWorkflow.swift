@@ -56,12 +56,13 @@ final class CreatorWorkflow {
         if element.isHittable {
             element.tap()
         } else {
-            let screen = app.windows.firstMatch.frame
+            // Touched where it shows, as a thumb does: a card cut by the screen's edge too.
+            let shown = element.frame.intersection(app.windows.firstMatch.frame)
             capture("untouchable-\(what.filter { $0.isLetter || $0.isNumber })")
-            XCTAssertTrue(screen.contains(element.frame), "\(what) is off screen (at \(element.frame))", file: file, line: line)
-            print("CREATOR STEP \(name) · \(what) isn't hittable for XCUITest at \(element.frame): tapped its middle")
-            retries.append("\(what) tapped by its middle")
-            element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
+            XCTAssertFalse(shown.isEmpty, "\(what) is off screen (at \(element.frame))", file: file, line: line)
+            print("CREATOR STEP \(name) · \(what) isn't hittable for XCUITest at \(element.frame): tapped where it shows")
+            retries.append("\(what) tapped where it shows")
+            app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: shown.midX, dy: shown.midY)).tap()
         }
         taps += 1
     }
