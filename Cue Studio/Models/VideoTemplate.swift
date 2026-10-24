@@ -96,10 +96,15 @@ nonisolated enum VideoTemplate: String, CaseIterable, Identifiable, Sendable {
     /// The captions' settings: the theme, the reveal, the look, the size and the color of the word being said.
     var captionSettings: CaptionSettings {
         var settings = CaptionSettings(theme: captionTheme)
-        settings.followsWords = captionReveal.followsWords
         settings.accent = captionAccent
         settings.sizeScale = captionSize
+        // The template's look as changes over its style (one renderer, every control works on it), and its way of showing
+        // words as the style's motion.
         settings.customLook = captionLook?.look(for: .caption)
+        settings = settings.withoutCopiedLook
+        let motion = CaptionMotion(playing: captionReveal, spec: settings.spec)
+        settings.motion = motion
+        settings.followsWords = motion.followsWords
         return settings
     }
 

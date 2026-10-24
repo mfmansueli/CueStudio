@@ -22,7 +22,8 @@ nonisolated final class OverlayImageCache: @unchecked Sendable {
         let drawn: UIImage?
         if let settings = lazy.collection {
             drawn = CaptionCollectionRenderer.image(lazy.text.text, settings: settings,
-                                                     frame: CGSize(width: lazy.frameWidth, height: lazy.frameHeight), emphasis: lazy.emphasis)
+                                                     frame: CGSize(width: lazy.frameWidth, height: lazy.frameHeight), emphasis: lazy.emphasis,
+                                                     markup: lazy.markup)
         } else {
             drawn = TextOverlayRenderer.image(
                 for: lazy.text, frameWidth: lazy.frameWidth, widthFraction: lazy.widthFraction, emphasis: lazy.emphasis

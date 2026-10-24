@@ -34,6 +34,8 @@ final class CoverStudioViewModel: Identifiable {
     private(set) var rendered: UIImage?
     /// Each template as this cover would look in it.
     private(set) var thumbnails: [CoverTemplate: UIImage] = [:]
+    /// Each saved style drawn with this cover's picture and title (`+Library`).
+    private(set) var savedThumbnails: [UUID: UIImage] = [:]
     /// Whether a person was found for Text behind me and Outline me; nil until looked for.
     private(set) var personFound: Bool?
     private(set) var isLoadingPicture = false
@@ -69,7 +71,8 @@ final class CoverStudioViewModel: Identifiable {
     let suggestions: [String]
     /// Width over height of the cover (the take's format).
     let aspect: Double
-    private(set) var myStyle: CoverStyle?
+    /// The cover styles the creator saved, with favorites and the one new covers start in (`+Library`).
+    var coverStyles: StyleLibrary<CoverStyle>
     @ObservationIgnored private let pictures: CoverPicturing
     @ObservationIgnored private let importer: EditMediaImporting
     @ObservationIgnored private let styles: TextStyleStoring
@@ -111,8 +114,8 @@ final class CoverStudioViewModel: Identifiable {
         self.styles = styles
         aspect = edit.aspect.widthOverHeight
         hadCover = cover != nil
-        let myStyle = styles.myCoverStyle
-        self.myStyle = myStyle
+        let library = styles.coverStyles
+        coverStyles = library
         if var existing = cover {
             if existing.composition == nil { existing.composition = CoverComposition(legacy: existing) }
             self.cover = existing
@@ -120,8 +123,7 @@ final class CoverStudioViewModel: Identifiable {
         } else {
             var made = VideoCover(source: .clipFrame(frame))
             made.title = suggestions.first ?? ""
-            made.composition = myStyle?.composition(title: made.title, handle: handle, episode: 1)
-                ?? CoverComposition.make(.educational, title: made.title, handle: handle)
+            made.composition = Self.start(library, title: made.title, handle: handle)
             self.cover = made
             step = .image
         }
@@ -295,6 +297,14 @@ final class CoverStudioViewModel: Identifiable {
                 guard !Task.isCancelled else { return }
             }
             thumbnails = drawn
+            var saved: [UUID: UIImage] = [:]
+            for style in coverStyles.styles {
+                saved[style.id] = await self.pictures.render(
+                    title: title, composition: style.look.apply(to: current), pictures: pictures, size: size, cutout: nil
+                )
+                guard !Task.isCancelled else { return }
+            }
+            savedThumbnails = saved
         }
     }
 
@@ -389,9 +399,15 @@ final class CoverStudioViewModel: Identifiable {
         importedFiles.insert(name)
     }
 
-    func setMyStyle(_ style: CoverStyle) {
-        styles.myCoverStyle = style
-        myStyle = style
+    /// A new cover in the default style: a saved one, one of Cue's templates, else Educational.
+    static func start(_ library: StyleLibrary<CoverStyle>, title: String, handle: String) -> CoverComposition {
+        if let saved = library.defaultSaved { return saved.look.composition(title: title, handle: handle, episode: 1) }
+        let template = library.defaultStyle?.builtInName.flatMap(CoverTemplate.init(rawValue:)) ?? .educational
+        return CoverComposition.make(template, title: title, handle: handle)
+    }
+
+    func writeCoverStyles() {
+        styles.coverStyles = coverStyles
     }
 
     var importing: EditMediaImporting { importer }

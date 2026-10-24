@@ -11,9 +11,10 @@ import Foundation
 /// are and how they come and go stay as they were; no other text is touched, and nothing links the
 /// text and the captions afterwards (changing the text again leaves the captions alone).
 ///
-/// Captions in the collection keep it: the look goes in `CaptionSettings.customLook`, so their place,
-/// safe area, size, highlight and reveal are still the collection's. Captions from before the
-/// collection take it as their type look (`TakeEdit.captionLook`), which already draws every reveal.
+/// Captions in the collection keep it as changes over their style (`CaptionSettings.adjustments`, read from the text's look by
+/// `withoutCopiedLook`), so their place, safe area, size, highlight and motion are still theirs and Adjust changes any part of
+/// it. Captions from before the collection take it as their type look (`TakeEdit.captionLook`), which already draws every
+/// reveal.
 nonisolated enum CaptionStyleCopy {
     /// What the captions look like now, which the copy replaces.
     enum Replaced: Equatable, Sendable {
@@ -34,7 +35,7 @@ nonisolated enum CaptionStyleCopy {
 
     static func replaced(in edit: TakeEdit) -> Replaced {
         if let settings = edit.captionCollection {
-            return settings.customLook == nil ? .preset(settings.theme.label) : .custom
+            return settings.customLook == nil && settings.changedLookCount == 0 ? .preset(settings.theme.label) : .custom
         }
         if edit.captionLook != nil, let preset = edit.captionPreset { return .preset(preset.label) }
         return .custom
@@ -60,7 +61,11 @@ nonisolated enum CaptionStyleCopy {
             return
         }
         let current = settings.highlightColor
+        // Over the style's own look: what an earlier copy or Adjust changed goes.
+        settings.face = nil
+        settings.adjustments = nil
         settings.customLook = look
+        settings = settings.withoutCopiedLook
         let shown = current.standingOut(on: look)
         if shown != current { settings.accent = shown }
         snapshot.captionCollection = settings

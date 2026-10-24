@@ -19,11 +19,12 @@ struct TextStylePanel: View {
 
     @Environment(VideoThumbnailService.self) private var thumbnails
     @State private var frame: UIImage?
+    @State private var naming: StyleNameRequest?
     @FocusState private var writes: Bool
     @Environment(\.dynamicTypeSize) private var typeSize
 
     /// What the preset cards say.
-    private static let sample = "Big idea"
+    private static var sample: String { String(localized: "Big idea", comment: "What the text style cards say: two short words") }
     /// The colors here are what the panel is for: larger than in other panels.
     private static let swatchDiameter: CGFloat = 34
 
@@ -52,6 +53,12 @@ struct TextStylePanel: View {
             .task {
                 guard frame == nil else { return }
                 frame = await thumbnails.thumbnail(for: viewModel.videoURL, maxPixelSize: 240)
+            }
+            .styleNamePrompt($naming) { purpose, name in
+                switch purpose {
+                case .save: viewModel.overlays.saveTextStyle(named: name)
+                case .rename(let id): viewModel.overlays.renameTextStyle(id, to: name)
+                }
             }
             .onAppear(perform: focusIfAsked)
             .onChange(of: viewModel.overlays.focusesTextField) { _, _ in focusIfAsked() }
@@ -162,28 +169,65 @@ struct TextStylePanel: View {
         ) { viewModel.overlays.restyleText(.glow($0 / 100), key: "textGlow") }
     }
 
+    /// "Save style", the creator's styles (favorites first) and Cue's presets in a row; each held for its menu.
     private var styleCards: some View {
-        ScrollView(.horizontal) {
+        let library = viewModel.overlays.textStyles
+        let saved = library.styles.sorted { library.isFavorite($0.key) && !library.isFavorite($1.key) }
+        let presets = TypePreset.editorPresets.sorted { library.isFavorite(.builtIn($0.rawValue)) && !library.isFavorite(.builtIn($1.rawValue)) }
+        return ScrollView(.horizontal) {
             HStack(alignment: .top, spacing: 8) {
-                PanelSaveStyleCard(action: viewModel.overlays.saveMyStyle)
-                if let mine = viewModel.overlays.myStyle {
-                    PanelPresetCard(
-                        name: String(localized: "My style"), sample: TypeLookPreview.image(mine, use: .title, sample: Self.sample),
-                        frame: frame, isSelected: viewModel.overlays.pickedTextIsMyStyle, identifier: "edit.style.mine"
-                    ) { viewModel.overlays.pickTextPreset(nil) }
+                PanelSaveStyleCard {
+                    naming = StyleNameRequest(purpose: .save, name: viewModel.overlays.suggestedTextStyleName)
                 }
-                ForEach(TypePreset.editorPresets) { preset in
-                    PanelPresetCard(
-                        name: preset.label, sample: TypeLookPreview.image(preset.look(for: .title), use: .title, sample: Self.sample),
-                        frame: frame, isSelected: viewModel.overlays.pickedTextPreset == preset, identifier: "edit.style.\(preset.rawValue)"
-                    ) { viewModel.overlays.pickTextPreset(preset) }
-                }
+                ForEach(saved) { style in savedCard(style, library: library) }
+                ForEach(presets) { preset in presetCard(preset, library: library) }
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 2)
         }
         .scrollIndicators(.hidden)
         .padding(.horizontal, -16)
+    }
+
+    private func savedCard(_ style: SavedStyle<TextLook>, library: StyleLibrary<TextLook>) -> some View {
+        let overlays = viewModel.overlays
+        return PanelPresetCard(
+            name: style.name, sample: TypeLookPreview.image(style.look, use: .title, sample: Self.sample), frame: frame,
+            isSelected: overlays.pickedTextSavedStyleID == style.id, isFavorite: library.isFavorite(style.key),
+            isDefault: library.isDefault(style.key), identifier: "edit.style.saved.\(style.id.uuidString)",
+            action: { overlays.pickSavedTextStyle(style.id) },
+            menu: {
+                StyleCardMenu(
+                    isFavorite: library.isFavorite(style.key), isDefault: library.isDefault(style.key),
+                    defaultLabel: String(localized: "Use for new texts"),
+                    onFavorite: { overlays.toggleFavoriteTextStyle(style.key) },
+                    onDefault: { overlays.toggleDefaultTextStyle(style.key, name: style.name) },
+                    onDuplicate: { overlays.duplicateTextStyle(style.key, name: style.name) },
+                    onRename: { naming = StyleNameRequest(purpose: .rename(style.id), name: style.name) },
+                    onUpdate: { overlays.updateTextStyle(style.id) },
+                    onDelete: { overlays.deleteTextStyle(style.id) }
+                )
+            }
+        )
+    }
+
+    private func presetCard(_ preset: TypePreset, library: StyleLibrary<TextLook>) -> some View {
+        let overlays = viewModel.overlays
+        let key = StyleKey.builtIn(preset.rawValue)
+        return PanelPresetCard(
+            name: preset.label, sample: TypeLookPreview.image(preset.look(for: .title), use: .title, sample: Self.sample),
+            frame: frame, isSelected: overlays.pickedTextPreset == preset && overlays.pickedTextSavedStyleID == nil, isFavorite: library.isFavorite(key),
+            isDefault: library.isDefault(key), identifier: "edit.style.\(preset.rawValue)",
+            action: { overlays.pickTextPreset(preset) },
+            menu: {
+                StyleCardMenu(
+                    isFavorite: library.isFavorite(key), isDefault: library.isDefault(key), defaultLabel: String(localized: "Use for new texts"),
+                    onFavorite: { overlays.toggleFavoriteTextStyle(key) },
+                    onDefault: { overlays.toggleDefaultTextStyle(key, name: preset.label) },
+                    onDuplicate: { overlays.duplicateTextStyle(key, name: preset.label) }
+                )
+            }
+        )
     }
 
     @ViewBuilder

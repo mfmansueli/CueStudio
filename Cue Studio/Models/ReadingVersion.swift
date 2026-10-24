@@ -16,7 +16,8 @@ nonisolated enum ReadingVersion: CaseIterable, Sendable {
     /// Studio Voice (`VoiceProcessing`): 1 one switch each; 2 the levels (equalizer and expander); 3 Reduce noise through
     /// Apple's voice isolation.
     case audio
-    /// The caption styles' numbers (`CaptionStyleSpec`): 1 the first five presets; 2 the complete presets.
+    /// The caption styles' numbers (`CaptionStyleSpec`): 1 the first five presets; 2 the complete presets; 3 the catalogue of
+    /// twenty, each with its own motion.
     case captionStyle
     /// How a take's words were heard (`CaptionTranscript`): 2 a script in more than one language is heard in each. An older
     /// transcript is heard again when captions are made.
@@ -30,7 +31,7 @@ nonisolated enum ReadingVersion: CaseIterable, Sendable {
         switch self {
         case .look: 2
         case .audio: 3
-        case .captionStyle: 2
+        case .captionStyle: 3
         case .captionTranscript: 2
         case .autoCorrection: 1
         }

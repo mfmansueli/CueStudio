@@ -15,8 +15,8 @@ import Foundation
 ///
 /// What a creator decided stays: lines split or joined by hand (`CaptionCue.keepsBlock`) or broken onto a new line by hand
 /// (`CaptionCue.lineBreaks`) are left as they are, as are empty lines, and the lines of another recording or with a style of
-/// their own are never mixed with the rest. A run of lines with no measured word times is never shown one word at a time
-/// (that would pretend to follow the voice): it gets short phrases.
+/// their own are never mixed with the rest. A line whose words aren't all measured by the voice is never shown one word at a
+/// time (that would pretend to follow the voice): it gets short phrases, and only it.
 nonisolated enum CaptionBlocking {
     /// A silence this long always ends a block.
     static let pauseBreak: TimeInterval = 0.6
@@ -48,7 +48,10 @@ nonisolated enum CaptionBlocking {
                 result.append(line)
                 continue
             }
-            if let last = run.last, last.sourceID != line.sourceID || last.lineStyle != line.lineStyle || line.start < last.start {
+            // One word goes by the voice's own times: a line whose words aren't all measured (a correction's guess) stays in short
+            // phrases on its own, and the lines around it still go one word at a time.
+            let timingChanges = format == .oneWord && run.last.map { $0.hasWordTiming != line.hasWordTiming } == true
+            if let last = run.last, last.sourceID != line.sourceID || last.lineStyle != line.lineStyle || line.start < last.start || timingChanges {
                 flush()
             }
             run.append(line)
@@ -63,12 +66,16 @@ nonisolated enum CaptionBlocking {
         let word: CaptionWord
         /// The line of the run it came from.
         let line: Int
+        /// The creator marked it for emphasis (`CaptionCue.emphasis`): it is measured bigger, and its block keeps the mark.
+        var isEmphasized = false
     }
 
     private static func regrouped(_ run: [CaptionCue], format: CaptionFormat, settings: CaptionSettings, frame: CGSize) -> [CaptionCue] {
         guard !run.isEmpty else { return [] }
         let styled = CaptionCollectionRenderer.styled(settings, for: run[0].lineStyle)
-        let tokens = run.enumerated().flatMap { index, line in words(of: line).map { Token(word: $0, line: index) } }
+        let tokens = run.enumerated().flatMap { index, line in
+            words(of: line).enumerated().map { place, word in Token(word: word, line: index, isEmphasized: line.emphasis.contains(place)) }
+        }
         let groups: [Range<Int>]
         if format == .oneWord, run.allSatisfy(\.hasWordTiming) {
             groups = tokens.indices.map { $0..<($0 + 1) }
@@ -88,6 +95,7 @@ nonisolated enum CaptionBlocking {
         var groups: [Range<Int>] = []
         var start = 0
         func text(_ range: Range<Int>) -> String { CaptionText.joined(tokens[range].map(\.word.text)) }
+        func marks(_ range: Range<Int>) -> Set<Int> { Set(range.filter { tokens[$0].isEmphasized }.map { $0 - range.lowerBound }) }
         for index in tokens.indices {
             guard index + 1 < tokens.count else {
                 groups.append(start..<tokens.count)
@@ -110,7 +118,7 @@ nonisolated enum CaptionBlocking {
             let candidate = start..<(index + 2)
             // A short phrase takes a second line only so a word isn't left alone on its own.
             let allowed = format == .phrase ? (count < 2 ? 2 : 1) : format.maxLines
-            let measured = CaptionCollectionRenderer.measure(text(candidate), settings: settings, frame: frame)
+            let measured = CaptionCollectionRenderer.measure(text(candidate), settings: settings, frame: frame, emphasis: marks(candidate))
             let fits = measured.map { $0.lines <= allowed && !$0.overlong } ?? true
             if fits, next.end - tokens[start].word.start <= format.longestBlock { continue }
             var end = index + 1
@@ -145,6 +153,7 @@ nonisolated enum CaptionBlocking {
         )
         cue.sourceID = lines[0].sourceID
         cue.lineStyle = lines[0].lineStyle
+        cue.emphasis = Set(tokens.enumerated().filter { $0.element.isEmphasized }.map(\.offset))
         if let opened = lines.first(where: { Self.words(of: $0).first == first && !used.contains($0.id) }) {
             cue.id = opened.id
             used.insert(opened.id)

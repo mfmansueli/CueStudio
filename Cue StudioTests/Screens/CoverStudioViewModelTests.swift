@@ -180,21 +180,47 @@ struct CoverStudioViewModelTests {
         #expect(studio.rendered == nil)
     }
 
-    @Test func myStyleIsSavedWithoutTheWords() async {
+    @Test func aSavedStyleKeepsTheLookWithoutTheWords() async throws {
         let styles = FakeTextStyleStore()
         let studio = makeStudio(styles: styles)
         await studio.start()
         studio.applyTemplate(.series)
         studio.updateTitle { $0.accent = .mint }
-        studio.saveMyStyle()
-        #expect(styles.myCoverStyle?.template == .series)
-        #expect(styles.myCoverStyle?.title.accent == .mint)
-        #expect(styles.myCoverStyle?.title.highlights.isEmpty == true)
+        studio.saveCoverStyle(named: "Series look")
+        let saved = try #require(styles.coverStyles.styles.first)
+        #expect(saved.name == "Series look")
+        #expect(saved.look.template == .series)
+        #expect(saved.look.title.accent == .mint)
+        #expect(saved.look.title.highlights.isEmpty)
+        #expect(studio.wornCoverStyleID == saved.id)
         // Applied to another cover: its words stay.
         let other = makeStudio(cover: VideoCover(source: .frame(1)), styles: styles)
         other.setTitle("Tea time")
-        other.applyMyStyle()
+        other.applySavedCoverStyle(saved.id)
         #expect(other.cover.title == "Tea time")
         #expect(other.composition.title.accent == .mint)
+    }
+
+    @Test func aSavedStyleIsRenamedUpdatedCopiedFavoredAndDeletedWithUndo() async throws {
+        let styles = FakeTextStyleStore()
+        let studio = makeStudio(styles: styles)
+        await studio.start()
+        studio.saveCoverStyle(named: "First")
+        let id = try #require(studio.coverStyles.styles.first?.id)
+        studio.renameCoverStyle(id, to: "Renamed")
+        studio.applyTemplate(.list)
+        studio.updateCoverStyle(id)
+        #expect(styles.coverStyles.style(id)?.name == "Renamed")
+        #expect(styles.coverStyles.style(id)?.look.template == .list)
+        studio.duplicateCoverStyle(id)
+        #expect(styles.coverStyles.styles.count == 2)
+        studio.toggleFavoriteCoverStyle(.saved(id))
+        studio.toggleDefaultCoverStyle(.saved(id), name: "Renamed")
+        #expect(styles.coverStyles.isFavorite(.saved(id)) && styles.coverStyles.isDefault(.saved(id)))
+        studio.deleteCoverStyle(id)
+        #expect(styles.coverStyles.style(id) == nil && styles.coverStyles.defaultStyle == nil)
+        studio.toast.action?.perform()
+        #expect(styles.coverStyles.style(id)?.name == "Renamed")
+        #expect(styles.coverStyles.isFavorite(.saved(id)) && styles.coverStyles.isDefault(.saved(id)))
     }
 }

@@ -95,7 +95,7 @@ struct CaptionStyleSpecTests {
     // MARK: - The complete presets
 
     @Test func everyPresetHasItsOwnFontSizeAndRecipe() {
-        let specs = CaptionTheme.catalog.map { CaptionStyleSpec.spec(for: $0, version: 2) }
+        let specs = [CaptionTheme.cue, .educational, .interview, .impact, .pop, .editorial].map { CaptionStyleSpec.spec(for: $0, version: 2) }
         for spec in specs {
             #expect(UIFont(name: spec.fontName, size: 20) != nil, "\(spec.fontName) isn't bundled")
             #expect((22...31).contains(spec.baseSize))
@@ -189,14 +189,22 @@ struct CaptionStyleSpecTests {
         #expect(middle.allSatisfy { $0 > 0.86 })
     }
 
-    @Test func onlyTheFirstStateOfALinePopsAndTheLastFadesOut() throws {
+    @Test func aLinePopsAndFadesFromItsFirstStateToItsLast() throws {
+        // Every state carries the line's way in and out, timed from the line's start and to its end.
         let pop = CaptionCollectionRenderer.overlays([cue], settings: CaptionSettings(theme: .pop), position: .bottom, frame: frame)
         #expect(pop.count > 1)
         #expect(pop.first?.popScale == 0.86 && pop.first?.popDuration == 0.18)
-        #expect(pop.dropFirst().allSatisfy { $0.popDuration == 0 && $0.fadeIn == 0 })
+        let start = try #require(pop.first?.span?.start), end = try #require(pop.last?.span?.end)
+        #expect(pop.allSatisfy { $0.entryStart == start && $0.exitEnd == end })
         let editorial = CaptionCollectionRenderer.overlays([cue], settings: CaptionSettings(theme: .editorial), position: .bottom, frame: frame)
         #expect(editorial.first?.fadeIn == 0.2 && editorial.last?.fadeOut == 0.2)
-        #expect(editorial.dropFirst().dropLast().allSatisfy { $0.fadeIn == 0 && $0.fadeOut == 0 })
+        let rising = CaptionCollectionRenderer.overlays([cue], settings: CaptionSettings(theme: .band), position: .bottom, frame: frame)
+        #expect(rising.count == 1 && (rising.first?.riseDistance ?? 0) > 0 && rising.first?.riseDuration == CaptionEntry.rise.drawn.riseDuration)
+        #expect(editorial.allSatisfy { $0.entryStart == editorial.first?.span?.start && $0.exitEnd == editorial.last?.span?.end })
+        // Before motion, only the first state came in and the last went out.
+        let before = CaptionCollectionRenderer.overlays([cue], settings: CaptionSettings.savedBeforeMotion(.editorial), position: .bottom,
+                                                        frame: frame, animation: .highlight)
+        #expect(before.dropFirst().dropLast().allSatisfy { $0.fadeIn == 0 && $0.fadeOut == 0 && $0.entryStart == nil })
         let interview = CaptionCollectionRenderer.overlays([cue], settings: CaptionSettings(theme: .interview), position: .bottom, frame: frame)
         #expect(interview.count == 1 && interview[0].fadeIn == 0.1 && interview[0].fadeOut == 0.1)
         // Cue comes in as it always did.
@@ -205,8 +213,7 @@ struct CaptionStyleSpecTests {
     }
 
     @Test func aSavedEditWithTheFirstReadingComesInAsItAlwaysDid() throws {
-        var settings = CaptionSettings(theme: .pop)
-        settings.styleVersion = nil
+        let settings = CaptionSettings.savedBeforeMotion(.pop, version: nil)
         let overlays = CaptionCollectionRenderer.overlays([cue], settings: settings, position: .bottom, frame: frame)
         #expect(overlays.allSatisfy { $0.fadeIn == 0 && $0.fadeOut == 0 && $0.popDuration == 0 })
     }

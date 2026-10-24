@@ -72,23 +72,29 @@ extension OverlaysViewModel {
     /// The preset Text style marks: the picked text's.
     var pickedTextPreset: TypePreset? { selectedText?.preset }
 
-    /// "My style" is marked when the picked text looks exactly like it.
-    var pickedTextIsMyStyle: Bool {
-        guard let myStyle, let text = selectedText, text.preset == nil else { return false }
-        var mine = myStyle
-        mine.sizeScale = TextLook(of: text).sizeScale
-        mine.verticalOffset = TextLook(of: text).verticalOffset
-        return mine == TextLook(of: text)
+    /// The saved style the picked text looks exactly like (its size and height aside); nil when none. It is marked instead of
+    /// the preset the text was made from.
+    var pickedTextSavedStyleID: UUID? {
+        guard let text = selectedText else { return nil }
+        let worn = TextLook(of: text)
+        return textStyles.styles.first { style in
+            var look = style.look
+            look.sizeScale = worn.sizeScale
+            look.verticalOffset = worn.verticalOffset
+            return look == worn
+        }?.id
     }
 
-    /// A preset (or My style, nil) on the scope.
-    func pickTextPreset(_ preset: TypePreset?) {
+    /// A preset on the scope.
+    func pickTextPreset(_ preset: TypePreset) {
         guard isReady else { return }
-        if let preset {
-            applyPreset(preset, to: textStyleScope)
-        } else {
-            applyMyStyle(to: textStyleScope)
-        }
+        applyPreset(preset, to: textStyleScope)
+    }
+
+    /// A saved style on the scope.
+    func pickSavedTextStyle(_ id: UUID) {
+        guard isReady else { return }
+        applySavedTextStyle(id, to: textStyleScope)
     }
 
     /// The size Text style shows: `TextOverlay.size`, 24–120 pt.

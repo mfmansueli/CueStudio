@@ -13,13 +13,12 @@ nonisolated extension EditedComposition {
             let animation: CaptionAnimation = if case .translation = edit.captionDisplay { .line } else { edit.captionAnimation }
             var main = settings
             // The same goes for the style's own way of showing words: a translation is shown whole.
-            if case .translation = edit.captionDisplay { main.followsWords = false }
+            if case .translation = edit.captionDisplay { main = main.shownWhole }
             var overlays = CaptionCollectionRenderer.overlays(
                 shown.main, settings: main, position: edit.captionPosition, frame: frame, animation: animation
             )
-            var secondary = settings
+            var secondary = settings.shownWhole
             secondary.sizeScale *= 0.8
-            secondary.followsWords = false
             let y = settings.center?.y ?? edit.captionPosition.verticalFraction
             secondary.center = OverlayPoint(x: settings.center?.x ?? 0.5, y: y + (y < 0.5 ? 0.12 : -0.12))
             overlays += CaptionCollectionRenderer.overlays(shown.second, settings: secondary, position: edit.captionPosition, frame: frame)

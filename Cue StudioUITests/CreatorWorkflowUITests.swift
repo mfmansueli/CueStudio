@@ -468,6 +468,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.step("Captions › Style › Format › Short phrase")
         flow.tool("captions")
         flow.tap(app.buttons["edit.captionsStyleButton"], "Aa Style")
+        flow.tap(app.buttons["edit.panel.tab.format"], "Format")
         let phrase = app.buttons["edit.captionFormat.phrase"]
         XCTAssertTrue(flow.waits(for: phrase, "the formats"), "No Format in Caption style")
         XCTAssertFalse(phrase.isSelected, "An edit from before formats shows one picked")

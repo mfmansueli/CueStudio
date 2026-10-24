@@ -17,23 +17,15 @@ extension OverlaysViewModel {
         applyLook(preset.look(for: scope.use), preset: preset, name: preset.label, to: scope, keepingCustomizations: keepingCustomizations)
     }
 
-    /// Sets the saved "My style" on `scope`.
-    func applyMyStyle(to scope: TextStyleScope, keepingCustomizations: Bool = false) {
-        guard var look = myStyle else { return }
+    /// Sets a saved text style on `scope`.
+    func applySavedTextStyle(_ id: UUID, to scope: TextStyleScope, keepingCustomizations: Bool = false) {
+        guard let saved = textStyles.style(id) else { return }
+        var look = saved.look
         if scope == .allCaptions {
             // Saved from a title: captions keep a size a line of five words fits in.
             look.sizeScale = min(look.sizeScale, Self.largestCaptionScale)
         }
-        applyLook(look, preset: nil, name: String(localized: "My style"), to: scope, keepingCustomizations: keepingCustomizations)
-    }
-
-    /// Saves the picked text's look as "My style", for this edit and the next ones.
-    func saveMyStyle() {
-        guard let id = styledTextID, let text = edit.texts.first(where: { $0.id == id }) else { return }
-        let look = TextLook(of: text)
-        styles.myStyle = look
-        myStyle = look
-        toast.show(String(localized: "Saved as My style"))
+        applyLook(look, preset: nil, name: saved.name, to: scope, keepingCustomizations: keepingCustomizations)
     }
 
     /// Changes one part of a text's look by hand: it is remembered, so "Keep my changes" keeps it

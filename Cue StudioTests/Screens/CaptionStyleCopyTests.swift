@@ -44,7 +44,7 @@ struct CaptionStyleCopyTests {
     @Test func itSaysWhichPresetItReplaces() {
         var edit = edit()
         edit.captionCollection = CaptionSettings(theme: .pop)
-        #expect(CaptionStyleCopy.replaced(in: edit) == .preset("Pop"))
+        #expect(CaptionStyleCopy.replaced(in: edit) == .preset("Violet"))
         edit.captionCollection?.customLook = CaptionStyleCopy.look(from: title())
         #expect(CaptionStyleCopy.replaced(in: edit) == .custom)
         edit.captionCollection = nil
@@ -68,9 +68,14 @@ struct CaptionStyleCopyTests {
         let before = snapshot
         let look = CaptionStyleCopy.look(from: title())
         CaptionStyleCopy.apply(look, to: &snapshot)
-        var expected = settings
-        expected.customLook = look
+        // The look as changes over the style (Adjust edits it like any other); where the captions sit and how big stay.
+        var copied = settings
+        copied.customLook = look
+        var expected = copied.withoutCopiedLook
+        expected.accent = snapshot.captionCollection?.accent
         #expect(snapshot.captionCollection == expected)
+        #expect(snapshot.captionCollection?.customLook == nil && snapshot.captionCollection?.face == look.font)
+        #expect(snapshot.captionCollection?.center == settings.center && snapshot.captionCollection?.sizeScale == 1.3)
         // Everything else is as it was: lines, texts, how lines appear, where they sit.
         var rest = snapshot
         rest.captionCollection = before.captionCollection

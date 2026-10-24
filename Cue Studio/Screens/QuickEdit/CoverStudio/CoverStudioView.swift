@@ -18,6 +18,8 @@ struct CoverStudioView: View {
 
     @State private var confirmsDiscard = false
     @State private var confirmsRemove = false
+    /// Naming a cover style (Finish › Save style, or a saved style's Rename in Template).
+    @State private var naming: StyleNameRequest?
     /// While the keyboard is up the steps hide, so the cover keeps as much room as it can.
     @State private var isKeyboardUp = false
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -122,10 +124,10 @@ struct CoverStudioView: View {
                 Group {
                     switch viewModel.step {
                     case .image: CoverPictureStep(viewModel: viewModel, frameRate: frameRate)
-                    case .template: CoverTemplateStep(viewModel: viewModel)
+                    case .template: CoverTemplateStep(viewModel: viewModel, naming: $naming)
                     case .text: CoverTitleStep(viewModel: viewModel)
                     case .elements: CoverGraphicsStep(viewModel: viewModel)
-                    case .effects: CoverFinishStep(viewModel: viewModel) { confirmsRemove = true }
+                    case .effects: CoverFinishStep(viewModel: viewModel, naming: $naming) { confirmsRemove = true }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -133,6 +135,12 @@ struct CoverStudioView: View {
                 .padding(.bottom, 16)
             }
             .scrollDismissesKeyboard(.interactively)
+            .styleNamePrompt($naming) { purpose, name in
+                switch purpose {
+                case .save: viewModel.saveCoverStyle(named: name)
+                case .rename(let id): viewModel.renameCoverStyle(id, to: name)
+                }
+            }
             .scrollEdgeEffectStyle(.soft, for: .bottom)
             .id(viewModel.step)
         }

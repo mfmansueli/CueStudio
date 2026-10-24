@@ -96,6 +96,20 @@ struct CaptionBlockingTests {
         #expect(cut.contains { $0.words.count > 1 })
     }
 
+    /// One corrected line with guessed times keeps only itself in short phrases: the measured lines around it still go one word
+    /// at a time (one line once kept a whole video in phrases).
+    @Test func oneGuessedLineDoesntTurnTheOthersIntoPhrases() {
+        var corrected = line("Com Cue Studio, você transforma", from: 2)
+        corrected.words[1].isEstimated = true
+        corrected.words[2].isEstimated = true
+        let cut = blocks([line("Uma boa ideia merece virar"), corrected, line("tudo no mesmo lugar", from: 5)], .oneWord)
+        let texts = cut.map(\.text)
+        #expect(Array(texts.prefix(5)) == ["Uma", "boa", "ideia", "merece", "virar"], "\(texts)")
+        #expect(Array(texts.suffix(4)) == ["tudo", "no", "mesmo", "lugar"], "\(texts)")
+        let middle = cut.dropFirst(5).dropLast(4)
+        #expect(!middle.isEmpty && middle.contains { $0.words.count > 1 }, "the corrected line stays in phrases: \(texts)")
+    }
+
     @Test func aWordWiderThanTheRoomStandsAlone() {
         let long = "Pneumonoultramicroscopicsilicovolcanoconiosis"
         var big = Self.settings

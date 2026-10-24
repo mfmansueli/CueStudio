@@ -80,18 +80,4 @@ extension CoverStudioViewModel {
     func setEffectAmount(_ amount: Double) {
         changeComposition { $0.effectAmount = min(max(amount, 0), 1) }
     }
-
-    /// "Save as my style": this cover's look (never its words or picture) for the next covers.
-    func saveMyStyle() {
-        setMyStyle(composition.style)
-        toast.show(String(localized: "Saved · Used for new covers"))
-    }
-
-    /// "Apply my style": the saved look on this cover; its words, picture and graphics stay.
-    func applyMyStyle() {
-        guard let myStyle else { return }
-        changeComposition { composition in
-            composition = myStyle.apply(to: composition)
-        }
-    }
 }

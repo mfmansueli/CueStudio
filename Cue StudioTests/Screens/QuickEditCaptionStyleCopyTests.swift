@@ -124,8 +124,10 @@ struct QuickEditCaptionStyleCopyTests {
         viewModel.captions.copyStyleToCaptions()
 
         let title = text(ids.title, in: viewModel)
-        let look = viewModel.edit.captionCollection?.customLook
-        #expect(look?.font == .dmSerif && look?.color == .lavender && look?.background == .pill && look?.glow == 0.4)
+        // The look as changes over the style, which Adjust edits like any other.
+        let copy = viewModel.edit.captionCollection
+        #expect(copy?.customLook == nil && copy?.face == .dmSerif)
+        #expect(copy?.adjustments?.textColor == .lavender && copy?.adjustments?.background == .pill && copy?.adjustments?.shadow == .glow)
         // The captions' own size, not the title's 80 pt.
         #expect(viewModel.captions.captionPointSize == 22)
         #expect(viewModel.edit.captionCollection?.center == before.captionCollection?.center)
@@ -176,7 +178,7 @@ struct QuickEditCaptionStyleCopyTests {
         viewModel.overlays.textStyleScope = .allTexts
         viewModel.overlays.pickTextPreset(.pop)
         #expect(viewModel.edit.captionCollection == copied)
-        #expect(text(ids.title, in: viewModel)?.color != copied?.customLook?.color)
+        #expect(text(ids.title, in: viewModel)?.color != copied?.adjustments?.textColor)
     }
 
     @Test func aHighlightThatWouldVanishIsMovedAndSaid() async {
@@ -199,7 +201,7 @@ struct QuickEditCaptionStyleCopyTests {
         let subtitle = text(ids.subtitle, in: viewModel)
         viewModel.captions.askToCopyStyleToCaptions()
         viewModel.captions.copyStyleToCaptions()
-        #expect(viewModel.edit.captionCollection?.customLook?.font == .dmSerif)
+        #expect(viewModel.edit.captionCollection?.face == .dmSerif)
         #expect(text(ids.subtitle, in: viewModel) == subtitle)
     }
 
@@ -214,11 +216,11 @@ struct QuickEditCaptionStyleCopyTests {
         viewModel.selection = nil
         viewModel.panel = .captionStyle
         #expect(viewModel.captions.captionTheme == nil)
-        #expect(viewModel.captions.captionCustomLook?.font == .dmSerif)
-        #expect(viewModel.captions.captionCustomLookName == "Custom")
-        #expect(viewModel.captions.captionEditableLook?.font == .dmSerif)
-        viewModel.captions.updateCaptionLook { $0.color = .cyan }
-        #expect(viewModel.edit.captionCollection?.customLook?.color == .cyan)
+        #expect(viewModel.captions.currentCaptionCard?.name == "This video")
+        #expect(viewModel.captions.captionFace == .dmSerif)
+        #expect(viewModel.captions.changedCaptionLookCount > 0)
+        viewModel.captions.adjustCaptions { $0.textColor = .cyan }
+        #expect(viewModel.edit.captionCollection?.adjustments?.textColor == .cyan)
         // The highlight stays the collection's to pick.
         viewModel.captions.setCaptionAccent(.peach)
         #expect(viewModel.captions.captionAccent == .peach)
@@ -236,13 +238,13 @@ struct QuickEditCaptionStyleCopyTests {
         viewModel.panel = .captionStyle
         viewModel.captions.pickCaptionTheme(.cue)
         #expect(viewModel.captions.captionTheme == .cue)
-        #expect(viewModel.captions.captionCustomLook == nil)
+        #expect(viewModel.captions.changedCaptionLookCount == 0)
         #expect(viewModel.edit.captionCollection?.center?.y == 0.3)
         #expect(viewModel.edit.texts == texts)
         #expect(viewModel.edit.textLook == textLook)
         // One step back is the copied look again.
         viewModel.undo()
-        #expect(viewModel.captions.captionCustomLook?.font == .dmSerif)
+        #expect(viewModel.captions.captionFace == .dmSerif)
     }
 
     @Test func captionsFromBeforeTheCollectionTakeTheLookAsTheirs() async {
@@ -297,8 +299,8 @@ struct QuickEditCaptionStyleCopyTests {
         let copied = viewModel.edit.captionCollection
         viewModel.done()
         let saved = scenario.takes.takes[0].edit?.captionCollection
-        #expect(saved?.customLook == copied?.customLook)
-        #expect(saved?.customLook?.font == .dmSerif)
+        #expect(saved?.adjustments == copied?.adjustments)
+        #expect(saved?.face == .dmSerif)
         #expect(saved?.theme == copied?.theme && saved?.sizeScale == copied?.sizeScale)
     }
 }

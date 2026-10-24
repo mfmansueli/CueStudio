@@ -479,6 +479,24 @@ struct PaletteContrastTests {
         }
     }
 
+    /// A style card's marks over the take's frame (dimmed under the sample), white or black: "Default" and the ★ on their dark
+    /// fill read as text; the ✓ badge (yellow, ringed dark) stands out from the frame as a part that informs (3:1) and its check
+    /// reads on its yellow.
+    @Test func theStyleCardMarksReadOverAnyFrame() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            let frame = rgb(Palette.Editor.presetCardDim, in: .dark, over: picture)
+            let badge = rgb(Palette.Editor.presetCardBadge, in: .dark, over: frame)
+            for appearance in Appearance.allCases {
+                let words = ColorContrast.ratio(rgb(Palette.chipOn, in: appearance, over: badge), badge)
+                #expect(words >= ColorContrast.textMinimum, "Default and ★ over \(picture), \(appearance): \(words)")
+                let yellow = ColorContrast.ratio(rgb(Palette.acc, in: appearance, over: frame), frame)
+                let ring = ColorContrast.ratio(badge, frame)
+                #expect(max(yellow, ring) >= ColorContrast.componentMinimum, "✓ badge over \(picture), \(appearance): \(yellow) / \(ring)")
+                #expect(ratio(Palette.accInk, on: Palette.acc, in: appearance) >= ColorContrast.textMinimum)
+            }
+        }
+    }
+
     /// The Low Power Mode notice over the preview: its title, its sentence and ✕ on the toast's fill, over a white or a black
     /// picture; the battery is an icon that informs (3:1).
     @Test func theLowPowerNoticeReadsOverAnyPicture() {

@@ -36,6 +36,18 @@ nonisolated struct CoverStyle: Codable, Hashable, Sendable {
         }
     }
 
+    /// The style with its graphics' identities set aside (each copy of a style gives them new ones): what two styles share
+    /// when they look alike.
+    var comparable: CoverStyle {
+        var style = self
+        style.items = items.map { item in
+            var item = item
+            item.id = UUID(uuidString: "00000000-0000-0000-0000-000000000000") ?? item.id
+            return item
+        }
+        return style
+    }
+
     /// A new cover in this style for a title, with the key word highlighted, the series' kicker for `episode` and the handle.
     func composition(title: String, handle: String, episode: Int) -> CoverComposition {
         var composition = CoverComposition.make(template, title: title, handle: handle, episode: episode)

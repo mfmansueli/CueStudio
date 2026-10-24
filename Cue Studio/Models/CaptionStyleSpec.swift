@@ -10,10 +10,11 @@ import Foundation
 /// breaks, and how it shows (its own way of lighting the words and how a line comes in). The
 /// renderer reads only this, so a preset is a recipe, never only a font.
 ///
-/// Presets have two readings (`CaptionSettings.styleVersion`). Version 1 is how the first five
+/// Presets have three readings (`CaptionSettings.styleVersion`). Version 1 is how the first five
 /// looked, and edits saved with them keep drawing with exactly those numbers. Version 2 is the
 /// complete presets: Educational and Interview, and a finer Impact, Pop and Editorial. Cue and
-/// Clean are the same in both.
+/// Clean are the same in both. Version 3 is the catalogue of twenty (`CaptionStyleSpec+Catalog`),
+/// each with its own motion (`motion`), every one readable on a white and a black picture.
 nonisolated struct CaptionStyleSpec: Equatable, Sendable {
     struct RGB: Equatable, Sendable {
         var red: Double
@@ -23,6 +24,19 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
 
         static let white = RGB(red: 1, green: 1, blue: 1)
         static let black = RGB(red: 0, green: 0, blue: 0)
+
+        init(red: Double, green: Double, blue: Double, alpha: Double = 1) {
+            self.red = red
+            self.green = green
+            self.blue = blue
+            self.alpha = alpha
+        }
+
+        /// A palette color, solid.
+        init(_ color: OverlayColor) {
+            let parts = color.components
+            self.init(red: parts.red, green: parts.green, blue: parts.blue)
+        }
     }
 
     enum Plate: Equatable, Sendable {
@@ -43,14 +57,24 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
         var opacity: Double
         var blur: Double
         var offsetY: Double
+        /// Black for a shadow or a halo; the words' own color for a glow.
+        var color = RGB.black
+        /// Times the words are drawn with it: a halo is drawn twice, dense enough at the letters' edge to read them against.
+        var passes = 1
+
+        /// A dark halo wide and dense enough that the words read on a white picture.
+        static let halo = Shadow(opacity: 0.9, blur: 4, offsetY: 0, passes: 3)
     }
 
-    /// How a line comes in and goes out: it fades, and/or pops to size.
+    /// How a line comes in and goes out: it fades, and/or pops to size, and/or rises.
     struct Entry: Equatable, Sendable {
         var fade: TimeInterval = 0
         /// The size the line starts at (1 for none), growing to full with a little overshoot.
         var popScale = 1.0
         var popDuration: TimeInterval = 0
+        /// Points (at the reference width) the line rises from as it comes in, over `riseDuration`.
+        var rise = 0.0
+        var riseDuration: TimeInterval = 0
 
         static let none = Entry()
     }
@@ -67,6 +91,7 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
     var fallbackWeight: Double
     /// Points at the reference width (402), scaled with the frame.
     var baseSize: Double
+    /// All capitals (`letterCase`).
     var uppercase = false
     /// Space added between letters, in points at the reference width; not used for scripts whose
     /// letters join (Arabic) or stack (Hindi, Thai), where it would break the writing.
@@ -89,14 +114,81 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
     var highlightsWithBox = false
     var defaultAccent: CaptionAccent
     var entry = Entry.none
+    /// All small letters (`letterCase`).
+    var lowercase = false
+    var alignment = LineAlignment.center
+    /// The words the creator marked for emphasis (`CaptionCue.emphasis`): their color, and how much bigger they are.
+    var emphasisColor: CaptionAccent = .yellow
+    var emphasisScale = 1.15
+    /// How the reading's lines move (version 3 on); nil for the first two readings, which play `animation` with `entry` and
+    /// `highlightsWithBox` as they always did.
+    var motion: CaptionMotion?
+    /// The corners of the box behind the word being said, in points at the reference width.
+    var spokenBoxRadius = 5.0
+    /// The outline is drawn whole outside the letters, the letters filled over it (the catalogue). The first two readings draw
+    /// it on the letters' edge, half over them, as they always did.
+    var strokesOutside = false
+    /// The size scales the whole caption (the catalogue): the widest a line may run grows and shrinks with the type, so the
+    /// same words stay on each line and the caption takes more or less of the screen, until the safe area stops it. The first two
+    /// readings keep a fixed width, the type alone changing, as they always did.
+    var widthScalesWithSize = false
+    /// Room added to each space between words, as a share of the type size: captions whose word being said pops leave it, so
+    /// the word grows without touching its neighbors (`CaptionSettings.spec`).
+    var wordSpacing = 0.0
+
+    /// The letters as typed, in capitals or small.
+    var letterCase: CaptionLetterCase {
+        get { uppercase ? .upper : lowercase ? .lower : .asTyped }
+        set {
+            uppercase = newValue == .upper
+            lowercase = newValue == .lower
+        }
+    }
+
+    /// The plate's color, with its opacity; nil without one.
+    var plateColor: RGB? {
+        switch plate {
+        case .none: nil
+        case .block(let color, _, _, _), .perLine(let color, _, _, _): color
+        }
+    }
+
+    /// Bundled faces with a weight axis: any of the editor's weights draws.
+    private static let variableFonts: Set<String> = ["SpaceGrotesk-Light", "Inter-Regular", "Manrope-Regular"]
+
+    /// The weights the recipe's family comes in (Adjust › Weight offers these alone).
+    var availableWeights: [TextOverlayWeight] {
+        if let face { return face.weights }
+        if Self.variableFonts.contains(fontName) { return TextOverlayWeight.editorWeights }
+        return [TextOverlayWeight.nearest(to: fontWeight, in: TextOverlayWeight.allCases)]
+    }
+
+    /// The weight the words are drawn at, as one of those.
+    var shownWeight: TextOverlayWeight {
+        TextOverlayWeight.nearest(to: fontWeight, in: availableWeights)
+    }
+
+    /// Whether a line takes the same room in both: everything a line is measured with (`CaptionCollectionRenderer.measure`).
+    func measuresLike(_ other: CaptionStyleSpec) -> Bool {
+        fontName == other.fontName && fontWeight == other.fontWeight && face == other.face && baseSize == other.baseSize
+            && letterCase == other.letterCase && tracking == other.tracking && lineSpacing == other.lineSpacing
+            && outline?.width == other.outline?.width && widthFraction == other.widthFraction && maxLines == other.maxLines
+            && emphasisScale == other.emphasisScale && wordSpacing == other.wordSpacing && widthScalesWithSize == other.widthScalesWithSize
+    }
+
+    /// How this reading plays when the edit says only `animation` (an edit saved before motion, or a first reading).
+    func motion(playing animation: CaptionAnimation) -> CaptionMotion {
+        motion ?? CaptionMotion(playing: animation, spec: self)
+    }
 
     // MARK: - The presets
 
-    /// The version 2 of every preset: what a new look is made from.
+    /// The reading a new look is made from (version 3: the catalogue).
     static var currentVersion: Int { ReadingVersion.captionStyle.current }
 
     static func spec(for theme: CaptionTheme, version: Int) -> CaptionStyleSpec {
-        version >= 2 ? current(theme) : original(theme)
+        if version >= 3 || !theme.existedBeforeCatalog { return catalog(theme) }
+        return version >= 2 ? complete(theme) : original(theme)
     }
 
     /// How the first five looked, to the number.
@@ -124,6 +216,9 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
                 plate: .block(color: RGB(red: 0, green: 0, blue: 0, alpha: 0.66), radius: 5, insetX: 10, insetY: 4),
                 animation: .highlight, defaultAccent: .peach
             )
+        default:
+            // The catalogue's own: they have no earlier reading.
+            return catalog(theme)
         }
     }
 
@@ -143,7 +238,7 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
     }
 
     /// The complete presets.
-    private static func current(_ theme: CaptionTheme) -> CaptionStyleSpec {
+    private static func complete(_ theme: CaptionTheme) -> CaptionStyleSpec {
         switch theme {
         case .cue:
             return cue
@@ -193,6 +288,8 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
                 plate: .block(color: RGB(red: 0, green: 0, blue: 0, alpha: 0.62), radius: 4, insetX: 14, insetY: 6),
                 widthFraction: 0.78, animation: .highlight, defaultAccent: .peach, entry: Entry(fade: 0.2)
             )
+        default:
+            return catalog(theme)
         }
     }
 }

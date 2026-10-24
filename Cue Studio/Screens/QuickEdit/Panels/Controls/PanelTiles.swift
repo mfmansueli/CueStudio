@@ -40,6 +40,8 @@ struct PanelTiles<Value: Hashable>: View {
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
+                .disabled(!option.isEnabled)
+                .opacity(option.isEnabled ? 1 : Metrics.disabledOpacity)
                 .accessibilityAddTraits(isOn ? .isSelected : [])
                 .accessibilityIdentifier("\(identifier).\(option.key)")
             }

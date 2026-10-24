@@ -30,10 +30,15 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     /// What the content shows (the panel's tab): when it changes, the content starts again from its top. A tab opened while the
     /// last one was scrolled to its end showed the middle of its own controls, with the first ones out of sight above.
     var contentKey: AnyHashable?
+    /// Where the content was scrolled to, kept for when it shows again (Caption style › Styles: back from another tab, the cards
+    /// are where they were); nil starts at the top.
+    var keptOffset: Binding<CGFloat>?
     let onApply: () -> Void
     @ViewBuilder var fixed: Fixed
     @ViewBuilder var content: Content
     @ViewBuilder var footer: Footer
+
+    @State private var position = ScrollPosition(edge: .top)
 
     private var isRoomy: Bool { expansion != nil || clearsHomeIndicator }
 
@@ -52,6 +57,19 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                 .padding(.top, 10)
                 .padding(.bottom, 12)
                 .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .scrollPosition($position)
+            .onScrollGeometryChange(
+                for: CGFloat.self, of: { $0.contentOffset.y + $0.contentInsets.top },
+                action: { _, offset in keptOffset?.wrappedValue = max(0, offset) }
+            )
+            .task(id: contentKey) {
+                // After the content is laid out: the offset it was left at, else its top.
+                if let kept = keptOffset?.wrappedValue, kept > 0 {
+                    position.scrollTo(y: kept)
+                } else {
+                    position.scrollTo(edge: .top)
+                }
             }
             .id(contentKey)
             .scrollIndicators(.hidden)

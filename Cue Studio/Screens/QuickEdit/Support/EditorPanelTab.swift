@@ -5,15 +5,16 @@
 
 import Foundation
 
-/// The tabs of the styling panels: Text style (Presets, Font, Color, Motion) and Caption style
-/// (Presets, Reveal, Position, Font).
+/// The tabs of the styling panels: Text style (Presets, Font, Color, Motion) and Caption style (Styles, Format, Animation,
+/// Adjust: the look to pick, where the captions sit and how they are cut, how they move, and the look's details).
 enum EditorPanelTab: String, CaseIterable, Identifiable {
-    case presets, font, color, motion, reveal, position
+    case presets, font, color, motion
+    case styles, format, animation, adjust
 
     var id: String { rawValue }
 
     static let textStyle: [EditorPanelTab] = [.presets, .font, .color, .motion]
-    static let captionStyle: [EditorPanelTab] = [.presets, .reveal, .position, .font]
+    static let captionStyle: [EditorPanelTab] = [.styles, .format, .animation, .adjust]
 
     var label: String {
         switch self {
@@ -21,8 +22,11 @@ enum EditorPanelTab: String, CaseIterable, Identifiable {
         case .font: String(localized: "Font")
         case .color: String(localized: "Color")
         case .motion: String(localized: "Motion")
-        case .reveal: String(localized: "Reveal")
-        case .position: String(localized: "Position")
+        case .styles: String(localized: "Styles")
+        // Not the video's format nor the Adjust tool: how caption lines are cut, and the details of their look.
+        case .format: String(localized: LocalizedStringResource("captionStyle.format", defaultValue: "Format"))
+        case .animation: String(localized: "Animation")
+        case .adjust: String(localized: LocalizedStringResource("captionStyle.adjust", defaultValue: "Adjust"))
         }
     }
 }

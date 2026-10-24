@@ -12,6 +12,8 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
     let panel: EditorPanel
     var onReset: (() -> Void)?
     var compare: PanelCompare?
+    /// Where the content is kept scrolled to between tabs (`EditorPanelContainer.keptOffset`).
+    var keptOffset: Binding<CGFloat>?
     @ViewBuilder var fixed: Fixed
     @ViewBuilder var content: Content
     @ViewBuilder var footer: Footer
@@ -21,7 +23,7 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
             title: viewModel.panelTitle(panel), subtitle: viewModel.panelSubtitle(panel), onReset: onReset ?? viewModel.panelReset(panel),
             compare: compare,
             expansion: panel.isExpandable ? expansion : nil, clearsHomeIndicator: panel.scrollsClearOfHomeIndicator, contentKey: viewModel.panelTab,
-            onApply: viewModel.closePanel, fixed: { fixed }, content: { content }, footer: { footer }
+            keptOffset: keptOffset, onApply: viewModel.closePanel, fixed: { fixed }, content: { content }, footer: { footer }
         )
         .accessibilityIdentifier("edit.panel.\(panel.rawValue)")
     }
@@ -46,10 +48,11 @@ extension PanelFrame where Fixed == EmptyView, Footer == EmptyView {
 extension PanelFrame where Footer == EmptyView {
     init(
         viewModel: QuickEditViewModel, panel: EditorPanel, onReset: (() -> Void)? = nil, compare: PanelCompare? = nil,
-        @ViewBuilder fixed: () -> Fixed, @ViewBuilder content: () -> Content
+        keptOffset: Binding<CGFloat>? = nil, @ViewBuilder fixed: () -> Fixed, @ViewBuilder content: () -> Content
     ) {
         self.init(
-            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, fixed: fixed, content: content, footer: { EmptyView() }
+            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, keptOffset: keptOffset, fixed: fixed, content: content,
+            footer: { EmptyView() }
         )
     }
 }

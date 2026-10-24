@@ -225,36 +225,51 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.edit.captionLook == nil)
     }
 
-    @Test func myStyleIsSavedFromATextAndReused() async {
+    @Test func aTextStyleIsSavedFromATextAndReused() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.overlays.addText(.title)
         let id = viewModel.edit.texts[0].id
         viewModel.overlays.customizeText(id, .color) { $0.color = .green }
         viewModel.overlays.customizeText(id, .tracking) { $0.tracking = 0.1 }
-        viewModel.overlays.saveMyStyle()
-        #expect(scenario.styles.myStyle?.color == .green)
-        #expect(scenario.styles.myStyle?.tracking == 0.1)
-        #expect(viewModel.overlays.myStyle == scenario.styles.myStyle)
-        #expect(scenario.toast.message == "Saved as My style")
+        viewModel.overlays.saveTextStyle(named: "Green")
+        let saved = try #require(scenario.styles.textStyles.styles.first)
+        #expect(saved.look.color == .green && saved.look.tracking == 0.1)
+        #expect(viewModel.overlays.textStyles == scenario.styles.textStyles)
+        #expect(scenario.toast.message == "Saved as Green")
+        #expect(viewModel.overlays.pickedTextSavedStyleID == saved.id)
 
         viewModel.overlays.addText(.hook)
-        viewModel.overlays.applyMyStyle(to: .allTexts)
+        viewModel.overlays.applySavedTextStyle(saved.id, to: .allTexts)
         #expect(viewModel.edit.texts.allSatisfy { $0.color == .green && $0.tracking == 0.1 })
         #expect(viewModel.edit.textPreset == nil)
-        #expect(scenario.toast.message == "My style on every text")
+        #expect(scenario.toast.message == "Green on every text")
     }
 
-    @Test func myStyleOnCaptionsStaysReadable() async {
+    @Test func aDefaultTextStyleStartsNewTextsOnAVideoWithoutItsOwn() async throws {
         let scenario = await makeScenario()
-        scenario.styles.myStyle = TextLook(sizeScale: 2.2, color: .yellow)
+        let style = scenario.styles.textStyles.add(TextLook(color: .peach), named: "Peach")
+        scenario.styles.textStyles.setDefault(style.key)
         let viewModel = QuickEditViewModel(
             take: scenario.viewModel.take, takes: scenario.takes, library: scenario.viewModel.library, editing: scenario.editor,
             drafts: FakeDraftStore(), toast: scenario.toast, player: scenario.player,
             mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: scenario.styles
         )
         await viewModel.prepare()
-        viewModel.overlays.applyMyStyle(to: .allCaptions)
+        viewModel.overlays.addText(.title)
+        #expect(viewModel.edit.texts.last?.color == .peach)
+    }
+
+    @Test func aSavedTextStyleOnCaptionsStaysReadable() async throws {
+        let scenario = await makeScenario()
+        let style = scenario.styles.textStyles.add(TextLook(sizeScale: 2.2, color: .yellow), named: "Big")
+        let viewModel = QuickEditViewModel(
+            take: scenario.viewModel.take, takes: scenario.takes, library: scenario.viewModel.library, editing: scenario.editor,
+            drafts: FakeDraftStore(), toast: scenario.toast, player: scenario.player,
+            mediaImporter: FakeMediaImporter(), recorder: FakeVoiceRecorder(), styles: scenario.styles
+        )
+        await viewModel.prepare()
+        viewModel.overlays.applySavedTextStyle(style.id, to: .allCaptions)
         #expect(viewModel.edit.captionLook?.color == .yellow)
         #expect(viewModel.edit.captionLook?.sizeScale == 1.3)
     }

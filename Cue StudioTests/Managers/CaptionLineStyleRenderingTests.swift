@@ -26,7 +26,7 @@ struct CaptionLineStyleRenderingTests {
     @Test func anEmphasizedLineIsLitWholeForItsWholeTime() throws {
         var line = cue
         line.lineStyle = CaptionLineStyle(isEmphasized: true)
-        let settings = CaptionSettings(theme: .educational)
+        let settings = CaptionSettings.savedBeforeMotion(.educational)
         let states = CaptionCollectionRenderer.overlays([line], settings: settings, position: .bottom, frame: frame, animation: .highlight)
         #expect(states.count == 1)
         let emphasis = try #require(states.first?.lazyText?.emphasis)
@@ -44,9 +44,22 @@ struct CaptionLineStyleRenderingTests {
     @Test func boxedRevealBoxesTheEmphasizedLine() throws {
         var line = cue
         line.lineStyle = CaptionLineStyle(isEmphasized: true)
-        let states = CaptionCollectionRenderer.overlays([line], settings: CaptionSettings(), position: .bottom, frame: frame, animation: .box)
+        let states = CaptionCollectionRenderer.overlays(
+            [line], settings: CaptionSettings.savedBeforeMotion(), position: .bottom, frame: frame, animation: .box
+        )
         let emphasis = try #require(states.first?.lazyText?.emphasis)
         #expect(emphasis.style == .box(fill: .yellow, text: .black))
+    }
+
+    @Test func withMotionAnEmphasizedLineIsLitWholeTheStylesWay() throws {
+        var line = cue
+        line.lineStyle = CaptionLineStyle(isEmphasized: true)
+        let boxed = CaptionCollectionRenderer.overlays([line], settings: CaptionSettings(theme: .cue), position: .bottom, frame: frame)
+        #expect(boxed.count == 1)
+        let markup = try #require(boxed.first?.lazyText?.markup)
+        #expect(markup.lit == 0 && markup.litCount == words.count && markup.spoken == .box)
+        let colored = CaptionCollectionRenderer.overlays([line], settings: CaptionSettings(theme: .educational), position: .bottom, frame: frame)
+        #expect(colored.first?.lazyText?.markup?.spoken == .color)
     }
 
     @Test func aBiggerLineIsDrawnBiggerAndTheOthersStay() throws {

@@ -27,6 +27,24 @@ nonisolated extension OverlayColor {
         return Self.preference.first { $0.standsOut(on: look) } ?? self
     }
 
+    /// The palette color `color` is (its alpha aside), if it is one: what a style's own color shows as picked.
+    static func matching(_ color: CaptionStyleSpec.RGB?) -> OverlayColor? {
+        guard let color else { return nil }
+        return palette.first { candidate in
+            let parts = candidate.components
+            return abs(parts.red - color.red) < 0.01 && abs(parts.green - color.green) < 0.01 && abs(parts.blue - color.blue) < 0.01
+        }
+    }
+
+    /// Black or white, whichever reads better on this color (the words on a box of it).
+    var readableInk: OverlayColor {
+        let parts = components
+        let on = ColorContrast.RGB(red: parts.red, green: parts.green, blue: parts.blue)
+        let black = ColorContrast.ratio(on, ColorContrast.RGB(red: 0, green: 0, blue: 0))
+        let white = ColorContrast.ratio(on, ColorContrast.RGB(red: 1, green: 1, blue: 1))
+        return black >= white ? .black : .white
+    }
+
     /// Below this (sRGB, 0 to √3) two colors read as the same: peach and blush are 0.26 apart.
     private static let minimumDistance = 0.3
 

@@ -7,7 +7,7 @@ import Foundation
 
 /// Caption style › Format: how the lines are cut into what shows at once (`CaptionFormat`, `CaptionBlocking`). Changing it cuts
 /// the same words again, with their corrections and times, in one undo step; lines cut by hand stay. New captions start as
-/// short phrases, unless My style says otherwise; an edit from before formats keeps its lines until a format is picked.
+/// short phrases, unless the default style says otherwise; an edit from before formats keeps its lines until a format is picked.
 extension CaptionsViewModel {
     /// The format the lines are cut by; nil while they are as they were made (edits from before formats).
     var captionFormat: CaptionFormat? { edit.captionCollection?.format }
@@ -33,6 +33,27 @@ extension CaptionsViewModel {
         sayUndoable(String(localized: "Captions format: \(format.label)"))
     }
 
+    /// Format › Width: how wide a line may run (one undo step); the lines of a format are cut again for the new room.
+    func setCaptionWidth(_ width: CaptionWidth) {
+        guard isReady, edit.captionCollection?.width != width else { return }
+        updateCaptionSettings { settings in
+            // A look copied by an earlier version is drawn by the collection, which has a width.
+            settings = settings.withoutCopiedLook
+            settings.width = width
+        }
+        previewCurrentCaptionLine()
+    }
+
+    /// Format › Alignment (one undo step).
+    func setCaptionAlignment(_ alignment: LineAlignment) {
+        guard isReady, edit.captionCollection?.spec.alignment != alignment else { return }
+        updateCaptionSettings { settings in
+            settings = settings.withoutCopiedLook
+            settings.alignment = alignment
+        }
+        previewCurrentCaptionLine()
+    }
+
     /// After a change of the captions' type (a preset, a font, a size, a copied look), the lines of a format are cut again, in
     /// the same undo step: what fit one look may not fit another, and nothing shrinks to fit. A change that keeps the type (a
     /// color, a place) leaves them.
@@ -44,10 +65,9 @@ extension CaptionsViewModel {
         snapshot.captionTranslations = snapshot.captionTranslations.map { pointing($0, at: blocks) }
     }
 
-    /// The two draw their lines in the same type, at the same size.
+    /// The two draw their lines in the same type, at the same size, in the same room: what a line fits in.
     private static func typeMatches(_ a: CaptionSettings, _ b: CaptionSettings) -> Bool {
-        a.theme == b.theme && a.face == b.face && a.sizeScale == b.sizeScale && a.customLook == b.customLook
-            && a.styleVersion == b.styleVersion && a.format == b.format
+        a.sizeScale == b.sizeScale && a.customLook == b.customLook && a.format == b.format && a.spec.measuresLike(b.spec)
     }
 
     /// `lines` cut by `format` in `settings`' type, on a frame of the take's shape.

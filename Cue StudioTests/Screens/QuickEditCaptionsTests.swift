@@ -84,12 +84,12 @@ struct QuickEditCaptionsTests {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let initial = viewModel.edit.captionCollection
-        viewModel.captions.setCaptionTheme(.pop)
+        viewModel.captions.pickCaptionTheme(.pop)
         #expect(viewModel.edit.captionCollection?.theme == .pop)
         #expect(scenario.editor.captionScript == nil)
         viewModel.undo()
         #expect(viewModel.edit.captionCollection == initial)
-        viewModel.captions.setCaptionTheme(.clean)
+        viewModel.captions.pickCaptionTheme(.clean)
         #expect(viewModel.edit.captionCollection?.followsWords == false)
         viewModel.captions.updateCaptionSettings {
             $0.sizeScale = 1.2
@@ -314,7 +314,7 @@ struct QuickEditCaptionsTests {
         let viewModel = scenario.viewModel
         viewModel.captions.makeCaptions()
         await finish(viewModel)
-        viewModel.captions.setCaptionTheme(.pop)
+        viewModel.captions.pickCaptionTheme(.pop)
         viewModel.captions.updateCaptionSettings { $0.accent = .peach }
         let style = viewModel.edit.captionCollection
         let line = viewModel.edit.captions[0]
@@ -395,7 +395,7 @@ struct QuickEditCaptionsTests {
         let viewModel = scenario.viewModel
         viewModel.captions.makeCaptions()
         await finish(viewModel)
-        viewModel.captions.setCaptionTheme(.pop)
+        viewModel.captions.pickCaptionTheme(.pop)
         let style = viewModel.edit.captionCollection
         let line = viewModel.edit.captions[0]
         viewModel.captions.setCaptionText(line.id, "Okay,   brand new words here ")
@@ -406,7 +406,7 @@ struct QuickEditCaptionsTests {
             [typed], settings: style ?? CaptionSettings(theme: .pop), position: .bottom, frame: CGSize(width: 1080, height: 1920)
         )
         // Every word lights once, in order (a pause the voice left between two words stays plain).
-        #expect(states.compactMap { $0.lazyText?.emphasis?.index } == Array(typed.lineWords.indices))
+        #expect(states.compactMap(\.litWord) == Array(typed.lineWords.indices))
         #expect(typed.lineWords.map(\.text) == ["Okay,", "brand", "new", "words", "here"])
     }
 

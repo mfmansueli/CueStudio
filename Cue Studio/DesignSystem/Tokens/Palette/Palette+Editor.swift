@@ -116,5 +116,7 @@ extension Palette {
         /// A preset card: the frame of the take under the sample, darkened, and the card's edge.
         static let presetCardDim = Color.black.opacity(0.28)
         static let presetCardBorder = Color.white.opacity(0.08)
+        /// Behind a preset card's marks (★, "Default"): dark enough for `chipOn` words and symbols on any frame of the take.
+        static let presetCardBadge = Color.black.opacity(0.66)
     }
 }

@@ -56,10 +56,13 @@ extension CaptionsViewModel {
     /// Line styles draw with the captions' collection look (every edit since caption presets); older captions keep one look.
     var canStyleCaptionLines: Bool { edit.captionCollection != nil }
 
-    /// Whether every picked line is emphasized (the Emphasis switch is on).
+    /// Whether every picked line is emphasized (the Emphasis switch is on): every word marked, or lit whole as lines were
+    /// emphasized before words could be.
     var pickedCaptionsAreEmphasized: Bool {
         let lines = pickedCaptionLines
-        return !lines.isEmpty && lines.allSatisfy { $0.lineStyle?.isEmphasized == true }
+        return !lines.isEmpty && lines.allSatisfy { line in
+            line.lineStyle?.isEmphasized == true || (!line.emphasis.isEmpty && line.shownEmphasis.count == CaptionText.words(in: line.text).count)
+        }
     }
 
     /// The size the picked lines share; nil when they differ.
@@ -68,9 +71,22 @@ extension CaptionsViewModel {
         return sizes.count == 1 ? sizes.first : nil
     }
 
-    /// Emphasis on (or off) for every picked line, one undo step.
+    /// Emphasis on (or off) for every picked line, one undo step: every word of each marked for emphasis (`CaptionCue.emphasis`),
+    /// as a word is marked by hand. Off also takes away the whole-line light lines had before.
     func setPickedCaptionsEmphasized(_ emphasized: Bool) {
-        restylePickedCaptions { $0.isEmphasized = emphasized }
+        guard canStyleCaptionLines, let picks = captionPicks, !picks.isEmpty else { return }
+        change { snapshot in
+            guard var lines = snapshot.captions else { return }
+            for index in lines.indices where picks.contains(lines[index].id) {
+                lines[index].emphasis = emphasized ? Set(CaptionText.words(in: lines[index].text).indices) : []
+                if !emphasized, var style = lines[index].lineStyle {
+                    style.isEmphasized = false
+                    lines[index].lineStyle = style.isPlain ? nil : style
+                }
+            }
+            snapshot.captions = lines
+            Self.convertCopiedLook(&snapshot)
+        }
         if !emphasized || edit.showsCaptions { previewFirstPickedLine() }
     }
 

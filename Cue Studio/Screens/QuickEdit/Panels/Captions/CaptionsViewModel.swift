@@ -10,7 +10,7 @@ import Foundation
 /// themselves are in the edit, and every change to them is an undo step through the session.
 ///
 /// Each part of the work is in its own extension (`+Lines`, `+LineByLine`, `+Panels`, `+Picks`, `+Find`, `+StyleCopy`,
-/// `+MyStyle`, `+Translation`, `+Preview`).
+/// `+Catalog`, `+Library`, `+Adjust`, `+Motion`, `+Emphasis`, `+Format`, `+Translation`, `+Preview`).
 @MainActor
 @Observable
 final class CaptionsViewModel: EditorPart {
@@ -25,8 +25,19 @@ final class CaptionsViewModel: EditorPart {
     var focusesCaptionField = false
     /// The text whose look "Apply this style to captions" is asking to copy; nil when not asking.
     var captionStyleCopySourceID: UUID?
-    /// The captions' saved "My style" (`+MyStyle`).
-    var myCaptionStyle: MyCaptionStyle?
+    /// The creator's saved caption styles, with favorites and the one new captions start in (`+Library`).
+    var captionStyles: StyleLibrary<MyCaptionStyle>
+    /// Caption style › Styles' filter, kept as it was left (`+Catalog`).
+    var captionCatalogFilter: CaptionCatalogFilter
+    /// The card last picked in Styles, while Styles offers its own size and place (`+Catalog`).
+    var lastPickedCaptionCard: CaptionStyleCard.Kind?
+    /// Caption style › Adjust's warning: the look as it is would be hard to read on bright scenes (`+Adjust`).
+    var captionContrastWarning = false
+    /// How far Styles was scrolled, kept while the editor is open (`+Catalog`): back from another tab, the cards are where they
+    /// were.
+    @ObservationIgnored var captionCatalogOffset: CGFloat = 0
+    /// What the Styles cards say, taken when Caption style opens (`+Catalog`): the cards don't redraw as the video plays.
+    var captionSampleWords: [String] = []
     /// The Translate sheet is open.
     var showsTranslation = false
     /// Translating the captions (`+Translation`).
@@ -68,7 +79,8 @@ final class CaptionsViewModel: EditorPart {
         speechLanguageFor = speechLanguage
         likelySpokenLanguagesFor = likelySpokenLanguages
         languageConflictFor = languageConflict
-        myCaptionStyle = styles.myCaptionStyle
+        captionStyles = styles.captionStyles
+        captionCatalogFilter = CaptionCatalogFilter(rawValue: styles.captionCatalogFilter)
     }
 
     /// The edit changed (from `previous`): the lines timed to it are worked out again when the lines or the cuts moved.
@@ -76,9 +88,15 @@ final class CaptionsViewModel: EditorPart {
         if previous.captions != edit.captions || previous.timeline != edit.timeline { captionMapStore = nil }
     }
 
-    /// The panel changed to `next`: picking several lines belongs to the list of lines.
+    /// The panel changed to `next`: picking several lines belongs to the list of lines, and the offer of a style's own size and
+    /// place to Caption style.
     func panelChanged(to next: EditorPanel?) {
         if next != .captions { captionPicks = nil }
+        if next != .captionStyle { lastPickedCaptionCard = nil }
+        if next == .captionStyle {
+            captionSampleWords = currentSampleWords
+            checkCaptionContrast()
+        }
     }
 
     // MARK: - The take
