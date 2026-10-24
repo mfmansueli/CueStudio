@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Cue editor proposal</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@500;600;700&amp;display=swap">
+<style>
+body{margin:0}
+.ce-tl::-webkit-scrollbar{display:none}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; overflow: hidden; background: #0A0B12; color: #FFFFFF; font-family: Geist, -apple-system, system-ui, sans-serif">
+
+<div style="position: absolute; left: 16px; right: 16px; top: 54px; height: 38px; display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<button type="button" aria-label="Back, keeps the draft" onClick="{{ goBack }}" style="all: unset; width: 38px; height: 38px; border-radius: 19px; background: rgba(20, 22, 36, 0.72); box-shadow: inset 0 0 0 0.5px rgba(180, 167, 255, 0.22); display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="10" height="17" viewBox="0 0 11 19" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2 2 9.5 9 17"></path></svg></button>
+<button type="button" onClick="{{ statusTap }}" aria-label="{{ statusText }}" style="all: unset; height: 30px; padding: 0 10px; border-radius: 15px; background: {{ statusBg }}; color: {{ statusFg }}; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; display: flex; align-items: center; cursor: pointer; white-space: nowrap">{{ statusText }}</button>
+<button type="button" onClick="{{ openDone }}" style="all: unset; height: 34px; padding: 0 16px; border-radius: 17px; background: #FFD60A; color: #000000; font-size: 15px; font-weight: 700; display: flex; align-items: center; cursor: pointer">Done</button>
+</div>
+
+<div style="position: absolute; left: {{ pvL }}px; top: 104px; width: {{ pvW }}px; height: {{ pvH }}px; border-radius: 18px; overflow: hidden; background: {{ prevBg }}; box-shadow: 0 0 0 0.5px rgba(255, 255, 255, 0.14); z-index: {{ pvZ }}">
+<svg width="100%" height="100%" viewBox="0 0 220 392" preserveAspectRatio="xMidYMax slice" aria-hidden="true" style="position: absolute; inset: 0"><circle cx="110" cy="170" r="40" fill="{{ figure }}"></circle><path d="M24 392c0-76 38-132 86-132s86 56 86 132z" fill="{{ figure }}"></path></svg>
+<div style="position: absolute; left: 10px; top: 10px; padding: 3px 8px; border-radius: 8px; background: rgba(0, 0, 0, 0.5); font-size: 11px; font-weight: 600">{{ prevLabel }}</div>
+<sc-if value="{{ showTitle }}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; left: 18px; right: 18px; top: 46px; padding: 7px 9px; border-radius: 8px; background: #FFD60A; color: #0A0B12; text-align: center; font-weight: 800; font-size: 19px; line-height: 22px">3 tips for clean audio</div>
+</sc-if>
+<sc-if value="{{ showArrow }}" hint-placeholder-val="{{ false }}">
+<svg width="70" height="70" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="position: absolute; left: 24px; top: 150px"><path d="M5 19 19 5M10 5h9v9"></path></svg>
+</sc-if>
+<sc-if value="{{ showBroll }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; right: 12px; top: 92px; width: 92px; height: 116px; border-radius: 10px; background: linear-gradient(160deg, #2E4A44, #13201D); box-shadow: 0 0 0 1.5px rgba(255, 255, 255, 0.7); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 6px; box-sizing: border-box; font-size: 10px; font-weight: 600">B-roll</div>
+</sc-if>
+<sc-if value="{{ showCap }}" hint-placeholder-val="{{ true }}">
+<div style="position: absolute; left: 10px; right: 10px; bottom: 34px; text-align: center; font-weight: 800; font-size: 17px; line-height: 21px; text-transform: uppercase; color: #FFFFFF; text-shadow: 0 2px 0 #000000, 0 0 10px rgba(0, 0, 0, 0.6)">{{ capText }}</div>
+</sc-if>
+<div style="position: absolute; left: 0; right: 0; bottom: 8px; text-align: center; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 9px; letter-spacing: 0.08em; color: rgba(225, 228, 245, 0.75)">SIMULATED PREVIEW</div>
+<sc-if value="{{ isProtected }}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; background: #0D0E16; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 18px; text-align: center; font-size: 13px; line-height: 18px; color: rgba(225, 228, 245, 0.85)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#C9CCE0" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="10" rx="2"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg>Preview hidden while the screen is being recorded. Your edit is not affected.</div>
+</sc-if>
+<sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+<div role="status" style="position: absolute; left: 10px; right: 10px; top: 10px; padding: 8px 10px; border-radius: 12px; background: rgba(20, 21, 31, 0.96); box-shadow: inset 0 0 0 0.5px rgba(180, 167, 255, 0.45); font-size: 12px; font-weight: 600; line-height: 16px; text-align: center">{{ toast }}</div>
+</sc-if>
+</div>
+
+<div style="position: absolute; left: 14px; right: 10px; top: 498px; height: 44px; display: flex; align-items: center; justify-content: space-between">
+<div style="font-family: 'Geist Mono', ui-monospace, monospace; font-size: 12px; font-weight: 600; letter-spacing: 0.02em; width: 128px; white-space: nowrap"><span style="color: #FFD60A">{{ tTxt }}</span><span style="color: rgba(225, 228, 245, 0.55)"> / {{ totTxt }}</span></div>
+<button type="button" aria-label="{{ playLabel }}" onClick="{{ togglePlay }}" style="all: unset; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer">
+<sc-if value="{{ playing }}" hint-placeholder-val="{{ false }}"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="#FFFFFF"></rect><rect x="14" y="5" width="4" height="14" rx="1" fill="#FFFFFF"></rect></svg></sc-if>
+<sc-if value="{{ paused }}" hint-placeholder-val="{{ true }}"><svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14l12-7z" fill="#FFFFFF"></path></svg></sc-if>
+</button>
+<div style="display: flex; align-items: center">
+<button type="button" aria-label="Undo" onClick="{{ undo }}" style="all: unset; width: 38px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: {{ undoOp }}"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg></button>
+<button type="button" aria-label="Redo" onClick="{{ redo }}" style="all: unset; width: 38px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: {{ redoOp }}"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 14 5-5-5-5"></path><path d="M20 9H9.5a5.5 5.5 0 0 0 0 11H13"></path></svg></button>
+<button type="button" aria-label="Timeline zoom out" onClick="{{ zoomOut }}" style="all: unset; width: 32px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(225,228,245,0.85)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+<button type="button" aria-label="Timeline zoom in" onClick="{{ zoomIn }}" style="all: unset; width: 32px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="rgba(225,228,245,0.85)" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5v14"></path></svg></button>
+<button type="button" aria-label="{{ fsLabel }}" onClick="{{ toggleFs }}" style="all: unset; width: 34px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"></path></svg></button>
+</div>
+</div>
+
+<div style="position: absolute; left: 0; right: 0; top: 544px; height: 198px; background: #101119; border-top: 0.5px solid rgba(80, 86, 120, 0.4)">
+<div class="ce-tl" ref="{{ setTL }}" onScroll="{{ onScroll }}" style="position: absolute; inset: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none">
+<div style="position: relative; height: 198px; width: {{ innerW }}px">
+<button type="button" aria-label="Clear selection" onClick="{{ clearSel }}" style="all: unset; position: absolute; inset: 0; cursor: default"></button>
+<sc-for list="{{ ticks }}" as="k" hint-placeholder-count="5">
+<div style="position: absolute; left: {{ k.x }}px; top: 5px; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 9px; color: rgba(225, 228, 245, 0.45); pointer-events: none">{{ k.l }}</div>
+</sc-for>
+<button type="button" aria-label="Cover" onClick="{{ openCover }}" style="all: unset; position: absolute; left: 143px; top: 20px; width: 44px; height: 50px; border-radius: 8px; background: linear-gradient(160deg, #2B3350, #141726); box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.3); display: flex; align-items: flex-end; overflow: hidden; cursor: pointer"><span style="width: 100%; height: 15px; background: rgba(0, 0, 0, 0.6); font-size: 8.5px; font-weight: 600; text-align: center; line-height: 15px">Cover</span></button>
+<sc-for list="{{ clips }}" as="c" hint-placeholder-count="3">
+<button type="button" aria-label="{{ c.aria }}" onClick="{{ c.pick }}" style="all: unset; box-sizing: border-box; position: absolute; left: {{ c.x }}px; top: 20px; width: {{ c.w }}px; height: 50px; border-radius: 8px; background: {{ c.bg }}; box-shadow: {{ c.ring }}; padding: 5px 7px; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; justify-content: space-between"><span style="font-size: 10.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ c.name }}</span><span style="font-size: 9.5px; color: rgba(255, 255, 255, 0.78); white-space: nowrap; overflow: hidden; text-overflow: ellipsis">{{ c.sub }}</span></button>
+</sc-for>
+<sc-for list="{{ joins }}" as="j" hint-placeholder-count="2">
+<button type="button" aria-label="{{ j.aria }}" onClick="{{ j.pick }}" style="all: unset; position: absolute; left: {{ j.x }}px; top: 31px; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; cursor: pointer"><span style="width: 11px; height: 11px; transform: rotate(45deg); border-radius: 2px; background: {{ j.bg }}; box-shadow: 0 0 0 1.5px #101119"></span></button>
+</sc-for>
+<sc-if value="{{ hasHandles }}" hint-placeholder-val="{{ false }}">
+<div aria-label="Trim start" onPointerDown="{{ hDownL }}" onPointerMove="{{ hMove }}" onPointerUp="{{ hUp }}" style="position: absolute; left: {{ hlx }}px; top: 20px; width: 14px; height: 50px; border-radius: 6px 0 0 6px; background: #FFD60A; touch-action: none; cursor: ew-resize; display: flex; align-items: center; justify-content: center"><span style="width: 2px; height: 16px; border-radius: 1px; background: #0A0B12"></span></div>
+<div aria-label="Trim end" onPointerDown="{{ hDownR }}" onPointerMove="{{ hMove }}" onPointerUp="{{ hUp }}" style="position: absolute; left: {{ hrx }}px; top: 20px; width: 14px; height: 50px; border-radius: 0 6px 6px 0; background: #FFD60A; touch-action: none; cursor: ew-resize; display: flex; align-items: center; justify-content: center"><span style="width: 2px; height: 16px; border-radius: 1px; background: #0A0B12"></span></div>
+</sc-if>
+<sc-for list="{{ layers }}" as="l" hint-placeholder-count="6">
+<button type="button" aria-label="{{ l.aria }}" onClick="{{ l.pick }}" style="all: unset; box-sizing: border-box; position: absolute; left: {{ l.x }}px; top: {{ l.y }}px; width: {{ l.w }}px; height: 21px; border-radius: 6px; background: {{ l.bg }}; color: {{ l.fg }}; box-shadow: {{ l.ring }}; font-size: 9.5px; font-weight: 700; padding: 0 6px; display: flex; align-items: center; white-space: nowrap; overflow: hidden; cursor: pointer">{{ l.text }}</button>
+</sc-for>
+</div>
+</div>
+<div aria-hidden="true" style="position: absolute; left: 194px; top: 16px; width: 2px; height: 178px; border-radius: 1px; background: #FFFFFF; box-shadow: 0 0 6px rgba(255, 255, 255, 0.6); pointer-events: none"></div>
+</div>
+
+<div style="position: absolute; left: 0; right: 0; top: 744px; bottom: 0; padding: 6px 10px 0; box-sizing: border-box">
+<sc-if value="{{ lvMain }}" hint-placeholder-val="{{ true }}">
+<div style="display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 2px; padding-top: 10px">
+<sc-for list="{{ mainBar }}" as="m" hint-placeholder-count="6">
+<button type="button" onClick="{{ m.go }}" style="all: unset; min-height: 54px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; cursor: pointer; font-size: 10px; font-weight: 500; color: {{ m.fg }}; text-align: center; line-height: 1.15"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="{{ m.fg }}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="{{ m.d }}"></path></svg>{{ m.l }}</button>
+</sc-for>
+</div>
+</sc-if>
+<sc-if value="{{ lvSel }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="display: flex; align-items: center; gap: 4px; height: 36px; padding-right: 6px; border-radius: 12px; background: #1A1C2B">
+<button type="button" aria-label="Back to main tools" onClick="{{ clearSel }}" style="all: unset; width: 40px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="8" height="14" viewBox="0 0 11 19" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2 2 9.5 9 17"></path></svg></button>
+<span style="width: 8px; height: 8px; border-radius: 2px; background: {{ selDot }}; flex-shrink: 0"></span>
+<div style="flex-grow: 1; min-width: 0; display: flex; align-items: baseline; gap: 7px; white-space: nowrap; overflow: hidden"><b style="font-size: 14px">{{ selName }}</b><span style="font-size: 11.5px; color: rgba(225, 228, 245, 0.65); overflow: hidden; text-overflow: ellipsis">{{ selSub }}</span></div>
+</div>
+<div style="display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px">
+<sc-for list="{{ selBar }}" as="b" hint-placeholder-count="5">
+<button type="button" onClick="{{ b.go }}" style="all: unset; box-sizing: border-box; min-height: 48px; padding: 4px 2px; border-radius: 12px; background: #161827; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 11.5px; font-weight: 600; line-height: 1.2; text-align: center; color: {{ b.fg }}; opacity: {{ b.op }}">{{ b.l }}</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+</div>
+
+<sc-if value="{{ hasSheet }}" hint-placeholder-val="{{ false }}">
+<button type="button" aria-label="Close" onClick="{{ closeSheet }}" style="all: unset; position: absolute; inset: 0; z-index: 20; background: rgba(0, 0, 0, 0.4); cursor: default"></button>
+<div role="dialog" aria-label="{{ shTitle }}" style="position: absolute; z-index: 21; left: 0; right: 0; bottom: 0; max-height: 600px; overflow-y: auto; box-sizing: border-box; padding: 8px 16px 30px; border-radius: 26px 26px 0 0; background: #12131D; box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5), inset 0 0.5px 0 rgba(180, 167, 255, 0.3); display: flex; flex-direction: column; gap: 10px">
+<div style="align-self: center; width: 36px; height: 5px; border-radius: 3px; background: #3B3E5E"></div>
+<div style="display: flex; align-items: center; gap: 4px">
+<sc-if value="{{ hasShBack }}" hint-placeholder-val="{{ false }}">
+<button type="button" aria-label="Back" onClick="{{ shBack }}" style="all: unset; width: 40px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0"><svg width="9" height="16" viewBox="0 0 11 19" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 2 2 9.5 9 17"></path></svg></button>
+</sc-if>
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px">
+<div style="font-size: 18px; font-weight: 700; line-height: 1.2">{{ shTitle }}</div>
+<sc-if value="{{ hasShSub }}" hint-placeholder-val="{{ true }}"><div style="font-size: 12.5px; line-height: 1.35; color: rgba(225, 228, 245, 0.68)">{{ shSub }}</div></sc-if>
+</div>
+<button type="button" aria-label="Close panel" onClick="{{ closeSheet }}" style="all: unset; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0"><span style="width: 32px; height: 32px; border-radius: 16px; background: #26283A; display: flex; align-items: center; justify-content: center"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5 10 17 19 7"></path></svg></span></button>
+</div>
+
+<sc-if value="{{ shMenu }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ menuGroups }}" as="g" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 4px">
+<div style="font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 1px; color: rgba(225, 228, 245, 0.55); padding: 4px 4px 0">{{ g.t }}</div>
+<sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+<button type="button" onClick="{{ it.go }}" style="all: unset; box-sizing: border-box; min-height: 46px; padding: 6px 12px; border-radius: 12px; background: #1A1C2B; display: flex; align-items: center; gap: 10px; cursor: pointer"><span style="flex-grow: 1; min-width: 0; font-size: 14.5px; font-weight: 600; color: {{ it.fg }}">{{ it.l }}</span><span style="font-size: 11px; color: rgba(225, 228, 245, 0.6); text-align: right; max-width: 150px">{{ it.note }}</span><span style="width: 8px; height: 8px; border-radius: 4px; background: {{ it.dot }}; flex-shrink: 0" aria-hidden="true"></span></button>
+</sc-for>
+</div>
+</sc-for>
+<div style="display: flex; gap: 12px; flex-wrap: wrap; padding: 4px; font-size: 11px; color: rgba(225, 228, 245, 0.62)"><span style="display: flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 4px; background: #6EE596"></span>Works in prototype</span><span style="display: flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 4px; background: #9D8CFF"></span>Choice works, result simulated</span><span style="display: flex; align-items: center; gap: 5px"><span style="width: 8px; height: 8px; border-radius: 4px; background: #6E7196"></span>Option in place</span></div>
+</sc-if>
+
+<sc-if value="{{ shTool }}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; gap: 6px; flex-wrap: wrap"><span style="padding: 5px 10px; border-radius: 10px; background: #1F2236; font-size: 12px">Target: {{ tgt }}</span><span style="padding: 5px 10px; border-radius: 10px; background: #1F2236; font-size: 12px">Scope: {{ toolScope }}</span><span style="padding: 5px 10px; border-radius: 10px; background: {{ stBg }}; color: {{ stFg }}; font-size: 12px; font-weight: 600">{{ stText }}</span></div>
+<sc-if value="{{ hasCond }}" hint-placeholder-val="{{ false }}"><div style="padding: 10px 12px; border-radius: 12px; background: rgba(255, 179, 64, 0.1); color: #FFC56B; font-size: 12.5px; line-height: 17px">{{ toolCond }}</div></sc-if>
+<sc-for list="{{ toolGroups }}" as="g" hint-placeholder-count="2">
+<div style="display: flex; flex-direction: column; gap: 6px">
+<div style="font-size: 12px; font-weight: 600; color: rgba(225, 228, 245, 0.7)">{{ g.t }}</div>
+<div style="display: flex; flex-wrap: wrap; gap: 6px">
+<sc-for list="{{ g.opts }}" as="o" hint-placeholder-count="4">
+<button type="button" aria-pressed="{{ o.pressed }}" onClick="{{ o.go }}" style="all: unset; box-sizing: border-box; min-height: 36px; padding: 6px 12px; border-radius: 12px; background: {{ o.bg }}; color: {{ o.fg }}; box-shadow: {{ o.ring }}; font-size: 13px; font-weight: 600; display: flex; align-items: center; cursor: pointer">{{ o.l }}</button>
+</sc-for>
+</div>
+</div>
+</sc-for>
+<sc-if value="{{ isSfx }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ sfxRows }}" as="x" hint-placeholder-count="5">
+<div style="display: flex; align-items: center; gap: 6px; min-height: 48px; padding: 0 4px 0 12px; border-radius: 12px; background: #1A1C2B">
+<span style="flex-grow: 1; font-size: 14.5px; font-weight: 600">{{ x.n }}</span>
+<button type="button" aria-label="Play {{ x.n }}" onClick="{{ x.play }}" style="all: unset; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer"><span style="width: 32px; height: 32px; border-radius: 16px; background: {{ x.pbg }}; display: flex; align-items: center; justify-content: center"><svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14l12-7z" fill="#FFFFFF"></path></svg></span></button>
+<button type="button" onClick="{{ x.add }}" style="all: unset; height: 32px; padding: 0 12px; border-radius: 16px; background: #26283A; font-size: 12.5px; font-weight: 700; display: flex; align-items: center; cursor: pointer">Add</button>
+</div>
+</sc-for>
+</sc-if>
+<sc-if value="{{ hasNote }}" hint-placeholder-val="{{ true }}"><div style="font-size: 13px; line-height: 18px; color: rgba(225, 228, 245, 0.8)">{{ toolNote }}</div></sc-if>
+<div style="font-family: 'Geist Mono', ui-monospace, monospace; font-size: 10.5px; color: rgba(225, 228, 245, 0.5)">{{ toolF }}</div>
+</sc-if>
+
+<sc-if value="{{ shTiming }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ timingRows }}" as="r" hint-placeholder-count="2">
+<div style="display: flex; align-items: center; gap: 8px; min-height: 52px; padding: 0 6px 0 14px; border-radius: 12px; background: #1A1C2B">
+<span style="flex-grow: 1; font-size: 14px">{{ r.l }}</span>
+<button type="button" aria-label="{{ r.l }} minus 0.1 seconds" onClick="{{ r.minus }}" style="all: unset; width: 44px; height: 44px; border-radius: 22px; background: #26283A; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+<span style="width: 70px; text-align: center; font-family: 'Geist Mono', ui-monospace, monospace; font-size: 13px; font-weight: 600">{{ r.v }}</span>
+<button type="button" aria-label="{{ r.l }} plus 0.1 seconds" onClick="{{ r.plus }}" style="all: unset; width: 44px; height: 44px; border-radius: 22px; background: #26283A; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5v14"></path></svg></button>
+</div>
+</sc-for>
+<div style="font-size: 12px; line-height: 16px; color: rgba(225, 228, 245, 0.65)">{{ timingNote }}</div>
+</sc-if>
+
+<sc-if value="{{ shReorder }}" hint-placeholder-val="{{ false }}">
+<sc-for list="{{ orderRows }}" as="o" hint-placeholder-count="3">
+<div style="display: flex; align-items: center; gap: 6px; min-height: 56px; padding: 4px 4px 4px 12px; border-radius: 12px; background: #1A1C2B">
+<span style="width: 10px; height: 34px; border-radius: 3px; background: {{ o.bg }}"></span>
+<div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px"><span style="font-size: 14px; font-weight: 600">{{ o.name }}</span><span style="font-size: 11.5px; color: rgba(225, 228, 245, 0.62)">{{ o.sub }}</span></div>
+<button type="button" aria-label="Move {{ o.name }} up" onClick="{{ o.up }}" style="all: unset; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: {{ o.upOp }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 14 6-6 6 6"></path></svg></button>
+<button type="button" aria-label="Move {{ o.name }} down" onClick="{{ o.down }}" style="all: unset; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: {{ o.downOp }}"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 10 6 6 6-6"></path></svg></button>
+</div>
+</sc-for>
+<div style="font-size: 12px; line-height: 16px; color: rgba(225, 228, 245, 0.65)">Items anchored to a clip move with it. Long press on a clip opens this list too.</div>
+</sc-if>
+
+<sc-if value="{{ shDelete }}" hint-placeholder-val="{{ false }}">
+<div style="font-size: 14px; line-height: 20px; color: rgba(225, 228, 245, 0.85)">{{ delText }}</div>
+<button type="button" onClick="{{ confirmDelete }}" style="all: unset; box-sizing: border-box; min-height: 50px; border-radius: 14px; background: rgba(255, 69, 58, 0.16); color: #FF6961; font-size: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; cursor: pointer">Delete clip</button>
+<button type="button" onClick="{{ closeSheet }}" style="all: unset; box-sizing: border-box; min-height: 50px; border-radius: 14px; background: #1A1C2B; font-size: 16px; font-weight: 600; display: flex; align-items: center; justify-content: center; cursor: pointer">Keep it</button>
+</sc-if>
+
+<sc-if value="{{ shDone }}" hint-placeholder-val="{{ false }}">
+<div style="padding: 10px 12px; border-radius: 12px; background: {{ doneBg }}; color: {{ doneFg }}; font-size: 13px; font-weight: 600">{{ doneState }}</div>
+<sc-for list="{{ doneOpts }}" as="d" hint-placeholder-count="4">
+<button type="button" onClick="{{ d.go }}" style="all: unset; box-sizing: border-box; min-height: 56px; padding: 6px 14px; border-radius: 14px; background: #1A1C2B; display: flex; flex-direction: column; justify-content: center; gap: 2px; cursor: pointer; opacity: {{ d.op }}"><span style="font-size: 15px; font-weight: 600">{{ d.l }}</span><span style="font-size: 12px; color: rgba(225, 228, 245, 0.62)">{{ d.s }}</span></button>
+</sc-for>
+</sc-if>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"start":{"editor":"enum","options":["13.1","13.2","13.3","13.4"],"default":"13.1","tsType":"string"},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  static SRC = { A: { name: 'Take 1', len: 30, bg: '#3A4466', prev: 'linear-gradient(160deg, #2B3350, #141726)', fig: '#55608A' }, B: { name: 'Take 2', len: 14, bg: '#6A4A2E', prev: 'linear-gradient(160deg, #4A3524, #1B1410)', fig: '#8A6A4A' } };
+  static ZOOMS = [12, 20, 32, 52];
+  static KIND = {
+    text: { row: 0, bg: 'rgba(255,214,10,0.2)', fg: '#FFD60A', dot: '#FFD60A', name: 'Title' },
+    graphic: { row: 0, bg: 'rgba(255,214,10,0.12)', fg: '#FFE680', dot: '#FFD60A', name: 'Graphic' },
+    caption: { row: 1, bg: 'rgba(157,140,255,0.32)', fg: '#E4DEFF', dot: '#9D8CFF', name: 'Caption' },
+    media: { row: 2, bg: 'rgba(100,210,255,0.22)', fg: '#BDEBFF', dot: '#64D2FF', name: 'Overlay' },
+    music: { row: 3, bg: 'rgba(110,229,150,0.2)', fg: '#B8F5CC', dot: '#6EE596', name: 'Music' },
+    sfx: { row: 4, bg: 'rgba(255,159,10,0.22)', fg: '#FFD59A', dot: '#FF9F0A', name: 'Sound' },
+    vo: { row: 4, bg: 'rgba(255,105,97,0.2)', fg: '#FFC2BE', dot: '#FF6961', name: 'Voice-over' }
+  };
+  static SFX = ['Whoosh', 'Pop', 'Click', 'Ding', 'Sparkle', 'Riser', 'Boom', 'Ping', 'Typing', 'Shutter', 'Wrong'];
+  init(id) {
+    const three = [
+      { id: 'c1', src: 'A', in: 0, dur: 8, label: 'Intro and tip 1' },
+      { id: 'c2', src: 'B', in: 2, dur: 6, label: 'Tip 2' },
+      { id: 'c3', src: 'A', in: 12, dur: 7, label: 'Tip 3' }
+    ];
+    const layers = [
+      { id: 't1', kind: 'text', clip: 'c1', off: 0.4, dur: 3.4, label: '3 tips for clean audio' },
+      { id: 'g1', kind: 'graphic', clip: 'c2', off: 1.0, dur: 2.0, label: 'Arrow' },
+      { id: 'k1', kind: 'caption', clip: 'c1', off: 0.3, dur: 2.7, label: 'Okay, three quick tips.' },
+      { id: 'k2', kind: 'caption', clip: 'c1', off: 3.2, dur: 4.4, label: 'First, kill the echo.' },
+      { id: 'k3', kind: 'caption', clip: 'c2', off: 0.4, dur: 5.2, label: 'Second, get closer to the mic.' },
+      { id: 'k4', kind: 'caption', clip: 'c3', off: 0.6, dur: 5.8, label: 'Third, record room tone.' },
+      { id: 'm1', kind: 'media', clip: 'c3', off: 1.0, dur: 3.0, label: 'B-roll · mic close-up' },
+      { id: 'u1', kind: 'music', clip: null, off: 0, dur: 99, label: 'calm_loop.m4a' },
+      { id: 's1', kind: 'sfx', clip: 'c2', off: 0, dur: 0.8, label: 'Whoosh' },
+      { id: 'v1', kind: 'vo', clip: 'c3', off: 2.2, dur: 3.4, label: 'Voice-over 1' }
+    ];
+    const one = id === '13.3';
+    return { start: id, clips: one ? [three[0]] : three, layers: one ? layers.filter(l => l.clip === 'c1') : layers, vals: { caps: 'On' }, t: 4.2, zi: 1, sel: one ? { kind: 'clip', id: 'c1' } : null, sheet: null, past: [], future: [], save: 'saved', fails: id === '13.2', prot: id === '13.4', toast: null, playing: false, fs: false, nextId: 10, playingSfx: null };
+  }
+  state = this.init((this.props && this.props.start) || '13.1');
+  componentDidUpdate(pp) { if (pp.start !== this.props.start && this.props.start) { this.stop(); this.setState(this.init(this.props.start)); } this.syncScroll(); }
+  componentDidMount() { this.syncScroll(); }
+  componentWillUnmount() { this.stop(); clearTimeout(this._tt); clearTimeout(this._st); clearTimeout(this._sx); }
+  setTL = (el) => { this.tlEl = el; };
+  syncScroll() { const el = this.tlEl; if (!el) return; const want = Math.round(this.state.t * this.pps()); if (Math.abs(el.scrollLeft - want) > 1) el.scrollLeft = want; }
+  pps() { return Component.ZOOMS[this.state.zi]; }
+  total(clips) { return (clips || this.state.clips).reduce((a, c) => a + c.dur, 0); }
+  starts(clips) { let s = 0; return clips.map(c => { const r = s; s += c.dur; return r; }); }
+  fmt(x) { x = Math.max(0, x); const m = Math.floor(x / 60), s = x - m * 60; return String(m).padStart(2, '0') + ':' + s.toFixed(1).padStart(4, '0'); }
+  say(m) { clearTimeout(this._tt); this.setState({ toast: m }); this._tt = setTimeout(() => this.setState({ toast: null }), 2400); }
+  snap() { const s = this.state; return { clips: s.clips.map(c => Object.assign({}, c)), layers: s.layers.map(l => Object.assign({}, l)), vals: Object.assign({}, s.vals) }; }
+  commit(label, next) {
+    const past = this.state.past.concat([{ label, snap: this._pre || this.snap() }]).slice(-50);
+    this._pre = null;
+    this.setState(Object.assign({ past, future: [] }, next));
+    this.persist();
+  }
+  persist() { clearTimeout(this._st); this.setState({ save: 'saving' }); this._st = setTimeout(() => this.setState({ save: this.state.fails ? 'failed' : 'saved' }), 900); }
+  stop() { clearInterval(this._iv); this._iv = null; }
+  restore(snap) { return { clips: snap.clips, layers: snap.layers, vals: snap.vals }; }
+
+  onScroll = (e) => { const el = e.currentTarget; const t = Math.min(this.total(), Math.max(0, el.scrollLeft / this.pps())); if (Math.abs(t - this.state.t) > 0.04) this.setState({ t }); };
+  togglePlay = () => {
+    if (this._iv) { this.stop(); this.setState({ playing: false }); return; }
+    if (this.state.t >= this.total() - 0.05) this.setState({ t: 0 });
+    this.setState({ playing: true });
+    this._iv = setInterval(() => { const t = this.state.t + 0.1; if (t >= this.total()) { this.stop(); this.setState({ t: this.total(), playing: false }); } else this.setState({ t }); }, 100);
+  };
+  undo = () => { const p = this.state.past; if (!p.length) return; const last = p[p.length - 1]; this.setState(Object.assign({ past: p.slice(0, -1), future: this.state.future.concat([{ label: last.label, snap: this.snap() }]), sheet: null }, this.restore(last.snap))); this.fixSel(); this.say('Undo: ' + last.label); this.persist(); };
+  redo = () => { const f = this.state.future; if (!f.length) return; const nx = f[f.length - 1]; this.setState(Object.assign({ future: f.slice(0, -1), past: this.state.past.concat([{ label: nx.label, snap: this.snap() }]), sheet: null }, this.restore(nx.snap))); this.fixSel(); this.say('Redo: ' + nx.label); this.persist(); };
+  fixSel() { this.setState(s => { const x = s.sel; if (!x) return {}; if (x.kind === 'clip' && !s.clips.find(c => c.id === x.id)) return { sel: null }; if (x.kind === 'layer' && !s.layers.find(l => l.id === x.id)) return { sel: null }; if (x.kind === 'join' && x.i >= s.clips.length - 1) return { sel: null }; return {}; }); }
+  zoomIn = () => this.setState({ zi: Math.min(3, this.state.zi + 1) });
+  zoomOut = () => this.setState({ zi: Math.max(0, this.state.zi - 1) });
+  toggleFs = () => this.setState({ fs: !this.state.fs });
+  clearSel = () => this.setState({ sel: null, sheet: null });
+  closeSheet = () => this.setState({ sheet: null });
+  shBack = () => { const b = this.state.sheet && this.state.sheet.back; this.setState({ sheet: b || null }); };
+  goBack = () => { this.stop(); this.setState({ playing: false }); this.say(this.state.save === 'saved' ? 'Draft kept. Back to take review, no question asked.' : 'Finishing the save before leaving.'); };
+  statusTap = () => { if (this.state.save === 'failed') { this.setState({ fails: false }); this.persist(); } };
+  openDone = () => { this.stop(); this.setState({ playing: false, sheet: { k: 'done' } }); };
+  openCover = () => this.setState({ sheet: { k: 'menu', menu: this.coverMenu() } });
+
+  selClip() { const s = this.state.sel; return s && s.kind === 'clip' ? this.state.clips.find(c => c.id === s.id) : null; }
+  selLayer() { const s = this.state.sel; return s && s.kind === 'layer' ? this.state.layers.find(l => l.id === s.id) : null; }
+  clipIdx(id) { return this.state.clips.findIndex(c => c.id === id); }
+  name(i) { return 'Clip ' + (i + 1); }
+  lStart(l, st) { if (!l.clip) return l.off; const i = this.clipIdx(l.clip); return i < 0 ? -1 : st[i] + l.off; }
+  splitCheck() {
+    const c = this.selClip(); if (!c) return { ok: false, why: '' };
+    const i = this.clipIdx(c.id), st = this.starts(this.state.clips)[i], local = this.state.t - st;
+    if (local <= 0 || local >= c.dur) return { ok: false, why: 'Move the playhead inside ' + this.name(i) + ' to split it.' };
+    if (local < 0.3 || c.dur - local < 0.3) return { ok: false, why: 'Too close to the edge. Keep 0.3 s on each side.' };
+    return { ok: true, local, i, c };
+  }
+  split() {
+    const k = this.splitCheck(); if (!k.ok) { this.say(k.why); return; }
+    const clips = this.state.clips.slice(), c = k.c, id = 'c' + this.state.nextId;
+    clips.splice(k.i, 1, Object.assign({}, c, { dur: +k.local.toFixed(2) }), Object.assign({}, c, { id, in: +(c.in + k.local).toFixed(2), dur: +(c.dur - k.local).toFixed(2) }));
+    const layers = this.state.layers.map(l => l.clip === c.id && l.off >= k.local ? Object.assign({}, l, { clip: id, off: +(l.off - k.local).toFixed(2) }) : l);
+    this.commit('Split', { clips, layers, nextId: this.state.nextId + 1, sel: { kind: 'clip', id }, sheet: null });
+    this.say('Split at ' + this.fmt(this.state.t) + '.');
+  }
+  dupClip() { const c = this.selClip(); if (!c) return; const i = this.clipIdx(c.id), id = 'c' + this.state.nextId, clips = this.state.clips.slice(); clips.splice(i + 1, 0, Object.assign({}, c, { id })); this.commit('Duplicate', { clips, nextId: this.state.nextId + 1, sheet: null, sel: { kind: 'clip', id } }); this.say(this.name(i) + ' duplicated right after itself.'); }
+  askDelete() { const c = this.selClip(); if (!c) return; if (this.state.clips.length <= 1) { this.say('A project keeps at least one clip.'); return; } this.setState({ sheet: { k: 'delete' } }); }
+  confirmDelete = () => { const c = this.selClip(); if (!c) return; const i = this.clipIdx(c.id); const clips = this.state.clips.filter(x => x.id !== c.id); const layers = this.state.layers.filter(l => l.clip !== c.id); this.commit('Delete clip', { clips, layers, sheet: null, sel: null, t: Math.min(this.state.t, this.total(clips)) }); this.say(this.name(i) + ' deleted. Undo brings it back.'); };
+  move(id, d) { const clips = this.state.clips.slice(), i = clips.findIndex(c => c.id === id), j = i + d; if (j < 0 || j >= clips.length) return; const tmp = clips[i]; clips[i] = clips[j]; clips[j] = tmp; this.commit('Reorder', { clips }); }
+  trimBy(side, d, record) {
+    const c = this.selClip(); if (!c) return; const L = Component.SRC[c.src].len;
+    const clips = this.state.clips.map(x => { if (x.id !== c.id) return x; const y = Object.assign({}, x); if (side === 'L') { const nd = Math.max(-y.in, Math.min(d, y.dur - 0.5)); y.in = +(y.in + nd).toFixed(2); y.dur = +(y.dur - nd).toFixed(2); } else { const nd = Math.max(0.5 - y.dur, Math.min(d, L - y.in - y.dur)); y.dur = +(y.dur + nd).toFixed(2); } return y; });
+    if (record) this.commit(side === 'L' ? 'Trim start' : 'Trim end', { clips }); else this.setState({ clips });
+  }
+  layerBy(field, d) {
+    const l = this.selLayer(); if (!l) return;
+    const layers = this.state.layers.map(x => { if (x.id !== l.id) return x; const y = Object.assign({}, x); if (field === 'off') y.off = Math.max(0, +(y.off + d).toFixed(2)); else y.dur = Math.max(0.3, +(y.dur + d).toFixed(2)); return y; });
+    this.commit('Timing', { layers });
+  }
+  dupLayer() { const l = this.selLayer(); if (!l) return; const id = 'l' + this.state.nextId; const layers = this.state.layers.concat([Object.assign({}, l, { id, off: +(l.off + l.dur + 0.2).toFixed(2) })]); this.commit('Duplicate', { layers, nextId: this.state.nextId + 1, sel: { kind: 'layer', id }, sheet: null }); this.say('Duplicated. Content, motion and time stay separate.'); }
+  delLayer() { const l = this.selLayer(); if (!l) return; this.commit('Delete', { layers: this.state.layers.filter(x => x.id !== l.id), sel: null, sheet: null }); this.say(Component.KIND[l.kind].name + ' deleted. Undo brings it back.'); }
+  addSfx(n) { const st = this.starts(this.state.clips), t = this.state.t; let i = st.findIndex((s, k) => t >= s && t < s + this.state.clips[k].dur); if (i < 0) i = this.state.clips.length - 1; const id = 'l' + this.state.nextId; this.commit('Add ' + n, { layers: this.state.layers.concat([{ id, kind: 'sfx', clip: this.state.clips[i].id, off: +(t - st[i]).toFixed(2), dur: 0.8, label: n }]), nextId: this.state.nextId + 1, sheet: null, sel: { kind: 'layer', id } }); this.say(n + ' added at the playhead.'); }
+  playSfx(n) { clearTimeout(this._sx); this.setState({ playingSfx: n }); this._sx = setTimeout(() => this.setState({ playingSfx: null }), 900); }
+  hDownL = (e) => this.hDown(e, 'L');
+  hDownR = (e) => this.hDown(e, 'R');
+  hDown(e, side) { try { e.currentTarget.setPointerCapture(e.pointerId); } catch (x) {} this._drag = { side, x: e.clientX, applied: 0 }; this._pre = this.snap(); e.stopPropagation(); }
+  hMove = (e) => { const d = this._drag; if (!d) return; const sec = Math.round(((e.clientX - d.x) / this.pps()) * 10) / 10; const delta = sec - d.applied; if (Math.abs(delta) < 0.05) return; d.applied = sec; this.trimBy(d.side, delta, false); };
+  hUp = () => { const d = this._drag; this._drag = null; if (!d) return; if (Math.abs(d.applied) < 0.05) { this._pre = null; return; } this.commit(d.side === 'L' ? 'Trim start' : 'Trim end', {}); };
+
+  mkTool(l, f, st, o) { return Object.assign({ l, f, st, scope: '', cond: '', note: '', groups: [] }, o || {}); }
+  tools() {
+    const T = (l, f, st, o) => this.mkTool(l, f, st, o);
+    const c = this.selClip(), srcN = c ? Component.SRC[c.src].name : 'Take 1';
+    return {
+      split: T('Split', 'F06', 'fn', { act: 'split' }),
+      speed: T('Speed', 'F16, F17', 'sim', { scope: 'This clip', groups: [{ t: 'Speed', key: 'spd', opts: ['Normal', '0.5×', '1.5×', '2×', 'Custom'] }, { t: 'Keep pitch', key: 'pitch', opts: ['On', 'Off'] }, { t: 'Curve', key: 'curve', opts: ['None', 'Hero', 'Bullet', 'Ramp up', 'Ramp down', 'Montage', 'Flash in', 'Flash out', 'Custom'] }], note: 'Shows the length before and after. Normal removes the curve. Curves run from 0.25× to 4× and Custom has its own point editor.' }),
+      zoom: T('Zoom', 'F18', 'sim', { scope: 'This clip', groups: [{ t: 'Camera move', key: 'zm', opts: ['None', 'Push in', 'Pull out', 'Punch in'] }], note: 'Intensity slider. A camera move inside the clip, not the timeline zoom and not the Zoom transition.' }),
+      volume: T('Volume', 'F59', 'sim', { scope: 'This clip', groups: [{ t: 'Recording sound', key: 'mute', opts: ['On', 'Muted'] }], note: 'Volume slider for the sound recorded in this clip. Music, effects, voice-over and overlay sound have their own volume.' }),
+      stabilize: T('Stabilize', 'F19, F27', 'sim', { scope: 'This clip, or all clips', groups: [{ t: 'Strength', key: 'stab', opts: ['Off', 'Gentle', 'Standard', 'Strong'] }, { t: 'Apply to', key: 'stabAll', opts: ['This clip', 'All clips'] }], note: 'Adds some crop. Needs motion analysis on this iPhone: real progress, pauses when the phone is hot or the app is in the background, then resumes.' }),
+      dupClip: T('Duplicate', 'F07, F15', 'fn', { act: 'dupClip' }),
+      freeze: T('Freeze frame', 'F11', 'opt', { scope: 'This clip', note: 'Freezes the frame at the playhead. Starts at 2 s, can extend to 5 s. Music and voice-over are kept.' }),
+      reverse: T('Reverse', 'F12', 'opt', { scope: 'This clip', cond: 'Clips up to 2 min.', note: 'Reverses image and sound. Tap again to switch back. Undo works. No percentage progress.' }),
+      replace: T('Replace', 'F10', 'opt', { scope: 'This clip', note: 'Uses the new video from its start, shortened to fit. Compatible settings stay. New audio and captions count as a new source.' }),
+      reorder: T('Reorder', 'F08, F15', 'fn', { act: 'reorder' }),
+      adjust: T('Adjust', 'F22, F23', 'sim', { scope: 'Whole video, or this clip', groups: [{ t: 'Apply to', key: 'adjScope', opts: ['Whole video', 'This clip'] }, { t: 'Control', key: 'adj', opts: ['Auto', 'Exposure', 'Contrast', 'Temperature', 'Tint', 'Saturation', 'Vibrance', 'Highlights', 'Shadows', 'Sharpness', 'Skin smoothing'] }], note: 'Each control has a slider and its own reset, plus Reset all. Auto is measured, with intensity. Compare shows the original image. A clip follows the whole video until you change it here.' }),
+      filters: T('Filters', 'F24, F92', 'sim', { scope: 'Whole video, or this clip', groups: [{ t: 'Apply to', key: 'filScope', opts: ['Whole video', 'This clip'] }, { t: 'Filter', key: 'fil', opts: ['Original', 'Natural', 'Studio', 'Soft', 'Cinema', 'Warm Editorial', 'Retro', 'Mono Soft', 'Mono Contrast'] }], note: 'Intensity slider and reset. An older filter shows up here, marked In use, only when this project already has it.' }),
+      background: T('Background', 'F25, F26', 'sim', { scope: srcN + ' and its sections, or this clip', groups: [{ t: 'Look', key: 'bg', opts: ['Original', 'Blur', 'Color', 'Image'] }, { t: 'Cutout, when not Original', key: 'bgm', opts: ['Automatic', 'Green screen', 'Blue screen', 'Custom color'] }], note: 'Blur strength, color or photo come after the look. Screen methods have Tolerance, Edge and Spill. Automatic says when it finds no person.' }),
+      copyLook: T('Copy look', 'F14', 'opt', { scope: 'This clip', note: 'Copies Adjust, Filter, Background and Zoom. Never audio, text or timing.' }),
+      pasteLook: T('Paste look', 'F14', 'sim', { scope: 'This clip, or all clips', groups: [{ t: 'Parts', key: 'paste', opts: ['Adjust', 'Filter', 'Background', 'Zoom'] }, { t: 'Apply to', key: 'pasteTo', opts: ['This clip', 'All clips'] }] }),
+      extract: T('Extract audio', 'F67', 'opt', { scope: 'This clip or overlay', note: 'Puts the sound on its own track and mutes the source, so nothing plays twice. Says so when there is no sound or it is muted.' }),
+      delClip: T('Delete clip', 'F07', 'fn', { act: 'delClip', danger: true }),
+      timing: T('Timing', 'F05, F39', 'fn', { act: 'timing' }),
+      transition: T('Transition', 'F13', 'sim', { scope: 'This cut, or all cuts', groups: [{ t: 'Style', key: 'tr', opts: ['None', 'Dissolve', 'Fade', 'Slide', 'Zoom', 'Blur', 'Flash', 'Push', 'Punch', 'Wipe'] }, { t: 'Apply to', key: 'trAll', opts: ['This cut', 'All cuts'] }], note: 'Duration from 0.2 to 1.5 s, shorter when a clip is short.' }),
+      editText: T('Edit text', 'F28, F35', 'opt', { scope: 'Only this item', note: 'Typing gets its own state: field, keyboard and a usable preview. Style tabs come back after Done typing.' }),
+      style: T('Style', 'F31, F32', 'sim', { scope: 'This text, or all texts', groups: [{ t: 'Apply to', key: 'stScope', opts: ['This text', 'All texts · 1'] }, { t: 'Preset', key: 'preset', opts: ['Orbit', 'Logbook', 'Signal', 'Launch', 'Nebula', 'Comet', 'Postcard', 'My style'] }], note: 'All texts changes look only. Words, motion, timing and graphics stay as they are. Save as My style keeps your own look.' }),
+      font: T('Font and color', 'F33', 'opt', { scope: 'Follows Style', note: 'Family from the 10 in the app, weight, size, glow, color, background and its color, shadow or outline.' }),
+      copyToCaps: T('Copy style to captions', 'F34', 'opt', { scope: 'All captions, once', note: 'Asks first. Captions take this look one time and do not stay linked to the text.' }),
+      motion: T('Motion', 'F36', 'sim', { scope: 'This item', groups: [{ t: 'Preset', key: 'mo', opts: ['None', 'Fade in', 'Slide up', 'Slide in', 'Gentle zoom', 'Pop', 'In and out'] }], note: 'Duration, strength and replay. Works together with keyframes.' }),
+      keyframes: T('Keyframes', 'F37', 'opt', { scope: 'This item', note: 'Add or remove at the playhead, go to previous or next. Move and scale at the playhead. Times are local to the item.' }),
+      track: T('Track', 'F38, F27', 'opt', { scope: 'This item', note: 'The center of the item picks what to follow. Progress and Cancel. Lost target and outdated result are explained here in full, with Try again and the manual path.' }),
+      timingL: T('Timing', 'F39, F05', 'fn', { act: 'timingL' }),
+      dupL: T('Duplicate', 'F35, F72', 'fn', { act: 'dupL' }),
+      delL: T('Delete', 'F35, F46, F72', 'fn', { act: 'delL', danger: true }),
+      gStyle: T('Style', 'F30', 'opt', { scope: 'This graphic', note: 'Color, size and rotation. All texts never changes graphics.' }),
+      editLine: T('Edit line', 'F45', 'opt', { scope: 'This line', note: 'Keyboard stays open with previous and next line, Play this part, and start and end times.' }),
+      splitLine: T('Split line', 'F46', 'opt', { scope: 'This line', note: 'Keeps the order in time and stays inside its recording.' }),
+      mergeNext: T('Merge with next', 'F46', 'opt', { scope: 'This line and the next' }),
+      capStyle: T('Caption style', 'F51, F52', 'sim', { scope: 'All captions', groups: [{ t: 'Look', key: 'cst', opts: ['Cue', 'Educational', 'Interview', 'Bold', 'Pop', 'Editorial'] }, { t: 'Reveal', key: 'rev', opts: ['Line', 'Fade', 'Groups', 'Word highlight', 'Box'] }], note: 'Position, size, fonts and colors when the look allows them. Custom and Reset. Clean appears only when already in use. Reveal timing is approximate.' }),
+      selectLines: T('Select lines', 'F49, F50', 'opt', { scope: 'Selected lines', note: 'Select any lines, all or none. Emphasis and size for those lines only. Shift by 0.1 s without overlapping. Delete.' }),
+      find: T('Find and replace', 'F48', 'opt', { scope: 'All captions', note: 'Count of results with their times. Replace one or all. Times are kept.' }),
+      generate: T('Generate captions', 'F41, F42', 'sim', { scope: 'Whole video', groups: [{ t: 'Spoken language', key: 'lang', opts: ['Auto', 'English', 'Português (Brasil)', 'Español', 'Deutsch', 'Français', '日本語', 'العربية', 'More languages…'] }], cond: 'Needs sound and the speech model on this iPhone. Auto detects within what the model supports.', note: 'Shows listening progress with Stop, and Retry when useful. If lines were reviewed, it asks before replacing them.' }),
+      write: T('Write captions yourself', 'F44', 'opt', { scope: 'Whole video', note: 'Add a line wherever there is room. Works without speech recognition.' }),
+      show: T('Show on video', 'F43', 'fn', { scope: 'Whole video', groups: [{ t: 'Captions on the video', key: 'caps', opts: ['On', 'Off'] }], note: 'Hiding never deletes lines.' }),
+      review: T('Review lines', 'F43, F45', 'opt', { scope: 'All captions', note: 'Expanded list that follows playback. Tap a line to jump there and fix it.' }),
+      translate: T('Translate', 'F53, F54, F55', 'sim', { scope: 'All captions', groups: [{ t: 'Show on video', key: 'disp', opts: ['Original', 'Translation', 'Both'] }], note: 'Translate on this iPhone or write it yourself. Says when a language pair needs a download or is not available. Your fixes are kept, and lines changed in the original are marked as outdated. Delete translation.' }),
+      editByText: T('Edit by text', 'F56, F57', 'opt', { scope: 'Cuts the video', note: 'Select words and play them. Cut them from the video, or fix only the caption text. Put back when possible, otherwise Undo.' }),
+      sources: T('Sources', 'F58', 'opt', { scope: 'Whole video', note: 'Take 1: captions ready. Take 2: not heard yet, so its part has no captions until you generate them.' }),
+      deleteAll: T('Delete all captions', 'F47', 'opt', { danger: true, scope: 'All captions', note: 'Different from hiding them. Undo brings them back.' }),
+      addTitle: T('Title', 'F28', 'opt', { scope: 'New item' }), addSub: T('Subtitle', 'F28', 'opt', { scope: 'New item', note: 'Manual text, not an automatic caption.' }), addHook: T('Hook', 'F28', 'opt', { scope: 'New item' }), addCallout: T('Callout', 'F28', 'opt', { scope: 'New item' }),
+      comment: T('Comment card', 'F29', 'opt', { scope: 'New item', cond: 'Only when this take came from a script made from a comment.' }),
+      arrow: T('Arrow', 'F30', 'opt', { scope: 'New graphic' }), circle: T('Circle', 'F30', 'opt', { scope: 'New graphic' }), tag: T('Tag', 'F30', 'opt', { scope: 'New graphic' }),
+      myStyle: T('My style', 'F32', 'opt', { scope: 'Texts', note: 'Apply or save your own text look.' }),
+      studio: T('Studio Voice', 'F60, F61', 'sim', { scope: 'Take 1 always, other recordings by choice', groups: [{ t: 'Enhance voice', key: 'ev', opts: ['Off', 'Light', 'Strong'] }, { t: 'Reduce noise', key: 'rn', opts: ['Off', 'Light', 'Strong'] }, { t: 'Recordings', key: 'svsrc', opts: ['Take 1 only', 'Take 1 and Take 2'] }], note: 'Compare plays the original sound. Level voices evens the recordings. Music, voice-over and overlay sound are never treated.' }),
+      files: T('Music from Files', 'F62', 'opt', { scope: 'New track', note: 'Import sheet with Cancel and Add. The file is copied into the app. Loading, error, replace and missing file states.' }),
+      sfx: T('Sound effects', 'F63', 'fn', { scope: 'New sound at the playhead', sfx: true, note: 'Made by Cue. Play only listens. Add puts it at the playhead.' }),
+      voiceover: T('Voice-over', 'F66', 'opt', { scope: 'New track from the playhead', note: 'Records with the preview muted. Stop, listen, re-record, volume, delete. Explains when the microphone is denied or the recording is interrupted.' }),
+      mVol: T('Volume', 'F64', 'opt', { scope: 'This track' }),
+      fades: T('Fades', 'F64', 'opt', { scope: 'This track', note: 'Fade in and fade out.' }),
+      duck: T('Ducking', 'F64', 'opt', { scope: 'This track', note: 'Lowers this track under the voice.' }),
+      beats: T('Beats', 'F65', 'opt', { scope: 'This music', cond: 'Only for music imported from Files. Not for effects or extracted sound.', note: 'Snap to beats, move cuts, cut every 1, 2 or 4 beats. Says when no beats are found.' }),
+      rerecord: T('Re-record', 'F66', 'opt', { scope: 'This voice-over' }),
+      insert: T('Insert clip', 'F09', 'opt', { scope: 'Montage', note: 'Choose where it goes first, then pick from Your takes or Photos.' }),
+      overlay: T('Photo or video overlay', 'F68', 'opt', { scope: 'New overlay', cond: 'Up to 3 at the same time.' }),
+      layout: T('Layout and shape', 'F69', 'sim', { scope: 'This overlay', groups: [{ t: 'Layout', key: 'ml', opts: ['Full frame', 'Window'] }, { t: 'Shape', key: 'ms', opts: ['Original', '1:1', '4:5', '16:9'] }], note: 'Size and position on the preview. The window shape never changes the project format.' }),
+      range: T('Source range', 'F70', 'opt', { scope: 'This overlay', note: 'Pick which part of the video plays. The start inside the file is separate from the length on the timeline.' }),
+      oSound: T('Sound', 'F71', 'sim', { scope: 'This overlay', groups: [{ t: 'Overlay sound', key: 'mso', opts: ['Muted', 'Keep'] }], note: 'B-roll arrives muted until you choose. Own volume.' }),
+      order: T('Order among media', 'F72', 'opt', { scope: 'Overlays', note: 'Front and back between photos and videos. Select one hidden under another from here.' }),
+      oReplace: T('Replace', 'F72', 'opt', { scope: 'This overlay' }),
+      format: T('Format and crop', 'F20', 'sim', { scope: 'Whole project', groups: [{ t: 'Format', key: 'fmt', opts: ['9:16', '4:5', '1:1', '16:9'] }, { t: 'Fit', key: 'fit', opts: ['Fill', 'Fit'] }], note: 'Manual crop by dragging the preview. The project format is separate from any overlay shape.' }),
+      follow: T('Follow face', 'F21', 'sim', { scope: 'Whole project', groups: [{ t: 'Follow', key: 'ff', opts: ['Off', 'Calm', 'Natural', 'Quick'] }], cond: 'Needs Fill and room to crop. Moving the crop by hand turns it off.' }),
+      smartMore: T('Other Smart shortcuts', 'F85', 'opt', { note: 'The Smart panel has six shortcuts. Auto captions, Studio Voice and Background are confirmed. The other three come from SmartPanel.swift in the next batch.' }),
+      templates: T('Video templates', 'F86', 'sim', { scope: 'Whole video', groups: [{ t: 'Template', key: 'vt', opts: ['Bold hook', 'Tutorial', 'Story', 'Clean', 'Interview'] }], note: 'Changes caption and text style and motion. Keeps your words, cuts, sound and graphics. One Undo reverts it.' }),
+      cImage: T('Frame or photo', 'F75', 'opt', { scope: 'Cover', note: 'A frame from the right recording, or a photo. Scrub and one frame back or forward. The frame stays linked to its recording after reordering.' }),
+      cFraming: T('Framing', 'F76', 'opt', { scope: 'Cover', note: 'Zoom and reset. Center and thirds guides, approximate 3:4 and 1:1 crops.' }),
+      cBA: T('Before and After', 'F78', 'opt', { scope: 'Cover', cond: 'With the Before/After template.', note: 'Two sources, each with its framing, a divider and labels.' }),
+      cTemplate: T('Template', 'F77', 'sim', { scope: 'Cover', groups: [{ t: 'Template', key: 'ct', opts: ['Educational', 'Opinion', 'List', 'Demo', 'Before/After', 'Series'] }], note: 'Keeps your words and elements.' }),
+      cText: T('Title', 'F79, F80', 'opt', { scope: 'Cover', note: 'Suggestions, several highlighted words, font, size, width, alignment and capitals. Title and highlight colors, Color or Box, shadow, outline, box and kicker. Warns about overflow and supports right to left.' }),
+      cElements: T('Elements', 'F81', 'opt', { scope: 'Cover', note: 'Arrow, Circle, Tag and @handle. Text, color, size, rotation, duplicate, order and delete.' }),
+      cFinish: T('Finish', 'F82, F83', 'sim', { scope: 'Cover', groups: [{ t: 'Effect', key: 'cf', opts: ['Clean', 'Text behind me', 'Outline me', 'Dim', 'Blur'] }], cond: 'Effects on the person need a person in the picture.', note: 'Strength for Dim and Blur. Save or apply a cover style. Remove cover asks first.' }),
+      cDone: T('Done, apply the cover', 'F84', 'fn', { act: 'coverDone' }),
+      cCancel: T('Cancel cover changes', 'F84', 'fn', { act: 'coverCancel' })
+    };
+  }
+  families() {
+    const t = this.tools();
+    return {
+      captions: { title: 'Captions', sub: 'Whole video · 4 lines · Take 2 not heard yet', groups: [{ t: 'CREATE', items: [t.generate, t.write] }, { t: 'REVIEW', items: [t.review, t.show, t.find, t.selectLines, t.editByText, t.sources] }, { t: 'LOOK AND LANGUAGE', items: [t.capStyle, t.translate] }, { t: 'REMOVE', items: [t.deleteAll] }] },
+      text: { title: 'Text and graphics', sub: 'Add a new item at the playhead', groups: [{ t: 'TEXT', items: [t.addTitle, t.addSub, t.addHook, t.addCallout, t.comment] }, { t: 'GRAPHICS', items: [t.arrow, t.circle, t.tag] }, { t: 'STYLE', items: [t.myStyle] }] },
+      audio: { title: 'Audio', sub: 'Voice of the recordings, music and sounds, narration', groups: [{ t: 'VOICE', items: [t.studio] }, { t: 'MUSIC AND SOUNDS', items: [t.files, t.sfx] }, { t: 'NARRATION', items: [t.voiceover] }] },
+      media: { title: 'Media', sub: 'Montage clip or overlay, chosen first', groups: [{ t: 'INTO THE MONTAGE', items: [t.insert] }, { t: 'ON TOP OF THE VIDEO', items: [t.overlay] }] },
+      visual: { title: 'Visual', sub: 'Format, image and background', groups: [{ t: 'FRAME', items: [t.format, t.follow] }, { t: 'IMAGE', items: [t.adjust, t.filters] }, { t: 'BEHIND THE PERSON', items: [t.background] }] },
+      smart: { title: '✦ Smart', sub: 'Shortcuts open the same tools, with the same values', groups: [{ t: 'TOOLS', items: [Object.assign({}, t.generate, { l: 'Auto captions' }), t.studio, t.background, t.smartMore] }, { t: 'TEMPLATES', items: [t.templates] }] }
+    };
+  }
+  coverMenu() { const t = this.tools(); return { title: 'Cover Studio', sub: 'Own Undo and Redo. Cancel asks first. Done applies everything as one step.', groups: [{ t: 'IMAGE', items: [t.cImage, t.cFraming, t.cBA] }, { t: 'TEMPLATE', items: [t.cTemplate] }, { t: 'TEXT', items: [t.cText] }, { t: 'ELEMENTS', items: [t.cElements] }, { t: 'FINISH', items: [t.cFinish] }, { t: 'COVER STUDIO', items: [t.cCancel, t.cDone] }] }; }
+  ctx() {
+    const t = this.tools(), sel = this.state.sel; if (!sel) return null;
+    if (sel.kind === 'clip') return { bar: [t.split, t.speed, t.zoom, t.volume], groups: [{ t: 'ON THE BAR', items: [t.split, t.speed, t.zoom, t.volume, t.timing] }, { t: 'MOVEMENT', items: [t.stabilize] }, { t: 'MONTAGE', items: [t.dupClip, t.freeze, t.reverse, t.replace, t.reorder] }, { t: 'IMAGE', items: [t.adjust, t.filters, t.background] }, { t: 'REUSE', items: [t.copyLook, t.pasteLook] }, { t: 'SOUND', items: [t.extract] }, { t: 'REMOVE', items: [t.delClip] }] };
+    if (sel.kind === 'join') return { bar: [t.transition], groups: [{ t: 'JUNCTION', items: [t.transition] }] };
+    const l = this.selLayer(); if (!l) return null;
+    const k = l.kind;
+    if (k === 'text') return { bar: [t.editText, t.style, t.motion, t.timingL], groups: [{ t: 'CONTENT', items: [t.editText] }, { t: 'LOOK', items: [t.style, t.font, t.copyToCaps] }, { t: 'MOVEMENT', items: [t.motion, t.keyframes, t.track] }, { t: 'TIME', items: [t.timingL] }, { t: 'ITEM', items: [t.dupL, t.delL] }] };
+    if (k === 'graphic') return { bar: [t.gStyle, t.motion, t.timingL, t.track], groups: [{ t: 'LOOK', items: [t.gStyle] }, { t: 'MOVEMENT', items: [t.motion, t.keyframes, t.track] }, { t: 'TIME', items: [t.timingL] }, { t: 'ITEM', items: [t.dupL, t.delL] }] };
+    if (k === 'caption') return { bar: [t.editLine, t.splitLine, t.mergeNext, t.timingL], groups: [{ t: 'THIS LINE', items: [t.editLine, t.splitLine, t.mergeNext, t.timingL, Object.assign({}, t.delL, { l: 'Delete line' })] }, { t: 'ALL CAPTIONS', items: [t.capStyle, t.selectLines, t.find, t.translate, t.editByText] }] };
+    if (k === 'media') return { bar: [t.layout, t.range, t.oSound, t.timingL], groups: [{ t: 'PLACE', items: [t.layout, t.order] }, { t: 'VIDEO', items: [t.range, t.oSound, t.extract] }, { t: 'MOVEMENT', items: [t.motion, t.keyframes, t.track] }, { t: 'TIME', items: [t.timingL] }, { t: 'ITEM', items: [t.oReplace, t.dupL, t.delL] }] };
+    if (k === 'music') return { bar: [t.mVol, t.fades, t.duck, t.beats], groups: [{ t: 'SOUND', items: [t.mVol, t.fades, t.duck] }, { t: 'RHYTHM', items: [t.beats] }, { t: 'TIME', items: [t.timingL] }, { t: 'ITEM', items: [t.delL] }] };
+    if (k === 'sfx') return { bar: [t.mVol, t.fades, t.timingL, t.delL], groups: [{ t: 'SOUND', items: [t.mVol, t.fades] }, { t: 'TIME', items: [t.timingL] }, { t: 'ITEM', items: [t.delL] }] };
+    return { bar: [t.rerecord, t.mVol, t.timingL, t.delL], groups: [{ t: 'RECORDING', items: [t.rerecord, t.mVol] }, { t: 'TIME', items: [t.timingL] }, { t: 'ITEM', items: [t.delL] }] };
+  }
+  run(tool, back) {
+    const a = tool.act;
+    if (a === 'split') return this.split();
+    if (a === 'dupClip') return this.dupClip();
+    if (a === 'delClip') return this.askDelete();
+    if (a === 'reorder') return this.setState({ sheet: { k: 'reorder', back } });
+    if (a === 'timing') return this.setState({ sheet: { k: 'timing', back } });
+    if (a === 'timingL') return this.setState({ sheet: { k: 'timingL', back } });
+    if (a === 'dupL') return this.dupLayer();
+    if (a === 'delL') return this.delLayer();
+    if (a === 'coverDone') { this.setState({ sheet: null }); return this.say('Cover applied as one step. Undo reverts it.'); }
+    if (a === 'coverCancel') { this.setState({ sheet: null }); return this.say('Cover changes discarded after confirming.'); }
+    this.setState({ sheet: { k: 'tool', tool, back } });
+  }
+  pickVal(key, v) {
+    if (this.state.vals[key] === v) return;
+    const vals = Object.assign({}, this.state.vals, { [key]: v });
+    this.commit(key === 'caps' ? (v === 'On' ? 'Show captions' : 'Hide captions') : v, { vals });
+  }
+
+  renderVals() {
+    const s = this.state, K = Component, pps = this.pps(), tot = this.total(), st = this.starts(s.clips);
+    const ci = s.clips.findIndex((c, i) => s.t >= st[i] && s.t < st[i] + c.dur);
+    const curI = ci >= 0 ? ci : s.clips.length - 1, cur = s.clips[curI];
+    const sel = s.sel, selC = this.selClip(), selI = selC ? this.clipIdx(selC.id) : -1, selL = this.selLayer();
+    const active = (kind) => s.layers.find(l => l.kind === kind && (() => { const a = this.lStart(l, st); return a >= 0 && s.t >= a && s.t < a + l.dur; })());
+    const capL = active('caption');
+    const ticks = []; for (let x = 0; x <= tot + 0.01; x += 5) ticks.push({ x: 195 + x * pps, l: this.fmt(x).slice(0, 5) });
+    const sp = this.splitCheck();
+    const save = { saved: ['✓ SAVED', 'rgba(110,229,150,0.12)', '#8FEBB0'], saving: ['SAVING…', 'rgba(225,228,245,0.08)', 'rgba(225,228,245,0.78)'], failed: ["COULDN'T SAVE · RETRY", 'rgba(255,179,64,0.16)', '#FFC56B'] }[s.save];
+    const sh = s.sheet || {};
+    const fams = this.families();
+    const dot = { fn: '#6EE596', sim: '#9D8CFF', opt: '#6E7196' };
+    const toItem = (tool, back) => ({ l: tool.l, note: tool.act ? '' : (tool.scope || ''), fg: tool.danger ? '#FF8A84' : '#FFFFFF', dot: dot[tool.st], go: () => this.run(tool, back) });
+    const ctx = this.ctx();
+    const allSheet = ctx ? { k: 'menu', menu: { title: 'All actions', sub: '', groups: ctx.groups } } : null;
+    let count = 0; if (ctx) ctx.groups.forEach(g => g.items.forEach(x => { if (x.act !== 'timing') count += 1; }));
+    if (allSheet) allSheet.menu.sub = count + ' actions for ' + (selC ? this.name(selI) : selL ? K.KIND[selL.kind].name.toLowerCase() : 'this junction');
+    const tool = sh.k === 'tool' ? sh.tool : null;
+    const stTxt = { fn: 'Works in prototype', sim: 'Choice works · result simulated', opt: 'Option in place · controls next batch' };
+    const stCol = { fn: ['rgba(110,229,150,0.14)', '#8FEBB0'], sim: ['rgba(157,140,255,0.2)', '#D5CCFF'], opt: ['rgba(110,113,150,0.25)', '#C9CCE0'] };
+    const target = selC ? this.name(selI) + ' · ' + K.SRC[selC.src].name : selL ? K.KIND[selL.kind].name + ' · ' + selL.label : sel && sel.kind === 'join' ? 'Junction ' + (sel.i + 1) : 'Whole video';
+    const fsW = 330, fsH = 586;
+    return {
+      statusText: save[0], statusBg: save[1], statusFg: save[2], goBack: this.goBack, statusTap: this.statusTap, openDone: this.openDone,
+      pvL: s.fs ? 30 : 85, pvW: s.fs ? fsW : 220, pvH: s.fs ? fsH : 392, pvZ: s.fs ? 5 : 1, fsLabel: s.fs ? 'Exit full screen' : 'Full screen', toggleFs: this.toggleFs,
+      prevBg: K.SRC[cur.src].prev, figure: K.SRC[cur.src].fig, prevLabel: K.SRC[cur.src].name + ' · ' + this.name(curI),
+      showTitle: !!active('text'), showArrow: !!active('graphic'), showBroll: !!active('media'),
+      showCap: !!capL && s.vals.caps !== 'Off', capText: capL ? capL.label : '',
+      isProtected: s.prot,
+      hasToast: !!s.toast, toast: s.toast || '',
+      tTxt: this.fmt(s.t), totTxt: this.fmt(tot), playing: s.playing, paused: !s.playing, playLabel: s.playing ? 'Pause' : 'Play', togglePlay: this.togglePlay,
+      undo: this.undo, redo: this.redo, undoOp: s.past.length ? 1 : 0.35, redoOp: s.future.length ? 1 : 0.35, zoomIn: this.zoomIn, zoomOut: this.zoomOut,
+      setTL: this.setTL, onScroll: this.onScroll, innerW: 390 + Math.ceil(tot * pps), ticks, openCover: this.openCover, clearSel: this.clearSel,
+      clips: s.clips.map((c, i) => { const on = sel && sel.kind === 'clip' && sel.id === c.id; return { x: 195 + st[i] * pps + 1, w: Math.max(6, c.dur * pps - 2), bg: K.SRC[c.src].bg, ring: on ? '0 0 0 2px #FFD60A' : '0 0 0 1px rgba(255,255,255,0.18)', name: this.name(i) + ' · ' + c.label, sub: K.SRC[c.src].name + ' · ' + c.dur.toFixed(1) + ' s', aria: this.name(i) + ', ' + K.SRC[c.src].name + ', ' + c.dur.toFixed(1) + ' seconds' + (on ? ', selected' : ''), pick: () => { this.stop(); this.setState({ sel: { kind: 'clip', id: c.id }, sheet: null, playing: false }); } }; }),
+      joins: s.clips.slice(0, -1).map((c, i) => { const on = sel && sel.kind === 'join' && sel.i === i; return { x: 195 + (st[i] + c.dur) * pps - 14, bg: on ? '#FFD60A' : '#C9CCE0', aria: 'Junction between ' + this.name(i) + ' and ' + this.name(i + 1), pick: () => this.setState({ sel: { kind: 'join', i }, sheet: null }) }; }),
+      hasHandles: !!selC, hlx: selC ? 195 + st[selI] * pps - 13 : 0, hrx: selC ? 195 + (st[selI] + selC.dur) * pps - 1 : 0,
+      hDownL: this.hDownL, hDownR: this.hDownR, hMove: this.hMove, hUp: this.hUp,
+      layers: s.layers.map(l => { const a = this.lStart(l, st); if (a < 0 || a >= tot) return null; const d = Math.min(l.dur, tot - a); const k = K.KIND[l.kind]; const on = selL && selL.id === l.id; return { x: 195 + a * pps, y: 76 + k.row * 24, w: Math.max(18, d * pps - 1), bg: k.bg, fg: k.fg, ring: on ? '0 0 0 2px #FFD60A' : 'none', text: (l.kind === 'text' ? 'T  ' : '') + l.label, aria: k.name + ', ' + l.label + (l.clip ? ', anchored to ' + this.name(this.clipIdx(l.clip)) : '') + (on ? ', selected' : ''), pick: () => { this.stop(); this.setState({ sel: { kind: 'layer', id: l.id }, sheet: null, playing: false }); } }; }).filter(Boolean),
+      lvMain: !sel, lvSel: !!sel,
+      mainBar: [['captions', 'Captions', 'M4 6h16v12H4zM7 11h4M13 11h4M7 14h7'], ['text', 'Text', 'M5 6h14M12 6v13M9 19h6'], ['audio', 'Audio', 'M9 18V6l10-2v12M9 18a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0zM19 16a2.5 2.5 0 1 1-5 0 2.5 2.5 0 0 1 5 0z'], ['media', 'Media', 'M4 5h16v14H4zM4 15l5-5 4 4 3-3 4 4'], ['visual', 'Visual', 'M12 4a8 8 0 1 0 0 16 8 8 0 0 0 0-16zM12 4v16'], ['smart', '✦ Smart', 'M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z']].map(([k, l, d]) => ({ l, d, fg: k === 'smart' ? '#C9BEFF' : 'rgba(225,228,245,0.82)', go: () => this.setState({ sheet: { k: 'menu', menu: fams[k] } }) })),
+      selDot: selC ? K.SRC[selC.src].bg : selL ? K.KIND[selL.kind].dot : '#C9CCE0',
+      selName: selC ? this.name(selI) : selL ? K.KIND[selL.kind].name : sel && sel.kind === 'join' ? 'Junction ' + (sel.i + 1) : '',
+      selSub: selC ? K.SRC[selC.src].name + ' · ' + selC.dur.toFixed(1) + ' s' : selL ? selL.label + (selL.clip ? ' · on ' + this.name(this.clipIdx(selL.clip)) : '') : sel && sel.kind === 'join' ? this.name(sel.i) + ' and ' + this.name(sel.i + 1) : '',
+      selBar: ctx ? ctx.bar.map(tl => ({ l: tl.l, fg: tl.danger ? '#FF8A84' : '#FFFFFF', op: tl.act === 'split' && !sp.ok ? 0.45 : 1, go: () => { if (tl.act === 'split' && !sp.ok) { this.say(sp.why); return; } this.run(tl, null); } })).concat(ctx.groups.length > 1 ? [{ l: 'All · ' + count, fg: '#FFD60A', op: 1, go: () => this.setState({ sheet: allSheet }) }] : []) : [],
+      hasSheet: !!s.sheet, closeSheet: this.closeSheet, hasShBack: !!sh.back, shBack: this.shBack,
+      shTitle: sh.k === 'menu' ? sh.menu.title : sh.k === 'tool' ? tool.l : sh.k === 'timing' || sh.k === 'timingL' ? 'Timing' : sh.k === 'reorder' ? 'Reorder clips' : sh.k === 'delete' ? 'Delete ' + (selC ? this.name(selI) : '') + '?' : sh.k === 'done' ? 'Done editing?' : '',
+      hasShSub: (sh.k === 'menu' && !!sh.menu.sub) || sh.k === 'timing' || sh.k === 'timingL' || sh.k === 'reorder',
+      shSub: sh.k === 'menu' ? sh.menu.sub : sh.k === 'reorder' ? 'Whole project · ' + s.clips.length + ' clips from 2 recordings' : (sh.k === 'timing' || sh.k === 'timingL') ? target : '',
+      shMenu: sh.k === 'menu', shTool: sh.k === 'tool', shTiming: sh.k === 'timing' || sh.k === 'timingL', shReorder: sh.k === 'reorder', shDelete: sh.k === 'delete', shDone: sh.k === 'done',
+      menuGroups: sh.k === 'menu' ? sh.menu.groups.map(g => ({ t: g.t, items: g.items.map(it => toItem(it, s.sheet)) })) : [],
+      tgt: target, toolScope: tool ? (tool.scope || 'This item') : '', stText: tool ? stTxt[tool.st] : '', stBg: tool ? stCol[tool.st][0] : '', stFg: tool ? stCol[tool.st][1] : '',
+      hasCond: !!(tool && tool.cond), toolCond: tool ? tool.cond : '', hasNote: !!(tool && tool.note), toolNote: tool ? tool.note : '', toolF: tool ? 'Matrix: ' + tool.f : '',
+      toolGroups: tool ? tool.groups.map(g => ({ t: g.t, opts: g.opts.map(o => { const on = s.vals[g.key] === o; return { l: o, pressed: on ? 'true' : 'false', bg: on ? 'rgba(255,214,10,0.14)' : '#1A1C2B', fg: on ? '#FFD60A' : '#FFFFFF', ring: on ? 'inset 0 0 0 1.5px #FFD60A' : 'none', go: () => this.pickVal(g.key, o) }; }) })) : [],
+      isSfx: !!(tool && tool.sfx), sfxRows: K.SFX.map(n => ({ n, pbg: s.playingSfx === n ? '#9D8CFF' : '#26283A', play: () => this.playSfx(n), add: () => this.addSfx(n) })),
+      timingRows: sh.k === 'timing' && selC ? [
+        { l: 'Start in ' + K.SRC[selC.src].name, v: selC.in.toFixed(1) + ' s', minus: () => this.trimBy('L', -0.1, true), plus: () => this.trimBy('L', 0.1, true) },
+        { l: 'Length', v: selC.dur.toFixed(1) + ' s', minus: () => this.trimBy('R', -0.1, true), plus: () => this.trimBy('R', 0.1, true) }
+      ] : sh.k === 'timingL' && selL ? [
+        { l: selL.clip ? 'Starts after clip start' : 'Starts at', v: selL.off.toFixed(1) + ' s', minus: () => this.layerBy('off', -0.1), plus: () => this.layerBy('off', 0.1) },
+        { l: 'Length', v: Math.min(selL.dur, tot).toFixed(1) + ' s', minus: () => this.layerBy('dur', -0.1), plus: () => this.layerBy('dur', 0.1) }
+      ] : [],
+      timingNote: sh.k === 'timing' && selC ? 'Same as dragging the yellow handles. ' + K.SRC[selC.src].name + ' is ' + K.SRC[selC.src].len + ' s long. Minimum clip 0.5 s. Undo reverts each step.' : 'Same as dragging the item on the timeline. Undo reverts each step.',
+      orderRows: s.clips.map((c, i) => { const anc = s.layers.filter(l => l.clip === c.id).length; return { name: this.name(i) + ' · ' + c.label, sub: K.SRC[c.src].name + ' · ' + c.dur.toFixed(1) + ' s' + (anc ? ' · ' + anc + ' anchored items move with it' : ''), bg: K.SRC[c.src].bg, upOp: i === 0 ? 0.3 : 1, downOp: i === s.clips.length - 1 ? 0.3 : 1, up: () => this.move(c.id, -1), down: () => this.move(c.id, 1) }; }),
+      delText: selC ? (() => { const anc = s.layers.filter(l => l.clip === selC.id); return this.name(selI) + ' (' + K.SRC[selC.src].name + ', ' + selC.dur.toFixed(1) + ' s) leaves the montage.' + (anc.length ? ' Anchored to it: ' + anc.map(l => K.KIND[l.kind].name.toLowerCase()).join(', ') + '.' : '') + ' Undo brings everything back.'; })() : '',
+      confirmDelete: this.confirmDelete,
+      doneState: s.save === 'saved' ? '✓ Edit saved on this iPhone' : s.save === 'saving' ? 'Saving your edit…' : "Couldn't save your edit. Tap the status at the top to retry.",
+      doneBg: s.save === 'saved' ? 'rgba(110,229,150,0.12)' : s.save === 'saving' ? 'rgba(225,228,245,0.08)' : 'rgba(255,179,64,0.16)',
+      doneFg: s.save === 'saved' ? '#8FEBB0' : s.save === 'saving' ? 'rgba(225,228,245,0.8)' : '#FFC56B',
+      doneOpts: [['Share now', 'Opens the existing share flow'], ['Save to Photos', 'Opens the existing download flow'], ['Ready, post later', 'Keeps it ready in your takes'], ["I'm not done", 'Back to editing']].map(([l, sub], i) => ({ l, s: sub, op: s.save === 'saved' || i === 3 ? 1 : 0.45, go: () => { if (i === 3) { this.setState({ sheet: null }); return; } if (s.save !== 'saved') { this.say('Waiting for the save to finish.'); return; } this.setState({ sheet: null }); this.say(l + ': continues in the take review flow, not redrawn here.'); } }))
+    };
+  }
+}
+</script>
+</body>
+</html>

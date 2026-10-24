@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Cue — Find inspiration</title>
+<style>
+/* 3.3 Find inspiration, read from source (879bee2e468a): FindInspirationSheet (large sheet, SheetHeader, filter bar 16 pt below, card 38 pt below with the
+   orbit, "Another idea" 14 pt under the card, pinned actions: Start with it 54 pt · helper footnote · ✦ Draft it now), InspirationCard (20 pt padding,
+   #1D1A3E + violet light from the top corner, border 34%, radius 26, rail + HUD category in aiText, title2 bold, YOUR ANGLE / OPENING LINE over hairlines),
+   InspirationFilterBar (36 pt chips, chosen #6A5AE0 with a 50% lilac ring, "Topics" with slider.horizontal.3), InspirationOrbit (96 × 44, −14°),
+   InspirationCardContent, Niche.chipLabel, OnboardingTopic.color (warm, mint, pink), CueSheetChrome (system close), SheetHeader.
+   Motion from the device recording (ScreenRecording 15): the card blurs out and the next one blurs in while small stars drift round it; ↻ sits left of Start with it. The idea texts are sample content; slider.horizontal.3 and arrow.triangle.2.circlepath are SF Symbols, drawn here as close stand-ins (≈). */
+:root{--fill:rgba(110,116,150,.26);--ink:#fff;--ink2:rgba(225,228,245,.62);--ink3:rgba(225,228,245,.45);--acc:#FFD60A;--ai:#B4A7FF;--aiStrong:#E4DEFF;--sep:rgba(80,86,120,.5)}
+body{margin:0;background:#000}*{box-sizing:border-box}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;color:var(--ink);background:#05060B}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.chip{height:36px;padding:0 14px;border-radius:18px;display:flex;align-items:center;gap:7px;font-size:15px;font-weight:500;background:var(--fill);white-space:nowrap;flex-shrink:0;cursor:pointer}
+.chip.on{background:#6A5AE0;box-shadow:inset 0 0 0 1px rgba(228,222,255,.5);font-weight:600}
+.rail{width:3px;height:14px;border-radius:2px;flex-shrink:0}
+.sect{padding-top:14px}.sect>i{display:block;height:.5px;background:var(--sep);margin-bottom:10px}
+.sect b{display:block;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--ink2);margin-bottom:6px}
+.sect p{margin:0;font-size:17px;line-height:22px}
+@keyframes cardIn{from{opacity:0;filter:blur(10px);transform:scale(.97)}to{opacity:1;filter:none;transform:none}}
+.card.out{transition:filter .24s,opacity .24s,transform .24s;filter:blur(10px);opacity:.25;transform:scale(.985)}
+#sp i{position:absolute;width:4px;height:4px;border-radius:2px;background:rgba(228,222,255,.7);opacity:0;transition:opacity .3s,transform 1.2s ease-out}
+#sp.on i{opacity:1}
+@media (prefers-reduced-motion:reduce){.card{animation:none!important}}
+svg{display:block}
+</style></head><body>
+<div class="phone">
+<!-- Scripts under the sheet, pushed back -->
+<div style="position:absolute;left:0;right:0;top:0;height:80px;background:radial-gradient(70% 100% at 20% 0,rgba(157,140,255,.16),rgba(157,140,255,0) 70%),#0A0B12"></div>
+
+<!-- The sheet: large detent, Palette.sheetNight, corner 38 -->
+<div style="position:absolute;left:0;right:0;top:58px;bottom:0;border-radius:38px 38px 0 0;background:rgba(20,22,42,.96);box-shadow:0 -10px 30px rgba(0,0,0,.4);overflow:hidden">
+  <div style="position:absolute;left:50%;top:6px;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:rgba(225,228,245,.3)"></div>
+  <!-- CueSheetChrome: the system close button -->
+  <div role="button" aria-label="Close" style="position:absolute;left:16px;top:14px;width:44px;height:44px;border-radius:22px;background:rgba(255,255,255,.12);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg></div>
+
+  <div style="position:absolute;left:0;right:0;top:70px;bottom:190px;overflow-y:auto;scrollbar-width:none">
+    <div style="padding:4px 16px 0">
+      <div style="font-size:22px;font-weight:700;line-height:28px">Find inspiration</div>
+      <div style="margin-top:5px;font-size:15px;color:var(--ink2)">Ideas to start from.</div>
+    </div>
+    <div id="chips" style="margin-top:16px;display:flex;gap:8px;padding:2px 16px;overflow-x:auto;scrollbar-width:none">
+      <span class="chip on" data-tool="f" data-i="-1">All my topics</span>
+      <span class="chip" data-tool="f" data-i="0"><span class="rail" style="background:#FFC46B"></span>Daily routines</span>
+      <span class="chip" data-tool="f" data-i="1"><span class="rail" style="background:#7EE0B8"></span>Productivity &amp; career</span>
+      <span class="chip" data-tool="f" data-i="2"><span class="rail" style="background:#FF9BD2"></span>Budget travel</span>
+      <span class="chip" role="button" aria-label="Topics" data-topics="1" style="cursor:pointer"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M3 6h9M17 6h4M3 12h3M11 12h10M3 18h11M19 18h2"/><circle cx="14.5" cy="6" r="2.3"/><circle cx="8.5" cy="12" r="2.3"/><circle cx="16.5" cy="18" r="2.3"/></svg>Topics</span>
+    </div>
+
+    <div style="position:relative;margin:38px 16px 0">
+      <!-- InspirationOrbit: decorative, above the card's corner -->
+      <div aria-hidden="true" style="position:absolute;right:-4px;top:-40px;width:96px;height:44px">
+        <div style="position:absolute;left:2px;right:2px;top:10.5px;height:23px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(180,167,255,.28);transform:rotate(-14deg)"></div>
+        <div style="position:absolute;left:22px;right:22px;top:15.5px;height:13px;border-radius:50%;border:.8px dashed rgba(180,167,255,.28);transform:rotate(-14deg)"></div>
+        <span style="position:absolute;left:45px;top:19px;width:6px;height:6px;border-radius:3px;background:rgba(196,184,255,.8)"></span>
+        <span style="position:absolute;left:71px;top:3px;width:14px;height:14px;border-radius:7px;background:rgba(255,214,10,.18)"></span><span style="position:absolute;left:75px;top:7px;width:6px;height:6px;border-radius:3px;background:#FFD60A"></span>
+        <span style="position:absolute;left:12px;top:27px;width:3.2px;height:3.2px;border-radius:2px;background:rgba(228,222,255,.6)"></span>
+      </div>
+      <div id="card" class="card" data-tool="card" style="padding:20px;border-radius:26px;background:radial-gradient(260px 260px at 0 0,rgba(157,140,255,.16),rgba(157,140,255,0)),#1D1A3E;box-shadow:inset 0 0 0 .5px rgba(180,167,255,.34),inset 0 1px 0 rgba(180,167,255,.3),0 8px 14px rgba(0,0,0,.4);animation:cardIn .36s cubic-bezier(.2,.8,.2,1)"></div>
+      <div id="sp" aria-hidden="true" style="position:absolute;inset:-14px;pointer-events:none"><i style="left:10px;top:4px"></i><i style="left:40%;top:0"></i><i style="right:30px;top:6px;background:#FFD60A"></i><i style="right:0;top:40%"></i><i style="right:2px;bottom:30%"></i><i style="left:30%;bottom:0"></i><i style="right:24%;bottom:2px;background:#FFD60A"></i><i style="left:0;top:55%"></i></div>
+    </div>
+  </div>
+
+  <!-- safeAreaBar: the yellow action, where it goes, and the quieter direct way -->
+  <div style="position:absolute;left:0;right:0;bottom:0;padding:12px 16px 42px;display:flex;flex-direction:column;align-items:center;gap:10px;background:linear-gradient(rgba(20,22,42,0),rgba(20,22,42,.96) 22%)">
+    <div style="align-self:stretch;display:flex;gap:12px;align-items:center">
+      <div id="another" data-tool="another" role="button" aria-label="Another idea" style="width:52px;height:52px;border-radius:26px;flex-shrink:0;background:rgba(110,116,150,.32);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.16);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .45s"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 10A7.5 7.5 0 0 1 18 7l1.5 1.5M19.5 14A7.5 7.5 0 0 1 6 17l-1.5-1.5"/><path d="M19.5 3.5v5h-5M4.5 20.5v-5h5"/></svg></div>
+      <div id="start" role="button" style="flex:1;height:54px;border-radius:27px;background:var(--acc);color:#000;font-size:17px;font-weight:600;display:flex;align-items:center;justify-content:center;cursor:pointer">Start with it</div>
+    </div>
+    <div style="font-size:13px;color:var(--ink2);text-align:center">It goes into the composer. Make it yours first.</div>
+    <div id="draftnow" role="button" style="min-height:44px;padding:0 12px;display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;color:var(--ai);cursor:pointer"><span>✦</span>Draft it now</div>
+  </div>
+</div>
+</div>
+<script>
+(function(){function f(){document.body.style.zoom=Math.min(1,(innerHeight-8)/860)}f();addEventListener('resize',f)})();
+(function(){
+  var W=['#FFC46B','#7EE0B8','#FF9BD2'];
+  var I=[
+    {w:0,c:'Daily routines · Opinion',t:'Will routine survive a busy day?',a:'Observe shifts in everyday habits over time',o:'A familiar path looks different after a rush'},
+    {w:1,c:'Productivity & career · Tips',t:'When planning stalls, what do you do?',a:'Uncover what blocks progress silently',o:'The plan was fine. The first step was missing.'},
+    {w:0,c:'Daily routines · List',t:'3 things I stopped buying this year',a:'Share three purchases worth dropping and what changes without them.',o:'I didn’t miss a single one of them.'},
+    {w:2,c:'Budget travel · Tips',t:'3 Costs Nobody Tells You Before a Trip',a:'The fees that show up after you book.',o:'The ticket was cheap. Everything after it was not.'}
+  ];
+  var filter=-1,pos=0,card=document.getElementById('card');
+  function list(){return I.filter(function(x){return filter<0||x.w===filter});}
+  function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+  function draw(){var L=list(),x=L[pos%L.length];
+    card.style.animation='none';void card.offsetWidth;card.style.animation='';
+    card.innerHTML='<div style="display:flex;align-items:center;gap:8px"><span class="rail" style="background:'+W[x.w]+'"></span><span class="mono" style="font-size:12px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;color:var(--ai)">'+esc(x.c)+'</span></div>'+
+      '<div style="margin-top:12px;font-size:22px;line-height:28px;font-weight:700;letter-spacing:-.3px">'+esc(x.t)+'</div>'+
+      '<div class="sect"><i></i><b>Your point of view</b><p>'+esc(x.a)+'</p></div>'+
+      '<div class="sect"><i></i><b>Opening line</b><p style="font-style:italic">“'+esc(x.o)+'”</p></div>';}
+  var sp=document.getElementById('sp');
+  function nextCard(){card.classList.add('out');sp.classList.add('on');[].forEach.call(sp.children,function(d,k){d.style.transform='translate('+(k%2?-8:8)+'px,'+(k%3-1)*8+'px)'});
+    setTimeout(function(){card.classList.remove('out');pos++;draw();setTimeout(function(){sp.classList.remove('on');[].forEach.call(sp.children,function(d){d.style.transform=''})},700)},240);}
+  var an=document.getElementById('another');an.addEventListener('click',function(){an.style.transform='rotate(360deg)';setTimeout(function(){an.style.transition='none';an.style.transform='';void an.offsetWidth;an.style.transition='transform .45s'},480);nextCard();});
+  function cur(){var L=list();return L[pos%L.length]}
+  window.addEventListener('click',function(e){var s=e.target.closest&&e.target.closest('#start,#draftnow');if(!s)return;try{if(s.id==='start')parent.__cueIdea=cur().t;else parent.__cueDraft=cur().t}catch(x){}},true);
+  var sx=null;card.addEventListener('pointerdown',function(e){sx=e.clientX});card.addEventListener('pointerup',function(e){if(sx!=null&&Math.abs(e.clientX-sx)>70){nextCard();}sx=null;});
+  document.getElementById('chips').addEventListener('click',function(e){var c=e.target.closest('.chip');if(!c)return;
+    if(c.dataset.topics)return;
+    [].forEach.call(document.querySelectorAll('.chip[data-i]'),function(k){k.classList.toggle('on',k===c)});filter=+c.dataset.i;pos=0;draw();});
+  draw();
+})();
+</script>
+</body></html>

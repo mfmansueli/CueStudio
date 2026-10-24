@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Cue — Editing a script</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.night{background:radial-gradient(70% 30% at 20% 6%,rgba(157,140,255,0.20),rgba(157,140,255,0) 70%),#0A0B12}
+.k{height:42px;border-radius:6px;background:#56565C;display:flex;align-items:center;justify-content:center;font-size:21px;color:#fff;box-shadow:0 1px 0 rgba(0,0,0,0.5)}
+.kd{height:42px;border-radius:6px;background:#3A3A3F;display:flex;align-items:center;justify-content:center;font-size:15px;color:#fff;box-shadow:0 1px 0 rgba(0,0,0,0.5)}
+.cue{display:inline-flex;align-items:center;height:20px;padding:0 6px;border-radius:6px;background:rgba(255,214,10,0.14);color:#FFD60A;font-family:'Geist Mono',monospace;font-size:11px;font-weight:600;vertical-align:2px}
+@keyframes rise{0%{transform:translateY(6px);opacity:0}100%{transform:translateY(0);opacity:1}}
+.rise{animation:rise .35s cubic-bezier(.2,.9,.25,1) both}
+@media (prefers-reduced-motion: reduce){.rise{animation:none}}
+</style>
+<style>html,body{background:#000}</style>
+</head>
+<body>
+<div class="night" style="width: 390px; height: 844px; position: relative; overflow: hidden; font-family: Geist, -apple-system, sans-serif; color: #fff">
+  <div style="position: absolute; left: 12px; right: 12px; top: 54px; height: 36px; display: flex; align-items: center; gap: 6px">
+    <button aria-label="Back" style="width: 36px; height: 36px; border-radius: 18px; border: 0.5px solid rgba(180,167,255,0.22); background: rgba(14,16,28,0.7); display: flex; align-items: center; justify-content: center; padding: 0"><svg width="9" height="15" viewBox="4.8 0 14.4 24" aria-hidden="true" fill="none" stroke="#fff" stroke-width="2.56" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5.5L8.5 12l6.5 6.5"></path></svg></button>
+    
+    <div style="flex: 1; text-align: center; font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.08em; color: rgba(225,228,245,0.45)">AUTOSAVED</div>
+    <span style="width: 36px; flex-shrink: 0"></span>
+  </div>
+
+  <div style="position: absolute; left: 20px; right: 20px; top: 104px; display: flex; flex-direction: column; gap: 14px; font-size: 17px; line-height: 26px">
+    <div style="font-size: 22px; line-height: 28px; font-weight: 700; letter-spacing: -0.02em">3 habits that fixed my mornings</div>
+    <div>Okay, real talk. <span class="cue">pause</span> Three tiny habits completely changed my mornings.</div>
+    <div style="position: relative">One: no phone for the first twenty minutes. <span style="background: rgba(255,214,10,0.28); border-radius: 3px; box-shadow: 0 0 0 2px rgba(255,214,10,0.28)">No emails, no scrolling, just water and daylight.</span> <span class="cue">smile</span>
+      <span style="position: absolute; left: 0; top: 30px; width: 2px; height: 26px; background: #FFD60A"></span><span style="position: absolute; left: -3px; top: 25px; width: 8px; height: 8px; border-radius: 4px; background: #FFD60A"></span>
+    </div>
+    <div style="color: rgba(255,255,255,0.85)">Two: I write down one thing that would make today a win.</div>
+  </div>
+
+  <div class="rise" style="position: absolute; left: 14px; top: 186px; height: 40px; padding: 0 4px; border-radius: 20px; background: rgba(22,20,52,0.96); box-shadow: inset 0 0 0 0.5px rgba(180,167,255,0.45), 0 12px 30px rgba(0,0,0,0.5); display: flex; align-items: center; gap: 2px; white-space: nowrap">
+    <span style="height: 32px; padding: 0 11px; border-radius: 16px; background: rgba(157,140,255,0.3); display: flex; align-items: center; gap: 5px; font-size: 13.5px; font-weight: 600; color: #E4DEFF"><span style="color: #B4A7FF">✦</span>Rewrite</span>
+    <span style="height: 32px; padding: 0 10px; display: flex; align-items: center; font-size: 13.5px; font-weight: 600; color: #E4DEFF">Shorter</span>
+    <span style="height: 32px; padding: 0 10px; display: flex; align-items: center; font-size: 13.5px; font-weight: 600; color: #E4DEFF">Punchier</span>
+    <span style="height: 32px; padding: 0 10px; display: flex; align-items: center; font-size: 13.5px; font-weight: 600; color: #E4DEFF">More me</span>
+    <span style="width: 0.5px; height: 18px; background: rgba(180,167,255,0.4)"></span>
+    <span style="height: 32px; padding: 0 10px; display: flex; align-items: center; font-size: 13.5px; font-weight: 500; color: rgba(225,228,245,0.75)">Cut</span>
+    <span style="position: absolute; left: 60px; bottom: -5px; width: 10px; height: 10px; background: rgba(22,20,52,0.96); transform: rotate(45deg)"></span>
+  </div>
+
+  <div style="position: absolute; left: 0; right: 0; top: 476px; height: 46px; background: #15161F; border-top: 0.5px solid rgba(80,86,120,0.5); display: flex; align-items: center; gap: 6px; padding: 0 10px; box-sizing: border-box; white-space: nowrap; overflow: hidden">
+    <span style="font-family: 'Geist Mono', monospace; font-size: 9.5px; font-weight: 600; letter-spacing: 0.1em; color: rgba(225,228,245,0.45); margin-right: 2px">CUES</span>
+    <span style="height: 30px; padding: 0 10px; border-radius: 15px; background: rgba(255,214,10,0.14); color: #FFD60A; display: flex; align-items: center; font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 600">pause</span>
+    <span style="height: 30px; padding: 0 10px; border-radius: 15px; background: rgba(255,214,10,0.14); color: #FFD60A; display: flex; align-items: center; font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 600">smile</span>
+    <span style="height: 30px; padding: 0 10px; border-radius: 15px; background: rgba(255,214,10,0.14); color: #FFD60A; display: flex; align-items: center; font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 600">emphasis</span>
+    <span style="height: 30px; padding: 0 10px; border-radius: 15px; background: rgba(255,214,10,0.14); color: #FFD60A; display: flex; align-items: center; font-family: 'Geist Mono', monospace; font-size: 12px; font-weight: 600">look at camera</span>
+  </div>
+
+  <div style="position: absolute; left: 0; right: 0; top: 522px; bottom: 0; background: #2B2B31; padding: 8px 3px 0; box-sizing: border-box; display: flex; flex-direction: column; gap: 11px">
+    <div style="display: grid; grid-template-columns: repeat(10, minmax(0, 1fr)); gap: 6px; padding: 0 3px"><span class="k">q</span><span class="k">w</span><span class="k">e</span><span class="k">r</span><span class="k">t</span><span class="k">y</span><span class="k">u</span><span class="k">i</span><span class="k">o</span><span class="k">p</span></div>
+    <div style="display: grid; grid-template-columns: repeat(9, minmax(0, 1fr)); gap: 6px; padding: 0 20px"><span class="k">a</span><span class="k">s</span><span class="k">d</span><span class="k">f</span><span class="k">g</span><span class="k">h</span><span class="k">j</span><span class="k">k</span><span class="k">l</span></div>
+    <div style="display: flex; gap: 6px; padding: 0 3px"><span class="kd" style="width: 44px">⇧</span><div style="flex: 1; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; padding: 0 8px"><span class="k">z</span><span class="k">x</span><span class="k">c</span><span class="k">v</span><span class="k">b</span><span class="k">n</span><span class="k">m</span></div><span class="kd" style="width: 44px">⌫</span></div>
+    <div style="display: flex; gap: 6px; padding: 0 3px"><span class="kd" style="width: 90px">123</span><span class="k" style="flex: 1; font-size: 15px">space</span><span class="kd" style="width: 90px">return</span></div>
+  </div>
+</div>
+</body>
+</html>

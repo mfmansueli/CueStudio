@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Cue — Prompter studio</title>
+<link href="https://fonts.googleapis.com/css2?family=Lexend:wght@500&amp;display=swap" rel="stylesheet">
+<style>
+/* 5.3 Prompter Studio · v31.
+   Code read (879bee2e468a): StudioModeView, Studio/StudioTimeLine, Studio/StudioAdjustBar (Size · Line · Margins · Mirror · Remote · More, 8 apart, equal widths),
+   Studio/StudioControlPanel (transport = ScrollModePicker · back · play · forward), Controls/ControlSheet, Controls/SheetHandle, ModeSwitcher.
+   Calibrated against IMG_7437 / IMG_7438 (points = px ÷ 3): progress track y 124 (3 pt), time line y 139, reading line y 275 with glow under it,
+   right scrubber x 379 from 169 to 547 with yellow head, Lexend 500 34 pt, pitch 68 (2.0), text starts on the reading line.
+   Sheet folded top 708 / open top 565 (ControlSheet measures its height at run time; the capture is the reference). */
+:root{--acc:#FFD60A;--record:#FF3B30;--info:#64D2FF;--success:#30D158;--ink2:rgba(225,228,245,.62);--inkHint:rgba(225,228,245,.55)}
+body{margin:0;background:#000}*{box-sizing:border-box}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;color:#fff}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06));box-shadow:inset 0 0 0 .5px rgba(255,255,255,.22);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.cb{width:47px;height:47px;border-radius:24px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:linear-gradient(180deg,rgba(255,255,255,.12),rgba(255,255,255,.05));box-shadow:inset 0 0 0 .5px rgba(255,255,255,.22),inset 0 1px 0 rgba(255,255,255,.14)}
+.lx{font-family:Lexend,-apple-system,sans-serif;font-weight:500;text-align:center;white-space:nowrap}
+.sheet{position:absolute;left:11px;right:11px;bottom:27px;border-radius:44px;background:rgba(40,40,46,.94);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14),0 -1px 0 rgba(255,255,255,.04);z-index:6;transition:top .32s cubic-bezier(.2,.8,.2,1)}
+.x{display:none}.open .x{display:flex}.open .xc{display:none}
+svg{display:block}
+</style></head><body>
+<div class="phone open" id="ph" style="background:#000">
+<!-- Navigation bar: close · ModeSwitcher Selfie | Studio · platform chip (bolinha = rede social) -->
+<div style="position:absolute;left:16px;right:16px;top:58px;height:47px;display:flex;align-items:center;justify-content:space-between;z-index:7">
+  <div class="glass" aria-label="Close" style="width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;background:rgba(40,40,46,.55)"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.3" stroke-linecap="round"><path d="M5 5l14 14M19 5L5 19"/></svg></div>
+  <div class="glass" style="height:47px;padding:3px;border-radius:24px;display:flex;background:rgba(40,40,46,.55)">
+    <span style="height:41px;padding:0 21px;border-radius:21px;display:flex;align-items:center;font-size:16px;font-weight:500;">Selfie</span>
+    <span style="height:41px;padding:0 18px;border-radius:21px;display:flex;align-items:center;font-size:16px;font-weight:500;background:rgba(0,0,0,.6)">Studio</span></div>
+  <div class="glass" style="height:44px;padding:0 13px 0 10px;border-radius:22px;display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500;background:rgba(40,40,46,.55)"><span style="width:7px;height:7px;border-radius:4px;background:var(--info)"></span>TikTok</div>
+</div>
+<!-- StudioTimeLine: progress track + time left (yellow) · elapsed + ideal range -->
+<div style="position:absolute;left:20px;right:17px;top:123px;height:3px;border-radius:2px;background:rgba(110,116,150,.3)"><div style="width:0;height:3px;background:var(--acc)"></div></div>
+<div class="mono" style="position:absolute;left:20px;right:17px;top:131px;display:flex;justify-content:space-between;font-size:12px;letter-spacing:.4px"><span style="color:var(--acc);font-weight:600">1:23 LEFT</span><span style="color:var(--ink2)">1:23 · IDEAL 1:00–1:30</span></div>
+<!-- Scrubber -->
+<div style="position:absolute;left:378px;top:169px;width:1.5px;height:378px;background:rgba(110,116,150,.45)"></div>
+<div aria-label="Position" style="position:absolute;left:374px;top:165px;width:9px;height:9px;border-radius:5px;background:var(--acc);box-shadow:0 0 6px rgba(255,214,10,.6)"></div>
+<!-- Text: the current line sits on the reading line -->
+<div style="position:absolute;left:0;right:0;top:241px;height:330px;overflow:hidden;-webkit-mask-image:linear-gradient(180deg,#000 0,#000 72%,transparent 100%);mask-image:linear-gradient(180deg,#000 0,#000 72%,transparent 100%)">
+  <div class="lx" style="font-size:34px;line-height:68px">A small error in</div>
+  <div class="lx" style="font-size:34px;line-height:68px">planning can turn a</div>
+  <div class="lx" style="font-size:34px;line-height:68px">weekend Into this</div>
+  <div class="lx" style="font-size:34px;line-height:68px">week-long mess. I’ve</div>
+  <div class="lx" style="font-size:34px;line-height:68px">seen how tight money.</div>
+</div>
+<!-- Reading line + glow below -->
+<div style="position:absolute;left:20px;right:0;top:275px;height:22px;background:linear-gradient(180deg,rgba(255,214,10,.16),rgba(255,214,10,0));pointer-events:none"></div>
+<div style="position:absolute;left:20px;right:0;top:274px;height:2px;background:var(--acc);box-shadow:0 0 6px rgba(255,214,10,.5)"></div>
+<div style="position:absolute;left:7px;top:269px;width:0;height:0;border-top:6px solid transparent;border-bottom:6px solid transparent;border-left:9px solid var(--acc)"></div>
+
+<!-- StudioControlPanel (ControlSheet) -->
+<div class="sheet" id="sh">
+  <div role="button" aria-label="Controls" data-tool="sheet" onclick="document.getElementById('ph').classList.toggle('open')" style="height:36px;display:flex;align-items:center;justify-content:center;color:var(--ink2);cursor:pointer"><svg class="xc" width="13" height="8" viewBox="0 0 13 8" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 6.5L6.5 1.5l5 5"/></svg><svg class="x" width="13" height="8" viewBox="0 0 13 8" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 1.5l5 5 5-5"/></svg></div>
+  <div class="x" style="flex-direction:column;gap:14px;margin-top:-6px">
+    <div style="display:flex;gap:8px;padding:0 11px">
+      <span style="flex:1;min-width:0;height:54px;border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.05));box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18),inset 0 1px 0 rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h10M8 6v13M14 11h7M17.5 11v8"/></svg><span style="font-size:11px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px">Size</span></span>
+      <span style="flex:1;min-width:0;height:54px;border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.05));box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18),inset 0 1px 0 rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 6.5h11M8 17.5h8M5.5 12H21"/><circle cx="3.6" cy="12" r="1.8" fill="#fff" stroke="none"/></svg><span style="font-size:11px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px">Line</span></span>
+      <span style="flex:1;min-width:0;height:54px;border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.05));box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18),inset 0 1px 0 rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4v16M19 4v16M9 8h6M9 12h6M9 16h4"/></svg><span style="font-size:11px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px">Margins</span></span>
+      <span style="flex:1;min-width:0;height:54px;border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.05));box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18),inset 0 1px 0 rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v18" stroke-dasharray="1.6 2.6"/><path d="M9 7.5L4.5 12 9 16.5zM15 7.5l4.5 4.5-4.5 4.5z"/></svg><span style="font-size:11px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px">Mirror</span></span>
+      <span style="flex:1;min-width:0;height:54px;border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.05));box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18),inset 0 1px 0 rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8.5" y="4" width="7" height="16" rx="2"/><path d="M5.5 8.5a6 6 0 0 0 0 7M2.8 6.5a9.5 9.5 0 0 0 0 11M18.5 8.5a6 6 0 0 1 0 7M21.2 6.5a9.5 9.5 0 0 1 0 11"/></svg><span style="font-size:11px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px">Remote</span></span>
+      <span style="flex:1;min-width:0;height:54px;border-radius:15px;background:linear-gradient(180deg,rgba(255,255,255,.11),rgba(255,255,255,.05));box-shadow:inset 0 0 0 .5px rgba(255,255,255,.18),inset 0 1px 0 rgba(255,255,255,.12);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px"><span style="font-size:19px;font-weight:600;line-height:20px;height:20px">Aa</span><span style="font-size:11px;font-weight:600;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px">More</span></span>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;padding:0 21px;font-size:12.5px;color:var(--ink2);white-space:nowrap;overflow:hidden"><span style="display:flex;gap:3px"><i style="width:4px;height:4px;border-radius:2px;background:var(--acc)"></i><i style="width:4px;height:4px;border-radius:2px;background:var(--acc)"></i><i style="width:4px;height:4px;border-radius:2px;background:var(--acc)"></i><i style="width:4px;height:4px;border-radius:2px;background:var(--acc)"></i><i style="width:4px;height:4px;border-radius:2px;background:var(--acc)"></i></span>Scrolls when you talk, waits when you stop.</div>
+    <div style="text-align:center;font-size:14px;color:var(--ink2)">Tap play, then start reading</div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px;padding:10px 11px 0">
+    <div style="height:44px;padding:3px;border-radius:22px;background:rgba(255,255,255,.07);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.14);display:flex;align-items:center;flex-shrink:0">
+      <span style="height:38px;padding:0 10px 0 8px;border-radius:19px;background:#636366;display:flex;align-items:center;gap:7px;font-size:15px;font-weight:600"><svg width="17" height="15" viewBox="0 0 24 20" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><circle cx="8" cy="6" r="3.4"/><path d="M1.8 18.5c.6-3.4 3.2-5.3 6.2-5.3s5.6 1.9 6.2 5.3"/><path d="M16.5 3.5a5 5 0 0 1 0 6M19.5 1.5a8.5 8.5 0 0 1 0 10"/></svg>Voice</span>
+      <span style="height:38px;padding:0 8px 0 6px;display:flex;align-items:center;gap:6px;font-size:15px;font-weight:600;color:var(--ink2)"><svg width="17" height="14" viewBox="0 0 24 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M8 5h14M8 10h14M8 15h14M2 19h20"/><path d="M1.5 1.5l3 2-3 2z" fill="currentColor" stroke="none"/></svg>Steady</span></div>
+    <span class="cb" aria-label="Back" style="margin-left:auto"><svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 2L3 8l6 6M17 2l-6 6 6 6"/></svg></span>
+    <span class="cb" aria-label="Play"><svg width="17" height="18" viewBox="0 0 17 18" fill="#fff"><path d="M2 1.5v15l13-7.5z"/></svg></span>
+    <span class="cb" aria-label="Forward"><svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 2l6 6-6 6M3 2l6 6-6 6"/></svg></span>
+  </div>
+</div>
+</div>
+<style>#sh{top:708px}.open #sh{top:565px}</style>
+<script>(function(){function f(){document.body.style.zoom=Math.min(1,(innerHeight-8)/860)}f();addEventListener('resize',f)})();</script>
+</body></html>

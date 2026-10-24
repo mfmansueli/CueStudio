@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Cue para Apple Watch, tela 40 mm</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+@keyframes cwSpin{to{transform:rotate(360deg)}}
+.cw-spin{animation:cwSpin 1s linear infinite;transform-origin:50% 50%}
+</style>
+</helmet>
+<div style="{{vars}} width: 324px; height: 394px; box-sizing: border-box; border-radius: 60px; overflow: hidden; background: radial-gradient(130% 55% at 25% 0%, #1E1B3C 0%, #05060D 62%); color: #FFFFFF; font-family: -apple-system, 'SF Compact Text', 'SF Pro Text', system-ui, sans-serif; display: flex; flex-direction: column; position: relative">
+
+<sc-if value="{{sleep}}" hint-placeholder-val="{{ false }}">
+<div style="position: absolute; inset: 0; background: #000000; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #6E7196">Tela apagada</div>
+</sc-if>
+
+<div style="height: 54px; flex-shrink: 0; box-sizing: border-box; padding: 16px 26px 0 30px; display: flex; align-items: center; justify-content: space-between; gap: 8px">
+<sc-if value="{{hConn}}" hint-placeholder-val="{{ true }}">
+<span style="display: flex; align-items: center; gap: 8px; font-size: var(--cap); font-weight: 600; color: #6EE596; min-width: 0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#6EE596" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.1 0l3-3a5 5 0 0 0-7.1-7.1l-1 1"></path><path d="M14 11a5 5 0 0 0-7.1 0l-3 3a5 5 0 0 0 7.1 7.1l1-1"></path></svg>iPhone</span>
+</sc-if>
+<sc-if value="{{hLost}}" hint-placeholder-val="{{ false }}">
+<span style="display: flex; align-items: center; gap: 8px; font-size: var(--cap); font-weight: 600; color: #FFB340; min-width: 0"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFB340" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.1 0l3-3a5 5 0 0 0-7.1-7.1l-1 1"></path><path d="M14 11a5 5 0 0 0-7.1 0l-3 3a5 5 0 0 0 7.1 7.1l1-1"></path><path d="M3 3l18 18"></path></svg>{{hLostText}}</span>
+</sc-if>
+<sc-if value="{{hRec}}" hint-placeholder-val="{{ false }}">
+<span style="display: flex; align-items: center; gap: 8px; min-width: 0"><span style="display: flex; align-items: center; gap: 6px; background: #D11A2A; color: #FFFFFF; border-radius: 14px; padding: 3px 10px; font-size: var(--cap); font-weight: 700; letter-spacing: 0.5px"><span style="width: 12px; height: 12px; border-radius: 6px; background: #FFFFFF"></span>REC</span><sc-if value="{{hRecTime}}" hint-placeholder-val="{{ false }}"><span style="font-size: var(--cap); font-weight: 600; font-variant-numeric: tabular-nums">{{elapsedTxt}}</span></sc-if></span>
+</sc-if>
+<sc-if value="{{hCount}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: var(--cap); font-weight: 700; letter-spacing: 0.5px; color: #FFD60A">PREPARANDO</span>
+</sc-if>
+<sc-if value="{{hRehearsal}}" hint-placeholder-val="{{ false }}">
+<span style="border: 2px solid #FFD60A; color: #FFD60A; border-radius: 14px; padding: 1px 10px; font-size: var(--cap); font-weight: 700; letter-spacing: 0.5px">ENSAIO</span>
+</sc-if>
+<sc-if value="{{hPlain}}" hint-placeholder-val="{{ false }}">
+<span style="font-size: var(--cap); font-weight: 700; color: #FFD60A">Cue</span>
+</sc-if>
+<span style="font-size: var(--cap); font-weight: 600; color: #FFFFFF; font-variant-numeric: tabular-nums">9:41</span>
+</div>
+
+<div style="flex-grow: 1; min-height: 0; overflow-y: auto; box-sizing: border-box; padding: 6px 16px 20px; display: flex; flex-direction: column; gap: 10px">
+
+<sc-if value="{{isWait}}" hint-placeholder-val="{{ false }}">
+<div style="flex-grow: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; text-align: center; padding: 0 8px">
+<svg class="cw-spin" width="56" height="56" viewBox="0 0 56 56" fill="none" aria-hidden="true"><circle cx="28" cy="28" r="22" stroke="#3B3E5E" stroke-width="6"></circle><path d="M28 6a22 22 0 0 1 22 22" stroke="#FFD60A" stroke-width="6" stroke-linecap="round"></path></svg>
+<div style="font-size: var(--body); font-weight: 600; line-height: 1.2">{{waitTitle}}</div>
+<div style="font-size: var(--foot); color: #A3A6BD; line-height: 1.25">{{waitBody}}</div>
+</div>
+<sc-if value="{{waitCancel}}" hint-placeholder-val="{{ false }}">
+<button type="button" onClick="{{aCancel}}" style="all: unset; box-sizing: border-box; width: 100%; min-height: var(--btn2); padding: 8px 18px; border-radius: 999px; background: #22253A; color: #FFFFFF; font-size: var(--body); font-weight: 600; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer">Cancelar</button>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{isReady}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 4px; padding: 0 10px">
+<sc-if value="{{hasScript}}" hint-placeholder-val="{{ true }}">
+<div style="font-size: var(--cap); font-weight: 600; letter-spacing: 0.5px; color: #A3A6BD">ROTEIRO</div>
+<div style="font-size: var(--body); font-weight: 600; line-height: 1.2; overflow-wrap: anywhere">{{script}}</div>
+</sc-if>
+<sc-if value="{{noScript}}" hint-placeholder-val="{{ false }}">
+<div style="font-size: var(--body); font-weight: 600; line-height: 1.2">Gravação livre</div>
+<div style="font-size: var(--cap); color: #A3A6BD">Sem roteiro na tela</div>
+</sc-if>
+<sc-if value="{{voiceChip}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 8px; font-size: var(--cap); font-weight: 600; color: #64D2FF; margin-top: 2px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64D2FF" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"></path></svg>Voice Following</div>
+</sc-if>
+<sc-if value="{{manualChip}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; gap: 8px; font-size: var(--cap); font-weight: 600; color: #CDD0E0; margin-top: 2px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#CDD0E0" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 16a8 8 0 1 1 16 0"></path><path d="m12 16 4-5"></path></svg>Manual · {{speedTxt}}</div>
+</sc-if>
+</div>
+<button type="button" onClick="{{aRecord}}" style="all: unset; box-sizing: border-box; width: 100%; min-height: var(--btn); padding: 10px 18px; border-radius: 999px; background: #D11A2A; color: #FFFFFF; font-size: var(--title); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 12px; text-align: center; cursor: pointer; margin-top: 4px"><span style="width: 22px; height: 22px; border-radius: 11px; background: #FFFFFF; flex-shrink: 0"></span>Gravar</button>
+<sc-if value="{{hasScript}}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{aRehearse}}" style="all: unset; box-sizing: border-box; width: 100%; min-height: var(--btn2); padding: 8px 18px; border-radius: 999px; background: #22253A; color: #FFFFFF; font-size: var(--body); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center; cursor: pointer"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"></path></svg>Ensaiar</button>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{isCount}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; text-align: center">
+<div style="width: 108px; height: 108px; box-sizing: border-box; border-radius: 54px; border: 7px solid #FFD60A; display: flex; align-items: center; justify-content: center; font-size: 60px; font-weight: 700; font-variant-numeric: tabular-nums; color: #FFD60A">{{count}}</div>
+<div style="font-size: var(--body); font-weight: 600; line-height: 1.2">Ainda não grava</div>
+<div style="font-size: var(--foot); color: #A3A6BD; line-height: 1.25">O iPhone grava ao chegar a zero.</div>
+</div>
+<button type="button" onClick="{{aCancel}}" style="all: unset; box-sizing: border-box; width: 100%; min-height: var(--btn2); padding: 8px 18px; border-radius: 999px; background: #22253A; color: #FFFFFF; font-size: var(--body); font-weight: 600; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer">Cancelar</button>
+</sc-if>
+
+<sc-if value="{{isRec}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0">
+<div style="font-size: var(--body); font-weight: 600; color: #FF8A84">Gravando</div>
+<div style="font-size: var(--big); font-weight: 600; line-height: 1.05; font-variant-numeric: tabular-nums">{{elapsedTxt}}</div>
+<div style="font-size: var(--cap); color: #A3A6BD; line-height: 1.25; overflow-wrap: anywhere">{{scriptLine}}</div>
+</div>
+<sc-if value="{{armOff}}" hint-placeholder-val="{{ true }}">
+<button type="button" onClick="{{aStop}}" style="all: unset; box-sizing: border-box; width: 100%; min-height: var(--btn); padding: 10px 18px; border-radius: 999px; background: #2A1418; border: 3px solid #FF6961; color: #FFFFFF; font-size: var(--title); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 12px; text-align: center; cursor: pointer"><span style="width: 22px; height: 22px; border-radius: 5px; background: #FF6961; flex-shrink: 0"></span>Encerrar</button>
+</sc-if>
+<sc-if value="{{armOn}}" hint-placeholder-val="{{ false }}">
+<button type="button" onClick="{{aStop}}" style="all: unset; box-sizing: border-box; width: 100%; min-height: var(--btn); padding: 10px 18px; border-radius: 28px; background: #D11A2A; border: 3px solid #FFFFFF; color: #FFFFFF; font-size: var(--body); font-weight: 700; line-height: 1.15; display: flex; align-items: center; justify-content: center; gap: 12px; text-align: center; cursor: pointer"><span style="width: 20px; height: 20px; border-radius: 4px; background: #FFFFFF; flex-shrink: 0"></span>Toque de novo para encerrar</button>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{isText}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; justify-content: center; gap: 8px; text-align: center">
+<sc-if value="{{voice}}" hint-placeholder-val="{{ false }}"><span style="display: flex; align-items: center; gap: 8px; font-size: var(--foot); font-weight: 600; color: #64D2FF"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#64D2FF" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"></path></svg>Voice Following</span></sc-if>
+<sc-if value="{{manual}}" hint-placeholder-val="{{ true }}"><span style="font-size: var(--foot); font-weight: 600; color: #CDD0E0">Leitura manual</span></sc-if>
+</div>
+<div style="display: flex; align-items: flex-start; justify-content: center; gap: 22px">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 92px">
+<button type="button" aria-label="Voltar 3 linhas" onClick="{{aBack}}" style="all: unset; box-sizing: border-box; width: 84px; height: 84px; border-radius: 42px; background: #22253A; display: flex; align-items: center; justify-content: center; cursor: pointer; margin-top: 10px"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14 4 9l5-5"></path><path d="M4 9h10.5a5.5 5.5 0 0 1 0 11H11"></path></svg></button>
+<span style="font-size: var(--cap); color: #CDD0E0; text-align: center; line-height: 1.15">Voltar</span>
+</div>
+<div style="display: flex; flex-direction: column; align-items: center; gap: 4px; width: 120px">
+<button type="button" aria-label="{{playLabel}}" onClick="{{aPlay}}" style="all: unset; box-sizing: border-box; width: 104px; height: 104px; border-radius: 52px; background: #FFD60A; display: flex; align-items: center; justify-content: center; cursor: pointer">
+<sc-if value="{{playing}}" hint-placeholder-val="{{ false }}"><svg width="40" height="40" viewBox="0 0 24 24" aria-hidden="true"><rect x="6" y="5" width="4" height="14" rx="1" fill="#111111"></rect><rect x="14" y="5" width="4" height="14" rx="1" fill="#111111"></rect></svg></sc-if>
+<sc-if value="{{paused}}" hint-placeholder-val="{{ true }}"><svg width="42" height="42" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="#111111"></path></svg></sc-if>
+</button>
+<span style="font-size: var(--cap); color: #FFD60A; font-weight: 600; text-align: center; line-height: 1.15">{{playCaption}}</span>
+</div>
+</div>
+<sc-if value="{{manual}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; align-items: center; gap: 8px">
+<button type="button" aria-label="Mais devagar" onClick="{{aSlower}}" style="all: unset; box-sizing: border-box; width: 72px; height: 68px; flex-shrink: 0; border-radius: 34px; background: #22253A; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14"></path></svg></button>
+<sc-if value="{{crownOff}}" hint-placeholder-val="{{ true }}">
+<button type="button" aria-label="Velocidade {{speedTxt}}. Toque para usar a coroa." onClick="{{aCrown}}" style="all: unset; box-sizing: border-box; flex-grow: 1; min-width: 0; height: 68px; border-radius: 20px; border: 2px solid #3B3E5E; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer"><span style="font-size: var(--body); font-weight: 600; font-variant-numeric: tabular-nums; line-height: 1.1">{{speedTxt}}</span><span style="font-size: 20px; color: #A3A6BD; line-height: 1.1">velocidade</span></button>
+</sc-if>
+<sc-if value="{{crownOn}}" hint-placeholder-val="{{ false }}">
+<button type="button" aria-label="Coroa ajustando velocidade {{speedTxt}}. Toque para soltar." onClick="{{aCrown}}" style="all: unset; box-sizing: border-box; flex-grow: 1; min-width: 0; height: 68px; border-radius: 20px; border: 4px solid #FFD60A; background: rgba(255, 214, 10, 0.12); display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer"><span style="font-size: var(--body); font-weight: 700; font-variant-numeric: tabular-nums; line-height: 1.1; color: #FFD60A">{{speedTxt}}</span><span style="display: flex; align-items: center; gap: 4px; font-size: 20px; color: #FFD60A; line-height: 1.1"><svg width="14" height="18" viewBox="0 0 14 18" fill="none" stroke="#FFD60A" stroke-width="2" aria-hidden="true"><rect x="2" y="1" width="10" height="16" rx="3"></rect><path d="M5 5h4M5 9h4M5 13h4"></path></svg>coroa</span></button>
+</sc-if>
+<button type="button" aria-label="Mais rápido" onClick="{{aFaster}}" style="all: unset; box-sizing: border-box; width: 72px; height: 68px; flex-shrink: 0; border-radius: 34px; background: #22253A; display: flex; align-items: center; justify-content: center; cursor: pointer"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14M12 5v14"></path></svg></button>
+</div>
+</sc-if>
+<sc-if value="{{voice}}" hint-placeholder-val="{{ false }}">
+<div style="font-size: var(--cap); color: #A3A6BD; text-align: center; line-height: 1.25; padding: 0 8px">A velocidade segue sua voz.</div>
+</sc-if>
+<sc-if value="{{camNote}}" hint-placeholder-val="{{ false }}">
+<div style="font-size: var(--cap); color: #FF8A84; text-align: center; line-height: 1.25">A câmera continua gravando.</div>
+</sc-if>
+<sc-if value="{{rehearsalEnd}}" hint-placeholder-val="{{ false }}">
+<button type="button" onClick="{{aEndRehearsal}}" style="all: unset; box-sizing: border-box; width: 100%; min-height: var(--btn2); padding: 8px 18px; border-radius: 999px; background: #22253A; color: #FFFFFF; font-size: var(--body); font-weight: 600; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer">Concluir ensaio</button>
+</sc-if>
+</sc-if>
+
+<sc-if value="{{showDots}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; justify-content: center; gap: 4px">
+<button type="button" aria-label="Página Gravação" onClick="{{aPageRec}}" style="all: unset; width: 44px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer"><span style="width: 14px; height: 14px; border-radius: 7px; background: {{dotRec}}"></span></button>
+<button type="button" aria-label="Página Texto" onClick="{{aPageText}}" style="all: unset; width: 44px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer"><span style="width: 14px; height: 14px; border-radius: 7px; background: {{dotText}}"></span></button>
+</div>
+</sc-if>
+
+<sc-if value="{{isSaved}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center">
+<div style="width: 72px; height: 72px; border-radius: 36px; background: #30D158; display: flex; align-items: center; justify-content: center"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#062A12" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg></div>
+<div style="font-size: var(--title); font-weight: 700; line-height: 1.15">Take salvo</div>
+<div style="font-size: var(--foot); color: #A3A6BD; font-variant-numeric: tabular-nums">Take {{take}} · {{elapsedTxt}}</div>
+</div>
+<button type="button" onClick="{{aRecord}}" style="all: unset; box-sizing: border-box; width: 100%; min-height: var(--btn2); padding: 8px 18px; border-radius: 999px; background: #D11A2A; color: #FFFFFF; font-size: var(--body); font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px; text-align: center; cursor: pointer"><span style="width: 18px; height: 18px; border-radius: 9px; background: #FFFFFF; flex-shrink: 0"></span>Gravar outro</button>
+<button type="button" onClick="{{aDone}}" style="all: unset; box-sizing: border-box; width: 100%; min-height: var(--btn2); padding: 8px 18px; border-radius: 999px; background: #22253A; color: #FFFFFF; font-size: var(--body); font-weight: 600; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer">Concluir</button>
+</sc-if>
+
+<sc-if value="{{isMsg}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; padding: 0 6px">
+<sc-if value="{{icPhone}}" hint-placeholder-val="{{ false }}"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="{{msgTone}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"></rect><path d="M11 18.5h2"></path></svg></sc-if>
+<sc-if value="{{icUnlink}}" hint-placeholder-val="{{ false }}"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="{{msgTone}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 13a5 5 0 0 0 7.1 0l3-3a5 5 0 0 0-7.1-7.1l-1 1"></path><path d="M14 11a5 5 0 0 0-7.1 0l-3 3a5 5 0 0 0 7.1 7.1l1-1"></path><path d="M3 3l18 18"></path></svg></sc-if>
+<sc-if value="{{icWarn}}" hint-placeholder-val="{{ false }}"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="{{msgTone}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3.5 2.5 20h19z"></path><path d="M12 10v4.5M12 17.2v.1"></path></svg></sc-if>
+<sc-if value="{{icClock}}" hint-placeholder-val="{{ false }}"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="{{msgTone}}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3 2"></path></svg></sc-if>
+<div style="font-size: var(--title); font-weight: 700; line-height: 1.15">{{msgTitle}}</div>
+<div style="font-size: var(--foot); color: #C4C7D8; line-height: 1.25">{{msgBody}}</div>
+<sc-if value="{{hasStale}}" hint-placeholder-val="{{ false }}">
+<div style="margin-top: 4px; width: 100%; box-sizing: border-box; padding: 8px 12px; border-radius: 16px; border: 2px dashed #4A4D6A; font-size: var(--cap); color: #A3A6BD; line-height: 1.25">{{stale}}</div>
+</sc-if>
+</div>
+<sc-if value="{{hasMsgBtn}}" hint-placeholder-val="{{ false }}">
+<button type="button" onClick="{{aMsg}}" style="all: unset; box-sizing: border-box; width: 100%; min-height: var(--btn2); padding: 8px 18px; border-radius: 999px; background: #22253A; color: #FFFFFF; font-size: var(--body); font-weight: 600; display: flex; align-items: center; justify-content: center; text-align: center; cursor: pointer">{{msgBtn}}</button>
+</sc-if>
+<sc-if value="{{connFoot}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; align-items: center; justify-content: center; gap: 6px; font-size: var(--cap); color: #6EE596"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6EE596" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>iPhone conectado</div>
+</sc-if>
+</sc-if>
+
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"st":{"editor":null},"onAct":{"editor":null},"$preview":{"width":324,"height":394}}'>
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.props.st || { screen: 'ready', script: 'Lançamento de outono', mode: 'voice', speed: 1.2, elapsed: 42, take: 4 };
+    const L = !!s.large;
+    const vars = L
+      ? '--cap: 30px; --foot: 32px; --body: 36px; --title: 40px; --big: 88px; --btn: 100px; --btn2: 88px;'
+      : '--cap: 24px; --foot: 26px; --body: 30px; --title: 34px; --big: 80px; --btn: 92px; --btn2: 76px;';
+    const sc = s.screen || 'ready';
+    const fire = (n) => () => { if (this.props.onAct) this.props.onAct(n); };
+    const el = s.elapsed || 0;
+    const elapsedTxt = String(Math.floor(el / 60)).padStart(2, '0') + ':' + String(el % 60).padStart(2, '0');
+    const speedTxt = (s.speed || 1).toFixed(1).replace('.', ',') + '×';
+    const hasScript = !!s.script;
+    const voice = s.mode === 'voice';
+    const recText = sc === 'text';
+    const rehearsal = sc === 'rehearsal';
+    const isText = recText || rehearsal;
+    const playing = !!s.playing;
+
+    const waits = {
+      checking: ['Verificando o iPhone', 'O estado aparece quando o iPhone responder.', false],
+      requesting: ['Pedindo ao iPhone', 'Ainda não está gravando.', true],
+      stopping: ['Encerrando no iPhone', 'Aguarde a confirmação.', false],
+      saving: ['Salvando no iPhone', 'Aguarde a confirmação.', false],
+      sending: ['Enviando ao iPhone', 'Aguarde a confirmação.', false]
+    };
+    const msgs = {
+      nosession: ['phone', '#FFD60A', 'Prepare no iPhone', 'Abra o Cue no iPhone e escolha um roteiro ou a gravação livre.', '', ''],
+      lost: ['unlink', '#FFB340', 'Sem conexão', 'A gravação pode continuar no iPhone. Confira por lá.', 'Tentar de novo', 'retry'],
+      noconfirm: ['phone', '#FFB340', 'Sem resposta', 'Confira no iPhone se o comando foi feito.', 'Atualizar', 'retry'],
+      failstart: ['warn', '#FFB340', 'Não começou a gravar', 'Confira a câmera no iPhone.', 'Tentar de novo', 'record'],
+      failsave: ['warn', '#FFB340', 'Salvamento não confirmado', 'Confira no iPhone se o take foi salvo.', 'OK', 'ok'],
+      unavailable: ['clock', '#CDD0E0', 'Indisponível agora', 'Volte à tela de gravação no iPhone.', 'OK', 'ok']
+    };
+    const w = waits[sc];
+    const m = msgs[sc];
+    const isRecHeader = sc === 'rec' || recText || sc === 'stopping';
+    const showDots = (sc === 'rec' || recText) && hasScript;
+
+    return {
+      vars,
+      sleep: !!s.sleep,
+      hConn: ['ready', 'requesting', 'saved', 'nosession', 'failstart', 'failsave', 'unavailable', 'saving'].includes(sc),
+      hLost: sc === 'lost' || sc === 'noconfirm' || sc === 'checking',
+      hLostText: sc === 'checking' ? 'Conectando' : (sc === 'lost' ? 'Sem conexão' : 'Sem resposta'),
+      hRec: isRecHeader,
+      hRecTime: recText,
+      hCount: sc === 'count',
+      hRehearsal: rehearsal || sc === 'sending',
+      hPlain: false,
+      isWait: !!w,
+      waitTitle: w ? w[0] : '',
+      waitBody: w ? w[1] : '',
+      waitCancel: w ? w[2] : false,
+      isReady: sc === 'ready',
+      hasScript,
+      noScript: !hasScript,
+      voiceChip: hasScript && voice,
+      manualChip: hasScript && !voice,
+      script: s.script || '',
+      scriptLine: s.script || 'Gravação livre',
+      isCount: sc === 'count',
+      count: s.count || 3,
+      isRec: sc === 'rec',
+      armOn: !!s.armed,
+      armOff: !s.armed,
+      isText,
+      voice,
+      manual: !voice,
+      playing,
+      paused: !playing,
+      playLabel: playing ? (recText ? 'Pausar texto' : 'Pausar leitura') : (recText ? 'Retomar texto' : 'Ler'),
+      playCaption: playing ? (recText ? 'Pausar texto' : 'Pausar') : (recText ? 'Retomar texto' : 'Ler'),
+      crownOn: !!s.crown,
+      crownOff: !s.crown,
+      camNote: recText && !playing,
+      rehearsalEnd: rehearsal,
+      showDots,
+      dotRec: sc === 'rec' ? '#FFFFFF' : '#4A4D6A',
+      dotText: recText ? '#FFFFFF' : '#4A4D6A',
+      isSaved: sc === 'saved',
+      take: s.take || 1,
+      elapsedTxt,
+      speedTxt,
+      isMsg: !!m,
+      icPhone: m ? m[0] === 'phone' : false,
+      icUnlink: m ? m[0] === 'unlink' : false,
+      icWarn: m ? m[0] === 'warn' : false,
+      icClock: m ? m[0] === 'clock' : false,
+      msgTone: m ? m[1] : '#FFFFFF',
+      msgTitle: m ? m[2] : '',
+      msgBody: m ? m[3] : '',
+      msgBtn: m ? m[4] : '',
+      hasMsgBtn: m ? !!m[4] : false,
+      connFoot: sc === 'nosession',
+      hasStale: sc === 'lost' && !!s.stale,
+      stale: s.stale || '',
+      aRecord: fire('record'),
+      aRehearse: fire('rehearse'),
+      aCancel: fire('cancel'),
+      aStop: fire('stop'),
+      aBack: fire('back'),
+      aPlay: fire('play'),
+      aSlower: fire('slower'),
+      aFaster: fire('faster'),
+      aCrown: fire('crown'),
+      aEndRehearsal: fire('endRehearsal'),
+      aPageRec: fire('pageRec'),
+      aPageText: fire('pageText'),
+      aDone: fire('done'),
+      aMsg: fire(m ? m[5] : 'ok')
+    };
+  }
+}
+</script>
+</body>
+</html>

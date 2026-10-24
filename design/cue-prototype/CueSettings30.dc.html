@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+@keyframes stTw{0%,100%{opacity:.16;transform:scale(.75)}45%{opacity:.75;transform:scale(1)}60%{opacity:.58}}
+@keyframes stIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:none}}
+@keyframes stUp{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}
+.__stscroll::-webkit-scrollbar{display:none}
+.__stsearch::placeholder{color:rgba(235,235,245,0.55)}
+</style>
+</helmet>
+<div style="position:absolute;inset:0;overflow:hidden;color:#fff;font-family:-apple-system,'SF Pro Text',system-ui,sans-serif;-webkit-font-smoothing:antialiased;background:radial-gradient(70% 30% at 20% 6%,rgba(157,140,255,0.20),rgba(157,140,255,0) 70%),radial-gradient(55% 28% at 85% 60%,rgba(94,78,224,0.12),rgba(94,78,224,0) 70%),#0A0B12">
+  <div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(0.9px 0.9px at 115px 143px,rgba(255,255,255,0.57),transparent),radial-gradient(0.9px 0.9px at 115px 130px,rgba(228,222,255,0.37),transparent),radial-gradient(0.9px 0.9px at 131px 121px,rgba(255,255,255,0.58),transparent),radial-gradient(0.7px 0.7px at 24px 114px,rgba(255,236,170,0.33),transparent),radial-gradient(0.6px 0.6px at 177px 162px,rgba(255,255,255,0.64),transparent),radial-gradient(0.9px 0.9px at 115px 167px,rgba(228,222,255,0.53),transparent),radial-gradient(0.9px 0.9px at 159px 3px,rgba(255,255,255,0.32),transparent),radial-gradient(1.0px 1.0px at 9px 48px,rgba(255,236,170,0.51),transparent),radial-gradient(0.8px 0.8px at 118px 83px,rgba(255,255,255,0.59),transparent),radial-gradient(0.9px 0.9px at 132px 59px,rgba(228,222,255,0.47),transparent),radial-gradient(0.8px 0.8px at 169px 21px,rgba(255,255,255,0.4),transparent),radial-gradient(0.9px 0.9px at 141px 21px,rgba(255,236,170,0.41),transparent),radial-gradient(0.7px 0.7px at 58px 131px,rgba(255,255,255,0.32),transparent),radial-gradient(0.6px 0.6px at 27px 102px,rgba(228,222,255,0.4),transparent),radial-gradient(0.9px 0.9px at 17px 4px,rgba(255,255,255,0.3),transparent),radial-gradient(0.8px 0.8px at 53px 13px,rgba(255,236,170,0.64),transparent)"></div>
+  <div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1.3px 1.3px at 242px 137px,rgba(255,255,255,0.68),transparent),radial-gradient(1.0px 1.0px at 73px 195px,rgba(228,222,255,0.58),transparent),radial-gradient(1.3px 1.3px at 140px 235px,rgba(255,255,255,0.66),transparent),radial-gradient(1.3px 1.3px at 285px 0px,rgba(255,236,170,0.5),transparent),radial-gradient(1.1px 1.1px at 225px 188px,rgba(255,255,255,0.77),transparent),radial-gradient(1.4px 1.4px at 30px 295px,rgba(228,222,255,0.48),transparent),radial-gradient(1.3px 1.3px at 351px 172px,rgba(255,255,255,0.73),transparent),radial-gradient(1.5px 1.5px at 44px 9px,rgba(255,236,170,0.74),transparent),radial-gradient(1.1px 1.1px at 338px 260px,rgba(255,255,255,0.8),transparent),radial-gradient(1.1px 1.1px at 216px 227px,rgba(228,222,255,0.6),transparent),radial-gradient(1.2px 1.2px at 69px 276px,rgba(255,255,255,0.67),transparent),radial-gradient(1.3px 1.3px at 83px 26px,rgba(255,236,170,0.63),transparent)"></div>
+  <div aria-hidden="true" style="position:absolute;inset:0;pointer-events:none;display:none"></div>
+  <sc-for list="{{ tw }}" as="t" hint-placeholder-count="10"><span aria-hidden="true" style="position:absolute;left:{{ t.x }};top:{{ t.y }};width:{{ t.s }};height:{{ t.s }};border-radius:50%;background:{{ t.c }};box-shadow:0 0 4px {{ t.c }};pointer-events:none;animation:stTw 7s ease-in-out {{ t.d }} infinite"></span></sc-for>
+
+  <div ref="{{ setScroll }}" class="__stscroll" style="position:absolute;inset:0;overflow-y:auto;scrollbar-width:none;padding:{{ padTop }} 0 130px;box-sizing:border-box">
+    <div ref="{{ setPage }}">
+      <sc-if value="{{ large }}" hint-placeholder-val="{{ true }}"><div style="padding:0 20px;font-size:34px;font-weight:700;letter-spacing:0.2px">{{ title }}</div></sc-if>
+      <sc-if value="{{ hasSearch }}" hint-placeholder-val="{{ true }}">
+        <div style="margin:10px 16px 0;height:38px;border-radius:19px;background:rgba(118,118,128,0.24);display:flex;align-items:center;gap:7px;padding:0 6px 0 12px">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(235,235,245,0.6)" style="stroke-width:2.4;stroke-linecap:round;flex-shrink:0"><circle cx="11" cy="11" r="6.5"></circle><path d="M16 16l4.5 4.5"></path></svg>
+          <input class="__stsearch" value="{{ q }}" onChange="{{ onQ }}" placeholder="Search" aria-label="Search settings" style="flex:1;min-width:0;height:36px;border:0;outline:none;background:transparent;color:#fff;font-family:inherit;font-size:17px;caret-color:#FFD60A">
+          <sc-if value="{{ hasQ }}"><div onClick="{{ clearQ }}" role="button" aria-label="Clear" style="width:30px;height:30px;display:flex;align-items:center;justify-content:center;cursor:pointer"><span style="width:18px;height:18px;border-radius:9px;background:rgba(235,235,245,0.3);color:#0A0B12;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center">×</span></div></sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hdrSetup }}" hint-placeholder-val="{{ true }}">
+        <div style="margin:16px 16px 0;border-radius:24px;background:radial-gradient(120% 90% at 0% 0%,rgba(157,140,255,0.30),rgba(157,140,255,0) 60%),rgba(22,24,38,0.62);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:inset 0 0 0 0.5px rgba(196,184,255,0.35);padding:14px;display:flex;gap:14px">
+          <div style="width:66px;height:118px;border-radius:14px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,0.35);position:relative;flex-shrink:0;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;box-sizing:border-box"><div style="position:absolute;left:8px;right:8px;top:16px;height:30px;border-radius:5px;background:rgba(0,0,0,0.55);box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.2);display:flex;flex-direction:column;justify-content:center;gap:3px;padding:0 5px"><span style="height:2.5px;border-radius:2px;background:#fff;width:90%"></span><span style="height:2.5px;border-radius:2px;background:#FFD60A;width:70%"></span><span style="height:2.5px;border-radius:2px;background:rgba(255,255,255,0.5);width:80%"></span></div><span style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10px;font-weight:700;color:rgba(235,235,245,0.7)">{{ fmtL }}</span></div>
+          <div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:6px">
+            <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;font-weight:700;letter-spacing:1px;color:#FFD60A">YOUR SETUP</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px"><sc-for list="{{ setupVals }}" as="v" hint-placeholder-count="4"><div onClick="{{ v.go }}" role="button" style="border-radius:11px;background:rgba(5,6,12,0.42);padding:7px 9px;min-width:0;cursor:pointer"><div style="font-size:11px;color:rgba(235,235,245,0.6)">{{ v.k }}</div><div style="font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ v.v }}</div></div></sc-for></div>
+          </div>
+        </div>
+        <div style="padding:8px 32px 0;font-size:13px;line-height:1.35;color:rgba(235,235,245,0.6)">Tap a value to change it. Platforms may suggest a setup. You choose.</div>
+      </sc-if>
+      <sc-if value="{{ hdrPrompter }}" hint-placeholder-val="{{ false }}">
+        <div style="position:sticky;top:0;z-index:3;padding:4px 16px 0">
+          <div style="position:relative;height:{{ pv.h }};border-radius:22px;background:{{ pv.bg }};box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.14),0 10px 30px rgba(0,0,0,0.35);overflow:hidden;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);transition:height .25s">
+            <div style="position:absolute;left:12px;top:10px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10px;font-weight:700;letter-spacing:.1em;color:rgba(235,235,245,0.5)">PREVIEW</div>
+            <sc-if value="{{ pv.guide }}"><div style="position:absolute;left:0;right:0;top:{{ pv.ly }};height:1.5px;background:rgba(255,214,10,0.55);transition:top .2s"></div></sc-if>
+            <div style="position:absolute;left:{{ pv.mx }};right:{{ pv.mx }};top:{{ pv.ty }};font-family:{{ pv.ff }};font-size:{{ pv.fs }};line-height:{{ pv.lh }};font-weight:600;text-align:{{ pv.al }};color:{{ pv.c }};transform:{{ pv.tf }};transition:font-size .2s,top .2s,left .2s,right .2s">Three tiny habits changed my mornings.<sc-if value="{{ pv.coach }}"><span style="margin-left:6px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10px;font-weight:700;color:#FFD60A;background:rgba(255,214,10,0.14);border-radius:4px;padding:1px 5px;vertical-align:3px">PAUSE</span></sc-if> <span style="opacity:.8">One: no phone for the first twenty minutes.</span></div>
+          </div>
+        </div>
+      </sc-if>
+      <sc-if value="{{ hdrRemote }}" hint-placeholder-val="{{ false }}">
+        <div style="margin:14px 16px 0;border-radius:24px;background:radial-gradient(100% 80% at 50% 0%,{{ rmv.glow }},rgba(0,0,0,0) 60%),rgba(22,24,38,0.62);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.12);padding:20px 16px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+          <div style="width:84px;height:84px;border-radius:42px;box-shadow:inset 0 0 0 2px {{ rmv.ring }},0 0 0 10px {{ rmv.halo }};display:flex;align-items:center;justify-content:center;transition:box-shadow .3s"><svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="{{ rmv.ic }}" style="stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round"><rect x="8" y="3" width="8" height="18" rx="2"></rect><path d="M4.5 9a5 5 0 000 6M19.5 9a5 5 0 010 6"></path></svg></div>
+          <div style="font-size:19px;font-weight:700">{{ rmv.title }}</div>
+          <div style="font-size:14px;line-height:1.4;color:{{ rmv.subC }};max-width:280px">{{ rmv.sub }}</div>
+        </div>
+      </sc-if>
+      <sc-for list="{{ sections }}" as="g" hint-placeholder-count="3">
+        <div style="padding:{{ g.hp }}">
+          <sc-if value="{{ g.hasH }}"><div style="padding:0 20px 7px;font-size:13px;font-weight:600;color:rgba(235,235,245,0.6);text-transform:{{ g.tt }};letter-spacing:0.3px">{{ g.h }}</div></sc-if>
+          <div style="margin:0 16px;border-radius:24px;background:rgba(22,24,38,0.62);backdrop-filter:blur(18px) saturate(140%);-webkit-backdrop-filter:blur(18px) saturate(140%);box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.10);overflow:hidden">
+            <sc-for list="{{ g.rows }}" as="r" hint-placeholder-count="3">
+              <div style="display:flex;flex-direction:column">
+                <div onClick="{{ r.tap }}" role="{{ r.role }}" aria-label="{{ r.l }}" style="display:flex;align-items:center;gap:12px;min-height:{{ r.mh }};padding:6px 14px;box-sizing:border-box;cursor:{{ r.cur }}" style-active="background:rgba(255,255,255,0.05)">
+                  <sc-if value="{{ r.hasIc }}"><span style="width:30px;height:30px;border-radius:8px;background:{{ r.icBg }};display:flex;align-items:center;justify-content:center;flex-shrink:0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="{{ r.icFg }}" style="stroke-width:2;stroke-linecap:round;stroke-linejoin:round"><path d="{{ r.ic }}"></path></svg></span></sc-if>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:17px;color:{{ r.lc }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ r.l }}<sc-if value="{{ r.isNew }}"><span style="margin-left:8px;font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10px;font-weight:700;color:#000;background:#FFD60A;border-radius:5px;padding:1px 5px;vertical-align:2px">NEW</span></sc-if></div>
+                    <sc-if value="{{ r.hasS }}"><div style="font-size:13px;line-height:1.3;color:rgba(235,235,245,0.6);margin-top:1px">{{ r.s }}</div></sc-if>
+                  </div>
+                  <sc-if value="{{ r.hasV }}"><span style="font-size:17px;color:rgba(235,235,245,0.6);white-space:nowrap;flex-shrink:0;font-variant-numeric:tabular-nums">{{ r.v }}</span></sc-if>
+                  <sc-if value="{{ r.menu }}"><svg width="10" height="14" viewBox="0 0 10 16" fill="none" stroke="rgba(235,235,245,0.45)" style="stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0"><path d="M2 6l3-3 3 3M2 10l3 3 3-3"></path></svg></sc-if>
+                  <sc-if value="{{ r.nav }}"><svg width="8" height="14" viewBox="0 0 8 14" fill="none" stroke="rgba(235,235,245,0.3)" style="stroke-width:2;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0"><path d="M1 1l6 6-6 6"></path></svg></sc-if>
+                  <sc-if value="{{ r.tog }}"><span role="switch" aria-checked="{{ r.on }}" style="width:51px;height:31px;border-radius:16px;background:{{ r.tBg }};position:relative;flex-shrink:0;transition:background .2s"><span style="position:absolute;top:2px;left:{{ r.tX }};width:27px;height:27px;border-radius:50%;background:#fff;box-shadow:0 2px 4px rgba(0,0,0,0.25);transition:left .2s"></span></span></sc-if>
+                  <sc-if value="{{ r.check }}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" style="stroke-width:2.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if>
+                </div>
+                <sc-if value="{{ r.seg }}"><div style="display:flex;gap:2px;margin:0 14px 12px;padding:2px;border-radius:9px;background:rgba(118,118,128,0.24)"><sc-for list="{{ r.opts }}" as="o" hint-placeholder-count="2"><div onClick="{{ o.pick }}" role="radio" aria-checked="{{ o.on }}" style="flex:1;height:32px;border-radius:7px;background:{{ o.bg }};display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:{{ o.fw }};cursor:pointer;transition:background .2s">{{ o.l }}</div></sc-for></div></sc-if>
+                <sc-if value="{{ r.slider }}"><div style="display:flex;align-items:center;gap:10px;margin:0 14px 12px"><span style="font-size:12px;color:rgba(235,235,245,0.55);white-space:nowrap">{{ r.a }}</span><div onPointerDown="{{ r.down }}" role="slider" aria-label="{{ r.l }}" aria-valuetext="{{ r.v }}" style="position:relative;flex:1;height:30px;cursor:pointer;touch-action:none"><div style="position:absolute;left:12px;right:12px;top:0;bottom:0"><div style="position:absolute;left:0;right:0;top:13px;height:4px;border-radius:2px;background:rgba(120,120,128,0.32)"></div><div style="position:absolute;left:0;top:13px;height:4px;border-radius:2px;width:{{ r.p }};background:#FFD60A"></div><div style="position:absolute;top:3px;left:{{ r.p }};width:24px;height:24px;margin-left:-12px;border-radius:12px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,0.35)"></div></div></div><span style="font-size:12px;color:rgba(235,235,245,0.55);white-space:nowrap">{{ r.b }}</span></div></sc-if>
+                <sc-if value="{{ r.tiles }}"><div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:0 14px 12px"><sc-for list="{{ r.opts }}" as="o" hint-placeholder-count="4"><div onClick="{{ o.pick }}" role="radio" aria-checked="{{ o.on }}" style="height:64px;border-radius:13px;background:{{ o.bg }};box-shadow:inset 0 0 0 {{ o.bw }} #FFD60A;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;font-size:13px;font-weight:600;cursor:pointer"><span style="width:{{ o.w }};height:{{ o.h }};border-radius:3px;border:1.6px solid #fff"></span>{{ o.l }}</div></sc-for></div></sc-if>
+                <sc-if value="{{ r.bd }}"><div style="height:0.5px;background:rgba(84,84,88,0.55);margin-left:{{ r.bdL }}"></div></sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ g.hasF }}"><div style="padding:7px 32px 0;font-size:13px;line-height:1.35;color:rgba(235,235,245,0.6);text-wrap:pretty">{{ g.f }}</div></sc-if>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noResults }}"><div style="padding:60px 32px 0;text-align:center;display:flex;flex-direction:column;gap:6px"><div style="font-size:20px;font-weight:700">No results for “{{ q }}”</div><div style="font-size:15px;color:rgba(235,235,245,0.6)">Try another word, like speed or mirror.</div></div></sc-if>
+    </div>
+  </div>
+
+  <sc-if value="{{ inline }}" hint-placeholder-val="{{ false }}">
+    <div style="position:absolute;left:0;right:0;top:0;height:112px;z-index:6;background:linear-gradient(to bottom,rgba(10,11,18,0.96) 70%,rgba(10,11,18,0));pointer-events:none"></div>
+    <div style="position:absolute;left:16px;right:16px;top:56px;height:48px;z-index:7;display:flex;align-items:center;gap:8px">
+      <div onClick="{{ back }}" role="button" aria-label="Back" style="width:44px;height:44px;border-radius:22px;background:linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.04)),rgba(30,32,48,0.55);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);box-shadow:inset 0 0.5px 0 rgba(255,255,255,0.35),inset 0 0 0 0.5px rgba(255,255,255,0.14);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer" style-active="transform:scale(1.08);filter:brightness(1.15)"><svg width="11" height="18" viewBox="0 0 12 20" fill="none" stroke="#fff" style="stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round"><path d="M10 2L2 10l8 8"></path></svg></div>
+      <div style="flex:1;text-align:center;font-size:17px;font-weight:600;margin-right:52px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ title }}</div>
+    </div>
+  </sc-if>
+
+  <div style="position: absolute; z-index: 8; left: 16px; right: 16px; bottom: 26px; height: 64px; border-radius: 32px; background: linear-gradient(180deg,rgba(255,255,255,0.10),rgba(255,255,255,0.03) 45%,rgba(255,255,255,0.05)),rgba(22,24,38,0.42); -webkit-backdrop-filter: blur(22px) saturate(180%); backdrop-filter: blur(22px) saturate(180%); border: 0.5px solid rgba(255,255,255,0.18); box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), inset 0 -1px 0 rgba(255,255,255,0.05), 0 10px 30px rgba(0,0,0,0.35); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); align-items: center; padding: 0 5px; box-sizing: border-box">
+    <button onClick="{{ tabX }}" style="height: 54px; border: 0; background: transparent; color: rgba(225,228,245,0.62); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-family: inherit; font-size: 10px; font-weight: 500; padding: 0"><svg style="display: block; margin: 2px 0" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="3.5"></rect><path d="M9 8.5h6M9 12.5h6M9 16.5h3.5"></path></svg>Scripts</button>
+    <button onClick="{{ tabX }}" style="height: 54px; border: 0; background: transparent; color: rgba(225,228,245,0.62); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-family: inherit; font-size: 10px; font-weight: 500; padding: 0"><svg style="display: block; margin: 2px 0" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.5" y="6.5" width="14" height="14" rx="3.5"></rect><path d="M7.5 3.5h9.5a3.5 3.5 0 0 1 3.5 3.5v9.5"></path><path d="M9 10.6v5.8l4.8-2.9z" fill="currentColor" stroke="none"></path></svg>Takes</button>
+    <button onClick="{{ tabX }}" style="height: 54px; border: 0; background: transparent; color: rgba(225,228,245,0.62); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-family: inherit; font-size: 10px; font-weight: 500; padding: 0"><svg style="display: block" width="30" height="30" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="1.6"></circle><circle cx="12" cy="12" r="6.6" fill="#FF3B30"></circle></svg>Record</button>
+    <button onClick="{{ tabX }}" style="height: 54px; border: 0; background: transparent; color: rgba(225,228,245,0.62); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-family: inherit; font-size: 10px; font-weight: 500; padding: 0"><svg style="display: block; margin: 2px 0" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9.2"></circle><circle cx="12" cy="10" r="3.1"></circle><path d="M6.6 18.3c1.3-2.1 3.2-3.1 5.4-3.1s4.1 1 5.4 3.1"></path></svg>Profile</button>
+    <button onClick="{{ tabX }}" style="position: relative; z-index: 0; isolation: isolate; height: 54px; border: 0; border-radius: 27px; background: transparent; color: #FFD60A; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; font-family: inherit; font-size: 10px; font-weight: 600; padding: 0"><svg style="display: block; margin: 2px 0" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h8.5M17.5 8H20M4 16h2.5M11.5 16H20"></path><circle cx="15" cy="8" r="2.5"></circle><circle cx="9" cy="16" r="2.5"></circle></svg>Settings<span aria-hidden="true" style="position: absolute; left: 2px; right: 2px; top: 50%; height: 56px; margin-top: -28px; border-radius: 26px; background: linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.06)); border: 0.5px solid rgba(255,255,255,0.2); box-shadow: inset 0 1px 0 rgba(255,255,255,0.25); z-index: -1"></span></button>
+  </div>
+
+  <sc-if value="{{ menuOn }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeMenu }}" style="position:absolute;inset:0;z-index:40"></div>
+    <div style="position:absolute;right:20px;top:{{ menuY }};z-index:41;min-width:210px;border-radius:14px;background:rgba(40,42,58,0.92);backdrop-filter:blur(30px) saturate(170%);-webkit-backdrop-filter:blur(30px) saturate(170%);box-shadow:inset 0 0 0 0.5px rgba(255,255,255,0.14),0 18px 50px rgba(0,0,0,0.55);overflow:hidden;transform-origin:top right;animation:stIn .18s ease-out">
+      <sc-for list="{{ menuOpts }}" as="m" hint-placeholder-count="3"><div onClick="{{ m.pick }}" role="menuitemradio" aria-checked="{{ m.on }}" style="min-height:44px;padding:0 14px;display:flex;align-items:center;gap:10px;font-size:16px;border-top:{{ m.bd }};cursor:pointer" style-hover="background:rgba(255,255,255,0.06)"><span style="width:16px;display:flex;justify-content:center"><sc-if value="{{ m.on }}"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" style="stroke-width:3;stroke-linecap:round;stroke-linejoin:round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg></sc-if></span><span style="flex:1">{{ m.l }}</span></div></sc-for>
+    </div>
+  </sc-if>
+
+  <sc-if value="{{ confirmOn }}" hint-placeholder-val="{{ false }}">
+    <div onClick="{{ closeConfirm }}" style="position:absolute;inset:0;z-index:50;background:rgba(5,6,12,0.5);animation:stIn .2s"></div>
+    <div style="position:absolute;left:8px;right:8px;bottom:12px;z-index:51;display:flex;flex-direction:column;gap:8px;animation:stUp .3s cubic-bezier(.2,.9,.25,1)">
+      <div style="border-radius:16px;background:rgba(40,42,58,0.94);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);overflow:hidden;text-align:center">
+        <div style="padding:14px 16px;font-size:13px;line-height:1.35;color:rgba(235,235,245,0.6)">Deletes your scripts, takes, edits and My Cue Voice from this iPhone. This can’t be undone.</div>
+        <div onClick="{{ doDelete }}" role="button" style="height:56px;border-top:0.5px solid rgba(84,84,88,0.6);display:flex;align-items:center;justify-content:center;font-size:19px;color:#FF453A;cursor:pointer">Delete my Cue data</div>
+      </div>
+      <div onClick="{{ closeConfirm }}" role="button" style="height:56px;border-radius:16px;background:rgba(40,42,58,0.94);backdrop-filter:blur(30px);-webkit-backdrop-filter:blur(30px);display:flex;align-items:center;justify-content:center;font-size:19px;font-weight:600;cursor:pointer">Cancel</div>
+    </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;id&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;11.1&quot;,&quot;11.2&quot;,&quot;11.3&quot;],&quot;default&quot;:&quot;11.1&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;onAction&quot;:{&quot;editor&quot;:null,&quot;tsType&quot;:&quot;(id: string, texts: string[], p: object) =&gt; boolean&quot;}}">
+class Component extends DCLogic {
+  static START = { '11.1': ['root'], '11.2': ['root', 'prompter'], '11.3': ['root', 'personalize'] };
+  state = { stack: Component.START[this.props.id] || ['root'], q: '', menu: null, confirm: false,
+    cam: 'Front', res: '1080p', fps: '30 fps', fmt: '9:16', mic: 'Automatic', recCount: '3 s', grid: false,
+    follow: true, speed: 150, playCount: '3 s', coach: true, size: 'Large', font: 'SF Pro', lsp: 1.35, align: 'Center', tcolor: 'White',
+    guide: true, line: 22, winH: 300, winW: 92, margin: 20, bgOp: 58, blur: 35, zone: 'TikTok', safe: true, zT: 12, zB: 22, zL: 4, zR: 14, studioBg: 'Night', mirror: false, flipV: false,
+    rm: 'off', appLang: 'iPhone Language', vf: 'Same as script', sl: 'Auto-detect', ai: true, imp: false, tag: true, sky: 'Calm', cel: true, hap: true, icon: 'Default' };
+  componentDidUpdate(pp, ps) {
+    if (pp.id !== this.props.id && Component.START[this.props.id]) this.setState({ stack: Component.START[this.props.id], q: '' });
+    if (ps.stack.length !== this.state.stack.length && this.pageEl) { const fwd = this.state.stack.length > ps.stack.length; this.pageEl.animate([{ transform: 'translateX(' + (fwd ? 40 : -40) + 'px)', opacity: 0 }, { transform: 'none', opacity: 1 }], { duration: 280, easing: 'cubic-bezier(.2,.9,.25,1)' }); if (this.scrollEl) this.scrollEl.scrollTop = 0; }
+  }
+  componentWillUnmount() { clearTimeout(this._rmT); }
+  act(texts, msg) { this.props.onAction && this.props.onAction(this.props.id, texts, { x: 0, y: 0, msg }); }
+  toast(m) { this.act(['__toast'], m); }
+  push(p) { this.setState(s => ({ stack: [...s.stack, p], menu: null })); }
+  I = { rec: 'M3 7.5A2.5 2.5 0 015.5 5h8A2.5 2.5 0 0116 7.5v9a2.5 2.5 0 01-2.5 2.5h-8A2.5 2.5 0 013 16.5zM16 10.5l5-3v9l-5-3', tp: 'M5 4h14v16H5zM8 9h8M8 13h8M8 17h5', remote: 'M8 3h8v18H8zM4.5 9a5 5 0 000 6M19.5 9a5 5 0 010 6', voice: 'M11 3l1.9 5.1L18 10l-5.1 1.9L11 17l-1.9-5.1L4 10l5.1-1.9z', sky: 'M12 3l2 5 5 2-5 2-2 5-2-5-5-2 5-2zM19 15l.8 2 2 .8-2 .8-.8 2-.8-2-2-.8 2-.8z', lang: 'M12 3a9 9 0 100 18 9 9 0 000-18zM3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9S14.5 18.4 12 21M12 3C9.5 5.6 8.2 8.6 8.2 12S9.5 18.4 12 21', priv: 'M12 3l7 3v6c0 4.4-3 7.6-7 9-4-1.4-7-4.6-7-9V6z', pro: 'M12 3.5l2.5 5.1 5.6.8-4 3.9 1 5.6L12 16.3l-5.1 2.6 1-5.6-4-3.9 5.6-.8z', restore: 'M3.5 12a8.5 8.5 0 102.6-6.1M3.5 3.5V8H8', doc: 'M7 3h7l4 4v14H7zM14 3v4h4M10 12h5M10 16h5', info: 'M12 3a9 9 0 100 18 9 9 0 000-18zM12 11v6M12 7.5v.5' };
+  pages() {
+    const s = this.state, Y = '#FFD60A';
+    const base = o => ({ l: '', s: '', v: '', hasS: !!o.s, hasV: o.v != null && o.v !== '', hasIc: !!o.ic, icBg: o.icBg || 'rgba(110,116,150,0.35)', icFg: o.icFg || '#fff', lc: o.lc || '#fff', nav: false, menu: false, tog: false, check: false, seg: false, slider: false, tiles: false, isNew: false, mh: o.s ? '60px' : '50px', cur: 'default', role: 'group', on: 'false', tap: () => {}, opts: [], tBg: '', tX: '', p: '0%', a: '', b: '', down: () => {}, bdL: o.ic ? '56px' : '14px', kw: '', ...o, ic: o.ic ? this.I[o.ic] : '', bd: true });
+    const nav = (l, page, o = {}) => base({ l, nav: true, cur: 'pointer', role: 'button', tap: () => this.push(page), ...o });
+    const tg = (l, k, o = {}) => base({ l, tog: true, on: s[k] ? 'true' : 'false', tBg: s[k] ? '#34C759' : 'rgba(120,120,128,0.32)', tX: s[k] ? '22px' : '2px', cur: 'pointer', role: 'switch', tap: () => this.setState({ [k]: !s[k] }), ...o });
+    const menu = (l, k, opts, o = {}) => base({ l, v: s[k], menu: true, cur: 'pointer', role: 'button', tap: e => { const r = e.currentTarget.getBoundingClientRect(), pr = this.scrollEl.parentElement.getBoundingClientRect(); this.setState({ menu: { k, opts, y: Math.min(r.bottom - pr.top + 4, 844 - 60 - opts.length * 45) } }); }, ...o });
+    const seg = (l, k, opts, o = {}) => base({ l, seg: true, mh: '46px', opts: opts.map(x => ({ l: x, on: s[k] === x ? 'true' : 'false', bg: s[k] === x ? '#636366' : 'transparent', fw: s[k] === x ? 600 : 400, pick: e => { e.stopPropagation(); this.setState({ [k]: x }); } })), ...o });
+    const sld = (l, k, min, max, step, fmt, a, b, o = {}) => base({ l, v: fmt(s[k]), slider: true, p: ((s[k] - min) / (max - min) * 100) + '%', a, b, down: e => { e.stopPropagation(); const r = e.currentTarget.getBoundingClientRect(), L = r.left + 12, W = r.width - 24; const set = x => { let v = min + Math.max(0, Math.min(1, (x - L) / W)) * (max - min); v = +(Math.round(v / step) * step).toFixed(2); this.setState({ [k]: v }); }; set(e.clientX); const mv = ev => set(ev.clientX), up = () => { window.removeEventListener('pointermove', mv); window.removeEventListener('pointerup', up); }; window.addEventListener('pointermove', mv); window.addEventListener('pointerup', up); }, ...o });
+    const pick = (l, k, v, o = {}) => base({ l, check: s[k] === v, cur: 'pointer', role: 'radio', on: s[k] === v ? 'true' : 'false', tap: () => this.setState({ [k]: v }), ...o });
+    const btn = (l, fn, o = {}) => base({ l, lc: Y, cur: 'pointer', role: 'button', tap: fn, ...o });
+    const sec = (h, rows, f, top) => { rows = rows.filter(Boolean); if (!rows.length) return null; rows[rows.length - 1].bd = false; return { h: h || '', hasH: !!h, tt: 'uppercase', f: f || '', hasF: !!f, hp: (top == null ? 24 : top) + 'px 0 0', rows }; };
+    const fmtTiles = base({ l: '', tiles: true, mh: '0px', opts: [['9:16', 13, 22], ['4:5', 18, 22], ['1:1', 22, 22], ['16:9', 24, 14]].map(([l, w, h]) => ({ l, w: w + 'px', h: h + 'px', on: s.fmt === l ? 'true' : 'false', bg: s.fmt === l ? 'rgba(255,214,10,0.12)' : 'rgba(5,6,12,0.42)', bw: s.fmt === l ? '2px' : '0px', pick: e => { e.stopPropagation(); this.setState({ fmt: l }); } })), kw: 'format 9:16 4:5 1:1 16:9 vertical' });
+    const pct = v => Math.round(v) + '%';
+    const rmT = s.rm === 'on' ? 'Connected' : s.rm === 'pair' ? 'Waiting…' : 'Off';
+    return {
+      root: { t: 'Settings', large: true, search: true, hdr: 'setup', sections: [
+        sec('Create', [nav('Recording', 'recording', { v: s.cam + ' · ' + s.res, ic: 'rec', icBg: '#FF453A' }), nav('Prompter', 'prompter', { v: s.follow ? 'Voice' : 'Steady', ic: 'tp', icBg: Y, icFg: '#000', kw: 'display aa text font size teleprompter' }), nav('Remote', 'remote', { v: rmT, ic: 'remote', icBg: '#0A84FF' })], 'Set it up once. Every recording starts from here.'),
+        sec('Your Cue', [base({ l: 'My Cue Voice', v: '71%', ic: 'voice', icBg: '#5E4EE0', nav: true, cur: 'pointer', role: 'button', tap: () => this.act(['__goto:9.3']) }), nav('Personalize', 'personalize', { isNew: true, ic: 'sky', icBg: '#BF5AF2' })]),
+        sec('General', [nav('Language & Region', 'language', { v: s.appLang === 'iPhone Language' ? 'English' : s.appLang, ic: 'lang', icBg: '#30B0C7' }), nav('Privacy & AI data', 'privacy', { ic: 'priv', icBg: '#34C759' })]),
+        sec('', [base({ l: 'Cue Pro', v: 'Free · 3 left', ic: 'pro', icBg: '#3A2E00', icFg: Y, nav: true, cur: 'pointer', role: 'button', tap: () => this.act(['__goto:11.4']) }), btn('Restore purchases', () => this.toast('No purchases to restore'), { ic: 'restore' })]),
+        sec('About', [btn('Privacy policy', () => this.toast('Opens in Safari'), { lc: '#fff', ic: 'doc', nav: true }), btn('Terms of use', () => this.toast('Opens in Safari'), { lc: '#fff', ic: 'doc', nav: true }), nav('Acknowledgements', 'ack', { ic: 'info' }), base({ l: 'Version', v: '3.0 (30)', ic: 'info' })])
+      ] },
+      recording: { t: 'Recording', sections: [
+        sec('Camera', [seg('Starts with', 'cam', ['Front', 'Back'], { kw: 'camera front back selfie' })], 'Flip anytime while recording.', 12),
+        sec('Quality', [menu('Resolution', 'res', ['720p', '1080p', '4K']), menu('Frame rate', 'fps', ['24 fps', '30 fps', '60 fps'])], 'A platform can suggest another setup. You choose.'),
+        sec('Default format', [fmtTiles], 'Framing, safe zones and export follow it.'),
+        sec('Microphone', [nav('Input', 'mic', { v: s.mic, kw: 'microphone mic audio airpods dji' })], 'Uses a connected mic when there is one.'),
+        sec('While recording', [menu('Countdown', 'recCount', ['Off', '3 s', '5 s', '10 s'], { kw: 'timer countdown' }), tg('Grid', 'grid', { s: 'Rule of thirds over the camera' })])
+      ] },
+      mic: { t: 'Microphone', sections: [sec('', ['Automatic', 'iPhone', 'AirPods Pro', 'DJI Mic 2'].map(m => pick(m, 'mic', m, m === 'Automatic' ? { s: 'A connected mic, or the iPhone’s' } : {})), 'Plug in or pair a mic and it shows up here.', 12)] },
+      prompter: { t: 'Prompter', hdr: 'prompter', sections: [
+        sec('Reading', [tg('Follow my voice', 'follow', { s: 'The text moves when you speak', kw: 'voice following steady' }), sld('Speed', 'speed', 80, 220, 5, v => v + ' wpm', '80', '220 wpm', { s: 'Used when Cue isn’t following you', kw: 'wpm scroll' }), menu('Countdown before play', 'playCount', ['Off', '3 s', '5 s', '10 s'], { kw: 'timer studio' }), tg('AI Coach', 'coach', { s: 'Cues like PAUSE or SMILE in the text', kw: 'cues coach pause smile' })], '', 16),
+        sec('Text', [seg('Text size', 'size', ['Small', 'Medium', 'Large', 'XL'], { kw: 'size bigger smaller aa' }), nav('Font', 'font', { v: s.font }), sld('Line spacing', 'lsp', 1, 1.8, 0.05, v => v.toFixed(2), 'Tight', 'Airy'), seg('Alignment', 'align', ['Left', 'Center']), menu('Text color', 'tcolor', ['White', 'Warm white', 'Yellow', 'Mint'])]),
+        sec('Reading line', [tg('Show reading line', 'guide'), sld('Position', 'line', 10, 50, 1, pct, 'Near camera', 'Middle', { kw: 'reading line eyes' }), btn('Reset to recommended', () => { this.setState({ line: 22, winH: 300, winW: 92, margin: 20 }); this.toast('Back to recommended'); })], s.line === 22 ? '118 pt below the camera · recommended.' : 'Or drag the line on the recorder.'),
+        sec('Text window · Selfie', [sld('Height', 'winH', 150, 470, 10, v => v + ' pt', '150', '470 pt'), sld('Width', 'winW', 64, 96, 1, pct, 'Narrow', 'Wide', { s: 'Narrow means less eye movement' }), sld('Side margins', 'margin', 0, 48, 2, v => v + ' pt', '0', '48 pt', { kw: 'margins padding' })], 'Or drag the ⌟ handle on the recorder.'),
+        sec('Over the camera · Selfie', [sld('Background opacity', 'bgOp', 0, 100, 5, pct, '0%', '100%'), sld('Camera blur', 'blur', 0, 100, 5, v => v === 0 ? 'Off' : pct(v), 'Off', 'Strong'), nav('Social safe zone', 'safezone', { v: s.safe ? s.zone : 'Off', kw: 'safe zone tiktok reels shorts captions' })], 'Changes the preview only, never the recording.'),
+        sec('Studio', [menu('Background color', 'studioBg', ['Night', 'Black', 'Dark gray'])]),
+        sec('Rigs', [tg('Mirror text', 'mirror', { s: 'For beam-splitter glass', kw: 'mirror flip beam splitter rig glass' }), tg('Flip vertically', 'flipV', { s: 'For rigs that reflect from below', kw: 'mirror flip upside rig' })], 'Studio uses these too. The screen stays on while the prompter is open.')
+      ] },
+      font: { t: 'Font', sections: [sec('', ['SF Pro', 'New York', 'SF Rounded', 'Lexend', 'Atkinson Hyperlegible'].map(f => pick(f, 'font', f)), 'Fonts made for reading at a distance.', 12)] },
+      safezone: { t: 'Social safe zone', sections: [
+        sec('', [tg('Show safe zone', 'safe', { s: 'Where each app’s buttons and captions cover the frame' })], '', 12),
+        s.safe ? sec('Platform', ['TikTok', 'Reels', 'Shorts', 'Custom'].map(p => pick(p, 'zone', p))) : null,
+        s.safe && s.zone === 'Custom' ? sec('Custom margins', [['Top risk', 'zT'], ['Bottom risk', 'zB'], ['Left risk', 'zL'], ['Right risk', 'zR']].map(([l, k]) => sld(l, k, 0, 40, 1, pct, '0%', '40%'))) : null
+      ].filter(Boolean).map((x, i, arr) => (i === arr.length - 1 ? { ...x, f: 'A guide, not a guarantee · Never recorded', hasF: true } : x)) },
+      remote: { t: 'Remote', hdr: 'remote', sections: [
+        sec('', [s.rm === 'on' ? btn('Disconnect', () => this.setState({ rm: 'off' }), { lc: '#FF453A' }) : s.rm === 'pair' ? btn('Cancel', () => { clearTimeout(this._rmT); this.setState({ rm: 'off' }); }, { lc: '#fff' }) : btn('Connect a device', () => { this.setState({ rm: 'pair' }); clearTimeout(this._rmT); this._rmT = setTimeout(() => { if (this.state.rm === 'pair') { this.setState({ rm: 'on' }); this.toast('Remote connected'); } }, 2200); }, { ic: 'remote', icBg: '#0A84FF' })], 'Both devices need Cue and Wi-Fi or Bluetooth on.', 16),
+        sec('Use this iPhone as a remote', [btn('Enter a code', () => this.toast('Type the 6 characters on the other screen'), { lc: '#fff', nav: true }), btn('Scan the code', () => this.toast('Opens the camera to scan'), { lc: '#fff', nav: true })]),
+        sec('Coming next', [base({ l: 'Keyboards and foot pedals', v: 'Soon', lc: 'rgba(235,235,245,0.6)' })])
+      ] },
+      personalize: { t: 'Personalize', sections: [
+        sec('App icon', [nav('App icon', 'icon', { v: s.icon, s: 'Deep Space and First Light unlock with milestones' })], '', 16),
+        sec('Topics & colors', [base({ l: 'Your topics', v: '3', s: 'Edit them in My Cue Voice', nav: true, cur: 'pointer', role: 'button', tap: () => this.act(['__goto:2.2']) }), tg('Tag new scripts automatically', 'tag', { s: 'Cue picks the topic on this iPhone' })]),
+        sec('Motion', [menu('Starry sky', 'sky', ['Off', 'Calm', 'Lively'], { kw: 'sky stars background motion' }), tg('Celebrations', 'cel'), tg('Haptics', 'hap', { kw: 'vibration haptics' })], 'Never over your face or your edit. Off with Reduce Motion.')
+      ] },
+      icon: { t: 'App icon', sections: [sec('', [pick('Default', 'icon', 'Default'), base({ l: 'Deep Space', v: '25 videos', lc: 'rgba(235,235,245,0.5)' }), base({ l: 'First Light', v: '50 videos · Pro', lc: 'rgba(235,235,245,0.5)' })], 'Unlock with milestones. Some come with Pro.', 12)] },
+      language: { t: 'Language & Region', sections: [
+        sec('', [btn('App language', () => this.toast('Opens iPhone Settings › Cue'), { lc: '#fff', v: s.appLang, nav: true })], 'Opens iPhone Settings › Cue › Language.', 12),
+        sec('', [menu('Voice following', 'vf', ['Same as script', 'English', 'Português', 'Español', 'Deutsch', '日本語'])], 'The language Cue listens for while you speak.'),
+        sec('', [menu('Script language', 'sl', ['Auto-detect', 'English', 'Português', 'Español', 'Deutsch', '日本語'])], 'New scripts start in it. Scripts are never translated.')
+      ] },
+      privacy: { t: 'Privacy & AI data', sections: [
+        sec('', [tg('On-device AI', 'ai', { s: 'Scripts and My Cue Voice stay on this iPhone' }), tg('Help improve Cue', 'imp', { s: 'Anonymous usage, never videos or scripts' })], 'Nothing is sold or shared.', 12),
+        sec('', [btn('Privacy policy', () => this.toast('Opens in Safari'), { lc: '#fff', nav: true }), nav('Permissions', 'perms', { v: 'Camera · Mic · Speech' })]),
+        sec('', [btn('Delete my Cue data', () => this.setState({ confirm: true }), { lc: '#FF453A' })], 'Asks for confirmation. This can’t be undone.')
+      ] },
+      perms: { t: 'Permissions', sections: [
+        sec('', [['Camera', 'Allowed'], ['Microphone', 'Allowed'], ['Speech recognition', 'Allowed'], ['Photos', 'Add only']].map(([l, v]) => base({ l, v })), 'Cue asks only when a feature needs it.', 12),
+        sec('', [btn('Open iPhone Settings', () => this.toast('Opens iPhone Settings › Cue'))])
+      ] },
+      ack: { t: 'Acknowledgements', sections: [sec('', ['Poppins', 'Anton', 'Unbounded', 'Instrument Serif', 'Syne', 'Space Grotesk', 'Space Mono', 'Caveat', 'Lexend', 'Atkinson Hyperlegible'].map(f => base({ l: f, s: 'SIL Open Font License 1.1' })), 'The free fonts Cue ships with.', 12)] }
+    };
+  }
+  renderVals() {
+    const s = this.state, P = this.pages(), cur = s.stack[s.stack.length - 1], pg = P[cur] || P.root;
+    const q = s.q.trim().toLowerCase(), searching = cur === 'root' && q.length > 0;
+    let sections = pg.sections.filter(Boolean);
+    if (searching) {
+      const out = []; const seen = new Set();
+      const walk = (key, trail) => { if (seen.has(key) || !P[key]) return; seen.add(key); P[key].sections.filter(Boolean).forEach(sc => { const hits = sc.rows.filter(r => (r.l + ' ' + r.s + ' ' + r.kw + ' ' + (sc.h || '')).toLowerCase().includes(q)); if (hits.length) { hits.forEach((r, i) => r.bd = i < hits.length - 1); out.push({ ...sc, h: [trail, sc.h].filter(Boolean).join(' › '), hasH: true, tt: 'none', hasF: false, hp: '20px 0 0', rows: hits }); } }); };
+      [['root', 'Settings'], ['recording', 'Recording'], ['mic', 'Recording › Microphone'], ['prompter', 'Prompter'], ['font', 'Prompter › Font'], ['safezone', 'Prompter › Safe zone'], ['remote', 'Remote'], ['personalize', 'Personalize'], ['language', 'Language & Region'], ['privacy', 'Privacy'], ['perms', 'Privacy › Permissions']].forEach(([k, t]) => walk(k, t));
+      sections = out;
+    }
+    const rmS = s.rm;
+    const zoomFs = { Small: 15, Medium: 18, Large: 21, XL: 25 }[s.size];
+    const ffMap = { 'SF Pro': "-apple-system,'SF Pro Display',system-ui", 'New York': "'New York',Georgia,serif", 'SF Rounded': "ui-rounded,'SF Pro Rounded',system-ui", 'Lexend': "Lexend,system-ui", 'Atkinson Hyperlegible': "'Atkinson Hyperlegible',system-ui" };
+    const pvH = 150, ly = Math.round(30 + (pvH - 50) * (s.line - 10) / 40);
+    const tc = { White: '#FFFFFF', 'Warm white': '#FFF3DC', Yellow: '#FFE680', Mint: '#B9F6DC' }[s.tcolor];
+    const go = p => () => this.push(p);
+    const m = s.menu;
+    return {
+      title: pg.t, large: !!pg.large, inline: !pg.large, padTop: pg.large ? '58px' : '108px',
+      hasSearch: !!pg.search, q: s.q, hasQ: !!s.q, onQ: e => this.setState({ q: e.target.value }), clearQ: () => this.setState({ q: '' }),
+      hdrSetup: pg.hdr === 'setup' && !searching, hdrPrompter: pg.hdr === 'prompter', hdrRemote: pg.hdr === 'remote',
+      sections, noResults: searching && !sections.length,
+      fmtL: s.fmt,
+      setupVals: [['Camera', s.cam, 'recording'], ['Quality', s.res + ' · ' + s.fps.replace(' fps', ''), 'recording'], ['Mic', s.mic === 'Automatic' ? 'Auto' : s.mic, 'mic'], ['Text', s.size, 'prompter']].map(([k, v, p]) => ({ k, v, go: p === 'mic' ? () => this.setState(x => ({ stack: [...x.stack, 'recording', 'mic'] })) : go(p) })),
+      pv: { h: pvH + 'px', bg: s.studioBg === 'Black' ? 'rgba(0,0,0,0.82)' : s.studioBg === 'Dark gray' ? 'rgba(40,40,46,0.82)' : 'rgba(5,6,12,' + (0.3 + s.bgOp / 200) + ')', guide: s.guide, ly: ly + 'px', ty: Math.max(26, ly - Math.round(zoomFs * 0.95)) + 'px', mx: (14 + s.margin / 2 + (96 - s.winW) * 1.5) + 'px', fs: zoomFs + 'px', lh: s.lsp, al: s.align === 'Left' ? 'left' : 'center', c: tc, ff: ffMap[s.font], coach: s.coach, tf: [s.mirror ? 'scaleX(-1)' : '', s.flipV ? 'scaleY(-1)' : ''].join(' ').trim() || 'none' },
+      rmv: { glow: rmS === 'on' ? 'rgba(52,199,89,0.16)' : rmS === 'pair' ? 'rgba(255,214,10,0.12)' : 'rgba(0,0,0,0)', ring: rmS === 'on' ? 'rgba(52,199,89,0.6)' : rmS === 'pair' ? 'rgba(255,214,10,0.7)' : 'rgba(225,228,245,0.22)', halo: rmS === 'on' ? 'rgba(52,199,89,0.08)' : rmS === 'pair' ? 'rgba(255,214,10,0.08)' : 'rgba(255,255,255,0.03)', ic: rmS === 'on' ? '#34C759' : rmS === 'pair' ? '#FFD60A' : 'rgba(235,235,245,0.75)', title: rmS === 'on' ? 'Maya’s iPad' : rmS === 'pair' ? 'Waiting for your device…' : 'No remote connected', sub: rmS === 'on' ? 'Connected · play, pause, speed and scroll' : 'Play, pause and change speed from another iPhone, iPad or Apple Watch.', subC: rmS === 'on' ? '#34C759' : 'rgba(235,235,245,0.65)' },
+      back: () => this.setState(x => x.stack.length > 1 ? { stack: x.stack.slice(0, -1), menu: null } : null),
+      setScroll: el => { this.scrollEl = el; }, setPage: el => { this.pageEl = el; },
+      menuOn: !!m, menuY: m ? m.y + 'px' : '0px', closeMenu: () => this.setState({ menu: null }),
+      menuOpts: m ? m.opts.map((o, i) => ({ l: o, on: s[m.k] === o, bd: i ? '0.5px solid rgba(84,84,88,0.6)' : 'none', pick: () => this.setState({ [m.k]: o, menu: null }) })) : [],
+      confirmOn: s.confirm, closeConfirm: () => this.setState({ confirm: false }), doDelete: () => { this.setState({ confirm: false }); this.toast('Nothing deleted in the prototype'); },
+      tabX: e => { const t = (e.currentTarget.textContent || '').trim(); this.act([t || 'Record']); },
+      tw: [[64, 128, 2.6, 0], [152, 30, 2, 0.8], [300, 150, 3, 1.3], [222, 232, 2, 2.1], [186, 196, 2.2, 0.4], [28, 262, 1.8, 1.7], [334, 404, 2, 3.1], [92, 532, 2.2, 4.4], [248, 618, 1.8, 2.6], [40, 712, 1.8, 5.2]].map(([x, y, sz, d], i) => ({ x: x + 'px', y: y + 'px', s: sz + 'px', d: d + 's', c: i % 4 === 2 ? '#FFF3C4' : i % 4 === 3 ? '#E4DEFF' : '#FFFFFF' }))
+    };
+  }
+}
+</script>
+</body>
+</html>

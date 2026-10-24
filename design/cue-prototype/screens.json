@@ -1,0 +1,753 @@
+{
+  "version": "v31",
+  "viewer": "index.html",
+  "note": "Screens in screens/ are standalone HTML (open directly). index.html is the interactive full flow. appFiles are suggestions; verify before relying on them.",
+  "screens": [
+    {
+      "id": "1.1",
+      "title": "Welcome every creator has a universe",
+      "group": "First launch",
+      "file": "screens/1.1_Welcome-every-creator-has-a-universe.html",
+      "status": "current",
+      "pageTitle": "Cue — Welcome",
+      "appFiles": [
+        "Cue Studio/Screens/Onboarding/OnboardingView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "1.2",
+      "title": "Your universe topics become worlds",
+      "group": "First launch",
+      "file": "screens/1.2_Your-universe-topics-become-worlds.html",
+      "status": "current",
+      "pageTitle": "Cue — Your topics",
+      "appFiles": [
+        "Cue Studio/Screens/Onboarding/OnboardingView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "1.3",
+      "title": "Your first voyage pick a galaxy",
+      "group": "First launch",
+      "file": "screens/1.3_Your-first-voyage-pick-a-galaxy.html",
+      "status": "current",
+      "pageTitle": "Cue — Your first video",
+      "appFiles": [
+        "Cue Studio/Screens/Onboarding/OnboardingView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "1.4",
+      "title": "Your first script in your voice",
+      "group": "First launch",
+      "file": "screens/1.4_Your-first-script-in-your-voice.html",
+      "status": "current",
+      "pageTitle": "Cue — Your first script",
+      "appFiles": [
+        "Cue Studio/Screens/Onboarding/OnboardingView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "1.4b",
+      "title": "Your first script slow loading",
+      "group": "First launch",
+      "file": "screens/1.4b_Your-first-script-slow-loading.html",
+      "status": "current",
+      "pageTitle": "Cue — Your first script (waiting)",
+      "appFiles": [
+        "Cue Studio/Screens/Onboarding/OnboardingView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "1.5",
+      "title": "Give it a voice permissions in the story",
+      "group": "First launch",
+      "file": "screens/1.5_Give-it-a-voice-permissions-in-the-story.html",
+      "status": "current",
+      "pageTitle": "Cue — Camera & voice",
+      "appFiles": [
+        "Cue Studio/Screens/Onboarding/OnboardingView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "1.6",
+      "title": "Practice run record or not",
+      "group": "First launch",
+      "file": "screens/1.6_Practice-run-record-or-not.html",
+      "status": "current",
+      "pageTitle": "Cue — Onboarding 5, practice run",
+      "appFiles": [
+        "Cue Studio/Screens/Onboarding/OnboardingView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "1.7",
+      "title": "Your first star",
+      "group": "First launch",
+      "file": "screens/1.7_Your-first-star.html",
+      "status": "current",
+      "pageTitle": "Cue — Onboarding 6, first star",
+      "appFiles": [
+        "Cue Studio/Screens/TakeReview/Celebration/FirstStar/FirstStarView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "2.1",
+      "title": "My Cue Voice creator type",
+      "group": "My Cue Voice",
+      "file": "screens/2.1_My-Cue-Voice-creator-type.html",
+      "status": "current",
+      "pageTitle": "Cue — Creator type",
+      "appFiles": [
+        "Cue Studio/Screens/Profile/Voice/Editor/VoiceEditorSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "2.2",
+      "title": "My Cue Voice topics your colors",
+      "group": "My Cue Voice",
+      "file": "screens/2.2_My-Cue-Voice-topics-your-colors.html",
+      "status": "current",
+      "pageTitle": "Cue — Topics",
+      "appFiles": [
+        "Cue Studio/Screens/Profile/Voice/Editor/VoiceEditorSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "2.3",
+      "title": "My Cue Voice audience",
+      "group": "My Cue Voice",
+      "file": "screens/2.3_My-Cue-Voice-audience.html",
+      "status": "current",
+      "pageTitle": "Cue — Audience",
+      "appFiles": [
+        "Cue Studio/Screens/Profile/Voice/Editor/VoiceEditorSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "2.4",
+      "title": "My Cue Voice tone",
+      "group": "My Cue Voice",
+      "file": "screens/2.4_My-Cue-Voice-tone.html",
+      "status": "current",
+      "pageTitle": "Cue — Tone",
+      "appFiles": [
+        "Cue Studio/Screens/Profile/Voice/Editor/VoiceEditorSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "3.1",
+      "title": "Scripts first visit",
+      "group": "Scripts and ideas",
+      "file": "screens/3.1_Scripts-first-visit.html",
+      "status": "current",
+      "pageTitle": "Cue — Scripts, first visit",
+      "appFiles": [
+        "Cue Studio/Screens/Scripts/Empty/EmptyLibraryView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "3.2",
+      "title": "Scripts",
+      "group": "Scripts and ideas",
+      "file": "screens/3.2_Scripts.html",
+      "status": "current",
+      "pageTitle": "Cue — Scripts",
+      "appFiles": [
+        "Cue Studio/Screens/Scripts/ScriptsView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "3.3",
+      "title": "Need an idea",
+      "group": "Scripts and ideas",
+      "file": "screens/3.3_Need-an-idea.html",
+      "status": "current",
+      "pageTitle": "Cue — Find inspiration",
+      "appFiles": [
+        "Cue Studio/Screens/Scripts/Inspiration/FindInspirationSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "3.4",
+      "title": "Create for platform",
+      "group": "Scripts and ideas",
+      "file": "screens/3.4_Create-for-platform.html",
+      "status": "current",
+      "pageTitle": "Cue — Create for",
+      "appFiles": [
+        "Cue Studio/Screens/CreateScript/Format/FormatSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "3.5",
+      "title": "Start a video",
+      "group": "Scripts and ideas",
+      "file": "screens/3.5_Start-a-video.html",
+      "status": "current",
+      "pageTitle": "Cue — Start a video",
+      "appFiles": [
+        "Cue Studio/Screens/CreateScript/StartRecordingSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "3.6",
+      "title": "Logbook",
+      "group": "Scripts and ideas",
+      "file": "screens/3.6_Logbook.html",
+      "status": "current",
+      "pageTitle": "Cue — Logbook",
+      "appFiles": [
+        "Cue Studio/Screens/Scripts/Logbook/LogbookView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "4.1",
+      "title": "Script page AI writing in your voice",
+      "group": "Script page",
+      "file": "screens/4.1_Script-page-AI-writing-in-your-voice.html",
+      "status": "current",
+      "pageTitle": "Cue — Script page",
+      "appFiles": [
+        "Cue Studio/Screens/ScriptDetail/Page/ScriptPageView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "4.2",
+      "title": "Editing a script AI on selection",
+      "group": "Script page",
+      "file": "screens/4.2_Editing-a-script-AI-on-selection.html",
+      "status": "current",
+      "pageTitle": "Cue — Editing a script",
+      "appFiles": [
+        "Cue Studio/Screens/ScriptDetail/Page/Editor/ScriptTextView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "4.3",
+      "title": "Pick a hook",
+      "group": "Script page",
+      "file": "screens/4.3_Pick-a-hook.html",
+      "status": "current",
+      "pageTitle": "Cue — Pick a hook",
+      "appFiles": [
+        "Cue Studio/Screens/ScriptDetail/"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "4.4",
+      "title": "Improve this script",
+      "group": "Script page",
+      "file": "screens/4.4_Improve-this-script.html",
+      "status": "current",
+      "pageTitle": "Cue — Improve this script",
+      "appFiles": [
+        "Cue Studio/Screens/ScriptDetail/"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "5.1",
+      "title": "Countdown a ring of stars",
+      "group": "Record",
+      "file": "screens/5.1_Countdown-a-ring-of-stars.html",
+      "status": "current",
+      "pageTitle": "Cue — Countdown",
+      "appFiles": [
+        "Cue Studio/Screens/Prompter/PrompterView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "5.2",
+      "title": "Teleprompter the text follows your voice",
+      "group": "Record",
+      "file": "screens/5.2_Teleprompter-the-text-follows-your-voice.html",
+      "status": "current",
+      "pageTitle": "Cue — Prompter selfie",
+      "appFiles": [
+        "Cue Studio/Screens/Prompter/PrompterView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "5.3",
+      "title": "Studio mode rear camera orb speed",
+      "group": "Record",
+      "file": "screens/5.3_Studio-mode-rear-camera-orb-speed.html",
+      "status": "current",
+      "pageTitle": "Cue — Prompter studio",
+      "appFiles": [
+        "Cue Studio/Screens/Prompter/Studio/StudioModeView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "6.1",
+      "title": "Pick your best take Cue picks a star",
+      "group": "Pick and takes",
+      "file": "screens/6.1_Pick-your-best-take-Cue-picks-a-star.html",
+      "status": "current",
+      "pageTitle": "Cue — Pick your best take",
+      "appFiles": [
+        "Cue Studio/Screens/TakeReview/Pick/PickBestTakeView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "6.2",
+      "title": "Takes",
+      "group": "Pick and takes",
+      "file": "screens/6.2_Takes.html",
+      "status": "current",
+      "pageTitle": "Cue — Takes",
+      "appFiles": [
+        "Cue Studio/Screens/Takes/TakesView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "6.3",
+      "title": "Selected video",
+      "group": "Pick and takes",
+      "file": "screens/6.3_Selected-video.html",
+      "status": "current",
+      "pageTitle": "Cue — Selected video",
+      "appFiles": [
+        "Cue Studio/Screens/TakeReview/TakeReviewView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "7.1",
+      "title": "Opening the editor",
+      "group": "Editor",
+      "file": "screens/7.1_Opening-the-editor.html",
+      "status": "current",
+      "pageTitle": "Cue — Opening the editor",
+      "appFiles": [
+        "Cue Studio/Screens/QuickEdit/QuickEditView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "7.2",
+      "title": "Editor close to v26",
+      "group": "Editor",
+      "file": "screens/7.2_Editor-close-to-v26.html",
+      "status": "current",
+      "pageTitle": "Cue — Editor",
+      "appFiles": [
+        "Cue Studio/Screens/QuickEdit/QuickEditView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "7.3",
+      "title": "Text styles free fonts and orb sliders",
+      "group": "Editor",
+      "file": "screens/7.3_Text-styles-free-fonts-and-orb-sliders.html",
+      "status": "current",
+      "pageTitle": "Cue — Text styles",
+      "appFiles": [
+        "Cue Studio/Screens/QuickEdit/Panels/EditorPanelView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "7.4",
+      "title": "Caption styles size orb",
+      "group": "Editor",
+      "file": "screens/7.4_Caption-styles-size-orb.html",
+      "status": "current",
+      "pageTitle": "Cue — Caption styles",
+      "appFiles": [
+        "Cue Studio/Screens/QuickEdit/Panels/EditorPanelView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "7.5",
+      "title": "Sound voice music and clean up",
+      "group": "Editor",
+      "file": "screens/7.5_Sound-voice-music-and-clean-up.html",
+      "status": "current",
+      "pageTitle": "Cue — Sound",
+      "appFiles": [
+        "Cue Studio/Screens/QuickEdit/Panels/EditorPanelView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "7.6",
+      "title": "Is it ready to post",
+      "group": "Editor",
+      "file": "screens/7.6_Is-it-ready-to-post.html",
+      "status": "current",
+      "pageTitle": "Cue — Is it ready to post?",
+      "appFiles": [
+        "Cue Studio/Screens/QuickEdit/QuickEditView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "8.1",
+      "title": "Ready to travel",
+      "group": "Share and celebrate",
+      "file": "screens/8.1_Ready-to-travel.html",
+      "status": "current",
+      "pageTitle": "Cue — Ready to travel",
+      "appFiles": [
+        "Cue Studio/Screens/TakeReview/Celebration/ReadyToTravelView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "8.2",
+      "title": "The send off",
+      "group": "Share and celebrate",
+      "file": "screens/8.2_The-send-off.html",
+      "status": "current",
+      "pageTitle": "Cue — The send-off",
+      "appFiles": [
+        "Cue Studio/Screens/TakeReview/Celebration/SendOffView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "8.3",
+      "title": "Milestone unlocked",
+      "group": "Share and celebrate",
+      "file": "screens/8.3_Milestone-unlocked.html",
+      "status": "current",
+      "pageTitle": "Cue — Milestone unlocked",
+      "appFiles": [
+        "Cue Studio/Screens/TakeReview/Celebration/MilestoneView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "9.1",
+      "title": "Profile",
+      "group": "Profile",
+      "file": "screens/9.1_Profile.html",
+      "status": "current",
+      "pageTitle": "Cue — Profile",
+      "appFiles": [
+        "Cue Studio/Screens/Profile/ProfileView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "9.2",
+      "title": "Your universe",
+      "group": "Profile",
+      "file": "screens/9.2_Your-universe.html",
+      "status": "current",
+      "pageTitle": "Cue — Your universe",
+      "appFiles": [
+        "Cue Studio/Screens/Profile/Universe/YourUniverseView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "9.3",
+      "title": "My Cue Voice",
+      "group": "Profile",
+      "file": "screens/9.3_My-Cue-Voice.html",
+      "status": "current",
+      "pageTitle": "Cue — My Cue Voice",
+      "appFiles": [
+        "Cue Studio/Screens/Profile/Voice/MyCueVoicePage.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "9.4",
+      "title": "Voice question sheet",
+      "group": "Profile",
+      "file": "screens/9.4_Voice-question-sheet.html",
+      "status": "current",
+      "pageTitle": "Cue — Voice question",
+      "appFiles": [
+        "Cue Studio/Screens/Profile/Voice/Question/VoiceQuestionSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "10.1",
+      "title": "Send a comment to Cue",
+      "group": "Answer with a video",
+      "file": "screens/10.1_Send-a-comment-to-Cue.html",
+      "status": "current",
+      "pageTitle": "Cue — Send a comment to Cue",
+      "appFiles": [
+        "Cue Studio/Screens/CreateScript/Answer/AnswerCommentSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "10.2",
+      "title": "Is this right",
+      "group": "Answer with a video",
+      "file": "screens/10.2_Is-this-right.html",
+      "status": "current",
+      "pageTitle": "Cue — Confirm the comment",
+      "appFiles": [
+        "Cue Studio/Screens/CreateScript/Answer/AnswerCommentSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "10.3",
+      "title": "Draft in your voice",
+      "group": "Answer with a video",
+      "file": "screens/10.3_Draft-in-your-voice.html",
+      "status": "current",
+      "pageTitle": "Cue — Answer with a video",
+      "appFiles": [
+        "Cue Studio/Screens/CreateScript/Answer/AnswerCommentSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "10.4",
+      "title": "Comment card in the editor",
+      "group": "Answer with a video",
+      "file": "screens/10.4_Comment-card-in-the-editor.html",
+      "status": "current",
+      "pageTitle": "Cue — Editor with comment card",
+      "appFiles": [
+        "Cue Studio/Screens/CreateScript/Answer/AnswerCommentSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "11.1",
+      "title": "Settings",
+      "group": "Settings and Pro",
+      "file": "screens/11.1_Settings.html",
+      "status": "current",
+      "pageTitle": "Cue — Settings",
+      "appFiles": [
+        "Cue Studio/Screens/Settings/SettingsView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "11.2",
+      "title": "Prompter settings orb sliders",
+      "group": "Settings and Pro",
+      "file": "screens/11.2_Prompter-settings-orb-sliders.html",
+      "status": "current",
+      "pageTitle": "Cue — Prompter settings",
+      "appFiles": [
+        "Cue Studio/Screens/Settings/Pages/SettingsPrompterView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "11.3",
+      "title": "Personalize sky orb",
+      "group": "Settings and Pro",
+      "file": "screens/11.3_Personalize-sky-orb.html",
+      "status": "current",
+      "pageTitle": "Cue — Settings, Personalize",
+      "appFiles": [
+        "Cue Studio/Screens/Settings/Personalize/PersonalizeView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "11.4",
+      "title": "Cue Pro",
+      "group": "Settings and Pro",
+      "file": "screens/11.4_Cue-Pro.html",
+      "status": "current",
+      "pageTitle": "Cue — Cue Pro",
+      "appFiles": [
+        "Cue Studio/Screens/Shared/Paywall/ProPlansScreen.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "12.1",
+      "title": "Gravar pelo pulso",
+      "group": "Apple Watch (proposal)",
+      "component": "CueWatch31.dc.html",
+      "status": "proposal, awaiting owner approval",
+      "appFiles": [
+        "Cue Studio Watch/Screens/"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "12.2",
+      "title": "Ensaio no modo manual",
+      "group": "Apple Watch (proposal)",
+      "component": "CueWatch31.dc.html",
+      "status": "proposal, awaiting owner approval",
+      "appFiles": [
+        "Cue Studio Watch/Screens/"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "12.3",
+      "title": "Voice Following",
+      "group": "Apple Watch (proposal)",
+      "component": "CueWatch31.dc.html",
+      "status": "proposal, awaiting owner approval",
+      "appFiles": [
+        "Cue Studio Watch/Screens/"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "12.4",
+      "title": "Conexão perdida",
+      "group": "Apple Watch (proposal)",
+      "component": "CueWatch31.dc.html",
+      "status": "proposal, awaiting owner approval",
+      "appFiles": [
+        "Cue Studio Watch/Screens/"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "12.5",
+      "title": "Falha e indisponível",
+      "group": "Apple Watch (proposal)",
+      "component": "CueWatch31.dc.html",
+      "status": "proposal, awaiting owner approval",
+      "appFiles": [
+        "Cue Studio Watch/Screens/"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "12.6",
+      "title": "Todos os estados",
+      "group": "Apple Watch (proposal)",
+      "component": "CueWatch31.dc.html",
+      "status": "proposal, awaiting owner approval",
+      "appFiles": [
+        "Cue Studio Watch/Screens/"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "13.1",
+      "title": "Editor every tool in context",
+      "group": "Editor proposal",
+      "component": "CueEditor31.dc.html",
+      "status": "proposal, awaiting owner approval",
+      "appFiles": [],
+      "appFilesStatus": "unmapped"
+    },
+    {
+      "id": "13.2",
+      "title": "Editor save fails",
+      "group": "Editor proposal",
+      "component": "CueEditor31.dc.html",
+      "status": "proposal, awaiting owner approval",
+      "appFiles": [],
+      "appFilesStatus": "unmapped"
+    },
+    {
+      "id": "13.3",
+      "title": "Editor one clip left",
+      "group": "Editor proposal",
+      "component": "CueEditor31.dc.html",
+      "status": "proposal, awaiting owner approval",
+      "appFiles": [],
+      "appFilesStatus": "unmapped"
+    },
+    {
+      "id": "13.4",
+      "title": "Editor preview protected",
+      "group": "Editor proposal",
+      "component": "CueEditor31.dc.html",
+      "status": "proposal, awaiting owner approval",
+      "appFiles": [],
+      "appFilesStatus": "unmapped"
+    },
+    {
+      "id": "1.4-alt",
+      "title": "Your first script slow loading",
+      "group": "First launch",
+      "file": "screens/1.4_Your-first-script-slow-loading.html",
+      "status": "current",
+      "appFiles": [
+        "Cue Studio/Screens/Onboarding/OnboardingView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "2.5",
+      "title": "Does this sound like you",
+      "group": "My Cue Voice",
+      "file": "screens/2.5_Does-this-sound-like-you.html",
+      "status": "current",
+      "appFiles": [
+        "Cue Studio/Screens/Profile/Voice/Preview/VoicePreviewSheet.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "R1",
+      "title": "Prompter selfie",
+      "group": "Recorder",
+      "file": "screens/R1_Prompter-selfie.html",
+      "status": "current",
+      "appFiles": [
+        "Cue Studio/Screens/Prompter/Selfie/SelfieModeView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "R2",
+      "title": "Prompter studio",
+      "group": "Recorder",
+      "file": "screens/R2_Prompter-studio.html",
+      "status": "current",
+      "appFiles": [
+        "Cue Studio/Screens/Prompter/Studio/StudioModeView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    },
+    {
+      "id": "S1",
+      "title": "Scripts library",
+      "group": "Scripts library",
+      "file": "screens/S1_Scripts-library.html",
+      "status": "current",
+      "appFiles": [
+        "Cue Studio/Screens/Scripts/ScriptsView.swift"
+      ],
+      "appFilesStatus": "suggested, confirm in code"
+    }
+  ],
+  "unlistedScreenFiles": []
+}
