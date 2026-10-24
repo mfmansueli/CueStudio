@@ -61,17 +61,7 @@ struct CaptionSpeechTests {
         let words = transcript.words
         #expect(!words.isEmpty, "\(sample.label): nothing heard")
 
-        // How much of the script was heard, in order: by words, and for the languages written without spaces
-        // (where the recognizer and the script cut words differently, and write numbers differently) by letters.
-        let written = ScriptWords(text: script, language: language).tokens
-        let heardKeys = words.flatMap { WordTokenizer.matchingKeys(of: $0.text, language: language) }
-        let wordShare = Double(WordAlignment.matches(written, heardKeys).count) / Double(max(1, written.count))
-        let writtenLetters = written.joined().map(String.init)
-        let heardLetters = heardKeys.joined().map(String.init)
-        let letterShare = Double(WordAlignment.matches(writtenLetters, heardLetters).count) / Double(max(1, writtenLetters.count))
-        // Korean is spaced as each writer likes (띄어쓰기: "6 대 6" and "6대 6", "타이 브레이크" and "타이브레이크"): its words are
-        // counted by letters too.
-        let share = language.writesWithoutSpaces || language == .korean ? max(wordShare, letterShare) : wordShare
+        let (share, letterShare) = Self.share(of: words.map(\.text), in: script, language: language)
 
         // Times: inside the recording, in order, and honest about which are measured.
         let outside = words.filter { $0.start < -0.05 || $0.end > length + 0.5 || $0.end < $0.start }
@@ -79,6 +69,13 @@ struct CaptionSpeechTests {
         let estimated = words.filter(\.isEstimated).count
         let sharedRuns = words.filter { word in words.contains { $0 != word && $0.start == word.start && $0.end == word.end } }
         let unflagged = sharedRuns.filter { !$0.isEstimated }.count
+
+        // What the creator sees: the lines built from it, with the script's spelling where the take follows it.
+        let lines = CaptionBuilder.captions(
+            heard: words.map { CaptionWord(text: $0.text, start: $0.start, end: $0.end, isEstimated: $0.isEstimated) },
+            script: script, language: language
+        )
+        let screenShare = Self.share(of: lines.flatMap { $0.words.map(\.text) }, in: script, language: language).share
 
         // Sync: the first word starts near where the voice starts, the last ends near where it stops.
         let first = words.first?.start ?? 0
@@ -91,10 +88,12 @@ struct CaptionSpeechTests {
                 + " · last word \(String(format: "%.2f", last)) s (voice stops at \(String(format: "%.2f", voice.end)) s)"
                 + " of \(String(format: "%.2f", length)) s"
                 + " · outside \(outside.count) · out of order \(backwards) · engine code \(transcript.languageCode)"
-                + " · by letters \(Int(letterShare * 100))% · heard “\(CaptionText.joined(words.map(\.text)).prefix(160))”"
+                + " · by letters \(Int(letterShare * 100))% · on screen \(Int(screenShare * 100))%"
+                + " · heard “\(CaptionText.joined(words.map(\.text)).prefix(160))”"
         )
         let timeline = words.map { "\($0.text)@\(String(format: "%.2f", $0.start))–\(String(format: "%.2f", $0.end))" }
         print("CAPTION WORDS \(sample.label): " + timeline.joined(separator: " "))
+        print("CAPTION SCREEN \(sample.label): " + lines.map(\.text).joined(separator: " | "))
         #expect(share >= Self.requiredShare(for: language), "\(sample.label): only \(Int(share * 100))% of the script was heard")
         #expect(outside.isEmpty, "\(sample.label): \(outside.count) words timed outside the recording")
         #expect(backwards == 0, "\(sample.label): \(backwards) words out of order")
@@ -110,14 +109,25 @@ struct CaptionSpeechTests {
         }
         #expect(last <= length + 0.5 && last >= length * 0.6, "\(sample.label): last word ends at \(last) s of \(length) s")
         // The caption lines built from it stay inside the recording too.
-        let lines = CaptionBuilder.captions(
-            heard: words.map { CaptionWord(text: $0.text, start: $0.start, end: $0.end, isEstimated: $0.isEstimated) },
-            script: script, language: language
-        )
         #expect(!lines.isEmpty)
         #expect(lines.allSatisfy { $0.start >= -0.05 && $0.end <= length + 0.5 }, "\(sample.label): a line runs outside the recording")
         // Chinese keeps its writing system all the way: Traditional characters never come back as Simplified.
         if language == .chineseTraditional { #expect(transcript.languageCode == "zh-Hant") }
         if language == .chineseSimplified { #expect(transcript.languageCode == "zh-Hans") }
+    }
+
+    /// How much of `script` the `heard` words hold, in order: by words, and for the languages written without spaces (where
+    /// the recognizer and the script cut words differently, and write numbers differently) by letters.
+    private static func share(of heard: [String], in script: String, language: CueLanguage) -> (share: Double, letters: Double) {
+        let written = ScriptWords(text: script, language: language).tokens
+        let heardKeys = heard.flatMap { WordTokenizer.matchingKeys(of: $0, language: language) }
+        let wordShare = Double(WordAlignment.matches(written, heardKeys).count) / Double(max(1, written.count))
+        let writtenLetters = written.joined().map(String.init)
+        let heardLetters = heardKeys.joined().map(String.init)
+        let letterShare = Double(WordAlignment.matches(writtenLetters, heardLetters).count) / Double(max(1, writtenLetters.count))
+        // Korean is spaced as each writer likes (띄어쓰기: "6 대 6" and "6대 6", "타이 브레이크" and "타이브레이크"): its words are
+        // counted by letters too.
+        let share = language.writesWithoutSpaces || language == .korean ? max(wordShare, letterShare) : wordShare
+        return (share, letterShare)
     }
 }
