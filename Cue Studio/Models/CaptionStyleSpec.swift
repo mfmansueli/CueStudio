@@ -128,6 +128,10 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
     /// The outline is drawn whole outside the letters, the letters filled over it (the catalogue). The first two readings draw
     /// it on the letters' edge, half over them, as they always did.
     var strokesOutside = false
+    /// The size scales the whole caption (the catalogue): the widest a line may run grows and shrinks with the type, so the
+    /// same words stay on each line and the caption takes more or less of the screen, until the safe area stops it. The first two
+    /// readings keep a fixed width, the type alone changing, as they always did.
+    var widthScalesWithSize = false
     /// Room added to each space between words, as a share of the type size: captions whose word being said pops leave it, so
     /// the word grows without touching its neighbors (`CaptionSettings.spec`).
     var wordSpacing = 0.0
@@ -169,7 +173,7 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
         fontName == other.fontName && fontWeight == other.fontWeight && face == other.face && baseSize == other.baseSize
             && letterCase == other.letterCase && tracking == other.tracking && lineSpacing == other.lineSpacing
             && outline?.width == other.outline?.width && widthFraction == other.widthFraction && maxLines == other.maxLines
-            && emphasisScale == other.emphasisScale && wordSpacing == other.wordSpacing
+            && emphasisScale == other.emphasisScale && wordSpacing == other.wordSpacing && widthScalesWithSize == other.widthScalesWithSize
     }
 
     /// How this reading plays when the edit says only `animation` (an edit saved before motion, or a first reading).

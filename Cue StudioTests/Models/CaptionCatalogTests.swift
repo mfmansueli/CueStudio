@@ -64,6 +64,26 @@ struct CaptionCatalogTests {
         #expect(!theme.summary.isEmpty && theme.label != theme.rawValue || theme == .cue)
     }
 
+    /// The size scales the whole caption: a bigger one keeps its words on the same lines and takes more of the screen (until the
+    /// safe area), a smaller one less; captions saved before the catalogue keep their fixed width.
+    @Test func theSizeScalesTheWholeCaption() throws {
+        let frame = CGSize(width: 1080, height: 1920)
+        let text = "Make it real one take at a time"
+        func lines(_ settings: CaptionSettings) -> Int? { CaptionCollectionRenderer.measure(text, settings: settings, frame: frame)?.lines }
+        var small = CaptionSettings(theme: .educational)
+        small.sizeScale = CaptionSize.small.points / TextLook.captionBaseSize
+        var medium = small
+        medium.sizeScale = CaptionSize.medium.points / TextLook.captionBaseSize
+        #expect(lines(small) == lines(medium), "a smaller caption breaks its lines elsewhere")
+        let smallImage = try #require(CaptionCollectionRenderer.image(text, settings: small, frame: frame))
+        let mediumImage = try #require(CaptionCollectionRenderer.image(text, settings: medium, frame: frame))
+        #expect(smallImage.size.width < mediumImage.size.width * 0.9, "the smaller caption doesn't take less of the screen")
+        // The earlier reading: the type alone changes; the room stays.
+        var before = CaptionSettings.savedBeforeMotion(.educational)
+        before.sizeScale = small.sizeScale
+        #expect(CaptionCollectionRenderer.lineWidthFraction(before, spec: before.spec) == CGFloat(before.spec.widthFraction))
+    }
+
     @Test func theSevenOlderStylesKeepTheirEarlierReadings() {
         for theme in CaptionTheme.allCases {
             #expect(theme.existedBeforeCatalog == [.cue, .impact, .clean, .pop, .editorial, .educational, .interview].contains(theme))

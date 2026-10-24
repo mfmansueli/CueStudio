@@ -28,6 +28,18 @@ extension CaptionsViewModel {
         changeCaptionMotion { $0.spoken = spoken }
     }
 
+    /// Whether the word being said can be seen lit: lit only in a color, that color isn't the words' own (a box or a pop show
+    /// anyway).
+    var captionHighlightStandsOut: Bool {
+        guard let settings = edit.captionCollection, captionMotion.spoken == .color else { return true }
+        let spec = settings.spec
+        let accent = settings.highlightColor.components
+        let text = spec.textColor
+        let distance = ((accent.red - text.red) * (accent.red - text.red) + (accent.green - text.green) * (accent.green - text.green)
+            + (accent.blue - text.blue) * (accent.blue - text.blue)).squareRoot()
+        return distance >= 0.3
+    }
+
     /// Word by word adds nothing when each block is one word (Format › One word).
     var captionRevealIsMoot: Bool { edit.captionCollection?.format == .oneWord }
 

@@ -127,7 +127,14 @@ nonisolated enum CaptionCollectionRenderer {
         }
         let safe = contentRect(settings, frame: frame)
         let requested = settings.center ?? OverlayPoint(x: Double(safe.midX / frame.width), y: position.verticalFraction)
-        let x = min(max(CGFloat(requested.clamped.x) * frame.width, safe.minX + size.width / 2), safe.maxX - size.width / 2)
+        var x = min(max(CGFloat(requested.clamped.x) * frame.width, safe.minX + size.width / 2), safe.maxX - size.width / 2)
+        // Aligned left or right, the caption sits against that side of the safe area (captions move only up and down by hand).
+        let leftmost = safe.minX + size.width / 2, rightmost = safe.maxX - size.width / 2
+        switch settings.spec.alignment {
+        case .leading where leftmost <= rightmost: x = leftmost
+        case .trailing where leftmost <= rightmost: x = rightmost
+        default: break
+        }
         let y = min(max(CGFloat(requested.clamped.y) * frame.height, safe.minY + size.height / 2), safe.maxY - size.height / 2)
         let origin = CGPoint(x: (x - size.width / 2).rounded(), y: (frame.height - y - size.height / 2).rounded())
         return Placement(text: text, size: size, origin: origin, widthFraction: widthFraction)
@@ -221,6 +228,12 @@ nonisolated enum CaptionCollectionRenderer {
             }
             drawGlyphs(all, layout: layout, spec: spec)
         }
+    }
+
+    /// The widest a line may run, as a share of the frame: the style's, grown or shrunk with the captions' size when the size
+    /// scales the whole caption (`widthScalesWithSize`); the safe area still stops it.
+    static func lineWidthFraction(_ settings: CaptionSettings, spec: CaptionStyleSpec) -> CGFloat {
+        CGFloat(spec.widthScalesWithSize ? spec.widthFraction * settings.clampedScale : spec.widthFraction)
     }
 
     /// Adds `room` points to every space between words (a style whose word being said pops); nothing with no room asked.
@@ -359,7 +372,7 @@ nonisolated enum CaptionCollectionRenderer {
         let display = spec.letterCase.shown(text)
         let unit = min(frame.width, frame.height) / TextOverlayRenderer.referenceWidth
         let padding = 14 * unit
-        let maxWidth = max(1, min(frame.width * spec.widthFraction, contentRect(settings, frame: frame).width) - padding * 2)
+        let maxWidth = max(1, min(frame.width * lineWidthFraction(settings, spec: spec), contentRect(settings, frame: frame).width) - padding * 2)
         let size = CGFloat(spec.baseSize) * settings.clampedScale * unit
         let font = CaptionFont.font(spec: spec, size: size, text: display)
         let kern = spec.tracking > 0 && TextShaping.allowsLetterSpacing(in: display) ? CGFloat(spec.tracking) * unit : 0
@@ -401,7 +414,7 @@ nonisolated enum CaptionCollectionRenderer {
         let base = CGFloat(spec.baseSize)
         let padding = CGSize(width: 14 * unit, height: 9 * unit)
         let safe = contentRect(settings, frame: frame)
-        let maxWidth = max(1, min(frame.width * spec.widthFraction, safe.width) - padding.width * 2)
+        let maxWidth = max(1, min(frame.width * lineWidthFraction(settings, spec: spec), safe.width) - padding.width * 2)
         var pointSize = base * settings.clampedScale * unit
         // A format's blocks are cut to fit its lines at this size (`CaptionBlocking`): only a block that still doesn't (a word
         // wider than the room, a line written by hand) shrinks.

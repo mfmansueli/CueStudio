@@ -6,7 +6,8 @@
 import SwiftUI
 import UIKit
 
-/// Caption style › Styles: the filters (All, Favorites, Mine and the catalogue's groups, kept as left), then the cards in a grid
+/// Caption style › Styles: the captions' size (what most creators set right after the style; also in Format), the filters (All,
+/// Favorites, Mine and the catalogue's groups, kept as left), then the cards in a grid
 /// that fills the panel (three in a row on an iPhone): this video's look when no style is it, "Save style", the creator's styles
 /// and the twenty of the catalogue by group. Each card is drawn by the export's renderer with this video's words; the one the
 /// captions wear is checked and plays. Held (or with VoiceOver's actions), a card favors, starts new videos, saves a copy, and
@@ -26,6 +27,12 @@ struct CaptionStylesTab: View {
     var body: some View {
         let filter = captions.captionCatalogFilter
         let sections = captions.captionCardSections(filter)
+        // How big the captions are is what most creators set right after the style: here too, not only in Format.
+        PanelSegmented(
+            label: String(localized: "Size"),
+            options: CaptionSize.allCases.map { PanelOption($0, $0.label, key: "\($0.rawValue)") },
+            selection: CaptionSize.nearest(to: captions.captionPointSize), height: 38, identifier: "edit.captionStyleSize"
+        ) { captions.setCaptionPointSize($0.points) }
         PanelChips(
             options: CaptionCatalogFilter.allCases.map { PanelOption($0, $0.label, key: $0.rawValue) }, selection: filter,
             identifier: "edit.captionFilter", onSelect: captions.setCaptionCatalogFilter

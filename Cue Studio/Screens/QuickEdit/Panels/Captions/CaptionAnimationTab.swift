@@ -47,6 +47,9 @@ struct CaptionAnimationTab: View {
                     reset: viewModel.edit.captionCollection?.accent == nil ? nil : (String(localized: "Style's"), { captions.resetCaptionAccent() }),
                     identifier: "edit.captionAccent"
                 ) { captions.setCaptionAccent($0) }
+                if !captions.captionHighlightStandsOut {
+                    PanelNote(text: String(localized: "The word being said is the same color as the others: pick another highlight color."), tint: Palette.warnText)
+                }
             }
             if motion.followsWords, captions.linesWithoutWordTiming > 0 {
                 PanelNote(text: String(localized: "\(captions.linesWithoutWordTiming) lines follow the voice approximately."))

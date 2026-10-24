@@ -78,6 +78,9 @@ struct CaptionAdjustTab: View {
         ) { letterCase in captions.adjustCaptions { $0.letterCase = letterCase } }
     }
 
+    /// The text's color, and the highlight's beside it while the word being said is lit (all the captions' colors in one place;
+    /// Animation shows the highlight's too).
+    @ViewBuilder
     private func colors(_ spec: CaptionStyleSpec, changes: CaptionAdjustments) -> some View {
         PanelSwatches(
             label: String(localized: "Text color"), colors: OverlayColor.palette,
@@ -85,6 +88,17 @@ struct CaptionAdjustTab: View {
             reset: changes.textColor == nil ? nil : (Self.styleColor, { captions.adjustCaptions { $0.textColor = nil } }),
             identifier: "edit.captionTextColor"
         ) { color in captions.adjustCaptions { $0.textColor = color } }
+        if captions.captionMotion.spoken != .none, let accent = captions.captionAccent {
+            PanelSwatches(
+                label: String(localized: "Highlight color"), colors: OverlayColor.palette, selection: accent, diameter: swatchDiameter,
+                reset: viewModel.edit.captionCollection?.accent == nil ? nil : (Self.styleColor, { captions.resetCaptionAccent() }),
+                identifier: "edit.captionAdjustAccent"
+            ) { captions.setCaptionAccent($0) }
+            if !captions.captionHighlightStandsOut {
+                PanelNote(text: String(localized: "The word being said is the same color as the others: pick another highlight color."), tint: Palette.warnText)
+                    .accessibilityIdentifier("edit.captionHighlightHidden")
+            }
+        }
     }
 
     @ViewBuilder

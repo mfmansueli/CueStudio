@@ -370578,6 +370578,125 @@
         }
       }
     },
+    "The word being said is the same color as the others: pick another highlight color." : {
+      "comment" : "Note in Caption style when the highlight color of the word being said is the text's own color, so it doesn't show.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الكلمة المنطوقة بلون باقي الكلمات نفسه: اختر لون تمييز آخر."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det ord, der siges, har samme farve som de andre: vælg en anden markeringsfarve."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das gesprochene Wort hat dieselbe Farbe wie die anderen: Wähl eine andere Hervorhebungsfarbe."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La palabra que se dice tiene el mismo color que las demás: elige otro color de resaltado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le mot prononcé a la même couleur que les autres : choisissez une autre couleur de surlignage."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बोला जा रहा शब्द बाकी शब्दों जैसे ही रंग का है: कोई दूसरा हाइलाइट रंग चुनें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kata yang diucapkan berwarna sama dengan kata lain: pilih warna sorotan lain."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La parola detta ha lo stesso colore delle altre: scegli un altro colore di evidenziazione."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "話している単語が他の単語と同じ色です。別のハイライト色を選んでください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "말하는 단어가 다른 단어와 같은 색이에요. 다른 하이라이트 색상을 골라 주세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordet som sies har samme farge som de andre: velg en annen markeringsfarge."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het gesproken woord heeft dezelfde kleur als de andere: kies een andere markeringskleur."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A palavra falada está da mesma cor das outras: escolha outra cor de destaque."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ordet som sägs har samma färg som de andra: välj en annan markeringsfärg."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำที่กำลังพูดเป็นสีเดียวกับคำอื่น เลือกสีไฮไลต์อื่น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Söylenen kelime diğerleriyle aynı renkte: başka bir işaretleme rengi seçin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Từ đang nói cùng màu với các từ khác: hãy chọn màu tô sáng khác."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在说的词和其他词颜色相同：请换一种高亮颜色。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "正在說的詞和其他詞顏色相同：請換一種醒目顏色。"
+          }
+        }
+      }
+    },
     "There are a lot of flight myths out there. Let’s sort them out." : {
       "comment" : "Find inspiration: a starter idea's opening line, a first sentence the creator could say to camera",
       "localizations" : {

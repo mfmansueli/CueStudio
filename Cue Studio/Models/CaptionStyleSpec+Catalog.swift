@@ -73,6 +73,7 @@ nonisolated extension CaptionStyleSpec {
         spec.animation = motion.nearestAnimation
         spec.highlightsWithBox = motion.spoken.boxes
         spec.strokesOutside = true
+        spec.widthScalesWithSize = true
         if spec.entry == .none { spec.entry = motion.entry.drawn }
         return spec
     }
