@@ -23,17 +23,20 @@ nonisolated struct WordEmphasis: Hashable, Sendable {
     /// How many words from `index` are lit: 1 for the word being said, every word for a line lit whole
     /// (`CaptionLineStyle.isEmphasized`).
     var count = 1
+    /// The words after which the line goes on a new line (`CaptionCue.lineBreaks`), as it is drawn.
+    var breaks: Set<Int> = []
 
-    init(words: [String], index: Int, style: Style, count: Int = 1) {
+    init(words: [String], index: Int, style: Style, count: Int = 1, breaks: Set<Int> = []) {
         self.words = words
         self.index = index
         self.style = style
         self.count = max(1, count)
+        self.breaks = breaks
     }
 
     /// Every word of the line lit.
-    static func wholeLine(_ words: [String], style: Style) -> WordEmphasis {
-        WordEmphasis(words: words, index: 0, style: style, count: words.count)
+    static func wholeLine(_ words: [String], style: Style, breaks: Set<Int> = []) -> WordEmphasis {
+        WordEmphasis(words: words, index: 0, style: style, count: words.count, breaks: breaks)
     }
 
     /// Where the lit words are in `display` (the line as drawn: joined, in capitals when the look asks),
@@ -48,8 +51,10 @@ nonisolated struct WordEmphasis: Hashable, Sendable {
         let locale = uppercased ? TextShaping.capitalsLocale(for: words.joined(separator: " ")) : nil
         for (position, word) in words.enumerated() {
             let shown = uppercased ? TextShaping.uppercased(word, locale: locale) : word
-            if let previous = line.unicodeScalars.last, let first = shown.unicodeScalars.first,
-               !(WordSegmenter.isUnspaced(previous) && WordSegmenter.isUnspaced(first)) {
+            if position > 0, breaks.contains(position - 1) {
+                line += "\n"
+            } else if let previous = line.unicodeScalars.last, let first = shown.unicodeScalars.first,
+                      !(WordSegmenter.isUnspaced(previous) && WordSegmenter.isUnspaced(first)) {
                 line += " "
             }
             let location = (line as NSString).length

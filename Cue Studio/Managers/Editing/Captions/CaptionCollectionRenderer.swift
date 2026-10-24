@@ -31,7 +31,8 @@ nonisolated enum CaptionCollectionRenderer {
         return cues.flatMap { cue in
             let settings = styled(settings, for: cue.lineStyle)
             let words = cue.lineWords
-            let line = CaptionText.joined(words.map(\.text))
+            let breaks = cue.lineBreaks
+            let line = CaptionText.joined(words.map(\.text), breaks: breaks)
             // The drawing is named by its text (and, for a copied look, measured with it): the image is
             // made from the same line and settings when it shows (`image`).
             let text: TextOverlay
@@ -68,8 +69,8 @@ nonisolated enum CaptionCollectionRenderer {
             func overlay(_ span: TimeSpan, index: Int?, wholeLine: Bool = false) -> FrameOverlay {
                 // A line lit whole takes the color the word said takes (boxed where the reveal boxes it), never the reveal.
                 let emphasis = wholeLine
-                    ? WordEmphasis.wholeLine(words.map(\.text), style: reveal == .box ? style : .color(.yellow))
-                    : index.map { WordEmphasis(words: words.map(\.text), index: $0, style: style) }
+                    ? WordEmphasis.wholeLine(words.map(\.text), style: reveal == .box ? style : .color(.yellow), breaks: breaks)
+                    : index.map { WordEmphasis(words: words.map(\.text), index: $0, style: style, breaks: breaks) }
                 var overlay = FrameOverlay(
                     lazyText: LazyText(text: text, emphasis: emphasis, frameWidth: frame.width, widthFraction: widthFraction,
                                        collection: settings, frameHeight: frame.height),
@@ -118,7 +119,7 @@ nonisolated enum CaptionCollectionRenderer {
         guard cues.count > 24, settings.customLook == nil else { return }
         var seen = Set<CaptionLineSizes.Key>()
         let missing = cues.compactMap { cue -> CaptionLineSizes.Key? in
-            let line = CaptionText.joined(cue.lineWords.map(\.text))
+            let line = CaptionText.joined(cue.lineWords.map(\.text), breaks: cue.lineBreaks)
             let text = TextOverlay.caption(line, look: TypePreset.cue.look(for: .caption), position: position, span: cue.span).text
             let key = CaptionLineSizes.Key(text: text, settings: styled(settings, for: cue.lineStyle), frame: frame)
             guard !CaptionLineSizes.isKnown(key), seen.insert(key).inserted else { return nil }
@@ -265,6 +266,39 @@ nonisolated enum CaptionCollectionRenderer {
 
     // MARK: - Layout
 
+    /// How `text` lays out in the collection's type at its own size, never shrunk: the lines it takes across the whole room,
+    /// and whether one of its words alone is wider than the room. What a caption format cuts lines by (`CaptionBlocking`),
+    /// measured as the drawing measures: font, weight, size, capitals, letter spacing and the room left by the margins and
+    /// the plate. Nil when there is nothing to lay out.
+    static func measure(_ text: String, settings: CaptionSettings, frame: CGSize) -> (lines: Int, overlong: Bool)? {
+        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, min(frame.width, frame.height) > 0 else { return nil }
+        let spec = settings.spec
+        let display = spec.uppercase ? TextShaping.uppercased(text) : text
+        let unit = min(frame.width, frame.height) / TextOverlayRenderer.referenceWidth
+        let padding = 14 * unit
+        let maxWidth = max(1, min(frame.width * spec.widthFraction, contentRect(settings, frame: frame).width) - padding * 2)
+        let font = CaptionFont.font(spec: spec, size: CGFloat(spec.baseSize) * settings.clampedScale * unit, text: display)
+        let kern = spec.tracking > 0 && TextShaping.allowsLetterSpacing(in: display) ? CGFloat(spec.tracking) * unit : 0
+        var attributes: [NSAttributedString.Key: Any] = [.font: font]
+        if kern > 0 { attributes[.kern] = kern }
+        if let outline = spec.outline { attributes[.strokeWidth] = -outline.width }
+        let widest = CaptionText.words(in: display).map { ($0 as NSString).size(withAttributes: attributes).width }.max() ?? 0
+        let paragraph = NSMutableParagraphStyle()
+        paragraph.lineBreakMode = .byWordWrapping
+        paragraph.lineSpacing = CGFloat(spec.lineSpacing) * unit
+        attributes[.paragraphStyle] = paragraph
+        let storage = NSTextStorage(string: display, attributes: attributes)
+        let manager = NSLayoutManager()
+        storage.addLayoutManager(manager)
+        let container = NSTextContainer(size: CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
+        container.lineFragmentPadding = 0
+        manager.addTextContainer(container)
+        manager.ensureLayout(for: container)
+        var count = 0
+        manager.enumerateLineFragments(forGlyphRange: manager.glyphRange(for: container)) { _, _, _, _, _ in count += 1 }
+        return (count, widest > maxWidth)
+    }
+
     private static func layout(_ text: String, settings: CaptionSettings, frame: CGSize) -> Layout? {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, min(frame.width, frame.height) > 0 else { return nil }
         let spec = settings.spec
@@ -275,6 +309,9 @@ nonisolated enum CaptionCollectionRenderer {
         let safe = contentRect(settings, frame: frame)
         let maxWidth = max(1, min(frame.width * spec.widthFraction, safe.width) - padding.width * 2)
         var pointSize = base * settings.clampedScale * unit
+        // A format's blocks are cut to fit its lines at this size (`CaptionBlocking`): only a block that still doesn't (a word
+        // wider than the room, a line written by hand) shrinks.
+        let maxLines = settings.format?.maxLines ?? spec.maxLines
         let paragraph = NSMutableParagraphStyle()
         paragraph.alignment = .center
         paragraph.lineBreakMode = .byWordWrapping
@@ -316,7 +353,9 @@ nonisolated enum CaptionCollectionRenderer {
             // Favor two balanced lines for a short sentence, while keeping the longest word whole.
             let fullWidth = measure(display, font: font)
             let longest = words.map { measure($0, font: font) }.max() ?? 0
-            let balanced = words.count > spec.balanceFromWords ? max(longest + 2 * unit, fullWidth / balanceRatio) : fullWidth
+            // A line broken by hand goes on a new line only where the creator put it.
+            let balanced = display.contains("\n") ? maxWidth
+                : words.count > spec.balanceFromWords ? max(longest + 2 * unit, fullWidth / balanceRatio) : fullWidth
             let width = min(maxWidth, max(1, balanced))
             let container = NSTextContainer(size: CGSize(width: width, height: .greatestFiniteMagnitude))
             container.lineFragmentPadding = 0
@@ -329,10 +368,10 @@ nonisolated enum CaptionCollectionRenderer {
             let size = CGSize(width: ceil(width + padding.width * 2), height: ceil(bounds.height + padding.height * 2))
             result = Layout(storage: storage, manager: manager, container: container, size: size,
                             origin: CGPoint(x: padding.width, y: padding.height), unit: unit)
-            if count <= spec.maxLines, size.height <= safe.height { break }
+            if count <= maxLines, size.height <= safe.height { break }
             // Too many lines while the balanced width is still narrower than the room: widen it first. Shrinking the type
             // shrinks that width with it, so the line count would never drop and the caption would end up a few points tall.
-            if count > spec.maxLines, width < maxWidth - 0.5, balanceRatio > 1 {
+            if count > maxLines, width < maxWidth - 0.5, balanceRatio > 1 {
                 balanceRatio = max(1, balanceRatio * 0.85)
                 continue
             }

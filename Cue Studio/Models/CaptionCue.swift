@@ -32,6 +32,9 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
     /// How the line stands out from the others (emphasis, bigger type); nil draws it like every line (and lines saved before
     /// line styles).
     var lineStyle: CaptionLineStyle?
+    /// The creator decided where this line starts and ends (split or joined by hand): a caption format (`CaptionBlocking`)
+    /// leaves it as it is and cuts the lines around it.
+    var keepsBlock = false
 
     init(
         id: UUID = UUID(), text: String, start: TimeInterval, end: TimeInterval, words: [CaptionWord] = [],
@@ -85,16 +88,23 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
         }
     }
 
-    /// The line as drawn: its words one space apart (no stray spaces or breaks from typing), which
-    /// is also what a word being lit is found in.
+    /// The words after which the line goes on a new line: the line breaks the creator put in (Caption › Line break), never
+    /// past its last word.
+    var lineBreaks: Set<Int> {
+        let count = CaptionText.words(in: text).count
+        return CaptionText.breaks(in: text).filter { $0 < count - 1 }
+    }
+
+    /// The line as drawn: its words one space apart (no stray spaces from typing), on a new line where the creator broke it,
+    /// which is also what a word being lit is found in.
     var shownText: String {
-        CaptionText.joined(lineWords.map(\.text))
+        CaptionText.joined(lineWords.map(\.text), breaks: lineBreaks)
     }
 
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case id, text, start, end, words, origin, isRevised, needsTimingReview, sourceID, lineStyle
+        case id, text, start, end, words, origin, isRevised, needsTimingReview, sourceID, lineStyle, keepsBlock
     }
 
     /// Captions saved before they had an identity or words read as legacy lines.
@@ -110,5 +120,22 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
         needsTimingReview = (try? container.decodeIfPresent(Bool.self, forKey: .needsTimingReview)) ?? false
         sourceID = try? container.decodeIfPresent(UUID.self, forKey: .sourceID)
         lineStyle = try? container.decodeIfPresent(CaptionLineStyle.self, forKey: .lineStyle)
+        keepsBlock = (try? container.decodeIfPresent(Bool.self, forKey: .keepsBlock)) ?? false
+    }
+
+    /// `keepsBlock` is written only when set: lines that never had it read and write as before.
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(text, forKey: .text)
+        try container.encode(start, forKey: .start)
+        try container.encode(end, forKey: .end)
+        try container.encode(words, forKey: .words)
+        try container.encode(origin, forKey: .origin)
+        try container.encode(isRevised, forKey: .isRevised)
+        try container.encode(needsTimingReview, forKey: .needsTimingReview)
+        try container.encodeIfPresent(sourceID, forKey: .sourceID)
+        try container.encodeIfPresent(lineStyle, forKey: .lineStyle)
+        if keepsBlock { try container.encode(keepsBlock, forKey: .keepsBlock) }
     }
 }

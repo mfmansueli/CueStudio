@@ -19,7 +19,14 @@ extension CaptionsViewModel {
     /// Every line in "My style", one undo step.
     func applyMyCaptionStyle() {
         guard isReady, let mine = myCaptionStyle, !captionsWearMyStyle else { return }
-        change { mine.apply(to: &$0) }
+        let aspect = edit.aspect
+        change { snapshot in
+            let before = snapshot.captionCollection
+            mine.apply(to: &snapshot)
+            // A style saved before formats keeps the edit's format.
+            if snapshot.captionCollection?.format == nil { snapshot.captionCollection?.format = before?.format }
+            Self.refit(&snapshot, from: before, aspect: aspect)
+        }
         previewCurrentCaptionLine()
         sayUndoable(String(localized: "My style on every line"))
     }
@@ -35,6 +42,8 @@ extension CaptionsViewModel {
         let fresh = CaptionSettings()
         current.safeMargins = fresh.safeMargins
         current.styleVersion = fresh.styleVersion
+        // The format is how the lines are cut, not a look: an edit whose lines were deleted is still unstyled.
+        current.format = fresh.format
         guard current == fresh else { return }
         mine.apply(to: &snapshot)
     }

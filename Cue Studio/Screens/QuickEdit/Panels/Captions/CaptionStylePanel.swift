@@ -6,8 +6,8 @@
 import SwiftUI
 import UIKit
 
-/// Caption style, always for every line, and the one place captions are styled: the collection's
-/// presets, how lines appear (tapping one plays the current line with it), where they sit and how
+/// Caption style, always for every line, and the one place captions are styled: the format the lines are cut by
+/// (`CaptionFormat`: one word, a short phrase, two lines), the collection's presets, how lines appear (tapping one plays the current line with it), where they sit and how
 /// big, and the highlight color. Captions drawn with a text's look (copied with "Apply this style to
 /// captions", or from an older version) show it as Custom, first and picked, and Font changes its
 /// family, weight and color; picking a preset replaces it, on the captions only. The panel expands
@@ -62,6 +62,15 @@ struct CaptionStylePanel: View {
     /// between the names however large the text.
     @ViewBuilder
     private var presets: some View {
+        // How the lines are cut into what shows at once: above the looks, as it decides how much each one holds.
+        if viewModel.edit.captionCollection != nil {
+            PanelSegmented(
+                label: String(localized: "Format"),
+                detail: viewModel.captions.captionFormat == nil ? String(localized: "as they were made") : nil,
+                options: CaptionFormat.allCases.map { PanelOption($0, $0.label) },
+                selection: viewModel.captions.captionFormat, height: 38, identifier: "edit.captionFormat"
+            ) { viewModel.captions.setCaptionFormat($0) }
+        }
         LazyVGrid(
             columns: [GridItem(.adaptive(minimum: Self.presetCell), spacing: 8, alignment: .top)],
             spacing: 12

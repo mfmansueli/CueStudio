@@ -156,34 +156,46 @@ extension CaptionsViewModel {
     /// With `reveal` (the way of showing words a complete preset brings), both change in the same
     /// undo step, so one Undo goes back to the look before, never to a mix of the two.
     func setCaptionTheme(_ theme: CaptionTheme, reveal: CaptionAnimation? = nil) {
+        let aspect = edit.aspect
         change { snapshot in
+            let before = snapshot.captionCollection
             var settings = CaptionSettings(theme: theme)
-            settings.center = snapshot.captionCollection?.center
-            settings.safeMargins = snapshot.captionCollection?.safeMargins ?? captionSafeMargins
+            settings.center = before?.center
+            settings.safeMargins = before?.safeMargins ?? captionSafeMargins
+            // The format is how the lines are cut, not a look: it stays.
+            settings.format = before?.format
             if let reveal {
                 settings.followsWords = reveal.followsWords
                 snapshot.captionAnimation = reveal
             }
             snapshot.captionCollection = settings
+            Self.refit(&snapshot, from: before, aspect: aspect)
         }
         toast.show(String(localized: "\(theme.label) on the captions"))
     }
 
     func updateCaptionSettings(_ update: (inout CaptionSettings) -> Void) {
+        let aspect = edit.aspect
         change { snapshot in
             guard var settings = snapshot.captionCollection else { return }
+            let before = settings
             update(&settings)
             snapshot.captionCollection = settings
+            Self.refit(&snapshot, from: before, aspect: aspect)
         }
     }
 
     func resetCaptionTheme() {
         guard let theme = edit.captionCollection?.theme else { return }
+        let aspect = edit.aspect
         change { snapshot in
+            let before = snapshot.captionCollection
             var settings = CaptionSettings(theme: theme)
-            settings.safeMargins = snapshot.captionCollection?.safeMargins ?? captionSafeMargins
+            settings.safeMargins = before?.safeMargins ?? captionSafeMargins
+            settings.format = before?.format
             snapshot.captionCollection = settings
             snapshot.captionPosition = .bottom
+            Self.refit(&snapshot, from: before, aspect: aspect)
         }
     }
 
@@ -245,9 +257,18 @@ extension CaptionsViewModel {
         keepsCaptionsHiddenAfterListening = false
         var made = snapshot
         startsCaptionsInMyStyle(&made)
+        lines.sort { $0.start < $1.start }
+        // New lines are cut by the edit's format (My style's, else short phrases); an edit from before formats that already had
+        // lines keeps making them its way until a format is picked.
+        if var settings = made.captionCollection, settings.format != nil || edit.captions.isEmpty {
+            let format = settings.format ?? .phrase
+            settings.format = format
+            made.captionCollection = settings
+            lines = Self.blocked(lines, format: format, settings: settings, aspect: edit.aspect)
+        }
         changeEdit { edit in
             edit.apply(made)
-            edit.captions = lines.sorted { $0.start < $1.start }
+            edit.captions = lines
             edit.showsCaptions = shows
             if edit.captionLanguage != nil, let spoken { edit.captionLanguage = spoken }
         }
@@ -347,11 +368,13 @@ extension CaptionsViewModel {
         }
     }
 
-    /// Splits a line before its word at `index`.
+    /// Splits a line before its word at `index`. Both parts were cut by hand: a caption format leaves them as they are.
     func splitCaption(_ id: UUID, beforeWord index: Int) {
         change { snapshot in
             guard var lines = snapshot.captions, let position = lines.firstIndex(where: { $0.id == id }),
-                  let (first, second) = CaptionRevision.split(lines[position], beforeWord: index) else { return }
+                  var (first, second) = CaptionRevision.split(lines[position], beforeWord: index) else { return }
+            first.keepsBlock = true
+            second.keepsBlock = true
             lines[position] = first
             lines.insert(second, at: position + 1)
             snapshot.captions = lines
@@ -359,13 +382,14 @@ extension CaptionsViewModel {
     }
 
     /// Joins a line with the one that plays after it, when that's the next thing said in the same recording
-    /// (`CaptionJoin`).
+    /// (`CaptionJoin`). The joined line was made by hand: a caption format leaves it as it is.
     func mergeCaptionWithNext(_ id: UUID) {
         guard case .next(let nextID) = CaptionJoin.next(after: id, in: edit) else { return }
         change { snapshot in
             guard var lines = snapshot.captions, let position = lines.firstIndex(where: { $0.id == id }),
                   let other = lines.firstIndex(where: { $0.id == nextID }) else { return }
             lines[position] = CaptionRevision.merged(lines[position], lines[other])
+            lines[position].keepsBlock = true
             lines.remove(at: other)
             snapshot.captions = lines
         }
@@ -398,6 +422,57 @@ extension CaptionsViewModel {
         splitCaption(id, beforeWord: index)
         if let second = edit.captions.first(where: { !before.contains($0.id) }) { selection = .caption(second.id) }
         sayUndoable(String(localized: "Line split"))
+    }
+
+    /// Caption line › Word timing: where word `index` ends and the next one starts (seconds of the recording), never closer than
+    /// a tenth to their other ends. The two words now have times the creator set (no longer estimated), the line is revised and
+    /// stops asking for a timing check once none of its words is estimated; one undo step a drag.
+    func setWordBoundary(_ id: UUID, after index: Int, at time: TimeInterval) {
+        updateCaption(id, key: "wordTiming.\(id).\(index)") { cue in
+            var words = cue.lineWords
+            guard words.indices.contains(index + 1) else { return cue }
+            let low = words[index].start + 0.1
+            let high = words[index + 1].end - 0.1
+            guard low < high else { return cue }
+            let boundary = min(max(time, low), high)
+            words[index] = CaptionWord(text: words[index].text, start: words[index].start, end: boundary)
+            words[index + 1] = CaptionWord(text: words[index + 1].text, start: boundary, end: words[index + 1].end)
+            var timed = cue
+            timed.words = words
+            timed.isRevised = true
+            if !words.contains(where: \.isEstimated) { timed.needsTimingReview = false }
+            return timed
+        }
+    }
+
+    /// Caption › Line break: the line goes on a new line before the word at `offset` (a character of its text, where the cursor
+    /// is; nil: the word at the playhead), in the same caption. Return still goes on to the next caption. A line broken by hand
+    /// keeps its edges whatever the format; deleting the break in the text takes it out.
+    func breakCaptionLine(_ id: UUID, atCharacter offset: Int?) {
+        guard let cue = edit.captions.first(where: { $0.id == id }) else { return }
+        let words = CaptionText.words(in: cue.text)
+        guard words.count > 1 else {
+            toast.show(String(localized: "Only one word here"))
+            return
+        }
+        let before: Int
+        if let offset {
+            let typed = String(cue.text.prefix(max(0, offset)))
+            let count = CaptionText.words(in: typed).count
+            before = (typed.last?.isWhitespace ?? true) ? count : count - 1
+        } else {
+            before = CaptionRevision.splitIndex(of: cue, atSource: edit.timeline.sourceTime(forEdited: player.currentTime))
+        }
+        let index = min(max(1, before), words.count - 1)
+        var breaks = cue.lineBreaks
+        breaks.insert(index - 1)
+        let text = CaptionText.joined(words, breaks: breaks)
+        updateCaption(id) { cue in
+            var broken = CaptionRevision.retimed(cue, text: text)
+            broken.keepsBlock = true
+            return broken
+        }
+        sayUndoable(String(localized: "Line break added"))
     }
 
     /// Caption › Join next.
