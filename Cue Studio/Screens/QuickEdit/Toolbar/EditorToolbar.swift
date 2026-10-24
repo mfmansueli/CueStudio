@@ -61,7 +61,7 @@ struct EditorToolbar: View {
     private func content(_ context: String?) -> some View {
         HStack(spacing: 0) {
             if let context {
-                backButton(context)
+                backButton(viewModel.toolbarContextName ?? context)
             }
             let pinned = viewModel.toolbarItems.filter(\.isPinned)
             GeometryReader { proxy in

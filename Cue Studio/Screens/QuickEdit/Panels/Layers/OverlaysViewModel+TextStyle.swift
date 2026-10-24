@@ -19,7 +19,7 @@ extension OverlaysViewModel {
         case .selected:
             switch selectedText?.role ?? .title {
             case .title: String(localized: "This title")
-            case .subtitle: String(localized: "This subtitle")
+            case .subtitle: String(localized: "This subheading")
             case .hook: String(localized: "This hook")
             case .callout: String(localized: "This callout")
             }
@@ -41,7 +41,7 @@ extension OverlaysViewModel {
     var textFieldPlaceholder: String {
         switch selectedText?.role ?? .title {
         case .title: String(localized: "Type your title")
-        case .subtitle: String(localized: "Type your subtitle")
+        case .subtitle: String(localized: "Type your subheading")
         case .hook: String(localized: "Type your hook")
         case .callout: String(localized: "Type your callout")
         }

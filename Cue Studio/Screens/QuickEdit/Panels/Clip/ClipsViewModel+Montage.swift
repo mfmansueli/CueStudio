@@ -81,7 +81,7 @@ extension ClipsViewModel {
         takes.takes.filter { $0.id != take.id }
     }
 
-    /// Adds another take from the library at the end of the montage (or after the picked section).
+    /// Adds another take from the library after the picked clip, else after the one at the playhead (`addSource`).
     func addClip(from take: Take) async {
         guard isReady else { return }
         let file = takes.videoURL(for: take)
@@ -100,7 +100,7 @@ extension ClipsViewModel {
         }
     }
 
-    /// Adds a video from Photos at the end of the montage (or after the picked section).
+    /// Adds a video from Photos after the picked clip, else after the one at the playhead (`addSource`).
     func addClip(importing item: PhotosPickerItem) async {
         guard isReady else { return }
         isImportingMedia = true
@@ -125,17 +125,32 @@ extension ClipsViewModel {
         }
     }
 
+    /// Where an added clip goes, as "Add photo or video" says: right after the picked clip, else after the one at the playhead.
+    var insertionIndex: Int {
+        (selectedSegmentIndex ?? min(clipIndexAtPlayhead, edit.timeline.segments.count - 1)) + 1
+    }
+
+    /// "Goes after clip 2, at 00:12.4": where an added clip will start, under the choice.
+    var insertionNote: String {
+        let index = insertionIndex
+        return String(localized: "Goes after clip \(index), at \(DurationText.editor(edit.timeline.editedStart(ofSegmentAt: index)))")
+    }
+
+    /// The new clip goes where `insertionIndex` says, is picked (its tools and outline show where it went) and the playhead
+    /// moves to its start; the toast says which clip it became.
     private func addSource(_ source: ClipSource) {
         var next = arranged(edit)
-        let at = selectedSegmentIndex.map { $0 + 1 }
-        guard let id = next.timeline.insertClip(source: source.id, duration: source.duration, at: at) else {
+        guard let id = next.timeline.insertClip(source: source.id, duration: source.duration, at: insertionIndex) else {
             toast.show(String(localized: "Video too short to add"))
             return
         }
         next.sources.append(source)
         commit(EditSnapshot(next))
-        player.seek(to: next.timeline.editedStart(ofSegmentAt: next.timeline.index(ofSegment: id) ?? 0))
-        sayUndoable(String(localized: "\(source.title) added"))
+        let index = next.timeline.index(ofSegment: id) ?? 0
+        let start = next.timeline.editedStart(ofSegmentAt: index)
+        player.seek(to: start)
+        selection = .clip(id)
+        sayUndoable(String(localized: "\(source.title) added as clip \(index + 1), at \(DurationText.editor(start))"))
     }
 
     /// Reorder: the clips in a list to drag, from the clip's tools or holding a clip on the timeline. One clip: nothing to order.

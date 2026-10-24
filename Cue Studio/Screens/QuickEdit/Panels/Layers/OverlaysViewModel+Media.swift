@@ -35,6 +35,14 @@ extension OverlaysViewModel {
 
     /// Adds what was copied in at the playhead, on top of what's there, for its length (a photo's
     /// three seconds) or until the end. Up to `MediaOverlay.simultaneousLimit` show at once.
+    /// "Starts at 00:07.0 · a photo stays 3 s, a video plays its length": where a pick laid over the video lands (`addMedia`),
+    /// under the choice.
+    var insertionNote: String {
+        let start = min(player.currentTime, max(0, edit.editedDuration - MediaOverlay.minimumDuration))
+        let photo = Int(MediaOverlay.photoDuration.rounded())
+        return String(localized: "Starts at \(DurationText.editor(start)) · a photo stays \(photo) s, a video plays its length")
+    }
+
     func addMedia(_ imported: ImportedMedia) {
         importedFiles.insert(imported.fileName)
         let total = edit.editedDuration

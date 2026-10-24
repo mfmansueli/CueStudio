@@ -18,7 +18,7 @@ nonisolated enum TextOverlayRole: String, LenientChoice, CaseIterable, Identifia
     var label: String {
         switch self {
         case .title: String(localized: "Title")
-        case .subtitle: String(localized: "Subtitle")
+        case .subtitle: String(localized: "Subheading")
         case .hook: String(localized: "Hook")
         case .callout: String(localized: "Callout")
         }
