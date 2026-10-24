@@ -142,12 +142,14 @@ nonisolated enum CaptionTranscriber {
             var words: [TimedWord] = []
             for try await result in results {
                 let heard = text(result)
+                var resultWords: [TimedWord] = []
                 for run in heard.runs {
                     guard let range = heard[run.range].audioTimeRange else { continue }
                     let text = String(heard[run.range].characters)
-                    words += spread(text, start: range.start.seconds, end: range.end.seconds, language: language)
+                    resultWords += spread(text, start: range.start.seconds, end: range.end.seconds, language: language)
                     if length > 0 { progress?(.transcribing(min(1, range.end.seconds / length))) }
                 }
+                words += SettledLastWord.applied(to: resultWords)
             }
             return words
         }

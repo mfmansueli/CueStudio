@@ -56,12 +56,16 @@ struct CaptionReplayTests {
         let samples = try CueLanguage.allCases.map(SpeechSample.synthetic(of:)) + SpeechSample.human()
         let replays = try stored.readings.map { reading in
             let sample = try #require(samples.first { $0.name == reading.name }, "\(reading.name) isn't a recording the suites play")
-            let words = reading.words.compactMap { values -> CaptionWord? in
+            let words = reading.words.compactMap { values -> TimedWord? in
                 guard values.count == 4, case .text(let text) = values[0], case .time(let start) = values[1],
                       case .time(let end) = values[2], case .flag(let estimated) = values[3] else { return nil }
-                return CaptionWord(text: text, start: start, end: end, isEstimated: estimated)
+                return TimedWord(text: text, start: start, end: end, isEstimated: estimated)
             }
-            return Replay(sample: sample, heard: words)
+            // Each reading was one result, heard before `SettledLastWord` made a last word heard twice one.
+            let heard = SettledLastWord.applied(to: words).map {
+                CaptionWord(text: $0.text, start: $0.start, end: $0.end, isEstimated: $0.isEstimated)
+            }
+            return Replay(sample: sample, heard: heard)
         }
         return (stored.heardOn, replays)
     }
@@ -102,8 +106,8 @@ struct CaptionReplayTests {
         let heardByPeople = everyone.map(\.raw).reduce(0, +) / Double(max(1, everyone.count))
         let shownToPeople = everyone.map(\.shown).reduce(0, +) / Double(max(1, everyone.count))
         report.append("all people: \(heardByPeople) → \(shownToPeople)")
-        // 9.2% of people's words heard wrong, 6.6% on screen with the script's numbers and names (7.4% before them).
-        #expect(shownToPeople <= 0.067, "people's captions get \(Int((shownToPeople * 100).rounded()))% of the words wrong")
+        // 9.0% of people's words heard wrong, 6.5% on screen with the script's numbers and names (7.4% before them).
+        #expect(shownToPeople <= 0.065, "people's captions get \(Int((shownToPeople * 100).rounded()))% of the words wrong")
         report += lines
         print(report.joined(separator: "\n"))
         // `TEST_RUNNER_CUE_REPLAY_REPORT=<file>` keeps the table, which a simulator's console doesn't show.

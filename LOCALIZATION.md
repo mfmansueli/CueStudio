@@ -496,15 +496,17 @@ the shipping settings, word to text.
   (`WordBoundaries`): English 5 of 5 clean.
 - **What the creator sees** (`CaptionReplayTests`: the words this iPhone heard in the 100 recordings, rebuilt into lines with
   the script as a take is, in the simulator): the share of the script's words wrong (letters for ja, zh, th and ko), people's
-  readings, as heard → on screen: en 6% → 1%, es 4% → 3%, pt-BR 15% → 6%, fr 10% → 5%, de 8% → 6%, it 1% → 0%, ja 0% → 0%,
+  readings, as heard → on screen: en 6% → 1%, es 3% → 2%, pt-BR 15% → 6%, fr 10% → 5%, de 6% → 4%, it 1% → 0%, ja 0% → 0%,
   ko 3% → 2%, zh-CN 12% → 11%, hi 28% → 24%, id 4% → 1%, ar 20% → 17%, tr 9% → 6%, th 5% → 5%, vi 8% → 6%, zh-TW 7% → 7%,
-  nl 14% → 7%, sv 13% → 13%, da 5% → 4%, nb 11% → 8%; all of them 9.2% → 6.6%. The script's numbers and names took it from
+  nl 14% → 7%, sv 13% → 13%, da 5% → 4%, nb 11% → 8%; all of them 9.0% → 6.5%. The script's numbers and names took it from
   7.4%: the same number written another way takes the script's writing ("3 thói quen" → "ba thói quen", "3 つ" → "三つ",
   "An 2 00 6" → "An (2006)"), a name heard as other words that sound like it is written as the name ("Jean Carlos disse que
   ela" → "Giancarlo Fisichella"), and a mark the recognizer wrote on its own isn't repeated ("、 、", "。 。"). Against
   10,700 scripts with one to four words swapped for another reading's (the voice said something else), 22 show a word that
   wasn't said, all from the near-miss rule ("المحطة" for "المحيط"); 84 did before, most from a phrase taken for another
-  language between Danish, Norwegian and Swedish, which now has to sound like what was heard.
+  language between Danish, Norwegian and Swedish, which now has to sound like what was heard. The transcriber ended 3 of the
+  100 results with its last word twice, first as it guessed it and closing the sentence ("gezeichnet wurde. wurde", "planes
+  de vida. viaje."); dictation never did (`SpeechResultsDeviceTests`). The two are one word now (`SettledLastWord`).
 - **Another recognizer** (a Mac with Apple silicon, WhisperKit 1.1 running OpenAI's Whisper large-v3 turbo, 632 MB and
   626 MB, and large-v3, 947 MB, on the same 100 recordings with the language given, scored by one rule with Apple's):
   people's words wrong 10.2%, 10.5% and 11.7%, against Apple's 9.4% heard and 7.4% on screen (that scorer's numbers; before
@@ -515,8 +517,10 @@ the shipping settings, word to text.
   the end of two readings. Not used.
 - **Known limits**: Portuguese read by people: Edit by text clips the first sound of the word after the cut in every reading
   (the transcriber starts the next word 0.12–0.3 s after the voice does: "das" is said 7.05–7.13 s and timed from 7.20 s,
-  where Whisper and the level agree; a known issue in `EditByTextDeviceTests`; `SpeechResultsDeviceTests` prints what
-  dictation times there). Voice Following's
+  where Whisper and the level agree; a known issue in `EditByTextDeviceTests`). `SpeechResultsDeviceTests` ran both
+  recognizers on four Portuguese and two German readings: dictation starts the same words a median 0.06–0.11 s earlier (up
+  to 0.3 s; "das" at 7.02 s) and leaves the pauses between words, which the transcriber never does, and German has the same
+  lag. Voice Following's
   first move waits for the first recognized word: 0.9–2.6 s after the voice with people (4.5 s on one Turkish reading opening
   with a name; dictation is slower to its first word). One Arabic reading was followed to 62% in real time (its last words
   came late from dictation; 88% given time). The speaking indicator lit on breaths before the voice in a few readings; the text

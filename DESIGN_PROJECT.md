@@ -1415,11 +1415,13 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   que soam como ele ("Jean Carlos disse que ela" → "Giancarlo Fisichella"; `ScriptNames` acha os nomes pela escrita, maiúscula no
   meio da frase, maiúscula dentro da palavra ou letras latinas num roteiro de outro alfabeto; `SoundKey` e `SoundAlignment` comparam
   pelo som em qualquer escrita); e uma frase de outro idioma só quando soa como o que foi ouvido. Pontuação que o reconhecedor
-  escreveu sozinha não se repete ("。 。"). Medido com o que um iPhone 15 Pro ouviu das 100 gravações (`CaptionReplayTests`, no
-  simulador): as pessoas têm 9,2% das palavras erradas no texto ouvido e 6,6% na tela (7,4% antes dos números e nomes); em 10.700
+  escreveu sozinha não se repete ("。 。"). Uma última palavra que o reconhecedor escreveu duas vezes, a primeira fechando a frase
+  ("gezeichnet wurde. wurde", "planes de vida. viaje."), vira uma só, mesmo sem roteiro (`SettledLastWord`). Medido com o que um
+  iPhone 15 Pro ouviu das 100 gravações (`CaptionReplayTests`, no
+  simulador): as pessoas têm 9,0% das palavras erradas no texto ouvido e 6,5% na tela (7,4% antes dos números e nomes); em 10.700
   roteiros com uma frase trocada, 22 mostram uma palavra não dita (eram 84). O Whisper (no Mac) errou mais e inventou frases no
   silêncio: não é usado (`LOCALIZATION.md` §5).
-- **Testes:** `ScriptSpellingTests`, `SoundKeyTests`, `SoundAlignmentTests`, `ScriptNamesTests`, `CaptionReplayTests`,
+- **Testes:** `ScriptSpellingTests`, `SoundKeyTests`, `SoundAlignmentTests`, `ScriptNamesTests`, `SettledLastWordTests`, `CaptionReplayTests`,
   `SpokenLanguageIdentifierTests`, `SpeechLocaleReservationTests`, `TranscriptTimingCheckTests`,
   `LanguageServiceTests/aTakeWithoutAScriptIsComparedInItsLikelyLanguages`,
   `QuickEditLanguageTests/aLanguagePickedUnlikeTheScriptsIsCheckedAgainstIt`, `CaptionBuilderTests/wordsSpreadOverTheSpeechMakeWholeLines`;
