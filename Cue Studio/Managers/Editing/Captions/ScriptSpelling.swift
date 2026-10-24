@@ -17,10 +17,15 @@ import Foundation
 ///   written as the script has it ("mostra" → "mostrar").
 /// - **Improvised** (little lines up): only words that line up reliably take the script's spelling,
 ///   and a heard word is replaced only when it is nearly the same word.
+/// **Numbers** are the script's when they are the same number written another way ("3" for "ba", "seks" for "6", "2 00 6"
+/// for "2006"); a different one ("seventy" for "seventeen") is never replaced.
+/// **Names.** A recognizer often writes a name it doesn't know as other words ("Jean Carlos disse que ela" for "Giancarlo
+/// Fisichella"). When the take was read from the script, heard words that sound like a name of the script (`ScriptNames`,
+/// `SoundAlignment`) are written as the name.
 /// **Mixed languages.** A recognizer listens in one language, so an English phrase inside a Portuguese
 /// take comes out as Portuguese-sounding words that mean nothing. When the take was read from the
 /// script and the script has a phrase clearly in another language (`LanguageDetector.isForeign`)
-/// where the voice gave about as many words of gibberish, the phrase is written as the script has it.
+/// where the voice gave about as many words that sound like it, the phrase is written as the script has it.
 /// Words are compared by `WordTokenizer.key` (case, accents, width and the letters recognizers
 /// write in more than one way are folded), so Arabic, Hindi, Japanese, Chinese and Thai are
 /// compared the same way as Latin scripts.
@@ -50,6 +55,23 @@ nonisolated enum ScriptSpelling {
     static let minimumLetters = (spaced: 4, unspaced: 2)
     /// Most letters in a stretch re-split into other words.
     static let stretchLetters = 2...12
+    /// How alike a phrase of the script in another language and the words heard for it must sound: the recognizer wrote
+    /// what it heard in its own language's spelling, not something else that was said.
+    static let foreignLikeness = 0.5
+    /// How alike heard words and a name of the script must sound for the name to be written.
+    static let nameLikeness = 0.65
+    /// Longest stretch, in words on either side, searched for names: a misheard name leaves a short one.
+    static let longestNameGap = 12
+
+    /// What a stretch between words that line up is corrected with.
+    private struct Context {
+        let following: Bool
+        let language: CueLanguage?
+        /// `ScriptNames.keys` of the script.
+        let names: Set<String>
+        /// Reads numbers spelled out in the take's language ("seventeen"), so they are never taken for other words.
+        let spelled: NumberFormatter?
+    }
 
     /// `heard` with the script's spelling where it applies; the same words and times, except that a
     /// stretch re-split into other words shares its time (and is marked estimated).
@@ -62,6 +84,10 @@ nonisolated enum ScriptSpelling {
         let coverage = Double(pairs.count) / Double(heard.count)
         let follows = heard.count >= followingMinimumWords && pairs.count >= followingMinimumMatches && coverage >= followingCoverage
         let anchors = follows ? trusted(pairs, keys: heardKeys) : WordAlignment.reliable(pairs, keys: heardKeys)
+        let context = Context(
+            following: follows, language: language, names: follows ? ScriptNames.keys(in: script, language: language) : [],
+            spelled: language.map(spellOutReader(in:))
+        )
 
         var words: [CaptionWord] = []
         var heardFrom = 0
@@ -69,10 +95,7 @@ nonisolated enum ScriptSpelling {
         let end = WordAlignment.Match(first: heard.count, second: written.count)
         for anchor in anchors + [end] {
             guard anchor.first >= heardFrom, anchor.second >= writtenFrom else { continue }
-            words += corrected(
-                Array(heard[heardFrom..<anchor.first]), toward: Array(written[writtenFrom..<anchor.second]), following: follows,
-                language: language
-            )
+            words += corrected(Array(heard[heardFrom..<anchor.first]), toward: Array(written[writtenFrom..<anchor.second]), context: context)
             if anchor.first < heard.count {
                 var word = heard[anchor.first]
                 word.text = written[anchor.second]
@@ -81,7 +104,20 @@ nonisolated enum ScriptSpelling {
             heardFrom = anchor.first + 1
             writtenFrom = anchor.second + 1
         }
-        return Result(words: words, followsScript: follows, coverage: coverage)
+        return Result(words: withoutRepeatedMarks(words), followsScript: follows, coverage: coverage)
+    }
+
+    /// `words` without a mark the recognizer wrote on its own ("。") right after a word whose closing marks already hold it, as
+    /// a word taking the script's spelling does ("2002）。" then "。").
+    private static func withoutRepeatedMarks(_ words: [CaptionWord]) -> [CaptionWord] {
+        var kept: [CaptionWord] = []
+        for word in words {
+            let mark = word.text.trimmingCharacters(in: .whitespaces)
+            let endsWith = kept.last.map { String($0.text.reversed().prefix { !$0.isLetter && !$0.isNumber }) } ?? ""
+            if !mark.isEmpty, WordAlignment.key(mark).isEmpty, endsWith.contains(mark) { continue }
+            kept.append(word)
+        }
+        return kept
     }
 
     /// The matches to trust in a take read from the script: the reliable ones, and a short word
@@ -105,21 +141,26 @@ nonisolated enum ScriptSpelling {
     // MARK: - Between the words that line up
 
     /// The heard words between two matches, written as the script has them when they are nearly the
-    /// same words. Nothing changes when the voice and the script say different things there.
-    private static func corrected(
-        _ heard: [CaptionWord], toward written: [String], following: Bool, language: CueLanguage?
-    ) -> [CaptionWord] {
+    /// same words, the same number or a name heard as other words. Nothing changes when the voice and the script say
+    /// different things there.
+    private static func corrected(_ heard: [CaptionWord], toward written: [String], context: Context, byName: Bool = true) -> [CaptionWord] {
         guard !heard.isEmpty, !written.isEmpty else { return heard }
-        if following, let language, abs(heard.count - written.count) <= 1, heard.count <= longestForeignGap, written.count <= longestForeignGap,
-           LanguageDetector.isForeign(written, to: language.languageCode) {
+        if let numbered = atTheSameNumber(heard, written, context: context) { return numbered }
+        if context.following, let language = context.language, abs(heard.count - written.count) <= 1, heard.count <= longestForeignGap,
+           written.count <= longestForeignGap, LanguageDetector.isForeign(written, to: language.languageCode),
+           SoundKey.likeness(heard.map(\.text), written) >= foreignLikeness {
             return rewritten(heard, as: written)
         }
+        if byName, context.following, !context.names.isEmpty, heard.count <= longestNameGap, written.count <= longestNameGap,
+           let named = withNames(heard, written, context: context) {
+            return named
+        }
         guard heard.count <= longestGap, written.count <= longestGap else { return heard }
-        let wordLimit = following ? similarity.following : similarity.improvised
+        let wordLimit = context.following ? similarity.following : similarity.improvised
         if heard.count == written.count {
             return zip(heard, written).map { word, spelling in
                 var word = word
-                if isNearlyTheSame(word.text, spelling, limit: wordLimit) { word.text = spelling }
+                if isNearlyTheSame(word.text, spelling, limit: wordLimit, context: context) { word.text = spelling }
                 return word
             }
         }
@@ -129,9 +170,104 @@ nonisolated enum ScriptSpelling {
         guard stretchLetters.contains(heardLetters.count), stretchLetters.contains(writtenLetters.count),
               abs(heardLetters.count - writtenLetters.count) <= 1,
               !hasDigit(heardLetters), !hasDigit(writtenLetters),
-              ratio(heardLetters, writtenLetters) >= (following ? stretchSimilarity.following : stretchSimilarity.improvised),
+              ratio(heardLetters, writtenLetters) >= (context.following ? stretchSimilarity.following : stretchSimilarity.improvised),
               let first = heard.first, let last = heard.last else { return heard }
         return share(written, over: TimeSpan(start: first.start, end: max(first.start, last.end)))
+    }
+
+    // MARK: - Numbers
+
+    /// `heard` with a number the script writes another way written as the script has it: the whole stretch when both say the
+    /// same numbers ("3 cốc" / "ba cốc"), or a run of digits the recognizer cut up ("2 00 6" / "(2006)") with the words around
+    /// it corrected on their own. Nil when no number is the same.
+    private static func atTheSameNumber(_ heard: [CaptionWord], _ written: [String], context: Context) -> [CaptionWord]? {
+        let heardTexts = heard.map(\.text)
+        guard heardTexts.contains(where: hasDigit) || written.contains(where: hasDigit) else { return nil }
+        let spoken = { (words: [String]) in words.flatMap { WordTokenizer.matchingKeys(of: $0, language: context.language) } }
+        if heardTexts.map(WordAlignment.key) != written.map(WordAlignment.key), spoken(heardTexts) == spoken(written) {
+            return rewritten(heard, as: written)
+        }
+        guard let heardRun = digitRun(in: heardTexts), let writtenRun = digitRun(in: written),
+              digits(of: Array(heardTexts[heardRun])) == digits(of: Array(written[writtenRun])),
+              heardRun.count > 1 || writtenRun.count > 1 || heardTexts[heardRun] != written[writtenRun] else { return nil }
+        return corrected(Array(heard[..<heardRun.lowerBound]), toward: Array(written[..<writtenRun.lowerBound]), context: context)
+            + rewritten(Array(heard[heardRun]), as: Array(written[writtenRun]))
+            + corrected(Array(heard[heardRun.upperBound...]), toward: Array(written[writtenRun.upperBound...]), context: context)
+    }
+
+    /// The first run of words that are digits, with the points and commas between them ("2", ".", "0", "1", "6").
+    private static func digitRun(in words: [String]) -> Range<Int>? {
+        let isDigits = { (word: String) in
+            let key = WordAlignment.key(word)
+            return !key.isEmpty && key.allSatisfy { $0.wholeNumberValue != nil }
+        }
+        guard let first = words.firstIndex(where: isDigits) else { return nil }
+        var last = first
+        var index = first + 1
+        while index < words.count {
+            if isDigits(words[index]) {
+                last = index
+            } else if !WordAlignment.key(words[index]).isEmpty {
+                break
+            }
+            index += 1
+        }
+        return first..<(last + 1)
+    }
+
+    /// The digits of `words`, in order, whatever the script they are written in.
+    private static func digits(of words: [String]) -> [Int] {
+        words.flatMap { WordAlignment.key($0).compactMap(\.wholeNumberValue) }
+    }
+
+    /// Whether `word` is a number, in digits or spelled out in the take's language.
+    private static func isNumber(_ word: String, context: Context) -> Bool {
+        hasDigit(word) || number(word, context: context) != nil
+    }
+
+    /// The value of `word` when it is a number: digits in any script ("2006", "٢٠٠٦", "三"), or a number spelled out in the
+    /// take's language ("seventeen", "ثلاثة").
+    private static func number(_ word: String, context: Context) -> Double? {
+        let key = WordAlignment.key(word)
+        guard !key.isEmpty else { return nil }
+        let values = key.map(\.wholeNumberValue)
+        if values.allSatisfy({ $0 != nil }) { return values.compactMap { $0 }.reduce(0) { Double($0) * 10 + Double($1) } }
+        let spelled = word.lowercased().trimmingCharacters(in: .punctuationCharacters.union(.whitespaces))
+        return context.spelled?.number(from: spelled)?.doubleValue
+    }
+
+    private static func spellOutReader(in language: CueLanguage) -> NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .spellOut
+        formatter.locale = language.locale
+        return formatter
+    }
+
+    // MARK: - Names
+
+    /// `heard` with the stretches that sound like a name of the script written as the script has them (`SoundAlignment`), and
+    /// the words between them corrected as any other; nil when no name was heard. Only names are written this way, never a word
+    /// beside one, and numbers never pair.
+    private static func withNames(_ heard: [CaptionWord], _ written: [String], context: Context) -> [CaptionWord]? {
+        let numbers = Set((heard.map(\.text) + written).filter { isNumber($0, context: context) })
+        let blocks = SoundAlignment.blocks(heard.map(\.text), written, least: nameLikeness) { stretch in
+            !stretch.contains(where: numbers.contains)
+        }
+        .filter { block in written[block.written].allSatisfy { context.names.contains(WordAlignment.key($0)) } }
+        guard !blocks.isEmpty else { return nil }
+        var result: [CaptionWord] = []
+        var heardFrom = 0
+        var writtenFrom = 0
+        for block in blocks {
+            result += corrected(
+                Array(heard[heardFrom..<block.heard.lowerBound]), toward: Array(written[writtenFrom..<block.written.lowerBound]),
+                context: context, byName: false
+            )
+            result += rewritten(Array(heard[block.heard]), as: Array(written[block.written]))
+            heardFrom = block.heard.upperBound
+            writtenFrom = block.written.upperBound
+        }
+        return result + corrected(Array(heard[heardFrom...]), toward: Array(written[writtenFrom...]), context: context, byName: false)
     }
 
     /// `heard` written as `written`: word for word in the voice's own times when there are as many,
@@ -147,11 +283,16 @@ nonisolated enum ScriptSpelling {
         return share(written, over: TimeSpan(start: first.start, end: max(first.start, last.end)))
     }
 
-    /// Whether the heard word is the script's word with a slip or two.
-    private static func isNearlyTheSame(_ heard: String, _ written: String, limit: Double) -> Bool {
+    /// Whether the heard word is the script's word with a slip or two. Digits are only ever the same number spelled out ("5"
+    /// for "five"), and a number never another ("seventy" for "seventeen"). Words that are numbers too are otherwise compared
+    /// by their letters like any word: "ثلاثة" is "ثلاث", but "einen" isn't "ein", nor "un" "una" (articles that also count one).
+    private static func isNearlyTheSame(_ heard: String, _ written: String, limit: Double, context: Context) -> Bool {
         let heardKey = WordAlignment.key(heard)
         let writtenKey = WordAlignment.key(written)
-        guard !hasDigit(heardKey), !hasDigit(writtenKey) else { return false }
+        let heardNumber = number(heard, context: context)
+        let writtenNumber = number(written, context: context)
+        if hasDigit(heardKey) || hasDigit(writtenKey) { return heardNumber != nil && heardNumber == writtenNumber }
+        if let heardNumber, let writtenNumber, heardNumber != writtenNumber { return false }
         let unspaced = WordSegmenter.containsUnspacedScript(heardKey) || WordSegmenter.containsUnspacedScript(writtenKey)
         let least = unspaced ? minimumLetters.unspaced : minimumLetters.spaced
         guard heardKey.count >= least, writtenKey.count >= least else { return false }

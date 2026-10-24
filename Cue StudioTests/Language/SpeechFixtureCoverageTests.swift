@@ -10,8 +10,9 @@ import Testing
 
 /// The speech tests that run on a device (`VoiceFollowingSpeechTests`, `CaptionSpeechTests`) go through
 /// every language Cue offers. This one runs everywhere and keeps them honest: each of the 20 has a
-/// script and a recording, the script is in the language it claims, and the recording is long enough
-/// to hold it. A language added to Cue without them fails here, before a device is needed.
+/// script and a recording in the system voice and four people's readings (two women, two men; `SpeechSample`),
+/// every script is in the language it claims, and every recording is long enough to hold it. A language added to
+/// Cue without them fails here, before a device is needed.
 @MainActor
 @Suite("Speech fixtures")
 struct SpeechFixtureCoverageTests {
@@ -57,5 +58,50 @@ struct SpeechFixtureCoverageTests {
             tracker.hear(language.writesWithoutSpaces ? heard.suffix(40).joined() : heard.suffix(40).joined(separator: " "))
         }
         #expect(tracker.position >= words.count - 1, "\(language.rawValue): \(tracker.position)/\(words.count)")
+    }
+
+    // MARK: - People's readings (FLEURS)
+
+    @Test(arguments: CueLanguage.allCases)
+    func everyLanguageHasTwoWomenAndTwoMenReading(language: CueLanguage) throws {
+        let readings = try SpeechSample.human().filter { $0.language == language }
+        #expect(readings.count == 4, "\(language.rawValue): \(readings.count) readings")
+        #expect(readings.count { $0.speaker == "female" } == 2 && readings.count { $0.speaker == "male" } == 2, "\(language.rawValue)")
+        #expect(Set(readings.map(\.script)).count == readings.count, "\(language.rawValue): a sentence is read twice")
+    }
+
+    @Test(arguments: CueLanguage.allCases)
+    func everyReadingHoldsItsSentence(language: CueLanguage) throws {
+        for reading in try SpeechSample.human().filter({ $0.language == language }) {
+            let file = try AVAudioFile(forReading: reading.url)
+            let seconds = Double(file.length) / file.processingFormat.sampleRate
+            let words = ScriptWords(text: reading.script, language: language).count
+            #expect(seconds > 5 && seconds < 17, "\(reading.name): \(seconds) s")
+            #expect(Double(words) / seconds > 0.8 && Double(words) / seconds < 12, "\(reading.name): \(words) words in \(seconds) s")
+        }
+    }
+
+    @Test(arguments: CueLanguage.allCases)
+    func everyReadingIsInTheLanguageItClaims(language: CueLanguage) throws {
+        for reading in try SpeechSample.human().filter({ $0.language == language }) {
+            let detected = LanguageDetector.language(in: reading.script)
+            #expect(detected == language, "\(reading.name) detected as \(detected?.rawValue ?? "nothing"): \(reading.script)")
+        }
+    }
+
+    /// Read word by word without error, the tracker reaches the end of each sentence (names, numbers and all).
+    @Test(arguments: CueLanguage.allCases)
+    func everyReadingCanBeFollowed(language: CueLanguage) throws {
+        for reading in try SpeechSample.human().filter({ $0.language == language }) {
+            let words = ScriptWords(text: reading.script, language: language)
+            #expect(words.count >= 10, "\(reading.name): \(words.count) words")
+            var tracker = ScriptSpeechTracker(words: words.tokens, language: language)
+            var heard: [String] = []
+            for token in words.tokens {
+                heard.append(token)
+                tracker.hear(language.writesWithoutSpaces ? heard.suffix(40).joined() : heard.suffix(40).joined(separator: " "))
+            }
+            #expect(tracker.position >= words.count - 1, "\(reading.name): \(tracker.position)/\(words.count)")
+        }
     }
 }

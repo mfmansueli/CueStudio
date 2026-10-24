@@ -56,9 +56,62 @@ struct ScriptSpellingTests {
         #expect(!text(result).contains("duas"))
     }
 
-    @Test func aNumberIsNeverRewrittenEvenWhenTheTakeFollowsTheScript() {
-        let result = ScriptSpelling.apply(to: heard("we need five apples for the pie today"), script: "We need 5 apples for the pie today.")
-        #expect(text(result).contains("five"))
+    @Test func aNumberTakesTheScriptsWritingOnlyWhenItIsTheSameNumber() {
+        let script = "We need 5 apples for the pie today."
+        #expect(text(ScriptSpelling.apply(to: heard("we need five apples for the pie today"), script: script, language: .english)) == script)
+        // Another number stays as said, in digits or in words.
+        #expect(text(ScriptSpelling.apply(to: heard("we need six apples for the pie today"), script: script, language: .english)).contains("six"))
+        let teens = ScriptSpelling.apply(
+            to: heard("she turned seventy years old this week"), script: "She turned seventeen years old this week.", language: .english
+        )
+        #expect(text(teens).contains("seventy"))
+    }
+
+    /// The system voice on an iPhone: Vietnamese written in digits where the script spells the numbers out.
+    @Test func aNumberInDigitsTakesTheScriptsWords() {
+        let result = ScriptSpelling.apply(
+            to: heard("đây là 3 thói quen đã thay đổi buổi sáng của tôi"), script: "Đây là ba thói quen đã thay đổi buổi sáng của tôi.",
+            language: .vietnamese
+        )
+        #expect(text(result) == "Đây là ba thói quen đã thay đổi buổi sáng của tôi.")
+    }
+
+    /// A Dutch reading on an iPhone: the recognizer wrote "2006" as three numbers.
+    @Test func digitsTheRecognizerCutUpAreTheScriptsNumber() {
+        let words = heard("volgens angel 2 00 6 kunnen organisaties beter presteren")
+        let result = ScriptSpelling.apply(to: words, script: "Volgens Angel (2006) kunnen organisaties beter presteren.", language: .dutch)
+        #expect(text(result) == "Volgens Angel (2006) kunnen organisaties beter presteren.")
+        let year = result.words[2]
+        #expect(year.start == words[2].start && year.end == words[4].end && year.isEstimated)
+        // Other digits stay as heard: one is missing from these.
+        let missing = ScriptSpelling.apply(to: heard("volgens angel 2 0 6 kunnen organisaties beter presteren"),
+                                           script: "Volgens Angel (2006) kunnen organisaties beter presteren.", language: .dutch)
+        #expect(!text(missing).contains("2006"))
+    }
+
+    /// Articles that also count one aren't numbers to swap: "einen" was said, the script has "ein".
+    @Test func anArticleThatAlsoCountsOneIsLeftAsSaid() {
+        let result = ScriptSpelling.apply(
+            to: heard("ich sehe einen hund im park heute morgen"), script: "Ich sehe ein Hund im Park heute Morgen.", language: .german
+        )
+        #expect(text(result).contains("einen"))
+    }
+
+    /// A Portuguese reading on an iPhone: a racing driver's name heard as five other words.
+    @Test func aNameHeardAsOtherWordsIsWrittenAsTheScriptHasIt() {
+        let script = "Giancarlo Fisichella perdeu o controle do carro e acabou a corrida logo após a largada."
+        let words = heard("jean carlos disse que ela perdeu o controle do carro e acabou a corrida logo após a largada")
+        let result = ScriptSpelling.apply(to: words, script: script, language: .portugueseBrazil)
+        #expect(text(result) == script)
+        // The name takes the time the voice took for it, shared as an estimate.
+        #expect(result.words[0].start == words[0].start && abs(result.words[1].end - words[4].end) < 0.0001)
+        #expect(result.words[0].isEstimated && result.words[1].isEstimated)
+        // Improvised, nothing is taken for a name.
+        let improvised = ScriptSpelling.apply(
+            to: heard("jean carlos disse que ela gosta muito de cozinhar aos domingos com a família"), script: script,
+            language: .portugueseBrazil
+        )
+        #expect(text(improvised).hasPrefix("jean carlos"))
     }
 
     @Test func aShortWordBetweenWordsThatLineUpTakesTheScriptsSpellingOnlyWhenTheTakeFollowsIt() {
@@ -95,6 +148,21 @@ struct ScriptSpellingTests {
         #expect(result.words.prefix(4).map(\.start) == words.prefix(4).map(\.start))
     }
 
+    /// The creator greeted in Portuguese where the script has an English greeting: what was said stays.
+    @Test func aPhraseInAnotherLanguageIsWrittenOnlyWhenItSoundsLikeWhatWasHeard() {
+        let script = "Hey guys welcome back. Hoje vou mostrar três hábitos que mudaram minhas manhãs."
+        let result = ScriptSpelling.apply(
+            to: heard("oi gente tudo bem hoje vou mostrar três hábitos que mudaram minhas manhãs"), script: script, language: .portugueseBrazil
+        )
+        #expect(result.followsScript)
+        #expect(text(result).hasPrefix("oi gente tudo bem Hoje"))
+    }
+
+    @Test func aMarkTheRecognizerWroteOnItsOwnIsntRepeated() {
+        let result = ScriptSpelling.apply(to: heard("first point here ."), script: "First point here.")
+        #expect(text(result) == "First point here.")
+    }
+
     @Test func anEnglishPhraseIsLeftAsHeardWhenTheTakeDidntFollowTheScriptOrTheLengthsDiffer() {
         let script = "Hey guys welcome back. Hoje vou mostrar três hábitos que mudaram minhas manhãs."
         let different = ScriptSpelling.apply(
@@ -126,6 +194,21 @@ struct ScriptSpellingTests {
         #expect(ScriptSpelling.ratio("duas", "tres") < 0.5)
         #expect(ScriptSpelling.ratio("same", "same") == 1)
         #expect(ScriptSpelling.ratio("", "x") == 0)
+    }
+
+    /// A 20-minute take read from its script, a name and a few words misheard in every sentence: spelled in a second or so (off
+    /// the main thread, once, after a transcription that takes minutes); the bound catches a rule gone slow, not a busy Mac.
+    @Test func aLongTakeIsSpelledQuickly() {
+        let sentence = "Today Giancarlo Fisichella shows how the new camera from Sony handles light in the evening"
+        let misheard = "today jean carlos disse que ela shows how the new kamera from sunny handles light in the evening"
+        let script = Array(repeating: sentence + ".", count: 120).joined(separator: " ")
+        let words = heard(Array(repeating: misheard, count: 120).joined(separator: " "))
+        let started = ProcessInfo.processInfo.systemUptime
+        let result = ScriptSpelling.apply(to: words, script: script, language: .english)
+        let seconds = ProcessInfo.processInfo.systemUptime - started
+        #expect(result.followsScript)
+        #expect(text(result).hasPrefix("Today Giancarlo Fisichella shows how the new camera from Sony handles"))
+        #expect(seconds < 3, "\(seconds) s for \(words.count) words")
     }
 
     @Test func noScriptOrNoWordsChangesNothing() {

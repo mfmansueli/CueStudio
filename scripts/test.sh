@@ -10,7 +10,7 @@
 #   scripts/test.sh full             the Full plan: unit and UI tests (what ⌘U runs)
 #   scripts/test.sh only <id>…       chosen tests: "Cue StudioTests/DockFoldTests", "Cue StudioUITests/TabBarUITests/testTabs()"
 #   scripts/test.sh device <suite>   a device-only suite on the iPhone named by CUE_DEVICE (name or id), one set at a time
-#                                    (VoiceFollowingSpeechTests, VoiceFollowingLatencyTests, CaptionSpeechTests, EditByTextDeviceTests,
+#                                    (VoiceFollowingSpeechTests, VoiceFollowingLatencyTests, CaptionSpeechTests, EditByTextDeviceTests, SpeechResultsDeviceTests,
 #                                    SpokenLanguageDeviceTests, LanguageModelDeviceTests, ScriptGenerationFlowDeviceTests, VoicePersonaDeviceTests,
 #                                    PromptBudgetDeviceTests, WritingImportDeviceTests, PlatformLengthDeviceTests,
 #                                    LengthVariantsDeviceTests, ScriptToolsDeviceTests, IdeaRelevanceDeviceTests, IdeaSuggestionsDeviceTests, CreatorDayDeviceTests,
@@ -95,7 +95,8 @@ case "$mode" in
         require_unlocked
         # The suites skip themselves unless their flag is on (TEST_RUNNER_ reaches the tests without the prefix).
         case "${ids[0]}" in
-            VoiceFollowingSpeechTests* | VoiceFollowingLatencyTests* | CaptionSpeechTests* | SpokenLanguageDeviceTests* | EditByTextDeviceTests*) export TEST_RUNNER_CUE_SPEECH_E2E=1 ;;
+            VoiceFollowingSpeechTests* | VoiceFollowingLatencyTests* | CaptionSpeechTests* | SpokenLanguageDeviceTests* | EditByTextDeviceTests* | \
+            SpeechResultsDeviceTests*) export TEST_RUNNER_CUE_SPEECH_E2E=1 ;;
             LanguageModelDeviceTests* | ScriptGenerationFlowDeviceTests* | VoicePersonaDeviceTests* | PromptBudgetDeviceTests* | WritingImportDeviceTests* | PlatformLengthDeviceTests* | LengthVariantsDeviceTests* | ScriptToolsDeviceTests* | IdeaRelevanceDeviceTests* | IdeaSuggestionsDeviceTests* | CreatorDayDeviceTests* | InspirationDeviceTests* | ScriptQualityDeviceTests*)
                 export TEST_RUNNER_CUE_AI_E2E=1 ;;
             QuickEditPreviewLatencyTests*) export TEST_RUNNER_CUE_PREVIEW_LATENCY=1 ;;

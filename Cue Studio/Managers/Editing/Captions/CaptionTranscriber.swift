@@ -59,9 +59,12 @@ nonisolated enum CaptionTranscriber {
             }
         }
         var words = MixedLanguageMerge.merge(heard, primary: code, reading: reading)
-        // Times that don't fit the recording (a recognizer that finishes early) are never passed off as measured.
-        if let levels = try? AudioLevelReader.levels(of: audio, interval: 0.05) {
-            words = TranscriptTimingCheck.reconciled(words, spoken: TranscriptTimingCheck.spokenSpan(levels: levels, interval: 0.05))
+        // No word starts in the silence before the voice, times that don't fit the recording (a recognizer that finishes early)
+        // are never passed off as measured, and words that run into each other meet where the voice dips between them.
+        if let fine = try? AudioLevelReader.levels(of: audio, interval: 0.01) {
+            let spoken = TranscriptTimingCheck.spokenSpan(levels: AudioLevelReader.combined(fine, every: 5), interval: 0.05)
+            words = TranscriptTimingCheck.reconciled(TranscriptTimingCheck.startingWithTheVoice(words, spoken: spoken), spoken: spoken)
+            words = WordBoundaries.atQuietestPoints(words, levels: fine, interval: 0.01)
         }
         return TakeTranscript(words: words, languageCode: Self.transcriptCode(for: route, code: code), unheardLanguages: unheard)
     }
@@ -85,18 +88,43 @@ nonisolated enum CaptionTranscriber {
         switch route.engine {
         case .transcriber:
             let transcriber = SpeechTranscriber(locale: route.locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])
-            return try await transcribe(
-                audio, with: transcriber, results: transcriber.results, language: route.language, terms: terms, progress: progress
-            ) { $0.text }
+            try await install(transcriber, progress: progress)
+            progress?(.transcribing(0))
+            let length = try Self.length(of: audio)
+            let heard = words(of: transcriber.results, language: route.language, length: length, progress: progress) { $0.text }
+            // Dictation times the same words closer to the voice (`DictationTiming`), in the same pass over the take.
+            guard let dictation = await dictationForTiming(route) else {
+                return try await analyze(audio, with: [transcriber], terms: terms, collecting: [heard])[0]
+            }
+            let timed = words(of: dictation.results, language: route.language, length: length, progress: nil) { $0.text }
+            let both = try await analyze(audio, with: [transcriber, dictation], terms: terms, collecting: [heard, timed])
+            return DictationTiming.retimed(both[0], by: both[1])
         case .dictation:
             let dictation = DictationTranscriber(
                 locale: route.locale, contentHints: [], transcriptionOptions: [], reportingOptions: [],
                 attributeOptions: [.audioTimeRange]
             )
-            return try await transcribe(
-                audio, with: dictation, results: dictation.results, language: route.language, terms: terms, progress: progress
-            ) { $0.text }
+            try await install(dictation, progress: progress)
+            progress?(.transcribing(0))
+            let heard = words(of: dictation.results, language: route.language, length: try Self.length(of: audio), progress: progress) {
+                $0.text
+            }
+            return try await analyze(audio, with: [dictation], terms: terms, collecting: [heard])[0]
         }
+    }
+
+    /// Dictation in `route`'s language to time the transcriber's words by, when its model is already on this iPhone (never
+    /// a download for it: the take is captioned by the transcriber's times instead) and the language is written with spaces
+    /// between words (in Japanese, Chinese and Thai the two cut words differently).
+    private static func dictationForTiming(_ route: SpeechRoute) async -> DictationTranscriber? {
+        guard route.language?.writesWithoutSpaces == false,
+              let locale = await DictationTranscriber.supportedLocale(equivalentTo: route.locale) else { return nil }
+        let dictation = DictationTranscriber(
+            locale: locale, contentHints: [], transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange]
+        )
+        guard await AssetInventory.status(forModules: [dictation]) == .installed,
+              await SpeechAnalyzer.bestAvailableAudioFormat(compatibleWith: [dictation]) != nil else { return nil }
+        return dictation
     }
 
     /// Progress of one of several passes over the take, as a share of the whole.
@@ -113,13 +141,9 @@ nonisolated enum CaptionTranscriber {
         }
     }
 
-    private static func transcribe<Results: AsyncSequence & Sendable>(
-        _ audio: URL, with module: any SpeechModule, results: Results, language: CueLanguage?, terms: [String],
-        progress: (@Sendable (CaptionProgress) -> Void)?,
-        text: @escaping @Sendable (Results.Element) -> AttributedString
-    ) async throws -> [TimedWord] where Results.Element: Sendable {
-        let modules: [any SpeechModule] = [module]
-        if let request = try await AssetInventory.assetInstallationRequest(supporting: modules) {
+    /// Downloads `module`'s model when this iPhone doesn't have it yet, reporting the system's progress.
+    private static func install(_ module: any SpeechModule, progress: (@Sendable (CaptionProgress) -> Void)?) async throws {
+        if let request = try await AssetInventory.assetInstallationRequest(supporting: [module]) {
             progress?(.downloading(nil))
             let watcher = Task {
                 // The system's download reports its own progress; read it while it runs.
@@ -132,22 +156,40 @@ nonisolated enum CaptionTranscriber {
             try await request.downloadAndInstall()
         }
         try Task.checkCancellation()
+    }
+
+    private static func length(of audio: URL) throws -> TimeInterval {
         let file = try AVAudioFile(forReading: audio)
-        let length = Double(file.length) / max(1, file.processingFormat.sampleRate)
-        progress?(.transcribing(0))
-        let collector = Task {
+        return Double(file.length) / max(1, file.processingFormat.sampleRate)
+    }
+
+    /// The words of `results` as they come, reporting how far into the take they reach.
+    private static func words<Results: AsyncSequence & Sendable>(
+        of results: Results, language: CueLanguage?, length: TimeInterval, progress: (@Sendable (CaptionProgress) -> Void)?,
+        text: @escaping @Sendable (Results.Element) -> AttributedString
+    ) -> Task<[TimedWord], any Error> where Results.Element: Sendable {
+        Task {
             var words: [TimedWord] = []
             for try await result in results {
                 let heard = text(result)
+                var resultWords: [TimedWord] = []
                 for run in heard.runs {
                     guard let range = heard[run.range].audioTimeRange else { continue }
                     let text = String(heard[run.range].characters)
-                    words += spread(text, start: range.start.seconds, end: range.end.seconds, language: language)
+                    resultWords += spread(text, start: range.start.seconds, end: range.end.seconds, language: language)
                     if length > 0 { progress?(.transcribing(min(1, range.end.seconds / length))) }
                 }
+                words += SettledLastWord.applied(to: resultWords)
             }
             return words
         }
+    }
+
+    /// One pass of `modules` over the take, and what each `collecting` task (one per module, in order) read of it.
+    private static func analyze(
+        _ audio: URL, with modules: [any SpeechModule], terms: [String], collecting: [Task<[TimedWord], any Error>]
+    ) async throws -> [[TimedWord]] {
+        let file = try AVAudioFile(forReading: audio)
         let analyzer = SpeechAnalyzer(modules: modules)
         if !terms.isEmpty {
             let context = AnalysisContext()
@@ -155,18 +197,27 @@ nonisolated enum CaptionTranscriber {
             // Only a hint: a model that ignores it still listens.
             try? await analyzer.setContext(context)
         }
-        try await withTaskCancellationHandler {
-            if let last = try await analyzer.analyzeSequence(from: file) {
-                try await analyzer.finalizeAndFinish(through: last)
-            } else {
-                await analyzer.cancelAndFinishNow()
+        do {
+            try await withTaskCancellationHandler {
+                if let last = try await analyzer.analyzeSequence(from: file) {
+                    try await analyzer.finalizeAndFinish(through: last)
+                } else {
+                    await analyzer.cancelAndFinishNow()
+                }
+            } onCancel: {
+                collecting.forEach { $0.cancel() }
+                Task { await analyzer.cancelAndFinishNow() }
             }
-        } onCancel: {
-            collector.cancel()
-            Task { await analyzer.cancelAndFinishNow() }
+            try Task.checkCancellation()
+        } catch {
+            collecting.forEach { $0.cancel() }
+            throw error
         }
-        try Task.checkCancellation()
-        return try await collector.value
+        var heard: [[TimedWord]] = []
+        for collector in collecting {
+            heard.append(try await collector.value)
+        }
+        return heard
     }
 
     /// A run can hold several words; keep its measured interval on all of them. There is no

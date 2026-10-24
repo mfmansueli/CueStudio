@@ -8,9 +8,9 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// A recording from `Fixtures/Speech` cut into the buffers a camera would deliver (48 kHz mono
-/// 16-bit, 1024 frames, about 21 ms each), with silence or room noise before and after, and when
-/// each word of the script ends in it. Latency is measured against these times.
+/// A recording from `Fixtures/Speech` (a `SpeechSample`: the system voice or a person) cut into the buffers a camera would
+/// deliver (48 kHz mono 16-bit, 1024 frames, about 21 ms each), with silence or room noise before and after, and when each word
+/// of the script ends in it. Latency is measured against these times.
 struct SpeechFixture {
     static let sampleRate: Double = 48_000
     static let framesPerBuffer: AVAudioFrameCount = 1024
@@ -35,17 +35,13 @@ struct SpeechFixture {
         init(_ buffer: AVAudioPCMBuffer) { self.buffer = buffer }
     }
 
-    private final class BundleToken {}
-
     /// - Parameters:
     ///   - noise: RMS level in dBFS of white noise under the whole feed (a room), or nil for silence.
     ///   - wordEnds: when each script word ends in the recording, from `timedWords`.
     static func load(
-        _ language: CueLanguage, script: String, lead: TimeInterval = 1.5, tail: TimeInterval = 2,
-        noise: Float? = nil, timedWords: [TimedWord]
+        _ sample: SpeechSample, lead: TimeInterval = 1.5, tail: TimeInterval = 2, noise: Float? = nil, timedWords: [TimedWord]
     ) throws -> SpeechFixture {
-        let url = try #require(Bundle(for: BundleToken.self).url(forResource: "speech-\(language.rawValue)", withExtension: "m4a"))
-        let speech = try samples(of: url)
+        let speech = try samples(of: sample.url)
         let leadFrames = Int(lead * sampleRate)
         var mono = [Float](repeating: 0, count: leadFrames) + speech + [Float](repeating: 0, count: Int(tail * sampleRate))
         if let noise {
@@ -56,11 +52,10 @@ struct SpeechFixture {
                 mono[index] += Float.random(in: -amplitude...amplitude, using: &generator)
             }
         }
-        let onsetFrame = speech.firstIndex { abs($0) > 0.002 } ?? 0
-        let words = ScriptWords(text: script).tokens
+        let words = ScriptWords(text: sample.script).tokens
         return SpeechFixture(
-            language: language, script: script, buffers: try chunks(of: mono),
-            speechOnset: lead + Double(onsetFrame) / sampleRate,
+            language: sample.language, script: sample.script, buffers: try chunks(of: mono),
+            speechOnset: lead + RecordingOnset.seconds(in: speech, sampleRate: sampleRate),
             wordEnds: ends(of: words, heard: timedWords).map { lead + $0 },
             lead: lead
         )

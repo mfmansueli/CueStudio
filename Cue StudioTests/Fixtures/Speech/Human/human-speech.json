@@ -1,0 +1,1128 @@
+{
+ "source": "FLEURS, Google (https://huggingface.co/datasets/google/fleurs)",
+ "citation": "Conneau et al., FLEURS: Few-shot Learning Evaluation of Universal Representations of Speech, 2022",
+ "license": "CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)",
+ "changes": "Four clips per language (two women, two men), from the test split, or the train split where the test split has a single voice; loudness-normalized to -16 LUFS and encoded as AAC 16 kHz mono; outer CSV quotes removed from transcripts; zh-TW transcripts converted to Traditional characters (ICU Hans-Hant).",
+ "samples": [
+  {
+   "language": "en-US",
+   "file": "human-en-US-1",
+   "script": "However, due to the slow communication channels, styles in the west could lag behind by 25 to 30 year.",
+   "voice": "male",
+   "seconds": 10.56,
+   "fleurs": {
+    "config": "en_us",
+    "split": "test",
+    "file": "1003119935936341070.wav",
+    "sentence": 1904
+   },
+   "note": null
+  },
+  {
+   "language": "en-US",
+   "file": "human-en-US-2",
+   "script": "All nouns, alongside the word Sie for you, always begin with a capital letter, even in the middle of a sentence.",
+   "voice": "male",
+   "seconds": 8.76,
+   "fleurs": {
+    "config": "en_us",
+    "split": "test",
+    "file": "10052240106321793346.wav",
+    "sentence": 1675
+   },
+   "note": null
+  },
+  {
+   "language": "en-US",
+   "file": "human-en-US-3",
+   "script": "To the north and within easy reach is the romantic and fascinating town of Sintra and which was made famous to foreigners after a glowing account of its splendours recorded by Lord Byron.",
+   "voice": "female",
+   "seconds": 11.46,
+   "fleurs": {
+    "config": "en_us",
+    "split": "test",
+    "file": "10167324587744183095.wav",
+    "sentence": 1950
+   },
+   "note": null
+  },
+  {
+   "language": "en-US",
+   "file": "human-en-US-4",
+   "script": "The Northern Marianas emergency management office said that there were no damages reported in the nation.",
+   "voice": "female",
+   "seconds": 10.8,
+   "fleurs": {
+    "config": "en_us",
+    "split": "test",
+    "file": "10323357556845456822.wav",
+    "sentence": 1876
+   },
+   "note": null
+  },
+  {
+   "language": "es-ES",
+   "file": "human-es-ES-1",
+   "script": "Se recomienda enfáticamente a los viajeros que se informen sobre cualquier riesgo de clima extremo en el área que visitan, dado que ello puede afectar sus planes de viaje.",
+   "voice": "male",
+   "seconds": 12.84,
+   "fleurs": {
+    "config": "es_419",
+    "split": "test",
+    "file": "1001146817223348054.wav",
+    "sentence": 2001
+   },
+   "note": "Latin American Spanish (FLEURS has no Spain Spanish)"
+  },
+  {
+   "language": "es-ES",
+   "file": "human-es-ES-2",
+   "script": "Fue tanta la cantidad de gente que se concentró, que no todos pudieron acceder al funeral en la Plaza de San Pedro.",
+   "voice": "male",
+   "seconds": 9.72,
+   "fleurs": {
+    "config": "es_419",
+    "split": "test",
+    "file": "1008205615316519958.wav",
+    "sentence": 1764
+   },
+   "note": "Latin American Spanish (FLEURS has no Spain Spanish)"
+  },
+  {
+   "language": "es-ES",
+   "file": "human-es-ES-3",
+   "script": "Duvall, que está casado y tiene dos hijos adultos, no causó una buena impresión a Miller, que fue a quien le relató la historia.",
+   "voice": "female",
+   "seconds": 10.26,
+   "fleurs": {
+    "config": "es_419",
+    "split": "test",
+    "file": "10150624747569080019.wav",
+    "sentence": 1816
+   },
+   "note": "Latin American Spanish (FLEURS has no Spain Spanish)"
+  },
+  {
+   "language": "es-ES",
+   "file": "human-es-ES-4",
+   "script": "Se puede definir a una civilización como una cultura específica de la que forma parte un extenso grupo de personas que viven y trabajan en conjunto; es decir, una sociedad.",
+   "voice": "female",
+   "seconds": 12.12,
+   "fleurs": {
+    "config": "es_419",
+    "split": "test",
+    "file": "10192388533260519980.wav",
+    "sentence": 1794
+   },
+   "note": "Latin American Spanish (FLEURS has no Spain Spanish)"
+  },
+  {
+   "language": "pt-BR",
+   "file": "human-pt-BR-1",
+   "script": "Construída pelos egípcios no século 3 A.C., a Grande Pirâmide é uma das muitas grandes estruturas de pirâmide construídas para honrar faraós mortos.",
+   "voice": "male",
+   "seconds": 13.62,
+   "fleurs": {
+    "config": "pt_br",
+    "split": "test",
+    "file": "10047022047800689031.wav",
+    "sentence": 1769
+   },
+   "note": null
+  },
+  {
+   "language": "pt-BR",
+   "file": "human-pt-BR-2",
+   "script": "Giancarlo Fisichella perdeu o controle do carro e acabou a corrida logo após a largada.",
+   "voice": "male",
+   "seconds": 8.4,
+   "fleurs": {
+    "config": "pt_br",
+    "split": "test",
+    "file": "10083615766068544069.wav",
+    "sentence": 1853
+   },
+   "note": null
+  },
+  {
+   "language": "pt-BR",
+   "file": "human-pt-BR-3",
+   "script": "Esta é uma prática comum em outras partes do Reino Unido, mas a justiça da Escócia atua de maneira distinta, e as cortes consideram a publicação de fotos como algo potencialmente prejudicial.",
+   "voice": "female",
+   "seconds": 14.04,
+   "fleurs": {
+    "config": "pt_br",
+    "split": "train",
+    "file": "10050585535431059068.wav",
+    "sentence": 1143
+   },
+   "note": null
+  },
+  {
+   "language": "pt-BR",
+   "file": "human-pt-BR-4",
+   "script": "O design interativo necessita que os componentes de um projeto se conectem uns aos outros, mas também façam sentido como uma entidade separada.",
+   "voice": "female",
+   "seconds": 13.62,
+   "fleurs": {
+    "config": "pt_br",
+    "split": "train",
+    "file": "10052049500382180418.wav",
+    "sentence": 454
+   },
+   "note": null
+  },
+  {
+   "language": "fr-FR",
+   "file": "human-fr-FR-1",
+   "script": "L’accident a eu lieu en terrain montagneux, et il semblerait que cela ait été causé par un incendie malveillant.",
+   "voice": "female",
+   "seconds": 10.2,
+   "fleurs": {
+    "config": "fr_fr",
+    "split": "test",
+    "file": "10043298898524273336.wav",
+    "sentence": 1987
+   },
+   "note": null
+  },
+  {
+   "language": "fr-FR",
+   "file": "human-fr-FR-2",
+   "script": "Il a ajouté qu’« on ne devrait cependant pas leur demander d’assumer des obligations qui dépassent leur stade de développement, leur responsabilité et leurs capacités. »",
+   "voice": "male",
+   "seconds": 8.28,
+   "fleurs": {
+    "config": "fr_fr",
+    "split": "test",
+    "file": "10138021779681596478.wav",
+    "sentence": 1857
+   },
+   "note": null
+  },
+  {
+   "language": "fr-FR",
+   "file": "human-fr-FR-3",
+   "script": "Le rugissement du tigre ne ressemble pas au rugissement ample du lion, mais plutôt à une phrase dont les mots seraient des cris et des grondements.",
+   "voice": "female",
+   "seconds": 10.2,
+   "fleurs": {
+    "config": "fr_fr",
+    "split": "test",
+    "file": "10143749263702132703.wav",
+    "sentence": 1913
+   },
+   "note": null
+  },
+  {
+   "language": "fr-FR",
+   "file": "human-fr-FR-4",
+   "script": "Giancarlo Fisichella a perdu le contrôle de sa voiture et a terminé la course peu après le démarrage.",
+   "voice": "male",
+   "seconds": 7.2,
+   "fleurs": {
+    "config": "fr_fr",
+    "split": "test",
+    "file": "10174413140250646001.wav",
+    "sentence": 1853
+   },
+   "note": null
+  },
+  {
+   "language": "de-DE",
+   "file": "human-de-DE-1",
+   "script": "Er griff auch alles an, was ins Wasser kam; selbst ein großer Dinosaurier wie der T. Rex war ihm nicht gewachsen.",
+   "voice": "male",
+   "seconds": 11.16,
+   "fleurs": {
+    "config": "de_de",
+    "split": "test",
+    "file": "10009182821551087671.wav",
+    "sentence": 1738
+   },
+   "note": null
+  },
+  {
+   "language": "de-DE",
+   "file": "human-de-DE-2",
+   "script": "Wenn Sie den Film „Das Vermächtnis der Tempelritter“ gesehen haben, denken Sie vielleicht, dass auf die Rückseite der Unabhängigkeitserklärung eine Schatzkarte gezeichnet wurde.",
+   "voice": "male",
+   "seconds": 12.42,
+   "fleurs": {
+    "config": "de_de",
+    "split": "test",
+    "file": "10014044777125235464.wav",
+    "sentence": 1849
+   },
+   "note": null
+  },
+  {
+   "language": "de-DE",
+   "file": "human-de-DE-3",
+   "script": "In ähnlicher Weise kann ein britischer Reisender in Spanien ein Winken zum Abschied, bei dem die Handfläche dem Winkenden zugewandt ist (und nicht der Person, der gewunken wird), als Geste zum Zurückkommen missverstehen.",
+   "voice": "female",
+   "seconds": 13.68,
+   "fleurs": {
+    "config": "de_de",
+    "split": "train",
+    "file": "10017435468751592635.wav",
+    "sentence": 976
+   },
+   "note": null
+  },
+  {
+   "language": "de-DE",
+   "file": "human-de-DE-4",
+   "script": "Gridley oder Stark platzierte einen Pfahl etwa 100 Fuß (30 m) vor dem Zaun und befahl, dass niemand feuern sollte, bevor die regulären Soldaten daran vorbeigelaufen waren.",
+   "voice": "female",
+   "seconds": 12.66,
+   "fleurs": {
+    "config": "de_de",
+    "split": "train",
+    "file": "10022767750054426643.wav",
+    "sentence": 544
+   },
+   "note": null
+  },
+  {
+   "language": "it-IT",
+   "file": "human-it-IT-1",
+   "script": "Il blog è uno strumento che si prefigge di incoraggiare la collaborazione e sviluppare l'apprendimento degli studenti ben oltre la giornata scolastica normale.",
+   "voice": "male",
+   "seconds": 11.52,
+   "fleurs": {
+    "config": "it_it",
+    "split": "test",
+    "file": "10000151032537989529.wav",
+    "sentence": 1787
+   },
+   "note": null
+  },
+  {
+   "language": "it-IT",
+   "file": "human-it-IT-2",
+   "script": "Se avete visto il film \"Il mistero dei Templari\", potreste pensare che sul retro della Dichiarazione d'Indipendenza sia disegnata una mappa del tesoro.",
+   "voice": "female",
+   "seconds": 11.4,
+   "fleurs": {
+    "config": "it_it",
+    "split": "test",
+    "file": "10017896147709177739.wav",
+    "sentence": 1849
+   },
+   "note": null
+  },
+  {
+   "language": "it-IT",
+   "file": "human-it-IT-3",
+   "script": "Con ioni idrogeno si intendono dei protoni cui sono stati strappati via gli elettroni (dato che gli atomi di idrogeno sono formati da un protone e da un elettrone).",
+   "voice": "female",
+   "seconds": 11.28,
+   "fleurs": {
+    "config": "it_it",
+    "split": "test",
+    "file": "10037759924455051213.wav",
+    "sentence": 1814
+   },
+   "note": null
+  },
+  {
+   "language": "it-IT",
+   "file": "human-it-IT-4",
+   "script": "Alla luce di tutto ciò, non dovrebbe sorprendere il fatto che i nostri stessi antenati abbiano risolto il loro \"problema proteico\" in un certo senso come fanno oggi gli scimpanzé della savana.",
+   "voice": "male",
+   "seconds": 13.08,
+   "fleurs": {
+    "config": "it_it",
+    "split": "test",
+    "file": "10437794928490533393.wav",
+    "sentence": 1940
+   },
+   "note": null
+  },
+  {
+   "language": "ja-JP",
+   "file": "human-ja-JP-1",
+   "script": "インターネットで「敵対的環境コース」について検索すると、おそらく現地企業の住所が出てくるでしょう。",
+   "voice": "male",
+   "seconds": 10.44,
+   "fleurs": {
+    "config": "ja_jp",
+    "split": "test",
+    "file": "10020345318418093976.wav",
+    "sentence": 1828
+   },
+   "note": null
+  },
+  {
+   "language": "ja-JP",
+   "file": "human-ja-JP-2",
+   "script": "また、北側に行くなら世界的に有名なマリア像の聖地であるファティマの聖母の聖域（神社）を訪れましょう。",
+   "voice": "male",
+   "seconds": 14.22,
+   "fleurs": {
+    "config": "ja_jp",
+    "split": "test",
+    "file": "10086073819084529371.wav",
+    "sentence": 1834
+   },
+   "note": null
+  },
+  {
+   "language": "ja-JP",
+   "file": "human-ja-JP-3",
+   "script": "群島や湖では、必ずしもヨットは必要ありません。",
+   "voice": "female",
+   "seconds": 6.96,
+   "fleurs": {
+    "config": "ja_jp",
+    "split": "test",
+    "file": "10203675650837159328.wav",
+    "sentence": 1731
+   },
+   "note": null
+  },
+  {
+   "language": "ja-JP",
+   "file": "human-ja-JP-4",
+   "script": "残念ながら、運転手の行動を100%の確率で予測することはできないので、交通の流れを研究することは困難です。",
+   "voice": "female",
+   "seconds": 11.76,
+   "fleurs": {
+    "config": "ja_jp",
+    "split": "test",
+    "file": "10401481013809636276.wav",
+    "sentence": 1980
+   },
+   "note": null
+  },
+  {
+   "language": "ko-KR",
+   "file": "human-ko-KR-1",
+   "script": "다리 밑 수직 간격은 15미터이며, 공사는 2011년 8월에 마무리되었으며, 해당 다리의 통행금지는 2017년 3월까지이다.",
+   "voice": "female",
+   "seconds": 12.48,
+   "fleurs": {
+    "config": "ko_kr",
+    "split": "test",
+    "file": "10015989594226850325.wav",
+    "sentence": 1883
+   },
+   "note": null
+  },
+  {
+   "language": "ko-KR",
+   "file": "human-ko-KR-2",
+   "script": "델 포트로가 2세트에서 먼저 어드밴티지를 얻었지만 6 대 6이 된 후 다시 타이 브레이크가 필요했다.",
+   "voice": "female",
+   "seconds": 10.8,
+   "fleurs": {
+    "config": "ko_kr",
+    "split": "test",
+    "file": "1007237877117014760.wav",
+    "sentence": 1929
+   },
+   "note": null
+  },
+  {
+   "language": "ko-KR",
+   "file": "human-ko-KR-3",
+   "script": "겨울에 북발트해를 건널 경우에는 빙판을 통과하면서 꽤 끔찍한 소음이 발생하기 때문에, 객실의 위치를 확인하는 것이 좋다.",
+   "voice": "male",
+   "seconds": 12.54,
+   "fleurs": {
+    "config": "ko_kr",
+    "split": "test",
+    "file": "10107840715193359973.wav",
+    "sentence": 2000
+   },
+   "note": null
+  },
+  {
+   "language": "ko-KR",
+   "file": "human-ko-KR-4",
+   "script": "1940년 8월 15일, 연합군은 프랑스 남부를 침략했고, 이 침략은 \"드래군 작전\"이라 불렸다.",
+   "voice": "male",
+   "seconds": 13.62,
+   "fleurs": {
+    "config": "ko_kr",
+    "split": "test",
+    "file": "10137428678292478399.wav",
+    "sentence": 1705
+   },
+   "note": null
+  },
+  {
+   "language": "zh-CN",
+   "file": "human-zh-CN-1",
+   "script": "“这并不是告别。这是一个篇章的结束，也是新篇章的开始。”",
+   "voice": "male",
+   "seconds": 10.38,
+   "fleurs": {
+    "config": "cmn_hans_cn",
+    "split": "test",
+    "file": "10026684690566417990.wav",
+    "sentence": 1906
+   },
+   "note": null
+  },
+  {
+   "language": "zh-CN",
+   "file": "human-zh-CN-2",
+   "script": "钙、钾等元素属于金属，银和金等元素当然也是金属。",
+   "voice": "male",
+   "seconds": 8.28,
+   "fleurs": {
+    "config": "cmn_hans_cn",
+    "split": "test",
+    "file": "10040380210557600780.wav",
+    "sentence": 2006
+   },
+   "note": null
+  },
+  {
+   "language": "zh-CN",
+   "file": "human-zh-CN-3",
+   "script": "适当使用博客，\"可以使学生变得更善于分析和进行思辨；通过积极回应网络材料，学生们可以在他人文章的上下文语境中找到自己的立场，并能够针对特定问题提出自己的观点（Oravec, 2002）。\"",
+   "voice": "female",
+   "seconds": 15.42,
+   "fleurs": {
+    "config": "cmn_hans_cn",
+    "split": "test",
+    "file": "10053956375630517392.wav",
+    "sentence": 1852
+   },
+   "note": null
+  },
+  {
+   "language": "zh-CN",
+   "file": "human-zh-CN-4",
+   "script": "Scotturb 403 路公共汽车定期发车前往辛特拉 (Sintra)，在罗卡角停靠。",
+   "voice": "female",
+   "seconds": 7.62,
+   "fleurs": {
+    "config": "cmn_hans_cn",
+    "split": "test",
+    "file": "10112798408996336578.wav",
+    "sentence": 1805
+   },
+   "note": null
+  },
+  {
+   "language": "zh-TW",
+   "file": "human-zh-TW-1",
+   "script": "橋下垂直淨空 15 米。該項目於 2011 年 8 月完工，但直到 2017 年 3 月才開始通車。",
+   "voice": "male",
+   "seconds": 13.86,
+   "fleurs": {
+    "config": "cmn_hans_cn",
+    "split": "test",
+    "file": "10048525650290665384.wav",
+    "sentence": 1883
+   },
+   "note": "Mainland Mandarin speakers; transcript converted to Traditional characters"
+  },
+  {
+   "language": "zh-TW",
+   "file": "human-zh-TW-2",
+   "script": "科學家們可以得出結論，暗物質對其他暗物質的影響方式與普通物質相同。",
+   "voice": "male",
+   "seconds": 12.9,
+   "fleurs": {
+    "config": "cmn_hans_cn",
+    "split": "test",
+    "file": "10056338555786085046.wav",
+    "sentence": 1734
+   },
+   "note": "Mainland Mandarin speakers; transcript converted to Traditional characters"
+  },
+  {
+   "language": "zh-TW",
+   "file": "human-zh-TW-3",
+   "script": "這裡幾乎都是沙灘，游泳很安全，大部分地方都有新西蘭聖誕樹的樹蔭。",
+   "voice": "female",
+   "seconds": 6.84,
+   "fleurs": {
+    "config": "cmn_hans_cn",
+    "split": "test",
+    "file": "10134195680525011353.wav",
+    "sentence": 1965
+   },
+   "note": "Mainland Mandarin speakers; transcript converted to Traditional characters"
+  },
+  {
+   "language": "zh-TW",
+   "file": "human-zh-TW-4",
+   "script": "當所有可用的資源在一個組織的職能部門之間得到有效利用時，創造力和獨創性就會發生。",
+   "voice": "female",
+   "seconds": 7.26,
+   "fleurs": {
+    "config": "cmn_hans_cn",
+    "split": "test",
+    "file": "10142207404499844309.wav",
+    "sentence": 1903
+   },
+   "note": "Mainland Mandarin speakers; transcript converted to Traditional characters"
+  },
+  {
+   "language": "hi-IN",
+   "file": "human-hi-IN-1",
+   "script": "कुछ अणुओं में अस्थिर केंद्रक होता है, जिसका मतलब यह है कि उनमें थोड़े या बिना किसी झटके से टूटने की प्रवृत्ति होती है,",
+   "voice": "male",
+   "seconds": 9.12,
+   "fleurs": {
+    "config": "hi_in",
+    "split": "test",
+    "file": "10011266027513218401.wav",
+    "sentence": 1766
+   },
+   "note": null
+  },
+  {
+   "language": "hi-IN",
+   "file": "human-hi-IN-2",
+   "script": "ग्रीनलैंड को बहुत कम जगह बसाया गया था. नॉर्स सगास में वे कहते हैं कि एरिक रेड हत्या के लिए आइसलैंड से निर्वासित किया गया था, और आगे पश्चिम की यात्रा करते समय, ग्रीनलैंड मिला जिसे ग्रीनलैंड नाम दिया गया.",
+   "voice": "male",
+   "seconds": 13.8,
+   "fleurs": {
+    "config": "hi_in",
+    "split": "test",
+    "file": "10014385262415025488.wav",
+    "sentence": 1784
+   },
+   "note": null
+  },
+  {
+   "language": "hi-IN",
+   "file": "human-hi-IN-3",
+   "script": "अपनी सरकार के अलावा आप अन्य देशों की सरकारों की सलाह ले सकते हैं. हालाँकि, उनकी सलाह उनके नागरिकों को ध्यान में रखकर दी जाती हैं.",
+   "voice": "female",
+   "seconds": 10.62,
+   "fleurs": {
+    "config": "hi_in",
+    "split": "test",
+    "file": "10107687492910459268.wav",
+    "sentence": 1666
+   },
+   "note": null
+  },
+  {
+   "language": "hi-IN",
+   "file": "human-hi-IN-4",
+   "script": "केवल दो हफ़्तों में अमेरिकियों और फ़्री फ़्रेंच बलों ने दक्षिणी फ़्रांस को मुक्त कर दिया था और जर्मनी की ओर बढ़ रहे थे.",
+   "voice": "female",
+   "seconds": 12.9,
+   "fleurs": {
+    "config": "hi_in",
+    "split": "test",
+    "file": "10291152526359423424.wav",
+    "sentence": 1702
+   },
+   "note": null
+  },
+  {
+   "language": "id-ID",
+   "file": "human-id-ID-1",
+   "script": "Tim-tim virtual memiliki standar keunggulan yang sama dengan tim konvensional, tetapi ada sedikit perbedaan.",
+   "voice": "male",
+   "seconds": 8.58,
+   "fleurs": {
+    "config": "id_id",
+    "split": "test",
+    "file": "10000183170391984234.wav",
+    "sentence": 1909
+   },
+   "note": null
+  },
+  {
+   "language": "id-ID",
+   "file": "human-id-ID-2",
+   "script": "Semua nomina, di samping kata Sie untuk Anda, selalu dimulai dengan huruf kapital, bahkan di tengah kalimat.",
+   "voice": "male",
+   "seconds": 9.48,
+   "fleurs": {
+    "config": "id_id",
+    "split": "test",
+    "file": "10030207972417551421.wav",
+    "sentence": 1675
+   },
+   "note": null
+  },
+  {
+   "language": "id-ID",
+   "file": "human-id-ID-3",
+   "script": "Pihak berwajib tidak banyak memberi pernyataan resmi selain mengonfirmasi penahanan hari ini.",
+   "voice": "female",
+   "seconds": 9.18,
+   "fleurs": {
+    "config": "id_id",
+    "split": "train",
+    "file": "10014050057465037761.wav",
+    "sentence": 89
+   },
+   "note": null
+  },
+  {
+   "language": "id-ID",
+   "file": "human-id-ID-4",
+   "script": "Sanggurdi adalah penopang untuk kaki pengemudi yang menggantung di sisi mana sadel mana saja.",
+   "voice": "female",
+   "seconds": 7.92,
+   "fleurs": {
+    "config": "id_id",
+    "split": "train",
+    "file": "1003348851738760602.wav",
+    "sentence": 1038
+   },
+   "note": null
+  },
+  {
+   "language": "ar-SA",
+   "file": "human-ar-SA-1",
+   "script": "تشكلت في المحيط الأطلسي اليوم عاشر عاصفة مُسماة لموسم الأعاصير الأطلسية، العاصفة شبه الاستوائية جيري.",
+   "voice": "female",
+   "seconds": 8.16,
+   "fleurs": {
+    "config": "ar_eg",
+    "split": "test",
+    "file": "10019390257075855641.wav",
+    "sentence": 1993
+   },
+   "note": "Egyptian speakers reading Modern Standard Arabic (FLEURS has no Saudi set)"
+  },
+  {
+   "language": "ar-SA",
+   "file": "human-ar-SA-2",
+   "script": "تغادر الحافلات المحطة الداخلية بين المناطق (عبر النهر) في خلال اليوم على الرغم من أن معظمها وخاصة المتجهة منها إلى الشرق وجاكار/بومثانج تغادر بين 06:30 و 07:30.",
+   "voice": "female",
+   "seconds": 14.16,
+   "fleurs": {
+    "config": "ar_eg",
+    "split": "test",
+    "file": "10035416633083120372.wav",
+    "sentence": 1730
+   },
+   "note": "Egyptian speakers reading Modern Standard Arabic (FLEURS has no Saudi set)"
+  },
+  {
+   "language": "ar-SA",
+   "file": "human-ar-SA-3",
+   "script": "وعلى الرغم من ذلك، فإنها معضلة من الصعب حلها وستستغرق سنين طوال قبل أن نشهد بناء مفاعلات اندماج ذات نفع.",
+   "voice": "male",
+   "seconds": 11.7,
+   "fleurs": {
+    "config": "ar_eg",
+    "split": "train",
+    "file": "10002899498199807056.wav",
+    "sentence": 351
+   },
+   "note": "Egyptian speakers reading Modern Standard Arabic (FLEURS has no Saudi set)"
+  },
+  {
+   "language": "ar-SA",
+   "file": "human-ar-SA-4",
+   "script": "قال كوستيلو إنه عندما يصبح توليد الطاقة النووية مجدياً من الناحية الاقتصادية، يجب على أستراليا أن السعي لاستخدامها.",
+   "voice": "male",
+   "seconds": 11.16,
+   "fleurs": {
+    "config": "ar_eg",
+    "split": "train",
+    "file": "10090164443625950456.wav",
+    "sentence": 56
+   },
+   "note": "Egyptian speakers reading Modern Standard Arabic (FLEURS has no Saudi set)"
+  },
+  {
+   "language": "tr-TR",
+   "file": "human-tr-TR-1",
+   "script": "Aynı ay, başka bir yolcu uçağı Meşhed'deki bir pisti aşarak bir duvara çarptı ve on yedi kişinin ölümüne neden oldu.",
+   "voice": "male",
+   "seconds": 14.16,
+   "fleurs": {
+    "config": "tr_tr",
+    "split": "test",
+    "file": "10000377651956138413.wav",
+    "sentence": 2004
+   },
+   "note": null
+  },
+  {
+   "language": "tr-TR",
+   "file": "human-tr-TR-2",
+   "script": "Romantizm; Goethe, Fichte ve Schlegel gibi yazarlardan geçen geniş bir kültürel determinizm özelliği taşıyordu.",
+   "voice": "male",
+   "seconds": 12.36,
+   "fleurs": {
+    "config": "tr_tr",
+    "split": "test",
+    "file": "10002518854052673247.wav",
+    "sentence": 1660
+   },
+   "note": null
+  },
+  {
+   "language": "tr-TR",
+   "file": "human-tr-TR-3",
+   "script": "Fakat bu gerçekleşse bile muhtemelen çok uzun süre beklememiz gerekecek. Yıldızlar birbirinden o kadar uzak ki \"komşu\" olarak adlandırılan yıldızlar arasında trilyonlarca kilometre vardır.",
+   "voice": "female",
+   "seconds": 12.0,
+   "fleurs": {
+    "config": "tr_tr",
+    "split": "train",
+    "file": "10000911331452359985.wav",
+    "sentence": 591
+   },
+   "note": null
+  },
+  {
+   "language": "tr-TR",
+   "file": "human-tr-TR-4",
+   "script": "Eğer kendinizi uykunuzda alarmı tekrar kurarken bulursanız, saati odanın diğer tarafına yerleştirilebilirsiniz, bu sizi alarmı kapatmak için yataktan kalkmanıza zorlar.",
+   "voice": "female",
+   "seconds": 13.68,
+   "fleurs": {
+    "config": "tr_tr",
+    "split": "train",
+    "file": "10022805115428568320.wav",
+    "sentence": 1297
+   },
+   "note": null
+  },
+  {
+   "language": "th-TH",
+   "file": "human-th-TH-1",
+   "script": "Danielle Lantagne ผู้เชี่ยวชาญด้านโรคภัยประจำสหประชาชาติแถลงว่า เป็นไปได้ที่การระบาดของโรคในครั้งนี้เกิดจากเจ้าหน้าที่รักษาความสงบ",
+   "voice": "female",
+   "seconds": 8.82,
+   "fleurs": {
+    "config": "th_th",
+    "split": "test",
+    "file": "10021525843523202225.wav",
+    "sentence": 1858
+   },
+   "note": null
+  },
+  {
+   "language": "th-TH",
+   "file": "human-th-TH-2",
+   "script": "สิ่งนี้เรียกว่าค่า pH ของสารเคมี คุณสามารถสร้างตัวระบุได้โดยใช้น้ำกะหล่ำปลีแดง",
+   "voice": "female",
+   "seconds": 7.2,
+   "fleurs": {
+    "config": "th_th",
+    "split": "test",
+    "file": "10026868752543983818.wav",
+    "sentence": 1792
+   },
+   "note": null
+  },
+  {
+   "language": "th-TH",
+   "file": "human-th-TH-3",
+   "script": "มันจะคงอยู่ไปอีก 40 ปีข้างหน้า และจะมีการต่อสู้อย่างแท้จริงโดยกองทัพตัวแทน ในสมรภูมิต่าง ๆ ตั้งแต่แอฟริกาไปจนถึงเอเชีย ในอัฟกานิสถาน คิวบา และที่อื่น ๆ อีกมากมาย",
+   "voice": "male",
+   "seconds": 14.88,
+   "fleurs": {
+    "config": "th_th",
+    "split": "train",
+    "file": "10014394052161953398.wav",
+    "sentence": 1088
+   },
+   "note": null
+  },
+  {
+   "language": "th-TH",
+   "file": "human-th-TH-4",
+   "script": "หากโทรศัพท์ของคุณไม่ได้มีการเชื่อมต่อข้อมูล หรือเมื่ออยู่นอกเครือข่าย มันอาจมีประสิทธิภาพที่จำกัด หรืออาจใช้งานไม่ได้",
+   "voice": "male",
+   "seconds": 12.24,
+   "fleurs": {
+    "config": "th_th",
+    "split": "train",
+    "file": "10199570633980996849.wav",
+    "sentence": 921
+   },
+   "note": null
+  },
+  {
+   "language": "vi-VN",
+   "file": "human-vi-VN-1",
+   "script": "Văn hóa và bộ lạc cổ xưa đã bắt đầu giữ những con vật này để dễ lấy sữa, tóc, thịt, và da.",
+   "voice": "male",
+   "seconds": 11.34,
+   "fleurs": {
+    "config": "vi_vn",
+    "split": "test",
+    "file": "10057024225045006889.wav",
+    "sentence": 1886
+   },
+   "note": null
+  },
+  {
+   "language": "vi-VN",
+   "file": "human-vi-VN-2",
+   "script": "Đối với Springboks, trận này đã giúp đội tuyển kết thúc chuỗi thua 5 trận liền.",
+   "voice": "male",
+   "seconds": 7.26,
+   "fleurs": {
+    "config": "vi_vn",
+    "split": "test",
+    "file": "10072308967409148015.wav",
+    "sentence": 1978
+   },
+   "note": null
+  },
+  {
+   "language": "vi-VN",
+   "file": "human-vi-VN-3",
+   "script": "Theo sau quá trình tố tụng này, HJR-3 sẽ được xem xét lại bởi cơ quan lập pháp được bầu cử tiếp theo trong năm 2015 hoặc 2016 để tiếp tục quá trình xử lý.",
+   "voice": "female",
+   "seconds": 14.4,
+   "fleurs": {
+    "config": "vi_vn",
+    "split": "train",
+    "file": "10016275350434725363.wav",
+    "sentence": 301
+   },
+   "note": null
+  },
+  {
+   "language": "vi-VN",
+   "file": "human-vi-VN-4",
+   "script": "Phát minh bánh xe nan hoa làm cho những cỗ xe ngựa chiến của người Assyria nhẹ hơn, nhanh hơn và sẵn sàng hơn để đánh bại các binh lính và cỗ xe khác.",
+   "voice": "female",
+   "seconds": 13.26,
+   "fleurs": {
+    "config": "vi_vn",
+    "split": "train",
+    "file": "10016312583329006585.wav",
+    "sentence": 411
+   },
+   "note": null
+  },
+  {
+   "language": "nl-NL",
+   "file": "human-nl-NL-1",
+   "script": "Volgens Angel (2006) kunnen organisaties beter presteren met een aanpak op basis van het continuümmodel.",
+   "voice": "male",
+   "seconds": 6.48,
+   "fleurs": {
+    "config": "nl_nl",
+    "split": "test",
+    "file": "10042455874761876908.wav",
+    "sentence": 1927
+   },
+   "note": null
+  },
+  {
+   "language": "nl-NL",
+   "file": "human-nl-NL-2",
+   "script": "Bij een verkeersstroom wordt gekeken naar de bewegingen van individuele bestuurders en voertuigen tussen twee punten en de interacties die plaatsvinden tussen de individuen.",
+   "voice": "male",
+   "seconds": 9.66,
+   "fleurs": {
+    "config": "nl_nl",
+    "split": "test",
+    "file": "10152288169439514825.wav",
+    "sentence": 1823
+   },
+   "note": null
+  },
+  {
+   "language": "nl-NL",
+   "file": "human-nl-NL-3",
+   "script": "'S Winters bezitten ze echter een andere, maar even charmante schoonheid. Veel bergstations krijgen een flinke laag sneeuw, zodat u er kunt skiën en snowboarden.",
+   "voice": "female",
+   "seconds": 13.5,
+   "fleurs": {
+    "config": "nl_nl",
+    "split": "train",
+    "file": "10001762917384736681.wav",
+    "sentence": 994
+   },
+   "note": null
+  },
+  {
+   "language": "nl-NL",
+   "file": "human-nl-NL-4",
+   "script": "Luchtvaartmaatschappijen weten maar al te goed dat er een groep vliegers is die bereid is om veel geld neer te tellen om ergens snel en comfortabel heen te vliegen en de maatschappijen brengen hiervoor dan ook bijpassende kosten in rekening.",
+   "voice": "female",
+   "seconds": 15.0,
+   "fleurs": {
+    "config": "nl_nl",
+    "split": "train",
+    "file": "100043116111965020.wav",
+    "sentence": 1268
+   },
+   "note": null
+  },
+  {
+   "language": "sv-SE",
+   "file": "human-sv-SE-1",
+   "script": "Många tyska bakverk har också mandlar, hasselnötter och andra nötter. Populära kakor passar ofta särskilt bra med en kopp starkt kaffe.",
+   "voice": "male",
+   "seconds": 12.78,
+   "fleurs": {
+    "config": "sv_se",
+    "split": "test",
+    "file": "10011314709555999730.wav",
+    "sentence": 1916
+   },
+   "note": null
+  },
+  {
+   "language": "sv-SE",
+   "file": "human-sv-SE-2",
+   "script": "De andra nomineringarna inkluderar bästa film, regissör, filmkonst, kostymdesign, filmredigering, originalmusik, produktionsdesign, ljudredigering, ljudmixning och originalmanus.",
+   "voice": "male",
+   "seconds": 12.72,
+   "fleurs": {
+    "config": "sv_se",
+    "split": "test",
+    "file": "10038003841559301831.wav",
+    "sentence": 1789
+   },
+   "note": null
+  },
+  {
+   "language": "sv-SE",
+   "file": "human-sv-SE-3",
+   "script": "Därför var blyertspennan en trogen följeslagare för många människor när den kom ut.",
+   "voice": "female",
+   "seconds": 7.68,
+   "fleurs": {
+    "config": "sv_se",
+    "split": "test",
+    "file": "10070024341607636465.wav",
+    "sentence": 1880
+   },
+   "note": null
+  },
+  {
+   "language": "sv-SE",
+   "file": "human-sv-SE-4",
+   "script": "Samoas huvudstad heter Apia. Staden ligger på ön Upolu och har en folkmängd strax under 40 000.",
+   "voice": "female",
+   "seconds": 13.92,
+   "fleurs": {
+    "config": "sv_se",
+    "split": "test",
+    "file": "1138743331354513610.wav",
+    "sentence": 1684
+   },
+   "note": null
+  },
+  {
+   "language": "da-DK",
+   "file": "human-da-DK-1",
+   "script": "Nordmarianernes beredskabskontor meddelte, at der ikke var rapporteret om skader i nationen.",
+   "voice": "male",
+   "seconds": 6.84,
+   "fleurs": {
+    "config": "da_dk",
+    "split": "test",
+    "file": "10077729101954371425.wav",
+    "sentence": 1876
+   },
+   "note": null
+  },
+  {
+   "language": "da-DK",
+   "file": "human-da-DK-2",
+   "script": "Finland er et fantastisk rejsemål for sejlere. \"De tusind søers land\" har også tusindvis af øer i søerne samt i øhavene langs kysten.",
+   "voice": "male",
+   "seconds": 11.34,
+   "fleurs": {
+    "config": "da_dk",
+    "split": "test",
+    "file": "10085624755376094742.wav",
+    "sentence": 1856
+   },
+   "note": null
+  },
+  {
+   "language": "da-DK",
+   "file": "human-da-DK-3",
+   "script": "Italiens hovedmål var afrikanske lande. For at erobre disse lande skulle de bruge en affyringsrampe til tropperne, så disse kunne sejle henover Middelhavet og invadere Afrika.",
+   "voice": "female",
+   "seconds": 14.82,
+   "fleurs": {
+    "config": "da_dk",
+    "split": "train",
+    "file": "10003268609183508233.wav",
+    "sentence": 399
+   },
+   "note": null
+  },
+  {
+   "language": "da-DK",
+   "file": "human-da-DK-4",
+   "script": "Det kan spare penge i forhold til at købe nye kort til en GPS, en separat GPS-enhed eller leje af en fra et biludlejningsfirma.",
+   "voice": "female",
+   "seconds": 11.88,
+   "fleurs": {
+    "config": "da_dk",
+    "split": "train",
+    "file": "10026252658814664439.wav",
+    "sentence": 920
+   },
+   "note": null
+  },
+  {
+   "language": "nb-NO",
+   "file": "human-nb-NO-1",
+   "script": "Det begynte med at gamle kulturer og stammer beholdte dem for lett tilgang til melk, hår, kjøtt og skinn.",
+   "voice": "female",
+   "seconds": 10.08,
+   "fleurs": {
+    "config": "nb_no",
+    "split": "test",
+    "file": "10079345942595448902.wav",
+    "sentence": 1886
+   },
+   "note": null
+  },
+  {
+   "language": "nb-NO",
+   "file": "human-nb-NO-2",
+   "script": "Aristoteles syn på alt som handlet om vitenskap, inkludert psykologi, ble godtatt.",
+   "voice": "female",
+   "seconds": 8.28,
+   "fleurs": {
+    "config": "nb_no",
+    "split": "test",
+    "file": "10127119633288296536.wav",
+    "sentence": 1926
+   },
+   "note": null
+  },
+  {
+   "language": "nb-NO",
+   "file": "human-nb-NO-3",
+   "script": "USAs ingeniørkorps har anslått at 6 tommer kan bryte de allerede ødelagte dikene.",
+   "voice": "male",
+   "seconds": 8.1,
+   "fleurs": {
+    "config": "nb_no",
+    "split": "test",
+    "file": "10268701139472903088.wav",
+    "sentence": 2007
+   },
+   "note": null
+  },
+  {
+   "language": "nb-NO",
+   "file": "human-nb-NO-4",
+   "script": "Husk at det kan være deler av festivalen som vil fortsette å spille musikk til sent på natten selv om musikken på hovedscenen er ferdig.",
+   "voice": "male",
+   "seconds": 6.84,
+   "fleurs": {
+    "config": "nb_no",
+    "split": "test",
+    "file": "12086341839951577125.wav",
+    "sentence": 1771
+   },
+   "note": null
+  }
+ ]
+}
