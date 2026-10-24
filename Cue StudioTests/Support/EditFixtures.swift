@@ -78,6 +78,10 @@ enum EditFixtures {
         text.color = .peach
         edit.texts = [text]
         edit.media = [MediaOverlay(kind: .photo, fileName: "p.jpg", aspect: 1, mediaDuration: nil, span: TimeSpan(start: 2, end: 5))]
+        edit.splitScreen = SplitScreen(
+            layouts: [SplitLayout(arrangement: .sideBySide, ratio: .sixtyForty)],
+            framings: [RecordingFraming(sourceID: nil, framing: AreaFraming(fit: .fit, zoom: 1.5))], mutesMedia: true
+        )
         edit.voiceOvers = [VoiceOverClip(fileName: "v.m4a", duration: 2, anchor: 1)]
         edit.creatorStyle = .clean
         edit.textLook = TypePreset.cue.look(for: .title)

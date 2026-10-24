@@ -122,8 +122,10 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     // MARK: Added
     /// Texts over the video, pinned to the recording.
     var texts: [TextOverlay] = []
-    /// Photos and videos over the take (B-roll), one at a time, pinned to the recording.
+    /// Photos and videos over the take (B-roll, windows, the supports of a split screen), pinned to the recording.
     var media: [MediaOverlay] = []
+    /// The split screen's layout, how the main video sits in its area and whether the media's sound plays.
+    var splitScreen = SplitScreen()
     /// Narrations recorded over the edit.
     var voiceOvers: [VoiceOverClip] = []
     /// The style picked with the old Style tool (it also set captions and the filter); kept so
@@ -226,13 +228,18 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         }
     }
 
-    /// Photos and videos that show somewhere in `timeline`, with where (edited seconds), in order.
-    /// A video never shows longer than it lasts.
+    /// Photos and videos that show somewhere in `timeline`, with where (edited seconds, from the start of their first piece to
+    /// the end of their last), in order. A video never shows longer than its file has left (`MediaOverlay.pieces`).
     func editedMedia(in timeline: EditTimeline) -> [(media: MediaOverlay, span: TimeSpan)] {
-        media.compactMap { item -> (media: MediaOverlay, span: TimeSpan)? in
-            guard var span = Self.editedSpan(item.span, anchor: item.clipAnchor, in: timeline) else { return nil }
-            span.end = min(span.end, span.start + item.longestDuration)
-            return (item, span)
+        placedMedia(in: timeline).map { ($0.media, $0.span) }
+    }
+
+    /// Like `editedMedia`, with each one's pieces: where it shows without a break and which second of its file plays there.
+    func placedMedia(in timeline: EditTimeline) -> [(media: MediaOverlay, span: TimeSpan, pieces: [MediaPiece])] {
+        media.compactMap { item -> (media: MediaOverlay, span: TimeSpan, pieces: [MediaPiece])? in
+            let pieces = item.pieces(in: timeline)
+            guard let first = pieces.first, let last = pieces.last else { return nil }
+            return (item, TimeSpan(start: first.edited.start, end: last.edited.end), pieces)
         }
         .sorted { $0.span.start < $1.span.start }
     }
@@ -323,6 +330,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
+        case splitScreen
     }
 
     /// Edits saved before the timeline had pieces: trim handles, cut points, deleted sections and
@@ -397,6 +405,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         // Added later: edits saved before have none, and a damaged one loses only that part.
         texts = container.decodeLossy([TextOverlay].self, forKey: .texts)
         media = container.decodeLossy([MediaOverlay].self, forKey: .media)
+        splitScreen = container.decodeLenient(SplitScreen.self, forKey: .splitScreen, report: report) ?? SplitScreen()
         voiceOvers = container.decodeLossy([VoiceOverClip].self, forKey: .voiceOvers)
         creatorStyle = try? container.decodeIfPresent(CreatorStyle.self, forKey: .creatorStyle)
         textLook = container.decodeLenient(TextLook.self, forKey: .textLook, report: report)

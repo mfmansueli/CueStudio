@@ -5,10 +5,12 @@
 
 import Foundation
 
-/// A photo or video from the creator's library laid over the take (B-roll). The file is a copy
-/// kept by the app (`EditMediaFiles`), so the edit never depends on the library. Pinned to the
-/// recording like texts, stacked when they overlap (up to `simultaneousLimit`). A video plays from `startInFile` (its own
-/// start unless the creator picked another part of it), muted unless its sound is kept, for as long as it shows.
+/// A photo or video from the creator's library laid over the take: B-roll over the whole frame or in a window, or a support
+/// in its own area of a split screen (`layout`). The file is a copy kept by the app (`EditMediaFiles`), so the edit never
+/// depends on the library. Pinned to the recording like texts, stacked when they overlap (up to `simultaneousLimit`). A video
+/// plays from `startInFile` (its own start unless the creator picked another part of it), muted unless its sound is kept, at
+/// its own speed whatever the speed of the clip under it; where the edit cuts out speech under it, the same stretch is cut out
+/// of it (`pieces`), so what it shows stays with what is said.
 nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     /// Narrowest a window can be, as a fraction of the frame's width.
     static let widthRange: ClosedRange<Double> = 0.25...1
@@ -57,6 +59,17 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     /// The window's width as a fraction of the frame's.
     var width: Double = 0.6
     var shape: MediaShape = .original
+
+    /// A support's layout (`SplitScreen.layout(id:)`); nil uses the video's.
+    var splitLayoutID: UUID?
+    /// How a support sits in its area; nil fills it, centered.
+    var areaFraming: AreaFraming?
+    /// How loud the main video plays while it shows, 0 to 1; nil leaves the main video as it is. With the support's own sound
+    /// up, 0 hears only the support.
+    var mainVolume: Double?
+    /// Whether a cut in the speech under it cuts the same stretch out of it (`pieces`): set on everything added since; nil
+    /// (media added before) plays straight on from where it starts, as it always did.
+    var followsCuts: Bool?
 
     init(kind: MediaKind, fileName: String, aspect: Double, mediaDuration: TimeInterval?, span: TimeSpan) {
         self.kind = kind
