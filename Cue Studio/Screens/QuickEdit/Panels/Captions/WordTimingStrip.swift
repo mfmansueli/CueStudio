@@ -30,7 +30,7 @@ struct WordTimingStrip: View {
                     let span = max(0.001, line.end - line.start)
                     let x = { (time: TimeInterval) in CGFloat((time - line.start) / span) * proxy.size.width }
                     ZStack(alignment: .leading) {
-                        ForEach(Array(words.enumerated()), id: \.offset) { index, word in
+                        ForEach(Array(words.enumerated()), id: \.offset) { _, word in
                             wordCell(word)
                                 .frame(width: max(2, x(word.end) - x(word.start) - 2), height: proxy.size.height)
                                 .offset(x: x(word.start) + 1)
@@ -84,7 +84,11 @@ struct WordTimingStrip: View {
             .gesture(
                 DragGesture(minimumDistance: 2)
                     .onChanged { value in
-                        if drag?.index != index { drag = (index, current) }
+                        if drag?.index != index {
+                            // The whole drag is one undo step.
+                            viewModel.beginChange()
+                            drag = (index, current)
+                        }
                         let origin = drag?.origin ?? current
                         viewModel.captions.setWordBoundary(cueID, after: index, at: origin + Double(value.translation.width / max(1, width)) * span)
                     }

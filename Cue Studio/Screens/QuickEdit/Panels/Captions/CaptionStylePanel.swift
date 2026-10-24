@@ -6,12 +6,11 @@
 import SwiftUI
 import UIKit
 
-/// Caption style, always for every line, and the one place captions are styled: the format the lines are cut by
-/// (`CaptionFormat`: one word, a short phrase, two lines), the collection's presets, how lines appear (tapping one plays the current line with it), where they sit and how
-/// big, and the highlight color. Captions drawn with a text's look (copied with "Apply this style to
-/// captions", or from an older version) show it as Custom, first and picked, and Font changes its
-/// family, weight and color; picking a preset replaces it, on the captions only. The panel expands
-/// like Text style.
+/// Caption style, always for every line, and the one place captions are styled: the format the lines are cut by (`CaptionFormat`: one word,
+/// a short phrase, two lines), the collection's presets, how lines appear (tapping one plays the current line with it), where they sit and
+/// how big, and the highlight color. Captions drawn with a text's look (copied with "Apply this style to captions", or from an older
+/// version) show it as Custom, first and picked, and Font changes its family, weight and color; picking a preset replaces it, on the
+/// captions only. The panel expands like Text style.
 struct CaptionStylePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 

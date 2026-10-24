@@ -124,7 +124,7 @@ struct QuickEditCaptionFormatTests {
         let block = try #require(viewModel.edit.captions.first)
         viewModel.captions.splitCaption(block.id, beforeWord: 2)
         let split = Array(viewModel.edit.captions.prefix(2))
-        #expect(split.allSatisfy(\.keepsBlock))
+        #expect(split.allSatisfy { $0.keepsBlock })
         viewModel.captions.setCaptionFormat(.oneWord)
         #expect(Array(viewModel.edit.captions.prefix(2)) == split)
     }
@@ -133,7 +133,7 @@ struct QuickEditCaptionFormatTests {
     @Test func aKeptBlockIsSavedAndOldLinesReadWithoutIt() throws {
         var line = CaptionCue(text: "Kept", start: 0, end: 1)
         let plain = try JSONEncoder().encode(line)
-        #expect(!String(decoding: plain, as: UTF8.self).contains("keepsBlock"))
+        #expect(String(bytes: plain, encoding: .utf8)?.contains("keepsBlock") == false)
         line.keepsBlock = true
         let kept = try JSONDecoder().decode(CaptionCue.self, from: JSONEncoder().encode(line))
         #expect(kept.keepsBlock)
@@ -162,6 +162,8 @@ struct QuickEditCaptionFormatTests {
         await makeCaptions(viewModel)
         let first = try #require(viewModel.edit.captions.first)
         let boundary = (first.words[0].end + first.words[1].start) / 2
+        // A drag: one undo step however many moves.
+        viewModel.beginChange()
         viewModel.captions.setWordBoundary(first.id, after: 0, at: boundary + 0.05)
         viewModel.captions.setWordBoundary(first.id, after: 0, at: boundary + 0.08)
         viewModel.endChange()
@@ -169,6 +171,7 @@ struct QuickEditCaptionFormatTests {
         #expect(abs(timed.words[0].end - (boundary + 0.08)) < 0.000_1)
         #expect(timed.words[1].start == timed.words[0].end)
         #expect(timed.isRevised)
+        viewModel.beginChange()
         viewModel.captions.setWordBoundary(first.id, after: 0, at: -5)
         viewModel.endChange()
         let clamped = try #require(viewModel.edit.captions.first { $0.id == first.id })

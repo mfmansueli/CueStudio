@@ -52,7 +52,7 @@ struct CaptionBlockingTests {
         for block in cut {
             let lines = lineCount(block)
             #expect(lines <= 2, "\(block.text)")
-            if block.words.count >= 3 { #expect(lines == 1, "\(block.text)") }
+            if block.words.count >= 2 { #expect(lines == 1, "\(block.text)") }
         }
     }
 
@@ -173,8 +173,8 @@ struct CaptionBlockingTests {
 
     /// A line broken by hand goes on a new line there, and the word being said is still found in it.
     @Test func aBrokenLineIsDrawnOnTwoLinesWithItsWordsLit() throws {
-        var broken = line("Three habits that changed everything")
-        broken.text = "Three habits\nthat changed everything"
+        var broken = line("Three habits that changed")
+        broken.text = "Three habits\nthat changed"
         #expect(broken.lineBreaks == [1])
         #expect(broken.shownText == broken.text)
         #expect(CaptionCollectionRenderer.measure(broken.text, settings: Self.settings, frame: Self.frame)?.lines == 2)

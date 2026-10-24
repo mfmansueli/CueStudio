@@ -14,8 +14,9 @@ import Foundation
 /// enough to be read when the silence after it leaves room.
 ///
 /// What a creator decided stays: lines split or joined by hand (`CaptionCue.keepsBlock`) or broken onto a new line by hand
-/// (`CaptionCue.lineBreaks`) are left as they are, as are empty lines, and the lines of another recording or with a style of their own are never mixed with the rest. A run of lines with
-/// no measured word times is never shown one word at a time (that would pretend to follow the voice): it gets short phrases.
+/// (`CaptionCue.lineBreaks`) are left as they are, as are empty lines, and the lines of another recording or with a style of
+/// their own are never mixed with the rest. A run of lines with no measured word times is never shown one word at a time
+/// (that would pretend to follow the voice): it gets short phrases.
 nonisolated enum CaptionBlocking {
     /// A silence this long always ends a block.
     static let pauseBreak: TimeInterval = 0.6
@@ -107,8 +108,8 @@ nonisolated enum CaptionBlocking {
                 continue
             }
             let candidate = start..<(index + 2)
-            // A short phrase takes a second line only while it is still too short to read on its own.
-            let allowed = format == .phrase ? (count < 3 ? 2 : 1) : format.maxLines
+            // A short phrase takes a second line only so a word isn't left alone on its own.
+            let allowed = format == .phrase ? (count < 2 ? 2 : 1) : format.maxLines
             let measured = CaptionCollectionRenderer.measure(text(candidate), settings: settings, frame: frame)
             let fits = measured.map { $0.lines <= allowed && !$0.overlong } ?? true
             if fits, next.end - tokens[start].word.start <= format.longestBlock { continue }
@@ -131,7 +132,7 @@ nonisolated enum CaptionBlocking {
         let first = words[0]
         let last = words[words.count - 1]
         let text = CaptionText.joined(words.map(\.text))
-        let closing = tokens.last.map { run[$0.line] }.flatMap { words(of: $0).last == last ? $0.end : nil }
+        let closing = tokens.last.map { run[$0.line] }.flatMap { Self.words(of: $0).last == last ? $0.end : nil }
         let reading = max(shortestBlock, Double(text.count) / readingSpeed)
         var end = max(closing ?? last.end, first.start + reading)
         if let nextStart {
@@ -144,7 +145,7 @@ nonisolated enum CaptionBlocking {
         )
         cue.sourceID = lines[0].sourceID
         cue.lineStyle = lines[0].lineStyle
-        if let opened = lines.first(where: { words(of: $0).first == first && !used.contains($0.id) }) {
+        if let opened = lines.first(where: { Self.words(of: $0).first == first && !used.contains($0.id) }) {
             cue.id = opened.id
             used.insert(opened.id)
         }

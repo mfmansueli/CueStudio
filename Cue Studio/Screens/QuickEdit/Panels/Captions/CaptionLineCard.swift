@@ -5,13 +5,12 @@
 
 import SwiftUI
 
-/// A line in Captions: when it plays ("00:05.2 → 00:07.1 · 1.9s") and what it says, yellow while
-/// it plays. Picked, it opens for working line by line: the words in a field outlined in yellow
-/// (Return goes on to the next line, with the keyboard still up), ‹ 3/12 › to step between lines,
-/// Play and delete; More opens Start and End −/+ in tenths, Split, Join next, Line break (a new line where the cursor
-/// is, in the same caption) and each word's time (`WordTimingStrip`), and opens by itself on a line whose timing needs a look. A long press on any line offers Play, Select and Delete. While lines are
-/// picked together (Captions › Select), a line shows a check circle and a tap puts it in or out; the field and its tools
-/// stay closed.
+/// A line in Captions: when it plays ("00:05.2 → 00:07.1 · 1.9s") and what it says, yellow while it plays. Picked, it opens for working
+/// line by line: the words in a field outlined in yellow (Return goes on to the next line, with the keyboard still up), ‹ 3/12 › to step
+/// between lines, Play and delete; More opens Start and End −/+ in tenths, Split, Join next, Line break (a new line where the cursor is, in
+/// the same caption) and each word's time (`WordTimingStrip`), and opens by itself on a line whose timing needs a look. A long press on any
+/// line offers Play, Select and Delete. While lines are picked together (Captions › Select), a line shows a check circle and a tap puts it
+/// in or out; the field and its tools stay closed.
 struct CaptionLineCard: View {
     let viewModel: QuickEditViewModel
     let line: CaptionCue
