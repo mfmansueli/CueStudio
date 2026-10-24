@@ -272,6 +272,28 @@ struct PaletteContrastTests {
         }
     }
 
+    /// Caption line › More › Word timing, on every card a line can have (plain, playing, one of several picked): a measured
+    /// word on its gray, an estimated word and its dashed edge, and the yellow handle between two words.
+    @Test func theWordTimingStripReadsOnTheLineCard() {
+        for appearance in Appearance.allCases {
+            let panel = rgb(Palette.Editor.panel, in: appearance)
+            let cards = [
+                ("card", rgb(Palette.Editor.panelCard, in: appearance, over: panel)),
+                ("playing card", rgb(Palette.Editor.accCard, in: appearance, over: panel)),
+                ("picked card", rgb(Palette.surface2, in: appearance, over: panel)),
+            ]
+            for (name, card) in cards {
+                let cell = rgb(Palette.segmentOn, in: appearance, over: card)
+                let measured = ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: cell), cell)
+                #expect(measured >= ColorContrast.textMinimum, "a measured word on the \(name), \(appearance): \(measured)")
+                let estimated = ColorContrast.ratio(rgb(Palette.ink2, in: appearance, over: card), card)
+                #expect(estimated >= ColorContrast.textMinimum, "an estimated word and its edge on the \(name), \(appearance): \(estimated)")
+                let handle = ColorContrast.ratio(rgb(Palette.acc, in: appearance, over: card), card)
+                #expect(handle >= ColorContrast.componentMinimum, "a word handle on the \(name), \(appearance): \(handle)")
+            }
+        }
+    }
+
     /// The quieter line on a yellow button reads on it.
     @Test func theSecondLineOnAYellowButtonReads() {
         for appearance in Appearance.allCases {

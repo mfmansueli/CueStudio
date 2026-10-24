@@ -1709,6 +1709,8 @@ de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra tran
 - **Word timing** (Caption › More, `WordTimingStrip`): as palavras da linha lado a lado, cada uma da largura do tempo em que é dita; a alça amarela entre
   duas move onde uma acaba e a outra começa (nunca a menos de 0,1 s das outras pontas), um passo de desfazer por arraste. Tempo medido ou posto pelo
   criador é sólido; estimado é tracejado. VoiceOver: cada alça se ajusta de 0,1 em 0,1 s. Quando nenhuma palavra fica estimada, "Check timing" sai.
+  Contraste medido nos três cartões da linha (`panelCard`, `accCard`, `surface2` sobre o painel), com e sem Aumentar Contraste: palavra medida `ink`
+  sobre `segmentOn`, palavra estimada e o tracejado em `ink2` (4,5:1), alça `acc` (3:1) (`PaletteContrastTests.theWordTimingStripReadsOnTheLineCard`).
 - **Traduções:** cada linha traduzida guarda o próprio texto e o próprio tempo (nunca é cortada palavra por palavra) e passa a apontar para os blocos sobre
   os quais toca; a linha escolhida continua escolhida no bloco que contém o começo dela.
 - **Cortes, cópias, montagem e velocidade:** os blocos são cortados no tempo da gravação (como as linhas sempre foram), então o mapa das legendas na edição
