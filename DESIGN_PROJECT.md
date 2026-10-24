@@ -1409,10 +1409,22 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
 - **Horários:** o trecho falado é lido contra o ruído da própria sala (12 dB acima dele, nunca um chiado de −40 dBFS tomado por
   fala), e nenhuma palavra começa no silêncio antes da voz (o coreano esticava a primeira palavra até 0,00 s, até 2,4 s antes de
   alguém falar) (`TranscriptTimingCheck`).
-- **Testes:** `SpokenLanguageIdentifierTests`, `SpeechLocaleReservationTests`, `TranscriptTimingCheckTests`,
+- **O roteiro na legenda** (`ScriptSpelling`): a voz decide o que foi dito e quando; o roteiro só empresta como se escreve. Numa
+  take lida do roteiro: palavras quase iguais; o mesmo número escrito de outro jeito ("3" → "ba", "2 00 6" → "(2006)"; um número
+  diferente nunca troca, nem um artigo que também conta um, "einen"/"ein"); um nome que o reconhecedor ouviu como outras palavras
+  que soam como ele ("Jean Carlos disse que ela" → "Giancarlo Fisichella"; `ScriptNames` acha os nomes pela escrita, maiúscula no
+  meio da frase, maiúscula dentro da palavra ou letras latinas num roteiro de outro alfabeto; `SoundKey` e `SoundAlignment` comparam
+  pelo som em qualquer escrita); e uma frase de outro idioma só quando soa como o que foi ouvido. Pontuação que o reconhecedor
+  escreveu sozinha não se repete ("。 。"). Medido com o que um iPhone 15 Pro ouviu das 100 gravações (`CaptionReplayTests`, no
+  simulador): as pessoas têm 9,2% das palavras erradas no texto ouvido e 6,6% na tela (7,4% antes dos números e nomes); em 10.700
+  roteiros com uma frase trocada, 22 mostram uma palavra não dita (eram 84). O Whisper (no Mac) errou mais e inventou frases no
+  silêncio: não é usado (`LOCALIZATION.md` §5).
+- **Testes:** `ScriptSpellingTests`, `SoundKeyTests`, `SoundAlignmentTests`, `ScriptNamesTests`, `CaptionReplayTests`,
+  `SpokenLanguageIdentifierTests`, `SpeechLocaleReservationTests`, `TranscriptTimingCheckTests`,
   `LanguageServiceTests/aTakeWithoutAScriptIsComparedInItsLikelyLanguages`,
   `QuickEditLanguageTests/aLanguagePickedUnlikeTheScriptsIsCheckedAgainstIt`, `CaptionBuilderTests/wordsSpreadOverTheSpeechMakeWholeLines`;
-  aparelho `SpokenLanguageDeviceTests` e `CaptionSpeechTests`, com a voz do sistema ou de pessoas (`TEST_RUNNER_CUE_SPEECH_VOICE`).
+  aparelho `SpokenLanguageDeviceTests` e `CaptionSpeechTests`, com a voz do sistema ou de pessoas (`TEST_RUNNER_CUE_SPEECH_VOICE`);
+  `CaptionSpeechTests` também grava o que ouviu para o replay (`tools/speech/heard_fixture.py`).
 
 ## 42. Desempenho medido no iPhone (22 de outubro de 2026)
 

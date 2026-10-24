@@ -494,8 +494,29 @@ the shipping settings, word to text.
   writing counted (`SpokenLanguageIdentifier`): 55 of 55 found, from 50. Edit by text: a word beside the cut was lost in natural
   speech, where the recognizer gives touching words one shared edge; edges now move to the pause between them
   (`WordBoundaries`): English 5 of 5 clean.
+- **What the creator sees** (`CaptionReplayTests`: the words this iPhone heard in the 100 recordings, rebuilt into lines with
+  the script as a take is, in the simulator): the share of the script's words wrong (letters for ja, zh, th and ko), people's
+  readings, as heard → on screen: en 6% → 1%, es 4% → 3%, pt-BR 15% → 6%, fr 10% → 5%, de 8% → 6%, it 1% → 0%, ja 0% → 0%,
+  ko 3% → 2%, zh-CN 12% → 11%, hi 28% → 24%, id 4% → 1%, ar 20% → 17%, tr 9% → 6%, th 5% → 5%, vi 8% → 6%, zh-TW 7% → 7%,
+  nl 14% → 7%, sv 13% → 13%, da 5% → 4%, nb 11% → 8%; all of them 9.2% → 6.6%. The script's numbers and names took it from
+  7.4%: the same number written another way takes the script's writing ("3 thói quen" → "ba thói quen", "3 つ" → "三つ",
+  "An 2 00 6" → "An (2006)"), a name heard as other words that sound like it is written as the name ("Jean Carlos disse que
+  ela" → "Giancarlo Fisichella"), and a mark the recognizer wrote on its own isn't repeated ("、 、", "。 。"). Against
+  10,700 scripts with one to four words swapped for another reading's (the voice said something else), 22 show a word that
+  wasn't said, all from the near-miss rule ("المحطة" for "المحيط"); 84 did before, most from a phrase taken for another
+  language between Danish, Norwegian and Swedish, which now has to sound like what was heard.
+- **Another recognizer** (a Mac with Apple silicon, WhisperKit 1.1 running OpenAI's Whisper large-v3 turbo, 632 MB and
+  626 MB, and large-v3, 947 MB, on the same 100 recordings with the language given, scored by one rule with Apple's):
+  people's words wrong 10.2%, 10.5% and 11.7%, against Apple's 9.4% heard and 7.4% on screen (that scorer's numbers; before
+  the numbers and names above). Better in Portuguese, Dutch and Traditional Chinese read by people, worse in most languages,
+  and large-v3 lost Turkish (52%). On 10 s of silence or room noise it wrote sentences no one said,
+  subtitle credits it learned from video: "ご視聴ありがとうございました", "Legenda Adriana Zanotto", "Textning.nu",
+  "ترجمة نانسي قنقر", "请不吝点赞 订阅 转发 打赏支持明镜与点点栏目" (7 of 8 languages with the turbo model, 6 with large-v3), and at
+  the end of two readings. Not used.
 - **Known limits**: Portuguese read by people: Edit by text clips the first sound of the word after the cut in every reading
-  (its word edges are up to ~150 ms off, "maneira" timed 0.18 s); a known issue in `EditByTextDeviceTests`. Voice Following's
+  (the transcriber starts the next word 0.12–0.3 s after the voice does: "das" is said 7.05–7.13 s and timed from 7.20 s,
+  where Whisper and the level agree; a known issue in `EditByTextDeviceTests`; `SpeechResultsDeviceTests` prints what
+  dictation times there). Voice Following's
   first move waits for the first recognized word: 0.9–2.6 s after the voice with people (4.5 s on one Turkish reading opening
   with a name; dictation is slower to its first word). One Arabic reading was followed to 62% in real time (its last words
   came late from dictation; 88% given time). The speaking indicator lit on breaths before the voice in a few readings; the text

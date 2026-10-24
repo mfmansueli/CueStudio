@@ -13,3 +13,13 @@ To rebuild them (needs `ffmpeg` and Xcode's `swift`), from an empty folder outsi
 
 To read a run: `python3 -I collect.py build/logs/test-device.log` (system voice against people, per language);
 `python3 -I table.py captions.log following.log spoken.log latency.log` prints the table in `LOCALIZATION.md` §5.
+
+What the creator sees, without a phone: a `CaptionSpeechTests` run with `both` prints every word heard (`CAPTION WORDS`);
+`python3 -I heard_fixture.py build/logs/test-device.log "Cue StudioTests/Fixtures/Speech/heard-captions.json" "iPhone 15 Pro,
+iOS 27.0, <date>"` keeps them for `CaptionReplayTests`, which rebuilds the lines with each script in the simulator
+(`TEST_RUNNER_CUE_REPLAY_REPORT=<file>` writes its table and every reading's lines). Record it again when iOS changes.
+
+Another recognizer against Apple's: `zsh whisper.sh <out> <models> large-v3-v20240930_turbo_632MB` (WhisperKit, about
+0.6–1 GB a model; delete them after), then `python3 -I score.py build/logs/test-device.log <out>/out-<model> --json
+<file>`: one rule for all (WER, CER for ja/zh/th/ko, Chinese folded to Simplified with `hans.swift`).
+
