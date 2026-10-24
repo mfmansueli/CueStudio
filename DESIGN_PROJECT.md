@@ -1684,7 +1684,7 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
 O que a legenda **diz** (as palavras, as correções, os tempos de cada palavra, as marcas de revisão) fica separado de **como ela é cortada** no que aparece
 de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra transcrição nem apaga uma decisão do criador.
 - **Format** (Caption style › Presets, acima da grade; `CaptionFormat` em `CaptionSettings.format`): **One word** (só a palavra que está sendo dita, trocada
-  pela seguinte, no mesmo lugar), **Short phrase** (um grupo que faz sentido, numa linha quando dá, em duas no máximo; o padrão) e **Two lines** (blocos
+  pela seguinte, no mesmo lugar), **Short phrase** (um grupo que faz sentido, numa linha; a segunda só para uma palavra não ficar sozinha; o padrão) e **Two lines** (blocos
   de até duas linhas, quebradas por igual). Legendas novas nascem em Short phrase, ou no formato do My style salvo. Uma edição de antes dos formatos fica
   como era ("Format · as they were made", nada marcado) até alguém escolher um: escolher corta as mesmas palavras de novo, num passo de desfazer, com o
   aviso "Captions format: …" e Undo.
@@ -1718,4 +1718,6 @@ de uma vez. Trocar o corte, o preset, a fonte ou o tamanho nunca pede outra tran
 - **Testes:** `CaptionBlockingTests` (palavras em ordem, uma linha na frase curta, nunca três, frase e pausa, palavras que se apoiam, uma palavra só com
   tempo medido, palavra larga sozinha, japonês, árabe, linhas feitas à mão, correções e marcas, cortar de novo não muda nada, outra gravação, quebra de
   linha desenhada e acesa, Return), `QuickEditCaptionFormatTests` (Short phrase nas novas, edição antiga intacta, um passo de desfazer, traduções, linha
-  escolhida, Split à mão, `keepsBlock` gravado só quando há, Line break no cursor, Word timing).
+  escolhida, Split à mão, `keepsBlock` gravado só quando há, Line break no cursor, Word timing: um arraste é um passo de desfazer),
+  `CreatorWorkflowUITests.testCaptionsInAShortPhraseALineBreakAndWordTiming` (o demo, de antes dos formatos, sem nada marcado; Short phrase corta as
+  8 linhas em 15; Line break; Word timing à vista).
