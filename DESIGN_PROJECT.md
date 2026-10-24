@@ -1422,15 +1422,17 @@ enquadramento.
   da GPU); montar a prévia ao abrir fica ~35% mais rápido (285 → 191 ms com texto, 282 → 183 ms em 4K, 277 → 173 ms no corte). O app instalado
   pelo `scripts/build.sh install` é Debug: para julgar a fluidez como na App Store, `CUE_CONFIGURATION=Release`.
 
-**Take longo** (`LongTakeDeviceTests`, `CUE_DEVICE=… scripts/test.sh device LongTakeDeviceTests`; 23/10/2026, iPhone 15 Pro, Debug): 30 minutos
-de vídeo 720p com 600 linhas de legenda (cinco palavras cada), o Cue na frente.
-- **Editor:** abre em 18 ms (sem o player); a linha sob o cursor, pedida a cada quadro, leva 1 µs (`CaptionMap`; mapear todas as linhas de novo,
-  como cada leitura fazia antes, leva 1,3 ms, e arrastar uma legenda fazia isso uma vez por barra); a timeline sai em 0,3 ms; corrigir uma linha,
-  0,6 ms; +36 MB de memória.
-- **Rascunho:** 6 MB depois de 20 correções de legenda (cada passo de desfazer guarda as 600 linhas), escrito fora da linha principal em 125 ms.
-  Guardar só as linhas que mudaram em cada passo fica para a Fase C (as legendas viram uma parte própria do editor).
-- **Prévia:** a composição de 30 minutos com as 600 legendas leva 1,0 s para montar (fora da linha principal), +50 MB.
-- **Studio Voice:** 78 s para tratar os 30 minutos; o arquivo tem 302 MB; o limite do cache era 2,8 GB com 27 GB livres.
+**Take longo** (`LongTakeDeviceTests`, `CUE_DEVICE=… scripts/test.sh device LongTakeDeviceTests`; 24/10/2026, iPhone 15 Pro, Debug, cinco
+rodadas): 30 minutos de vídeo 720p com 600 linhas de legenda (cinco palavras cada), o Cue na frente.
+- **Editor:** abre em 7–11 ms (sem o player); a linha sob o cursor, pedida a cada quadro, leva 1 µs (`CaptionMap`; mapear todas as linhas de novo,
+  como cada leitura fazia antes, leva 1,3 ms); a timeline sai em 0,3 ms; corrigir uma linha, 0,1 ms; +4 MB de memória.
+- **Rascunho:** 322 KB depois de 20 correções de legenda (cada passo guarda só a linha que mudou, `LinesChange`; guardando as 600 linhas em todo
+  passo eram 6 MB), escrito fora da linha principal em 17 ms.
+- **Prévia:** a composição de 30 minutos com as 600 legendas monta em 48–88 ms (fora da linha principal; as linhas diagramadas lado a lado e
+  guardadas, `CaptionLineSizes`); de novo depois de um ajuste de imagem, 40 ms; depois de uma linha corrigida, 41 ms; +19 a 49 MB.
+- **Studio Voice:** 49 s para tratar os 30 minutos; o arquivo tem 302 MB; o limite do cache era 2,8 GB com 26 GB livres.
+- Em duas das cinco rodadas (as duas primeiras da noite), o segundo dos dois testes passou dos 5 minutos sem dizer em que etapa; nas três seguintes,
+  com marcas em cada etapa, os dois passaram em ~90 s e nenhuma etapa demorou. Causa não achada (provavelmente a tela do iPhone durante a rodada).
 
 ## 43. Apple Watch: o gravador no pulso (22 de outubro de 2026; pedido do dono)
 
@@ -1634,7 +1636,8 @@ O editor dividido em partes que crescem sem esbarrar uma na outra, a prévia dec
   Aumentar Contraste desenha tudo de novo.
 - **Rascunho de um vídeo longo**: cada passo de desfazer grava as linhas de legenda (e de cada tradução) que mudou, com a ordem só quando linhas entraram,
   saíram ou trocaram de lugar (`LinesChange`), e não todas as linhas em todo passo. 20 correções num vídeo de 600 linhas: de 2,3 MB para 183 KB. Um
-  rascunho gravado no meio de um gesto (o app deixado durante um arraste) leva o gesto como um passo próprio, e o Desfazer volta ao começo dele.
+  rascunho gravado no meio de um gesto (o app deixado durante um arraste) leva o gesto como um passo próprio, e o Desfazer volta ao começo dele. No
+  iPhone, 20 correções num vídeo de 30 minutos: 322 KB (§42).
 - **Legendas diagramadas uma vez**: o tamanho de cada linha fica guardado por estilo (`CaptionLineSizes`); uma montagem que não muda linha nenhuma (um
   ajuste, um corte, um som) não diagrama nenhuma de novo, e uma linha corrigida é a única refeita. As linhas de um vídeo longo ainda não diagramadas são
   feitas lado a lado em todos os núcleos. Medido no iPhone: §42.
