@@ -37,8 +37,10 @@ extension QuickEditViewModel {
             )
         }
         input.media = edit.placedMedia(in: timeline).map { item, span, pieces in
+            // The bar's badge shows how it shows with its symbol: the words say only what it is.
             var input = TimelineGeometry.ItemInput(
-                id: item.id, span: span, label: Self.label(of: item), isLocked: edit.lockedLayers.contains(item.id)
+                id: item.id, span: span, label: item.kind == .photo ? String(localized: "Photo") : String(localized: "Video"),
+                isLocked: edit.lockedLayers.contains(item.id)
             )
             input.strip = TimelineGeometry.MediaStrip(fileName: item.fileName, isVideo: item.kind == .video, pieces: pieces, layout: item.layout)
             return input
@@ -74,13 +76,6 @@ extension QuickEditViewModel {
         input.heightClass = heightClass
         input.pointsPerSecond = TimelineGeometry.basePointsPerSecond * timelineZoom
         return input
-    }
-
-    /// "Photo · Full screen", "Video · Window": what the item on the media track is and how it
-    /// shows, so a photo that fills the frame doesn't read as a plain strip.
-    static func label(of media: MediaOverlay) -> String {
-        let kind = media.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
-        return "\(kind) · \(media.layout.label)"
     }
 
     /// "1.5×", "Push in", "Stabilized", "Muted" or "Volume 150%", the clip's own filter and "Adjusted", and the background's style

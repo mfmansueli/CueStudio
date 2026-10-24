@@ -14,3 +14,10 @@ nonisolated enum FrameRate: Int, Codable, CaseIterable, Identifiable, Sendable {
 
     var label: String { String(rawValue) }
 }
+
+nonisolated extension FrameRate {
+    /// The frame rate closest to an imported video's.
+    static func nearest(to fps: Double) -> FrameRate {
+        allCases.min { abs(Double($0.rawValue) - fps) < abs(Double($1.rawValue) - fps) } ?? .fps30
+    }
+}

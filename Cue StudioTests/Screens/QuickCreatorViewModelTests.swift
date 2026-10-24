@@ -501,9 +501,11 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         viewModel.overlays.addMedia(photo())
         let id = viewModel.edit.media[0].id
-        #expect(viewModel.timelineInput(heightClass: .regular).media[0].label == "Photo · Full screen")
+        // What it is in words; how it shows by its layout's symbol on the bar's badge.
+        #expect(viewModel.timelineInput(heightClass: .regular).media[0].label == "Photo")
+        #expect(viewModel.timelineInput(heightClass: .regular).media[0].strip?.layout == .fullFrame)
         viewModel.overlays.updateMedia(id) { $0.layout = .window }
-        #expect(viewModel.timelineInput(heightClass: .regular).media[0].label == "Photo · Window")
+        #expect(viewModel.timelineInput(heightClass: .regular).media[0].strip?.layout == .window)
     }
 
     // MARK: - Voice-over

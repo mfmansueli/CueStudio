@@ -4,6 +4,8 @@
 //
 
 import Foundation
+import PhotosUI
+import SwiftUI
 
 /// The Takes library: videos (takes grouped by script, each at the stage its takes put it in)
 /// filtered by platform and by the stage picked in the pipeline, by day.
@@ -28,17 +30,45 @@ final class TakesViewModel {
     private let presentation: PresentationService
     private let toast: ToastService
     private let now: () -> Date
+    private let importer: TakeVideoImporting
+    /// A video from Photos is being copied in to edit.
+    private(set) var isImporting = false
 
     init(
         takes: TakeLibraryService, library: ScriptLibraryService, drafts: QuickEditDraftStoring,
-        presentation: PresentationService, toast: ToastService, now: @escaping () -> Date = Date.init
+        presentation: PresentationService, toast: ToastService, importer: TakeVideoImporting? = nil,
+        now: @escaping () -> Date = Date.init
     ) {
         self.takes = takes
         self.library = library
         self.drafts = drafts
         self.presentation = presentation
         self.toast = toast
+        self.importer = importer ?? TakeVideoImporter()
         self.now = now
+    }
+
+    // MARK: - Importing
+
+    /// "Import video": a video from Photos becomes a video of its own here, marked imported (never a take of the teleprompter),
+    /// and opens straight in the editor.
+    func importVideo(_ item: PhotosPickerItem) async {
+        guard !isImporting else { return }
+        isImporting = true
+        defer { isImporting = false }
+        toast.show(String(localized: "Importing…"))
+        do {
+            let video = try await importer.importVideo(item) { _ in }
+            let take = try takes.importVideo(
+                fileAt: video.url, duration: video.duration, uprightSize: video.uprightSize, frameRate: video.frameRate
+            )
+            refresh()
+            presentation.openReview(of: take, then: .edit)
+        } catch is CancellationError {
+            // Stopped: nothing to say.
+        } catch {
+            toast.show(String(localized: "Can't import this video"))
+        }
     }
 
     // MARK: - Reading

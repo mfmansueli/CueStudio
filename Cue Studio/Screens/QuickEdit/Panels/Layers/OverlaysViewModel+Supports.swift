@@ -169,12 +169,13 @@ extension OverlaysViewModel {
             } else {
                 message = String(localized: "Photo added to the split screen at \(place)")
             }
-            if videos > 0 { message += " · " + String(localized: "muted") }
         } else {
             message = picks.count == 1
                 ? (videos == 1 ? String(localized: "Video added at \(place)") : String(localized: "Photo added at \(place)"))
                 : String(localized: "\(picks.count) added over the video from \(place)")
         }
+        // Videos go in silent: said, so the sound is never a surprise (the panel's Sound turns it up).
+        if picks.contains(where: { $0.isVideo && $0.imported.hasSound }) { message += " · " + String(localized: "muted") }
         if run.leftOut > 0 { message += " · " + String(localized: "\(run.leftOut) didn’t fit") }
         return message
     }

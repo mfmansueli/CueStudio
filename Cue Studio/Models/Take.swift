@@ -33,6 +33,8 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
     var isExported: Bool = false
     /// Quick edit's recipe, applied on top of the recording when it plays or exports.
     var edit: TakeEdit?
+    /// Recorded with Cue (nil, takes from before imports) or imported from Photos.
+    var origin: TakeOrigin?
 
     init(
         id: UUID = UUID(), scriptID: UUID?, scriptTitle: String, scriptVersion: Int?, number: Int,
@@ -61,9 +63,13 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
     /// The frame the take exports in: the edit's crop, or the frame it was filmed for.
     var outputAspect: AspectRatio { edit?.aspect ?? aspect }
 
-    var label: String { String(localized: "Take \(number)") }
+    /// "Take 3"; an imported video, "Imported".
+    var label: String { isImported ? String(localized: "Imported") : String(localized: "Take \(number)") }
 
     var isFreestyle: Bool { scriptID == nil }
+
+    /// A video imported from Photos to edit, not recorded with Cue.
+    var isImported: Bool { origin == .imported }
 
     // MARK: - Coding
 
@@ -88,6 +94,7 @@ nonisolated struct Take: Codable, Identifiable, Hashable, Sendable {
         isExported = try container.decodeIfPresent(Bool.self, forKey: .isExported) ?? false
         // An edit that can't be read never hides the take: it opens as recorded, and the store keeps the file as it was.
         edit = container.decodeLenient(TakeEdit.self, forKey: .edit, report: decoder.decodingReport)
+        origin = try? container.decodeIfPresent(TakeOrigin.self, forKey: .origin)
     }
 
     func captionScript(current: Script?) -> Script? {

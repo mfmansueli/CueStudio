@@ -38,7 +38,8 @@ nonisolated struct TakeLibraryFilter: Hashable, Sendable {
         }
         return order.compactMap { key in
             guard let group = grouped[key]?.sorted(by: { $0.number > $1.number }), let first = group.first else { return nil }
-            let title = first.isFreestyle ? String(localized: "Freestyle recording") : first.scriptTitle
+            let title = first.isImported ? String(localized: "Imported video")
+                : first.isFreestyle ? String(localized: "Freestyle recording") : first.scriptTitle
             let platform = first.scriptID.flatMap(scriptPlatform) ?? first.platform
             return TakeVideo(takes: group, title: title, platform: platform, stage: TakeStage(takes: group, hasDraft: hasDraft))
         }
