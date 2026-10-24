@@ -493,7 +493,14 @@ the shipping settings, word to text.
   `SpeechLocaleReservation`), and an English reading was taken for Spanish (0.92 against 0.91) until the recognizers' own
   writing counted (`SpokenLanguageIdentifier`): 55 of 55 found, from 50. Edit by text: a word beside the cut was lost in natural
   speech, where the recognizer gives touching words one shared edge; edges now move to the pause between them
-  (`WordBoundaries`): English 5 of 5 clean.
+  (`WordBoundaries`): English 5 of 5 clean. Portuguese read by people still lost the next word's first sound in 4 of 4: the
+  transcriber starts words a median 0.06–0.11 s after the voice, up to 0.3 s ("das" said 7.05–7.13 s, where Whisper and the
+  level agree, timed from 7.20 s; dictation from 7.02 s), never leaves a pause between them, and German has the same lag
+  (`SpeechResultsDeviceTests`, both recognizers on four Portuguese and two German readings). Where dictation's model is already
+  on the iPhone, it now runs in the same pass and the transcriber's words take its times (`DictationTiming`; the words stay the
+  transcriber's, which writes better): Portuguese 4 of 4 clean, English and both system voices too, 10 of 10. The pass costs
+  0.37 s instead of 0.24 s for a 13.6 s reading; captions in the 20 languages stay inside the recording, in order, and the first
+  word as close to the voice. Japanese, Chinese and Thai keep the transcriber's times (the two cut words differently).
 - **What the creator sees** (`CaptionReplayTests`: the words this iPhone heard in the 100 recordings, rebuilt into lines with
   the script as a take is, in the simulator): the share of the script's words wrong (letters for ja, zh, th and ko), people's
   readings, as heard → on screen: en 6% → 1%, es 3% → 2%, pt-BR 15% → 6%, fr 10% → 5%, de 6% → 4%, it 1% → 0%, ja 0% → 0%,
@@ -515,13 +522,9 @@ the shipping settings, word to text.
   subtitle credits it learned from video: "ご視聴ありがとうございました", "Legenda Adriana Zanotto", "Textning.nu",
   "ترجمة نانسي قنقر", "请不吝点赞 订阅 转发 打赏支持明镜与点点栏目" (7 of 8 languages with the turbo model, 6 with large-v3), and at
   the end of two readings. Not used.
-- **Known limits**: Portuguese read by people: Edit by text clips the first sound of the word after the cut in every reading
-  (the transcriber starts the next word 0.12–0.3 s after the voice does: "das" is said 7.05–7.13 s and timed from 7.20 s,
-  where Whisper and the level agree; a known issue in `EditByTextDeviceTests`). `SpeechResultsDeviceTests` ran both
-  recognizers on four Portuguese and two German readings: dictation starts the same words a median 0.06–0.11 s earlier (up
-  to 0.3 s; "das" at 7.02 s) and leaves the pauses between words, which the transcriber never does, and German has the same
-  lag. Voice Following's
-  first move waits for the first recognized word: 0.9–2.6 s after the voice with people (4.5 s on one Turkish reading opening
+- **Known limits**: a take in a language whose dictation model isn't on the iPhone is timed by the transcriber alone (no
+  download is started for it), so in fluent Portuguese a cut by text can still clip the next word's first sound there.
+  Voice Following's first move waits for the first recognized word: 0.9–2.6 s after the voice with people (4.5 s on one Turkish reading opening
   with a name; dictation is slower to its first word). One Arabic reading was followed to 62% in real time (its last words
   came late from dictation; 88% given time). The speaking indicator lit on breaths before the voice in a few readings; the text
   never moved before it.

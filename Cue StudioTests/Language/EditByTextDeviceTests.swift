@@ -93,15 +93,9 @@ struct EditByTextDeviceTests {
                 + " · around “\(neighbourBefore.text) | \(neighbourAfter.text)” · heard after “\(CaptionText.joined(again.words.map(\.text)))”"
         )
         #expect(phraseGone, "\(sample.label): “\(phrase.joined(separator: " "))” still heard in the export")
-        if sample.voice == .human, language == .portugueseBrazil {
-            // Measured on an iPhone: Portuguese's recognizer puts the edges of words read fluently by people up to ~150 ms off
-            // ("maneira" timed 0.18 s long), so a cut at them clips the next word's first sound in every reading. English is clean.
-            withKnownIssue("Portuguese word edges from people's fluent speech are off (LOCALIZATION.md §5)", isIntermittent: true) {
-                #expect(neighboursKept, "\(sample.label): a word next to the cut is missing from the export")
-            }
-        } else {
-            #expect(neighboursKept, "\(sample.label): a word next to the cut is missing from the export")
-        }
+        // People's fluent Portuguese clipped the next word's first sound in every reading until words took dictation's times
+        // (`DictationTiming`): 4 of 4 clean since, on an iPhone 15 Pro.
+        #expect(neighboursKept, "\(sample.label): a word next to the cut is missing from the export")
     }
 
     /// The same on the creator's own takes on this iPhone, never touching them: each recording is COPIED to the temporary

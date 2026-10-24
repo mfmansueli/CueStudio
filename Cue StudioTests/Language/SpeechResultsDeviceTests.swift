@@ -41,6 +41,53 @@ struct SpeechResultsDeviceTests {
         #expect(!transcribed.isEmpty || !dictated.isEmpty)
     }
 
+    /// How long each recognizer takes on a reading, alone and both in one analysis (`SPEECH TIME`), after a first pass that
+    /// loads the models: what timing words by dictation would add to captions.
+    @Test(arguments: ["human-pt-BR-1", "human-pt-BR-3", "human-de-DE-2", "human-en-US-3", "human-es-ES-4", "human-fr-FR-2"])
+    func timeOfEachRecognizer(name: String) async throws {
+        KeepScreenAwake.enable()
+        let sample = try #require(try SpeechSample.human().first { $0.name == name })
+        let locale = Locale(identifier: sample.language.rawValue)
+        await SpeechLocaleReservation.reserve(locale)
+        func transcriber() -> SpeechTranscriber {
+            SpeechTranscriber(locale: locale, transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])
+        }
+        func dictation() -> DictationTranscriber {
+            DictationTranscriber(locale: locale, contentHints: [], transcriptionOptions: [], reportingOptions: [], attributeOptions: [.audioTimeRange])
+        }
+        let warm = transcriber()
+        _ = try await Self.results(of: sample.url, with: warm, results: warm.results) { ($0.range, $0.text) }
+        let clock = ContinuousClock()
+        var times: [String] = []
+        for _ in 0..<2 {
+            let alone = transcriber()
+            let transcribed = try await clock.measure {
+                _ = try await Self.results(of: sample.url, with: alone, results: alone.results) { ($0.range, $0.text) }
+            }
+            let dictating = dictation()
+            let dictated = try await clock.measure {
+                _ = try await Self.results(of: sample.url, with: dictating, results: dictating.results) { ($0.range, $0.text) }
+            }
+            let first = transcriber()
+            let second = dictation()
+            let both = try await clock.measure {
+                let firstWords = Task { for try await _ in first.results {} }
+                let secondWords = Task { for try await _ in second.results {} }
+                let analyzer = SpeechAnalyzer(modules: [first, second])
+                if let last = try await analyzer.analyzeSequence(from: AVAudioFile(forReading: sample.url)) {
+                    try await analyzer.finalizeAndFinish(through: last)
+                }
+                try await firstWords.value
+                try await secondWords.value
+            }
+            times.append(String(format: "transcriber %.2f s, dictation %.2f s, both %.2f s",
+                                transcribed / .seconds(1), dictated / .seconds(1), both / .seconds(1)))
+        }
+        let length = try AVAudioFile(forReading: sample.url)
+        print("SPEECH TIME \(sample.label) (\(String(format: "%.1f", Double(length.length) / length.processingFormat.sampleRate)) s): "
+              + times.joined(separator: " | "))
+    }
+
     /// Every result of `module` for the recording at `url`: "[start–end] “text” · word@start–end …".
     private static func results<Results: AsyncSequence & Sendable>(
         of url: URL, with module: any SpeechModule, results: Results,
