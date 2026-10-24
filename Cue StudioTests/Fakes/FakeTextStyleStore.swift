@@ -6,14 +6,16 @@
 import Foundation
 @testable import Cue_Studio
 
-/// "My style" in memory, so tests never write the simulator's defaults.
+/// Saved styles in memory, so tests never write the simulator's defaults.
 @MainActor
 final class FakeTextStyleStore: TextStyleStoring {
-    var myStyle: TextLook?
-    var myCoverStyle: CoverStyle?
-    var myCaptionStyle: MyCaptionStyle?
+    var captionStyles = StyleLibrary<MyCaptionStyle>()
+    var textStyles = StyleLibrary<TextLook>()
+    var coverStyles = StyleLibrary<CoverStyle>()
+    var captionCatalogFilter: String?
 
+    /// A store with `myStyle` saved as the creator's one text style.
     init(myStyle: TextLook? = nil) {
-        self.myStyle = myStyle
+        if let myStyle { textStyles.add(myStyle, named: "My style") }
     }
 }

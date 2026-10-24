@@ -102,11 +102,12 @@ struct QuickEditCoverTests {
         #expect(viewModel.cover.coverStudio != nil)
     }
 
-    @Test func aNewCoverStartsInMyStyle() async throws {
+    @Test func aNewCoverStartsInTheDefaultStyle() async throws {
         let (viewModel, _, styles) = await makeViewModel()
         var saved = CoverComposition.make(.series, title: "x", episode: 2)
         saved.title.accent = .cyan
-        styles.myCoverStyle = saved.style
+        let style = styles.coverStyles.add(saved.style, named: "Series")
+        styles.coverStyles.setDefault(style.key)
         viewModel.cover.openCoverStudio()
         let studio = try #require(viewModel.cover.coverStudio)
         #expect(studio.composition.template == .series)

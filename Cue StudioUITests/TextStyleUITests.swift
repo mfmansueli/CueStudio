@@ -217,7 +217,7 @@ final class TextStyleUITests: XCTestCase {
         alert.buttons["Apply"].firstMatch.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Captions use this style"))
 
-        // Caption style shows the copy as Custom, picked.
+        // Caption style shows the copy as this video's look, picked.
         app.buttons["edit.panel.apply"].tap()
         let back = app.buttons["edit.toolbar.back"]
         if back.exists(within: 3) { back.tap() }
@@ -228,21 +228,30 @@ final class TextStyleUITests: XCTestCase {
         let custom = app.buttons["edit.captionPreset.custom"]
         XCTAssertTrue(custom.exists(within: 5))
         XCTAssertTrue(custom.isSelected)
-        XCTAssertFalse(app.buttons["edit.captionPreset.cue"].isSelected)
-        XCTAssertTrue(app.staticTexts["edit.captionCustomNote"].exists)
+        XCTAssertEqual(custom.label, "This video")
+        // Cue's own card (made as it comes into view) isn't the one marked.
+        let cue = app.buttons["edit.captionPreset.cue"]
+        XCTAssertFalse(cue.exists && cue.isSelected)
 
-        // A preset replaces it; Undo brings the copy back, Redo the preset. Custom comes first in the row, so Pop may be past its edge.
+        // A style replaces it; Undo brings the copy back, Redo the style. Violet is under Colorful.
+        let colorful = app.buttons["edit.captionFilter.colorful"]
+        let row = app.scrollViews.allElementsBoundByIndex.first { $0.frame.height < 80 && $0.buttons["edit.captionFilter.all"].exists }
+        for _ in 0..<5 where !colorful.exists || colorful.frame.maxX > app.windows.firstMatch.frame.maxX - 8 { row?.swipeLeft(velocity: .slow) }
+        colorful.tap()
         let pop = app.buttons["edit.captionPreset.pop"]
-        let catalog = app.descendants(matching: .any)["edit.captionCatalog"]
-        for _ in 0..<4 where pop.frame.maxX > app.windows.firstMatch.frame.maxX { catalog.swipeLeft(velocity: .slow) }
+        XCTAssertTrue(pop.exists(within: 5))
         pop.tap()
         XCTAssertTrue(waitFor { !custom.exists })
         XCTAssertTrue(app.buttons["edit.captionPreset.pop"].isSelected)
         app.buttons["edit.undoButton"].tap()
+        for _ in 0..<5 where app.buttons["edit.captionFilter.all"].frame.minX < 0 { row?.swipeRight(velocity: .slow) }
+        app.buttons["edit.captionFilter.all"].tap()
         XCTAssertTrue(custom.exists(within: 3))
         XCTAssertTrue(custom.isSelected)
         app.buttons["edit.redoButton"].tap()
         XCTAssertTrue(waitFor { !custom.exists })
+        for _ in 0..<5 where colorful.frame.maxX > app.windows.firstMatch.frame.maxX - 8 { row?.swipeLeft(velocity: .slow) }
+        colorful.tap()
         XCTAssertTrue(app.buttons["edit.captionPreset.pop"].isSelected)
     }
 }

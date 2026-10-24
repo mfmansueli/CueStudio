@@ -1,0 +1,207 @@
+//
+//  CaptionCollectionRenderer+Motion.swift
+//  Cue Studio
+//
+
+import UIKit
+
+/// Captions with motion (`CaptionMotion`): each line comes in and goes out its way (fade, pop, rise), shows whole or word by
+/// word, and lights the word being said its way (color, box, a box sliding from word to word, a pop). Every state is one more
+/// drawing of the same layout (`CaptionMarkup`): the box and the pop are drawn over the words, never moving them, and a pop or
+/// a slide is two or three short states, so the preview and the export play them alike, frame for frame.
+nonisolated extension CaptionCollectionRenderer {
+    /// How a popped word lands: a little past its size for an instant, then at it (seconds, scale), after `popScale` holds.
+    private static let popSteps: [(length: TimeInterval, scale: Double)] = [(0.045, 1.05), (0.05, 1.17)]
+
+    static func motionOverlays(
+        _ cues: [CaptionCue], settings: CaptionSettings, motion: CaptionMotion, position: CaptionPosition, frame: CGSize
+    ) -> [FrameOverlay] {
+        let styleEntry = settings.styleSpec.motion?.entry
+        let unit = min(frame.width, frame.height) / TextOverlayRenderer.referenceWidth
+        return cues.flatMap { cue -> [FrameOverlay] in
+            let settings = styled(settings, for: cue.lineStyle)
+            let spec = settings.spec
+            // The style's own way in keeps its tuned numbers; another one picked over it plays the usual ones.
+            let entry = motion.entry == styleEntry ? spec.entry : motion.entry.drawn
+            let words = cue.lineWords
+            let marks = cue.shownEmphasis
+            guard let placed = placement(cue, settings: settings, position: position, frame: frame) else { return [] }
+            func overlay(_ span: TimeSpan, _ markup: CaptionMarkup) -> FrameOverlay {
+                var markup = markup
+                markup.emphasized = marks
+                return FrameOverlay(
+                    lazyText: LazyText(text: placed.text, emphasis: nil, frameWidth: frame.width, widthFraction: placed.widthFraction,
+                                       collection: settings, frameHeight: frame.height, markup: markup),
+                    size: placed.size, origin: placed.origin, span: span
+                )
+            }
+            func entered(_ states: [FrameOverlay]) -> [FrameOverlay] {
+                var states = states
+                guard let first = states.indices.first, let last = states.indices.last else { return states }
+                states[first].fadeIn = entry.fade
+                states[first].popScale = entry.popScale
+                states[first].popDuration = entry.popDuration
+                states[first].riseDistance = CGFloat(entry.rise) * unit
+                states[first].riseDuration = entry.riseDuration
+                states[last].fadeOut = entry.fade
+                return states
+            }
+            if cue.lineStyle?.isEmphasized == true, !words.isEmpty {
+                let lit = CaptionMarkup(lit: 0, litCount: words.count, spoken: motion.spoken.boxes ? .box : .color)
+                return entered([overlay(cue.span, lit)])
+            }
+            guard motion.followsWords, !words.isEmpty else { return entered([overlay(cue.span, CaptionMarkup())]) }
+            let reveals = motion.reveal == .words
+            var states: [FrameOverlay] = []
+            var cursor = cue.start
+            // Word by word: nothing shows before the first word is said.
+            if reveals, let first = words.first { cursor = max(cue.start, first.start) }
+            var previous: Int?
+            for index in words.indices {
+                let word = words[index]
+                let start = max(cursor, word.start, cue.start)
+                let end = min(cue.end, word.end, index + 1 < words.count ? words[index + 1].start : cue.end)
+                if start > cursor {
+                    // A breath between words: the words said so far stay, none is lit.
+                    states.append(overlay(TimeSpan(start: cursor, end: start), CaptionMarkup(revealedThrough: reveals ? index - 1 : nil)))
+                    previous = nil
+                }
+                if end > start {
+                    let span = TimeSpan(start: start, end: end)
+                    states += wordStates(index, span: span, motion: motion, after: previous).map { overlay($0.span, $0.markup) }
+                    previous = index
+                }
+                cursor = max(cursor, end)
+            }
+            if cursor < cue.end { states.append(overlay(TimeSpan(start: cursor, end: cue.end), CaptionMarkup())) }
+            return entered(states.isEmpty ? [overlay(cue.span, CaptionMarkup())] : states)
+        }
+    }
+
+    /// The states while word `index` is said over `span`: one, or a pop's landing, or the box sliding from the word lit right
+    /// before (`after`).
+    private static func wordStates(
+        _ index: Int, span: TimeSpan, motion: CaptionMotion, after previous: Int?
+    ) -> [(span: TimeSpan, markup: CaptionMarkup)] {
+        var markup = CaptionMarkup(lit: motion.spoken == .none ? nil : index, spoken: motion.spoken)
+        if motion.reveal == .words { markup.revealedThrough = index }
+        var steps: [(TimeInterval, CaptionMarkup)] = []
+        switch motion.spoken {
+        case .pop:
+            for step in popSteps {
+                var landing = markup
+                landing.popScale = step.scale
+                steps.append((step.length, landing))
+            }
+            markup.popScale = CaptionSpokenHighlight.popScale
+        case .glide where previous == index - 1 && index > 0:
+            for progress in [0.34, 0.67] {
+                var sliding = markup
+                sliding.glideFrom = index - 1
+                sliding.glideProgress = progress
+                steps.append((CaptionSpokenHighlight.glideDuration / 3, sliding))
+            }
+        default:
+            break
+        }
+        // Steps only where the word lasts long enough to land after them.
+        let total = steps.reduce(0) { $0 + $1.0 }
+        guard !steps.isEmpty, span.duration > total + 0.03 else { return [(span, markup)] }
+        var states: [(TimeSpan, CaptionMarkup)] = []
+        var cursor = span.start
+        for (length, step) in steps {
+            states.append((TimeSpan(start: cursor, end: cursor + length), step))
+            cursor += length
+        }
+        states.append((TimeSpan(start: cursor, end: span.end), markup))
+        return states
+    }
+
+    // MARK: - Drawing
+
+    /// The words of one state with motion: the words not said yet left out, the word being said lit its way, the marked words
+    /// as the layout set them. Called inside the image's drawing, after the plate.
+    static func drawPlaying(
+        _ markup: CaptionMarkup, text: String, display: String, layout: Layout, settings: CaptionSettings, in context: CGContext
+    ) {
+        let spec = settings.spec
+        let storage = layout.storage
+        let length = (display as NSString).length
+        let all = layout.manager.glyphRange(for: layout.container)
+        let words = CaptionText.words(in: text)
+        let breaks = CaptionText.breaks(in: text)
+        func range(_ index: Int, count: Int = 1) -> NSRange? {
+            WordEmphasis(words: words, index: index, style: .reveal, count: count, breaks: breaks).range(in: display, letterCase: spec.letterCase)
+        }
+        func hide(_ hidden: NSRange) {
+            guard hidden.length > 0 else { return }
+            storage.addAttribute(.foregroundColor, value: UIColor.clear, range: hidden)
+            storage.removeAttribute(.shadow, range: hidden)
+            storage.removeAttribute(.strokeWidth, range: hidden)
+        }
+        func boxes(_ characters: NSRange) -> [CGRect] {
+            let glyphs = layout.manager.glyphRange(forCharacterRange: characters, actualCharacterRange: nil)
+            var rects: [CGRect] = []
+            layout.manager.enumerateEnclosingRects(forGlyphRange: glyphs, withinSelectedGlyphRange: NSRange(location: NSNotFound, length: 0),
+                                                 in: layout.container) { rect, _ in
+                rects.append(rect.offsetBy(dx: layout.origin.x, dy: layout.origin.y).insetBy(dx: -5 * layout.unit, dy: -1.5 * layout.unit))
+            }
+            return rects
+        }
+        if let through = markup.revealedThrough {
+            if through < 0 {
+                hide(NSRange(location: 0, length: length))
+            } else if let said = range(through) {
+                hide(NSRange(location: said.location + said.length, length: length - said.location - said.length))
+            }
+        }
+        var popped: NSRange?
+        if let lit = markup.lit, let litRange = range(lit, count: markup.litCount) {
+            let accent = settings.highlightColor
+            switch markup.spoken {
+            case .none:
+                break
+            case .color:
+                storage.addAttribute(.foregroundColor, value: color(accent), range: litRange)
+            case .box, .glide:
+                var rects = boxes(litRange)
+                if markup.spoken == .glide, let from = markup.glideFrom, let source = range(from).flatMap({ boxes($0).first }),
+                   let target = rects.first, abs(source.midY - target.midY) < 1 {
+                    let progress = CGFloat(min(max(markup.glideProgress, 0), 1))
+                    let slid = CGRect(
+                        x: source.minX + (target.minX - source.minX) * progress, y: target.minY,
+                        width: source.width + (target.width - source.width) * progress, height: target.height
+                    )
+                    rects = [slid]
+                }
+                color(accent).setFill()
+                for rect in rects {
+                    UIBezierPath(roundedRect: rect, cornerRadius: min(spec.spokenBoxRadius * layout.unit, rect.height / 2)).fill()
+                }
+                // On its box the word reads by itself: no outline, no shadow, the ink that reads best on the box.
+                storage.addAttribute(.foregroundColor, value: color(accent.readableInk), range: litRange)
+                storage.removeAttribute(.strokeWidth, range: litRange)
+                storage.removeAttribute(.shadow, range: litRange)
+            case .pop:
+                storage.addAttribute(.foregroundColor, value: color(accent), range: litRange)
+                if markup.popScale != 1 { popped = litRange }
+            }
+        }
+        guard let popped else {
+            drawGlyphs(all, layout: layout, spec: spec)
+            return
+        }
+        // Every word but the popped one in place, then the popped one bigger around its own middle.
+        let word = layout.manager.glyphRange(forCharacterRange: popped, actualCharacterRange: nil)
+        drawGlyphs(NSRange(location: all.location, length: word.location - all.location), layout: layout, spec: spec)
+        drawGlyphs(NSRange(location: NSMaxRange(word), length: NSMaxRange(all) - NSMaxRange(word)), layout: layout, spec: spec)
+        let bounds = layout.manager.boundingRect(forGlyphRange: word, in: layout.container).offsetBy(dx: layout.origin.x, dy: layout.origin.y)
+        let scale = CGFloat(markup.popScale)
+        context.saveGState()
+        context.translateBy(x: bounds.midX, y: bounds.midY)
+        context.scaleBy(x: scale, y: scale)
+        context.translateBy(x: -bounds.midX, y: -bounds.midY)
+        drawGlyphs(word, layout: layout, spec: spec)
+        context.restoreGState()
+    }
+}

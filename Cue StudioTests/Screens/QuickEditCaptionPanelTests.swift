@@ -132,10 +132,10 @@ struct QuickEditCaptionPanelTests {
         let scenario = await makeScenario(lines: [(0, 2, "First")])
         let viewModel = scenario.viewModel
         viewModel.captions.pickCaptionTheme(.interview)
-        #expect(viewModel.captions.captionTheme == .interview && viewModel.captions.captionReveal == .line)
+        #expect(viewModel.captions.captionTheme == .interview && viewModel.captions.captionMotion == CaptionMotion(entry: .fade))
         #expect(viewModel.edit.captionCollection?.followsWords == false)
         viewModel.captions.pickCaptionTheme(.educational)
-        #expect(viewModel.captions.captionReveal == .highlight && viewModel.edit.captionCollection?.followsWords == true)
+        #expect(viewModel.captions.captionMotion.spoken == .color && viewModel.edit.captionCollection?.followsWords == true)
         #expect(viewModel.edit.captionCollection?.styleVersion == CaptionStyleSpec.currentVersion)
         viewModel.undo()
         #expect(viewModel.captions.captionTheme == .interview)
@@ -156,7 +156,8 @@ struct QuickEditCaptionPanelTests {
         viewModel.captions.pickCaptionTheme(.impact)
         viewModel.captions.setCaptionFace(.tiktokSans)
         #expect(viewModel.captions.captionFace == .tiktokSans)
-        #expect(viewModel.captions.captionTheme == .impact)
+        // The style stays; the family is a change over it.
+        #expect(viewModel.edit.captionCollection?.theme == .impact && viewModel.captions.changedCaptionLookCount == 1)
         viewModel.undo()
         #expect(viewModel.captions.captionFace == nil)
         viewModel.redo()

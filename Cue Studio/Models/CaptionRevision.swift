@@ -23,6 +23,7 @@ nonisolated enum CaptionRevision {
         var revised = cue
         revised.text = text
         revised.isRevised = true
+        revised.emphasis = emphasis(cue.emphasis, from: cue.text, to: text)
         guard !cue.words.isEmpty else { return revised }
         let newWords = CaptionText.words(in: text)
         guard !newWords.isEmpty else {
@@ -136,6 +137,7 @@ nonisolated enum CaptionRevision {
             second.lineStyle = cue.lineStyle
             second.start = max(second.start, first.end)
             first.isRevised = true
+            (first.emphasis, second.emphasis) = splitEmphasis(cue.emphasis, at: index)
             return (first, second)
         }
         let words = CaptionText.words(in: cue.text)
@@ -155,6 +157,7 @@ nonisolated enum CaptionRevision {
         second.sourceID = cue.sourceID
         second.lineStyle = cue.lineStyle
         first.needsTimingReview = true
+        (first.emphasis, second.emphasis) = splitEmphasis(cue.emphasis, at: index)
         return (first, second)
     }
 
@@ -188,6 +191,38 @@ nonisolated enum CaptionRevision {
         merged.words = first.words.isEmpty || second.words.isEmpty ? [] : first.words + second.words
         merged.isRevised = true
         merged.needsTimingReview = first.needsTimingReview || second.needsTimingReview
+        let offset = CaptionText.words(in: first.text).count
+        merged.emphasis = first.shownEmphasis.union(second.shownEmphasis.map { $0 + offset })
         return merged
+    }
+
+    // MARK: - Emphasis
+
+    /// The marked words of `old` found again in `new`: a word that stays keeps its mark, and a word replaced by as many new
+    /// words (a spelling fix) passes it on to them; a word taken out takes its mark with it.
+    static func emphasis(_ marks: Set<Int>, from old: String, to new: String) -> Set<Int> {
+        guard !marks.isEmpty else { return [] }
+        let before = CaptionText.words(in: old)
+        let after = CaptionText.words(in: new)
+        let pairs = WordAlignment.matches(after.map(WordAlignment.key), before.map(WordAlignment.key))
+        var kept = Set<Int>()
+        var newFrom = 0
+        var oldFrom = 0
+        for anchor in pairs + [WordAlignment.Match(first: after.count, second: before.count)] {
+            let fresh = newFrom..<max(newFrom, anchor.first)
+            let replaced = oldFrom..<max(oldFrom, anchor.second)
+            if fresh.count == replaced.count {
+                for (new, old) in zip(fresh, replaced) where marks.contains(old) { kept.insert(new) }
+            }
+            if anchor.first < after.count, marks.contains(anchor.second) { kept.insert(anchor.first) }
+            newFrom = anchor.first + 1
+            oldFrom = anchor.second + 1
+        }
+        return kept
+    }
+
+    /// The marks of a line split before its word at `index`: those before stay on the first part, the rest move to the second.
+    private static func splitEmphasis(_ marks: Set<Int>, at index: Int) -> (Set<Int>, Set<Int>) {
+        (marks.filter { $0 < index }, Set(marks.filter { $0 >= index }.map { $0 - index }))
     }
 }

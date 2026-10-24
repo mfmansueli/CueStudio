@@ -25,8 +25,8 @@ final class OverlaysViewModel: EditorPart {
     /// The text or photo or video a finger is moving on the preview: the video leaves it out meanwhile
     /// (`hidingDraggedOverlay(in:)`).
     var draggedOverlay: EditorSelection?
-    /// The type the creator saved as "My style" (`+Style`).
-    var myStyle: TextLook?
+    /// The text looks the creator saved, with favorites and the one new texts start in (`+TextLibrary`).
+    var textStyles: StyleLibrary<TextLook>
     /// Track: how far following the picked item's object is, 0 to 1; nil when it isn't (`+Track`).
     var trackingProgress: Double?
     /// A video just added that has its own sound: Media asks whether to keep it.
@@ -49,7 +49,7 @@ final class OverlaysViewModel: EditorPart {
         self.styles = styles
         self.library = library
         self.tracker = tracker
-        myStyle = styles.myStyle
+        textStyles = styles.textStyles
     }
 
     /// The edit changed: a video whose sound was being asked about and is gone isn't asked about any more.

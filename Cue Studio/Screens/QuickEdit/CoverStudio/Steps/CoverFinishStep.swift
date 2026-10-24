@@ -10,6 +10,7 @@ import SwiftUI
 /// saved one on this cover.
 struct CoverFinishStep: View {
     let viewModel: CoverStudioViewModel
+    @Binding var naming: StyleNameRequest?
     /// Remove cover: asked, then done.
     let onRemove: () -> Void
 
@@ -42,16 +43,12 @@ struct CoverFinishStep: View {
                 )
             }
             VStack(alignment: .leading, spacing: 8) {
-                PanelRowLabel(label: String(localized: "My cover style"), detail: String(localized: "Look only: never the words or the picture."))
-                HStack(spacing: 8) {
-                    PanelButton(label: String(localized: "Save as my style"), systemImage: "square.and.arrow.down", identifier: "cover.saveStyle") {
-                        viewModel.saveMyStyle()
-                    }
-                    if viewModel.myStyle != nil {
-                        PanelButton(label: String(localized: "Use my style"), systemImage: "paintbrush", identifier: "cover.applyStyle") {
-                            viewModel.applyMyStyle()
-                        }
-                    }
+                PanelRowLabel(label: String(localized: "Your cover styles"), detail: String(localized: "Look only: never the words or the picture."))
+                PanelButton(label: String(localized: "Save style"), systemImage: "square.and.arrow.down", identifier: "cover.saveStyle") {
+                    naming = StyleNameRequest(purpose: .save, name: viewModel.suggestedCoverStyleName)
+                }
+                if !viewModel.coverStyles.styles.isEmpty {
+                    PanelNote(text: String(localized: "Your styles are first in Template."))
                 }
             }
             if viewModel.hadCover {

@@ -66,6 +66,7 @@ struct PanelSegmented<Value: Hashable>: View {
         .disabled(!option.isEnabled)
         .opacity(option.isEnabled ? 1 : Metrics.disabledOpacity)
         .accessibilityAddTraits(isOn ? .isSelected : [])
+        .accessibilityLabel(Text(option.accessibilityLabel ?? option.label))
         .accessibilityIdentifier("\(identifier).\(option.key)")
     }
 }

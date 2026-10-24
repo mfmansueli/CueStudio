@@ -92,6 +92,9 @@ final class DataEraserService {
             DefaultsKey.voiceQuestionState, DefaultsKey.myTextStyle,
             // "Your stars", which earlier versions kept and nothing shows any more.
             DefaultsKey.skyMemory, DefaultsKey.skyMemoryAdded, DefaultsKey.myCoverStyle, DefaultsKey.myCoverStudioStyle,
+            // Every saved style, and the single caption style saved before them.
+            DefaultsKey.myCaptionStyle, DefaultsKey.captionStyleLibrary, DefaultsKey.textStyleLibrary, DefaultsKey.coverStyleLibrary,
+            DefaultsKey.captionCatalogFilter,
         ] {
             defaults.removeObject(forKey: key)
         }

@@ -5,7 +5,9 @@
 
 import Foundation
 
-/// "My style" in UserDefaults, on this device.
+/// The creator's saved styles in UserDefaults, on this device. The single "My style" each kind had before saved styles is read
+/// once into its library, as the first style (and, for captions and covers, as the default, since new captions and covers
+/// already started in it); the old key stays, so an earlier version of Cue still finds it.
 @MainActor
 final class TextStyleStore: TextStyleStoring {
     private let defaults: UserDefaults
@@ -14,56 +16,57 @@ final class TextStyleStore: TextStyleStoring {
         self.defaults = defaults
     }
 
-    /// The cover look a creator saved in the v26 Cover panel, what Cover Studio's style starts from when there's none.
-    private var myCoverLook: CoverLook? {
-        defaults.data(forKey: DefaultsKey.myCoverStyle).flatMap { try? JSONDecoder().decode(CoverLook.self, from: $0) }
+    var captionStyles: StyleLibrary<MyCaptionStyle> {
+        get { library(at: DefaultsKey.captionStyleLibrary, legacy: decoded(MyCaptionStyle.self, at: DefaultsKey.myCaptionStyle), isDefault: true) }
+        set { write(newValue, at: DefaultsKey.captionStyleLibrary) }
     }
 
-    /// Cover Studio's style; a creator who saved one in the v26 Cover panel starts from it, converted.
-    var myCoverStyle: CoverStyle? {
-        get {
-            if let data = defaults.data(forKey: DefaultsKey.myCoverStudioStyle), let style = try? JSONDecoder().decode(CoverStyle.self, from: data) {
-                return style
-            }
-            guard let look = myCoverLook else { return nil }
-            var design = CoverDesign()
-            design.apply(look)
-            var cover = VideoCover(source: .frame(0))
-            cover.design = design
-            return CoverComposition(legacy: cover).style
-        }
-        set {
-            if let newValue, let data = try? JSONEncoder().encode(newValue) {
-                defaults.set(data, forKey: DefaultsKey.myCoverStudioStyle)
-            } else {
-                defaults.removeObject(forKey: DefaultsKey.myCoverStudioStyle)
-            }
-        }
+    var textStyles: StyleLibrary<TextLook> {
+        // Text's "My style" was a card to pick, not where new texts started.
+        get { library(at: DefaultsKey.textStyleLibrary, legacy: decoded(TextLook.self, at: DefaultsKey.myTextStyle), isDefault: false) }
+        set { write(newValue, at: DefaultsKey.textStyleLibrary) }
     }
 
-    var myStyle: TextLook? {
-        get {
-            defaults.data(forKey: DefaultsKey.myTextStyle).flatMap { try? JSONDecoder().decode(TextLook.self, from: $0) }
-        }
-        set {
-            if let newValue, let data = try? JSONEncoder().encode(newValue) {
-                defaults.set(data, forKey: DefaultsKey.myTextStyle)
-            } else {
-                defaults.removeObject(forKey: DefaultsKey.myTextStyle)
-            }
-        }
+    var coverStyles: StyleLibrary<CoverStyle> {
+        get { library(at: DefaultsKey.coverStyleLibrary, legacy: legacyCoverStyle, isDefault: true) }
+        set { write(newValue, at: DefaultsKey.coverStyleLibrary) }
     }
 
-    var myCaptionStyle: MyCaptionStyle? {
-        get {
-            defaults.data(forKey: DefaultsKey.myCaptionStyle).flatMap { try? JSONDecoder().decode(MyCaptionStyle.self, from: $0) }
-        }
-        set {
-            if let newValue, let data = try? JSONEncoder().encode(newValue) {
-                defaults.set(data, forKey: DefaultsKey.myCaptionStyle)
-            } else {
-                defaults.removeObject(forKey: DefaultsKey.myCaptionStyle)
-            }
-        }
+    var captionCatalogFilter: String? {
+        get { defaults.string(forKey: DefaultsKey.captionCatalogFilter) }
+        set { defaults.set(newValue, forKey: DefaultsKey.captionCatalogFilter) }
+    }
+
+    // MARK: - Private
+
+    /// The library at `key`; the first time, made from the single style an earlier version saved (and written, so its
+    /// identity stays).
+    private func library<Look: Codable & Hashable & Sendable>(at key: String, legacy: Look?, isDefault: Bool) -> StyleLibrary<Look> {
+        if let library = decoded(StyleLibrary<Look>.self, at: key) { return library }
+        var library = StyleLibrary<Look>()
+        guard let legacy else { return library }
+        let style = library.add(legacy, named: String(localized: "My style"))
+        if isDefault { library.setDefault(style.key) }
+        write(library, at: key)
+        return library
+    }
+
+    /// Cover Studio's "My cover style"; a creator who saved one in the v26 Cover panel starts from it, converted.
+    private var legacyCoverStyle: CoverStyle? {
+        if let style = decoded(CoverStyle.self, at: DefaultsKey.myCoverStudioStyle) { return style }
+        guard let look = decoded(CoverLook.self, at: DefaultsKey.myCoverStyle) else { return nil }
+        var design = CoverDesign()
+        design.apply(look)
+        var cover = VideoCover(source: .frame(0))
+        cover.design = design
+        return CoverComposition(legacy: cover).style
+    }
+
+    private func decoded<Value: Decodable>(_ type: Value.Type, at key: String) -> Value? {
+        defaults.data(forKey: key).flatMap { try? JSONDecoder().decode(Value.self, from: $0) }
+    }
+
+    private func write<Value: Encodable>(_ value: Value, at key: String) {
+        if let data = try? JSONEncoder().encode(value) { defaults.set(data, forKey: key) }
     }
 }

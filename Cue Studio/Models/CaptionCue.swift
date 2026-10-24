@@ -35,6 +35,10 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
     /// The creator decided where this line starts and ends (split or joined by hand): a caption format (`CaptionBlocking`)
     /// leaves it as it is and cuts the lines around it.
     var keepsBlock = false
+    /// The words the creator marked for emphasis (Caption › Emphasis), by their place among the line's words
+    /// (`CaptionText.words(in: text)`): drawn in the style's emphasis color and size for the whole line, measured at that size
+    /// when lines are cut, and kept through corrections, splits, joins and formats. Unlike the word being said, they stay.
+    var emphasis: Set<Int> = []
 
     init(
         id: UUID = UUID(), text: String, start: TimeInterval, end: TimeInterval, words: [CaptionWord] = [],
@@ -106,7 +110,7 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
-        case id, text, start, end, words, origin, isRevised, needsTimingReview, sourceID, lineStyle, keepsBlock
+        case id, text, start, end, words, origin, isRevised, needsTimingReview, sourceID, lineStyle, keepsBlock, emphasis
     }
 
     /// Captions saved before they had an identity or words read as legacy lines.
@@ -123,9 +127,10 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
         sourceID = try? container.decodeIfPresent(UUID.self, forKey: .sourceID)
         lineStyle = try? container.decodeIfPresent(CaptionLineStyle.self, forKey: .lineStyle)
         keepsBlock = (try? container.decodeIfPresent(Bool.self, forKey: .keepsBlock)) ?? false
+        emphasis = ((try? container.decodeIfPresent(Set<Int>.self, forKey: .emphasis)) ?? []).filter { $0 >= 0 }
     }
 
-    /// `keepsBlock` is written only when set: lines that never had it read and write as before.
+    /// `keepsBlock` and `emphasis` are written only when set: lines that never had them read and write as before.
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
@@ -139,5 +144,13 @@ nonisolated struct CaptionCue: Codable, Hashable, Identifiable, Sendable {
         try container.encodeIfPresent(sourceID, forKey: .sourceID)
         try container.encodeIfPresent(lineStyle, forKey: .lineStyle)
         if keepsBlock { try container.encode(keepsBlock, forKey: .keepsBlock) }
+        if !emphasis.isEmpty { try container.encode(emphasis.sorted(), forKey: .emphasis) }
+    }
+
+    /// The marked words that are words of the line now (a shorter correction leaves none past its end).
+    var shownEmphasis: Set<Int> {
+        guard !emphasis.isEmpty else { return [] }
+        let count = CaptionText.words(in: text).count
+        return emphasis.filter { $0 < count }
     }
 }

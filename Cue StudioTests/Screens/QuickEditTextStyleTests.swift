@@ -96,8 +96,8 @@ struct QuickEditTextStyleTests {
             viewModel.overlays.restyleText(.shadow(.outline))
             viewModel.overlays.restyleText(.font(.dmSerif))
             viewModel.overlays.pickTextPreset(.pop)
-            viewModel.overlays.saveMyStyle()
-            viewModel.overlays.pickTextPreset(nil)
+            viewModel.overlays.saveTextStyle(named: "Mine")
+            if let saved = viewModel.overlays.textStyles.styles.first { viewModel.overlays.pickSavedTextStyle(saved.id) }
         }
         #expect(viewModel.edit.captionCollection == captions)
         #expect(viewModel.edit.captionLook == look)
@@ -132,13 +132,13 @@ struct QuickEditTextStyleTests {
     @Test func aTabFromAnotherPanelShowsPresetsInBothTheTabsAndTheContent() async {
         let viewModel = await makeViewModel()
         _ = twoTexts(viewModel)
-        viewModel.panelTab = .reveal
+        viewModel.panelTab = .animation
         #expect(viewModel.overlays.textStyleTab == .presets)
         #expect(viewModel.overlays.textStyleTabChangesLook)
         viewModel.panelTab = .font
         #expect(viewModel.overlays.textStyleTab == .font)
         viewModel.panelTab = .motion
-        #expect(viewModel.captions.captionStyleTab == .presets)
+        #expect(viewModel.captions.captionStyleTab == .styles)
     }
 
     @Test func theExpandedPanelIsKeptBetweenTheStylingPanels() async {

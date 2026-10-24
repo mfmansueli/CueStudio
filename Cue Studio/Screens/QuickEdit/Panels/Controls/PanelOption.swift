@@ -14,14 +14,19 @@ struct PanelOption<Value: Hashable>: Identifiable {
     var key: String
     /// Shown but not pickable (an export can't go above the recording); the reason is said nearby.
     var isEnabled = true
+    /// Read by VoiceOver instead of the label, when the label is letters to see ("AA").
+    var accessibilityLabel: String?
 
     var id: String { key }
 
-    init(_ value: Value, _ label: String, systemImage: String? = nil, key: String? = nil, isEnabled: Bool = true) {
+    init(
+        _ value: Value, _ label: String, systemImage: String? = nil, key: String? = nil, isEnabled: Bool = true, accessibilityLabel: String? = nil
+    ) {
         self.value = value
         self.label = label
         self.systemImage = systemImage
         self.key = key ?? String(describing: value)
         self.isEnabled = isEnabled
+        self.accessibilityLabel = accessibilityLabel
     }
 }

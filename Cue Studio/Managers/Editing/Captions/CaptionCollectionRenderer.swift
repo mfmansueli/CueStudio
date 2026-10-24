@@ -9,7 +9,7 @@ import UIKit
 /// One TextKit layout for every state of a line: changing ink never changes glyph positions.
 /// Drawn lazily through the existing compositor cache, identically in thumbnails and exports.
 nonisolated enum CaptionCollectionRenderer {
-    private struct Layout {
+    struct Layout {
         let storage: NSTextStorage
         let manager: NSLayoutManager
         let container: NSTextContainer
@@ -18,49 +18,35 @@ nonisolated enum CaptionCollectionRenderer {
         let unit: CGFloat
     }
 
+    /// Where a line's drawing goes on the frame and what it is named by: the drawing is made from the same line and settings
+    /// when it shows (`image`).
+    struct Placement {
+        let text: TextOverlay
+        let size: CGSize
+        let origin: CGPoint
+        let widthFraction: CGFloat
+    }
+
     /// How the collection's lines come and go: a still line, faded, words appearing, the word said
     /// lit (the theme's own way: Cue boxes it, the others color it) or boxed. A line whose words
     /// have no times of their own (written or corrected by hand) gets the same effects over its
     /// words shared across its time (`CaptionCue.lineWords`). A line with a style of its own (`CaptionLineStyle`) is drawn
-    /// bigger, and an emphasized one shows lit whole for its whole time instead of word by word.
+    /// bigger, and an emphasized one shows lit whole for its whole time instead of word by word. Captions with motion
+    /// (`CaptionSettings.motion`) play it instead (`motionOverlays`); edits saved before it play `animation` as they did.
     static func overlays(
         _ cues: [CaptionCue], settings: CaptionSettings, position: CaptionPosition, frame: CGSize, animation: CaptionAnimation = .line
     ) -> [FrameOverlay] {
-        let reveal = effectiveAnimation(settings: settings, animation: animation)
         layOutAhead(cues, settings: settings, position: position, frame: frame)
+        if let motion = settings.motion {
+            return motionOverlays(cues, settings: settings, motion: motion, position: position, frame: frame)
+        }
+        let reveal = effectiveAnimation(settings: settings, animation: animation)
         return cues.flatMap { cue in
             let settings = styled(settings, for: cue.lineStyle)
             let words = cue.lineWords
             let breaks = cue.lineBreaks
-            let line = CaptionText.joined(words.map(\.text), breaks: breaks)
-            // The drawing is named by its text (and, for a copied look, measured with it): the image is
-            // made from the same line and settings when it shows (`image`).
-            let text: TextOverlay
-            let size: CGSize
-            let widthFraction: CGFloat
-            if let look = settings.customLook {
-                let custom = customCaption(line, look: look, settings: settings, frame: frame)
-                text = custom.text
-                widthFraction = custom.widthFraction
-                // Whole pixels, as the image is drawn: the box placed is the box drawn.
-                let measured = TextOverlayRenderer.size(for: text, frameWidth: frame.width, widthFraction: widthFraction)
-                size = CGSize(width: measured.width.rounded(.up), height: measured.height.rounded(.up))
-                guard size.width > 0, size.height > 0 else { return [FrameOverlay]() }
-            } else {
-                text = TextOverlay.caption(line, look: TypePreset.cue.look(for: .caption), position: position, span: cue.span)
-                widthFraction = 0.8
-                // Laid out once per line and look (`CaptionLineSizes`): a build that changes no line lays none out again.
-                let laidOut = CaptionLineSizes.size(text.text, settings: settings, frame: frame) {
-                    layout(text.text, settings: settings, frame: frame)?.size
-                }
-                guard let laidOut else { return [FrameOverlay]() }
-                size = laidOut
-            }
-            let safe = contentRect(settings, frame: frame)
-            let requested = settings.center ?? OverlayPoint(x: Double(safe.midX / frame.width), y: position.verticalFraction)
-            let x = min(max(CGFloat(requested.clamped.x) * frame.width, safe.minX + size.width / 2), safe.maxX - size.width / 2)
-            let y = min(max(CGFloat(requested.clamped.y) * frame.height, safe.minY + size.height / 2), safe.maxY - size.height / 2)
-            let origin = CGPoint(x: (x - size.width / 2).rounded(), y: (frame.height - y - size.height / 2).rounded())
+            let marks = cue.shownEmphasis
+            guard let placed = placement(cue, settings: settings, position: position, frame: frame) else { return [FrameOverlay]() }
             let style: WordEmphasis.Style = switch reveal {
             case .groups: .reveal
             case .box: .box(fill: .yellow, text: .black)
@@ -72,9 +58,10 @@ nonisolated enum CaptionCollectionRenderer {
                     ? WordEmphasis.wholeLine(words.map(\.text), style: reveal == .box ? style : .color(.yellow), breaks: breaks)
                     : index.map { WordEmphasis(words: words.map(\.text), index: $0, style: style, breaks: breaks) }
                 var overlay = FrameOverlay(
-                    lazyText: LazyText(text: text, emphasis: emphasis, frameWidth: frame.width, widthFraction: widthFraction,
-                                       collection: settings, frameHeight: frame.height),
-                    size: size, origin: origin, span: span
+                    lazyText: LazyText(text: placed.text, emphasis: emphasis, frameWidth: frame.width, widthFraction: placed.widthFraction,
+                                       collection: settings, frameHeight: frame.height,
+                                       markup: marks.isEmpty ? nil : CaptionMarkup(emphasized: marks)),
+                    size: placed.size, origin: placed.origin, span: span
                 )
                 if reveal == .fade { overlay.fade = CaptionAnimation.fadeDuration }
                 return overlay
@@ -112,6 +99,40 @@ nonisolated enum CaptionCollectionRenderer {
         }
     }
 
+    /// Where `cue` is drawn with `settings` (its own line style already on them) and how big, inside the safe area; nil when
+    /// there is nothing to draw.
+    static func placement(_ cue: CaptionCue, settings: CaptionSettings, position: CaptionPosition, frame: CGSize) -> Placement? {
+        let line = CaptionText.joined(cue.lineWords.map(\.text), breaks: cue.lineBreaks)
+        let text: TextOverlay
+        let size: CGSize
+        let widthFraction: CGFloat
+        if let look = settings.customLook {
+            let custom = customCaption(line, look: look, settings: settings, frame: frame)
+            text = custom.text
+            widthFraction = custom.widthFraction
+            // Whole pixels, as the image is drawn: the box placed is the box drawn.
+            let measured = TextOverlayRenderer.size(for: text, frameWidth: frame.width, widthFraction: widthFraction)
+            size = CGSize(width: measured.width.rounded(.up), height: measured.height.rounded(.up))
+            guard size.width > 0, size.height > 0 else { return nil }
+        } else {
+            text = TextOverlay.caption(line, look: TypePreset.cue.look(for: .caption), position: position, span: cue.span)
+            widthFraction = 0.8
+            let marks = cue.shownEmphasis
+            // Laid out once per line and look (`CaptionLineSizes`): a build that changes no line lays none out again.
+            let laidOut = CaptionLineSizes.size(text.text, settings: settings, frame: frame, emphasis: marks) {
+                layout(text.text, settings: settings, frame: frame, emphasis: marks)?.size
+            }
+            guard let laidOut else { return nil }
+            size = laidOut
+        }
+        let safe = contentRect(settings, frame: frame)
+        let requested = settings.center ?? OverlayPoint(x: Double(safe.midX / frame.width), y: position.verticalFraction)
+        let x = min(max(CGFloat(requested.clamped.x) * frame.width, safe.minX + size.width / 2), safe.maxX - size.width / 2)
+        let y = min(max(CGFloat(requested.clamped.y) * frame.height, safe.minY + size.height / 2), safe.maxY - size.height / 2)
+        let origin = CGPoint(x: (x - size.width / 2).rounded(), y: (frame.height - y - size.height / 2).rounded())
+        return Placement(text: text, size: size, origin: origin, widthFraction: widthFraction)
+    }
+
     /// A long take's lines not laid out yet are laid out side by side, on every core (each layout is its own TextKit
     /// objects), before the overlays are made from them: the first build of an hour of captions waits for the slowest core,
     /// not for every line in turn.
@@ -121,31 +142,35 @@ nonisolated enum CaptionCollectionRenderer {
         let missing = cues.compactMap { cue -> CaptionLineSizes.Key? in
             let line = CaptionText.joined(cue.lineWords.map(\.text), breaks: cue.lineBreaks)
             let text = TextOverlay.caption(line, look: TypePreset.cue.look(for: .caption), position: position, span: cue.span).text
-            let key = CaptionLineSizes.Key(text: text, settings: styled(settings, for: cue.lineStyle), frame: frame)
+            let key = CaptionLineSizes.Key(text: text, settings: styled(settings, for: cue.lineStyle), frame: frame, emphasis: cue.shownEmphasis)
             guard !CaptionLineSizes.isKnown(key), seen.insert(key).inserted else { return nil }
             return key
         }
         DispatchQueue.concurrentPerform(iterations: missing.count) { index in
             let key = missing[index]
-            _ = CaptionLineSizes.size(key.text, settings: key.settings, frame: key.frame) {
-                layout(key.text, settings: key.settings, frame: key.frame)?.size
+            _ = CaptionLineSizes.size(key.text, settings: key.settings, frame: key.frame, emphasis: key.emphasis) {
+                layout(key.text, settings: key.settings, frame: key.frame, emphasis: key.emphasis)?.size
             }
         }
     }
 
-    static func image(_ text: String, settings: CaptionSettings, frame: CGSize, emphasis: WordEmphasis? = nil) -> UIImage? {
+    /// `text` drawn as `settings` draw it: the word lit as `emphasis` says (edits saved before motion), or as `markup` says
+    /// with the words marked for emphasis (`CaptionMarkup`).
+    static func image(
+        _ text: String, settings: CaptionSettings, frame: CGSize, emphasis: WordEmphasis? = nil, markup: CaptionMarkup? = nil
+    ) -> UIImage? {
         if let look = settings.customLook {
             return customImage(text, look: look, settings: settings, frame: frame, emphasis: emphasis)
         }
-        guard let layout = layout(text, settings: settings, frame: frame) else { return nil }
+        guard let layout = layout(text, settings: settings, frame: frame, emphasis: markup?.emphasized ?? []) else { return nil }
         let spec = settings.spec
-        let display = spec.uppercase ? TextShaping.uppercased(text) : text
-        let range = emphasis?.range(in: display, uppercased: spec.uppercase)
+        let display = spec.letterCase.shown(text)
+        let range = emphasis?.range(in: display, letterCase: spec.letterCase)
         let all = layout.manager.glyphRange(for: layout.container)
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         format.opaque = false
-        return UIGraphicsImageRenderer(size: layout.size, format: format).image { _ in
+        return UIGraphicsImageRenderer(size: layout.size, format: format).image { renderer in
             var lines: [CGRect] = []
             layout.manager.enumerateLineFragments(forGlyphRange: all) { _, used, _, _, _ in
                 lines.append(used.offsetBy(dx: layout.origin.x, dy: layout.origin.y))
@@ -157,13 +182,18 @@ nonisolated enum CaptionCollectionRenderer {
                 if let first = lines.first {
                     let box = lines.dropFirst().reduce(first) { $0.union($1) }.insetBy(dx: -insetX * layout.unit, dy: -insetY * layout.unit)
                     Self.color(color).setFill()
-                    UIBezierPath(roundedRect: box, cornerRadius: radius * layout.unit).fill()
+                    UIBezierPath(roundedRect: box, cornerRadius: min(radius * layout.unit, box.height / 2)).fill()
                 }
             case .perLine(let color, let radius, let insetX, let insetY):
                 Self.color(color).setFill()
                 for line in lines {
-                    UIBezierPath(roundedRect: line.insetBy(dx: -insetX * layout.unit, dy: -insetY * layout.unit), cornerRadius: radius * layout.unit).fill()
+                    let box = line.insetBy(dx: -insetX * layout.unit, dy: -insetY * layout.unit)
+                    UIBezierPath(roundedRect: box, cornerRadius: min(radius * layout.unit, box.height / 2)).fill()
                 }
+            }
+            if let markup, markup.playsWords {
+                drawPlaying(markup, text: text, display: display, layout: layout, settings: settings, in: renderer.cgContext)
+                return
             }
             if let range, emphasis?.style == .reveal {
                 // Only the words said so far.
@@ -189,8 +219,39 @@ nonisolated enum CaptionCollectionRenderer {
                     layout.storage.addAttribute(.foregroundColor, value: accent, range: range)
                 }
             }
-            layout.manager.drawGlyphs(forGlyphRange: all, at: layout.origin)
+            drawGlyphs(all, layout: layout, spec: spec)
         }
+    }
+
+    /// The glyphs as `spec` draws them: a halo's passes over one another, so it is dense where the letters meet the picture;
+    /// an outline outside the letters (`strokesOutside`) drawn first, twice as wide and under its shadow, the letters filled
+    /// over it so it never eats into them.
+    static func drawGlyphs(_ glyphs: NSRange, layout: Layout, spec: CaptionStyleSpec) {
+        guard glyphs.length > 0 else { return }
+        let passes = max(1, spec.shadow?.passes ?? 1)
+        guard spec.strokesOutside, spec.outline != nil else {
+            for _ in 0..<passes { layout.manager.drawGlyphs(forGlyphRange: glyphs, at: layout.origin) }
+            return
+        }
+        let storage = layout.storage
+        let characters = layout.manager.characterRange(forGlyphRange: glyphs, actualGlyphRange: nil)
+        var strokes: [(range: NSRange, width: CGFloat)] = []
+        storage.enumerateAttribute(.strokeWidth, in: characters) { value, range, _ in
+            if let width = (value as? NSNumber).map({ CGFloat(truncating: $0) }) { strokes.append((range, width)) }
+        }
+        var shadows: [(range: NSRange, shadow: Any)] = []
+        storage.enumerateAttribute(.shadow, in: characters) { value, range, _ in
+            if let value { shadows.append((range, value)) }
+        }
+        // The outline alone (a positive width strokes without filling), with the shadow under it.
+        for stroke in strokes { storage.addAttribute(.strokeWidth, value: abs(stroke.width) * 2, range: stroke.range) }
+        for _ in 0..<passes { layout.manager.drawGlyphs(forGlyphRange: glyphs, at: layout.origin) }
+        // The letters, filled, over it.
+        storage.removeAttribute(.strokeWidth, range: characters)
+        storage.removeAttribute(.shadow, range: characters)
+        layout.manager.drawGlyphs(forGlyphRange: glyphs, at: layout.origin)
+        for stroke in strokes { storage.addAttribute(.strokeWidth, value: stroke.width, range: stroke.range) }
+        for shadow in shadows { storage.addAttribute(.shadow, value: shadow.shadow, range: shadow.range) }
     }
 
     /// What actually plays: a theme set not to follow words shows the line (faded or still);
@@ -269,25 +330,35 @@ nonisolated enum CaptionCollectionRenderer {
     /// How `text` lays out in the collection's type at its own size, never shrunk: the lines it takes across the whole room,
     /// and whether one of its words alone is wider than the room. What a caption format cuts lines by (`CaptionBlocking`),
     /// measured as the drawing measures: font, weight, size, capitals, letter spacing and the room left by the margins and
-    /// the plate. Nil when there is nothing to lay out.
-    static func measure(_ text: String, settings: CaptionSettings, frame: CGSize) -> (lines: Int, overlong: Bool)? {
+    /// the plate, and the words marked for emphasis at their size. Nil when there is nothing to lay out.
+    static func measure(
+        _ text: String, settings: CaptionSettings, frame: CGSize, emphasis: Set<Int> = []
+    ) -> (lines: Int, overlong: Bool)? {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, min(frame.width, frame.height) > 0 else { return nil }
         let spec = settings.spec
-        let display = spec.uppercase ? TextShaping.uppercased(text) : text
+        let display = spec.letterCase.shown(text)
         let unit = min(frame.width, frame.height) / TextOverlayRenderer.referenceWidth
         let padding = 14 * unit
         let maxWidth = max(1, min(frame.width * spec.widthFraction, contentRect(settings, frame: frame).width) - padding * 2)
-        let font = CaptionFont.font(spec: spec, size: CGFloat(spec.baseSize) * settings.clampedScale * unit, text: display)
+        let size = CGFloat(spec.baseSize) * settings.clampedScale * unit
+        let font = CaptionFont.font(spec: spec, size: size, text: display)
         let kern = spec.tracking > 0 && TextShaping.allowsLetterSpacing(in: display) ? CGFloat(spec.tracking) * unit : 0
         var attributes: [NSAttributedString.Key: Any] = [.font: font]
         if kern > 0 { attributes[.kern] = kern }
         if let outline = spec.outline { attributes[.strokeWidth] = -outline.width }
-        let widest = CaptionText.words(in: display).map { ($0 as NSString).size(withAttributes: attributes).width }.max() ?? 0
+        let marked = WordEmphasis.ranges(of: emphasis, in: text, display: display, letterCase: spec.letterCase)
+        var bigger = attributes
+        bigger[.font] = CaptionFont.font(spec: spec, size: size * CGFloat(spec.emphasisScale), text: display)
+        let words = CaptionText.words(in: display)
+        let widest = words.enumerated().map { index, word in
+            (word as NSString).size(withAttributes: marked[index] == nil ? attributes : bigger).width
+        }.max() ?? 0
         let paragraph = NSMutableParagraphStyle()
         paragraph.lineBreakMode = .byWordWrapping
         paragraph.lineSpacing = CGFloat(spec.lineSpacing) * unit
         attributes[.paragraphStyle] = paragraph
         let storage = NSTextStorage(string: display, attributes: attributes)
+        for range in marked.values { storage.addAttribute(.font, value: bigger[.font] as Any, range: range) }
         let manager = NSLayoutManager()
         storage.addLayoutManager(manager)
         let container = NSTextContainer(size: CGSize(width: maxWidth, height: .greatestFiniteMagnitude))
@@ -299,10 +370,12 @@ nonisolated enum CaptionCollectionRenderer {
         return (count, widest > maxWidth)
     }
 
-    private static func layout(_ text: String, settings: CaptionSettings, frame: CGSize) -> Layout? {
+    /// `text` laid out in the collection's type: balanced over two lines when short, shrunk only when it still doesn't fit
+    /// (`CaptionBlocking` cuts blocks to fit), the words at `emphasis` bigger and in the emphasis color.
+    static func layout(_ text: String, settings: CaptionSettings, frame: CGSize, emphasis: Set<Int> = []) -> Layout? {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty, min(frame.width, frame.height) > 0 else { return nil }
         let spec = settings.spec
-        let display = spec.uppercase ? TextShaping.uppercased(text) : text
+        let display = spec.letterCase.shown(text)
         let unit = min(frame.width, frame.height) / TextOverlayRenderer.referenceWidth
         let base = CGFloat(spec.baseSize)
         let padding = CGSize(width: 14 * unit, height: 9 * unit)
@@ -313,7 +386,11 @@ nonisolated enum CaptionCollectionRenderer {
         // wider than the room, a line written by hand) shrinks.
         let maxLines = settings.format?.maxLines ?? spec.maxLines
         let paragraph = NSMutableParagraphStyle()
-        paragraph.alignment = .center
+        paragraph.alignment = switch spec.alignment {
+        case .leading: .left
+        case .center: .center
+        case .trailing: .right
+        }
         paragraph.lineBreakMode = .byWordWrapping
         paragraph.baseWritingDirection = ScriptDirection.isRightToLeft(language: nil, text: display) ? .rightToLeft : .leftToRight
         // Letters spaced out only where the writing allows it.
@@ -323,8 +400,14 @@ nonisolated enum CaptionCollectionRenderer {
         }
         // Fit a long indivisible word before TextKit can fall back to breaking its characters.
         let words = CaptionText.words(in: display)
-        let initialFont = CaptionFont.font(spec: spec, size: pointSize, text: display)
-        let widest = words.map { measure($0, font: initialFont) }.max() ?? 0
+        let marked = WordEmphasis.ranges(of: emphasis, in: text, display: display, letterCase: spec.letterCase)
+        let scale = CGFloat(spec.emphasisScale)
+        func wordWidths(_ size: CGFloat) -> [CGFloat] {
+            let font = CaptionFont.font(spec: spec, size: size, text: display)
+            let bigger = marked.isEmpty ? font : CaptionFont.font(spec: spec, size: size * scale, text: display)
+            return words.enumerated().map { index, word in measure(word, font: marked[index] == nil ? font : bigger) }
+        }
+        let widest = wordWidths(pointSize).max() ?? 0
         if widest > maxWidth { pointSize *= maxWidth / widest }
         var result: Layout?
         // How much narrower than one line a short sentence is balanced to; widened before the type ever shrinks.
@@ -342,17 +425,24 @@ nonisolated enum CaptionCollectionRenderer {
             }
             if let shade = spec.shadow {
                 let shadow = NSShadow()
-                shadow.shadowColor = UIColor.black.withAlphaComponent(shade.opacity)
+                shadow.shadowColor = color(shade.color).withAlphaComponent(shade.opacity)
                 shadow.shadowBlurRadius = shade.blur * unit
                 shadow.shadowOffset = CGSize(width: 0, height: shade.offsetY * unit)
                 attributes[.shadow] = shadow
             }
             let storage = NSTextStorage(string: display, attributes: attributes)
+            if !marked.isEmpty {
+                let bigger = CaptionFont.font(spec: spec, size: pointSize * scale, text: display)
+                for range in marked.values {
+                    storage.addAttribute(.font, value: bigger, range: range)
+                    storage.addAttribute(.foregroundColor, value: color(spec.emphasisColor), range: range)
+                }
+            }
             let manager = NSLayoutManager()
             storage.addLayoutManager(manager)
             // Favor two balanced lines for a short sentence, while keeping the longest word whole.
-            let fullWidth = measure(display, font: font)
-            let longest = words.map { measure($0, font: font) }.max() ?? 0
+            let fullWidth = marked.isEmpty ? measure(display, font: font) : storage.size().width
+            let longest = marked.isEmpty ? (words.map { measure($0, font: font) }.max() ?? 0) : (wordWidths(pointSize).max() ?? 0)
             // A line broken by hand goes on a new line only where the creator put it.
             let balanced = display.contains("\n") ? maxWidth
                 : words.count > spec.balanceFromWords ? max(longest + 2 * unit, fullWidth / balanceRatio) : fullWidth

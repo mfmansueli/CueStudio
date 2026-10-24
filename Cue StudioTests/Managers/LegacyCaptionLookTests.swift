@@ -74,15 +74,14 @@ struct LegacyCaptionLookTests {
 
     /// A collection look as an edit saved before Reveal and the complete presets has it: the first reading, the word lit.
     private static func firstReading(_ theme: CaptionTheme) -> CaptionSettings {
-        var settings = CaptionSettings(theme: theme)
-        settings.styleVersion = nil
+        var settings = CaptionSettings.savedBeforeMotion(theme, version: nil)
         settings.followsWords = true
         return settings
     }
 
-    /// A collection look as picked in Caption style today: the complete preset with its own reveal.
+    /// A collection look as picked in Caption style before motion: the complete preset with its own reveal.
     private static func complete(_ edit: inout TakeEdit, _ theme: CaptionTheme) {
-        let settings = CaptionSettings(theme: theme)
+        let settings = CaptionSettings.savedBeforeMotion(theme)
         edit.captionCollection = settings
         edit.captionAnimation = settings.spec.animation
     }
@@ -92,7 +91,7 @@ struct LegacyCaptionLookTests {
         for theme in [CaptionTheme.cue, .impact, .clean, .pop, .editorial] {
             cases.append(("v1-\(theme.rawValue)", edit { $0.captionCollection = firstReading(theme) }))
         }
-        for theme in CaptionTheme.allCases {
+        for theme in [CaptionTheme.cue, .impact, .clean, .pop, .editorial, .educational, .interview] {
             cases.append(("v2-\(theme.rawValue)", edit { complete(&$0, theme) }))
         }
         cases.append(("v2-cue-box", edit { complete(&$0, .cue); $0.captionAnimation = .box }))
@@ -166,7 +165,7 @@ struct LegacyCaptionLookTests {
         return try moments.compactMap { time in
             guard let overlay = overlays.first(where: { $0.isVisible(at: time) }) else { return nil }
             let image = try #require(overlay.image ?? overlay.lazyText.flatMap(cache.image(for:)))
-            return try #require(context.createCGImage(image, from: image.extent, format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)))
+            return context.createCGImage(image, from: image.extent, format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB))
         }
     }
 

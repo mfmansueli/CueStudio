@@ -152,28 +152,6 @@ extension CaptionsViewModel {
         edit.captions.filter { !$0.hasWordTiming }.count
     }
 
-    /// Selecting a look never enables transcription. Generation has its own explicit control.
-    /// With `reveal` (the way of showing words a complete preset brings), both change in the same
-    /// undo step, so one Undo goes back to the look before, never to a mix of the two.
-    func setCaptionTheme(_ theme: CaptionTheme, reveal: CaptionAnimation? = nil) {
-        let aspect = edit.aspect
-        change { snapshot in
-            let before = snapshot.captionCollection
-            var settings = CaptionSettings(theme: theme)
-            settings.center = before?.center
-            settings.safeMargins = before?.safeMargins ?? captionSafeMargins
-            // The format is how the lines are cut, not a look: it stays.
-            settings.format = before?.format
-            if let reveal {
-                settings.followsWords = reveal.followsWords
-                snapshot.captionAnimation = reveal
-            }
-            snapshot.captionCollection = settings
-            Self.refit(&snapshot, from: before, aspect: aspect)
-        }
-        toast.show(String(localized: "\(theme.label) on the captions"))
-    }
-
     func updateCaptionSettings(_ update: (inout CaptionSettings) -> Void) {
         let aspect = edit.aspect
         change { snapshot in
@@ -185,15 +163,16 @@ extension CaptionsViewModel {
         }
     }
 
+    /// Reset: the style the captions are in, whole (its look, motion, size and place), one undo step; how they are cut and the
+    /// words marked for emphasis stay.
     func resetCaptionTheme() {
-        guard let theme = edit.captionCollection?.theme else { return }
+        guard let current = edit.captionCollection else { return }
         let aspect = edit.aspect
         change { snapshot in
             let before = snapshot.captionCollection
-            var settings = CaptionSettings(theme: theme)
-            settings.safeMargins = before?.safeMargins ?? captionSafeMargins
-            settings.format = before?.format
-            snapshot.captionCollection = settings
+            let next = current.restyled(current.theme, full: true)
+            snapshot.captionCollection = next
+            snapshot.captionAnimation = next.motion?.nearestAnimation ?? .line
             snapshot.captionPosition = .bottom
             Self.refit(&snapshot, from: before, aspect: aspect)
         }
@@ -256,9 +235,9 @@ extension CaptionsViewModel {
         let shows = !keepsCaptionsHiddenAfterListening
         keepsCaptionsHiddenAfterListening = false
         var made = snapshot
-        startsCaptionsInMyStyle(&made)
+        startsCaptionsInDefaultStyle(&made)
         lines.sort { $0.start < $1.start }
-        // New lines are cut by the edit's format (My style's, else short phrases); an edit from before formats that already had
+        // New lines are cut by the edit's format (the default style's, else short phrases); an edit from before formats that already had
         // lines keeps making them its way until a format is picked.
         if var settings = made.captionCollection, settings.format != nil || edit.captions.isEmpty {
             let format = settings.format ?? .phrase

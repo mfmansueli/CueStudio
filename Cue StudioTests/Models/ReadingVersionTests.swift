@@ -15,7 +15,7 @@ struct ReadingVersionTests {
     @Test func theTableIsFrozen() {
         #expect(ReadingVersion.look.current == 2)
         #expect(ReadingVersion.audio.current == 3)
-        #expect(ReadingVersion.captionStyle.current == 2)
+        #expect(ReadingVersion.captionStyle.current == 3)
         #expect(ReadingVersion.captionTranscript.current == 2)
         #expect(ReadingVersion.autoCorrection.current == 1)
         #expect(ReadingVersion.allCases.allSatisfy { $0.first == 1 })
@@ -36,7 +36,7 @@ struct ReadingVersionTests {
         #expect(!ReadingVersion.captionTranscript.isCurrent(nil))
         #expect(ReadingVersion.captionTranscript.isCurrent(2))
         #expect(ReadingVersion.captionTranscript.isCurrent(3))
-        #expect(CaptionSettings(theme: .pop).styleVersion == 2)
+        #expect(CaptionSettings(theme: .pop).styleVersion == 3)
     }
 
     @Test func autoFromANewerVersionIsLeftOutOfThePictureButKept() throws {

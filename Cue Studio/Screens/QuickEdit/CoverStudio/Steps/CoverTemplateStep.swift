@@ -5,16 +5,58 @@
 
 import SwiftUI
 
-/// Template: each template drawn with this cover's own picture and title, so the choice is the real result. Picking one keeps
-/// what was made (the words, the highlighted words, the framing, the graphics added).
+/// Template: the creator's saved cover styles first, then each template, all drawn with this cover's own picture and title, so
+/// the choice is the real result. Picking one keeps what was made (the words, the highlighted words, the framing, the graphics
+/// added). The one the cover wears is ringed and checked; favorites have a star, the style new covers start in says "Default";
+/// held (or with VoiceOver's actions), a tile favors, starts new covers, saves a copy, and for the creator's own renames,
+/// updates and deletes.
 struct CoverTemplateStep: View {
     let viewModel: CoverStudioViewModel
+    @Binding var naming: StyleNameRequest?
+
+    @ScaledMetric(relativeTo: .caption2) private var badgeSize: CGFloat = 20
 
     var body: some View {
+        let library = viewModel.coverStyles
         ScrollView(.horizontal) {
             HStack(spacing: 10) {
+                ForEach(library.styles) { style in
+                    tile(
+                        name: style.name, image: viewModel.savedThumbnails[style.id],
+                        marks: Marks(isOn: viewModel.wornCoverStyleID == style.id, isFavorite: library.isFavorite(style.key),
+                                     isDefault: library.isDefault(style.key)),
+                        identifier: "cover.style.saved.\(style.id.uuidString)", action: { viewModel.applySavedCoverStyle(style.id) },
+                        menu: {
+                        StyleCardMenu(
+                            isFavorite: library.isFavorite(style.key), isDefault: library.isDefault(style.key),
+                            defaultLabel: String(localized: "Use for new covers"),
+                            onFavorite: { viewModel.toggleFavoriteCoverStyle(style.key) },
+                            onDefault: { viewModel.toggleDefaultCoverStyle(style.key, name: style.name) },
+                            onDuplicate: { viewModel.duplicateCoverStyle(style.id) },
+                            onRename: { naming = StyleNameRequest(purpose: .rename(style.id), name: style.name) },
+                            onUpdate: { viewModel.updateCoverStyle(style.id) },
+                            onDelete: { viewModel.deleteCoverStyle(style.id) }
+                        )
+                        }
+                    )
+                }
                 ForEach(CoverTemplate.allCases) { template in
-                    tile(template)
+                    let key = StyleKey.builtIn(template.rawValue)
+                    tile(
+                        name: template.label, image: viewModel.thumbnails[template],
+                        marks: Marks(isOn: viewModel.wornCoverStyleID == nil && viewModel.composition.template == template,
+                                     isFavorite: library.isFavorite(key), isDefault: library.isDefault(key)),
+                        identifier: "cover.template.\(template.rawValue)", action: { viewModel.applyTemplate(template) },
+                        menu: {
+                        StyleCardMenu(
+                            isFavorite: library.isFavorite(key), isDefault: library.isDefault(key),
+                            defaultLabel: String(localized: "Use for new covers"),
+                            onFavorite: { viewModel.toggleFavoriteCoverStyle(key) },
+                            onDefault: { viewModel.toggleDefaultCoverStyle(key, name: template.label) },
+                            onDuplicate: { viewModel.duplicateCoverTemplate(template) }
+                        )
+                        }
+                    )
                 }
             }
             .padding(.horizontal, 16)
@@ -24,14 +66,24 @@ struct CoverTemplateStep: View {
         .padding(.horizontal, -16)
     }
 
-    private func tile(_ template: CoverTemplate) -> some View {
-        let isOn = viewModel.composition.template == template
+    /// How a tile stands: worn by this cover, a favorite, where new covers start.
+    private struct Marks {
+        let isOn: Bool
+        let isFavorite: Bool
+        let isDefault: Bool
+    }
+
+    private func tile(
+        name: String, image: UIImage?, marks: Marks, identifier: String, action: @escaping () -> Void, @ViewBuilder menu: () -> some View
+    ) -> some View {
+        let isOn = marks.isOn, isFavorite = marks.isFavorite, isDefault = marks.isDefault
         let width: CGFloat = 92
         let height = width / CGFloat(viewModel.aspect)
-        return Button { viewModel.applyTemplate(template) } label: {
+        let menu = menu()
+        return Button(action: action) {
             VStack(spacing: 6) {
                 Group {
-                    if let image = viewModel.thumbnails[template] {
+                    if let image {
                         Image(uiImage: image).resizable().scaledToFill()
                     } else {
                         Palette.surface2.overlay(ProgressView().tint(Palette.ink2))
@@ -43,7 +95,38 @@ struct CoverTemplateStep: View {
                     RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous)
                         .strokeBorder(isOn ? Palette.acc : Palette.separator, lineWidth: isOn ? 2.5 : 1)
                 }
-                Text(template.label)
+                .overlay(alignment: .topTrailing) {
+                    if isOn {
+                        Image(systemName: "checkmark")
+                            .font(.system(.caption2, weight: .heavy))
+                            .foregroundStyle(Palette.accInk)
+                            .frame(width: badgeSize, height: badgeSize)
+                            .background(Palette.acc, in: Circle())
+                            .padding(4)
+                    }
+                }
+                .overlay(alignment: .topLeading) {
+                    if isFavorite {
+                        Image(systemName: "star.fill")
+                            .font(.system(.caption2, weight: .bold))
+                            .foregroundStyle(Palette.chipOn)
+                            .frame(width: badgeSize, height: badgeSize)
+                            .background(Palette.Editor.presetCardBadge, in: Circle())
+                            .padding(4)
+                    }
+                }
+                .overlay(alignment: .bottom) {
+                    if isDefault {
+                        Text("Default", comment: "A style card's mark: new work starts in this style")
+                            .font(.system(.caption2, weight: .bold))
+                            .foregroundStyle(Palette.chipOn)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Palette.Editor.presetCardBadge, in: Capsule())
+                            .padding(.bottom, 4)
+                    }
+                }
+                Text(name)
                     .font(.system(.footnote, weight: .semibold))
                     .foregroundStyle(isOn ? Palette.accText : Palette.ink)
                     .lineLimit(1)
@@ -53,8 +136,12 @@ struct CoverTemplateStep: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.cuePressCard)
-        .accessibilityLabel(Text(template.label))
+        .contextMenu { menu }
+        .accessibilityActions { menu }
+        .accessibilityLabel(Text(name))
+        .accessibilityValue(Text([isFavorite ? String(localized: "Favorite") : nil, isDefault ? String(localized: "Default for new videos") : nil]
+            .compactMap { $0 }.joined(separator: ", ")))
         .accessibilityAddTraits(isOn ? [.isSelected] : [])
-        .accessibilityIdentifier("cover.template.\(template.rawValue)")
+        .accessibilityIdentifier(identifier)
     }
 }

@@ -70,15 +70,16 @@ struct QuickEditCaptionPicksTests {
         viewModel.captions.setPickedCaptionsEmphasized(true)
         #expect(viewModel.document.history.past.count == steps + 1)
         #expect(viewModel.captions.pickedCaptionsAreEmphasized)
-        let styles = Dictionary(uniqueKeysWithValues: viewModel.edit.captions.map { ($0.id, $0.lineStyle) })
-        #expect(styles[lines[0]]??.isEmphasized == true && styles[lines[2]]??.isEmphasized == true)
-        #expect(styles[lines[1]] ?? nil == nil)
+        // Every word of the picked lines marked for emphasis, as a word is marked by hand; the other line untouched.
+        let marks = Dictionary(uniqueKeysWithValues: viewModel.edit.captions.map { ($0.id, $0.emphasis) })
+        #expect(marks[lines[0]] == [0] && marks[lines[2]] == [0])
+        #expect(marks[lines[1]] == [])
         viewModel.captions.setPickedCaptionSize(.bigger)
         #expect(viewModel.captions.pickedCaptionSize == .bigger)
         // Back to plain: no style left on the line.
         viewModel.captions.setPickedCaptionsEmphasized(false)
         viewModel.captions.setPickedCaptionSize(.regular)
-        #expect(viewModel.edit.captions.allSatisfy { $0.lineStyle == nil })
+        #expect(viewModel.edit.captions.allSatisfy { $0.lineStyle == nil && $0.emphasis.isEmpty })
         viewModel.undo()
         #expect(viewModel.captions.pickedCaptionSize == .bigger)
     }

@@ -55,17 +55,39 @@ nonisolated enum TextShaping {
         return text.uppercased()
     }
 
+    /// `text` in small letters, as its language writes them: Turkish and Azerbaijani "I" becomes "ı".
+    static func lowercased(_ text: String) -> String {
+        lowercased(text, locale: smallLettersLocale(for: text))
+    }
+
+    /// One piece of `line` in the small letters the whole line is written in (`smallLettersLocale(for: line)`).
+    static func lowercased(_ text: String, locale: Locale?) -> String {
+        if let locale { return text.lowercased(with: locale) }
+        return text.lowercased()
+    }
+
+    /// The language whose small letters differ from everyone else's, when `text` is in one and has a letter they change.
+    static func smallLettersLocale(for text: String) -> Locale? {
+        guard text.contains("I") || text.contains("İ") else { return nil }
+        return dottedILanguage(in: text).map(Locale.init(identifier:))
+    }
+
     /// The language whose capitals differ from everyone else's, when `text` is in one and has a letter they change; nil
     /// writes them the usual way. Read from the text once and remembered (drawing asks for every frame).
     static func capitalsLocale(for text: String) -> Locale? {
         guard text.contains("i") else { return nil }
-        if let known = remembered.withLock({ $0[text] }) { return known.map(Locale.init(identifier:)) }
+        return dottedILanguage(in: text).map(Locale.init(identifier:))
+    }
+
+    /// The dotted-i language `text` is in, if any. Read from the text once and remembered (drawing asks for every frame).
+    private static func dottedILanguage(in text: String) -> String? {
+        if let known = remembered.withLock({ $0[text] }) { return known }
         let code = LanguageDetector.dominantLanguageCode(in: text).flatMap { dottedILanguages.contains($0) ? $0 : nil }
         remembered.withLock { cache in
             if cache.count >= 512 { cache.removeAll() }
             cache[text] = .some(code)
         }
-        return code.map(Locale.init(identifier:))
+        return code
     }
 
     /// Languages whose "i" keeps its dot as a capital ("İ").

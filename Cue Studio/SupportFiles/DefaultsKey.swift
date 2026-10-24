@@ -38,8 +38,16 @@ nonisolated enum DefaultsKey {
     static let myCoverStyle = "myCoverStyle"
     /// Cover Studio's "My cover style" (`CoverStyle`).
     static let myCoverStudioStyle = "myCoverStudioStyle"
-    /// The captions' "My style" in Quick edit (`MyCaptionStyle`, JSON).
+    /// The captions' "My style" in Quick edit (`MyCaptionStyle`, JSON), before saved styles: read once into
+    /// `captionStyleLibrary` and kept for an earlier version of Cue.
     static let myCaptionStyle = "myCaptionStyle"
+    /// The creator's saved styles (`StyleLibrary`, JSON): captions (`MyCaptionStyle`), texts (`TextLook`) and covers
+    /// (`CoverStyle`), with favorites and the style new work starts in.
+    static let captionStyleLibrary = "styles.captions"
+    static let textStyleLibrary = "styles.texts"
+    static let coverStyleLibrary = "styles.covers"
+    /// Caption style › Styles' filter (`CaptionCatalogFilter` raw value).
+    static let captionCatalogFilter = "styles.captions.filter"
     /// Quick edit › Voice-over's "Show script" (`Bool`; absent = on) and the speed it scrolls at (`PrompterSettings.speed`'s scale;
     /// absent = the prompter's), `EditorPreferencesStore`.
     static let narrationScriptShown = "editor.narrationScriptShown"

@@ -29,6 +29,9 @@ nonisolated struct FrameOverlay: @unchecked Sendable {
     var fadeOut: TimeInterval = 0
     var popScale = 1.0
     var popDuration: TimeInterval = 0
+    /// A line rising as it comes in: it starts `riseDistance` lower and reaches its place over `riseDuration`, easing out.
+    var riseDistance: CGFloat = 0
+    var riseDuration: TimeInterval = 0
     /// Keyframed motion over its own time, on a frame of `frameSize`.
     var motion: OverlayMotion?
     var frameSize: CGSize = .zero
@@ -74,6 +77,12 @@ nonisolated struct FrameOverlay: @unchecked Sendable {
         if let span {
             if fadeIn > 0 { alpha *= CGFloat(min(1, max(0, (time - span.start) / fadeIn))) }
             if fadeOut > 0 { alpha *= CGFloat(min(1, max(0, (span.end - time) / fadeOut))) }
+            if riseDuration > 0, riseDistance != 0, motion == nil {
+                let progress = min(1, max(0, (time - span.start) / riseDuration))
+                let eased = 1 - pow(1 - progress, 3)
+                // Core Image's y grows upward: lower is a smaller y.
+                transform = transform.concatenating(CGAffineTransform(translationX: 0, y: -riseDistance * CGFloat(1 - eased)))
+            }
             if popDuration > 0, popScale != 1, motion == nil {
                 let scale = CGFloat(PopEase.scale(from: popScale, elapsed: time - span.start, duration: popDuration))
                 if scale != 1 {

@@ -41,6 +41,7 @@ struct QuickEditView: View {
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
             editing: services.editing, drafts: services.drafts, toast: services.toast,
+            styles: TextStyleStore(defaults: services.defaults),
             editorPreferences: EditorPreferencesStore(defaults: services.defaults), prompterLook: services.preferences.prompter,
             motion: services.motion,
             speechLanguage: { languages.captionRequest(for: $0) },

@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-/// "Save as my style", first in Text style's and Caption style's presets: keeps the look for this edit and the next ones.
+/// "Save style", first among the creator's styles in Caption style, Text style and Cover: names the look on screen and keeps it
+/// for the next videos.
 struct PanelSaveStyleCard: View {
     var identifier = "edit.style.saveMine"
     let action: () -> Void
@@ -15,7 +16,7 @@ struct PanelSaveStyleCard: View {
             VStack(spacing: 6) {
                 VStack(spacing: 4) {
                     Image(systemName: "plus").font(.editorGlyph(EditorGlyph.button, weight: .bold))
-                    Text("Save as my style")
+                    Text("Save style")
                         .font(.system(.caption, weight: .semibold))
                         .multilineTextAlignment(.center)
                         .lineLimit(2)

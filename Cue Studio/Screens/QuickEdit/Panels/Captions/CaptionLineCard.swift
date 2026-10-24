@@ -150,6 +150,7 @@ struct CaptionLineCard: View {
                     }
                 }
                 WordTimingStrip(viewModel: viewModel, cueID: cueID)
+                CaptionEmphasisStrip(viewModel: viewModel, cueID: cueID)
             }
         }
     }

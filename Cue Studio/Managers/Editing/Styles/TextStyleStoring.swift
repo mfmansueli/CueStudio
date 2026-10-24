@@ -5,13 +5,16 @@
 
 import Foundation
 
-/// Where "My style" is kept between edits: the type the creator saved from a text, and the cover
-/// style they saved ("My cover style"), reused on any take.
+/// Where the creator's saved styles are kept between edits (`StyleLibrary`): their caption combinations, their texts' looks and
+/// their covers' styles, each with its favorites and the style new work starts in, reused on any take.
 @MainActor
 protocol TextStyleStoring: AnyObject {
-    var myStyle: TextLook? { get set }
-    /// Cover Studio's "My cover style": new covers start in it.
-    var myCoverStyle: CoverStyle? { get set }
-    /// The captions' "My style": new captions start in it.
-    var myCaptionStyle: MyCaptionStyle? { get set }
+    /// Caption style's saved styles: new captions start in the default one.
+    var captionStyles: StyleLibrary<MyCaptionStyle> { get set }
+    /// Text style's saved looks: new texts start in the default one, on a video with no style of its own yet.
+    var textStyles: StyleLibrary<TextLook> { get set }
+    /// Cover Studio's saved styles: new covers start in the default one.
+    var coverStyles: StyleLibrary<CoverStyle> { get set }
+    /// Caption style › Styles' filter, as it was left (`CaptionCatalogFilter.rawValue`); nil: All.
+    var captionCatalogFilter: String? { get set }
 }

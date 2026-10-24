@@ -15,6 +15,9 @@ nonisolated struct LazyText: Sendable {
     let widthFraction: CGFloat
     var collection: CaptionSettings?
     var frameHeight: CGFloat = 0
+    /// For a collection caption: the words marked for emphasis and, with motion, the word being said and how
+    /// (`CaptionMarkup`).
+    var markup: CaptionMarkup?
 
     /// Names this drawing in the compositor's cache: the line, its word and size, and everything the
     /// drawing depends on, so a corrected word or a new style is drawn again when the compositor
@@ -26,6 +29,7 @@ nonisolated struct LazyText: Sendable {
         drawing.combine(collection)
         drawing.combine(widthFraction)
         drawing.combine(frameHeight)
+        drawing.combine(markup)
         return "\(text.id.uuidString)-\(emphasis?.index ?? -1)-\(Int(frameWidth.rounded()))-\(drawing.finalize())"
     }
 }

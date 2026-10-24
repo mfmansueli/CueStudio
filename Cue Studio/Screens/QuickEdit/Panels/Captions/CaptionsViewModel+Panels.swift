@@ -136,11 +136,10 @@ extension CaptionsViewModel {
 
     // MARK: - Caption style
 
-    /// The collection's look the presets show as picked; nil while captions draw with a text's look
-    /// (copied with "Apply this style to captions", or set by an older version) or the old caption
-    /// style.
+    /// The style of the catalogue the captions wear as it is; nil while they wear it changed (Adjust, a text's look copied
+    /// onto them, set by an older version) or the old caption style.
     var captionTheme: CaptionTheme? {
-        guard let settings = edit.captionCollection, settings.customLook == nil else { return nil }
+        guard let settings = edit.captionCollection, settings.customLook == nil, settings.changedLookCount == 0 else { return nil }
         return settings.theme
     }
 
@@ -158,16 +157,6 @@ extension CaptionsViewModel {
         return settings.customLook
     }
 
-    /// The family picked over the preset (Caption style › Font); nil draws the preset's own.
-    var captionFace: TextOverlayFont? { edit.captionCollection?.face }
-
-    /// Draws the preset's lines in `face` (nil: its own font) and keeps the rest of it. One undo step.
-    func setCaptionFace(_ face: TextOverlayFont?) {
-        guard edit.captionCollection != nil, captionFace != face else { return }
-        updateCaptionSettings { $0.face = face }
-        previewCurrentCaptionLine()
-    }
-
     /// Custom's name: a type preset an older version put on the captions keeps its own.
     var captionCustomLookName: String {
         if edit.captionCollection == nil, let preset = edit.captionPreset { return preset.label }
@@ -176,16 +165,7 @@ extension CaptionsViewModel {
 
     /// The tab Caption style shows: the one picked, when it is one of Caption style's.
     var captionStyleTab: EditorPanelTab {
-        EditorPanelTab.captionStyle.contains(panelTab) ? panelTab : .presets
-    }
-
-    /// A collection preset on every line (one undo step). A preset is a complete recipe, so it
-    /// brings its own reveal with it (Educational lights the word said, Interview only fades the
-    /// line); Reveal can change it after.
-    func pickCaptionTheme(_ theme: CaptionTheme) {
-        guard captionTheme != theme else { return }
-        setCaptionTheme(theme, reveal: CaptionStyleSpec.spec(for: theme, version: CaptionStyleSpec.currentVersion).animation)
-        previewCurrentCaptionLine()
+        EditorPanelTab.captionStyle.contains(panelTab) ? panelTab : .styles
     }
 
     /// How lines appear, as it plays now.
@@ -266,6 +246,12 @@ extension CaptionsViewModel {
 
     func setCaptionAccent(_ accent: CaptionAccent) {
         change { $0.captionCollection?.accent = accent }
+        previewCurrentCaptionLine()
+    }
+
+    /// The highlight color back to the style's own.
+    func resetCaptionAccent() {
+        change { $0.captionCollection?.accent = nil }
     }
 }
 
