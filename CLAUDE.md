@@ -102,6 +102,7 @@ aparelho não roda aparece como **não validado** (teste cancelado), nunca aprov
 | Quick edit | `QuickEditPreviewLatencyTests`; `LongTakeDeviceTests` (take de 30 min com 600 legendas: editor, rascunho, prévia, Studio Voice); `SkinSmoothingDeviceTests` e `BackgroundDeviceTests` (Vision de verdade; foto de retrato em `Documents` do app via `xcrun devicectl device copy to … --domain-identifier com.cuestudioteleprompter`, `TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg`) | `DESIGN_PROJECT.md` §20, §31, §42 |
 | Desempenho | `PerformanceDeviceUITests` (`TEST_RUNNER_CUE_PERF=1`, `device-ui`: abertura a frio, rolagem sobre o céu, editor pronto, universo; métricas do XCTest); `SplitScreenDeviceTests` (quadros por segundo da prévia com tela dividida e o pior caso, exportação; links das takes mais novas, só lidas) | `DESIGN_PROJECT.md` §42, §51 |
 | Biblioteca e fontes próprias | `CustomFontStoreTests` (registro no Core Text, desenho da exportação), `MediaLibraryStoreTests` (links físicos), sem variável | `DESIGN_PROJECT.md` §52 |
+| Mídia como um criador | `CreatorMediaUseUITests` (`device-ui`, sem variável: toca as miniaturas do Fotos da galeria do aparelho nos quatro lugares e na biblioteca, na edição de demonstração em memória; Ajustes › Desenvolvedor › Enable UI Automation) | `DESIGN_PROJECT.md` §51 |
 
 ## Espaço em disco (não encher o Mac)
 

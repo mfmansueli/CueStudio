@@ -1862,7 +1862,11 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   metade do sistema a galeria não tinha espaço) e a cheia; arrastar troca entre elas, nada as muda sozinho. Pouco espaço a partir da agulha
   (menos de 3 s) é dito antes de escolher, em `warnText`: "Starts at 00:22.8 · only 1.6s of room · move the playhead back for more".
   `MediaSheetLayoutUITests` mede que nada se move nos quatro modos e nas duas alturas e que Continue fica na tela com zero, uma e duas escolhas e
-  ao desmarcar; o seletor do Fotos roda fora do Cue e não é alcançável pelos testes (o teste dele fica pulado; o rodapé é o mesmo da biblioteca).
+  ao desmarcar. O Fotos entrega cada toque na hora e em ordem (`selectionBehavior: .continuousAndOrdered`; com `.ordered` a escolha só chegava pelo
+  botão Adicionar do próprio seletor, que a folha esconde, e Continue nunca contava: achado do dono, 25/10). `CreatorMediaUseUITests` usa a folha
+  como um criador, tocando as miniaturas do Fotos onde aparecem (o seletor roda fora do Cue): tela dividida com duas, janela, tela cheia, a sequência
+  e a biblioteca, até o vídeo dizer que entrou; passou no simulador e no iPhone 15 Pro do dono com a galeria dele (25/10,
+  `CUE_DEVICE=<iPhone> scripts/test.sh device-ui CreatorMediaUseUITests`, na edição de demonstração em memória).
 - **O modelo** (`MediaLayout.split`, `SplitScreen`, `SplitLayout`, `AreaFraming`, `RecordingFraming`, `SplitPlacement`): um apoio é uma mídia com o
   layout de tela dividida, a mesma `MediaOverlay` da Janela e da Tela cheia (trocar o modo em **Show as** mantém tudo que estava nela). O layout
   (cima/baixo ou lado a lado, 50/50 ou 60/40, qual conteúdo fica maior, qual vem primeiro, a linha) é **um só para o vídeo inteiro por enquanto**;
