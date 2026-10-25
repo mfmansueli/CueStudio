@@ -34,9 +34,9 @@ In the viewer:
 
 `screens.json` is the index to start from. Each screen lists `appFiles`, the Swift files that implement it. Those paths are **suggestions** (`appFilesStatus: "suggested"`), made by name; confirm them in the code before relying on them, and fix the entry when you do.
 
-## Keep it current
+## Bringing it up to date
 
-When a PR changes a screen that is listed in `screens.json`, update that screen's HTML (and its entry, if the title or the files changed) in the same PR, and add a line to `CHANGELOG.md`. Tag a finished state `proto-vNN`.
+The prototype is brought up to date only when the owner asks for it (the owner's call, 25 Oct 2026): a PR that changes a screen leaves the prototype as it is. When asked, redraw the screens that are behind (and their entries, if the title or the files changed), add a line to `CHANGELOG.md`, and tag the finished state `proto-vNN`.
 
 To know how far behind the prototype is:
 
