@@ -13,6 +13,8 @@ extension BrandViewModel {
     /// What putting a part of `kit` on this video does, said before it happens.
     struct KitChange: Identifiable, Equatable {
         let part: BrandKitPart
+        /// The part, with the style's name ("Text style · Acme title").
+        var title: String
         let detail: String
         /// Nothing to change here (no texts yet, no cover): said, not chosen.
         let isAvailable: Bool
@@ -28,36 +30,43 @@ extension BrandViewModel {
         return kit.parts.map { part in
             switch part {
             case .textStyle:
-                let name = kit.textStyle?.name ?? ""
+                let title = "\(part.label) · \(kit.textStyle?.name ?? "")"
                 return words == 0
-                    ? KitChange(part: part, detail: String(localized: "\(name) · for the texts you add"), isAvailable: true)
-                    : KitChange(part: part, detail: String(localized: "\(name) on \(words) texts · words, timing and place stay"), isAvailable: true)
+                    ? KitChange(part: part, title: title, detail: String(localized: "For the texts you add"), isAvailable: true)
+                    : KitChange(part: part, title: title, detail: String(localized: "On \(words) texts · words, timing and place stay"), isAvailable: true)
             case .captionStyle:
-                let name = kit.captionStyle?.name ?? ""
+                let title = "\(part.label) · \(kit.captionStyle?.name ?? "")"
                 return edit.captions.isEmpty
-                    ? KitChange(part: part, detail: String(localized: "\(name) · for the captions you make"), isAvailable: true)
-                    : KitChange(part: part, detail: String(localized: "\(name) · lines, timing, size and place stay"), isAvailable: true)
+                    ? KitChange(part: part, title: title, detail: String(localized: "For the captions you make"), isAvailable: true)
+                    : KitChange(part: part, title: title, detail: String(localized: "Lines, timing, size and place stay"), isAvailable: true)
             case .coverStyle:
-                let name = kit.coverStyle?.name ?? ""
+                let title = "\(part.label) · \(kit.coverStyle?.name ?? "")"
                 return edit.cover?.composition == nil
-                    ? KitChange(part: part, detail: String(localized: "No cover yet · make one and use \(name) there"), isAvailable: false)
-                    : KitChange(part: part, detail: String(localized: "\(name) on the cover · its words stay"), isAvailable: true)
+                    ? KitChange(part: part, title: title, detail: String(localized: "No cover yet · make one to use it"), isAvailable: false)
+                    : KitChange(part: part, title: title, detail: String(localized: "On the cover · its words stay"), isAvailable: true)
             case .fonts:
                 let names = [kit.titleFont.map { String(localized: "Titles: \($0.label)") }, kit.captionFont.map { String(localized: "Captions: \($0.label)") }]
                 let missing = [kit.titleFont, kit.captionFont].compactMap { $0 }.contains { $0.isMissing }
                 let detail = names.compactMap { $0 }.joined(separator: " · ")
                 return KitChange(
-                    part: part, detail: missing ? String(localized: "\(detail) · not on this iPhone, drawn in SF Pro") : detail, isAvailable: true
+                    part: part, title: part.label,
+                    detail: missing ? String(localized: "\(detail) · not on this iPhone, drawn in SF Pro") : detail, isAvailable: true
                 )
             case .colors:
-                return KitChange(part: part, detail: String(localized: "\(kit.colors.count) colors first in this video’s color pickers"), isAvailable: true)
+                return KitChange(
+                    part: part, title: part.label, detail: String(localized: "\(kit.colors.count) colors first in this video’s color pickers"),
+                    isAvailable: true
+                )
             case .logo:
                 guard kits.hasLogoFile(kit), let logo = kit.logo else {
-                    return KitChange(part: part, detail: String(localized: "The logo’s file is missing · pick it again in the kit"), isAvailable: false)
+                    return KitChange(
+                        part: part, title: part.label, detail: String(localized: "The logo’s file is missing · pick it again in the kit"),
+                        isAvailable: false
+                    )
                 }
                 let replaces = edit.media.contains { $0.isLogo == true }
                 return KitChange(
-                    part: part,
+                    part: part, title: "\(part.label) · \(logo.name)",
                     detail: replaces
                         ? String(localized: "Replaces the video’s logo, where it is")
                         : String(localized: "\(logo.corner.label), over the whole video"),

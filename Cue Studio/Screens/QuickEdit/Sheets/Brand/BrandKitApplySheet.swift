@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-/// Putting a kit on the video, said before it happens: each part the kit has, with what it would change here ("Bold yellow on
-/// 4 texts · words, timing and place stay"), all on at first; one that can't (no cover yet, the logo's file gone) says why.
+/// Putting a kit on the video, said before it happens: each part the kit has (with its style's name), with what it would change
+/// here ("On 4 texts · words, timing and place stay"), all on at first; one that can't (no cover yet, the logo's file gone) says why.
 /// "Apply to this video" is one undo step.
 struct BrandKitApplySheet: View {
     let viewModel: QuickEditViewModel
@@ -61,7 +61,7 @@ struct BrandKitApplySheet: View {
                     .frame(width: 28)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(change.part.label).font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink)
+                    Text(change.title).font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink)
                     Text(change.detail).font(.footnote).foregroundStyle(Palette.ink2).fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

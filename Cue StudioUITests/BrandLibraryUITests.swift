@@ -27,11 +27,14 @@ final class BrandLibraryUITests: XCTestCase {
         let logo = app.buttons["edit.library.asset.Cue logo"]
         XCTAssertTrue(logo.exists(within: 5), "The seeded logo isn't in the library")
         XCTAssertTrue(app.buttons["edit.library.asset.Studio wall"].exists)
+        EditorApp.capture(app, "library-all")
         // Filters and search narrow it.
         app.buttons["edit.library.filter.logos"].tap()
         XCTAssertTrue(app.buttons["edit.library.asset.Studio wall"].isGone(within: 3))
+        EditorApp.capture(app, "library-logos")
         logo.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "added over the whole video"))
+        EditorApp.capture(app, "logo-on-video")
         app.buttons["edit.undoButton"].tap()
         XCTAssertTrue(app.buttons["edit.redoButton"].isEnabled)
     }
@@ -43,11 +46,13 @@ final class BrandLibraryUITests: XCTestCase {
         let brandTab = app.buttons["edit.smart.section.brand"]
         XCTAssertTrue(brandTab.exists(within: 5))
         brandTab.tap()
+        EditorApp.capture(app, "brand-empty")
         app.buttons["edit.brand.newKit"].tap()
         let name = app.textFields["edit.brand.kitName"]
         XCTAssertTrue(name.exists(within: 5))
         name.tap()
         name.clearAndType("Acme")
+        EditorApp.capture(app, "kit-editor")
         app.buttons["edit.brand.saveKit"].tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Acme saved"))
         let card = app.buttons["edit.brand.kit.Acme"]
@@ -56,8 +61,10 @@ final class BrandLibraryUITests: XCTestCase {
         let apply = app.buttons["edit.brand.apply"]
         XCTAssertTrue(apply.exists(within: 5))
         XCTAssertTrue(app.buttons["edit.brand.part.textStyle"].exists)
+        EditorApp.capture(app, "kit-apply")
         apply.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "Acme on this video"))
+        EditorApp.capture(app, "kit-applied")
 
         // Closed and opened again: the kit and the library are still there.
         app.terminate()

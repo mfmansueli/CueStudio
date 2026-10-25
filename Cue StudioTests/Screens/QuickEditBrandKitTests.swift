@@ -181,7 +181,8 @@ struct QuickEditBrandKitTests {
         kit.coverStyle = BrandKitStyle(name: "Acme cover", look: CoverComposition(template: .educational).style)
         let changes = viewModel.brand.changes(for: kit)
         #expect(changes.map(\.part) == [.textStyle, .coverStyle, .fonts, .colors, .logo])
-        #expect(changes.first { $0.part == .textStyle }?.detail.hasPrefix("Acme title on 1 text") == true)
+        #expect(changes.first { $0.part == .textStyle }?.title == "Text style · Acme title")
+        #expect(changes.first { $0.part == .textStyle }?.detail.hasPrefix("On 1 text") == true)
         // No cover yet: said, not chosen.
         #expect(changes.first { $0.part == .coverStyle }?.isAvailable == false)
         #expect(changes.first { $0.part == .logo }?.detail == "Top right, over the whole video")

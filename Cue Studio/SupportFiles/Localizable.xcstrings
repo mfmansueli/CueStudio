@@ -5103,244 +5103,6 @@
         }
       }
     },
-    "%@ · for the texts you add" : {
-      "comment" : "Apply a brand kit sheet, Text style row, when the video has no texts yet: the kit's text style name; it's used for the texts added later",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · للنصوص التي تضيفها"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · til de tekster, du tilføjer"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · für die Texte, die du hinzufügst"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · para los textos que añadas"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · pour les textes que vous ajouterez"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · आपके जोड़े जाने वाले टेक्स्ट के लिए"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · untuk tulisan yang kamu tambahkan"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · per i testi che aggiungi"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · これから追加するテキストに"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 앞으로 추가할 텍스트에 적용"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · for tekstene du legger til"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · voor de teksten die je toevoegt"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · para os textos que você adicionar"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · för texterna du lägger till"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · สำหรับข้อความที่คุณจะเพิ่ม"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · ekleyeceğin metinler için"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · cho chữ bạn thêm"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 用于你之后添加的文字"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 用於你之後加入的文字"
-          }
-        }
-      }
-    },
-    "%@ · for the captions you make" : {
-      "comment" : "Apply a brand kit sheet, Caption style row, when the video has no captions yet: the kit's caption style name; it's used for the captions made later",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · للترجمة النصية التي تنشئها"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · til de undertekster, du laver"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · für die Untertitel, die du erstellst"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · para los subtítulos que crees"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · pour les sous-titres que vous créerez"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · आपके बनाए जाने वाले कैप्शन के लिए"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · untuk teks yang kamu buat"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · per i sottotitoli che crei"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · これから作る字幕に"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 앞으로 만들 자막에 적용"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · for undertekstene du lager"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · voor de ondertitels die je maakt"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · para as legendas que você criar"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · för undertexterna du skapar"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · สำหรับคำบรรยายที่คุณจะสร้าง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · oluşturacağın altyazılar için"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · cho phụ đề bạn tạo"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 用于你之后生成的字幕"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 用於你之後產生的字幕"
-          }
-        }
-      }
-    },
     "%@ · IDEAL %@" : {
       "localizations" : {
         "ar" : {
@@ -5580,125 +5342,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ · 這部 iPhone 上沒有，以 SF Pro 顯示"
-          }
-        }
-      }
-    },
-    "%@ · lines, timing, size and place stay" : {
-      "comment" : "Apply a brand kit sheet, Caption style row, when the video has captions: the kit's caption style name; the captions' lines, timing, size and place don't change",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · تبقى الأسطر والتوقيت والحجم والمكان"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · linjer, timing, størrelse og placering bliver"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · Zeilen, Timing, Größe und Platz bleiben"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · líneas, tiempo, tamaño y lugar se mantienen"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · lignes, minutage, taille et place restent"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · लाइनें, टाइमिंग, साइज़ और जगह वही रहेंगी"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · baris, waktu, ukuran, dan posisi tetap"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · righe, tempi, dimensione e posizione restano"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 行、タイミング、サイズ、位置はそのまま"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 줄, 타이밍, 크기, 위치는 그대로"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · linjer, timing, størrelse og plassering blir"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · regels, timing, grootte en plek blijven"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · linhas, tempo, tamanho e posição continuam"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · rader, timing, storlek och plats blir kvar"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · บรรทัด จังหวะเวลา ขนาด และตำแหน่งคงเดิม"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · satırlar, zamanlama, boyut ve yer korunur"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · giữ nguyên dòng, thời điểm, cỡ và vị trí"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 行、时间、大小和位置不变"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ · 行、時間、大小和位置不變"
           }
         }
       }
@@ -11439,311 +11082,6 @@
         }
       }
     },
-    "%@ on %lld texts · words, timing and place stay" : {
-      "comment" : "Apply a brand kit sheet, Text style row: the kit's text style name and how many texts of the video it goes on; their words, timing and place don't change",
-      "localizations" : {
-        "ar" : {
-          "variations" : {
-            "plural" : {
-              "few" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ على %2$lld نصوص · تبقى الكلمات والتوقيت والمكان"
-                }
-              },
-              "many" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ على %2$lld نصًا · تبقى الكلمات والتوقيت والمكان"
-                }
-              },
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ على %2$lld نص · تبقى الكلمات والتوقيت والمكان"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ على %2$lld نص · تبقى الكلمات والتوقيت والمكان"
-                }
-              },
-              "two" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ على %2$lld نصوص · تبقى الكلمات والتوقيت والمكان"
-                }
-              },
-              "zero" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ على %2$lld نص · تبقى الكلمات والتوقيت والمكان"
-                }
-              }
-            }
-          }
-        },
-        "da" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ på %2$lld tekst · ord, timing og placering bliver"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ på %2$lld tekster · ord, timing og placering bliver"
-                }
-              }
-            }
-          }
-        },
-        "de" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ auf %2$lld Text · Wörter, Timing und Platz bleiben"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ auf %2$lld Texten · Wörter, Timing und Platz bleiben"
-                }
-              }
-            }
-          }
-        },
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ on %2$lld text · words, timing and place stay"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ on %2$lld texts · words, timing and place stay"
-                }
-              }
-            }
-          }
-        },
-        "es" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ en %2$lld texto · palabras, tiempo y lugar se mantienen"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ en %2$lld textos · palabras, tiempo y lugar se mantienen"
-                }
-              }
-            }
-          }
-        },
-        "fr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ sur %2$lld texte · mots, minutage et place restent"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ sur %2$lld textes · mots, minutage et place restent"
-                }
-              }
-            }
-          }
-        },
-        "hi" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%2$lld टेक्स्ट पर %1$@ · शब्द, टाइमिंग और जगह वही रहेंगे"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%2$lld टेक्स्ट पर %1$@ · शब्द, टाइमिंग और जगह वही रहेंगे"
-                }
-              }
-            }
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ pada %2$lld tulisan · kata, waktu, dan posisi tetap"
-          }
-        },
-        "it" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ su %2$lld testo · parole, tempi e posizione restano"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ su %2$lld testi · parole, tempi e posizione restano"
-                }
-              }
-            }
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%2$lld件のテキストに%1$@ · 文字、タイミング、位置はそのまま"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "텍스트 %2$lld개에 %1$@ · 글자, 타이밍, 위치는 그대로"
-          }
-        },
-        "nb" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ på %2$lld tekst · ord, timing og plassering blir"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ på %2$lld tekster · ord, timing og plassering blir"
-                }
-              }
-            }
-          }
-        },
-        "nl" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ op %2$lld tekst · woorden, timing en plek blijven"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ op %2$lld teksten · woorden, timing en plek blijven"
-                }
-              }
-            }
-          }
-        },
-        "pt" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ em %2$lld texto · palavras, tempo e posição continuam"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ em %2$lld textos · palavras, tempo e posição continuam"
-                }
-              }
-            }
-          }
-        },
-        "sv" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ på %2$lld text · ord, timing och plats blir kvar"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%1$@ på %2$lld texter · ord, timing och plats blir kvar"
-                }
-              }
-            }
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ บนข้อความ %2$lld รายการ · คำ จังหวะเวลา และตำแหน่งคงเดิม"
-          }
-        },
-        "tr" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%2$lld metinde %1$@ · kelimeler, zamanlama ve yer korunur"
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%2$lld metinde %1$@ · kelimeler, zamanlama ve yer korunur"
-                }
-              }
-            }
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$@ trên %2$lld mục chữ · giữ nguyên chữ, thời điểm và vị trí"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%2$lld 段文字使用 %1$@ · 文字、时间和位置不变"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%2$lld 段文字套用 %1$@ · 文字、時間和位置不變"
-          }
-        }
-      }
-    },
     "%@ on every cut" : {
       "localizations" : {
         "ar" : {
@@ -12094,125 +11432,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "字幕已套用 %@"
-          }
-        }
-      }
-    },
-    "%@ on the cover · its words stay" : {
-      "comment" : "Apply a brand kit sheet, Cover style row: the kit's cover style name goes on the video's cover; the cover's words don't change",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ على الغلاف · تبقى كلماته"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ på coveret · ordene bliver"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ auf dem Cover · seine Wörter bleiben"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ en la portada · sus palabras se mantienen"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ sur la couverture · ses mots restent"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कवर पर %@ · उसके शब्द वही रहेंगे"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ di sampul · katanya tetap"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ sulla copertina · le sue parole restano"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カバーに%@ · 文字はそのまま"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "커버에 %@ · 글자는 그대로"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ på omslaget · ordene blir"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ op de cover · de woorden blijven"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ na capa · as palavras continuam"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ på omslaget · orden blir kvar"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ บนปก · คำบนปกคงเดิม"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kapakta %@ · yazıları korunur"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%@ cho ảnh bìa · giữ nguyên chữ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "封面使用 %@ · 文字不变"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "封面套用 %@ · 文字不變"
           }
         }
       }
@@ -162140,6 +161359,244 @@
         }
       }
     },
+    "For the captions you make" : {
+      "comment" : "Apply a brand kit sheet (✦ Smart › Brand, tapping a kit), detail line under the Caption style row (its title reads \"Caption style · <style name>\"): the video has no captions yet; the style is used for the captions made later",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "للترجمة النصية التي تنشئها"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Til de undertekster, du laver"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für die Untertitel, die du erstellst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para los subtítulos que crees"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour les sous-titres que vous créerez"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके बनाए जाने वाले कैप्शन के लिए"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untuk teks yang kamu buat"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per i sottotitoli che crei"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これから作る字幕に"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앞으로 만들 자막에 적용"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For undertekstene du lager"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voor de ondertitels die je maakt"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para as legendas que você criar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "För undertexterna du skapar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สำหรับคำบรรยายที่คุณจะสร้าง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oluşturacağın altyazılar için"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cho phụ đề bạn tạo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用于你之后生成的字幕"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用於你之後產生的字幕"
+          }
+        }
+      }
+    },
+    "For the texts you add" : {
+      "comment" : "Apply a brand kit sheet (✦ Smart › Brand, tapping a kit), detail line under the Text style row (its title reads \"Text style · <style name>\"): the video has no texts yet; the style is used for the texts added later",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "للنصوص التي تضيفها"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Til de tekster, du tilføjer"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Für die Texte, die du hinzufügst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para los textos que añadas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pour les textes que vous ajouterez"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके जोड़े जाने वाले टेक्स्ट के लिए"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Untuk tulisan yang kamu tambahkan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Per i testi che aggiungi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "これから追加するテキストに"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "앞으로 추가할 텍스트에 적용"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "For tekstene du legger til"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voor de teksten die je toevoegt"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Para os textos que você adicionar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "För texterna du lägger till"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สำหรับข้อความที่คุณจะเพิ่ม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekleyeceğin metinler için"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cho chữ bạn thêm"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用于你之后添加的文字"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用於你之後加入的文字"
+          }
+        }
+      }
+    },
     "Forget" : {
       "comment" : "My Cue Voice: Import my writing",
       "localizations" : {
@@ -210709,6 +210166,125 @@
         }
       }
     },
+    "Lines, timing, size and place stay" : {
+      "comment" : "Apply a brand kit sheet (✦ Smart › Brand, tapping a kit), detail line under the Caption style row (its title reads \"Caption style · <style name>\"): the video has captions; their lines, timing, size and place don't change",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تبقى الأسطر والتوقيت والحجم والمكان"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linjer, timing, størrelse og placering bliver"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeilen, Timing, Größe und Platz bleiben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Líneas, tiempo, tamaño y lugar se mantienen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lignes, minutage, taille et place restent"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लाइनें, टाइमिंग, साइज़ और जगह वही रहेंगी"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Baris, waktu, ukuran, dan posisi tetap"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Righe, tempi, dimensione e posizione restano"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行、タイミング、サイズ、位置はそのまま"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "줄, 타이밍, 크기, 위치는 그대로"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linjer, timing, størrelse og plassering blir"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Regels, timing, grootte en plek blijven"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linhas, tempo, tamanho e posição continuam"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rader, timing, storlek och plats blir kvar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บรรทัด จังหวะเวลา ขนาด และตำแหน่งคงเดิม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Satırlar, zamanlama, boyut ve yer korunur"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giữ nguyên dòng, thời điểm, cỡ và vị trí"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行、时间、大小和位置不变"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "行、時間、大小和位置不變"
+          }
+        }
+      }
+    },
     "Lining up the stars" : {
       "localizations" : {
         "ar" : {
@@ -242149,121 +241725,121 @@
         }
       }
     },
-    "No cover yet · make one and use %@ there" : {
-      "comment" : "Apply a brand kit sheet, Cover style row, when the video has no cover (the row is off): the kit's cover style name",
+    "No cover yet · make one to use it" : {
+      "comment" : "Apply a brand kit sheet (✦ Smart › Brand, tapping a kit), detail line under the Cover style row (its title reads \"Cover style · <style name>\"): the video has no cover, so the row is off; \"it\" is the kit's cover style",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لا غلاف بعد · أنشئ غلافًا واستخدم %@ فيه"
+            "value" : "لا غلاف بعد · أنشئ غلافًا لاستخدام النمط"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Intet cover endnu · lav et, og brug %@ der"
+            "value" : "Intet cover endnu · lav et for at bruge stilen"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Noch kein Cover · erstelle eins und nutze dort %@"
+            "value" : "Noch kein Cover · erstelle eins, um den Stil zu nutzen"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aún no hay portada · crea una y usa %@ en ella"
+            "value" : "Aún no hay portada · crea una para usar el estilo"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pas encore de couverture · créez-en une et utilisez-y %@"
+            "value" : "Pas encore de couverture · créez-en une pour utiliser le style"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "अभी कोई कवर नहीं है · एक बनाएँ और वहाँ %@ इस्तेमाल करें"
+            "value" : "अभी कोई कवर नहीं है · स्टाइल इस्तेमाल करने के लिए एक बनाएँ"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Belum ada sampul · buat satu dan pakai %@ di sana"
+            "value" : "Belum ada sampul · buat satu untuk memakai gaya ini"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ancora nessuna copertina · creane una e usa %@ lì"
+            "value" : "Ancora nessuna copertina · creane una per usare lo stile"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "まだカバーがありません · カバーを作って%@を使いましょう"
+            "value" : "まだカバーがありません · カバーを作ると使えます"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "아직 커버가 없어요 · 커버를 만들고 %@을(를) 쓰세요"
+            "value" : "아직 커버가 없어요 · 커버를 만들면 쓸 수 있어요"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ikke noe omslag ennå · lag et og bruk %@ der"
+            "value" : "Ikke noe omslag ennå · lag et for å bruke stilen"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Nog geen cover · maak er een en gebruik daar %@"
+            "value" : "Nog geen cover · maak er een om de stijl te gebruiken"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ainda não há capa · crie uma e use %@ nela"
+            "value" : "Ainda não há capa · crie uma para usar o estilo"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inget omslag än · skapa ett och använd %@ där"
+            "value" : "Inget omslag än · skapa ett för att använda stilen"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ยังไม่มีปก · สร้างปกแล้วใช้ %@ ที่นั่น"
+            "value" : "ยังไม่มีปก · สร้างปกก่อนจึงจะใช้ได้"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Henüz kapak yok · bir kapak yap ve orada %@ kullan"
+            "value" : "Henüz kapak yok · stili kullanmak için bir kapak yap"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Chưa có ảnh bìa · hãy tạo một ảnh bìa và dùng %@ ở đó"
+            "value" : "Chưa có ảnh bìa · hãy tạo một ảnh bìa để dùng kiểu này"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "还没有封面 · 先做一个封面，再使用 %@"
+            "value" : "还没有封面 · 先做一个封面才能使用"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "還沒有封面 · 先做一個封面，再套用 %@"
+            "value" : "還沒有封面 · 先做一個封面才能套用"
           }
         }
       }
@@ -255785,6 +255361,311 @@
         }
       }
     },
+    "On %lld texts · words, timing and place stay" : {
+      "comment" : "Apply a brand kit sheet (✦ Smart › Brand, tapping a kit), detail line under the Text style row (its title reads \"Text style · <style name>\"): how many texts of the video the style goes on; their words, timing and place don't change",
+      "localizations" : {
+        "ar" : {
+          "variations" : {
+            "plural" : {
+              "few" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "على %lld نصوص · تبقى الكلمات والتوقيت والمكان"
+                }
+              },
+              "many" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "على %lld نصًا · تبقى الكلمات والتوقيت والمكان"
+                }
+              },
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "على %lld نص · تبقى الكلمات والتوقيت والمكان"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "على %lld نص · تبقى الكلمات والتوقيت والمكان"
+                }
+              },
+              "two" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "على %lld نصوص · تبقى الكلمات والتوقيت والمكان"
+                }
+              },
+              "zero" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "على %lld نص · تبقى الكلمات والتوقيت والمكان"
+                }
+              }
+            }
+          }
+        },
+        "da" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "På %lld tekst · ord, timing og placering bliver"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "På %lld tekster · ord, timing og placering bliver"
+                }
+              }
+            }
+          }
+        },
+        "de" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Auf %lld Text · Wörter, Timing und Platz bleiben"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Auf %lld Texten · Wörter, Timing und Platz bleiben"
+                }
+              }
+            }
+          }
+        },
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "On %lld text · words, timing and place stay"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "On %lld texts · words, timing and place stay"
+                }
+              }
+            }
+          }
+        },
+        "es" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "En %lld texto · palabras, tiempo y lugar se mantienen"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "En %lld textos · palabras, tiempo y lugar se mantienen"
+                }
+              }
+            }
+          }
+        },
+        "fr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Sur %lld texte · mots, minutage et place restent"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Sur %lld textes · mots, minutage et place restent"
+                }
+              }
+            }
+          }
+        },
+        "hi" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld टेक्स्ट पर · शब्द, टाइमिंग और जगह वही रहेंगे"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld टेक्स्ट पर · शब्द, टाइमिंग और जगह वही रहेंगे"
+                }
+              }
+            }
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pada %lld tulisan · kata, waktu, dan posisi tetap"
+          }
+        },
+        "it" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Su %lld testo · parole, tempi e posizione restano"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Su %lld testi · parole, tempi e posizione restano"
+                }
+              }
+            }
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld件のテキストに適用 · 文字、タイミング、位置はそのまま"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "텍스트 %lld개에 적용 · 글자, 타이밍, 위치는 그대로"
+          }
+        },
+        "nb" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "På %lld tekst · ord, timing og plassering blir"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "På %lld tekster · ord, timing og plassering blir"
+                }
+              }
+            }
+          }
+        },
+        "nl" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Op %lld tekst · woorden, timing en plek blijven"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Op %lld teksten · woorden, timing en plek blijven"
+                }
+              }
+            }
+          }
+        },
+        "pt" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Em %lld texto · palavras, tempo e posição continuam"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Em %lld textos · palavras, tempo e posição continuam"
+                }
+              }
+            }
+          }
+        },
+        "sv" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "På %lld text · ord, timing och plats blir kvar"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "På %lld texter · ord, timing och plats blir kvar"
+                }
+              }
+            }
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บนข้อความ %lld รายการ · คำ จังหวะเวลา และตำแหน่งคงเดิม"
+          }
+        },
+        "tr" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld metinde · kelimeler, zamanlama ve yer korunur"
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld metinde · kelimeler, zamanlama ve yer korunur"
+                }
+              }
+            }
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trên %lld mục chữ · giữ nguyên chữ, thời điểm và vị trí"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用于 %lld 段文字 · 文字、时间和位置不变"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "套用於 %lld 段文字 · 文字、時間和位置不變"
+          }
+        }
+      }
+    },
     "On its way." : {
       "localizations" : {
         "ar" : {
@@ -255899,6 +255780,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已在路上。"
+          }
+        }
+      }
+    },
+    "On the cover · its words stay" : {
+      "comment" : "Apply a brand kit sheet (✦ Smart › Brand, tapping a kit), detail line under the Cover style row (its title reads \"Cover style · <style name>\"): the style goes on the video's cover; the cover's words don't change",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "على الغلاف · تبقى كلماته"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På coveret · ordene bliver"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf dem Cover · seine Wörter bleiben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En la portada · sus palabras se mantienen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sur la couverture · ses mots restent"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कवर पर · उसके शब्द वही रहेंगे"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Di sampul · katanya tetap"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sulla copertina · le sue parole restano"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カバーに適用 · 文字はそのまま"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "커버에 적용 · 글자는 그대로"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På omslaget · ordene blir"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Op de cover · de woorden blijven"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Na capa · as palavras continuam"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "På omslaget · orden blir kvar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "บนปก · คำบนปกคงเดิม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapakta · yazıları korunur"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cho ảnh bìa · giữ nguyên chữ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用于封面 · 文字不变"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "套用於封面 · 文字不變"
           }
         }
       }
