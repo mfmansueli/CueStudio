@@ -45,7 +45,9 @@ extension BrandViewModel {
                     ? KitChange(part: part, title: title, detail: String(localized: "No cover yet · make one to use it"), isAvailable: false)
                     : KitChange(part: part, title: title, detail: String(localized: "On the cover · its words stay"), isAvailable: true)
             case .fonts:
-                let names = [kit.titleFont.map { String(localized: "Titles: \($0.label)") }, kit.captionFont.map { String(localized: "Captions: \($0.label)") }]
+                // The caption font goes on captions the video has (their style); without them, only the titles' is said.
+                let captionFont = edit.captionCollection == nil ? nil : kit.captionFont
+                let names = [kit.titleFont.map { String(localized: "Titles: \($0.label)") }, captionFont.map { String(localized: "Captions: \($0.label)") }]
                 let missing = [kit.titleFont, kit.captionFont].compactMap { $0 }.contains { $0.isMissing }
                 let detail = names.compactMap { $0 }.joined(separator: " · ")
                 return KitChange(
@@ -107,7 +109,8 @@ extension BrandViewModel {
         if parts.contains(.logo), let logo, let kitLogo = kit.logo {
             placeLogo(logo, corner: kitLogo.corner, width: kitLogo.width, in: &snapshot, edit: edit)
         }
-        snapshot.brandKit = AppliedBrandKit(id: kit.id, name: kit.name, colors: kit.colors)
+        // The palette's first colors only when Colors was chosen; else the ones the video had.
+        snapshot.brandKit = AppliedBrandKit(id: kit.id, name: kit.name, colors: parts.contains(.colors) ? kit.colors : snapshot.brandKit?.colors ?? [])
         snapshot.brandKitKnown = true
     }
 

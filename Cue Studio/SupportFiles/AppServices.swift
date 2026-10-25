@@ -259,6 +259,9 @@ struct AppServices {
         takes.reloadIfUnread()
         brands.reloadIfUnread()
         quota.reloadIfUnread()
+        fonts.reloadIfUnread()
+        mediaLibrary.reloadIfUnread()
+        brandKits.reloadIfUnread()
         // And writes what a failed save (a full iPhone) left only in memory, now that space may be free.
         library.saveAgainIfFailed()
         takes.saveAgainIfFailed()

@@ -35,6 +35,21 @@ final class BrandKitStore {
         }
     }
 
+    /// The kits couldn't be read at launch: read them again now, keeping (first) the ones saved since.
+    func reloadIfUnread() {
+        if mergeUnread() { persist() }
+    }
+
+    /// The kits on disk, read now if they couldn't be before, with the ones saved since; whether they were read.
+    private func mergeUnread() -> Bool {
+        guard !canSave, let saved = try? repository.load() else { return false }
+        let made = Set(kits.map(\.id))
+        kits += saved.filter { !made.contains($0.id) }
+        kits.sort { $0.updatedAt > $1.updatedAt }
+        canSave = true
+        return true
+    }
+
     func kit(_ id: UUID) -> BrandKit? {
         kits.first { $0.id == id }
     }
@@ -112,6 +127,7 @@ final class BrandKitStore {
     }
 
     private func persist() {
+        _ = mergeUnread()
         guard canSave else {
             logger.error("Not saving brand kits: the ones on disk still can't be read")
             return

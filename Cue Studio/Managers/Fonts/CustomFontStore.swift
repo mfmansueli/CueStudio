@@ -47,6 +47,22 @@ final class CustomFontStore {
         publish(registering: true)
     }
 
+    /// The families couldn't be read at launch: read them again now (and register them), keeping the ones imported since.
+    func reloadIfUnread() {
+        guard mergeUnread() else { return }
+        publish(registering: true)
+        persist()
+    }
+
+    /// The families on disk, read now if they couldn't be before, with the ones imported since; whether they were read.
+    private func mergeUnread() -> Bool {
+        guard !canSave, let saved = try? repository.load() else { return false }
+        let made = Set(families.map(\.name))
+        families += saved.filter { !made.contains($0.name) }
+        canSave = true
+        return true
+    }
+
     struct ImportOutcome: Equatable {
         /// The families that came in or grew, by name.
         var added: [String] = []
@@ -86,8 +102,16 @@ final class CustomFontStore {
                 }
             } catch {
                 // The same file again: already one of the creator's families.
-                if case .alreadyInstalled = error, let face = sameFaces(in: data), known.contains(face) {
-                    outcome.alreadyHere.append(families.first { $0.faces.contains { $0.postScriptName == face } }?.name ?? label)
+                if case .alreadyInstalled = error, let face = sameFaces(in: data), known.contains(face),
+                   let index = families.firstIndex(where: { $0.faces.contains { $0.postScriptName == face } }) {
+                    if families[index].isRemoved {
+                        // Removed, and still on this iPhone for the videos that use it: back in the pickers.
+                        families[index].isRemoved = false
+                        families[index].importedAt = .now
+                        outcome.added.append(families[index].name)
+                    } else {
+                        outcome.alreadyHere.append(families[index].name)
+                    }
                 } else {
                     outcome.problems[label] = error
                 }
@@ -99,7 +123,10 @@ final class CustomFontStore {
             }
             if !outcome.added.contains(added) { outcome.added.append(added) }
         }
-        if !outcome.added.isEmpty { persist() }
+        if !outcome.added.isEmpty {
+            persist()
+            publish(registering: false)
+        }
         return outcome
     }
 
@@ -138,6 +165,8 @@ final class CustomFontStore {
 
     /// Deletes the families' files and forgets them.
     func forget(_ names: Set<String>) {
+        // A family restored or imported again while the sweep looked stays.
+        let names = names.filter { name in families.contains { $0.name == name && $0.isRemoved } }
         guard !names.isEmpty else { return }
         for family in families where names.contains(family.name) {
             for fileName in Set(family.faces.map(\.fileName)) {
@@ -216,6 +245,7 @@ final class CustomFontStore {
     }
 
     private func persist() {
+        if mergeUnread() { publish(registering: true) }
         guard canSave else {
             logger.error("Not saving fonts: the ones on disk still can't be read")
             return

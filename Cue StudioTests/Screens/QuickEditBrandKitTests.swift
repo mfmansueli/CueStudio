@@ -123,6 +123,19 @@ struct QuickEditBrandKitTests {
         #expect(viewModel.edit.brandKit?.id == kit.id)
     }
 
+    @Test func colorsGoFirstInThePalettesOnlyWhenChosen() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        let kit = try await kit(scenario)
+        viewModel.brand.apply(kit, parts: [.logo])
+        #expect(viewModel.edit.brandKit?.colors == [])
+        viewModel.brand.apply(kit, parts: [.colors])
+        #expect(viewModel.edit.brandKit?.colors == [brandBlue, .yellow])
+        // Another part later keeps the colors the video has.
+        viewModel.brand.apply(kit, parts: [.textStyle])
+        #expect(viewModel.edit.brandKit?.colors == [brandBlue, .yellow])
+    }
+
     @Test func aSecondLogoReplacesThePictureWhereItIs() async throws {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel

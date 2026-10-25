@@ -39,6 +39,20 @@ final class MediaLibraryStore {
         }
     }
 
+    /// The list couldn't be read at launch: read it again now, keeping (first) what came in since.
+    func reloadIfUnread() {
+        if mergeUnread() { persist() }
+    }
+
+    /// The list on disk, read now if it couldn't be before, with what came in since; whether it was read.
+    private func mergeUnread() -> Bool {
+        guard !canSave, let saved = try? repository.load() else { return false }
+        let made = Set(assets.map(\.id))
+        assets += saved.filter { !made.contains($0.id) }
+        canSave = true
+        return true
+    }
+
     /// The assets `filter` and `search` let through, favorites first, then the latest added or used.
     func assets(in filter: LibraryFilter, matching search: String = "") -> [LibraryAsset] {
         assets.filter { filter.includes($0) && $0.matches(search) }
@@ -173,6 +187,7 @@ final class MediaLibraryStore {
     }
 
     private func persist() {
+        _ = mergeUnread()
         guard canSave else {
             logger.error("Not saving the media library: the list on disk still can't be read")
             return

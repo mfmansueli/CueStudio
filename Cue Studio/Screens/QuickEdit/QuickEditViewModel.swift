@@ -165,8 +165,19 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             session: session, editing: editing, importer: mediaImporter, recorder: recorder ?? VoiceOverRecorder(),
             editorPreferences: preferences, prompterLook: prompterLook, soundPreviews: soundPreviews ?? SoundEffectPreviewPlayer()
         )
+        // Without the app's stores (tests, previews): ones of their own in a temporary folder, never the creator's.
+        let scratch = URL.temporaryDirectory.appending(path: "EditorAssets-\(UUID().uuidString)", directoryHint: .isDirectory)
         brand = BrandViewModel(
-            session: session, library: mediaLibrary ?? MediaLibraryStore(), kits: brandKits ?? BrandKitStore(), fonts: fonts ?? CustomFontStore(),
+            session: session,
+            library: mediaLibrary ?? MediaLibraryStore(
+                repository: LocalMediaLibraryRepository(directory: scratch.appending(path: "Library")), directory: scratch.appending(path: "Library")
+            ),
+            kits: brandKits ?? BrandKitStore(
+                repository: LocalBrandKitRepository(directory: scratch.appending(path: "Kits")), directory: scratch.appending(path: "Kits")
+            ),
+            fonts: fonts ?? CustomFontStore(
+                repository: LocalCustomFontRepository(directory: scratch.appending(path: "Fonts")), directory: scratch.appending(path: "Fonts")
+            ),
             styles: styles
         )
         session.host = self

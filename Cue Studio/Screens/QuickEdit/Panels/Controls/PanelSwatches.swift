@@ -82,21 +82,35 @@ struct PanelSwatches: View {
     }
 }
 
-/// The last well of a palette: the system's color picker, for a color of the creator's own.
+/// The last well of a palette: the system's color picker, for a color of the creator's own. The picker changes its color all
+/// the while a finger moves on it; the color goes on once it rests (`settle`), so one pick is one change (and one Undo).
 struct CustomColorWell: View {
     let selection: OverlayColor?
     let diameter: CGFloat
     let identifier: String
     let onSelect: (OverlayColor) -> Void
 
+    @State private var shown: OverlayColor?
+    @State private var delivery: Task<Void, Never>?
+
+    private static let settle: Duration = .milliseconds(350)
+
     var body: some View {
         ColorPicker(selection: Binding(
-            get: { selection?.color ?? .white },
+            get: { (shown ?? selection)?.color ?? .white },
             set: { color in
                 let resolved = UIColor(color).resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
                 var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
                 guard resolved.getRed(&red, green: &green, blue: &blue, alpha: &alpha) else { return }
-                onSelect(.custom(red: Double(red), green: Double(green), blue: Double(blue)))
+                let picked = OverlayColor.custom(red: Double(red), green: Double(green), blue: Double(blue))
+                shown = picked
+                delivery?.cancel()
+                delivery = Task {
+                    try? await Task.sleep(for: Self.settle)
+                    guard !Task.isCancelled else { return }
+                    onSelect(picked)
+                    shown = nil
+                }
             }
         ), supportsOpacity: false) {
             Text("Custom color")

@@ -55,27 +55,45 @@ struct BrandKitEditorSheet: View {
     private var colors: some View {
         VStack(alignment: .leading, spacing: 8) {
             PanelRowLabel(label: String(localized: "Colors"), detail: "\(kit.colors.count)/\(BrandKit.maximumColors)")
+            // Each color is its own well: the system's picker changes it in place (a brand's exact color); − takes it out.
             HStack(spacing: 4) {
-                ForEach(kit.colors) { color in
-                    Button {
-                        kit.colors.removeAll { $0 == color }
-                    } label: {
-                        Circle().fill(color.color).frame(width: 30, height: 30)
-                            .overlay(Circle().strokeBorder(Palette.ink3, lineWidth: 1))
-                            .overlay(alignment: .topTrailing) {
-                                Image(systemName: "minus.circle.fill").font(.caption).foregroundStyle(Palette.ink, Palette.surface)
-                            }
-                            .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                ForEach(Array(kit.colors.enumerated()), id: \.offset) { index, color in
+                    CustomColorWell(selection: color, diameter: 30, identifier: "edit.brand.color.\(index)") { picked in
+                        guard kit.colors.indices.contains(index) else { return }
+                        kit.colors[index] = picked
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel(Text("Remove \(color.label)"))
+                    .overlay(alignment: .topTrailing) {
+                        Button {
+                            guard kit.colors.indices.contains(index) else { return }
+                            kit.colors.remove(at: index)
+                        } label: {
+                            Image(systemName: "minus.circle.fill").font(.caption).foregroundStyle(Palette.ink, Palette.surface)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(Text("Remove \(color.label)"))
+                    }
                 }
                 if kit.colors.count < BrandKit.maximumColors {
-                    CustomColorWell(selection: nil, diameter: 30, identifier: "edit.brand.addColor") { color in
-                        if !kit.colors.contains(color), kit.colors.count < BrandKit.maximumColors { kit.colors.append(color) }
+                    // A new color to set: the palette's first one the kit doesn't have; tapping it opens the picker.
+                    Button {
+                        kit.colors.append(OverlayColor.palette.first { !kit.colors.contains($0) } ?? .white)
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.editorGlyph(EditorGlyph.control, weight: .semibold))
+                            .foregroundStyle(Palette.ink)
+                            .frame(width: 30, height: 30)
+                            .background(Palette.fill, in: Circle())
+                            .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                            .contentShape(Rectangle())
                     }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel(Text("Add a color"))
+                    .accessibilityIdentifier("edit.brand.addColor")
                 }
             }
+            Text("Tap a color to set it exactly (a brand’s own)")
+                .font(.footnote)
+                .foregroundStyle(Palette.ink2)
             if kit.colors.count < BrandKit.maximumColors {
                 PanelSwatches(label: String(localized: "Add from the palette"), colors: OverlayColor.palette, selection: nil, identifier: "edit.brand.palette") { color in
                     if !kit.colors.contains(color), kit.colors.count < BrandKit.maximumColors { kit.colors.append(color) }
@@ -92,14 +110,19 @@ struct BrandKitEditorSheet: View {
             fontChips(selection: kit.titleFont, identifier: "edit.brand.titleFont") { kit.titleFont = $0 }
             PanelRowLabel(label: String(localized: "Captions font"), detail: kit.captionFont?.label)
             fontChips(selection: kit.captionFont, identifier: "edit.brand.captionFont") { kit.captionFont = $0 }
-            FontImportButton(viewModel: viewModel)
+            FontImportButton(viewModel: viewModel) { imported in
+                if kit.titleFont == nil { kit.titleFont = imported }
+            }
         }
     }
 
     private func fontChips(selection: TextOverlayFont?, identifier: String, onSelect: @escaping (TextOverlayFont?) -> Void) -> some View {
-        PanelChips(
+        // The imported families from their store (watched: one just imported shows), then the bundled ones.
+        let imported = brand.offeredFonts.map(\.font)
+        let fonts = (selection.map { $0.isCustom && !imported.contains($0) ? [$0] : [] } ?? []) + imported + TextOverlayFont.editorFonts
+        return PanelChips(
             options: [PanelOption(TextOverlayFont?.none, String(localized: "None"), key: "none")]
-                + TextOverlayFont.pickerFonts(including: selection).map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },
+                + fonts.map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },
             selection: selection,
             font: { face, size in face.map { CueStudioFont.chip($0, size: size) } ?? .system(size: size, weight: .semibold) },
             identifier: identifier, onSelect: onSelect

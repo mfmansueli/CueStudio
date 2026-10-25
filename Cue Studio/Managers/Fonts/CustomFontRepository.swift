@@ -11,7 +11,8 @@ protocol CustomFontRepository: Sendable {
     func save(_ families: [CustomFontFamily]) throws
 }
 
-/// The families as JSON next to their files (`CustomFontFiles`).
+/// The families as JSON next to their files (`CustomFontFiles`), readable once the iPhone was unlocked after it started: an
+/// export that goes on with the iPhone locked still finds the fonts.
 nonisolated struct LocalCustomFontRepository: CustomFontRepository {
     private let fileURL: URL
 
@@ -27,6 +28,6 @@ nonisolated struct LocalCustomFontRepository: CustomFontRepository {
 
     func save(_ families: [CustomFontFamily]) throws {
         try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-        try JSONEncoder().encode(families).write(to: fileURL, options: [.atomic, .completeFileProtection])
+        try JSONEncoder().encode(families).write(to: fileURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
     }
 }

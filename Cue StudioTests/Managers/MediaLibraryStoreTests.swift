@@ -97,6 +97,19 @@ struct MediaLibraryStoreTests {
         #expect(LibraryFileReader.picture(at: store.url(of: asset)) != nil)
     }
 
+    @Test func aNewLinkToOldBytesCountsAsNew() async throws {
+        let old = try picture()
+        let monthAgo = Date.now.addingTimeInterval(-30 * 24 * 60 * 60)
+        try FileManager.default.setAttributes([.modificationDate: monthAgo], ofItemAtPath: old.path(percentEncoded: false))
+        let folder = URL.temporaryDirectory.appending(path: "Links-\(UUID().uuidString)", directoryHint: .isDirectory)
+        defer { try? FileManager.default.removeItem(at: folder) }
+        let name = try MediaLibraryFiles.keep(old, in: folder)
+        // Its bytes are a month old; the link was made now: no sweep takes it for settled.
+        let date = try #require(EditStorageCleaner.modified(in: folder)[name])
+        #expect(date > Date.now.addingTimeInterval(-60))
+        #expect(LibraryFileSweep.strays(files: [name: date], list: "", launchedAt: .now).isEmpty)
+    }
+
     @Test func aMissingOrBrokenFileIsSaid() async throws {
         let store = makeStore()
         defer { store.eraseAll() }

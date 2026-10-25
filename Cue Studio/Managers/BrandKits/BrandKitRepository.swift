@@ -11,7 +11,7 @@ protocol BrandKitRepository: Sendable {
     func save(_ kits: [BrandKit]) throws
 }
 
-/// The kits as JSON next to their logos (`BrandKitFiles`).
+/// The kits as JSON next to their logos (`BrandKitFiles`), readable once the iPhone was unlocked after it started.
 nonisolated struct LocalBrandKitRepository: BrandKitRepository {
     private let fileURL: URL
 
@@ -27,6 +27,6 @@ nonisolated struct LocalBrandKitRepository: BrandKitRepository {
 
     func save(_ kits: [BrandKit]) throws {
         try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-        try JSONEncoder().encode(kits).write(to: fileURL, options: [.atomic, .completeFileProtection])
+        try JSONEncoder().encode(kits).write(to: fileURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
     }
 }

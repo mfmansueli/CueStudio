@@ -125,6 +125,23 @@ struct CustomFontStoreTests {
         #expect(TextOverlayFont.custom(family).isMissing)
     }
 
+    @Test func importingARemovedFamilyAgainBringsItBackAndASweepLeavesIt() async throws {
+        let (store, _) = makeStore()
+        defer { store.eraseAll() }
+        let family = TestFonts.uniqueFamily()
+        let file = try TestFonts.renamedAnton(to: family)
+        _ = await store.importFonts(from: [file])
+        store.remove(family)
+        #expect(store.offered.isEmpty)
+        let again = await store.importFonts(from: [file])
+        #expect(again.added == [family])
+        #expect(store.offered.map(\.name) == [family])
+        // A sweep that found it unused before it came back leaves it.
+        store.forget([family])
+        #expect(store.families.map(\.name) == [family])
+        #expect(!TextOverlayFont.custom(family).isMissing)
+    }
+
     @Test func reopeningFindsTheFontsAgain() async throws {
         let (store, folder) = makeStore()
         defer { store.eraseAll() }

@@ -11,7 +11,8 @@ protocol MediaLibraryRepository: Sendable {
     func save(_ assets: [LibraryAsset]) throws
 }
 
-/// The list as JSON next to the files (`MediaLibraryFiles`).
+/// The list as JSON next to the files (`MediaLibraryFiles`), readable once the iPhone was unlocked after it started (Cue woken
+/// with the iPhone locked still reads it).
 nonisolated struct LocalMediaLibraryRepository: MediaLibraryRepository {
     private let fileURL: URL
 
@@ -27,6 +28,6 @@ nonisolated struct LocalMediaLibraryRepository: MediaLibraryRepository {
 
     func save(_ assets: [LibraryAsset]) throws {
         try FileManager.default.createDirectory(at: fileURL.deletingLastPathComponent(), withIntermediateDirectories: true)
-        try JSONEncoder().encode(assets).write(to: fileURL, options: [.atomic, .completeFileProtection])
+        try JSONEncoder().encode(assets).write(to: fileURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
     }
 }

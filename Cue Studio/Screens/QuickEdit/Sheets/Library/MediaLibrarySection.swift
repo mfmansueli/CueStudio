@@ -60,6 +60,10 @@ struct MediaLibrarySection: View {
                 .padding(.bottom, 8)
             }
         }
+        .onAppear {
+            // A filter the sequence doesn't offer (Logos, Photos) goes back to All.
+            if videosOnly, ![.all, .favorites, .videos].contains(brand.libraryFilter) { brand.libraryFilter = .all }
+        }
         .onChange(of: photoItems) { _, items in
             guard !items.isEmpty else { return }
             Task {
