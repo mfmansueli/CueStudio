@@ -22,7 +22,9 @@ extension BrandViewModel {
         guard !urls.isEmpty else { return }
         let outcome = await fonts.importFonts(from: urls)
         toast.show(outcome.message)
-        if let first = outcome.added.first { pick?(.custom(first)) }
+        // A family whose file came back: the preview draws its words in it again.
+        if !outcome.repaired.isEmpty { player.redraw() }
+        if let first = outcome.added.first ?? outcome.repaired.first { pick?(.custom(first)) }
     }
 
     /// Takes a family out of the pickers, with Undo; videos and styles that use it keep drawing in it.
@@ -34,9 +36,9 @@ extension BrandViewModel {
         )
     }
 
-    /// The note under a picker whose family isn't on this iPhone.
-    static func missingFontNote(_ font: TextOverlayFont) -> String? {
-        guard font.isMissing else { return nil }
+    /// The note under a picker whose family isn't on this iPhone; it goes as soon as the family can be drawn again.
+    func missingFontNote(_ font: TextOverlayFont) -> String? {
+        guard let family = font.customFamily, !fonts.drawable.contains(family) else { return nil }
         return String(localized: "\(font.label) isn’t on this iPhone · drawn in SF Pro until you import it again")
     }
 }

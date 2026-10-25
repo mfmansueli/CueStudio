@@ -9406,6 +9406,125 @@
         }
       }
     },
+    "%@ is back · videos that use it show it again" : {
+      "comment" : "Toast: an imported font whose file had gone from this iPhone was imported again; %@ is the font family's name",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عاد %@ · تعرضه الفيديوهات التي تستخدمه من جديد"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ er tilbage · videoer, der bruger den, viser den igen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ist zurück · Videos, die sie nutzen, zeigen sie wieder"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ volvió · los videos que la usan la muestran otra vez"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ est de retour · les vidéos qui l’utilisent l’affichent à nouveau"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ वापस आ गया · इसे इस्तेमाल करने वाले वीडियो इसे फिर दिखाते हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ kembali · video yang memakainya menampilkannya lagi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ è tornato · i video che lo usano lo mostrano di nuovo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@が戻りました · 使っている動画にまた表示されます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@이(가) 돌아왔어요 · 이 서체를 쓰는 영상에 다시 표시돼요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ er tilbake · videoer som bruker den, viser den igjen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ is terug · video’s die het gebruiken tonen het weer"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ voltou · os vídeos que usam essa fonte a mostram de novo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ är tillbaka · videor som använder det visar det igen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ กลับมาแล้ว · วิดีโอที่ใช้ฟอนต์นี้จะแสดงอีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ geri geldi · onu kullanan videolar yeniden gösteriyor"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ đã trở lại · các video dùng phông này hiển thị lại"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 已恢复 · 使用它的视频会重新显示"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 已恢復 · 使用它的影片會重新顯示"
+          }
+        }
+      }
+    },
     "%@ is missing · remove it from your library" : {
       "comment" : "Toast when a photo, video or logo picked from Your library (Add photo or video) has lost its file: the item's name",
       "localizations" : {
@@ -37606,6 +37725,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "一條牛仔褲的 3 種穿法"
+          }
+        }
+      }
+    },
+    "3 photos or videos already show then · up to 3 at a time" : {
+      "comment" : "Toast: what was picked would make a fourth photo or video over the same moment (windows, full screens and the split screen's support all count); nothing went in",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تظهر 3 صور أو فيديوهات بالفعل حينها · 3 كحد أقصى في كل مرة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der vises allerede 3 fotos eller videoer da · højst 3 ad gangen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dann laufen schon 3 Fotos oder Videos · höchstens 3 gleichzeitig"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ya se muestran 3 fotos o videos en ese momento · hasta 3 a la vez"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 photos ou vidéos s’affichent déjà à ce moment · 3 à la fois au maximum"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "उस समय पहले से 3 फ़ोटो या वीडियो दिखते हैं · एक बार में अधिकतम 3"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudah ada 3 foto atau video saat itu · maksimal 3 sekaligus"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In quel momento ci sono già 3 foto o video · massimo 3 alla volta"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "その時間にはすでに写真・動画が3つあります · 同時に最大3つ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "그때 이미 사진·영상이 3개 나와요 · 한 번에 최대 3개"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Det vises allerede 3 bilder eller videoer da · maks. 3 om gangen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Er staan dan al 3 foto’s of video’s · max. 3 tegelijk"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já aparecem 3 fotos ou vídeos nesse momento · até 3 por vez"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Då visas redan 3 foton eller videor · högst 3 åt gången"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ช่วงนั้นมีรูปหรือวิดีโอ 3 รายการแล้ว · แสดงพร้อมกันได้สูงสุด 3 รายการ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O sırada zaten 3 fotoğraf veya video var · aynı anda en fazla 3"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lúc đó đã có 3 ảnh hoặc video · tối đa 3 cùng lúc"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此时已有 3 张照片或视频 · 一次最多 3 个"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "此時已有 3 張照片或影片 · 一次最多 3 個"
+          }
+        }
+      }
+    },
+    "3 photos or videos already show here · move the playhead" : {
+      "comment" : "Add photo or video, under the place picked: the moment at the playhead already has the most photos and videos the video can show at once",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تظهر هنا 3 صور أو فيديوهات بالفعل · حرّك رأس التشغيل"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her vises allerede 3 fotos eller videoer · flyt afspilningsmarkøren"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier laufen schon 3 Fotos oder Videos · Abspielposition verschieben"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aquí ya se muestran 3 fotos o videos · mueve el cursor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 photos ou vidéos s’affichent déjà ici · déplacez la tête de lecture"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "यहाँ पहले से 3 फ़ोटो या वीडियो दिख रहे हैं · प्लेहेड खिसकाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sudah ada 3 foto atau video di sini · geser playhead"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qui ci sono già 3 foto o video · sposta l’indicatore"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ここにはすでに写真・動画が3つあります · 再生ヘッドを移動"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "여기에는 이미 사진·영상이 3개 있어요 · 재생 헤드를 옮기세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Her vises allerede 3 bilder eller videoer · flytt avspillingshodet"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hier staan al 3 foto’s of video’s · verplaats de afspeelkop"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Já aparecem 3 fotos ou vídeos aqui · mova o cursor"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Här visas redan 3 foton eller videor · flytta markören"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตรงนี้มีรูปหรือวิดีโอ 3 รายการแล้ว · เลื่อนหัวเล่น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Burada zaten 3 fotoğraf veya video var · oynatma çubuğunu taşı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ở đây đã có 3 ảnh hoặc video · dời đầu phát"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "这里已有 3 张照片或视频 · 请移动播放头"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "這裡已有 3 張照片或影片 · 請移動播放頭"
           }
         }
       }

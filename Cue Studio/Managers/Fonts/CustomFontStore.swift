@@ -16,6 +16,9 @@ import UIKit
 @Observable
 final class CustomFontStore {
     private(set) var families: [CustomFontFamily] = []
+    /// The families this launch can draw (their files here and registered), as the renderers have them: a picker's "isn't on
+    /// this iPhone" note follows it.
+    private(set) var drawable: Set<String> = []
 
     @ObservationIgnored private let repository: CustomFontRepository
     @ObservationIgnored let directory: URL
@@ -66,6 +69,8 @@ final class CustomFontStore {
     struct ImportOutcome: Equatable {
         /// The families that came in or grew, by name.
         var added: [String] = []
+        /// Families whose files had gone (the families stayed), back from the files picked.
+        var repaired: [String] = []
         /// Files that were already here.
         var alreadyHere: [String] = []
         /// What went wrong with a file, by its name.
@@ -77,6 +82,7 @@ final class CustomFontStore {
                     ? String(localized: "\(name) added · use it in Text, Captions and Cover")
                     : String(localized: "\(added.count) fonts added · use them in Text, Captions and Cover")
             }
+            if let name = repaired.first { return String(localized: "\(name) is back · videos that use it show it again") }
             if let name = alreadyHere.first { return String(localized: "\(name) is already in your fonts") }
             return problems.values.first?.message ?? String(localized: "This file isn’t a font Cue can use · TTF or OTF")
         }
@@ -102,13 +108,17 @@ final class CustomFontStore {
                 }
             } catch {
                 // The same file again: already one of the creator's families.
-                if case .alreadyInstalled = error, let face = sameFaces(in: data), known.contains(face),
-                   let index = families.firstIndex(where: { $0.faces.contains { $0.postScriptName == face } }) {
+                if case .alreadyInstalled = error, let faces = faceNames(in: data),
+                   let index = families.firstIndex(where: { $0.faces.contains { faces.contains($0.postScriptName) } }) {
+                    let repaired = repairFiles(of: families[index], from: data, faces: faces)
                     if families[index].isRemoved {
                         // Removed, and still on this iPhone for the videos that use it: back in the pickers.
                         families[index].isRemoved = false
                         families[index].importedAt = .now
                         outcome.added.append(families[index].name)
+                    } else if repaired {
+                        families[index].importedAt = .now
+                        outcome.repaired.append(families[index].name)
                     } else {
                         outcome.alreadyHere.append(families[index].name)
                     }
@@ -123,7 +133,7 @@ final class CustomFontStore {
             }
             if !outcome.added.contains(added) { outcome.added.append(added) }
         }
-        if !outcome.added.isEmpty {
+        if !outcome.added.isEmpty || !outcome.repaired.isEmpty {
             persist()
             publish(registering: false)
         }
@@ -224,14 +234,42 @@ final class CustomFontStore {
         return familyName
     }
 
-    /// The PostScript name of the first face in `data`, to recognise a file imported before.
-    private func sameFaces(in data: Data) -> String? {
-        (try? CustomFontInspector.inspect(data) { _ in false })?.first?.postScriptName
+    /// The PostScript names of the faces in `data`, to recognise a file imported before.
+    private func faceNames(in data: Data) -> Set<String>? {
+        (try? CustomFontInspector.inspect(data) { _ in false }).map { Set($0.map(\.postScriptName)) }
+    }
+
+    /// The files of `family`'s faces in `data` that are gone from this iPhone (the family stayed in fonts.json), written again
+    /// from `data` under the names the family keeps and registered, so the videos that use it draw in it again; whether any
+    /// came back.
+    private func repairFiles(of family: CustomFontFamily, from data: Data, faces: Set<String>) -> Bool {
+        let gone = Set(family.faces.filter { faces.contains($0.postScriptName) }.map(\.fileName)).filter { fileName in
+            !FileManager.default.fileExists(atPath: CustomFontFiles.url(for: fileName, in: directory).path(percentEncoded: false))
+        }
+        var repaired = false
+        for fileName in gone {
+            let url = CustomFontFiles.url(for: fileName, in: directory)
+            // Gone while this launch had it registered: registered again from the file now there.
+            CustomFontFiles.unregister(url)
+            do {
+                try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+                try data.write(to: url, options: .atomic)
+            } catch {
+                continue
+            }
+            guard CustomFontFiles.register(url) else {
+                try? FileManager.default.removeItem(at: url)
+                continue
+            }
+            repaired = true
+        }
+        if repaired { publish(registering: false) }
+        return repaired
     }
 
     /// Hands the families whose files are here to the renderers; on launch, registers them first.
     private func publish(registering: Bool) {
-        var drawable: [CustomFontFamily] = []
+        var ready: [CustomFontFamily] = []
         for family in families {
             var family = family
             family.faces = family.faces.filter { face in
@@ -239,9 +277,11 @@ final class CustomFontStore {
                 guard FileManager.default.fileExists(atPath: url.path(percentEncoded: false)) else { return false }
                 return !registering || CustomFontFiles.register(url) || UIFont(name: face.postScriptName, size: 12) != nil
             }
-            if !family.faces.isEmpty { drawable.append(family) }
+            if !family.faces.isEmpty { ready.append(family) }
         }
-        registry.update(drawable)
+        registry.update(ready)
+        let names = Set(ready.map(\.name))
+        if names != drawable { drawable = names }
     }
 
     private func persist() {

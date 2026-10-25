@@ -237,7 +237,7 @@ struct TextStylePanel: View {
             font: { CueStudioFont.chip($0, size: $1) }, identifier: "edit.textFont",
             onSelect: { viewModel.overlays.restyleText(.font($0)) }
         )
-        if let note = BrandViewModel.missingFontNote(text.font) { PanelNote(text: note) }
+        if let note = viewModel.brand.missingFontNote(text.font) { PanelNote(text: note) }
         FontImportButton(viewModel: viewModel) { viewModel.overlays.restyleText(.font($0)) }
         PanelSegmented(
             label: String(localized: "Weight"), options: text.font.weights.map { PanelOption($0, $0.label) },

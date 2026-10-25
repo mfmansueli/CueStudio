@@ -65,7 +65,7 @@ struct CaptionAdjustTab: View {
             font: { face, size in face.map { CueStudioFont.chip($0, size: size) } ?? .system(size: size, weight: .semibold) },
             identifier: "edit.captionFace", onSelect: captions.setCaptionFace
         )
-        if let face = settings.face, let note = BrandViewModel.missingFontNote(face) { PanelNote(text: note) }
+        if let face = settings.face, let note = viewModel.brand.missingFontNote(face) { PanelNote(text: note) }
         FontImportButton(viewModel: viewModel) { captions.setCaptionFace($0) }
         if spec.availableWeights.count > 1 {
             PanelSegmented(

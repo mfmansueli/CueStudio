@@ -65,6 +65,7 @@ extension OverlaysViewModel {
         let start = runStart(for: mode)
         let room = runRoom(for: mode, from: start)
         guard room >= MediaOverlay.minimumDuration else { return String(localized: "No room here · Move the playhead") }
+        if isFull(at: start) { return String(localized: "3 photos or videos already show here · move the playhead") }
         if room < Self.shortRoom {
             return String(localized: "Starts at \(DurationText.editor(start)) · only \(DurationText.tenths(room)) of room · move the playhead back for more")
         }
@@ -74,9 +75,17 @@ extension OverlaysViewModel {
     /// Less room than this from the playhead (to the video's end or the next support) is said as a warning before picking.
     static let shortRoom: TimeInterval = 3
 
-    /// Whether the room from the playhead is short (`shortRoom`) or none.
+    /// Whether the room from the playhead is short (`shortRoom`) or none, or the moment there is full (`isFull(at:)`).
     func insertionRoomIsShort(for mode: MediaInsertMode) -> Bool {
-        runRoom(for: mode, from: runStart(for: mode)) < Self.shortRoom
+        let start = runStart(for: mode)
+        return runRoom(for: mode, from: start) < Self.shortRoom || isFull(at: start)
+    }
+
+    /// Whether `MediaOverlay.simultaneousLimit` photos or videos already show at `start`: windows, full screens and the split
+    /// screen's support alike.
+    private func isFull(at start: TimeInterval) -> Bool {
+        let moment = TimeSpan(start: start, end: start + MediaOverlay.minimumDuration)
+        return LayerLanes.peak(of: mediaBars.map(\.span), within: moment) >= MediaOverlay.simultaneousLimit
     }
 
     // MARK: - Adding
@@ -118,14 +127,13 @@ extension OverlaysViewModel {
             toast.show(String(localized: "No room · Move the playhead"))
             return
         }
-        // Windows and full screens over the same moment: never more than the export draws at once.
-        if layout != .split {
-            let others = mediaBars.map(\.span)
-            guard run.placed.allSatisfy({ LayerLanes.peak(of: others, within: $0.span) < MediaOverlay.simultaneousLimit }) else {
-                EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
-                toast.show(String(localized: "Max 3 photos or videos"))
-                return
-            }
+        // Never more photos and videos over the same moment than the export draws at once (it would leave a fourth video out
+        // without a word): a support counts like a window.
+        let others = mediaBars.map(\.span)
+        guard run.placed.allSatisfy({ LayerLanes.peak(of: others, within: $0.span) < MediaOverlay.simultaneousLimit }) else {
+            EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
+            toast.show(String(localized: "3 photos or videos already show then · up to 3 at a time"))
+            return
         }
         var next = edit
         if layout == .split, next.splitScreen.layouts.isEmpty {

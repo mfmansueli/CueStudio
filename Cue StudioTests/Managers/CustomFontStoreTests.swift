@@ -12,7 +12,8 @@ import UIKit
 /// Imported fonts: a whole TrueType file comes in under its family's name, is registered for Cue and drawn by the renderers
 /// (preview and export share `TextFont`), letters it lacks in the system font; the same file twice, a font the iPhone already
 /// has and a file that isn't a font are refused and leave nothing; removing keeps it for the videos that use it, and its
-/// files go only once nothing names it; reopening finds it again; a video naming a family that isn't here draws in SF Pro.
+/// files go only once nothing names it; reopening finds it again; a family left without its file is repaired by importing the
+/// file again; a video naming a family that isn't here draws in SF Pro.
 /// Serialized: the renderers read one registry for the whole app.
 @MainActor
 @Suite("Imported fonts", .serialized)
@@ -153,6 +154,86 @@ struct CustomFontStoreTests {
         #expect(TextFont.font(.custom(family), weight: .bold, size: 30, text: "Hi").fontName == "\(family)-Regular")
     }
 
+    /// Its family still in fonts.json, its file gone, Cue opened again (nothing registered): imported again, the file is back
+    /// where the family says, drawn again, nothing doubled (the reviewer's case, 25/10).
+    @Test func aFontWhoseFileWentIsRepairedByImportingItAgain() async throws {
+        let (store, folder) = makeStore()
+        defer { store.eraseAll() }
+        let family = TestFonts.uniqueFamily()
+        let file = try TestFonts.renamedAnton(to: family)
+        _ = await store.importFonts(from: [file])
+        let fileName = try #require(store.families.first?.faces.first?.fileName)
+        let reopened = try reopenWithoutItsFile(fileName, in: folder)
+        #expect(reopened.families.map(\.name) == [family])
+        #expect(TextOverlayFont.custom(family).isMissing)
+        let again = await reopened.importFonts(from: [file])
+        #expect(again.repaired == [family])
+        #expect(again.alreadyHere.isEmpty)
+        #expect(again.message == "\(family) is back · videos that use it show it again")
+        #expect(reopened.drawable == [family])
+        #expect(FileManager.default.fileExists(atPath: folder.appending(path: fileName).path(percentEncoded: false)))
+        #expect(!TextOverlayFont.custom(family).isMissing)
+        #expect(TextFont.font(.custom(family), weight: .regular, size: 30, text: "Hi").fontName == "\(family)-Regular")
+        #expect(reopened.families.map(\.faces.count) == [1])
+        let files = try FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false))
+        #expect(files.filter { $0 != "fonts.json" } == [fileName])
+        // The same file once more, now that it's here: already in the fonts.
+        #expect(await reopened.importFonts(from: [file]).alreadyHere == [family])
+    }
+
+    /// A video whose title is in that font: imported again from the picker, the preview draws again and the note goes.
+    @Test func aVideoInAFontWhoseFileWentDrawsInItAgainOnceItsImportedAgain() async throws {
+        let (store, folder) = makeStore()
+        defer { store.eraseAll() }
+        let family = TestFonts.uniqueFamily()
+        let file = try TestFonts.renamedAnton(to: family)
+        _ = await store.importFonts(from: [file])
+        let reopened = try reopenWithoutItsFile(try #require(store.families.first?.faces.first?.fileName), in: folder)
+        let (viewModel, toast, player) = await editor(fonts: reopened)
+        viewModel.changeEdit { edit in
+            var title = TextOverlay(role: .title, look: TextLook(), preset: nil, span: TimeSpan(start: 1, end: 4))
+            title.text = "Three habits"
+            title.font = .custom(family)
+            edit.texts = [title]
+        }
+        #expect(viewModel.brand.missingFontNote(.custom(family)) != nil)
+        let redraws = player.redraws
+        await viewModel.brand.importFonts([file])
+        #expect(toast.message == "\(family) is back · videos that use it show it again")
+        #expect(viewModel.brand.missingFontNote(.custom(family)) == nil)
+        #expect(player.redraws > redraws)
+        #expect(viewModel.edit.texts.map(\.font) == [.custom(family)])
+    }
+
+    /// Cue opened again after the file `fileName` went (its family left in fonts.json): nothing registered.
+    private func reopenWithoutItsFile(_ fileName: String, in folder: URL) throws -> CustomFontStore {
+        let url = folder.appending(path: fileName)
+        CustomFontFiles.unregister(url)
+        try FileManager.default.removeItem(at: url)
+        let reopened = CustomFontStore(repository: LocalCustomFontRepository(directory: folder), directory: folder)
+        reopened.load()
+        return reopened
+    }
+
+    private func editor(fonts: CustomFontStore) async -> (QuickEditViewModel, ToastService, FakeEditPlayback) {
+        let script = TestData.script(text: "Okay, real talk.")
+        var take = TestData.take(scriptID: script.id, number: 1)
+        take.duration = 30
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: [take]))
+        takes.load()
+        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]))
+        library.load()
+        let toast = ToastService()
+        let player = FakeEditPlayback()
+        let viewModel = QuickEditViewModel(
+            take: takes.takes[0], takes: takes, library: library, editing: FakeTakeEditor(),
+            drafts: FakeDraftStore(), toast: toast, player: player, mediaImporter: FakeMediaImporter(),
+            recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore(), fonts: fonts
+        )
+        await viewModel.prepare()
+        return (viewModel, toast, player)
+    }
+
     @Test func aVideoNamingAFamilyThatIsntHereDrawsInSFProAndKeepsTheName() throws {
         let missing = TextOverlayFont.custom("Brand Sans Gone")
         #expect(missing.isMissing)
@@ -160,7 +241,6 @@ struct CustomFontStoreTests {
         let system = UIFont.systemFont(ofSize: 30, weight: .bold)
         #expect(TextFont.font(missing, weight: .bold, size: 30, text: "Hi").fontName == system.fontName)
         #expect(TextOverlayFont.pickerFonts(including: missing).first == missing)
-        #expect(BrandViewModel.missingFontNote(missing) != nil)
         // Saved and read back, the name stays; an earlier version (any value it doesn't know) reads SF Pro.
         let data = try JSONEncoder().encode([missing])
         #expect(try JSONDecoder().decode([TextOverlayFont].self, from: data) == [missing])

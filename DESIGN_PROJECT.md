@@ -1883,7 +1883,10 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   legenda posta ali). **Onde não há apoio, o
   principal volta à tela cheia**, com corte seco. Janelas e fotos por cima ficam por cima da tela dividida; o fade para o preto escurece tudo;
   textos e legendas vêm por último. A capa não leva a tela dividida (como o B-roll, §46). Um apoio por vez na área (um sobre outro é recusado:
-  "Another support shows then · one at a time in the split screen") e cada apoio conta no limite de 3 mídias ao mesmo tempo, que não mudou.
+  "Another support shows then · one at a time in the split screen") e **cada apoio conta como uma janela no limite de 3 fotos ou vídeos ao
+  mesmo tempo** (o que a exportação desenha sobre o vídeo; um quarto vídeo ficaria de fora sem aviso): a folha avisa sob a escolha, em cor de
+  alerta, quando a agulha já tem 3 ("3 photos or videos already show here · move the playhead"), e o que passaria disso não entra nem deixa
+  arquivo ("3 photos or videos already show then · up to 3 at a time"). Mover ou esticar uma mídia respeita o mesmo limite.
 - **Os apoios seguem a fala** (`MediaOverlay.pieces`, `followsCuts`, `TakeEdit.pinMedia`): toda mídia posta a partir desta fase fica com o trecho
   da fala sobre o qual foi posta. Dividir um clipe não muda nada; cortar 5 a 7 s do principal sob um apoio corta os mesmos 2 s do apoio e o resto
   continua em sincronia; o que vem depois anda junto; um clipe de outra gravação posto no meio (Inserir na sequência) toca sem o apoio, que
@@ -1935,10 +1938,12 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   reenquadrado e não coberto, inverter, 60/40, lado a lado, tela cheia no espaço, linha, foto de outro formato sem deformar, o corte que corta o
   apoio, os sons independentes e sem duplicar, e a prévia igual à exportação), `SplitScreenUITests` (a folha de Media, as áreas na prévia, o
   painel, dividir e fechar espaço); `EditSnapshotCompletenessTests` cobre a tela dividida no Desfazer. Demo: `-uiTestDemoSplit`.
-- **Medido no iPhone 15 Pro** (`SplitScreenDeviceTests`, 25/10, take de 1080p a 30 fps, links das takes mais novas): a composição da prévia
-  desenha a take sozinha a 326 quadros por segundo, com um apoio e a divisória em Desfoque a 106 (sem efeito, 199), com um apoio e duas janelas
-  (o máximo do editor) a 112: mais de 3 vezes o que a prévia precisa. A exportação 1080p de 29,4 s leva 5,4 s só com a take e 5,3 s com um apoio
-  sobre 27,4 s: a tela dividida não deixa a exportação mais lenta. Capturas para olhar: `SplitScreenCaptureTests`
+- **Medido no iPhone 15 Pro** (`SplitScreenDeviceTests`, 25/10, take de 1080p a 30 fps, links das takes mais novas), resultados destes
+  cenários: a composição da prévia, lida o mais rápido possível fora da tela, desenhou a take sozinha a 326 quadros por segundo, com um apoio e a
+  divisória em Desfoque a 106 (sem efeito, 199), com um apoio e duas janelas (o máximo que o limite de 3 deixa) a 112. Isso mede o custo de
+  desenhar os quadros nesses cenários, não a fluidez da interface (a prévia tocando com o editor aberto, rolar a timeline, os toques), que não
+  foi medida com instrumentos. A exportação 1080p de 29,4 s levou 5,4 s só com a take e 5,3 s com um apoio sobre 27,4 s: nesse cenário, a tela
+  dividida não deixou a exportação mais lenta. Capturas para olhar: `SplitScreenCaptureTests`
   (`TEST_RUNNER_CUE_SPLIT_CAPTURE=<pasta com main.mov e support.mov>`).
 
 ## 52. Biblioteca, kits de marca e fontes próprias (Fase 5 do refinamento, 25 de outubro de 2026; pedido do dono)
@@ -1994,6 +1999,10 @@ Tudo fica neste iPhone.
   `TextFont` da prévia e da exportação; **letras que a fonte não tem** saem na fonte do sistema, no mesmo peso, letra a letra (cascade list).
   Um vídeo guarda a fonte como "custom:<família>": se a família não está no iPhone (removida de vez), o texto sai em SF Pro, o seletor mostra o
   nome com a nota "… isn’t on this iPhone · drawn in SF Pro until you import it again", e importar a mesma família devolve a fonte ao vídeo.
+  **Uma família que ficou em `fonts.json` sem o arquivo** (o arquivo sumiu, o Cue abriu de novo): importar o mesmo arquivo a repara, em vez
+  de dizer "already in your fonts": o arquivo volta com o nome que a família guarda, é registrado, a prévia é desenhada de novo e a nota some
+  ("… is back · videos that use it show it again"); nada é duplicado. A nota acompanha as famílias que o Cue consegue desenhar agora
+  (`CustomFontStore.drawable`), então some assim que a fonte volta.
   Importar de novo uma família removida a devolve aos seletores. **Remover** (Your fonts, com Undo) tira dos seletores, mas o vídeo, estilo salvo ou kit que usa continua desenhando nela; os arquivos só são
   apagados num lançamento em que nada salvo cita a família (vídeos, rascunhos com o desfazer, estilos salvos, kits). Só fontes que o criador
   pode usar: o Cue não traz fontes comerciais de terceiros nem presume direito de redistribuição, e diz isso sob o botão.
