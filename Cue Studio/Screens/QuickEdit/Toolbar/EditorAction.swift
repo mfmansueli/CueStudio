@@ -80,4 +80,6 @@ enum EditorAction: Hashable {
     case splitMedia
     /// A support moved back to meet the one before it.
     case closeGap
+    /// The photo or video kept in the creator's library, to reuse in other videos.
+    case saveMediaToLibrary
 }

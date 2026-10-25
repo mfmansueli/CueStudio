@@ -76,6 +76,8 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     /// A video whose own voice is captioned while it shows, in place of the main video's (heard on its own, never mixed with
     /// it: one voice at a time); nil or false: the main video's.
     var captionsItsVoice: Bool?
+    /// A logo (a brand kit's, or one from the library): small over the whole video, its transparency kept.
+    var isLogo: Bool?
 
     init(kind: MediaKind, fileName: String, aspect: Double, mediaDuration: TimeInterval?, span: TimeSpan) {
         self.kind = kind

@@ -60,11 +60,13 @@ struct CaptionAdjustTab: View {
     private func font(_ settings: CaptionSettings, spec: CaptionStyleSpec, changes: CaptionAdjustments) -> some View {
         PanelChips(
             options: [PanelOption(nil, String(localized: "Style's font"), key: "preset")]
-                + TextOverlayFont.editorFonts.map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },
+                + TextOverlayFont.pickerFonts(including: settings.face).map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },
             selection: settings.face,
             font: { face, size in face.map { CueStudioFont.chip($0, size: size) } ?? .system(size: size, weight: .semibold) },
             identifier: "edit.captionFace", onSelect: captions.setCaptionFace
         )
+        if let face = settings.face, let note = BrandViewModel.missingFontNote(face) { PanelNote(text: note) }
+        FontImportButton(viewModel: viewModel) { captions.setCaptionFace($0) }
         if spec.availableWeights.count > 1 {
             PanelSegmented(
                 label: String(localized: "Weight"), options: spec.availableWeights.map { PanelOption($0, $0.label) },

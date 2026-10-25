@@ -43,5 +43,6 @@ extension TakeEdit {
         if let locked = step.lockedLayers { lockedLayers = locked }
         if step.captionLanguageKnown == true { captionLanguage = step.captionLanguage }
         if let splitScreen = step.splitScreen { self.splitScreen = splitScreen }
+        if step.brandKitKnown == true { brandKit = step.brandKit }
     }
 }

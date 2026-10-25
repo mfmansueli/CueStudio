@@ -1920,3 +1920,66 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   reenquadrado e não coberto, inverter, 60/40, lado a lado, tela cheia no espaço, linha, foto de outro formato sem deformar, o corte que corta o
   apoio, os sons independentes e sem duplicar, e a prévia igual à exportação), `SplitScreenUITests` (a folha de Media, as áreas na prévia, o
   painel, dividir e fechar espaço); `EditSnapshotCompletenessTests` cobre a tela dividida no Desfazer. Demo: `-uiTestDemoSplit`.
+
+## 52. Biblioteca, kits de marca e fontes próprias (Fase 5 do refinamento, 25 de outubro de 2026; pedido do dono)
+
+O criador guarda o que é dele (logo, fotos, vídeos, cores, fontes, estilos) uma vez e reaplica em qualquer vídeo, sem conta nem nuvem.
+Tudo fica neste iPhone.
+- **Sua biblioteca** (`MediaLibraryStore`, `LibraryAsset`, Application Support/MediaLibrary com `library.json`): dentro de **Adicionar foto ou
+  vídeo**, a escolha **Photos · Your library** troca o seletor de Fotos pela biblioteca (lembrada enquanto o editor está aberto), sem ir a outra
+  seção. Busca, filtros **All · Favorites · Logos · Videos · Photos** (na sequência, só vídeos), favoritos primeiro, depois os usados ou guardados
+  por último. Cada cartão mostra a imagem (logo sobre xadrez, para a transparência aparecer), nome, tipo, duração, estrela, a ordem em que foi
+  escolhido e **Missing** ou **Can’t be read** quando o arquivo sumiu ou estragou (tocar diz para tirar da biblioteca; nada é escondido).
+  Fotos e vídeos são escolhidos em ordem e seguem o mesmo caminho de Fotos (onde entram, o trecho, a revisão, §51): inserir como sobreposição
+  (tela dividida, janela, tela cheia) ou como clipe na sequência, conforme o modo. Um **logo** entra num toque: janela pequena (20% da largura) no
+  canto de cima à direita, dentro da área segura, sobre o vídeo inteiro, transparência mantida (`MediaOverlay.isLogo`); um segundo logo troca a
+  imagem do primeiro onde ele está. Entram arquivos por **Add from Photos** e **Add from Files** (PNG de logo, vídeos) sem sair da folha, e
+  **Save to library** na barra de uma mídia escolhida guarda a mídia do vídeo. Segurar um cartão: **Rename**, **Add to favorites**, **Use as a
+  logo / Use as a photo**, **Remove from library** (aviso com Undo; "videos that use it keep it" quando algum vídeo usa).
+- **Propriedade dos arquivos**: a biblioteca guarda um **link físico** (hard link) para os bytes que o Cue já tem (a importação, a mídia de
+  um vídeo); inserir num vídeo cria outro link na pasta do editor (`EditMediaFiles`). Cada um (biblioteca, cada vídeo, cada kit) tem o seu nome
+  para os mesmos bytes, sem cópia nem espaço a mais (cópia só quando o sistema não deixa linkar). Por isso: apagar da biblioteca nunca afeta um
+  vídeo, apagar um vídeo nunca afeta a biblioteca, e os bytes só somem quando o último nome some. O mesmo arquivo duas vezes é o mesmo item
+  (SHA-256 dos bytes, "Already in your library"). Fotos entram de pé, até 2160 px; uma imagem com partes transparentes vira PNG (antes toda foto
+  virava JPEG e o logo perdia a transparência), inclusive no B-roll.
+- **O que sai e quando** (`LibraryFileSweep`, num lançamento, depois da limpeza do editor): um item tirado da biblioteca some da lista na hora,
+  mas o arquivo fica até um lançamento seguinte (Undo funciona na sessão); arquivos que a lista não cita (importação cancelada no meio, item
+  removido) e que não mudaram nos últimos 10 minutos são apagados; nunca um que a lista cita. A pasta do editor segue a regra de antes (§37).
+- **Kits de marca** (`BrandKit`, `BrandKitStore`, Application Support/BrandKits com `kits.json`): em **✦ Smart › Brand** (terceira seção, ao lado de
+  Templates: os looks do Cue e os seus). Um kit tem nome, **cores** (até 6, qualquer cor), **fontes** (títulos e legendas), **logo** (um link
+  próprio para a imagem, com o canto) e cópias dos **estilos de texto, legenda e capa** do criador (os salvos, §50, ou os "deste vídeo"; mudar ou
+  apagar o estilo salvo depois não muda o kit). Vários kits, para quem trabalha com marcas diferentes. **New kit from this video** começa um com o
+  que o vídeo usa (o estilo dos textos, das legendas e da capa, as cores mais usadas sem branco e preto, as fontes e o logo); nada é salvo até
+  **Save kit**. Segurar o cartão: **Edit kit**, **Duplicate**, **Delete kit** (Undo).
+- **Aplicar é explícito** (`BrandKitApplySheet`): tocar o kit abre a lista das partes que ele tem, cada uma dizendo o que muda neste vídeo
+  ("Acme title on 4 texts · words, timing and place stay", "Replaces the video’s logo, where it is", "No cover yet · make one and use … there");
+  todas marcadas de início, a que não dá fica apagada com o motivo. **Apply to this video** é **um passo de Desfazer** (`BrandViewModel.wear`):
+  muda só o visual das partes escolhidas. Textos mantêm palavras, tempo, movimento e lugar (`TextLook.apply(keeping: [.position])`); gráficos
+  (setas, círculos, etiquetas) ficam como estão; legendas mantêm linhas, tempo, tamanho, lugar e formato (`laidOut(like:)`, como trocar de
+  estilo, §50); a capa mantém as palavras. As fontes vão nos textos (no peso mais perto que a família tem), no título da capa e nas legendas.
+  As cores do kit aparecem primeiro em toda paleta deste vídeo (`AppliedBrandKit`, `\.brandColors`). O cartão do kit aplicado fica marcado.
+  **Atualizar ou apagar um kit nunca muda um vídeo já feito**: o vídeo guarda o que o kit pôs nele.
+- **Cores livres** (`OverlayColor` aceita "#RRGGBB"): o último poço de toda paleta do editor abre o seletor de cor do sistema; a cor escolhida
+  aparece na paleta enquanto está em uso. Edições antigas leem igual (o JSON continua texto); uma versão anterior do Cue lê uma cor livre como
+  branco. A cor do texto é conteúdo do criador, não um token: o aviso de contraste das legendas (§50) continua valendo.
+- **Fontes próprias** (`CustomFontStore`, `CustomFontInspector`, `CustomFontRegistry`, Application Support/Fonts com `fonts.json`): **Import font**
+  (Arquivos, TTF, OTF e coleções, vários de uma vez) em Text style › Font, Caption style › Adjust e ✦ Smart › Brand › Your fonts; a família
+  importada aparece primeiro em todo seletor de fonte (texto, legenda, capa, kits), escrita nela mesma. Antes de guardar, o arquivo é lido
+  inteiro: precisa ser fonte que o Core Text monta, com tabela 'head', letras (uma fonte de ícones é recusada) e no máximo 40 MB; nome da família,
+  estilos e peso vêm da própria fonte (tabela OS/2, e o eixo de peso de uma fonte variável). Uma fonte com o mesmo nome PostScript de uma que o
+  iPhone ou o Cue já têm é recusada ("… is already on this iPhone"); o mesmo arquivo de novo diz "already in your fonts"; um arquivo que falha não
+  deixa nada. Registro só para o Cue (`.process`), nunca para outros apps, e o arquivo nunca é movido depois de registrado. Desenhada pelo mesmo
+  `TextFont` da prévia e da exportação; **letras que a fonte não tem** saem na fonte do sistema, no mesmo peso, letra a letra (cascade list).
+  Um vídeo guarda a fonte como "custom:<família>": se a família não está no iPhone (removida de vez), o texto sai em SF Pro, o seletor mostra o
+  nome com a nota "… isn’t on this iPhone · drawn in SF Pro until you import it again", e importar a mesma família devolve a fonte ao vídeo.
+  **Remover** (Your fonts, com Undo) tira dos seletores, mas o vídeo, estilo salvo ou kit que usa continua desenhando nela; os arquivos só são
+  apagados num lançamento em que nada salvo cita a família (vídeos, rascunhos com o desfazer, estilos salvos, kits). Só fontes que o criador
+  pode usar: o Cue não traz fontes comerciais de terceiros nem presume direito de redistribuição, e diz isso sob o botão.
+- **Apagar meus dados** leva também a biblioteca, os kits e as fontes (desregistradas antes).
+- **Limitações**: nada sincroniza entre aparelhos e nada vai junto quando um vídeo é exportado como arquivo de projeto (não há exportação de
+  projeto): a biblioteca, os kits e as fontes valem neste iPhone. Um backup do iPhone leva as pastas; restaurado num aparelho sem o arquivo de uma
+  fonte, o vídeo mostra a nota e desenha em SF Pro. A fonte importada não aparece nos apps de outras empresas nem no teleprompter. O kit não tem
+  "fontes de subtítulo/corpo" separadas (títulos e legendas). Cores do kit não recolorem nada sozinhas: entram nas paletas (os estilos do kit já
+  trazem as cores deles). A capa sem composição ainda não recebe o estilo do kit (o cartão diz).
+- **Testes:** `MediaLibraryStoreTests`, `CustomFontStoreTests` (a Anton do app renomeada vira uma fonte nova para importar), `OverlayColorCustomTests`,
+  `QuickEditBrandKitTests`, `BrandLibraryUITests` (`-uiTestSeedLibrary`, `-uiTestAssetRoot`).

@@ -41,7 +41,8 @@ struct QuickEditView: View {
         _viewModel = State(initialValue: QuickEditViewModel(
             take: take, takes: services.takes, library: services.library,
             editing: services.editing, drafts: services.drafts, toast: services.toast,
-            styles: TextStyleStore(defaults: services.defaults),
+            styles: TextStyleStore(defaults: services.defaults), mediaLibrary: services.mediaLibrary, brandKits: services.brandKits,
+            fonts: services.fonts,
             editorPreferences: EditorPreferencesStore(defaults: services.defaults), prompterLook: services.preferences.prompter,
             motion: services.motion,
             speechLanguage: { languages.captionRequest(for: $0) },
@@ -73,6 +74,7 @@ struct QuickEditView: View {
                     )
                 }
         }
+        .environment(\.brandColors, viewModel.edit.brandKit?.colors ?? [])
         .modifier(CaptionTranslationRunner(viewModel: viewModel))
         .editorPhotoPicker(viewModel)
         .task {
@@ -107,6 +109,16 @@ struct QuickEditView: View {
             // Replace with a longer video: which part fills the place.
             Color.clear.sheet(item: Binding(get: { viewModel.session.partChoice }, set: { viewModel.session.partChoice = $0 })) { choice in
                 MediaPartSheet(viewModel: viewModel, choice: choice)
+            }
+        }
+        .background {
+            // ✦ Smart › Brand: which parts of a kit go on, and a kit made or changed.
+            Color.clear.sheet(item: Bindable(viewModel.brand).kitToApply) { kit in
+                BrandKitApplySheet(viewModel: viewModel, kit: kit)
+                    .environment(\.brandColors, viewModel.edit.brandKit?.colors ?? [])
+            }
+            Color.clear.sheet(item: Bindable(viewModel.brand).kitBeingEdited) { kit in
+                BrandKitEditorSheet(viewModel: viewModel, kit: kit)
             }
         }
         .confirmationDialog(

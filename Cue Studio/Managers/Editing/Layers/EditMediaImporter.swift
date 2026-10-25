@@ -96,7 +96,8 @@ final class EditMediaImporter: EditMediaImporting {
     }
 
     /// The photo upright, its longest side at most `maxPhotoSide`, read straight from the file at that size (`CGImageSource`):
-    /// a 48 MP photo is never decoded whole (about 190 MB) just to be made smaller.
+    /// a 48 MP photo is never decoded whole (about 190 MB) just to be made smaller. A see-through picture (a logo, a sticker)
+    /// is kept as PNG, with its transparency; any other as JPEG.
     nonisolated static func storePhoto(_ data: Data) throws -> ImportedMedia {
         let options: [CFString: Any] = [
             kCGImageSourceCreateThumbnailFromImageAlways: true,
@@ -107,10 +108,13 @@ final class EditMediaImporter: EditMediaImporting {
         ]
         guard let source = CGImageSourceCreateWithData(data as CFData, nil),
               let image = CGImageSourceCreateThumbnailAtIndex(source, 0, options as CFDictionary),
-              image.width > 0, image.height > 0,
-              let jpeg = UIImage(cgImage: image).jpegData(compressionQuality: 0.9) else { throw EditMediaImportError.unreadable }
-        let file = try EditMediaFiles.newFile(pathExtension: "jpg")
-        try jpeg.write(to: file.url, options: .atomic)
+              image.width > 0, image.height > 0 else { throw EditMediaImportError.unreadable }
+        let seeThrough = LibraryFileReader.isSeeThrough(source)
+        guard let encoded = seeThrough ? UIImage(cgImage: image).pngData() : UIImage(cgImage: image).jpegData(compressionQuality: 0.9) else {
+            throw EditMediaImportError.unreadable
+        }
+        let file = try EditMediaFiles.newFile(pathExtension: seeThrough ? "png" : "jpg")
+        try encoded.write(to: file.url, options: .atomic)
         return ImportedMedia(kind: .photo, fileName: file.name, aspect: Double(image.width) / Double(image.height), duration: nil)
     }
 }

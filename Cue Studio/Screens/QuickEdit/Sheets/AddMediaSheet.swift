@@ -11,7 +11,8 @@ import SwiftUI
 /// then the photo library right in the sheet. Over the video, several can be picked at once, in order, and go one after the
 /// other from the playhead. Before anything goes in, a video's part is chosen (`MediaPartStep`), and several picks are
 /// reviewed together (`MediaRunStep`), with what is shortened or left out to fit said up front. In the sequence, the
-/// creator's other takes come first, for a montage of several takes.
+/// creator's other takes come first, for a montage of several takes. "Your library" (`MediaLibrarySection`) in place of
+/// Photos offers what the creator kept to reuse: picked the same way, a logo straight on.
 struct AddMediaSheet: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -95,6 +96,32 @@ struct AddMediaSheet: View {
                     }
                 }
             }
+            PanelSegmented(
+                options: [PanelOption(false, String(localized: "Photos"), key: "photos"), PanelOption(true, String(localized: "Your library"), key: "library")],
+                selection: viewModel.brand.showsLibrary, identifier: "edit.mediaSource"
+            ) { viewModel.brand.showsLibrary = $0 }
+            if viewModel.brand.showsLibrary {
+                MediaLibrarySection(
+                    viewModel: viewModel, videosOnly: mode == .sequence, allowsSeveral: mode.allowsSeveral,
+                    onContinue: { assets in proceed(with: viewModel.brand.picks(of: assets)) },
+                    onLogo: { asset in
+                        viewModel.brand.insertLogo(asset)
+                        isDone = true
+                        dismiss()
+                    }
+                )
+            } else {
+                photoLibrary
+            }
+        }
+        .onChange(of: items) { _, picked in
+            // In the sequence one video goes in at a time: picking it is enough.
+            guard !mode.allowsSeveral, !picked.isEmpty else { return }
+            Task { await bringIn() }
+        }
+    }
+
+    @ViewBuilder private var photoLibrary: some View {
             ZStack {
                 PhotosPicker(
                     selection: $items, maxSelectionCount: mode.allowsSeveral ? 20 : 1, selectionBehavior: .ordered,
@@ -119,12 +146,6 @@ struct AddMediaSheet: View {
                 ) { Task { await bringIn() } }
                 .padding(.bottom, 8)
             }
-        }
-        .onChange(of: items) { _, picked in
-            // In the sequence one video goes in at a time: picking it is enough.
-            guard !mode.allowsSeveral, !picked.isEmpty else { return }
-            Task { await bringIn() }
-        }
     }
 
     private var insertionNote: String {
@@ -147,8 +168,14 @@ struct AddMediaSheet: View {
     private func bringIn() async {
         let imported = await overlays.importPicks(items)
         items = []
-        guard !imported.isEmpty else { return }
-        picks = imported.map { MediaPick($0) }
+        proceed(with: imported.map { MediaPick($0) })
+    }
+
+    /// Picks in hand (from Photos or the library): one video asks for its part, one photo goes straight in, several are
+    /// reviewed.
+    private func proceed(with picked: [MediaPick]) {
+        guard !picked.isEmpty else { return }
+        picks = picked
         if picks.count == 1 {
             if picks[0].isVideo {
                 step = .part(picks[0].id)

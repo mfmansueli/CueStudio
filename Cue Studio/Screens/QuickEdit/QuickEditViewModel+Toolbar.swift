@@ -237,6 +237,9 @@ extension QuickEditViewModel {
                     id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateMedia
                 ))
             }
+            items.append(EditorToolbarItem(
+                id: "saveToLibrary", label: String(localized: "Save to library"), systemImage: "tray.and.arrow.down", action: .saveMediaToLibrary
+            ))
             // Only a video with a sound of its own has one to take out.
             if audio.canExtractAudio {
                 items.append(EditorToolbarItem(
@@ -341,6 +344,7 @@ extension QuickEditViewModel {
         case .deleteMedia: overlays.deleteMedia(id)
         case .splitMedia: overlays.splitMedia(id)
         case .closeGap: overlays.closeGap(before: id)
+        case .saveMediaToLibrary: Task { await brand.saveMediaToLibrary(id) }
         default: return false
         }
         return true

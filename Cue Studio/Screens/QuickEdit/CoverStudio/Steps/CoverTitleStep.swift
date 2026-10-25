@@ -28,7 +28,7 @@ struct CoverTitleStep: View {
             group(String(localized: "Type")) {
                 // The same families as the texts and captions on the video, each chip in its own face.
                 PanelChips(
-                    options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: style.font.face,
+                    options: TextOverlayFont.pickerFonts(including: style.font.face).map { PanelOption($0, $0.label) }, selection: style.font.face,
                     font: { CueStudioFont.chip($0, size: $1) }, identifier: "cover.font",
                     onSelect: { face in viewModel.updateTitle { $0.font = CoverFont(face, weight: $0.font.weight) } }
                 )

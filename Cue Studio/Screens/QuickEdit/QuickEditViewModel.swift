@@ -107,6 +107,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// What lies on the video: texts and graphics, photos and videos, their motion and keyframes, Track, type styles
     /// (`OverlaysViewModel`).
     let overlays: OverlaysViewModel
+    /// The creator's own things: the media library, brand kits and imported fonts (`BrandViewModel`).
+    let brand: BrandViewModel
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
     @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
     /// Everything the editor started and waits for (`EditorJobs`): Auto, captions, Track, the cover, a short preview, the
@@ -117,6 +119,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
+        mediaLibrary: MediaLibraryStore? = nil, brandKits: BrandKitStore? = nil, fonts: CustomFontStore? = nil,
         editorPreferences: EditorPreferencesStoring? = nil, prompterLook: PrompterSettings = PrompterSettings(),
         coverPictures: CoverPicturing? = nil, soundPreviews: SoundEffectPreviewing? = nil,
         translations: TranslationAvailabilityChecking = AppleTranslationAvailability(), motion: MotionAnalysisService? = nil,
@@ -161,6 +164,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         audio = AudioViewModel(
             session: session, editing: editing, importer: mediaImporter, recorder: recorder ?? VoiceOverRecorder(),
             editorPreferences: preferences, prompterLook: prompterLook, soundPreviews: soundPreviews ?? SoundEffectPreviewPlayer()
+        )
+        brand = BrandViewModel(
+            session: session, library: mediaLibrary ?? MediaLibraryStore(), kits: brandKits ?? BrandKitStore(), fonts: fonts ?? CustomFontStore(),
+            styles: styles
         )
         session.host = self
         self.player.playingStopped = { [weak self] in self?.audio.playingStopped() }
