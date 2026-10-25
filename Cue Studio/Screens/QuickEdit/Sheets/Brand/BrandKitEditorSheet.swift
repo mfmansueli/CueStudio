@@ -56,7 +56,7 @@ struct BrandKitEditorSheet: View {
         VStack(alignment: .leading, spacing: 8) {
             PanelRowLabel(label: String(localized: "Colors"), detail: "\(kit.colors.count)/\(BrandKit.maximumColors)")
             // Each color is its own well: the system's picker changes it in place (a brand's exact color); − takes it out.
-            HStack(spacing: 4) {
+            HStack(spacing: 12) {
                 ForEach(Array(kit.colors.enumerated()), id: \.offset) { index, color in
                     CustomColorWell(selection: color, diameter: 30, identifier: "edit.brand.color.\(index)") { picked in
                         guard kit.colors.indices.contains(index) else { return }
@@ -67,9 +67,14 @@ struct BrandKitEditorSheet: View {
                             guard kit.colors.indices.contains(index) else { return }
                             kit.colors.remove(at: index)
                         } label: {
-                            Image(systemName: "minus.circle.fill").font(.caption).foregroundStyle(Palette.ink, Palette.surface)
+                            Image(systemName: "minus.circle.fill")
+                                .font(.editorGlyph(EditorGlyph.large, weight: .semibold))
+                                .foregroundStyle(Palette.surface, Palette.ink)
+                                .frame(width: 28, height: 28)
+                                .contentShape(Rectangle())
                         }
                         .buttonStyle(.plain)
+                        .offset(x: 8, y: -8)
                         .accessibilityLabel(Text("Remove \(color.label)"))
                     }
                 }
