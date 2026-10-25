@@ -47,7 +47,7 @@ extension OverlaysViewModel {
         guard let first = run.placed.first, let end = run.end else {
             return String(localized: "No room here · Move the playhead")
         }
-        let place = String(localized: "\(DurationText.editor(first.span.start)) to \(DurationText.editor(end))")
+        let place = DurationText.editorRange(first.span.start, end)
         if run.leftOut > 0 {
             return String(localized: "\(place) · \(run.leftOut) don’t fit before the end and stay out")
         }
@@ -117,7 +117,12 @@ extension OverlaysViewModel {
             }
         }
         var next = edit
-        if layout == .split, next.splitScreen.layouts.isEmpty { next.splitScreen.setLayout(SplitLayout()) }
+        if layout == .split, next.splitScreen.layouts.isEmpty {
+            // The first split screen: a soft blurred seam with the captions on it, the way these videos are made (Layout
+            // changes the seam, Caption style moves the captions).
+            next.splitScreen.setLayout(SplitLayout(seam: .blur))
+            next.splitScreen.captionsOnSeam = true
+        }
         let splitLayout = next.splitScreen.layout(id: nil)
         let areas = SplitPlacement.areas(splitLayout, in: frameShape)
         var layer = (next.media.map(\.stackOrder).max() ?? -1) + 1
@@ -287,7 +292,10 @@ extension OverlaysViewModel {
         }
         var next = edit
         if layout == .split {
-            if next.splitScreen.layouts.isEmpty { next.splitScreen.setLayout(SplitLayout()) }
+            if next.splitScreen.layouts.isEmpty {
+                next.splitScreen.setLayout(SplitLayout(seam: .blur))
+                next.splitScreen.captionsOnSeam = true
+            }
             let areas = SplitPlacement.areas(next.splitScreen.layout(id: nil), in: frameShape)
             next.media[index].splitLayoutID = next.splitScreen.layouts.first?.id
             if next.media[index].areaFraming == nil {

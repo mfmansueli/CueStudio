@@ -134,6 +134,8 @@ struct QuickEditMontageTests {
         let viewModel = scenario.viewModel
         let original = try writeVideo(of: scenario.other, in: viewModel)
         defer { try? FileManager.default.removeItem(at: original) }
+        // At the end: it goes after the take.
+        scenario.player.seek(to: 12)
         await viewModel.clips.addClip(from: scenario.other)
         let source = try #require(viewModel.edit.sources.first)
         defer { EditMediaFiles.remove([source.fileName]) }
@@ -151,7 +153,7 @@ struct QuickEditMontageTests {
 
     /// Insert as clip goes where the sheet says before the pick: after the clip at the playhead (not at the end), picked, with the
     /// playhead on its start and a toast that says which clip it became.
-    @Test func anAddedClipGoesAfterTheClipAtThePlayheadAndIsPicked() async throws {
+    @Test func anAddedClipGoesInAtThePlayheadSplittingTheClipAndIsPicked() async throws {
         let editor = FakeTakeEditor()
         editor.duration = 12
         let scenario = await makeScenario(editor: editor)
@@ -164,16 +166,20 @@ struct QuickEditMontageTests {
         viewModel.perform(.splitClip)
         viewModel.selection = nil
         scenario.player.seek(to: 3)
-        #expect(viewModel.clips.insertionNote == "Goes after clip 1, at 00:06.0")
+        #expect(viewModel.clips.insertionNote == "Goes in at 00:03.0 · splits clip 1")
         await viewModel.clips.addClip(from: scenario.other)
         let source = try #require(viewModel.edit.sources.first)
         defer { EditMediaFiles.remove([source.fileName]) }
         let segments = viewModel.edit.timeline.segments
-        #expect(segments.count == 3)
+        #expect(segments.count == 4)
+        #expect(segments[0].sourceEnd == 3 && segments[2].sourceStart == 3)
         #expect(segments[1].sourceID == source.id)
         #expect(viewModel.selection == .clip(segments[1].id))
-        #expect(scenario.player.currentTime == 6)
-        #expect(scenario.toast.message == "B-roll walk · Take 1 added as clip 2, at 00:06.0")
+        #expect(scenario.player.currentTime == 3)
+        #expect(scenario.toast.message?.hasPrefix("B-roll walk · Take 1 added as clip 2, at 00:03.0 · the video is") == true)
+        // Close to a cut, it goes in at the cut, splitting nothing.
+        scenario.player.seek(to: viewModel.edit.timeline.editedStart(ofSegmentAt: 3) - 0.05)
+        #expect(viewModel.clips.insertionNote.hasSuffix("before clip 4"))
     }
 
     /// A photo or video laid over the video starts at the playhead: the sheet says so, and how long, before the pick.

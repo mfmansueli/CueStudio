@@ -1126,13 +1126,12 @@ auditoria: `reports/editor-award-checklist.md`.
   separam estilo por linha e o painel diz "Pick a look in Style…". Dividir uma linha mantém o estilo nas duas metades; traduções mostram as
   linhas sem o estilo. Sair da lista (outro painel) termina a seleção; a timeline continua mostrando uma linha escolhida por vez.
 - **Replace clip** (barra do clipe › **Replace**, `ClipsViewModel+ReplaceClip`, `EditTimeline.replaceSource`, `TakeEdit.moveOverlays`; o
-  padrão do CapCut): o Fotos abre só com vídeos; o escolhido entra no lugar do clipe, do começo do vídeo, pela mesma duração (se o vídeo é mais
-  curto, o clipe fica do tamanho dele: "Clip replaced · the video is shorter, so the clip is too"), com a mesma velocidade, zoom, volume,
+  padrão do CapCut): o Fotos abre só com vídeos; um vídeo mais longo que o clipe abre **Pick the part** (`MediaPartSheet`: a janela do tamanho do
+  clipe desliza sobre o vídeo novo, ▶ toca o trecho); o escolhido entra no lugar do clipe, daquele trecho, pela mesma duração (se o vídeo tem menos,
+  o clipe fica do tamanho dele: "Clip replaced · the video is shorter, so the clip is too"), com a mesma velocidade, zoom, volume,
   transição e look. Textos, mídias e narrações presos ao clipe ficam no mesmo momento dele. Legendas e Studio Voice são da gravação: a nova não
   tem legendas até Auto captions ouvir de novo. A gravação antiga nunca muda; um Undo ("Clip replaced" · Undo) a traz de volta. Foto: "Pick a
   video first"; menos de 0,3 s: "Video too short to add".
-  Diferença que fica do CapCut (comparado em 17/10/2026): lá se escolhe que trecho do vídeo novo entra; aqui ele entra do começo e as alças do
-  clipe aparam. Próximo passo: a faixa "Part of the video" do B-roll (`MediaTrimStrip`) também para um clipe de outra gravação.
 - **Extract audio** (barra do clipe e, num vídeo com som por cima, a da mídia; `AudioViewModel+ExtractAudio`, `SoundExtractor`,
   `TakeEditing.extractSound`): o som do clipe sai para a faixa de música como um clipe próprio ("Sound · Clip 2" / "Sound · Video",
   `MusicClip.extractedFrom`), onde tocava, no volume do clipe (ou do vídeo), sem fades e sem abaixar sob a voz, e o clipe (ou o vídeo) fica mudo:
@@ -1151,8 +1150,9 @@ auditoria: `reports/editor-award-checklist.md`.
   cinco primeiras na tela do iPhone. **Format** (antes Crop, só na barra do clipe) abre o painel "Format" ("Whole video · format for where you post").
   Clipe: **Split · Speed · Zoom · Volume · Stabilize · Duplicate · Freeze frame · Reverse · Replace · Extract audio · Reorder · Adjust · Filters ·
   Background · Copy look · Paste look · Delete** (Stabilize e Reverse: §39): só o que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro
-  (Format, Studio Voice, Media) fica na principal. Texto ganha **Motion** (Style › Motion); mídia ganha **Track** (§39), **Duplicate** (por cima,
-  mesmo arquivo) e, num vídeo com som, **Extract audio**.
+  (Format, Studio Voice, Media) fica na principal. Texto ganha **Motion** (Style › Motion); mídia ganha **Split** (em dois na agulha), **Replace**,
+  **Track** (§39), **Duplicate** (por cima, mesmo arquivo) e, num vídeo com som, **Extract audio**; um apoio da tela dividida não tem Track nem
+  Duplicate e ganha **Close gap** quando há espaço antes dele (§51).
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
   clipes com quadro, número, origem e duração, arrastados pela alça; cada mudança é um passo de desfazer e o que toca no clipe vai junto. Um clipe só:
   "Split or add a clip to reorder".
@@ -1164,9 +1164,9 @@ auditoria: `reports/editor-award-checklist.md`.
   Edit by text que não ouviu palavras mostra o motivo (`CaptionState.message`, em `warnText`) e só oferece **Try again** quando pode ajudar.
 - **Edit by text à vista:** primeiro bloco de ✦ Smart › Tools, botão "Edit by text · cut words from the video" no painel de legendas, o menu da faixa
   e as ferramentas do clipe (Edit, logo depois de Split, com Remove pauses; §48).
-- **Mídia na barra principal** (**Media**, `.addMediaChoice`): a folha explica cada caminho — **On top of video** (B-roll: "Plays over your video…
-  Move and resize it on the preview") e **Insert as clip** ("Becomes a clip of its own in the sequence, after the clip at the playhead. Videos
-  only.") — e diz, antes de escolher, onde e por quanto tempo (§48).
+- **Mídia na barra principal** (**Media**, `.addMediaChoice`): a folha diz primeiro onde a escolha vai (§51) — **Sobreposição, ao mesmo tempo
+  que o vídeo**: **Split screen**, **Window**, **Full screen** (B-roll); ou **Sequence**: **In sequence** ("Adds time: becomes a clip of its own
+  at the playhead, and the video gets longer. Videos only.") — e diz, antes de escolher, onde e por quanto tempo (§48).
 - **Animações prontas** (`MotionPreset`, `OverlayAnimation`, `MotionPresetPicker` no topo do painel de movimento de textos, gráficos e mídias):
   Fade, Slide up, Slide in, Gentle zoom, Pop e In and out, com **Duration** (0,2–1,5 s) e **Strength**, e **Play it**. A animação é calculada por
   cima dos keyframes (base + animação), então a edição manual em **Keyframes** ("To move it your own way") continua valendo junto.
@@ -1174,8 +1174,10 @@ auditoria: `reports/editor-award-checklist.md`.
   Background e Zoom do clipe; **Paste look** abre a folha para escolher as partes ("The words, sound and timing stay") e colar no clipe ou em
   **Every clip**, num passo de desfazer. Em todos os clipes, o look vai para os ajustes do vídeo e cada clipe perde a cópia própria das partes
   coladas (Filters, Adjust e Background do vídeo inteiro continuam valendo); num clipe, ele guarda só o que difere do vídeo.
-- **Trecho do B-roll** (`MediaOverlay.mediaStart`, `MediaTrimStrip`): no painel da mídia, **Part of the video** mostra a faixa do arquivo com o trecho
-  ("0:03 to 0:05 of 0:06"); arrastar escolhe de onde começa, **Plays for** muda a duração; nunca passa do fim do arquivo. Edições antigas: do 0.
+- **Trecho do B-roll** (`MediaOverlay.mediaStart`, `MediaTrimStrip`): escolhido antes de entrar (§51) e, depois, no painel da mídia: **Part of the
+  video** mostra a faixa do arquivo com o trecho ("0:03 to 0:05 of 0:06"); arrastar escolhe de onde começa sem mudar onde ele está no vídeo,
+  **Plays for** muda a duração; nunca passa do fim do arquivo. Mover a barra mantém o trecho; aparar o começo dela apara o começo do trecho junto
+  (o que aparece em cada momento que fica não muda), como no CapCut. Edições antigas: do 0.
 - **Efeitos sonoros** (`SoundEffect`, `SoundEffectSynth`, na folha "Add music or a sound"): 11 sons **sintetizados no aparelho pelo próprio Cue**
   (Whoosh, Pop, Click, Ding, Sparkle, Riser, Boom, Ping, Typing, Shutter, Wrong), agrupados por uso (Transitions, Text appears, Big moment, Right
   answer, Mistake, Taps, steps…) — "Made by Cue · free to use in your videos": nenhum arquivo de terceiros, nenhum download. Ouvir antes ("Hear …"),
@@ -1378,8 +1380,9 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   e **Cut on** Every beat · Every 2 · Every 4 › **Cut the video on the beats**. Subtítulo: "112 BPM · 48 beats in the video", "Finding the
   beats…" ou "No steady beat in this music". Cada ação é um passo de desfazer.
 - **Barras:** Clipe: Split · Speed · Zoom · Volume · **Stabilize** · Duplicate · Freeze frame · **Reverse** · Reorder · Adjust · Filters · Background ·
-  Copy look · Paste look · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Mídia: Edit · **Track** · Duplicate ·
-  Replace · Delete. Música: Volume · **Beats** · Replace · Delete (efeitos sonoros e sons extraídos sem Beats).
+  Copy look · Paste look · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Mídia: Edit · Split · Replace ·
+  **Track** · Duplicate · Delete (um apoio da tela dividida: Edit · Split · Replace · Close gap · Delete, §51). Música: Volume · **Beats** ·
+  Replace · Delete (efeitos sonoros e sons extraídos sem Beats).
 - **Comparação com CapCut, Edits e InShot** (17/10/2026): Follow face é o "Auto reframe" do CapCut (formato + velocidade do acompanhamento), no
   painel de formato; Stabilize tem três níveis como o do CapCut, por clipe, e ganha "Use on every clip"; Track: no CapCut se arrasta uma caixa
   sobre o objeto; no Cue o próprio item é a caixa (põe e toca Track), um passo a menos, sem caixa de tamanho ajustável; Speed com Normal | Curve
@@ -1688,11 +1691,11 @@ InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza d
 - **O ‹ diz o que está escolhido** (`toolbarContextName`): "Clip 2" numa montagem ("Clip" com um só), "Photo" ou "Video", o tipo do texto ("Title",
   "Subheading", "Hook", "Callout") ou do gráfico ("Arrow", "Circle", "Tag"); "Caption", "Music", "Voice-over", "Transition"; o menu aberto. O tipo
   continua sendo a identidade das ferramentas (`toolbarContextLabel`): escolher outro clipe não volta a barra para o começo.
-- **Inserir mídia diz onde e quanto tempo, antes de escolher** (`AddMediaSheet`, linha com ↧): por cima do vídeo, "Starts at 00:07.0 · a photo
-  stays 3 s, a video plays its length" (a agulha; `OverlaysViewModel.insertionNote`); como clipe, "Goes after clip 2, at 00:12.4"
-  (`ClipsViewModel.insertionNote`). O clipe entra **depois do clipe escolhido, senão do que está na agulha** (antes ia para o fim quando nada estava
-  escolhido, contra o que a folha dizia), fica escolhido, a agulha vai para o começo dele e o aviso diz "Morning habits · Take 2 added as clip 2, at
-  00:12.4" com Undo. A foto ou o vídeo por cima já entrava na agulha, escolhido, com "Photo added at 00:07.0".
+- **Inserir mídia diz onde e quanto tempo, antes de escolher** (`AddMediaSheet`, linha com ↧): por cima do vídeo, "Starts at 00:07.0 · room until
+  00:30.0" (`OverlaysViewModel.insertionNote(for:)`); na sequência, "Goes in at 00:07.2 · splits clip 2" (`ClipsViewModel.insertionNote`). O clipe
+  entra **na agulha**, dividindo o clipe ali (perto de um corte, naquele corte), o resto da sequência vai para depois, fica escolhido, a agulha vai
+  para o começo dele e o aviso diz "Morning habits · Take 2 added as clip 2, at 00:12.4 · the video is 8.0s longer" com Undo. Por cima do vídeo,
+  o que foi escolhido entra na agulha, escolhido, com "Photo added at 00:07.0" (§51).
 - **Palavras que não se confundem:** **Captions** são as linhas da fala (Auto captions, ou **Write captions** à mão, no tempo da fala); **Text** é o
   que se põe em qualquer lugar (Title, **Subheading**, Hook, Callout). "Subtitle" virou "Subheading": em espanhol e francês o texto e a legenda eram a
   mesma palavra (Subtítulo, Sous-titre); agora "Texto secundario", "Texte secondaire", "Subkop" (nl), "Underoverskrift" (da, nb), "उपशीर्षक" (hi). Em
@@ -1831,3 +1834,89 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   `CaptionControlsDeliverTests`, `CaptionReviewFixesTests` (o que a revisão independente achou), `CaptionMotionCostTests`,
   `CaptionStyleCatalogUITests` (filtro, salvar e apagar com Undo, tamanho mantido, Animation e Adjust, ênfase), `TextStyleUITests`; capturas opt-in
   `CaptionCatalogCaptureTests` (`TEST_RUNNER_CUE_CAPTION_CATALOG`).
+
+## 51. Tela dividida: o vídeo principal e os apoios ao mesmo tempo (Fase 4 do refinamento, 25 de outubro de 2026; pedido do dono)
+
+Dois conteúdos tocando juntos em duas áreas da mesma tela: o **vídeo principal** (a take, ou um vídeo importado, com seus clipes) e os **apoios**,
+fotos e vídeos com cortes, durações e trechos próprios que se sucedem na outra área enquanto o principal continua. Qualquer conteúdo vai em
+qualquer área; não precisa haver apresentador. **Dividir** (a tesoura) corta no tempo; **Tela dividida** organiza no espaço. Referência do dono: o
+formato "apresentador embaixo, demonstrações trocando em cima" das redes; o Cue o torna um layout pronto em vez da montagem à mão por Overlay e
+máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
+- **Onde se faz** (`AddMediaSheet`, `MediaModeCards`, `MediaLayoutDiagram`): **Media** abre em onde a escolha vai, em cartões desenhados:
+  **Sobreposição · ao mesmo tempo** (**Split screen**, **Window**, **Full screen**) ou **Sequence** (**In sequence**, que acrescenta tempo). Por cima
+  do vídeo, vários de uma vez, na ordem em que foram tocados (o Fotos numera), com **Continue · 3**. Um vídeo só abre **Pick the part**
+  (`MediaPartStep`, `MediaPartStrip`, `MediaPartPreview`: a janela amarela sobre os quadros do vídeo, as pontas para encurtar, ▶ toca o trecho
+  uma vez, "Uses 0:03.0 to 0:08.0 of 0:20.0" e onde entra); vários abrem a revisão (`MediaRunStep`: cada um com quanto mostra, **Part…** e ✕).
+  Entram um depois do outro a partir da agulha (na tela dividida, depois do apoio que estiver na agulha), cada vídeo com o trecho inteiro (ou o
+  escolhido), uma foto com 3 s, **sem nunca alongar o vídeo principal**: o que não cabe até o fim (ou até o próximo apoio) é dito antes, em
+  `warnText` ("the last one is shortened to fit", "1 don’t fit before the end and stay out"), e só isso é encurtado ou fica de fora (`MediaRun`).
+  Tudo entra num passo de desfazer, mudo, e o aviso diz "3 added to the split screen from 00:07.0 · muted" com Undo. A última sobreposição usada é
+  a que Media abre de novo; o "+" depois dos clipes abre na sequência.
+- **O modelo** (`MediaLayout.split`, `SplitScreen`, `SplitLayout`, `AreaFraming`, `RecordingFraming`, `SplitPlacement`): um apoio é uma mídia com o
+  layout de tela dividida, a mesma `MediaOverlay` da Janela e da Tela cheia (trocar o modo em **Show as** mantém tudo que estava nela). O layout
+  (cima/baixo ou lado a lado, 50/50 ou 60/40, qual conteúdo fica maior, qual vem primeiro, a linha) é **um só para o vídeo inteiro por enquanto**;
+  cada apoio guarda o id do layout que usa (`splitLayoutID`), de modo que um trecho possa ter o seu depois. O enquadramento do principal na área é
+  **por gravação** (todo clipe da mesma gravação fica igual, duas pessoas gravadas à parte têm cada uma o seu) e separado do enquadramento da tela
+  cheia (Format, Seguir rosto): voltar à tela cheia nunca herda o zoom da área. Cada apoio tem o seu (Preencher ou Ajustar, zoom de 1 a 4×, ponto
+  no centro), que vale em qualquer formato de área.
+- **Desenho** (`CueVideoCompositor`, `FramePipeline.inArea`, prévia e exportação iguais): com um apoio na agulha, a área do principal é desenhada
+  **a partir da gravação inteira**, não do quadro já recortado pelo Format (uma área mais larga que 9:16 alcança o que o Format cortaria), com
+  Estabilizar, fundo, Skin Smoothing, Adjust, filtro, transições e o zoom do clipe aplicados dentro dela; o apoio preenche ou ajusta a sua (preto
+  onde Ajustar não alcança, nunca desfocado nem esticado). **A emenda** (`SplitLayout.seam`, `SplitSeamDrawing`, só a faixa dela é trabalhada):
+  **None** (corte seco), **Line** (branca, 0,4% do lado menor), **Blur** (as duas imagens se desfazem uma na outra numa faixa de 6% do lado menor
+  para cada lado, mais forte no meio; o padrão da primeira tela dividida) e **Shadow** (faixa escura de 10% para cada lado, até 70% no meio, que também firma a
+  legenda posta ali). **Onde não há apoio, o
+  principal volta à tela cheia**, com corte seco. Janelas e fotos por cima ficam por cima da tela dividida; o fade para o preto escurece tudo;
+  textos e legendas vêm por último. A capa não leva a tela dividida (como o B-roll, §46). Um apoio por vez na área (um sobre outro é recusado:
+  "Another support shows then · one at a time in the split screen") e cada apoio conta no limite de 3 mídias ao mesmo tempo, que não mudou.
+- **Os apoios seguem a fala** (`MediaOverlay.pieces`, `followsCuts`, `TakeEdit.pinMedia`): toda mídia posta a partir desta fase fica com o trecho
+  da fala sobre o qual foi posta. Dividir um clipe não muda nada; cortar 5 a 7 s do principal sob um apoio corta os mesmos 2 s do apoio e o resto
+  continua em sincronia; o que vem depois anda junto; um clipe de outra gravação posto no meio (Inserir na sequência) toca sem o apoio, que
+  continua depois, onde a fala continua; a velocidade de um clipe nunca acelera o apoio (sob um clipe mais rápido ele mostra menos do arquivo, sob
+  um mais lento mais, nunca passando do fim: aí a tela volta inteira, e a barra mostra onde). Uma mídia posta atravessando para o clipe de outra
+  gravação toca por cima dele o tanto que foi posta (`tail`). Mídia de antes desta fase toca direto, como sempre.
+- **Tempo e trecho**: a barra da mídia move (o trecho fica) e apara (aparar o começo apara o começo do trecho junto, o que aparece em cada momento
+  que fica não muda); **Part** › **Part of the video** escolhe outro trecho sem mudar o lugar; **Split** divide a mídia na agulha (a segunda parte
+  continua do mesmo segundo do arquivo; perto demais de uma ponta: "Move the playhead inside it to split it"); **Close gap** move o apoio para
+  junto do anterior, sem tocar na fala ("Moved 0.3s back to meet the one before · the speech didn’t change"). Espaços curtos (menos de 0,5 s)
+  entre apoios ficam marcados na timeline com hachura amarela; nunca são fechados sozinhos. Excluir um apoio deixa o espaço ("Support removed ·
+  the main video fills the frame there" · Undo).
+- **Som** (`MediaOverlay.mainVolume`, `MainSoundLevels`, `SplitScreen.mutesMedia`): todo vídeo entra mudo. No painel: **Main video** (o volume do
+  principal só enquanto o apoio aparece, até 0 para ouvir só o apoio, com rampa de 30 ms nas pontas) e **This support** (o som próprio); **Mute
+  all supports** cala todas as mídias por cima, cada uma guardando o seu volume. Cada vídeo tem uma faixa de som só: trocar de layout nunca duplica
+  imagem nem som. Abaixar o apoio sob a voz automaticamente fica para depois.
+- **Legendas**: continuam desenhadas por cima de tudo e no tempo da fala. **On the seam during the split screen** (Caption style › Format,
+  `SplitScreen.captionsOnSeam`, ligada ao criar a primeira tela dividida, como nos vídeos desse formato) centraliza na emenda as linhas ditas
+  enquanto um apoio aparece (cima/baixo; lado a lado não tem emenda na
+  horizontal), dentro das margens seguras; o resto fica onde o criador pôs, e arrastar a legenda para fora da emenda desliga a opção. **Caption its
+  voice** (painel › Sound, `MediaOverlay.captionsItsVoice`) legenda a fala do próprio apoio, ouvido sozinho do seu arquivo pelo mesmo transcritor
+  (nunca a mistura das duas vozes, que o reconhecimento de fala não separa): as linhas dele aparecem onde ele aparece e seguem os cortes como ele;
+  as da fala principal sob ele ficam escondidas, não apagadas, e voltam quando a opção desliga. Uma voz legendada por vez.
+- **Painel** (`SplitScreenPanel`; título "Split screen"): **Layout** (Show as; cartões Top and bottom / Side by side; Proportion 50/50 · 60/40;
+  Larger: Main video · Support; Swap top and bottom / Swap sides, que troca só as posições, nunca som, trecho, duração ou o que cada um é; Seam:
+  None · Line · Blur · Shadow; "Every split screen in this video uses this layout"), **Framing** (Area: Main video · Support, Fill · Fit, Zoom, Center and fill),
+  **Sound** e **Part** (o trecho e a duração, onde está no vídeo, Close gap). Subtítulo: "Every split screen in the video", "Main video · its
+  recording" ou "This support". Altura média; a timeline compacta mostra a faixa de mídia junto do vídeo.
+- **Na prévia** (`SplitAreaLayer`, parado): tocar uma área escolhe o apoio com aquela área (contorno amarelo e o nome num selo escuro; a outra
+  tracejada); arrastar e pinçar movem e dão zoom no que ela mostra, seguindo o dedo (uma cópia desenhada ali; o vídeo redesenha quando o dedo sai),
+  resistindo além da borda e com um toque háptico ao centralizar; a pega na emenda arrasta entre 40, 50 e 60%. VoiceOver: Zoom in/out e Move
+  up/down/left/right em cada área; a emenda é ajustável.
+- **Timeline**: as mídias têm **faixa própria**, logo abaixo do vídeo (só quando há alguma), com os quadros de cada uma (de cada pedaço, do seu
+  segundo do arquivo), o tipo num selo com o símbolo do modo, e escurecido onde ela não aparece dentro da barra.
+- **Substituir** (mídia): um vídeo mais longo que o lugar abre Pick the part; fica o lugar, a duração (um vídeo com menos termina antes: "Video in
+  its place · it’s shorter, so it ends sooner"), o modo, a janela, o zoom e o ajuste do enquadramento, o movimento e o volume (se o novo tem som);
+  foto pode tomar o lugar de vídeo e vice-versa; um passo de desfazer, com aviso.
+- **Importar vídeo** (Takes, botão no alto à esquerda; `TakeVideoImporter`, `TakeLibraryService.importVideo`, `TakeOrigin`): um vídeo do Fotos
+  vira um vídeo próprio na biblioteca, **marcado como importado** ("Imported video", "Imported"; sem número de take, sem Retake, sem roteiro), no
+  seu formato, resolução e quadros por segundo, e abre direto no editor, onde as legendas saem do som dele.
+- **Limites desta entrega**: um layout para o vídeo inteiro (um layout por trecho fica preparado no modelo, não na tela); o enquadramento do
+  principal é por gravação, não por clipe; Seguir rosto não age dentro da área (o primeiro enquadramento acha o rosto uma vez, `FaceFinder`, e
+  depois é do criador); sem transição animada entre tela cheia e dividida (corte seco); sem abaixar o apoio sob a voz; linhas da voz de um apoio não
+  se arrastam na timeline para outro clipe; reordenar clipes de modo que a fala de um apoio volte no tempo encerra o apoio ali.
+- **Testes:** `MediaPiecesTests` (as regras de corte, velocidade, inserção, trecho, prender ao editar), `SplitScreenModelTests` (áreas, preencher e
+  ajustar, limites do arraste, rosto, som do principal, leitura de edições antigas e de versões novas), `SplitScreenCaptionTests`,
+  `QuickEditSplitScreenTests` (entrar vários, não caber, um por vez, dividir, fechar espaço, aparar, layout e enquadramento como passos de desfazer,
+  som, inserir na sequência), `TakesImportTests`, exportações reais `RealExports/SplitScreenExportTests` (cada área pela cor, o principal
+  reenquadrado e não coberto, inverter, 60/40, lado a lado, tela cheia no espaço, linha, foto de outro formato sem deformar, o corte que corta o
+  apoio, os sons independentes e sem duplicar, e a prévia igual à exportação), `SplitScreenUITests` (a folha de Media, as áreas na prévia, o
+  painel, dividir e fechar espaço); `EditSnapshotCompletenessTests` cobre a tela dividida no Desfazer. Demo: `-uiTestDemoSplit`.

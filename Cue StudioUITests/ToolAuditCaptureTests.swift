@@ -408,8 +408,8 @@ final class ToolAuditCaptureTests: XCTestCase {
             closeSheet()
         }
         tap("edit.toolbar.back", within: 2)
-        // The tracks under the video: texts and media (0), captions (1), music (2), voice-over (3).
-        if tapTrack(2, secondsAfterPlayhead: 1.5), app.buttons["edit.toolbar.beats"].exists(within: 3) {
+        // The tracks under the video: media (0), texts (1), captions (2), music (3), voice-over (4).
+        if tapTrack(3, secondsAfterPlayhead: 1.5), app.buttons["edit.toolbar.beats"].exists(within: 3) {
             try capture("demo-music-picked")
             if tool("beats") {
                 sleep(3)
@@ -418,11 +418,11 @@ final class ToolAuditCaptureTests: XCTestCase {
             }
             tap("edit.toolbar.back", within: 2)
         }
-        if tapTrack(3, secondsAfterPlayhead: 2.5), app.buttons["edit.toolbar.reRecord"].exists(within: 3) {
+        if tapTrack(4, secondsAfterPlayhead: 2.5), app.buttons["edit.toolbar.reRecord"].exists(within: 3) {
             try capture("demo-voiceover-picked")
             tap("edit.toolbar.back", within: 2)
         }
-        if tapTrack(1, secondsAfterPlayhead: 1), app.buttons["edit.toolbar.editCaption"].exists(within: 3) {
+        if tapTrack(2, secondsAfterPlayhead: 1), app.buttons["edit.toolbar.editCaption"].exists(within: 3) {
             try capture("demo-caption-picked")
             if scrollToolbarToEnd() { try capture("demo-caption-picked-end") }
             tap("edit.toolbar.back", within: 2)

@@ -479,6 +479,23 @@ struct PaletteContrastTests {
         }
     }
 
+    /// The split screen on the preview, over a white or a black picture: the picked area's name (ink on the badge's pill), the
+    /// picked area's yellow outline and the seam's yellow grip ringed in the outlines' dark halo (parts that inform, 3:1), and the
+    /// ▶ of a part's preview.
+    @Test func theSplitScreenMarksReadOverAnyPicture() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            let pill = rgb(Palette.Takes.durationBadge, in: .dark, over: picture)
+            let name = ColorContrast.ratio(rgb(Palette.ink, in: .dark, over: pill), pill)
+            #expect(name >= ColorContrast.textMinimum, "area name over \(picture): \(name)")
+            let halo = rgb(Palette.Editor.overlayOutlineHalo, in: .dark, over: picture)
+            let yellow = ColorContrast.ratio(rgb(Palette.acc, in: .dark, over: picture), picture)
+            let ring = ColorContrast.ratio(halo, picture)
+            #expect(max(yellow, ring) >= ColorContrast.componentMinimum, "seam grip over \(picture): \(yellow) / \(ring)")
+            let gripOnRing = ColorContrast.ratio(rgb(Palette.acc, in: .dark, over: halo), halo)
+            #expect(gripOnRing >= ColorContrast.componentMinimum, "seam grip on its ring: \(gripOnRing)")
+        }
+    }
+
     /// A style card's marks over the take's frame (dimmed under the sample), white or black: "Default" and the ★ on their dark
     /// fill read as text; the ✓ badge (yellow, ringed dark) stands out from the frame as a part that informs (3:1) and its check
     /// reads on its yellow.

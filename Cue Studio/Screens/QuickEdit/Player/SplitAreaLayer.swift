@@ -170,9 +170,11 @@ struct SplitAreaLayer: View {
         let stacked = layout.arrangement == .stacked
         let share = layout.firstShare
         let position = stacked ? size.height * CGFloat(share) : size.width * CGFloat(share)
+        // Yellow ringed in the outlines' dark halo, so it stands out on a white picture as on a black one (3:1).
         return Capsule()
             .fill(Palette.acc)
-            .frame(width: stacked ? 36 : 6, height: stacked ? 6 : 36)
+            .overlay(Capsule().strokeBorder(Palette.Editor.overlayOutlineHalo, lineWidth: 1.5))
+            .frame(width: stacked ? 36 : 7, height: stacked ? 7 : 36)
             .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
             .contentShape(Rectangle())
             .position(x: stacked ? size.width / 2 : position, y: stacked ? position : size.height / 2)

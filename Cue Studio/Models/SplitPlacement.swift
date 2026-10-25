@@ -9,11 +9,14 @@ import Foundation
 /// Where the areas of a split screen are on a frame, and how a picture sits in its area. Pure, so the compositor, the
 /// preview's handles and the tests use the same numbers.
 nonisolated enum SplitPlacement {
-    /// The two areas on a frame, from the top left, and the seam's line when the layout shows it.
+    /// The two areas on a frame, from the top left, the seam's line when the layout draws one (Line), and the band its effect
+    /// spreads over (Blur, Shadow).
     struct Areas: Equatable, Sendable {
         var main: CGRect
         var support: CGRect
         var divider: CGRect?
+        var band: CGRect?
+        var seam: SplitSeam = .none
 
         func rect(of area: SplitArea) -> CGRect {
             area == .main ? main : support
@@ -46,11 +49,19 @@ nonisolated enum SplitPlacement {
         var areas = layout.first == .main
             ? Areas(main: first, support: second, divider: nil)
             : Areas(main: second, support: first, divider: nil)
-        if layout.showsDivider {
-            let thickness = max(2, (min(size.width, size.height) * dividerShare).rounded())
+        areas.seam = layout.seam
+        let short = min(size.width, size.height)
+        if layout.seam == .line {
+            let thickness = max(2, (short * dividerShare).rounded())
             areas.divider = stacked
                 ? CGRect(x: 0, y: cut - (thickness / 2).rounded(.down), width: size.width, height: thickness)
                 : CGRect(x: cut - (thickness / 2).rounded(.down), y: 0, width: thickness, height: size.height)
+        }
+        if layout.seam.band > 0, layout.seam != .line {
+            let half = max(2, (short * CGFloat(layout.seam.band)).rounded())
+            areas.band = stacked
+                ? CGRect(x: 0, y: cut - half, width: size.width, height: half * 2)
+                : CGRect(x: cut - half, y: 0, width: half * 2, height: size.height)
         }
         return areas
     }

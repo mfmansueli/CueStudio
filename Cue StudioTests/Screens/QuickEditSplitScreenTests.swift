@@ -63,6 +63,9 @@ struct QuickEditSplitScreenTests {
         #expect(viewModel.edit.media.allSatisfy { $0.layout == .split && $0.followsCuts == true && $0.audioVolume == nil })
         #expect(viewModel.edit.splitScreen.layouts.count == 1)
         #expect(viewModel.edit.media.allSatisfy { $0.splitLayoutID == viewModel.edit.splitScreen.layouts[0].id })
+        // The first split screen starts with a blurred seam and the captions on it.
+        #expect(viewModel.edit.splitScreen.layouts[0].seam == .blur)
+        #expect(viewModel.edit.splitScreen.captionsOnSeam)
         #expect(viewModel.selection == .media(viewModel.edit.media[0].id))
         #expect(scenario.toast.message?.contains("3 added to the split screen from 00:10.0") == true)
         #expect(scenario.toast.message?.contains("muted") == true)
@@ -90,7 +93,7 @@ struct QuickEditSplitScreenTests {
         let run = viewModel.overlays.run(of: picks, as: .split)
         #expect(run.leftOut == 1)
         #expect(run.placed.last?.isShortened == true)
-        #expect(viewModel.overlays.runNote(run, count: 3).contains("1 don’t fit"))
+        #expect(viewModel.overlays.runNote(run, count: 3).contains("1 doesn’t fit"))
         await viewModel.overlays.add(picks, as: .split)
         #expect(spans(viewModel) == [TimeSpan(start: 58, end: 62), TimeSpan(start: 62, end: 64)])
         #expect(viewModel.edit.editedDuration == 64)
@@ -179,6 +182,29 @@ struct QuickEditSplitScreenTests {
         #expect(scenario.toast.message?.contains("one at a time") == true)
     }
 
+    @Test func replacingASupportKeepsItsPlaceAndSettings() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 10)
+        await viewModel.overlays.add([video(6, sound: true)], as: .split)
+        let id = viewModel.edit.media[0].id
+        viewModel.overlays.setAreaFraming(AreaFraming(fit: .fit, zoom: 1.5, center: OverlayPoint(x: 0.2, y: 0.4)), for: .support, of: id)
+        viewModel.overlays.setMediaSoundVolume(id, 0.6)
+        viewModel.overlays.setMainVolume(id, 0.3)
+        var pick = video(20, sound: true)
+        pick.start = 4
+        viewModel.overlays.replaceMedia(id, with: pick)
+        let replaced = try #require(viewModel.edit.media.first)
+        #expect(replaced.id == id && replaced.layout == .split)
+        #expect(spans(viewModel) == [TimeSpan(start: 10, end: 16)])
+        #expect(replaced.mediaStart == 4)
+        #expect(replaced.areaFraming?.fit == .fit && replaced.areaFraming?.zoom == 1.5)
+        #expect(replaced.audioVolume == 0.6 && replaced.mainVolume == 0.3)
+        #expect(scenario.toast.message?.contains("place and settings kept") == true)
+        viewModel.undo()
+        #expect(viewModel.edit.media[0].mediaStart == nil)
+    }
+
     // MARK: - Layout and framing
 
     @Test func theLayoutChangesAsUndoStepsAndSwappingMovesOnlyThePlaces() async {
@@ -193,6 +219,8 @@ struct QuickEditSplitScreenTests {
         viewModel.overlays.swapSplit()
         #expect(viewModel.overlays.splitLayout.first == .main)
         #expect(viewModel.overlays.splitLayout.larger == .main)
+        // Swapping keeps the seam.
+        #expect(viewModel.overlays.splitLayout.seam == .blur)
         // The support's sound, part and timing are as they were.
         #expect(viewModel.edit.media[0] == before)
         viewModel.undo()

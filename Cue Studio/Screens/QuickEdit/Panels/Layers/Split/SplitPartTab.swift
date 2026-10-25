@@ -29,7 +29,7 @@ struct SplitPartTab: View {
             if let span {
                 PanelRowLabel(
                     label: String(localized: "In the video"),
-                    detail: String(localized: "\(DurationText.editor(span.start)) to \(DurationText.editor(span.end))")
+                    detail: DurationText.editorRange(span.start, span.end)
                 )
             }
             if let gap = overlays.gapBefore(media.id) {

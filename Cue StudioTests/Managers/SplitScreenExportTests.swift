@@ -138,12 +138,27 @@ extension RealExports {
             #expect(TwoToneClip.same(try await color(0.5, 0.25, at: 3, in: output), TwoToneClip.green))
         }
 
-        @Test func theDividerIsAThinLineOnTheSeam() async throws {
-            let output = try await export(layout: SplitLayout(showsDivider: true))
-            defer { try? FileManager.default.removeItem(at: output) }
-            let seam = try await color(0.5, 0.5, at: 2, in: output)
-            #expect(seam.allSatisfy { $0 > 180 })
-            #expect(TwoToneClip.same(try await color(0.5, 0.52, at: 2, in: output), TwoToneClip.red))
+        @Test func theSeamIsALineABlurOrAShadow() async throws {
+            // The support is green, the main video's top half red: the seam at 50%.
+            let line = try await export(layout: SplitLayout(seam: .line))
+            defer { try? FileManager.default.removeItem(at: line) }
+            #expect(try await color(0.5, 0.5, at: 2, in: line).allSatisfy { $0 > 180 })
+            #expect(TwoToneClip.same(try await color(0.5, 0.52, at: 2, in: line), TwoToneClip.red))
+            // Blur: just above the seam the green takes on red, just below the red takes on green; further off, untouched.
+            let blur = try await export(layout: SplitLayout(seam: .blur))
+            defer { try? FileManager.default.removeItem(at: blur) }
+            let above = try await color(0.5, 0.495, at: 2, in: blur)
+            let below = try await color(0.5, 0.505, at: 2, in: blur)
+            #expect(above[0] > TwoToneClip.green[0] + 30, "above the seam: \(above)")
+            #expect(below[1] > TwoToneClip.red[1] + 30, "below the seam: \(below)")
+            #expect(TwoToneClip.same(try await color(0.5, 0.4, at: 2, in: blur), TwoToneClip.green))
+            #expect(TwoToneClip.same(try await color(0.5, 0.6, at: 2, in: blur), TwoToneClip.red))
+            // Shadow: darker on the seam, the same away from it.
+            let shadow = try await export(layout: SplitLayout(seam: .shadow))
+            defer { try? FileManager.default.removeItem(at: shadow) }
+            let shaded = try await color(0.5, 0.505, at: 2, in: shadow)
+            #expect(shaded[0] < TwoToneClip.red[0] - 50, "on the seam: \(shaded)")
+            #expect(TwoToneClip.same(try await color(0.5, 0.65, at: 2, in: shadow), TwoToneClip.red))
         }
 
         @Test func aPhotoOfAnotherShapeFitsWithoutBeingStretched() async throws {
@@ -163,6 +178,31 @@ extension RealExports {
             #expect(TwoToneClip.same(try await color(0.5, 0.25, at: 2, in: output), TwoToneClip.yellow))
             #expect(try await color(0.5, 0.03, at: 2, in: output).allSatisfy { $0 < 30 })
             #expect(TwoToneClip.same(try await color(0.5, 0.9, at: 2, in: output), TwoToneClip.blue))
+        }
+
+        @Test func aLandscapeVideoFillsAPortraitTakesAreaWithoutBeingStretched() async throws {
+            // A 16:9 support (640×360) in the 360×320 area on top: Fill covers the area edge to edge, cropping its sides, never
+            // squeezing it.
+            let wide = try await TwoToneClip.make(seconds: 4, top: TwoToneClip.green, bottom: TwoToneClip.green, width: 640, height: 360)
+            defer { try? FileManager.default.removeItem(at: wide) }
+            let name = try EditMediaFiles.link(wide)
+            defer { EditMediaFiles.remove([name]) }
+            let output = try await export(supports: []) { edit in
+                var media = MediaOverlay(kind: .video, fileName: name, aspect: 16.0 / 9, mediaDuration: 4, span: TimeSpan(start: 1, end: 3))
+                media.layout = .split
+                media.followsCuts = true
+                edit.media = [media]
+            }
+            defer { try? FileManager.default.removeItem(at: output) }
+            // Filling: the area is covered edge to edge, no bars. (A 640×360 video is read with the standard-definition color
+            // matrix, so its green comes out a little lighter: green by its dominant channel.)
+            for x in [0.05, 0.5, 0.95] {
+                for y in [0.03, 0.25, 0.47] {
+                    let found = try await color(x, y, at: 2, in: output)
+                    #expect(found[1] > found[0] + 60 && found[1] > found[2] + 60, "at \(x), \(y): \(found)")
+                }
+            }
+            #expect(TwoToneClip.same(try await color(0.5, 0.6, at: 2, in: output), TwoToneClip.red))
         }
 
         @Test func aStretchCutFromTheSpeechIsCutFromTheSupport() async throws {

@@ -62,7 +62,7 @@ struct MediaPartStrip: View {
         .environment(\.layoutDirection, .leftToRight)
         .accessibilityElement()
         .accessibilityLabel(Text("Part of the video"))
-        .accessibilityValue(Text("\(DurationText.editor(start)) to \(DurationText.editor(start + length))"))
+        .accessibilityValue(Text(verbatim: DurationText.editorRange(start, start + length)))
         .accessibilityAdjustableAction { direction in
             move(to: start + (direction == .increment ? 0.5 : -0.5))
         }

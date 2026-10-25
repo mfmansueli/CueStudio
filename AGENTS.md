@@ -98,7 +98,7 @@ aparelho não roda aparece como **não validado** (teste cancelado), nunca aprov
 | My Cue Voice e roteirista | `VoicePersonaDeviceTests` (`tools/voice/collect_runs.py`, `make_pairs.py`), `PromptBudgetDeviceTests`, `WritingImportDeviceTests`, `PlatformLengthDeviceTests`, `LengthVariantsDeviceTests`, `ScriptToolsDeviceTests`, `IdeaRelevanceDeviceTests`, `IdeaSuggestionsDeviceTests`, `CreatorDayDeviceTests`, `InspirationDeviceTests` | `DESIGN_PROJECT.md` §4, §23, §30 |
 | Qualidade de roteiros e ideias (PT/EN/ES, voz completa, meia e sem voz) | `ScriptQualityDeviceTests` (`TEST_RUNNER_CUE_QUALITY_RUN=<nome>`; `tools/quality/collect.py`, `report.py`; reaplicar a lógica pura nos textos: `QualityReplayTests`) | `DESIGN_PROJECT.md` §4.1 |
 | Quick edit | `QuickEditPreviewLatencyTests`; `SkinSmoothingDeviceTests` e `BackgroundDeviceTests` (Vision de verdade; foto de retrato em `Documents` do app via `xcrun devicectl device copy to … --domain-identifier com.cuestudioteleprompter`, `TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg`) | `DESIGN_PROJECT.md` §20, §31 |
-| Desempenho | `PerformanceDeviceUITests` (`TEST_RUNNER_CUE_PERF=1`, `device-ui`: abertura a frio, rolagem sobre o céu, editor pronto, universo; métricas do XCTest) | `DESIGN_PROJECT.md` §42 |
+| Desempenho | `PerformanceDeviceUITests` (`TEST_RUNNER_CUE_PERF=1`, `device-ui`: abertura a frio, rolagem sobre o céu, editor pronto, universo; métricas do XCTest); `SplitScreenDeviceTests` (quadros por segundo da prévia com tela dividida e o pior caso, exportação; cópias das takes mais novas) | `DESIGN_PROJECT.md` §42, §51 |
 
 ## Espaço em disco (não encher o Mac)
 

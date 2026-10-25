@@ -40,7 +40,7 @@ struct SplitScreenModelTests {
     }
 
     @Test func sideBySideSplitsAcrossAndTheAreasMeetWithoutAGap() {
-        let layout = SplitLayout(arrangement: .sideBySide, ratio: .sixtyForty, first: .main, larger: .main, showsDivider: true)
+        let layout = SplitLayout(arrangement: .sideBySide, ratio: .sixtyForty, first: .main, larger: .main, seam: .line)
         let areas = SplitPlacement.areas(layout, in: CGSize(width: 1081, height: 1920))
         #expect(areas.main.minX == 0)
         #expect(areas.main.maxX == areas.support.minX)
@@ -144,7 +144,7 @@ struct SplitScreenModelTests {
         support.mainVolume = 0.2
         support.audioVolume = 0.7
         edit.media = [support]
-        edit.splitScreen.setLayout(SplitLayout(arrangement: .sideBySide, ratio: .sixtyForty, first: .main, larger: .support, showsDivider: true))
+        edit.splitScreen.setLayout(SplitLayout(arrangement: .sideBySide, ratio: .sixtyForty, first: .main, larger: .support, seam: .blur))
         edit.splitScreen.setFraming(AreaFraming(zoom: 2), for: nil)
         edit.splitScreen.mutesMedia = true
         let read = try JSONDecoder().decode(TakeEdit.self, from: JSONEncoder().encode(edit))

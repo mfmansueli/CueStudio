@@ -261,8 +261,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     }
 
     /// A split screen: the main video (already drawn at its area's size) in its area, the support in the other as its framing
-    /// says, on black where a picture doesn't reach (Fit), and the seam's line when the layout shows it. A video without a
-    /// frame at this moment leaves its area black rather than moving the main video.
+    /// says, on black where a picture doesn't reach (Fit), and the seam as the layout draws it (`SplitSeamDrawing`). A video
+    /// without a frame at this moment leaves its area black rather than moving the main video.
     nonisolated private static func splitScreen(
         main: CIImage, support: MediaFrame, frame: CVPixelBuffer?, areas: SplitPlacement.Areas
     ) -> CIImage {
@@ -289,10 +289,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 .transformed(by: CGAffineTransform(translationX: rect.minX, y: rect.minY))
                 .composited(over: canvas)
         }
-        if let divider = areas.divider {
-            canvas = CIImage(color: CIColor(red: 1, green: 1, blue: 1, alpha: 0.9)).cropped(to: flipped(divider)).composited(over: canvas)
-        }
-        return canvas
+        return SplitSeamDrawing.draw(areas.seam, on: canvas, areas: areas, height: size.height)
     }
 
     /// `incoming` sliding in from the right over `outgoing`: none of it at 0, all of it at 1.

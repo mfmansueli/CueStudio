@@ -6,8 +6,9 @@
 import SwiftUI
 import UIKit
 
-/// The part of a video laid over the take that plays: the whole file in frames, and a yellow window as long as it shows in the
-/// edit, dragged to play an earlier or later part (where it shows in the edit doesn't move). Under it, how long it plays,
+/// The part of a video laid over the take that plays: the whole file in frames, and a yellow window over the part it goes
+/// through (as long as it shows, plus what cuts in the speech under it took out), dragged to play an earlier or later part
+/// (where it shows in the edit doesn't move). Under it, how long it plays,
 /// longer or shorter by a tenth or half a second.
 struct MediaTrimStrip: View {
     let viewModel: QuickEditViewModel
@@ -22,14 +23,16 @@ struct MediaTrimStrip: View {
     var body: some View {
         let length = media.mediaDuration ?? 0
         let shown = viewModel.mediaBars.first { $0.id == media.id }?.span.duration ?? 0
+        // The part of the file it goes through: the time it shows, and what the cuts in the speech under it took out with them.
+        let used = viewModel.overlays.fileUsed(by: media)
         VStack(alignment: .leading, spacing: 8) {
             PanelRowLabel(
                 label: String(localized: "Part of the video"),
-                detail: String(localized: "\(DurationText.editor(media.startInFile)) to \(DurationText.editor(media.startInFile + shown)) of \(DurationText.editor(length))")
+                detail: String(localized: "\(DurationText.editor(media.startInFile)) to \(DurationText.editor(media.startInFile + used)) of \(DurationText.editor(length))")
             )
             GeometryReader { proxy in
                 let width = proxy.size.width
-                let window = CGFloat(shown / max(0.001, length)) * width
+                let window = CGFloat(used / max(0.001, length)) * width
                 let x = CGFloat(media.startInFile / max(0.001, length)) * width
                 ZStack(alignment: .leading) {
                     HStack(spacing: 0) {

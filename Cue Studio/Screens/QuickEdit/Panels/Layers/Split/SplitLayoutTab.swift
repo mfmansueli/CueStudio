@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// Where the two contents go: one over the other or side by side, half and half or 60/40 (and which content gets the larger
-/// share), swapped, with or without a line on the seam. One layout for the whole video for now, said under it. "Show as"
-/// turns the support into a window or a full-screen B-roll and back, keeping everything set on it.
+/// share), swapped, and how the seam looks (none, a line, a blur, a shadow). One layout for the whole video for now, said
+/// under it. "Show as" turns the support into a window or a full-screen B-roll and back, keeping everything set on it.
 struct SplitLayoutTab: View {
     let viewModel: QuickEditViewModel
     let media: MediaOverlay
@@ -41,9 +41,10 @@ struct SplitLayoutTab: View {
                 systemImage: layout.arrangement == .stacked ? "arrow.up.arrow.down" : "arrow.left.arrow.right",
                 identifier: "edit.split.swap"
             ) { overlays.swapSplit() }
-            PanelToggleRow(
-                label: String(localized: "Line on the seam"), isOn: layout.showsDivider, identifier: "edit.split.divider"
-            ) { overlays.changeSplitLayout { $0.showsDivider.toggle() } }
+            PanelSegmented(
+                label: String(localized: "Seam"), options: SplitSeam.allCases.map { PanelOption($0, $0.label) },
+                selection: layout.seam, identifier: "edit.split.seam"
+            ) { seam in overlays.changeSplitLayout { $0.seam = seam } }
             PanelNote(text: String(localized: "Every split screen in this video uses this layout."))
         }
     }

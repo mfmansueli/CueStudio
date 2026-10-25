@@ -38,6 +38,8 @@ struct QuickEditMontageCleanUpTests {
         await viewModel.prepare()
         let file = viewModel.takes.videoURL(for: other)
         try Data("video".utf8).write(to: file)
+        // At the end: the other take comes after this one.
+        viewModel.player.seek(to: 12)
         await viewModel.clips.addClip(from: other)
         let source = try #require(viewModel.edit.sources.first)
         return Scenario(viewModel: viewModel, editor: editor, source: source) {

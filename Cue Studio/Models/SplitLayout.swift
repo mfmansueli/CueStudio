@@ -6,7 +6,7 @@
 import Foundation
 
 /// Where the two contents of a split screen go: one over the other or side by side, evenly or 60/40, which content is first
-/// (top, or left), which gets the larger share, and whether a thin line marks the seam. Supports name the layout they use
+/// (top, or left), which gets the larger share, and how the seam between them looks (`SplitSeam`). Supports name the layout they use
 /// (`MediaOverlay.splitLayoutID`): the editor keeps one for the whole video for now, and a section can get its own later.
 nonisolated struct SplitLayout: Codable, Hashable, Identifiable, Sendable {
     var id = UUID()
@@ -17,18 +17,18 @@ nonisolated struct SplitLayout: Codable, Hashable, Identifiable, Sendable {
     var first: SplitArea = .support
     /// The content with the larger share at 60/40.
     var larger: SplitArea = .main
-    var showsDivider = false
+    var seam: SplitSeam = .none
 
     init(
         id: UUID = UUID(), arrangement: SplitArrangement = .stacked, ratio: SplitRatio = .even, first: SplitArea = .support,
-        larger: SplitArea = .main, showsDivider: Bool = false
+        larger: SplitArea = .main, seam: SplitSeam = .none
     ) {
         self.id = id
         self.arrangement = arrangement
         self.ratio = ratio
         self.first = first
         self.larger = larger
-        self.showsDivider = showsDivider
+        self.seam = seam
     }
 
     /// The same layout with the two contents' places exchanged; sizes stay with the contents.
@@ -44,7 +44,7 @@ nonisolated struct SplitLayout: Codable, Hashable, Identifiable, Sendable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, arrangement, ratio, first, larger, showsDivider
+        case id, arrangement, ratio, first, larger, seam
     }
 
     /// Lenient: what's missing or unknown reads as the default.
@@ -55,6 +55,6 @@ nonisolated struct SplitLayout: Codable, Hashable, Identifiable, Sendable {
         ratio = (try? container.decodeIfPresent(SplitRatio.self, forKey: .ratio)) ?? .even
         first = (try? container.decodeIfPresent(SplitArea.self, forKey: .first)) ?? .support
         larger = (try? container.decodeIfPresent(SplitArea.self, forKey: .larger)) ?? .main
-        showsDivider = (try? container.decodeIfPresent(Bool.self, forKey: .showsDivider)) ?? false
+        seam = (try? container.decodeIfPresent(SplitSeam.self, forKey: .seam)) ?? .none
     }
 }

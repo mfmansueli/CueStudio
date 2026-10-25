@@ -454,10 +454,11 @@ struct QuickCreatorViewModelTests {
         viewModel.overlays.addMedia(photo())
         let id = viewModel.edit.media[0].id
         viewModel.selection = .media(id)
-        #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "track", "duplicate", "replaceMedia", "lock", "delete"])
+        #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "splitMedia", "replaceMedia", "track", "duplicate", "lock", "delete"])
         viewModel.perform(.replaceMedia)
         #expect(viewModel.photoRequest?.purpose == .replaceMedia(id, kind: .photo))
-        #expect(viewModel.photoRequest?.offersVideos == false)
+        // A photo's place can take a video too (and a video's a photo).
+        #expect(viewModel.photoRequest?.offersVideos == true)
     }
 
     @Test func duplicatingAMediaPutsACopyOnTopThatSharesTheFile() async throws {
