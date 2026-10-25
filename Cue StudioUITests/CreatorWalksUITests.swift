@@ -292,7 +292,11 @@ final class CreatorWalksUITests: XCTestCase {
         let field = app.alerts.textFields.firstMatch
         waitFor(field, "The name field")
         field.typeText(String(repeating: XCUIKeyboardKey.delete.rawValue, count: 12) + "B-roll walk")
-        app.alerts.buttons["Save"].tap()
+        // The alert rides up with the keyboard: Save is tapped once it has settled, as a finger would.
+        Thread.sleep(forTimeInterval: 1)
+        let saveName = app.alerts.buttons["Save"]
+        saveName.tap()
+        if !app.alerts.firstMatch.isGone(within: 2), saveName.exists { saveName.tap() }
         let renamed = app.buttons["edit.library.asset.B-roll walk"]
         waitFor(renamed, "The renamed video")
 
