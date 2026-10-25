@@ -21,9 +21,9 @@ documentos); as telas em `screens/*.html` são a referência visual e `ANIMACOES
 nela** (não é carregado automaticamente) e atualize-a na mesma entrega, descrevendo o estado atual (sem histórico: o que saiu, sai do texto).
 
 O protótipo clicável do app inteiro, com o movimento rodando, está em `design/cue-prototype/` (`README.md`; `screens.json` liga cada tela aos arquivos
-Swift que a implementam). Ele acompanha o app: ao mudar uma tela listada em `screens.json`, atualize na mesma entrega o HTML dela, a entrada em
-`screens.json` e o `CHANGELOG.md`; `scripts/check-prototype.py` confere e avisa quando o app mudou e o protótipo não. O protótipo mostra, não decide:
-as decisões do dono seguem em `handoff-telas/docs/09-Decisions.md` e em `DESIGN_PROJECT.md`.
+Swift que a implementam). **Só é atualizado quando o dono pede** (decisão do dono, 25/10/2026): uma entrega que muda uma tela não mexe no
+protótipo. Para saber o quanto ele está atrás, `scripts/check-prototype.py --report`; para redesenhar, quando pedido, `design/cue-prototype/REFRESH.md`.
+O protótipo mostra, não decide: as decisões do dono seguem em `handoff-telas/docs/09-Decisions.md` e em `DESIGN_PROJECT.md`.
 
 ## Contraste (WCAG 2.2 AA, HIG da Apple)
 
