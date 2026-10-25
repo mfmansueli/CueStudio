@@ -367,7 +367,8 @@ struct TakeReviewView: View {
                         playback.pause()
                         editingTake = take
                     },
-                    onRetake: onRetake,
+                    // An imported video wasn't recorded here: nothing to record again.
+                    onRetake: take.isImported ? nil : onRetake,
                     onSave: { Task { await viewModel.save() } },
                     onScript: take.scriptID.map { id in { playback.pause(); onOpenScript(id) } },
                     onShare: { shareToUniverse() }

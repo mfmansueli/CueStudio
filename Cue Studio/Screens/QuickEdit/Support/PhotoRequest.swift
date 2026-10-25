@@ -22,13 +22,20 @@ nonisolated struct PhotoRequest: Equatable, Sendable {
     let id = UUID()
     let purpose: Purpose
 
-    /// Replacing a video or a clip offers videos; everything else offers photos.
+    /// Replacing a clip offers videos; replacing a photo or video, either (one can take the other's place); the background,
+    /// photos.
     var offersVideos: Bool {
         switch purpose {
-        case .replaceMedia(_, .video), .replaceClip: true
-        default: false
+        case .replaceMedia, .replaceClip: true
+        case .background: false
         }
     }
 
-    var filter: PHPickerFilter { offersVideos ? .videos : .images }
+    var filter: PHPickerFilter {
+        switch purpose {
+        case .replaceMedia: .any(of: [.images, .videos])
+        case .replaceClip: .videos
+        case .background: .images
+        }
+    }
 }

@@ -3,11 +3,13 @@
 //  Cue Studio
 //
 
+import PhotosUI
 import SwiftUI
 
 /// Every recording, one card or row per video (takes grouped by script), under the pipeline: how
 /// many videos are to pick, in edit, ready and shared, and what to do next. A 9:16 grid by default,
-/// a list on request, filtered by platform and by stage, in Today, Yesterday and Earlier.
+/// a list on request, filtered by platform and by stage, in Today, Yesterday and Earlier. "Import video" brings a video from
+/// Photos in to edit, shown as imported (not as a take).
 struct TakesView: View {
     @State private var viewModel: TakesViewModel
     @AppStorage(DefaultsKey.takesLayout) private var layoutValue = TakeLayout.grid.rawValue
@@ -23,6 +25,8 @@ struct TakesView: View {
     @Environment(\.scenePhase) private var scenePhase
     /// "Remind me…" from a video's menu: a reminder for its best take.
     @State private var reminding: TakeVideo?
+    /// The video picked in "Import video".
+    @State private var importing: PhotosPickerItem?
 
     init(services: AppServices) {
         self.services = services
@@ -65,11 +69,24 @@ struct TakesView: View {
         .navigationTitle("Takes")
         .toolbarTitleDisplayMode(.inlineLarge)
         .toolbar {
+            // A video from Photos, to edit without recording it here first.
+            ToolbarItem(placement: .topBarLeading) {
+                PhotosPicker(selection: $importing, matching: .videos, photoLibrary: .shared()) {
+                    Label("Import video", systemImage: "square.and.arrow.down")
+                }
+                .disabled(viewModel.isImporting)
+                .accessibilityIdentifier("takes.importVideo")
+            }
             if !viewModel.isEmpty {
                 // The segmented control has its own track: no glass capsule of the bar's around it.
                 ToolbarItem(placement: .topBarTrailing) { TakesLayoutToggle(layout: layout) }
                     .sharedBackgroundVisibility(.hidden)
             }
+        }
+        .onChange(of: importing) { _, item in
+            guard let item else { return }
+            importing = nil
+            Task { await viewModel.importVideo(item) }
         }
         .onAppear { viewModel.refresh(); takeRequest() }
         .onChange(of: presentation.takesRequest) { _, _ in takeRequest() }

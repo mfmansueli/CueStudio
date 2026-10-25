@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import CoreGraphics
 import Foundation
 
 /// Output frame of a take. Recording always uses the full portrait sensor; the frame is applied as a
@@ -35,5 +36,14 @@ nonisolated enum AspectRatio: String, LenientChoice, CaseIterable, Identifiable,
         let all = Self.allCases
         let index = all.firstIndex(of: self) ?? 0
         return all[(index + 1) % all.count]
+    }
+}
+
+nonisolated extension AspectRatio {
+    /// The frame closest to a picture of `size` (an imported video's own).
+    static func nearest(to size: CGSize) -> AspectRatio {
+        guard size.width > 0, size.height > 0 else { return .portrait }
+        let ratio = Double(size.width / size.height)
+        return allCases.min { abs(log($0.widthOverHeight / ratio)) < abs(log($1.widthOverHeight / ratio)) } ?? .portrait
     }
 }

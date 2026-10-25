@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import CoreGraphics
 import Foundation
 
 /// How the compositor frames one recording's frame (`CueVideoCompositor`): where it lands on the take's frame (`frame`:
@@ -19,11 +20,15 @@ nonisolated struct Framing {
     /// The edit's own seconds, for what the look draws over time (film grain): the moment's, unless the video starts before
     /// the edit does (the editor's preview, `EditedComposition.Options.shownTimeline`).
     let lookTime: TimeInterval
+    /// While a support shows: the main area's size (pixels of the take's frame) and how the recording sits in it. The frame is
+    /// then drawn into the area from the whole recording, not from the take's crop.
+    var area: (size: CGSize, framing: AreaFraming)?
 
     init(
         frame: SourceFrame, cropFit: CropFit, look: LookSettings, key: String, moment: SmoothingMoment, sourceTime: TimeInterval,
-        lookTime: TimeInterval? = nil
+        lookTime: TimeInterval? = nil, area: (size: CGSize, framing: AreaFraming)? = nil
     ) {
+        self.area = area
         self.frame = frame
         self.cropFit = cropFit
         self.look = look

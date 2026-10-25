@@ -21,6 +21,15 @@ nonisolated enum DurationText {
 
     /// "1:00 to 1:30" in the interface's words (de "1:00 bis 1:30", ja "1:00〜1:30"): a range of lengths, never written with a
     /// dash. Its own numbered key, because "%@ to %@" is the countdown ("18s to 1:00").
+    /// "00:03.0 to 00:08.0": two moments of the editor's timeline (`editor`) as a range, never the countdown "%@ to %@".
+    static func editorRange(_ start: TimeInterval, _ end: TimeInterval) -> String {
+        let template = String(
+            localized: "%1$@ to %2$@",
+            comment: "A range of numbers or lengths (“3 to 5”, “1:00 to 1:30”). Not the countdown “%@ to %@”."
+        )
+        return String(format: template, editor(start), editor(end))
+    }
+
     static func range(_ range: ClosedRange<TimeInterval>) -> String {
         let template = String(
             localized: "%1$@ to %2$@",

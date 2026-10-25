@@ -26,7 +26,15 @@ nonisolated enum CaptionTimelineMapping {
     /// Shortest part of a line (seconds of its recording) that shows after a cut.
     static let shortestShown: TimeInterval = 0.08
 
-    static func instances(_ cues: [CaptionCue], in timeline: EditTimeline) -> [(line: CaptionCue, cueID: UUID)] {
+    /// A video laid over the take whose own voice is captioned (`MediaOverlay.captionsItsVoice`): where it shows, piece by piece.
+    struct Voice {
+        let mediaID: UUID
+        let pieces: [MediaPiece]
+    }
+
+    /// `cues` where they play in `timeline`. Lines of a video's own voice (`sourceID` its id) show where it shows, on its
+    /// file's seconds; while it shows, the lines of the speech under it don't (they stay, for when it's moved or turned off).
+    static func instances(_ cues: [CaptionCue], in timeline: EditTimeline, voices: [Voice] = []) -> [(line: CaptionCue, cueID: UUID)] {
         var windows: [Window] = []
         for (index, segment) in timeline.segments.enumerated() {
             if let last = windows.last, last.sourceID == segment.sourceID,
@@ -37,11 +45,24 @@ nonisolated enum CaptionTimelineMapping {
                                       editedStart: timeline.editedStart(ofSegmentAt: index)))
             }
         }
+        let speechWindows = windows.count
+        for voice in voices {
+            for (index, piece) in voice.pieces.enumerated() {
+                windows.append(Window(
+                    id: instanceID(voice.mediaID, UUID(uuid: (0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, UInt8(index % 256)))),
+                    sourceID: voice.mediaID, span: TimeSpan(start: piece.fileStart, end: piece.fileEnd), speed: 1, curve: nil,
+                    editedStart: piece.edited.start
+                ))
+            }
+        }
+        let voiced = voices.flatMap { $0.pieces.map(\.edited) }
         var result: [(line: CaptionCue, cueID: UUID)] = []
         for cue in cues {
             var first = true
-            for window in windows where window.sourceID == cue.sourceID && window.span.overlaps(cue.span) {
+            for (index, window) in windows.enumerated() where window.sourceID == cue.sourceID && window.span.overlaps(cue.span) {
                 guard var mapped = mapped(cue, into: window) else { continue }
+                // The speech under a captioned video doesn't show while it does.
+                if index < speechWindows, voiced.contains(where: { $0.contains(mapped.start) }) { continue }
                 if !first { mapped.id = instanceID(cue.id, window.id) }
                 first = false
                 result.append((mapped, cue.id))

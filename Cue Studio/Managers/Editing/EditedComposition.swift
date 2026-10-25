@@ -21,8 +21,9 @@ import CoreImage
 /// cut, the other side of it from the recording (the incoming piece before the cut, the outgoing
 /// one after it), and the compositor blends the two (or slides one over the other).
 ///
-/// Photos and videos laid over the take show one at a time: videos share one more video track,
-/// read only while one shows.
+/// Photos and videos laid over the take go on more video tracks, read only while one shows. A support of a split screen
+/// takes its area and moves the main video to the other one, framed there from the recording itself (`FramePipeline`), so
+/// Format's crop never limits what the area can show; where no support shows, the main video has the whole frame again.
 ///
 /// Music belongs to the edit, not to what is said: it's placed on the edit's own seconds, which in
 /// the preview start `Options.window.start` into the grown timeline.
@@ -129,12 +130,14 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             of: edit.timeline, recording: recording, sound: recordingSound(of:), curveSounds: curveSounds, video: video,
             soundTrack: { playsVarispeed($0) ? varispeed : audio }
         )
+        // The main video turned down while a support shows with the main's volume lowered.
+        let quieter = mainSoundWindows(of: edit)
         var takeTracks: [(track: AVMutableCompositionTrack, levels: [Fade], pitch: AVAudioTimePitchAlgorithm?)] = []
         if let audio {
-            takeTracks.append((audio, levels(for: edit.timeline) { !playsVarispeed($0) }, nil))
+            takeTracks.append((audio, MainSoundLevels.scaled(levels(for: edit.timeline) { !playsVarispeed($0) }, by: quieter), nil))
         }
         if let varispeed {
-            takeTracks.append((varispeed, levels(for: edit.timeline, plays: playsVarispeed), .varispeed))
+            takeTracks.append((varispeed, MainSoundLevels.scaled(levels(for: edit.timeline, plays: playsVarispeed), by: quieter), .varispeed))
         }
 
         let windows = plan.transitions
@@ -163,7 +166,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             overlays += captionOverlays(for: edit, frame: crop.size)
         }
         let (mediaTracks, mediaFrames, mediaSounds) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
-        let videoMedia = mediaFrames.filter(\.isVideo).map(\.span)
+        let videoMedia = mediaFrames.filter(\.isVideo).flatMap(\.shownSpans)
         let voices = await placeVoiceOvers(of: edit, in: composition)
         let window = plan.window ?? TimeSpan(start: 0, end: cursor.seconds)
         let spoken = speech.editedSpans(in: edit.timeline) + edit.voiceOvers.compactMap { $0.editedSpan(in: edit.timeline) }
@@ -182,8 +185,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             // Before the cut the blend track holds the incoming piece; after it, the outgoing one.
             let blendSegment = stretch.dissolve.map { timeline.segments[middle < $0.cut ? $0.join : $0.join - 1] }
             // The media tracks with a video in this stretch.
+            let stretchSpan = TimeSpan(start: stretch.range.start.seconds, end: stretch.range.end.seconds)
             let showing = mediaFrames.filter { frame in
-                frame.isVideo && frame.span.overlaps(TimeSpan(start: stretch.range.start.seconds, end: stretch.range.end.seconds))
+                frame.isVideo && frame.shownSpans.contains { $0.overlaps(stretchSpan) }
             }
             let mediaTrackIDs = stretch.showsMedia
                 ? mediaTracks.map(\.trackID).filter { id in showing.contains { $0.trackID == id } }
@@ -195,6 +199,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 mediaTrackIDs: mediaTrackIDs,
                 frame: framing.frame(of: playedSegment),
                 blendFrame: blendSegment.map { framing.frame(of: $0) },
+                mainFraming: edit.splitScreen.framing(for: playedSegment.sourceID),
+                blendMainFraming: blendSegment.map { edit.splitScreen.framing(for: $0.sourceID) },
                 edit: edit,
                 look: edit.lookSettings(for: playedSegment),
                 blendLook: blendSegment.map { edit.lookSettings(for: $0) },
@@ -478,75 +484,107 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
     /// Photos and videos over the take, placed on a frame of `size`, in their stacking order.
     /// Videos go on more video tracks (a second one only where two overlap, up to
-    /// `MediaOverlay.simultaneousLimit`), each from its own start for as long as it shows; one that
-    /// can't be read, or would need one track too many, is left out rather than failing the edit.
+    /// `MediaOverlay.simultaneousLimit`), each piece of each (`MediaOverlay.pieces`) from its second of the file for as long
+    /// as it shows; one that can't be read, or would need one track too many, is left out rather than failing the edit. A
+    /// support gets the split screen's areas; its sound, like any video's, plays only when turned up and not muted for all.
     private static func placeMedia(
         of edit: TakeEdit, frame size: CGSize, in composition: AVMutableComposition, duration: CMTime
     ) async -> (tracks: [AVMutableCompositionTrack], frames: [MediaFrame], sounds: [(track: AVMutableCompositionTrack, volume: Float)]) {
-        let placed = edit.editedMedia(in: edit.timeline)
+        let placed = edit.placedMedia(in: edit.timeline)
         guard !placed.isEmpty else { return ([], [], []) }
+        let end = duration.seconds
         var frames: [MediaFrame] = []
         var sounds: [(track: AVMutableCompositionTrack, volume: Float)] = []
         var tracks: [(track: AVMutableCompositionTrack, filled: CMTime)] = []
         for entry in placed {
             let url = EditMediaFiles.url(for: entry.media.fileName)
-            let topLeft = MediaPlacement.rect(for: entry.media, in: size)
+            // The pieces inside the edit.
+            let shown = entry.pieces.compactMap { piece -> MediaPiece? in
+                guard piece.edited.start < end - MediaOverlay.shortestPiece else { return nil }
+                var piece = piece
+                piece.edited.end = min(piece.edited.end, end)
+                return piece
+            }
+            guard let firstShown = shown.first, let lastShown = shown.last else { continue }
+            let span = TimeSpan(start: firstShown.edited.start, end: lastShown.edited.end)
+            let areas = entry.media.layout == .split
+                ? SplitPlacement.areas(edit.splitScreen.layout(id: entry.media.splitLayoutID), in: size)
+                : nil
+            let topLeft = areas?.support ?? MediaPlacement.rect(for: entry.media, in: size)
             // Core Image measures y from the bottom.
             let rect = CGRect(x: topLeft.minX, y: size.height - topLeft.maxY, width: topLeft.width, height: topLeft.height)
+            var frame: MediaFrame
             switch entry.media.kind {
             case .photo:
                 guard let image = CIImage(contentsOf: url, options: [.applyOrientationProperty: true]) else { continue }
-                var frame = MediaFrame(span: entry.span, rect: rect, image: image, transform: .identity, layer: entry.media.stackOrder)
-                if let motion = Self.motion(of: entry.media, rect: topLeft, span: frame.span, in: size) {
-                    frame.motion = motion
-                    frame.frameSize = size
-                }
-                frames.append(frame)
+                frame = MediaFrame(span: span, rect: rect, image: image, transform: .identity, layer: entry.media.stackOrder)
             case .video:
                 let asset = AVURLAsset(url: url)
                 guard let source = try? await asset.loadTracks(withMediaType: .video).first,
-                      let transform = try? await source.load(.preferredTransform) else { continue }
-                let start = CMTime(seconds: entry.span.start, preferredTimescale: 600)
-                let end = CMTimeMinimum(CMTime(seconds: entry.span.end, preferredTimescale: 600), duration)
-                guard CMTimeCompare(end, start) > 0 else { continue }
-                // The first track free by then, or a new one.
-                var slot = tracks.firstIndex { CMTimeCompare($0.filled, start) <= 0 }
-                if slot == nil, tracks.count < MediaOverlay.simultaneousLimit,
-                   let added = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid) {
-                    tracks.append((added, .zero))
-                    slot = tracks.count - 1
-                }
-                guard let slot else { continue }
-                let track = tracks[slot].track
-                if CMTimeCompare(start, tracks[slot].filled) > 0 {
-                    track.insertEmptyTimeRange(CMTimeRange(start: tracks[slot].filled, end: start))
-                }
-                // The part of the video the creator picked, from where it starts in the file.
-                let inFile = CMTime(seconds: entry.media.startInFile, preferredTimescale: 600)
-                do {
-                    try track.insertTimeRange(CMTimeRange(start: inFile, duration: end - start), of: source, at: start)
-                } catch {
-                    continue
-                }
-                tracks[slot].filled = end
-                if let volume = entry.media.audioVolume, volume > 0,
-                   let sound = await placeSound(of: asset, from: start, to: end, inFile: inFile, in: composition) {
+                      let transform = try? await source.load(.preferredTransform),
+                      let track = videoTrack(from: span.start, among: &tracks, in: composition),
+                      insert(shown, of: source, into: track, among: &tracks) else { continue }
+                if !edit.splitScreen.mutesMedia, let volume = entry.media.audioVolume, volume > 0,
+                   let sound = await placeSound(of: asset, pieces: shown, in: composition) {
                     sounds.append((sound, Float(min(max(volume, 0), 1))))
                 }
-                var frame = MediaFrame(
-                    span: TimeSpan(start: start.seconds, end: end.seconds), rect: rect, image: nil, transform: transform,
-                    trackID: track.trackID, layer: entry.media.stackOrder
-                )
-                if let motion = Self.motion(of: entry.media, rect: topLeft, span: frame.span, in: size) {
-                    frame.motion = motion
-                    frame.frameSize = size
-                }
-                frames.append(frame)
+                frame = MediaFrame(span: span, rect: rect, image: nil, transform: transform, trackID: track.trackID, layer: entry.media.stackOrder)
             }
+            if shown.count > 1 { frame.pieces = shown.map(\.edited) }
+            frame.frameSize = size
+            if let areas {
+                frame.areas = areas
+                frame.areaFraming = entry.media.areaFraming ?? AreaFraming()
+            } else if let motion = Self.motion(of: entry.media, rect: topLeft, span: span, in: size) {
+                frame.motion = motion
+            }
+            frames.append(frame)
         }
         let used = tracks.map(\.track).filter { track in frames.contains { $0.trackID == track.trackID } }
         for (track, _) in tracks where !used.contains(where: { $0.trackID == track.trackID }) { composition.removeTrack(track) }
         return (used, frames, sounds)
+    }
+
+    /// The first media track free by `start` (edited seconds), or a new one while there are fewer than
+    /// `MediaOverlay.simultaneousLimit`.
+    private static func videoTrack(
+        from start: TimeInterval, among tracks: inout [(track: AVMutableCompositionTrack, filled: CMTime)], in composition: AVMutableComposition
+    ) -> AVMutableCompositionTrack? {
+        let at = CMTime(seconds: start, preferredTimescale: 600)
+        if let free = tracks.first(where: { CMTimeCompare($0.filled, at) <= 0 }) { return free.track }
+        guard tracks.count < MediaOverlay.simultaneousLimit,
+              let added = composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid) else { return nil }
+        tracks.append((added, .zero))
+        return added
+    }
+
+    /// Lays each piece of a video on `track` from its second of the file, empty in between; false (and nothing laid) when the
+    /// file can't give one.
+    private static func insert(
+        _ pieces: [MediaPiece], of source: AVAssetTrack, into track: AVMutableCompositionTrack,
+        among tracks: inout [(track: AVMutableCompositionTrack, filled: CMTime)]
+    ) -> Bool {
+        guard let slot = tracks.firstIndex(where: { $0.track.trackID == track.trackID }) else { return false }
+        let before = tracks[slot].filled
+        var filled = before
+        for piece in pieces {
+            let start = CMTime(seconds: piece.edited.start, preferredTimescale: 600)
+            let end = CMTime(seconds: piece.edited.end, preferredTimescale: 600)
+            guard CMTimeCompare(end, start) > 0 else { continue }
+            if CMTimeCompare(start, filled) > 0 { track.insertEmptyTimeRange(CMTimeRange(start: filled, end: start)) }
+            do {
+                let at = CMTimeMaximum(start, filled)
+                let inFile = CMTime(seconds: piece.fileStart, preferredTimescale: 600)
+                try track.insertTimeRange(CMTimeRange(start: inFile, duration: end - at), of: source, at: at)
+            } catch {
+                // What this video laid so far comes off again; the track is as it was.
+                if CMTimeCompare(track.timeRange.end, before) > 0 { track.removeTimeRange(CMTimeRange(start: before, end: track.timeRange.end)) }
+                return false
+            }
+            filled = CMTimeMaximum(filled, end)
+        }
+        tracks[slot].filled = filled
+        return true
     }
 
     /// A photo's or video's keyframes and preset, over where its window is (`rect`, from the top left); nil when nothing moves it.
@@ -557,25 +595,41 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         return OverlayMotion(keyframes, animation: media.animation, length: span.duration, base: OverlayMotion.State(center: center, scale: 1, opacity: 1))
     }
 
-    /// A video's own sound on a sound track of its own, from where it starts in the file for as long as it shows.
+    /// A video's own sound on a sound track of its own: each piece from its second of the file, as long as it shows and the
+    /// file has sound.
     private static func placeSound(
-        of asset: AVURLAsset, from start: CMTime, to end: CMTime, inFile: CMTime, in composition: AVMutableComposition
+        of asset: AVURLAsset, pieces: [MediaPiece], in composition: AVMutableComposition
     ) async -> AVMutableCompositionTrack? {
         guard let source = try? await asset.loadTracks(withMediaType: .audio).first,
               let track = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
         else { return nil }
-        let available = CMTimeSubtract((try? await source.load(.timeRange).duration) ?? (end - start + inFile), inFile)
-        guard CMTimeCompare(available, .zero) > 0 else {
-            composition.removeTrack(track)
-            return nil
+        let length = (try? await source.load(.timeRange).end.seconds) ?? .greatestFiniteMagnitude
+        var filled = CMTime.zero
+        for piece in pieces {
+            let available = min(piece.edited.duration, length - piece.fileStart)
+            guard available > MediaOverlay.shortestPiece else { continue }
+            let start = CMTime(seconds: piece.edited.start, preferredTimescale: 600)
+            if CMTimeCompare(start, filled) > 0 { track.insertEmptyTimeRange(CMTimeRange(start: filled, end: start)) }
+            let range = CMTimeRange(
+                start: CMTime(seconds: piece.fileStart, preferredTimescale: 600), duration: CMTime(seconds: available, preferredTimescale: 600)
+            )
+            guard (try? track.insertTimeRange(range, of: source, at: CMTimeMaximum(start, filled))) != nil else { continue }
+            filled = track.timeRange.end
         }
-        do {
-            try track.insertTimeRange(CMTimeRange(start: inFile, duration: CMTimeMinimum(end - start, available)), of: source, at: start)
-        } catch {
+        guard CMTimeCompare(filled, .zero) > 0 else {
             composition.removeTrack(track)
             return nil
         }
         return track
+    }
+
+    /// Where the main video plays quieter (or silent) because a support shows with the main's volume lowered.
+    static func mainSoundWindows(of edit: TakeEdit) -> [MainSoundLevels.Window] {
+        edit.placedMedia(in: edit.timeline).flatMap { entry -> [MainSoundLevels.Window] in
+            guard let volume = entry.media.mainVolume else { return [] }
+            let factor = Float(min(max(volume, 0), 1))
+            return entry.pieces.map { MainSoundLevels.Window(span: $0.edited, factor: factor) }
+        }
     }
 
     /// Each music clip that isn't muted on its own sound track, on the edit's seconds within

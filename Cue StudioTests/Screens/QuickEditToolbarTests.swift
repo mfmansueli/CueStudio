@@ -181,7 +181,7 @@ struct QuickEditToolbarTests {
         let media = MediaOverlay(kind: .photo, fileName: "p.jpg", aspect: 1, mediaDuration: nil, span: TimeSpan(start: 2, end: 5))
         viewModel.changeEdit { $0.media = [media] }
         viewModel.selection = .media(media.id)
-        #expect(ids(viewModel) == ["editMedia", "track", "duplicate", "replaceMedia", "lock", "delete"])
+        #expect(ids(viewModel) == ["editMedia", "splitMedia", "replaceMedia", "track", "duplicate", "lock", "delete"])
         viewModel.perform(.duplicateMedia)
         #expect(viewModel.edit.media.count == 2)
         #expect(viewModel.selection != .media(media.id))

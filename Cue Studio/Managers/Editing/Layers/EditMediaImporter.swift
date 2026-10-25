@@ -35,7 +35,7 @@ final class EditMediaImporter: EditMediaImporting {
 
     /// What `item` holds as `type`, telling how far the loading is (Photos downloads it from iCloud first when it isn't on the
     /// iPhone) and stopping when the task is cancelled.
-    private static func load<Value: Transferable & Sendable>(
+    static func load<Value: Transferable & Sendable>(
         _ type: Value.Type, from item: PhotosPickerItem, progress: @escaping @MainActor (Double) -> Void
     ) async throws -> Value? {
         let loading = LoadingProgress()

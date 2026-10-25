@@ -13,7 +13,7 @@ import SwiftUI
 /// bottom). Each photo or video in a window showing at the playhead has its handle, stacked as the video draws them (the
 /// picked one on top, so it can be moved even where another covers it); a tap goes to the one under the finger, and tapping
 /// again where several overlap goes to the next one down (`QuickEditViewModel.tapMedia`). It moves (with the same guides) and
-/// pinches.
+/// pinches. A split screen's areas are under all of it (`SplitAreaLayer`).
 ///
 /// Texts, photos and videos are drawn into the video exactly as they export; while a finger moves one, the video leaves it
 /// out (`beginOverlayDrag`) and a copy follows the finger, so it never shows twice; the change lands when it lifts.
@@ -40,6 +40,8 @@ struct OverlayEditingLayer: View {
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color.clear.allowsHitTesting(false)
+            // Under everything else: the split screen's areas (texts, captions and windows over them stay reachable).
+            SplitAreaLayer(viewModel: viewModel, size: size)
             if drag != nil { dragGuides }
             if !viewModel.player.isPlaying, let caption = viewModel.captions.previewCaption(in: size) {
                 captionHandle(caption.id, frame: caption.frame)
@@ -348,7 +350,8 @@ struct OverlayEditingLayer: View {
         viewModel.player.pause()
         if viewModel.selection != .media(media.id) { viewModel.selection = .media(media.id) }
         viewModel.overlays.beginOverlayDrag(.media(media.id))
-        let local = max(0, viewModel.player.currentTime - (viewModel.mediaBars.first { $0.id == media.id }?.span.start ?? 0))
+        // The second of the file showing now (the part picked, and what the cuts took out, count).
+        let local = media.fileTime(at: viewModel.player.currentTime, in: viewModel.edit.timeline) ?? media.startInFile
         Task {
             let image = await thumbnails.picture(
                 of: EditMediaFiles.url(for: media.fileName), isVideo: media.kind == .video, at: local, maxPixelSize: 720

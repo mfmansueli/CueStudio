@@ -51,6 +51,7 @@ final class TimelineContentView: UIView {
         case clip(UUID)
         case pause(UUID)
         case join(UUID)
+        case gap(UUID)
         case item(TimelineGeometry.ItemKind, UUID)
         case ghost(Int)
         case add
@@ -179,7 +180,12 @@ final class TimelineContentView: UIView {
         }
         for item in geometry.items where item.frame.maxX >= drawn.minX - 4 && item.frame.minX <= drawn.maxX {
             let inset = max(0, visible.minX - item.frame.minX)
-            place(.item(item.kind, item.id), ItemSpec(item: item, labelInset: inset)) { _ in drawItem(item, labelInset: inset) }
+            place(.item(item.kind, item.id), ItemSpec(item: item, labelInset: inset)) { waiting in
+                drawItem(item, labelInset: inset, pointsPerSecond: geometry.pointsPerSecond, waiting: &waiting)
+            }
+        }
+        for gap in geometry.gaps where gap.frame.intersects(drawn) {
+            place(.gap(gap.id), gap) { _ in drawGap(gap) }
         }
         for (index, ghost) in geometry.ghosts.enumerated() {
             place(.ghost(index), ghost) { _ in drawGhost(ghost) }
@@ -445,7 +451,63 @@ final class TimelineContentView: UIView {
         return mark
     }
 
-    private func drawItem(_ item: TimelineGeometry.Item, labelInset inset: CGFloat) -> CALayer {
+    /// A short space between two supports: a thin yellow mark across the track, the space itself hatched.
+    private func drawGap(_ gap: TimelineGeometry.Gap) -> CALayer {
+        let layer = CALayer()
+        layer.frame = gap.frame
+        layer.cornerRadius = Metrics.editorTickRadius
+        layer.backgroundColor = Self.hatch(marked: true).cgColor
+        layer.borderWidth = 1
+        layer.borderColor = UIColor(Palette.acc).cgColor
+        return layer
+    }
+
+    /// A photo's or video's frames along its bar, piece by piece, each from its second of the file (a picture repeats); where
+    /// it doesn't show within its bar (another recording's clip in between), the track shows through, dimmed.
+    private func drawStrip(
+        _ strip: TimelineGeometry.MediaStrip, in item: TimelineGeometry.Item, pointsPerSecond pps: CGFloat, into box: CALayer,
+        waiting: inout [WaitingTile]
+    ) {
+        let url = EditMediaFiles.url(for: strip.fileName)
+        let tileWidth = max(12, item.frame.height * 0.75)
+        let tileSeconds = TimeInterval(tileWidth / max(0.001, pps))
+        let grid = TimelineFrameCache.grid(forTile: tileSeconds)
+        let start = item.frame.minX
+        var shownUntil = start
+        for piece in strip.pieces {
+            let pieceX = CGFloat(piece.edited.start) * pps
+            if pieceX - shownUntil > 1 {
+                let hidden = CALayer()
+                hidden.frame = CGRect(x: shownUntil - start, y: 0, width: pieceX - shownUntil, height: item.frame.height)
+                hidden.backgroundColor = UIColor(Palette.Editor.coverDim).cgColor
+                box.addSublayer(hidden)
+            }
+            var x = pieceX
+            let pieceEnd = CGFloat(piece.edited.end) * pps
+            while x < pieceEnd {
+                let tile = CALayer()
+                tile.frame = CGRect(x: x - start, y: 0, width: min(tileWidth, pieceEnd - x), height: item.frame.height)
+                tile.contentsGravity = .resizeAspectFill
+                tile.masksToBounds = true
+                let time = strip.isVideo ? piece.fileStart + TimeInterval((x - pieceX) / pps) + tileSeconds / 2 : 0
+                if let image = frames.image(for: url, at: time, grid: grid) {
+                    tile.contents = image.cgImage
+                } else {
+                    tile.backgroundColor = UIColor(Palette.Takes.thumbnailBottom).cgColor
+                }
+                if !frames.hasExactImage(for: url, at: time, grid: grid) {
+                    waiting.append(WaitingTile(layer: tile, url: url, time: time, grid: grid))
+                }
+                box.addSublayer(tile)
+                x += tileWidth
+            }
+            shownUntil = pieceEnd
+        }
+    }
+
+    private func drawItem(
+        _ item: TimelineGeometry.Item, labelInset inset: CGFloat, pointsPerSecond: CGFloat, waiting: inout [WaitingTile]
+    ) -> CALayer {
         let style = Self.style(of: item.kind, selected: item.isSelected)
         let group = CALayer()
         if item.isSelected {
@@ -465,15 +527,25 @@ final class TimelineContentView: UIView {
         box.opacity = item.isDimmed ? 0.5 : 1
         // The label stays readable while the item's start is scrolled away.
         var x: CGFloat = 7 + min(inset, max(0, item.frame.width - 60))
-        // A locked item says so where its kind's symbol was.
-        if let icon = symbolLayer(item.isLocked ? "lock.fill" : style.symbol, size: 10, color: style.ink) {
-            icon.frame.origin = CGPoint(x: x, y: (item.frame.height - icon.frame.height) / 2)
-            box.addSublayer(icon)
-            x += icon.frame.width + 5
+        if let strip = item.strip {
+            // A photo or video: its frames, with its kind and how it shows on a dark badge over them.
+            drawStrip(strip, in: item, pointsPerSecond: pointsPerSecond, into: box, waiting: &waiting)
+            let symbol = item.isLocked ? "lock.fill" : strip.layout.systemImage
+            let badge = badgeLayer(item.label, color: .white, weight: .semibold, symbol: symbol)
+            badge.frame.origin = CGPoint(x: x - 3, y: (item.frame.height - badge.frame.height) / 2)
+            if badge.frame.maxX > item.frame.width - 2 { badge.frame.size.width = max(0, item.frame.width - 2 - badge.frame.minX) }
+            box.addSublayer(badge)
+        } else {
+            // A locked item says so where its kind's symbol was.
+            if let icon = symbolLayer(item.isLocked ? "lock.fill" : style.symbol, size: 10, color: style.ink) {
+                icon.frame.origin = CGPoint(x: x, y: (item.frame.height - icon.frame.height) / 2)
+                box.addSublayer(icon)
+                x += icon.frame.width + 5
+            }
+            let label = textLayer(item.label, size: 11.5, weight: .semibold, color: style.ink)
+            label.frame = CGRect(x: x, y: (item.frame.height - label.frame.height) / 2, width: max(0, item.frame.width - x - 6), height: label.frame.height)
+            box.addSublayer(label)
         }
-        let label = textLayer(item.label, size: 11.5, weight: .semibold, color: style.ink)
-        label.frame = CGRect(x: x, y: (item.frame.height - label.frame.height) / 2, width: max(0, item.frame.width - x - 6), height: label.frame.height)
-        box.addSublayer(label)
         // The music's beats: short ticks along the bottom, in the label's color.
         for offset in item.beatOffsets where offset >= 0 && offset <= item.frame.width {
             let tick = CALayer()
@@ -564,13 +636,21 @@ final class TimelineContentView: UIView {
         return text
     }
 
-    private func badgeLayer(_ string: String, color: UIColor, weight: UIFont.Weight) -> CALayer {
-        let text = textLayer(string, size: 10.5, weight: weight, color: color, monospaced: true)
+    /// A dark badge on frames: a clip's "1.5×" and length (in mono), or a photo's or video's kind with its layout's symbol.
+    private func badgeLayer(_ string: String, color: UIColor, weight: UIFont.Weight, symbol: String? = nil) -> CALayer {
+        let text = textLayer(string, size: 10.5, weight: weight, color: color, monospaced: symbol == nil)
         let badge = CALayer()
-        badge.frame = CGRect(x: 0, y: 0, width: text.frame.width + 12, height: 18)
-        badge.cornerRadius = 5
+        var x: CGFloat = 6
+        if let symbol, let icon = symbolLayer(symbol, size: 9.5, color: color) {
+            icon.frame.origin = CGPoint(x: x, y: (18 - icon.frame.height) / 2)
+            badge.addSublayer(icon)
+            x += icon.frame.width + 4
+        }
+        badge.frame = CGRect(x: 0, y: 0, width: x + text.frame.width + 6, height: 18)
+        badge.cornerRadius = Metrics.editorMarkRadius
+        badge.masksToBounds = true
         badge.backgroundColor = UIColor.black.withAlphaComponent(0.7).cgColor
-        text.frame.origin = CGPoint(x: 6, y: (18 - text.frame.height) / 2)
+        text.frame.origin = CGPoint(x: x, y: (18 - text.frame.height) / 2)
         badge.addSublayer(text)
         return badge
     }

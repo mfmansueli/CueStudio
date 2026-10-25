@@ -62,15 +62,17 @@ extension OverlaysViewModel {
             toast.show(String(localized: "Max 3 photos or videos"))
             return
         }
-        let pinned = edit.pin(placed)
         var media = MediaOverlay(
             kind: imported.kind, fileName: imported.fileName, aspect: imported.aspect,
-            mediaDuration: imported.duration, span: pinned.span
+            mediaDuration: imported.duration, span: placed
         )
-        media.clipAnchor = pinned.anchor
+        media.followsCuts = true
         media.hasSound = imported.kind == .video ? imported.hasSound : nil
         media.layer = (edit.media.map(\.stackOrder).max() ?? -1) + 1
-        change { $0.media.append(media) }
+        var next = edit
+        next.media.append(media)
+        next.layMedia(at: next.media.count - 1, over: placed)
+        commit(EditSnapshot(next))
         selectedMediaID = media.id
         // Muted until the creator says to keep its sound.
         if imported.kind == .video, imported.hasSound { soundChoiceMediaID = media.id }
@@ -143,9 +145,11 @@ extension OverlaysViewModel {
         sayUndoable(String(localized: "Media duplicated"))
     }
 
+    /// Takes the photo or video out (Undo brings it back). A support leaves its space: the main video has the whole frame there.
     func deleteMedia(_ id: UUID) {
+        let wasSupport = edit.media.first { $0.id == id }?.layout == .split
         change { $0.media.removeAll { $0.id == id } }
-        toast.show(String(localized: "Media removed"))
+        sayUndoable(wasSupport ? String(localized: "Support removed · the main video fills the frame there") : String(localized: "Media removed"))
     }
 
     // MARK: - The part of a video
@@ -153,24 +157,30 @@ extension OverlaysViewModel {
     /// Plays another part of the video (`start`, seconds of the file) in the same place of the edit, for as long as it shows
     /// there; kept inside the file. A drag is one undo step (`beginChange`).
     func slipMedia(_ id: UUID, toStart start: TimeInterval) {
-        guard let media = edit.media.first(where: { $0.id == id }), let length = media.mediaDuration,
-              let shown = mediaBars.first(where: { $0.id == id })?.span.duration else { return }
-        let clamped = min(max(0, start), max(0, length - shown))
+        guard let media = edit.media.first(where: { $0.id == id }), let length = media.mediaDuration else { return }
+        let clamped = min(max(0, start), max(0, length - fileUsed(by: media)))
         updateMedia(id) { $0.mediaStart = clamped > 0.000_1 ? clamped : nil }
+    }
+
+    /// How much of its file a video goes through where it shows: the time it shows, and the stretches cut out of the speech
+    /// under it (`MediaOverlay.pieces`).
+    func fileUsed(by media: MediaOverlay) -> TimeInterval {
+        let pieces = media.pieces(in: edit.timeline)
+        guard let first = pieces.first, let last = pieces.last else { return 0 }
+        return last.fileEnd - first.fileStart
     }
 
     /// How long the photo or video shows, from where it starts in the edit: longer is as far as the video (from its part) and the
     /// edit allow. One undo step per tap.
     func setMediaLength(_ id: UUID, _ seconds: TimeInterval) {
         guard let media = edit.media.first(where: { $0.id == id }), let bar = mediaBars.first(where: { $0.id == id }) else { return }
-        let longest = min(media.longestDuration, edit.editedDuration - bar.span.start)
+        var end = edit.editedDuration
+        // A support stops where the next one starts: one shows at a time.
+        if media.layout == .split, let next = supportSpans.map(\.span.start).filter({ $0 > bar.span.start + 0.001 }).min() { end = min(end, next) }
+        let longest = min(media.longestDuration, end - bar.span.start)
         let length = min(max(seconds, MediaOverlay.minimumDuration), longest)
         guard abs(length - bar.span.duration) > 0.01 else { return }
-        let pinned = edit.pin(TimeSpan(start: bar.span.start, end: bar.span.start + length))
-        updateMedia(id) { item in
-            item.span = pinned.span
-            item.clipAnchor = pinned.anchor
-        }
+        layMedia(id, over: TimeSpan(start: bar.span.start, end: bar.span.start + length))
     }
 
     /// Its place on a preview of `size` (from the top left), as the export places it.
@@ -190,13 +200,24 @@ extension OverlaysViewModel {
 
     // MARK: - Replacing
 
-    /// Copies the picked file in and swaps it for the one on the media track.
+    /// Copies the picked file in and swaps it for the one on the media track; a video longer than the slot first asks which
+    /// part of it fills the slot (`partChoice`).
     func replaceMedia(_ id: UUID, importing item: PhotosPickerItem) async {
         guard isReady, !isImportingMedia else { return }
         isImportingMedia = true
         defer { isImportingMedia = false }
         do {
-            replaceMedia(id, with: try await importPicked(item))
+            let imported = try await importPicked(item)
+            guard let slot = mediaBars.first(where: { $0.id == id })?.span.duration else {
+                EditMediaFiles.remove([imported.fileName])
+                return
+            }
+            if imported.kind == .video, let length = imported.duration, length > slot + 0.05 {
+                importedFiles.insert(imported.fileName)
+                partChoice = MediaPartChoice(purpose: .replaceMedia(id), pick: MediaPick(imported), length: slot)
+            } else {
+                replaceMedia(id, with: MediaPick(imported))
+            }
         } catch is CancellationError {
             // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
@@ -205,32 +226,46 @@ extension OverlaysViewModel {
         }
     }
 
-    /// Puts `imported` in the place of a photo or video: where it shows, for how long, in which
-    /// window and with which keyframes stay; only the picture (or the video) changes. A photo is
-    /// replaced by a photo and a video by a video, and a video that is shorter than the stretch it
-    /// fills shows for its own length.
-    func replaceMedia(_ id: UUID, with imported: ImportedMedia) {
-        guard !isClosed, let old = edit.media.first(where: { $0.id == id }) else {
+    /// Puts `pick` in the place of a photo or video: where it shows and for how long (a video with less left than that shows
+    /// for what it has), its layout, window, framing, motion and keyframes stay; its sound keeps its level when the new video
+    /// has sound. A photo can take a video's place and a video a photo's. One undo step.
+    func replaceMedia(_ id: UUID, with pick: MediaPick) {
+        let imported = pick.imported
+        guard !isClosed, let index = edit.media.firstIndex(where: { $0.id == id }),
+              let span = mediaBars.first(where: { $0.id == id })?.span else {
             EditMediaFiles.remove([imported.fileName])
-            return
-        }
-        guard imported.kind == old.kind else {
-            EditMediaFiles.remove([imported.fileName])
-            toast.show(String(localized: "Can't add this file"))
             return
         }
         importedFiles.insert(imported.fileName)
-        updateMedia(id) { media in
-            media.fileName = imported.fileName
-            media.aspect = imported.aspect.isFinite && imported.aspect > 0 ? imported.aspect : 1
-            media.mediaDuration = imported.duration
-            media.mediaStart = nil
-            if media.kind == .video {
-                media.hasSound = imported.hasSound
-                media.audioVolume = nil
-                media.span.end = min(media.span.end, media.span.start + media.longestDuration)
-            }
+        let old = edit.media[index]
+        var next = edit
+        var media = old
+        media.kind = imported.kind
+        media.fileName = imported.fileName
+        media.aspect = imported.aspect.isFinite && imported.aspect > 0 ? imported.aspect : 1
+        media.mediaDuration = imported.duration
+        media.mediaStart = imported.kind == .video && pick.start > 0.000_1 ? pick.start : nil
+        media.hasSound = imported.kind == .video ? imported.hasSound : nil
+        if imported.kind != .video || !imported.hasSound { media.audioVolume = nil }
+        // The framing's zoom and fit stay; the new picture starts centered.
+        if var framing = media.areaFraming {
+            framing.center = .center
+            media.areaFraming = framing
         }
-        toast.show(old.kind == .photo ? String(localized: "Photo replaced") : String(localized: "Video replaced"))
+        next.media[index] = media
+        var shown = span
+        if imported.kind == .video, let length = imported.duration {
+            shown.end = min(span.end, span.start + max(MediaOverlay.minimumDuration, length - pick.start))
+        }
+        next.layMedia(at: index, over: shown)
+        commit(EditSnapshot(next))
+        let shorter = shown.duration + 0.05 < span.duration
+        let message = switch (imported.kind, shorter) {
+        case (.photo, _): String(localized: "Photo in its place · place and settings kept")
+        case (.video, true): String(localized: "Video in its place · it’s shorter, so it ends sooner")
+        case (.video, false): String(localized: "Video in its place · place and settings kept")
+        }
+        sayUndoable(message)
     }
+
 }

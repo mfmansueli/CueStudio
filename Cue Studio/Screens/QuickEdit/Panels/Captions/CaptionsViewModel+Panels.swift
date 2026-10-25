@@ -210,6 +210,12 @@ extension CaptionsViewModel {
         return .bottom
     }
 
+    /// "On the seam during the split screen" on or off, as an undo step.
+    func setCaptionsOnSeam(_ isOn: Bool) {
+        guard isOn != edit.splitScreen.captionsOnSeam else { return }
+        changeEdit { $0.splitScreen.captionsOnSeam = isOn }
+    }
+
     func setCaptionPositionStop(_ position: CaptionPosition) {
         let index = CaptionPosition.allCases.firstIndex(of: position) ?? 2
         moveCaptions(toY: Self.captionStops[index])

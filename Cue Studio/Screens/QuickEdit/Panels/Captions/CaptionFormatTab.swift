@@ -29,6 +29,7 @@ struct CaptionFormatTab: View {
                 options: CaptionPosition.allCases.map { PanelOption($0, $0.label) },
                 selection: captions.captionPositionStop, height: 38, identifier: "edit.captionPosition"
             ) { captions.setCaptionPositionStop($0) }
+            if viewModel.edit.media.contains(where: { $0.layout == .split }) { seamRow }
             // S · M · L · XL: four words, so a segmented control, like Position above it.
             PanelSegmented(
                 label: String(localized: "Size"),
@@ -47,16 +48,35 @@ struct CaptionFormatTab: View {
             ) { captions.setCaptionAlignment($0) }
             PanelNote(text: String(localized: "You can also drag the caption in the video. Another style keeps all of this."))
         } else {
-            PanelSegmented(
-                label: String(localized: "Position"),
-                options: CaptionPosition.allCases.map { PanelOption($0, $0.label) },
-                selection: captions.captionPositionStop, height: 38, identifier: "edit.captionPosition"
-            ) { captions.setCaptionPositionStop($0) }
-            PanelSegmented(
-                label: String(localized: "Size"),
-                options: CaptionSize.allCases.map { PanelOption($0, $0.label, key: "\($0.rawValue)") },
-                selection: CaptionSize.nearest(to: captions.captionPointSize), height: 38, identifier: "edit.captionSize"
-            ) { captions.setCaptionPointSize($0.points) }
+            legacyControls
         }
+    }
+
+    /// "On the seam": while the split screen shows (one over the other), the captions sit on its seam.
+    private var seamRow: some View {
+        let isSideBySide = viewModel.overlays.splitLayout.arrangement == .sideBySide
+        return PanelToggleRow(
+            label: String(localized: "On the seam during the split screen"),
+            detail: isSideBySide
+                ? String(localized: "Side by side has no seam across: the captions stay where you put them")
+                : String(localized: "Everywhere else, where you put them"),
+            isOn: viewModel.edit.splitScreen.captionsOnSeam, identifier: "edit.captionsOnSeam"
+        ) { captions.setCaptionsOnSeam(!viewModel.edit.splitScreen.captionsOnSeam) }
+        .disabled(isSideBySide)
+    }
+
+    /// Captions from before the style catalogue: where they sit and how big.
+    @ViewBuilder
+    private var legacyControls: some View {
+        PanelSegmented(
+            label: String(localized: "Position"),
+            options: CaptionPosition.allCases.map { PanelOption($0, $0.label) },
+            selection: captions.captionPositionStop, height: 38, identifier: "edit.captionPosition"
+        ) { captions.setCaptionPositionStop($0) }
+        PanelSegmented(
+            label: String(localized: "Size"),
+            options: CaptionSize.allCases.map { PanelOption($0, $0.label, key: "\($0.rawValue)") },
+            selection: CaptionSize.nearest(to: captions.captionPointSize), height: 38, identifier: "edit.captionSize"
+        ) { captions.setCaptionPointSize($0.points) }
     }
 }

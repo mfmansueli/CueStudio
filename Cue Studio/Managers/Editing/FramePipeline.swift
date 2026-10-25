@@ -38,14 +38,17 @@ nonisolated enum FramePipeline {
         if let steady = frame.steady {
             image = steadied(image, by: steady, at: sourceTime)
         }
-        if framing.cropFit == .fit {
+        if let area = framing.area {
+            // A split screen's main area: framed from the whole recording, so the area reaches what Format's crop would cut.
+            image = inArea(image, size: area.size, framing: area.framing)
+        } else if framing.cropFit == .fit {
             image = fitted(image, into: frame.crop.size)
         } else {
             let crop = frame.cropRect(at: sourceTime)
             image = image.cropped(to: crop)
                 .transformed(by: CGAffineTransform(translationX: -crop.minX, y: -crop.minY))
         }
-        if abs(frame.scale - 1) > 0.000_1 {
+        if framing.area == nil, abs(frame.scale - 1) > 0.000_1 {
             image = image.transformed(by: CGAffineTransform(scaleX: frame.scale, y: frame.scale))
         }
         // The faces of the frame as recorded (before a background is put behind the creator), found only when the dial is above 0.
@@ -56,6 +59,19 @@ nonisolated enum FramePipeline {
             }
         }
         return FrameLook.apply(look, to: image, skin: smoothing, time: framing.lookTime)
+    }
+
+    /// A picture (corner at the origin) in an area of `size` as `framing` says (`SplitPlacement.place`), the area's corner at
+    /// the origin, on black where it doesn't reach.
+    static func inArea(_ image: CIImage, size: CGSize, framing: AreaFraming) -> CIImage {
+        let bounds = CGRect(origin: .zero, size: size)
+        let placed = SplitPlacement.place(image.extent.size, in: size, framing: framing)
+        // Core Image's y grows upward: the picture's top left corner goes `origin.y` below the area's top.
+        let moved = image
+            .transformed(by: CGAffineTransform(scaleX: placed.scale, y: placed.scale))
+            .transformed(by: CGAffineTransform(translationX: placed.origin.x, y: size.height - placed.origin.y - placed.size.height))
+            .cropped(to: bounds)
+        return moved.composited(over: CIImage(color: .black).cropped(to: bounds))
     }
 
     /// `image` scaled around its center, cropped back to its frame (a section's slow zoom).

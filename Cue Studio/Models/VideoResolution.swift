@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import CoreGraphics
 import Foundation
 
 nonisolated enum VideoResolution: String, Codable, CaseIterable, Identifiable, Sendable {
@@ -29,5 +30,14 @@ nonisolated enum VideoResolution: String, Codable, CaseIterable, Identifiable, S
         case .hd1080: 1080
         case .uhd4K: 2160
         }
+    }
+}
+
+nonisolated extension VideoResolution {
+    /// The resolution an imported video of `shortSide` pixels comes closest to without going over.
+    static func nearest(shortSide: CGFloat) -> VideoResolution {
+        if shortSide >= 2000 { return .uhd4K }
+        if shortSide >= 1000 { return .hd1080 }
+        return .hd720
     }
 }

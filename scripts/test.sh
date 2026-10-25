@@ -103,6 +103,8 @@ case "$mode" in
             LongTakeDeviceTests*) export TEST_RUNNER_CUE_LONG_TAKE=1 ;;
             ContinuedTaskDeviceTests*) export TEST_RUNNER_CUE_CONTINUED_TASK=1 ;;
             EditorExportDeviceTests*) export TEST_RUNNER_CUE_EDITOR_EXPORT=1 ;;
+            # The split screen's preview drawing rate and export time, on copies of this iPhone's newest takes.
+            SplitScreenDeviceTests*) export TEST_RUNNER_CUE_SPLIT_E2E=1 ;;
             # Motion (analysis, face follow, tracking, stabilization, speed curves, beats) on COPIES of this iPhone's newest takes.
             MotionAnalysisDeviceTests* | EditorMotionDeviceTests*) export TEST_RUNNER_CUE_MOTION_E2E=1 ;;
             # A portrait in the app's Documents on the device: TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg (see SkinSmoothingDeviceTests).

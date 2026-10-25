@@ -10,8 +10,8 @@ import os
 
 /// Renders each frame of an edited take with Core Image: upright, cropped to the
 /// take's frame, with its background blurred or replaced (the person found by Vision, or a chroma key), with
-/// Adjust and Filters, blended, slid or darkened by a transition, with the photo or video laid
-/// over it (B-roll), then texts and captions. Used by the Quick
+/// Adjust and Filters, blended, slid or darkened by a transition, in its area of a split screen beside a support, with the
+/// photo or video laid over it (B-roll), then texts and captions. Used by the Quick
 /// edit preview and by exports, so both show exactly the same thing.
 final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendable {
     private let context: CIContext
@@ -149,12 +149,16 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         let moment = Int((time * 1000).rounded())
         // The stretch of video this frame belongs to: the faces found in it carry from frame to frame, and are forgotten at its edges.
         let stretch = instruction.timeRange.start.seconds
+        // A support showing: the main video goes to its own area, framed there; without one it has the whole frame.
+        let support = instruction.media.first { $0.isSupport && $0.isVisible(at: time) }
+        let mainArea = support?.areas?.main.size
         var image = framed(
             source,
             as: Framing(
-                frame: instruction.frame, cropFit: instruction.edit.cropFit, look: instruction.look, key: "main-\(moment)",
+                frame: instruction.frame, cropFit: instruction.edit.cropFit, look: instruction.look,
+                key: mainArea == nil ? "main-\(moment)" : "main-split-\(moment)",
                 moment: SmoothingMoment(stream: .main, stretch: stretch, time: time), sourceTime: instruction.sourceTime(at: time),
-                lookTime: time - instruction.timeOrigin
+                lookTime: time - instruction.timeOrigin, area: mainArea.map { ($0, instruction.mainFraming) }
             ),
             faces: faces
         )
@@ -166,9 +170,10 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 other,
                 as: Framing(
                     frame: instruction.blendFrame ?? instruction.frame, cropFit: instruction.edit.cropFit,
-                    look: instruction.blendLook ?? instruction.look, key: "blend-\(moment)",
+                    look: instruction.blendLook ?? instruction.look, key: mainArea == nil ? "blend-\(moment)" : "blend-split-\(moment)",
                     moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time), sourceTime: dissolve.otherSideSourceTime(at: time),
-                    lookTime: time - instruction.timeOrigin
+                    lookTime: time - instruction.timeOrigin,
+                    area: mainArea.map { ($0, instruction.blendMainFraming ?? instruction.mainFraming) }
                 ),
                 faces: faces
             )
@@ -180,9 +185,12 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             default: image = TransitionDrawing.draw(dissolve.transition, from: outgoing, to: incoming, progress: dissolve.progress(at: time))
             }
         }
-        // Every photo and video showing, lowest layer first; the same layer in the order they come in the edit, as the
+        if let support, let areas = support.areas {
+            image = splitScreen(main: image, support: support, frame: support.trackID.flatMap { media[$0] }, areas: areas)
+        }
+        // Every other photo and video showing, lowest layer first; the same layer in the order they come in the edit, as the
         // editor stacks them (`QuickEditViewModel.visibleMediaStack`).
-        let showing = instruction.media.enumerated().filter { $0.element.isVisible(at: time) }
+        let showing = instruction.media.enumerated().filter { !$0.element.isSupport && $0.element.isVisible(at: time) }
         for shown in showing.sorted(by: { ($0.element.layer, $0.offset) < ($1.element.layer, $1.offset) }).map(\.element) {
             image = laid(shown, frame: shown.trackID.flatMap { media[$0] }, over: image, at: time)
         }
@@ -250,6 +258,38 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             }
         }
         return picture.composited(over: image)
+    }
+
+    /// A split screen: the main video (already drawn at its area's size) in its area, the support in the other as its framing
+    /// says, on black where a picture doesn't reach (Fit), and the seam as the layout draws it (`SplitSeamDrawing`). A video
+    /// without a frame at this moment leaves its area black rather than moving the main video.
+    nonisolated private static func splitScreen(
+        main: CIImage, support: MediaFrame, frame: CVPixelBuffer?, areas: SplitPlacement.Areas
+    ) -> CIImage {
+        let size = support.frameSize
+        // Core Image measures y from the bottom.
+        func flipped(_ rect: CGRect) -> CGRect { CGRect(x: rect.minX, y: size.height - rect.maxY, width: rect.width, height: rect.height) }
+        var canvas = CIImage(color: .black).cropped(to: CGRect(origin: .zero, size: size))
+        let mainRect = flipped(areas.main)
+        canvas = main
+            .transformed(by: CGAffineTransform(translationX: mainRect.minX - main.extent.minX, y: mainRect.minY - main.extent.minY))
+            .cropped(to: mainRect)
+            .composited(over: canvas)
+        var picture: CIImage?
+        if let photo = support.image {
+            picture = photo
+        } else if let frame {
+            picture = CIImage(cvPixelBuffer: frame)
+                .transformed(by: FramePipeline.uprightTransform(support.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(frame))))
+        }
+        if let picture {
+            let upright = picture.transformed(by: CGAffineTransform(translationX: -picture.extent.minX, y: -picture.extent.minY))
+            let rect = flipped(areas.support)
+            canvas = FramePipeline.inArea(upright, size: rect.size, framing: support.areaFraming)
+                .transformed(by: CGAffineTransform(translationX: rect.minX, y: rect.minY))
+                .composited(over: canvas)
+        }
+        return SplitSeamDrawing.draw(areas.seam, on: canvas, areas: areas, height: size.height)
     }
 
     /// `incoming` sliding in from the right over `outgoing`: none of it at 0, all of it at 1.

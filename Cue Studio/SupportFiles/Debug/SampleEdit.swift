@@ -75,6 +75,31 @@ enum SampleEdit {
         return edit
     }
 
+    /// `demo` with a split screen instead of the window (`-uiTestDemoSplit`): three supports one after the other from 2 s (parts
+    /// of the demo's B-roll), a second without one, and a fourth from 9 s; the support on top, the take below, half and half.
+    static func demoSplit(aspect: AspectRatio, heard: Bool = false) -> TakeEdit {
+        var edit = demo(aspect: aspect, heard: heard)
+        edit.splitScreen.setLayout(SplitLayout())
+        let layout = edit.splitScreen.layouts.first?.id
+        let spans: [(TimeSpan, TimeInterval)] = [
+            (TimeSpan(start: 2, end: 4), 0), (TimeSpan(start: 4, end: 6), 2), (TimeSpan(start: 6, end: 8), 4), (TimeSpan(start: 9, end: 11), 1),
+        ]
+        edit.media = spans.enumerated().map { index, entry in
+            var support = MediaOverlay(
+                kind: .video, fileName: SampleEditMedia.brollFile, aspect: SampleEditMedia.brollAspect,
+                mediaDuration: SampleEditMedia.brollDuration, span: entry.0
+            )
+            support.layout = .split
+            support.splitLayoutID = layout
+            support.followsCuts = true
+            support.mediaStart = entry.1 > 0 ? entry.1 : nil
+            support.hasSound = false
+            support.layer = index
+            return support
+        }
+        return edit
+    }
+
     /// A line's words, each a share of the line's time with a short gap after it.
     private static func heardWords(_ line: (TimeInterval, TimeInterval, String)) -> [CaptionWord] {
         let texts = line.2.split(separator: " ").map(String.init)

@@ -26,6 +26,10 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
     let frame: SourceFrame
     /// The same for the blend track's frames (the other side of a dissolve); nil outside one.
     let blendFrame: SourceFrame?
+    /// How the recording this stretch plays sits in the main area while a support shows (`SplitScreen.framing(for:)`).
+    let mainFraming: AreaFraming
+    /// The same for the other side of a dissolve; nil outside one.
+    let blendMainFraming: AreaFraming?
     let edit: TakeEdit
     /// The light, color and filter of the clip this stretch plays: the take's, with that clip's own
     /// overrides on top.
@@ -49,7 +53,8 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
     init(
         timeRange: CMTimeRange, trackID: CMPersistentTrackID, blendTrackID: CMPersistentTrackID? = nil,
         mediaTrackIDs: [CMPersistentTrackID] = [],
-        frame: SourceFrame, blendFrame: SourceFrame? = nil, edit: TakeEdit, look: LookSettings? = nil, blendLook: LookSettings? = nil,
+        frame: SourceFrame, blendFrame: SourceFrame? = nil, mainFraming: AreaFraming = AreaFraming(), blendMainFraming: AreaFraming? = nil,
+        edit: TakeEdit, look: LookSettings? = nil, blendLook: LookSettings? = nil,
         overlays: [FrameOverlay], media: [MediaFrame] = [],
         outputScale: CGFloat, dissolve: TransitionWindow? = nil, zoom: ZoomWindow? = nil, fades: [TransitionWindow] = [],
         timeOrigin: TimeInterval = 0
@@ -63,6 +68,8 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
         self.media = media
         self.frame = frame
         self.blendFrame = blendFrame
+        self.mainFraming = mainFraming
+        self.blendMainFraming = blendMainFraming
         self.edit = edit
         self.look = look ?? LookSettings(edit)
         self.blendLook = blendLook

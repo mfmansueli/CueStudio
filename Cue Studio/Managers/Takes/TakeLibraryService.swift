@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import CoreGraphics
 import Foundation
 import os
 
@@ -130,6 +131,30 @@ final class TakeLibraryService {
             throw error
         }
         onTakeAdded?(take)
+        return take
+    }
+
+    /// Moves a video imported from Photos into the library as a take of its own to edit (`TakeOrigin.imported`): no script, no
+    /// number to show, its own frame, resolution and frame rate. Nothing learns from it as from a recording. Throws, the
+    /// video given back, when the library can't be written.
+    @discardableResult
+    func importVideo(fileAt url: URL, duration: TimeInterval, uprightSize: CGSize, frameRate: Double) throws -> Take {
+        let fileName = try repository.storeVideo(from: url)
+        var take = Take(
+            scriptID: nil, scriptTitle: String(localized: "Imported video"), scriptVersion: nil, number: nextNumber(for: nil),
+            duration: duration, recordedAt: now(), fileName: fileName,
+            resolution: VideoResolution.nearest(shortSide: min(uprightSize.width, uprightSize.height)),
+            frameRate: FrameRate.nearest(to: frameRate), aspect: AspectRatio.nearest(to: uprightSize), platform: nil
+        )
+        take.origin = .imported
+        takes.insert(take, at: 0)
+        do {
+            try save()
+        } catch {
+            takes.removeAll { $0.id == take.id }
+            try? repository.returnVideo(named: fileName, to: url)
+            throw error
+        }
         return take
     }
 

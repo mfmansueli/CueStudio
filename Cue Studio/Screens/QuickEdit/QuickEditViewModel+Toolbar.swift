@@ -221,12 +221,22 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteVoiceOver),
             ]
         case .media:
+            // A support of the split screen: its area beside the main video, one at a time (no Track, no copy over it).
+            let isSupport = selectedMedia?.layout == .split
             var items = [
                 EditorToolbarItem(id: "editMedia", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.media)),
-                EditorToolbarItem(id: "track", label: String(localized: "Track"), systemImage: "scope", action: .trackItem),
-                EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateMedia),
+                EditorToolbarItem(id: "splitMedia", label: String(localized: "Split"), systemImage: "scissors", action: .splitMedia),
                 EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
             ]
+            if isSupport, let id = selectedMedia?.id, overlays.gapBefore(id) != nil {
+                items.append(EditorToolbarItem(id: "closeGap", label: String(localized: "Close gap"), systemImage: "arrow.left.to.line", action: .closeGap))
+            }
+            if !isSupport {
+                items.append(EditorToolbarItem(id: "track", label: String(localized: "Track"), systemImage: "scope", action: .trackItem))
+                items.append(EditorToolbarItem(
+                    id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateMedia
+                ))
+            }
             // Only a video with a sound of its own has one to take out.
             if audio.canExtractAudio {
                 items.append(EditorToolbarItem(
@@ -261,7 +271,7 @@ extension QuickEditViewModel {
             look.lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
             self.panel = panel
         case .addMedia, .addMediaChoice:
-            overlays.mediaInsertMode = .overlay
+            overlays.mediaInsertMode = overlays.lastOverlayMode
             sheet = .media
         case .addText, .addGraphic, .addCommentCard, .styleAllTexts, .editText: performTextAction(action)
         case .deleteAllCaptions: captions.deleteAllCaptions()
@@ -303,11 +313,10 @@ extension QuickEditViewModel {
 
     /// The actions on the picked item. False when `action` isn't one of them.
     private func performOnSelection(_ action: EditorAction) -> Bool {
-        if performOnClip(action) || performOnMotion(action) { return true }
+        if performOnClip(action) || performOnMotion(action) || performOnMedia(action) { return true }
         switch action {
         case .duplicateText: selection?.textID.map(overlays.duplicateText)
         case .toggleLock: toggleLockOfSelection()
-        case .duplicateMedia: selection?.mediaID.map(overlays.duplicateMedia)
         case .deleteText: selection?.textID.map(overlays.deleteText)
         case .editCaption:
             panel = .captions
@@ -318,8 +327,20 @@ extension QuickEditViewModel {
         case .deleteMusic: selection?.musicID.map(audio.deleteMusic)
         case .reRecordVoiceOver: selection?.voiceOverID.map(audio.reRecordVoiceOver)
         case .deleteVoiceOver: selection?.voiceOverID.map(audio.deleteVoiceOver)
+        default: return false
+        }
+        return true
+    }
+
+    /// The actions on a picked photo or video. False when `action` isn't one of them.
+    private func performOnMedia(_ action: EditorAction) -> Bool {
+        guard let id = selection?.mediaID else { return false }
+        switch action {
+        case .duplicateMedia: overlays.duplicateMedia(id)
         case .replaceMedia: replaceSelectedMedia()
-        case .deleteMedia: selection?.mediaID.map(overlays.deleteMedia)
+        case .deleteMedia: overlays.deleteMedia(id)
+        case .splitMedia: overlays.splitMedia(id)
+        case .closeGap: overlays.closeGap(before: id)
         default: return false
         }
         return true

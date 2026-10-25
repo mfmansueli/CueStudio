@@ -5,19 +5,22 @@
 
 import SwiftUI
 
-/// A photo or video on top of the take, picked: full screen or in a window (its shape and size;
+/// A photo or video on top of the take, picked: how it shows (a support of the split screen has its own panel,
+/// `SplitScreenPanel`), full screen or in a window (its shape and size;
 /// on the preview, drag it to move it and pinch to resize it), for a video which part of it plays and for how long
 /// (`MediaTrimStrip`), its place among the others, and in Advanced its own sound (a video's), a ready-made motion and keyframes.
 struct MediaPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
     var body: some View {
-        if let media = viewModel.selectedMedia {
+        if let media = viewModel.selectedMedia, media.layout == .split {
+            SplitScreenPanel(viewModel: viewModel, media: media)
+        } else if let media = viewModel.selectedMedia {
             PanelFrame(viewModel: viewModel, panel: .media) {
                 PanelSegmented(
-                    label: String(localized: "Layout"), options: MediaLayout.allCases.map { PanelOption($0, $0.label) },
+                    label: String(localized: "Show as"), options: MediaLayout.offered.map { PanelOption($0, $0.label) },
                     selection: media.layout, identifier: "edit.mediaLayout"
-                ) { layout in viewModel.overlays.updateMedia(media.id) { $0.layout = layout } }
+                ) { layout in Task { await viewModel.overlays.setMediaLayout(media.id, layout) } }
                 if media.layout == .window {
                     PanelSegmented(
                         label: String(localized: "Ratio"), options: MediaShape.allCases.map { PanelOption($0, $0.label) },

@@ -63,6 +63,12 @@ extension QuickEditViewModel {
         switch edge {
         case .start:
             span.start = min(max(time, limits.start), span.end - shortest)
+            // A video's start trims its part with it (what shows at every moment that stays doesn't move): `trimMediaStart`.
+            if bar.kind == .media, edit.media.contains(where: { $0.id == bar.id && $0.kind == .video }) {
+                guard fits(bar, at: span) else { return }
+                overlays.trimMediaStart(bar.id, to: span.start)
+                return
+            }
             if let longest = longestLength(of: bar) { span.start = max(span.start, span.end - longest) }
         case .end:
             span.end = max(min(time, limits.end), span.start + shortest)
@@ -86,12 +92,15 @@ extension QuickEditViewModel {
         return TimeSpan(start: floor, end: max(floor, ceiling))
     }
 
-    /// Photos and videos can overlap, up to `MediaOverlay.simultaneousLimit` at a time; a move or a
-    /// stretch past that stays where it was.
+    /// Photos and videos can overlap, up to `MediaOverlay.simultaneousLimit` at a time, and supports of the split screen not
+    /// at all; a move or a stretch past that stays where it was.
     private func fits(_ bar: LayerBar, at span: TimeSpan) -> Bool {
         guard bar.kind == .media else { return true }
         let others = mediaBars.filter { $0.id != bar.id }.map(\.span)
-        return LayerLanes.peak(of: others, within: span) < MediaOverlay.simultaneousLimit
+        guard LayerLanes.peak(of: others, within: span) < MediaOverlay.simultaneousLimit else { return false }
+        // The split screen shows one support at a time.
+        guard edit.media.first(where: { $0.id == bar.id })?.layout == .split else { return true }
+        return !overlays.supportSpans.contains { $0.id != bar.id && $0.span.overlaps(span) }
     }
 
     private func longestLength(of bar: LayerBar) -> TimeInterval? {
@@ -110,10 +119,7 @@ extension QuickEditViewModel {
                 text.clipAnchor = pinned.anchor
             }
         case .media:
-            overlays.updateMedia(bar.id) { item in
-                item.span = pinned.span
-                item.clipAnchor = pinned.anchor
-            }
+            overlays.layMedia(bar.id, over: span)
         case .caption:
             // A line stays with its recording: only its time on it changes, and only over a clip of that recording.
             let cueID = captions.captionCueID(forLine: bar.id)

@@ -93,7 +93,8 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.tool("addMedia")
         let mode = flow.element("edit.mediaMode")
         XCTAssertTrue(flow.waits(for: mode, "Add photo or video"), "Media didn't open Add photo or video")
-        XCTAssertTrue(app.buttons["On top of video"].isSelected, "Media doesn't start on top of the video")
+        XCTAssertTrue(app.buttons["edit.mediaMode.split"].isSelected, "Media doesn't start over the video, on the split screen")
+        flow.tap(app.buttons["edit.mediaMode.fullScreen"], "Full screen")
         let explanation = flow.element("edit.mediaModeExplanation")
         XCTAssertTrue(explanation.label.contains("B-roll"), explanation.label)
         flow.tap(app.buttons["sheet.closeButton"].firstMatch, "Add photo or video's ×")
@@ -382,25 +383,25 @@ final class CreatorWorkflowUITests: XCTestCase {
 
     // MARK: - 7. Ad
 
-    /// Another take joins the sequence where the sheet says before the tap (after the clip at the playhead), picked and named;
-    /// the texts already there are styled together; the cover.
+    /// Another take joins the sequence where the sheet says before the tap (at the playhead), picked and named; the texts
+    /// already there are styled together; the cover.
     func testAdCombinesTakesTextsAndTheCover() {
         let app = EditorApp.open(demo: true)
         let flow = CreatorWorkflow("ad", app: app)
 
-        flow.step("Media › Insert as clip › one of your takes")
+        flow.step("Media › In sequence › one of your takes")
         flow.tool("addMedia")
-        let clipMode = app.descendants(matching: .any)["edit.mediaMode"].buttons["Insert as clip"]
-        flow.tap(clipMode, "Insert as clip")
+        flow.tap(app.buttons["edit.mediaMode.sequence"], "In sequence")
         let note = flow.element("edit.mediaInsertionNote")
         XCTAssertTrue(flow.waits(for: note, "where the clip goes"))
-        XCTAssertEqual(note.label, "Goes after clip 1, at 00:12.4", "The sheet doesn't say where the clip goes")
+        // The playhead is at the start: the take goes in before the first clip.
+        XCTAssertEqual(note.label, "Goes in at 00:00.0, before clip 1", "The sheet doesn't say where the clip goes")
         let take = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.addTake.'")).firstMatch
         flow.tap(take, "another take")
-        XCTAssertTrue(flow.toastSays("added as clip 2, at 00:12.4", timeout: 10), "No word of where the take went")
+        XCTAssertTrue(flow.toastSays("added as clip 1, at 00:00.0", timeout: 10), "No word of where the take went")
         let back = app.buttons["edit.toolbar.back"]
         XCTAssertTrue(flow.waits(for: back, "the new clip's tools"), "The new clip isn't picked")
-        XCTAssertEqual(back.value as? String, "Clip 2")
+        XCTAssertEqual(back.value as? String, "Clip 1")
         flow.backToMainTools()
 
         flow.step("Text › Style all")

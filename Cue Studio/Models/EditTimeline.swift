@@ -684,20 +684,21 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return true
     }
 
-    /// Replace clip: the piece `id` plays another recording (`source`, `duration` long) from its start, for as long as it did
-    /// (shorter when the new one is shorter), keeping its place, speed, zoom, sound and look. The edit becomes arranged.
-    /// Returns the stretch of its old recording it played, nil (and no change) when there's no such piece or the new
-    /// recording is too short.
+    /// Replace clip: the piece `id` plays another recording (`source`, `duration` long) from `start` (the part the creator
+    /// picked, its start by default), for as long as it did (shorter when the new one has less left), keeping its place,
+    /// speed, zoom, sound and look. The edit becomes arranged. Returns the stretch of its old recording it played, nil (and no
+    /// change) when there's no such piece or the new recording is too short.
     @discardableResult
-    mutating func replaceSource(ofSegment id: UUID, with source: UUID, duration: TimeInterval) -> TimeSpan? {
+    mutating func replaceSource(ofSegment id: UUID, with source: UUID, duration: TimeInterval, from start: TimeInterval = 0) -> TimeSpan? {
         guard let index = index(ofSegment: id), duration >= Self.minimumClipDuration else { return nil }
         let old = segments[index]
+        let from = min(max(0, start), max(0, duration - Self.minimumClipDuration))
         otherSources[source] = duration
         isArranged = true
         var piece = old
         piece.sourceID = source
-        piece.sourceStart = 0
-        piece.sourceEnd = min(old.sourceLength, duration)
+        piece.sourceStart = from
+        piece.sourceEnd = min(from + old.sourceLength, duration)
         segments[index] = piece
         return old.span
     }

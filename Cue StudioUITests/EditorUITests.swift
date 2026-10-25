@@ -214,12 +214,12 @@ final class EditorUITests: XCTestCase {
         XCTAssertEqual(time.value as? String, held, "pause didn't hold the playhead")
     }
 
-    /// Media › Insert as clip: the creator's other takes come before Photos, and one tapped joins the montage as a clip.
+    /// Media › In sequence: the creator's other takes come before Photos, and one tapped joins the montage as a clip.
     func testAnotherTakeJoinsTheMontageFromMedia() {
         let app = EditorApp.open()
         EditorApp.tapTool(app, "addMedia")
-        let clipMode = app.descendants(matching: .any)["edit.mediaMode"].buttons["Insert as clip"]
-        XCTAssertTrue(clipMode.exists(within: 5), "No Insert as clip")
+        let clipMode = app.buttons["edit.mediaMode.sequence"]
+        XCTAssertTrue(clipMode.exists(within: 5), "No In sequence")
         clipMode.tap()
         let take = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.addTake.'")).firstMatch
         XCTAssertTrue(take.exists(within: 5), "No other take to add")

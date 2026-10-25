@@ -16,7 +16,8 @@ struct ReviewActionBar: View {
     /// "Continue" when an edit is waiting, "Edit" otherwise.
     let editTitle: String
     var onEdit: (() -> Void)?
-    let onRetake: () -> Void
+    /// Nil for a video imported from Photos: no Retake.
+    var onRetake: (() -> Void)?
     let onSave: () -> Void
     /// The take's script, when it has one.
     var onScript: (() -> Void)?
@@ -26,7 +27,9 @@ struct ReviewActionBar: View {
         VStack(spacing: 14) {
             HStack(spacing: 8) {
                 tile(editTitle, systemImage: "scissors", identifier: "review.editButton", isEnabled: onEdit != nil, action: onEdit ?? {})
-                tile("Retake", systemImage: "arrow.clockwise", identifier: "review.retakeButton", action: onRetake)
+                if let onRetake {
+                    tile("Retake", systemImage: "arrow.clockwise", identifier: "review.retakeButton", action: onRetake)
+                }
                 tile(
                     justSaved ? String(localized: "Saved") : String(localized: "Save"), systemImage: "arrow.down.to.line", identifier: "review.saveButton",
                     isRunning: runningAction == .save, isDone: justSaved, action: onSave

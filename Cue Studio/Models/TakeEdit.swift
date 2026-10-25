@@ -122,8 +122,10 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     // MARK: Added
     /// Texts over the video, pinned to the recording.
     var texts: [TextOverlay] = []
-    /// Photos and videos over the take (B-roll), one at a time, pinned to the recording.
+    /// Photos and videos over the take (B-roll, windows, the supports of a split screen), pinned to the recording.
     var media: [MediaOverlay] = []
+    /// The split screen's layout, how the main video sits in its area and whether the media's sound plays.
+    var splitScreen = SplitScreen()
     /// Narrations recorded over the edit.
     var voiceOvers: [VoiceOverClip] = []
     /// The style picked with the old Style tool (it also set captions and the filter); kept so
@@ -175,7 +177,14 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
 
     /// Lines timed to the edit, each with the line it comes from.
     func editedInstances(of lines: [CaptionCue]) -> [(line: CaptionCue, cueID: UUID)] {
-        CaptionTimelineMapping.instances(lines, in: timeline)
+        CaptionTimelineMapping.instances(lines, in: timeline, voices: captionedVoices)
+    }
+
+    /// The videos laid over the take whose own voice is captioned, where they show (`MediaOverlay.captionsItsVoice`).
+    var captionedVoices: [CaptionTimelineMapping.Voice] {
+        media.filter { $0.captionsItsVoice == true && $0.kind == .video }.map { item in
+            CaptionTimelineMapping.Voice(mediaID: item.id, pieces: item.pieces(in: timeline))
+        }
     }
 
     /// Texts that show somewhere in `timeline`, with where (edited seconds), in order.
@@ -212,6 +221,14 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
             texts[index].span = pinned.span
         }
         for index in media.indices where media[index].clipAnchor == nil {
+            // Media that follows the cuts keeps its stretch of the speech, cut-out gaps and all: only the clip holding its
+            // start is named, so it shows exactly as before.
+            if media[index].followsCuts == true {
+                let start = media[index].span.start
+                guard let piece = timeline.segments.first(where: { $0.sourceID == nil && $0.sourceEnd > start + 0.000_1 }) else { continue }
+                media[index].clipAnchor = ClipAnchor(segmentID: piece.id, sourceID: nil)
+                continue
+            }
             guard let span = timeline.editedSpan(forSource: media[index].span) else { continue }
             let pinned = timeline.anchoredSpan(forEdited: span)
             media[index].clipAnchor = pinned.anchor
@@ -226,13 +243,65 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         }
     }
 
-    /// Photos and videos that show somewhere in `timeline`, with where (edited seconds), in order.
-    /// A video never shows longer than it lasts.
+    /// How media that follows the cuts (`MediaOverlay.followsCuts`) laid over `edited` (edited seconds) is pinned, so its
+    /// pieces show exactly there (`MediaOverlay.pieces`): the stretch of the speech under it (in an arranged edit, from the
+    /// clip at its start through the clips of the same recording that follow it), and, laid on into another recording's
+    /// clip, how long it plays on over it (`tail`).
+    func pinMedia(_ edited: TimeSpan) -> (anchor: ClipAnchor?, span: TimeSpan, tail: TimeInterval?) {
+        guard timeline.isArranged else { return (nil, timeline.sourceSpan(forEdited: edited), nil) }
+        let segments = timeline.segments
+        let first = timeline.segmentIndex(atEdited: edited.start)
+        let anchor = segments[first]
+        var pieceStart = timeline.editedStart(ofSegmentAt: first)
+        let start = min(anchor.sourceEnd, anchor.sourceStart + anchor.sourceOffset(forEdited: max(0, edited.start - pieceStart)))
+        let pin = ClipAnchor(segmentID: anchor.id, sourceID: anchor.sourceID)
+        var end = start
+        var reached = edited.start
+        for index in first..<segments.count {
+            let segment = segments[index]
+            // Only clips going on with the same recording carry the speech on.
+            guard segment.sourceID == anchor.sourceID, index == first || segment.sourceStart >= end - 0.000_1 else { break }
+            let segmentEnd = pieceStart + segment.duration
+            if edited.end <= segmentEnd + 0.000_1 {
+                end = segment.sourceStart + segment.sourceOffset(forEdited: max(0, edited.end - pieceStart))
+                return (pin, TimeSpan(start: start, end: max(start, min(segment.sourceEnd, end))), nil)
+            }
+            end = segment.sourceEnd
+            reached = segmentEnd
+            pieceStart = segmentEnd
+        }
+        let tail = edited.end - reached
+        return (pin, TimeSpan(start: start, end: end), tail > MediaOverlay.shortestPiece ? tail : nil)
+    }
+
+    /// Lays the photo or video at `index` over `edited` (edited seconds), pinned the way it goes with the speech: following
+    /// the cuts (`pinMedia`) or, media added before, to the recording as it always was (`pin`).
+    mutating func layMedia(at index: Int, over edited: TimeSpan) {
+        guard media.indices.contains(index) else { return }
+        if media[index].followsCuts == true {
+            let pinned = pinMedia(edited)
+            media[index].clipAnchor = pinned.anchor
+            media[index].span = pinned.span
+            media[index].tail = pinned.tail
+        } else {
+            let pinned = pin(edited)
+            media[index].clipAnchor = pinned.anchor
+            media[index].span = pinned.span
+        }
+    }
+
+    /// Photos and videos that show somewhere in `timeline`, with where (edited seconds, from the start of their first piece to
+    /// the end of their last), in order. A video never shows longer than its file has left (`MediaOverlay.pieces`).
     func editedMedia(in timeline: EditTimeline) -> [(media: MediaOverlay, span: TimeSpan)] {
-        media.compactMap { item -> (media: MediaOverlay, span: TimeSpan)? in
-            guard var span = Self.editedSpan(item.span, anchor: item.clipAnchor, in: timeline) else { return nil }
-            span.end = min(span.end, span.start + item.longestDuration)
-            return (item, span)
+        placedMedia(in: timeline).map { ($0.media, $0.span) }
+    }
+
+    /// Like `editedMedia`, with each one's pieces: where it shows without a break and which second of its file plays there.
+    func placedMedia(in timeline: EditTimeline) -> [(media: MediaOverlay, span: TimeSpan, pieces: [MediaPiece])] {
+        media.compactMap { item -> (media: MediaOverlay, span: TimeSpan, pieces: [MediaPiece])? in
+            let pieces = item.pieces(in: timeline)
+            guard let first = pieces.first, let last = pieces.last else { return nil }
+            return (item, TimeSpan(start: first.edited.start, end: last.edited.end), pieces)
         }
         .sorted { $0.span.start < $1.span.start }
     }
@@ -323,6 +392,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
+        case splitScreen
     }
 
     /// Edits saved before the timeline had pieces: trim handles, cut points, deleted sections and
@@ -397,6 +467,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         // Added later: edits saved before have none, and a damaged one loses only that part.
         texts = container.decodeLossy([TextOverlay].self, forKey: .texts)
         media = container.decodeLossy([MediaOverlay].self, forKey: .media)
+        splitScreen = container.decodeLenient(SplitScreen.self, forKey: .splitScreen, report: report) ?? SplitScreen()
         voiceOvers = container.decodeLossy([VoiceOverClip].self, forKey: .voiceOvers)
         creatorStyle = try? container.decodeIfPresent(CreatorStyle.self, forKey: .creatorStyle)
         textLook = container.decodeLenient(TextLook.self, forKey: .textLook, report: report)

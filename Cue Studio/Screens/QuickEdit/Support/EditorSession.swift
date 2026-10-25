@@ -36,6 +36,8 @@ final class EditorSession {
     var work: EditorWork?
     /// Why the photo library is open, if it is (`EditorPhotoPicker`); the editor puts the pick where it was asked for.
     var photoRequest: PhotoRequest?
+    /// A video picked to replace something, waiting for its part to be chosen (`MediaPartSheet`).
+    var partChoice: MediaPartChoice?
     /// Frames per second of the recording: read from the file when it opens, the take's setting until then.
     var frameRate: Double
     /// Copies a picked photo or video into the edit's media.

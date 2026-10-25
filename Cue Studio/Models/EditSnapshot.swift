@@ -54,6 +54,8 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     /// on (`thinned`).
     var captionChanges: LinesChange<CaptionCue>?
     var translationChanges: [CueLanguage: LinesChange<TranslatedCaptionLine>]?
+    /// The split screen's layout, framings and the media's mute; nil in steps saved before it, which leave it as it is.
+    var splitScreen: SplitScreen?
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, texts, media, voiceOvers, cover, creatorStyle, captionStyle, filter
@@ -61,6 +63,7 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
         case captionTranslations, captionDisplay, music, backgrounds
         case captionCollection, captionCollectionVersion, captionPosition, look
         case lockedLayers, captionLanguage, captionLanguageKnown, captionChanges, translationChanges
+        case splitScreen
     }
 }
 
@@ -100,7 +103,8 @@ nonisolated extension EditSnapshot {
             captionTranslations: edit.captionTranslations, captionDisplay: edit.captionDisplay, music: edit.music,
             backgrounds: edit.backgrounds, captionCollection: edit.captionCollection,
             captionCollectionVersion: 1, captionPosition: edit.captionPosition, look: EditLook(edit),
-            lockedLayers: edit.lockedLayers, captionLanguage: edit.captionLanguage, captionLanguageKnown: true
+            lockedLayers: edit.lockedLayers, captionLanguage: edit.captionLanguage, captionLanguageKnown: true,
+            splitScreen: edit.splitScreen
         )
     }
 
@@ -136,7 +140,8 @@ nonisolated extension EditSnapshot {
             captionLanguage: try? container.decodeIfPresent(CueLanguage.self, forKey: .captionLanguage),
             captionLanguageKnown: try? container.decodeIfPresent(Bool.self, forKey: .captionLanguageKnown),
             captionChanges: try? container.decodeIfPresent(LinesChange<CaptionCue>.self, forKey: .captionChanges),
-            translationChanges: try? container.decodeIfPresent([CueLanguage: LinesChange<TranslatedCaptionLine>].self, forKey: .translationChanges)
+            translationChanges: try? container.decodeIfPresent([CueLanguage: LinesChange<TranslatedCaptionLine>].self, forKey: .translationChanges),
+            splitScreen: try? container.decodeIfPresent(SplitScreen.self, forKey: .splitScreen)
         )
     }
 }

@@ -104,7 +104,89 @@ extension CaptionsViewModel {
                 candidates: spokenCandidates(for: script)
             ))
         }
-        return result
+        return result + supportVoices
+    }
+
+    /// The videos laid over the take whose own voice is captioned (`MediaOverlay.captionsItsVoice`), each heard on its own.
+    private var supportVoices: [CaptionRecording] {
+        edit.media.filter { $0.captionsItsVoice == true && $0.kind == .video && $0.hasSound == true }.map { media in
+            CaptionRecording(
+                source: media.id, url: EditMediaFiles.url(for: media.fileName), script: "",
+                language: edit.captionLanguage.map(SpeechLanguageRequest.language) ?? speechLanguageFor(nil),
+                candidates: spokenCandidates(for: nil)
+            )
+        }
+    }
+
+    /// The voice of the video `id` laid over the take captioned in place of the main video's while it shows, or not. On, it's
+    /// heard on its own now (when there are captions to join; else when they're made) and its lines join the others; off, its
+    /// lines go (Undo brings them back). The main video's lines under it stay, and show again when it's off.
+    func setCaptionsItsVoice(_ id: UUID, _ isOn: Bool) {
+        guard isReady, let media = edit.media.first(where: { $0.id == id }), media.kind == .video, media.hasSound == true else { return }
+        guard isOn else {
+            changeEdit { edit in
+                guard let index = edit.media.firstIndex(where: { $0.id == id }) else { return }
+                edit.media[index].captionsItsVoice = nil
+                edit.captions.removeAll { $0.sourceID == id }
+            }
+            return
+        }
+        changeEdit { edit in
+            guard let index = edit.media.firstIndex(where: { $0.id == id }) else { return }
+            edit.media[index].captionsItsVoice = true
+        }
+        guard !edit.captions.isEmpty, !captionState.isWorking, let recording = supportVoices.first(where: { $0.source == id }) else {
+            toast.show(String(localized: "Its voice is captioned when you make captions"))
+            return
+        }
+        captionState = .working(.preparing)
+        jobs.start(.captions) { [weak self, editing] request in
+            guard let self else { return }
+            let report: @Sendable (CaptionProgress) -> Void = { [weak self] progress in
+                Task { @MainActor in self?.receiveCaptionProgress(progress, for: request) }
+            }
+            do {
+                let outcome = try await editing.captions(
+                    forVideoAt: recording.url, script: "", language: recording.language, spokenAmong: recording.candidates, progress: report
+                )
+                joinSupportVoice(id, outcome: outcome, request: request)
+            } catch is CancellationError {
+                finishCaptions(request, with: .cancelled)
+            } catch {
+                noteFailure(error, "captions")
+                finishCaptions(request, with: .failed)
+            }
+        }
+    }
+
+    /// The support's lines in place of the ones it had, cut the way the others are; nothing heard is said.
+    private func joinSupportVoice(_ id: UUID, outcome: CaptionOutcome, request: EditorJobs.Ticket) {
+        guard jobs.isCurrent(request) else { return }
+        guard case .captions(let found, var transcript) = outcome, !found.isEmpty else {
+            captionState = .idle
+            toast.show(String(localized: "No speech in this video"))
+            return
+        }
+        transcript.sourceID = id
+        updateFindings { edit in
+            edit.sourceTranscripts.removeAll { $0.sourceID == id }
+            edit.sourceTranscripts.append(transcript)
+        }
+        var lines = found.map { line in
+            var tagged = line
+            tagged.sourceID = id
+            return tagged
+        }
+        if let settings = edit.captionCollection, let format = settings.format {
+            lines = Self.blocked(lines, format: format, settings: settings, aspect: edit.aspect)
+        }
+        let count = lines.count
+        changeEdit { edit in
+            edit.captions.removeAll { $0.sourceID == id }
+            edit.captions = (edit.captions + lines).sorted { $0.start < $1.start }
+        }
+        captionState = .idle
+        toast.show(String(localized: "\(count) lines from the support’s voice to check"))
     }
 
     /// A transcript already made: in the language asked for, or (on Auto) in one of the languages the recording is likely spoken in.

@@ -412,7 +412,7 @@ struct QuickCreatorViewModelTests {
             $0.width = 0.4
         }
         let before = viewModel.edit.media[0]
-        viewModel.overlays.replaceMedia(id, with: ImportedMedia(kind: .photo, fileName: "other.jpg", aspect: 2, duration: nil))
+        viewModel.overlays.replaceMedia(id, with: MediaPick(ImportedMedia(kind: .photo, fileName: "other.jpg", aspect: 2, duration: nil)))
         let after = viewModel.edit.media[0]
         #expect(after.fileName == "other.jpg" && after.aspect == 2)
         #expect(after.id == before.id && after.span == before.span && after.layout == .window && after.width == 0.4)
@@ -421,13 +421,19 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.edit.media[0].fileName == before.fileName)
     }
 
-    @Test func aPhotoIsOnlyReplacedByAPhotoAndAVideoByAVideo() async {
+    @Test func aVideoCanTakeAPhotosPlaceAndUndoBringsThePhotoBack() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         let original = photo()
         viewModel.overlays.addMedia(original)
         let id = viewModel.edit.media[0].id
-        viewModel.overlays.replaceMedia(id, with: ImportedMedia(kind: .video, fileName: "clip.mov", aspect: 1, duration: 2))
+        viewModel.overlays.replaceMedia(id, with: MediaPick(ImportedMedia(kind: .video, fileName: "clip.mov", aspect: 1, duration: 2, hasSound: true)))
+        #expect(viewModel.edit.media[0].fileName == "clip.mov")
+        #expect(viewModel.edit.media[0].kind == .video)
+        // The photo showed 3 s; the video has 2.
+        #expect(abs(viewModel.edit.media[0].span.duration - 2) < 0.01)
+        #expect(viewModel.edit.media[0].id == id)
+        viewModel.undo()
         #expect(viewModel.edit.media[0].fileName == original.fileName)
         #expect(viewModel.edit.media[0].kind == .photo)
     }
@@ -437,7 +443,7 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         viewModel.overlays.addMedia(ImportedMedia(kind: .video, fileName: "long.mov", aspect: 1, duration: 8))
         let id = viewModel.edit.media[0].id
-        viewModel.overlays.replaceMedia(id, with: ImportedMedia(kind: .video, fileName: "short.mov", aspect: 1, duration: 3))
+        viewModel.overlays.replaceMedia(id, with: MediaPick(ImportedMedia(kind: .video, fileName: "short.mov", aspect: 1, duration: 3)))
         #expect(viewModel.edit.media[0].span.duration == 3)
         #expect(viewModel.edit.media[0].mediaDuration == 3)
     }
@@ -448,10 +454,11 @@ struct QuickCreatorViewModelTests {
         viewModel.overlays.addMedia(photo())
         let id = viewModel.edit.media[0].id
         viewModel.selection = .media(id)
-        #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "track", "duplicate", "replaceMedia", "lock", "delete"])
+        #expect(viewModel.toolbarItems.map(\.id) == ["editMedia", "splitMedia", "replaceMedia", "track", "duplicate", "lock", "delete"])
         viewModel.perform(.replaceMedia)
         #expect(viewModel.photoRequest?.purpose == .replaceMedia(id, kind: .photo))
-        #expect(viewModel.photoRequest?.offersVideos == false)
+        // A photo's place can take a video too (and a video's a photo).
+        #expect(viewModel.photoRequest?.offersVideos == true)
     }
 
     @Test func duplicatingAMediaPutsACopyOnTopThatSharesTheFile() async throws {
@@ -495,9 +502,11 @@ struct QuickCreatorViewModelTests {
         let viewModel = scenario.viewModel
         viewModel.overlays.addMedia(photo())
         let id = viewModel.edit.media[0].id
-        #expect(viewModel.timelineInput(heightClass: .regular).media[0].label == "Photo · Full screen")
+        // What it is in words; how it shows by its layout's symbol on the bar's badge.
+        #expect(viewModel.timelineInput(heightClass: .regular).media[0].label == "Photo")
+        #expect(viewModel.timelineInput(heightClass: .regular).media[0].strip?.layout == .fullFrame)
         viewModel.overlays.updateMedia(id) { $0.layout = .window }
-        #expect(viewModel.timelineInput(heightClass: .regular).media[0].label == "Photo · Window")
+        #expect(viewModel.timelineInput(heightClass: .regular).media[0].strip?.layout == .window)
     }
 
     // MARK: - Voice-over
