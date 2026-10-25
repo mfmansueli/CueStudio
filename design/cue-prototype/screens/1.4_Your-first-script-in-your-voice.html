@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Cue — Your first script</title>
+<style>
+/* 1.4 Chapter 3, read from source (879bee2e468a): ScriptChapter (heading with no motion of its own, 20 pt, the card at 16 pt gutters, the capsule 20 pt under it,
+   "It’s just practice. Nothing is recorded." 12.5 inkHint, "Try the teleprompter" with the shine), MessageCard (outer violet 32% r24 with the turning ring of light,
+   2.8 s a turn; inner r22 aurora on #1B1740, padding 16/18/18, min 327; header "✦ PREPARING YOUR SCRIPT" → "✦ PRACTICE SCRIPT · READY" 10.5 mono; "VIDEO FOR · TIKTOK",
+   12 pt ring, "24 SEC" in gold; HOOK in yellow, BODY and CTA labels 10 mono; CTA in lilac with a caret; four gold brackets; rising specks; the scan line at the end),
+   OnboardingScript.practice (the same text for everyone). Approximate (not read): word timing (MessageWords, MessageTimeline), the capsule (MessageCapsule),
+   the aurora (AuroraCardBackground). */
+body{margin:0;background:#000}*{box-sizing:border-box}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;color:#fff;background:#07080E;display:flex;flex-direction:column;padding:54px 0 34px}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.lab{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:10px;font-weight:600;letter-spacing:1px;margin-bottom:4px}
+.w{opacity:0;filter:blur(4px);transition:opacity .35s,filter .35s}.w.in{opacity:1;filter:none}
+.br{position:absolute;width:14px;height:14px;border-color:rgba(255,230,128,.85);border-style:solid;border-width:0;opacity:0;transform:scale(1.5);transition:all .6s cubic-bezier(.16,1,.3,1) .8s}
+.on .br{opacity:1;transform:scale(1)}
+@property --a{syntax:'<angle>';inherits:false;initial-value:0deg}
+@keyframes turn{to{--a:360deg}}
+@keyframes rise{0%{opacity:0;transform:translateY(0)}20%{opacity:.95}100%{opacity:0;transform:translateY(-34px)}}
+@keyframes scan{from{top:4%;opacity:1}to{top:96%;opacity:0}}
+@keyframes caret{50%{opacity:0}}
+@keyframes shine{0%,86%{transform:translateX(-140%)}100%{transform:translateX(260%)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div class="phone">
+  <div style="margin-top:8px;height:44px;padding:0 20px;display:flex;align-items:center;gap:5px;flex-shrink:0">
+    <span style="width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.85)"></span><span style="width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.85)"></span><span style="width:22px;height:4px;border-radius:2px;background:#FFD60A"></span><span style="width:22px;height:4px;border-radius:2px;background:rgba(110,116,150,.26)"></span><span style="width:22px;height:4px;border-radius:2px;background:rgba(110,116,150,.26)"></span>
+  </div>
+  <div style="padding:0 20px;display:flex;flex-direction:column;gap:10px;flex-shrink:0">
+    <div class="mono" style="font-size:12px;font-weight:600;letter-spacing:1.4px;color:#FFD60A">CHAPTER 3 · YOUR FIRST SCRIPT</div>
+    <div style="font-size:30px;line-height:36px;font-weight:700;letter-spacing:-.6px">Your first script. Ready to read.</div>
+    <div style="font-size:15px;line-height:20px;color:rgba(225,228,245,.62)">Read it out loud on the teleprompter.</div>
+  </div>
+  <div style="flex:0 0 20px"></div>
+  <!-- MessageCard -->
+  <div id="card" style="margin:0 16px;position:relative;padding:2px;border-radius:24px;background:rgba(170,154,255,.32);box-shadow:0 20px 50px rgba(40,20,120,.45),0 0 34px rgba(157,140,255,.22);flex-shrink:0">
+    <div id="ring" style="position:absolute;inset:0;border-radius:24px;padding:2px;background:conic-gradient(from var(--a),rgba(180,167,255,0) 0deg,rgba(180,167,255,0) 190deg,#B4A7FF 270deg,#FFD60A 318deg,#FFF6C2 332deg,#E4DEFF 345deg,rgba(180,167,255,0) 360deg);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;animation:turn 2.8s linear infinite;transition:opacity .6s"></div>
+    <div style="position:relative;border-radius:22px;overflow:hidden;min-height:327px;padding:16px 18px 18px;background:radial-gradient(80% 60% at 10% 0,rgba(157,140,255,.35),rgba(157,140,255,0) 70%),radial-gradient(70% 60% at 100% 100%,rgba(94,78,224,.35),rgba(94,78,224,0) 70%),#1B1740">
+      <i class="br" style="left:8px;top:8px;border-left-width:1.5px;border-top-width:1.5px;border-top-left-radius:6px"></i><i class="br" style="right:8px;top:8px;border-right-width:1.5px;border-top-width:1.5px;border-top-right-radius:6px"></i><i class="br" style="left:8px;bottom:8px;border-left-width:1.5px;border-bottom-width:1.5px;border-bottom-left-radius:6px"></i><i class="br" style="right:8px;bottom:8px;border-right-width:1.5px;border-bottom-width:1.5px;border-bottom-right-radius:6px"></i>
+      <div id="specks" aria-hidden="true"></div>
+      <div class="mono" style="height:22px;display:flex;align-items:center;font-size:10.5px;font-weight:600;letter-spacing:1.05px;position:relative">
+        <span id="writing" style="color:#B4A7FF;transition:opacity .3s">✦ PREPARING YOUR SCRIPT</span>
+        <span id="ready" style="position:absolute;left:0;color:#E4DEFF;opacity:0;transition:opacity .4s">✦ PRACTICE SCRIPT · READY</span>
+      </div>
+      <div style="margin-top:12px;height:18px;display:flex;align-items:center;gap:8px">
+        <span style="width:7px;height:7px;border-radius:4px;background:#64D2FF;box-shadow:0 0 4px #64D2FF"></span>
+        <span class="mono" style="font-size:10px;font-weight:600;letter-spacing:1px;color:rgba(225,228,245,.72)">VIDEO FOR · TIKTOK</span>
+        <span style="flex:1"></span>
+        <svg width="16" height="16" viewBox="0 0 16 16" style="display:block"><circle cx="8" cy="8" r="6" fill="none" stroke="rgba(225,228,245,.22)" stroke-width="2"/><circle id="prog" cx="8" cy="8" r="6" fill="none" stroke="#FFE680" stroke-width="2" stroke-linecap="round" stroke-dasharray="37.7" stroke-dashoffset="37.7" transform="rotate(-90 8 8)"/><path id="chk" d="M5.4 8.2l1.7 1.7 3.4-3.6" fill="none" stroke="#FFE680" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" opacity="0"/></svg>
+        <span class="mono" style="font-size:10px;font-weight:600;letter-spacing:1px;color:#FFE680">24 SEC</span>
+      </div>
+      <div id="body" style="margin-top:16px;display:flex;flex-direction:column;gap:10px;font-size:17px;line-height:22px"></div>
+      <div id="scan" style="position:absolute;left:0;right:0;top:4%;height:1.5px;background:linear-gradient(90deg,rgba(255,214,10,0),rgba(255,214,10,.75) 30%,rgba(255,214,10,.75) 70%,rgba(255,214,10,0));box-shadow:0 0 6px rgba(255,214,10,.55);opacity:0"></div>
+    </div>
+  </div>
+  <div id="caps" class="mono" style="margin:20px 16px 0;height:34px;border-radius:17px;background:rgba(255,214,10,.12);box-shadow:inset 0 0 0 .5px rgba(255,214,10,.38);display:flex;align-items:center;justify-content:center;gap:8px;font-size:11px;font-weight:600;letter-spacing:1px;color:#FFD60A;opacity:0;transition:opacity .5s;flex-shrink:0"><span>✓</span>SCRIPT READY · LET’S TRY IT</div>
+  <div id="note" style="margin-top:12px;padding:0 20px;text-align:center;font-size:12.5px;color:rgba(225,228,245,.55);opacity:0;transition:opacity .5s;flex-shrink:0">It’s just practice. Nothing is recorded.</div>
+  <div style="flex:1;min-height:12px"></div>
+  <div style="padding:0 16px;flex-shrink:0">
+    <div id="go" role="button" style="position:relative;overflow:hidden;height:54px;border-radius:27px;background:#FFD60A;color:#000;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1);cursor:pointer">Try the teleprompter<span aria-hidden="true" style="position:absolute;top:0;bottom:0;left:0;width:40%;background:linear-gradient(100deg,rgba(255,255,255,0),rgba(255,255,255,.55),rgba(255,255,255,0));animation:shine 5s linear 7s infinite;transform:translateX(-140%)"></span></div>
+  </div>
+</div>
+<script>
+(function(){function f(){document.body.style.zoom=Math.min(1,(innerHeight-8)/860)}f();addEventListener('resize',f)})();
+(function(){
+  var S=[['HOOK','#FFD60A','#fff','An idea is good. Seeing it become a video is even better.'],['BODY','rgba(225,228,245,.6)','#fff','Cue Studio helps me write it, read it with a teleprompter that follows my voice, and record it right here. I can add automatic captions and edit my take before sharing it.'],['CTA','rgba(225,228,245,.6)','#B4A7FF','My idea gets to sound like me and reach the people I made it for.']];
+  var body=document.getElementById('body'),words=[],reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  S.forEach(function(s,i){var d=document.createElement('div');d.innerHTML='<div class="lab" style="color:'+s[1]+'">'+s[0]+'</div>';var p=document.createElement('div');p.style.color=s[2];s[3].split(' ').forEach(function(w){var e=document.createElement('span');e.className='w';e.textContent=w+' ';p.appendChild(e);words.push(e);});if(i===2){var c=document.createElement('span');c.textContent='▍';c.style.cssText='color:#B4A7FF;animation:caret 1s steps(1) infinite;font-size:15px';p.appendChild(c);}d.appendChild(p);body.appendChild(d);});
+  var sp=document.getElementById('specks');[[40,30,2,'#E4DEFF',-4,2.2,0],[120,50,2.5,'#FFE680',6,2.6,.5],[200,20,2,'#E4DEFF',-6,2,1],[260,60,1.6,'#fff',4,2.8,.3],[300,26,2.2,'#B4A7FF',-3,2.4,1.4],[80,90,1.6,'#fff',5,2.1,.8]].forEach(function(s){var e=document.createElement('i');e.style.cssText='position:absolute;left:'+s[0]+'px;bottom:'+s[1]+'px;width:'+s[2]+'px;height:'+s[2]+'px;border-radius:50%;background:'+s[3]+';box-shadow:0 0 3px '+s[3]+';opacity:0;animation:rise '+s[5]+'s ease-out '+s[6]+'s infinite';sp.appendChild(e);});
+  document.getElementById('card').classList.add('on');
+  var start=1.6,step=.055,end=start+words.length*step,prog=document.getElementById('prog');
+  function at(sec,fn){reduce?fn():setTimeout(fn,sec*1000);}
+  words.forEach(function(w,i){at(start+i*step,function(){w.classList.add('in');prog.setAttribute('stroke-dashoffset',37.7*(1-(i+1)/words.length));});});
+  at(end+.1,function(){document.getElementById('writing').style.opacity=0;document.getElementById('ready').style.opacity=1;document.getElementById('chk').setAttribute('opacity',1);document.getElementById('ring').style.opacity=0;sp.style.opacity=0;sp.style.transition='opacity .6s';
+    var sc=document.getElementById('scan');if(!reduce)sc.style.animation='scan 1.25s ease-in-out forwards';});
+  at(end+.4,function(){document.getElementById('caps').style.opacity=1;document.getElementById('note').style.opacity=1;});
+  at(end+.7,function(){var g=document.getElementById('go');g.style.opacity=1;g.style.transform='none';});
+})();
+</script>
+</body></html>

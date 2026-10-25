@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Cue — Creator type</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000}
+*{box-sizing:border-box}
+.night{width:390px;height:844px;position:relative;overflow:hidden;font-family:Geist,-apple-system,sans-serif;color:#fff;background:radial-gradient(70% 30% at 20% 6%,rgba(157,140,255,0.20),rgba(157,140,255,0) 70%),radial-gradient(55% 28% at 85% 60%,rgba(94,78,224,0.12),rgba(94,78,224,0) 70%),#0A0B12}
+.stars{background-image:radial-gradient(1.3px 1.3px at 22px 38px,rgba(255,255,255,0.75),transparent),radial-gradient(1px 1px at 88px 142px,rgba(228,222,255,0.6),transparent),radial-gradient(1.6px 1.6px at 151px 64px,rgba(255,255,255,0.55),transparent),radial-gradient(1px 1px at 203px 211px,rgba(255,255,255,0.45),transparent),radial-gradient(1.2px 1.2px at 262px 30px,rgba(228,222,255,0.7),transparent),radial-gradient(1px 1px at 318px 168px,rgba(255,255,255,0.5),transparent),radial-gradient(1.4px 1.4px at 360px 92px,rgba(255,236,170,0.55),transparent),radial-gradient(1px 1px at 45px 250px,rgba(255,255,255,0.4),transparent),radial-gradient(1px 1px at 128px 290px,rgba(228,222,255,0.45),transparent),radial-gradient(1.2px 1.2px at 290px 268px,rgba(255,255,255,0.5),transparent);background-size:390px 310px;animation:drift 160s linear infinite}
+@keyframes drift{from{background-position:0 0}to{background-position:0 310px}}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.06));border:0.5px solid rgba(255,255,255,0.2);box-shadow:inset 0 1px 0 rgba(255,255,255,0.25);-webkit-backdrop-filter:blur(20px) saturate(170%);backdrop-filter:blur(20px) saturate(170%)}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;cursor:pointer;text-align:inherit}
+.circ{width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ink2{color:rgba(225,228,245,0.62)}.hint{color:rgba(225,228,245,0.5)}.acc{color:#FFD60A}.ai{color:#B4A7FF}
+.sep{height:1px;background:rgba(80,86,120,0.4);margin-left:16px}
+.dim{position:absolute;inset:0;background:rgba(0,0,0,0.42)}
+.sheet{position:absolute;left:0;right:0;bottom:0;top:56px;border-radius:38px 38px 0 0;background:rgba(22,24,38,0.97);box-shadow:inset 0 0.5px 0 rgba(255,255,255,0.18);overflow:hidden}
+.grab{position:absolute;left:50%;top:6px;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:rgba(235,235,245,0.3);z-index:3}
+.card{border-radius:16px;background:#1F2236;overflow:hidden}
+.radio{width:24px;height:24px;border-radius:12px;box-shadow:inset 0 0 0 2px rgba(225,228,245,0.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:transparent}
+.on .radio{box-shadow:inset 0 0 0 2px #FFD60A,inset 0 0 0 5px rgba(22,24,38,1),inset 0 0 0 12px #FFD60A}.on .radio.chk{box-shadow:none;background:#FFD60A;color:#000}
+.cta{width:100%;height:54px;border-radius:27px;background:#FFD60A;color:#000;font-size:17px;font-weight:700;text-align:center}
+.link{width:100%;min-height:44px;text-align:center;font-size:15px;font-weight:600}
+.bbar{position:absolute;left:0;right:0;bottom:0;padding:24px 16px 30px;background:linear-gradient(rgba(22,24,38,0),rgba(22,24,38,0.98) 30%);display:flex;flex-direction:column;gap:4px;z-index:3}
+.q{font-size:28px;line-height:33px;font-weight:700;letter-spacing:-0.56px}
+.dimmed{opacity:.45}.rc{width:100%;min-height:112px;padding:12px;border-radius:16px;background:#1F2236;display:flex;flex-direction:column;gap:8px;text-align:left}.rc.on{background:rgba(255,214,10,0.12);box-shadow:inset 0 0 0 2px #FFD60A}
+.fchip{height:40px;padding:0 14px;border-radius:20px;background:rgba(110,116,150,0.26);font-size:15px;font-weight:500;white-space:nowrap}.fchip.on{background:#fff;color:#000;font-weight:600}
+.lvl{flex:1;min-height:44px;border-radius:22px;background:rgba(110,116,150,0.26);font-size:15px;font-weight:600;text-align:center}.lvl.on{background:#fff;color:#000}
+.rr{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:0 16px}
+</style>
+</head>
+<body>
+<div class="night">
+<div class="dim"></div>
+<div class="sheet">
+<div class="grab"></div>
+<div style="position:absolute;left:16px;right:16px;top:14px;height:44px;display:flex;align-items:center;gap:10px;z-index:2">
+  
+  <div style="display:flex;align-items:center;gap:10px"><span style="display:flex;gap:4px"><span style="width:26px;height:4px;border-radius:2px;background:#FFD60A"></span><span style="width:26px;height:4px;border-radius:2px;background:rgba(110,116,150,0.26)"></span><span style="width:26px;height:4px;border-radius:2px;background:rgba(110,116,150,0.26)"></span><span style="width:26px;height:4px;border-radius:2px;background:rgba(110,116,150,0.26)"></span></span><span class="mono ink2" style="font-size:11px;font-weight:600;letter-spacing:0.06em">01 / 04</span></div>
+  <div style="flex:1"></div>
+  <button class="ink2" style="font-size:17px;min-height:44px">Not now</button>
+</div>
+<div class="scroll" style="top:62px;padding:16px 16px 210px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-direction:column;gap:6px"><div class="q">What kind of creator are you?</div><div class="ink2" style="font-size:15px">Pick the closest. Change it anytime.</div></div>
+<div data-group data-cap="1" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+<button class="rc on" data-opt><span style="width:34px;height:34px;border-radius:10px;background:rgba(255,214,10,0.16);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3"/><path d="M6.6 18.3c1.3-2 3.2-3 5.4-3s4.1 1 5.4 3"/></svg></span><span style="font-size:15px;font-weight:600;line-height:19px">Lifestyle &amp; personal</span><span class="ink2" style="font-size:12px;line-height:16px">Routine, style, opinions, vlogs</span></button>
+<button class="rc" data-opt><span style="width:34px;height:34px;border-radius:10px;background:rgba(255,214,10,0.16);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h9v6a4.5 4.5 0 0 1-9 0z"/><path d="M13 8h7v6a4.5 4.5 0 0 1-7 3.7"/><path d="M6.5 13.5c.8.8 2.2.8 3 0"/></svg></span><span style="font-size:15px;font-weight:600;line-height:19px">Entertainer</span><span class="ink2" style="font-size:12px;line-height:16px">Comedy, sketches, music, reacts</span></button>
+<button class="rc" data-opt><span style="width:34px;height:34px;border-radius:10px;background:rgba(255,214,10,0.16);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.8l2.5 5.1 5.6.8-4.1 4 1 5.6-5-2.6-5 2.6 1-5.6-4.1-4 5.6-.8z"/></svg></span><span style="font-size:15px;font-weight:600;line-height:19px">Expert, coach or pro</span><span class="ink2" style="font-size:12px;line-height:16px">Trainer, doctor, lawyer, consultant</span></button>
+<button class="rc" data-opt><span style="width:34px;height:34px;border-radius:10px;background:rgba(255,214,10,0.16);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9.5L12 5l9.5 4.5L12 14z"/><path d="M6.5 11.5v4.5c3 2.2 8 2.2 11 0v-4.5"/></svg></span><span style="font-size:15px;font-weight:600;line-height:19px">Teacher or explainer</span><span class="ink2" style="font-size:12px;line-height:16px">Classes, study, how things work</span></button>
+<button class="rc" data-opt><span style="width:34px;height:34px;border-radius:10px;background:rgba(255,214,10,0.16);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10v10h16V10"/><path d="M3 10l1.5-5h15L21 10c0 1.4-1.2 2.5-2.6 2.5S15.8 11.4 15.8 10c0 1.4-1.2 2.5-2.6 2.5h-2.4C9.4 12.5 8.2 11.4 8.2 10c0 1.4-1.2 2.5-2.6 2.5S3 11.4 3 10z"/><path d="M10 20v-5h4v5"/></svg></span><span style="font-size:15px;font-weight:600;line-height:19px">My own business</span><span class="ink2" style="font-size:12px;line-height:16px">Shop, salon, studio, service</span></button>
+<button class="rc" data-opt><span style="width:34px;height:34px;border-radius:10px;background:rgba(255,214,10,0.16);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 12.5V4h8.5l8.5 8.5-8.5 8.5z"/><circle cx="8" cy="8.5" r="1.5"/></svg></span><span style="font-size:15px;font-weight:600;line-height:19px">Content for brands</span><span class="ink2" style="font-size:12px;line-height:16px">UGC, reviews, social media manager</span></button>
+<button class="rc" data-opt><span style="width:34px;height:34px;border-radius:10px;background:rgba(255,214,10,0.16);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h13v14H6a2 2 0 0 1-2-2z"/><path d="M17 9h3v8a2 2 0 0 1-2 2"/><path d="M7.5 9h6M7.5 12.5h6M7.5 16h4"/></svg></span><span style="font-size:15px;font-weight:600;line-height:19px">News &amp; commentary</span><span class="ink2" style="font-size:12px;line-height:16px">Report, analyze, review, react</span></button>
+<button class="rc" data-opt><span style="width:34px;height:34px;border-radius:10px;background:rgba(255,214,10,0.16);display:flex;align-items:center;justify-content:center"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 16.5s-4-2.4-4-5.2a2.2 2.2 0 0 1 4-1.3 2.2 2.2 0 0 1 4 1.3c0 2.8-4 5.2-4 5.2z"/></svg></span><span style="font-size:15px;font-weight:600;line-height:19px">Community or cause</span><span class="ink2" style="font-size:12px;line-height:16px">Faith, nonprofit, activism, politics</span></button>
+</div>
+<div class="ink2" style="font-size:13px;text-align:center">Doing more than one? Pick the one you film most.</div>
+</div>
+<div class="bbar"><button class="link ink2">Skip this one</button><button class="cta">Continue</button></div>
+</div>
+</div>
+<script>
+document.querySelectorAll('[data-group]').forEach(g=>{const cap=+g.dataset.cap||1;g.querySelectorAll('[data-opt]').forEach(o=>o.addEventListener('click',()=>{if(cap===1){g.querySelectorAll('[data-opt]').forEach(x=>x.classList.toggle('on',x===o));}else{if(!o.classList.contains('on')&&g.querySelectorAll('[data-opt].on').length>=cap)return;o.classList.toggle('on');}const full=g.querySelectorAll('[data-opt].on').length>=cap&&cap>1;g.querySelectorAll('[data-opt]').forEach(x=>x.classList.toggle('dimmed',full&&!x.classList.contains('on')));const n=document.querySelector('[data-count]');if(n)n.textContent=full?('Up to '+cap+' · '+cap+' of '+cap):('Pick up to '+cap);}))});
+</script>
+</body>
+</html>

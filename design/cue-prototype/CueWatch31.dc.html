@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Cue para Apple Watch, protótipo</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<style>
+body{margin:0}
+</style>
+</helmet>
+<div style="position: relative; width: 390px; height: 844px; box-sizing: border-box; overflow: hidden; background: radial-gradient(120% 40% at 30% 0%, #1E1B3C 0%, #07080E 60%); color: #FFFFFF; font-family: -apple-system, 'SF Pro Text', system-ui, sans-serif; display: flex; flex-direction: column">
+
+<div style="flex-shrink: 0; padding: 16px 20px 8px; display: flex; flex-direction: column; gap: 2px">
+<div style="font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; color: #FFD60A">APPLE WATCH · 40 MM · {{ id }}</div>
+<div style="font-size: 20px; font-weight: 700; letter-spacing: -0.3px">{{ title }}</div>
+</div>
+
+<sc-if value="{{ notGallery }}" hint-placeholder-val="{{ true }}">
+<div style="flex-shrink: 0; position: relative; width: 340px; height: 410px; margin: 0 auto">
+<div style="position: absolute; left: 336px; top: 104px; width: 14px; height: 58px; border-radius: 7px; background: #2A2C3A; box-shadow: inset 0 0 0 1px #3B3E5E"></div>
+<div style="position: absolute; left: 337px; top: 196px; width: 9px; height: 74px; border-radius: 5px; background: #20222E"></div>
+<div style="position: absolute; inset: 0; border-radius: 76px; background: #15161E; box-shadow: inset 0 0 0 1px #2A2C3A, 0 24px 60px rgba(0, 0, 0, 0.55); padding: 8px; box-sizing: border-box">
+<dc-import name="CueWatchScreen31" st="{{ st }}" on-act="{{ act }}" hint-size="324px,394px"></dc-import>
+</div>
+</div>
+<div style="flex-shrink: 0; height: 34px; display: flex; align-items: center; justify-content: center">
+<sc-if value="{{ hasHaptic }}" hint-placeholder-val="{{ false }}">
+<div style="height: 26px; padding: 0 12px; border-radius: 13px; background: rgba(100, 210, 255, 0.14); color: #64D2FF; font-size: 12.5px; font-weight: 600; display: flex; align-items: center; gap: 6px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#64D2FF" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M4 9v6M8 6v12M12 9v6M16 6v12M20 9v6"></path></svg>Vibração: {{ haptic }}</div>
+</sc-if>
+</div>
+
+<div style="flex-grow: 1; min-height: 0; overflow-y: auto; margin: 0 12px 12px; border-radius: 20px; background: #12131D; box-shadow: inset 0 0 0 0.5px rgba(180, 167, 255, 0.16); padding: 12px 14px; display: flex; flex-direction: column; gap: 9px">
+<div style="font-size: 12.5px; line-height: 1.4; color: rgba(225, 228, 245, 0.85)"><span style="font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 1px; color: #FFD60A">NO IPHONE </span>{{ truth }}</div>
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+<div style="display: flex; gap: 8px; align-items: flex-start">
+<div style="width: 64px; flex-shrink: 0; padding-top: 8px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.8px; color: rgba(225, 228, 245, 0.5)">{{ r.l }}</div>
+<div style="display: flex; flex-wrap: wrap; gap: 5px; min-width: 0">
+<sc-for list="{{ r.items }}" as="o" hint-placeholder-count="3">
+<button type="button" onClick="{{ o.go }}" style="all: unset; box-sizing: border-box; min-height: 28px; padding: 5px 10px; border-radius: 14px; background: {{ o.bg }}; color: {{ o.fg }}; font-size: 12px; font-weight: 600; line-height: 1.25; cursor: pointer">{{ o.t }}</button>
+</sc-for>
+</div>
+</div>
+</sc-for>
+<div style="height: 0.5px; background: rgba(180, 167, 255, 0.16)"></div>
+<sc-for list="{{ log }}" as="m" hint-placeholder-count="3">
+<div style="font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: 10.5px; line-height: 1.35; color: rgba(225, 228, 245, 0.6)">{{ m }}</div>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isGallery }}" hint-placeholder-val="{{ false }}">
+<div style="flex-grow: 1; min-height: 0; overflow-y: auto; padding: 4px 16px 24px">
+<div style="font-size: 12.5px; line-height: 1.45; color: rgba(225, 228, 245, 0.62); margin-bottom: 12px">Tamanho real da tela de 40 mm. Toque em um cenário à esquerda para navegar por eles.</div>
+<div style="display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 12px">
+<sc-for list="{{ gallery }}" as="g" hint-placeholder-count="6">
+<div style="display: flex; flex-direction: column; align-items: center; gap: 6px">
+<div style="width: 170px; height: 205px; border-radius: 40px; background: #15161E; box-shadow: inset 0 0 0 1px #2A2C3A; padding: 4px; box-sizing: border-box">
+<div style="width: 162px; height: 197px; overflow: hidden; border-radius: 30px">
+<div style="width: 324px; height: 394px; transform: scale(0.5); transform-origin: 0 0">
+<dc-import name="CueWatchScreen31" st="{{ g.st }}" hint-size="324px,394px"></dc-import>
+</div>
+</div>
+</div>
+<div style="font-size: 12px; line-height: 1.3; color: rgba(225, 228, 245, 0.8); text-align: center">{{ g.c }}</div>
+</div>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"start":{"editor":"enum","options":["12.1","12.2","12.3","12.4","12.5","12.6"],"default":"12.1","tsType":"string"},"chooser":{"editor":"boolean","default":true},"$preview":{"width":390,"height":844}}'>
+class Component extends DCLogic {
+  static S = 'Lançamento de outono';
+  static SC = {
+    '12.1': { t: 'Gravar pelo pulso', sess: null },
+    '12.2': { t: 'Ensaio no modo manual', sess: { script: 'Lançamento de outono', mode: 'manual' } },
+    '12.3': { t: 'Voice Following', sess: { script: 'Lançamento de outono', mode: 'voice' } },
+    '12.4': { t: 'Conexão perdida', sess: { script: 'Lançamento de outono', mode: 'voice' }, rec: 37 },
+    '12.5': { t: 'Falha e indisponível', sess: { script: 'Lançamento de outono', mode: 'voice' }, next: 'fail' },
+    '12.6': { t: 'Todos os estados', gallery: true }
+  };
+  static LIVE = ['ready', 'count', 'rec', 'text', 'rehearsal', 'saving', 'nosession'];
+  static G = [
+    ['Verificando o iPhone', { screen: 'checking' }],
+    ['Sem sessão', { screen: 'nosession' }],
+    ['Pronto, roteiro com Voice Following', { screen: 'ready', script: 'Lançamento de outono', mode: 'voice' }],
+    ['Pronto, gravação livre', { screen: 'ready', script: null }],
+    ['Pedindo ao iPhone', { screen: 'requesting' }],
+    ['Contagem confirmada', { screen: 'count', count: 2 }],
+    ['Gravando', { screen: 'rec', script: 'Lançamento de outono', elapsed: 42 }],
+    ['Encerrar armado', { screen: 'rec', script: 'Lançamento de outono', elapsed: 51, armed: true }],
+    ['Salvando no iPhone', { screen: 'saving' }],
+    ['Take salvo', { screen: 'saved', take: 4, elapsed: 52 }],
+    ['Ensaio manual', { screen: 'rehearsal', script: 'Lançamento de outono', mode: 'manual', speed: 1.2 }],
+    ['Ensaio, coroa na velocidade', { screen: 'rehearsal', script: 'Lançamento de outono', mode: 'manual', speed: 1.4, playing: true, crown: true }],
+    ['Ensaio com Voice Following', { screen: 'rehearsal', script: 'Lançamento de outono', mode: 'voice', playing: true }],
+    ['Texto durante a gravação', { screen: 'text', script: 'Lançamento de outono', mode: 'manual', speed: 1.2, elapsed: 64 }],
+    ['Conexão perdida', { screen: 'lost', stale: 'Último estado às 9:41: gravando, 00:42' }],
+    ['Sem resposta', { screen: 'noconfirm' }],
+    ['Não começou a gravar', { screen: 'failstart' }],
+    ['Salvamento não confirmado', { screen: 'failsave' }],
+    ['Indisponível', { screen: 'unavailable' }],
+    ['Texto ampliado, pronto', { screen: 'ready', script: 'Lançamento de outono', mode: 'voice', large: true }],
+    ['Texto ampliado, gravando', { screen: 'rec', script: 'Lançamento de outono', elapsed: 42, large: true }]
+  ];
+
+  init(id) {
+    const K = Component, sc = K.SC[id] || K.SC['12.1'];
+    const ph = { session: sc.sess ? Object.assign({}, sc.sess) : null, phase: sc.rec != null ? 'rec' : 'idle', count: 3, elapsed: sc.rec || 0, playing: false, speed: 1.2, take: 3 };
+    return { id: K.SC[id] ? id : '12.1', ph, link: true, screen: sc.gallery ? 'gallery' : (!ph.session ? 'nosession' : (ph.phase === 'rec' ? 'rec' : 'ready')), armed: false, crown: false, page: 'rec', stale: '', sleep: false, next: sc.next || 'ok', haptic: null, log: ['Cenário: ' + sc.t] };
+  }
+  state = this.init((this.props && this.props.start) || '12.1');
+  _t = [];
+  later(ms, fn) { const h = setTimeout(fn, ms); this._t.push(h); return h; }
+  clearTimers() { this._t.forEach(clearTimeout); this._t = []; clearTimeout(this._arm); clearTimeout(this._crownT); }
+  componentDidMount() { this._iv = setInterval(() => this.tick(), 1000); }
+  componentWillUnmount() { clearInterval(this._iv); this.clearTimers(); }
+  componentDidUpdate(pp) { if (pp.start !== this.props.start && this.props.start) this.reset(this.props.start); }
+  reset(id) { this.clearTimers(); this.setState(this.init(id)); }
+
+  fmt(e) { return String(Math.floor(e / 60)).padStart(2, '0') + ':' + String(e % 60).padStart(2, '0'); }
+  derive(ph, page) {
+    if (!ph.session) return 'nosession';
+    if (ph.phase === 'count') return 'count';
+    if (ph.phase === 'rec') return (page === 'text' && ph.session.script) ? 'text' : 'rec';
+    if (ph.phase === 'saving') return 'saving';
+    if (ph.phase === 'rehearsal') return 'rehearsal';
+    return 'ready';
+  }
+  log(m) { this.setState(s => ({ log: [m].concat(s.log).slice(0, 4) })); }
+  buzz(h) { this.setState({ haptic: h }); clearTimeout(this._hz); this._hz = this.later(1700, () => this.setState({ haptic: null })); }
+  setPh(p) { this.setState(s => ({ ph: Object.assign({}, s.ph, p) })); }
+  sync() { this.setState(s => ({ screen: s.link ? this.derive(s.ph, s.page) : 'lost' })); }
+
+  tick() {
+    const s = this.state; if (s.screen === 'gallery') return;
+    const ph = Object.assign({}, s.ph); let hap = null, m = null;
+    if (ph.phase === 'count') { ph.count -= 1; if (ph.count <= 0) { ph.phase = 'rec'; ph.elapsed = 0; m = 'iPhone: gravando'; hap = 'Início'; } }
+    else if (ph.phase === 'rec') ph.elapsed += 1;
+    else return;
+    const upd = { ph };
+    if (s.link && Component.LIVE.includes(s.screen)) upd.screen = this.derive(ph, s.page);
+    if (m) upd.log = [m].concat(s.log).slice(0, 4);
+    this.setState(upd);
+    if (hap && s.link && !s.sleep) this.buzz(hap);
+  }
+
+  send(label, ok, o) {
+    o = o || {};
+    const s = this.state;
+    this.log('Watch → iPhone: ' + label);
+    if (s.next === 'silent') { this.setState({ next: 'ok' }); this.later(3000, () => { this.setState({ screen: 'noconfirm', armed: false }); this.buzz('Falha'); this.log('Sem confirmação do iPhone'); }); return; }
+    if (s.next === 'blocked') { this.setState({ next: 'ok' }); this.later(500, () => { this.setState({ screen: 'unavailable', armed: false }); this.buzz('Falha'); this.log('iPhone: comando indisponível agora'); }); return; }
+    if (s.next === 'fail' && o.fail) { this.setState({ next: 'ok' }); this.later(900, () => { o.fail(); this.buzz('Falha'); }); return; }
+    this.later(o.ms || 700, ok);
+  }
+
+  act = (n) => {
+    const s = this.state, ph = s.ph;
+    if (n === 'record') {
+      if (!['ready', 'saved', 'failstart'].includes(s.screen)) return;
+      this.setState({ screen: 'requesting' });
+      this.send('iniciar contagem', () => { this.setState(st => ({ ph: Object.assign({}, st.ph, { phase: 'count', count: 3 }), screen: st.screen === 'requesting' ? 'count' : st.screen })); this.log('iPhone: contagem confirmada'); this.buzz('Toque leve'); },
+        { fail: () => { this.setState({ screen: 'failstart' }); this.log('iPhone: não começou a gravar'); } });
+    } else if (n === 'cancel') {
+      if (s.screen === 'requesting') { this.clearTimers(); this.setState({ screen: 'ready' }); this.log('Pedido cancelado antes da confirmação'); return; }
+      this.send('cancelar contagem', () => { this.setState(st => ({ ph: Object.assign({}, st.ph, { phase: 'idle', count: 3 }), screen: 'ready' })); this.log('iPhone: contagem cancelada'); });
+    } else if (n === 'rehearse') {
+      this.setState({ screen: 'sending' });
+      this.send('abrir ensaio', () => { this.setState(st => ({ ph: Object.assign({}, st.ph, { phase: 'rehearsal', playing: false }), screen: 'rehearsal' })); this.log('iPhone: ensaio aberto'); this.buzz('Toque leve'); });
+    } else if (n === 'endRehearsal') {
+      this.send('concluir ensaio', () => { this.setState(st => ({ ph: Object.assign({}, st.ph, { phase: 'idle', playing: false }), screen: 'ready', crown: false })); this.log('iPhone: ensaio concluído'); });
+    } else if (n === 'stop') {
+      if (!s.armed) { this.setState({ armed: true }); clearTimeout(this._arm); this._arm = setTimeout(() => this.setState({ armed: false }), 3000); return; }
+      clearTimeout(this._arm); this.setState({ armed: false, screen: 'stopping' });
+      this.send('encerrar gravação', () => {
+        this.setState(st => ({ ph: Object.assign({}, st.ph, { phase: 'saving' }), screen: st.link ? 'saving' : st.screen })); this.log('iPhone: gravação encerrada'); this.buzz('Parada');
+        this.later(1500, () => { this.setState(st => ({ ph: Object.assign({}, st.ph, { phase: 'idle', take: st.ph.take + 1 }), screen: st.link ? 'saved' : st.screen, page: 'rec' })); this.log('iPhone: take salvo'); if (this.state.link) this.buzz('Sucesso'); });
+      }, { fail: () => { this.setState(st => ({ ph: Object.assign({}, st.ph, { phase: 'idle' }), screen: 'failsave', page: 'rec' })); this.log('iPhone: salvamento não confirmado'); } });
+    } else if (n === 'play') {
+      this.send(ph.playing ? 'pausar texto' : 'ler texto', () => { this.setPh({ playing: !this.state.ph.playing }); this.log(this.state.ph.playing ? 'iPhone: leitura pausada' : 'iPhone: lendo'); }, { ms: 300 });
+    } else if (n === 'back') {
+      this.send('voltar 3 linhas', () => { this.log('iPhone: voltou 3 linhas'); this.buzz('Toque leve'); }, { ms: 300 });
+    } else if (n === 'slower' || n === 'faster') {
+      this.speed(n === 'faster' ? 0.1 : -0.1);
+    } else if (n === 'crown') {
+      const on = !s.crown; this.setState({ crown: on }); clearTimeout(this._crownT);
+      if (on) { this.log('Coroa ligada à velocidade'); this._crownT = setTimeout(() => this.setState({ crown: false }), 5000); } else this.log('Coroa solta');
+    } else if (n === 'pageRec' || n === 'pageText') {
+      const page = n === 'pageText' ? 'text' : 'rec'; this.setState(st => ({ page, armed: false, screen: st.link ? this.derive(st.ph, page) : st.screen }));
+    } else if (n === 'done' || n === 'ok') {
+      this.sync();
+    } else if (n === 'retry') {
+      this.setState({ screen: 'checking' }); this.later(900, () => this.sync());
+    }
+  };
+  speed(d) {
+    this.send('velocidade', () => { const v = Math.min(3, Math.max(0.5, Math.round((this.state.ph.speed + d) * 10) / 10)); this.setPh({ speed: v }); }, { ms: 200 });
+    if (this.state.crown) { clearTimeout(this._crownT); this._crownT = setTimeout(() => this.setState({ crown: false }), 5000); }
+  }
+  sim(n) {
+    const s = this.state, ph = s.ph, K = Component;
+    if (n.startsWith('sc:')) { this.reset(n.slice(3)); return; }
+    if (n.startsWith('next:')) { this.setState({ next: n.slice(5) }); return; }
+    if (n === 'voice' || n === 'manual' || n === 'free' || n === 'close') {
+      if (ph.phase !== 'idle') { this.log('iPhone ocupado: encerre antes'); return; }
+      const session = n === 'close' ? null : (n === 'free' ? { script: null, mode: 'manual' } : { script: K.S, mode: n });
+      this.setState(st => ({ ph: Object.assign({}, st.ph, { session }), screen: (st.link && K.LIVE.concat(['saved']).includes(st.screen)) ? this.derive(Object.assign({}, st.ph, { session }), st.page) : st.screen }));
+      this.log(n === 'close' ? 'iPhone: sessão fechada' : 'iPhone: sessão preparada'); return;
+    }
+    if (n === 'lose') {
+      if (!s.link) return;
+      const what = ph.phase === 'rec' ? 'gravando, ' + this.fmt(ph.elapsed) : ph.phase === 'count' ? 'contagem' : ph.phase === 'rehearsal' ? 'ensaio' : ph.phase === 'saving' ? 'salvando' : 'pronto';
+      this.setState({ link: false, screen: 'lost', armed: false, crown: false, stale: 'Último estado às 9:41: ' + what });
+      if (!s.sleep) this.buzz('Falha'); this.log('Conexão perdida. O iPhone segue sozinho.'); return;
+    }
+    if (n === 'reconnect') { if (s.link) return; this.setState({ link: true, screen: 'checking' }); this.log('Conexão de volta: pedindo o estado real'); this.later(900, () => this.sync()); return; }
+    if (n === 'down') { this.setState({ sleep: true, armed: false, crown: false }); this.log('Pulso abaixado: tela apagada'); return; }
+    if (n === 'up') { this.setState({ sleep: false, screen: 'checking' }); this.log('Pulso levantado: conferindo o iPhone'); this.later(800, () => this.sync()); return; }
+    if (n === 'cu' || n === 'cd') {
+      const ok = s.crown && ['text', 'rehearsal'].includes(s.screen) && ph.session && ph.session.mode === 'manual';
+      if (ok) this.speed(n === 'cu' ? 0.1 : -0.1); else this.log('Coroa girada: nada muda (velocidade não está ativa)');
+    }
+  }
+
+  renderVals() {
+    const s = this.state, K = Component, ph = s.ph, Y = '#FFD60A';
+    const sc = K.SC[s.id];
+    const chip = (t, n, on) => ({ t, go: () => this.sim(n), bg: on ? Y : 'rgba(110,116,150,0.26)', fg: on ? '#000000' : '#FFFFFF' });
+    const mode = ph.session ? (ph.session.script ? (ph.session.mode === 'voice' ? 'roteiro com Voice Following' : 'roteiro, leitura manual') : 'gravação livre') : 'sem sessão preparada';
+    const phase = { idle: 'pronto', count: 'contagem ' + ph.count, rec: 'gravando ' + this.fmt(ph.elapsed), saving: 'salvando', rehearsal: 'ensaio' }[ph.phase];
+    const rows = [];
+    if (this.props.chooser ?? true) rows.push({ l: 'CENÁRIO', items: [chip('Fluxo', 'sc:12.1', s.id === '12.1'), chip('Ensaio', 'sc:12.2', s.id === '12.2'), chip('Voice', 'sc:12.3', s.id === '12.3'), chip('Conexão', 'sc:12.4', s.id === '12.4'), chip('Falha', 'sc:12.5', s.id === '12.5'), chip('Estados', 'sc:12.6', s.id === '12.6')] });
+    rows.push({ l: 'IPHONE', items: [chip('Preparar roteiro (voz)', 'voice'), chip('Roteiro manual', 'manual'), chip('Gravação livre', 'free'), chip('Fechar sessão', 'close')] });
+    rows.push({ l: 'LIGAÇÃO', items: [chip('Perder conexão', 'lose', !s.link), chip('Reconectar', 'reconnect'), chip('Abaixar pulso', 'down', s.sleep), chip('Levantar pulso', 'up')] });
+    rows.push({ l: 'PRÓXIMA RESPOSTA', items: [chip('Confirma', 'next:ok', s.next === 'ok'), chip('Falha', 'next:fail', s.next === 'fail'), chip('Sem resposta', 'next:silent', s.next === 'silent'), chip('Indisponível', 'next:blocked', s.next === 'blocked')] });
+    rows.push({ l: 'COROA', items: [chip('Girar para cima', 'cu'), chip('Girar para baixo', 'cd')] });
+    return {
+      id: s.id,
+      title: sc ? sc.t : '',
+      isGallery: s.screen === 'gallery',
+      notGallery: s.screen !== 'gallery',
+      st: { screen: s.screen, script: ph.session ? ph.session.script : null, mode: ph.session ? ph.session.mode : 'manual', speed: ph.speed, playing: ph.playing, elapsed: ph.elapsed, count: ph.count, armed: s.armed, crown: s.crown, take: ph.take, stale: s.stale, sleep: s.sleep },
+      act: this.act,
+      hasHaptic: !!s.haptic,
+      haptic: s.haptic || '',
+      truth: (s.link ? '' : '(o Watch não sabe) ') + mode + ' · ' + phase,
+      rows,
+      log: s.log,
+      gallery: K.G.map(([c, st]) => ({ c, st }))
+    };
+  }
+}
+</script>
+</body>
+</html>

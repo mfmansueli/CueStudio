@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html><head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="runtime/01-17b552e9.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script src="runtime/02-5af9c6e4.js"></script>
+<script src="runtime/03-51803200.js"></script>
+<script src="runtime/04-250c6a86.js"></script>
+<script src="runtime/05-f3fa6bc4.js"></script>
+<script src="runtime/06-466ba0e6.js"></script>
+<script src="runtime/07-86119354.js"></script>
+</head>
+<body>
+
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+html,body{margin:0;background:#05060B}
+body{font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;-webkit-font-smoothing:antialiased;color:#fff}
+a{color:#FFD60A;text-decoration:none}a:hover{color:#FFE680}
+@keyframes v28In{from{opacity:0;transform:scale(.985)}to{opacity:1;transform:none}}
+@keyframes v28Toast{from{opacity:0;transform:translate(-50%,-8px)}to{opacity:1;transform:translate(-50%,0)}}
+</style>
+</helmet>
+<div style="min-height:100vh;display:flex;gap:40px;align-items:flex-start;justify-content:center;padding:40px 40px 80px;box-sizing:border-box;background:radial-gradient(60% 40% at 50% 0%,rgba(157,140,255,0.10),rgba(157,140,255,0) 70%),#05060B">
+
+  <sc-if value="{{ showNav }}" hint-placeholder-val="{{ true }}">
+  <div style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:14px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <a href="../../../Cue App v30.dc.html" style="align-self:flex-start;height:30px;padding:0 12px;border-radius:15px;background:rgba(110,116,150,0.26);color:#fff;font-size:12.5px;font-weight:600;display:flex;align-items:center;gap:6px;margin-bottom:6px">‹ Atalhos v30</a>
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;font-weight:700;letter-spacing:1.2px;color:#FFD60A">CUE STUDIO · APP v31</div>
+      <div style="font-size:24px;font-weight:700;letter-spacing:-0.4px;line-height:1.15">Cue Universe · the full flow</div>
+      <div style="font-size:13px;line-height:1.5;color:rgba(225,228,245,0.6)">v31: onboarding 1.1–1.5, Scripts 3.2, Find inspiration 3.3, script page 4.1, Prompter 5.2 · 5.3, My Cue Voice 2.x · 9.3 · 9.4, Profile 9.1 and Settings 11.1 drawn from the app code; the rest is still v30 (see CHANGES-v31.md). Tap anything tappable inside the phone; every button follows the flow. Apple Watch 12.1 a 12.6: app companheiro, aguardando aprovação. Editor 13.1 a 13.4: proposta do editor com todas as ferramentas no contexto, aguardando aprovação.</div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div sc-camel-on-click="{{ startFirst }}" style="height:34px;padding:0 14px;border-radius:17px;background:#FFD60A;color:#000;font-size:13px;font-weight:700;display:flex;align-items:center;cursor:pointer">First launch</div>
+      <div sc-camel-on-click="{{ startHome }}" style="height:34px;padding:0 14px;border-radius:17px;background:rgba(110,116,150,0.26);font-size:13px;font-weight:600;display:flex;align-items:center;cursor:pointer">Returning creator</div>
+      <div sc-camel-on-click="{{ back }}" style="height:34px;padding:0 14px;border-radius:17px;background:rgba(110,116,150,0.26);font-size:13px;font-weight:600;display:flex;align-items:center;cursor:pointer;opacity:{{ backOp }}">‹ Back</div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;max-height:720px;overflow-y:auto;scrollbar-width:thin;padding-right:4px">
+      <sc-for list="{{ groups }}" as="g" hint-placeholder-count="11">
+        <div style="display:flex;flex-direction:column;gap:2px">
+          <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:1px;color:rgba(225,228,245,0.5);padding:4px 8px">{{ g.t }}</div>
+          <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+            <div sc-camel-on-click="{{ it.go }}" style="display:flex;align-items:center;gap:10px;min-height:32px;padding:0 8px;border-radius:9px;background:{{ it.bg }};cursor:pointer" style-hover="background:rgba(255,255,255,0.05)">
+              <span style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;font-weight:700;color:{{ it.c }};width:30px;flex-shrink:0">{{ it.id }}</span>
+              <span style="font-size:13px;color:{{ it.tc }};white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ it.n }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  </sc-if>
+
+  <div style="width:{{ phoneW }}px;height:{{ phoneH }}px;flex-shrink:0;position:relative">
+  <div style="position:absolute;left:0;top:0;transform-origin:0 0;transform:scale({{ phoneScale }})">
+  <div style="position:relative;width:390px;height:844px;flex-shrink:0;border-radius:{{ frameR }}px;overflow:hidden;background:#07080E;box-shadow:{{ frameShadow }}">
+    <div style="position:absolute;inset:0;animation:v28In .28s ease-out" data-screen-label="{{ cur }}">
+      <sc-if value="{{ isSetUI }}" hint-placeholder-val="{{ false }}"><dc-import name="CueSettings30" id="{{ cur }}" on-action="{{ act }}" style="position:absolute;inset:0" hint-size="390px,844px"></dc-import></sc-if>
+      <sc-if value="{{ notRecUI }}" hint-placeholder-val="{{ true }}"><dc-import name="CueBoard30" id="{{ cur }}" files="{{ files }}" on-action="{{ act }}" style="position:absolute;inset:0" hint-size="390px,844px"></dc-import></sc-if>
+      <sc-if value="{{ isEditorUI }}" hint-placeholder-val="{{ false }}"><dc-import name="CueEditor31" start="{{ cur }}" style="position:absolute;inset:0" hint-size="390px,844px"></dc-import></sc-if>
+      <sc-if value="{{ isWatchUI }}" hint-placeholder-val="{{ false }}"><dc-import name="CueWatch31" start="{{ cur }}" chooser="{{ false }}" style="position:absolute;inset:0" hint-size="390px,844px"></dc-import></sc-if>
+      <sc-if value="{{ isRecUI }}" hint-placeholder-val="{{ false }}"><dc-import name="CueRecorder30" id="{{ cur }}" mode="{{ recMode }}" on-action="{{ act }}" style="position:absolute;inset:0" hint-size="390px,844px"></dc-import></sc-if>
+    </div>
+    <sc-if value="{{ notWatch }}" hint-placeholder-val="{{ true }}"><div style="position:absolute;top:11px;left:50%;margin-left:-62px;width:124px;height:36px;border-radius:18px;background:#000;z-index:20;pointer-events:none"></div></sc-if>
+    <sc-if value="{{ hasToast }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;top:58px;left:50%;transform:translateX(-50%);z-index:30;height:38px;padding:0 16px;border-radius:19px;background:rgba(20,21,31,0.96);box-shadow:inset 0 0 0 0.5px rgba(180,167,255,0.35),0 10px 30px rgba(0,0,0,0.5);display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;white-space:nowrap;animation:v28Toast .25s ease-out"><span style="color:#34C759">✓</span>{{ toast }}</div>
+    </sc-if>
+  </div>
+
+  </div>
+  </div>
+
+  <sc-if value="{{ showCtx }}" hint-placeholder-val="{{ true }}">
+  <div style="width:280px;flex-shrink:0;display:flex;flex-direction:column;gap:14px">
+    <div style="border-radius:20px;background:#12131D;box-shadow:inset 0 0 0 0.5px rgba(180,167,255,0.16);padding:16px;display:flex;flex-direction:column;gap:8px">
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:11px;font-weight:700;letter-spacing:1px;color:#FFD60A">NOW · {{ cur }}</div>
+      <div style="font-size:18px;font-weight:700;line-height:1.25">{{ curName }}</div>
+      <div style="font-size:12.5px;line-height:1.5;color:rgba(225,228,245,0.62)">{{ curGroup }}</div>
+      <div style="height:0.5px;background:rgba(180,167,255,0.16);margin:4px 0"></div>
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:1px;color:rgba(225,228,245,0.5)">TRY TAPPING</div>
+      <sc-for list="{{ hints }}" as="h" hint-placeholder-count="3"><div style="font-size:12.5px;line-height:1.45;color:rgba(225,228,245,0.8)">{{ h }}</div></sc-for>
+    </div>
+    <div style="border-radius:20px;background:#12131D;box-shadow:inset 0 0 0 0.5px rgba(180,167,255,0.16);padding:16px;display:flex;flex-direction:column;gap:10px">
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:1px;color:rgba(225,228,245,0.5)">APP DATA</div>
+      <div style="display:flex;gap:2px;padding:2px;border-radius:10px;background:rgba(110,116,150,0.26)"><sc-for list="{{ dataSeg }}" as="o" hint-placeholder-count="2"><div sc-camel-on-click="{{ o.pick }}" style="flex:1;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12.5px;white-space:nowrap;font-weight:{{ o.fw }};background:{{ o.bg }};color:#fff;cursor:pointer">{{ o.l }}</div></sc-for></div>
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:1px;color:rgba(225,228,245,0.5);margin-top:4px">FREE EXPORTS</div>
+          <div style="display:flex;gap:2px;padding:2px;border-radius:10px;background:rgba(110,116,150,0.26)"><sc-for list="{{ xpSeg }}" as="o" hint-placeholder-count="3"><div sc-camel-on-click="{{ o.pick }}" style="flex:1;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:12.5px;white-space:nowrap;font-weight:{{ o.fw }};background:{{ o.bg }};color:#fff;cursor:pointer">{{ o.l }}</div></sc-for></div>
+          <div style="font-size:12px;line-height:1.45;color:rgba(225,228,245,0.55)">New account shows every empty state. New year opens Your universe on Jan 1, with the year still empty.</div>
+    </div>
+    <div style="border-radius:20px;background:#12131D;box-shadow:inset 0 0 0 0.5px rgba(180,167,255,0.16);padding:16px;display:flex;flex-direction:column;gap:8px;font-size:12.5px;line-height:1.5;color:rgba(225,228,245,0.62)">
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:1px;color:rgba(225,228,245,0.5)">DESIGN DOCS</div> <a href="../SCREENS.md">Approved screens (SCREENS.md) ›</a> <a href="../02-Tokens.md">Tokens ›</a> <a href="../03-Screen-map.md">Screen map ›</a> <a href="../CHANGES-v31.md">What changed in v31 ›</a>
+      <div style="height:0.5px;background:rgba(180,167,255,0.16);margin:4px 0"></div>
+      <div style="font-family:ui-monospace,'SF Mono',Menlo,monospace;font-size:10.5px;font-weight:700;letter-spacing:1px;color:#FFD60A">APP STORE VIDEO</div> <a href="../../cue-v30/video/Cue App Preview v5.dc.html">App Preview v5 · 886×1920 · 30 s ›</a> <a href="../../cue-v30/video/PROMPT-VIDEO.md">Prompt to remake it ›</a>
+    </div>
+  </div>
+  </sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script="" data-props="{&quot;start&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;1.1&quot;,&quot;3.1&quot;,&quot;3.2&quot;,&quot;4.1&quot;,&quot;5.2&quot;,&quot;6.2&quot;,&quot;6.3&quot;,&quot;7.2&quot;,&quot;8.1&quot;,&quot;8.2&quot;,&quot;9.1&quot;,&quot;9.2&quot;,&quot;11.1&quot;,&quot;11.4&quot;,&quot;12.1&quot;,&quot;12.2&quot;,&quot;12.3&quot;,&quot;12.4&quot;,&quot;12.5&quot;,&quot;12.6&quot;,&quot;13.1&quot;,&quot;13.2&quot;,&quot;13.3&quot;,&quot;13.4&quot;],&quot;default&quot;:&quot;3.2&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Flow&quot;},&quot;appData&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;sample&quot;,&quot;newYear&quot;,&quot;empty&quot;],&quot;default&quot;:&quot;sample&quot;,&quot;tsType&quot;:&quot;'sample' | 'newYear' | 'empty'&quot;,&quot;section&quot;:&quot;Flow&quot;},&quot;layout&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;hub&quot;,&quot;phone+context&quot;,&quot;phone&quot;],&quot;default&quot;:&quot;hub&quot;,&quot;tsType&quot;:&quot;'hub' | 'phone+context' | 'phone'&quot;,&quot;section&quot;:&quot;View&quot;},&quot;phoneScale&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;min&quot;:0.6,&quot;max&quot;:1.3,&quot;step&quot;:0.05,&quot;default&quot;:1,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;View&quot;}}">
+class Component extends DCLogic {
+  static F = {"13.1":"Editor-every-tool-in-context","13.2":"Editor-save-fails","13.3":"Editor-one-clip-left","13.4":"Editor-preview-protected","12.1":"Gravar-pelo-pulso","12.2":"Ensaio-no-modo-manual","12.3":"Voice-Following","12.4":"Conexão-perdida","12.5":"Falha-e-indisponível","12.6":"Todos-os-estados","1.1":"Welcome-every-creator-has-a-universe","1.2":"Your-universe-topics-become-worlds","1.3":"Your-first-voyage-pick-a-galaxy","1.4":"Your-first-script-in-your-voice","1.4b":"Your-first-script-slow-loading","1.5":"Give-it-a-voice-permissions-in-the-story","1.6":"Practice-run-record-or-not","1.7":"Your-first-star","2.1":"My-Cue-Voice-creator-type","2.2":"My-Cue-Voice-topics-your-colors","2.3":"My-Cue-Voice-audience","2.4":"My-Cue-Voice-tone","3.1":"Scripts-first-visit","3.2":"Scripts","3.3":"Need-an-idea","3.4":"Create-for-platform","3.5":"Start-a-video","3.6":"Logbook","4.1":"Script-page-AI-writing-in-your-voice","4.2":"Editing-a-script-AI-on-selection","4.3":"Pick-a-hook","4.4":"Improve-this-script","5.1":"Countdown-a-ring-of-stars","5.2":"Teleprompter-the-text-follows-your-voice","5.3":"Studio-mode-rear-camera-orb-speed","6.1":"Pick-your-best-take-Cue-picks-a-star","6.2":"Takes","6.3":"Selected-video","7.1":"Opening-the-editor","7.2":"Editor-close-to-v26","7.3":"Text-styles-free-fonts-and-orb-sliders","7.4":"Caption-styles-size-orb","7.5":"Sound-voice-music-and-clean-up","7.6":"Is-it-ready-to-post","8.1":"Ready-to-travel","8.2":"The-send-off","8.3":"Milestone-unlocked","9.1":"Profile","9.2":"Your-universe","9.3":"My-Cue-Voice","9.4":"Voice-question-sheet","10.1":"Send-a-comment-to-Cue","10.2":"Is-this-right","10.3":"Draft-in-your-voice","10.4":"Comment-card-in-the-editor","11.1":"Settings","11.2":"Prompter-settings-orb-sliders","11.3":"Personalize-sky-orb","11.4":"Cue-Pro"};
+  static G = [['1', 'FIRST LAUNCH · THE VOYAGE BEGINS'], ['2', 'MY CUE VOICE'], ['3', 'SCRIPTS & IDEAS'], ['4', 'WRITE A SCRIPT'], ['5', 'RECORD'], ['6', 'PICK, REVIEW & TAKES'], ['7', 'EDIT'], ['8', 'SHARE & CELEBRATE'], ['9', 'PROFILE & UNIVERSE'], ['10', 'ANSWER YOUR AUDIENCE'], ['11', 'SETTINGS & PRO'], ['12', 'APPLE WATCH'], ['13', 'EDITOR · PROPOSAL']];
+  static TABS = ['3.1', '3.2', '6.2', '9.1', '9.2', '11.1'];
+  static HINTS = {"13.1": ["Tap a clip, a junction ◇, the title, a caption, the B-roll, music, Whoosh or the voice-over", "All shows every action of that item", "Green dot works, violet is a simulated choice, grey is an option in place"], "13.2": ["Make any edit: the status turns to Couldn't save", "Done keeps the destinations locked until the save works", "Tap the status to retry"], "13.3": ["Only one clip: Delete explains why it stays", "Split and trim still work"], "13.4": ["Screen recording protection hides the preview", "Editing keeps working"], "12.1": ["No painel do iPhone simulado: Preparar roteiro (voz)", "No relógio: Gravar, aguarde a contagem confirmada", "Encerrar, e toque de novo em até 3 s"], "12.2": ["Ensaiar abre o teleprompter sem gravar", "Toque na velocidade para ligar a coroa", "Girar para cima ou para baixo no painel"], "12.3": ["Ensaiar ou Gravar: sem velocidade manual", "Durante a gravação, deslize para a página Texto pelos pontos"], "12.4": ["Perder conexão: o relógio mostra o último estado como antigo", "O iPhone continua gravando", "Reconectar ou Levantar pulso busca o estado real"], "12.5": ["Gravar: a próxima resposta é uma falha", "Mude Próxima resposta para Sem resposta ou Indisponível"], "12.6": ["Galeria em tamanho real, 40 mm", "Inclui texto ampliado e tela apagada"],  '2.3': ['Audience + how much they know', 'Continue'], '2.2': ['Up to 3 topics', 'Continue'], '9.4': ['Pick up to 2 · Save', '✕ = Not now', 'None of these'], '1.1': ['Watch the opening: the star draws the C, lands on 3 words, becomes the last dot', 'Get started'], '1.2': ['Topic chips (up to 3 · each one becomes a world)', 'Continue (grey “Pick a topic” until one is picked)'], '1.3': ['A platform chip or a galaxy', 'Continue with TikTok'], '1.4': ['Watch the script arrive word by word', 'Try the teleprompter'], '1.4b': ['The script is not there yet: the card keeps writing', 'Try the teleprompter waits, dimmed'], '1.5': ['Microphone → ✓ Allowed · Camera → lens lights up', 'Continue'], '1.6': ['Record it for real', 'Not now'], '1.7': ['Go to my studio', 'Edit this take first'], '2.1': ['A creator card', 'Continue · Skip this one · Not now'], '2.4': ['Pick up to 2 tones', '✦ Write my script → 4.1 with Does it sound like you?', 'Just save my voice'], '3.1': ['My Cue Voice', 'For TikTok', 'An idea row', '+'], '3.2': ['Mic → Getting ready → Listening… (the list blurs, the dock lights up) · stop', '↑ → Drafting in your voice → 4.1 writes itself', 'The idea rotates on its own · ↻ next now', 'Lightbulb → Find inspiration (3.3)', 'A row · Continue › · filter chips'], '3.3': ['↻ (or swipe) → the card blurs into the next', 'Topic chips filter the idea', 'Start with it → the idea lands in the Scripts composer', '✦ Draft it now → Drafting in your voice → 4.1', '✕ closes'], '3.4': ['A platform'], '3.5': ['Let Cue write it', 'Write it myself', 'Answer a comment', 'Record without a script'], '3.6': ['✦ Write → script', 'Done'], '4.1': ['Tap the text → editing (pause · smile · emphasis, ✓ to finish)', 'Hook → 4.3 · ✦ Improve → 4.4 · Cues (on/off) · Aa', 'Record (yellow, pinned) → 5.2', '••• → Versions · Script language · Duplicate'], '4.2': ['Rewrite · Shorter · Punchier on the selected line', 'Select any other text → same bar', 'Keep / Undo / Try again'], '4.3': ['A hook'], '4.4': ['An improvement'], '5.1': ['Waits 3 s, or tap'], '5.2': ['Record → take saved → 6.1', 'Studio → 5.3', 'Chevron opens Voice | Steady · play · Aa', 'Grip moves the reading line · corner resizes the window'], '5.3': ['Size · Line · Margin · Mirror · Remote · More (Aa)', 'Selfie → 5.2', 'More → Prompter settings'], '6.1': ['Use take 2', 'Record again'], '6.2': ['Share', 'A video', 'Tabs'], '6.3': ['Edit · Retake · Save · Script', 'Share to TikTok', 'Go Pro'], '7.1': ['Waits 3 s, or tap'], '7.2': ['Every tool opens: Edit · Audio · Text · Captions · Filters · ✦ Smart · Cover', 'Edit › Speed / Volume sliders', 'Done → Is it ready to post?', '‹ → take → ‹ → Takes'], '7.3': ['Drag the sliders', 'Done', '‹ Back'], '7.6': ['Yes — share', 'Download video', 'Ready, I’ll post later', 'Not yet', 'Tap above the sheet → back to the editor'], '8.1': ['Share to universe → pick several networks', 'Queue: Open app → Posted? Yes / Not yet', 'APP DATA › FREE EXPORTS › None left → Your video is ready'], '8.2': ['Watch the star fly to the planet you picked', 'Share again → 8.1', 'Done → milestone'], '8.3': ['Use Deep Space', 'Keep my current icon'], '9.1': ['Edit voice → My Cue Voice (9.3)', 'Answer → voice question (9.4)', '✦ Preview → a sample in your voice', 'Your universe → 9.2', 'Try Pro › → Cue Pro'], '9.3': ['A row → question sheet (9.4)', 'Next: … Answer', 'Reset My Cue Voice'], '9.2': ['Share my universe', 'Tabs'], '10.1': ['Continue'], '10.2': ['Draft my reply'], '10.3': ['Record reply', 'Edit'], '10.4': ['Done'], '11.1': ['Recording · Remote · Language · Privacy → their pages', 'Prompter → 11.2 · Personalize → 11.3 · My Cue Voice → 9.3', 'Cue Pro → 11.4 · Restore purchases', 'Reset Creator Setup'], '11.2': ['Sticky preview follows every change', 'Reading · Text · Reading line · Text window · Over the camera · Studio · Rigs', 'Font › · Social safe zone › (Custom = 4 margins)'], '11.3': ['‹ Settings'], '11.4': ['Start 7-day free trial', '✕']};
+  state = { cur: (this.props && this.props.start) || '3.2', stack: [], toast: null, msSeen: false };
+  componentWillUnmount() { clearTimeout(this._tt); }
+  componentDidMount() { this.applyData(this.props.appData); }
+  componentDidUpdate(pp) {
+    if (pp.start !== this.props.start && this.props.start) this.tab(this.props.start);
+    if (pp.appData !== this.props.appData) this.applyData(this.props.appData);
+  }
+  applyData(k) { if (!k || k === 'sample') { if (this.state.empty || this.state.newYear) this.setEmpty(false); return; } if (k === 'empty') this.setEmpty(true); if (k === 'newYear') this.setNewYear(); }
+  nm(id) { return (Component.F[id] || '').replace(/-/g, ' ').replace(/\bAI\b/, 'AI').replace(/\s*\borb sliders\b/i, ' sliders').replace(/\s*\borb\b/ig, '').replace(/\s+/g, ' ').trim(); }
+  go(id) { if (window.__cueEmpty && id === '3.2') id = '3.1'; if (!Component.F[id] || id === this.state.cur) return; this.setState(s => { const i = s.stack.indexOf(id); if ((s.cur === '6.1' || s.cur === '7.6') && id === '6.3') return { cur: id, stack: ['6.2'] }; return { cur: id, stack: i >= 0 ? s.stack.slice(0, i) : [...s.stack, s.cur].slice(-30) }; }); }
+  tab(id) { if (window.__cueEmpty && id === '3.2') id = '3.1'; window.__cueResetScript = true; this.setState({ cur: id, stack: [] }); }
+  setEmpty(on) { window.__cueNewYear = false; window.__cueEmpty = on; this.setState({ empty: on, newYear: false, cur: on ? '3.1' : '3.2', stack: [] }); this.toastMsg(on ? 'New account · empty app' : 'Sample data'); }
+  setNewYear() { window.__cueEmpty = false; window.__cueNewYear = true; this.setState({ empty: false, newYear: true, cur: '9.2', stack: [] }); this.toastMsg('New year · Jan 1, 2027'); }
+  static PARENT = { '7.2': '6.3', '7.3': '7.2', '7.4': '7.2', '7.5': '7.2', '10.4': '7.2', '6.3': '6.2', '6.1': '6.2', '4.1': '3.2', '4.2': '4.1', '4.3': '4.1', '4.4': '4.1', '3.3': '3.2', '3.4': '3.2', '3.5': '3.2', '3.6': '3.2', '8.1': '6.3', '8.3': '6.2', '9.2': '9.1', '9.4': '9.3', '11.2': '11.1', '11.3': '11.1', '10.1': '3.5', '10.2': '10.1', '10.3': '10.2', '2.2': '2.1', '2.3': '2.2', '2.4': '2.3', '1.2': '1.1', '1.3': '1.2', '1.4': '1.3', '1.5': '1.4', '1.6': '1.5' };
+  static TRANSIENT = ['5.1', '7.1', '8.2', '7.6', '4.3', '4.4', '3.3', '3.4', '3.5', '8.3', '11.4'];
+  static ROOTS = ['1.1', '3.1', '3.2', '6.2', '9.1', '11.1'];
+  static FALLBACK = { '5.2': '4.1', '5.3': '5.2', '11.4': '9.1', '2.1': '9.1', '6.1': '6.2', '7.6': '7.2', '8.2': '6.2' };
+  backTarget(s) { s = s || this.state; const K = Component; if (K.ROOTS.includes(s.cur)) return null; const st = s.stack.filter(x => !K.TRANSIENT.includes(x) && x !== s.cur); if (st.length) return st[st.length - 1]; return K.PARENT[s.cur] || K.FALLBACK[s.cur] || null; }
+  back() { const s = this.state, to = this.backTarget(s); if (!to) return; const idx = s.stack.lastIndexOf(to); this.setState({ cur: to, stack: idx >= 0 ? s.stack.slice(0, idx) : s.stack.filter(x => !Component.TRANSIENT.includes(x)) });
+    if (s.cur === '7.2') this.toastMsg('Draft saved'); }
+  toastMsg(m) { clearTimeout(this._tt); this.setState({ toast: m }); this._tt = setTimeout(() => this.setState({ toast: null }), 2200); }
+  rec(studio) { this.setState({ studio: !!studio }); this.go(studio ? '5.3' : '5.2'); return true; }
+  route(id, T, p) {
+    const go = x => (this.go(x), true), tab = x => (this.tab(x), true), back = () => (this.back(), true), t = m => (this.toastMsg(m), true);
+    const R = re => re.test(T), both = (x, m) => (this.go(x), this.toastMsg(m), true);
+    if (T === '__toast') return t((p && p.msg) || '');
+    if (T === '__voiceflow') return go('2.1');
+    if (T === '__back') return back();
+    if (T.startsWith('__goto:')) return go(T.slice(7));
+    if (T === '__rec') { this.rec(false); return true; }
+    if (T === '__go') return go('6.3');
+    if (T === '__send') return p && p.msg === '__quiet' ? go('4.1') : both('4.1', (p && p.msg) || '✦ Writing in your voice');
+    if (id === '5.1') { if (R(/^cancel$/i)) return back(); this.go(this.state.studio ? '5.3' : '5.2'); return true; }
+    if (id === '7.1') return go('7.2');
+    if ((id === '5.2' || id === '5.3') && R(/^record$/i)) return both('6.1', 'Take 1 saved');
+    if (id === '5.2' && R(/^studio$/i)) return go('5.3');
+    if ((id === '5.2' || id === '5.3') && R(/^more$/i)) return go('11.2');
+    if (R(/^(back|close|cancel|✕|×|‹|‹ ?back|‹ ?settings)$/i)) { if (id === '6.1') return tab('6.2'); return back(); }
+    if (R(/^scripts$/i)) return tab('3.2'); if (R(/^takes$/i)) return tab('6.2'); if (R(/^profile$/i)) return tab('9.1'); if (R(/^settings$/i)) return tab('11.1'); if (R(/^record$/i) && !['4.1'].includes(id)) return go('3.5');
+    if (R(/^skip$/i)) return tab('3.1');
+    if (R(/^not now$/i)) { if (/^1\./.test(id)) return tab('3.1'); if (/^2\./.test(id)) { const s0 = this.state, keep = s0.stack.filter(x => !/^2\./.test(x)); const to = [...keep].reverse().find(x => !Component.TRANSIENT.includes(x)) || '9.1'; const i = keep.lastIndexOf(to); this.setState({ cur: to, stack: i >= 0 ? keep.slice(0, i) : keep }); return true; } return back(); }
+    switch (id) {
+      case '1.1': if (R(/^get started$/i)) return go('1.2'); if (R(/already use cue/i)) return tab('3.2'); break;
+      case '1.2': if (R(/^continue$/i)) return go('1.3'); if (R(/^\+ your own$/i)) return t('Type your own topic'); break;
+      case '1.3': if (R(/^continue with/i)) return go('1.4'); break;
+      case '1.4': if (R(/^try the teleprompter$/i)) return go('1.5'); break;
+      case '1.4b': break;
+      case '1.5': if (R(/^continue$/i)) return go('1.6'); break;
+      case '1.6': if (R(/record it for real/i)) { this.setState({ first: true }); return this.rec(false); } if (R(/take me to my studio/i)) return tab('3.2'); break;
+      case '1.7': if (R(/go to my studio/i)) return tab('3.2'); if (R(/edit this take/i)) return go('7.1'); break;
+      case '2.1': if (R(/^continue$/i) || R(/^skip this one$/i)) return go('2.2'); break;
+      case '2.2': if (R(/^continue$/i)) return go('2.3'); break;
+      case '2.3': if (R(/^continue$/i)) return go('2.4'); break;
+      case '2.4': if (R(/write my script/i)) { window.__cueDraft = 'My first script'; return go('4.1'); } if (R(/just save my voice/i)) { this.tab('9.1'); return t('Saved to My Cue Voice'); } if (R(/^add a voice example/i)) return t('Paste, speak or pick a script'); break;
+      case '2.5': if (R(/sounds like me/i)) return both('4.1', 'Saved to My Cue Voice'); if (R(/^adjust$/i)) return go('2.4'); break;
+      case '3.1': case '3.2':
+        if (R(/^find inspiration$/i)) return go('3.3');
+        if (id === '3.1' && R(/^write it$/i)) return go('4.1');
+        if (R(/^write my own/i)) return go('4.2'); if (R(/^import ›$/i)) return go('3.5');
+        if (R(/^new script$/i) || R(/^\+$/)) return go('3.5'); if (R(/^dictate an idea$/i) || R(/type or say an idea/i)) return go('3.3'); if (R(/^write it$/i) || R(/^let.s cue!/i)) { if (!window.__cueDraft) window.__cueDraft = 'My Honest Spend on Remote Hours'; return go('4.1'); }
+        if (id === '3.2') { if (R(/^rec$/i)) return this.rec(false); if (R(/^continue ›$/i)) return go('4.2'); if (/^×\d ›$/.test(T)) return tab('6.2'); if (R(/^✦ ?voice/i)) return go('9.3'); if (R(/^make scripts sound/i) || R(/^one quick question/i)) return go('9.4'); if (R(/^format/i)) return t('Format · Auto'); if (R(/^select$/i)) return t('Select scripts'); if (R(/^search scripts$/i)) return t('Search scripts'); if (R(/^untitled|my 5-minute night reset/i)) return go('4.2'); }
+        if (R(/^logbook/i)) return go('3.6'); if (R(/my cue voice/i)) return go('2.1'); if (R(/^for tiktok/i)) return go('3.4');
+        if (R(/morning routine in 60|money habit|5-minute reset|cheap flights|3 habits that fixed|24-hour rule|weekday budget/i)) return go('4.1');
+        break;
+      case '3.3': if (R(/^start with it$/i)) { this.tab('3.2'); return t('This idea replaced your draft'); } if (R(/draft it now/i)) { if (!window.__cueDraft) window.__cueDraft = 'Will routine survive a busy day?'; return go('4.1'); } if (R(/^topics$/i)) return go('2.2'); break;
+      case '3.4': if (R(/^(tiktok|instagram reels|reels|youtube shorts|shorts|youtube.*|linkedin|instagram stories)$/i)) { window.__cuePlat = T; this.back(); return t('Creating for ' + T); } break;
+      case '3.5': if (R(/^let cue write it/i)) return go('3.3'); if (R(/^write it myself/i)) return go('4.2'); if (R(/^import text/i)) return t('Scan · Photo · File · Paste'); if (R(/^answer a comment/i)) return go('10.1'); if (R(/record without a script/i)) return this.rec(false); break;
+      case '3.6': if (R(/^done$/i)) return back(); if (R(/hold to capture/i)) return t('Hold to talk'); if (R(/^✦ ?(shape|write)$/i) || R(/^✦$/)) return both('4.1', '✦ Writing your script'); if (T.length > 14 && T.length < 60 && !/logbook|ideas you|captured/i.test(T)) return go('4.1'); break;
+      case '4.1': if (R(/^(rec|record)$/i)) return this.rec(false); if (R(/^sounds like me$/i)) return t('Saved to My Cue Voice'); if (R(/^adjust$/i)) return t('Tell Cue what to change'); if (R(/^shape$/i)) return t('✦ Cues added'); if (R(/^split$/i)) return t('Sentence split'); if (R(/^stop$/i)) return t('Writing stopped'); if (R(/^done$/i)) return tab('3.2'); if (R(/^aa$/i)) return t('Text size · Large'); if (R(/^(my cue voice|without|cues)$/i)) return true; if (R(/^more$/i)) return t('Versions · Script language · Duplicate'); if (R(/^hook/i)) return go('4.3'); if (R(/improve|writing in your voice/i)) return go('4.4'); break;
+      case '4.2': if (R(/^(done|shaped)$/i)) return back(); if (R(/^draft$/i)) return true; if (R(/^(pause|smile|emphasis|look at camera)$/i)) return t('Cue added: ' + T); break;
+      case '4.3': if (R(/^more hooks$/i)) return t('5 more hooks'); if (T.length > 18 && /\d:\d\d/.test(T)) { this.back(); return t(/^current/i.test(T) ? 'Kept your current hook' : 'Hook swapped'); } break;
+      case '4.4': if (R(/^punchier hook/i)) return go('4.3'); if (R(/pro$/i) || R(/^(versions for reels|turn into a series)/i)) return go('11.4'); if (R(/^(make it shorter|sound more like me|add a call to action|add performance cues|simpler words)/i)) { this.back(); return t('✦ Applied · ' + T.replace(/\s+[A-Z−0-9·\s]+$/, '')); } break;
+      case '5.2': case '5.3': if (R(/^stop recording$/i)) return go('6.1'); if (R(/^(text size|aa)$/i)) return go('11.2'); if (R(/^pause prompter$/i)) return t('Prompter paused'); if (R(/^restart$/i)) return t('Back to the top'); if (R(/^mirror$/i)) return t('Text mirrored'); if (R(/^flip camera$/i)) return t('Camera flipped'); if (id === '5.3' && R(/^selfie$/i)) { this.setState(s => ({ cur: '5.2' })); return true; } break;
+      case '6.1': if (R(/^play take/i)) return t('▶ Playing take 2 · 0:58'); if (R(/^record again$/i)) return this.rec(false); if (R(/^use take 2$/i)) { if (this.state.first) { this.setState({ first: false }); return go('1.7'); } return both('6.3', '★ Take 2 is your best'); } break;
+      case '6.2': if (R(/^select$/i)) return t('Select videos'); if (R(/^share$/i)) return go('8.1'); break;
+      case '6.3': if (R(/^play$/i)) return t('▶ Playing · 1:02'); if (R(/^favorite$/i)) return t('★ Marked as best'); if (R(/^delete$/i)) { this.tab('6.2'); return t('Take deleted · Undo'); } if (R(/^edit$/i) || R(/^continue$/i)) return go('7.1'); if (R(/^retake$/i)) return this.rec(false); if (R(/^save$/i)) return t('Saved to Photos'); if (R(/^script$/i)) return go('4.1'); if (R(/^share to/i)) return go('8.1'); if (R(/go pro|of 5/i)) return go('11.4'); break;
+      case '7.2': if (R(/^done$/i)) return go('7.6'); if (R(/^text$/i)) return go('7.3'); if (R(/^captions$/i) || R(/first 20 minutes|no phone for the/i)) return go('7.4'); if (R(/^audio$/i) || R(/add music|voiceover/i)) return go('7.5'); break;
+      case '7.3': case '7.4': case '7.5': case '10.4': if (R(/^done$/i)) return go('7.6'); break;
+      case '7.6': if (R(/share to (social|my universe)/i)) return go('8.1'); if (R(/^download video/i)) return both('6.3', 'Saved to Photos'); if (R(/post later/i)) { this.tab('6.2'); return t('✓ Ready to post'); } if (R(/^not yet/i)) return both('6.3', 'Draft saved'); break;
+      case '8.1': if (R(/^share to|^other apps$/i)) return go('8.2'); if (R(/^save to photos$/i)) return t('Saved to Photos'); if (R(/of 5 left|free exports/i)) return go('11.4'); break;
+      case '8.2': if (R(/^share again$/i)) return go('8.1'); if (R(/^done$/i)) return go('8.3'); if (R(/star in your( 20\d\d)? universe/i)) return go('9.2'); break;
+      case '8.3': if (R(/use deep space/i)) return both('9.2', 'App icon: Deep Space'); if (R(/keep my current icon/i)) return tab('6.2'); break;
+      case '9.1': if (R(/try pro/i)) return go('11.4'); if (R(/^your universe/i)) return go('9.2'); if (R(/^edit voice$/i)) return go('9.3'); if (R(/^answer$/i) || R(/^✦ ?a phrase you always say/i)) return go('9.4'); if (R(/^✦ ?preview$/i)) return t('✦ Sample in your voice'); if (R(/^edit$/i) || R(/^iago lima/i)) return t('Edit profile'); break;
+      case '9.2': if (R(/share my universe/i)) return t('Share sheet'); if (R(/share 2 more|unlocks the deep/i)) return tab('6.2'); break;
+      case '9.3': if (R(/^(answer|i am|topics|audience|voice|style|usual formats|opens with|ends with|my phrases|avoid|reach)/i) || R(/^next:/i)) return go('9.4'); if (R(/^examples/i)) return t('Paste, speak or pick a script'); if (R(/^fine-tune/i)) return t('Fine-tune how you sound'); if (R(/^reset my cue voice$/i)) return t('Questions reset'); break;
+      case '9.4': if (R(/^save$/i)) { this.back(); return t('Saved · voice 65%'); } if (R(/^none of these$/i)) { this.back(); return t('Skipped'); } if (R(/something else/i)) return t('Type yours'); return T.length < 40 ? true : false;
+      case '10.1': if (R(/^continue$/i)) return go('10.2'); if (R(/save to logbook|keep it with/i)) return both('3.6', 'Saved to Logbook'); break;
+      case '10.2': if (R(/draft my reply/i)) return go('10.3'); if (R(/write it myself/i)) return go('4.2'); break;
+      case '10.3': if (R(/^edit$/i)) return go('4.2'); if (R(/^record reply$/i)) return this.rec(false); break;
+      case '11.1': if (R(/^prompter/i)) return go('11.2'); if (R(/^personalize/i)) return go('11.3'); if (R(/^my cue voice/i)) return go('9.3'); if (R(/^cue pro/i)) return go('11.4'); if (R(/^restore purchases$/i)) return t('No purchases to restore'); if (R(/^reset creator setup$/i)) return t('Back to Cue’s defaults'); if (R(/^notifications/i)) return t('Notifications'); if (R(/^search$/i)) return t('Search Settings'); if (R(/^(terms of use|acknowledgements)/i)) return t(T.replace(/\s.*$/, '') === 'Terms' ? 'Terms of use' : 'Acknowledgements'); break;
+      case '11.3': if (R(/your topics|edit them in my/i)) return go('2.2'); break;
+      case '11.4': if (R(/free trial/i)) { window.__cuePro = true; if (window.__cueTrialExport) { window.__cueTrialExport = false; this.go('8.2'); return t('Trial started · video exported'); } this.back(); return t('Trial started · 7 days free'); } if (R(/^(restore|terms|privacy)/i)) return t(T); break;
+    }
+    return false;
+  }
+  regions(id, p) { if (p && p.x < 70 && p.y > 36 && p.y < 118 && !Component.ROOTS.includes(id) && !/^1\./.test(id)) { this.back(); return true; } if (id === '7.6' && p && p.y < 330) { this.back(); return true; } if (id === '6.2' && p.y > 230 && p.y < 760 && p.x > 10) { this.go('6.3'); return true; } return false; }
+  act = (id, texts, p) => {
+    const list = [...(texts || [])];
+    if (window.__cueDry) { const rec = [], sv = [this.go, this.tab, this.back, this.toastMsg, this.setState, this.rec]; this.go = x => rec.push('go ' + x); this.tab = x => rec.push('tab ' + x); this.back = () => rec.push('back→' + this.backTarget()); this.toastMsg = () => rec.push('toast'); this.setState = () => rec.push('state'); this.rec = s => (rec.push('rec' + (s ? ' studio' : '')), true);
+      let hit = false; try { for (const T of list) if (this.route(id, T, p)) { hit = true; break; } if (!hit && p) hit = !!this.regions(id, p); } catch (e) { rec.push('err ' + e.message); } finally { [this.go, this.tab, this.back, this.toastMsg, this.setState, this.rec] = sv; }
+      window.__cueDry.push({ id, t: list[0] || '', hit, rec: rec.join(',') }); return hit; }
+    for (const T of list) if (this.route(id, T, p)) return true;
+    return p ? !!this.regions(id, p) : false;
+  };
+  renderVals() {
+    const s = this.state, K = Component, Y = '#FFD60A', grp = s.cur.split('.')[0], G = K.G.find(g => g[0] === grp);
+    return {
+      cur: s.cur, files: K.F, act: this.act, isRecUI: false, isWatchUI: /^12\./.test(s.cur), notWatch: !/^12\./.test(s.cur), frameR: /^12\./.test(s.cur) ? 28 : 54, frameShadow: /^12\./.test(s.cur) ? '0 0 0 1px #2A2C3A,0 40px 90px rgba(0,0,0,0.6)' : '0 0 0 10px #15161E,0 0 0 11px #2A2C3A,0 40px 90px rgba(0,0,0,0.6)', notRecUI: !/^11\.[23]$/.test(s.cur) && !/^12\./.test(s.cur) && !/^13\./.test(s.cur), isEditorUI: /^13\./.test(s.cur), isSetUI: /^11\.[23]$/.test(s.cur), recMode: s.cur === '5.3' ? 'studio' : 'selfie', curName: this.nm(s.cur), curGroup: G ? G[1] : 'SYSTEM',
+      hints: K.HINTS[s.cur] || ['Tap any button — it follows the flow'],
+      xpSeg: [[3, '3 left'], [1, 'Last one'], [0, 'None left']].map(([n, l]) => { const on = (window.__cueExports == null ? 3 : window.__cueExports) === n && !window.__cuePro; return { l, bg: on ? '#636366' : 'transparent', fw: on ? 600 : 400, pick: () => { window.__cuePro = false; window.__cueExportDeclined = false; window.__cueExports = n; this.setState({ cur: s.cur === '8.1' ? '6.3' : '8.1', stack: [], xp: n }); if (s.cur === '8.1') setTimeout(() => this.setState({ cur: '8.1' }), 60); this.toastMsg(n === 0 ? 'No free exports left' : n === 1 ? 'Last free export' : '3 free exports left'); } }; }),
+      dataSeg: [['full', 'Sample'], ['year', 'New year'], ['empty', 'New account']].map(([k, l]) => { const on = k === 'empty' ? !!s.empty : k === 'year' ? !!s.newYear : !s.empty && !s.newYear; return { l, bg: on ? '#636366' : 'transparent', fw: on ? 600 : 400, pick: () => k === 'year' ? this.setNewYear() : this.setEmpty(k === 'empty') }; }),
+      hasToast: !!s.toast, toast: s.toast,
+      ...(() => { const L = this.props.layout || 'hub', sc = Math.max(0.5, Math.min(1.4, +this.props.phoneScale || 1)); return { showNav: L === 'hub', showCtx: L !== 'phone', phoneScale: sc, phoneW: Math.round(390 * sc), phoneH: Math.round(844 * sc) }; })(),
+      back: () => this.back(), backOp: this.backTarget() ? 1 : 0.4,
+      startFirst: () => this.tab('1.1'), startHome: () => this.tab('3.2'),
+      groups: K.G.map(([g, title]) => ({ t: title, items: Object.keys(K.F).filter(id => id.split('.')[0] === g).sort((a, b) => parseFloat(a.split('.')[1]) - parseFloat(b.split('.')[1])).map(id => { const on = id === s.cur; return { id, n: this.nm(id), bg: on ? 'rgba(255,214,10,0.12)' : 'transparent', c: on ? Y : 'rgba(225,228,245,0.5)', tc: on ? '#fff' : 'rgba(225,228,245,0.75)', go: () => this.tab(id) }; }) }))
+    };
+  }
+}
+</script>
+
+
+<div id="__claude_design_branding"><style>#__claude_design_branding{position:fixed;right:16px;bottom:16px;z-index:2147483646;display:flex;align-items:center;gap:7px;height:30px;padding:0 5px 0 10px;border-radius:999px;font-family:"Anthropic Sans",-apple-system,BlinkMacSystemFont,system-ui,sans-serif;font-size:12.5px;font-weight:400;line-height:1;letter-spacing:normal;text-transform:none;color:#141413;background:rgba(255,255,255,.86);-webkit-backdrop-filter:blur(24px);backdrop-filter:blur(24px);box-shadow:0 0 0 .5px rgba(31,30,29,.14),0 2px 10px rgba(0,0,0,.09)}
+#__claude_design_branding *{box-sizing:border-box;margin:0}
+#__claude_design_branding a{color:inherit;text-decoration:none;display:inline-flex;align-items:center;gap:7px;white-space:nowrap}
+#__claude_design_branding a:hover span{text-decoration:underline}
+#__claude_design_branding svg{flex:none}
+#__claude_design_branding a svg{color:#D97757}
+#__claude_design_branding button{width:20px;height:20px;padding:0;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;color:currentColor;opacity:.55;border:0;background:none;cursor:pointer;flex:none;font:inherit;transition:opacity .14s}
+#__claude_design_branding button:hover{opacity:1;background:rgba(127,127,127,.22)}
+@media print{#__claude_design_branding{display:none}}</style><a href="https://claude.com/product/design" target="_blank" rel="noopener noreferrer"><svg width="14" height="14" viewBox="0 0 20 21" fill="none" aria-hidden="true"><path fill="currentColor" d="M9.99902 0C15.5258 0.000170936 19.999 4.50643 19.999 10.0547C19.999 11.7656 19.5863 12.9976 18.7861 13.8203C17.9924 14.6362 16.9465 14.9138 15.9854 15.0078C15.05 15.0993 14.0097 15.0262 13.2549 15.0186C12.8524 15.0145 12.5177 15.0267 12.2441 15.0703C11.9682 15.1144 11.8143 15.1813 11.7305 15.2432C11.4745 15.4322 11.3353 15.7121 11.2656 16.1602C11.2303 16.3875 11.2168 16.6362 11.209 16.9131C11.2017 17.1715 11.1986 17.4893 11.1807 17.7705C11.1469 18.2975 11.0495 19.0865 10.4199 19.5908C9.7846 20.0996 8.88652 20.1057 7.85449 19.877C7.36399 19.7682 6.88652 19.6232 6.42578 19.4453C2.66989 17.9949 0.000187748 14.3414 0 10.0547C0 4.50643 4.47223 0.000171048 9.99902 0ZM9.99902 1.60547C5.36781 1.60564 1.60547 5.38391 1.60547 10.0547C1.60566 13.6582 3.84823 16.7296 7.00391 17.9482C7.39027 18.0974 7.79085 18.2184 8.20215 18.3096C9.1375 18.5169 9.384 18.3633 9.41602 18.3379C9.4524 18.3087 9.54558 18.1915 9.5791 17.668C9.5947 17.4239 9.59473 17.1786 9.60352 16.8672C9.61179 16.5742 9.62831 16.2435 9.67969 15.9131C9.78359 15.2455 10.0474 14.4906 10.7764 13.9521C11.1479 13.6778 11.5842 13.5493 11.9912 13.4844C12.4007 13.4191 12.8434 13.4088 13.2705 13.4131C14.1753 13.4222 15.0071 13.4905 15.8291 13.4102C16.6257 13.3322 17.2249 13.1235 17.6357 12.7012C18.0401 12.2855 18.3935 11.5261 18.3936 10.0547C18.3936 5.38391 14.6302 1.60564 9.99902 1.60547ZM5.11621 9.86719C5.86386 9.91468 6.45486 10.5348 6.45508 11.2939C6.45506 12.0838 5.81519 12.7245 5.02539 12.7246C4.28481 12.7246 3.67573 12.1617 3.60254 11.4404L3.59473 11.2939L3.60156 11.1533C3.66942 10.4596 4.23282 9.91186 4.93359 9.86719H5.11621ZM14.9814 7.19141C15.729 7.23889 16.3199 7.85919 16.3203 8.61816C16.3203 9.40801 15.6804 10.0487 14.8906 10.0488C14.1501 10.0487 13.5409 9.48586 13.4678 8.76465L13.46 8.61816L13.4668 8.47754C13.5348 7.78403 14.0983 7.23618 14.7988 7.19141H14.9814ZM6.4541 4.93457C7.20161 4.9822 7.79275 5.60231 7.79297 6.36133C7.79288 7.151 7.15291 7.7917 6.36328 7.79199C5.62274 7.79199 5.01369 7.22903 4.94043 6.50781L4.93262 6.36133L4.93945 6.2207C5.00731 5.52698 5.5707 4.97922 6.27148 4.93457H6.4541ZM11.3867 3.59668C12.1343 3.64419 12.7253 4.26436 12.7256 5.02344C12.7256 5.81326 12.0857 6.45393 11.2959 6.4541C10.5553 6.4541 9.94622 5.89123 9.87305 5.16992L9.86523 5.02344L9.87207 4.88281C9.93996 4.18912 10.5033 3.64133 11.2041 3.59668H11.3867Z"></path></svg><span>Made with Claude Design</span></a><button type="button" aria-label="Dismiss" onclick="this.parentElement.remove()"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"></path></svg></button></div></body></html>

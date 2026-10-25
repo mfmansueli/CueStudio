@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Cue — Camera &amp; voice</title>
+<style>
+/* 1.5 Chapter 4, read from source (879bee2e468a): VoiceChapter (art on top, heading at 24 pt gutters 10 pt under it, 24 pt, one card r20 on surface with
+   a separator hairline: Microphone · Camera rows 64 pt, 36 pt tile r12 at 14% / 18%, title 16 semibold, line 12.5 at 60%; badges 26 pt: "Allow" (yellow ring
+   when next), "Next", "✓ Allowed" green on 16%, "Off · Turn on" orange; footnote 12.5 inkHint, "Continue"), OnboardingParts (bar segment 4).
+   mic and camera are SF Symbols in the app, drawn here as close stand-ins (≈). Approximate (not read): the art (VoicePermissionsArt). */
+body{margin:0;background:#000}*{box-sizing:border-box}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;color:#fff;background:#07080E;display:flex;flex-direction:column;padding:54px 0 34px}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.row{display:flex;align-items:center;gap:12px;min-height:64px;padding:0 14px;cursor:pointer}
+.badge{height:26px;padding:0 10px;border-radius:13px;display:flex;align-items:center;font-size:12.5px;font-weight:600;white-space:nowrap;transition:all .25s}
+@keyframes breathe{0%,100%{opacity:.55}50%{opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style></head><body>
+<div class="phone">
+  <div style="margin-top:8px;height:44px;padding:0 20px;display:flex;align-items:center;gap:5px;flex-shrink:0">
+    <span style="width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.85)"></span><span style="width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.85)"></span><span style="width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.85)"></span><span style="width:22px;height:4px;border-radius:2px;background:#FFD60A"></span><span style="width:22px;height:4px;border-radius:2px;background:rgba(110,116,150,.26)"></span>
+  </div>
+  <!-- VoicePermissionsArt (≈): the microphone's glass and the camera's lens, which lights when the camera is allowed -->
+  <div aria-hidden="true" style="height:200px;position:relative;flex-shrink:0">
+    <div style="position:absolute;left:96px;top:34px;width:64px;height:118px;border-radius:32px;background:linear-gradient(160deg,#54471F,#241E10 55%,#0B0905);box-shadow:inset 0 0 0 1px rgba(255,214,10,.35),0 0 40px rgba(255,214,10,.18)"></div>
+    <div style="position:absolute;left:110px;top:56px;width:36px;height:56px;border-radius:18px;background:repeating-linear-gradient(0deg,rgba(255,214,10,.35) 0 1px,transparent 1px 5px);animation:breathe 2.4s ease-in-out infinite"></div>
+    <div id="lens" style="position:absolute;left:206px;top:44px;width:98px;height:98px;border-radius:49px;background:radial-gradient(circle,#05040F 0 22%,#6B5FD0 23%,#0A0920 52%,#2A2550 54%,#0D0C20 100%);box-shadow:0 0 0 1px rgba(180,167,255,.3);transition:box-shadow .8s,filter .8s;filter:brightness(.7)"></div>
+  </div>
+  <div style="padding:10px 24px 0;display:flex;flex-direction:column;gap:10px;flex-shrink:0">
+    <div class="mono" style="font-size:12px;font-weight:600;letter-spacing:1.4px;color:#FFD60A">CHAPTER 4 · CAMERA &amp; VOICE</div>
+    <div style="font-size:30px;line-height:36px;font-weight:700;letter-spacing:-.6px">Let the text follow your voice.</div>
+    <div style="font-size:15px;line-height:20px;color:rgba(225,228,245,.62)">The microphone lets the teleprompter follow your words, on this iPhone. The camera shows you while you read.</div>
+  </div>
+  <div style="flex:1;min-height:24px"></div>
+  <div style="margin:0 16px;border-radius:20px;background:#161826;box-shadow:inset 0 0 0 .5px rgba(80,86,120,.5);overflow:hidden;flex-shrink:0">
+    <div class="row" id="mic" data-tool="perm">
+      <span style="width:36px;height:36px;border-radius:12px;background:rgba(255,214,10,.14);display:flex;align-items:center;justify-content:center"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FFD60A" stroke-width="2.2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></span>
+      <div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">Microphone</div><div style="font-size:12.5px;color:rgba(225,228,245,.6)">So the teleprompter follows your voice</div></div>
+      <span class="badge" style="color:#FFD60A;box-shadow:inset 0 0 0 1px rgba(255,214,10,.6)">Allow</span>
+    </div>
+    <div style="height:.5px;background:rgba(80,86,120,.5)"></div>
+    <div class="row" id="cam" data-tool="perm">
+      <span style="width:36px;height:36px;border-radius:12px;background:rgba(180,167,255,.18);display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#B4A7FF" stroke-width="2" stroke-linejoin="round"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h2l1.5-2h6l1.5 2h2A2.5 2.5 0 0 1 21 8.5v9a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><circle cx="12" cy="13" r="3.6"/></svg></span>
+      <div style="flex:1;min-width:0"><div style="font-size:16px;font-weight:600">Camera</div><div style="font-size:12.5px;color:rgba(225,228,245,.6)">So you can see yourself while you read</div></div>
+      <span class="badge" style="color:rgba(225,228,245,.62);box-shadow:inset 0 0 0 1px rgba(180,167,255,.22)">Allow</span>
+    </div>
+  </div>
+  <div id="foot" style="margin-top:19px;padding:0 28px;text-align:center;font-size:12.5px;color:rgba(225,228,245,.55);flex-shrink:0">Cue only records when you tap Record.</div>
+  <div style="flex:0 0 12px"></div>
+  <div style="padding:0 16px 6px;flex-shrink:0">
+    <div role="button" style="height:54px;border-radius:27px;background:#FFD60A;color:#000;font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer">Continue</div>
+  </div>
+</div>
+<script>
+(function(){function f(){document.body.style.zoom=Math.min(1,(innerHeight-8)/860)}f();addEventListener('resize',f)})();
+(function(){
+  var st={mic:'ask',cam:'ask'};
+  function badge(el,s,next,follow){var b=el.querySelector('.badge');
+    if(s==='ok'){b.textContent='✓ Allowed';b.style.cssText='color:#34C759;background:rgba(52,199,89,.16);box-shadow:none';}
+    else{b.textContent=next&&follow?'Next':'Allow';b.style.background='transparent';b.style.color=next?'#FFD60A':'rgba(225,228,245,.62)';b.style.boxShadow='inset 0 0 0 1px '+(next?'rgba(255,214,10,.6)':'rgba(180,167,255,.22)');}}
+  function draw(){var m=document.getElementById('mic'),c=document.getElementById('cam');badge(m,st.mic,st.mic==='ask',false);badge(c,st.cam,st.mic!=='ask'&&st.cam==='ask',st.mic!=='ask');
+    var l=document.getElementById('lens');if(st.cam==='ok'){l.style.filter='none';l.style.boxShadow='0 0 0 1px rgba(180,167,255,.5),0 0 46px rgba(157,140,255,.55)';}}
+  document.getElementById('mic').addEventListener('click',function(){st.mic='ok';draw();});
+  document.getElementById('cam').addEventListener('click',function(){st.cam='ok';draw();});
+  draw();
+})();
+</script>
+</body></html>

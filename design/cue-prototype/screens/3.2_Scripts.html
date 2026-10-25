@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Cue — Scripts</title>
+<style>
+/* Tokens: Palette.swift, Metrics.swift (879bee2e468a). Icons: CueIconGeometry.swift (same paths, same stroke rule).
+   Motion from the device recording (ScreenRecording 15/16, 2026-10-21): the dock's idea rotates with a blur crossfade (↻ = next now);
+   mic → the list blurs and dims, header "Getting ready" (5 dots) → "Listening..." (bars), a lit border runs round the dock,
+   the words land in the field; stop (red ring) ends it. ↑ sends the idea → "Drafting in your voice" (4.1). Lightbulb = Find inspiration. */
+:root{--bg:#0A0B12;--fill:rgba(110,116,150,.26);--glass:rgba(14,16,28,.72);--ink:#fff;--ink2:rgba(225,228,245,.62);--inkHint:rgba(225,228,245,.55);--acc:#FFD60A;--accInk:#000;--ai:#B4A7FF;--aiStrong:#E4DEFF;--aiFill:rgba(157,140,255,.17);--record:#FF3B30;--info:#64D2FF;--chipOn:#fff}
+body{margin:0;background:#000}*{box-sizing:border-box}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.hud{font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.chip{min-width:0;overflow:hidden;height:34px;padding:0 14px;border-radius:17px;display:inline-flex;align-items:center;gap:6px;font-size:14px;font-weight:600;background:var(--fill);white-space:nowrap;flex-shrink:0}
+.dot{width:7px;height:7px;border-radius:4px;display:inline-block;flex-shrink:0}
+.card{background:rgba(22,24,38,.64);border-radius:26px;box-shadow:inset 0 0 0 .5px rgba(255,255,255,.12)}
+.sec{white-space:nowrap;font-family:ui-monospace,"SF Mono",Menlo,monospace;font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--inkHint)}
+.glass{background:var(--glass);box-shadow:inset 0 0 0 .5px rgba(180,167,255,.22);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.circ{display:flex;align-items:center;justify-content:center;flex-shrink:0;border-radius:50%}
+svg{display:block}
+#list{transition:filter .35s,opacity .35s}
+.voice #list{filter:blur(5px);opacity:.32;pointer-events:none}
+.idea{transition:filter .32s,opacity .32s}.idea.out{filter:blur(6px);opacity:0}
+.v-only{display:none!important}.voice .v-only{display:flex!important}.voice .i-only{display:none!important}
+#ringwrap{position:absolute;inset:0;border-radius:28px;overflow:hidden;opacity:0;transition:opacity .4s;pointer-events:none}
+.voice #ringwrap{opacity:1}
+#ring{position:absolute;left:-40%;top:-200%;width:180%;height:500%;background:conic-gradient(from 0deg,#FFD60A,#FF9F6B,#B4A7FF,#64D2FF,#B4A7FF,#FFD60A);animation:spin 3.2s linear infinite}
+#ringmask{position:absolute;inset:1.5px;border-radius:26.5px;background:linear-gradient(180deg,#3d3480,#2a2463)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes dotp{0%,100%{opacity:.25}50%{opacity:1}}
+@keyframes bar{0%,100%{transform:scaleY(.35)}50%{transform:scaleY(1)}}
+@keyframes spin1{to{transform:rotate(360deg)}}
+.w{display:inline-block;animation:win .3s ease-out both}@keyframes win{from{opacity:0;filter:blur(4px)}to{opacity:1;filter:none}}
+@media (prefers-reduced-motion:reduce){#ring,.w{animation:none!important}}
+</style></head><body>
+<div class="phone" id="ph">
+<div style="position:absolute;inset:0;background:radial-gradient(70% 30% at 20% 6%,rgba(157,140,255,.20),rgba(157,140,255,0) 70%),var(--bg)"></div>
+
+<!-- Large title; toolbar: search (cueicon search, yellow), Logbook (cueicon logbook, violet), + (system plus) -->
+<div style="position:absolute;left:0;right:0;top:56px;padding:0 20px;display:flex;align-items:center;justify-content:space-between">
+  <div style="font-size:40px;font-weight:700;letter-spacing:-.02em;line-height:44px">Scripts</div>
+  <div class="glass" style="height:52px;padding:0 6px;border-radius:26px;display:flex;align-items:center;background:rgba(14,16,28,.8)">
+    <span class="circ" style="width:44px;height:44px;color:var(--acc)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.3 10.5a6.2 6.2 0 1 0 12.4 0a6.2 6.2 0 1 0 -12.4 0z"/><path d="M15.2 15.2l4.6 4.6"/></svg></span>
+    <span class="circ" style="width:44px;height:44px;color:var(--aiStrong)"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18.5V4.5A1.5 1.5 0 0 1 6.5 3H19v15.5H6.5A1.5 1.5 0 0 0 5 20a1 1 0 0 0 1 1h13"/><path d="M12.50 6.20C12.79 8.61 13.69 9.51 16.10 9.80C13.69 10.09 12.79 10.99 12.50 13.40C12.21 10.99 11.31 10.09 8.90 9.80C11.31 9.51 12.21 8.61 12.50 6.20Z" fill="currentColor" stroke="none"/></svg></span>
+    <span class="circ" style="width:44px;height:44px;color:var(--acc)"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span>
+  </div>
+</div>
+
+<div id="list">
+<div class="hud" style="position:absolute;left:24px;top:150px;color:var(--acc)">1 scripts · 0 ready</div>
+
+<!-- PlatformFilterChips: horizontal, edge to edge, 34 pt chips, selected = white with black text -->
+<div style="position:absolute;left:0;right:0;top:186px;display:flex;gap:8px;padding:0 16px;overflow-x:auto;scrollbar-width:none">
+  <span class="chip" style="background:var(--chipOn);color:#000;font-weight:600">All <span class="mono" style="font-size:11px;color:rgba(0,0,0,.62)">1</span></span>
+  <span class="chip"><span class="dot" style="width:7px;height:7px;background:var(--info)"></span>TikTok <span class="mono" style="font-size:11px;color:var(--inkHint)">1</span></span>
+  <span class="chip"><span class="dot" style="background:#BF5AF2"></span>Reels <span class="mono" style="font-size:11px;color:var(--inkHint)">0</span></span>
+  <span class="chip"><span class="dot" style="background:#FF6B5A"></span>Shorts <span class="mono" style="font-size:11px;color:var(--inkHint)">0</span></span>
+</div>
+
+<!-- groupHeader: "Drafts · 1 — In progress" (mono 10, tracking 1.2); Select on the right -->
+<div style="position:absolute;left:28px;right:28px;top:254px;display:flex;justify-content:space-between;align-items:center">
+  <span class="sec">Drafts · 1 — In progress</span>
+  <span class="sec">Select</span>
+</div>
+
+<!-- ScriptRow: ThemeRail 3×30 pt, title 15.5/600, mono line with PlatformDot, trailing "Continue ›" at a fixed width -->
+<div class="card" style="position:absolute;top:286px;left:16px;right:16px;height:72px;display:flex;align-items:center;gap:12px;padding:6px 12px 6px 14px">
+  <span style="width:3px;height:30px;border-radius:2px;background:var(--info);flex-shrink:0"></span>
+  <div style="flex:1;min-width:0">
+    <div style="font-size:15.5px;font-weight:600;line-height:19px">The Budget Mistake No One Notes</div>
+    <div class="hud" style="margin-top:4px;font-size:10px;letter-spacing:.06em;color:var(--inkHint);display:flex;align-items:center;gap:6px"><span class="dot" style="width:6px;height:6px;background:var(--info)"></span>TikTok · 1:06 · 6 cues</div>
+  </div>
+  <span style="width:84px;flex-shrink:0;text-align:right;font-size:13.5px;font-weight:600;color:var(--ink2);white-space:nowrap">Continue ›</span>
+</div>
+
+</div>
+
+<!-- ScriptsDock: row 1 Format · For TikTok · Voice (sparkAi, violet) · lightbulb (findInspiration); row 2 field, ↻, mic, yellow send -->
+<div id="dock" style="position:absolute;left:12px;right:12px;bottom:110px;border-radius:28px;box-shadow:0 10px 30px rgba(0,0,0,.35)">
+  <div class="glass" style="position:absolute;inset:0;border-radius:28px;background:linear-gradient(180deg,rgba(72,62,140,.55),rgba(44,38,96,.72))"></div>
+  <div id="ringwrap"><div id="ring"></div><div id="ringmask"></div></div>
+  <div style="position:relative;padding:16px 12px 12px">
+  <div class="i-only" style="display:flex;align-items:center;gap:5px;height:36px;min-width:0">
+    <span class="chip" role="button" aria-label="Format" style="flex-shrink:0;height:34px;padding:0 9px;gap:5px;background:rgba(14,16,28,.7);font-size:12.5px">Format <span style="color:var(--inkHint);margin-left:2px">⌄</span></span>
+    <span class="chip" style="flex-shrink:0;height:34px;padding:0 9px;gap:5px;background:rgba(14,16,28,.7);font-size:12.5px"><span class="dot" style="background:var(--info)"></span>For TikTok</span>
+    <span class="chip" style="flex-shrink:0;height:34px;padding:0 9px;gap:5px;background:var(--aiFill);color:var(--aiStrong);font-size:12.5px"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M11 4C11.6 9.6 13.4 11.4 19 12C13.4 12.6 11.6 14.4 11 20C10.4 14.4 8.6 12.6 3 12C8.6 11.4 10.4 9.6 11 4Z"/></svg>Voice <span class="mono" style="font-size:10.5px;color:var(--ai)">69%</span></span>
+    <span class="circ" role="button" aria-label="Find inspiration" style="margin-left:auto;width:34px;height:36px;color:var(--acc);cursor:pointer"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.44 11.38A9 2.6 -18 0 1 5.74 8.58M17.54 4.88A9 2.6 -18 0 1 20.56 5.82"/><path d="M9 17v-1.6c0-1.2-.6-2.2-1.5-3.1A6.3 6.3 0 1 1 16.5 12.3c-.9.9-1.5 1.9-1.5 3.1V17z"/><path d="M9.5 19.6h5M10.6 22h2.8"/><path d="M20.56 5.82A9 2.6 -18 0 1 12.80 11.07A9 2.6 -18 0 1 3.44 11.38"/></svg></span>
+  </div>
+  <div class="v-only" style="align-items:center;gap:8px;height:36px;padding-left:4px;color:var(--acc);font-size:14px;font-weight:600" id="vhead"></div>
+  <div style="margin-top:10px;background:rgba(14,16,28,.7);border-radius:20px;padding:6px 6px 6px 14px;display:flex;align-items:center;gap:6px;min-height:56px">
+    <div id="field" class="idea" style="flex:1;min-width:0;padding:8px 0;font-size:16px;font-weight:500;line-height:21px"></div>
+    <div class="i-only" style="display:flex;align-items:center;gap:6px">
+      <span id="next" data-tool="next" role="button" aria-label="Another idea" style="width:32px;height:44px;display:flex;align-items:center;justify-content:center;color:var(--aiStrong);font-size:17px;cursor:pointer;transition:transform .4s">↻</span>
+      <span id="mic" data-tool="mic" role="button" aria-label="Dictate" class="circ" style="width:44px;height:44px;color:var(--ink2);cursor:pointer"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3h0a3 3 0 0 1 3 3v5a3 3 0 0 1 -3 3h0a3 3 0 0 1 -3 -3v-5a3 3 0 0 1 3 -3z"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21"/></svg></span>
+      <span id="send" role="button" aria-label="Write it" class="circ" style="width:40px;height:40px;background:var(--acc);color:var(--accInk);cursor:pointer"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></span>
+    </div>
+    <div class="v-only" style="align-items:center;gap:8px">
+      <span id="stop" data-tool="stop" role="button" aria-label="Stop" class="circ" style="width:40px;height:40px;box-shadow:inset 0 0 0 2px var(--record);cursor:pointer"><span style="width:13px;height:13px;border-radius:3px;background:var(--record)"></span></span>
+      <span data-tool="off" class="circ" style="width:40px;height:40px;background:rgba(110,116,150,.32);color:rgba(225,228,245,.4)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5M5.5 11.5L12 5l6.5 6.5"/></svg></span>
+    </div>
+  </div>
+  </div>
+</div>
+
+<!-- Tab bar: CueTabImage templates (26 pt); Scripts selected in yellow; Record = 30 pt ring + red dot -->
+<div class="glass" style="position:absolute;left:16px;right:16px;bottom:30px;height:62px;border-radius:31px;display:flex;align-items:center;justify-content:space-around;background:rgba(14,16,28,.8)">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:62px;color:var(--acc);font-size:11px;font-weight:600"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 3H6.5A1.5 1.5 0 0 0 5 4.5v15A1.5 1.5 0 0 0 6.5 21h11a1.5 1.5 0 0 0 1.5-1.5V7.5z"/><path d="M14.5 3v4.5H19"/><path d="M8.5 12h7M8.5 15.5h4.5"/></svg>Scripts</div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:62px;font-size:11px;font-weight:600"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3.5h10.5A1.5 1.5 0 0 1 20 5v10.5"/><path d="M6.5 7h8a2.5 2.5 0 0 1 2.5 2.5v9a2.5 2.5 0 0 1 -2.5 2.5h-8a2.5 2.5 0 0 1 -2.5 -2.5v-9a2.5 2.5 0 0 1 2.5 -2.5z"/><path d="M9 11.2v5.6l4.4-2.8z" fill="currentColor" stroke="none"/></svg>Takes</div>
+  <div style="width:30px;height:30px;border-radius:15px;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.75);display:flex;align-items:center;justify-content:center"><div style="width:17px;height:17px;border-radius:9px;background:var(--record)"></div></div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:62px;font-size:11px;font-weight:600"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M8.4 8.5a3.6 3.6 0 1 0 7.2 0a3.6 3.6 0 1 0 -7.2 0z"/><path d="M5 20.5c.9-3.9 3.6-6 7-6s6.1 2.1 7 6"/></svg>Profile</div>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:3px;width:62px;font-size:11px;font-weight:600"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 8h2.6M11.4 8H20M4 16h9.1M17.9 16H20"/><path d="M6.6 8a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0 -4.8 0z"/><path d="M13.1 16a2.4 2.4 0 1 0 4.8 0a2.4 2.4 0 1 0 -4.8 0z"/></svg>Settings</div>
+</div>
+</div>
+<script>
+// Fit the 390 × 844 screen into the preview window (the design size is unchanged).
+(function(){function f(){document.body.style.zoom=Math.min(1,(innerHeight-8)/860)}f();addEventListener('resize',f)})();
+(function(){
+  var ph=document.getElementById('ph'),F=document.getElementById('field'),H=document.getElementById('vhead');
+  var IDEAS=['Sketching Skills That Evolve Overnight.','Does decluttering feel like freedom?','How to stretch on a tight budget','My Honest Spend on Remote Hours'];
+  var i=0,user=null,rot=null,mode='idle',timers=[];
+  function hint(s){F.style.color='var(--ink2)';F.textContent=s}
+  function show(s){F.style.color='#fff';F.textContent=s}
+  function swap(fn){F.classList.add('out');setTimeout(function(){fn();F.classList.remove('out')},300)}
+  function next(){i=(i+1)%IDEAS.length;swap(function(){show(IDEAS[i])})}
+  function start(){clearInterval(rot);if(!user)rot=setInterval(next,3400)}
+  try{if(parent.__cueIdea){user=parent.__cueIdea;parent.__cueIdea=null}}catch(e){}
+  if(user)show(user);else show(IDEAS[0]);start();
+  document.getElementById('next').onclick=function(){var n=this;n.style.transform='rotate(360deg)';setTimeout(function(){n.style.transition='none';n.style.transform='';void n.offsetWidth;n.style.transition='transform .4s'},420);user=null;next();start()};
+  function clear(){timers.forEach(clearTimeout);timers=[]}
+  function later(f,ms){timers.push(setTimeout(f,ms))}
+  function head(kind){H.innerHTML=kind==='ready'
+    ?'<span style="display:flex;gap:3px">'+[0,1,2,3,4].map(function(k){return '<i style="width:4px;height:4px;border-radius:2px;background:var(--acc);animation:dotp 1s '+(k*.12)+'s infinite"></i>'}).join('')+'</span>Getting ready'
+    :'<span style="display:flex;gap:2px;align-items:center;height:14px">'+[0,1,2,3,4].map(function(k){return '<i style="width:3px;height:14px;border-radius:2px;background:var(--acc);transform-origin:center;animation:bar .7s '+(k*.11)+'s infinite"></i>'}).join('')+'</span>Listening...'}
+  function voice(){clearInterval(rot);clear();mode='voice';ph.classList.add('voice');head('ready');hint('Say it or type your idea...');
+    var words="You, I'm feeling fine, and you.".split(' ');
+    later(function(){head('listen')},1300);
+    words.forEach(function(w,k){later(function(){if(k===0)F.textContent='';F.style.color='#fff';if(k)F.appendChild(document.createTextNode(' '));var s=document.createElement('span');s.className='w';s.textContent=w;F.appendChild(s)},2300+k*380)});
+    later(stop,2300+words.length*380+1400)}
+  function stop(){if(mode!=='voice')return;clear();mode='idle';var s=F.textContent.trim();ph.classList.remove('voice');if(s&&s.indexOf('Say it')!==0){user=s;show(s)}else{show(IDEAS[i]);start()}
+    document.getElementById('next').style.display=user?'none':'flex'}
+  document.getElementById('mic').onclick=voice;document.getElementById('stop').onclick=stop;
+  window.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#send')){try{parent.__cueDraft=F.textContent.trim()}catch(x){}}},true);
+})();
+</script>
+</body></html>

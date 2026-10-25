@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Cue — Script page</title>
+<style>
+/* 4.1 Script page · v31. Code: ScriptPageView (tools row), ScriptPageHeader, ScriptStateStrip, ScriptLengthBar, ScriptRecordButton,
+   editor keyboard bar (undo · redo · cue chips · +) (879bee2e468a).
+   Calibrated to the device captures IMG_7440 (reading) and IMG_7442 (editing), points = px ÷ 3:
+   nav 44 pt at y 59 (back · "● TikTok" in yellow · ••• yellow), title 29 bold 2 lines, state pill 32 pt + "Draft · Your script · 6 cues",
+   length line in green when in range + ✓, track 4 pt (green fill, dim green ideal band), tools 33 pt, body 19 / 28.5, Record 53 pt pinned.
+   Editing: header dims, ✓ (yellow) replaces chip and •••, keyboard bar with pause · smile · emphasis, Record hides.
+   Tap the text to edit, ✓ to finish. SF Symbols drawn as stand-ins.
+   Drafting (from the device recording ScreenRecording 16): after ↑ in the Scripts dock / ✦ Draft it now, a dark screen with the star in an orbit
+   ring that fills (yellow → violet), "Drafting in your voice", the idea in quotes, a status line that changes (Drafting a hook… · Lining up the stars ·
+   Shaping it your way · Saving room for your pause · Trimming the extra words · Warming up the prompter), the % and Cancel. Then the page: title and
+   words arrive from blur, strip shows Stop, "✦ Drafting in your voice" pill over a dimmed Record; at the end "✦ Draft ready · Edit anything" and Record lights up.
+   Start (ScreenRecording 16, 1.8–3.7 s): the page pushes in as "Untitled", the send ball turns into the star and flies up in a curve with a
+   spark trail while the screen goes dark and a violet glow follows it; when it stops in the centre the ring, the text and Cancel appear.
+   Open this file with #draft to watch it on its own. */
+:root{--bg:#0B0C14;--fill:rgba(110,116,150,.24);--ink:#fff;--ink2:rgba(225,228,245,.6);--inkHint:rgba(225,228,245,.5);--acc:#FFD60A;--ai:#B4A7FF;--aiStrong:#D9D2FF;--aiFill:rgba(120,104,230,.26);--record:#FF3B30;--ok:#34C759}
+body{margin:0;background:#000}*{box-sizing:border-box}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.gl{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.04)),rgba(30,32,44,.75);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.2),inset 0 1px 0 rgba(255,255,255,.12);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px)}
+.circ{width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.tool{flex-shrink:1;min-width:0;height:33px;padding:0 13px;border-radius:17px;display:inline-flex;align-items:center;gap:8px;font-size:15.5px;font-weight:600;white-space:nowrap}
+.ed{display:none!important}.editing .ed{display:flex!important}.editing .rd{display:none!important}
+.editing .dim{opacity:.32;pointer-events:none}
+.dim{transition:opacity .2s}
+svg{display:block}
+.w{display:inline;animation:win .38s ease-out both}@keyframes win{from{opacity:0;filter:blur(5px)}to{opacity:1;filter:none}}
+@keyframes sparkIn{from{opacity:0;transform:translate(var(--dx),var(--dy)) scale(.6)}30%{opacity:1}to{opacity:0;transform:none}}
+@keyframes glowP{0%,100%{box-shadow:0 0 14px 4px rgba(255,255,255,.35),0 0 40px 12px rgba(180,167,255,.18)}50%{box-shadow:0 0 18px 6px rgba(255,255,255,.5),0 0 56px 18px rgba(180,167,255,.26)}}
+@keyframes toastIn{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}
+@media (prefers-reduced-motion:reduce){.w,#dstar,#draft *{animation:none!important}}
+</style></head><body>
+<div class="phone" id="ph">
+
+<!-- Navigation bar -->
+<div style="position:absolute;left:16px;right:16px;top:59px;height:44px;display:flex;align-items:center;gap:12px;z-index:5">
+  <div class="gl circ" aria-label="Back"><svg width="12" height="20" viewBox="0 0 12 20" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9.5 2L2.5 10l7 8"/></svg></div>
+  <div style="flex:1"></div>
+  <div id="plat" class="gl rd" aria-label="Create for" style="transition:opacity .25s;height:44px;padding:0 15px 0 13px;border-radius:22px;display:flex;align-items:center;gap:9px;font-size:15.5px;font-weight:600;color:var(--acc)"><span style="width:7px;height:7px;border-radius:4px;background:#64D2FF"></span>TikTok</div>
+  <div class="gl circ rd" aria-label="More"><span style="display:flex;gap:4px"><i style="width:5px;height:5px;border-radius:3px;background:var(--acc)"></i><i style="width:5px;height:5px;border-radius:3px;background:var(--acc)"></i><i style="width:5px;height:5px;border-radius:3px;background:var(--acc)"></i></span></div>
+  <div class="gl circ ed" role="button" aria-label="Done editing" data-tool="done" onclick="document.getElementById('ph').classList.remove('editing')" style="cursor:pointer"><svg width="20" height="16" viewBox="0 0 20 16" fill="none" stroke="var(--acc)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2 8.5l5.5 5.5L18 2"/></svg></div>
+</div>
+
+<div style="position:absolute;left:0;right:0;top:118px;bottom:0;overflow:hidden">
+  <div class="dim" style="padding:0 20px">
+    <!-- ScriptPageHeader -->
+    <div id="ttl" style="font-size:29px;line-height:32px;font-weight:700;letter-spacing:-.2px">The Budget Mistake No One Notes</div>
+    <!-- ScriptStateStrip -->
+    <div id="strip" style="margin-top:14px;display:flex;align-items:center;gap:11px;white-space:nowrap">
+      <span style="height:32px;padding:0 13px 0 8px;border-radius:16px;background:var(--fill);display:flex;align-items:center;gap:8px;font-size:15.5px;font-weight:600"><span style="width:16px;height:16px;border-radius:8px;box-shadow:inset 0 0 0 1.6px rgba(225,228,245,.6)"></span>Ready to record</span>
+      <span style="font-size:15.5px;color:var(--inkHint);overflow:hidden;text-overflow:ellipsis">Draft · Your script · 6 cues</span>
+    </div>
+    <!-- ScriptLengthBar: in range = green + ✓ -->
+    <div id="len" class="mono" style="margin-top:20px;display:flex;justify-content:space-between;align-items:center;font-size:12.5px;font-weight:600;letter-spacing:.6px;white-space:nowrap"><span style="color:var(--ok);display:flex;align-items:center;gap:6px">166 WORDS · ~1:06 · <svg width="10" height="8" viewBox="0 0 10 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1 4.2l2.6 2.6L9 1.2"/></svg></span><span style="color:var(--ink2)">IDEAL 1:00–1:30</span></div>
+    <div style="margin-top:6px;height:4px;border-radius:2px;background:rgba(110,116,150,.22);position:relative;overflow:hidden"><div style="position:absolute;left:0;width:83.5%;top:0;bottom:0;background:rgba(52,199,89,.32)"></div><div id="fill" style="position:absolute;left:0;top:0;bottom:0;width:61.5%;background:var(--ok);border-radius:2px;transition:width .4s"></div></div>
+    <!-- Tools -->
+    <div style="display:flex;gap:8px;margin-top:17px;align-items:center">
+      <span class="tool" role="button" aria-label="Hook" style="background:var(--fill)"><svg width="15" height="13" viewBox="0 0 15 13" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round"><path d="M5 1.5h9M5 5h9M1 8.5h13M1 12h13"/><path d="M1 1.2l1.4 1M1 4.8l1.4-1" stroke-width="1.3"/></svg>Hook</span>
+      <span class="tool" role="button" aria-label="Improve" style="background:var(--aiFill);color:var(--aiStrong)"><svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M10 4C10.7 10 12.3 11.6 18 12.3C12.3 13 10.7 14.6 10 20.6C9.3 14.6 7.7 13 2 12.3C7.7 11.6 9.3 10 10 4Z"/><path d="M18.5 1.5C18.8 3.6 19.4 4.2 21.5 4.5C19.4 4.8 18.8 5.4 18.5 7.5C18.2 5.4 17.6 4.8 15.5 4.5C17.6 4.2 18.2 3.6 18.5 1.5Z"/></svg>Improve</span>
+      <span class="tool" role="button" aria-label="Cues" style="background:var(--fill);color:var(--ink2)"><svg width="18" height="14" viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 9s3.6-6.5 10-6.5S22 9 22 9s-3.6 6.5-10 6.5S2 9 2 9z"/><circle cx="12" cy="9" r="3"/><path d="M4 1l16 16"/></svg>Cues</span>
+      <div style="flex:1"></div>
+      <span class="circ" role="button" aria-label="Text size" style="margin-right:2px;width:35px;height:35px;border-radius:18px;background:var(--fill);font-weight:700;display:flex;align-items:baseline;justify-content:center;padding-top:7px"><span style="font-size:11px">A</span><span style="font-size:15px">A</span></span>
+    </div>
+  </div>
+  <!-- Editor -->
+  <div id="body" role="textbox" aria-label="Script" data-tool="edit" onclick="document.getElementById('ph').classList.add('editing')" style="margin-top:20px;padding:0 20px 0 26px;font-size:19px;line-height:28.5px;cursor:text">
+    <p style="margin:0 0 28px">A small error in planning can turn a weekend Into this week-long mess. I’ve seen how tight money hides quiet guesses. When I first tried to make my cash last, I stuck to boring plans. I didn’t get how tight moving around could really be. &nbsp;I’ve figured out the stiff price of going with the flow.ers matter more than the labels.</p>
+    <p style="margin:0">I spent a week navigating local routes and price tags. My goal was to keep costs low, but I didn’t factor in hidden fees. I checked transportation options, checked rates, and still missed the small charges that added up to almost everything.</p>
+  </div>
+</div>
+
+
+<!-- Drafting in your voice (full screen) -->
+<div id="draft" style="display:none;position:absolute;inset:0;z-index:20;transition:opacity .6s">
+  <div id="dbg" style="position:absolute;inset:0;background:radial-gradient(60% 30% at 50% 38%,rgba(60,52,130,.18),rgba(0,0,0,0) 70%),#05060B;opacity:0;transition:opacity .55s ease-out"></div>
+  <div id="trail" aria-hidden="true" style="position:absolute;inset:0;pointer-events:none"></div>
+  <div id="fly" style="position:absolute;left:0;top:0;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:7px;background:#fff;box-shadow:0 0 14px 5px rgba(255,255,255,.45),0 0 60px 26px rgba(130,110,255,.22);will-change:transform"></div>
+  <div id="sparks" aria-hidden="true" style="position:absolute;left:195px;top:320px;width:0;height:0"></div>
+  <svg id="dring" width="92" height="92" viewBox="0 0 92 92" style="position:absolute;left:149px;top:274px;transform:rotate(-90deg) scale(.6);opacity:0;transition:opacity .45s,transform .55s cubic-bezier(.2,.8,.2,1)"><defs><linearGradient id="dg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFD60A"/><stop offset="1" stop-color="#B4A7FF"/></linearGradient></defs><circle cx="46" cy="46" r="34" fill="none" stroke="rgba(110,116,150,.22)" stroke-width="1.5"/><circle id="arc" cx="46" cy="46" r="34" fill="none" stroke="url(#dg)" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="0 214" style="transition:stroke-dasharray .5s"/></svg>
+  <div id="dstar" style="position:absolute;left:188px;top:313px;width:14px;height:14px;border-radius:7px;background:#fff;animation:glowP 2.4s ease-in-out infinite;transition:transform .6s,opacity .6s;opacity:0"></div>
+  <div id="dtext" style="position:absolute;left:24px;right:24px;top:416px;text-align:center;transition:opacity .4s;opacity:0">
+    <div style="font-size:17px;font-weight:600">Drafting in your voice</div>
+    <div id="dq" style="margin-top:6px;font-size:13px;color:var(--ink2)"></div>
+    <div id="dst" style="margin-top:12px;height:18px;font-size:14px;font-style:italic;color:var(--ai);transition:opacity .3s"></div>
+    <div id="dpc" class="mono" style="margin-top:6px;font-size:10px;color:var(--inkHint)">0%</div>
+  </div>
+  <div id="dcancel" role="button" aria-label="Cancel" style="opacity:0;transition:opacity .4s;position:absolute;left:50%;top:684px;transform:translateX(-50%);height:44px;padding:0 20px;display:flex;align-items:center;font-size:15px;font-weight:500;cursor:pointer">Cancel</div>
+</div>
+<div id="dpill" style="display:none;position:absolute;left:50%;top:686px;transform:translateX(-50%);height:38px;padding:0 15px;border-radius:19px;background:rgba(64,54,150,.72);box-shadow:inset 0 0 0 .5px rgba(180,167,255,.4);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);align-items:center;gap:8px;font-size:14px;font-weight:600;color:var(--aiStrong);white-space:nowrap;z-index:8"><span>✦</span>Drafting in your voice</div>
+<div id="dtoast" style="display:none;position:absolute;left:50%;top:62px;height:38px;padding:0 16px;border-radius:19px;background:rgba(40,42,60,.92);box-shadow:inset 0 0 0 .5px rgba(255,255,255,.2);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);align-items:center;gap:8px;font-size:14px;font-weight:600;white-space:nowrap;z-index:9;animation:toastIn .3s ease-out both"><span style="color:var(--acc)">✦</span>Draft ready · Edit anything</div>
+
+<!-- ScriptRecordButton (reading) -->
+<div id="rec" class="rd" role="button" aria-label="Record" style="transition:opacity .4s;position:absolute;left:16px;right:13px;bottom:35px;height:53px;border-radius:27px;background:var(--acc);box-shadow:0 6px 18px rgba(255,214,10,.16),inset 0 1px 0 rgba(255,255,255,.35);display:flex;align-items:center;justify-content:center;gap:11px;color:#000;font-size:20px;font-weight:700;z-index:6"><span style="width:11px;height:11px;border-radius:6px;background:var(--record)"></span>Record</div>
+
+<!-- Editing: keyboard bar + system keyboard -->
+<div class="ed" style="position:absolute;left:0;right:0;bottom:0;height:378px;flex-direction:column;z-index:7">
+  <div class="gl" style="margin:0 10px;height:51px;border-radius:26px;display:flex;align-items:center;gap:10px;padding:0 6px;background:rgba(26,28,52,.86)">
+    <span class="circ" aria-label="Undo" style="width:34px;height:34px;background:rgba(110,116,150,.2);color:var(--ink2)"><svg width="15" height="13" viewBox="0 0 16 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1.5L1.5 5 5 8.5"/><path d="M1.5 5h8a4.5 4.5 0 0 1 0 9H7"/></svg></span>
+    <span class="circ" aria-label="Redo" style="width:34px;height:34px;background:rgba(110,116,150,.2);color:var(--ink2)"><svg width="15" height="13" viewBox="0 0 16 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 1.5L14.5 5 11 8.5"/><path d="M14.5 5h-8a4.5 4.5 0 0 0 0 9H9"/></svg></span>
+    <span style="width:1px;height:24px;background:rgba(180,167,255,.35)"></span>
+    <div style="flex:1;min-width:0;display:flex;gap:7px;overflow:hidden;-webkit-mask-image:linear-gradient(90deg,#000 80%,transparent);mask-image:linear-gradient(90deg,#000 80%,transparent)">
+      <span class="mono" role="button" style="height:33px;padding:0 13px;border-radius:17px;background:rgba(255,214,10,.2);color:var(--acc);display:flex;align-items:center;font-size:12.5px;font-weight:700;white-space:nowrap">pause</span><span class="mono" role="button" style="height:33px;padding:0 13px;border-radius:17px;background:rgba(255,214,10,.2);color:var(--acc);display:flex;align-items:center;font-size:12.5px;font-weight:700;white-space:nowrap">smile</span><span class="mono" role="button" style="height:33px;padding:0 13px;border-radius:17px;background:rgba(255,214,10,.2);color:var(--acc);display:flex;align-items:center;font-size:12.5px;font-weight:700;white-space:nowrap">emphasis</span>
+    </div>
+    <span class="circ" aria-label="Add cue" style="width:34px;height:34px"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"><path d="M8 1.5v13M1.5 8h13"/></svg></span>
+  </div>
+  <div style="flex:1;margin-top:8px;border-radius:28px 28px 0 0;background:rgba(44,44,50,.96);padding:52px 0 0;display:flex;flex-direction:column;gap:12px;color:#fff">
+    <div style="display:flex;gap:6px;padding:0 3px"><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">q</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">w</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">e</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">r</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">t</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">y</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">u</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">i</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">o</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">p</span></div>
+    <div style="display:flex;gap:6px;padding:0 22px"><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">a</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">s</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">d</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">f</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">g</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">h</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">j</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">k</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">l</span></div>
+    <div style="display:flex;gap:6px;padding:0 3px"><span style="flex:1.4;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;"><svg width="20" height="18" viewBox="0 0 20 18" fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"><path d="M10 1.5L1.5 10H6v6.5h8V10h4.5z"/></svg></span><span style="width:8px"></span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">z</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">x</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">c</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">v</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">b</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">n</span><span style="flex:1;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;">m</span><span style="width:8px"></span><span style="flex:1.4;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;"><svg width="22" height="16" viewBox="0 0 22 16" fill="none" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"><path d="M7 1.5h13v13H7L1.5 8z"/><path d="M11 5l5 6M16 5l-5 6"/></svg></span></div>
+    <div style="display:flex;gap:6px;padding:0 3px"><span style="flex:1.3;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;font-size:17px">123</span><span style="flex:1.3;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;font-size:20px">☺</span><span style="flex:5.2;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;"><span style="margin-left:auto;margin-right:10px;font-size:11px;color:rgba(255,255,255,.5)">PT</span></span><span style="flex:2.6;height:42px;border-radius:9px;background:rgba(120,120,128,.42);display:flex;align-items:center;justify-content:center;font-size:23px;"><svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M20 1.5v5.5H3M7 3L2.5 7 7 11"/></svg></span></div>
+  </div>
+</div>
+</div>
+<script>
+(function(){
+  var idea=null;try{idea=parent.__cueDraft;parent.__cueDraft=null}catch(e){}
+  if(!idea&&location.hash==='#draft')idea="You, I'm feeling fine, and you.";
+  if(!idea)return;
+  var $=function(i){return document.getElementById(i)};
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var title=/feeling fine/i.test(idea)?"You, I’m Feeling Fine, and You: The Hidden Shift":idea.replace(/[.?!]+$/,'').replace(/\b\w/g,function(c){return c.toUpperCase()});
+  var P=["Sixteen percent of new hires leave within the first month because they don’t know what counts as a core task. I’ve watched how this gap quietly shapes the day. When I step back, it’s clear: people miss the balance between surface duties and deeper impact.",
+    "I’m filming in my kitchen, surrounded by mismatched mugs and sticky notes, and I’ve been working with local creatives who juggle multiple gigs. The challenge isn’t just knowing the schedule—it’s spotting the shift in priority.",
+    "Instead of asking the usual questions, I noticed that pausing to observe the flow of conversation—even the small talk—revealed hidden patterns. This subtle shift opened a new lens on the work.",
+    "The clearer I became about the unseen rhythm, the steadier my work felt. That’s why I believe the smallest observation can reshape the workday. Try it—comment what you noticed."];
+  var words=P.join(' ').split(/\s+/).length, mins=Math.round(words/150*60);
+  var dur=Math.floor(mins/60)+':'+('0'+mins%60).slice(-2);
+  var T=[];function at(ms,f){T.push(setTimeout(f,reduce?0:ms))}
+  var ph=$('ph');ph.classList.remove('editing');
+  // page in drafting state
+  $('ttl').innerHTML='<span style="color:var(--inkHint)">Untitled</span>';$('body').innerHTML='';$('body').removeAttribute('data-tool');$('body').onclick=null;
+  $('strip').innerHTML='<span style="height:32px;padding:0 13px 0 8px;border-radius:16px;background:var(--fill);display:flex;align-items:center;gap:8px;font-size:15.5px;font-weight:600;opacity:.4"><span style="width:16px;height:16px;border-radius:8px;box-shadow:inset 0 0 0 1.6px rgba(225,228,245,.6)"></span>Ready to rec…</span><span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:15.5px;color:var(--inkHint)">Draft · Your script…</span><span id="dstop" role="button" aria-label="Stop" style="height:32px;padding:0 13px;border-radius:16px;background:var(--fill);display:flex;align-items:center;font-size:15px;font-weight:600;cursor:pointer">Stop</span>';
+  var lenL=$('len').firstElementChild;lenL.style.color='var(--acc)';lenL.textContent='0 WORDS · ~0:00';
+  $('fill').style.background='var(--acc)';$('fill').style.width='2%';$('rec').style.opacity='.4';$('rec').style.pointerEvents='none';
+  // drafting screen
+  var d=$('draft');d.style.display='block';$('dq').textContent='“'+idea+'”';
+  var FL=reduce?0:1150;
+  flight();
+  at(FL,function(){$('dstar').style.opacity=1;$('fly').style.display='none';$('dring').style.opacity=1;$('dring').style.transform='rotate(-90deg)';$('dtext').style.opacity=1;$('dcancel').style.opacity=1;sparks()});
+  function flight(){var dbg=$('dbg'),fly=$('fly'),tr=$('trail');requestAnimationFrame(function(){dbg.style.opacity=1});
+    if(reduce){fly.style.display='none';return}
+    var P0=[340,694],P1=[318,470],P2=[262,300],P3=[195,320],t0=performance.now(),last=0;
+    function bz(a,b,c,d,u){var v=1-u;return v*v*v*a+3*v*v*u*b+3*v*u*u*c+u*u*u*d}
+    (function step(now){var u=Math.min(1,(now-t0)/FL),e=1-Math.pow(1-u,2.2),x=bz(P0[0],P1[0],P2[0],P3[0],e),y=bz(P0[1],P1[1],P2[1],P3[1],e);
+      fly.style.transform='translate('+x+'px,'+y+'px) scale('+(1.9-.9*e).toFixed(3)+')';fly.style.background=u<.18?'#FFD60A':'#fff';
+      if(now-last>32&&u<.92){last=now;for(var q=0;q<2;q++){var s=document.createElement('i'),sz=Math.random()<.3?3:2;s.style.cssText='position:absolute;left:'+(x+(Math.random()*14-7))+'px;top:'+(y+(Math.random()*14-7))+'px;width:'+sz+'px;height:'+sz+'px;border-radius:2px;background:'+(Math.random()<.25?'#FFD60A':'#fff')+';opacity:.9;transition:opacity 1.1s ease-out,transform 1.1s ease-out';tr.appendChild(s);(function(s){requestAnimationFrame(function(){s.style.opacity=0;s.style.transform='translate('+(Math.random()*10-5)+'px,'+(Math.random()*10+4)+'px)'});setTimeout(function(){s.remove()},1200)})(s)}}
+      if(u<1)requestAnimationFrame(step)})(t0)}
+  function sparks(){var sp=$('sparks');for(var k=0;k<14;k++){var a=k/14*6.28,r=90+((k*37)%60),s=document.createElement('i');s.style.cssText='position:absolute;width:'+(k%4?2:3)+'px;height:'+(k%4?2:3)+'px;border-radius:2px;background:'+(k%3?'#fff':'#FFD60A')+';--dx:'+Math.round(Math.cos(a)*r)+'px;--dy:'+Math.round(Math.sin(a)*r-40)+'px;animation:sparkIn 1.6s '+(k*.07)+'s ease-in both';sp.appendChild(s)}}
+  var ST=['Drafting a hook…','Lining up the stars','Shaping it your way','Saving room for your pause','Trimming the extra words','Warming up the prompter'];
+  var PC=[5,5,24,49,67,71];
+  ST.forEach(function(s,k){at(FL+300+k*900,function(){var e=$('dst');e.style.opacity=0;setTimeout(function(){e.textContent=s;e.style.opacity=1},reduce?0:200);$('dpc').textContent=PC[k]+'%';$('arc').setAttribute('stroke-dasharray',(PC[k]/100*214).toFixed(1)+' 214')})});
+  var end=FL+300+ST.length*900;
+  at(end,function(){$('arc').setAttribute('stroke-dasharray','214 214');$('dpc').textContent='100%';$('dtext').style.opacity=0;$('dstar').style.transform='scale(1.6)'});
+  at(end+500,function(){d.style.opacity=0;$('dpill').style.display='flex'});
+  at(end+1100,function(){d.style.display='none';stream()});
+  function stream(){
+    var tw=title.split(' '),i=0,ttl=$('ttl');ttl.innerHTML='';
+    tw.forEach(function(w,k){at(k*110,function(){if(k)ttl.appendChild(document.createTextNode(' '));var s=document.createElement('span');s.className='w';s.textContent=w;ttl.appendChild(s)})});
+    var base=tw.length*110+200,n=0,body=$('body');
+    P.forEach(function(pp,pi){var el=document.createElement('p');el.style.margin=pi<P.length-1?'0 0 28px':'0';var ws=pp.split(' ');
+      ws.forEach(function(w){var my=n++;at(base+my*28,function(){if(!el.parentNode)body.appendChild(el);if(el.childNodes.length)el.appendChild(document.createTextNode(' '));var s=document.createElement('span');s.className='w';s.textContent=w;el.appendChild(s);
+        if(my%6===0){var c=my+1;lenL.textContent=c+' WORDS · ~'+Math.floor(c/150*60/60)+':'+('0'+Math.round(c/150*60)%60).slice(-2).replace(/^(\d)$/,'0$1');$('fill').style.width=Math.min(61.5,c/166*61.5)+'%'}})})});
+    at(base+n*28+300,done);
+  }
+  function done(){T.forEach(clearTimeout);
+    if(!$('ttl').textContent)$('ttl').textContent=title;
+    if(!$('body').textContent){$('body').innerHTML=P.map(function(pp,pi){return '<p style="margin:'+(pi<P.length-1?'0 0 28px':'0')+'">'+pp+'</p>'}).join('')}
+    $('dpill').style.display='none';
+    $('strip').innerHTML='<span style="height:32px;padding:0 13px 0 8px;border-radius:16px;background:var(--fill);display:flex;align-items:center;gap:8px;font-size:15.5px;font-weight:600"><span style="width:16px;height:16px;border-radius:8px;box-shadow:inset 0 0 0 1.6px rgba(225,228,245,.6)"></span>Ready to record</span><span style="font-size:15.5px;color:var(--inkHint);overflow:hidden;text-overflow:ellipsis">Draft · Your script · 9 cues</span>';
+    lenL.textContent=words+' WORDS · ~'+dur;$('fill').style.width=(Math.min(words,166)/166*61.5)+'%';
+    $('rec').style.opacity='1';$('rec').style.pointerEvents='';
+    var b=$('body');b.setAttribute('data-tool','edit');b.onclick=function(){ph.classList.add('editing')};
+    $('plat').style.opacity=0;var to=$('dtoast');to.style.display='flex';
+    setTimeout(function(){to.style.display='none';$('plat').style.opacity=1},2600);
+  }
+  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest('#dstop'))done()});
+})();
+</script>
+<script>(function(){function f(){document.body.style.zoom=Math.min(1,(innerHeight-8)/860)}f();addEventListener('resize',f)})();</script>
+</body></html>

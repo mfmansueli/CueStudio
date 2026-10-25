@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=390">
+<title>Cue — Your first video</title>
+<style>
+/* 1.3 Chapter 2, read from source (879bee2e468a): VoyageChapter (heading, the galaxies between heading and chips, the mono line "CHOOSE ONE PLATFORM" →
+   "TIKTOK · TAP ANOTHER TO SWITCH" in gold, five chips with 8 pt spacing, the hint typed in once the light lands, 36 pt, "Continue with TikTok" or the dimmed
+   "Choose a platform"), VoyageChip (38 pt, 14.5 semibold, 8 pt dot, white once picked, ripple ×4 in 0.55 s), Platform.primary, Palette+Platform,
+   PlatformRules.json with monetization goals (TikTok 1:00–1:30, Reels 0:30–1:30, Shorts 0:30–1:00, YouTube 16:9 8:00–15:00 no safe zones, LinkedIn 4:5 0:30–1:30),
+   OnboardingParts (bar segment 2, dimmed yellow pill with quietInk title). Approximate (not read): the galaxies and the light's flight (VoyageScene, VoyageRoute). */
+body{margin:0;background:#000}*{box-sizing:border-box}
+.phone{width:390px;height:844px;position:relative;overflow:hidden;font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;color:#fff;background:#07080E;display:flex;flex-direction:column;padding:54px 0 34px}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,monospace}
+.chip{position:relative;overflow:hidden;height:38px;padding:0 13px 0 11px;border-radius:19px;display:flex;align-items:center;gap:7px;font-size:14.5px;font-weight:600;background:rgba(110,116,150,.26);color:#fff;white-space:nowrap;cursor:pointer;transition:background .15s ease-out,color .15s ease-out}
+.chip.on{background:#fff;color:#000}
+.chip i{width:8px;height:8px;border-radius:4px;flex-shrink:0}
+.gal{position:absolute;width:64px;height:64px;margin:-32px 0 0 -32px;border-radius:50%;cursor:pointer;transition:transform .3s}
+.gal.on{transform:scale(1.25)}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes rip{from{transform:scale(.4);opacity:.9}to{transform:scale(4);opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(16px);filter:blur(10px)}to{opacity:1;transform:none;filter:none}}
+.rise{animation:rise .75s cubic-bezier(.16,1,.3,1) both}
+@media (prefers-reduced-motion:reduce){.rise,.gal span{animation:none!important}}
+</style></head><body>
+<div class="phone">
+  <div id="scene" style="position:absolute;left:0;right:0;top:250px;height:330px"></div>
+  <div style="margin-top:8px;height:44px;padding:0 20px;display:flex;align-items:center;gap:5px;flex-shrink:0;position:relative">
+    <span style="width:22px;height:4px;border-radius:2px;background:rgba(255,255,255,.85)"></span><span style="width:22px;height:4px;border-radius:2px;background:#FFD60A"></span><span style="width:22px;height:4px;border-radius:2px;background:rgba(110,116,150,.26)"></span><span style="width:22px;height:4px;border-radius:2px;background:rgba(110,116,150,.26)"></span><span style="width:22px;height:4px;border-radius:2px;background:rgba(110,116,150,.26)"></span>
+  </div>
+  <div style="padding:0 20px;display:flex;flex-direction:column;gap:10px;flex-shrink:0;position:relative">
+    <div class="mono rise" style="font-size:12px;font-weight:600;letter-spacing:1.4px;color:#FFD60A">CHAPTER 2 · YOUR FIRST VIDEO</div>
+    <div class="rise" style="font-size:30px;line-height:36px;font-weight:700;letter-spacing:-.6px;animation-delay:.08s">Where will you share your videos?</div>
+    <div class="rise" style="font-size:15px;line-height:20px;color:rgba(225,228,245,.62);animation-delay:.16s">Cue sets the frame, the ideal length and the safe zones for that platform.</div>
+  </div>
+  <div style="flex:1"></div>
+  <div style="position:relative;flex-shrink:0">
+    <div id="line" class="mono" style="padding:0 20px 8px;height:26px;font-size:12px;font-weight:600;letter-spacing:1.2px;color:rgba(255,255,255,.82);white-space:nowrap">CHOOSE ONE PLATFORM</div>
+    <div id="chips" style="padding:0 20px;display:flex;flex-wrap:wrap;gap:8px"></div>
+    <div id="hint" class="mono" style="padding:5px 20px 0;min-height:19px;font-size:10px;font-weight:600;letter-spacing:1px;color:rgba(225,228,245,.6);white-space:nowrap;overflow:hidden"></div>
+  </div>
+  <div style="flex:0 0 36px"></div>
+  <div style="padding:0 16px;flex-shrink:0;position:relative">
+    <div id="go" role="button" data-tool="off" style="height:54px;border-radius:27px;background:rgba(255,214,10,.2);color:rgba(255,255,255,.8);font-size:17px;font-weight:700;display:flex;align-items:center;justify-content:center;cursor:pointer">Choose a platform</div>
+  </div>
+</div>
+<script>
+(function(){function f(){document.body.style.zoom=Math.min(1,(innerHeight-8)/860)}f();addEventListener('resize',f)})();
+(function(){
+  var P=[['TikTok','#64D2FF','9:16','1:00–1:30',1,[78,70]],['Reels','#BF5AF2','9:16','0:30–1:30',1,[300,58]],['Shorts','#FF6B5A','9:16','0:30–1:00',1,[195,40]],['YouTube','#FF9F0A','16:9','8:00–15:00',0,[110,190]],['LinkedIn','#0A84FF','4:5','0:30–1:30',1,[292,180]]];
+  var scene=document.getElementById('scene'),chips=document.getElementById('chips'),line=document.getElementById('line'),hint=document.getElementById('hint'),go=document.getElementById('go'),picked=-1,typer;
+  var you=document.createElement('div');you.style.cssText='position:absolute;left:183px;top:288px;width:24px;height:24px;border-radius:12px;background:radial-gradient(circle at 40% 38%,#fff,#F2EEFF 45%,#C9BFFF);box-shadow:0 0 20px rgba(201,191,255,.7)';scene.appendChild(you);
+  var light=document.createElement('div');light.style.cssText='position:absolute;left:0;top:0;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:4px;background:#FFF6C2;box-shadow:0 0 12px 3px rgba(255,230,128,.8);opacity:0';scene.appendChild(light);
+  var G=P.map(function(p,i){var g=document.createElement('div');g.className='gal';g.setAttribute('data-tool','gal');g.style.left=p[5][0]+'px';g.style.top=p[5][1]+'px';
+    g.innerHTML='<span style="position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,'+p[1]+'00,'+p[1]+'aa,'+p[1]+'00 40%,'+p[1]+'88 60%,'+p[1]+'00);-webkit-mask:radial-gradient(circle,#000 20%,transparent 70%);mask:radial-gradient(circle,#000 20%,transparent 70%);animation:spin '+(26+i*4)+'s linear infinite;opacity:0;transition:opacity .6s '+(1.1+i*.3)+'s"></span><span style="position:absolute;left:28px;top:28px;width:8px;height:8px;border-radius:4px;background:#fff;box-shadow:0 0 10px 2px '+p[1]+';opacity:0;transition:opacity .6s '+(1.1+i*.3)+'s"></span>';
+    g.addEventListener('click',function(){pick(i)});scene.appendChild(g);return g;});
+  requestAnimationFrame(function(){G.forEach(function(g){[].forEach.call(g.children,function(s){s.style.opacity=1})})});
+  var C=P.map(function(p,i){var c=document.createElement('span');c.className='chip';c.setAttribute('data-tool','plat');c.innerHTML='<i style="background:'+p[1]+'"></i>'+p[0];c.addEventListener('click',function(){pick(i)});chips.appendChild(c);return c;});
+  function pick(i){if(picked===i)return;picked=i;var p=P[i];
+    C.forEach(function(c,k){c.classList.toggle('on',k===i)});G.forEach(function(g,k){g.classList.toggle('on',k===i)});
+    var r=document.createElement('span');r.style.cssText='position:absolute;left:4px;top:2px;width:34px;height:34px;border-radius:17px;background:'+p[1]+'8c;animation:rip .55s ease-out forwards;pointer-events:none';C[i].appendChild(r);setTimeout(function(){r.remove()},600);
+    line.textContent=p[0].toUpperCase()+' · TAP ANOTHER TO SWITCH';line.style.color='#FFE680';
+    go.textContent='Continue with '+p[0];go.style.background='#FFD60A';go.style.color='#000';go.removeAttribute('data-tool');
+    // the light leaves 0.4 s after the tap and lands 2 s later; then the hint types in
+    light.style.transition='none';light.style.opacity=0;light.style.left='195px';light.style.top='300px';hint.textContent='';clearTimeout(typer);
+    setTimeout(function(){light.style.transition='left 2s cubic-bezier(.4,0,.2,1),top 2s cubic-bezier(.4,0,.2,1),opacity .3s';light.style.opacity=1;light.style.left=p[5][0]+'px';light.style.top=p[5][1]+'px';},400);
+    setTimeout(function(){light.style.opacity=0;var txt=p[2]+' · IDEAL '+p[3]+' · SAFE ZONES '+(p[4]?'ON':'OFF'),n=0;(function step(){n++;hint.textContent=txt.slice(0,Math.ceil(txt.length*n/34));if(n<34)typer=setTimeout(step,18);})();},2400);
+  }
+})();
+</script>
+</body></html>

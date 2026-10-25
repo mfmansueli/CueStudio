@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Cue — Logbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@500;600&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0}
+.night{background:radial-gradient(70% 30% at 20% 6%,rgba(157,140,255,0.20),rgba(157,140,255,0) 70%),#0A0B12}
+.sheet{background:radial-gradient(70% 22% at 50% 0%,rgba(157,140,255,0.16),rgba(157,140,255,0) 70%),rgba(18,20,34,0.97)}
+@keyframes ring{0%{transform:scale(1);opacity:0.55}100%{transform:scale(1.5);opacity:0}}
+.ring{animation:ring 2.4s ease-out infinite}
+@media (prefers-reduced-motion: reduce){.ring{animation:none;opacity:0.3}}
+.mint{background:radial-gradient(circle at 34% 30%,#E6FFF5 0%,#7EE0B8 40%,#23735C 85%,#0E2A22 100%)}
+.warm{background:radial-gradient(circle at 34% 30%,#FFF0CC 0%,#FFC46B 32%,#C9742F 70%,#3A1E10 100%)}
+</style>
+<style>html,body{background:#000}</style>
+</head>
+<body>
+<div class="night" style="width: 390px; height: 844px; position: relative; overflow: hidden; font-family: Geist, -apple-system, sans-serif; color: #fff">
+  <div style="position: absolute; left: 20px; top: 58px; font-size: 34px; line-height: 40px; font-weight: 700; letter-spacing: -0.02em; opacity: 0.35">Scripts</div>
+  <div style="position: absolute; inset: 0; background: rgba(0,0,0,0.45)"></div>
+
+  <div class="sheet" style="position: absolute; left: 0; right: 0; top: 52px; bottom: 0; border-radius: 30px 30px 0 0; border-top: 0.5px solid rgba(180,167,255,0.28)">
+    <div style="position: absolute; left: 50%; top: 8px; width: 38px; height: 5px; border-radius: 3px; background: rgba(225,228,245,0.3); transform: translateX(-50%)"></div>
+
+    <div style="position: absolute; left: 20px; right: 20px; top: 30px; display: flex; align-items: flex-start; justify-content: space-between">
+      <div style="display: flex; flex-direction: column; gap: 4px">
+        <div style="font-size: 28px; line-height: 34px; font-weight: 700; letter-spacing: -0.02em">Logbook</div>
+        <div style="font-size: 15px; color: rgba(225,228,245,0.62)">Catch it now. Write it later.</div>
+      </div>
+      <button style="height: 34px; padding: 0 4px; border: 0; background: transparent; color: #FFD60A; font-family: Geist, sans-serif; font-size: 16px; font-weight: 600">Done</button>
+    </div>
+
+    <div style="position: absolute; left: 0; right: 0; top: 128px; display: flex; flex-direction: column; align-items: center; gap: 12px">
+      <div style="position: relative; width: 92px; height: 92px">
+        <div class="ring" style="position: absolute; inset: 0; border-radius: 46px; border: 1.5px solid #FFD60A"></div>
+        <button aria-label="Hold to capture an idea" style="position: absolute; inset: 0; border-radius: 46px; border: 0; background: #FFD60A; display: flex; align-items: center; justify-content: center; padding: 0; box-shadow: 0 0 40px rgba(255,214,10,0.3)">
+          <svg width="26" height="34" viewBox="2.8235294117647065 0 18.352941176470587 24" aria-hidden="true" fill="none" stroke="#000" stroke-width="1.70" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"></path></svg>
+        </button>
+      </div>
+      <div style="font-size: 14px; color: rgba(225,228,245,0.62)">Hold to capture an idea</div>
+    </div>
+
+    <label style="position: absolute; left: 16px; right: 16px; top: 290px; height: 48px; border-radius: 24px; background: #1F2236; border: 0.5px solid rgba(80,86,120,0.5); display: flex; align-items: center; gap: 10px; padding: 0 16px; box-sizing: border-box">
+      <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="rgba(225,228,245,0.5)" stroke-width="2.40" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5h4l10-10a2.8 2.8 0 0 0-4-4l-10 10z"></path><path d="M13 7l4 4"></path></svg>
+      <input aria-label="Type an idea" placeholder="Or type an idea…" style="flex-grow: 1; border: 0; background: transparent; outline: none; color: #fff; font-family: Geist, sans-serif; font-size: 16px">
+    </label>
+
+    <div style="position: absolute; left: 20px; right: 20px; top: 366px; display: flex; align-items: center; justify-content: space-between; font-family: 'Geist Mono', monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.1em">
+      <div style="color: rgba(225,228,245,0.5)">WAITING · 4</div>
+      <div style="color: rgba(225,228,245,0.5)">NEWEST FIRST</div>
+    </div>
+
+    <div style="position: absolute; left: 16px; right: 16px; top: 392px; display: flex; flex-direction: column; gap: 8px">
+      <div style="border-radius: 16px; background: #1F2236; padding: 12px 14px; display: flex; align-items: center; gap: 12px">
+        <div style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 16px; background: rgba(255,214,10,0.12); display: flex; align-items: center; justify-content: center">
+          <svg width="10" height="14" viewBox="3.428571428571429 0 17.142857142857142 24" aria-hidden="true" fill="none" stroke="#FFD60A" stroke-width="2.74" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"></path></svg>
+        </div>
+        <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px">
+          <div style="font-size: 15px; font-weight: 500">Why I stopped buying coffee out</div>
+          <div style="display: flex; align-items: center; gap: 8px; font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: rgba(225,228,245,0.45)"><span>0:14 · 2H AGO</span><div class="mint" style="width: 8px; height: 8px; border-radius: 4px"></div></div>
+        </div>
+        <button style="height: 30px; padding: 0 11px; border-radius: 15px; border: 0.5px solid rgba(180,167,255,0.36); background: rgba(157,140,255,0.16); color: #E4DEFF; font-family: Geist, sans-serif; font-size: 13px; font-weight: 600; white-space: nowrap"><span style="color: #B4A7FF">✦</span> Write</button>
+      </div>
+      <div style="border-radius: 16px; background: #1F2236; padding: 12px 14px; display: flex; align-items: center; gap: 12px">
+        <div style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 16px; background: rgba(110,116,150,0.26); display: flex; align-items: center; justify-content: center">
+          <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="rgba(225,228,245,0.8)" stroke-width="2.74" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5h4l10-10a2.8 2.8 0 0 0-4-4l-10 10z"></path><path d="M13 7l4 4"></path></svg>
+        </div>
+        <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px">
+          <div style="font-size: 15px; font-weight: 500">Cold showers: myth vs. what helped</div>
+          <div style="display: flex; align-items: center; gap: 8px; font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: rgba(225,228,245,0.45)"><span>TEXT · YESTERDAY</span><div class="warm" style="width: 8px; height: 8px; border-radius: 4px"></div></div>
+        </div>
+        <button style="height: 30px; padding: 0 11px; border-radius: 15px; border: 0.5px solid rgba(180,167,255,0.36); background: rgba(157,140,255,0.16); color: #E4DEFF; font-family: Geist, sans-serif; font-size: 13px; font-weight: 600; white-space: nowrap"><span style="color: #B4A7FF">✦</span> Write</button>
+      </div>
+      <div style="border-radius: 16px; background: #1F2236; padding: 12px 14px; display: flex; align-items: center; gap: 12px">
+        <div style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 16px; background: rgba(255,214,10,0.12); display: flex; align-items: center; justify-content: center">
+          <svg width="10" height="14" viewBox="3.428571428571429 0 17.142857142857142 24" aria-hidden="true" fill="none" stroke="#FFD60A" stroke-width="2.74" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3" width="6" height="11" rx="3"></rect><path d="M5.5 11.5a6.5 6.5 0 0 0 13 0M12 18v3"></path></svg>
+        </div>
+        <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px">
+          <div style="font-size: 15px; font-weight: 500">Staying consistent on weekends</div>
+          <div style="display: flex; align-items: center; gap: 8px; font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: rgba(225,228,245,0.45)"><span>0:31 · YESTERDAY</span><div class="warm" style="width: 8px; height: 8px; border-radius: 4px"></div></div>
+        </div>
+        <button style="height: 30px; padding: 0 11px; border-radius: 15px; border: 0.5px solid rgba(180,167,255,0.36); background: rgba(157,140,255,0.16); color: #E4DEFF; font-family: Geist, sans-serif; font-size: 13px; font-weight: 600; white-space: nowrap"><span style="color: #B4A7FF">✦</span> Write</button>
+      </div>
+      <div style="border-radius: 16px; background: #1F2236; padding: 12px 14px; display: flex; align-items: center; gap: 12px">
+        <div style="width: 32px; height: 32px; flex-shrink: 0; border-radius: 16px; background: rgba(110,116,150,0.26); display: flex; align-items: center; justify-content: center">
+          <svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="rgba(225,228,245,0.8)" stroke-width="2.74" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5h4l10-10a2.8 2.8 0 0 0-4-4l-10 10z"></path><path d="M13 7l4 4"></path></svg>
+        </div>
+        <div style="flex-grow: 1; min-width: 0; display: flex; flex-direction: column; gap: 5px">
+          <div style="font-size: 15px; font-weight: 500">50/30/20 for freelancers?</div>
+          <div style="display: flex; align-items: center; gap: 8px; font-family: 'Geist Mono', monospace; font-size: 10px; font-weight: 600; letter-spacing: 0.06em; color: rgba(225,228,245,0.45)"><span>TEXT · 3 DAYS AGO</span><div class="mint" style="width: 8px; height: 8px; border-radius: 4px"></div></div>
+        </div>
+        <button style="height: 30px; padding: 0 11px; border-radius: 15px; border: 0.5px solid rgba(180,167,255,0.36); background: rgba(157,140,255,0.16); color: #E4DEFF; font-family: Geist, sans-serif; font-size: 13px; font-weight: 600; white-space: nowrap"><span style="color: #B4A7FF">✦</span> Write</button>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

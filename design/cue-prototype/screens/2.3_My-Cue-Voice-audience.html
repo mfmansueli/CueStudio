@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=390">
+<title>Cue — Audience</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&amp;family=Geist+Mono:wght@500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;background:#000}
+*{box-sizing:border-box}
+.night{width:390px;height:844px;position:relative;overflow:hidden;font-family:Geist,-apple-system,sans-serif;color:#fff;background:radial-gradient(70% 30% at 20% 6%,rgba(157,140,255,0.20),rgba(157,140,255,0) 70%),radial-gradient(55% 28% at 85% 60%,rgba(94,78,224,0.12),rgba(94,78,224,0) 70%),#0A0B12}
+.stars{background-image:radial-gradient(1.3px 1.3px at 22px 38px,rgba(255,255,255,0.75),transparent),radial-gradient(1px 1px at 88px 142px,rgba(228,222,255,0.6),transparent),radial-gradient(1.6px 1.6px at 151px 64px,rgba(255,255,255,0.55),transparent),radial-gradient(1px 1px at 203px 211px,rgba(255,255,255,0.45),transparent),radial-gradient(1.2px 1.2px at 262px 30px,rgba(228,222,255,0.7),transparent),radial-gradient(1px 1px at 318px 168px,rgba(255,255,255,0.5),transparent),radial-gradient(1.4px 1.4px at 360px 92px,rgba(255,236,170,0.55),transparent),radial-gradient(1px 1px at 45px 250px,rgba(255,255,255,0.4),transparent),radial-gradient(1px 1px at 128px 290px,rgba(228,222,255,0.45),transparent),radial-gradient(1.2px 1.2px at 290px 268px,rgba(255,255,255,0.5),transparent);background-size:390px 310px;animation:drift 160s linear infinite}
+@keyframes drift{from{background-position:0 0}to{background-position:0 310px}}
+.mono{font-family:'Geist Mono',ui-monospace,monospace}
+.scroll{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none}.scroll::-webkit-scrollbar{display:none}
+.glass{background:linear-gradient(180deg,rgba(255,255,255,0.16),rgba(255,255,255,0.06));border:0.5px solid rgba(255,255,255,0.2);box-shadow:inset 0 1px 0 rgba(255,255,255,0.25);-webkit-backdrop-filter:blur(20px) saturate(170%);backdrop-filter:blur(20px) saturate(170%)}
+button{font:inherit;color:inherit;border:0;background:none;padding:0;margin:0;cursor:pointer;text-align:inherit}
+.circ{width:44px;height:44px;border-radius:22px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ink2{color:rgba(225,228,245,0.62)}.hint{color:rgba(225,228,245,0.5)}.acc{color:#FFD60A}.ai{color:#B4A7FF}
+.sep{height:1px;background:rgba(80,86,120,0.4);margin-left:16px}
+.dim{position:absolute;inset:0;background:rgba(0,0,0,0.42)}
+.sheet{position:absolute;left:0;right:0;bottom:0;top:56px;border-radius:38px 38px 0 0;background:rgba(22,24,38,0.97);box-shadow:inset 0 0.5px 0 rgba(255,255,255,0.18);overflow:hidden}
+.grab{position:absolute;left:50%;top:6px;width:36px;height:5px;margin-left:-18px;border-radius:3px;background:rgba(235,235,245,0.3);z-index:3}
+.card{border-radius:16px;background:#1F2236;overflow:hidden}
+.radio{width:24px;height:24px;border-radius:12px;box-shadow:inset 0 0 0 2px rgba(225,228,245,0.3);flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:transparent}
+.on .radio{box-shadow:inset 0 0 0 2px #FFD60A,inset 0 0 0 5px rgba(22,24,38,1),inset 0 0 0 12px #FFD60A}.on .radio.chk{box-shadow:none;background:#FFD60A;color:#000}
+.cta{width:100%;height:54px;border-radius:27px;background:#FFD60A;color:#000;font-size:17px;font-weight:700;text-align:center}
+.link{width:100%;min-height:44px;text-align:center;font-size:15px;font-weight:600}
+.bbar{position:absolute;left:0;right:0;bottom:0;padding:24px 16px 30px;background:linear-gradient(rgba(22,24,38,0),rgba(22,24,38,0.98) 30%);display:flex;flex-direction:column;gap:4px;z-index:3}
+.q{font-size:28px;line-height:33px;font-weight:700;letter-spacing:-0.56px}
+.dimmed{opacity:.45}.rc{width:100%;min-height:112px;padding:12px;border-radius:16px;background:#1F2236;display:flex;flex-direction:column;gap:8px;text-align:left}.rc.on{background:rgba(255,214,10,0.12);box-shadow:inset 0 0 0 2px #FFD60A}
+.fchip{height:40px;padding:0 14px;border-radius:20px;background:rgba(110,116,150,0.26);font-size:15px;font-weight:500;white-space:nowrap}.fchip.on{background:#fff;color:#000;font-weight:600}
+.lvl{flex:1;min-height:44px;border-radius:22px;background:rgba(110,116,150,0.26);font-size:15px;font-weight:600;text-align:center}.lvl.on{background:#fff;color:#000}
+.rr{display:flex;align-items:center;gap:12px;width:100%;min-height:52px;padding:0 16px}
+</style>
+</head>
+<body>
+<div class="night">
+<div class="dim"></div>
+<div class="sheet">
+<div class="grab"></div>
+<div style="position:absolute;left:16px;right:16px;top:14px;height:44px;display:flex;align-items:center;gap:10px;z-index:2">
+  <button aria-label="Back" style="width:44px;height:44px;display:flex;align-items:center;justify-content:center"><svg width="11" height="18" viewBox="4.8 0 14.4 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5.5L8.5 12l6.5 6.5"/></svg></button>
+  <div style="display:flex;align-items:center;gap:10px"><span style="display:flex;gap:4px"><span style="width:26px;height:4px;border-radius:2px;background:#FFD60A"></span><span style="width:26px;height:4px;border-radius:2px;background:#FFD60A"></span><span style="width:26px;height:4px;border-radius:2px;background:#FFD60A"></span><span style="width:26px;height:4px;border-radius:2px;background:rgba(110,116,150,0.26)"></span></span><span class="mono ink2" style="font-size:11px;font-weight:600;letter-spacing:0.06em">03 / 04</span></div>
+  <div style="flex:1"></div>
+  <button class="ink2" style="font-size:17px;min-height:44px">Not now</button>
+</div>
+<div class="scroll" style="top:62px;padding:16px 16px 210px;display:flex;flex-direction:column;gap:18px">
+<div style="display:flex;flex-direction:column;gap:6px"><div class="q">Who do you talk to?</div><div class="ink2" style="font-size:15px">They decide the words Cue uses.</div></div>
+<div class="card" data-group data-cap="1"><button class="rr on" data-opt><span style="flex:1;font-size:17px">Everyday people</span><span class="radio"></span></button><div class="sep"></div><button class="rr" data-opt><span style="flex:1;font-size:17px">People who know the field</span><span class="radio"></span></button><div class="sep"></div><button class="rr" data-opt><span style="flex:1;font-size:17px">A young crowd</span><span class="radio"></span></button><div class="sep"></div><button class="rr" data-opt><span style="flex:1;font-size:17px">Professionals</span><span class="radio"></span></button></div>
+<div style="display:flex;flex-direction:column;gap:8px"><div class="ink2" style="padding:0 4px;font-size:15px;font-weight:600">How much do they already know?</div>
+<div data-group data-cap="1" style="display:flex;gap:6px"><button class="lvl on" data-opt>New to it</button><button class="lvl" data-opt>Some basics</button><button class="lvl" data-opt>Experienced</button></div></div>
+</div>
+<div class="bbar"><button class="cta">Continue</button></div>
+</div>
+</div>
+<script>
+document.querySelectorAll('[data-group]').forEach(g=>{const cap=+g.dataset.cap||1;g.querySelectorAll('[data-opt]').forEach(o=>o.addEventListener('click',()=>{if(cap===1){g.querySelectorAll('[data-opt]').forEach(x=>x.classList.toggle('on',x===o));}else{if(!o.classList.contains('on')&&g.querySelectorAll('[data-opt].on').length>=cap)return;o.classList.toggle('on');}const full=g.querySelectorAll('[data-opt].on').length>=cap&&cap>1;g.querySelectorAll('[data-opt]').forEach(x=>x.classList.toggle('dimmed',full&&!x.classList.contains('on')));const n=document.querySelector('[data-count]');if(n)n.textContent=full?('Up to '+cap+' · '+cap+' of '+cap):('Pick up to '+cap);}))});
+</script>
+</body>
+</html>
