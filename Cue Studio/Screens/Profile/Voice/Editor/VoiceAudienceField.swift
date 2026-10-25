@@ -29,7 +29,7 @@ struct VoiceAudienceField: View {
                     isSelected: { option in current.watchReasons.contains { $0.rawValue == option.id } },
                     onTap: { option in
                         guard let reason = WatchReason(rawValue: option.id) else { return }
-                        if case .limit(let message) = profile.toggleWatchReason(reason) { toast.show(message) }
+                        if case .limit(let message) = profile.toggleWatchReason(reason) { toast.show(message, kind: .problem) }
                     },
                     identifier: "voice.watch"
                 )

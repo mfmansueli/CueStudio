@@ -77,7 +77,7 @@ extension CaptionsViewModel {
             }
             translationRequest = nil
             translationState = .idle
-            toast.show(String(localized: "Translated to \(request.target.localizedName)"))
+            toast.show(String(localized: "Translated to \(request.target.localizedName)"), kind: .cue)
         } catch is CancellationError {
             guard translationRequest == request else { return }
             translationRequest = nil

@@ -207,6 +207,18 @@ struct ScriptDetailViewModelTests {
         #expect(scenario.library.script(id: script.id)?.text == script.text)
         // It is saved, and says how far it is from the length when it is not there ("Short and punchy." is three words).
         #expect(scenario.toast.message?.hasPrefix("Reels version saved · Closer to ") == true)
+        #expect(scenario.toast.kind == .cue)
+    }
+
+    @Test func aVersionThatIsStoppedLetsItsRingGo() async {
+        let scenario = makeScenario(script: TestData.script(title: "Habits", platform: .tiktok))
+        defer { scenario.defaults.tearDown() }
+        scenario.writer.error = CancellationError()
+        await scenario.viewModel.makeVersion(for: .reels)
+        #expect(scenario.toast.message == nil)
+        scenario.writer.error = ScriptAIError.unsupportedTranslation(source: "Portuguese", target: "Thai")
+        await scenario.viewModel.makeVersion(for: .reels)
+        #expect(scenario.toast.kind == .problem)
     }
 
     @Test func aVersionThatIsTheRightLengthIsJustSaved() async {

@@ -76,6 +76,11 @@ final class CustomFontStore {
         /// What went wrong with a file, by its name.
         var problems: [String: CustomFontInspector.Problem] = [:]
 
+        /// ✓ when a font came in, came back or was already here; ! when none of the files was a font Cue can use.
+        var kind: ToastKind {
+            added.isEmpty && repaired.isEmpty && alreadyHere.isEmpty ? .problem : .done
+        }
+
         var message: String {
             if let name = added.first {
                 return added.count == 1

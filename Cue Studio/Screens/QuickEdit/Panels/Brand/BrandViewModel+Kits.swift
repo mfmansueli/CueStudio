@@ -237,7 +237,7 @@ extension BrandViewModel {
     /// A library picture as the kit's logo (its own link to it).
     func logo(from asset: LibraryAsset) -> BrandKitLogo? {
         guard let name = try? kits.keepLogo(at: library.url(of: asset)) else {
-            toast.show(String(localized: "\(asset.name) is missing · remove it from your library"))
+            toast.show(String(localized: "\(asset.name) is missing · remove it from your library"), kind: .problem)
             return nil
         }
         return BrandKitLogo(fileName: name, aspect: asset.aspect, name: asset.name)

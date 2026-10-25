@@ -33,7 +33,7 @@ struct VoiceFormatsField: View {
                 options: options,
                 isSelected: { profile.isSelected($0, for: question) },
                 onTap: { option in
-                    if case .limit(let message) = profile.answer(question, with: option) { toast.show(message) }
+                    if case .limit(let message) = profile.answer(question, with: option) { toast.show(message, kind: .problem) }
                 },
                 extras: extras,
                 onTapExtra: { value in
@@ -84,7 +84,7 @@ struct VoiceFormatsField: View {
                 isSelected: { option in current.contentGoals.contains { $0.rawValue == option.id } },
                 onTap: { option in
                     guard let goal = ContentGoal(rawValue: option.id) else { return }
-                    if case .limit(let message) = profile.toggleContentGoal(goal) { toast.show(message) }
+                    if case .limit(let message) = profile.toggleContentGoal(goal) { toast.show(message, kind: .problem) }
                 },
                 identifier: "voice.goal"
             )

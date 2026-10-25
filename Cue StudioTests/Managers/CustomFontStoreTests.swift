@@ -87,7 +87,7 @@ struct CustomFontStoreTests {
         _ = await store.importFonts(from: [file])
         let again = await store.importFonts(from: [file])
         #expect(again.added.isEmpty)
-        #expect(again.alreadyHere == [family])
+        #expect(again.alreadyHere == [family] && again.kind == .done)
         // Cue's own Anton is already registered under the same PostScript name.
         let anton = try #require(Bundle.main.url(forResource: "Anton-Regular", withExtension: "ttf"))
         let bundled = await store.importFonts(from: [anton])
@@ -95,7 +95,7 @@ struct CustomFontStoreTests {
         let junk = URL.temporaryDirectory.appending(path: "junk-\(UUID().uuidString).ttf")
         try Data("not a font".utf8).write(to: junk)
         let notAFont = await store.importFonts(from: [junk])
-        #expect(notAFont.problems.values.first == .notAFont)
+        #expect(notAFont.problems.values.first == .notAFont && notAFont.kind == .problem)
         // Only the one font's file and the list are in the folder.
         let files = try FileManager.default.contentsOfDirectory(atPath: folder.path(percentEncoded: false))
         #expect(files.filter { $0 != "fonts.json" }.count == 1)
@@ -167,7 +167,7 @@ struct CustomFontStoreTests {
         #expect(reopened.families.map(\.name) == [family])
         #expect(TextOverlayFont.custom(family).isMissing)
         let again = await reopened.importFonts(from: [file])
-        #expect(again.repaired == [family])
+        #expect(again.repaired == [family] && again.kind == .done)
         #expect(again.alreadyHere.isEmpty)
         #expect(again.message == "\(family) is back · videos that use it show it again")
         #expect(reopened.drawable == [family])

@@ -32,13 +32,13 @@ struct VoyageNoticeTests {
     @Test func eachDoneStepSaysWhatComesNext() {
         let id = UUID()
         #expect(VoyageNotice.message(newlyDone: [.practice], progress: progress(practiced: true), hasCaptions: false)
-            == "✓ Rehearsed · Next: record")
+            == "Rehearsed · Next: record")
         #expect(VoyageNotice.message(newlyDone: [.record], progress: progress(takes: [TestData.take(scriptID: id)]), hasCaptions: false)
-            == "✓ Recorded · Next: pick a take")
+            == "Recorded · Next: pick a take")
         #expect(VoyageNotice.message(newlyDone: [.polish], progress: progress(takes: [captionedTake(id)]), hasCaptions: true)
-            == "✓ Captions on · Next: share")
+            == "Captions on · Next: share")
         #expect(VoyageNotice.message(newlyDone: [.share], progress: progress(shares: 1), hasCaptions: false)
-            == "✓ Your first star is out there")
+            == "Your first star is out there")
     }
 
     @Test func aNextThatIsAlreadyBehindIsNeverSaid() {
@@ -48,7 +48,7 @@ struct VoyageNoticeTests {
         #expect(VoyageNotice.message(newlyDone: [.record, .pick], progress: both, hasCaptions: false) == nil)
         // A take before ever practicing: recording counts as the practice, and "Next: pick a take" is true.
         let recorded = progress(takes: [TestData.take(scriptID: id)])
-        #expect(VoyageNotice.message(newlyDone: [.practice, .record], progress: recorded, hasCaptions: false) == "✓ Recorded · Next: pick a take")
+        #expect(VoyageNotice.message(newlyDone: [.practice, .record], progress: recorded, hasCaptions: false) == "Recorded · Next: pick a take")
     }
 
     @Test func writingPickingAndASkippedPolishPassQuietly() {

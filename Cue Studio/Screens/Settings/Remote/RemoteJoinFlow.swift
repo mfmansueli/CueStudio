@@ -42,7 +42,7 @@ struct RemoteJoinFlow: ViewModifier {
     private func join(_ text: String) {
         guard remote.join(code: text) else {
             Haptics.rigid()
-            toast.show(String(localized: "Wrong code · Try again"))
+            toast.show(String(localized: "Wrong code · Try again"), kind: .problem)
             return
         }
         presentation.openRemoteController()

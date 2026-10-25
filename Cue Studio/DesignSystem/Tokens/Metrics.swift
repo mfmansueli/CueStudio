@@ -83,8 +83,10 @@ enum Metrics {
     static let editorHandleRadius: CGFloat = 4
     /// A slider's tick.
     static let editorTickRadius: CGFloat = 1
-    /// The editor's toasts and notices over the preview (a line, two when a language needs them).
+    /// The editor's notices over the preview (Low Power Mode).
     static let editorNoticeRadius: CGFloat = 17
+    /// A toast: round ends on one line (44 pt), the same corners on two.
+    static let toastRadius: CGFloat = 22
     /// The corners of a record button's stop square.
     static let recordStopRadius: CGFloat = 7
 

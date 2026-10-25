@@ -85,7 +85,7 @@ final class VoiceQuestionSheetModel {
         }
         switch profile.answer(question, with: option) {
         case .limit(let message):
-            toast.show(message)
+            toast.show(message, kind: .problem)
         case .added, .removed, .alreadyThere:
             // Picking something is answering, even before "Save": closing the sheet then is not a dismissal.
             answeredCurrent = true
@@ -121,7 +121,7 @@ final class VoiceQuestionSheetModel {
             feedback = .message(String(localized: "Already added."))
         case .limit(let message):
             feedback = nil
-            toast.show(message)
+            toast.show(message, kind: .problem)
         case .rejected(let check):
             feedback = check.message.map(Feedback.message)
         case .suggest(let suggestion, let original):
@@ -193,7 +193,7 @@ final class VoiceQuestionSheetModel {
         if saved { answersInARow += 1 }
         if scheduler.completionToastIsDue() {
             scheduler.completionToastShown()
-            toast.show(String(localized: "✓ Cue Voice complete"))
+            toast.show(String(localized: "Cue Voice complete"))
         }
         savedStrength = strength
     }

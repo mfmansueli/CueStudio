@@ -22,7 +22,7 @@ extension LookViewModel {
     /// Paste look: asks which parts and where.
     func askToPasteLook() {
         guard copiedLook != nil else {
-            toast.show(String(localized: "Copy a clip's look first"))
+            toast.show(String(localized: "Copy a clip's look first"), kind: .problem)
             return
         }
         showsPasteLook = true

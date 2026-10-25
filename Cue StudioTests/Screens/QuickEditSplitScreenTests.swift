@@ -11,7 +11,8 @@ import Testing
 /// the video longer (what doesn't fit is shortened or left out, and said); one support at a time, and never a fourth photo or
 /// video over the same moment; a support splits, its gap
 /// closes, its start trims its part with it; the layout and each area's framing change as undo steps, the main video's
-/// framing kept per recording and apart from the whole frame's; a clip in the sequence goes in at the playhead.
+/// framing kept per recording and apart from the whole frame's; a clip in the sequence goes in at the playhead; a dragged
+/// caption sticks to the seam, and one dragged off it says so, with the way back.
 @MainActor
 @Suite("Split screen in the editor")
 struct QuickEditSplitScreenTests {
@@ -148,7 +149,7 @@ struct QuickEditSplitScreenTests {
         #expect(viewModel.edit.media.count == 3)
         #expect(viewModel.overlays.supportSpans.isEmpty)
         #expect(viewModel.document.history.past.count == steps)
-        #expect(scenario.toast.message == "3 photos or videos already show then · up to 3 at a time")
+        #expect(scenario.toast.message == "3 photos or videos already show then · up to 3 at a time" && scenario.toast.kind == .problem)
         // Starting before them and running into them: refused too.
         scenario.player.seek(to: 6)
         await viewModel.overlays.add([video(6)], as: .split)
@@ -323,5 +324,54 @@ struct QuickEditSplitScreenTests {
         #expect(segments[1].sourceStart == 2 && segments[1].sourceEnd == 7)
         #expect(viewModel.edit.editedDuration == 69)
         #expect(scenario.toast.message?.contains("longer") == true)
+    }
+
+    // MARK: - Captions on the seam
+
+    @Test func aCaptionDraggedOffTheSeamSaysSoAndOneTapPutsItBack() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 10)
+        await viewModel.overlays.add([video(4)], as: .split)
+        scenario.player.seek(to: 11)
+        let seam = try #require(EditedComposition.splitSeams(of: viewModel.edit).first?.y)
+        #expect(viewModel.edit.splitScreen.captionsOnSeam && viewModel.captions.captionY == seam)
+        // Dragged up over the support: the captions go there, and the toast says they no longer sit on the seam.
+        let steps = viewModel.document.history.past.count
+        viewModel.captions.moveCaptions(toY: 0.38)
+        #expect(!viewModel.edit.splitScreen.captionsOnSeam && viewModel.edit.captionCollection?.center?.y == 0.38)
+        #expect(viewModel.document.history.past.count == steps + 1)
+        #expect(scenario.toast.message == "Captions stay where you put them" && scenario.toast.action?.title == "On the seam")
+        // One tap puts them back on the seam while the split screen shows; elsewhere they stay where they were put.
+        scenario.toast.action?.perform()
+        #expect(viewModel.edit.splitScreen.captionsOnSeam && viewModel.captions.captionY == seam)
+        scenario.player.seek(to: 30)
+        #expect(viewModel.captions.captionY == 0.38)
+    }
+
+    @Test func aCaptionDraggedNearTheSeamSticksToItAndSitsThereAgain() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 10)
+        await viewModel.overlays.add([video(4)], as: .split)
+        scenario.player.seek(to: 11)
+        let seam = try #require(EditedComposition.splitSeams(of: viewModel.edit).first?.y)
+        viewModel.captions.moveCaptions(toY: 0.38)
+        #expect(!viewModel.edit.splitScreen.captionsOnSeam)
+        // Near the seam the caption sticks to it (the drag ticks there), and the option is on again, with a toast.
+        let near = CaptionsViewModel.snappedCaption(seam + 0.02, seam: seam)
+        #expect(near.y == seam && near.stop == seam)
+        viewModel.captions.moveCaptions(toY: seam + 0.02)
+        #expect(viewModel.edit.splitScreen.captionsOnSeam && viewModel.captions.captionY == seam)
+        #expect(scenario.toast.message == "Captions on the seam during the split screen")
+        // Its own place for the rest of the video stays where it was put.
+        #expect(viewModel.edit.captionCollection?.center?.y == 0.38)
+        // Dropped on the seam again, nothing changes.
+        let steps = viewModel.document.history.past.count
+        viewModel.captions.moveCaptions(toY: seam)
+        #expect(viewModel.document.history.past.count == steps)
+        // Without a split screen at the playhead there is no seam to stick to.
+        scenario.player.seek(to: 30)
+        #expect(viewModel.captions.splitSeamAtPlayhead == nil)
     }
 }

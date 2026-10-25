@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// Over the bottom of the preview while Low Power Mode is on (`QuickEditViewModel+LowPower`): what it costs the editor and
-/// where to turn it off, on the toast's dark fill, with ✕. It never stops anything: the edit goes on under it.
+/// where to turn it off, on the toasts' pill (`toastSurface(in:)`), with ✕. It never stops anything: the edit goes on under it.
 struct LowPowerNoticeBanner: View {
     let viewModel: QuickEditViewModel
 
@@ -45,7 +45,7 @@ struct LowPowerNoticeBanner: View {
         .padding(.leading, 14)
         .padding(.trailing, 12)
         .padding(.vertical, 12)
-        .background(Palette.Editor.toast, in: RoundedRectangle(cornerRadius: Metrics.editorNoticeRadius, style: .continuous))
+        .toastSurface(in: RoundedRectangle(cornerRadius: Metrics.editorNoticeRadius, style: .continuous))
         .accessibilityElement(children: .contain)
     }
 }

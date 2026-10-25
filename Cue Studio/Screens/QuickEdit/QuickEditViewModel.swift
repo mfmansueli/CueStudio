@@ -418,7 +418,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
                 // can't be written, the creator hears it wasn't saved.
                 let kept = saveDraft(forced: true)
                 close(keepingDraft: true)
-                toast.show(kept ? String(localized: "Couldn't save the edits · Kept as a draft") : Self.notSaved)
+                toast.show(kept ? String(localized: "Couldn't save the edits · Kept as a draft") : Self.notSaved, kind: .problem)
                 return
             }
             toast.show(String(localized: "Edits saved to this take"))
@@ -459,7 +459,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         audio.stopRecordingIfNeeded()
         let kept = saveDraft(forced: true)
         close(keepingDraft: true)
-        if !kept { toast.show(Self.notSaved) }
+        if !kept { toast.show(Self.notSaved, kind: .problem) }
     }
 
     /// Leaves without saving on the take. Changes stay in a draft that Edit picks up again; the take
@@ -475,7 +475,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         }
         let kept = saveDraft()
         close(keepingDraft: true)
-        toast.show(kept ? String(localized: "Draft saved") : Self.notSaved)
+        toast.show(kept ? String(localized: "Draft saved") : Self.notSaved, kind: kept ? .done : .problem)
     }
 
     /// Leaving the app or the screen without Done or Cancel: the draft keeps everything.

@@ -22,7 +22,28 @@ removida); só o **Reduzir Movimento** mostra o estado final. `speed` só serve 
 
 **Vidro customizado (exceções do `07` §2):** o dock de Scripts (`DockSurface`), a barra e as folhas sobre a câmera (`GlassNight`, precisam ler sobre
 vídeo), os painéis e a barra do editor, a barra de IA sobre uma seleção (o menu de edição do `UITextView` não
-reproduz a pílula violeta), o toast e a dica do My Cue Voice (`VoiceTipViewStyle`). Confirmações destrutivas: `CueActionSheet` (§17).
+reproduz a pílula violeta) e a dica do My Cue Voice (`VoiceTipViewStyle`). Confirmações destrutivas: `CueActionSheet` (§17).
+
+**Avisos (toasts)** (`ToastView`, `ToastIcon`, `ToastService`; os mesmos no app e no editor; o iOS não tem toast nativo): uma pílula **opaca** no topo
+(`Palette.Toast`, `toastSurface(in:)`: `#2B2F48`, contorno claro de 24%, 40% com Aumentar Contraste, e sombra), para ler sobre a noite do app, o céu e um
+vídeo claro; texto 15 pt semibold em até duas linhas (Dynamic Type); o botão (**Undo**, **Settings**, **Write it**) é amarelo com texto preto. À esquerda,
+o ícone do tipo (`ToastKind`), escolhido em cada chamada:
+- **✓ verde** (`.done`, o padrão): o que o criador fez está feito, ou já estava ("Duplicated", "Every cut already has it", todo `sayUndoable` do editor).
+  Sem vibração: o toque do criador já teve a dele.
+- **★ amarela** (`.cue`): o Cue decidiu por ele: reescritas, versões e traduções, rascunho pronto, gancho, cues do Shape, legendas feitas, cortes no ritmo,
+  pausas do Clean up, Auto, rastreamento, aprender a voz. Toque leve no auge da estrela.
+- **! laranja** (`.problem`): nada aconteceu, ou só parte, e por quê ("Move playhead onto the clip", limites, permissões, falhas da IA, da gravação e da
+  exportação, "Interrupted · Take saved"). Vibração de alerta.
+- **Anel girando** (`.working`, `showWorking`/`endWorking`): extrair o som, congelar o quadro, a versão para outra rede, importar vídeo. O aviso seguinte
+  (o resultado ou o porquê) toma o lugar na **mesma pílula**: o anel vira o novo ícone e o texto cruza, sem sair e voltar; terminou bem, vibração de
+  sucesso; se o trabalho termina sem nada a dizer (parado, a revisão abriu), o anel some; nunca passa de 60 s.
+
+Cada ícone faz um gesto uma vez, ao chegar: o disco cresce de 50% com um leve exagero (0,32 s); o ✓ se desenha (Draw On do sistema, a partir de 0,2 s);
+a ★ entra girando de −40° e 40% até 118% e assenta (0,45 s, a partir de 0,1 s); o ! balança preso embaixo (−16°, 12°, −6°, 0,45 s, a partir de 0,2 s);
+tudo termina até cerca de 0,65 s, e a vibração cai no mesmo instante. Reduzir Movimento: os ícones chegam parados; o anel continua (diz que o trabalho
+segue). Medido em `PaletteContrastTests.theToastReadsOverAnyScreen`: texto 13,1:1, Undo 14,9:1 (o amarelo na pílula, 9,3:1), discos na pílula 5,9 a
+9,3:1, símbolo preto no disco 9,5 a 14,9:1, contorno no fundo do app 3,2:1. A pílula de trabalho do editor (`EditorWorkPill`, com o anel de progresso
+amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mesma pílula.
 
 ## 2. Scripts (3.1, 3.2) — o dock
 
@@ -909,8 +930,8 @@ nem faixa (o dono pediu algo orgânico).
   **Edit**; depois a do treino com a duração: **Try it**), na revisão (**Compare** com mais de um take), no editor acima das ferramentas (**Add captions** ·
   Skip) e no "Share to universe". **"★ 2 OF 6"** abre `VoyageStepsSheet` (feitos, próximo com Start, seguintes, Hide guide).
 - **O ✕ vale pela sessão** (a do primeiro rascunho, uma vez só).
-- **Aviso de passo feito** (`VoyageAnnouncer` em `MainView`, `VoyageNotice`): toast com toque suave ao sair da câmera e da revisão, sem outro toast na tela:
-  "✓ Rehearsed · Next: record", "✓ Recorded · Next: pick a take", "✓ Captions on · Next: share", "✓ Your first star is out there". Só quando o "Next" é
+- **Aviso de passo feito** (`VoyageAnnouncer` em `MainView`, `VoyageNotice`): toast ✓ com toque suave ao sair da câmera e da revisão, sem outro toast na
+  tela: "Rehearsed · Next: record", "Recorded · Next: pick a take", "Captions on · Next: share", "Your first star is out there". Só quando o "Next" é
   verdade; cada passo uma vez.
 - **Telemetria** (`VoyageTelemetryEvent`, `cue_voyage`, só com "Help improve Cue"): dica vista, botão, ✕, passo feito; nunca texto.
 - Vistas do Cue, não TipKit (a ordem e o estado são da viagem; TipKit duplicaria e atrapalha os testes).
@@ -961,7 +982,8 @@ Mais expressão nas cenas de descoberta e celebração, discrição no roteiro, 
 - **Celebrações** (`StoryCover`, `CueMotion.storyIn/storyOut`): a primeira estrela e o marco entram em fade sobre a revisão do take (0,35 s, curva da luz) e saem
   em 0,25 s; de "Ready to travel" para o send-off a capa troca sem descer e subir. Depois da história, primeira estrela, send-off e marco desenham a 30 fps e
   param com o app inativo.
-- **Toasts** (`AnyTransition.toast`, app e editor): entram descendo 8 pt em 0,25 s e saem em fade de 0,2 s (`motion/README.md`).
+- **Toasts** (`AnyTransition.toast`, app e editor): entram descendo 8 pt em 0,25 s e saem em fade de 0,2 s (`motion/README.md`); o ícone faz o gesto do
+  seu tipo (§1, Avisos), e o fim de um trabalho troca ícone e texto na mesma pílula.
 - **Ícones que trocam** (`symbolSwap`, `CueMotion.symbolSwap`): play/pause do gravador e do editor, o olho dos cues, o microfone do Logbook, a conexão do
   controle remoto e a estrela de melhor take (com um pequeno pulo) usam o `replace` do sistema.
 - **Chips e cartões** (`CuePressButtonStyle`, `.cuePress` / `.cuePressCard`): chips de filtro (Scripts, Takes, voz, blocos, painéis do editor) e cartões que são
@@ -1561,8 +1583,8 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   (`QuickEditViewModel+FrameStep`); somem com texto muito grande.
 - **Barra de ferramentas:** principal com **Adjust** (vídeo inteiro) ao lado de Filters; o esmaecido só no lado onde há mais ferramentas; "Add
   line" adiciona uma linha na agulha; Text › **Motion** (antes "Animation"); Subheading e Hook com o símbolo do papel.
-- **Avisos** (`EditorPart+Toasts`): dividir, duplicar, apagar e adicionar dizem o quê e onde ("Clip 2 deleted", "Photo added at
-  00:07.0") e trazem **Undo**.
+- **Avisos** (`EditorPart+Toasts`, o toast do app, §1): dividir, duplicar, apagar e adicionar dizem o quê e onde ("Clip 2 deleted", "Photo added at
+  00:07.0"), com ✓ e **Undo**; o que não pode acontecer diz por quê, com !.
 - **Dois toques** num texto ou legenda no vídeo abrem as palavras com o teclado (Text style ou a linha em Captions).
 - **Folhas:** Translate captions fecha com o X do sistema e escolhe o idioma numa lista com check; Auto captions escolhe o idioma falado numa
   linha que abre a lista no lugar (Automatic primeiro).
@@ -1906,7 +1928,9 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
 - **Legendas**: continuam desenhadas por cima de tudo e no tempo da fala. **On the seam during the split screen** (Caption style › Format,
   `SplitScreen.captionsOnSeam`, ligada ao criar a primeira tela dividida, como nos vídeos desse formato) centraliza na emenda as linhas ditas
   enquanto um apoio aparece (cima/baixo; lado a lado não tem emenda na
-  horizontal), dentro das margens seguras; o resto fica onde o criador pôs, e arrastar a legenda para fora da emenda desliga a opção. **Caption its
+  horizontal), dentro das margens seguras; o resto fica onde o criador pôs. Com a tela dividida na agulha, a legenda arrastada **gruda na emenda** (a
+  3% dela, com o toque de encaixe) e a opção liga, com o toast ✓ "Captions on the seam during the split screen"; solta longe dela, a opção desliga e a
+  legenda fica onde caiu (no vídeo todo), com o toast "Captions stay where you put them" e o botão **On the seam**, que a põe de volta. **Caption its
   voice** (painel › Sound, `MediaOverlay.captionsItsVoice`) legenda a fala do próprio apoio, ouvido sozinho do seu arquivo pelo mesmo transcritor
   (nunca a mistura das duas vozes, que o reconhecimento de fala não separa): as linhas dele aparecem onde ele aparece e seguem os cortes como ele;
   as da fala principal sob ele ficam escondidas, não apagadas, e voltam quando a opção desliga. Uma voz legendada por vez.

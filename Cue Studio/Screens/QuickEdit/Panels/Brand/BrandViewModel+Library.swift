@@ -26,7 +26,7 @@ extension BrandViewModel {
                 session.importedFiles.insert(media.fileName)
                 picks.append(MediaPick(media))
             } catch {
-                toast.show(String(localized: "\(asset.name) is missing · remove it from your library"))
+                toast.show(String(localized: "\(asset.name) is missing · remove it from your library"), kind: .problem)
             }
         }
         return picks
@@ -41,7 +41,7 @@ extension BrandViewModel {
             change { snapshot in Self.placeLogo(media, corner: .topRight, width: BrandKitLogo.defaultWidth, in: &snapshot, edit: edit) }
             sayUndoable(String(localized: "\(asset.name) added over the whole video"))
         } catch {
-            toast.show(String(localized: "\(asset.name) is missing · remove it from your library"))
+            toast.show(String(localized: "\(asset.name) is missing · remove it from your library"), kind: .problem)
         }
     }
 
@@ -66,7 +66,7 @@ extension BrandViewModel {
                 break
             } catch {
                 noteFailure(error, "addToLibrary")
-                toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
+                toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")), kind: .problem)
             }
         }
         sayAdded(added, already: already)
@@ -92,7 +92,7 @@ extension BrandViewModel {
                 }
             } catch {
                 noteFailure(error, "addFileToLibrary")
-                toast.show(String(localized: "Can't add this file"))
+                toast.show(String(localized: "Can't add this file"), kind: .problem)
             }
         }
         sayAdded(added, already: already)
@@ -109,7 +109,7 @@ extension BrandViewModel {
             }
         } catch {
             noteFailure(error, "saveToLibrary")
-            toast.show(String(localized: "Can't add this file"))
+            toast.show(String(localized: "Can't add this file"), kind: .problem)
         }
     }
 

@@ -85,7 +85,7 @@ extension PrompterViewModel {
             speechUnavailable = reason
             if noticedSpeechUnavailable != reason {
                 noticedSpeechUnavailable = reason
-                toast.show(reason.message)
+                toast.show(reason.message, kind: .problem)
             }
             // The practice script stops saying the teleprompter follows the voice.
             matchPracticeScript()

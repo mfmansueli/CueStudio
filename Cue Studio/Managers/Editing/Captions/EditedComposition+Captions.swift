@@ -52,8 +52,12 @@ nonisolated extension EditedComposition {
     /// Where the captions sit on the seam (`SplitScreen.captionsOnSeam`): each support's pieces with its layout's seam, as a
     /// fraction of the frame from the top. None side by side (the seam runs down the frame) or with the option off.
     static func seamSpans(of edit: TakeEdit) -> [(span: TimeSpan, y: Double)] {
-        guard edit.splitScreen.captionsOnSeam else { return [] }
-        return edit.placedMedia(in: edit.timeline).flatMap { entry -> [(span: TimeSpan, y: Double)] in
+        edit.splitScreen.captionsOnSeam ? splitSeams(of: edit) : []
+    }
+
+    /// Every seam across the frame while a split screen shows, option on or off: where a dragged caption sticks.
+    static func splitSeams(of edit: TakeEdit) -> [(span: TimeSpan, y: Double)] {
+        edit.placedMedia(in: edit.timeline).flatMap { entry -> [(span: TimeSpan, y: Double)] in
             guard entry.media.layout == .split else { return [] }
             let layout = edit.splitScreen.layout(id: entry.media.splitLayoutID)
             guard layout.arrangement == .stacked else { return [] }

@@ -94,7 +94,7 @@ struct VoiceTopicsField: View {
 
     private func toggle(_ topic: VoiceTopicRef) {
         Haptics.selection()
-        if case .limit(let message) = profile.toggleTopic(topic) { toast.show(message) }
+        if case .limit(let message) = profile.toggleTopic(topic) { toast.show(message, kind: .problem) }
     }
 
     // MARK: - Their own
@@ -135,7 +135,7 @@ struct VoiceTopicsField: View {
                 options: suggested,
                 isSelected: { held.contains($0.id) },
                 onTap: { option in
-                    if case .limit(let message) = profile.toggleSubtopic(option.id, of: topic) { toast.show(message) }
+                    if case .limit(let message) = profile.toggleSubtopic(option.id, of: topic) { toast.show(message, kind: .problem) }
                 },
                 extras: own,
                 onTapExtra: { _ = profile.toggleSubtopic($0, of: topic) },

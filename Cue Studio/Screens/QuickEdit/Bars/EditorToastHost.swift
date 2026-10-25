@@ -5,64 +5,27 @@
 
 import SwiftUI
 
-/// The editor's toasts: a line (two when a language needs them, so an instruction is never cut) on a dark pill with a small
-/// yellow star, at the top of the preview, for 2 s. They confirm an action or say why one can't happen ("Move the playhead
-/// inside the clip"); a tap lets one go early. One with an action ("8 lines deleted" · Undo) shows
-/// its button at the end of the pill and stays 4 s (`ToastService`).
+/// The editor's toasts: the app's toast (`ToastView`, with its kind's icon) at the top of the preview, for 2 s. They confirm an
+/// action or say why one can't happen ("Move the playhead inside the clip"); a tap lets one go early. One with an action
+/// ("8 lines deleted" · Undo) shows its button at the end of the pill and stays 4 s (`ToastService`).
 struct EditorToastHost: ViewModifier {
     @Environment(ToastService.self) private var toast
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    /// The message and its action, growing with the text size.
-    @ScaledMetric(relativeTo: .footnote) private var messageSize: CGFloat = 13.5
 
     func body(content: Content) -> some View {
         content
             .overlay(alignment: .top) {
                 if let message = toast.message {
-                    HStack(spacing: 6) {
-                        HStack(spacing: 6) {
-                            Image(systemName: "star.fill")
-                                .font(.editorGlyph(EditorGlyph.mark, weight: .bold))
-                                .foregroundStyle(Palette.accText)
-                                .accessibilityHidden(true)
-                            Text(message)
-                                .font(.system(size: messageSize, weight: .semibold))
-                                .lineLimit(2)
-                                .minimumScaleFactor(0.85)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
-                        .accessibilityElement(children: .combine)
-                        .accessibilityIdentifier("toast")
-                        if let action = toast.action {
-                            Button {
-                                action.perform()
-                                toast.dismiss()
-                            } label: {
-                                Text(action.title)
-                                    .font(.system(size: messageSize, weight: .semibold))
-                                    .foregroundStyle(Palette.accText)
-                                    .padding(.horizontal, 10)
-                                    .frame(height: 26)
-                                    .background(Palette.accSoft, in: Capsule())
-                                    .frame(minHeight: Metrics.hitTarget)
-                                    .contentShape(Rectangle())
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityIdentifier("toast.action")
-                        }
+                    ToastView(message: message, kind: toast.kind, action: toast.action) {
+                        toast.action?.perform()
+                        toast.dismiss()
                     }
-                    .padding(.leading, 14)
-                    .padding(.trailing, toast.action == nil ? 14 : 4)
-                    .padding(.vertical, 4)
-                    .frame(minHeight: 34)
-                    // A pill on one line; on two, the same round ends.
-                    .background(Palette.Editor.toast, in: RoundedRectangle(cornerRadius: Metrics.editorNoticeRadius, style: .continuous))
                     .padding(.horizontal, 16)
                     .padding(.top, 10)
-                    .id(message)
+                    // Work under way that ends keeps its pill (`ToastService.pill`): only a new toast comes in anew.
+                    .id(toast.pill)
                     .transition(.toast(reduceMotion: reduceMotion))
                     .onTapGesture { toast.dismiss() }
-                    .accessibilityElement(children: .contain)
                 }
             }
             .animation(reduceMotion ? .easeOut(duration: 0.15) : .easeOut(duration: 0.2), value: toast.message)

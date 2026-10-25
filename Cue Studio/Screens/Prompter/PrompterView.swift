@@ -206,7 +206,7 @@ struct PrompterView: View {
 
     private func pasteAndAttach() {
         guard let text = importer.clipboardText() else {
-            toast.show(String(localized: "Copy your script first"))
+            toast.show(String(localized: "Copy your script first"), kind: .problem)
             return
         }
         let script = library.create(

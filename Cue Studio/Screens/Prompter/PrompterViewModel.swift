@@ -550,7 +550,7 @@ final class PrompterViewModel {
             return
         }
         guard camera.status == .running else {
-            toast.show(String(localized: "The camera isn't ready"))
+            toast.show(String(localized: "The camera isn't ready"), kind: .problem)
             watchOutcome = .failedStart
             return
         }
@@ -606,7 +606,7 @@ final class PrompterViewModel {
             try await camera.startRecording()
         } catch {
             AudioRoute.allowHapticsDuringRecording(true)
-            toast.show(error.localizedDescription)
+            toast.show(error.localizedDescription, kind: .problem)
             watchOutcome = .failedStart
             watch?.publishCurrent()
             return
@@ -682,7 +682,7 @@ final class PrompterViewModel {
             watch?.publishCurrent()
         }
         guard let clip else {
-            toast.show(String(localized: "The take couldn't be saved"))
+            toast.show(String(localized: "The take couldn't be saved"), kind: .problem)
             watchOutcome = .failedSave
             return
         }
@@ -694,10 +694,10 @@ final class PrompterViewModel {
                 reviewStartsWithPick = shouldPickBest(after: take)
                 reviewingTake = take
             }
-            if let message { toast.show(message) }
+            if let message { toast.show(message, kind: .problem) }
             watchOutcome = .saved(take: take.number, seconds: clip.duration)
         } catch {
-            toast.show(String(localized: "The take couldn't be saved"))
+            toast.show(String(localized: "The take couldn't be saved"), kind: .problem)
             watchOutcome = .failedSave
         }
     }
@@ -755,7 +755,7 @@ final class PrompterViewModel {
         let requested = session.camera
         if let active = camera.activeLens, active != requested.lens, noticedLens != requested.lens {
             noticedLens = requested.lens
-            toast.show(String(localized: "No \(requested.lens.label) · Using \(active.label)"))
+            toast.show(String(localized: "No \(requested.lens.label) · Using \(active.label)"), kind: .problem)
             return
         }
         let microphone = MicrophoneChoice(id: requested.microphoneID, name: requested.microphoneName)
@@ -763,6 +763,6 @@ final class PrompterViewModel {
         microphones.refreshInputs()
         guard let notice = MicrophoneFallback.notice(for: microphone, available: microphones.inputs, inUse: microphones.inputInUse) else { return }
         noticedMicrophone = microphone
-        toast.show(notice)
+        toast.show(notice, kind: .problem)
     }
 }

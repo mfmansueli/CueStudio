@@ -214,7 +214,7 @@ struct MediaLibrarySection: View {
 
     private func tap(_ asset: LibraryAsset, status: LibraryFileReader.Status) {
         guard status == .ready else {
-            viewModel.toast.show(String(localized: "\(asset.name) is missing · remove it from your library"))
+            viewModel.toast.show(String(localized: "\(asset.name) is missing · remove it from your library"), kind: .problem)
             return
         }
         Haptics.selection()

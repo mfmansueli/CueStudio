@@ -5,9 +5,9 @@
 
 import SwiftUI
 
-/// Says when a step of the first voyage gets done, as a toast ("✓ Recorded · Next: pick a take"): once the creator is back from the
+/// Says when a step of the first voyage gets done, as a ✓ toast ("Recorded · Next: pick a take"): once the creator is back from the
 /// camera and the review (nothing is said over the teleprompter while they read), when no other toast is showing, with a soft tap.
-/// The first video shared says "✓ Your first star is out there" and ends the voyage. Lives once, in `MainView`.
+/// The first video shared says "Your first star is out there" and ends the voyage. Lives once, in `MainView`.
 struct VoyageAnnouncer: View {
     @Environment(FirstVoyageService.self) private var voyage
     @Environment(PresentationService.self) private var presentation

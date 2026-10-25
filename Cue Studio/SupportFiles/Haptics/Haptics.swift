@@ -7,7 +7,7 @@ import UIKit
 
 /// The app's haptics, one per meaning, so every screen feels the same: picking and snapping
 /// (selection), applying a panel (light), deleting (rigid), starting and stopping a recording
-/// (medium), something arriving (success). The system skips them where there is no Taptic Engine
+/// (medium), something arriving (success), something that didn't happen (warning). The system skips them where there is no Taptic Engine
 /// (and in tests). Settings › Personalize › Haptics turns all of them off (`isEnabled`).
 @MainActor
 enum Haptics {
@@ -73,9 +73,15 @@ enum Haptics {
         lightGenerator.impactOccurred()
     }
 
-    /// A world is born, a video arrives, the first star, a milestone, a permission granted.
+    /// A world is born, a video arrives, the first star, a milestone, a permission granted, work that ends well.
     static func success() {
         guard isEnabled else { return }
         notificationGenerator.notificationOccurred(.success)
+    }
+
+    /// Something didn't happen, and a toast says why (its "!").
+    static func warning() {
+        guard isEnabled else { return }
+        notificationGenerator.notificationOccurred(.warning)
     }
 }

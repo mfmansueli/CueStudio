@@ -189,7 +189,7 @@ final class ScriptDetailViewModel {
         library.update(scriptID) { $0.text = ScriptTextEditing.replacingOpening(of: $0.text, with: hook) }
         syncPage()
         sheet = nil
-        toast.show(String(localized: "Hook replaced · ~\(DurationText.short(ReadTime.seconds(for: hook)))"))
+        toast.show(String(localized: "Hook replaced · ~\(DurationText.short(ReadTime.seconds(for: hook)))"), kind: .cue)
     }
 
     /// "Pick a new hook": the model writes three for this script when it can; otherwise the
@@ -241,7 +241,7 @@ final class ScriptDetailViewModel {
             }
             adopt(
                 ScriptTextEditing.addingDisclosure(to: workingText, language: script?.language),
-                message: String(localized: "Disclosure added up front")
+                message: String(localized: "Disclosure added up front"), kind: .done
             )
         case .translate:
             // The target is always the creator's pick; there is no language to translate into by default.
@@ -253,8 +253,8 @@ final class ScriptDetailViewModel {
     }
 
     /// What a tool wrote becomes the script's words, saved at once (a new version when takes were made
-    /// from the old ones). The toast says what happened, and its Undo puts the old words back.
-    private func adopt(_ text: String, message: String) {
+    /// from the old ones). The toast says what happened (Cue's ★ for its own writing), and its Undo puts the old words back.
+    private func adopt(_ text: String, message: String, kind: ToastKind = .cue) {
         guard let script else { return }
         let before = (text: script.text, version: script.version)
         let bumpsVersion = !scriptTakes.isEmpty
@@ -264,7 +264,7 @@ final class ScriptDetailViewModel {
         }
         syncPage()
         sheet = nil
-        toast.show(message, duration: .seconds(4), action: ToastAction(title: String(localized: "Undo")) { [weak self] in
+        toast.show(message, kind: kind, duration: .seconds(4), action: ToastAction(title: String(localized: "Undo")) { [weak self] in
             guard let self else { return }
             library.update(scriptID) { script in
                 script.text = before.text
@@ -278,12 +278,12 @@ final class ScriptDetailViewModel {
     private func rewrite(with tool: ScriptTool) async {
         guard script != nil else { return }
         if let reason = drafting.reason {
-            toast.show(reason)
+            toast.show(reason, kind: .problem)
             return
         }
         let before = workingText
         guard ReadTime.wordCount(in: before) > 0 else {
-            toast.show(String(localized: "Write a few lines. Cue builds on them."))
+            toast.show(String(localized: "Write a few lines. Cue builds on them."), kind: .problem)
             return
         }
         runningTool = tool
@@ -295,7 +295,7 @@ final class ScriptDetailViewModel {
                 adopt(result.text, message: notice.message)
             } else {
                 sheet = nil
-                toast.show(notice.message)
+                toast.show(notice.message, kind: notice.kind)
             }
         } catch {
             showFailure(error)
@@ -306,11 +306,11 @@ final class ScriptDetailViewModel {
         guard let script else { return }
         // Apple Intelligence itself is told here; a language of the pair it can't take is named by the translation (both languages).
         if let reason = writer.drafting(in: []).reason {
-            toast.show(reason)
+            toast.show(reason, kind: .problem)
             return
         }
         guard ReadTime.wordCount(in: workingText) > 0 else {
-            toast.show(String(localized: "Write a few lines. Cue builds on them."))
+            toast.show(String(localized: "Write a few lines. Cue builds on them."), kind: .problem)
             return
         }
         runningTool = .translate
@@ -320,7 +320,7 @@ final class ScriptDetailViewModel {
             context.language = language
             let result = try await writer.rewriteReported(workingText, with: .translate, context: context)
             guard !result.isUntouched else {
-                toast.show(String(localized: "Couldn’t draft it · Try again"))
+                toast.show(String(localized: "Couldn’t draft it · Try again"), kind: .problem)
                 return
             }
             // A translation is a new script in the new language; the original stays as written.
@@ -334,7 +334,7 @@ final class ScriptDetailViewModel {
             if result.leftAsWritten > 0 {
                 message += " · " + String(localized: "\(result.leftAsWritten) of \(result.parts) parts left as written")
             }
-            toast.show(message)
+            toast.show(message, kind: .cue)
         } catch {
             showFailure(error)
         }
@@ -347,12 +347,16 @@ final class ScriptDetailViewModel {
         guard let script, versionInProgress == nil else { return }
         // Told before "Drafting the … version…", not after it.
         if let reason = drafting.reason {
-            toast.show(reason)
+            toast.show(reason, kind: .problem)
             return
         }
         versionInProgress = platform
-        defer { versionInProgress = nil }
-        toast.show(String(localized: "Drafting the \(platform.label) version…"))
+        // The ring turns while the version is written; what came of it takes its place, and a stop lets it go.
+        let work = toast.showWorking(String(localized: "Drafting the \(platform.label) version…"))
+        defer {
+            versionInProgress = nil
+            toast.endWorking(work)
+        }
         do {
             var context = rewriteContext
             context.platform = platform
@@ -369,7 +373,7 @@ final class ScriptDetailViewModel {
             if let length = RewriteNotice.lengthNote(words: ReadTime.wordCount(in: result.text), idealRange: range) {
                 message += " · " + length
             }
-            toast.show(message)
+            toast.show(message, kind: .cue)
         } catch {
             showFailure(error)
         }
@@ -378,7 +382,7 @@ final class ScriptDetailViewModel {
     /// An AI tool failed: the reason in Cue's words. Stopping it is not a failure and says nothing.
     private func showFailure(_ error: any Error) {
         guard !(error is CancellationError) else { return }
-        toast.show(error.localizedDescription)
+        toast.show(error.localizedDescription, kind: .problem)
     }
 
     private func doneMessage(for tool: ScriptTool) -> String {
@@ -419,7 +423,7 @@ final class ScriptDetailViewModel {
     func confirmNewFolder() {
         guard let name = library.createFolder(named: newFolderName) else {
             if !newFolderName.trimmingCharacters(in: .whitespaces).isEmpty {
-                toast.show(String(localized: "That folder already exists"))
+                toast.show(String(localized: "That folder already exists"), kind: .problem)
             }
             return
         }

@@ -336,14 +336,14 @@ final class TakeReviewViewModel {
         case PhotoLibraryError.notAuthorized:
             photosDenied = true
         case ExportPreflightError.notEnoughSpace(let megabytes):
-            toast.show(String(localized: "Not enough space on this iPhone. Free about \(megabytes) MB and try again."))
+            toast.show(String(localized: "Not enough space on this iPhone. Free about \(megabytes) MB and try again."), kind: .problem)
         case BackgroundExportError.stoppedBySystem, VideoExportError.interrupted:
-            toast.show(String(localized: "iOS stopped the export · Try again"))
+            toast.show(String(localized: "iOS stopped the export · Try again"), kind: .problem)
         case VideoExportError.tooWarm:
             // Follow face or Stabilize needed an analysis the iPhone was too hot to finish; it goes on from there next time.
-            toast.show(VideoExportError.tooWarm.localizedDescription)
+            toast.show(VideoExportError.tooWarm.localizedDescription, kind: .problem)
         default:
-            toast.show(String(localized: "Couldn't export · Try again"))
+            toast.show(String(localized: "Couldn't export · Try again"), kind: .problem)
         }
     }
 
@@ -482,7 +482,7 @@ final class TakeReviewViewModel {
                     _ = try? await saveCoverIfChosen()
                 } catch PhotoLibraryError.notAuthorized {
                     // The networks can take the file without Photos: the queue goes on, and the first network that gets it counts the export.
-                    toast.show(String(localized: "Photos is off · the video wasn't saved there"))
+                    toast.show(String(localized: "Photos is off · the video wasn't saved there"), kind: .problem)
                 }
             }
             phase = .idle
@@ -574,11 +574,11 @@ final class TakeReviewViewModel {
             toast.show(String(localized: "Sharing cancelled"))
         case .unavailable:
             // Not there after all (or it wouldn't open): the share sheet takes the file.
-            toast.show(String(localized: "\(label) isn’t on this iPhone · Pick another app"))
+            toast.show(String(localized: "\(label) isn’t on this iPhone · Pick another app"), kind: .problem)
             presentActivity(for: operation, destination: destination)
         case .failed:
             phase = .failed
-            toast.show(String(localized: "\(label) didn’t take the video"))
+            toast.show(String(localized: "\(label) didn’t take the video"), kind: .problem)
         }
     }
 
@@ -609,7 +609,7 @@ final class TakeReviewViewModel {
             phase = .cancelled
         case .failed:
             phase = .failed
-            toast.show(String(localized: "Couldn’t share · Try again"))
+            toast.show(String(localized: "Couldn’t share · Try again"), kind: .problem)
         }
     }
 

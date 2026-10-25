@@ -55,8 +55,12 @@ final class TakesViewModel {
     func importVideo(_ item: PhotosPickerItem) async {
         guard !isImporting else { return }
         isImporting = true
-        defer { isImporting = false }
-        toast.show(String(localized: "Importing…"))
+        // The ring turns while the video comes in; the review it opens in (or why it couldn't) ends it.
+        let work = toast.showWorking(String(localized: "Importing…"))
+        defer {
+            isImporting = false
+            toast.endWorking(work)
+        }
         do {
             let video = try await importer.importVideo(item) { _ in }
             let take = try takes.importVideo(
@@ -67,7 +71,7 @@ final class TakesViewModel {
         } catch is CancellationError {
             // Stopped: nothing to say.
         } catch {
-            toast.show(String(localized: "Can't import this video"))
+            toast.show(String(localized: "Can't import this video"), kind: .problem)
         }
     }
 

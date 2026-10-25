@@ -37,7 +37,7 @@ extension ClipsViewModel {
             // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
             noteFailure(error, "replaceClip")
-            toast.show(String(localized: "Can't add this file"))
+            toast.show(String(localized: "Can't add this file"), kind: .problem)
         }
     }
 
@@ -49,12 +49,12 @@ extension ClipsViewModel {
         }
         guard imported.kind == .video, let duration = imported.duration else {
             EditMediaFiles.remove([imported.fileName])
-            toast.show(String(localized: "Pick a video first"))
+            toast.show(String(localized: "Pick a video first"), kind: .problem)
             return
         }
         guard duration >= EditTimeline.minimumClipDuration else {
             EditMediaFiles.remove([imported.fileName])
-            toast.show(String(localized: "Video too short to add"))
+            toast.show(String(localized: "Video too short to add"), kind: .problem)
             return
         }
         importedFiles.insert(imported.fileName)

@@ -21,7 +21,7 @@ extension BrandViewModel {
     func importFonts(_ urls: [URL], then pick: ((TextOverlayFont) -> Void)? = nil) async {
         guard !urls.isEmpty else { return }
         let outcome = await fonts.importFonts(from: urls)
-        toast.show(outcome.message)
+        toast.show(outcome.message, kind: outcome.kind)
         // A family whose file came back: the preview draws its words in it again.
         if !outcome.repaired.isEmpty { player.redraw() }
         if let first = outcome.added.first ?? outcome.repaired.first { pick?(.custom(first)) }

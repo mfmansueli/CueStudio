@@ -15,16 +15,16 @@ struct ToastHost: ViewModifier {
         content
             .overlay(alignment: .top) {
                 if let message = toast.message {
-                    ToastView(message: message, action: toast.action) {
+                    ToastView(message: message, kind: toast.kind, action: toast.action) {
                         toast.action?.perform()
                         toast.dismiss()
                     }
                     .padding(.horizontal, Metrics.gutter)
                     .padding(.top, 8)
-                    .id(message)
+                    // Work under way that ends keeps its pill (`ToastService.pill`): only a new toast comes in anew.
+                    .id(toast.pill)
                     .transition(.toast(reduceMotion: reduceMotion))
                     .onTapGesture { toast.dismiss() }
-                    .accessibilityIdentifier("toast")
                 }
             }
             .animation(.spring(duration: 0.3), value: toast.message)

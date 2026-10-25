@@ -24,21 +24,21 @@ struct RewriteNoticeTests {
 
     @Test func shorterSaysHowMuchShorter() {
         let notice = Self.notice(.shorterAndDirect, before: Self.words(100), after: Self.words(60))
-        #expect(notice.changesScript)
+        #expect(notice.changesScript && notice.kind == .cue)
         #expect(notice.message == "Done it · 100 → 60 words")
     }
 
     @Test func theSameWordsAreNotCalledDone() {
         let before = Self.words(40)
         let notice = Self.notice(.moreHuman, before: before, after: before)
-        #expect(!notice.changesScript)
+        #expect(!notice.changesScript && notice.kind == .problem)
         #expect(notice.message == "Couldn’t draft it · Try again")
     }
 
     @Test func aScriptWithNothingWrongSaysSo() {
         let text = "I tried cold showers for thirty days."
         let notice = Self.notice(.fixGrammar, before: text, after: text)
-        #expect(!notice.changesScript)
+        #expect(!notice.changesScript && notice.kind == .done)
         #expect(notice.message == "No mistakes to fix")
     }
 
@@ -46,7 +46,7 @@ struct RewriteNoticeTests {
         let words = ReadTime.words(for: 75)
         let text = Self.words(words)
         let notice = Self.notice(.fitToTime, before: text, after: text, left: 1)
-        #expect(!notice.changesScript)
+        #expect(!notice.changesScript && notice.kind == .done)
         #expect(notice.message == "Already fits 1:00 to 1:30")
     }
 

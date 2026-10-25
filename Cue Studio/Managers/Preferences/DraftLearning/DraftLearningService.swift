@@ -54,7 +54,7 @@ final class DraftLearningService {
         drafts[script.id] = nil
         persist()
         guard let example = profile.learnFromRecordedScript(script.text) else { return }
-        toast.show(String(localized: "Cue learned from this"), action: ToastAction(title: String(localized: "Undo")) { [profile] in
+        toast.show(String(localized: "Cue learned from this"), kind: .cue, action: ToastAction(title: String(localized: "Undo")) { [profile] in
             profile.removeApprovedSample(example.id)
         })
     }

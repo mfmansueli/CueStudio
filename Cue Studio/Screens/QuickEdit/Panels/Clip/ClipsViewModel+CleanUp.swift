@@ -64,11 +64,11 @@ extension ClipsViewModel {
         }
         if failed, listened.isEmpty {
             analysis = .failed
-            toast.show(String(localized: "Couldn't listen to this take"))
+            toast.show(String(localized: "Couldn't listen to this take"), kind: .problem)
             return
         }
         analysis = .done
-        if failed { toast.show(String(localized: "Couldn't listen to every clip")) }
+        if failed { toast.show(String(localized: "Couldn't listen to every clip"), kind: .problem) }
     }
 
     // MARK: - Reading

@@ -29,7 +29,7 @@ extension OverlaysViewModel {
             // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
             noteFailure(error, "importMedia")
-            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")), kind: .problem)
         }
     }
 
@@ -53,13 +53,13 @@ extension OverlaysViewModel {
         guard end - start >= MediaOverlay.minimumDuration else {
             EditMediaFiles.remove([imported.fileName])
             importedFiles.remove(imported.fileName)
-            toast.show(String(localized: "No room · Move the playhead"))
+            toast.show(String(localized: "No room · Move the playhead"), kind: .problem)
             return
         }
         guard LayerLanes.peak(of: mediaBars.map(\.span), within: placed) < MediaOverlay.simultaneousLimit else {
             EditMediaFiles.remove([imported.fileName])
             importedFiles.remove(imported.fileName)
-            toast.show(String(localized: "Max 3 photos or videos"))
+            toast.show(String(localized: "Max 3 photos or videos"), kind: .problem)
             return
         }
         var media = MediaOverlay(
@@ -131,7 +131,7 @@ extension OverlaysViewModel {
         // The copy shows over the same moment: never more than the export draws at once.
         let shown = mediaBars.first { $0.id == id }?.span ?? original.span
         guard LayerLanes.peak(of: mediaBars.map(\.span), within: shown) < MediaOverlay.simultaneousLimit else {
-            toast.show(String(localized: "Max 3 photos or videos"))
+            toast.show(String(localized: "Max 3 photos or videos"), kind: .problem)
             return
         }
         var copy = original
@@ -222,7 +222,7 @@ extension OverlaysViewModel {
             // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
             noteFailure(error, "replaceMedia")
-            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")), kind: .problem)
         }
     }
 

@@ -96,7 +96,7 @@ extension ClipsViewModel {
             addSource(source)
         } catch {
             noteFailure(error, "addTake")
-            toast.show(String(localized: "Can't add this take"))
+            toast.show(String(localized: "Can't add this take"), kind: .problem)
         }
     }
 
@@ -105,7 +105,7 @@ extension ClipsViewModel {
         guard isReady, !isClosed else { return }
         importedFiles.insert(pick.imported.fileName)
         guard pick.imported.kind == .video, let duration = pick.imported.duration else {
-            toast.show(String(localized: "Pick a video first"))
+            toast.show(String(localized: "Pick a video first"), kind: .problem)
             return
         }
         let part = TimeSpan(start: pick.start, end: min(duration, pick.start + pick.wanted))
@@ -128,7 +128,7 @@ extension ClipsViewModel {
             // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
             noteFailure(error, "addVideo")
-            toast.show(String(localized: "Can't add this file"))
+            toast.show(String(localized: "Can't add this file"), kind: .problem)
         }
     }
 
@@ -163,7 +163,7 @@ extension ClipsViewModel {
         var next = arranged(edit)
         if place.splits { next.timeline.split(atEdited: place.time) }
         guard let id = next.timeline.insertClip(source: source.id, duration: source.duration, span: part, at: place.index) else {
-            toast.show(String(localized: "Video too short to add"))
+            toast.show(String(localized: "Video too short to add"), kind: .problem)
             return
         }
         next.sources.append(source)
@@ -180,7 +180,7 @@ extension ClipsViewModel {
     func openClipOrder() {
         guard isReady else { return }
         guard edit.timeline.segments.count > 1 else {
-            toast.show(String(localized: "Split or add a clip to reorder"))
+            toast.show(String(localized: "Split or add a clip to reorder"), kind: .problem)
             return
         }
         player.pause()
@@ -205,13 +205,15 @@ extension ClipsViewModel {
         isImportingMedia = true
         defer { isImportingMedia = false }
         player.pause()
-        toast.show(String(localized: "Freezing the frame…"))
+        // The ring turns until the frozen frame (or why not) takes its place; a frame that can't go in lets it go.
+        let work = toast.showWorking(String(localized: "Freezing the frame…"))
+        defer { toast.endWorking(work) }
         let name: String
         do {
             name = try await editing.stillClip(ofVideoAt: url, at: timeline.sourceTime(forEdited: time), length: Self.freezeFileLength)
         } catch {
             noteFailure(error, "freezeFrame")
-            toast.show(String(localized: "Can't freeze this frame"))
+            toast.show(String(localized: "Can't freeze this frame"), kind: .problem)
             return
         }
         guard !isClosed else {
@@ -221,7 +223,7 @@ extension ClipsViewModel {
         // The frame took a moment (about 2 s in 4K): if the cuts changed meanwhile, the place it was for may be gone.
         guard edit.timeline == timeline else {
             EditMediaFiles.remove([name])
-            toast.show(String(localized: "The video changed meanwhile · Freeze the frame again"))
+            toast.show(String(localized: "The video changed meanwhile · Freeze the frame again"), kind: .problem)
             return
         }
         importedFiles.insert(name)

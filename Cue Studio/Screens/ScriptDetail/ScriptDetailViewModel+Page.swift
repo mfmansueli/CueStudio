@@ -110,7 +110,7 @@ extension ScriptDetailViewModel {
         page.text = result.text
         page.selection = nil
         commitPage()
-        toast.show(String(localized: "\(result.added) cues added"))
+        toast.show(String(localized: "\(result.added) cues added"), kind: .cue)
     }
 
     /// Done: READY. With no text nothing is saved; with a format's sections still empty it asks first.
@@ -127,7 +127,7 @@ extension ScriptDetailViewModel {
     private func done() {
         switch ScriptPageRules.done(text: page.text, type: script?.type) {
         case .nothingToSave:
-            toast.show(String(localized: "Nothing to save yet"))
+            toast.show(String(localized: "Nothing to save yet"), kind: .problem)
         case .confirmEmptySections(let count):
             page.emptySectionsToConfirm = count
         case .finish:
@@ -254,7 +254,7 @@ extension ScriptDetailViewModel {
             return
         }
         if let reason = drafting.reason {
-            toast.show(reason)
+            toast.show(reason, kind: .problem)
             return
         }
         page.isRewriting = true
@@ -263,14 +263,14 @@ extension ScriptDetailViewModel {
             let result = try await writer.rewriteReported(selected, with: tool, context: rewriteContext)
             // The tool couldn't do what it says to these words: they stay, and the creator is told, instead of a "change" that changes nothing.
             guard !result.isUntouched, result.text != selected else {
-                toast.show(String(localized: "Couldn’t draft it · Try again"))
+                toast.show(String(localized: "Couldn’t draft it · Try again"), kind: .problem)
                 return
             }
             replace(range, with: result.text, action: action, original: selected)
         } catch is CancellationError {
             return
         } catch {
-            toast.show(Self.failureMessage(for: error))
+            toast.show(Self.failureMessage(for: error), kind: .problem)
         }
     }
 
@@ -395,7 +395,7 @@ extension ScriptDetailViewModel {
                     page.isWriting = false
                     page.revealed = nil
                     transition.fail()
-                    toast.show(Self.failureMessage(for: error))
+                    toast.show(Self.failureMessage(for: error), kind: .problem)
                     return
                 }
                 page.isWriting = false
@@ -452,7 +452,7 @@ extension ScriptDetailViewModel {
         draftLearning?.noteDraft(generated.text, for: scriptID)
         toast.show(generated.needsFactCheck
             ? String(localized: "Draft ready · Check facts")
-            : String(localized: "Draft ready · Edit anything"))
+            : String(localized: "Draft ready · Edit anything"), kind: .cue)
     }
 
     /// The card's idea became this script: it starts empty the next time. A script written from something else (an idea written as it is

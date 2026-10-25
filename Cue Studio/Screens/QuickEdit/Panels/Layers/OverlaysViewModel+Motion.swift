@@ -125,7 +125,7 @@ extension OverlaysViewModel {
     /// Adds a keyframe at the playhead where the item is now, or takes away the one there.
     func toggleKeyframe() {
         guard let item = motionItem, let local = localTime(of: item) else {
-            toast.show(String(localized: "Move playhead onto it first"))
+            toast.show(String(localized: "Move playhead onto it first"), kind: .problem)
             return
         }
         player.pause()

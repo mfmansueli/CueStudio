@@ -141,7 +141,7 @@ struct VoiceQuestionSheetModelTests {
         model.choose(VoiceOption(id: VoiceQuestion.nothingToAvoidID, label: "Nothing to avoid"))
         #expect(rig.profile.profile.voiceStrength == 100)
         model.save()
-        #expect(rig.toast.message == "✓ Cue Voice complete")
+        #expect(rig.toast.message == "Cue Voice complete")
         #expect(!rig.scheduler.completionToastIsDue())
     }
 }

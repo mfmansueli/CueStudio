@@ -69,7 +69,7 @@ extension ClipsViewModel {
             if timeline.remove([span], in: first.sourceID, only: clips) { removed += span.duration }
         }
         guard timeline != edit.timeline else {
-            toast.show(String(localized: "Keep at least one section"))
+            toast.show(String(localized: "Keep at least one section"), kind: .problem)
             return
         }
         player.pause()

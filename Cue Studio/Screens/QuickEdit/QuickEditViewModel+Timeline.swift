@@ -211,7 +211,7 @@ extension QuickEditViewModel {
     func pickNearestJoin() {
         let time = player.currentTime
         guard let nearest = clips.cuts.min(by: { abs($0.time - time) < abs($1.time - time) }) else {
-            toast.show(String(localized: "No cuts yet"))
+            toast.show(String(localized: "No cuts yet"), kind: .problem)
             return
         }
         player.pause()

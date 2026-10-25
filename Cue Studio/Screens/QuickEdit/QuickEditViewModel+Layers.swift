@@ -125,7 +125,7 @@ extension QuickEditViewModel {
             let cueID = captions.captionCueID(forLine: bar.id)
             let target = edit.timeline.anchoredSpan(forEdited: span)
             guard target.anchor.sourceID == edit.captions.first(where: { $0.id == cueID })?.sourceID else {
-                toast.show(String(localized: "A line stays on its own clip"))
+                toast.show(String(localized: "A line stays on its own clip"), kind: .problem)
                 return
             }
             captions.moveCaption(cueID, to: target.span)

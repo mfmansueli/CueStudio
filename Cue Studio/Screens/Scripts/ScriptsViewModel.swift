@@ -145,7 +145,7 @@ final class ScriptsViewModel {
     func confirmNewFolder() {
         guard let name = library.createFolder(named: newFolderName) else {
             if !newFolderName.trimmingCharacters(in: .whitespaces).isEmpty {
-                toast.show(String(localized: "That folder already exists"))
+                toast.show(String(localized: "That folder already exists"), kind: .problem)
             }
             return
         }

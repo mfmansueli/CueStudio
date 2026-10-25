@@ -179,7 +179,7 @@ struct VoiceExamplesField: View {
         case .alreadyThere:
             feedback = String(localized: "Already added.")
         case .limit(let message):
-            toast.show(message)
+            toast.show(message, kind: .problem)
         default:
             break
         }

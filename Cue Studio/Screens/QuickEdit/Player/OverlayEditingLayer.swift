@@ -29,6 +29,10 @@ struct OverlayEditingLayer: View {
     }
 
     @State private var drag: Drag?
+    /// Where the dragged caption is now, so it ticks once as it sticks to a place, not at every move inside it.
+    private var draggedCaptionY: Double? {
+        if case .caption(_, let y) = drag { y } else { nil }
+    }
     @State private var guides: (vertical: Bool, horizontal: Bool) = (false, false)
     /// The photo or video being pinched, and by how much.
     @State private var pinch: (id: UUID, scale: CGFloat)?
@@ -257,8 +261,11 @@ struct OverlayEditingLayer: View {
                     viewModel.player.pause()
                     if viewModel.selection != .caption(id) { viewModel.selection = .caption(id) }
                 }
-                let placed = CaptionsViewModel.snappedCaption(viewModel.captions.captionY + Double(value.translation.height / max(1, size.height)))
-                if placed.stop != nil, !guides.horizontal { Haptics.snap() }
+                let placed = CaptionsViewModel.snappedCaption(
+                    viewModel.captions.captionY + Double(value.translation.height / max(1, size.height)),
+                    seam: viewModel.captions.splitSeamAtPlayhead
+                )
+                if placed.stop != nil, placed.y != draggedCaptionY { Haptics.snap() }
                 guides = (false, placed.stop == 0.5)
                 drag = .caption(id, y: placed.y)
             }

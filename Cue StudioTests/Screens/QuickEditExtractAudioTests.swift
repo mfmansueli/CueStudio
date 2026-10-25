@@ -187,5 +187,19 @@ struct QuickEditExtractAudioTests {
         await viewModel.audio.extractAudio()
         #expect(viewModel.edit.music.isEmpty)
         #expect(scenario.toast.message == "The video changed meanwhile · Extract the sound again")
+        #expect(scenario.toast.kind == .problem)
+    }
+
+    @Test func theRingTurnsWhileTheSoundComesOutAndBecomesItsTrack() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.perform(.selectClipAtPlayhead)
+        var during: (kind: ToastKind, message: String?, pill: UUID)?
+        scenario.editor.whileExtracting = { during = (scenario.toast.kind, scenario.toast.message, scenario.toast.pill) }
+        await viewModel.audio.extractAudio()
+        #expect(during?.kind == .working && during?.message == "Extracting the sound…")
+        // The same pill says what came of it, with Undo.
+        #expect(scenario.toast.pill == during?.pill && scenario.toast.kind == .done && scenario.toast.action != nil)
+        #expect(scenario.toast.message == "Sound on its own track · the clip is muted")
     }
 }
