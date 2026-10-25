@@ -1920,6 +1920,11 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   reenquadrado e não coberto, inverter, 60/40, lado a lado, tela cheia no espaço, linha, foto de outro formato sem deformar, o corte que corta o
   apoio, os sons independentes e sem duplicar, e a prévia igual à exportação), `SplitScreenUITests` (a folha de Media, as áreas na prévia, o
   painel, dividir e fechar espaço); `EditSnapshotCompletenessTests` cobre a tela dividida no Desfazer. Demo: `-uiTestDemoSplit`.
+- **Medido no iPhone 15 Pro** (`SplitScreenDeviceTests`, 25/10, take de 1080p a 30 fps, links das takes mais novas): a composição da prévia
+  desenha a take sozinha a 326 quadros por segundo, com um apoio e a divisória em Desfoque a 106 (sem efeito, 199), com um apoio e duas janelas
+  (o máximo do editor) a 112: mais de 3 vezes o que a prévia precisa. A exportação 1080p de 29,4 s leva 5,4 s só com a take e 5,3 s com um apoio
+  sobre 27,4 s: a tela dividida não deixa a exportação mais lenta. Capturas para olhar: `SplitScreenCaptureTests`
+  (`TEST_RUNNER_CUE_SPLIT_CAPTURE=<pasta com main.mov e support.mov>`).
 
 ## 52. Biblioteca, kits de marca e fontes próprias (Fase 5 do refinamento, 25 de outubro de 2026; pedido do dono)
 

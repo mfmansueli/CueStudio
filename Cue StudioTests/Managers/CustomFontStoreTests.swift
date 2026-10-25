@@ -44,6 +44,26 @@ struct CustomFontStoreTests {
         #expect(!TextOverlayFont.custom(family).isMissing)
     }
 
+    @Test func theRenderersDrawTheWordsInTheImportedFont() async throws {
+        let (store, _) = makeStore()
+        defer { store.eraseAll() }
+        let family = TestFonts.uniqueFamily()
+        _ = await store.importFonts(from: [try TestFonts.renamedAnton(to: family)])
+        func drawn(_ font: TextOverlayFont) throws -> Data {
+            var text = TextOverlay(role: .title, look: TextLook(), preset: nil, span: TimeSpan(start: 0, end: 1))
+            text.text = "BRAND"
+            text.font = font
+            text.weight = .regular
+            text.hasShadow = false
+            let image = try #require(TextOverlayRenderer.image(for: text, frameWidth: 1080))
+            return try #require(image.pngData())
+        }
+        // The imported family is Anton under another name: the texts the export draws come out letter for letter as Anton,
+        // and not as SF Pro (what a family that isn't here falls back to).
+        #expect(try drawn(.custom(family)) == drawn(.anton))
+        #expect(try drawn(.custom(family)) != drawn(.sfPro))
+    }
+
     @Test func lettersTheFontLacksAreDrawnInTheSystemFont() async throws {
         let (store, _) = makeStore()
         defer { store.eraseAll() }

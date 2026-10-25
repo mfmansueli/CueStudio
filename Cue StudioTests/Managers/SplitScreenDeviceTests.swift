@@ -8,7 +8,7 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The split screen on this iPhone, on COPIES of its newest takes (never the takes themselves): how many frames a second the
+/// The split screen on this iPhone, on links to its newest takes (read only, never changed; the links go after): how many frames a second the
 /// editor's preview composition draws (the take alone, with a support in the split screen, and the worst case the editor
 /// allows: a support and two windows, three videos over the take) and how long a 1080p export takes with and without the
 /// split screen. Above the take's own frame rate, the preview plays without dropping frames. Printed as `SPLIT …`.
@@ -22,16 +22,20 @@ import Testing
     .timeLimit(.minutes(5))
 )
 struct SplitScreenDeviceTests {
-    /// Copies of the newest takes: the first is the main video, the others are laid over it (a take is reused when there are
-    /// fewer).
+    /// Links to the newest takes (hard links: no bytes copied, and only read): the first is the main video, the others are laid
+    /// over it (a take is reused when there are fewer). Deleting a link leaves the take whole.
     private func copiesOfNewestTakes(_ count: Int) throws -> [URL] {
         let takes = MotionAnalysisDeviceTests.newestTakes(count)
         try #require(!takes.isEmpty, "No takes on this iPhone")
         return try (0..<count).map { index in
             let original = takes[index % takes.count]
-            let copy = URL.temporaryDirectory.appending(path: "split-\(UUID().uuidString).\(original.pathExtension)")
-            try FileManager.default.copyItem(at: original, to: copy)
-            return copy
+            let link = URL.temporaryDirectory.appending(path: "split-\(UUID().uuidString).\(original.pathExtension)")
+            do {
+                try FileManager.default.linkItem(at: original, to: link)
+            } catch {
+                try FileManager.default.copyItem(at: original, to: link)
+            }
+            return link
         }
     }
 
@@ -78,16 +82,19 @@ struct SplitScreenDeviceTests {
         let track = try #require(try await AVURLAsset(url: take).loadTracks(withMediaType: .video).first)
         let (size, rate) = try await track.load(.naturalSize, .nominalFrameRate)
         let duration = try await AVURLAsset(url: take).load(.duration).seconds
-        let seconds = min(8, max(2, duration - 2))
+        let seconds = min(5, max(2, duration - 2))
         var edit = TakeEdit(sourceDuration: duration, aspect: .portrait)
         edit.voiceEnhancement = .off
         let alone = try await drawingRate(of: take, edit: edit, seconds: seconds)
+        print("SPLIT PREVIEW take alone \(String(format: "%.0f", alone)) fps")
 
-        edit.splitScreen.setLayout(SplitLayout())
+        // The first split screen's own seam: Blur, the costliest.
+        edit.splitScreen.setLayout(SplitLayout(seam: .blur))
         let support = try await media(files[1], layout: .split, seconds: seconds)
         names.append(support.fileName)
         edit.media = [support]
         let split = try await drawingRate(of: take, edit: edit, seconds: seconds)
+        print("SPLIT PREVIEW with a support \(String(format: "%.0f", split)) fps")
 
         var windows: [MediaOverlay] = []
         for (index, file) in files.dropFirst(2).enumerated() {
