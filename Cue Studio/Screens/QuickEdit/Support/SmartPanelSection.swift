@@ -17,7 +17,8 @@ enum SmartPanelSection: String, CaseIterable, Identifiable {
         switch self {
         case .tools: String(localized: "Tools", comment: "✦ Smart tab: the one-tap tools")
         case .templates: String(localized: "Templates")
-        case .brand: String(localized: "Brand", comment: "✦ Smart tab: the creator's brand kits")
+        // Its own key: "Brand" is also the brand brief's field, which stays "Marca" in Portuguese where this tab is "Kit de marca".
+        case .brand: String(inInterfaceLanguage: LocalizedStringResource("smart.brandKits", defaultValue: "Brand"))
         }
     }
 }

@@ -85,7 +85,7 @@ extension OverlaysViewModel {
     /// screen's support alike.
     private func isFull(at start: TimeInterval) -> Bool {
         let moment = TimeSpan(start: start, end: start + MediaOverlay.minimumDuration)
-        return LayerLanes.peak(of: mediaBars.map(\.span), within: moment) >= MediaOverlay.simultaneousLimit
+        return LayerLanes.peak(of: limitedMediaSpans(), within: moment) >= MediaOverlay.simultaneousLimit
     }
 
     // MARK: - Adding
@@ -129,7 +129,7 @@ extension OverlaysViewModel {
         }
         // Never more photos and videos over the same moment than the export draws at once (it would leave a fourth video out
         // without a word): a support counts like a window.
-        let others = mediaBars.map(\.span)
+        let others = limitedMediaSpans()
         guard run.placed.allSatisfy({ LayerLanes.peak(of: others, within: $0.span) < MediaOverlay.simultaneousLimit }) else {
             EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
             toast.show(String(localized: "3 photos or videos already show then · up to 3 at a time"), kind: .problem)

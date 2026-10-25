@@ -31,6 +31,17 @@ extension EditorPart {
         }
     }
 
+    /// Where the photos and videos that count in `MediaOverlay.simultaneousLimit` play: all but a still logo, and not `excluded`
+    /// (the one being moved, stretched or replaced).
+    func limitedMediaSpans(excluding excluded: UUID? = nil) -> [TimeSpan] {
+        edit.editedMedia(in: edit.timeline).filter { !$0.media.isStaticLogo && $0.media.id != excluded }.map(\.span)
+    }
+
+    /// Whether `media` can show over `span` with no more than `MediaOverlay.simultaneousLimit` at once: always, for a still logo.
+    func mediaFits(_ media: MediaOverlay, over span: TimeSpan) -> Bool {
+        media.isStaticLogo || LayerLanes.peak(of: limitedMediaSpans(excluding: media.id), within: span) < MediaOverlay.simultaneousLimit
+    }
+
     var voiceOverBars: [LayerBar] {
         edit.voiceOvers.enumerated().compactMap { index, clip in
             guard let span = clip.editedSpan(in: edit.timeline) else { return nil }

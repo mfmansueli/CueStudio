@@ -93,6 +93,22 @@ final class BrandLibraryUITests: XCTestCase {
         app.buttons["edit.smart.section.brand"].tap()
         XCTAssertTrue(app.buttons["edit.brand.kit.Acme"].exists(within: 5), "The kit didn't survive reopening")
     }
+
+    /// In Portuguese the tab is "Kit de marca" (the owner's word), in Cue's own language even where the iPhone's differs, and with
+    /// the largest text it takes two lines in its segment rather than being cut.
+    func testTheBrandTabSaysKitDeMarcaInPortugueseAtTheLargestText() {
+        let app = EditorApp.open(arguments: [
+            "-uiTestAppLanguage", "pt", "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL",
+        ])
+        EditorApp.tapTool(app, "smart")
+        let tab = app.buttons["edit.smart.section.brand"]
+        XCTAssertTrue(tab.exists(within: 5))
+        XCTAssertEqual(tab.label, "Kit de marca")
+        XCTAssertTrue(tab.isHittable)
+        EditorApp.capture(app, "brand-tab-pt-xxxl")
+        tab.tap()
+        XCTAssertTrue(app.buttons["edit.brand.newKit"].exists(within: 5))
+    }
 }
 
 private extension XCUIElement {

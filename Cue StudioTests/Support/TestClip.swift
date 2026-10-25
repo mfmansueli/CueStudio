@@ -19,8 +19,14 @@ enum TestClip {
     private static let framesPerSecond: Int32 = 30
 
     /// A portrait clip `seconds` long. With `loudSeconds`, it has a mono sound track: a tone during
-    /// those seconds, silence during the others.
+    /// those seconds, silence during the others. Written again if the writer sticks (`FootageWriting`).
     static func make(seconds: Int, loudSeconds: Set<Int>? = nil, width: Int = 360, height: Int = 640) async throws -> URL {
+        try await FootageWriting.withRetry(patience: .seconds(20 + seconds)) {
+            try await write(seconds: seconds, loudSeconds: loudSeconds, width: width, height: height)
+        }
+    }
+
+    private static func write(seconds: Int, loudSeconds: Set<Int>?, width: Int, height: Int) async throws -> URL {
         let url = URL.temporaryDirectory.appending(path: "clip-\(UUID().uuidString).mov")
         let writer = try AVAssetWriter(outputURL: url, fileType: .mov)
         let video = AVAssetWriterInput(mediaType: .video, outputSettings: [

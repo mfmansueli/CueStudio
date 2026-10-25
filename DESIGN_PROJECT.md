@@ -1908,7 +1908,11 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   "Another support shows then · one at a time in the split screen") e **cada apoio conta como uma janela no limite de 3 fotos ou vídeos ao
   mesmo tempo** (o que a exportação desenha sobre o vídeo; um quarto vídeo ficaria de fora sem aviso): a folha avisa sob a escolha, em cor de
   alerta, quando a agulha já tem 3 ("3 photos or videos already show here · move the playhead"), e o que passaria disso não entra nem deixa
-  arquivo ("3 photos or videos already show then · up to 3 at a time"). Mover ou esticar uma mídia respeita o mesmo limite.
+  arquivo ("3 photos or videos already show then · up to 3 at a time"). Adicionar, duplicar, mover, esticar, alongar no painel (o tempo da
+  mídia) e trocar o arquivo respeitam o mesmo limite. **O logo parado fica fora dele** (`MediaOverlay.isStaticLogo`: marcado como logo e foto;
+  decisão do dono, 25/10): uma imagem não é decodificada quadro a quadro, então 3 vídeos cabem com o logo, posto antes ou depois, na prévia e na
+  exportação (`LogoOverVideosExportTests`); a cópia de um logo também fica fora; um vídeo marcado como logo conta, e o logo trocado por um vídeo
+  passa a contar (recusado onde não cabe). Os outros limites não mudaram.
 - **Os apoios seguem a fala** (`MediaOverlay.pieces`, `followsCuts`, `TakeEdit.pinMedia`): toda mídia posta a partir desta fase fica com o trecho
   da fala sobre o qual foi posta. Dividir um clipe não muda nada; cortar 5 a 7 s do principal sob um apoio corta os mesmos 2 s do apoio e o resto
   continua em sincronia; o que vem depois anda junto; um clipe de outra gravação posto no meio (Inserir na sequência) toca sem o apoio, que
@@ -1994,7 +1998,8 @@ Tudo fica neste iPhone.
 - **O que sai e quando** (`LibraryFileSweep`, num lançamento, depois da limpeza do editor): um item tirado da biblioteca some da lista na hora,
   mas o arquivo fica até um lançamento seguinte (Undo funciona na sessão); arquivos que a lista não cita (importação cancelada no meio, item
   removido) e que não mudaram nos últimos 10 minutos são apagados; nunca um que a lista cita. A pasta do editor segue a regra de antes (§37).
-- **Kits de marca** (`BrandKit`, `BrandKitStore`, Application Support/BrandKits com `kits.json`): em **✦ Smart › Brand** (terceira seção, ao lado de
+- **Kits de marca** (`BrandKit`, `BrandKitStore`, Application Support/BrandKits com `kits.json`): em **✦ Smart › Brand** (em português **Kit de marca**, decisão do dono, 25/10; chave própria `smart.brandKits`, porque o "Brand" do
+  briefing de publicidade continua "Marca"; terceira seção, ao lado de
   Templates: os looks do Cue e os seus). Um kit tem nome, **cores** (até 6; cada uma é um poço que abre o seletor de cor do sistema e muda ali
   mesmo, **+** acrescenta uma, − tira), **fontes** (títulos e legendas), **logo** (um link
   próprio para a imagem, com o canto) e cópias dos **estilos de texto, legenda e capa** do criador (os salvos, §50, ou os "deste vídeo"; mudar ou

@@ -92,14 +92,13 @@ extension QuickEditViewModel {
         return TimeSpan(start: floor, end: max(floor, ceiling))
     }
 
-    /// Photos and videos can overlap, up to `MediaOverlay.simultaneousLimit` at a time, and supports of the split screen not
-    /// at all; a move or a stretch past that stays where it was.
+    /// Photos and videos can overlap, up to `MediaOverlay.simultaneousLimit` at a time (a still logo aside), and supports of the
+    /// split screen not at all; a move or a stretch past that stays where it was.
     private func fits(_ bar: LayerBar, at span: TimeSpan) -> Bool {
-        guard bar.kind == .media else { return true }
-        let others = mediaBars.filter { $0.id != bar.id }.map(\.span)
-        guard LayerLanes.peak(of: others, within: span) < MediaOverlay.simultaneousLimit else { return false }
+        guard bar.kind == .media, let media = edit.media.first(where: { $0.id == bar.id }) else { return true }
+        guard mediaFits(media, over: span) else { return false }
         // The split screen shows one support at a time.
-        guard edit.media.first(where: { $0.id == bar.id })?.layout == .split else { return true }
+        guard media.layout == .split else { return true }
         return !overlays.supportSpans.contains { $0.id != bar.id && $0.span.overlaps(span) }
     }
 
