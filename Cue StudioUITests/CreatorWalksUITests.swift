@@ -224,8 +224,8 @@ final class CreatorWalksUITests: XCTestCase {
 
     // MARK: - 3. A font from Files
 
-    /// Text style › Font › Import font › Files › the font: it comes in, the text wears it, and the video exports. Needs a
-    /// font file in Files (On My iPhone); without one the test says so.
+    /// Text style › Font › Import font › Files › the font, searched for by name: it comes in, the text wears it, and the video
+    /// exports. Needs the font file somewhere in Files (On My iPhone, iCloud Drive); without one the test says so.
     func testAFontFromFilesIsUsedAndExported() throws {
         app = EditorApp.open(demo: true)
         let fontFile = ProcessInfo.processInfo.environment["CUE_FONT_FILE"] ?? "Qbrnd-Regular"
@@ -241,15 +241,23 @@ final class CreatorWalksUITests: XCTestCase {
         Thread.sleep(forTimeInterval: 2)
         step("files-picker")
 
-        // Files: Browse › On My iPhone › the font.
-        let browse = app.buttons["Browse"]
-        if browse.exists(within: 3) { browse.tap() }
-        let onMyPhone = app.staticTexts["On My iPhone"].firstMatch
-        if onMyPhone.exists(within: 3) { onMyPhone.tap() }
-        let file = app.descendants(matching: .any).matching(NSPredicate(format: "label BEGINSWITH %@", fontFile)).firstMatch
-        guard file.exists(within: 5) else {
+        // Files: the font searched for by its name, wherever it is; without a search field, Browse › On My iPhone.
+        let search = app.searchFields.firstMatch
+        if search.exists(within: 5) {
+            search.tap()
+            search.typeText(fontFile)
+        } else {
+            let browse = app.buttons["Browse"]
+            if browse.exists(within: 3) { browse.tap() }
+            let onMyPhone = app.staticTexts["On My iPhone"].firstMatch
+            if onMyPhone.exists(within: 3) { onMyPhone.tap() }
+        }
+        let named = NSPredicate(format: "label BEGINSWITH %@", fontFile)
+        let cell = app.cells.matching(named).firstMatch
+        let file = cell.exists(within: 15) ? cell : app.descendants(matching: .any).matching(named).firstMatch
+        guard file.exists(within: 2) else {
             step("files-no-font")
-            throw XCTSkip("No “\(fontFile)” font in Files › On My iPhone on this device")
+            throw XCTSkip("No “\(fontFile)” font in Files on this device")
         }
         file.tap()
         let open = app.buttons["Open"]
