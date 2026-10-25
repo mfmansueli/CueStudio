@@ -26,6 +26,8 @@ final class BrandViewModel: EditorPart {
     /// The library's filter and search in Add photo or video.
     var libraryFilter: LibraryFilter = .all
     var librarySearch = ""
+    /// The library's photos and videos picked in Add photo or video, in the order tapped.
+    var libraryPicked: [UUID] = []
     /// Files being brought into the library.
     var isAddingToLibrary = false
     /// The kit whose parts are being chosen before it goes on the video.

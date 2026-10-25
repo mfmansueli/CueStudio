@@ -48758,6 +48758,125 @@
         }
       }
     },
+    "Add to your library" : {
+      "comment" : "VoiceOver label of the + menu next to the search field of Your library (Add photo or video): adds from Photos or Files",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إضافة إلى مكتبتك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Føj til dit bibliotek"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zu deiner Mediathek hinzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Añadir a tu biblioteca"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajouter à votre bibliothèque"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपनी लाइब्रेरी में जोड़ें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tambah ke pustakamu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiungi alla tua libreria"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "マイライブラリに追加"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "내 보관함에 추가"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Legg til i biblioteket ditt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toevoegen aan je bibliotheek"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adicionar à sua biblioteca"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lägg till i ditt bibliotek"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพิ่มลงในคลังของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Arşivine ekle"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Thêm vào thư viện của bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "添加到我的素材库"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加入我的素材庫"
+          }
+        }
+      }
+    },
     "Add topics" : {
       "comment" : "Find inspiration: the chip that opens the topics editor when the creator has none",
       "localizations" : {
@@ -353819,6 +353938,125 @@
         }
       }
     },
+    "Source" : {
+      "comment" : "Label (read by VoiceOver, not shown) of the segmented control at the top of Add photo or video: Photos · Your library · Your takes",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المصدر"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilde"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quelle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Origen"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Source"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्रोत"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sumber"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Origine"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ソース"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "소스"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kilde"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bron"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Origem"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Källa"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แหล่งที่มา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kaynak"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nguồn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "来源"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "來源"
+          }
+        }
+      }
+    },
     "Spaced capitals on square bands, rises in" : {
       "comment" : "VoiceOver description of the 'Band' caption style.",
       "localizations" : {
@@ -361200,6 +361438,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "從 %@ 開始 · 照片顯示 %lld 秒，影片依原長播放"
+          }
+        }
+      }
+    },
+    "Starts at %@ · only %@ of room · move the playhead back for more" : {
+      "comment" : "Place note of Add photo or video in warning color, when under 3 s are left from the playhead to the video's end or the next support: where it starts (\"00:22.8\"), then how much room there is (\"1.6s\")",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يبدأ عند %1$@ · المساحة %2$@ فقط · أرجِع رأس التشغيل للحصول على المزيد"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starter ved %1$@ · kun %2$@ plads · flyt afspilningsmarkøren tilbage for mere"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beginnt bei %1$@ · nur %2$@ Platz · schieb die Abspielposition zurück für mehr"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Empieza en %1$@ · solo %2$@ de espacio · mueve el cursor hacia atrás para tener más"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Commence à %1$@ · seulement %2$@ de place · reculez la tête de lecture pour en avoir plus"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ से शुरू · सिर्फ़ %2$@ की जगह · ज़्यादा जगह के लिए प्लेहेड पीछे ले जाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mulai di %1$@ · hanya ada ruang %2$@ · geser playhead ke belakang untuk ruang lebih"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inizia a %1$@ · solo %2$@ di spazio · sposta indietro l’indicatore per averne di più"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@から開始 · 空きは%2$@だけ · 再生ヘッドを前に戻すと増えます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@부터 시작 · 공간이 %2$@뿐이에요 · 재생 헤드를 앞으로 옮기면 늘어나요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Starter ved %1$@ · bare %2$@ plass · flytt avspillingshodet tilbake for mer"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Begint bij %1$@ · maar %2$@ ruimte · zet de afspeelkop terug voor meer"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Começa em %1$@ · só %2$@ de espaço · volte o cursor para ter mais"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Börjar vid %1$@ · bara %2$@ utrymme · flytta tillbaka uppspelningsmarkören för mer"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เริ่มที่ %1$@ · มีที่ว่างแค่ %2$@ · เลื่อนหัวเล่นถอยหลังเพื่อให้มีที่มากขึ้น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$@ itibarıyla başlar · yalnızca %2$@ yer var · daha fazlası için oynatma çubuğunu geri al"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bắt đầu tại %1$@ · chỉ còn %2$@ · lùi đầu phát lại để có thêm chỗ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从 %1$@ 开始 · 只有 %2$@ 的空间 · 将播放头往前移可留出更多"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從 %1$@ 開始 · 只有 %2$@ 的空間 · 將播放頭往前移可留出更多"
           }
         }
       }
@@ -374270,6 +374627,244 @@
         }
       }
     },
+    "Tap a video to put it in at the playhead" : {
+      "comment" : "Footer hint of Add photo or video, In sequence, when Photos or Your library is shown",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط على فيديو لإدراجه عند رأس التشغيل"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryk på en video for at sætte den ind ved afspilningsmarkøren"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe auf ein Video, um es an der Abspielposition einzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca un video para insertarlo en el cursor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez une vidéo pour l’insérer à la tête de lecture"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किसी वीडियो पर टैप करके उसे प्लेहेड पर डालें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk video untuk menyisipkannya di playhead"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocca un video per inserirlo all’indicatore"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "動画をタップすると再生ヘッドの位置に入ります"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "영상을 탭하면 재생 헤드 위치에 넣어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk på en video for å sette den inn ved avspillingshodet"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tik op een video om die bij de afspeelkop in te voegen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque num vídeo para inserir no cursor"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck på en video för att lägga in den vid uppspelningsmarkören"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แตะวิดีโอเพื่อแทรกที่หัวเล่น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynatma çubuğuna eklemek için bir videoya dokun"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chạm vào một video để chèn tại đầu phát"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "轻点视频即可插入到播放头处"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點一下影片即可插入到播放頭處"
+          }
+        }
+      }
+    },
+    "Tap a take to put it in at the playhead" : {
+      "comment" : "Footer hint of Add photo or video, In sequence, when Your takes (the creator's other takes) are listed",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط على لقطة لإدراجها عند رأس التشغيل"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryk på en optagelse for at sætte den ind ved afspilningsmarkøren"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe auf einen Take, um ihn an der Abspielposition einzufügen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca una toma para insertarla en el cursor"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez une prise pour l’insérer à la tête de lecture"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "किसी टेक पर टैप करके उसे प्लेहेड पर डालें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk take untuk menyisipkannya di playhead"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocca una ripresa per inserirla all’indicatore"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テイクをタップすると再生ヘッドの位置に入ります"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "테이크를 탭하면 재생 헤드 위치에 넣어요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk på et opptak for å sette det inn ved avspillingshodet"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tik op een opname om die bij de afspeelkop in te voegen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque num take para inserir no cursor"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck på en tagning för att lägga in den vid uppspelningsmarkören"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แตะเทคเพื่อแทรกที่หัวเล่น"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oynatma çubuğuna eklemek için bir çekime dokun"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chạm vào một cảnh quay để chèn tại đầu phát"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "轻点镜头即可插入到播放头处"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "點一下鏡頭即可插入到播放頭處"
+          }
+        }
+      }
+    },
     "Tap Done in the editor, or pick a best take. It lands here, ready to post." : {
       "comment" : "Takes: what the Ready stage means. No dashes in any language.",
       "localizations" : {
@@ -374385,6 +374980,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "在編輯器中點「完成」，或挑選一個最佳鏡頭，它就會出現在這裡，可以發布。"
+          }
+        }
+      }
+    },
+    "Tap more to add them too, in the order you tap" : {
+      "comment" : "Footer hint of Add photo or video, over the video, once something is picked: more can be picked, in tap order",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط على المزيد لإضافتها أيضًا، بترتيب ضغطك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryk på flere for også at tilføje dem i den rækkefølge, du trykker"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe weitere an, um sie auch hinzuzufügen, in der Reihenfolge, in der du tippst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca más para añadirlos también, en el orden en que los toques"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez-en d’autres pour les ajouter aussi, dans l’ordre où vous les touchez"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "और जोड़ने के लिए और पर टैप करें, जिस क्रम में आप टैप करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk yang lain untuk ikut menambahkannya, sesuai urutan ketukanmu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toccane altri per aggiungerli, nell’ordine in cui li tocchi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ほかもタップすると、タップした順に追加されます"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "더 탭하면 탭한 순서대로 함께 추가돼요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk på flere for å legge dem til også, i rekkefølgen du trykker"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tik op meer om die ook toe te voegen, in de volgorde waarin je tikt"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque em mais para adicionar também, na ordem dos toques"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck på fler för att lägga till dem också, i den ordning du trycker"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แตะเพิ่มเพื่อใส่ด้วย ตามลำดับที่คุณแตะ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha fazlasını eklemek için onlara da dokun, dokunduğun sırayla eklenir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chạm thêm để thêm cả chúng, theo thứ tự bạn chạm"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "继续轻点可一并添加，按轻点顺序排列"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "繼續點一下可一併加入，依點選順序排列"
+          }
+        }
+      }
+    },
+    "Tap photos and videos in the order they’ll show, then Continue" : {
+      "comment" : "Footer hint of Add photo or video, over the video, before anything is picked; Continue is the sheet's button",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اضغط على الصور والفيديوهات بترتيب ظهورها، ثم على متابعة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryk på fotos og videoer i den rækkefølge, de skal vises i, og derefter på Fortsæt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe Fotos und Videos in der Reihenfolge an, in der sie erscheinen, dann auf Weiter"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca las fotos y videos en el orden en que se verán y luego Continuar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Touchez les photos et vidéos dans l’ordre où elles apparaîtront, puis Continuer"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "फ़ोटो और वीडियो उसी क्रम में टैप करें जिसमें वे दिखेंगे, फिर जारी रखें पर टैप करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketuk foto dan video sesuai urutan tampilnya, lalu Lanjutkan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tocca foto e video nell’ordine in cui appariranno, poi Continua"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示する順に写真や動画をタップしてから、「続ける」をタップしてください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보일 순서대로 사진과 영상을 탭한 다음 계속을 탭하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trykk på bilder og videoer i rekkefølgen de skal vises i, og deretter på Fortsett"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tik op foto’s en video’s in de volgorde waarin ze verschijnen en daarna op Doorgaan"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toque nas fotos e vídeos na ordem em que vão aparecer e depois em Continuar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tryck på bilder och videor i den ordning de ska visas och sedan på Fortsätt"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แตะรูปและวิดีโอตามลำดับที่จะแสดง แล้วแตะทำต่อ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fotoğraflara ve videolara görünecekleri sırayla dokun, sonra Devam et’e dokun"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chạm vào ảnh và video theo thứ tự sẽ hiện, rồi chạm Tiếp tục"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "按显示顺序轻点照片和视频，然后轻点“继续”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "依顯示順序點一下照片和影片，然後點一下「繼續」"
           }
         }
       }

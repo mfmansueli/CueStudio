@@ -65,7 +65,18 @@ extension OverlaysViewModel {
         let start = runStart(for: mode)
         let room = runRoom(for: mode, from: start)
         guard room >= MediaOverlay.minimumDuration else { return String(localized: "No room here · Move the playhead") }
+        if room < Self.shortRoom {
+            return String(localized: "Starts at \(DurationText.editor(start)) · only \(DurationText.tenths(room)) of room · move the playhead back for more")
+        }
         return String(localized: "Starts at \(DurationText.editor(start)) · room until \(DurationText.editor(start + room))")
+    }
+
+    /// Less room than this from the playhead (to the video's end or the next support) is said as a warning before picking.
+    static let shortRoom: TimeInterval = 3
+
+    /// Whether the room from the playhead is short (`shortRoom`) or none.
+    func insertionRoomIsShort(for mode: MediaInsertMode) -> Bool {
+        runRoom(for: mode, from: runStart(for: mode)) < Self.shortRoom
     }
 
     // MARK: - Adding

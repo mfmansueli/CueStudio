@@ -73,6 +73,18 @@ struct QuickEditSplitScreenTests {
         #expect(viewModel.edit.media.isEmpty)
     }
 
+    @Test func littleRoomFromThePlayheadIsSaidBeforePicking() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 10)
+        #expect(!viewModel.overlays.insertionRoomIsShort(for: .split))
+        #expect(viewModel.overlays.insertionNote(for: .split).contains("room until"))
+        // 1.6 s before the end, as in the owner's recording (25/10).
+        scenario.player.seek(to: 62.4)
+        #expect(viewModel.overlays.insertionRoomIsShort(for: .split))
+        #expect(viewModel.overlays.insertionNote(for: .split).contains("move the playhead back"))
+    }
+
     @Test func aVideosChosenPartGoesIn() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel

@@ -1059,9 +1059,9 @@ O dono revisou no iPhone, tela a tela, o primeiro voo, a primeira estrela, o Pro
 
 O editor trata cada gravação de uma montagem (o take, outros takes, vídeos do Fotos) como a dona do que foi achado ou escolhido nela. Progresso e
 auditoria: `reports/editor-award-checklist.md`.
-- **Outra take na montagem:** Media › **Insert as clip** mostra "Your takes" (as outras takes do criador, a mais nova primeiro; script, número e
-  duração) antes do Fotos; tocar uma a põe como clipe depois do clipe escolhido, senão do que está na agulha, e ela fica escolhida (§48;
-  `addableTakes`, `addClip(from:)`, `AddMediaSheet`).
+- **Outra take na montagem:** Media › **In sequence** abre em **Your takes** (as outras takes do criador, a mais nova primeiro; script, número e
+  duração, uma por linha), a terceira opção da origem ao lado de Photos e Your library; tocar uma a põe como clipe na agulha, e ela fica escolhida
+  (§48; `addableTakes`, `addClip(from:)`, `AddMediaSheet`).
 - **Capa de qualquer gravação** (`CoverSource.clipFrame`, `CoverFrame`: gravação, clipe e segundo da gravação; `TakeEdit+Cover`). O quadro é sempre o
   da gravação onde foi escolhido, enquadrado como o vídeo o mostra ali (`FramePipeline`, `EditFraming`: Stabilize, o zoom do clipe naquele momento,
   Follow face, Fit, a escala da montagem, o fundo e o look do clipe que o mostra; uma cópia pode ter o seu); trocar a ordem, duplicar, dividir ou mudar a
@@ -1852,6 +1852,17 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   `warnText` ("the last one is shortened to fit", "1 don’t fit before the end and stay out"), e só isso é encurtado ou fica de fora (`MediaRun`).
   Tudo entra num passo de desfazer, mudo, e o aviso diz "3 added to the split screen from 00:07.0 · muted" com Undo. A última sobreposição usada é
   a que Media abre de novo; o "+" depois dos clipes abre na sequência.
+- **A folha fica parada** (pedido do dono, 25/10: os elementos pulavam ao trocar de modo e Continue ficava fora da folha): título, cartões, a
+  explicação (que guarda o espaço da mais longa das quatro) e a nota de onde entra (duas linhas guardadas) nunca mudam de lugar; a origem é o
+  controle segmentado do sistema (**Photos · Your library**, e **Your takes** em In sequence, que abre nelas); a galeria ocupa o que sobra e rola
+  sozinha (o Fotos do sistema, ou a biblioteca inteira numa rolagem só: busca e **+** numa linha, filtros, grade). Um rodapé nativo sobre a
+  área segura (`safeAreaBar`) tem sempre a mesma altura: **Continue** (do sistema, desligado até haver escolha, depois **Continue · N**) e a dica
+  ("Tap photos and videos in the order they’ll show, then Continue" / "Tap more to add them too, in the order you tap"); em In sequence um toque
+  basta, então só a dica aparece ("Tap a take to put it in at the playhead") e o botão guarda o lugar. Alturas: a do meio é 80% da tela (na
+  metade do sistema a galeria não tinha espaço) e a cheia; arrastar troca entre elas, nada as muda sozinho. Pouco espaço a partir da agulha
+  (menos de 3 s) é dito antes de escolher, em `warnText`: "Starts at 00:22.8 · only 1.6s of room · move the playhead back for more".
+  `MediaSheetLayoutUITests` mede que nada se move nos quatro modos e nas duas alturas e que Continue fica na tela com zero, uma e duas escolhas e
+  ao desmarcar; o seletor do Fotos roda fora do Cue e não é alcançável pelos testes (o teste dele fica pulado; o rodapé é o mesmo da biblioteca).
 - **O modelo** (`MediaLayout.split`, `SplitScreen`, `SplitLayout`, `AreaFraming`, `RecordingFraming`, `SplitPlacement`): um apoio é uma mídia com o
   layout de tela dividida, a mesma `MediaOverlay` da Janela e da Tela cheia (trocar o modo em **Show as** mantém tudo que estava nela). O layout
   (cima/baixo ou lado a lado, 50/50 ou 60/40, qual conteúdo fica maior, qual vem primeiro, a linha) é **um só para o vídeo inteiro por enquanto**;

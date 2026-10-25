@@ -7,8 +7,9 @@ import PhotosUI
 import SwiftUI
 
 /// "Your library" in Add photo or video: the creator's kept photos, videos and logos, searchable, filtered (All, Favorites,
-/// Logos, Videos, Photos), favorites first. Photos and videos are picked in order and go on like picks from Photos (where
-/// they go, their part); a logo goes straight on, small over the whole video. Files come in from Photos or Files without
+/// Logos, Videos, Photos), favorites first. Photos and videos are picked in order (`BrandViewModel.libraryPicked`; the sheet's
+/// bar continues with them) and go on like picks from Photos (where they go, their part); a logo goes straight on, small over
+/// the whole video. Files come in from Photos or Files without
 /// leaving the sheet; holding a card renames it, stars it, makes a picture a logo (or back) or removes it (Undo).
 struct MediaLibrarySection: View {
     let viewModel: QuickEditViewModel
@@ -18,9 +19,10 @@ struct MediaLibrarySection: View {
     let onContinue: ([LibraryAsset]) -> Void
     let onLogo: (LibraryAsset) -> Void
 
-    @State private var picked: [UUID] = []
     @State private var photoItems: [PhotosPickerItem] = []
     @State private var importsFiles = false
+    /// Photos, as the system's sheet (from the + menu).
+    @State private var picksPhotos = false
     @State private var renaming: LibraryAsset?
     @State private var newName = ""
     @FocusState private var searchFocused: Bool
@@ -30,36 +32,39 @@ struct MediaLibrarySection: View {
 
     var body: some View {
         @Bindable var brand = brand
-        VStack(alignment: .leading, spacing: 10) {
-            if !brand.library.assets.isEmpty {
-                SearchField(text: $brand.librarySearch, prompt: "Search your library", isFocused: $searchFocused)
-                    .accessibilityIdentifier("edit.library.search")
-                PanelChips(
-                    options: LibraryFilter.allCases.filter { !videosOnly || $0 == .all || $0 == .favorites || $0 == .videos }
-                        .map { PanelOption($0, $0.label, key: $0.rawValue) },
-                    selection: brand.libraryFilter, identifier: "edit.library.filter"
-                ) { brand.libraryFilter = $0 }
-            }
-            addButtons
-            let assets = brand.shownAssets(videosOnly: videosOnly)
-            if brand.library.assets.isEmpty {
-                empty
-            } else if assets.isEmpty {
-                PanelNote(text: String(localized: "Nothing here matches. Try another word or filter."))
-            } else {
-                LazyVGrid(columns: Self.columns, alignment: .leading, spacing: 12) {
-                    ForEach(assets) { asset in tile(asset) }
+        // One scroll for the whole library (search, filters, adding, the grid) in the room the sheet leaves it: picking never
+        // moves the sheet's controls, and the footer's Continue stays in view.
+        ScrollView {
+            VStack(alignment: .leading, spacing: 10) {
+                if !brand.library.assets.isEmpty {
+                    // Search and adding share a row, so the grid starts high even at the sheet's middle height.
+                    HStack(spacing: 8) {
+                        SearchField(text: $brand.librarySearch, prompt: "Search your library", isFocused: $searchFocused)
+                            .accessibilityIdentifier("edit.library.search")
+                        addMenu
+                    }
+                    PanelChips(
+                        options: LibraryFilter.allCases.filter { !videosOnly || $0 == .all || $0 == .favorites || $0 == .videos }
+                            .map { PanelOption($0, $0.label, key: $0.rawValue) },
+                        selection: brand.libraryFilter, identifier: "edit.library.filter"
+                    ) { brand.libraryFilter = $0 }
+                }
+                let assets = brand.shownAssets(videosOnly: videosOnly)
+                if brand.library.assets.isEmpty {
+                    empty
+                    addButtons
+                } else if assets.isEmpty {
+                    PanelNote(text: String(localized: "Nothing here matches. Try another word or filter."))
+                } else {
+                    LazyVGrid(columns: Self.columns, alignment: .leading, spacing: 12) {
+                        ForEach(assets) { asset in tile(asset) }
+                    }
                 }
             }
-            if !picked.isEmpty {
-                PanelButton(
-                    label: String(localized: "Continue · \(picked.count)"), isPrimary: true, identifier: "edit.library.continue"
-                ) {
-                    onContinue(picked.compactMap { brand.library.asset($0) })
-                }
-                .padding(.bottom, 8)
-            }
+            .padding(.bottom, 12)
         }
+        .scrollIndicators(.hidden)
+        .scrollDismissesKeyboard(.immediately)
         .onAppear {
             // A filter the sequence doesn't offer (Logos, Photos) goes back to All.
             if videosOnly, ![.all, .favorites, .videos].contains(brand.libraryFilter) { brand.libraryFilter = .all }
@@ -71,6 +76,7 @@ struct MediaLibrarySection: View {
                 photoItems = []
             }
         }
+        .photosPicker(isPresented: $picksPhotos, selection: $photoItems, maxSelectionCount: 20, matching: .any(of: [.images, .videos]))
         .fileImporter(isPresented: $importsFiles, allowedContentTypes: [.image, .movie], allowsMultipleSelection: true) { result in
             guard case .success(let urls) = result else { return }
             Task { await brand.addFilesToLibrary(urls) }
@@ -118,6 +124,23 @@ struct MediaLibrarySection: View {
         }
     }
 
+    /// "+": the system's menu, to add from Photos or Files.
+    private var addMenu: some View {
+        Menu {
+            Button { picksPhotos = true } label: { Label("Add from Photos", systemImage: "photo.on.rectangle") }
+            Button { importsFiles = true } label: { Label("Add from Files", systemImage: "folder") }
+        } label: {
+            Image(systemName: brand.isAddingToLibrary ? "hourglass" : "plus")
+                .font(.editorGlyph(EditorGlyph.control, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                .background(Palette.fill, in: Circle())
+        }
+        .disabled(brand.isAddingToLibrary)
+        .accessibilityLabel(Text("Add to your library"))
+        .accessibilityIdentifier("edit.library.add")
+    }
+
     private var empty: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Your library is empty")
@@ -134,7 +157,7 @@ struct MediaLibrarySection: View {
 
     private func tile(_ asset: LibraryAsset) -> some View {
         let status = brand.library.status(of: asset)
-        let order = picked.firstIndex(of: asset.id).map { $0 + 1 }
+        let order = brand.libraryPicked.firstIndex(of: asset.id).map { $0 + 1 }
         return Button {
             tap(asset, status: status)
         } label: {
@@ -165,7 +188,7 @@ struct MediaLibrarySection: View {
             Button { brand.library.setKind(asset.id, .photo) } label: { Label("Use as a photo", systemImage: "photo") }
         }
         Button(role: .destructive) {
-            picked.removeAll { $0 == asset.id }
+            brand.libraryPicked.removeAll { $0 == asset.id }
             brand.removeFromLibrary(asset.id)
         } label: { Label("Remove from library", systemImage: "trash") }
     }
@@ -184,10 +207,10 @@ struct MediaLibrarySection: View {
             onContinue([asset])
             return
         }
-        if let index = picked.firstIndex(of: asset.id) {
-            picked.remove(at: index)
+        if let index = brand.libraryPicked.firstIndex(of: asset.id) {
+            brand.libraryPicked.remove(at: index)
         } else {
-            picked.append(asset.id)
+            brand.libraryPicked.append(asset.id)
         }
     }
 }
