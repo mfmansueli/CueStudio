@@ -74,23 +74,23 @@ extension AudioViewModel {
         guard let moved = BeatCuts.movingCuts(of: edit.timeline, onto: editedBeats) else {
             toast.show(edit.timeline.segments.count > 1
                 ? String(localized: "No cut is near a beat")
-                : String(localized: "Split the video first, or use Cut on the beats"))
+                : String(localized: "Split the video first, or use Cut on the beats"), kind: .problem)
             return
         }
         commit(moved.timeline)
         toast.show(
-            String(localized: "\(moved.moved) cuts on the beat"), action: undoAction
+            String(localized: "\(moved.moved) cuts on the beat"), kind: .cue, action: undoAction
         )
     }
 
     func cutOnBeats() {
         guard let cut = BeatCuts.cutting(edit.timeline, onto: editedBeats, every: beatCutEvery) else {
-            toast.show(String(localized: "No beat to cut on"))
+            toast.show(String(localized: "No beat to cut on"), kind: .problem)
             return
         }
         commit(cut.timeline)
         toast.show(
-            String(localized: "\(cut.cuts) cuts on the beats"), action: undoAction
+            String(localized: "\(cut.cuts) cuts on the beats"), kind: .cue, action: undoAction
         )
     }
 }

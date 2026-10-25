@@ -28,13 +28,13 @@ enum EditorPanelTab: String, CaseIterable, Identifiable {
         case .motion: String(localized: "Motion")
         case .styles: String(localized: "Styles")
         // Not the video's format nor the Adjust tool: how caption lines are cut, and the details of their look.
-        case .format: String(localized: LocalizedStringResource("captionStyle.format", defaultValue: "Format"))
+        case .format: String(inInterfaceLanguage: LocalizedStringResource("captionStyle.format", defaultValue: "Format"))
         case .animation: String(localized: "Animation")
-        case .adjust: String(localized: LocalizedStringResource("captionStyle.adjust", defaultValue: "Adjust"))
-        case .layout: String(localized: LocalizedStringResource("splitScreen.layout", defaultValue: "Layout"))
+        case .adjust: String(inInterfaceLanguage: LocalizedStringResource("captionStyle.adjust", defaultValue: "Adjust"))
+        case .layout: String(inInterfaceLanguage: LocalizedStringResource("splitScreen.layout", defaultValue: "Layout"))
         case .framing: String(localized: "Framing")
         case .sound: String(localized: "Sound")
-        case .part: String(localized: LocalizedStringResource("splitScreen.part", defaultValue: "Part"))
+        case .part: String(inInterfaceLanguage: LocalizedStringResource("splitScreen.part", defaultValue: "Part"))
         }
     }
 }

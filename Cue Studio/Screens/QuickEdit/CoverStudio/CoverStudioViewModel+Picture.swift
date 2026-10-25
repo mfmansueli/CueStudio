@@ -47,13 +47,13 @@ extension CoverStudioViewModel {
             let imported = try await importing.importMedia(item)
             remember(imported: imported.fileName)
             guard imported.kind == .photo else {
-                toast.show(String(localized: "Pick a photo for the cover"))
+                toast.show(String(localized: "Pick a photo for the cover"), kind: .problem)
                 return
             }
             setSource(.photo(fileName: imported.fileName))
         } catch {
             EditorFailureReport.make(error, operation: "coverPicture")?.send()
-            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")), kind: .problem)
         }
     }
 

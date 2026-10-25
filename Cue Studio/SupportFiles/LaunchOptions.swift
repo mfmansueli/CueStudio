@@ -20,6 +20,8 @@ import Foundation
 ///   (`SampleEdit.demo`: two clips, captions, texts, music with a beat, a B-roll window and a voice-over, their files made by
 ///   `SampleEditMedia`); with `-uiTestDemoTranscript` its words were heard too, for Edit by text. `-uiTestDemoSplit` opens it with
 ///   a split screen instead of the window (`SampleEdit.demoSplit`).
+/// - `-uiTestSeedLibrary`: the media library starts with a logo and a photo (`DebugLibrarySeed`); the library, brand kits and
+///   imported fonts live in a folder of the test's own, kept between launches with `-uiTestAssetRoot <name>`.
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
@@ -84,6 +86,9 @@ struct LaunchOptions {
     var scriptRepository: ScriptRepository = LocalScriptRepository()
     var takeRepository: TakeRepository = LocalTakeRepository()
     var brandRepository: BrandRepository = LocalBrandRepository()
+    /// Where the media library, the brand kits and the imported fonts keep their files and lists; nil is Application Support.
+    /// UI tests use a folder of their own (`-uiTestAssetRoot <name>` keeps it between launches, to test reopening).
+    var assetRoot: URL?
     /// The camera the recorder uses; nil is the real one (`AppServices.camera`).
     var recorderCamera: CameraControlling?
     var draftStore: QuickEditDraftStoring = QuickEditDraftStore()
@@ -219,6 +224,8 @@ struct LaunchOptions {
             let seeded = arguments.contains("-uiTestSeedSamples")
             options.scriptRepository = InMemoryScriptRepository(scripts: seeded ? SampleScripts.all : [])
             options.brandRepository = InMemoryBrandRepository()
+            let rootName = arguments.firstIndex(of: "-uiTestAssetRoot").flatMap { arguments.indices.contains($0 + 1) ? arguments[$0 + 1] : nil }
+            options.assetRoot = URL.temporaryDirectory.appending(path: "UITestAssets-\(rootName ?? UUID().uuidString)", directoryHint: .isDirectory)
             if arguments.contains("-uiTestDemoCamera") { options.recorderCamera = DemoCamera() }
             var takes = seeded ? SampleTakes.all() : []
             // The editor's demo: "3 morning habits" Take 3 becomes the design's 21.6 s edit.

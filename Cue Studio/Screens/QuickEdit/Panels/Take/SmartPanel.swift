@@ -9,7 +9,8 @@ import SwiftUI
 /// Edit by text, Auto captions, Remove pauses, Studio Voice, Auto adjust and the take's Background. Each opens the panel that does it (Auto
 /// adjust opens Adjust and measures the picture), so nothing happens that the creator can't see and undo. **Templates**: a whole
 /// look for a kind of video (`VideoTemplate`), one card each with what it changes, the one the edit is in marked; one Undo
-/// puts everything back. Violet is the AI's color; everything here runs on the iPhone.
+/// puts everything back. **Brand**: the creator's brand kits (`BrandKitsSection`). Violet is the AI's color; everything here
+/// runs on the iPhone.
 struct SmartPanel: View {
     let viewModel: QuickEditViewModel
     @State private var section: SmartPanelSection = .tools
@@ -31,6 +32,7 @@ struct SmartPanel: View {
                 switch section {
                 case .tools: tiles.padding(.top, 4)
                 case .templates: templates
+                case .brand: BrandKitsSection(viewModel: viewModel)
                 }
             }
         )

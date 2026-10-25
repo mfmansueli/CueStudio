@@ -121,7 +121,7 @@ struct FirstVoyageServiceTests {
         #expect(before.takeNotice(hasCaptions: false) == nil, "writing passes quietly")
         #expect(before.stepsToAnnounce.isEmpty)
         before.markPracticed()
-        #expect(before.takeNotice(hasCaptions: false) == "✓ Rehearsed · Next: record")
+        #expect(before.takeNotice(hasCaptions: false) == "Rehearsed · Next: record")
         #expect(before.takeNotice(hasCaptions: false) == nil, "said once")
         // Two takes, one starred: recording and picking at once; "Next: pick a take" would be wrong, so nothing is said.
         let after = makeScenario(
@@ -136,7 +136,7 @@ struct FirstVoyageServiceTests {
         let scenario = makeScenario()
         scenario.milestones.recordShare(of: UUID())
         #expect(scenario.service.progress.current == nil)
-        #expect(scenario.service.takeNotice(hasCaptions: false) == "✓ Your first star is out there")
+        #expect(scenario.service.takeNotice(hasCaptions: false) == "Your first star is out there")
         #expect(scenario.service.marks.stage == .finished)
         #expect(!scenario.service.canBeTurnedOn)
         scenario.service.setOn(true)

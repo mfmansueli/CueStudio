@@ -27,7 +27,7 @@ extension AudioViewModel {
         guard isReady, !recorder.isRecording else { return }
         guard await recorder.requestPermission() else {
             toast.show(
-                String(localized: "Mic is off for Cue"),
+                String(localized: "Mic is off for Cue"), kind: .problem,
                 action: ToastAction(title: String(localized: "Settings")) { [weak self] in self?.opensSettings() }
             )
             return
@@ -42,7 +42,7 @@ extension AudioViewModel {
             try await recorder.start()
         } catch {
             noteFailure(error, "voiceOverStart")
-            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Couldn't start recording")))
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Couldn't start recording")), kind: .problem)
             return
         }
         recordingStart = start
@@ -67,7 +67,7 @@ extension AudioViewModel {
         importedFiles.insert(recorded.fileName)
         guard recorded.duration >= 0.3 else {
             EditMediaFiles.remove([recorded.fileName])
-            toast.show(String(localized: "Too short to keep"))
+            toast.show(String(localized: "Too short to keep"), kind: .problem)
             return
         }
         let clip = VoiceOverClip(
@@ -94,11 +94,11 @@ extension AudioViewModel {
         switch reason {
         case .interrupted:
             stopVoiceOver()
-            toast.show(String(localized: "Recording stopped · Another app took the microphone"))
+            toast.show(String(localized: "Recording stopped · Another app took the microphone"), kind: .problem)
         case .failed:
             noteFailure(VoiceOverError.couldNotWrite, "voiceOverRecord")
             cancelVoiceOver()
-            toast.show(String(localized: "Couldn't record the voice-over · Try again"))
+            toast.show(String(localized: "Couldn't record the voice-over · Try again"), kind: .problem)
         }
     }
 

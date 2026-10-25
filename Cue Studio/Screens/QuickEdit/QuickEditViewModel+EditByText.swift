@@ -17,7 +17,7 @@ extension QuickEditViewModel {
         sheet = nil
         clips.transcriptSelection = nil
         guard let line else {
-            toast.show(String(localized: "No caption line for these words"))
+            toast.show(String(localized: "No caption line for these words"), kind: .problem)
             return
         }
         panel = .captions

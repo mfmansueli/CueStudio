@@ -7,7 +7,7 @@ import CoreGraphics
 import Foundation
 
 /// The caption on the preview: tap it to pick its line (again: Captions opens on it, keyboard up), drag it up or down to move
-/// every caption, sticking to top, middle and bottom.
+/// every caption, sticking to top, middle and bottom, and to the split screen's seam while one shows.
 extension CaptionsViewModel {
     /// Where captions stick when dragged: top, middle and bottom, the same places Position puts them.
     static let captionStops: [Double] = CaptionPosition.allCases.map(\.verticalFraction)
@@ -45,33 +45,53 @@ extension CaptionsViewModel {
         if !keepsPanel { panel = nil }
     }
 
-    /// Where captions go when dragged to `y` (unit, from the top): stuck to top, middle or bottom
-    /// when close.
-    static func snappedCaption(_ y: Double) -> (y: Double, stop: Double?) {
+    /// Where captions go when dragged to `y` (unit, from the top): stuck to the split screen's `seam` when one shows there, else
+    /// to top, middle or bottom, when close.
+    static func snappedCaption(_ y: Double, seam: Double? = nil) -> (y: Double, stop: Double?) {
         let clamped = min(max(y, 0.1), 0.9)
+        if let seam, abs(seam - clamped) < captionSnap { return (seam, seam) }
         if let stop = captionStops.first(where: { abs($0 - clamped) < captionSnap }) { return (stop, stop) }
         return (clamped, nil)
     }
 
-    /// Every caption moves up or down to `y` (unit, from the top). One undo step. Dragged off the split screen's seam, the
-    /// captions stop sitting on it: where the creator puts them is where they go.
+    /// Every caption moves up or down to `y` (unit, from the top). One undo step. While a split screen shows, the captions stick
+    /// to its seam and sit on it again (`SplitScreen.captionsOnSeam`); dragged elsewhere, they go where the creator puts them,
+    /// and a toast says so with the way back.
     func moveCaptions(toY y: Double) {
-        let placed = Self.snappedCaption(y).y
-        if seamAtPlayhead != nil, edit.captionCollection != nil {
-            changeEdit { edit in
-                edit.splitScreen.captionsOnSeam = false
-                let x = edit.captionCollection?.center?.x ?? 0.5
-                edit.captionCollection?.center = OverlayPoint(x: x, y: placed)
-            }
+        let seam = splitSeamAtPlayhead
+        let placed = Self.snappedCaption(y, seam: seam)
+        if let seam, edit.captionCollection != nil {
+            moveCaptions(to: placed.y, onSeam: placed.stop == seam)
             return
         }
+        let placedY = placed.y
         if edit.captionCollection != nil {
             updateCaptionSettings { settings in
-                settings.center = OverlayPoint(x: settings.center?.x ?? 0.5, y: placed)
+                settings.center = OverlayPoint(x: settings.center?.x ?? 0.5, y: placedY)
             }
         } else {
-            let nearest = CaptionPosition.allCases.min { abs($0.verticalFraction - placed) < abs($1.verticalFraction - placed) } ?? .bottom
+            let nearest = CaptionPosition.allCases.min { abs($0.verticalFraction - placedY) < abs($1.verticalFraction - placedY) } ?? .bottom
             change { $0.captionPosition = nearest }
+        }
+    }
+
+    /// The captions dropped while a split screen shows: on its seam (the option on), or at `y`, off it, the rest of the video too.
+    private func moveCaptions(to y: Double, onSeam: Bool) {
+        let wasOnSeam = edit.splitScreen.captionsOnSeam
+        if onSeam, wasOnSeam { return }
+        changeEdit { edit in
+            edit.splitScreen.captionsOnSeam = onSeam
+            guard !onSeam else { return }
+            let x = edit.captionCollection?.center?.x ?? 0.5
+            edit.captionCollection?.center = OverlayPoint(x: x, y: y)
+        }
+        if onSeam {
+            toast.show(String(localized: "Captions on the seam during the split screen"))
+        } else if wasOnSeam {
+            toast.show(
+                String(localized: "Captions stay where you put them"),
+                action: ToastAction(title: String(localized: "On the seam")) { [weak self] in self?.setCaptionsOnSeam(true) }
+            )
         }
     }
 
@@ -84,5 +104,12 @@ extension CaptionsViewModel {
     private var seamAtPlayhead: Double? {
         let time = player.currentTime
         return EditedComposition.seamSpans(of: edit).first { $0.span.contains(time) }?.y
+    }
+
+    /// The split screen's seam at the playhead, the captions on it or not: where a dragged caption sticks.
+    var splitSeamAtPlayhead: Double? {
+        guard edit.captionCollection != nil else { return nil }
+        let time = player.currentTime
+        return EditedComposition.splitSeams(of: edit).first { $0.span.contains(time) }?.y
     }
 }

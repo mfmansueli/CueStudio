@@ -47,7 +47,7 @@ struct EditorToolbar: View {
                     .font(.footnote.weight(.semibold))
                     .padding(.horizontal, 12)
                     .frame(height: 30)
-                    .background(Palette.Editor.toast, in: Capsule())
+                    .toastSurface(in: Capsule())
                     .offset(y: -38)
                     .allowsHitTesting(false)
                     .transition(.opacity)

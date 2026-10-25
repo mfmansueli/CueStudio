@@ -68,3 +68,9 @@ custom_rules:
     excluded_match_kinds: [comment, doccomment, string]
     message: "Use a text style, @ScaledMetric or an EditorGlyph size, not a number."
     severity: warning
+  keyed_string_outside_interface_language:
+    name: "Keyed string"
+    regex: "String\\(localized:\\s*LocalizedStringResource\\("
+    excluded_match_kinds: [comment, doccomment, string]
+    message: "A keyed string follows Cue's language only through String(inInterfaceLanguage: LocalizedStringResource(…)); String(localized:) with a resource uses the iPhone's."
+    severity: warning

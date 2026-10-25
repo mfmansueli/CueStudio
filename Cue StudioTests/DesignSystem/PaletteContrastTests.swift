@@ -514,12 +514,12 @@ struct PaletteContrastTests {
         }
     }
 
-    /// The Low Power Mode notice over the preview: its title, its sentence and ✕ on the toast's fill, over a white or a black
+    /// The Low Power Mode notice over the preview: its title, its sentence and ✕ on the toasts' pill, over a white or a black
     /// picture; the battery is an icon that informs (3:1).
     @Test func theLowPowerNoticeReadsOverAnyPicture() {
         for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
             for appearance in Appearance.allCases {
-                let fill = rgb(Palette.Editor.toast, in: appearance, over: picture)
+                let fill = rgb(Palette.Toast.fill, in: appearance, over: picture)
                 for (name, color) in [("title", Palette.ink), ("sentence and ✕", Palette.ink2)] {
                     let words = ColorContrast.ratio(rgb(color, in: appearance, over: fill), fill)
                     #expect(words >= ColorContrast.textMinimum, "\(name), \(appearance): \(words)")
@@ -530,19 +530,44 @@ struct PaletteContrastTests {
         }
     }
 
-    /// The work pill over the preview (`EditorWorkPill`): "Reversing · 40%" and Cancel are words on the toast's fill, the
-    /// spinning ring a control part (3:1), over a white or a black picture.
+    /// The work pill over the preview (`EditorWorkPill`): "Reversing · 40%" and Cancel are words on the toasts' pill, the
+    /// yellow ring that fills a control part (3:1), over a white or a black picture.
     @Test func theWorkPillReadsOverAnyPicture() {
         for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
             for appearance in Appearance.allCases {
-                let fill = rgb(Palette.Editor.toast, in: appearance, over: picture)
+                let fill = rgb(Palette.Toast.fill, in: appearance, over: picture)
                 for (name, color) in [("label", Palette.ink), ("Cancel", Palette.accText)] {
                     let words = ColorContrast.ratio(rgb(color, in: appearance, over: fill), fill)
                     #expect(words >= ColorContrast.textMinimum, "\(name), \(appearance): \(words)")
                 }
-                let ring = ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: fill), fill)
+                let ring = ColorContrast.ratio(rgb(Palette.Toast.ring, in: appearance, over: fill), fill)
                 #expect(ring >= 3, "ring, \(appearance): \(ring)")
             }
+        }
+    }
+
+    /// A toast (`ToastView`), the same over any screen because its pill is opaque: the message (4.5:1), "Undo" in black on the yellow
+    /// and the yellow on the pill (a control, 3:1), each kind's disc on the pill and its black glyph on the disc (icons that inform,
+    /// 3:1), the working ring on the pill, and the rim against the app's ground, so the pill never melts into a dark screen (3:1).
+    @Test func theToastReadsOverAnyScreen() {
+        for appearance in Appearance.allCases {
+            let fill = rgb(Palette.Toast.fill, in: appearance)
+            let message = ColorContrast.ratio(rgb(Palette.ink, in: appearance, over: fill), fill)
+            #expect(message >= ColorContrast.textMinimum, "message, \(appearance): \(message)")
+            #expect(ratio(Palette.accInk, on: Palette.acc, in: appearance) >= ColorContrast.textMinimum)
+            let button = ColorContrast.ratio(rgb(Palette.acc, in: appearance, over: fill), fill)
+            #expect(button >= ColorContrast.componentMinimum, "Undo on the pill, \(appearance): \(button)")
+            for (name, disc) in [("✓", Palette.Toast.done), ("★", Palette.Toast.cue), ("!", Palette.Toast.problem)] {
+                let onPill = ColorContrast.ratio(rgb(disc, in: appearance, over: fill), fill)
+                #expect(onPill >= ColorContrast.componentMinimum, "\(name) disc, \(appearance): \(onPill)")
+                let glyph = ratio(Palette.Toast.glyph, on: disc, in: appearance)
+                #expect(glyph >= ColorContrast.componentMinimum, "\(name) glyph, \(appearance): \(glyph)")
+            }
+            let ring = ColorContrast.ratio(rgb(Palette.Toast.ring, in: appearance, over: fill), fill)
+            #expect(ring >= ColorContrast.componentMinimum, "ring, \(appearance): \(ring)")
+            let ground = rgb(Palette.bg, in: appearance)
+            let rim = ColorContrast.ratio(rgb(Palette.Toast.rim, in: appearance, over: fill), ground)
+            #expect(rim >= ColorContrast.componentMinimum, "rim on the app's ground, \(appearance): \(rim)")
         }
     }
 

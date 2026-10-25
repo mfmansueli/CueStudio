@@ -112,7 +112,7 @@ struct RootView: View {
     /// again by `NotificationNavigator`), or the tool's introduction first.
     /// Scripts or takes are only in memory: the creator hears it while there is still time to free space.
     private func warnUnsavedWork() {
-        services.toast.show(String(localized: "Couldn't save your work · Free up space on this iPhone"))
+        services.toast.show(String(localized: "Couldn't save your work · Free up space on this iPhone"), kind: .problem)
     }
 
     private func handleNotificationTaps() {

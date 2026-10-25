@@ -61,7 +61,7 @@ struct VoicePhrasesField: View {
                 options: options,
                 isSelected: { profile.isSelected($0, for: .avoid) },
                 onTap: { option in
-                    if case .limit(let message) = profile.answer(.avoid, with: option) { toast.show(message) }
+                    if case .limit(let message) = profile.answer(.avoid, with: option) { toast.show(message, kind: .problem) }
                 },
                 extras: typed,
                 onTapExtra: { value in profile.answer(.avoid, with: VoiceOption(id: value, label: value)) },

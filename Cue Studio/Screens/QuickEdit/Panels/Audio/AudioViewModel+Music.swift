@@ -35,7 +35,7 @@ extension AudioViewModel {
             addMusic(imported)
         } catch {
             noteFailure(error, "importMusic")
-            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")), kind: .problem)
         }
     }
 
@@ -52,13 +52,13 @@ extension AudioViewModel {
         let occupied = edit.music.filter(\.takesMusicRoom).compactMap { $0.span(inEditOf: edit.editedDuration) }
         guard let slot = MusicPlacement.slot(playhead: player.currentTime, editDuration: edit.editedDuration, occupied: occupied) else {
             discard(imported)
-            toast.show(String(localized: "No room · Move the playhead"))
+            toast.show(String(localized: "No room · Move the playhead"), kind: .problem)
             return
         }
         let length = min(imported.duration, slot.duration)
         guard length >= MusicClip.minimumDuration else {
             discard(imported)
-            toast.show(String(localized: "Can't add this file"))
+            toast.show(String(localized: "Can't add this file"), kind: .problem)
             return
         }
         var clip = MusicClip(
@@ -83,7 +83,7 @@ extension AudioViewModel {
         }
         guard imported.duration >= MusicClip.minimumDuration else {
             discard(imported)
-            toast.show(String(localized: "Can't add this file"))
+            toast.show(String(localized: "Can't add this file"), kind: .problem)
             return
         }
         updateMusic(id) { clip in
@@ -115,7 +115,7 @@ extension AudioViewModel {
             guard length >= MusicClip.minimumDuration else {
                 EditMediaFiles.remove([name])
                 importedFiles.remove(name)
-                toast.show(String(localized: "No room · Move the playhead"))
+                toast.show(String(localized: "No room · Move the playhead"), kind: .problem)
                 return
             }
             var clip = MusicClip(fileName: name, title: effect.label, fileDuration: duration, start: start, length: length)
@@ -131,7 +131,7 @@ extension AudioViewModel {
             sayUndoable(String(localized: "\(effect.label) added at \(DurationText.editor(start))"))
         } catch {
             noteFailure(error, "addSound")
-            toast.show(String(localized: "Can't add this sound"))
+            toast.show(String(localized: "Can't add this sound"), kind: .problem)
         }
     }
 

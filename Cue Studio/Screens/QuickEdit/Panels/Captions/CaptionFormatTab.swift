@@ -15,7 +15,7 @@ struct CaptionFormatTab: View {
     var body: some View {
         if let settings = viewModel.edit.captionCollection {
             PanelSegmented(
-                label: String(localized: LocalizedStringResource("captionStyle.format", defaultValue: "Format")),
+                label: String(inInterfaceLanguage: LocalizedStringResource("captionStyle.format", defaultValue: "Format")),
                 detail: captions.captionFormat == nil ? String(localized: "as they were made") : nil,
                 options: CaptionFormat.allCases.map { PanelOption($0, $0.label) },
                 selection: captions.captionFormat, height: 38, identifier: "edit.captionFormat"

@@ -164,7 +164,7 @@ extension CaptionsViewModel {
         guard jobs.isCurrent(request) else { return }
         guard case .captions(let found, var transcript) = outcome, !found.isEmpty else {
             captionState = .idle
-            toast.show(String(localized: "No speech in this video"))
+            toast.show(String(localized: "No speech in this video"), kind: .problem)
             return
         }
         transcript.sourceID = id
@@ -186,7 +186,7 @@ extension CaptionsViewModel {
             edit.captions = (edit.captions + lines).sorted { $0.start < $1.start }
         }
         captionState = .idle
-        toast.show(String(localized: "\(count) lines from the support’s voice to check"))
+        toast.show(String(localized: "\(count) lines from the support’s voice to check"), kind: .cue)
     }
 
     /// A transcript already made: in the language asked for, or (on Auto) in one of the languages the recording is likely spoken in.
@@ -337,7 +337,7 @@ extension CaptionsViewModel {
         captionState = unheard.isEmpty ? .idle : .missingLanguages(unheard)
         // Auto captions turns into the list of the new lines.
         if panel == .autoCaptions { panel = .captions }
-        toast.show(String(localized: "\(lines.count) lines to check"))
+        toast.show(String(localized: "\(lines.count) lines to check"), kind: .cue)
     }
 
     // MARK: - Reading
@@ -469,12 +469,12 @@ extension CaptionsViewModel {
         let instances = captionMap.instances.filter { $0.cueID == id }
         guard let span = (instances.first { $0.line.span.contains(time) } ?? instances.first)?.line.span else { return }
         guard time > span.start + 0.15, time < span.end - 0.15 else {
-            toast.show(String(localized: "Move playhead into the line"))
+            toast.show(String(localized: "Move playhead into the line"), kind: .problem)
             return
         }
         let words = CaptionRevision.words(of: cue)
         guard words.count > 1 else {
-            toast.show(String(localized: "Only one word here"))
+            toast.show(String(localized: "Only one word here"), kind: .problem)
             return
         }
         let source = edit.timeline.sourceTime(forEdited: time)
@@ -513,7 +513,7 @@ extension CaptionsViewModel {
         guard let cue = edit.captions.first(where: { $0.id == id }) else { return }
         let words = CaptionText.words(in: cue.text)
         guard words.count > 1 else {
-            toast.show(String(localized: "Only one word here"))
+            toast.show(String(localized: "Only one word here"), kind: .problem)
             return
         }
         let before: Int
@@ -539,7 +539,7 @@ extension CaptionsViewModel {
     /// Caption › Join next.
     func joinCaption(_ id: UUID) {
         if let refusal = CaptionJoin.next(after: id, in: edit).refusal {
-            toast.show(refusal)
+            toast.show(refusal, kind: .problem)
             return
         }
         mergeCaptionWithNext(id)

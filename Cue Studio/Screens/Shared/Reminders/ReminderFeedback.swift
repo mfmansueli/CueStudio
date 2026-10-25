@@ -14,7 +14,7 @@ enum ReminderFeedback {
             toast.show(String(localized: "Reminder set · \(when(date))"))
         case .savedNotificationsOff:
             toast.show(
-                String(localized: "Saved in Cue · notifications are off"),
+                String(localized: "Saved in Cue · notifications are off"), kind: .problem,
                 action: ToastAction(title: String(localized: "Settings")) {
                     if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
                 }
@@ -22,9 +22,9 @@ enum ReminderFeedback {
         case .savedWaiting:
             toast.show(String(localized: "Saved · Cue schedules it closer to the time"))
         case .past:
-            toast.show(String(localized: "Pick a time in the future"))
+            toast.show(String(localized: "Pick a time in the future"), kind: .problem)
         case .failed:
-            toast.show(String(localized: "Couldn’t set the reminder · Try again"))
+            toast.show(String(localized: "Couldn’t set the reminder · Try again"), kind: .problem)
         }
     }
 

@@ -98,7 +98,7 @@ extension AudioViewModel {
             guard let self, jobs.isCurrent(ticket), comparesOriginal else { return }
             guard let volume else {
                 endComparison()
-                toast.show(String(localized: "There's no speech to compare"))
+                toast.show(String(localized: "There's no speech to compare"), kind: .problem)
                 return
             }
             originalVolume = volume

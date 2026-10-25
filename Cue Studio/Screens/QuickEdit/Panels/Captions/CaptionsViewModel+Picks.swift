@@ -141,7 +141,7 @@ extension CaptionsViewModel {
         }
         let shift = min(max(seconds, min(0, earliest)), max(0, latest))
         guard !moves.isEmpty, abs(shift) >= 0.005 else {
-            toast.show(String(localized: "The lines can’t move further"))
+            toast.show(String(localized: "The lines can’t move further"), kind: .problem)
             return false
         }
         let segments = Dictionary(moves.map { ($0.id, (segment: $0.segment, offset: $0.offset)) }) { first, _ in first }

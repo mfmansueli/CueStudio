@@ -114,7 +114,7 @@ struct AppIconPicker: View {
             Haptics.rigid()
             shaking = icon
             shakes += 1
-            toast.show(String(localized: "Unlocks at \(icon.milestone) videos shared"))
+            toast.show(String(localized: "Unlocks at \(icon.milestone) videos shared"), kind: .problem)
             return
         }
         if icon.needsPro, !store.tier.isPro {

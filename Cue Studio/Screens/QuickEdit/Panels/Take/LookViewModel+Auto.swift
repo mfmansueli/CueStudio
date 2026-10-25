@@ -59,7 +59,7 @@ extension LookViewModel {
     func autoAdjust() {
         guard isReady, !isClosed, autoState != .analyzing else { return }
         guard let target = autoTarget else {
-            toast.show(String(localized: "Couldn’t measure · No change"))
+            toast.show(String(localized: "Couldn’t measure · No change"), kind: .problem)
             return
         }
         comparesPicture = false
@@ -90,7 +90,7 @@ extension LookViewModel {
         // The picked clip (or the whole take) is still what it was measured for.
         guard panel == .adjust, target.clipID == lookClip?.id else { return }
         guard let found else {
-            toast.show(String(localized: "Couldn’t measure · No change"))
+            toast.show(String(localized: "Couldn’t measure · No change"), kind: .problem)
             return
         }
         let correction = found.limited()
@@ -109,7 +109,7 @@ extension LookViewModel {
                 $0.autoAmount = 1
             }
         }
-        toast.show(String(localized: "Auto applied · Adjust below"))
+        toast.show(String(localized: "Auto applied · Adjust below"), kind: .cue)
     }
 
     // MARK: - Intensity, reset, compare

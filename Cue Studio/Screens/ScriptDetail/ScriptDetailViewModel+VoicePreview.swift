@@ -52,7 +52,7 @@ extension ScriptDetailViewModel {
         profile.profile.voiceApproved = true
         profile.recordApproval(of: page.text)
         page.voicePreview = nil
-        toast.show(String(localized: "Saved · Cue learns from it"))
+        toast.show(String(localized: "Saved · Cue learns from it"), kind: .cue)
     }
 
     func openVoiceAdjust() {
@@ -75,11 +75,11 @@ extension ScriptDetailViewModel {
             page.voicePreview?.showing = .mine
             page.voicePreview?.without = nil
             commitPage()
-            toast.show(keepsInProfile ? String(localized: "Profile updated · New version") : String(localized: "New version"))
+            toast.show(keepsInProfile ? String(localized: "Profile updated · New version") : String(localized: "New version"), kind: .cue)
         } catch is CancellationError {
             return
         } catch {
-            toast.show(error.localizedDescription)
+            toast.show(error.localizedDescription, kind: .problem)
         }
     }
 

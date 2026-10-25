@@ -34,16 +34,16 @@ extension ClipsViewModel {
         let timeline = edit.timeline
         let index = clipIndexAtPlayhead
         if let id = selection?.clipID, timeline.index(ofSegment: id) != index {
-            toast.show(String(localized: "Move playhead onto the clip"))
+            toast.show(String(localized: "Move playhead onto the clip"), kind: .problem)
             return
         }
         guard let time = splitPoint(in: index) else {
-            toast.show(String(localized: "Move playhead onto the clip"))
+            toast.show(String(localized: "Move playhead onto the clip"), kind: .problem)
             return
         }
         var next = timeline
         guard next.split(atEdited: time) else {
-            toast.show(String(localized: "Move playhead onto the clip"))
+            toast.show(String(localized: "Move playhead onto the clip"), kind: .problem)
             return
         }
         commit(next)
@@ -64,7 +64,7 @@ extension ClipsViewModel {
     func deleteClip(_ id: UUID) {
         guard isReady else { return }
         guard edit.timeline.segments.count > 1 else {
-            toast.show(String(localized: "Keep at least one clip"))
+            toast.show(String(localized: "Keep at least one clip"), kind: .problem)
             return
         }
         var next = edit.timeline

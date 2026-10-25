@@ -97,16 +97,17 @@ nonisolated enum EditStorageCleaner {
         return text
     }
 
-    /// The files in `folder` and when each was last changed (also what `TakeRecovery` looks through).
+    /// The files in `folder` and when each was last changed (also what `TakeRecovery` looks through): its bytes, or the file
+    /// itself, whichever is later. A new hard link to old bytes (a library file put in a video, §52) keeps the bytes' old date;
+    /// the link is new.
     static func modified(in folder: URL) -> [String: Date] {
-        let urls = (try? FileManager.default.contentsOfDirectory(
-            at: folder, includingPropertiesForKeys: [.contentModificationDateKey, .isRegularFileKey], options: .skipsHiddenFiles
-        )) ?? []
+        let keys: Set<URLResourceKey> = [.contentModificationDateKey, .attributeModificationDateKey, .isRegularFileKey]
+        let urls = (try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: Array(keys), options: .skipsHiddenFiles)) ?? []
         var files: [String: Date] = [:]
         for url in urls {
-            guard let values = try? url.resourceValues(forKeys: [.contentModificationDateKey, .isRegularFileKey]),
-                  values.isRegularFile == true, let date = values.contentModificationDate else { continue }
-            files[url.lastPathComponent] = date
+            guard let values = try? url.resourceValues(forKeys: keys), values.isRegularFile == true,
+                  let date = values.contentModificationDate else { continue }
+            files[url.lastPathComponent] = max(date, values.attributeModificationDate ?? date)
         }
         return files
     }

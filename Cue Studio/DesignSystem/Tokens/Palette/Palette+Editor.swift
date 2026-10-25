@@ -40,9 +40,6 @@ extension Palette {
         /// Done and the other glass buttons of the editor's top bar.
         static let barButton = Color(hex: 0x2B2F48, opacity: 0.7)
 
-        /// The editor's toast: one line on a dark pill.
-        static let toast = Color(hex: 0x1F2236, opacity: 0.96)
-
         /// Separators of the toolbar and the panels.
         static let separator = Color(hex: 0x505678, opacity: 0.5)
 

@@ -201,7 +201,7 @@ struct YourUniverseView: View {
     private func openReview(_ content: UniverseContent) {
         let row = content.review
         guard !row.isLocked else {
-            toast.show(String(localized: "Share 3 videos to unlock it"))
+            toast.show(String(localized: "Share 3 videos to unlock it"), kind: .problem)
             return
         }
         if content.reviewSwitchesYear { chosenYear = row.year }

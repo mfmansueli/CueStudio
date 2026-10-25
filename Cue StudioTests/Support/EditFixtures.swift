@@ -82,6 +82,7 @@ enum EditFixtures {
             layouts: [SplitLayout(arrangement: .sideBySide, ratio: .sixtyForty)],
             framings: [RecordingFraming(sourceID: nil, framing: AreaFraming(fit: .fit, zoom: 1.5))], mutesMedia: true
         )
+        edit.brandKit = AppliedBrandKit(id: UUID(), name: "Acme", colors: [.custom(red: 0.1, green: 0.4, blue: 0.96)])
         edit.voiceOvers = [VoiceOverClip(fileName: "v.m4a", duration: 2, anchor: 1)]
         edit.creatorStyle = .clean
         edit.textLook = TypePreset.cue.look(for: .title)

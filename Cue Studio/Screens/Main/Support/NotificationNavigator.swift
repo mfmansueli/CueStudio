@@ -122,7 +122,7 @@ struct NotificationNavigator {
         presentation.selectedTab = .scripts
         presentation.scriptsPath = []
         guard let idea = services.ideaSuggestions.idea(forKey: key) else {
-            services.toast.show(String(localized: "That idea isn’t here any more · try ↻ for another"), duration: Self.goneDuration)
+            services.toast.show(String(localized: "That idea isn’t here any more · try ↻ for another"), kind: .problem, duration: Self.goneDuration)
             return
         }
         // An idea with a brief goes in whole (title, angle, opening line), as "Start with it" puts it, so the script follows it.
@@ -142,7 +142,7 @@ struct NotificationNavigator {
             presentation.scriptsPath = []
             // The real reason: Cue's switch, the iPhone, the iOS switch or a model getting ready.
             let reason = services.writer.drafting(in: []).reason ?? String(localized: "Apple Intelligence isn’t available on this iPhone right now")
-            services.toast.show(reason, duration: Self.goneDuration)
+            services.toast.show(reason, kind: .problem, duration: Self.goneDuration)
             return
         }
         switch destination {
@@ -164,11 +164,11 @@ struct NotificationNavigator {
     private func gone(_ message: String) {
         presentation.selectedTab = .scripts
         presentation.scriptsPath = []
-        services.toast.show(message, duration: Self.goneDuration)
+        services.toast.show(message, kind: .problem, duration: Self.goneDuration)
     }
 
     private func goneTake() {
         presentation.selectedTab = .takes
-        services.toast.show(String(localized: "That recording is no longer in Cue"), duration: Self.goneDuration)
+        services.toast.show(String(localized: "That recording is no longer in Cue"), kind: .problem, duration: Self.goneDuration)
     }
 }

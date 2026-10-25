@@ -88,7 +88,7 @@ final class ScriptStarter {
             if let failure = writer.writingFailure(in: asked) {
                 AIFailureReport.note(failure, operation: "script", route: nil, language: request.language?.locale.identifier, seconds: 0, isFinal: true)
             }
-            toast.show(cause.reason, action: ToastAction(title: String(localized: "Write it")) { [weak self] in
+            toast.show(cause.reason, kind: .problem, action: ToastAction(title: String(localized: "Write it")) { [weak self] in
                 guard let self else { return }
                 // The dock's own idea leaves the dock as it becomes the draft; an idea from elsewhere leaves the creator's draft alone.
                 let id = idea == nil ? writeByHand(idea: text, format: request.format, comment: comment)

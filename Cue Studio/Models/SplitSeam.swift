@@ -20,10 +20,10 @@ nonisolated enum SplitSeam: String, LenientChoice, CaseIterable, Identifiable, S
 
     var label: String {
         switch self {
-        case .none: String(localized: LocalizedStringResource("splitSeam.none", defaultValue: "None"))
-        case .line: String(localized: LocalizedStringResource("splitSeam.line", defaultValue: "Line"))
-        case .blur: String(localized: LocalizedStringResource("splitSeam.blur", defaultValue: "Blur"))
-        case .shadow: String(localized: LocalizedStringResource("splitSeam.shadow", defaultValue: "Shadow"))
+        case .none: String(inInterfaceLanguage: LocalizedStringResource("splitSeam.none", defaultValue: "None"))
+        case .line: String(inInterfaceLanguage: LocalizedStringResource("splitSeam.line", defaultValue: "Line"))
+        case .blur: String(inInterfaceLanguage: LocalizedStringResource("splitSeam.blur", defaultValue: "Blur"))
+        case .shadow: String(inInterfaceLanguage: LocalizedStringResource("splitSeam.shadow", defaultValue: "Shadow"))
         }
     }
 

@@ -63,7 +63,7 @@ nonisolated enum CaptionTheme: String, LenientChoice, CaseIterable, Identifiable
         case .bold: String(localized: "Bold")
         case .comic: String(localized: "Comic")
         // Not the zoom effect named Punch: a caption style's name.
-        case .punch: String(localized: LocalizedStringResource("captionStyle.punch", defaultValue: "Punch"))
+        case .punch: String(inInterfaceLanguage: LocalizedStringResource("captionStyle.punch", defaultValue: "Punch"))
         case .paper: String(localized: "Paper")
         case .mono: String(localized: "Mono")
         case .lightPill: String(localized: "Light pill")

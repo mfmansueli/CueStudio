@@ -34,7 +34,7 @@ struct MainView: View {
             )
             .overlay { StarTransitionOverlay(transition: ideaTransition).ignoresSafeArea() }
             .overlay(alignment: .bottom) { continuePostingCard }
-            // "✓ Recorded · Next: pick a take": the first voyage says each step done.
+            // "Recorded · Next: pick a take" (a ✓ toast): the first voyage says each step done.
             .background { VoyageAnnouncer() }
             .sheet(item: $presentation.sheet) { sheet in
                 sheetContent(sheet)

@@ -233,10 +233,12 @@ struct TextStylePanel: View {
     @ViewBuilder
     private func font(_ text: TextOverlay) -> some View {
         PanelChips(
-            options: TextOverlayFont.editorFonts.map { PanelOption($0, $0.label) }, selection: text.font,
+            options: TextOverlayFont.pickerFonts(including: text.font).map { PanelOption($0, $0.label) }, selection: text.font,
             font: { CueStudioFont.chip($0, size: $1) }, identifier: "edit.textFont",
             onSelect: { viewModel.overlays.restyleText(.font($0)) }
         )
+        if let note = viewModel.brand.missingFontNote(text.font) { PanelNote(text: note) }
+        FontImportButton(viewModel: viewModel) { viewModel.overlays.restyleText(.font($0)) }
         PanelSegmented(
             label: String(localized: "Weight"), options: text.font.weights.map { PanelOption($0, $0.label) },
             selection: text.weight, height: 38, identifier: "edit.textWeight"

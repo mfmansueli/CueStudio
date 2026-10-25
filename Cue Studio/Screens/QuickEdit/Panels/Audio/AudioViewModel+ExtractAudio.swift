@@ -36,7 +36,7 @@ extension AudioViewModel {
         let segment = timeline.segments[index]
         // A muted clip (its sound already taken out, or turned off) has nothing to extract: its sound would play again.
         guard !segment.isMuted, segment.volume > 0 else {
-            toast.show(String(localized: "This clip is muted · Turn its sound on to extract it"))
+            toast.show(String(localized: "This clip is muted · Turn its sound on to extract it"), kind: .problem)
             return
         }
         let request = SoundExtraction(
@@ -66,11 +66,11 @@ extension AudioViewModel {
         guard let placed = edit.editedMedia(in: timeline).first(where: { $0.media.id == id }) else { return }
         let media = placed.media
         guard media.kind == .video, media.hasSound == true else {
-            toast.show(String(localized: "This video has no sound"))
+            toast.show(String(localized: "This video has no sound"), kind: .problem)
             return
         }
         guard let volume = media.audioVolume, volume > 0 else {
-            toast.show(String(localized: "This video is muted · Turn its sound on to extract it"))
+            toast.show(String(localized: "This video is muted · Turn its sound on to extract it"), kind: .problem)
             return
         }
         let start = media.startInFile
@@ -96,20 +96,22 @@ extension AudioViewModel {
         isImportingMedia = true
         defer { isImportingMedia = false }
         player.pause()
-        toast.show(String(localized: "Extracting the sound…"))
+        // The ring turns until what came of it takes its place: the new track (`finishExtracting`) or why not.
+        let work = toast.showWorking(String(localized: "Extracting the sound…"))
         do {
             let sound = try await editing.extractSound(request)
             guard !isClosed else {
                 EditMediaFiles.remove([sound.fileName])
+                toast.endWorking(work)
                 return nil
             }
             importedFiles.insert(sound.fileName)
             return sound
         } catch AudioTrackExtractor.ExtractError.noAudio {
-            toast.show(String(localized: "This clip has no sound"))
+            toast.show(String(localized: "This clip has no sound"), kind: .problem)
         } catch {
             noteFailure(error, "extractAudio")
-            toast.show(String(localized: "Can't extract this sound"))
+            toast.show(String(localized: "Can't extract this sound"), kind: .problem)
         }
         return nil
     }
@@ -117,7 +119,7 @@ extension AudioViewModel {
     private func discardExtracted(_ sound: ExtractedSound) {
         EditMediaFiles.remove([sound.fileName])
         importedFiles.remove(sound.fileName)
-        toast.show(String(localized: "The video changed meanwhile · Extract the sound again"))
+        toast.show(String(localized: "The video changed meanwhile · Extract the sound again"), kind: .problem)
     }
 
     /// The new clip on the music track: where the sound played, at its own level, with no fades and never ducking (it's the

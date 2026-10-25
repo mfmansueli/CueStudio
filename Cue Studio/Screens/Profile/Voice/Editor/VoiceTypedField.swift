@@ -67,7 +67,7 @@ struct VoiceTypedField: View {
             feedback = .message(String(localized: "Already added."))
         case .limit(let message):
             feedback = nil
-            toast.show(message)
+            toast.show(message, kind: .problem)
         case .rejected(let check):
             feedback = check.message.map(Feedback.message)
         case .suggest(let suggestion, let original):

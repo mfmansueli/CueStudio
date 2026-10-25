@@ -7,8 +7,10 @@ import SwiftUI
 
 /// Colors to pick from (the palette, `OverlayColor.palette`), the picked one ringed in yellow and checked (never only a
 /// color); each a 44 pt target, the color as large as `diameter` (the styling panels show them bigger). They wrap onto as
-/// many rows as the width needs, so the whole palette is always in view. With `reset`, a color picked over a style's own can
-/// go back to it from the label's row.
+/// many rows as the width needs, so the whole palette is always in view. The video's brand kit colors come first
+/// (`brandColors`), a color of the creator's own that is picked shows too, and the last well opens the system's color picker
+/// for any other (a brand's exact color). With `reset`, a color picked over a style's own can go back to it from the
+/// label's row.
 struct PanelSwatches: View {
     let label: String
     let colors: [OverlayColor]
@@ -19,8 +21,19 @@ struct PanelSwatches: View {
     let identifier: String
     let onSelect: (OverlayColor) -> Void
 
+    @Environment(\.brandColors) private var brandColors
+
     /// 44 pt targets, 4 pt apart, as many to a row as fit.
     private static let columns = [GridItem(.adaptive(minimum: Metrics.hitTarget, maximum: Metrics.hitTarget), spacing: 4)]
+
+    /// The brand's colors, then the palette, then the picked one when it is neither.
+    private var shown: [OverlayColor] {
+        var list = brandColors.filter { !colors.contains($0) }
+        list += colors
+        if let selection, !list.contains(selection) { list.append(selection) }
+        var seen = Set<OverlayColor>()
+        return list.filter { seen.insert($0).inserted }
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
@@ -36,7 +49,7 @@ struct PanelSwatches: View {
                 }
             }
             LazyVGrid(columns: Self.columns, alignment: .leading, spacing: 4) {
-                ForEach(colors) { color in
+                ForEach(shown) { color in
                     let isOn = color == selection
                     Button {
                         Haptics.selection()
@@ -63,7 +76,50 @@ struct PanelSwatches: View {
                     .accessibilityAddTraits(isOn ? .isSelected : [])
                     .accessibilityIdentifier("\(identifier).\(color.rawValue)")
                 }
+                CustomColorWell(selection: selection, diameter: diameter, identifier: "\(identifier).custom", onSelect: onSelect)
             }
         }
+    }
+}
+
+/// The last well of a palette: the system's color picker, for a color of the creator's own. The picker changes its color all
+/// the while a finger moves on it; the color goes on once it rests (`settle`), so one pick is one change (and one Undo).
+struct CustomColorWell: View {
+    let selection: OverlayColor?
+    let diameter: CGFloat
+    let identifier: String
+    let onSelect: (OverlayColor) -> Void
+
+    @State private var shown: OverlayColor?
+    @State private var delivery: Task<Void, Never>?
+
+    private static let settle: Duration = .milliseconds(350)
+
+    var body: some View {
+        ColorPicker(selection: Binding(
+            get: { (shown ?? selection)?.color ?? .white },
+            set: { color in
+                let resolved = UIColor(color).resolvedColor(with: UITraitCollection(userInterfaceStyle: .light))
+                var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+                guard resolved.getRed(&red, green: &green, blue: &blue, alpha: &alpha) else { return }
+                let picked = OverlayColor.custom(red: Double(red), green: Double(green), blue: Double(blue))
+                shown = picked
+                delivery?.cancel()
+                delivery = Task {
+                    try? await Task.sleep(for: Self.settle)
+                    guard !Task.isCancelled else { return }
+                    onSelect(picked)
+                    shown = nil
+                }
+            }
+        ), supportsOpacity: false) {
+            Text("Custom color")
+        }
+        .labelsHidden()
+        .scaleEffect(diameter / 28)
+        .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+        .accessibilityLabel(Text("Custom color"))
+        .accessibilityValue(Text((shown ?? selection)?.label ?? ""))
+        .accessibilityIdentifier(identifier)
     }
 }

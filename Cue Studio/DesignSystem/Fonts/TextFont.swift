@@ -42,6 +42,11 @@ nonisolated enum TextFont {
 
     static func font(_ face: TextOverlayFont, weight: TextOverlayWeight, size: CGFloat, text: String) -> UIFont {
         let system = UIFont.systemFont(ofSize: size, weight: uiWeight(weight))
+        if let family = face.customFamily {
+            // An imported family not on this iPhone draws in SF Pro (the panel says so).
+            guard let match = CustomFontRegistry.shared.face(of: family, weight: weight) else { return system }
+            return imported(match, weight: weight, size: size, fallback: system)
+        }
         switch face {
         case .classic, .sfPro: return system
         case .rounded: return designed(system, .rounded)
@@ -92,6 +97,21 @@ nonisolated enum TextFont {
             font = UIFont(descriptor: descriptor, size: size)
         }
         return covers(font, text) ? font : fallback
+    }
+
+    /// An imported face at `weight` (on its weight axis when it has one). Letters it lacks are drawn, one by one, in the
+    /// system font at the same weight: an imported family covers what its maker drew, and the rest of the line keeps it.
+    private static func imported(_ face: CustomFontFace, weight: TextOverlayWeight, size: CGFloat, fallback: UIFont) -> UIFont {
+        guard let base = UIFont(name: face.postScriptName, size: size) else { return fallback }
+        var attributes: [UIFontDescriptor.AttributeName: Any] = [
+            UIFontDescriptor.AttributeName(rawValue: kCTFontCascadeListAttribute as String): [fallback.fontDescriptor],
+        ]
+        if let range = face.weightRange {
+            attributes[UIFontDescriptor.AttributeName(rawValue: kCTFontVariationAttribute as String)] = [
+                wght: NSNumber(value: min(max(weight.value, range.lowerBound), range.upperBound)),
+            ]
+        }
+        return UIFont(descriptor: base.fontDescriptor.addingAttributes(attributes), size: size)
     }
 
     /// Whether the face has every letter of `text` (spaces aside).

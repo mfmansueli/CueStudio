@@ -64,7 +64,7 @@ struct EditProfileAccount: View {
             }
             toast.show(String(localized: "Signed in with Apple"))
         case .failure(let error):
-            if (error as? ASAuthorizationError)?.code != .canceled { toast.show(String(localized: "Couldn't sign in · Try again")) }
+            if (error as? ASAuthorizationError)?.code != .canceled { toast.show(String(localized: "Couldn't sign in · Try again"), kind: .problem) }
         }
     }
 }

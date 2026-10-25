@@ -65,7 +65,27 @@ extension OverlaysViewModel {
         let start = runStart(for: mode)
         let room = runRoom(for: mode, from: start)
         guard room >= MediaOverlay.minimumDuration else { return String(localized: "No room here · Move the playhead") }
+        if isFull(at: start) { return String(localized: "3 photos or videos already show here · move the playhead") }
+        if room < Self.shortRoom {
+            return String(localized: "Starts at \(DurationText.editor(start)) · only \(DurationText.tenths(room)) of room · move the playhead back for more")
+        }
         return String(localized: "Starts at \(DurationText.editor(start)) · room until \(DurationText.editor(start + room))")
+    }
+
+    /// Less room than this from the playhead (to the video's end or the next support) is said as a warning before picking.
+    static let shortRoom: TimeInterval = 3
+
+    /// Whether the room from the playhead is short (`shortRoom`) or none, or the moment there is full (`isFull(at:)`).
+    func insertionRoomIsShort(for mode: MediaInsertMode) -> Bool {
+        let start = runStart(for: mode)
+        return runRoom(for: mode, from: start) < Self.shortRoom || isFull(at: start)
+    }
+
+    /// Whether `MediaOverlay.simultaneousLimit` photos or videos already show at `start`: windows, full screens and the split
+    /// screen's support alike.
+    private func isFull(at start: TimeInterval) -> Bool {
+        let moment = TimeSpan(start: start, end: start + MediaOverlay.minimumDuration)
+        return LayerLanes.peak(of: limitedMediaSpans(), within: moment) >= MediaOverlay.simultaneousLimit
     }
 
     // MARK: - Adding
@@ -84,7 +104,7 @@ extension OverlaysViewModel {
                 break
             } catch {
                 noteFailure(error, "importMedia")
-                toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
+                toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")), kind: .problem)
             }
         }
         guard !isClosed else {
@@ -104,17 +124,16 @@ extension OverlaysViewModel {
         let unused = Set(picks.map(\.imported.fileName)).subtracting(run.placed.map { picks[$0.index].imported.fileName })
         guard !run.placed.isEmpty else {
             EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
-            toast.show(String(localized: "No room · Move the playhead"))
+            toast.show(String(localized: "No room · Move the playhead"), kind: .problem)
             return
         }
-        // Windows and full screens over the same moment: never more than the export draws at once.
-        if layout != .split {
-            let others = mediaBars.map(\.span)
-            guard run.placed.allSatisfy({ LayerLanes.peak(of: others, within: $0.span) < MediaOverlay.simultaneousLimit }) else {
-                EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
-                toast.show(String(localized: "Max 3 photos or videos"))
-                return
-            }
+        // Never more photos and videos over the same moment than the export draws at once (it would leave a fourth video out
+        // without a word): a support counts like a window.
+        let others = limitedMediaSpans()
+        guard run.placed.allSatisfy({ LayerLanes.peak(of: others, within: $0.span) < MediaOverlay.simultaneousLimit }) else {
+            EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
+            toast.show(String(localized: "3 photos or videos already show then · up to 3 at a time"), kind: .problem)
+            return
         }
         var next = edit
         if layout == .split, next.splitScreen.layouts.isEmpty {
@@ -287,7 +306,7 @@ extension OverlaysViewModel {
         guard let index = edit.media.firstIndex(where: { $0.id == id }), edit.media[index].layout != layout,
               let span = mediaBars.first(where: { $0.id == id })?.span else { return }
         if layout == .split, supportSpans.contains(where: { $0.id != id && $0.span.overlaps(span) }) {
-            toast.show(String(localized: "Another support shows then · one at a time in the split screen"))
+            toast.show(String(localized: "Another support shows then · one at a time in the split screen"), kind: .problem)
             return
         }
         var next = edit
@@ -385,7 +404,7 @@ extension OverlaysViewModel {
               let span = edit.placedMedia(in: edit.timeline).first(where: { $0.media.id == id })?.span else { return }
         let time = player.currentTime
         guard time - span.start >= MediaOverlay.minimumDuration, span.end - time >= MediaOverlay.minimumDuration else {
-            toast.show(String(localized: "Move the playhead inside it to split it"))
+            toast.show(String(localized: "Move the playhead inside it to split it"), kind: .problem)
             return
         }
         let original = edit.media[index]

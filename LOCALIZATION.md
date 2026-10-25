@@ -175,7 +175,9 @@ names in **bold** stay in English in every language.
   the share sheet's *Post caption* vs. the video's *Caption*), so each language can translate both. When the English must
   stay the same word on screen, the code asks for a key of its own with the English as default
   (`String(inInterfaceLanguage: LocalizedStringResource("step.next", defaultValue: "Next", comment: …))`) and the catalog gives
-  that key an `en` value (`scripts/strings.py add` takes `"en"` for such a key). Split this way (22 Oct 2026):
+  that key an `en` value (`scripts/strings.py add` takes `"en"` for such a key). Always through `String(inInterfaceLanguage:)`:
+  `String(localized:)` with a resource resolves in the iPhone's language, not Cue's (the SwiftLint rule
+  `keyed_string_outside_interface_language` flags it). Split this way (22 Oct 2026):
   - **Format**: the video's frame (Quick edit, Recording setup, Script details) keeps `Format`; the script's format (Scripts
     dock chip, Format sheet) is `format.script`; a file format (HEVC | H.264, Image | video) is `format.file`.
   - **Voice**: the creator's writing voice (dock chip ✦ Voice, My Cue Voice) keeps `Voice`; the prompter's Voice | Steady switch

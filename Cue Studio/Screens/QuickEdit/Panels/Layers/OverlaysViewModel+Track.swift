@@ -24,7 +24,7 @@ extension OverlaysViewModel {
     func trackSelectedItem() {
         guard !isTracking, let item = motionItem else { return }
         guard let span = editedSpan(of: item), localTime(of: item) != nil else {
-            toast.show(String(localized: "Move playhead onto it first"))
+            toast.show(String(localized: "Move playhead onto it first"), kind: .problem)
             return
         }
         player.pause()
@@ -93,11 +93,11 @@ extension OverlaysViewModel {
         guard jobs.isCurrent(ticket) else { return }
         trackingProgress = nil
         guard edit.timeline == timeline, editedSpan(of: item) == span else {
-            toast.show(String(localized: "The video changed meanwhile · Track it again"))
+            toast.show(String(localized: "The video changed meanwhile · Track it again"), kind: .problem)
             return
         }
         guard let points, points.count > 1, let first = points.first, let last = points.last else {
-            toast.show(String(localized: "Couldn’t follow anything there · Put it on what it should follow"))
+            toast.show(String(localized: "Couldn’t follow anything there · Put it on what it should follow"), kind: .problem)
             return
         }
         let base = OverlayMotion.State(center: motionState(of: item).center, scale: 1, opacity: 1)
@@ -113,7 +113,7 @@ extension OverlaysViewModel {
         let lost = last.time < reached.upperBound - 0.2 || first.time > reached.lowerBound + 0.2
         toast.show(lost
             ? String(localized: "Lost it after \(DurationText.tenths(last.time - first.time)) · It holds from there")
-            : String(localized: "Tracked · \(tracked.count) keyframes to adjust"))
+            : String(localized: "Tracked · \(tracked.count) keyframes to adjust"), kind: lost ? .problem : .cue)
     }
 
     /// How the recording at `url` lands on the edit's frame (Stabilize's correction, its crop, Follow face's path, or Fit). Off

@@ -203,7 +203,7 @@ struct ImportScriptSheet: View {
 
     private func pasteFromClipboard() {
         guard let pasted = importer.clipboardText() else {
-            toast.show(String(localized: "Copy your script first"))
+            toast.show(String(localized: "Copy your script first"), kind: .problem)
             isEditing = true
             return
         }

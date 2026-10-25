@@ -74,6 +74,11 @@ struct AppServices {
     let topicTagging: TopicTaggingService
     let logbook: LogbookService
     let brands: BrandStore
+    /// The creator's imported font families, registered for Cue at launch.
+    let fonts: CustomFontStore
+    /// Photos, videos and logos kept to reuse in any video.
+    let mediaLibrary: MediaLibraryStore
+    let brandKits: BrandKitStore
     let aiStatus: AIStatus
     let voiceQuestions: VoiceQuestionScheduler
     /// Reminders, the routine, project nudges and the tools' introductions (local notifications only).
@@ -200,6 +205,12 @@ struct AppServices {
         starter.briefWritten = { [ideaSuggestions] brief in ideaSuggestions.generated(from: brief) }
         starter.keepsComment = { [logbook] comment in logbook.add(comment.author.map { "\($0): \(comment.text)" } ?? comment.text) }
         brands = BrandStore(repository: options.brandRepository)
+        let fontFolder = options.assetRoot?.appending(path: "Fonts", directoryHint: .isDirectory) ?? CustomFontFiles.directory
+        fonts = CustomFontStore(repository: LocalCustomFontRepository(directory: fontFolder), directory: fontFolder)
+        let libraryFolder = options.assetRoot?.appending(path: "MediaLibrary", directoryHint: .isDirectory) ?? MediaLibraryFiles.directory
+        mediaLibrary = MediaLibraryStore(repository: LocalMediaLibraryRepository(directory: libraryFolder), directory: libraryFolder)
+        let kitFolder = options.assetRoot?.appending(path: "BrandKits", directoryHint: .isDirectory) ?? BrandKitFiles.directory
+        brandKits = BrandKitStore(repository: LocalBrandKitRepository(directory: kitFolder), directory: kitFolder)
         aiStatus = AIStatus(writer: options.writer)
         privacy = PrivacyPreferencesService(defaults: options.defaults, writer: options.writer)
         draftLearning = DraftLearningService(profile: profile, toast: toast, defaults: options.defaults)
@@ -216,7 +227,8 @@ struct AppServices {
         eraser = DataEraserService(
             library: library, takes: takes, drafts: options.draftStore, logbook: logbook, brands: brands,
             profile: profile, preferences: preferences, defaults: options.defaults, notifications: notifications, voyage: voyage,
-            draftLearning: draftLearning, voiceQuestions: voiceQuestions, ledger: ledger, shareQueue: shareQueue, ideas: ideaSuggestions
+            draftLearning: draftLearning, voiceQuestions: voiceQuestions, ledger: ledger, shareQueue: shareQueue, ideas: ideaSuggestions,
+            fonts: fonts, mediaLibrary: mediaLibrary, brandKits: brandKits
         )
         topicTagging = TopicTaggingService(library: library, profile: profile, personalization: personalization, writer: writer)
     }
@@ -225,6 +237,15 @@ struct AppServices {
         library.load()
         takes.load()
         brands.load()
+        // Before anything draws words: the imported fonts are registered for Cue.
+        fonts.load()
+        mediaLibrary.load()
+        brandKits.load()
+        #if DEBUG
+        if ProcessInfo.processInfo.arguments.contains("-uiTestSeedLibrary") {
+            Task { [mediaLibrary] in await DebugLibrarySeed.seed(into: mediaLibrary) }
+        }
+        #endif
         // A creator who already has scripts, takes or a profile skips the first flight.
         onboarding.resolve(
             hasExistingContent: !library.scripts.isEmpty || !takes.takes.isEmpty || !profile.profile.niches.isEmpty
@@ -238,6 +259,9 @@ struct AppServices {
         takes.reloadIfUnread()
         brands.reloadIfUnread()
         quota.reloadIfUnread()
+        fonts.reloadIfUnread()
+        mediaLibrary.reloadIfUnread()
+        brandKits.reloadIfUnread()
         // And writes what a failed save (a full iPhone) left only in memory, now that space may be free.
         library.saveAgainIfFailed()
         takes.saveAgainIfFailed()
@@ -251,9 +275,19 @@ struct AppServices {
     /// changed for a week (`EditStorageCleaner.orphanedMedia`).
     func cleanUpStorage() {
         let launchedAt = Date()
+        let libraryFolder = mediaLibrary.directory
+        let kitFolder = brandKits.directory
         Task.detached(priority: .background) {
             try? await Task.sleep(for: .seconds(8))
             await EditStorageCleaner.clean(launchedAt: launchedAt)
+            // What the creator removed from the library or the kits, past its session's Undo (`LibraryFileSweep`).
+            LibraryFileSweep.sweep(libraryFolder, listName: "library.json", launchedAt: launchedAt)
+            LibraryFileSweep.sweep(kitFolder, listName: "kits.json", launchedAt: launchedAt)
+        }
+        // A removed font's files, once nothing names it any more.
+        Task { [fonts, defaults] in
+            try? await Task.sleep(for: .seconds(12))
+            await fonts.sweepRemoved(defaults: defaults)
         }
         // A take a past session never filed (Cue stopped mid-take, or the library couldn't take it in) comes back (`TakeRecovery`).
         Task { [takes, preferences] in

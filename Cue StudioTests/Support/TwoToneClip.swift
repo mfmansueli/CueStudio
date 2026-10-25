@@ -19,10 +19,17 @@ enum TwoToneClip {
     static let green = [40, 200, 60]
     static let yellow = [230, 210, 40]
 
-    /// A portrait video `seconds` long, `top` over `bottom`; with `loud`, a tone all along.
+    /// A portrait video `seconds` long, `top` over `bottom`; with `loud`, a tone all along. Written again if the writer sticks
+    /// (`FootageWriting`).
     static func make(
         seconds: Int, top: [Int], bottom: [Int], loud: Bool = false, width: Int = 360, height: Int = 640
     ) async throws -> URL {
+        try await FootageWriting.withRetry(patience: .seconds(20 + seconds)) {
+            try await write(seconds: seconds, top: top, bottom: bottom, loud: loud, width: width, height: height)
+        }
+    }
+
+    private static func write(seconds: Int, top: [Int], bottom: [Int], loud: Bool, width: Int, height: Int) async throws -> URL {
         let url = URL.temporaryDirectory.appending(path: "two-tone-\(UUID().uuidString).mov")
         let writer = try AVAssetWriter(outputURL: url, fileType: .mov)
         let video = AVAssetWriterInput(mediaType: .video, outputSettings: [

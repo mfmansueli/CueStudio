@@ -161,7 +161,7 @@ struct BrandBriefSheet: View {
 
     private func confirm() {
         guard let brief = model.commit() else {
-            toast.show(String(localized: "Add brand and product"))
+            toast.show(String(localized: "Add brand and product"), kind: .problem)
             return
         }
         onConfirm(brief)

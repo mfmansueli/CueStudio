@@ -17,7 +17,7 @@ struct EditorWorkPill: View {
         HStack(spacing: 10) {
             ProgressView(value: work.fraction ?? 0)
                 .progressViewStyle(.circular)
-                .tint(Palette.ink)
+                .tint(Palette.Toast.ring)
                 .controlSize(.small)
                 .accessibilityHidden(true)
             Text(work.label)
@@ -37,7 +37,7 @@ struct EditorWorkPill: View {
         }
         .padding(.leading, 14)
         .padding(.trailing, 6)
-        .background(Palette.Editor.toast, in: Capsule())
+        .toastSurface(in: Capsule())
         .accessibilityElement(children: .contain)
         .accessibilityLabel(Text(work.label))
         .accessibilityIdentifier("edit.work")

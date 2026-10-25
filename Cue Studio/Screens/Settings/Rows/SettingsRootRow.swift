@@ -55,7 +55,10 @@ struct SettingsRootRow: View {
             Button {
                 Task {
                     let restored = await store.restore()
-                    toast.show(restored ? String(localized: "Purchases restored") : String(localized: "No purchases to restore"))
+                    toast.show(
+                        restored ? String(localized: "Purchases restored") : String(localized: "No purchases to restore"),
+                        kind: restored ? .done : .problem
+                    )
                 }
             } label: {
                 SettingsIconLabel(icon: .restore, title: entry.title, titleColor: Palette.accText)

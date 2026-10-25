@@ -138,7 +138,7 @@ struct ProPlansScreen: View {
             toast.show(String(localized: "Purchases restored"))
             onPurchased()
         } else {
-            toast.show(String(localized: "No purchases to restore"))
+            toast.show(String(localized: "No purchases to restore"), kind: .problem)
         }
     }
 

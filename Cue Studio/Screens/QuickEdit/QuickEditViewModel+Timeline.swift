@@ -39,7 +39,8 @@ extension QuickEditViewModel {
         input.media = edit.placedMedia(in: timeline).map { item, span, pieces in
             // The bar's badge shows how it shows with its symbol: the words say only what it is.
             var input = TimelineGeometry.ItemInput(
-                id: item.id, span: span, label: item.kind == .photo ? String(localized: "Photo") : String(localized: "Video"),
+                id: item.id, span: span,
+                label: item.isLogo == true ? String(localized: "Logo") : item.kind == .photo ? String(localized: "Photo") : String(localized: "Video"),
                 isLocked: edit.lockedLayers.contains(item.id)
             )
             input.strip = TimelineGeometry.MediaStrip(fileName: item.fileName, isVideo: item.kind == .video, pieces: pieces, layout: item.layout)
@@ -210,7 +211,7 @@ extension QuickEditViewModel {
     func pickNearestJoin() {
         let time = player.currentTime
         guard let nearest = clips.cuts.min(by: { abs($0.time - time) < abs($1.time - time) }) else {
-            toast.show(String(localized: "No cuts yet"))
+            toast.show(String(localized: "No cuts yet"), kind: .problem)
             return
         }
         player.pause()

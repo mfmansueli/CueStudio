@@ -16,7 +16,7 @@ nonisolated struct VoyageMarks: Codable, Equatable, Sendable {
     var skippedPolish = false
     /// The tip on Cue's first draft ("A first draft. Yours to change.") was read: it shows once.
     var sawDraftTip = false
-    /// The steps whose "✓ … · Next: …" notice already came (or that never have one), so none is said twice. Saved as `celebrated`, the
+    /// The steps whose "… · Next: …" notice already came (or that never have one), so none is said twice. Saved as `celebrated`, the
     /// name from when the card lit a segment for each.
     var announced: Set<VoyageStep> = []
 

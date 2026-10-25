@@ -30,7 +30,7 @@ extension ClipsViewModel {
             return
         }
         guard clip.sourceLength <= Self.longestReverse + 0.001 else {
-            toast.show(String(localized: "Reverse works on clips up to 2 minutes · Split it first"))
+            toast.show(String(localized: "Reverse works on clips up to 2 minutes · Split it first"), kind: .problem)
             return
         }
         let url = clip.sourceID.flatMap { clipSourceURLs[$0] } ?? videoURL
@@ -51,7 +51,7 @@ extension ClipsViewModel {
             return
         } catch {
             noteFailure(error, "reverse")
-            toast.show(String(localized: "Can’t reverse this clip"))
+            toast.show(String(localized: "Can’t reverse this clip"), kind: .problem)
             return
         }
         // Cancelled as it finished, or closed meanwhile: nothing will play it.
@@ -61,7 +61,7 @@ extension ClipsViewModel {
         }
         guard edit.timeline == timeline else {
             EditMediaFiles.remove([name])
-            toast.show(String(localized: "The video changed meanwhile · Reverse it again"))
+            toast.show(String(localized: "The video changed meanwhile · Reverse it again"), kind: .problem)
             return
         }
         importedFiles.insert(name)

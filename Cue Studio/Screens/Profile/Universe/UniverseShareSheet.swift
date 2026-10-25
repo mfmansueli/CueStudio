@@ -62,7 +62,7 @@ struct UniverseShareSheet: View {
         .sheet(item: $viewModel.sharedFile) { file in ActivityView(items: [file.url]).presentationDetents([.medium, .large]) }
         .onChange(of: viewModel.phase) { _, phase in
             if phase == .saved { toast.show(String(localized: "Saved to Photos")) }
-            if phase == .failed { toast.show(String(localized: "Couldn't save · Try again")) }
+            if phase == .failed { toast.show(String(localized: "Couldn't save · Try again"), kind: .problem) }
         }
     }
 

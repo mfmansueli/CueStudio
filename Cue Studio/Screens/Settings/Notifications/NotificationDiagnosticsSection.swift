@@ -31,7 +31,7 @@ struct NotificationDiagnosticsSection: View {
                     let message = count == 0
                         ? "Notifications are off for Cue in iOS Settings"
                         : "\(count) notifications, one every 6 s from 5 s · lock the iPhone to see them"
-                    toast.show(message, duration: .seconds(4))
+                    toast.show(message, kind: count == 0 ? .problem : .done, duration: .seconds(4))
                 }
             } label: {
                 Text(verbatim: "Preview every notification")

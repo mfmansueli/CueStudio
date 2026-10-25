@@ -92,7 +92,7 @@ extension ClipsViewModel {
         let removed = Set(marked.map(\.id))
         var timeline = edit.timeline
         guard timeline.remove(marked) else {
-            toast.show(String(localized: "Keep at least one clip"))
+            toast.show(String(localized: "Keep at least one clip"), kind: .problem)
             return
         }
         let decided = edit.suggestions.map { suggestion in
@@ -109,7 +109,7 @@ extension ClipsViewModel {
         let pauses = marked.filter { $0.kind == .pause }.count
         toast.show(pauses == marked.count
             ? String(localized: "Removed \(pauses) pauses · \(seconds)")
-            : String(localized: "Removed \(marked.count) · \(seconds)"))
+            : String(localized: "Removed \(marked.count) · \(seconds)"), kind: .cue)
     }
 
     /// Listen: 1.2 s before to 1.2 s after; a marked one is skipped, so what plays is the result.

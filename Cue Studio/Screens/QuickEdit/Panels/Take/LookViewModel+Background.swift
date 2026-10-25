@@ -131,7 +131,7 @@ extension LookViewModel {
             let imported = try await importPicked(item)
             guard imported.kind == .photo, !isClosed else {
                 EditMediaFiles.remove([imported.fileName])
-                if !isClosed { toast.show(String(localized: "Can't add this file")) }
+                if !isClosed { toast.show(String(localized: "Can't add this file"), kind: .problem) }
                 return
             }
             setBackgroundImage(imported.fileName)
@@ -139,7 +139,7 @@ extension LookViewModel {
             // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
             noteFailure(error, "importBackground")
-            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")), kind: .problem)
         }
     }
 

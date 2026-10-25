@@ -107,6 +107,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// What lies on the video: texts and graphics, photos and videos, their motion and keyframes, Track, type styles
     /// (`OverlaysViewModel`).
     let overlays: OverlaysViewModel
+    /// The creator's own things: the media library, brand kits and imported fonts (`BrandViewModel`).
+    let brand: BrandViewModel
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
     @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
     /// Everything the editor started and waits for (`EditorJobs`): Auto, captions, Track, the cover, a short preview, the
@@ -117,6 +119,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         take: Take, takes: TakeLibraryService, library: ScriptLibraryService, editing: TakeEditing,
         drafts: QuickEditDraftStoring, toast: ToastService, player: EditPlayback? = nil,
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
+        mediaLibrary: MediaLibraryStore? = nil, brandKits: BrandKitStore? = nil, fonts: CustomFontStore? = nil,
         editorPreferences: EditorPreferencesStoring? = nil, prompterLook: PrompterSettings = PrompterSettings(),
         coverPictures: CoverPicturing? = nil, soundPreviews: SoundEffectPreviewing? = nil,
         translations: TranslationAvailabilityChecking = AppleTranslationAvailability(), motion: MotionAnalysisService? = nil,
@@ -161,6 +164,21 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         audio = AudioViewModel(
             session: session, editing: editing, importer: mediaImporter, recorder: recorder ?? VoiceOverRecorder(),
             editorPreferences: preferences, prompterLook: prompterLook, soundPreviews: soundPreviews ?? SoundEffectPreviewPlayer()
+        )
+        // Without the app's stores (tests, previews): ones of their own in a temporary folder, never the creator's.
+        let scratch = URL.temporaryDirectory.appending(path: "EditorAssets-\(UUID().uuidString)", directoryHint: .isDirectory)
+        brand = BrandViewModel(
+            session: session,
+            library: mediaLibrary ?? MediaLibraryStore(
+                repository: LocalMediaLibraryRepository(directory: scratch.appending(path: "Library")), directory: scratch.appending(path: "Library")
+            ),
+            kits: brandKits ?? BrandKitStore(
+                repository: LocalBrandKitRepository(directory: scratch.appending(path: "Kits")), directory: scratch.appending(path: "Kits")
+            ),
+            fonts: fonts ?? CustomFontStore(
+                repository: LocalCustomFontRepository(directory: scratch.appending(path: "Fonts")), directory: scratch.appending(path: "Fonts")
+            ),
+            styles: styles
         )
         session.host = self
         self.player.playingStopped = { [weak self] in self?.audio.playingStopped() }
@@ -400,7 +418,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
                 // can't be written, the creator hears it wasn't saved.
                 let kept = saveDraft(forced: true)
                 close(keepingDraft: true)
-                toast.show(kept ? String(localized: "Couldn't save the edits · Kept as a draft") : Self.notSaved)
+                toast.show(kept ? String(localized: "Couldn't save the edits · Kept as a draft") : Self.notSaved, kind: .problem)
                 return
             }
             toast.show(String(localized: "Edits saved to this take"))
@@ -441,7 +459,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         audio.stopRecordingIfNeeded()
         let kept = saveDraft(forced: true)
         close(keepingDraft: true)
-        if !kept { toast.show(Self.notSaved) }
+        if !kept { toast.show(Self.notSaved, kind: .problem) }
     }
 
     /// Leaves without saving on the take. Changes stay in a draft that Edit picks up again; the take
@@ -457,7 +475,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         }
         let kept = saveDraft()
         close(keepingDraft: true)
-        toast.show(kept ? String(localized: "Draft saved") : Self.notSaved)
+        toast.show(kept ? String(localized: "Draft saved") : Self.notSaved, kind: kept ? .done : .problem)
     }
 
     /// Leaving the app or the screen without Done or Cancel: the draft keeps everything.

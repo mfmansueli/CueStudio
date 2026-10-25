@@ -29,7 +29,7 @@ extension OverlaysViewModel {
             // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
             noteFailure(error, "importMedia")
-            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")), kind: .problem)
         }
     }
 
@@ -53,13 +53,13 @@ extension OverlaysViewModel {
         guard end - start >= MediaOverlay.minimumDuration else {
             EditMediaFiles.remove([imported.fileName])
             importedFiles.remove(imported.fileName)
-            toast.show(String(localized: "No room · Move the playhead"))
+            toast.show(String(localized: "No room · Move the playhead"), kind: .problem)
             return
         }
-        guard LayerLanes.peak(of: mediaBars.map(\.span), within: placed) < MediaOverlay.simultaneousLimit else {
+        guard LayerLanes.peak(of: limitedMediaSpans(), within: placed) < MediaOverlay.simultaneousLimit else {
             EditMediaFiles.remove([imported.fileName])
             importedFiles.remove(imported.fileName)
-            toast.show(String(localized: "Max 3 photos or videos"))
+            toast.show(String(localized: "Max 3 photos or videos"), kind: .problem)
             return
         }
         var media = MediaOverlay(
@@ -128,10 +128,10 @@ extension OverlaysViewModel {
     /// shared (it goes only when nothing names it).
     func duplicateMedia(_ id: UUID) {
         guard let original = edit.media.first(where: { $0.id == id }) else { return }
-        // The copy shows over the same moment: never more than the export draws at once.
+        // The copy shows over the same moment: never more than the export draws at once (a still logo's copy is one too).
         let shown = mediaBars.first { $0.id == id }?.span ?? original.span
-        guard LayerLanes.peak(of: mediaBars.map(\.span), within: shown) < MediaOverlay.simultaneousLimit else {
-            toast.show(String(localized: "Max 3 photos or videos"))
+        guard original.isStaticLogo || LayerLanes.peak(of: limitedMediaSpans(), within: shown) < MediaOverlay.simultaneousLimit else {
+            toast.show(String(localized: "Max 3 photos or videos"), kind: .problem)
             return
         }
         var copy = original
@@ -180,7 +180,13 @@ extension OverlaysViewModel {
         let longest = min(media.longestDuration, end - bar.span.start)
         let length = min(max(seconds, MediaOverlay.minimumDuration), longest)
         guard abs(length - bar.span.duration) > 0.01 else { return }
-        layMedia(id, over: TimeSpan(start: bar.span.start, end: bar.span.start + length))
+        let span = TimeSpan(start: bar.span.start, end: bar.span.start + length)
+        // Longer only while no more than the export draws at once show then.
+        guard length < bar.span.duration || mediaFits(media, over: span) else {
+            toast.show(String(localized: "3 photos or videos already show then · up to 3 at a time"), kind: .problem)
+            return
+        }
+        layMedia(id, over: span)
     }
 
     /// Its place on a preview of `size` (from the top left), as the export places it.
@@ -222,7 +228,7 @@ extension OverlaysViewModel {
             // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
             noteFailure(error, "replaceMedia")
-            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")))
+            toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")), kind: .problem)
         }
     }
 
@@ -236,11 +242,17 @@ extension OverlaysViewModel {
             EditMediaFiles.remove([imported.fileName])
             return
         }
-        importedFiles.insert(imported.fileName)
         let old = edit.media[index]
-        var next = edit
         var media = old
         media.kind = imported.kind
+        // A still logo replaced by a video counts again: only where the others leave it room.
+        guard !old.isStaticLogo || mediaFits(media, over: span) else {
+            EditMediaFiles.remove([imported.fileName])
+            toast.show(String(localized: "3 photos or videos already show then · up to 3 at a time"), kind: .problem)
+            return
+        }
+        importedFiles.insert(imported.fileName)
+        var next = edit
         media.fileName = imported.fileName
         media.aspect = imported.aspect.isFinite && imported.aspect > 0 ? imported.aspect : 1
         media.mediaDuration = imported.duration

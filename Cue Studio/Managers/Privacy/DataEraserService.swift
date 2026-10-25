@@ -7,9 +7,9 @@ import Foundation
 
 /// "Delete my Cue data" (Settings › Privacy & AI data, 04 · F8): everything the creator made leaves this iPhone for good —
 /// scripts and folders, takes and their videos and edits, exported videos waiting to be shared and the share queue, the
-/// Logbook, saved brands, "your stars", My Cue Voice, the ideas Cue wrote and the taste it learned, my text and cover styles,
-/// the recording setup, the first voyage's marks, Cue's drafts waiting for a take, the copies of a damaged library, and the
-/// reminders, routine and notifications waiting.
+/// Logbook, saved brands, the media library, brand kits and imported fonts, "your stars", My Cue Voice, the ideas Cue wrote
+/// and the taste it learned, my text and cover styles, the recording setup, the first voyage's marks, Cue's drafts waiting for
+/// a take, the copies of a damaged library, and the reminders, routine and notifications waiting.
 /// Not touched: the purchase (it belongs to the Apple ID), the free-export counter and the exports' ledger (ids only: kept so
 /// deleting data can't hand back free exports), the count of videos shared (the universe's planets), the language and what
 /// Photos already holds. Irreversible, so the screen asks first.
@@ -34,6 +34,9 @@ final class DataEraserService {
     @ObservationIgnored private let ledger: ExportLedgerService?
     @ObservationIgnored private let shareQueue: ShareQueueService?
     @ObservationIgnored private let ideas: IdeaSuggestionService?
+    @ObservationIgnored private let fonts: CustomFontStore?
+    @ObservationIgnored private let mediaLibrary: MediaLibraryStore?
+    @ObservationIgnored private let brandKits: BrandKitStore?
     /// The editor's media folder and the camera's leftover recordings, whole. Tests point it at folders of their own: these
     /// are the app's, shared by every test running at the same time.
     @ObservationIgnored private let eraseLooseFiles: () -> Void
@@ -43,7 +46,8 @@ final class DataEraserService {
         brands: BrandStore, profile: CreatorProfileService, preferences: PreferencesService, defaults: UserDefaults = .standard,
         notifications: NotificationService? = nil, voyage: FirstVoyageService? = nil, draftLearning: DraftLearningService? = nil,
         voiceQuestions: VoiceQuestionScheduler? = nil, ledger: ExportLedgerService? = nil, shareQueue: ShareQueueService? = nil,
-        ideas: IdeaSuggestionService? = nil,
+        ideas: IdeaSuggestionService? = nil, fonts: CustomFontStore? = nil, mediaLibrary: MediaLibraryStore? = nil,
+        brandKits: BrandKitStore? = nil,
         eraseLooseFiles: @escaping () -> Void = {
             EditMediaFiles.removeAll()
             TakeRecovery.removeLeftovers()
@@ -64,6 +68,9 @@ final class DataEraserService {
         self.ledger = ledger
         self.shareQueue = shareQueue
         self.ideas = ideas
+        self.fonts = fonts
+        self.mediaLibrary = mediaLibrary
+        self.brandKits = brandKits
         self.eraseLooseFiles = eraseLooseFiles
     }
 
@@ -78,6 +85,10 @@ final class DataEraserService {
         takes.deleteEverything()
         drafts.discardAll()
         eraseLooseFiles()
+        // The media library, the brand kits and the imported fonts (unregistered first).
+        mediaLibrary?.eraseAll()
+        brandKits?.eraseAll()
+        fonts?.eraseAll()
         shareQueue?.discardAll()
         library.delete(Set(library.scripts.map(\.id)))
         library.deleteFoldersAndKeptCopies()

@@ -167,7 +167,7 @@ struct VoicePreviewSheet: View {
     private func soundsLikeMe() {
         profile.profile.approvals += 1
         Haptics.success()
-        toast.show(String(localized: "Learned from this script"))
+        toast.show(String(localized: "Learned from this script"), kind: .cue)
         dismiss()
     }
 }

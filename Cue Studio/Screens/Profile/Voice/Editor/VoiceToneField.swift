@@ -35,7 +35,7 @@ struct VoiceToneField: View {
                         identifier: "voiceSetup.tone.\(sound.id)"
                     ) {
                         if case .limit = profile.answer(.tone, with: VoiceOption(id: sound.rawValue, label: sound.label)) {
-                            toast.show(String(localized: "Max \(VoiceLimits.tones) · tap to remove"))
+                            toast.show(String(localized: "Max \(VoiceLimits.tones) · tap to remove"), kind: .problem)
                         }
                     }
                 }

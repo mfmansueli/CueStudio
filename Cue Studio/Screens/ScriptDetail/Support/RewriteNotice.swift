@@ -12,6 +12,9 @@ nonisolated struct RewriteNotice: Equatable, Sendable {
     let message: String
     /// Whether the script now says something else. When it doesn't, nothing is saved and there is nothing to undo.
     let changesScript: Bool
+    /// The toast's kind: Cue's ★ when it wrote, a ✓ when there was nothing to do ("Already fits 1:00 to 1:30"), a ! when it
+    /// couldn't.
+    var kind: ToastKind = .cue
 
     /// The notice for a tool that ran on `before` and gave `result`. `done` is what the tool says when it did its job, and `idealRange` the length
     /// the platform asks, in seconds.
@@ -22,7 +25,8 @@ nonisolated struct RewriteNotice: Equatable, Sendable {
         let now = ReadTime.wordCount(in: result.text)
         let same = ScriptTextNormalizer.normalize(result.text) == ScriptTextNormalizer.normalize(before)
         if same || result.isUntouched {
-            return RewriteNotice(message: nothingChanged(tool, words: words, result: result, idealRange: idealRange), changesScript: false)
+            let said = nothingChanged(tool, words: words, result: result, idealRange: idealRange)
+            return RewriteNotice(message: said.message, changesScript: false, kind: said.kind)
         }
         var message = done
         switch tool {
@@ -54,15 +58,17 @@ nonisolated struct RewriteNotice: Equatable, Sendable {
         return (low...high).contains(Double(words))
     }
 
-    private static func nothingChanged(_ tool: ScriptTool, words: Int, result: RewriteResult, idealRange: ClosedRange<TimeInterval>) -> String {
+    private static func nothingChanged(
+        _ tool: ScriptTool, words: Int, result: RewriteResult, idealRange: ClosedRange<TimeInterval>
+    ) -> (message: String, kind: ToastKind) {
         switch tool {
         case .fixGrammar where !result.isUntouched:
-            return String(localized: "No mistakes to fix")
+            return (String(localized: "No mistakes to fix"), .done)
         case .fitToTime where fits(words: words, idealRange: idealRange):
             let range = DurationText.range(idealRange)
-            return String(localized: "Already fits \(range)")
+            return (String(localized: "Already fits \(range)"), .done)
         default:
-            return String(localized: "Couldn’t draft it · Try again")
+            return (String(localized: "Couldn’t draft it · Try again"), .problem)
         }
     }
 }
