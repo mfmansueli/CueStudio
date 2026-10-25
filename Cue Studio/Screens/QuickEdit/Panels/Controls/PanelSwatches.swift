@@ -119,6 +119,7 @@ struct CustomColorWell: View {
         .scaleEffect(diameter / 28)
         .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
         .accessibilityLabel(Text("Custom color"))
+        .accessibilityValue(Text((shown ?? selection)?.label ?? ""))
         .accessibilityIdentifier(identifier)
     }
 }

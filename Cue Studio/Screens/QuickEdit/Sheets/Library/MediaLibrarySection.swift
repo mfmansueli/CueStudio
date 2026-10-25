@@ -28,7 +28,8 @@ struct MediaLibrarySection: View {
     @FocusState private var searchFocused: Bool
 
     private var brand: BrandViewModel { viewModel.brand }
-    private static let columns = [GridItem(.adaptive(minimum: 100), spacing: 10)]
+    /// Four to a row on an iPhone, so a whole row shows above the footer at the sheet's middle height.
+    private static let columns = [GridItem(.adaptive(minimum: 76), spacing: 8)]
 
     var body: some View {
         @Bindable var brand = brand
@@ -37,17 +38,14 @@ struct MediaLibrarySection: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 10) {
                 if !brand.library.assets.isEmpty {
-                    // Search and adding share a row, so the grid starts high even at the sheet's middle height.
+                    // Search, the filter and adding share one row, so a whole row of cards shows above the footer even at the
+                    // sheet's middle height.
                     HStack(spacing: 8) {
                         SearchField(text: $brand.librarySearch, prompt: "Search your library", isFocused: $searchFocused)
                             .accessibilityIdentifier("edit.library.search")
+                        filterMenu
                         addMenu
                     }
-                    PanelChips(
-                        options: LibraryFilter.allCases.filter { !videosOnly || $0 == .all || $0 == .favorites || $0 == .videos }
-                            .map { PanelOption($0, $0.label, key: $0.rawValue) },
-                        selection: brand.libraryFilter, identifier: "edit.library.filter"
-                    ) { brand.libraryFilter = $0 }
                 }
                 let assets = brand.shownAssets(videosOnly: videosOnly)
                 if brand.library.assets.isEmpty {
@@ -122,6 +120,27 @@ struct MediaLibrarySection: View {
         .overlay {
             if brand.isAddingToLibrary { ProgressView().tint(Palette.ink) }
         }
+    }
+
+    /// The filter, as the system's menu: All, Favorites, Logos, Videos, Photos (in the sequence, only those with videos); filled
+    /// while one other than All is on.
+    private var filterMenu: some View {
+        @Bindable var brand = brand
+        let filters = LibraryFilter.allCases.filter { !videosOnly || $0 == .all || $0 == .favorites || $0 == .videos }
+        return Menu {
+            Picker(String(localized: "Show"), selection: $brand.libraryFilter) {
+                ForEach(filters) { filter in Text(filter.label).tag(filter) }
+            }
+        } label: {
+            Image(systemName: brand.libraryFilter == .all ? "line.3.horizontal.decrease" : "line.3.horizontal.decrease.circle.fill")
+                .font(.editorGlyph(EditorGlyph.control, weight: .semibold))
+                .foregroundStyle(brand.libraryFilter == .all ? Palette.ink : Palette.accText)
+                .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                .background(Palette.fill, in: Circle())
+        }
+        .accessibilityLabel(Text("Filter"))
+        .accessibilityValue(Text(brand.libraryFilter.label))
+        .accessibilityIdentifier("edit.library.filter")
     }
 
     /// "+": the system's menu, to add from Photos or Files.

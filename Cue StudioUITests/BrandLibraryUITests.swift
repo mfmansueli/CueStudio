@@ -29,10 +29,12 @@ final class BrandLibraryUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.library.asset.Studio wall"].exists)
         EditorApp.capture(app, "library-all")
         // Filters and search narrow it.
-        app.buttons["edit.library.filter.logos"].tap()
+        app.buttons["edit.library.filter"].tap()
+        app.buttons["Logos"].tap()
         XCTAssertTrue(app.buttons["edit.library.asset.Studio wall"].isGone(within: 3))
         EditorApp.capture(app, "library-logos")
         logo.tap()
+        EditorApp.capture(app, "logo-tapped")
         XCTAssertTrue(EditorApp.toastSays(app, "added over the whole video"))
         EditorApp.capture(app, "logo-on-video")
         app.buttons["edit.undoButton"].tap()

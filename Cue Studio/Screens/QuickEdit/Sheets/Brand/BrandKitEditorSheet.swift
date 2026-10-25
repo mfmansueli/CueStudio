@@ -44,6 +44,7 @@ struct BrandKitEditorSheet: View {
         .padding(.horizontal, 16)
         .padding(.top, 8)
         .padding(.bottom, 12)
+        .modifier(EditorToastHost())
         .cueSheetChrome()
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)

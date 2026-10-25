@@ -71,6 +71,9 @@ struct AddMediaSheet: View {
         .safeAreaBar(edge: .bottom, spacing: 0) {
             if step == .choose { footer }
         }
+        // What the sheet does is said over it (removed from the library · Undo, already in it, a file missing): under the
+        // sheet, the editor's own toasts can't be seen.
+        .modifier(EditorToastHost())
         .cueSheetChrome()
         .presentationDetents([Self.middle, .large], selection: $detent)
         .presentationDragIndicator(.visible)
