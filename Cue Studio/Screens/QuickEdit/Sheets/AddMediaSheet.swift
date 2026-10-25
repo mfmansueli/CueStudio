@@ -158,8 +158,10 @@ struct AddMediaSheet: View {
 
     private var photoLibrary: some View {
         ZStack {
+            // Continuous: each tap reaches Cue at once, in order (the picker's own Add button is hidden, so a selection that
+            // waited for it never came, and Continue stayed off with a photo picked: owner, 25/10).
             PhotosPicker(
-                selection: $items, maxSelectionCount: mode.allowsSeveral ? 20 : 1, selectionBehavior: .ordered,
+                selection: $items, maxSelectionCount: mode.allowsSeveral ? 20 : 1, selectionBehavior: .continuousAndOrdered,
                 matching: mode == .sequence ? .videos : .any(of: [.images, .videos]), photoLibrary: .shared()
             ) {
                 EmptyView()

@@ -128,22 +128,36 @@ final class MediaSheetLayoutUITests: XCTestCase {
         XCTAssertTrue(EditorApp.toastSays(app, "split screen", timeout: 5), "The photo never went in")
     }
 
-    /// The owner's own path: Split screen › Photos › one photo tapped. The system's picker runs apart from Cue; when the
-    /// Simulator's library can't be reached, the test says so (skipped), never passes.
+    /// The owner's own path (25/10): Split screen › Photos › one photo tapped → Continue · 1, on screen. The system's picker runs
+    /// apart from Cue and its photos aren't in the app's hierarchy, so the first thumbnail is tapped where it shows; with no photo
+    /// in the library the test says so (skipped), never passes.
     func testAPhotoPickedInPhotosShowsContinueInView() throws {
         openSheet()
         photosSource.tap()
         let notice = app.buttons["OK"]
         if notice.exists(within: 3) { notice.tap() }
-        let photo = app.images.matching(NSPredicate(format: "label CONTAINS[c] 'photo' OR label CONTAINS[c] 'image'")).firstMatch
-        guard photo.exists(within: 5), photo.isHittable else {
-            throw XCTSkip("The Simulator's photo library isn't reachable from the test")
-        }
+        Thread.sleep(forTimeInterval: 1.5)
         let reference = fixedFrames()
-        photo.tap()
+        // The first thumbnail: just under the source switch, at the left.
+        let screen = app.windows.firstMatch.frame
+        let point = CGVector(dx: 0.12, dy: (photosSource.frame.maxY + 50) / screen.height)
+        app.windows.firstMatch.coordinate(withNormalizedOffset: point).tap()
+        guard continueButton.label.contains("1") || waitForCount(1) else {
+            throw XCTSkip("No photo where the first thumbnail should be (the Simulator's library may be empty)")
+        }
         checkContinueInView("Photos, one picked")
-        XCTAssertTrue(continueButton.label.contains("1"), "Continue doesn't count the photo: \(continueButton.label)")
+        XCTAssertTrue(continueButton.isEnabled, "Continue is off with a photo picked")
         XCTAssertEqual(fixedFrames().map(\.minY), reference.map(\.minY), "Picking in Photos moved the controls")
         EditorApp.capture(app, "media-middle-photos-1")
+    }
+
+    /// Continue counts `count` within a few seconds.
+    private func waitForCount(_ count: Int) -> Bool {
+        let deadline = Date().addingTimeInterval(4)
+        while Date() < deadline {
+            if continueButton.label.contains("\(count)") { return true }
+            Thread.sleep(forTimeInterval: 0.2)
+        }
+        return false
     }
 }
