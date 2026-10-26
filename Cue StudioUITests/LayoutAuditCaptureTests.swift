@@ -1,0 +1,290 @@
+//
+//  LayoutAuditCaptureTests.swift
+//  Cue StudioUITests
+//
+
+import XCTest
+
+/// Pictures of the app's fixed screens (Scripts, the script page, Takes, a take's review, Pro, Profile, Your universe, My Cue Voice,
+/// Settings, the first flight, the celebrations) at the size of the iPhone it runs on and at a text size, to see what doesn't fit on the
+/// smallest iPhone or doesn't grow with the text. Each screen starts from its own launch, so one that doesn't open never leaves the rest
+/// behind it; a control it couldn't find is written to `<name>-misses.txt`, never a failure. Opt-in:
+/// `TEST_RUNNER_CUE_AUDIT_DIR=<folder> TEST_RUNNER_CUE_AUDIT_NAME=se [TEST_RUNNER_CUE_AUDIT_SIZE=UICTContentSizeCategoryAccessibilityXXXL]
+/// CUE_SIMULATOR="Cue v10 iPhone SE" scripts/test.sh only "Cue StudioUITests/LayoutAuditCaptureTests"`.
+@MainActor
+final class LayoutAuditCaptureTests: XCTestCase {
+    private var directory: URL!
+    private var configuration = "audit"
+    private var size: String?
+
+    /// Reads the folder, the name and the text size, or skips the test when no folder is given.
+    private func begin() throws {
+        let env = ProcessInfo.processInfo.environment
+        guard let folder = env["CUE_AUDIT_DIR"] else { throw XCTSkip("Set TEST_RUNNER_CUE_AUDIT_DIR to capture") }
+        directory = URL(fileURLWithPath: folder, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        configuration = env["CUE_AUDIT_NAME"] ?? "audit"
+        size = env["CUE_AUDIT_SIZE"]
+        continueAfterFailure = true
+    }
+
+    // MARK: - Scripts
+
+    func testScripts() throws {
+        try begin()
+        let app = launch(seeded: true)
+        guard wait(app, "scripts.newButton", timeout: 20) else { return }
+        shot(app, "scripts")
+        scrollDown(app)
+        shot(app, "scripts-scrolled")
+        if tap(app, "scripts.logbookButton") {
+            shot(app, "logbook")
+            _ = tap(app, "logbook.doneButton")
+        }
+        if tap(app, "ideaCard.formatChip") {
+            shot(app, "format")
+            app.swipeDown()
+            sleep(1)
+        }
+        if tap(app, "scripts.newButton") {
+            shot(app, "new-script")
+        }
+        let empty = launch(seeded: false)
+        guard wait(empty, "scripts.newButton", timeout: 20) else { return }
+        shot(empty, "scripts-empty")
+    }
+
+    func testScriptPage() throws {
+        try begin()
+        let app = launch(seeded: true)
+        guard wait(app, "scripts.selectButton", timeout: 20) else { return }
+        let row = app.staticTexts["Oat & Co. · sponsored read"]
+        guard row.exists(within: 5) else { return miss("Oat & Co. row") }
+        row.tap()
+        guard app.pageBackButton.exists(within: 5) else { return miss("page") }
+        shot(app, "page")
+        scrollDown(app)
+        shot(app, "page-scrolled")
+        if tap(app, "page.menuButton") { shot(app, "page-menu") }
+    }
+
+    // MARK: - Takes and a take
+
+    func testTakes() throws {
+        try begin()
+        let app = launch(seeded: true, sampleVideo: true, extra: ["-uiTestExportsLeft", "0"])
+        guard openTab(app, "Takes"), let row = morningHabits(app) else { return }
+        shot(app, "takes")
+        scrollDown(app)
+        shot(app, "takes-scrolled")
+        let list = app.segmentedControls["takes.layout"].buttons.element(boundBy: 1)
+        if list.exists(within: 3) {
+            list.tap()
+            shot(app, "takes-list")
+            app.segmentedControls["takes.layout"].buttons.element(boundBy: 0).tap()
+        } else { miss("takes.layout") }
+        app.swipeDown()
+        guard row.exists(within: 5) else { return miss("takes row") }
+        row.tap()
+        guard wait(app, "review.shareButton") else { return }
+        shot(app, "review")
+        scrollDown(app)
+        shot(app, "review-scrolled")
+        app.swipeDown()
+        if app.buttons["review.saveButton"].exists(within: 3) {
+            app.buttons["review.saveButton"].tap()
+            if wait(app, "exportReady.notNow") {
+                shot(app, "export-ready")
+                if tap(app, "exportReady.seePro"), wait(app, "paywall.buyButton") { shot(app, "pro-calm") }
+            }
+        } else { miss("review.saveButton") }
+    }
+
+    func testCelebrations() throws {
+        try begin()
+        let milestone = launch(seeded: true, sampleVideo: true, extra: ["-uiTestMilestone", "25", "-uiTestUniverse", "sample", "-uiTestStoryAt", "6"])
+        if openTab(milestone, "Takes"), let row = morningHabits(milestone) {
+            row.tap()
+            if wait(milestone, "milestone.sheet", timeout: 15) {
+                sleep(3)
+                shot(milestone, "milestone")
+            }
+        }
+        milestone.terminate()
+        let firstStar = launch(seeded: true, sampleVideo: true, extra: ["-uiTestFirstStar", "-uiTestStoryAt", "7.5"])
+        if openTab(firstStar, "Takes"), let row = morningHabits(firstStar) {
+            row.tap()
+            if wait(firstStar, "firstStar.sheet", timeout: 15) {
+                sleep(3)
+                shot(firstStar, "first-star")
+            }
+        }
+    }
+
+    func testPrompter() throws {
+        try begin()
+        let app = launch(seeded: true)
+        let record = app.buttons["row.recordButton"].firstMatch
+        guard record.exists(within: 20) else { return miss("row.recordButton") }
+        record.tap()
+        sleep(2)
+        shot(app, "prompter")
+    }
+
+    // MARK: - Profile
+
+    func testProfile() throws {
+        try begin()
+        let app = launch(seeded: true, extra: ["-uiTestUniverse", "sample"])
+        guard openTab(app, "Profile"), wait(app, "profile.creatorCard") else { return }
+        shot(app, "profile")
+        scrollDown(app)
+        shot(app, "profile-2")
+        scrollDown(app)
+        shot(app, "profile-3")
+        if tap(app, "profile.upgradeButton"), wait(app, "paywall.closeButton") {
+            // Its opening plays even with the animations sped up.
+            sleep(4)
+            shot(app, "paywall")
+            scrollDown(app)
+            shot(app, "paywall-2")
+        }
+        let voice = launch(seeded: true, extra: ["-uiTestUniverse", "sample"])
+        guard openTab(voice, "Profile") else { return }
+        let edit = voice.buttons["Edit voice"]
+        if edit.exists(within: 10) {
+            edit.tap()
+            if wait(voice, "voicePage") {
+                shot(voice, "my-cue-voice")
+                scrollDown(voice)
+                shot(voice, "my-cue-voice-2")
+            }
+        } else { miss("Edit voice") }
+    }
+
+    func testUniverse() throws {
+        try begin()
+        let app = launch(seeded: false, extra: ["-uiTestUniverse", "sample"])
+        guard openTab(app, "Profile"), tap(app, "profile.universeLink"), wait(app, "universe.screen") else { return }
+        sleep(1)
+        shot(app, "universe")
+        scrollDown(app)
+        shot(app, "universe-2")
+        if tap(app, "universe.share") {
+            sleep(2)
+            shot(app, "universe-share")
+            _ = tap(app, "sheet.closeButton")
+        }
+        if tap(app, "universe.reviewRow"), wait(app, "yearInReview.screen") {
+            shot(app, "year-in-review")
+            if tap(app, "yearInReview.next") { shot(app, "year-in-review-2") }
+        }
+    }
+
+    // MARK: - Settings
+
+    func testSettings() throws {
+        try begin()
+        let app = launch(seeded: true)
+        guard openTab(app, "Settings") else { return }
+        shot(app, "settings")
+        scrollDown(app)
+        shot(app, "settings-2")
+        for entry in ["recording", "prompter", "remote", "personalize", "languageRegion", "notifications", "privacy"] {
+            let row = app.descendants(matching: .any)["settings.\(entry)"].firstMatch
+            app.swipeDown()
+            app.swipeDown()
+            for _ in 0..<6 where !row.isHittable { scrollDown(app) }
+            guard row.isHittable else { miss("settings.\(entry)"); continue }
+            row.tap()
+            sleep(1)
+            shot(app, "settings-\(entry)")
+            scrollDown(app)
+            shot(app, "settings-\(entry)-2")
+            app.navigationBars.buttons.firstMatch.tap()
+            sleep(1)
+        }
+    }
+
+    // MARK: - The first flight
+
+    func testFirstFlight() throws {
+        try begin()
+        for step in ["welcome", "universe", "voyage", "script", "voice"] {
+            var extra = ["-uiTestOnboarding", "-uiTestOnboardingStep", step, "-uiTestPermissions", "granted"]
+            if step == "voyage" { extra += ["-uiTestPlatformAt", "4"] }
+            let app = launch(seeded: false, extra: extra)
+            if wait(app, "onboarding.root", timeout: 15) {
+                sleep(3)
+                shot(app, "onb-\(step)")
+            }
+            app.terminate()
+        }
+    }
+
+    // MARK: - Helpers
+
+    private func launch(seeded: Bool, sampleVideo: Bool = false, extra: [String] = []) -> XCUIApplication {
+        CueApp.launch(seeded: seeded, sampleVideo: sampleVideo, contentSize: size, extraArguments: extra)
+    }
+
+    private func openTab(_ app: XCUIApplication, _ title: String) -> Bool {
+        let tab = app.cueTabBar.buttons[title]
+        guard tab.exists(within: 15) else { miss("tab \(title)"); return false }
+        tab.tap()
+        sleep(1)
+        return true
+    }
+
+    private func morningHabits(_ app: XCUIApplication) -> XCUIElement? {
+        let row = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'takes.video.' AND label CONTAINS '3 morning habits'")).firstMatch
+        guard row.exists(within: 15) else { miss("takes.video 3 morning habits"); return nil }
+        return row
+    }
+
+    private func wait(_ app: XCUIApplication, _ id: String, timeout: TimeInterval = 8) -> Bool {
+        guard app.descendants(matching: .any)[id].firstMatch.exists(within: timeout) else { miss(id); return false }
+        return true
+    }
+
+    /// Taps a control by identifier, scrolled into reach; a missing one is written down.
+    private func tap(_ app: XCUIApplication, _ id: String) -> Bool {
+        let element = app.descendants(matching: .any)[id].firstMatch
+        guard element.exists(within: 5) else { miss(id); return false }
+        for _ in 0..<4 where !element.isHittable { scrollDown(app) }
+        guard element.isHittable else { miss("\(id) (not hittable)"); return false }
+        element.tap()
+        sleep(1)
+        return true
+    }
+
+    /// One page down, along the left edge (clear of sliders), held at the end so the list stops under the finger.
+    private func scrollDown(_ app: XCUIApplication) {
+        let from = app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.72))
+        from.press(
+            forDuration: 0.05, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.05, dy: 0.3)),
+            withVelocity: .default, thenHoldForDuration: 0.1
+        )
+        sleep(1)
+    }
+
+    /// Writes down a control that wasn't there, at the end of `<name>-misses.txt`.
+    private func miss(_ what: String) {
+        let file = directory.appending(path: "\(configuration)-misses.txt")
+        let line = Data("\(name): \(what)\n".utf8)
+        if let handle = try? FileHandle(forWritingTo: file) {
+            _ = try? handle.seekToEnd()
+            try? handle.write(contentsOf: line)
+            try? handle.close()
+        } else {
+            try? line.write(to: file)
+        }
+    }
+
+    private func shot(_ app: XCUIApplication, _ label: String) {
+        let file = "\(configuration)-\(label)"
+        try? app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(file).png"))
+        // The hierarchy beside the picture, for `tools/contrast/audit.py`.
+        try? app.debugDescription.write(to: directory.appending(path: "\(file).txt"), atomically: true, encoding: .utf8)
+    }
+}
