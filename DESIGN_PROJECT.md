@@ -2128,7 +2128,9 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   **Invert** (chave), e em Advanced **Turn** em graus e **Size/Thickness** em passos (precisão no celular). Na prévia, com o painel aberto e o
   vídeo parado, o contorno amarelo é a área real; alças com função dita: abas laterais (largura e altura, as duas pontas juntas), **↻** (gira, gruda
   em 0/90/180°), **seta amarela** embaixo (borda suave; o contorno tracejado de fora mostra até onde ela vai), **ponto no canto** (arredonda),
-  na linha uma seta para o lado que aparece, na faixa a aba da espessura; pinça redimensiona, dois dedos giram. Em Picture, as alças somem, o
+  na linha uma seta para o lado que aparece, na faixa a aba da espessura; pinça redimensiona, dois dedos giram. **Numa máscara pequena** (uma
+  janela pequena) as alças se afastam em volta dela, cada uma a um dedo (44 pt) das outras e do meio, sempre na prévia (`HandleSpread`): um lado
+  sem espaço para as duas abas fica com uma (as duas puxam juntas), e uma linha fina leva cada aba afastada ao lado que ela muda. Em Picture, as alças somem, o
   contorno fica tracejado e a imagem inteira aparece em 30% para ver o que entra. A máscara vive no lugar da mídia: mover, aumentar, keyframes,
   Track e animação pronta a levam junto. **Com keyframes**, mexer na máscara grava a máscara no keyframe do cursor (cria um se não houver), e ela
   anda entre os keyframes que têm máscara com a suavização deles; a forma e o Invert não animam. **◐** mostra a mídia inteira ("Without the
@@ -2141,9 +2143,10 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   aquele rosto**; **All but the largest** esconde todos menos o maior (cada um uma área); **Draw an area** põe uma caixa no meio, para uma
   placa ou um nome. A área nasce do tamanho do clipe sob o cursor (de uma foto ou vídeo por cima: o arquivo todo) e, num rosto, com folga para
   testa, cabelo e orelhas (`BlurRegion.area(aroundFace:)`).
-  - **Visual de uma área nova** (`BlurLook`, decisão do dono, 26/10): a primeira de uma edição, rosto ou desenhada, nasce **oval, Blur, Strength
-    60%, Soft edge 50%**; as seguintes nascem com o visual que o criador deu por último a uma área nesta edição (estilo, forma, força e borda). Ao
-    abrir o editor de novo, volta o visual inicial.
+  - **Visual de uma área nova** (`BlurLook`, decisões do dono, 26/10): a primeira de um vídeo, rosto ou desenhada, nasce **oval, Blur, Strength
+    60%, Soft edge 50%**; as seguintes nascem com o visual que o criador deu por último a uma área **neste vídeo** (estilo, forma, força e borda),
+    guardado com a edição (`TakeEdit.blurLook`, no mesmo passo de desfazer da mudança): abrir o editor de novo nesse vídeo continua com ele; um
+    vídeo novo começa no visual inicial.
   - **Estilos, nenhum fraco** (pesquisa de privacidade: reconhecimento por IA ainda acerta com mosaico de ~14 blocos no rosto; mosaico em vídeo se
     reverte juntando quadros): **Blur** (a área reduzida a 10–4 pixels no lado menor e espalhada), **Pixelate** (8–4 blocos no lado menor, cada um a
     média do que cobre, a grade presa à área, não à tela), **Solid** (tarja opaca na paleta do editor; recomendada para textos, placas e telas).
@@ -2160,17 +2163,27 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
     mesmo jeito, mantendo o tamanho que o criador desenhou (pergunta do dono, 26/10: "o Track não era pra reconhecer o rosto todo?"); uma área sobre
     parte do rosto (olhos, boca), qualquer outra coisa, ou um rosto onde a análise não chegou, pelo `ObjectTracker` (Vision) para frente e
     para trás a partir do cursor, com a caixa do tamanho da área (do primeiro quadro, só para a frente: o leitor do iPhone recusa um trecho menor
-    que um quadro, e por isso o leitor sempre pede ao menos 0,1 s; achado no aparelho, 26/10, com uma área desenhada no vídeo do dono). O caminho vira keyframes enxutos (Ramer–Douglas–Peucker), num passo de desfazer;
+    que um quadro, e por isso o leitor sempre pede ao menos 0,1 s; achado no aparelho, 26/10, com uma área desenhada no vídeo do dono). Uma área
+    desenhada **nunca fica menor do que foi desenhada** (cresce quando o que ela segue cresce): a caixa do Vision em volta de algo estreito
+    encolhe com o tempo, e a área encolhia junto. O caminho vira keyframes enxutos (Ramer–Douglas–Peucker) que não se afastam do seguido mais
+    que 0,4% do quadro nem 4% do tamanho da própria área, num passo de desfazer. Fica marcado um quadro em que o Vision está pouco seguro
+    (confiança abaixo de 0,5; abaixo de 0,3 ele perde o alvo) e um tremor, quando a área anda mais de 10% do lado maior da caixa por quadro
+    durante 3 quadros seguidos. Um alvo perdido fica marcado até o fim: pegá-lo de novo sozinho poderia cobrir outra coisa dizendo que cobre,
+    e **Track from here** recomeça de onde o criador o põe de volta;
     **Cancel** guarda o que já foi seguido e marca o resto. Pontos postos à mão (arrastar a área num momento) são do criador: seguir de novo não os
     move.
   - **Nunca diz "coberto" sem estar:** onde não foi seguido, onde dois rostos cruzaram, onde a análise não chegou ou a área cresceu além do seguido
     fica **unchecked** (`BlurRegion.unchecked`): hachura laranja na barra da faixa **Blur area** da timeline, contorno laranja tracejado e "Not tracked
     here" na prévia, e o cartão de estado no topo do painel: "Not tracked 00:05.2–00:07.0 · 1.8 s" com **Go there · Track from here** (só aquele
-    trecho, do ponto corrigido até encontrar a parte boa) **· End here · It's right**. "Tracked the whole time" só aparece sem nada marcado. **Done**
+    trecho, do ponto corrigido até encontrar a parte boa) **· End here · It's right**. "Tracked the whole time" só aparece sem nada marcado, com
+    **Track again** pequeno ao lado (cinza, do tamanho das palavras, ainda um alvo de 44 pt; embaixo, quando não cabe). Quando o seguimento termina
+    com o painel aberto nessa área, o próprio cartão confirma: o sinal (✓ ou !) pula, com o toque de sucesso ou de aviso e o anúncio do VoiceOver,
+    sem toast cobrindo o topo da prévia (o ✕ e as alças de cima); seguida pela barra, com o painel fechado, o toast diz. **Done**
     pergunta antes ("A Blur area may not cover what it hides": Go there · Continue anyway), e não pergunta de novo até a edição mudar.
   - Na prévia (com o painel aberto ou a área escolhida, vídeo parado): arrastar move (no cursor quando ela se move, em todo lugar quando é parada),
     os cantos ou a pinça mudam o tamanho do caminho inteiro, ✕ apaga só ela; as outras áreas aparecem tracejadas e um toque escolhe. Barra da área:
-    **Edit · Track · Replay · Add area · Delete**. ◐ mostra o vídeo sem as áreas ("Without Blur areas"). A barra da timeline apara pelas pontas e não
+    **Edit · Track · Replay · Add area · Delete**, as quatro inteiras ao lado do Delete fixo num iPhone de 6,1" (ferramentas que estouram por pouco
+    ficam um pouco mais estreitas, nunca abaixo de 54 pt nem do rótulo: `EditorToolbarFit`; muitas demais rolam como antes). ◐ mostra o vídeo sem as áreas ("Without Blur areas"). A barra da timeline apara pelas pontas e não
     é arrastada (a área fica no que cobre).
 - **Combinações e limites, ditos:** Mask não vai em apoio da tela dividida (a área já é a forma) nem no clipe principal (fora desta fase). Blur area
   numa foto cobre a foto toda (não há tempo para seguir). Suavizar pele não acha um rosto já desfocado. ◐ de Adjust e Filters mantém as áreas. Uma
@@ -2188,7 +2201,8 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   a linha numa prévia estreita em vez de cortar o texto (achado no iPhone, 26/10).
 - **Alças sempre ao alcance:** um rosto que enche uma selfie faz uma área maior que o quadro; as alças, o ✕ e "Not tracked here" ficam na borda da
   prévia (12–16 pt para dentro), e a máscara faz o mesmo. A área tem três alças de canto (qualquer canto redimensiona pelo meio) e o ✕ no canto de
-  cima à esquerda, sem cobrir uma alça.
+  cima à esquerda, sem cobrir uma alça; numa área pequena (um olho, uma placa longe) eles se afastam pelas diagonais até ficar a um dedo uns dos
+  outros e do meio (onde arrastar move a área), cada um com uma linha fina até o seu canto, e "Not tracked here" desce abaixo deles.
 - **Fluxo no vídeo real do dono** (`RealFaceBlurUITests`, opt-in: no iPhone `TEST_RUNNER_CUE_REAL_TAKE=<arquivo em Takes> scripts/test.sh
   device-ui …`, com Ajustes › Desenvolvedor › Enable UI Automation ligado; no Simulador, um caminho no Mac): uma cópia da take aberta em memória
   (`-uiTestRealTake`, a take nunca muda), Blur area na barra principal, o rosto numerado, um toque, seguida, conferida ao longo do vídeo, os três
@@ -2198,9 +2212,11 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   claro e escuro, o nome da área no seu crachá sobre a hachura, ✓ e ! no cartão), `theLanesInksReadOnTheirFills` (faixa Blur area).
 - **Testes:** `BlurRegionTests`, `BlurFollowingTests` (rosto andando, saindo e voltando, cruzando; caixa perdida; afinar; pontos do criador),
   `TakeEditBlurTests` (cortes, velocidade, cópia, invertido, congelado, mídia por cima, desfazer), `MaskModelTests`, `PicturePlacementTests`,
-  `BlurDrawingTests` e `MaskDrawingTests` (pixels), `QuickEditBlurTests` e `QuickEditMaskTests` (fluxos com rastreador e detector falsos),
+  `BlurDrawingTests` e `MaskDrawingTests` (pixels), `QuickEditBlurTests` e `QuickEditMaskTests` (fluxos com rastreador e detector falsos; o cartão
+  que confirma no lugar do toast, o visual guardado com a edição), `HandleSpreadTests` (alças de máscara e área pequenas), `EditorToolbarFitTests`,
   `RealExports/BlurAreaExportTests` (a tarja no lugar depois de formato quadrado, corte e 2×, na área principal da tela dividida, só no vídeo por
-  cima; máscara circular), `PreviewMatchesExportTests` (`blurArea`), `MaskBlurUITests` (com `TEST_RUNNER_CUE_SCREENSHOT_DIR`, fotografa cada passo).
+  cima; máscara circular), `PreviewMatchesExportTests` (`blurArea`), `MaskBlurUITests` (com `TEST_RUNNER_CUE_SCREENSHOT_DIR`, fotografa cada passo;
+  a barra da área inteira ao lado do Delete, uma máscara pequena com as alças a um dedo).
 - **Barras de quem está por cima** (pedido do dono, 26/10: "tome as melhorias baseado no que vai ser melhor pra o criador de conteúdo editar vídeos
   complexos"; auditoria em scratchpad da sessão, `research/toolbar-audit.md`). Com um item escolhido só quatro botões cabem na tela (o "‹ Nome" e o
   Delete fixo tomam o resto), então o que um criador mais usa vai nesses quatro:
@@ -2217,6 +2233,14 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
     e Remove pauses têm o selo **ALL** (agem no vídeo inteiro).
   - **Legenda:** Edit · Split · Join next · **Emphasis** · Style · Delete (Emphasis abre a linha com o More aberto, nas palavras a destacar).
   - Split de uma mídia usa o mesmo ícone do Split do clipe; em inglês, Blur area usa "Track" como o resto do app (em português, "Seguir").
+- **Áreas pequenas medidas no iPhone 15 Pro** (`BlurTrackingDeviceTests`, 26/10, na take do dono): ovais desenhadas sobre o nariz (227×269 px),
+  um olho (189×58 px) e a boca (343×160 px), seguidas pelo Vision e conferidas em cada um dos 882 quadros contra os pontos do rosto que o Vision
+  acha (coberto = todos os pontos dentro da oval). Quadros que diriam "coberto" sem estar: olho **201 → 0**, boca **40 → 0**, nariz **12 → 3**
+  (os 3 a no máximo 6% do raio para fora, sob a borda suave), com alarmes falsos de 0 → 7, 0 → 14 e 1 → 7 quadros. O que mais pesava: a caixa
+  do Vision encolhe num alvo estreito (no olho, para 71% do desenhado, em 98% dos quadros) e a área ia junto. Medido e deixado como estava:
+  seguir quadros maiores (até 1280 px) ou uma caixa de contexto maior que a área piorou (olho 272 e 633 quadros); baixar o limite de 0,5 para
+  0,4 ou 0,3 esconde escorregões de verdade (nariz 12 → 16 → 26); conferir cada meio segundo indo e voltando (erro de ida e volta) marcaria
+  12 s de 29 para achar os mesmos quadros; marcar cada quadro rápido (sem esperar 3 seguidos) enchia um rosto parado de marcas de 0,1 s.
 - **Conferido com o vídeo real do dono** ("Cue Studio: Teleprompter", take 2, 29,4 s, selfie com o rosto em ~72% da largura): o rosto seguido pela
   análise de movimento em 6 ms, coberto em pelo menos 98% nas 294 medições, nenhum trecho perdido, 116 keyframes depois de suavizar o caminho
   (eram 233: a caixa tremia com a detecção); exportação com o pixelado conferida quadro a quadro. Teste opt-in:

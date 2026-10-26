@@ -4,11 +4,13 @@
 //
 
 import SwiftUI
+import UIKit
 
 /// The toolbar under the timeline. With something picked (or the Text, Captions or Audio menu
 /// open), it swaps its whole content for that context's tools, with a yellow "‹ Clip" back to the
 /// main ones. It scrolls sideways, with a fade on each side where more tools wait; Delete,
-/// in red, stays at the right end whatever the scroll. On the smallest screens it keeps only the
+/// in red, stays at the right end whatever the scroll. Tools that would only just overflow draw a
+/// little narrower so each shows whole (`EditorToolbarFit`). On the smallest screens it keeps only the
 /// icons; their labels stay for VoiceOver and a long press.
 struct EditorToolbar: View {
     let viewModel: QuickEditViewModel
@@ -66,14 +68,16 @@ struct EditorToolbar: View {
             let pinned = viewModel.toolbarItems.filter(\.isPinned)
             GeometryReader { proxy in
                 let items = viewModel.toolbarItems.filter { !$0.isPinned }
-                let overflows = CGFloat(items.count) * heightClass.toolbarItemWidth + 8 > proxy.size.width
+                let separators = CGFloat(items.filter(\.startsGroup).count) * 4.5
+                let widths = itemWidths(items, available: proxy.size.width - 8 - separators)
+                let overflows = widths.reduce(0, +) + 8 + separators > proxy.size.width + 0.5
                 ScrollView(.horizontal) {
                     HStack(spacing: 0) {
-                        ForEach(items) { item in
+                        ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                             if item.startsGroup {
                                 Rectangle().fill(Palette.Editor.separator).frame(width: 0.5, height: 30).padding(.horizontal, 2)
                             }
-                            itemButton(item)
+                            itemButton(item, width: widths[index])
                         }
                     }
                     .padding(.horizontal, 4)
@@ -102,7 +106,7 @@ struct EditorToolbar: View {
                 }
             }
             ForEach(pinned) { item in
-                itemButton(item)
+                itemButton(item, width: itemWidths([item], available: .infinity)[0])
                     .padding(.horizontal, 4)
                     // The tools that scroll away fade out under it.
                     .background(
@@ -139,7 +143,21 @@ struct EditorToolbar: View {
         .accessibilityIdentifier("edit.toolbar.back")
     }
 
-    private func itemButton(_ item: EditorToolbarItem) -> some View {
+    /// The room each tool takes, its side padding included (`EditorToolbarFit`): the class's width, a little less when that
+    /// lets every tool show whole.
+    private func itemWidths(_ items: [EditorToolbarItem], available: CGFloat) -> [CGFloat] {
+        let padding: CGFloat = heightClass.toolbarShowsLabels ? 4 : 0
+        let font = UIFont.systemFont(ofSize: heightClass.toolbarLabelSize, weight: .medium)
+        let labels = items.map { item in
+            heightClass.toolbarShowsLabels ? ceil((item.label as NSString).size(withAttributes: [.font: font]).width) : 0
+        }
+        return EditorToolbarFit.widths(
+            labels: labels, preferred: heightClass.toolbarItemWidth + padding, minimum: heightClass.toolbarItemMinimumWidth + padding,
+            padding: padding, breathing: padding + 6, available: available
+        )
+    }
+
+    private func itemButton(_ item: EditorToolbarItem, width: CGFloat) -> some View {
         let tint: Color = switch item.style {
         case .normal: Palette.ink
         case .dimmed: Palette.ink3
@@ -182,7 +200,7 @@ struct EditorToolbar: View {
                         .fixedSize()
                 }
             }
-            .frame(minWidth: heightClass.toolbarItemWidth, maxHeight: .infinity)
+            .frame(minWidth: width - (heightClass.toolbarShowsLabels ? 4 : 0), maxHeight: .infinity)
             .padding(.horizontal, heightClass.toolbarShowsLabels ? 2 : 0)
             .contentShape(Rectangle())
         }

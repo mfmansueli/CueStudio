@@ -10,7 +10,8 @@ import Testing
 
 /// Following a Blur area: a face through the motion analysis's samples, kept on the same face when another crosses, marked
 /// where it's lost and picked up again when it comes back; a drawn area through the tracker's samples, marked where the
-/// tracker stopped short; the path thinned; and laid on an area without moving the creator's own keyframes.
+/// tracker stopped short, never smaller than drawn when the tracker's box shrinks; the path thinned (a small area to its own
+/// size); and laid on an area without moving the creator's own keyframes.
 @Suite("Blur area following")
 struct BlurFollowingTests {
     private func face(_ x: Double, _ y: Double, side: Double = 0.1) -> NormalizedBox {
@@ -92,7 +93,9 @@ struct BlurFollowingTests {
         let behind = stride(from: 0.0, to: 1.0, by: 1.0 / 30).map { time in
             TrackSample(time: time, box: NormalizedBox(x: 0.4 - (1 - time) * 0.1, y: 0.4, width: 0.2, height: 0.1), confidence: 0.9)
         }
-        let result = BlurFollowing.followObject(ahead: ahead, behind: behind, area: tracked, tracked: tracked, at: 1, through: TimeSpan(start: 0, end: 3))
+        let result = BlurFollowing.followObject(
+            ahead: ahead, behind: behind, area: tracked, tracked: tracked, at: 1, through: TimeSpan(start: 0, end: 3), frameAspect: 9.0 / 16
+        )
         // Lost after 2 s: the last second is unchecked.
         #expect(result.unchecked == [TimeSpan(start: 2, end: 3)])
         var region = BlurRegion(target: .recording(nil), span: TimeSpan(start: 0, end: 3), box: tracked)
@@ -116,6 +119,55 @@ struct BlurFollowingTests {
         #expect(!next.keyframes.contains { $0.time == 2 && $0.isSet != true }, "the followed one at the creator's spot gives way")
         #expect(next.openUnchecked == [TimeSpan(start: 3.5, end: 4)])
         #expect(next.isFollowed)
+    }
+
+    @Test func aDrawnAreaIsNeverSmallerThanDrawnButGrowsWithWhatItFollows() {
+        // Vision's box around an eye shrinks to 70% (it does, measured on the iPhone), then grows to 130%.
+        let tracked = NormalizedBox(center: CGPoint(x: 0.5, y: 0.4), width: 0.18, height: 0.04)
+        let ahead = stride(from: 1.0, through: 3.0, by: 1.0 / 30).map { time in
+            let scale = time < 2 ? 1 - (time - 1) * 0.3 : 0.7 + (time - 2) * 0.6
+            return TrackSample(time: time, box: NormalizedBox(center: tracked.center, width: 0.18 * scale, height: 0.04 * scale), confidence: 0.9)
+        }
+        let result = BlurFollowing.followObject(
+            ahead: ahead, behind: [], area: tracked, tracked: tracked, at: 1, through: TimeSpan(start: 1, end: 3), frameAspect: 9.0 / 16
+        )
+        var region = BlurRegion(target: .recording(nil), span: TimeSpan(start: 1, end: 3), box: tracked)
+        region = BlurFollowing.applying(result, to: region)
+        for time in stride(from: 1.0, through: 3.0, by: 0.1) {
+            #expect(region.box(at: time).width >= tracked.width - 0.000_5, "smaller than drawn at \(time) s")
+            #expect(region.box(at: time).height >= tracked.height - 0.000_5)
+        }
+        #expect(region.box(at: 3).width > tracked.width * 1.2, "it grows when what it follows grows")
+    }
+
+    @Test func aShakeIsMarkedButASingleFastFrameIsNot() {
+        // Still at x 0.5, one frame jumping 0.05 at 1 s (the tracker's jitter), then a shake of six frames at 2 s.
+        let tracked = NormalizedBox(center: CGPoint(x: 0.5, y: 0.5), width: 0.2, height: 0.1)
+        let ahead = stride(from: 0.0, through: 3.0, by: 1.0 / 30).map { time -> TrackSample in
+            let jitter = abs(time - 1) < 0.01 ? 0.05 : 0
+            let shake = time > 2 && time < 2.2 ? (Int((time * 30).rounded()) % 2 == 0 ? 0.06 : -0.06) : 0
+            return TrackSample(time: time, box: NormalizedBox(center: CGPoint(x: 0.5 + jitter + shake, y: 0.5), width: 0.2, height: 0.1), confidence: 0.9)
+        }
+        let result = BlurFollowing.followObject(
+            ahead: ahead, behind: [], area: tracked, tracked: tracked, at: 0, through: TimeSpan(start: 0, end: 3), frameAspect: 9.0 / 16
+        )
+        #expect(result.unchecked.count == 1)
+        #expect(result.unchecked.first.map { $0.start < 2.05 && $0.end > 2.15 } == true, "\(result.unchecked)")
+    }
+
+    @Test func aSmallAreasPathStaysWithinItsOwnSize() {
+        // An area 3% of the frame tall wobbling 0.3% up and down: under the frame's 0.4%, but a tenth of the area.
+        let area = NormalizedBox(center: CGPoint(x: 0.5, y: 0.5), width: 0.15, height: 0.03)
+        let keyframes = stride(from: 0.0, through: 2.0, by: 1.0 / 30).map { time in
+            BlurKeyframe(time: time, box: NormalizedBox(center: CGPoint(x: 0.5, y: 0.5 + 0.003 * sin(time * 9)), width: 0.15, height: 0.03))
+        }
+        let thinned = BlurFollowing.thinned(keyframes, share: BlurFollowing.sizeShare)
+        var region = BlurRegion(target: .recording(nil), span: TimeSpan(start: 0, end: 2), box: area)
+        region.keyframes = thinned
+        for keyframe in keyframes {
+            #expect(abs(region.box(at: keyframe.time).midY - keyframe.box.midY) <= area.height * BlurFollowing.sizeShare + 0.000_01)
+        }
+        #expect(BlurFollowing.thinned(keyframes).count < thinned.count, "the frame's tolerance alone lets it slip")
     }
 
     @Test func thinningKeepsTheTurnsOfThePath() {

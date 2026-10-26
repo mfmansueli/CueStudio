@@ -22,6 +22,8 @@ final class BlurViewModel: EditorPart {
     var picking: BlurPicking?
     /// The area being followed and how far, 0 to 1; nil while nothing is.
     var following: (id: UUID, progress: Double)?
+    /// Counts the times following ended with the area's card in view: the card's sign jumps (its confirmation, no toast).
+    var followingEnded = 0
     /// ◐: the preview without any Blur area.
     var comparesOriginal = false {
         didSet {
@@ -31,8 +33,9 @@ final class BlurViewModel: EditorPart {
     }
     /// Upright sizes of the footage the handles are drawn on, by file.
     var uprightSizes: [URL: CGSize] = [:]
-    /// What a new area looks like: the look the creator last gave one in this edit (`BlurLook.initial` until then).
-    @ObservationIgnored var lastLook = BlurLook.initial
+    /// What a new area looks like: the look the creator last gave one in this video (`BlurLook.initial` until then), kept with
+    /// its edit.
+    var lastLook: BlurLook { edit.blurLook ?? .initial }
     /// Areas waiting to be followed after the one following now (every face but the largest).
     @ObservationIgnored var followQueue: [UUID] = []
     /// How each recording lands on the frame, worked out once per setting (`+Preview`).

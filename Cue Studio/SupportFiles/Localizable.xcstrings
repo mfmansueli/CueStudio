@@ -20178,13 +20178,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld volto nascosto · Tracciamento"
+                  "value" : "%lld volto nascosto · Tracciamento in corso"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld volti nascosti · Tracciamento"
+                  "value" : "%lld volti nascosti · Tracciamento in corso"
                 }
               }
             }
@@ -20226,13 +20226,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld gezicht verborgen · Volgen"
+                  "value" : "%lld gezicht verborgen · Wordt gevolgd"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld gezichten verborgen · Volgen"
+                  "value" : "%lld gezichten verborgen · Worden gevolgd"
                 }
               }
             }
@@ -36531,7 +36531,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "À 0 %, il reste muet sous ta voix. Monte-le pour l’entendre."
+            "value" : "À 0 %, il reste muet sous votre voix. Montez-le pour l’entendre."
           }
         },
         "hi" : {
@@ -40671,13 +40671,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Et udvisket område følges stadig · Vent et øjeblik"
+            "value" : "Et sløret område følges stadig · Vent et øjeblik"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ein verwischter Bereich wird noch verfolgt · Einen Moment"
+            "value" : "Ein Unschärfebereich wird noch verfolgt · Einen Moment"
           }
         },
         "es" : {
@@ -40689,7 +40689,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Un floutage est encore en cours de suivi · Patiente un instant"
+            "value" : "Un floutage est encore en cours de suivi · Patientez un instant"
           }
         },
         "hi" : {
@@ -40790,13 +40790,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Et udvisket område dækker måske ikke det, det skal skjule"
+            "value" : "Et sløret område dækker måske ikke det, det skal skjule"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ein verwischter Bereich verdeckt vielleicht nicht, was er verbergen soll"
+            "value" : "Ein Unschärfebereich verdeckt vielleicht nicht, was er verbergen soll"
           }
         },
         "es" : {
@@ -75388,13 +75388,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Udvisket område slettet"
+            "value" : "Sløret område slettet"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verwischter Bereich gelöscht"
+            "value" : "Unschärfebereich gelöscht"
           }
         },
         "es" : {
@@ -75507,13 +75507,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Udvisk område"
+            "value" : "Slør område"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bereich verwischen"
+            "value" : "Unschärfebereich"
           }
         },
         "es" : {
@@ -75591,7 +75591,7 @@
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alanı bulanıklaştır"
+            "value" : "Bulanık alan"
           }
         },
         "vi" : {
@@ -76203,6 +76203,131 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "模糊強度"
+          }
+        }
+      }
+    },
+    "blur.subject.area" : {
+      "comment" : "Name of a Blur area the creator drew (not a face), next to 'Face 1': shown as the picked item's name in the toolbar and on VoiceOver. Same word as 'area' in the Blur area strings.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المنطقة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Område"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bereich"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Area"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zona"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zone"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "क्षेत्र"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Area"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Area"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "エリア"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "영역"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Område"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gebied"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Área"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Område"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "พื้นที่"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alan"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vùng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "区域"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "區域"
           }
         }
       }
@@ -94909,7 +95034,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "확인함 · %lld곳 남음"
+            "value" : "확인했어요 · %lld곳 남았어요"
           }
         },
         "nb" : {
@@ -95088,7 +95213,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "확인함 · 처음부터 끝까지 가려졌어요"
+            "value" : "확인했어요 · 처음부터 끝까지 가려졌어요"
           }
         },
         "nb" : {
@@ -99439,13 +99564,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klippet er erstattet · dets udviskede område lå på den gamle video"
+            "value" : "Klippet er erstattet · dets slørede område lå på den gamle video"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clip ersetzt · sein verwischter Bereich lag auf dem alten Video"
+            "value" : "Clip ersetzt · sein Unschärfebereich lag auf dem alten Video"
           }
         },
         "es" : {
@@ -125962,13 +126087,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Slet udvisket område"
+            "value" : "Slet sløret område"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Verwischten Bereich löschen"
+            "value" : "Unschärfebereich löschen"
           }
         },
         "es" : {
@@ -155181,7 +155306,7 @@
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Volto nascosto · Tracciamento"
+            "value" : "Volto nascosto · Tracciamento in corso"
           }
         },
         "ja" : {
@@ -155205,7 +155330,7 @@
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gezicht verborgen · Volgen"
+            "value" : "Gezicht verborgen · Wordt gevolgd"
           }
         },
         "pt" : {
@@ -166618,13 +166743,13 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有 %@ Cue 无法确认它遮住了要隐藏的内容。只要一帧就可能暴露某人。"
+            "value" : "有 %@ 的时间，Cue 无法确认它遮住了要隐藏的内容。只要一帧就可能暴露某人。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "有 %@ Cue 無法確認它遮住了要隱藏的內容。只要一個影格就可能讓人曝光。"
+            "value" : "有 %@ 的時間，Cue 無法確認它遮住了要隱藏的內容。只要一個影格就可能讓人曝光。"
           }
         }
       }
@@ -167126,7 +167251,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Para textos, matrículas y pantallas, Opaco lo oculta por completo."
+            "value" : "Para textos, placas y pantallas, Opaco lo oculta por completo."
           }
         },
         "fr" : {
@@ -167144,7 +167269,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Untuk teks, pelat nomor, dan layar, Pekat menyembunyikan sepenuhnya."
+            "value" : "Untuk teks, pelat nomor, dan layar, Solid menyembunyikan sepenuhnya."
           }
         },
         "it" : {
@@ -167162,7 +167287,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "글자, 번호판, 화면은 가리기로 완전히 가려져요."
+            "value" : "글자, 번호판, 화면은 단색으로 완전히 가려져요."
           }
         },
         "nb" : {
@@ -185479,7 +185604,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Oculta una cara, una matrícula o un nombre"
+            "value" : "Oculta una cara, una placa o un nombre"
           }
         },
         "fr" : {
@@ -225814,7 +225939,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "마스크 재설정됨"
+            "value" : "마스크를 재설정했어요"
           }
         },
         "nb" : {
@@ -225933,7 +226058,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "마스크 제거됨"
+            "value" : "마스크를 제거했어요"
           }
         },
         "nb" : {
@@ -226107,6 +226232,381 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "遮罩"
+          }
+        }
+      }
+    },
+    "mask.band" : {
+      "comment" : "Mask shape in Quick edit: a straight band (strip) across the picture; only the part inside it shows. One of None · Rectangle · Circle · Line · Band.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شريط"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bånd"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Balken"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Band"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Banda"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bandeau"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "बैंड"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pita"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fascia"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "帯"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "띠"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bånd"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Band"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Faixa"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Band"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แถบ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Şerit"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dải"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "条带"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "條帶"
+          }
+        }
+      }
+    },
+    "mask.line" : {
+      "comment" : "Mask shape in Quick edit: a straight line across the picture; one side of it shows. A geometric line, not a line of text. One of None · Rectangle · Circle · Line · Band.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "خط"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linje"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linie"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Line"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Línea"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ligne"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "लाइन"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Garis"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linea"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "線形"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "선형"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linje"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lijn"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linha"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Linje"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เส้นตรง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Çizgi"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đường thẳng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "线性"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "線性"
+          }
+        }
+      }
+    },
+    "mask.circle" : {
+      "comment" : "Mask shape in Quick edit: a filled circle or ellipse; only the part of the picture inside it shows. One of None · Rectangle · Circle · Line · Band.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "دائرة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cirkel"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kreis"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Circle"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Círculo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cercle"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "गोला"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lingkaran"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cerchio"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "円"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "원"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sirkel"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cirkel"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Círculo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cirkel"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "วงกลม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daire"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vòng tròn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圆形"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "圓形"
           }
         }
       }
@@ -250345,7 +250845,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No hay caras en este fotograma. Dibuja una zona sobre una matrícula, un nombre en una pantalla o lo que quieras."
+            "value" : "No hay caras en este fotograma. Dibuja una zona sobre una placa, un nombre en una pantalla o lo que quieras."
           }
         },
         "fr" : {
@@ -259713,7 +260213,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "No queda nada de lo que hay debajo. Lo mejor para textos, matrículas y pantallas."
+            "value" : "No queda nada de lo que hay debajo. Lo mejor para textos, placas y pantallas."
           }
         },
         "fr" : {
@@ -287286,7 +287786,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Places inversées"
+            "value" : "Places échangées"
           }
         },
         "hi" : {
@@ -319420,13 +319920,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Erstattet · det udviskede område lå på den gamle"
+            "value" : "Erstattet · det slørede område lå på den gamle"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ersetzt · der verwischte Bereich lag auf dem alten"
+            "value" : "Ersetzt · der Unschärfebereich lag auf dem alten"
           }
         },
         "es" : {
@@ -320231,7 +320731,7 @@
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wiederholen"
+            "value" : "Erneut ansehen"
           }
         },
         "es" : {
@@ -354257,13 +354757,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Viser videoen uden udviskede områder"
+            "value" : "Viser videoen uden slørede områder"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Zeigt das Video ohne verwischte Bereiche"
+            "value" : "Zeigt das Video ohne Unschärfebereiche"
           }
         },
         "es" : {
@@ -361640,7 +362140,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Pekat"
+            "value" : "Solid"
           }
         },
         "it" : {
@@ -361658,7 +362158,7 @@
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "가리기"
+            "value" : "단색"
           }
         },
         "nb" : {
@@ -381842,7 +382342,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Inverser"
+            "value" : "Échanger"
           }
         },
         "hi" : {
@@ -381890,7 +382390,7 @@
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Trocar lugar"
+            "value" : "Trocar de lugar"
           }
         },
         "sv" : {
@@ -432105,7 +432605,7 @@
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vidéo · son propre son"
+            "value" : "Vidéo · son propre audio"
           }
         },
         "hi" : {
@@ -450933,13 +451433,13 @@
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Uden udviskede områder"
+            "value" : "Uden slørede områder"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ohne verwischte Bereiche"
+            "value" : "Ohne Unschärfebereiche"
           }
         },
         "es" : {

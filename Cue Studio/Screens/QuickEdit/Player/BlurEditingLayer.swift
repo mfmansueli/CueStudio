@@ -10,7 +10,8 @@ import SwiftUI
 /// one; the picked one is outlined in its real shape (yellow, or dashed orange where it may not cover what it hides, with
 /// "Not tracked here"), dragged to move it (at the playhead when it moves), a corner pulled or a pinch to resize it, ✕ (its top
 /// left corner) to delete it. Every change shows in the video as it's made: the box is the area itself. A face filling a selfie
-/// makes an area larger than the frame: its handles and ✕ stay on the preview, at its edge, where a finger reaches them.
+/// makes an area larger than the frame: its handles and ✕ stay on the preview, at its edge, where a finger reaches them; a
+/// small area (an eye, a far plate) spreads them out around it, a finger apart, leaving its middle to drag (`HandleSpread`).
 struct BlurEditingLayer: View {
     let viewModel: QuickEditViewModel
     let size: CGSize
@@ -100,6 +101,8 @@ struct BlurEditingLayer: View {
     private func picked(_ region: BlurRegion, rect: CGRect) -> some View {
         let unchecked = blur.playheadIsUnchecked
         let tint = unchecked ? Palette.warnText : Palette.acc
+        let places = handlePlaces(rect)
+        let lowest = max(places[.bottomLeading]?.y ?? rect.maxY, places[.bottomTrailing]?.y ?? rect.maxY)
         return ZStack {
             shape(region.shape)
                 .stroke(tint, style: StrokeStyle(lineWidth: 2, dash: unchecked ? [6, 4] : []))
@@ -116,12 +119,13 @@ struct BlurEditingLayer: View {
                 .accessibilityAddTraits([.isButton, .isSelected])
                 .accessibilityActions { actions }
                 .accessibilityIdentifier("edit.blur.handle")
+            leaders(places, rect: rect)
             // Any corner resizes around the middle: the top left one is ✕'s.
             ForEach([Corner.topTrailing, .bottomLeading, .bottomTrailing], id: \.self) { corner in
-                cornerHandle(corner, region: region, rect: rect)
+                cornerHandle(corner, region: region, rect: rect, at: places[corner] ?? corner.point(of: rect))
             }
             deleteButton(region)
-                .offset(reachable(CGPoint(x: rect.minX, y: rect.minY), from: rect, margin: 14))
+                .offset(offset(places[.topLeading] ?? Corner.topLeading.point(of: rect), from: rect))
             if unchecked {
                 Label(String(localized: "Not tracked here"), systemImage: "exclamationmark.triangle.fill")
                     .font(.system(.caption2, weight: .semibold))
@@ -130,7 +134,8 @@ struct BlurEditingLayer: View {
                     .padding(.vertical, 4)
                     .background(Palette.Toast.fill, in: Capsule())
                     .fixedSize()
-                    .offset(reachable(CGPoint(x: rect.midX, y: rect.maxY + 18), from: rect, margin: 16))
+                    // Under the area, and under its lower corners when a small area spreads them out.
+                    .offset(reachable(CGPoint(x: rect.midX, y: max(rect.maxY + 18, lowest + 30)), from: rect, margin: 16))
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)
             }
@@ -182,6 +187,11 @@ struct BlurEditingLayer: View {
     private enum Corner: CaseIterable {
         case topLeading, topTrailing, bottomLeading, bottomTrailing
 
+        /// Where it is on `rect`.
+        func point(of rect: CGRect) -> CGPoint {
+            CGPoint(x: rect.midX + direction.width * rect.width / 2, y: rect.midY + direction.height * rect.height / 2)
+        }
+
         /// Which way pulling it grows the area.
         var direction: CGSize {
             switch self {
@@ -193,8 +203,45 @@ struct BlurEditingLayer: View {
         }
     }
 
+    /// Where ✕ and the three corner handles sit (`HandleSpread`): on the corners, moved out along their diagonals on a small
+    /// area so none covers another or the area's middle (where a drag moves it), and kept on the preview.
+    private func handlePlaces(_ rect: CGRect) -> [Corner: CGPoint] {
+        let corners: [Corner] = [.topLeading, .topTrailing, .bottomLeading, .bottomTrailing]
+        let handles = corners.map { corner in
+            HandleSpread.Handle(
+                "\(corner)", at: corner.point(of: rect), outward: CGVector(dx: corner.direction.width, dy: corner.direction.height)
+            )
+        }
+        let places = HandleSpread.place(
+            handles, around: CGPoint(x: rect.midX, y: rect.midY), in: CGRect(origin: .zero, size: size), spacing: Metrics.hitTarget, margin: 12
+        )
+        return Dictionary(uniqueKeysWithValues: corners.compactMap { corner in places["\(corner)"].map { (corner, $0.point) } })
+    }
+
+    /// A thin line from each handle moved out of a small area back to its corner.
+    private func leaders(_ places: [Corner: CGPoint], rect: CGRect) -> some View {
+        Path { path in
+            for (corner, place) in places {
+                let from = corner.point(of: rect)
+                guard HandleSpread.distance(from, place) > 8 else { continue }
+                path.move(to: CGPoint(x: from.x - rect.midX, y: from.y - rect.midY))
+                path.addLine(to: CGPoint(x: place.x - rect.midX, y: place.y - rect.midY))
+            }
+        }
+        .stroke(Palette.Editor.overlayOutline, style: StrokeStyle(lineWidth: 1, lineCap: .round))
+        .shadow(color: Palette.Editor.overlayOutlineHalo, radius: 1)
+        .frame(width: 0, height: 0)
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+
+    /// How far from the area's middle `point` (on the preview) is.
+    private func offset(_ point: CGPoint, from rect: CGRect) -> CGSize {
+        CGSize(width: point.x - rect.midX, height: point.y - rect.midY)
+    }
+
     /// A corner pulled out grows the area around its middle (both sides at once), pushed in shrinks it.
-    private func cornerHandle(_ corner: Corner, region: BlurRegion, rect: CGRect) -> some View {
+    private func cornerHandle(_ corner: Corner, region: BlurRegion, rect: CGRect, at place: CGPoint) -> some View {
         Circle()
             .fill(Color.white)
             .frame(width: 14, height: 14)
@@ -213,10 +260,7 @@ struct BlurEditingLayer: View {
                     }
                     .onEnded { _ in end("corner") }
             )
-            .offset(reachable(
-                CGPoint(x: rect.midX + corner.direction.width * rect.width / 2, y: rect.midY + corner.direction.height * rect.height / 2),
-                from: rect, margin: 12
-            ))
+            .offset(offset(place, from: rect))
             .accessibilityHidden(true)
     }
 

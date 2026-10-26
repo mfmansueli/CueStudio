@@ -16,7 +16,8 @@
 #                                    LengthVariantsDeviceTests, ScriptToolsDeviceTests, IdeaRelevanceDeviceTests, IdeaSuggestionsDeviceTests, CreatorDayDeviceTests,
 #                                    InspirationDeviceTests, QuickEditPreviewLatencyTests, EditorExportDeviceTests, SkinSmoothingDeviceTests,
 #                                    BackgroundDeviceTests, ContinuedTaskDeviceTests, MotionAnalysisDeviceTests, EditorMotionDeviceTests,
-#                                    SplitScreenDeviceTests, CustomFontStoreTests, MediaLibraryStoreTests)
+#                                    SplitScreenDeviceTests, BlurAreaDeviceTests, BlurTrackingDeviceTests, CustomFontStoreTests,
+#                                    MediaLibraryStoreTests)
 #   scripts/test.sh device-ui <class>  a UI test class (or Class/test) on that iPhone (opt-in classes skip without their flag)
 #
 # After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests);
@@ -106,8 +107,9 @@ case "$mode" in
             EditorExportDeviceTests*) export TEST_RUNNER_CUE_EDITOR_EXPORT=1 ;;
             # The split screen's preview drawing rate and export time, on links to this iPhone's newest takes (only read).
             SplitScreenDeviceTests*) export TEST_RUNNER_CUE_SPLIT_E2E=1 ;;
-            # Blur area and Mask: preview drawing rate, tracking speed and export time, on links to this iPhone's newest takes.
-            BlurAreaDeviceTests*) export TEST_RUNNER_CUE_BLUR_E2E=1 ;;
+            # Blur area and Mask: preview drawing rate, tracking speed and export time, on links to this iPhone's newest takes; small
+            # areas tracked against the face landmarks of CUE_REAL_TAKE (BlurTrackingDeviceTests).
+            BlurAreaDeviceTests* | BlurTrackingDeviceTests*) export TEST_RUNNER_CUE_BLUR_E2E=1 ;;
             # Imported fonts (Core Text's registration) and the media library's hard links on the iPhone's own file system, no flag.
             CustomFontStoreTests* | MediaLibraryStoreTests*) ;;
             # Motion (analysis, face follow, tracking, stabilization, speed curves, beats) on COPIES of this iPhone's newest takes.

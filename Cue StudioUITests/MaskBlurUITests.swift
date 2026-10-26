@@ -6,9 +6,9 @@
 import XCTest
 
 /// Mask and Blur area in the editor, as a creator reaches them: Blur area from the main toolbar (the faces found, else an area
-/// drawn, its panel with what it covers first, a solid bar, deleted by its ✕ on the preview), and Mask on the demo's video in a
-/// window (shapes, the real outline with its handles, Invert, what a drag moves). With `TEST_RUNNER_CUE_SCREENSHOT_DIR` set,
-/// each step is photographed there.
+/// drawn, its panel with what it covers first, a solid bar, its own tools all whole beside Delete, deleted by its ✕ on the
+/// preview), and Mask on the demo's video in a window (shapes, the real outline with its handles, Invert, what a drag moves; a
+/// small mask with its handles a finger apart). With `TEST_RUNNER_CUE_SCREENSHOT_DIR` set, each step is photographed there.
 final class MaskBlurUITests: XCTestCase {
     override func setUp() {
         continueAfterFailure = false
@@ -30,6 +30,16 @@ final class MaskBlurUITests: XCTestCase {
         app.buttons["edit.blur.style.pixelate"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["edit.blur.strength"].exists(within: 3), "Pixelate has a strength")
         snapshot(app, "blur-3-pixelate")
+        // The panel closed, the area's own tools: all four whole, none under the pinned Delete.
+        app.buttons["edit.panel.apply"].tap()
+        let delete = app.buttons["edit.toolbar.delete"]
+        XCTAssertTrue(delete.exists(within: 5), "No Delete for the picked area")
+        for id in ["editBlur", "followBlur", "reviewBlur", "addBlur"] {
+            let tool = app.buttons["edit.toolbar.\(id)"]
+            XCTAssertTrue(tool.exists && tool.isHittable, "\(id) isn't reachable")
+            XCTAssertLessThanOrEqual(tool.frame.maxX, delete.frame.minX + 1, "\(id) hides under Delete")
+        }
+        snapshot(app, "blur-4-tools")
         app.buttons["edit.blur.delete"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["edit.blur.handle"].isGone(within: 5), "The box stayed after ✕")
     }
@@ -65,6 +75,44 @@ final class MaskBlurUITests: XCTestCase {
         invert.tap()
         XCTAssertTrue(["On", "1"].contains(invert.value as? String ?? ""), "Invert didn’t turn on: \(String(describing: invert.value))")
         snapshot(app, "mask-4-inverted")
+    }
+
+    @MainActor
+    func testASmallMaskKeepsItsHandlesAFingerApart() throws {
+        let app = EditorApp.open(demo: true)
+        EditorApp.scrub(app)
+        let window = app.buttons["edit.mediaHandle"]
+        XCTAssertTrue(window.exists(within: 5), "No video in a window at the playhead")
+        window.tap()
+        EditorApp.tapTool(app, "mask")
+        app.buttons["edit.maskShape.rectangle"].tap()
+        // Advanced › Size, smaller step by step: a mask a few fingers wide.
+        let panel = app.descendants(matching: .any)["edit.panel.mask"]
+        let advanced = app.buttons["edit.maskAdvanced"]
+        var swipes = 0
+        while !(advanced.exists && advanced.isHittable), swipes < 4 {
+            panel.swipeUp()
+            swipes += 1
+        }
+        advanced.tap()
+        let smaller = app.buttons["edit.maskSize.minus"]
+        swipes = 0
+        while !(smaller.exists && smaller.isHittable), swipes < 4 {
+            panel.swipeUp()
+            swipes += 1
+        }
+        for _ in 0..<40 where smaller.isEnabled { smaller.tap() }
+        snapshot(app, "mask-5-small")
+        let handles = ["right", "left", "bottom", "top", "turn", "feather", "corners"]
+            .map { app.descendants(matching: .any)["edit.mask.handle.\($0)"] }
+            .filter(\.exists)
+        XCTAssertGreaterThanOrEqual(handles.count, 5, "A small rectangle keeps a tab each way, ↻, the soft edge and its corners")
+        for (index, handle) in handles.enumerated() {
+            for other in handles[(index + 1)...] {
+                let dx = handle.frame.midX - other.frame.midX, dy = handle.frame.midY - other.frame.midY
+                XCTAssertGreaterThanOrEqual((dx * dx + dy * dy).squareRoot(), 43, "\(handle.identifier) crowds \(other.identifier)")
+            }
+        }
     }
 
     // MARK: - Helpers

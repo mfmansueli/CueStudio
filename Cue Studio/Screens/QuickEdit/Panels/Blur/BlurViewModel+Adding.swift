@@ -5,6 +5,7 @@
 
 import CoreGraphics
 import Foundation
+import SwiftUI
 
 /// Blur area's first step: the footage under the playhead (the picked photo or video over the take, else the clip there, a
 /// reversed or frozen clip read as the recording it shows), its faces numbered on the preview (from the motion analysis when it
@@ -85,11 +86,12 @@ extension BlurViewModel {
         return boxes.map { NormalizedBox(x: $0.minX, y: $0.minY, width: $0.width, height: $0.height) }
     }
 
-    /// A tap on face `index` of the first step: an area over it, picked, followed at once.
+    /// A tap on face `index` of the first step: an area over it, picked, followed at once. Its card says it's tracking (no toast
+    /// over the top of the preview; VoiceOver hears it).
     func pickFace(_ index: Int) {
         guard let picking, picking.faces.indices.contains(index) else { return }
         let region = makeFaceRegion(picking.faces[index], on: picking.footage)
-        add([region], toast: String(localized: "Face hidden · Tracking it"))
+        add([region], saying: String(localized: "Face hidden · Tracking it"), inToast: false)
         follow(region.id)
     }
 
@@ -97,7 +99,7 @@ extension BlurViewModel {
     func pickAllButLargest() {
         guard let picking, picking.faces.count > 1 else { return }
         let regions = picking.faces.dropFirst().map { makeFaceRegion($0, on: picking.footage) }
-        add(regions, toast: String(localized: "\(regions.count) faces hidden · Tracking them"))
+        add(regions, saying: String(localized: "\(regions.count) faces hidden · Tracking them"), inToast: false)
         followQueue = regions.dropFirst().map(\.id)
         if let first = regions.first { follow(first.id) }
     }
@@ -109,7 +111,7 @@ extension BlurViewModel {
             x: 0.5 - Self.drawnSize.width / 2, y: 0.5 - Self.drawnSize.height / 2, width: Self.drawnSize.width, height: Self.drawnSize.height
         )
         let box = footageBox(for: frame, on: footage.target) ?? NormalizedBox(center: CGPoint(x: 0.5, y: 0.5), width: 0.3, height: 0.1)
-        add([lastLook.applied(to: BlurRegion(target: footage.target, span: footage.span, box: box))], toast: String(localized: "Drag it onto what to hide"))
+        add([lastLook.applied(to: BlurRegion(target: footage.target, span: footage.span, box: box))], saying: String(localized: "Drag it onto what to hide"))
     }
 
     // MARK: - Private
@@ -118,8 +120,9 @@ extension BlurViewModel {
         lastLook.applied(to: BlurRegion(target: footage.target, span: footage.span, box: BlurRegion.area(aroundFace: face), subject: .face))
     }
 
-    /// Adds `regions` in one undo step and picks the first; the first step ends.
-    private func add(_ regions: [BlurRegion], toast message: String) {
+    /// Adds `regions` in one undo step and picks the first; the first step ends. `message` is a toast with Undo, or, when the
+    /// open panel's card already says it, only VoiceOver's announcement (Undo stays in the player's bar).
+    private func add(_ regions: [BlurRegion], saying message: String, inToast: Bool = true) {
         guard let first = regions.first else { return }
         change { snapshot in
             var all = snapshot.blurRegions ?? []
@@ -130,6 +133,10 @@ extension BlurViewModel {
         selection = .blur(first.id)
         panel = .blur
         Haptics.selection()
-        sayUndoable(message)
+        if inToast {
+            sayUndoable(message)
+        } else {
+            AccessibilityNotification.Announcement(message).post()
+        }
     }
 }

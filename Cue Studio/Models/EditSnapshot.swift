@@ -61,6 +61,9 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
     var brandKitKnown: Bool?
     /// The Blur areas; nil in steps saved before them, which leave them as they are.
     var blurRegions: [BlurRegion]?
+    /// The look the next new Blur area starts with (`blurLookKnown`: steps saved before it was kept leave it as it is).
+    var blurLook: BlurLook?
+    var blurLookKnown: Bool?
 
     private enum CodingKeys: String, CodingKey {
         case timeline, suggestions, texts, media, voiceOvers, cover, creatorStyle, captionStyle, filter
@@ -68,7 +71,7 @@ nonisolated struct EditSnapshot: Codable, Hashable, Sendable {
         case captionTranslations, captionDisplay, music, backgrounds
         case captionCollection, captionCollectionVersion, captionPosition, look
         case lockedLayers, captionLanguage, captionLanguageKnown, captionChanges, translationChanges
-        case splitScreen, brandKit, brandKitKnown, blurRegions
+        case splitScreen, brandKit, brandKitKnown, blurRegions, blurLook, blurLookKnown
     }
 }
 
@@ -109,7 +112,8 @@ nonisolated extension EditSnapshot {
             backgrounds: edit.backgrounds, captionCollection: edit.captionCollection,
             captionCollectionVersion: 1, captionPosition: edit.captionPosition, look: EditLook(edit),
             lockedLayers: edit.lockedLayers, captionLanguage: edit.captionLanguage, captionLanguageKnown: true,
-            splitScreen: edit.splitScreen, brandKit: edit.brandKit, brandKitKnown: true, blurRegions: edit.blurRegions
+            splitScreen: edit.splitScreen, brandKit: edit.brandKit, brandKitKnown: true, blurRegions: edit.blurRegions,
+            blurLook: edit.blurLook, blurLookKnown: true
         )
     }
 
@@ -149,7 +153,9 @@ nonisolated extension EditSnapshot {
             splitScreen: try? container.decodeIfPresent(SplitScreen.self, forKey: .splitScreen),
             brandKit: try? container.decodeIfPresent(AppliedBrandKit.self, forKey: .brandKit),
             brandKitKnown: try? container.decodeIfPresent(Bool.self, forKey: .brandKitKnown),
-            blurRegions: try? container.decodeIfPresent(LossyList<BlurRegion>.self, forKey: .blurRegions).map(\.elements)
+            blurRegions: try? container.decodeIfPresent(LossyList<BlurRegion>.self, forKey: .blurRegions).map(\.elements),
+            blurLook: try? container.decodeIfPresent(BlurLook.self, forKey: .blurLook),
+            blurLookKnown: try? container.decodeIfPresent(Bool.self, forKey: .blurLookKnown)
         )
     }
 }

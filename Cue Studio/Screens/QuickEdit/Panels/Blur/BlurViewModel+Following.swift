@@ -5,6 +5,7 @@
 
 import Foundation
 import os
+import SwiftUI
 
 /// Following a Blur area's subject: a face (tapped, or an area drawn over most of one) through the recording's motion analysis
 /// (the same faces Follow face reads, ten a second, nothing analyzed again), anything else (or a face the analysis doesn't
@@ -87,6 +88,7 @@ extension BlurViewModel {
                 }
                 let stop: @Sendable () -> Bool = { stopFlag.withLock { $0 } }
                 let tracked = NormalizedBox(center: box.center, width: max(0.04, box.width), height: max(0.04, box.height))
+                let upright = await EditFraming.shape(of: url)?.uprightSize ?? CGSize(width: 9, height: 16)
                 do {
                     let ahead = try await tracker.track(videoAt: url, box: tracked, at: start, until: range.end, shouldStop: stop) { report($0, true) }
                     // From its first moment there's nothing behind to follow.
@@ -94,7 +96,8 @@ extension BlurViewModel {
                         ? try await tracker.track(videoAt: url, box: tracked, at: start, until: range.start, shouldStop: stop) { report($0, false) }
                         : []
                     result = BlurFollowing.followObject(
-                        ahead: ahead, behind: Array(behind.dropLast()), area: box, tracked: tracked, at: start, through: range
+                        ahead: ahead, behind: Array(behind.dropLast()), area: box, tracked: tracked, at: start, through: range,
+                        frameAspect: upright.width / max(1, upright.height)
                     )
                 } catch {
                     self?.noteFailure(error, "blurFollow")
@@ -118,7 +121,7 @@ extension BlurViewModel {
                 area.isFollowed = true
                 area.markUnchecked(area.span)
             }
-            toast.show(String(localized: "Couldn’t track it here · Move it onto what it hides"), kind: .problem)
+            say(String(localized: "Couldn’t track it here · Move it onto what it hides"), covered: false, about: id)
             if !followQueue.isEmpty { follow(followQueue.removeFirst()) }
             return
         }
@@ -129,13 +132,26 @@ extension BlurViewModel {
         }
         if let region = edit.blurRegions.first(where: { $0.id == id }) {
             if region.isCovered {
-                toast.show(String(localized: "Tracked the whole time"), kind: .cue)
+                say(String(localized: "Tracked the whole time"), covered: true, about: id)
             } else {
                 let left = DurationText.tenths(region.uncheckedDuration)
-                toast.show(String(localized: "Not tracked for \(left) · Check the marked part"), kind: .problem)
+                say(String(localized: "Not tracked for \(left) · Check the marked part"), covered: false, about: id)
             }
         }
         if !followQueue.isEmpty { follow(followQueue.removeFirst()) }
+    }
+
+    /// How following came out. With the area's card in view (its panel open on it), the card already says it: its sign jumps,
+    /// with the tap and VoiceOver's announcement, and no toast covers the top of the preview (its ✕ and top handles). Else a
+    /// toast.
+    private func say(_ message: String, covered: Bool, about id: UUID) {
+        guard panel == .blur, picking == nil, selectedBlurID == id else {
+            toast.show(message, kind: covered ? .cue : .problem)
+            return
+        }
+        followingEnded += 1
+        if covered { Haptics.success() } else { Haptics.warning() }
+        AccessibilityNotification.Announcement(message).post()
     }
 
     /// The recording's face samples across `range`, when its motion analysis reached that far.

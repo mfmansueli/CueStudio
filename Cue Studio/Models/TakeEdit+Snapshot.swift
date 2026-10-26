@@ -42,8 +42,15 @@ extension TakeEdit {
         step.look?.apply(to: &self)
         if let locked = step.lockedLayers { lockedLayers = locked }
         if step.captionLanguageKnown == true { captionLanguage = step.captionLanguage }
+        applyAddedLater(step)
+    }
+
+    /// The parts undo kept later (the split screen, the brand kit, the Blur areas and the look the next one starts with): a step
+    /// saved before one of them leaves it as it is.
+    private mutating func applyAddedLater(_ step: EditSnapshot) {
         if let splitScreen = step.splitScreen { self.splitScreen = splitScreen }
         if step.brandKitKnown == true { brandKit = step.brandKit }
         if let regions = step.blurRegions { blurRegions = regions }
+        if step.blurLookKnown == true { blurLook = step.blurLook }
     }
 }

@@ -74,12 +74,14 @@ struct QuickEditBlurTests {
         let region = try #require(viewModel.edit.blurRegions.first)
         #expect(viewModel.selection == .blur(region.id))
         #expect(region.subject == .face && region.shape == .oval)
-        // The whole clip, tracked both ways from the playhead: on the face at 7 s and at 0.5 s.
+        // The whole clip, tracked both ways from the playhead: on the face at 6 s and at 0.5 s.
         #expect(region.span == TimeSpan(start: 0, end: 10))
-        #expect(abs(region.box(at: 7).midX - Self.walk(7).midX) < 0.01)
+        #expect(abs(region.box(at: 6).midX - Self.walk(6).midX) < 0.01)
         #expect(abs(region.box(at: 0.5).midX - Self.walk(0.5).midX) < 0.01)
         #expect(region.isCovered)
-        #expect(scenario.toast.message == "Tracked the whole time")
+        // Its card, in view, says it (tracking, then tracked: its sign jumps); no toast covers the top of the preview.
+        #expect(scenario.toast.message == nil)
+        #expect(viewModel.blur.followingEnded == 1)
         // Made and followed: two steps; one Undo takes the path, the next the area.
         #expect(viewModel.document.history.past.count == steps + 2)
         viewModel.undo()
@@ -96,7 +98,8 @@ struct QuickEditBlurTests {
         #expect(!region.isCovered)
         #expect(region.openUnchecked.count == 1)
         #expect(abs((region.openUnchecked.first?.start ?? 0) - 6) < 0.05)
-        #expect(scenario.toast.message?.hasPrefix("Not tracked for") == true)
+        #expect(scenario.toast.message?.hasPrefix("Not tracked for") != true, "the card in view says it")
+        #expect(viewModel.blur.followingEnded == 1)
         // Done stops to ask first.
         viewModel.askIfReadyToPost()
         #expect(viewModel.showsBlurCheck)
@@ -203,6 +206,38 @@ struct QuickEditBlurTests {
         let second = try #require(viewModel.edit.blurRegions.last)
         #expect(viewModel.edit.blurRegions.count == 2)
         #expect(BlurLook(second) == BlurLook(style: .solid, shape: .rectangle, strength: 0.6, feather: 0))
+    }
+
+    @Test func trackedFromItsBarWithThePanelClosedItSaysSoInAToast() async throws {
+        let scenario = await makeScenario(faces: [])
+        let viewModel = scenario.viewModel
+        viewModel.perform(.addBlurArea)
+        await Wait.until { viewModel.blur.picking?.isSearching == false }
+        viewModel.blur.drawArea()
+        viewModel.closePanel()
+        #expect(viewModel.selectedBlur != nil)
+        viewModel.perform(.followBlur)
+        await Wait.until(timeout: .seconds(60)) { !viewModel.blur.isFollowing }
+        #expect(scenario.toast.message == "Tracked the whole time")
+        #expect(viewModel.blur.followingEnded == 0)
+    }
+
+    @Test func theLastLookIsKeptWithTheVideosEdit() async throws {
+        let scenario = await makeScenario(faces: [])
+        let viewModel = scenario.viewModel
+        #expect(viewModel.edit.blurLook == nil)
+        viewModel.perform(.addBlurArea)
+        await Wait.until { viewModel.blur.picking?.isSearching == false }
+        viewModel.blur.drawArea()
+        viewModel.blur.setStyle(.pixelate)
+        let look = BlurLook(style: .pixelate, shape: .oval, strength: 0.6, feather: 0.5)
+        #expect(viewModel.edit.blurLook == look)
+        // Saved with the edit: the editor opened again on this video starts the next area with it.
+        let reopened = try JSONDecoder().decode(TakeEdit.self, from: JSONEncoder().encode(viewModel.edit))
+        #expect(reopened.blurLook == look)
+        // Undo takes the look back with the change.
+        viewModel.undo()
+        #expect(viewModel.edit.blurLook == nil)
     }
 
     @Test func aDrawnAreaStaysPutUntilTrackedAndStartsWithTheFirstLook() async throws {
