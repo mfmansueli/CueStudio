@@ -364,6 +364,7 @@ struct LaunchOptions {
         return options
     }
 
+    #if DEBUG
     /// With `-uiTestRealTake <file name>`, "3 morning habits" Take 3 made to play a hard link of the creator's recording (in
     /// Takes) and its motion analysis, from the temporary folder.
     private static func openRealTake(asked arguments: [String], in takes: inout [Take], repository: InMemoryTakeRepository) {
@@ -389,4 +390,5 @@ struct LaunchOptions {
         takes[index].edit = nil
         try? repository.saveTakes(takes)
     }
+    #endif
 }
