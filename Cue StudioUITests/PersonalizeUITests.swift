@@ -33,6 +33,23 @@ final class PersonalizeUITests: XCTestCase {
         XCTAssertTrue(element(app, "personalize.hero").exists(within: 5))
     }
 
+    /// The sky cards picked across the grid, the diagonals too, with the real movement: each tap leaves exactly that card chosen (the ring
+    /// itself is drawn once over the grid, `SelectionRing`, so it glides above the other cards).
+    func testEachSkyCardTappedIsTheOnlyOneChosen() {
+        let app = CueApp.launch(seeded: true, animations: true)
+        openPersonalize(app)
+        let skies = ["off", "serene", "adrift", "interstellar"]
+        for sky in ["interstellar", "off", "serene", "adrift", "off", "interstellar"] {
+            let card = app.buttons["settings.starrySky.\(sky)"]
+            XCTAssertTrue(card.exists(within: 5))
+            card.tap()
+            XCTAssertTrue(card.isSelected, "\(sky) wasn't chosen")
+            for other in skies where other != sky {
+                XCTAssertFalse(app.buttons["settings.starrySky.\(other)"].isSelected, "\(other) still chosen after \(sky)")
+            }
+        }
+    }
+
     func testChoosingASkyShowsInTheHeroAndALockedIconStaysUnchosen() throws {
         let app = CueApp.launch(seeded: true)
         openPersonalize(app)

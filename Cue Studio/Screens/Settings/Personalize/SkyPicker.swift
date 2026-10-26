@@ -6,13 +6,16 @@
 import SwiftUI
 
 /// Settings › Personalize › Starry sky: the four skies as cards, two by two, each showing its own sky live (`SkyMiniature`) over its name
-/// and what is in it, so a creator sees Adrift's comet before choosing it. The chosen card has a yellow ring that glides to the next on a
-/// spring. One radio group for VoiceOver, its value the chosen sky.
+/// and what is in it, so a creator sees Adrift's comet before choosing it. The chosen card has the yellow ring and ✓ (`SelectionRing`), drawn
+/// over the whole grid so it glides above the other cards to the next one, on a firm spring. One radio group for VoiceOver, its value the
+/// chosen sky.
 struct SkyPicker: View {
     @Binding var selection: SkyDensity
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Namespace private var ring
+    @Namespace private var cards
+
+    private static var cardShape: RoundedRectangle { RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous) }
 
     var body: some View {
         LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
@@ -20,7 +23,9 @@ struct SkyPicker: View {
                 card(sky)
             }
         }
-        .animation(reduceMotion ? CueMotion.fade : .spring(response: 0.42, dampingFraction: 0.78), value: selection)
+        .selectionRing(on: selection, in: cards, shape: Self.cardShape, reduceMotion: reduceMotion)
+        // Firm, barely past the card and back: the ring lands where it is going.
+        .animation(reduceMotion ? CueMotion.fade : .spring(duration: 0.4, bounce: 0.12), value: selection)
         .accessibilityElement(children: .contain)
         .accessibilityLabel(Text("Starry sky"))
         .accessibilityValue(Text(selection.label))
@@ -39,7 +44,7 @@ struct SkyPicker: View {
 
     private func card(_ sky: SkyDensity) -> some View {
         let isCurrent = selection == sky
-        let shape = RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
+        let shape = Self.cardShape
         return Button {
             guard !isCurrent else { return }
             selection = sky
@@ -61,11 +66,7 @@ struct SkyPicker: View {
             }
             .padding(8)
             .background(Palette.surface, in: shape)
-            .overlay {
-                if isCurrent {
-                    shape.strokeBorder(Palette.acc, lineWidth: 2).matchedGeometryEffect(id: "ring", in: ring)
-                }
-            }
+            .selectionRingAnchor(sky, in: cards)
             .contentShape(shape)
         }
         .buttonStyle(.cuePressCard)
