@@ -1438,10 +1438,11 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   vai para a batida mais próxima, até 0,5 s, encurtando ou alongando o clipe antes dele, nunca além da gravação nem para dentro da parte seguinte)
   e **Cut on** Every beat · Every 2 · Every 4 › **Cut the video on the beats**. Subtítulo: "112 BPM · 48 beats in the video", "Finding the
   beats…" ou "No steady beat in this music". Cada ação é um passo de desfazer.
-- **Barras:** Clipe: Split · Speed · Zoom · Volume · **Stabilize** · Duplicate · Freeze frame · **Reverse** · Reorder · Adjust · Filters · Background ·
-  Blur area · Copy look · Paste look · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Mídia: Edit · Mask · Blur area ·
-  Split · Replace · **Track** · Duplicate · Delete (um apoio da tela dividida: Edit · Blur area · Split · Replace · Close gap · Delete, §51; Mask e
-  Blur area: §54). Música: Volume · **Beats** ·
+- **Barras** (a de hoje; a ordem de cada uma está em §54 › Barras): Clipe: Split · Edit by text · Speed · Volume · Remove pauses · Zoom ·
+  **Stabilize** · Duplicate · Freeze frame · **Reverse** · Replace · Extract audio · Reorder · Adjust · Filters · Background · Blur area · Copy look ·
+  Paste look · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Foto ou vídeo por cima: Edit · Volume · Motion ·
+  Mask · Split · Replace · Blur area · **Track** · Keyframe · Duplicate · Save to library · Delete; um apoio da tela dividida e a área do vídeo
+  principal: §54. Música: Volume · **Beats** ·
   Replace · Delete (efeitos sonoros e sons extraídos sem Beats).
 - **Comparação com CapCut, Edits e InShot** (17/10/2026): Follow face é o "Auto reframe" do CapCut (formato + velocidade do acompanhamento), no
   painel de formato; Stabilize tem três níveis como o do CapCut, por clipe, e ganha "Use on every clip"; Track: no CapCut se arrasta uma caixa
@@ -2178,3 +2179,26 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   `BlurDrawingTests` e `MaskDrawingTests` (pixels), `QuickEditBlurTests` e `QuickEditMaskTests` (fluxos com rastreador e detector falsos),
   `RealExports/BlurAreaExportTests` (a tarja no lugar depois de formato quadrado, corte e 2×, na área principal da tela dividida, só no vídeo por
   cima; máscara circular), `PreviewMatchesExportTests` (`blurArea`), `MaskBlurUITests` (com `TEST_RUNNER_CUE_SCREENSHOT_DIR`, fotografa cada passo).
+- **Barras de quem está por cima** (pedido do dono, 26/10: "tome as melhorias baseado no que vai ser melhor pra o criador de conteúdo editar vídeos
+  complexos"; auditoria em scratchpad da sessão, `research/toolbar-audit.md`). Com um item escolhido só quatro botões cabem na tela (o "‹ Nome" e o
+  Delete fixo tomam o resto), então o que um criador mais usa vai nesses quatro:
+  - **Apoio da tela dividida:** **Layout · Sound · Swap places · Replace** | Part · Split · Blur area · [Close gap] · Save to library · [Extract
+    audio] · Lock · Delete. Layout, Sound e Part abrem o painel já na aba (`EditorAction.openSplitTab`); Swap places troca num toque, com Undo.
+  - **Área do vídeo principal escolhida** (tocar na área do criador numa tela dividida): a barra passa a ser a dela, "‹ Main video": **Framing ·
+    Swap places · Layout · Clip · Blur area** (Clip vai às ferramentas do clipe sob o cursor: Speed, Volume…). Sem Delete nem Replace: com o rosto do
+    criador contornado, eles agiriam no apoio.
+  - **Foto ou vídeo em janela ou tela cheia:** **Edit · Volume · Motion · Mask** | Split · Replace · Blur area · Track · Keyframe · Duplicate · Save
+    to library · [Extract audio] · Lock · Delete. **Volume** abre o painel de volume com o som do vídeo (0–100%, mudo até subir; um vídeo sem som diz
+    "This video has no sound"); **Motion** abre o painel próprio (`MediaMotionPanel`: animações prontas, Track, keyframes, Starts/Ends). O painel
+    **Edit** perdeu o Advanced e ganhou **Opacity** (10–100%, `MediaOverlay.opacity`, multiplicada pela dos keyframes).
+  - **Clipe:** Split · Edit by text · Speed · **Volume** · Remove pauses · Zoom… (o volume de cada clipe de uma montagem volta à tela); Edit by text
+    e Remove pauses têm o selo **ALL** (agem no vídeo inteiro).
+  - **Legenda:** Edit · Split · Join next · **Emphasis** · Style · Delete (Emphasis abre a linha com o More aberto, nas palavras a destacar).
+  - Split de uma mídia usa o mesmo ícone do Split do clipe; em inglês, Blur area usa "Track" como o resto do app (em português, "Seguir").
+- **Conferido com o vídeo real do dono** ("Cue Studio: Teleprompter", take 2, 29,4 s, selfie com o rosto em ~72% da largura): o rosto seguido pela
+  análise de movimento em 6 ms, coberto em pelo menos 98% nas 294 medições, nenhum trecho perdido, 116 keyframes depois de suavizar o caminho
+  (eram 233: a caixa tremia com a detecção); exportação com o pixelado conferida quadro a quadro. Teste opt-in:
+  `RealExports/BlurRealTakeCaptureTests` (`TEST_RUNNER_CUE_REAL_FACE_TAKE`, `TEST_RUNNER_CUE_REAL_FACE_OUTPUT`). O Simulador não acha rostos (o
+  Vision só no aparelho), então ali o teste parte do rosto da análise.
+- **Testes das barras:** `QuickEditOverlayBarsTests` (apoio, área do vídeo principal, janela com Volume e Motion, Emphasis), `QuickEditToolbarTests`,
+  `QuickEditClipLookTests`; `BlurAreaExportTests.aHalfOpaqueVideoShowsTheTakeThrough`.

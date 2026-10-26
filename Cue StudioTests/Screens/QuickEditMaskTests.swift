@@ -41,7 +41,8 @@ struct QuickEditMaskTests {
     @Test func aShapeGoesOnAndAnotherKeepsWhereItIs() async throws {
         let (viewModel, _, _) = await makeViewModel()
         _ = try await addWindow(viewModel)
-        #expect(viewModel.toolbarItems.map(\.id).prefix(3) == ["editMedia", "mask", "blurArea"])
+        // A video's own tools on screen: its panel, sound, motion and mask.
+        #expect(Array(viewModel.toolbarItems.map(\.id).prefix(4)) == ["editMedia", "mediaVolume", "mediaMotion", "mask"])
         viewModel.perform(.openMask)
         #expect(viewModel.panel == .mask)
         viewModel.overlays.setMaskShape(.circle)

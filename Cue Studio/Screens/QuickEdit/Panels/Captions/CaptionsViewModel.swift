@@ -23,6 +23,8 @@ final class CaptionsViewModel: EditorPart {
     var captionPicks: Set<UUID>?
     /// The picked caption line's field takes the keyboard (a line was just added).
     var focusesCaptionField = false
+    /// The line whose More opens on its own (Emphasis on a caption's toolbar): its words to emphasize, at hand.
+    var expandedLineID: UUID?
     /// The text whose look "Apply this style to captions" is asking to copy; nil when not asking.
     var captionStyleCopySourceID: UUID?
     /// The creator's saved caption styles, with favorites and the one new captions start in (`+Library`).

@@ -56,6 +56,7 @@ extension QuickEditViewModel {
         case .beats: audio.beatsSubtitle
         case .media: selectedMedia?.layout == .split ? splitSubtitle : String(localized: "On top of the video")
         case .mask: maskSubtitle
+        case .motion: String(localized: "Ready-made motion, Track and keyframes")
         case .blur: blurSubtitle
         case .transition: transitionSubtitle
         case .smart: String(localized: "Quick fixes, made on your iPhone")
@@ -91,6 +92,7 @@ extension QuickEditViewModel {
             switch selection {
             case .music: return String(localized: "Music · under your voice")
             case .voiceOver: return String(localized: "Voice-over")
+            case .media: return String(localized: "Video · its own sound")
             default: return clipScope
             }
         }

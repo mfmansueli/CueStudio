@@ -96,7 +96,8 @@ final class SplitScreenUITests: XCTestCase {
         XCTAssertFalse(app.buttons["edit.toolbar.track"].exists, "A support has no Track")
         capture("support-picked")
 
-        app.buttons["edit.toolbar.editMedia"].tap()
+        // A support's bar opens its panel on Layout (its first tool).
+        app.buttons["edit.toolbar.layout"].tap()
         XCTAssertTrue(app.descendants(matching: .any)["edit.panel.media"].exists(within: 5), "No split screen panel")
         XCTAssertTrue(app.buttons["edit.panel.tab.layout"].isSelected)
         capture("panel-layout")

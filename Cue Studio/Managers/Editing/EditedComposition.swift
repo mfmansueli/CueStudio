@@ -542,6 +542,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 frame.areas = areas
             } else {
                 frame.mask = entry.media.mask
+                frame.opacity = min(max(entry.media.opacity ?? 1, 0.1), 1)
                 frame.motion = Self.motion(of: entry.media, rect: topLeft, span: span, in: size)
             }
             frames.append(frame)

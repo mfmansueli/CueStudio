@@ -105,6 +105,21 @@ extension RealExports {
             #expect(TwoToneClip.same(try await color(CGPoint(x: 0.5, y: 0.4), at: 0.5, in: output), TwoToneClip.red))
         }
 
+        @Test func aHalfOpaqueVideoShowsTheTakeThrough() async throws {
+            let output = try await export { edit, name in
+                var window = MediaOverlay(kind: .video, fileName: name, aspect: 9.0 / 16, mediaDuration: 4, span: TimeSpan(start: 0, end: 4))
+                window.layout = .fullFrame
+                window.followsCuts = true
+                window.opacity = 0.5
+                edit.media = [window]
+            }
+            defer { try? FileManager.default.removeItem(at: output) }
+            // Green over red at half: neither of them.
+            let mixed = try await color(CGPoint(x: 0.5, y: 0.25), at: 1, in: output)
+            #expect(!TwoToneClip.same(mixed, TwoToneClip.green) && !TwoToneClip.same(mixed, TwoToneClip.red), "\(mixed)")
+            #expect(mixed[0] > 80 && mixed[1] > 80, "\(mixed)")
+        }
+
         @Test func aCircleMaskShowsTheVideoInsideAndTheTakeAround() async throws {
             let output = try await export { edit, name in
                 var window = MediaOverlay(kind: .video, fileName: name, aspect: 9.0 / 16, mediaDuration: 4, span: TimeSpan(start: 0, end: 4))

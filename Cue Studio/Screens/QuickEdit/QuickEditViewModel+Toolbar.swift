@@ -29,6 +29,8 @@ extension QuickEditViewModel {
             return text.graphic?.kind.label ?? text.role.label
         case .media:
             guard let media = selectedMedia else { return selection.contextLabel }
+            // The main video's area of a split screen: its own tools, not the support's.
+            if media.layout == .split, overlays.selectedArea == .main { return String(localized: "Main video") }
             return media.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
         case .blur:
             guard let region = selectedBlur else { return selection.contextLabel }
@@ -146,19 +148,25 @@ extension QuickEditViewModel {
         let delete = String(localized: "Delete")
         switch selection {
         case .clip:
-            // The clip's own tools, most used first (Split, Speed, the punch-in Zoom, Volume) so they're the ones on screen;
-            // what changes the whole video lives on the main bar (Format, Audio › Studio Voice, Media). Right after Split, the
-            // other ways to cut mistakes: by the words (Edit by text) and the pauses, the same tools ✦ Smart opens.
+            // The clip's own tools, most used first so they're the ones on screen: Split, then cutting by the words (Edit by text,
+            // which reaches the whole video: "All"), Speed and Volume (a montage's clips rarely sound alike); Remove pauses
+            // (the whole video too) right after, as in ✦ Smart. What changes the whole video otherwise lives on the main bar.
             return [
                 EditorToolbarItem(
                     id: "split", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right",
                     style: clips.canSplitSelectedClip ? .normal : .dimmed, action: .splitClip
                 ),
-                EditorToolbarItem(id: "editByText", label: String(localized: "Edit by text"), systemImage: "text.badge.minus", action: .editByText),
-                EditorToolbarItem(id: "pauses", label: String(localized: "Remove pauses"), systemImage: "waveform", action: .open(.pauses)),
+                EditorToolbarItem(
+                    id: "editByText", label: String(localized: "Edit by text"), systemImage: "text.badge.minus", action: .editByText,
+                    scopeBadge: String(localized: "All")
+                ),
                 EditorToolbarItem(id: "speed", label: String(localized: "Speed"), systemImage: "gauge.with.dots.needle.67percent", action: .open(.speed)),
-                EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
+                EditorToolbarItem(
+                    id: "pauses", label: String(localized: "Remove pauses"), systemImage: "waveform", action: .open(.pauses),
+                    scopeBadge: String(localized: "All")
+                ),
+                EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
                 EditorToolbarItem(
                     id: "stabilize", label: String(localized: "Stabilize"), systemImage: "camera.metering.center.weighted", action: .open(.stabilize)
                 ),
@@ -206,6 +214,7 @@ extension QuickEditViewModel {
                 EditorToolbarItem(
                     id: "join", label: String(localized: "Join next"), systemImage: "arrow.right.and.line.vertical.and.arrow.left", action: .joinCaption
                 ),
+                EditorToolbarItem(id: "emphasis", label: String(localized: "Emphasis"), systemImage: "highlighter", action: .emphasizeCaption),
                 EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteCaption),
             ]
@@ -227,41 +236,8 @@ extension QuickEditViewModel {
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteVoiceOver),
             ]
         case .media:
-            // A support of the split screen: its area beside the main video, one at a time (no Track, no copy over it).
-            let isSupport = selectedMedia?.layout == .split
-            var items = [
-                EditorToolbarItem(id: "editMedia", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.media)),
-            ]
-            // A support has its area for a shape: no Mask there (it would hold one of the four places on screen for nothing).
-            if !isSupport {
-                items.append(EditorToolbarItem(id: "mask", label: String(localized: "Mask"), systemImage: "circle.rectangle.dashed", action: .openMask))
-            }
-            items += [
-                EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
-                EditorToolbarItem(id: "splitMedia", label: String(localized: "Split"), systemImage: "scissors", action: .splitMedia),
-                EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
-            ]
-            if isSupport, let id = selectedMedia?.id, overlays.gapBefore(id) != nil {
-                items.append(EditorToolbarItem(id: "closeGap", label: String(localized: "Close gap"), systemImage: "arrow.left.to.line", action: .closeGap))
-            }
-            if !isSupport {
-                items.append(EditorToolbarItem(id: "track", label: String(localized: "Track"), systemImage: "scope", action: .trackItem))
-                items.append(EditorToolbarItem(
-                    id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateMedia
-                ))
-            }
-            items.append(EditorToolbarItem(
-                id: "saveToLibrary", label: String(localized: "Save to library"), systemImage: "tray.and.arrow.down", action: .saveMediaToLibrary
-            ))
-            // Only a video with a sound of its own has one to take out.
-            if audio.canExtractAudio {
-                items.append(EditorToolbarItem(
-                    id: "extractAudio", label: String(localized: "Extract audio"), systemImage: "waveform.badge.plus", action: .extractAudio
-                ))
-            }
-            items.append(lockItem)
-            items.append(EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMedia))
-            return items
+            guard let media = selectedMedia else { return [] }
+            return media.layout == .split ? supportItems(media, delete: delete) : overlayItems(media, delete: delete)
         case .blur:
             return [
                 EditorToolbarItem(id: "editBlur", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.blur)),
@@ -274,6 +250,81 @@ extension QuickEditViewModel {
             // A cut is picked only with its Transition panel open, which takes the toolbar's place.
             return []
         }
+    }
+
+    /// A support of the split screen: what a react or a tutorial changes most, on screen (its layout, its sound, swapping the two
+    /// contents, another video in its place), then its part, cutting it, hiding something on it, its gap. With the main
+    /// video's area picked, that area's own tools instead (never the support's Delete or Replace while the creator's face is
+    /// outlined).
+    private func supportItems(_ media: MediaOverlay, delete: String) -> [EditorToolbarItem] {
+        if overlays.selectedArea == .main {
+            return [
+                EditorToolbarItem(id: "framing", label: EditorPanelTab.framing.label, systemImage: "crop", action: .openSplitTab(.framing)),
+                EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "arrow.up.arrow.down", action: .swapSplit),
+                EditorToolbarItem(id: "layout", label: EditorPanelTab.layout.label, systemImage: "rectangle.split.1x2", action: .openSplitTab(.layout)),
+                EditorToolbarItem(id: "clipTools", label: String(localized: "Clip"), systemImage: "film", action: .selectClipAtPlayhead),
+                EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
+            ]
+        }
+        var items = [
+            EditorToolbarItem(id: "layout", label: EditorPanelTab.layout.label, systemImage: "rectangle.split.1x2", action: .openSplitTab(.layout)),
+            EditorToolbarItem(id: "sound", label: EditorPanelTab.sound.label, systemImage: "speaker.wave.2", action: .openSplitTab(.sound)),
+            EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "arrow.up.arrow.down", action: .swapSplit),
+            EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
+            EditorToolbarItem(id: "part", label: EditorPanelTab.part.label, systemImage: "film", action: .openSplitTab(.part)),
+            EditorToolbarItem(
+                id: "splitMedia", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right", action: .splitMedia
+            ),
+            EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
+        ]
+        if overlays.gapBefore(media.id) != nil {
+            items.append(EditorToolbarItem(id: "closeGap", label: String(localized: "Close gap"), systemImage: "arrow.left.to.line", action: .closeGap))
+        }
+        return items + sharedMediaItems(delete: delete)
+    }
+
+    /// A photo or video in a window or over the whole frame: its panel, its sound and motion and mask on screen, then cutting,
+    /// replacing, hiding something on it, Track and keyframes (as a text has them), a copy.
+    private func overlayItems(_ media: MediaOverlay, delete: String) -> [EditorToolbarItem] {
+        var items = [EditorToolbarItem(id: "editMedia", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.media))]
+        if media.kind == .video {
+            // A video without sound says so when tapped.
+            items.append(EditorToolbarItem(
+                id: "mediaVolume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", style: media.hasSound == false ? .dimmed : .normal,
+                action: .open(.volume)
+            ))
+        }
+        items += [
+            EditorToolbarItem(id: "mediaMotion", label: String(localized: "Motion"), systemImage: "wind", action: .openMediaMotion),
+            EditorToolbarItem(id: "mask", label: String(localized: "Mask"), systemImage: "circle.rectangle.dashed", action: .openMask),
+            EditorToolbarItem(
+                id: "splitMedia", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right", action: .splitMedia
+            ),
+            EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
+            EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
+            EditorToolbarItem(id: "track", label: String(localized: "Track"), systemImage: "scope", action: .trackItem),
+            EditorToolbarItem(id: "keyframe", label: String(localized: "Keyframe"), systemImage: "diamond", action: .toggleKeyframe),
+            EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateMedia),
+        ]
+        return items + sharedMediaItems(delete: delete)
+    }
+
+    /// What every photo or video ends with: the library, its sound taken out (a video with sound), Lock, Delete.
+    private func sharedMediaItems(delete: String) -> [EditorToolbarItem] {
+        var items = [
+            EditorToolbarItem(
+                id: "saveToLibrary", label: String(localized: "Save to library"), systemImage: "tray.and.arrow.down", action: .saveMediaToLibrary
+            ),
+        ]
+        // Only a video with a sound of its own has one to take out.
+        if audio.canExtractAudio {
+            items.append(EditorToolbarItem(
+                id: "extractAudio", label: String(localized: "Extract audio"), systemImage: "waveform.badge.plus", action: .extractAudio
+            ))
+        }
+        items.append(lockItem)
+        items.append(EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMedia))
+        return items
     }
 
     // MARK: - Performing
@@ -290,10 +341,7 @@ extension QuickEditViewModel {
         case .addCaptionLine:
             openCaptions()
             captions.addCaptionAtPlayhead()
-        case .open(let panel):
-            // From a picked clip, Adjust, Filters and Background change that clip only.
-            look.lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
-            self.panel = panel
+        case .open(let panel): open(panel)
         case .addMedia, .addMediaChoice:
             overlays.mediaInsertMode = overlays.lastOverlayMode
             sheet = .media
@@ -312,6 +360,17 @@ extension QuickEditViewModel {
         case .openCoverStudio: cover.openCoverStudio()
         default: break
         }
+    }
+
+    /// A panel from the toolbar. From a picked clip, Adjust, Filters and Background change that clip only; a video over the take
+    /// without sound has no Volume to open, and says so.
+    private func open(_ panel: EditorPanel) {
+        if panel == .volume, selectedMedia?.kind == .video, selectedMedia?.hasSound == false {
+            toast.show(String(localized: "This video has no sound"), kind: .problem)
+            return
+        }
+        look.lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
+        self.panel = panel
     }
 
     /// The Text menu's actions and Edit on a picked text.
@@ -345,6 +404,9 @@ extension QuickEditViewModel {
         case .editCaption:
             panel = .captions
             captions.focusesCaptionField = true
+        case .emphasizeCaption:
+            captions.expandedLineID = selection?.captionID
+            panel = .captions
         case .splitCaption: selection?.captionID.map(captions.splitCaptionAtPlayhead)
         case .joinCaption: selection?.captionID.map(captions.joinCaption)
         case .deleteCaption: selection?.captionID.map(captions.deleteCaptionLine)
@@ -372,6 +434,13 @@ extension QuickEditViewModel {
             } else {
                 panel = .mask
             }
+        case .openSplitTab(let tab):
+            panel = .media
+            panelTab = tab
+        case .swapSplit:
+            overlays.swapSplit()
+            sayUndoable(String(localized: "Places swapped"))
+        case .openMediaMotion: panel = .motion
         default: return false
         }
         return true

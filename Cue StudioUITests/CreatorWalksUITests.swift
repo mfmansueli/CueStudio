@@ -115,7 +115,7 @@ final class CreatorWalksUITests: XCTestCase {
         XCTAssertTrue(EditorApp.toastSays(app, "split screen", timeout: 8), "The two never went in")
         step("split-added")
 
-        let edit = app.buttons["edit.toolbar.editMedia"]
+        let edit = app.buttons["edit.toolbar.layout"]
         waitFor(edit, "The support's tools")
         edit.tap()
         waitFor(app.descendants(matching: .any)["edit.panel.media"], "The split screen panel")

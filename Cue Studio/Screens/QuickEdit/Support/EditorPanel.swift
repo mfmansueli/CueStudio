@@ -18,8 +18,8 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     case textStyle
     // Audio
     case voiceOver, beats
-    // Added on top: a photo or video over the take, and its mask
-    case media, mask
+    // Added on top: a photo or video over the take, its mask and its motion
+    case media, mask, motion
     // Blur area: a face, a plate, a name hidden
     case blur
     // The cut between two clips
@@ -33,7 +33,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         switch self {
         case .zoom, .volume, .filters, .voiceOver, .autoCaptions: .mini
         case .speed, .voice, .pauses, .captions, .adjust, .background, .media, .smart, .transition, .crop, .stabilize, .beats: .medium
-        case .mask, .blur: .medium
+        case .mask, .blur, .motion: .medium
         case .textStyle, .captionStyle: .full
         }
     }
@@ -51,7 +51,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .textStyle: .text
         case .captions, .captionStyle, .autoCaptions: .captions
         case .voiceOver: .voiceOver
-        case .media, .mask: .media
+        case .media, .mask, .motion: .media
         case .blur: .blur
         default: nil
         }
@@ -60,7 +60,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     /// Panels that work on the selected item close when it's let go.
     var followsSelection: Bool {
         switch self {
-        case .speed, .zoom, .volume, .stabilize, .beats, .textStyle, .media, .mask, .blur, .transition: true
+        case .speed, .zoom, .volume, .stabilize, .beats, .textStyle, .media, .mask, .motion, .blur, .transition: true
         default: false
         }
     }
@@ -78,9 +78,9 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     func accepts(_ selection: EditorSelection) -> Bool {
         switch self {
         case .speed, .zoom, .stabilize: selection.clipID != nil
-        case .volume: selection.clipID != nil || selection.musicID != nil || selection.voiceOverID != nil
+        case .volume: selection.clipID != nil || selection.musicID != nil || selection.voiceOverID != nil || selection.mediaID != nil
         case .textStyle: selection.textID != nil
-        case .media, .mask: selection.mediaID != nil
+        case .media, .mask, .motion: selection.mediaID != nil
         // Choosing what to hide on a photo or video over the take keeps it picked meanwhile.
         case .blur: selection.blurID != nil || selection.mediaID != nil
         case .beats: selection.musicID != nil
@@ -109,6 +109,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .beats: String(localized: "Beats")
         case .media: String(localized: "Photo or video")
         case .mask: String(localized: "Mask")
+        case .motion: String(localized: "Motion")
         case .blur: String(localized: "Blur area")
         case .transition: String(localized: "Transition")
         case .smart: String(localized: "✦ Smart")

@@ -59,6 +59,8 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     /// The window's width as a fraction of the frame's.
     var width: Double = 0.6
     var shape: MediaShape = .original
+    /// How opaque it is, 0.1 to 1, under what its keyframes say; nil: fully.
+    var opacity: Double?
     /// A mask showing only part of it (`MediaMask`); nil shows it whole. Kept while it's a support of the split screen (whose
     /// area is already its shape), for when it's a window or full screen again.
     var mask: MediaMask?

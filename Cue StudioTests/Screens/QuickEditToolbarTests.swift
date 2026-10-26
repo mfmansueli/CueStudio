@@ -76,9 +76,9 @@ struct QuickEditToolbarTests {
         viewModel.perform(.selectClipAtPlayhead)
         let items = viewModel.toolbarItems
         #expect(["adjust", "background", "filters"].allSatisfy { id in items.contains { $0.id == id } })
-        // What changes the whole video lives on the main bar: no "All" badges on the clip's tools.
+        // What changes the whole video lives on the main bar; the two cutting tools that reach past the clip say "All".
         #expect(!items.contains { ["crop", "voice", "media"].contains($0.id) })
-        #expect(items.allSatisfy { $0.scopeBadge == nil })
+        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == ["editByText", "pauses"])
         #expect(items.last?.id == "delete")
     }
 
@@ -95,7 +95,7 @@ struct QuickEditToolbarTests {
         #expect(viewModel.selection == .clip(viewModel.edit.timeline.segments[0].id))
         #expect(viewModel.toolbarContextLabel == "Clip")
         #expect(ids(viewModel) == [
-            "split", "editByText", "pauses", "speed", "zoom", "volume", "stabilize", "duplicate", "freeze", "reverse", "replace", "extractAudio",
+            "split", "editByText", "speed", "volume", "pauses", "zoom", "stabilize", "duplicate", "freeze", "reverse", "replace", "extractAudio",
             "reorder", "adjust", "filters", "background", "blurArea", "copyLook", "pasteLook", "delete",
         ])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
@@ -152,7 +152,7 @@ struct QuickEditToolbarTests {
         viewModel.changeEdit { $0.captions = [line] }
         viewModel.selection = .caption(line.id)
         #expect(viewModel.toolbarContextLabel == "Caption")
-        #expect(ids(viewModel) == ["editCaption", "split", "join", "style", "delete"])
+        #expect(ids(viewModel) == ["editCaption", "split", "join", "emphasis", "style", "delete"])
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
         viewModel.changeEdit { $0.music = [music] }
         viewModel.selection = .music(music.id)
@@ -181,7 +181,9 @@ struct QuickEditToolbarTests {
         let media = MediaOverlay(kind: .photo, fileName: "p.jpg", aspect: 1, mediaDuration: nil, span: TimeSpan(start: 2, end: 5))
         viewModel.changeEdit { $0.media = [media] }
         viewModel.selection = .media(media.id)
-        #expect(ids(viewModel) == ["editMedia", "mask", "blurArea", "splitMedia", "replaceMedia", "track", "duplicate", "saveToLibrary", "lock", "delete"])
+        #expect(ids(viewModel) == [
+            "editMedia", "mediaMotion", "mask", "splitMedia", "replaceMedia", "blurArea", "track", "keyframe", "duplicate", "saveToLibrary", "lock", "delete",
+        ])
         viewModel.perform(.duplicateMedia)
         #expect(viewModel.edit.media.count == 2)
         #expect(viewModel.selection != .media(media.id))

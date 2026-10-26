@@ -27,7 +27,7 @@ struct CaptionLineCard: View {
     /// Where the cursor is in the field: Line break goes there.
     @State private var cursor: TextSelection?
 
-    private var showsMore: Bool { moreOverride ?? line.needsTimingReview }
+    private var showsMore: Bool { moreOverride ?? (line.needsTimingReview || viewModel.captions.expandedLineID == cueID) }
 
     var body: some View {
         HStack(alignment: .top, spacing: 10) {

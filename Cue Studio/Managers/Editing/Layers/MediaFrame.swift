@@ -43,6 +43,8 @@ nonisolated struct MediaFrame: @unchecked Sendable {
     var blurs: [BlurRegion] = []
     /// Its mask, when it has one and isn't a support.
     var mask: MediaMask?
+    /// How opaque it is (`MediaOverlay.opacity`), times what its keyframes say.
+    var opacity = 1.0
 
     var isSupport: Bool { areas != nil }
 

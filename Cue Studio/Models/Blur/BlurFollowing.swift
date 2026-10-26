@@ -75,7 +75,35 @@ nonisolated enum BlurFollowing {
             }
         }
         let marked = TimeSpan.merged(unchecked.map { clamp($0, to: span) })
-        return Result(keyframes: thinned(keyframes.sorted { $0.time < $1.time }), unchecked: marked, reached: span)
+        return Result(keyframes: thinned(steadied(keyframes.sorted { $0.time < $1.time })), unchecked: marked, reached: span)
+    }
+
+    /// Vision's face box breathes a little from sample to sample even on a still head: each run of samples (broken where the
+    /// face was lost) is smoothed both ways (zero lag, `GaussianSmoothing`), so the area glides with the face instead of
+    /// trembling, and fewer keyframes keep its path.
+    static func steadied(_ keyframes: [BlurKeyframe]) -> [BlurKeyframe] {
+        var runs: [[BlurKeyframe]] = []
+        for keyframe in keyframes {
+            if let last = runs.last?.last, keyframe.time - last.time <= longestStep, last.box != keyframe.box || keyframe.time - last.time > frame * 1.5 {
+                runs[runs.count - 1].append(keyframe)
+            } else {
+                runs.append([keyframe])
+            }
+        }
+        return runs.flatMap { run -> [BlurKeyframe] in
+            guard run.count > 3 else { return run }
+            let x = GaussianSmoothing.smoothed(run.map(\.box.midX), sigma: 1)
+            let y = GaussianSmoothing.smoothed(run.map(\.box.midY), sigma: 1)
+            let width = GaussianSmoothing.smoothed(run.map(\.box.width), sigma: 1.5)
+            let height = GaussianSmoothing.smoothed(run.map(\.box.height), sigma: 1.5)
+            return run.indices.map { index in
+                BlurKeyframe(
+                    time: run[index].time,
+                    box: NormalizedBox(center: CGPoint(x: x[index], y: y[index]), width: width[index], height: height[index]),
+                    isSet: run[index].isSet
+                )
+            }
+        }
     }
 
     /// The faces of `samples` nearest `time`, for picking one (within a few frames; none when the analysis has nothing there).

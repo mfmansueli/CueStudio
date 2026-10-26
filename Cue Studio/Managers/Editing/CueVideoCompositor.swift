@@ -257,6 +257,9 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         if let mask = item.mask {
             picture = MaskDrawing.apply(mask, placement: state?.mask ?? mask.placement, to: picture, in: item.rect)
         }
+        if item.opacity < 0.999, state == nil {
+            picture = picture.applyingFilter("CIColorMatrix", parameters: ["inputAVector": CIVector(x: 0, y: 0, z: 0, w: CGFloat(item.opacity))])
+        }
         if let state {
             // Keyframes: the laid picture moved to their center, scaled around its own, faded.
             let point = state.center.clamped
@@ -265,8 +268,9 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             picture = picture.transformed(by: CGAffineTransform(translationX: -item.rect.midX, y: -item.rect.midY)
                 .concatenating(CGAffineTransform(scaleX: scale, y: scale))
                 .concatenating(CGAffineTransform(translationX: center.x, y: center.y)))
-            if state.opacity < 0.999 {
-                picture = picture.applyingFilter("CIColorMatrix", parameters: ["inputAVector": CIVector(x: 0, y: 0, z: 0, w: CGFloat(state.opacity))])
+            let opacity = state.opacity * item.opacity
+            if opacity < 0.999 {
+                picture = picture.applyingFilter("CIColorMatrix", parameters: ["inputAVector": CIVector(x: 0, y: 0, z: 0, w: CGFloat(opacity))])
             }
         }
         return picture.composited(over: image)

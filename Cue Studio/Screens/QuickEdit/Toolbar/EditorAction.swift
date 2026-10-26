@@ -84,6 +84,14 @@ enum EditorAction: Hashable {
     case saveMediaToLibrary
     /// Mask: only part of the picked photo or video shows (a split screen's support says why it can't).
     case openMask
+    /// The split screen's panel on one of its tabs (Layout, Framing, Sound, Part), for the picked support.
+    case openSplitTab(EditorPanelTab)
+    /// The split screen's two contents trade places.
+    case swapSplit
+    /// The picked photo's or video's ready-made motion, Track and keyframes.
+    case openMediaMotion
+    /// The picked caption line's words, to emphasize some (Captions, the line's More open).
+    case emphasizeCaption
     // Blur area
     /// A face, a plate or a name hidden: the faces in the frame to tap, or an area to draw.
     case addBlurArea

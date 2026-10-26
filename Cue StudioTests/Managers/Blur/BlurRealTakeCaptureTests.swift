@@ -49,10 +49,20 @@ extension RealExports {
             try FileManager.default.createDirectory(at: output, withIntermediateDirectories: true)
             let duration = try await AVURLAsset(url: take).load(.duration).seconds
             let at = min(2, duration / 3)
+            var report: [String] = []
+            func say(_ line: String) {
+                print(line)
+                report.append(line)
+            }
             let found = await FaceFinder().faces(in: take, isVideo: true, at: at) ?? []
-            print("REALBLUR faces at \(at) s (Vision on the frame): \(found.map { String(format: "%.2f×%.2f at %.2f,%.2f", $0.width, $0.height, $0.minX, $0.minY) })")
-            let first = try #require(found.first, "No face found")
-            let face = NormalizedBox(x: first.minX, y: first.minY, width: first.width, height: first.height)
+            say("REALBLUR faces at \(at) s (Vision on the frame): \(found.map { String(format: "%.2f×%.2f at %.2f,%.2f", $0.width, $0.height, $0.minX, $0.minY) })")
+            // Where Vision can't run (the Simulator finds no faces), the face the analysis kept for that moment.
+            let analyzed = MotionAnalysisStore.complete(forRecording: take).map { BlurFollowing.faces(in: $0.subjects, at: at) } ?? []
+            let face = try #require(
+                found.first.map { NormalizedBox(x: $0.minX, y: $0.minY, width: $0.width, height: $0.height) } ?? analyzed.first, "No face found"
+            )
+            let origin = found.isEmpty ? "from the analysis" : "Vision"
+            say(String(format: "REALBLUR start face %.2f×%.2f at %.2f,%.2f (%@)", face.width, face.height, face.x, face.y, origin))
             let area = BlurRegion.area(aroundFace: face)
             let span = TimeSpan(start: 0, end: duration)
 
@@ -72,17 +82,17 @@ extension RealExports {
                     worst = min(worst, share)
                     if share < 0.98 { leaks += 1 }
                 }
-                print(String(format: "REALBLUR analysis follow · %.1f s in %.3f s · %d keyframes · unchecked %.1f s · face covered worst %.0f%% · samples under 98%%: %d of %d",
+                say(String(format: "REALBLUR analysis follow · %.1f s in %.3f s · %d keyframes · unchecked %.1f s · face covered worst %.0f%% · samples under 98%%: %d of %d",
                              duration, took, result.keyframes.count, region.uncheckedDuration, worst * 100, leaks, measured))
             } else {
-                print("REALBLUR no motion analysis next to the take")
+                say("REALBLUR no motion analysis next to the take")
             }
 
             // Vision's tracker on the same face, for comparison (5 s ahead).
             let started = ContinuousClock.now
             let samples = try await ObjectTracker().track(videoAt: take, box: area, at: at, until: min(duration, at + 5)) { _ in }
             let elapsed = (ContinuousClock.now - started) / .seconds(1)
-            print(String(format: "REALBLUR Vision tracker · %.1f s followed in %.1f s · %d samples · last confidence %.2f",
+            say(String(format: "REALBLUR Vision tracker · %.1f s followed in %.1f s · %d samples · last confidence %.2f",
                          (samples.last?.time ?? at) - at, elapsed, samples.count, samples.last?.confidence ?? 0))
 
             // The export with the face pixelated, and stills of it.
@@ -108,7 +118,8 @@ extension RealExports {
                 CGImageDestinationAddImage(destination, image, nil)
                 CGImageDestinationFinalize(destination)
             }
-            print("REALBLUR export and stills in \(output.path(percentEncoded: false))")
+            say("REALBLUR export and stills in \(output.path(percentEncoded: false))")
+            try report.joined(separator: "\n").write(to: output.appending(path: "summary.txt"), atomically: true, encoding: .utf8)
         }
     }
 }

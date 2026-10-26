@@ -5,12 +5,33 @@
 
 import SwiftUI
 
-/// Volume, 0 to 200%, of the picked clip (with "Mute this clip"), music or voice-over. Music keeps
-/// its fades and "Lower under voice" under Advanced.
+/// Volume, 0 to 200%, of the picked clip (with "Mute this clip"), music or voice-over; a video's own sound over the take, 0 to
+/// 100% (muted until it's turned up). Music keeps its fades and "Lower under voice" under Advanced.
 struct VolumePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
     var body: some View {
+        if let media = viewModel.selectedMedia {
+            mediaVolume(media)
+        } else {
+            clipVolume
+        }
+    }
+
+    /// A video laid over the take: its own sound, the same level Media › Edit had.
+    private func mediaVolume(_ media: MediaOverlay) -> some View {
+        PanelFrame(viewModel: viewModel, panel: .volume) {
+            PanelSlider(
+                label: String(localized: "Sound"), value: (media.audioVolume ?? 0) * 100, range: 0...100, format: .percent,
+                identifier: "edit.mediaSound",
+                onChange: { viewModel.overlays.setMediaSoundVolume(media.id, $0 / 100) },
+                onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+            )
+            PanelNote(text: String(localized: "0% keeps it muted under your voice. Turn it up to hear it."))
+        }
+    }
+
+    private var clipVolume: some View {
         PanelFrame(viewModel: viewModel, panel: .volume) {
             // The slider and the switch under it, 8 pt apart and without the 0%/200% captions (the value is written above the
             // track): "Mute this clip" then shows whole above the Home Indicator in the short panel of an iPhone 17 or SE.
