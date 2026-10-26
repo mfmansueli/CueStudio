@@ -116,7 +116,8 @@ struct MainView: View {
             Tab(value: AppTab.scripts) {
                 NavigationStack(path: $presentation.scriptsPath) {
                     ScriptsView(
-                        library: services.library, toast: services.toast, writer: services.writer, drafts: services.drafts, defaults: services.defaults
+                        library: services.library, toast: services.toast, logbook: services.logbook, writer: services.writer,
+                        drafts: services.drafts, defaults: services.defaults
                     )
                         // On the list (its selection hides the bar), not on the stack: the script page pushed over it hides the bar
                         // itself, the system's way, which a stack-wide setting would override.

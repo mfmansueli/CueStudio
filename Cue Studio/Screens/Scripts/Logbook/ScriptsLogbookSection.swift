@@ -6,8 +6,15 @@
 import SwiftUI
 
 /// The end of the Scripts list (v30 · 3.2): the ideas still waiting in the Logbook, up to two, each with "✦ Write" (which turns it into a script,
-/// "Write it" without Apple Intelligence), and "Open Logbook ›". Nothing shows when no idea is waiting.
+/// "Write it" without Apple Intelligence), and "Open Logbook ›". Nothing shows when no idea is waiting. While Scripts selects, the ideas are
+/// picked like the scripts above them (their mark in place of ✦ Write, a tap picks or lets go) and deleted with them; held, an idea offers
+/// Delete.
 struct ScriptsLogbookSection: View {
+    /// What Scripts has picked, while it selects; nil otherwise.
+    var selection: Set<UUID>?
+    var onToggle: (UUID) -> Void = { _ in }
+    var onDelete: (LogbookEntry) -> Void = { _ in }
+
     @Environment(LogbookService.self) private var logbook
     @Environment(AIStatus.self) private var aiStatus
     @Environment(ScriptStarter.self) private var starter
@@ -29,17 +36,23 @@ struct ScriptsLogbookSection: View {
                     .accessibilityAddTraits(.isHeader)
                 VStack(spacing: 0) {
                     ForEach(Array(waiting.prefix(Self.visibleLimit))) { entry in
-                        row(entry)
+                        if let selection {
+                            selectableRow(entry, isSelected: selection.contains(entry.id))
+                        } else {
+                            row(entry)
+                        }
                     }
-                    Button { presentation.present(.logbook) } label: {
-                        Text("Open Logbook ›")
-                            .font(.system(size: 14.5, weight: .semibold))
-                            .foregroundStyle(Palette.inkSoft)
-                            .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-                            .contentShape(Rectangle())
+                    if selection == nil {
+                        Button { presentation.present(.logbook) } label: {
+                            Text("Open Logbook ›")
+                                .font(.system(size: 14.5, weight: .semibold))
+                                .foregroundStyle(Palette.inkSoft)
+                                .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                                .contentShape(Rectangle())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("scripts.logbook.open")
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityIdentifier("scripts.logbook.open")
                 }
                 .background(Palette.surface, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
                 .cardDepth(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
@@ -49,13 +62,39 @@ struct ScriptsLogbookSection: View {
         }
     }
 
+    private func ideaText(_ entry: LogbookEntry) -> some View {
+        Text(entry.text)
+            .font(.system(size: 15))
+            .foregroundStyle(Palette.ink)
+            .lineLimit(2)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// While selecting: the whole row picks the idea, its mark where ✦ Write was.
+    private func selectableRow(_ entry: LogbookEntry, isSelected: Bool) -> some View {
+        Button {
+            Haptics.selection()
+            onToggle(entry.id)
+        } label: {
+            HStack(spacing: 10) {
+                ideaText(entry)
+                ScriptSelectionMark(isSelected: isSelected)
+                    .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
+            }
+            .padding(.leading, 14)
+            .padding(.trailing, 4)
+            .padding(.vertical, 4)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .overlay(alignment: .bottom) { Rectangle().fill(Palette.separator).frame(height: 0.5).padding(.leading, 14) }
+        .accessibilityAddTraits(isSelected ? .isSelected : [])
+        .accessibilityIdentifier("scripts.logbook.idea")
+    }
+
     private func row(_ entry: LogbookEntry) -> some View {
         HStack(spacing: 10) {
-            Text(entry.text)
-                .font(.system(size: 15))
-                .foregroundStyle(Palette.ink)
-                .lineLimit(2)
-                .frame(maxWidth: .infinity, alignment: .leading)
+            ideaText(entry)
             Button { write(entry) } label: {
                 Text(aiStatus.isAvailable ? "✦ Write" : "Write it")
                     .font(.system(size: 14, weight: .semibold))
@@ -73,6 +112,12 @@ struct ScriptsLogbookSection: View {
         .padding(.horizontal, 14)
         .padding(.vertical, 4)
         .overlay(alignment: .bottom) { Rectangle().fill(Palette.separator).frame(height: 0.5).padding(.leading, 14) }
+        .contentShape(Rectangle())
+        .contextMenu {
+            Button(role: .destructive) { onDelete(entry) } label: { Label("Delete", systemImage: "trash") }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("scripts.logbook.idea")
     }
 
     /// Like the Logbook's own "✦ Write": the star makes the idea a script (the idea leaves the Logbook once it has).

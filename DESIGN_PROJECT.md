@@ -76,6 +76,9 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
 - **Select** (no cabeçalho do primeiro grupo; vira **Done**): cada linha mostra a sua marca **dentro do card**, 16 pt da borda e centrada na altura
   (`ScriptSelectionMark`: anel `ink2` ou o círculo amarelo com ✓, 22 pt), no lugar da ação do estado; um toque na linha marca ou desmarca (não abre o
   roteiro), sem deslize. Não usa o modo de edição da `List`: o sistema punha o círculo na borda do card. A barra de seleção substitui o dock e a tab bar.
+  As ideias do Logbook no fim da lista **continuam** durante a seleção e são escolhidas como os roteiros (a marca no lugar do ✦ Write, sem
+  "Open Logbook ›"); a lixeira apaga roteiros e ideias juntos, com um Undo só; pasta e Duplicate valem só para roteiros (ficam apagados com só
+  ideias escolhidas). Fora da seleção, segurar uma ideia ali oferece **Delete** ("Idea deleted · Undo").
 - Abaixo da lista: **Logbook · n waiting** (`ScriptsLogbookSection`, até 2 ideias com ✦ Write e "Open Logbook ›"). Carregando: `ScriptRowSkeleton`
   (`SkeletonShine`, 1,4 s). Vazio: §30 e §32.
 - **Folhas da linha 1:** Format, For {Rede}, ✦ Voz e a lâmpada abrem todas em tela inteira (`.large`, sem meia altura).
@@ -709,7 +712,11 @@ biblioteca não a recebeu) volta na abertura seguinte como "Freestyle recording"
 pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/take-*.mov` com o nome da câmera ("The take couldn't be saved"), onde a
 recuperação o acha: nunca um vídeo na biblioteca sem take que aponte para ele.
 
-**Logbook:** título grande (`.large`) com "Catch it now. Write it later."; segurar o botão grava e um toque começa/termina ("Tap the button again to
+**Logbook:** título grande da própria página ("Logbook" e "Catch it now. Write it later.", como o título grande do sistema), com a barra sempre
+no modo pequeno: digitando e selecionando, o título recolhe e o pequeno aparece na barra (trocar a barra entre grande e pequeno acontecia num quadro
+e a página pulava). A captura (título, microfone, frase, campo e o vazio) fica **acima da lista de ideias**, fora dela: cada parte recolhe pela
+altura (`FoldAway`) e a lista cresce no lugar (uma parte de linha que recolhia fazia a lista redimensionar a linha num quadro, e tudo pulava ~160 pt);
+a página é alinhada no topo, então o teclado tira altura da lista e não desloca a página. Segurar o botão grava e um toque começa/termina ("Tap the button again to
 finish"; onde nada pode ouvir, diz por quê); embaixo dele, "Hold to talk · tap to start". Enquanto ouve, a linha embaixo é só "Listening…", os anéis
 seguem a voz e as palavras entram no campo. O campo tem a mesma altura vazio ou digitando (ícone centrado; cresce até 4 linhas só com ideia longa;
 cursor amarelo; Return salva). **Digitando** (pedido do dono, 20/10/2026): o microfone grande sai, o título vai para a barra e ao lado do campo fica
@@ -719,7 +726,12 @@ AGO" ou "TYPED · 9:40 PM"; a recém-salva entra no topo com contorno amarelo po
 (`HapticPatterns.listen`), um suave ao parar. **Movimento:** ao abrir, o círculo respira uma vez (1,08); sob o dedo afunda (0,92) e volta numa mola;
 ao começar a ouvir o microfone pula (1,25) e três ondas saem do círculo e somem, mais longe com a voz mais alta (`LogbookRipples`); digitando, o círculo
 encolhe em direção ao botão do lado do campo, que cresce de lá; microfone ↔ seta com um pulo (1,14) e um tick; ✦ Write acende o cartão em violeta e a estrela sai do próprio botão; apagar dá um toque
-firme e a lista fecha numa mola. Reduzir Movimento: sem ondas, pulos nem respiração. Uma ideia salva rola para cima do teclado. Siri sem abrir o app (`AddToLogbookIntent`: "Add an idea to Cue" / "Save an idea in Cue", pergunta
+firme e a lista fecha numa mola, com "Idea deleted · Undo" (4 s) mostrado na própria folha (`toastHost(inSheet:)`). **Select** (à direita do primeiro dia,
+como em Scripts; vira **Done**, e o Done da barra sai): a captura recolhe, cada cartão mostra a marca (`ScriptSelectionMark`) no lugar do ✦ Write e
+um toque marca ou desmarca; a barra de baixo ("Select ideas" / "n selected" e a lixeira) apaga o que foi escolhido com um Undo só. Reduzir
+Movimento: sem ondas, pulos nem respiração. Uma ideia salva rola para cima do teclado. Medido no iPhone 15 Pro (`PerformanceDeviceUITests`,
+intervalos "Logbook fold" e "Logbook listen"): recolher e abrir sem engasgo (~99 fps); começar a ouvir ainda tem 1–3 engasgos curtos (24–60 ms,
+variando muito), a melhorar. Siri sem abrir o app (`AddToLogbookIntent`: "Add an idea to Cue" / "Save an idea in Cue", pergunta
 "What's the idea?", responde "Saved in your Logbook."). Uma nota aberta por notificação vem ao centro com contorno `acc` de 1,5 pt.
 
 ## 23. Ferramentas de IA: o botão faz o que diz

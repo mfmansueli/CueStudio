@@ -10,11 +10,15 @@ import Testing
 @MainActor
 @Suite("ScriptsViewModel")
 struct ScriptsViewModelTests {
-    private func makeViewModel(scripts: [Script], folders: [String] = []) -> (ScriptsViewModel, ScriptLibraryService, ToastService) {
+    /// `logbook`: the Logbook whose ideas Scripts shows at the end of its list (an empty one, never written, when the test has none).
+    private func makeViewModel(
+        scripts: [Script], folders: [String] = [], logbook: LogbookService? = nil
+    ) -> (ScriptsViewModel, ScriptLibraryService, ToastService) {
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: scripts, folders: folders), now: { TestData.now })
         library.load()
         let toast = ToastService()
-        return (ScriptsViewModel(library: library, toast: toast), library, toast)
+        let ideas = logbook ?? LogbookService(defaults: TestDefaults().defaults)
+        return (ScriptsViewModel(library: library, toast: toast, logbook: ideas), library, toast)
     }
 
     @Test func filtersIncludeFolders() {
@@ -137,6 +141,62 @@ struct ScriptsViewModelTests {
         viewModel.deleteSelection()
         try #require(toast.action).perform()
         #expect(library.scripts.map(\.title) == ["A", "B"])
+    }
+
+    // MARK: - The Logbook's ideas at the end of the list
+
+    /// Picked with the scripts, the Logbook's ideas go with them, and one Undo brings back all of it.
+    @Test func theSelectionDeletesScriptsAndIdeasTogetherWithOneUndo() throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let logbook = LogbookService(defaults: defaults.defaults, now: { TestData.now })
+        let idea = try #require(logbook.add("Cold showers: myth vs. what helped"))
+        let kept = try #require(logbook.add("A week of 5 a.m. starts"))
+        let script = TestData.script(title: "A")
+        let (viewModel, library, toast) = makeViewModel(scripts: [script], logbook: logbook)
+        viewModel.isSelecting = true
+        viewModel.toggleSelection(of: script.id)
+        viewModel.toggleSelection(of: idea.id)
+        viewModel.deleteSelection()
+        #expect(library.scripts.isEmpty)
+        #expect(logbook.waiting.map(\.id) == [kept.id])
+        #expect(toast.message == "2 deleted" && !viewModel.isSelecting)
+        try #require(toast.action).perform()
+        #expect(library.scripts.map(\.title) == ["A"])
+        #expect(logbook.waiting.map(\.text) == ["A week of 5 a.m. starts", "Cold showers: myth vs. what helped"])
+    }
+
+    /// Folders and Duplicate are for scripts: with only ideas picked they do nothing, and the ideas never reach the library.
+    @Test func foldersAndDuplicateTakeOnlyThePickedScripts() throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let logbook = LogbookService(defaults: defaults.defaults, now: { TestData.now })
+        let idea = try #require(logbook.add("Three things I stopped buying"))
+        let script = TestData.script(title: "A")
+        let (viewModel, library, _) = makeViewModel(scripts: [script], folders: ["Brand deals"], logbook: logbook)
+        viewModel.isSelecting = true
+        viewModel.toggleSelection(of: idea.id)
+        #expect(viewModel.selectedScripts.isEmpty)
+        viewModel.duplicateSelection()
+        #expect(library.scripts.count == 1 && viewModel.isSelecting, "Nothing to duplicate: still selecting")
+        viewModel.toggleSelection(of: script.id)
+        #expect(viewModel.selectedScripts == [script.id])
+        viewModel.moveSelection(to: "Brand deals")
+        #expect(library.script(id: script.id)?.folder == "Brand deals")
+        #expect(logbook.waiting.count == 1, "The idea is not moved, nor deleted")
+    }
+
+    /// Held away from the end of the list: the idea goes, with Undo for 4 s, as a script does.
+    @Test func anIdeaDeletedFromTheListCanBeUndone() throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let logbook = LogbookService(defaults: defaults.defaults, now: { TestData.now })
+        let idea = try #require(logbook.add("Packing hacks for surprise road trips"))
+        let (viewModel, _, toast) = makeViewModel(scripts: [], logbook: logbook)
+        viewModel.delete(idea)
+        #expect(logbook.waiting.isEmpty && toast.message == "Idea deleted")
+        try #require(toast.action).perform()
+        #expect(logbook.waiting.map(\.id) == [idea.id])
     }
 
     @Test func eachFilterChipCountsItsScripts() {

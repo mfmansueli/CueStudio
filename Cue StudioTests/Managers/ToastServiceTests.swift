@@ -82,4 +82,14 @@ struct ToastServiceTests {
         let second = toast.showWorking("Extracting the sound…")
         #expect(first != second)
     }
+
+    /// A sheet that shows the toast itself takes it from the root while it is up, and never counts below none.
+    @Test func aSheetWithItsOwnHostTakesTheToastWhileItIsUp() {
+        let toast = ToastService()
+        toast.sheetHostAppeared()
+        #expect(toast.sheetHosts == 1)
+        toast.sheetHostDisappeared()
+        toast.sheetHostDisappeared()
+        #expect(toast.sheetHosts == 0)
+    }
 }
