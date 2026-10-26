@@ -266,7 +266,7 @@ extension QuickEditViewModel {
             return [
                 EditorToolbarItem(id: "editBlur", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.blur)),
                 EditorToolbarItem(id: "followBlur", label: String(localized: "Track"), systemImage: "scope", action: .followBlur),
-                EditorToolbarItem(id: "reviewBlur", label: String(localized: "Review"), systemImage: "play.rectangle", action: .reviewBlur),
+                EditorToolbarItem(id: "reviewBlur", label: String(localized: "Replay"), systemImage: "play.rectangle", action: .reviewBlur),
                 EditorToolbarItem(id: "addBlur", label: String(localized: "Add area"), systemImage: "plus.viewfinder", action: .addBlurArea),
                 EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteBlur),
             ]

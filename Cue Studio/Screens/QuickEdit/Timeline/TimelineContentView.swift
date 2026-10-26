@@ -527,7 +527,13 @@ final class TimelineContentView: UIView {
         box.opacity = item.isDimmed ? 0.5 : 1
         // The label stays readable while the item's start is scrolled away.
         var x: CGFloat = 7 + min(inset, max(0, item.frame.width - 60))
-        if let strip = item.strip {
+        if item.kind == .blur {
+            // A Blur area: its name on a dark badge, readable over the orange hatch of what's left unchecked.
+            let badge = badgeLayer(item.label, color: .white, weight: .semibold, symbol: style.symbol)
+            badge.frame.origin = CGPoint(x: x - 3, y: (item.frame.height - badge.frame.height) / 2)
+            if badge.frame.maxX > item.frame.width - 2 { badge.frame.size.width = max(0, item.frame.width - 2 - badge.frame.minX) }
+            box.addSublayer(badge)
+        } else if let strip = item.strip {
             // A photo or video: its frames, with its kind and how it shows on a dark badge over them.
             drawStrip(strip, in: item, pointsPerSecond: pointsPerSecond, into: box, waiting: &waiting)
             let symbol = item.isLocked ? "lock.fill" : strip.layout.systemImage

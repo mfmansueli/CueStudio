@@ -47,8 +47,13 @@ extension BlurViewModel {
         }
         guard let url = url(of: region.target) else { return }
         player.pause()
-        let here = edit.footageTime(of: region.target, at: player.currentTime, in: edit.timeline)
-        let start = here.flatMap { region.span.contains($0) ? $0 : nil } ?? region.span.start
+        // From where the creator sees it on what it hides: the playhead must be on it.
+        guard let here = edit.footageTime(of: region.target, at: player.currentTime, in: edit.timeline),
+              region.span.start - BlurFollowing.frame <= here, here <= region.span.end + BlurFollowing.frame else {
+            toast.show(String(localized: "Move playhead onto it first"), kind: .problem)
+            return
+        }
+        let start = min(max(here, region.span.start), region.span.end)
         var range = region.span
         if onlyUnchecked, let stretch = region.openUnchecked.first(where: { $0.start - 0.05 <= start && start <= $0.end + 0.05 }) {
             range = TimeSpan(start: max(region.span.start, stretch.start - BlurFollowing.frame), end: min(region.span.end, stretch.end + BlurFollowing.frame))

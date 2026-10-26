@@ -106,6 +106,8 @@ case "$mode" in
             EditorExportDeviceTests*) export TEST_RUNNER_CUE_EDITOR_EXPORT=1 ;;
             # The split screen's preview drawing rate and export time, on links to this iPhone's newest takes (only read).
             SplitScreenDeviceTests*) export TEST_RUNNER_CUE_SPLIT_E2E=1 ;;
+            # Blur area and Mask: preview drawing rate, tracking speed and export time, on links to this iPhone's newest takes.
+            BlurAreaDeviceTests*) export TEST_RUNNER_CUE_BLUR_E2E=1 ;;
             # Imported fonts (Core Text's registration) and the media library's hard links on the iPhone's own file system, no flag.
             CustomFontStoreTests* | MediaLibraryStoreTests*) ;;
             # Motion (analysis, face follow, tracking, stabilization, speed curves, beats) on COPIES of this iPhone's newest takes.

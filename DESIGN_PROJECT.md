@@ -1205,13 +1205,13 @@ auditoria: `reports/editor-award-checklist.md`.
   deleted", "Found 1 pause", "Cut 1 word from the video", "1 word cut · 0.8 s", "Frame frozen for 2 seconds", "3 matches"…) escolhem a forma
   de cada idioma (árabe com as seis); o botão de Edit by text diz "Cut N words from the video" e o toast "N words cut · 0,8 s".
 - **Barras como um editor de celular (decisão do dono, 16/10/2026, depois de comparar com CapCut, Edits e InShot; diverge da ordem do quadro
-  v29 · 7.2).** Principal: **Edit · Captions · Text · ✦ Smart · Media · Audio · Format · Adjust · Filters · Cover** (Adjust e Filters do vídeo inteiro, §44) — a ordem em que um vídeo falado é feito, as
+  v29 · 7.2).** Principal: **Edit · Captions · Text · ✦ Smart · Media · Blur area · Audio · Format · Adjust · Filters · Cover** (Adjust e Filters do vídeo inteiro, §44; Blur area em sexto, §54) — a ordem em que um vídeo falado é feito, as
   cinco primeiras na tela do iPhone. **Format** (antes Crop, só na barra do clipe) abre o painel "Format" ("Whole video · format for where you post").
   Clipe: **Split · Speed · Zoom · Volume · Stabilize · Duplicate · Freeze frame · Reverse · Replace · Extract audio · Reorder · Adjust · Filters ·
-  Background · Copy look · Paste look · Delete** (Stabilize e Reverse: §39): só o que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro
-  (Format, Studio Voice, Media) fica na principal. Texto ganha **Motion** (Style › Motion); mídia ganha **Split** (em dois na agulha), **Replace**,
+  Background · Blur area · Copy look · Paste look · Delete** (Stabilize e Reverse: §39; Blur area: §54): só o que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro
+  (Format, Studio Voice, Media) fica na principal. Texto ganha **Motion** (Style › Motion); mídia ganha **Mask** e **Blur area** (§54), **Split** (em dois na agulha), **Replace**,
   **Track** (§39), **Duplicate** (por cima, mesmo arquivo) e, num vídeo com som, **Extract audio**; um apoio da tela dividida não tem Track nem
-  Duplicate e ganha **Close gap** quando há espaço antes dele (§51).
+  Duplicate nem Mask e ganha **Close gap** quando há espaço antes dele (§51).
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
   clipes com quadro, número, origem e duração, arrastados pela alça; cada mudança é um passo de desfazer e o que toca no clipe vai junto. Um clipe só:
   "Split or add a clip to reorder".
@@ -1439,8 +1439,9 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   e **Cut on** Every beat · Every 2 · Every 4 › **Cut the video on the beats**. Subtítulo: "112 BPM · 48 beats in the video", "Finding the
   beats…" ou "No steady beat in this music". Cada ação é um passo de desfazer.
 - **Barras:** Clipe: Split · Speed · Zoom · Volume · **Stabilize** · Duplicate · Freeze frame · **Reverse** · Reorder · Adjust · Filters · Background ·
-  Copy look · Paste look · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Mídia: Edit · Split · Replace ·
-  **Track** · Duplicate · Delete (um apoio da tela dividida: Edit · Split · Replace · Close gap · Delete, §51). Música: Volume · **Beats** ·
+  Blur area · Copy look · Paste look · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Mídia: Edit · Mask · Blur area ·
+  Split · Replace · **Track** · Duplicate · Delete (um apoio da tela dividida: Edit · Blur area · Split · Replace · Close gap · Delete, §51; Mask e
+  Blur area: §54). Música: Volume · **Beats** ·
   Replace · Delete (efeitos sonoros e sons extraídos sem Beats).
 - **Comparação com CapCut, Edits e InShot** (17/10/2026): Follow face é o "Auto reframe" do CapCut (formato + velocidade do acompanhamento), no
   painel de formato; Stabilize tem três níveis como o do CapCut, por clipe, e ganha "Use on every clip"; Track: no CapCut se arrasta uma caixa
@@ -2110,3 +2111,70 @@ Profile, Pro, celebrações) tinha tamanho fixo copiado do quadro, e várias tel
 - **iPhone SE (375 × 667):** 1.1 e 8.3 cabem inteiras acima dos botões; o capítulo 3 rola acima do botão quando não cabe.
 - **Conferido** com `LayoutAuditCaptureTests` (cada tela num lançamento próprio, opt-in: `TEST_RUNNER_CUE_AUDIT_DIR`, `TEST_RUNNER_CUE_AUDIT_NAME`,
   `TEST_RUNNER_CUE_AUDIT_SIZE`, `CUE_SIMULATOR`) no SE com texto padrão, no SE com o maior tamanho de acessibilidade e no Pro Max.
+
+## 54. Máscara e Desfocar área (Fase 6 do refinamento, 26 de outubro de 2026; pedido do dono)
+
+Duas ferramentas, com nomes que não se confundem com o que já existe: **Mask** (uma forma desenhada que mostra só parte de uma foto ou vídeo por
+cima) e **Blur area** (esconde um rosto, uma placa ou um nome numa tela, e o segue). Não são o **Recorte** do Fundo (a pessoa achada pelo Vision)
+nem o **Desfoque** do Fundo (atrás do criador). Comparado com CapCut, InShot e Edits (pesquisa de fluxos e de fóruns, 26/10): nenhum dos três avisa
+quando o tracking perde o alvo, nenhum move o vídeo sob uma máscara parada, e no CapCut esconder um rosto pede duplicar o clipe, efeito, máscara e
+keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: https://claude.ai/artifact/UpoEnj7t6wAUpmGeCG8PpW.
+
+- **Máscara** (`MediaMask`, `MaskShape`, `MaskPlacement`, `MaskDrawing`, `OverlaysViewModel+Mask`, `MaskPanel`, `MaskEditingLayer`): na barra de uma
+  foto ou vídeo em janela ou tela cheia (**Edit · Mask · Blur area · Split…**). Formas **None · Rectangle · Circle · Line · Band** (sem coração e
+  estrela, decisão do dono); **Drag moves: Mask | Picture** (mover a máscara sobre a imagem parada, ou reenquadrar a imagem sob a máscara parada:
+  `areaFraming`, sempre Fill, zoom até 4×); **Soft edge** (espalha dos dois lados da linha, até 1/5 do lado menor), **Corners** (só retângulo),
+  **Invert** (chave), e em Advanced **Turn** em graus e **Size/Thickness** em passos (precisão no celular). Na prévia, com o painel aberto e o
+  vídeo parado, o contorno amarelo é a área real; alças com função dita: abas laterais (largura e altura, as duas pontas juntas), **↻** (gira, gruda
+  em 0/90/180°), **seta amarela** embaixo (borda suave; o contorno tracejado de fora mostra até onde ela vai), **ponto no canto** (arredonda),
+  na linha uma seta para o lado que aparece, na faixa a aba da espessura; pinça redimensiona, dois dedos giram. Em Picture, as alças somem, o
+  contorno fica tracejado e a imagem inteira aparece em 30% para ver o que entra. A máscara vive no lugar da mídia: mover, aumentar, keyframes,
+  Track e animação pronta a levam junto. **Com keyframes**, mexer na máscara grava a máscara no keyframe do cursor (cria um se não houver), e ela
+  anda entre os keyframes que têm máscara com a suavização deles; a forma e o Invert não animam. **◐** mostra a mídia inteira ("Without the
+  mask"); **Reset** volta a máscara ao começo da forma e a imagem ao centro. **Apoio da tela dividida:** sem Mask na barra (a área já é a forma);
+  a máscara guardada volta quando a mídia vira janela ou tela cheia de novo.
+- **Desfocar área** (`BlurRegion`, `BlurTarget`, `BlurKeyframe`, `BlurStyle`, `BlurShape`, `BlurSubject`, `BlurResolver`, `BlurDrawing`,
+  `BlurFollowing`, `BlurFaceWalker`, `BlurViewModel` e partes, `BlurPanel`, `BlurStatusCard`, `BlurEditingLayer`): **sexto botão da barra
+  principal** (os cinco da tela não mudam), na barra do clipe (depois de Background) e na de uma foto ou vídeo por cima. Primeiro passo: os rostos
+  do quadro numerados e tracejados na prévia (da análise de movimento quando ela chegou ali, senão Vision no quadro): **um toque esconde e já segue
+  aquele rosto**; **All but the largest** esconde todos menos o maior (cada um uma área); **Draw an area** põe uma caixa (Tarja) no meio, para uma
+  placa ou um nome. A área nasce do tamanho do clipe sob o cursor (de uma foto ou vídeo por cima: o arquivo todo) e, num rosto, com folga para
+  testa, cabelo e orelhas (`BlurRegion.area(aroundFace:)`, oval).
+  - **Estilos, nenhum fraco** (pesquisa de privacidade: reconhecimento por IA ainda acerta com mosaico de ~14 blocos no rosto; mosaico em vídeo se
+    reverte juntando quadros): **Blur** (a área reduzida a 10–4 pixels no lado menor e espalhada), **Pixelate** (8–4 blocos no lado menor, cada um a
+    média do que cobre, a grade presa à área, não à tela), **Solid** (tarja opaca na paleta do editor; recomendada para textos, placas e telas).
+    **Area shape** Rectangle | Oval, **Strength**, **Soft edge** (só para fora: o que é escondido continua coberto), Starts/Ends, **Replay** (toca o trecho).
+  - **Preso à gravação:** a área guarda a gravação (ou a mídia por cima) e os segundos dela, e as caixas no quadro de pé da gravação. É desenhada
+    no quadro de pé antes de Estabilizar, Format, Seguir rosto, Fit, a área da tela dividida e o zoom do clipe (`FramePipeline`), então acompanha
+    todos eles; cortes, velocidade e curvas não a tiram do lugar; aparece em cada cópia de um clipe (uma barra por aparição, `BlurInstance`), num
+    clipe invertido lido de trás para frente e num **quadro congelado** (`ClipSource.still`, `FrameOrigin`: o congelado agora guarda de onde veio).
+    Prévia, capa (`CoverRenderer`) e exportação usam o mesmo desenho. Um clipe trocado (Replace) deixa a área do vídeo antigo de fora e o aviso diz.
+    Um clipe alongado pela alça leva junto uma área que ia até a ponta dele, com a parte nova marcada para conferir.
+  - **Seguir** (Track): um rosto pela análise de movimento que o Cue já guarda (`.cuemotion`, rostos 10×/s: nada analisado de novo), face a face —
+    nunca troca pelo mais próximo: quando outro cruza, fica no que vinha e marca o momento; quando some, a área fica parada e marcada, e volta a
+    seguir quando o rosto reaparece perto. Uma área desenhada (ou um rosto onde a análise não chegou) pelo `ObjectTracker` (Vision) para frente e
+    para trás a partir do cursor, com a caixa do tamanho da área. O caminho vira keyframes enxutos (Ramer–Douglas–Peucker), num passo de desfazer;
+    **Cancel** guarda o que já foi seguido e marca o resto. Pontos postos à mão (arrastar a área num momento) são do criador: seguir de novo não os
+    move.
+  - **Nunca diz "coberto" sem estar:** onde não foi seguido, onde dois rostos cruzaram, onde a análise não chegou ou a área cresceu além do seguido
+    fica **unchecked** (`BlurRegion.unchecked`): hachura laranja na barra da faixa **Blur area** da timeline, contorno laranja tracejado e "Not tracked
+    here" na prévia, e o cartão de estado no topo do painel: "Not tracked 00:05.2–00:07.0 · 1.8 s" com **Go there · Track from here** (só aquele
+    trecho, do ponto corrigido até encontrar a parte boa) **· End here · It's right**. "Tracked the whole time" só aparece sem nada marcado. **Done**
+    pergunta antes ("A Blur area may not cover what it hides": Go there · Continue anyway), e não pergunta de novo até a edição mudar.
+  - Na prévia (com o painel aberto ou a área escolhida, vídeo parado): arrastar move (no cursor quando ela se move, em todo lugar quando é parada),
+    os cantos ou a pinça mudam o tamanho do caminho inteiro, ✕ apaga só ela; as outras áreas aparecem tracejadas e um toque escolhe. Barra da área:
+    **Edit · Track · Replay · Add area · Delete**. ◐ mostra o vídeo sem as áreas ("Without Blur areas"). A barra da timeline apara pelas pontas e não
+    é arrastada (a área fica no que cobre).
+- **Combinações e limites, ditos:** Mask não vai em apoio da tela dividida (a área já é a forma) nem no clipe principal (fora desta fase). Blur area
+  numa foto cobre a foto toda (não há tempo para seguir). Suavizar pele não acha um rosto já desfocado. ◐ de Adjust e Filters mantém as áreas. Uma
+  área de um vídeo trocado deixa de aparecer (Undo volta). Rotação das caixas: as áreas ficam de pé (a correção de giro do Stabilize gira a imagem,
+  a caixa no quadro de pé continua sobre o alvo).
+- **Desempenho:** força, estilo, forma e borda só redesenham (o item do player fica, só o desenho muda); seguir roda uma vez quando pedido, e
+  formato, estabilização, zoom, cortes e velocidade nunca pedem seguir de novo. Medições no aparelho: ver o relatório da fase.
+- **Contraste:** `PaletteContrastTests.theBlurAndMaskMarksRead` ("Not tracked here", contornos amarelo, laranja e branco com o halo sobre vídeo
+  claro e escuro, o nome da área no seu crachá sobre a hachura, ✓ e ! no cartão), `theLanesInksReadOnTheirFills` (faixa Blur area).
+- **Testes:** `BlurRegionTests`, `BlurFollowingTests` (rosto andando, saindo e voltando, cruzando; caixa perdida; afinar; pontos do criador),
+  `TakeEditBlurTests` (cortes, velocidade, cópia, invertido, congelado, mídia por cima, desfazer), `MaskModelTests`, `PicturePlacementTests`,
+  `BlurDrawingTests` e `MaskDrawingTests` (pixels), `QuickEditBlurTests` e `QuickEditMaskTests` (fluxos com rastreador e detector falsos),
+  `RealExports/BlurAreaExportTests` (a tarja no lugar depois de formato quadrado, corte e 2×, na área principal da tela dividida, só no vídeo por
+  cima; máscara circular), `PreviewMatchesExportTests` (`blurArea`), `MaskBlurUITests` (com `TEST_RUNNER_CUE_SCREENSHOT_DIR`, fotografa cada passo).

@@ -140,7 +140,7 @@ struct QuickEditView: View {
             isPresented: Bindable(viewModel).showsBlurCheck,
             titleVisibility: .visible
         ) {
-            Button("Review") { viewModel.reviewUncheckedBlur() }
+            Button("Go there") { viewModel.reviewUncheckedBlur() }
                 .accessibilityIdentifier("edit.blurCheck.review")
             Button("Continue anyway") { viewModel.continueDespiteUncheckedBlur() }
                 .accessibilityIdentifier("edit.blurCheck.continue")

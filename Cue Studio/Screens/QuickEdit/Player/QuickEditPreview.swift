@@ -119,7 +119,8 @@ struct QuickEditPreview: View {
             // ◐ in Blur area or Mask: the video without what they change.
             HStack(spacing: 6) {
                 Image(systemName: "circle.lefthalf.filled").font(.editorGlyph(EditorGlyph.small, weight: .bold)).foregroundStyle(Palette.accText)
-                Text(viewModel.blur.comparesOriginal ? "Without Blur areas" : "Without the mask").font(.footnote.weight(.semibold))
+                Text(viewModel.blur.comparesOriginal ? String(localized: "Without Blur areas") : String(localized: "Without the mask"))
+                    .font(.footnote.weight(.semibold))
             }
             .padding(.horizontal, 12)
             .frame(height: 30)

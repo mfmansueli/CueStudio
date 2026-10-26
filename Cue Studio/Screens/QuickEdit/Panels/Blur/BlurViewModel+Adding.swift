@@ -82,7 +82,8 @@ extension BlurViewModel {
                 guard let analysis = MotionAnalysisStore.load(forRecording: url), analysis.isCurrent, analysis.analyzedUntil >= time else { return nil }
                 return BlurFollowing.faces(in: analysis.subjects, at: time)
             }.value
-            if let analyzed { return analyzed.sorted { $0.area > $1.area } }
+            // The analysis reads a small copy: where it found nobody, Vision on the whole frame may still find a small face.
+            if let analyzed, !analyzed.isEmpty { return analyzed.sorted { $0.area > $1.area } }
         }
         let boxes = await faces.faces(in: footage.url, isVideo: footage.isVideo, at: footage.time) ?? []
         return boxes.map { NormalizedBox(x: $0.minX, y: $0.minY, width: $0.width, height: $0.height) }

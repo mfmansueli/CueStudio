@@ -73,7 +73,7 @@ struct BlurPanel: View {
         ) { blur.setStyle($0) }
         PanelNote(text: Self.note(for: region.style))
         PanelSegmented(
-            label: String(localized: "Shape"), options: BlurShape.allCases.map { PanelOption($0, $0.label) }, selection: region.shape,
+            label: String(localized: "Area shape"), options: BlurShape.allCases.map { PanelOption($0, $0.label) }, selection: region.shape,
             identifier: "edit.blur.shape"
         ) { blur.setShape($0) }
         if region.style.hasStrength {
@@ -104,7 +104,7 @@ struct BlurPanel: View {
                 onIncrease: { blur.resizeBar(region.id, instance: first, edge: .end, to: first.end + 0.1) }
             )
         }
-        PanelButton(label: String(localized: "Review"), systemImage: "play.fill", identifier: "edit.blur.review") { blur.review() }
+        PanelButton(label: String(localized: "Replay"), systemImage: "play.fill", identifier: "edit.blur.review") { blur.review() }
         PanelNote(text: String(localized: "Drag the box in the video to move it, pull a corner to resize it. Where it slipped, drag it back at that moment: that spot is yours, and tracking again keeps it."))
     }
 
