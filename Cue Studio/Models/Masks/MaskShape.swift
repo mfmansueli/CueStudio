@@ -23,9 +23,10 @@ nonisolated enum MaskShape: String, LenientChoice, CaseIterable, Identifiable, S
     var label: String {
         switch self {
         case .rectangle: String(localized: "Rectangle")
-        case .circle: String(localized: "Circle")
-        case .line: String(localized: "Line")
-        case .band: String(localized: "Band")
+        // Their own keys: "Line" and "Band" are also the captions' (a line of text, the band behind it), "Circle" the cover's ring.
+        case .circle: String(inInterfaceLanguage: LocalizedStringResource("mask.circle", defaultValue: "Circle"))
+        case .line: String(inInterfaceLanguage: LocalizedStringResource("mask.line", defaultValue: "Line"))
+        case .band: String(inInterfaceLanguage: LocalizedStringResource("mask.band", defaultValue: "Band"))
         }
     }
 

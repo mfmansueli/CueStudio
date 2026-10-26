@@ -51,8 +51,13 @@ enum EditorApp {
         let button = app.buttons["edit.toolbar.\(id)"]
         XCTAssertTrue(button.exists(within: 5), id)
         let screen = app.windows.firstMatch.frame
+        // A tool scrolled under the pinned Delete is on the screen but covered: a tap there would hit Delete.
+        let delete = app.buttons["edit.toolbar.delete"]
+        func reachable() -> Bool {
+            screen.contains(button.frame) && (id == "delete" || !(delete.exists && delete.frame.intersects(button.frame.insetBy(dx: 4, dy: 0))))
+        }
         var swipes = 0
-        while !screen.contains(button.frame), swipes < 4 {
+        while !reachable(), swipes < 6 {
             // The tools run on past the screen's trailing edge: the right, and the left in Arabic.
             let toolbar = app.descendants(matching: .any)["edit.toolbar"]
             if button.frame.minX < screen.minX { toolbar.swipeRight() } else { toolbar.swipeLeft() }

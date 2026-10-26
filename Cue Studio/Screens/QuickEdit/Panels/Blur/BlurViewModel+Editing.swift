@@ -46,11 +46,15 @@ extension BlurViewModel {
         }
     }
 
-    /// The picked area's look changed by the creator: the next new area starts with it.
+    /// The picked area's look changed by the creator: the next new area in this video starts with it, in the same undo step.
     private func updateLook(_ change: (inout BlurRegion) -> Void, key: String? = nil) {
         guard let region = selectedBlur else { return }
-        update(region.id, key: key, change)
-        if let changed = edit.blurRegions.first(where: { $0.id == region.id }) { lastLook = BlurLook(changed) }
+        self.change(key: key) { snapshot in
+            guard var regions = snapshot.blurRegions, let index = regions.firstIndex(where: { $0.id == region.id }) else { return }
+            change(&regions[index])
+            snapshot.blurRegions = regions
+            snapshot.blurLook = BlurLook(regions[index])
+        }
     }
 
     func setStyle(_ style: BlurStyle) {

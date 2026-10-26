@@ -6,9 +6,10 @@
 import Foundation
 
 /// How a Blur area hides what's under it: its way, shape, strength and soft edge. A new area starts with the look the creator
-/// last gave one in this edit, and the first one with `initial` (the owner's choice, 26/10: an oval, Blur at 60%, a 50% soft
-/// edge, which hides a face without looking like a sticker).
-nonisolated struct BlurLook: Equatable, Sendable {
+/// last gave one in this video's edit (kept with the edit, so it's there when the editor opens again: the owner's choice, 26/10),
+/// and the first one with `initial` (the owner's choice, 26/10: an oval, Blur at 60%, a 50% soft edge, which hides a face
+/// without looking like a sticker).
+nonisolated struct BlurLook: Codable, Hashable, Sendable {
     var style: BlurStyle
     var shape: BlurShape
     var strength: Double

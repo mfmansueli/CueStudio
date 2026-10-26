@@ -6,8 +6,9 @@
 import SwiftUI
 
 /// What a Blur area covers, first thing in its panel: following now (how far, Cancel), standing still (Follow), followed the
-/// whole time (said only when nothing is left unchecked), or a stretch it may not cover, with Go there, Follow from here,
-/// End here and It's right.
+/// whole time (said only when nothing is left unchecked; Track again small beside it), or a stretch it may not cover, with Go
+/// there, Follow from here, End here and It's right. When tracking ends with the card in view, its sign jumps instead of a
+/// toast covering the top of the preview.
 struct BlurStatusCard: View {
     let viewModel: QuickEditViewModel
     let region: BlurRegion
@@ -20,8 +21,25 @@ struct BlurStatusCard: View {
             } else if let stretch = blur.focusedUnchecked {
                 unchecked(stretch)
             } else if region.isCovered {
-                header(symbol: "checkmark.circle.fill", tint: Palette.successText, title: String(localized: "Tracked the whole time"))
-                PanelButton(label: String(localized: "Track again"), systemImage: "scope", identifier: "edit.blur.followAgain") { blur.follow() }
+                // Nothing left to do: Track again stays, small, beside what's said.
+                let said = header(
+                    symbol: "checkmark.circle.fill", tint: Palette.successText, title: String(localized: "Tracked the whole time"),
+                    bounce: blur.followingEnded
+                )
+                let again = PanelButton(
+                    label: String(localized: "Track again"), systemImage: "scope", isCompact: true, identifier: "edit.blur.followAgain"
+                ) { blur.follow() }
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 8) {
+                        said
+                        Spacer(minLength: 8)
+                        again.fixedSize()
+                    }
+                    VStack(alignment: .leading, spacing: 6) {
+                        said
+                        again
+                    }
+                }
             } else {
                 header(
                     symbol: "pin.fill", tint: Palette.ink2, title: String(localized: "Stays in place"),
@@ -67,7 +85,8 @@ struct BlurStatusCard: View {
             title: String(localized: "Not tracked \(place) · \(DurationText.tenths(stretch.duration))"),
             detail: count > 1
                 ? String(localized: "\(count) parts to check. It may not cover what it hides there: look, then fix it or say it's right.")
-                : String(localized: "It may not cover what it hides there: look, then fix it or say it's right.")
+                : String(localized: "It may not cover what it hides there: look, then fix it or say it's right."),
+            bounce: blur.followingEnded
         )
         LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
             PanelButton(label: String(localized: "Go there"), isPrimary: true, identifier: "edit.blur.goThere") { blur.goToUnchecked() }
@@ -77,11 +96,14 @@ struct BlurStatusCard: View {
         }
     }
 
-    private func header(symbol: String, tint: Color, title: String, detail: String? = nil) -> some View {
+    /// What it covers, with its sign; `bounce` changing (tracking just ended with the card in view) makes the sign jump: the
+    /// card is the confirmation then, with no toast over the preview.
+    private func header(symbol: String, tint: Color, title: String, detail: String? = nil, bounce: Int = 0) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Image(systemName: symbol)
                 .font(.editorGlyph(EditorGlyph.compact, weight: .semibold))
                 .foregroundStyle(tint)
+                .symbolEffect(.bounce, value: bounce)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)

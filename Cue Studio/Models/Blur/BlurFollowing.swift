@@ -27,6 +27,14 @@ nonisolated enum BlurFollowing {
 
     /// How far (a share of the frame) the thinned path may stray from the followed one.
     static let tolerance = 0.004
+    /// And how far as a share of the area's own size: a small area slips off what it hides long before a large one would.
+    static let sizeShare = 0.04
+    /// A drawn area moving faster than this share of its box's longer side a frame, for `lasting` frames running (a shake, the
+    /// phone picked up), is marked: Vision's box lags there. Measured on the iPhone against a face's landmarks (26/10): it caught
+    /// the shake at the end of a take, where an area slipped off a nose, for a few frames marked over a still face; a single fast
+    /// frame is the tracker's jitter, and marking those filled a still face with tenth-of-a-second marks.
+    static let fastest = 0.1
+    static let lasting = 3
     /// Samples further apart than this mean the analysis has nothing in between.
     static let longestStep: TimeInterval = 0.35
     /// A frame, the least a mark lasts.
@@ -115,30 +123,55 @@ nonisolated enum BlurFollowing {
     // MARK: - A drawn area
 
     /// The area followed by Vision's tracker from `time`: `ahead` and `behind` are the samples it gave each way (the box it
-    /// followed was `tracked`). Where the tracker stopped short of the area's ends, or wasn't sure, is unchecked.
+    /// followed was `tracked`; the frame is `frameAspect` wide for 1 tall). Where the tracker stopped short of the area's ends,
+    /// wasn't sure, or the area moved too fast for it, is unchecked. The area is never smaller than drawn (`smallest`, a share of
+    /// the drawn size): Vision's box around something narrow shrinks as it goes (an eye's, to 70% on the iPhone), and an area
+    /// shrinking with it uncovered what it hid while saying it was covered; it still grows with what it follows.
     static func followObject(
-        ahead: [TrackSample], behind: [TrackSample], area: NormalizedBox, tracked: NormalizedBox, at time: TimeInterval, through span: TimeSpan
+        ahead: [TrackSample], behind: [TrackSample], area: NormalizedBox, tracked: NormalizedBox, at time: TimeInterval, through span: TimeSpan,
+        frameAspect: Double, unsureBelow: Double = 0.5, share: Double? = sizeShare, smallest: Double = 1, fastest: Double? = fastest,
+        lasting: Int = lasting
     ) -> Result {
         let start = min(max(time, span.start), span.end)
         let samples = (behind + ahead).sorted { $0.time < $1.time }
         var keyframes: [BlurKeyframe] = []
         var unchecked: [TimeSpan] = []
+        var fastRun: [TimeInterval] = []
         // The tracker's box breathes from frame to frame: its size is smoothed over a few samples, its center isn't.
         let widths = smoothed(samples.map { $0.box.width / max(0.000_1, tracked.width) })
         let heights = smoothed(samples.map { $0.box.height / max(0.000_1, tracked.height) })
         for (index, sample) in samples.enumerated() {
-            let scaleX = min(max(widths[index], 0.6), 1.8), scaleY = min(max(heights[index], 0.6), 1.8)
+            let scaleX = min(max(widths[index], smallest), 1.8), scaleY = min(max(heights[index], smallest), 1.8)
             let center = CGPoint(
                 x: sample.box.midX + (area.midX - tracked.midX) * scaleX, y: sample.box.midY + (area.midY - tracked.midY) * scaleY
             )
             keyframes.append(BlurKeyframe(time: sample.time, box: NormalizedBox(center: center, width: area.width * scaleX, height: area.height * scaleY)))
-            if sample.confidence < 0.5 { unchecked.append(TimeSpan(start: sample.time - frame * 2, end: sample.time + frame * 2)) }
+            if sample.confidence < unsureBelow { unchecked.append(TimeSpan(start: sample.time - frame * 2, end: sample.time + frame * 2)) }
+            // Moving faster than the tracker can be trusted (a share of the box's longer side a frame, on the frame as seen): marked.
+            if let fastest, index > 0 {
+                let before = samples[index - 1]
+                let frames = max(1, (sample.time - before.time) / frame)
+                let dx = (sample.box.midX - before.box.midX) * frameAspect, dy = sample.box.midY - before.box.midY
+                let longer = max(sample.box.width * frameAspect, sample.box.height, 0.000_1)
+                let speed = (dx * dx + dy * dy).squareRoot() / longer / frames
+                if speed > fastest {
+                    fastRun.append(sample.time)
+                } else {
+                    if fastRun.count >= lasting, let first = fastRun.first, let last = fastRun.last {
+                        unchecked.append(TimeSpan(start: first - frame * 3, end: last + frame * 2))
+                    }
+                    fastRun = []
+                }
+            }
+        }
+        if fastRun.count >= lasting, let first = fastRun.first, let last = fastRun.last {
+            unchecked.append(TimeSpan(start: first - frame * 3, end: last + frame * 2))
         }
         if keyframes.isEmpty { keyframes = [BlurKeyframe(time: start, box: area)] }
         let first = samples.first?.time ?? start, last = samples.last?.time ?? start
         if last < span.end - frame * 1.5 { unchecked.append(TimeSpan(start: last, end: span.end)) }
         if first > span.start + frame * 1.5 { unchecked.append(TimeSpan(start: span.start, end: first)) }
-        return Result(keyframes: thinned(keyframes), unchecked: TimeSpan.merged(unchecked.map { clamp($0, to: span) }), reached: span)
+        return Result(keyframes: thinned(keyframes, share: share), unchecked: TimeSpan.merged(unchecked.map { clamp($0, to: span) }), reached: span)
     }
 
     // MARK: - Putting it on the area
@@ -160,9 +193,9 @@ nonisolated enum BlurFollowing {
 
     // MARK: - Thinning
 
-    /// The fewest keyframes that keep the path (center and size) within `tolerance` of the followed one, the first and last
-    /// always (Ramer–Douglas–Peucker over time).
-    static func thinned(_ keyframes: [BlurKeyframe]) -> [BlurKeyframe] {
+    /// The fewest keyframes that keep the path (center and size) within `tolerance` of the followed one, and within `share`
+    /// of the area's size when given, the first and last always (Ramer–Douglas–Peucker over time).
+    static func thinned(_ keyframes: [BlurKeyframe], tolerance: Double = tolerance, share: Double? = nil) -> [BlurKeyframe] {
         guard keyframes.count > 2 else { return keyframes }
         var keep = Array(repeating: false, count: keyframes.count)
         keep[0] = true
@@ -178,13 +211,19 @@ nonisolated enum BlurFollowing {
                 func off(_ value: (BlurKeyframe) -> Double) -> Double {
                     abs(value(point) - (value(start) + (value(end) - value(start)) * part))
                 }
-                let distance = max(off { $0.box.midX }, off { $0.box.midY }, off { $0.box.width } / 2, off { $0.box.height } / 2)
+                // How far it strays, as a share of how far it may: across in the frame's width, up and down in its height.
+                let alongX = share.map { min(tolerance, $0 * point.box.width) } ?? tolerance
+                let alongY = share.map { min(tolerance, $0 * point.box.height) } ?? tolerance
+                let distance = max(
+                    off { $0.box.midX } / max(0.000_001, alongX), off { $0.box.midY } / max(0.000_001, alongY),
+                    off { $0.box.width } / 2 / max(0.000_001, alongX), off { $0.box.height } / 2 / max(0.000_001, alongY)
+                )
                 if distance > worst {
                     worst = distance
                     worstIndex = index
                 }
             }
-            if worst > tolerance {
+            if worst > 1 {
                 keep[worstIndex] = true
                 stack.append((from, worstIndex))
                 stack.append((worstIndex, to))

@@ -10,8 +10,9 @@ import SwiftUI
 /// picture (Mask) or the picture under a still mask (Picture, the rest of the picture shown faintly around it); a pinch
 /// resizes the mask or brings the picture closer; two fingers turn the mask. The side handles change its width and height, ↻
 /// turns it, the yellow arrow below pulls its edge softer, the dot in a rectangle's corner rounds its corners, a band's handle
-/// sets its thickness, and a line's arrow points to the side that shows. Every change shows in the video as it's made, and a
-/// gesture is one undo step.
+/// sets its thickness, and a line's arrow points to the side that shows. On a small mask the handles move out around it, a
+/// finger apart, a thin line leading each tab back to its side (`HandleSpread`). Every change shows in the video as it's made,
+/// and a gesture is one undo step.
 struct MaskEditingLayer: View {
     let viewModel: QuickEditViewModel
     let size: CGSize
@@ -47,6 +48,12 @@ struct MaskEditingLayer: View {
         func point(_ x: CGFloat, _ y: CGFloat) -> CGPoint {
             let angle = degrees * .pi / 180
             return CGPoint(x: center.x + x * cos(angle) - y * sin(angle), y: center.y + x * sin(angle) + y * cos(angle))
+        }
+
+        /// A way `x`, `y` along the mask's own axes, turned onto the preview.
+        func direction(_ x: CGFloat, _ y: CGFloat) -> CGVector {
+            let angle = degrees * .pi / 180
+            return CGVector(dx: x * cos(angle) - y * sin(angle), dy: x * sin(angle) + y * cos(angle))
         }
 
         /// A finger's travel on the preview, along the mask's own axes.
@@ -149,25 +156,70 @@ struct MaskEditingLayer: View {
 
     // MARK: - Handles
 
-    @ViewBuilder
-    private func handles(_ mask: MediaMask, placement: MaskPlacement, geometry: Geometry) -> some View {
+    /// Where each handle sits (`HandleSpread`): at the side, past the edge or in the corner it changes, moved out along its way
+    /// on a small mask so none covers another or the mask's middle, and kept on the preview. A side with no room for both its
+    /// tabs keeps one (the two pull together anyway), on the other side when its own has no room on the preview.
+    private func handleSpots(_ mask: MediaMask, placement: MaskPlacement, geometry: Geometry) -> [String: HandleSpread.Spot] {
         let reach: CGFloat = 26
+        let room = Metrics.hitTarget * 0.7
+        var handles: [HandleSpread.Handle] = []
         switch mask.shape {
         case .rectangle, .circle:
-            sideHandle(geometry.point(geometry.width / 2, 0), axis: .width, geometry: geometry, id: "right")
-            sideHandle(geometry.point(-geometry.width / 2, 0), axis: .width, sign: -1, geometry: geometry, id: "left")
-            sideHandle(geometry.point(0, geometry.height / 2), axis: .height, geometry: geometry, id: "bottom")
-            sideHandle(geometry.point(0, -geometry.height / 2), axis: .height, sign: -1, geometry: geometry, id: "top")
-            turnHandle(geometry.point(0, -geometry.height / 2 - reach), geometry: geometry)
-            featherHandle(geometry.point(0, geometry.height / 2 + reach + geometry.feather / 2), geometry: geometry)
+            let halfWidth = geometry.width / 2, halfHeight = geometry.height / 2
+            let left = (anchor: geometry.point(-halfWidth, 0), outward: geometry.direction(-1, 0))
+            let top = (anchor: geometry.point(0, -halfHeight), outward: geometry.direction(0, -1))
+            let bothWide = halfWidth >= room, bothTall = halfHeight >= room
+            handles.append(HandleSpread.Handle(
+                "right", at: geometry.point(halfWidth, 0), outward: geometry.direction(1, 0), otherSide: bothWide ? nil : left
+            ))
+            handles.append(HandleSpread.Handle(
+                "bottom", at: geometry.point(0, halfHeight), outward: geometry.direction(0, 1), otherSide: bothTall ? nil : top
+            ))
+            if bothWide { handles.append(HandleSpread.Handle("left", at: left.anchor, outward: left.outward)) }
+            if bothTall { handles.append(HandleSpread.Handle("top", at: top.anchor, outward: top.outward)) }
+            handles.append(HandleSpread.Handle("turn", at: geometry.point(0, -halfHeight - reach), outward: geometry.direction(0, -1)))
+            handles.append(HandleSpread.Handle(
+                "feather", at: geometry.point(0, halfHeight + reach + geometry.feather / 2), outward: geometry.direction(0, 1)
+            ))
             if mask.shape.hasCorners {
                 let radius = CGFloat(placement.corners) * min(geometry.width, geometry.height) / 2
-                let inset = max(12, radius * 0.6)
-                cornerHandle(geometry.point(-geometry.width / 2 + inset, -geometry.height / 2 + inset), geometry: geometry)
+                let inset = min(max(12, radius * 0.6), min(halfWidth, halfHeight))
+                handles.append(HandleSpread.Handle(
+                    "corners", at: geometry.point(-halfWidth + inset, -halfHeight + inset), outward: geometry.direction(-1, -1)
+                ))
             }
         case .line:
-            turnHandle(geometry.point(min(90, geometry.short / 2), 0), geometry: geometry)
-            featherHandle(geometry.point(0, reach + geometry.feather / 2), geometry: geometry)
+            handles.append(HandleSpread.Handle("turn", at: geometry.point(min(90, geometry.short / 2), 0), outward: geometry.direction(1, 0)))
+            handles.append(HandleSpread.Handle("feather", at: geometry.point(0, reach + geometry.feather / 2), outward: geometry.direction(0, 1)))
+        case .band:
+            let thickness = CGFloat(placement.height) * geometry.rect.height * geometry.scale
+            handles.append(HandleSpread.Handle("thickness", at: geometry.point(0, thickness / 2), outward: geometry.direction(0, 1)))
+            handles.append(HandleSpread.Handle("turn", at: geometry.point(min(90, geometry.short / 2), 0), outward: geometry.direction(1, 0)))
+            handles.append(HandleSpread.Handle(
+                "feather", at: geometry.point(0, thickness / 2 + reach + geometry.feather / 2), outward: geometry.direction(0, 1)
+            ))
+        }
+        return HandleSpread.place(handles, around: geometry.center, in: CGRect(origin: .zero, size: size), spacing: Metrics.hitTarget, margin: 12)
+    }
+
+    @ViewBuilder
+    private func handles(_ mask: MediaMask, placement: MaskPlacement, geometry: Geometry) -> some View {
+        let spots = handleSpots(mask, placement: placement, geometry: geometry)
+        let places = spots.mapValues(\.point)
+        leaders(spots.filter { Self.tabs.contains($0.key) })
+        switch mask.shape {
+        case .rectangle, .circle:
+            // A tab moved to the other side grows the mask when pulled out of that side.
+            if let point = places["right"] { sideHandle(point, axis: .width, sign: side(point, 1, 0, geometry), geometry: geometry, id: "right") }
+            if let point = places["left"] { sideHandle(point, axis: .width, sign: -1, geometry: geometry, id: "left") }
+            if let point = places["bottom"] { sideHandle(point, axis: .height, sign: side(point, 0, 1, geometry), geometry: geometry, id: "bottom") }
+            if let point = places["top"] { sideHandle(point, axis: .height, sign: -1, geometry: geometry, id: "top") }
+            if let point = places["turn"] { turnHandle(point, geometry: geometry) }
+            if let point = places["feather"] { featherHandle(point, geometry: geometry) }
+            if let point = places["corners"] { cornerHandle(point, geometry: geometry) }
+        case .line:
+            if let point = places["turn"] { turnHandle(point, geometry: geometry) }
+            if let point = places["feather"] { featherHandle(point, geometry: geometry) }
             // The side that shows: above the line, below once inverted.
             Image(systemName: mask.inverted ? "arrow.down" : "arrow.up")
                 .font(.editorGlyph(EditorGlyph.small, weight: .bold))
@@ -179,17 +231,33 @@ struct MaskEditingLayer: View {
                 .allowsHitTesting(false)
                 .accessibilityHidden(true)
         case .band:
-            let thickness = CGFloat(placement.height) * geometry.rect.height * geometry.scale
-            sideHandle(geometry.point(0, thickness / 2), axis: .thickness, geometry: geometry, id: "thickness")
-            turnHandle(geometry.point(min(90, geometry.short / 2), 0), geometry: geometry)
-            featherHandle(geometry.point(0, thickness / 2 + reach + geometry.feather / 2), geometry: geometry)
+            if let point = places["thickness"] { sideHandle(point, axis: .thickness, geometry: geometry, id: "thickness") }
+            if let point = places["turn"] { turnHandle(point, geometry: geometry) }
+            if let point = places["feather"] { featherHandle(point, geometry: geometry) }
         }
     }
 
-    /// A handle meant at `point`, kept on the preview: a mask larger than the frame keeps its handles where a finger reaches.
-    private func onPreview(_ point: CGPoint) -> CGPoint {
-        let margin: CGFloat = 12
-        return CGPoint(x: min(max(point.x, margin), max(margin, size.width - margin)), y: min(max(point.y, margin), max(margin, size.height - margin)))
+    /// 1 when `point` is on the side of the mask the way `x`, `y` (its own axes) points to, -1 on the other.
+    private func side(_ point: CGPoint, _ x: CGFloat, _ y: CGFloat, _ geometry: Geometry) -> CGFloat {
+        let way = geometry.direction(x, y)
+        return (point.x - geometry.center.x) * way.dx + (point.y - geometry.center.y) * way.dy < 0 ? -1 : 1
+    }
+
+    /// The handles that belong to a point of the outline (a side, a corner): moved out, a line leads back to it.
+    private static let tabs: Set<String> = ["right", "left", "bottom", "top", "thickness", "corners"]
+
+    /// A thin line from each handle moved out of a small mask to the point of the outline it changes.
+    private func leaders(_ spots: [String: HandleSpread.Spot]) -> some View {
+        Path { path in
+            for spot in spots.values where HandleSpread.distance(spot.anchor, spot.point) > 8 {
+                path.move(to: spot.anchor)
+                path.addLine(to: spot.point)
+            }
+        }
+        .stroke(Palette.Editor.overlayOutline, style: StrokeStyle(lineWidth: 1, lineCap: .round))
+        .shadow(color: Palette.Editor.overlayOutlineHalo, radius: 1)
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 
     private enum Axis {
@@ -222,7 +290,7 @@ struct MaskEditingLayer: View {
                     }
                     .onEnded { _ in end("side-\(id)") }
             )
-            .position(onPreview(point))
+            .position(point)
             .accessibilityHidden(true)
             .accessibilityIdentifier("edit.mask.handle.\(id)")
     }
@@ -251,7 +319,7 @@ struct MaskEditingLayer: View {
                     }
                     .onEnded { _ in end("turn") }
             )
-            .position(onPreview(point))
+            .position(point)
             .accessibilityHidden(true)
             .accessibilityIdentifier("edit.mask.handle.turn")
     }
@@ -276,7 +344,7 @@ struct MaskEditingLayer: View {
                     }
                     .onEnded { _ in end("feather") }
             )
-            .position(onPreview(point))
+            .position(point)
             .accessibilityHidden(true)
             .accessibilityIdentifier("edit.mask.handle.feather")
     }
@@ -299,7 +367,7 @@ struct MaskEditingLayer: View {
                     }
                     .onEnded { _ in end("corners") }
             )
-            .position(onPreview(point))
+            .position(point)
             .accessibilityHidden(true)
             .accessibilityIdentifier("edit.mask.handle.corners")
     }

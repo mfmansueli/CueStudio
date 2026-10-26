@@ -16,7 +16,8 @@ nonisolated enum BlurSubject: String, LenientChoice, CaseIterable, Sendable {
     var label: String {
         switch self {
         case .face: String(localized: "Face")
-        case .area: String(localized: "Area", comment: "A Blur area the creator drew (not a face)")
+        // Its own key: "Area" is also the split screen's (Main video | Support), which some languages say another way.
+        case .area: String(inInterfaceLanguage: LocalizedStringResource("blur.subject.area", defaultValue: "Area"))
         }
     }
 }

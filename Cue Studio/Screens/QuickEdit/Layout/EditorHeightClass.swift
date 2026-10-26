@@ -74,4 +74,14 @@ nonisolated enum EditorHeightClass: Equatable, Sendable {
         case .veryCompact: 52
         }
     }
+
+    /// The narrowest a tool gets so the ones a picked item has all show whole instead of the last hiding under Delete
+    /// (`EditorToolbarFit`); never under the touch target.
+    var toolbarItemMinimumWidth: CGFloat {
+        switch self {
+        case .regular: 54
+        case .compact: 50
+        case .veryCompact: 46
+        }
+    }
 }
