@@ -17,7 +17,7 @@ struct EditProfilePreferences: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text("New scripts are made for")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 16)
                 .padding(.top, 14)
@@ -41,7 +41,7 @@ struct EditProfilePreferences: View {
                     Text(draft.monetizationGoals
                          ? String(localized: "Script lengths aim at what earns on \(draft.defaultPlatform.label)")
                          : String(localized: "Script lengths aim at what holds attention"))
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                         .contentTransition(.opacity)
                 }
@@ -77,7 +77,7 @@ struct EditProfilePreferences: View {
                 }
                 .frame(width: 50, height: 50)
                 Text(platform.label)
-                    .font(.caption)
+                    .cueFont(.caption)
                     .foregroundStyle(isOn ? Palette.ink : Palette.ink2)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)

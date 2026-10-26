@@ -16,7 +16,7 @@ struct ReviewPauseFlash: View {
     var body: some View {
         let still = reduceMotion
         return Image(systemName: "pause.fill")
-            .font(.system(size: 28, weight: .semibold))
+            .font(.fixed(28, weight: .semibold))
             .foregroundStyle(Palette.ink)
             .frame(width: 76, height: 76)
             .background(Color.black.opacity(0.35), in: Circle())

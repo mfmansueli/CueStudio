@@ -16,7 +16,7 @@ struct SettingsSearchResults: View {
         if groups.isEmpty {
             Section {
                 ContentUnavailableView {
-                    Text("No results for “\(query.trimmingCharacters(in: .whitespacesAndNewlines))”").font(.headline)
+                    Text("No results for “\(query.trimmingCharacters(in: .whitespacesAndNewlines))”").cueFont(.headline, weight: .semibold)
                 } description: {
                     Text("Try another word, like speed or mirror.")
                 }

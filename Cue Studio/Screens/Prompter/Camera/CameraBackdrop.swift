@@ -88,11 +88,11 @@ struct CameraBackdrop: View {
             CameraFeedPlaceholder()
             VStack(spacing: 10) {
                 Image(systemName: "video.slash")
-                    .font(.title)
+                    .cueFont(.title)
                     .foregroundStyle(Palette.ink2)
-                Text(title).font(.headline)
+                Text(title).cueFont(.headline, weight: .semibold)
                 Text(detail)
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)
                 if showsSettings {

@@ -48,7 +48,7 @@ struct ReviewInfoPanel: View {
                 .shadow(color: dotColor.opacity(0.7), radius: 4)
                 .accessibilityHidden(true)
             Text(take.scriptTitle)
-                .font(.system(size: 19, weight: .semibold))
+                .cueFont(19, weight: .semibold)
                 .foregroundStyle(Palette.ink)
                 .lineLimit(1)
             if take.isEdited {
@@ -58,7 +58,8 @@ struct ReviewInfoPanel: View {
                     .interfaceTracking(0.5)
                     .foregroundStyle(Palette.infoText)
                     .padding(.horizontal, 7)
-                    .frame(height: 18)
+                    .padding(.vertical, 2)
+                    .frame(minHeight: 18)
                     .background(Palette.infoSoft, in: Capsule())
             }
             Spacer(minLength: 0)
@@ -81,10 +82,10 @@ struct ReviewInfoPanel: View {
                     .frame(width: 7, height: 7)
                     .accessibilityHidden(true)
                 Text(verbatim: "\(platformName) · \(DurationText.clock(take.duration))")
-                    .font(.subheadline.weight(.medium))
+                    .cueFont(.subheadline, weight: .medium)
                     .foregroundStyle(Palette.ink2)
                 Image(systemName: "chevron.right")
-                    .font(.caption2.weight(.bold))
+                    .cueFont(.caption2, weight: .bold)
                     .foregroundStyle(Palette.ink2)
                     .rotationEffect(.degrees(showsDetails ? 90 : 0))
                     .accessibilityHidden(true)
@@ -103,7 +104,7 @@ struct ReviewInfoPanel: View {
         if let lengthFit { parts.append(Self.fitText(lengthFit, platform: platformName)) }
         if let scriptVersion { parts.append(String(localized: "From script \(scriptVersion)")) }
         return Text(verbatim: parts.joined(separator: " · "))
-            .font(.footnote)
+            .cueFont(.footnote)
             .foregroundStyle(Palette.ink2)
             .fixedSize(horizontal: false, vertical: true)
             .accessibilityIdentifier("review.lengthFit")

@@ -15,7 +15,7 @@ struct WritingImportReadingView: View {
                 .controlSize(.large)
                 .tint(Palette.aiText)
             Text(model.stage == .askingModel ? String(localized: "Apple Intelligence · on this iPhone") : String(localized: "Reading your texts"))
-                .font(.subheadline.weight(.semibold))
+                .cueFont(.subheadline, weight: .semibold)
                 .foregroundStyle(Palette.ink)
                 .accessibilityIdentifier("import.stage")
             Button("Cancel") { model.cancelReading() }

@@ -30,12 +30,12 @@ struct HooksSheet: View {
                         Text("~\(DurationText.short(ReadTime.seconds(for: currentHook)))")
                             .foregroundStyle(Palette.warnText)
                     }
-                    .font(.caption2.weight(.bold))
+                    .cueFont(.caption2, weight: .bold)
                     .textCase(.uppercase)
                     .kerning(0.8)
                     .foregroundStyle(Palette.ink2)
                     Text(currentHook.isEmpty ? String(localized: "No opening line yet") : CueParser.stripCues(currentHook))
-                        .font(.subheadline)
+                        .cueFont(.subheadline)
                         .foregroundStyle(Palette.inkSoft)
                 }
                 .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
@@ -47,7 +47,7 @@ struct HooksSheet: View {
                     HStack(spacing: 10) {
                         ProgressView().tint(Palette.accText)
                         Text("Drafting hooks…")
-                            .font(.subheadline)
+                            .cueFont(.subheadline)
                             .foregroundStyle(Palette.accText)
                     }
                     .frame(maxWidth: .infinity, minHeight: 120)
@@ -58,11 +58,11 @@ struct HooksSheet: View {
                             Button { onPick(hook) } label: {
                                 HStack(alignment: .firstTextBaseline, spacing: 12) {
                                     Text(CueParser.stripCues(hook))
-                                        .font(.body.weight(.medium))
+                                        .cueFont(.body, weight: .medium)
                                         .foregroundStyle(Palette.ink)
                                         .frame(maxWidth: .infinity, alignment: .leading)
                                     Text("~\(DurationText.short(ReadTime.seconds(for: hook)))")
-                                        .font(.footnote.weight(.semibold).monospacedDigit())
+                                        .cueFont(.footnote, weight: .semibold).monospacedDigit()
                                         .foregroundStyle(Palette.accText)
                                 }
                                 .padding(.horizontal, 16)

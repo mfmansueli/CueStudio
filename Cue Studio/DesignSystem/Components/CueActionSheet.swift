@@ -21,7 +21,7 @@ struct CueActionSheet: ViewModifier {
                 Spacer(minLength: 0)
                 VStack(spacing: 0) {
                     Text(message)
-                        .font(.system(size: 13.5))
+                        .cueFont(13.5)
                         .foregroundStyle(Palette.ink2)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 20)
@@ -31,14 +31,14 @@ struct CueActionSheet: ViewModifier {
                         isPresented = false
                         action()
                     } label: {
-                        Text(actionTitle).font(.system(size: 19)).foregroundStyle(Palette.danger).frame(maxWidth: .infinity).frame(height: 56)
+                        Text(actionTitle).cueFont(19).foregroundStyle(Palette.danger).frame(maxWidth: .infinity).frame(height: 56)
                     }
                     .buttonStyle(.plain)
                     .accessibilityIdentifier(actionIdentifier)
                 }
                 .background(Palette.surface3, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
                 Button { isPresented = false } label: {
-                    Text("Cancel").font(.system(size: 19, weight: .semibold)).foregroundStyle(Palette.ink).frame(maxWidth: .infinity).frame(height: 56)
+                    Text("Cancel").cueFont(19, weight: .semibold).foregroundStyle(Palette.ink).frame(maxWidth: .infinity).frame(height: 56)
                 }
                 .buttonStyle(.plain)
                 .background(Palette.surface3, in: RoundedRectangle(cornerRadius: 16, style: .continuous))

@@ -86,7 +86,7 @@ struct StudioModeView: View {
                 Button { viewModel.platformChipTapped() } label: {
                     HStack(spacing: 6) {
                         PlatformDot(color: script.platform.tint)
-                        Text(script.platform.label).font(.footnote.weight(.semibold))
+                        Text(script.platform.label).cueFont(.footnote, weight: .semibold)
                     }
                     .foregroundStyle(Palette.ink)
                 }

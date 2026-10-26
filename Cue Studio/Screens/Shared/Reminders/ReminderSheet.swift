@@ -54,11 +54,11 @@ struct ReminderSheet: View {
                 if picksTime { picker }
             }
             if let problem {
-                Text(problem).font(.footnote).foregroundStyle(Palette.warnText).accessibilityIdentifier("reminder.problem")
+                Text(problem).cueFont(.footnote).foregroundStyle(Palette.warnText).accessibilityIdentifier("reminder.problem")
             }
             if notifications.authorization == .denied {
                 Label("Notifications are off for Cue in iOS Settings. The reminder is kept here in Cue.", systemImage: "bell.slash")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -94,7 +94,7 @@ struct ReminderSheet: View {
             Spacer(minLength: 8)
             if let value { Text(value).foregroundStyle(Palette.ink2) }
         }
-        .font(.body)
+        .cueFont(.body)
         .padding(.horizontal, 16)
         .frame(minHeight: 52)
         .contentShape(Rectangle())
@@ -109,7 +109,7 @@ struct ReminderSheet: View {
                 .accessibilityIdentifier("reminder.datePicker")
             if notifications.isInQuietHours(pickedTime) {
                 Text("This is during your quiet hours. Cue will remind you anyway, since you chose this time.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("reminder.quietNote")
@@ -127,7 +127,7 @@ struct ReminderSheet: View {
         let set = notifications.reminders(about: subject).filter { $0.id != editing?.id }
         if !set.isEmpty {
             VStack(alignment: .leading, spacing: 6) {
-                Text("Already set").font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink2)
+                Text("Already set").cueFont(.footnote, weight: .semibold).foregroundStyle(Palette.ink2)
                 ForEach(set) { reminder in
                     HStack {
                         Text(reminder.time.date(in: calendar).map { ReminderFeedback.when($0) } ?? "")

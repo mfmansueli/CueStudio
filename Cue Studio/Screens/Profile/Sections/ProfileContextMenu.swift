@@ -73,12 +73,13 @@ struct ProfileContextMenu: View {
 
     private func row(_ title: LocalizedStringKey, systemImage: String) -> some View {
         HStack {
-            Text(title).font(.system(size: 17)).foregroundStyle(Palette.ink)
+            Text(title).cueFont(17).foregroundStyle(Palette.ink)
             Spacer(minLength: 8)
-            Image(systemName: systemImage).font(.system(size: 15, weight: .medium)).foregroundStyle(Palette.ink)
+            Image(systemName: systemImage).cueFont(15, weight: .medium).foregroundStyle(Palette.ink)
         }
         .padding(.horizontal, 16)
-        .frame(height: 44)
+        .padding(.vertical, 4)
+        .frame(minHeight: 44)
         .contentShape(Rectangle())
     }
 

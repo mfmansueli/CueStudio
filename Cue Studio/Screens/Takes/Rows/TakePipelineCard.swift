@@ -39,6 +39,8 @@ struct TakePipelineCard: View {
         .cardDepth(shape, edge: nil)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("takes.pipeline")
+        // Four steps on one line, each a word under its count: past the largest standard size they no longer fit a quarter of the width.
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
     }
 
     private func node(_ stage: TakeStage) -> some View {
@@ -92,7 +94,7 @@ struct TakePipelineCard: View {
             case .shared:
                 Circle().fill(Palette.Takes.sharedNode)
                     .overlay(Circle().strokeBorder(Palette.Flight.lilac, lineWidth: 1))
-                    .overlay { Text(verbatim: "✦").font(.system(size: 13)).foregroundStyle(Palette.acc) }
+                    .overlay { Text(verbatim: "✦").cueFont(13).foregroundStyle(Palette.acc) }
                     .shadow(color: Palette.Universe.nightViolet.opacity(0.5), radius: 14)
             }
         }

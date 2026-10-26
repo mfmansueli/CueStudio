@@ -105,7 +105,7 @@ struct PickBestTakeView: View {
             LinearGradient(colors: [.clear, .black.opacity(0.55)], startPoint: .center, endPoint: .bottom)
             Button { onOpen(take) } label: {
                 Image(systemName: "play.fill")
-                    .font(.title2)
+                    .cueFont(.title2)
                     .foregroundStyle(.white)
                     .frame(width: 64, height: 64)
                     .background(.ultraThinMaterial, in: Circle())
@@ -144,10 +144,11 @@ struct PickBestTakeView: View {
     private var badge: some View {
         HStack(spacing: 6) {
             Text("✦").foregroundStyle(Palette.aiText)
-            Text("Best take").font(.subheadline.weight(.semibold)).foregroundStyle(Palette.aiTextStrong)
+            Text("Best take").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.aiTextStrong)
         }
         .padding(.horizontal, 12)
-        .frame(height: 34)
+        .padding(.vertical, 4)
+        .frame(minHeight: 34)
         .background(Palette.bg.opacity(0.85), in: Capsule())
         .overlay(Capsule().strokeBorder(Palette.aiBorder, lineWidth: 0.5))
         .background { IgniteEffect(trigger: revealed ? 1 : 0, color: Palette.aiText, diameter: 10).offset(x: -26) }
@@ -237,10 +238,11 @@ struct PickBestTakeView: View {
 
     private func chipView(_ chip: Chip) -> some View {
         Text(chip.text)
-            .font(.footnote.weight(.medium))
+            .cueFont(.footnote, weight: .medium)
             .foregroundStyle(chip.isGood ? Palette.successText : Palette.ink)
             .padding(.horizontal, 12)
-            .frame(height: 34)
+            .padding(.vertical, 4)
+            .frame(minHeight: 34)
             .background(chip.isGood ? Palette.success.opacity(0.16) : Palette.surface2, in: Capsule())
     }
 

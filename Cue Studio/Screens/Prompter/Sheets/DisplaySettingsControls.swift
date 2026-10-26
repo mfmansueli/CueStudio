@@ -33,7 +33,7 @@ struct DisplaySettingsControls: View {
             quickSliders
             if mode == .selfie {
                 Text("Changes the preview only, never the recording.")
-                    .font(.caption)
+                    .cueFont(.caption)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 4)
             }
@@ -104,14 +104,14 @@ struct DisplaySettingsControls: View {
         } label: {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Advanced").font(.body.weight(.semibold))
+                    Text("Advanced").cueFont(.body, weight: .semibold)
                     Text("Font, spacing, margins, alignment, color")
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                 }
                 Spacer()
                 Image(systemName: "chevron.forward")
-                    .font(.footnote.weight(.bold))
+                    .cueFont(.footnote, weight: .bold)
                     .foregroundStyle(Palette.ink2)
                     // Forward points left in right to left, so it turns the other way to point down.
                     .rotationEffect(.degrees(showsAdvanced ? (layoutDirection == .rightToLeft ? -90 : 90) : 0))
@@ -184,7 +184,7 @@ struct DisplaySettingsControls: View {
                     SelectableCard(isSelected: settings.font == font, radius: 14) {
                         VStack(spacing: 4) {
                             Text("Aa").font(font.font(size: 22))
-                            Text(font.label).font(.caption2).foregroundStyle(Palette.ink2)
+                            Text(font.label).cueFont(.caption2).foregroundStyle(Palette.ink2)
                         }
                         .frame(height: 66)
                     }

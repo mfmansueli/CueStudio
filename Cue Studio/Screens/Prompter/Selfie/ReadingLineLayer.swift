@@ -53,7 +53,7 @@ struct ReadingLineLayer: View {
 
     private var tag: some View {
         Text("READING LINE")
-            .font(.system(size: 9.5, weight: .bold))
+            .font(.fixed(9.5, weight: .bold))
             .kerning(0.7)
             .foregroundStyle(Palette.accText)
             .shadow(color: Palette.textShadow, radius: 1.5, y: 1)
@@ -68,7 +68,7 @@ struct ReadingLineLayer: View {
         let dragging = dragStart != nil
         let grip = RoundedRectangle(cornerRadius: Self.gripSize.width / 2, style: .continuous)
         return Image(systemName: "chevron.up.chevron.down")
-            .font(.system(size: 7, weight: .bold))
+            .font(.fixed(7, weight: .bold))
             .foregroundStyle(.white)
             .frame(width: Self.gripSize.width, height: Self.gripSize.height)
             .background(.ultraThinMaterial, in: grip)

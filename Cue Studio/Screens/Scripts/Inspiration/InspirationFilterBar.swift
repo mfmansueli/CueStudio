@@ -34,7 +34,7 @@ struct InspirationFilterBar: View {
                     Button(action: onEditTopics) {
                         HStack(spacing: 6) {
                             Image(systemName: options.count > 1 ? "slider.horizontal.3" : "plus")
-                                .font(.footnote.weight(.semibold))
+                                .cueFont(.footnote, weight: .semibold)
                             Text(options.count > 1 ? LocalizedStringKey("Topics") : LocalizedStringKey("Add topics"))
                         }
                         .chipShape(isSelected: false, minHeight: chipHeight)

@@ -18,7 +18,7 @@ struct AcknowledgementsView: View {
                         } label: { EmptyView() }.opacity(0)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(verbatim: credit.name).foregroundStyle(Palette.ink)
-                            Text("SIL Open Font License 1.1").font(.footnote).foregroundStyle(Palette.ink2)
+                            Text("SIL Open Font License 1.1").cueFont(.footnote).foregroundStyle(Palette.ink2)
                         }
                         .frame(minHeight: Metrics.listRowContent, alignment: .leading)
                     }
@@ -36,7 +36,7 @@ struct AcknowledgementsView: View {
                         } label: { EmptyView() }.opacity(0)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(verbatim: credit.name).foregroundStyle(Palette.ink)
-                            Text(verbatim: credit.license).font(.footnote).foregroundStyle(Palette.ink2)
+                            Text(verbatim: credit.license).cueFont(.footnote).foregroundStyle(Palette.ink2)
                         }
                         .frame(minHeight: Metrics.listRowContent, alignment: .leading)
                     }

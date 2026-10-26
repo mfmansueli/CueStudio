@@ -100,7 +100,7 @@ struct CueSlider: View {
                 if let systemIcon {
                     CueIconView(systemIcon, size: 22).foregroundStyle(Palette.ink2)
                 }
-                Text(label).font(.body).foregroundStyle(Palette.ink)
+                Text(label).cueFont(.body).foregroundStyle(Palette.ink)
                 Spacer(minLength: 8)
                 valueLabel
             }
@@ -124,7 +124,7 @@ struct CueSlider: View {
             if let systemIcon {
                 CueIconView(systemIcon, size: 22).foregroundStyle(Palette.ink2)
             }
-            Text(label).font(.body).foregroundStyle(Palette.ink).lineLimit(2)
+            Text(label).cueFont(.body).foregroundStyle(Palette.ink).lineLimit(2)
             track.frame(minWidth: 96, maxWidth: 130)
             Spacer(minLength: 4)
             valueLabel.frame(minWidth: 44, alignment: .trailing)

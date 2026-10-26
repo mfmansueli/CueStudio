@@ -42,7 +42,7 @@ struct MessageWords: View {
             ForEach(Array(words.enumerated()), id: \.offset) { index, word in
                 let pose = pose(of: index, in: words.count)
                 Text(word)
-                    .font(.system(size: size, weight: .semibold))
+                    .cueFont(size, weight: .semibold)
                     .foregroundStyle(color)
                     .shadow(color: pose.glow ?? .clear, radius: pose.glowRadius)
                     .frame(height: (size * 1.33).rounded())

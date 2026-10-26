@@ -12,9 +12,9 @@ struct SettingsSearchField: View {
 
     var body: some View {
         HStack(spacing: 8) {
-            Image(systemName: "magnifyingglass").font(.system(size: 14, weight: .medium)).foregroundStyle(Palette.ink2)
+            Image(systemName: "magnifyingglass").cueFont(14, weight: .medium).foregroundStyle(Palette.ink2)
             TextField("Search", text: $text)
-                .font(.system(size: 17))
+                .cueFont(17)
                 .foregroundStyle(Palette.ink)
                 .focused($isFocused)
                 .submitLabel(.search)
@@ -23,14 +23,15 @@ struct SettingsSearchField: View {
                 .accessibilityIdentifier("settings.searchField")
             if !text.isEmpty {
                 Button { text = "" } label: {
-                    Image(systemName: "xmark.circle.fill").font(.system(size: 16)).foregroundStyle(Palette.ink3)
+                    Image(systemName: "xmark.circle.fill").cueFont(16).foregroundStyle(Palette.ink3)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(Text("Clear"))
             }
         }
         .padding(.horizontal, 12)
-        .frame(height: 38)
+        .padding(.vertical, 4)
+        .frame(minHeight: 38)
         .background(Color.white.opacity(0.1), in: Capsule())
         .contentShape(Capsule())
         .onTapGesture { isFocused = true }

@@ -48,7 +48,7 @@ struct IdeaCardChip: View {
             }
             if showsChevron { Text(verbatim: "⌄").foregroundStyle(Palette.inkHint) }
         }
-        .font(.system(size: isCompact ? 12 : 13, weight: .semibold))
+        .cueFont(isCompact ? 12 : 13, weight: .semibold)
         .foregroundStyle(foreground)
         .padding(.leading, dotColor == nil && glyph == nil ? 11 : 9)
         .padding(.trailing, 11)

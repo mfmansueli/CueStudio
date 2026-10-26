@@ -15,14 +15,14 @@ struct PhotosDeniedCard: View {
     var body: some View {
         HStack(alignment: .center, spacing: 12) {
             Image(systemName: "photo.badge.exclamationmark")
-                .font(.system(size: 20))
+                .cueFont(20)
                 .foregroundStyle(Palette.warnText)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Photos is off for Cue")
-                    .font(.system(.subheadline, weight: .semibold))
+                    .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                 Text("Allow it to save your video.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -31,7 +31,7 @@ struct PhotosDeniedCard: View {
                 .accessibilityIdentifier("review.photosDenied.settings")
             Button(action: onClose) {
                 Image(systemName: "xmark")
-                    .font(.system(size: 13, weight: .bold))
+                    .font(.fixed(13, weight: .bold))
                     .foregroundStyle(Palette.ink2)
                     .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
             }

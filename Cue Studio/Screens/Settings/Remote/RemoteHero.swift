@@ -223,7 +223,7 @@ struct RemoteHero: View {
         return ZStack {
             Circle().fill(Palette.success)
             Image(systemName: "checkmark")
-                .font(.system(size: 13, weight: .heavy))
+                .font(.fixed(13, weight: .heavy))
                 .foregroundStyle(Palette.Remote.checkInk)
         }
         .frame(width: 30, height: 30)

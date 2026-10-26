@@ -14,23 +14,25 @@ struct ProfileUniverseRow: View {
     @Environment(PersonalizationService.self) private var personalization
 
     var body: some View {
-        HStack(spacing: 14) {
+        ReflowStack(spacing: 14) {
             ProfileMiniUniverse(core: personalization.coreColor, networks: summary.networks)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(verbatim: summary.title)
-                    .font(.title3.bold())
-                    .foregroundStyle(Palette.ink)
-                    .fixedSize(horizontal: false, vertical: true)
-                Text(verbatim: summary.detail)
-                    .font(.subheadline)
-                    .foregroundStyle(Palette.ink2)
-                    .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 14) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(verbatim: summary.title)
+                        .cueFont(.title3, weight: .bold)
+                        .foregroundStyle(Palette.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(verbatim: summary.detail)
+                        .cueFont(.subheadline)
+                        .foregroundStyle(Palette.ink2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                Image(systemName: "chevron.forward")
+                    .cueFont(.footnote, weight: .semibold)
+                    .foregroundStyle(Palette.ink3)
+                    .accessibilityHidden(true)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            Image(systemName: "chevron.forward")
-                .font(.footnote.weight(.semibold))
-                .foregroundStyle(Palette.ink3)
-                .accessibilityHidden(true)
         }
         .padding(EdgeInsets(top: 14, leading: 14, bottom: 14, trailing: 14))
         .profileBlock()

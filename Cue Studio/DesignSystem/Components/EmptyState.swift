@@ -26,13 +26,13 @@ struct EmptyState: View {
             EmptyStateMark(icon: icon)
             VStack(spacing: 6) {
                 Text(title)
-                    .font(.system(size: 22, weight: .bold))
+                    .cueFont(22, weight: .bold)
                     .tracking(-0.44)
                     .foregroundStyle(Palette.ink)
                     .multilineTextAlignment(.center)
                     .accessibilityAddTraits(.isHeader)
                 Text(message)
-                    .font(.system(size: 15))
+                    .cueFont(15)
                     .lineSpacing(2)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)
@@ -52,7 +52,7 @@ struct EmptyState: View {
             if let linkTitle, let link {
                 Button(action: link) {
                     Text(linkTitle)
-                        .font(.system(size: 15, weight: .semibold))
+                        .cueFont(15, weight: .semibold)
                         .foregroundStyle(Palette.inkSoft)
                         .frame(minHeight: Metrics.hitTarget)
                         .padding(.horizontal, 8)

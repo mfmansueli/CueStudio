@@ -24,7 +24,8 @@ struct RecPill: View {
                     .foregroundStyle(Palette.ink)
             }
             .padding(.horizontal, Metrics.recPillPadding)
-            .frame(height: Metrics.recPillHeight)
+            .padding(.vertical, 2)
+            .frame(minHeight: Metrics.recPillHeight)
             .overlay(Capsule().strokeBorder(Palette.Camera.recPillRing, lineWidth: 1))
             // The pill is 26 pt; the touch area is the 44 pt around it.
             .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)

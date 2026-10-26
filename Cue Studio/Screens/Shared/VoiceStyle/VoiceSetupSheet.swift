@@ -56,19 +56,19 @@ struct VoiceSetupSheet: View {
                 VStack(alignment: .leading, spacing: 18) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(step.question)
-                            .font(.system(size: 28, weight: .bold))
+                            .cueFont(28, weight: .bold)
                             .tracking(-0.56)
                             .foregroundStyle(Palette.ink)
                             .fixedSize(horizontal: false, vertical: true)
                             .accessibilityAddTraits(.isHeader)
                         Text(subtitle)
-                            .font(.subheadline)
+                            .cueFont(.subheadline)
                             .foregroundStyle(Palette.ink2)
                     }
                     content
                     if step == .role {
                         Text("Doing more than one? Pick the one you film most.")
-                            .font(.footnote)
+                            .cueFont(.footnote)
                             .foregroundStyle(Palette.ink2)
                             .frame(maxWidth: .infinity)
                     }
@@ -114,7 +114,7 @@ struct VoiceSetupSheet: View {
             if index > 0 {
                 Button { index -= 1 } label: {
                     Image(systemName: "chevron.backward")
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.fixed(16, weight: .bold))
                         .foregroundStyle(Palette.ink)
                         .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                         .contentShape(Rectangle())
@@ -126,7 +126,7 @@ struct VoiceSetupSheet: View {
             Spacer(minLength: 0)
             Button { dismiss() } label: {
                 Text(mode == .edit ? "Close" : "Not now")
-                    .font(.body)
+                    .cueFont(.body)
                     .foregroundStyle(Palette.ink2)
                     .frame(minHeight: Metrics.hitTarget)
                     .contentShape(Rectangle())
@@ -143,7 +143,7 @@ struct VoiceSetupSheet: View {
             if step == .role {
                 Button { advance() } label: {
                     Text("Skip this one")
-                        .font(.subheadline.weight(.semibold))
+                        .cueFont(.subheadline, weight: .semibold)
                         .foregroundStyle(Palette.ink2)
                         .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
                         .contentShape(Rectangle())
@@ -160,7 +160,7 @@ struct VoiceSetupSheet: View {
             if isLast {
                 Button { showsExample = true } label: {
                     Text("Add a voice example")
-                        .font(.subheadline.weight(.semibold))
+                        .cueFont(.subheadline, weight: .semibold)
                         .foregroundStyle(Palette.aiText)
                         .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
                         .contentShape(Rectangle())
@@ -171,7 +171,7 @@ struct VoiceSetupSheet: View {
             if isLast, hasIdea, mode != .edit {
                 Button { save(writesScript: false) } label: {
                     Text("Just save my voice")
-                        .font(.subheadline.weight(.semibold))
+                        .cueFont(.subheadline, weight: .semibold)
                         .foregroundStyle(Palette.ink2)
                         .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
                         .contentShape(Rectangle())

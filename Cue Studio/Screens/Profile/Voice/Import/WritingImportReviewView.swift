@@ -26,7 +26,7 @@ struct WritingImportReviewView: View {
                     .accessibilityIdentifier("import.accept")
             } else {
                 Text("Nothing found yet. Add more texts and try again.")
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink2)
                     .accessibilityIdentifier("import.nothing")
             }
@@ -41,17 +41,17 @@ struct WritingImportReviewView: View {
     private var summary: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text("Texts: \(proposal.pieceCount) · Words: \(proposal.wordCount)")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .accessibilityIdentifier("import.summary")
             if proposal.isMixedLanguage {
                 Text("Only the main language was read.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.warnText)
             }
             if proposal.blockedPieces > 0 {
                 Text("Some texts were left out of the excerpts: words Apple Intelligence won’t learn from.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.warnText)
             }
         }
@@ -72,7 +72,7 @@ struct WritingImportReviewView: View {
             .tint(Palette.ink2)
             .accessibilityIdentifier("import.kept")
             Text("Teaches how you talk. Never reused for stories, opinions or results. Stays on this iPhone.")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
         }

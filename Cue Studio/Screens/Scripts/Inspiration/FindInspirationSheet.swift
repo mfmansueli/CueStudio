@@ -134,7 +134,7 @@ struct FindInspirationSheet: View {
                 text: Text("Pick your topics and the ideas will be about what you make. Until then, here are a few to start."),
                 identifier: "inspiration.noTopicsNote"
             ) {
-                Image(systemName: "sparkles").font(.footnote.weight(.semibold))
+                Image(systemName: "sparkles").cueFont(.footnote, weight: .semibold)
             }
             .padding(.top, 14)
         }
@@ -170,7 +170,7 @@ struct FindInspirationSheet: View {
                 .foregroundStyle(Palette.aiText)
                 .accessibilityHidden(true)
             text
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -282,7 +282,7 @@ struct FindInspirationSheet: View {
                     Text("No ideas here right now")
                 }
             }
-            .font(.headline)
+            .cueFont(.headline, weight: .semibold)
             .foregroundStyle(Palette.ink)
             .accessibilityAddTraits(.isHeader)
             Group {
@@ -292,7 +292,7 @@ struct FindInspirationSheet: View {
                     Text("Try another topic, or type your own idea in the composer.")
                 }
             }
-            .font(.subheadline)
+            .cueFont(.subheadline)
             .foregroundStyle(Palette.ink2)
             .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 10) {
@@ -336,7 +336,7 @@ struct FindInspirationSheet: View {
                 .frame(minHeight: Metrics.hitTarget)
                 .accessibilityIdentifier("inspiration.retryMore")
         }
-        .font(.footnote)
+        .cueFont(.footnote)
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("inspiration.couldNotFindMore")
@@ -353,7 +353,7 @@ struct FindInspirationSheet: View {
                     ProgressView().tint(Palette.ink)
                 } else {
                     Image(systemName: "arrow.triangle.2.circlepath")
-                        .font(.title3.weight(.semibold))
+                        .cueFont(.title3, weight: .semibold)
                         .foregroundStyle(Palette.ink)
                         .symbolEffect(.rotate.clockwise.byLayer, options: .speed(1.6), value: viewModel.turn)
                 }
@@ -387,7 +387,7 @@ struct FindInspirationSheet: View {
                 .accessibilityIdentifier("inspiration.use")
             }
             Text("It goes into the composer. Make it yours first.")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
@@ -416,7 +416,7 @@ struct FindInspirationSheet: View {
                     Text("Write it yourself")
                 }
             }
-            .font(.subheadline.weight(.semibold))
+            .cueFont(.subheadline, weight: .semibold)
             .foregroundStyle(canDraft ? Palette.aiText : Palette.ink2)
             .padding(.horizontal, 12)
             .frame(minHeight: Metrics.hitTarget)

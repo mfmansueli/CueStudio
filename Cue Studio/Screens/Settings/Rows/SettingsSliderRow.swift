@@ -24,7 +24,7 @@ struct SettingsSliderRow: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).foregroundStyle(Palette.ink)
                     if let detail {
-                        Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
+                        Text(detail).cueFont(.footnote).foregroundStyle(Palette.ink2)
                     }
                 }
                 Spacer(minLength: 8)
@@ -48,7 +48,7 @@ struct SettingsSliderRow: View {
 
     private func endLabel(_ text: String) -> some View {
         Text(text)
-            .font(.caption)
+            .cueFont(.caption)
             .foregroundStyle(Palette.inkHint)
             .fixedSize()
             .accessibilityHidden(true)

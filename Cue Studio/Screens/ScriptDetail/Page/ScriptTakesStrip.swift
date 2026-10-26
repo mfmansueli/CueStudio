@@ -14,7 +14,7 @@ struct ScriptTakesStrip: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
-                Text("Takes").font(.title3.bold())
+                Text("Takes").cueFont(.title3, weight: .bold)
                 Spacer()
                 Group {
                     if takes.count == 1 {
@@ -23,7 +23,7 @@ struct ScriptTakesStrip: View {
                         Text("\(takes.count) takes · v\(version)")
                     }
                 }
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
             }
             ScrollView(.horizontal) {

@@ -29,7 +29,7 @@ struct TakeTile: View {
                         .monospacedDigit()
                         .foregroundStyle(Palette.inkSoft)
                 }
-                .font(.caption.weight(.semibold))
+                .cueFont(.caption, weight: .semibold)
                 .foregroundStyle(.white)
                 .padding(.horizontal, 10)
                 .padding(.bottom, 9)

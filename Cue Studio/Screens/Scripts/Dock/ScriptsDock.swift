@@ -38,6 +38,7 @@ struct ScriptsDock: View {
     @Environment(DictationService.self) private var dictation
     @Environment(LanguageService.self) private var languages
     @Environment(PresentationService.self) private var presentation
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(IdeaTransitionService.self) private var transition
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -334,7 +335,7 @@ struct ScriptsDock: View {
                 // A new suggestion (↻, or the next after one was sent) arrives word by word out of the AI's light; the one already there
                 // when Scripts opens is simply there.
                 WordsFromLight(
-                    text: suggestion, font: .system(size: 16, weight: .medium), color: Palette.ink, stagger: Self.suggestionStagger,
+                    text: suggestion, font: .cue(16, weight: .medium, for: dynamicTypeSize), color: Palette.ink, stagger: Self.suggestionStagger,
                     playsFirst: false
                 )
                     .lineLimit(Self.minLines)
@@ -352,7 +353,7 @@ struct ScriptsDock: View {
         }
         .lineLimit(Self.minLines...(isExpanded ? Self.maxLines : Self.minLines))
         .focused($isFocused)
-        .font(.system(size: 16, weight: .medium))
+        .cueFont(16, weight: .medium)
         .foregroundStyle(Palette.ink)
         .tint(Palette.acc)
         .padding(.vertical, 6)
@@ -372,7 +373,7 @@ struct ScriptsDock: View {
                     Text(ideaDraft.text).foregroundStyle(Palette.ink)
                 }
             }
-            .font(.system(size: 16, weight: .medium))
+            .cueFont(16, weight: .medium)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.vertical, 6)
         }
@@ -406,7 +407,7 @@ struct ScriptsDock: View {
                     ProgressView().controlSize(.small).tint(Palette.aiTextStrong)
                 } else {
                     Image(systemName: "arrow.triangle.2.circlepath")
-                        .font(.system(size: 15, weight: .semibold))
+                        .cueFont(15, weight: .semibold)
                         .foregroundStyle(Palette.aiText)
                         .symbolEffect(.rotate.clockwise.byLayer, options: .speed(1.6), value: anotherTurn)
                 }
@@ -425,7 +426,7 @@ struct ScriptsDock: View {
         if hasAI {
             Button(action: submit) {
                 Image(systemName: "arrow.up")
-                    .font(.system(size: 17, weight: .bold))
+                    .font(.fixed(17, weight: .bold))
                     .foregroundStyle(Palette.accInk)
                     .frame(width: 40, height: 40)
                     .background(Palette.acc.opacity(canSend ? 1 : 0.35), in: Circle())
@@ -443,10 +444,11 @@ struct ScriptsDock: View {
         } else {
             Button(action: submit) {
                 Text("Write it")
-                    .font(.system(size: 15, weight: .semibold))
+                    .cueFont(15, weight: .semibold)
                     .foregroundStyle(canSend ? Palette.accInk : Palette.ink2)
                     .padding(.horizontal, 14)
-                    .frame(height: 34)
+                    .padding(.vertical, 4)
+                    .frame(minHeight: 34)
                     .background(canSend ? Palette.acc : Palette.fill, in: Capsule())
                     .frame(minHeight: Metrics.hitTarget)
                     .contentShape(Capsule())

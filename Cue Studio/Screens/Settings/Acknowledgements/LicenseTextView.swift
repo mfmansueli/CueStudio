@@ -14,7 +14,7 @@ struct LicenseTextView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 12) {
-                Text(verbatim: copyright).font(.footnote.weight(.semibold))
+                Text(verbatim: copyright).cueFont(.footnote, weight: .semibold)
                 Text(verbatim: text)
                     .monoFont(.caption)
                     .foregroundStyle(Palette.ink2)

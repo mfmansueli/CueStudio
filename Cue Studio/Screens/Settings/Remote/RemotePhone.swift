@@ -145,7 +145,7 @@ struct RemotePhone: View {
                 Circle().fill(Palette.acc.opacity(0.16)).frame(width: buttonSize, height: buttonSize)
                 Circle().strokeBorder(Palette.acc.opacity(0.55), lineWidth: 1.5).frame(width: buttonSize, height: buttonSize)
                 Image(systemName: "play.fill")
-                    .font(.system(size: buttonSize * 0.36, weight: .semibold))
+                    .font(.fixed(buttonSize * 0.36, weight: .semibold))
                     .foregroundStyle(Palette.acc)
                     .offset(x: buttonSize * 0.04)
             }

@@ -28,7 +28,8 @@ struct RecordingBadge: View {
         .interfaceTracking(0.5)
         .foregroundStyle(.white)
         .padding(.horizontal, 16)
-        .frame(height: 40)
+        .padding(.vertical, 4)
+        .frame(minHeight: 40)
         .background(Palette.record, in: Capsule())
         .onAppear {
             guard !reduceMotion else { return }

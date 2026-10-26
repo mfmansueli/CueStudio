@@ -18,11 +18,11 @@ struct YearInReviewSlideView: View {
             picture
             // The total reads as a number with a small caption; the others name the thing in large type.
             Text(headline)
-                .font(.system(size: slide == .total ? 21 : 30, weight: slide == .total ? .semibold : .bold))
+                .cueFont(slide == .total ? 21 : 30, weight: slide == .total ? .semibold : .bold)
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
             Text(line)
-                .font(.system(size: slide == .total ? 13 : 14))
+                .cueFont(slide == .total ? 13 : 14)
                 .foregroundStyle(Palette.inkSoft)
                 .multilineTextAlignment(.center)
         }
@@ -45,7 +45,7 @@ struct YearInReviewSlideView: View {
     private var picture: some View {
         switch slide {
         case .total:
-            Text("\(stats.total)").font(.system(size: 64, weight: .heavy)).foregroundStyle(.white).monospacedDigit()
+            Text("\(stats.total)").cueFont(64, weight: .heavy).foregroundStyle(.white).monospacedDigit()
         case .planet:
             if let main = stats.mainPlatform {
                 Canvas { canvas, size in
@@ -61,7 +61,7 @@ struct YearInReviewSlideView: View {
         case .month:
             YearInReviewMonthChart(months: stats.months, best: stats.bestMonth)
         case .streak:
-            Text("\(stats.longestStreakWeeks)").font(.system(size: 64, weight: .heavy)).foregroundStyle(.white).monospacedDigit()
+            Text("\(stats.longestStreakWeeks)").cueFont(64, weight: .heavy).foregroundStyle(.white).monospacedDigit()
         case .theme:
             if let theme = stats.strongestTheme {
                 let color = OnboardingTopic.color(at: theme.topicIndex)

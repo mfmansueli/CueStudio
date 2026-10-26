@@ -29,12 +29,12 @@ struct VoiceExamplesField: View {
                 adding
             } else {
                 Text("Max 3 examples · tap ✕ to swap one")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
             }
             if !current.approvedSamples.isEmpty { approved }
             Text("Teaches how you talk. Never reused for stories, opinions or results. Stays on this iPhone.")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
         }
@@ -53,7 +53,7 @@ struct VoiceExamplesField: View {
                 .accessibilityIdentifier("voice.import")
             } else {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Imported from your writing").font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink)
+                    Text("Imported from your writing").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
                     // Side by side when they fit, one under the other in the languages whose words are longer.
                     ViewThatFits(in: .horizontal) {
                         HStack(spacing: 8) { moreButton; forgetButton; Spacer(minLength: 0) }
@@ -72,7 +72,7 @@ struct VoiceExamplesField: View {
                     }
                     .padding(.top, 8)
                 } label: {
-                    Text("Excerpts: \(current.excerpts.count)").font(.footnote).foregroundStyle(Palette.ink2)
+                    Text("Excerpts: \(current.excerpts.count)").cueFont(.footnote).foregroundStyle(Palette.ink2)
                         .accessibilityIdentifier("voice.import.count")
                 }
                 .tint(Palette.ink2)
@@ -103,7 +103,7 @@ struct VoiceExamplesField: View {
                     Text(source.uppercased()).hudFont().interfaceTracking(0.6).foregroundStyle(Palette.inkHint)
                 }
                 Text("“\(example.text)”")
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .italic()
                     .foregroundStyle(Palette.ink)
                     .lineLimit(5)
@@ -130,11 +130,11 @@ struct VoiceExamplesField: View {
                 .background(Palette.surface2, in: RoundedRectangle(cornerRadius: Metrics.fieldRadius, style: .continuous))
                 .accessibilityIdentifier("voice.exampleField")
             if let feedback {
-                Text(feedback).font(.footnote).foregroundStyle(Palette.warnText).accessibilityIdentifier("voice.feedback")
+                Text(feedback).cueFont(.footnote).foregroundStyle(Palette.warnText).accessibilityIdentifier("voice.feedback")
             }
             sourceButtons
             Toggle("I said or wrote this myself", isOn: $isOwn)
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .tint(Palette.successText)
                 .accessibilityIdentifier("voice.exampleOwn")
             Button("Add an example", action: add)

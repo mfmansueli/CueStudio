@@ -50,13 +50,13 @@ struct ToastIcon: View {
         case .done:
             if drawn || reduceMotion {
                 Image(systemName: "checkmark")
-                    .font(.system(size: size * 0.5, weight: .bold))
+                    .cueFont(size * 0.5, weight: .bold)
                     .foregroundStyle(Palette.Toast.glyph)
                     .transition(.symbolEffect(.drawOn))
             }
         case .cue:
             Image(systemName: "star.fill")
-                .font(.system(size: size * 0.52, weight: .bold))
+                .cueFont(size * 0.52, weight: .bold)
                 .foregroundStyle(Palette.Toast.glyph)
                 .keyframeAnimator(initialValue: ToastGlyphMotion(), trigger: gestured) { content, motion in
                     content.scaleEffect(motion.scale).rotationEffect(.degrees(motion.angle)).opacity(motion.opacity)
@@ -80,7 +80,7 @@ struct ToastIcon: View {
                 .opacity(gestured || reduceMotion ? 1 : 0)
         case .problem:
             Image(systemName: "exclamationmark")
-                .font(.system(size: size * 0.55, weight: .heavy))
+                .cueFont(size * 0.55, weight: .heavy)
                 .foregroundStyle(Palette.Toast.glyph)
                 .keyframeAnimator(initialValue: ToastGlyphMotion(), trigger: gestured) { content, motion in
                     content.rotationEffect(.degrees(motion.angle), anchor: UnitPoint(x: 0.5, y: 0.8))

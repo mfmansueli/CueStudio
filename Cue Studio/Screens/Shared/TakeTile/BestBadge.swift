@@ -9,11 +9,12 @@ import SwiftUI
 struct BestBadge: View {
     var body: some View {
         Label("Best", systemImage: "star.fill")
-            .font(.caption2.weight(.bold))
+            .cueFont(.caption2, weight: .bold)
             .labelStyle(.titleAndIcon)
             .foregroundStyle(Palette.accInk)
             .padding(.horizontal, 7)
-            .frame(height: 22)
+            .padding(.vertical, 2)
+            .frame(minHeight: 22)
             .background(Palette.acc, in: Capsule())
     }
 }

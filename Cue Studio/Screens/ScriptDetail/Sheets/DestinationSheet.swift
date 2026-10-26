@@ -29,9 +29,9 @@ struct DestinationSheet: View {
                 }
                 Toggle(isOn: $profile.profile.monetizationGoals) {
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Monetization goals").font(.body.weight(.semibold))
+                        Text("Monetization goals").cueFont(.body, weight: .semibold)
                         Text("Longer videos earn: TikTok 1:00+, YouTube 8:00+")
-                            .font(.footnote)
+                            .cueFont(.footnote)
                             .foregroundStyle(Palette.ink2)
                     }
                 }
@@ -41,7 +41,7 @@ struct DestinationSheet: View {
                 .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
                 .accessibilityIdentifier("destination.monetizationToggle")
                 Text("Presets update as platforms change.")
-                    .font(.caption)
+                    .cueFont(.caption)
                     .foregroundStyle(Palette.ink2)
                     .frame(maxWidth: .infinity)
                     .multilineTextAlignment(.center)
@@ -57,15 +57,15 @@ struct DestinationSheet: View {
             HStack(spacing: 12) {
                 ColorDot(color: platform.tint, size: 10)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(platform.destinationName).font(.body.weight(.semibold))
+                    Text(platform.destinationName).cueFont(.body, weight: .semibold)
                     Text(rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals).summary)
-                        .font(.footnote.monospacedDigit())
+                        .cueFont(.footnote).monospacedDigit()
                         .foregroundStyle(Palette.ink2)
                 }
                 Spacer()
                 if platform == current {
                     Image(systemName: "checkmark")
-                        .font(.body.weight(.semibold))
+                        .cueFont(.body, weight: .semibold)
                         .foregroundStyle(Palette.accText)
                 }
             }

@@ -37,6 +37,8 @@ struct AppIconPicker: View {
         .fullScreenCover(item: $paywall) { PaywallView(context: $0) }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("settings.appIcon")
+        // Five icons share one row: past the largest standard size their names no longer fit a fifth of it.
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
     }
 
     private func tile(_ icon: AppIconChoice) -> some View {
@@ -65,13 +67,13 @@ struct AppIconPicker: View {
                         }
                     }
                 Text(icon.title)
-                    .font(.caption)
+                    .cueFont(.caption)
                     .foregroundStyle(isCurrent ? Palette.ink : Palette.ink2)
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                 if let note = note(icon, isUnlocked: isUnlocked) {
                     Text(verbatim: note)
-                        .font(.caption2)
+                        .cueFont(.caption2)
                         .foregroundStyle(Palette.inkHint)
                 }
             }
@@ -97,7 +99,7 @@ struct AppIconPicker: View {
         ZStack {
             Circle().fill(Palette.surface3)
             Image(systemName: "lock.fill")
-                .font(.system(size: 9, weight: .heavy))
+                .font(.fixed(9, weight: .heavy))
                 .foregroundStyle(Palette.ink)
         }
         .frame(width: 22, height: 22)

@@ -15,15 +15,15 @@ struct FormatTile: View {
         SelectableCard(isSelected: isSelected, radius: Metrics.tileRadius, background: choice.isSerious ? Palette.surfaceMuted : Palette.surface2) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(choice.title)
-                    .font(.system(size: 14, weight: .semibold))
+                    .cueFont(14, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                 if choice.needsBrandBrief {
                     Text("needs brand info")
-                        .font(.system(size: 11, weight: .medium))
+                        .cueFont(11, weight: .medium)
                         .foregroundStyle(Palette.aiText)
                 }
                 Text(choice.summary)
-                    .font(.system(size: 12))
+                    .cueFont(12)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.leading)
                 Spacer(minLength: 6)

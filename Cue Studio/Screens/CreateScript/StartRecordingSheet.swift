@@ -43,7 +43,7 @@ struct StartRecordingSheet: View {
 
             Button(action: onNewScript) {
                 Label("New script", systemImage: "plus")
-                    .font(.body.weight(.semibold))
+                    .cueFont(.body, weight: .semibold)
                     .foregroundStyle(Palette.accText)
                     .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget + 4, alignment: .leading)
                     .padding(.horizontal, 14)
@@ -59,14 +59,14 @@ struct StartRecordingSheet: View {
                     HStack(spacing: 10) {
                         Circle().fill(Palette.record).frame(width: 12, height: 12)
                         Text("Record without a script")
-                        Image(systemName: "chevron.forward").font(.footnote.weight(.bold))
+                        Image(systemName: "chevron.forward").cueFont(.footnote, weight: .bold)
                     }
                 }
                 .buttonStyle(.cueOutline(.large))
                 .padding(.top, 18)
                 .accessibilityIdentifier("startRecording.skip")
                 Text("Freestyle · Add a script anytime")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)
                     .frame(maxWidth: .infinity)
@@ -85,7 +85,7 @@ struct StartRecordingSheet: View {
                     .lineLimit(1)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Text("~\(DurationText.short(readSeconds(script)))")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .monospacedDigit()
                     .foregroundStyle(Palette.ink2)
             }

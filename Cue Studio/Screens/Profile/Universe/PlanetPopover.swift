@@ -17,16 +17,16 @@ struct PlanetPopover: View {
         VStack(alignment: .leading, spacing: 5) {
             HStack(spacing: 8) {
                 Circle().fill(platform.tint).frame(width: 7, height: 7)
-                Text(platform.label).font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.ink)
+                Text(platform.label).cueFont(17, weight: .semibold).foregroundStyle(Palette.ink)
             }
             Text("\(count) VIDEOS IN \(String(year))")
                 .monoFont(size: 11, weight: .semibold).interfaceTracking(1).foregroundStyle(Palette.accText)
             if isLive, let next = PlanetSize.next(videos: count) {
                 Text("\(next.remaining) more to unlock \(PlanetPopover.detailName(next.detail))")
-                    .font(.system(size: 12.5)).foregroundStyle(Palette.ink2).lineLimit(1).minimumScaleFactor(0.85)
+                    .cueFont(12.5).foregroundStyle(Palette.ink2).lineLimit(1).minimumScaleFactor(0.85)
             }
             Button(action: onSeeInTakes) {
-                Text("See in Takes ›").font(.system(size: 14, weight: .semibold)).foregroundStyle(Palette.ink)
+                Text("See in Takes ›").cueFont(14, weight: .semibold).foregroundStyle(Palette.ink)
                     .frame(maxWidth: .infinity).frame(height: 32)
                     .background(Color.white.opacity(0.12), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             }

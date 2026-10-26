@@ -24,8 +24,8 @@ struct UniverseInfoCard: View {
             }
             VStack(alignment: .leading, spacing: 4) {
                 Text(eyebrow).monoFont(size: 10.5, weight: .semibold).interfaceTracking(1).foregroundStyle(Palette.accText)
-                Text(title).font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.ink)
-                if !detail.isEmpty { Text(detail).font(.system(size: 13.5)).foregroundStyle(Palette.ink2) }
+                Text(title).cueFont(17, weight: .semibold).foregroundStyle(Palette.ink)
+                if !detail.isEmpty { Text(detail).cueFont(13.5).foregroundStyle(Palette.ink2) }
                 ProgressView(value: min(1, max(0, progress))).tint(Palette.acc).padding(.top, 4)
             }
             .frame(maxWidth: .infinity, alignment: .leading)

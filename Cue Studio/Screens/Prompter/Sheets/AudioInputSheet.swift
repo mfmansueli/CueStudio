@@ -52,13 +52,13 @@ struct AudioInputSheet: View {
         } label: {
             HStack(spacing: 14) {
                 Image(systemName: isSelected ? "largecircle.fill.circle" : "circle")
-                    .font(.title3)
+                    .cueFont(.title3)
                     .foregroundStyle(isSelected ? Palette.accText : Palette.ink3)
                 VStack(alignment: .leading, spacing: 1) {
                     Text(input.name)
                         .foregroundStyle(Palette.ink)
                     Text(input.detail)
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                 }
                 Spacer(minLength: 0)
@@ -76,7 +76,7 @@ struct AudioInputSheet: View {
     private var deniedMessage: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Cue can't hear you. Allow the microphone in Settings to record sound.")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
             Button("Open Settings") { openURL.openAppSettings() }
@@ -87,7 +87,7 @@ struct AudioInputSheet: View {
 
     private func note(_ text: String) -> some View {
         Text(text)
-            .font(.footnote)
+            .cueFont(.footnote)
             .foregroundStyle(Palette.ink2)
             .padding(EdgeInsets(top: 10, leading: 4, bottom: 0, trailing: 4))
     }

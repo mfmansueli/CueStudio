@@ -65,17 +65,17 @@ struct ReviewActionBar: View {
                         ProgressView().tint(Palette.ink)
                     } else if isDone {
                         Image(systemName: "checkmark.circle.fill")
-                            .font(.system(size: 19, weight: .semibold))
+                            .cueFont(19, weight: .semibold)
                             .symbolRenderingMode(.palette)
                             .foregroundStyle(Color.black, Palette.success)
                             .transition(.scale(scale: 0.3).combined(with: .opacity))
                     } else {
-                        Image(systemName: systemImage).font(.system(size: 17, weight: .semibold))
+                        Image(systemName: systemImage).cueFont(17, weight: .semibold)
                     }
                 }
                 .frame(height: 20)
                 Text(title)
-                    .font(.system(size: 12.5, weight: .semibold))
+                    .cueFont(12.5, weight: .semibold)
                     .contentTransition(.opacity)
             }
             .foregroundStyle(Palette.ink)

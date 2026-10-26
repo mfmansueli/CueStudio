@@ -74,6 +74,8 @@ struct YearInReviewView: View {
             withAnimation(.easeOut(duration: reduceMotion ? 0.2 : 0.3)) { visible = true }
         }
         .accessibilityElement(children: .contain)
+        // A scene with its words placed in it: the text grows up to the first accessibility size.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .accessibilityIdentifier("yearInReview.screen")
     }
 

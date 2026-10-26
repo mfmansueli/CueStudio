@@ -48,7 +48,7 @@ struct SelfieTopBar: ToolbarContent {
             if let script = viewModel.script {
                 HStack(spacing: 6) {
                     PlatformDot(color: script.platform.tint)
-                    Text(script.platform.label).font(.footnote.weight(.semibold))
+                    Text(script.platform.label).cueFont(.footnote, weight: .semibold)
                 }
                 .foregroundStyle(Palette.ink)
             } else {
@@ -58,7 +58,7 @@ struct SelfieTopBar: ToolbarContent {
                         .strokeBorder(Palette.ink, lineWidth: 1.6)
                         .frame(width: icon.width, height: icon.height)
                     Text(aspect.label)
-                        .font(.footnote.weight(.semibold))
+                        .cueFont(.footnote, weight: .semibold)
                         .lineLimit(1)
                         .minimumScaleFactor(0.85)
                 }

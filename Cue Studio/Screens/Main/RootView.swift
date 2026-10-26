@@ -33,6 +33,9 @@ struct RootView: View {
             .environment(\.locale, languages.interfaceLocale)
             // Dark only: the night is the identity.
             .preferredColorScheme(.dark)
+            // The text grows up to the third accessibility size: past it a row holds a word or two and the screens stop working
+            // (`InterfaceType`, DESIGN_PROJECT §53).
+            .dynamicTypeSize(...DynamicTypeSize.accessibility3)
             .environment(\.layoutDirection, LayoutDirection(rightToLeft: languages.interfaceLanguage.isRightToLeft))
             // And for UIKit, which lays out sheets, covers and navigation stacks.
             .onChange(of: languages.interfaceLanguage, initial: true) { _, language in

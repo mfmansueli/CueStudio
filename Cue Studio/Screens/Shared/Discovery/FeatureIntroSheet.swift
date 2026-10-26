@@ -28,7 +28,7 @@ struct FeatureIntroSheet: View {
             }
             if let note {
                 Label(note, systemImage: "info.circle")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("featureIntro.note")
@@ -41,7 +41,7 @@ struct FeatureIntroSheet: View {
                     .buttonStyle(.cueSecondary(.large))
                     .accessibilityIdentifier("featureIntro.notNow")
                 Button("Don’t suggest this", action: onDecline)
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink2)
                     .frame(minHeight: Metrics.hitTarget)
                     .accessibilityIdentifier("featureIntro.decline")
@@ -55,7 +55,7 @@ struct FeatureIntroSheet: View {
 
     @ViewBuilder private var symbolImage: some View {
         switch symbol {
-        case .system(let name): Image(systemName: name).font(.system(size: 22, weight: .semibold))
+        case .system(let name): Image(systemName: name).cueFont(22, weight: .semibold)
         case .cue(let icon): CueIconView(icon, size: 26)
         }
     }

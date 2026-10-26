@@ -20,7 +20,7 @@ struct CueSectionHeader: View {
 
     var body: some View {
         text
-            .font(.footnote.weight(.semibold))
+            .cueFont(.footnote, weight: .semibold)
             .textCase(.uppercase)
             .foregroundStyle(Palette.ink2)
     }

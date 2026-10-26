@@ -27,7 +27,7 @@ struct MyCueVoicePage: View {
                 if !aiStatus.isAvailable { needsAI }
                 mainCard
                 Text("What Cue tells Apple Intelligence · on device")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 16)
                 buttons
@@ -85,10 +85,10 @@ struct MyCueVoicePage: View {
         Label {
             VStack(alignment: .leading, spacing: 2) {
                 Text("My Cue Voice needs Apple Intelligence")
-                    .font(.subheadline.weight(.semibold))
+                    .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                 Text("Your answers stay saved and you can still edit them.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
             }
         } icon: {
@@ -105,7 +105,7 @@ struct MyCueVoicePage: View {
     private func layerView(_ layer: VoiceLayer) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(layerTitle(layer))
-                .font(.system(size: 12, weight: .semibold))
+                .cueFont(12, weight: .semibold)
                 .textCase(.uppercase)
                 .tracking(0.6)
                 .foregroundStyle(Palette.ink2)
@@ -131,11 +131,11 @@ struct MyCueVoicePage: View {
             HStack(spacing: 10) {
                 Text(verbatim: "✦").foregroundStyle(Palette.aiText)
                 Text("Next: \(question.title)")
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Text("Answer")
-                    .font(.subheadline.weight(.semibold))
+                    .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.accText)
             }
             .contentShape(Rectangle())
@@ -152,7 +152,7 @@ struct MyCueVoicePage: View {
             if aiStatus.isAvailable {
                 Button { showsPreview = true } label: {
                     Text("✦ Preview my voice")
-                        .font(.system(size: 14, weight: .semibold))
+                        .cueFont(14, weight: .semibold)
                         .foregroundStyle(Palette.aiTextStrong)
                         .frame(maxWidth: .infinity, minHeight: 40)
                         .background(Palette.aiFill, in: Capsule())
@@ -164,7 +164,7 @@ struct MyCueVoicePage: View {
             }
             Button { showsSends = true } label: {
                 Text("What Cue sends")
-                    .font(.system(size: 14, weight: .semibold))
+                    .cueFont(14, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                     .frame(maxWidth: .infinity, minHeight: 40)
                     .background(Palette.fill, in: Capsule())

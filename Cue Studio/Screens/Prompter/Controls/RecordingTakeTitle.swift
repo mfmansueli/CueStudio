@@ -16,12 +16,12 @@ struct RecordingTakeTitle: View {
     var body: some View {
         VStack(spacing: 1) {
             Text(subtitle)
-                .font(.footnote.weight(.semibold))
+                .cueFont(.footnote, weight: .semibold)
                 .lineLimit(1)
                 .fixedSize()
             if let chip = viewModel.monetizationChip {
                 Text(chip)
-                    .font(.caption2.weight(.semibold))
+                    .cueFont(.caption2, weight: .semibold)
                     .foregroundStyle(Palette.accText)
                     .lineLimit(1)
                     .fixedSize()

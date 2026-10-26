@@ -15,6 +15,7 @@ struct ProfileIdentityContent: View {
 
     @Environment(PersonalizationService.self) private var personalization
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private static let avatar: CGFloat = 72
 
@@ -25,21 +26,25 @@ struct ProfileIdentityContent: View {
 
     private var creatorType: String? { profile.customRole ?? profile.role?.creatorLabel }
 
+    /// At the accessibility text sizes the photo goes above the name and Edit under it: side by side, the name had room for a word.
+    private var isStacked: Bool { dynamicTypeSize.isAccessibilitySize }
+
     var body: some View {
+        let layout = isStacked ? AnyLayout(VStackLayout(alignment: .leading, spacing: 10)) : AnyLayout(HStackLayout(alignment: .center, spacing: 14))
         VStack(spacing: 0) {
-            HStack(alignment: .center, spacing: 14) {
+            layout {
                 avatar
                 VStack(alignment: .leading, spacing: 3) {
                     Text(verbatim: profile.displayName)
-                        .font(.title3.bold())
+                        .cueFont(.title3, weight: .bold)
                         .foregroundStyle(isEmpty ? Palette.ink2 : Palette.ink)
-                        .lineLimit(1)
+                        .lineLimit(isStacked ? 2 : 1)
                     if !isEmpty {
                         if let subtitle {
-                            Text(verbatim: subtitle).font(.subheadline).foregroundStyle(Palette.ink2).lineLimit(1)
+                            Text(verbatim: subtitle).cueFont(.subheadline).foregroundStyle(Palette.ink2).lineLimit(isStacked ? 3 : 1)
                         } else if let invite {
                             Button(action: onEdit) {
-                                Label(invite, systemImage: "plus").font(.subheadline.weight(.semibold)).foregroundStyle(Palette.accText)
+                                Label(invite, systemImage: "plus").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.accText)
                             }
                             .buttonStyle(.cuePress)
                             .padding(.top, 1)
@@ -57,14 +62,20 @@ struct ProfileIdentityContent: View {
             .accessibilityAddTraits(.isButton)
             .accessibilityHint(Text("Edits your name and username"))
             .accessibilityIdentifier("profile.creatorCard")
-            .overlay(alignment: .topTrailing) { if !isEmpty { editPill } }
+            .overlay(alignment: .topTrailing) { if !isEmpty && !isStacked { editPill } }
+            if !isEmpty && isStacked {
+                editPill
+                    .padding(.horizontal, 4)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             if isEmpty {
                 Button(action: onEdit) {
                     Label("Set up your profile", systemImage: "plus")
-                        .font(.body.weight(.semibold))
+                        .cueFont(.body, weight: .semibold)
                         .foregroundStyle(Palette.accText)
                         .frame(maxWidth: .infinity)
-                        .frame(height: 46)
+                        .padding(.vertical, 8)
+                        .frame(minHeight: 46)
                         .background(Palette.Settings.toolTileTop, in: Capsule())
                         .overlay(Capsule().strokeBorder(Palette.acc.opacity(0.45), lineWidth: 1))
                         .contentShape(Capsule())
@@ -98,10 +109,11 @@ struct ProfileIdentityContent: View {
     private var editPill: some View {
         Button(action: onEdit) {
             Label("Edit", systemImage: "pencil")
-                .font(.subheadline.weight(.semibold))
+                .cueFont(.subheadline, weight: .semibold)
                 .foregroundStyle(Palette.ink)
                 .padding(.horizontal, 12)
-                .frame(height: 32)
+                .padding(.vertical, 6)
+                .frame(minHeight: 32)
                 .background(Palette.surface2, in: Capsule())
                 .contentShape(Capsule())
         }

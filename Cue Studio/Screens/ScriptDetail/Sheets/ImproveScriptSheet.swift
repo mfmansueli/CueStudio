@@ -30,7 +30,7 @@ struct ImproveScriptSheet: View {
                 }
                 if viewModel.needsFactCheck {
                     Text("Apple Intelligence · Check facts before recording")
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                         .frame(maxWidth: .infinity)
                         .multilineTextAlignment(.center)
@@ -49,20 +49,20 @@ struct ImproveScriptSheet: View {
         } label: {
             HStack(spacing: 12) {
                 Image(systemName: "stopwatch")
-                    .font(.system(size: 20, weight: .medium))
+                    .cueFont(20, weight: .medium)
                     .foregroundStyle(Palette.warnText)
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Your hook runs ~\(DurationText.short(overrun))")
-                        .font(.subheadline.weight(.semibold))
+                        .cueFont(.subheadline, weight: .semibold)
                         .foregroundStyle(Palette.ink)
                     Text("Aim for about 3s. See shorter openings.")
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
+                    .cueFont(.caption, weight: .semibold)
                     .foregroundStyle(Palette.ink2)
                     .accessibilityHidden(true)
             }
@@ -86,7 +86,7 @@ struct ImproveScriptSheet: View {
                     ProgressView().tint(Palette.accText)
                 } else {
                     Image(systemName: tool.systemImage)
-                        .font(.system(size: 17, weight: .medium))
+                        .font(.fixed(17, weight: .medium))
                         .foregroundStyle(Palette.accText)
                 }
             }
@@ -94,15 +94,15 @@ struct ImproveScriptSheet: View {
             .background(Palette.accSoft, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
             VStack(alignment: .leading, spacing: 1) {
                 Text(tool.label)
-                    .font(.body.weight(.semibold))
+                    .cueFont(.body, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                 Text(tool.subtitle(idealRange: viewModel.preset.idealRange, platform: viewModel.script?.platform ?? .tiktok))
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: "chevron.right")
-                .font(.caption.weight(.semibold))
+                .cueFont(.caption, weight: .semibold)
                 .foregroundStyle(Palette.ink2)
                 .accessibilityHidden(true)
         }

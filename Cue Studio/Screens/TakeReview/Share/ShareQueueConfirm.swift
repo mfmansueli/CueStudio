@@ -17,12 +17,12 @@ struct ShareQueueConfirm: View {
             VStack(spacing: 2) {
                 Text("\(position) OF \(queue.count)")
                     .monoFont(size: 10.5, weight: .semibold).interfaceTracking(1).foregroundStyle(Palette.ink2)
-                Text("Post to \(network.platform.label)").font(.headline)
+                Text("Post to \(network.platform.label)").cueFont(.headline, weight: .semibold)
             }
             ShareQueueBar(items: queue.items, current: network).padding(.horizontal, Metrics.gutter)
             VStack(spacing: 6) {
-                Text("Posted on \(network.platform.label)?").font(.system(size: 24, weight: .bold)).foregroundStyle(Palette.ink)
-                Text("Welcome back. Cue lights its planet once it’s live.").font(.subheadline).foregroundStyle(Palette.ink2).multilineTextAlignment(.center)
+                Text("Posted on \(network.platform.label)?").cueFont(24, weight: .bold).foregroundStyle(Palette.ink)
+                Text("Welcome back. Cue lights its planet once it’s live.").cueFont(.subheadline).foregroundStyle(Palette.ink2).multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 12)

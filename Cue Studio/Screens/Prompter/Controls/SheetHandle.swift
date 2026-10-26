@@ -21,7 +21,7 @@ struct SheetHandle: View {
 
     var body: some View {
         Image(systemName: "chevron.up")
-            .font(.system(size: 11, weight: .bold))
+            .cueFont(11, weight: .bold)
             .foregroundStyle(Palette.ink2)
             .rotationEffect(.degrees(180 * Double(min(max(progress, 0), 1))))
             .frame(maxWidth: .infinity)

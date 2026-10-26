@@ -23,7 +23,7 @@ struct VoiceSegmentedChoice<Value: Hashable & Identifiable>: View {
                     onPick(value)
                 } label: {
                     Text(label(value))
-                        .font(.subheadline.weight(.semibold))
+                        .cueFont(.subheadline, weight: .semibold)
                         .foregroundStyle(picked ? Palette.accInk : Palette.ink)
                         .lineLimit(2)
                         .multilineTextAlignment(.center)

@@ -33,7 +33,7 @@ struct VoiceReachField: View {
                     onPick: { profile.answer(.length, with: VoiceOption(id: $0.rawValue, label: $0.label)) }, identifier: "voice.length"
                 )
                 Text("Without a length, Cue drafts for this one.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 4)
             }

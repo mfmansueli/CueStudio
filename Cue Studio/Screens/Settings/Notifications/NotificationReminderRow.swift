@@ -32,12 +32,12 @@ struct NotificationReminderRow: View {
                     .foregroundStyle(Palette.ink)
                     .lineLimit(1)
                 Text(verbatim: "\(kind) · \(reminder.time.date(in: calendar).map { ReminderFeedback.when($0) } ?? "")")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
             }
             Spacer(minLength: 8)
             Text(status)
-                .font(.footnote)
+                .cueFont(.footnote)
                 // `ink2` is the token measured on Settings' translucent cards (DESIGN_PROJECT §21); the word says the state.
                 .foregroundStyle(Palette.ink2)
         }

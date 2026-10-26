@@ -90,7 +90,7 @@ struct SettingsRemoteView: View {
                 .buttonStyle(.cuePrimary(.large))
                 .accessibilityIdentifier("remote.connectButton")
                 Text("Both devices need Cue and Wi-Fi or Bluetooth on.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)
             }
@@ -149,10 +149,10 @@ struct SettingsRemoteView: View {
     private func headline(title: String, detail: String) -> some View {
         VStack(spacing: 6) {
             Text(title)
-                .font(.title2.bold())
+                .cueFont(.title2, weight: .bold)
                 .foregroundStyle(Palette.ink)
             Text(detail)
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -165,15 +165,15 @@ struct SettingsRemoteView: View {
     private func connected(_ name: String, detail: String) -> some View {
         VStack(spacing: 6) {
             Text("Connected")
-                .font(.footnote.weight(.bold))
+                .cueFont(.footnote, weight: .bold)
                 .tracking(1.4)
                 .textCase(.uppercase)
                 .foregroundStyle(Palette.successText)
             Text(verbatim: name)
-                .font(.title2.bold())
+                .cueFont(.title2, weight: .bold)
                 .foregroundStyle(Palette.ink)
             Text(detail)
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -189,13 +189,13 @@ struct SettingsRemoteView: View {
                 .padding(.horizontal, Metrics.textGutter)
             HStack(spacing: 12) {
                 Image(systemName: "keyboard")
-                    .font(.system(size: 17, weight: .medium))
+                    .cueFont(17, weight: .medium)
                     .foregroundStyle(Palette.ink2)
                     .accessibilityHidden(true)
                 Text("Keyboards and foot pedals").foregroundStyle(Palette.ink2)
                 Spacer(minLength: 8)
                 Text("Soon")
-                    .font(.caption.weight(.bold))
+                    .cueFont(.caption, weight: .bold)
                     .textCase(.uppercase)
                     .tracking(1)
                     .foregroundStyle(Palette.ink2)

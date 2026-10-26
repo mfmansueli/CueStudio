@@ -67,7 +67,7 @@ struct PersonalizeView: View {
             content()
             if let footer {
                 Text(footer)
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, Metrics.textGutter)
                     .fixedSize(horizontal: false, vertical: true)

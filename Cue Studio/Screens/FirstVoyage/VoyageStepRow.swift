@@ -20,10 +20,10 @@ struct VoyageStepRow: View {
             mark
             VStack(alignment: .leading, spacing: 2) {
                 Text(step.title)
-                    .font(.body.weight(.semibold))
+                    .cueFont(.body, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                 Text(detail)
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(state == .next ? Palette.aiText : Palette.ink2)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -72,7 +72,7 @@ struct VoyageStepRow: View {
         switch state {
         case .done:
             Image(systemName: "checkmark")
-                .font(.system(size: 13, weight: .heavy))
+                .font(.fixed(13, weight: .heavy))
                 .foregroundStyle(Palette.accInk)
                 .frame(width: 28, height: 28)
                 .background(Palette.acc, in: Circle())
@@ -83,7 +83,7 @@ struct VoyageStepRow: View {
                 .overlay(Circle().fill(Palette.acc).frame(width: 10, height: 10))
         case .ahead:
             Text("\(step.number)")
-                .font(.footnote.weight(.bold))
+                .cueFont(.footnote, weight: .bold)
                 .foregroundStyle(Palette.ink2)
                 .frame(width: 28, height: 28)
                 .overlay(Circle().strokeBorder(Palette.ink3, lineWidth: 2))

@@ -23,7 +23,7 @@ struct SelectionBar: View {
     var body: some View {
         HStack {
             Text(count == 0 ? prompt : String(localized: "\(count) selected"))
-                .font(.subheadline.weight(.semibold))
+                .cueFont(.subheadline, weight: .semibold)
                 .padding(.leading, 22)
             Spacer()
             HStack(spacing: 6) {

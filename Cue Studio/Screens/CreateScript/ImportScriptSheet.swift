@@ -56,7 +56,7 @@ struct ImportScriptSheet: View {
                         .hudFont().textCase(.uppercase).tracking(1.2)
                         .foregroundStyle(Palette.accText)
                     Text("Bring a script in")
-                        .font(.title2.bold())
+                        .cueFont(.title2, weight: .bold)
                         .foregroundStyle(Palette.ink)
                         .accessibilityAddTraits(.isHeader)
                 }
@@ -65,7 +65,7 @@ struct ImportScriptSheet: View {
                 editor
                 if let pagesNote {
                     Text(pagesNote)
-                        .font(.subheadline)
+                        .cueFont(.subheadline)
                         .foregroundStyle(Palette.inkSoft)
                         .accessibilityIdentifier("import.pagesNote")
                 }
@@ -74,7 +74,7 @@ struct ImportScriptSheet: View {
                         ProgressView().tint(Palette.accText)
                         Text("Reading the text…").foregroundStyle(Palette.accText)
                     }
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .frame(maxWidth: .infinity)
                 }
                 Button(action: use) { Text("Use this script") }
@@ -125,7 +125,7 @@ struct ImportScriptSheet: View {
             ForEach(Source.allCases) { option in
                 Button { choose(option) } label: {
                     Text(option.title)
-                        .font(.system(size: 15, weight: source == option ? .semibold : .medium))
+                        .cueFont(15, weight: source == option ? .semibold : .medium)
                         .foregroundStyle(source == option ? Palette.chipOnInk : Palette.ink)
                         .frame(maxWidth: .infinity, minHeight: 36)
                         .background(source == option ? Palette.chipOn : .clear, in: Capsule())
@@ -147,7 +147,7 @@ struct ImportScriptSheet: View {
             TextEditor(text: $text)
                 .focused($isEditing)
                 .scrollContentBackground(.hidden)
-                .font(.system(size: 16))
+                .cueFont(16)
                 .foregroundStyle(Palette.ink)
                 .tint(Palette.accText)
                 .padding(10)
@@ -155,7 +155,7 @@ struct ImportScriptSheet: View {
                 .accessibilityIdentifier("import.editor")
             if text.isEmpty {
                 Text("Paste, scan or pick a script. You can fix it before you use it.")
-                    .font(.system(size: 16))
+                    .cueFont(16)
                     .foregroundStyle(Palette.inkHint)
                     .padding(.horizontal, 15).padding(.vertical, 18)
                     .allowsHitTesting(false)
@@ -171,13 +171,13 @@ struct ImportScriptSheet: View {
     private var cameraCard: some View {
         HStack(spacing: 12) {
             Text("Allow camera in Settings")
-                .font(.subheadline.weight(.semibold))
+                .cueFont(.subheadline, weight: .semibold)
                 .foregroundStyle(Palette.ink)
             Spacer(minLength: 8)
             Button("Open Settings") {
                 openURL.openAppSettings()
             }
-            .font(.subheadline.weight(.semibold))
+            .cueFont(.subheadline, weight: .semibold)
             .foregroundStyle(Palette.accText)
             .frame(minHeight: Metrics.hitTarget)
             .accessibilityIdentifier("import.openSettings")

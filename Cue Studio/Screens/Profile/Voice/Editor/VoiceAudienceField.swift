@@ -61,8 +61,8 @@ struct VoiceAudienceField: View {
             Button { typesAudience = true } label: {
                 SelectableCard(isSelected: true, radius: 16) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(note).font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink)
-                        Text("Your own · tap to change").font(.caption).foregroundStyle(Palette.ink2)
+                        Text(note).cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
+                        Text("Your own · tap to change").cueFont(.caption).foregroundStyle(Palette.ink2)
                     }
                     .frame(maxWidth: .infinity, minHeight: 52, alignment: .leading)
                     .padding(12)
@@ -79,7 +79,7 @@ struct VoiceAudienceField: View {
         } else {
             Button { typesAudience = true } label: {
                 Text("+ Describe them in your words")
-                    .font(.body)
+                    .cueFont(.body)
                     .foregroundStyle(Palette.aiText)
                     .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget, alignment: .leading)
                     .padding(.horizontal, 16)
@@ -102,7 +102,7 @@ struct VoiceAudienceField: View {
             )
             if let level = current.audienceLevel {
                 Text(level.explanation)
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 4)
             }

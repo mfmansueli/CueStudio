@@ -19,7 +19,7 @@ struct ShareNetworkPicker: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
-                Text("Share to universe").font(.headline).frame(maxWidth: .infinity)
+                Text("Share to universe").cueFont(.headline, weight: .semibold).frame(maxWidth: .infinity)
                     .overlay(alignment: .trailing) {
                         Button { showsOptions = true } label: { Image(systemName: "slider.horizontal.3") }
                             .buttonStyle(.cueIcon(.glass, diameter: 36))
@@ -66,7 +66,7 @@ struct ShareNetworkPicker: View {
                 .accessibilityIdentifier("shareFlow.start")
                 if let cost = flow.costLine {
                     Text(cost.text)
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(cost.isWarning ? Palette.warnText : Palette.ink2)
                         .frame(maxWidth: .infinity)
                         .accessibilityIdentifier("shareFlow.cost")
@@ -84,7 +84,7 @@ struct ShareNetworkPicker: View {
                 .frame(width: 40, height: 70)
                 .clipShape(RoundedRectangle(cornerRadius: 9, style: .continuous))
             VStack(alignment: .leading, spacing: 4) {
-                Text(take.scriptTitle).font(.system(size: 19, weight: .semibold)).lineLimit(2)
+                Text(take.scriptTitle).cueFont(19, weight: .semibold).lineLimit(2)
                 Text("✓ CLEAN FILE FOR EVERY NETWORK · NO WATERMARKS")
                     .monoFont(size: 10, weight: .semibold).interfaceTracking(0.6).foregroundStyle(Palette.successText)
             }

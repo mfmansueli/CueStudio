@@ -21,14 +21,14 @@ struct PersonalizeFeelRow: View {
             HStack(spacing: 13) {
                 Image(systemName: symbol)
                     .symbolRenderingMode(.hierarchical)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.fixed(16, weight: .semibold))
                     .foregroundStyle(isAI ? Palette.Settings.aiGlyph : Palette.Settings.generalGlyph)
                     .frame(width: 32, height: 32)
                     .background(tile, in: RoundedRectangle(cornerRadius: 9, style: .continuous))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(title).foregroundStyle(Palette.ink)
-                    Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
+                    Text(detail).cueFont(.footnote).foregroundStyle(Palette.ink2)
                 }
             }
         }

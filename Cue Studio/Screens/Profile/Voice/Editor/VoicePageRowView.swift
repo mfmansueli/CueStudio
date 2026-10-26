@@ -17,22 +17,22 @@ struct VoicePageRowView: View {
         Button(action: action) {
             HStack(spacing: 12) {
                 Text(row.title)
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink2)
                     .frame(width: 96, alignment: .leading)
                 Group {
                     if value.isEmpty {
-                        Text("+ Add · 1 tap").font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.accText)
+                        Text("+ Add · 1 tap").cueFont(16, weight: .semibold).foregroundStyle(Palette.accText)
                     } else if row == .topics {
                         topics
                     } else {
-                        Text(value).font(.system(size: 16)).foregroundStyle(Palette.ink)
+                        Text(value).cueFont(16).foregroundStyle(Palette.ink)
                     }
                 }
                 .multilineTextAlignment(.leading)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Image(systemName: "chevron.forward")
-                    .font(.footnote.weight(.semibold))
+                    .cueFont(.footnote, weight: .semibold)
                     .foregroundStyle(Palette.ink3)
                     .accessibilityHidden(true)
             }
@@ -59,7 +59,7 @@ struct VoicePageRowView: View {
                             .frame(width: Metrics.themeRailWidth, height: Metrics.themeRailChipHeight)
                             .accessibilityHidden(true)
                     }
-                    Text(topic.label).font(.system(size: 16)).foregroundStyle(Palette.ink)
+                    Text(topic.label).cueFont(16).foregroundStyle(Palette.ink)
                 }
             }
         }

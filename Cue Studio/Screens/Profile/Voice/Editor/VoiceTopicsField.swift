@@ -110,7 +110,7 @@ struct VoiceTopicsField: View {
         } else {
             Button { typesTopic = true } label: {
                 Text("+ Not here? Add your topic")
-                    .font(.body)
+                    .cueFont(.body)
                     .foregroundStyle(Palette.aiText)
                     .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget, alignment: .leading)
                     .padding(.horizontal, 16)

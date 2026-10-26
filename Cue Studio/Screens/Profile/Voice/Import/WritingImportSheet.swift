@@ -56,7 +56,7 @@ struct WritingImportSheet: View {
                 .interfaceTracking(1)
                 .foregroundStyle(Palette.aiText)
             Text(model.step == .review ? String(localized: "Here’s what Cue heard") : String(localized: "Import my writing"))
-                .font(.system(size: 28, weight: .bold))
+                .cueFont(28, weight: .bold)
                 .tracking(-0.56)
                 .foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)

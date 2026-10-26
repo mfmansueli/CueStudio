@@ -61,11 +61,11 @@ struct SettingsMicrophoneView: View {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(verbatim: title).foregroundStyle(Palette.ink)
-                    if let detail { Text(detail).font(.footnote).foregroundStyle(Palette.ink2) }
+                    if let detail { Text(detail).cueFont(.footnote).foregroundStyle(Palette.ink2) }
                 }
                 Spacer(minLength: 8)
                 if isSelected {
-                    Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(Palette.accText)
+                    Image(systemName: "checkmark").cueFont(.body, weight: .semibold).foregroundStyle(Palette.accText)
                 }
             }
             .frame(minHeight: Metrics.listRowContent)

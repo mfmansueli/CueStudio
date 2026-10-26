@@ -13,16 +13,16 @@ struct ShareQueueExplainer: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 18) {
-            Text("Posting to \(networks.count) networks").font(.headline).frame(maxWidth: .infinity)
+            Text("Posting to \(networks.count) networks").cueFont(.headline, weight: .semibold).frame(maxWidth: .infinity)
             point(1, title: "Cue opens each app", detail: "Your video is already loaded and the post text is copied.")
             point(2, title: "You post there", detail: "Paste the text, pick the cover, tap Post.")
             point(3, title: "Tap ◀ Cue to come back", detail: "Top left of the screen. Cue takes you to the next network.")
             HStack(spacing: 8) {
                 ForEach(Array(networks.enumerated()), id: \.element) { index, network in
-                    if index > 0 { Image(systemName: "chevron.forward").font(.caption2.weight(.bold)).foregroundStyle(Palette.ink3) }
+                    if index > 0 { Image(systemName: "chevron.forward").cueFont(.caption2, weight: .bold).foregroundStyle(Palette.ink3) }
                     Text(network.platform.label.uppercased())
                         .monoFont(size: 10.5, weight: .semibold).interfaceTracking(0.8).foregroundStyle(Palette.ink)
-                        .padding(.horizontal, 12).frame(height: 28)
+                        .padding(.horizontal, 12).padding(.vertical, 4).frame(minHeight: 28)
                         .background(Palette.surface3, in: Capsule())
                 }
             }
@@ -47,8 +47,8 @@ struct ShareQueueExplainer: View {
                 .frame(width: 32, height: 32)
                 .background(Palette.accWashFaint, in: Circle())
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(.system(size: 17, weight: .semibold)).foregroundStyle(Palette.ink)
-                Text(detail).font(.subheadline).foregroundStyle(Palette.ink2).fixedSize(horizontal: false, vertical: true)
+                Text(title).cueFont(17, weight: .semibold).foregroundStyle(Palette.ink)
+                Text(detail).cueFont(.subheadline).foregroundStyle(Palette.ink2).fixedSize(horizontal: false, vertical: true)
             }
         }
         .accessibilityElement(children: .combine)

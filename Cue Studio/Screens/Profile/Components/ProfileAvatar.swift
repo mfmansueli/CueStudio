@@ -34,7 +34,7 @@ struct ProfileAvatar: View {
                     LinearGradient(colors: [Palette.Universe.avatarLight, Palette.Universe.avatarDeep], startPoint: .topLeading, endPoint: .bottomTrailing)
                     if let initial {
                         Text(initial)
-                            .font(.system(size: size * 0.47, weight: .semibold))
+                            .font(.fixed(size * 0.47, weight: .semibold))
                             .foregroundStyle(.white)
                     } else {
                         // No name yet: an astronaut, the creator-to-be of an empty universe.

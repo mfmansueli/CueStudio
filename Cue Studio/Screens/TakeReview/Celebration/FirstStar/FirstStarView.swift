@@ -34,6 +34,8 @@ struct FirstStarView: View {
             }
         }
         .ignoresSafeArea()
+        // A scene with its words placed in it: the text grows up to the first accessibility size.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .background {
             // The board's own night (`#06070D` under a violet light behind the universe), and the sky over it.
             ZStack {
@@ -48,9 +50,11 @@ struct FirstStarView: View {
     }
 
     private func content(story: Double, world: Double, in size: CGSize) -> some View {
-        // The board is 390 pt wide: the scene sits in the middle of the screen, and the texts and buttons hold to the bottom.
+        // The board is 390 pt wide: the scene sits in the middle of the screen, drawn as much bigger or smaller as the screen is wider or
+        // narrower (a Pro Max ×1.13, an SE ×0.96), and the texts and buttons hold to the bottom.
+        let fit = min(1.13, max(0.96, size.width / 390))
         let across = (size.width - 390) / 2
-        let down = max(0, size.height - 844)
+        let down = max(0, size.height - 844 * fit)
         return ZStack(alignment: .topLeading) {
             ZStack(alignment: .topLeading) {
                 FirstStarScene(story: story, world: world, reduceMotion: reduceMotion)
@@ -60,10 +64,14 @@ struct FirstStarView: View {
             .frame(width: 390, height: 520, alignment: .topLeading)
             // The camera pushes slowly into the universe, about YOU.
             .scaleEffect(FirstStarScript.push(at: story), anchor: UnitPoint(x: FirstStarScript.core.x / 390, y: FirstStarScript.core.y / 520))
+            .scaleEffect(fit, anchor: .top)
             .offset(x: across)
-            texts(at: story).offset(y: 474 + down)
             VStack(spacing: 0) {
-                Spacer()
+                // The words sit where the board has them (474 pt down, with the scene's size, lower on a taller screen) when there is room, and climb above the
+                // buttons when there isn't (an iPhone SE, a large text size).
+                Spacer(minLength: 0).frame(maxHeight: 474 * fit + down).layoutPriority(1)
+                texts(at: story)
+                Spacer(minLength: 16)
                 buttons(at: story)
             }
             .frame(height: size.height)
@@ -136,7 +144,7 @@ struct FirstStarView: View {
                 .offset(y: 8 * (1 - chapter))
             title(at: story)
             Text("Saved in Takes. Add captions, edit it or share it to light up your \(String(UniverseYears.current())) universe.")
-                .font(.system(size: 17))
+                .cueFont(17)
                 .lineSpacing(3)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
@@ -180,7 +188,7 @@ struct FirstStarView: View {
             ForEach(Array(words.enumerated()), id: \.offset) { index, word in
                 let arrived = FirstStarScript.arrival(startingAt: FirstStarScript.wordStart(index), length: 10, at: story)
                 Text(verbatim: word)
-                    .font(.system(size: 30, weight: .bold))
+                    .cueFont(30, weight: .bold)
                     .tracking(-0.6)
                     .foregroundStyle(color)
                     .blur(radius: 8 * (1 - arrived))
@@ -202,7 +210,7 @@ struct FirstStarView: View {
                 .accessibilityIdentifier("firstStar.studio")
             Button(action: onEdit) {
                 Text("Edit my video")
-                    .font(.system(size: 15, weight: .semibold))
+                    .cueFont(15, weight: .semibold)
                     .foregroundStyle(Palette.ink2)
                     .frame(maxWidth: .infinity, minHeight: 40)
             }

@@ -22,7 +22,11 @@ struct ScriptRow: View {
     let onRecord: () -> Void
     let onTakes: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
+        // At the accessibility text sizes the title and its line take more lines instead of being cut short.
+        let large = dynamicTypeSize.isAccessibilitySize
         HStack(spacing: 12) {
             if let isSelected {
                 ScriptSelectionMark(isSelected: isSelected)
@@ -31,9 +35,9 @@ struct ScriptRow: View {
             ThemeRail(color: topicColor ?? Palette.separator)
             VStack(alignment: .leading, spacing: 3) {
                 Text(script.displayTitle)
-                    .font(.system(size: 15.5, weight: .semibold))
+                    .cueFont(15.5, weight: .semibold)
                     .foregroundStyle(Palette.ink)
-                    .lineLimit(2)
+                    .lineLimit(large ? 4 : 2)
                     .fixedSize(horizontal: false, vertical: true)
                 HStack(spacing: 6) {
                     PlatformDot(color: script.platform.tint, isSmall: true)
@@ -42,7 +46,7 @@ struct ScriptRow: View {
                         .textCase(.uppercase)
                         .tracking(0.6)
                         .foregroundStyle(Palette.inkHint)
-                        .lineLimit(1)
+                        .lineLimit(large ? 2 : 1)
                 }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(Text(line.values.joined(separator: ", ")))
@@ -62,7 +66,7 @@ struct ScriptRow: View {
             RecPill(action: onRecord, accessibilityIdentifier: "row.recordButton")
         case .draft:
             Text("Continue ›")
-                .font(.system(size: 13.5, weight: .semibold))
+                .cueFont(13.5, weight: .semibold)
                 .foregroundStyle(Palette.ink2)
                 .lineLimit(1)
                 .fixedSize()
@@ -70,7 +74,7 @@ struct ScriptRow: View {
         case .recorded:
             Button(action: onTakes) {
                 Text(verbatim: "×\(takeCount) ›")
-                    .font(.system(size: 13.5, weight: .semibold))
+                    .cueFont(13.5, weight: .semibold)
                     .foregroundStyle(Palette.ink2)
                     .lineLimit(1)
                     .fixedSize()

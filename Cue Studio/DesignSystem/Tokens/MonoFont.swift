@@ -8,12 +8,18 @@ import SwiftUI
 extension View {
     /// Cue's monospaced face for small capitals, labels and readouts, in a language whose letters it has (Latin, Greek,
     /// Cyrillic); in any other (Arabic, Hindi, Thai, Japanese…) the system face with even digits, so the words are never drawn
-    /// in a stretched stand-in for letters the face doesn't have.
+    /// in a stretched stand-in for letters the face doesn't have. At the board's `size`, growing with the text size and following the
+    /// iPhone's width, as `cueFont` (`InterfaceType`).
     func monoFont(size: CGFloat, weight: Font.Weight = .regular) -> some View {
+        modifier(MonoFont(size: .board(size), weight: weight))
+    }
+
+    /// The same at a size that never grows (a miniature, a share card drawn as a picture), as `Font.fixed`.
+    func monoFont(fixedSize size: CGFloat, weight: Font.Weight = .regular) -> some View {
         modifier(MonoFont(size: .fixed(size), weight: weight))
     }
 
-    /// The same at a text style's size, growing with the text size.
+    /// The same at a text style's size, growing on its curve.
     func monoFont(_ style: Font.TextStyle, weight: Font.Weight = .regular) -> some View {
         modifier(MonoFont(size: .style(style), weight: weight))
     }
@@ -43,6 +49,7 @@ extension Text {
 /// `monoFont`.
 private struct MonoFont: ViewModifier {
     enum Size {
+        case board(CGFloat)
         case fixed(CGFloat)
         case style(Font.TextStyle)
     }
@@ -50,12 +57,16 @@ private struct MonoFont: ViewModifier {
     let size: Size
     let weight: Font.Weight
     @Environment(\.locale) private var locale
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     func body(content: Content) -> some View {
         let design: Font.Design = TextShaping.hasMonospacedLetters(in: locale.language) ? .monospaced : .default
-        switch size {
-        case .fixed(let points): content.font(.system(size: points, weight: weight, design: design)).monospacedDigit()
-        case .style(let style): content.font(.system(style, design: design, weight: weight)).monospacedDigit()
+        let points = switch size {
+        case .board(let points): InterfaceType.size(points, for: dynamicTypeSize, proportion: ScreenProportion.current)
+        case .fixed(let points): points
+        case .style(let style):
+            InterfaceType.size(InterfaceType.defaultSize(of: style), relativeTo: style, for: dynamicTypeSize, proportion: ScreenProportion.current)
         }
+        content.font(.system(size: points, weight: weight, design: design)).monospacedDigit()
     }
 }

@@ -20,7 +20,7 @@ struct VoyageChip: View {
                 Circle().fill(platform.tint).frame(width: 8, height: 8)
                 Text(platform.label)
             }
-            .font(.system(size: 14.5, weight: .semibold))
+            .cueFont(14.5, weight: .semibold)
             .foregroundStyle(isPicked ? Palette.chipOnInk : Color.white)
             .padding(.leading, 11)
             .padding(.trailing, 13)

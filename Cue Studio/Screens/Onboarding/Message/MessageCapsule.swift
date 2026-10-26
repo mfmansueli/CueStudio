@@ -57,7 +57,7 @@ struct MessageCapsule: View {
                 .frame(width: 38, height: 38)
                 .motion(pulse)
             Image(systemName: "sparkle")
-                .font(.system(size: 14, weight: .bold))
+                .font(.fixed(14, weight: .bold))
                 .foregroundStyle(.black)
         }
         .frame(width: 30, height: 30)
