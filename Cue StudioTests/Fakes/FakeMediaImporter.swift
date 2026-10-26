@@ -18,8 +18,15 @@ final class FakeMediaImporter: EditMediaImporting {
     /// Waits (like a video coming from iCloud) until the import is cancelled, then throws `CancellationError`.
     var waitsUntilCancelled = false
 
+    /// Runs while a photo or video is being copied in (the call is suspended): what the creator does meanwhile.
+    var whileImportingMedia: (() -> Void)?
+
     func importMedia(_ item: PhotosPickerItem, progress: @escaping @MainActor (Double) -> Void) async throws -> ImportedMedia {
         for step in progressSteps { progress(step) }
+        if let whileImportingMedia {
+            await Task.yield()
+            whileImportingMedia()
+        }
         if waitsUntilCancelled {
             while !Task.isCancelled { try? await Task.sleep(for: .milliseconds(5)) }
             throw CancellationError()
@@ -30,9 +37,13 @@ final class FakeMediaImporter: EditMediaImporting {
     /// What `importAudio` hands back; nil throws, like a file that can't be read.
     var audio: ImportedAudio? = ImportedAudio(fileName: "song.m4a", title: "Morning song", duration: 95)
     private(set) var importedAudio: [URL] = []
+    /// Runs while a sound file is being copied in (the call is suspended): what the creator does meanwhile.
+    var whileImportingAudio: (() -> Void)?
 
     func importAudio(from url: URL) async throws -> ImportedAudio {
         importedAudio.append(url)
+        await Task.yield()
+        whileImportingAudio?()
         guard let audio else { throw EditMediaImportError.unreadableSound }
         return audio
     }

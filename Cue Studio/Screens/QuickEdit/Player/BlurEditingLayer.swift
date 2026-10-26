@@ -296,7 +296,7 @@ struct BlurEditingLayer: View {
         gestures.insert(gesture)
         if let gestureStart { return gestureStart }
         viewModel.player.pause()
-        viewModel.beginChange()
+        viewModel.beginPanelChange()
         gestureStart = rect
         return rect
     }
@@ -305,7 +305,7 @@ struct BlurEditingLayer: View {
         gestures.remove(gesture)
         guard gestureStart != nil, gestures.isEmpty else { return }
         gestureStart = nil
-        viewModel.endChange()
+        viewModel.endPanelChange()
     }
 
     private func place(_ region: BlurRegion, rect: CGRect) {

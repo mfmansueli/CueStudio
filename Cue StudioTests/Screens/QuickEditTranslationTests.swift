@@ -64,6 +64,21 @@ struct QuickEditTranslationTests {
         #expect(viewModel.edit.captions.map(\.text) == ["Okay, real talk."])
     }
 
+    /// Cancel while the iPhone is asked whether it can translate the pair: nothing starts when the answer comes, and asking
+    /// again works.
+    @Test func cancelWhileCheckingStartsNothing() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.availability.whileChecking = { viewModel.captions.cancelTranslation() }
+        await viewModel.captions.translateCaptions(to: .portugueseBrazil)
+        #expect(viewModel.captions.translationState == .idle)
+        #expect(viewModel.captions.translationRequest == nil)
+        scenario.availability.whileChecking = nil
+        await viewModel.captions.translateCaptions(to: .portugueseBrazil)
+        #expect(viewModel.captions.translationState == .translating)
+        #expect(viewModel.captions.translationRequest != nil)
+    }
+
     @Test func anUnsupportedPairIsSaidAndCanBeWrittenByHand() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel

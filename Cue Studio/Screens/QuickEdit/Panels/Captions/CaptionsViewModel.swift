@@ -46,10 +46,14 @@ final class CaptionsViewModel: EditorPart {
     var translationState: TranslationState = .idle
     /// The translation the view asks the system for; nil when none is wanted.
     var translationRequest: TranslationRequest?
+    /// The availability check under way (`translateCaptions`): Cancel clears it, and a check that comes back after isn't used.
+    @ObservationIgnored var translationCheck: UUID?
     /// Listening was asked for Edit by text: the captions it makes stay hidden if they were.
     var keepsCaptionsHiddenAfterListening = false
     /// The lines timed to the edit, kept until the lines or the cuts change (`captionMap`).
     @ObservationIgnored var captionMapStore: CaptionMap?
+    /// The video over the take whose voice is being listened to (`setCaptionsItsVoice`): turning it off stops that.
+    @ObservationIgnored var listeningSupportID: UUID?
 
     let session: EditorSession
     let editing: TakeEditing

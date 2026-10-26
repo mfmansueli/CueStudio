@@ -78,10 +78,13 @@ extension AudioViewModel {
             videoURL: EditMediaFiles.url(for: media.fileName), span: TimeSpan(start: start, end: start + placed.span.duration)
         )
         guard let sound = await extract(request) else { return }
-        guard edit.timeline == timeline, edit.media.contains(where: { $0.id == id }) else { return discardExtracted(sound) }
+        // Moved, trimmed, slipped or swapped meanwhile (none of which changes the cuts): the sound would land off its picture.
+        guard edit.timeline == timeline, let now = edit.editedMedia(in: timeline).first(where: { $0.media.id == id }),
+              now.span == placed.span, now.media.startInFile == start, now.media.fileName == media.fileName,
+              let nowVolume = now.media.audioVolume, nowVolume > 0 else { return discardExtracted(sound) }
         var clip = extractedClip(sound, title: String(localized: "Sound · Video"), start: placed.span.start)
         clip.extractedFrom = .media
-        clip.volume = volume
+        clip.volume = nowVolume
         change { snapshot in
             guard let index = snapshot.media.firstIndex(where: { $0.id == id }) else { return }
             snapshot.media[index].audioVolume = nil
@@ -109,6 +112,9 @@ extension AudioViewModel {
             return sound
         } catch AudioTrackExtractor.ExtractError.noAudio {
             toast.show(String(localized: "This clip has no sound"), kind: .problem)
+        } catch is CancellationError {
+            // The editor closed meanwhile: nothing to say.
+            toast.endWorking(work)
         } catch {
             noteFailure(error, "extractAudio")
             toast.show(String(localized: "Can't extract this sound"), kind: .problem)

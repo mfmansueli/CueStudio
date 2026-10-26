@@ -57,13 +57,13 @@ struct MaskPanel: View {
         PanelSlider(
             label: String(localized: "Soft edge"), value: placement.feather * 100, range: 0...100, format: .percent, identifier: "edit.maskFeather",
             onChange: { overlays.setMaskFeather($0 / 100) },
-            onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+            onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
         )
         if mask.shape.hasCorners {
             PanelSlider(
                 label: String(localized: "Corners"), value: placement.corners * 100, range: 0...100, format: .percent, identifier: "edit.maskCorners",
                 onChange: { overlays.setMaskCorners($0 / 100) },
-                onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+                onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
             )
         }
         PanelToggleRow(

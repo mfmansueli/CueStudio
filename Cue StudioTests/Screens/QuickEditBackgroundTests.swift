@@ -93,6 +93,31 @@ struct QuickEditBackgroundTests {
         #expect(viewModel.importedFiles.contains("beach.jpg"))
     }
 
+    /// A photo coming from the library lands where Background was writing when it was asked for: on that clip even if
+    /// another is picked meanwhile; on nothing, with a word, if that clip went.
+    @Test func aPhotoLandsOnTheClipItWasPickedForEvenIfTheClipChanged() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 30)
+        viewModel.clips.selectClipAtPlayhead()
+        viewModel.clips.splitClip()
+        let first = viewModel.edit.timeline.segments[0].id
+        let second = viewModel.edit.timeline.segments[1].id
+        viewModel.selection = .clip(first)
+        viewModel.perform(.openLook(.background, wholeVideo: false))
+        #expect(viewModel.look.lookScopeIsClip)
+        let asked = viewModel.look.backgroundTarget
+        viewModel.selection = .clip(second)
+        viewModel.look.setBackgroundImage("beach.jpg", on: asked)
+        #expect(viewModel.edit.timeline.segment(id: first)?.look?.background?.imageFileName == "beach.jpg")
+        #expect(viewModel.edit.timeline.segment(id: second)?.look?.background == nil)
+        #expect(viewModel.edit.background(for: nil)?.imageFileName == nil)
+        viewModel.clips.deleteClip(first)
+        viewModel.look.setBackgroundImage("late.jpg", on: asked)
+        #expect(!viewModel.importedFiles.contains("late.jpg"))
+        #expect(scenario.toast.message == "The clip is gone · Pick the photo again")
+    }
+
     @Test func aRecordingWithABackgroundShowsItOnItsClips() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel

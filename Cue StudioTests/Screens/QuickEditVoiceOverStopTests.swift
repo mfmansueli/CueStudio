@@ -38,6 +38,34 @@ struct QuickEditVoiceOverStopTests {
         return Scenario(viewModel: viewModel, recorder: recorder, drafts: drafts)
     }
 
+    /// A freeze, a reverse or an import still running would land under the narration: Record waits for it, and says so.
+    @Test func recordWaitsForWorkStillRunning() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.isImportingMedia = true
+        await viewModel.audio.startVoiceOver()
+        #expect(!viewModel.audio.isRecordingVoiceOver)
+        #expect(viewModel.toast.message == "Still working · Record when it finishes")
+        viewModel.isImportingMedia = false
+        await viewModel.audio.startVoiceOver()
+        #expect(viewModel.audio.isRecordingVoiceOver)
+    }
+
+    /// The narration stays where it was recorded over, even if a change lands during the take, and no tool reaches the edit
+    /// while it records.
+    @Test func aNarrationKeepsThePlaceItStartedAt() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.player.seek(to: 5)
+        await viewModel.audio.startVoiceOver()
+        viewModel.perform(.splitClip)
+        #expect(viewModel.edit.timeline.segments.count == 1)
+        // A change that lands anyway (a job started before Record): the clip plays twice as fast.
+        viewModel.updateClip { $0.speed = 2 }
+        viewModel.audio.stopVoiceOver()
+        #expect(viewModel.edit.voiceOvers.first.map { abs($0.anchor - 5) < 0.000_1 } == true)
+    }
+
     @Test func aCallKeepsWhatWasRecorded() async {
         let scenario = await makeScenario()
         await scenario.viewModel.audio.startVoiceOver()

@@ -150,10 +150,15 @@ extension QuickEditViewModel {
             overlays.mediaInsertMode = .sequence
             sheet = .media
         case .pause(let id): togglePauseMark(id)
-        case .gap(let id): pick(.media(id))
+        case .gap(let id):
+            // The track names the photo or video itself: a support's own tools, not its split screen's main video.
+            overlays.selectedArea = .support
+            pick(.media(id))
         case .join(let id): pickJoin(id)
         case .clip(let id): pick(.clip(id))
-        case .item(let kind, let id): Self.selection(of: kind, id).map(pick)
+        case .item(let kind, let id):
+            if kind == .media { overlays.selectedArea = .support }
+            Self.selection(of: kind, id).map(pick)
         case .lane: break
         }
     }

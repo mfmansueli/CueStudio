@@ -57,7 +57,7 @@ extension LookViewModel {
     /// step; this is one more, said with Undo. Only when asked.
     func useWholeVideosLookOnAllClips() {
         guard lookClip == nil, let tool = openLookTool, clipsKeepingTheirOwn(for: tool) > 0 else { return }
-        endChange()
+        endAllChanges()
         var timeline = edit.timeline
         for var clip in timeline.segments {
             guard var look = clip.look, tool.isOwn(in: look) else { continue }

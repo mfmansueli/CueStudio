@@ -462,7 +462,7 @@ struct MaskEditingLayer: View {
         gestures.insert(gesture)
         if let start { return start }
         viewModel.player.pause()
-        viewModel.beginChange()
+        viewModel.beginPanelChange()
         let now = viewModel.selectedMedia.flatMap { overlays.maskPlacementAtPlayhead(of: $0) } ?? MaskPlacement()
         start = now
         lastTranslation = .zero
@@ -477,7 +477,7 @@ struct MaskEditingLayer: View {
         start = nil
         lastTranslation = .zero
         lastMagnification = 1
-        viewModel.endChange()
+        viewModel.endPanelChange()
     }
 
     private func loadGhost(_ media: MediaOverlay) async {

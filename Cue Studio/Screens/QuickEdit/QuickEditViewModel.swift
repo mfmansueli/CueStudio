@@ -176,7 +176,9 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         )
         look = LookViewModel(session: session, editing: editing, motion: motion)
         clips = ClipsViewModel(session: session, editing: editing, takes: takes, library: library, speechLanguage: speechLanguage)
-        overlays = OverlaysViewModel(session: session, importer: mediaImporter, styles: styles, library: library, tracker: tracker)
+        overlays = OverlaysViewModel(
+            session: session, importer: mediaImporter, styles: styles, library: library, tracker: tracker, faces: faceFinder
+        )
         blur = BlurViewModel(session: session, tracker: tracker, faces: faceFinder)
         audio = AudioViewModel(
             session: session, editing: editing, importer: mediaImporter, recorder: recorder ?? VoiceOverRecorder(),
@@ -272,10 +274,12 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     }
 
     /// Picks `next` (nil lets go). The Text or Audio menu gives way to it; a cut opens its Transition panel; a panel that
-    /// works on the picked item closes when it can't work on `next`. Picking never ends an undo step: a gesture that picks
-    /// (or lets go of what it removed) keeps its one step.
+    /// works on the picked item closes when it can't work on `next`, ending its own control's undo step. Picking never ends a
+    /// gesture's: one that picks (or lets go of what it removed) keeps its one step.
     func pick(_ next: EditorSelection?) {
         guard next != picked else { return }
+        // Another photo or video, or none: a support starts on its own area (a tap on the main video's says so after, `pickArea`).
+        if next?.mediaID != picked?.mediaID { overlays.selectedArea = .support }
         picked = next
         // Picked by the creator: no longer the panel's to let go of.
         if next != panelPick { panelPick = nil }
@@ -303,7 +307,9 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         audio.panelChanged(from: previous)
         // Auto, Compare, the recordings' analysis for Format and Stabilize, a clip's scope.
         look.panelChanged(to: next)
-        if endingChange { endChange() }
+        // Opening another panel ends any change; a pick that closes it ends only the panel's own (its control may never say it
+        // let go), never a gesture's that picks or lets go of what it removed.
+        if endingChange { endAllChanges() } else { endPanelChange() }
         audio.stopRecordingIfNeeded()
         // A cut is picked only while its Transition panel is open.
         if previous == .transition, picked?.joinID != nil { picked = nil }
@@ -447,7 +453,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// Saves the edit on the take (its new length, marked Edited) when anything changed.
     func done() {
-        endChange()
+        endAllChanges()
         audio.stopRecordingIfNeeded()
         // Reversed videos nothing plays any more (a clip reversed and put back) were kept for undo; they go now.
         var saved = edit
@@ -477,7 +483,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Done: pauses and asks "Is it ready to post?" (`EditorDoneSheet`); the answer is `finish(_:)`.
     func askIfReadyToPost() {
         guard isReady else { return }
-        endChange()
+        endAllChanges()
         player.pause()
         // A Blur area still being tracked hasn't covered anything yet.
         if blur.isFollowing {
@@ -508,7 +514,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// "Not yet, I'll come back": the draft stays even if nothing changed, so the video is in edit.
     private func keepForLater() {
-        endChange()
+        endAllChanges()
         // A narration being recorded is kept with the draft.
         audio.stopRecordingIfNeeded()
         let kept = saveDraft(forced: true)
@@ -519,7 +525,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Leaves without saving on the take. Changes stay in a draft that Edit picks up again; the take
     /// is as it was.
     func cancel() {
-        endChange()
+        endAllChanges()
         // A narration being recorded is kept with the draft, like every other change.
         audio.stopRecordingIfNeeded()
         guard source == .ready, hasUnsavedChanges else {

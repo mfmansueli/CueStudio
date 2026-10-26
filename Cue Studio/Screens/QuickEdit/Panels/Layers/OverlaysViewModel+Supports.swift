@@ -117,67 +117,101 @@ extension OverlaysViewModel {
 
     /// Puts `picks` in as `mode` says, one after the other from where they start, in one undo step: each video for its part,
     /// a photo for three seconds, shortened or left out only as `run(of:as:)` said. Supports go in silent, each framed on a face
-    /// when there is one; the main video too, the first time it's in a split screen.
+    /// when there is one; the main video too, the first time it's in a split screen. The faces are found first (a moment per
+    /// video, while the creator can keep editing); then the room is checked again and only what this adds is written on the edit
+    /// as it is then, so a change made meanwhile stays, and an Undo made meanwhile isn't undone.
     func add(_ picks: [MediaPick], as mode: MediaInsertMode) async {
         guard let layout = mode.layout, !picks.isEmpty else { return }
         let run = run(of: picks, as: mode)
+        let timeline = edit.timeline
         let unused = Set(picks.map(\.imported.fileName)).subtracting(run.placed.map { picks[$0.index].imported.fileName })
-        guard !run.placed.isEmpty else {
-            EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
-            toast.show(String(localized: "No room · Move the playhead"), kind: .problem)
-            return
-        }
-        // Never more photos and videos over the same moment than the export draws at once (it would leave a fourth video out
-        // without a word): a support counts like a window.
-        let others = limitedMediaSpans()
-        guard run.placed.allSatisfy({ LayerLanes.peak(of: others, within: $0.span) < MediaOverlay.simultaneousLimit }) else {
-            EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
-            toast.show(String(localized: "3 photos or videos already show then · up to 3 at a time"), kind: .problem)
-            return
-        }
-        var next = edit
-        if layout == .split, next.splitScreen.layouts.isEmpty {
-            // The first split screen: a soft blurred seam with the captions on it, the way these videos are made (Layout
-            // changes the seam, Caption style moves the captions).
-            next.splitScreen.setLayout(SplitLayout(seam: .blur))
-            next.splitScreen.captionsOnSeam = true
-        }
-        let splitLayout = next.splitScreen.layout(id: nil)
-        let areas = SplitPlacement.areas(splitLayout, in: frameShape)
-        var layer = (next.media.map(\.stackOrder).max() ?? -1) + 1
-        var added: [UUID] = []
-        for placed in run.placed {
-            let pick = picks[placed.index]
-            importedFiles.insert(pick.imported.fileName)
-            var media = MediaOverlay(
-                kind: pick.imported.kind, fileName: pick.imported.fileName, aspect: pick.imported.aspect,
-                mediaDuration: pick.imported.duration, span: placed.span
-            )
-            media.followsCuts = true
-            media.layout = layout
-            media.mediaStart = pick.isVideo && pick.start > 0.000_1 ? pick.start : nil
-            media.hasSound = pick.isVideo ? pick.imported.hasSound : nil
-            media.layer = layer
-            layer += 1
-            if layout == .split {
-                media.splitLayoutID = splitLayout.id
-                media.areaFraming = await framing(of: pick, in: areas.support.size)
+        guard roomIsLeft(for: run.placed.map(\.span), as: layout, picks: picks) else { return }
+        var framings: [Int: AreaFraming] = [:]
+        var mainFraming: MainVideoFraming?
+        if layout == .split {
+            let areas = SplitPlacement.areas(splitLayoutToUse(in: edit), in: frameShape)
+            for placed in run.placed {
+                framings[placed.index] = await framing(of: picks[placed.index], in: areas.support.size)
             }
-            next.media.append(media)
-            next.layMedia(at: next.media.count - 1, over: placed.span)
-            added.append(media.id)
+            if let first = run.placed.first { mainFraming = await mainVideoFraming(at: first.span.start, area: areas.main.size) }
         }
-        if layout == .split, let first = run.placed.first {
-            await frameMainVideo(in: &next, at: first.span.start, area: areas.main.size)
+        guard !isClosed else {
+            // Closing let go of what wasn't in the edit; these never made it in.
+            EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
+            return
         }
-        guard !isClosed else { return }
+        // The places were measured on the cuts as they were: other cuts would put the picks somewhere else.
+        guard edit.timeline == timeline else {
+            EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
+            toast.show(String(localized: "The video changed meanwhile · Add it again"), kind: .problem)
+            return
+        }
+        guard roomIsLeft(for: run.placed.map(\.span), as: layout, picks: picks) else { return }
+        var added: [UUID] = []
+        changeEdit { edit in
+            if layout == .split, edit.splitScreen.layouts.isEmpty {
+                // The first split screen: a soft blurred seam with the captions on it, the way these videos are made (Layout
+                // changes the seam, Caption style moves the captions).
+                edit.splitScreen.setLayout(SplitLayout(seam: .blur))
+                edit.splitScreen.captionsOnSeam = true
+            }
+            let splitLayoutID = edit.splitScreen.layout(id: nil).id
+            var layer = (edit.media.map(\.stackOrder).max() ?? -1) + 1
+            for placed in run.placed {
+                let pick = picks[placed.index]
+                var media = MediaOverlay(
+                    kind: pick.imported.kind, fileName: pick.imported.fileName, aspect: pick.imported.aspect,
+                    mediaDuration: pick.imported.duration, span: placed.span
+                )
+                media.followsCuts = true
+                media.layout = layout
+                media.mediaStart = pick.isVideo && pick.start > 0.000_1 ? pick.start : nil
+                media.hasSound = pick.isVideo ? pick.imported.hasSound : nil
+                media.layer = layer
+                layer += 1
+                if layout == .split {
+                    media.splitLayoutID = splitLayoutID
+                    media.areaFraming = framings[placed.index] ?? AreaFraming()
+                }
+                edit.media.append(media)
+                edit.layMedia(at: edit.media.count - 1, over: placed.span)
+                added.append(media.id)
+            }
+            if let mainFraming, !edit.splitScreen.hasFraming(for: mainFraming.sourceID) {
+                edit.splitScreen.setFraming(mainFraming.framing, for: mainFraming.sourceID)
+            }
+        }
+        importedFiles.formUnion(run.placed.map { picks[$0.index].imported.fileName })
         EditMediaFiles.remove(unused)
-        commit(EditSnapshot(next))
         selectedArea = .support
         if let firstID = added.first { selection = .media(firstID) }
         player.pause()
         player.seek(to: run.placed[0].span.start)
         sayUndoable(addedMessage(picks: run.placed.map { picks[$0.index] }, run: run, mode: mode))
+    }
+
+    /// Whether `spans` still have room for `picks` as `layout`: some place at all, never more photos and videos over the same
+    /// moment than the export draws at once (it would leave a fourth video out without a word; a support counts like a window),
+    /// and one support at a time in the split screen. When not, it says why and the picks' files go.
+    private func roomIsLeft(for spans: [TimeSpan], as layout: MediaLayout, picks: [MediaPick]) -> Bool {
+        let problem: String? = if spans.isEmpty {
+            String(localized: "No room · Move the playhead")
+        } else if !spans.allSatisfy({ LayerLanes.peak(of: limitedMediaSpans(), within: $0) < MediaOverlay.simultaneousLimit }) {
+            String(localized: "3 photos or videos already show then · up to 3 at a time")
+        } else if layout == .split, supportSpans.contains(where: { support in spans.contains { $0.overlaps(support.span) } }) {
+            String(localized: "Another support shows then · one at a time in the split screen")
+        } else {
+            nil
+        }
+        guard let problem else { return true }
+        EditMediaFiles.remove(Set(picks.map(\.imported.fileName)))
+        toast.show(problem, kind: .problem)
+        return false
+    }
+
+    /// The split screen's layout as a support would get it: the edit's, or the soft blurred seam the first one starts with.
+    private func splitLayoutToUse(in edit: TakeEdit) -> SplitLayout {
+        edit.splitScreen.layouts.isEmpty ? SplitLayout(seam: .blur) : edit.splitScreen.layout(id: nil)
     }
 
     /// "3 videos added to the split screen · muted", "Photo added at 00:07.0"…
@@ -217,15 +251,15 @@ extension OverlaysViewModel {
         return SplitPlacement.framing(showing: found.box, content: found.size, area: area)
     }
 
-    /// The main video's recording playing at `time` gets a framing for its area, on its face, unless it has one already (one the
-    /// creator set is never moved).
-    private func frameMainVideo(in edit: inout TakeEdit, at time: TimeInterval, area: CGSize) async {
+    /// The framing the main video's recording playing at `time` gets for its area, on its face; nil when it has one already
+    /// (one the creator set is never moved) or no face is found. Read on the edit as it is now, written later by the caller.
+    private func mainVideoFraming(at time: TimeInterval, area: CGSize) async -> MainVideoFraming? {
         let timeline = edit.timeline
         let segment = timeline.segments[timeline.segmentIndex(atEdited: time)]
-        guard !edit.splitScreen.hasFraming(for: segment.sourceID) else { return }
+        guard !edit.splitScreen.hasFraming(for: segment.sourceID) else { return nil }
         let url = segment.sourceID.flatMap { id in edit.sources.first { $0.id == id } }.map { EditMediaFiles.url(for: $0.fileName) } ?? videoURL
-        guard let found = await faces.face(in: url, isVideo: true, at: timeline.sourceTime(forEdited: time)) else { return }
-        edit.splitScreen.setFraming(SplitPlacement.framing(showing: found.box, content: found.size, area: area), for: segment.sourceID)
+        guard let found = await faces.face(in: url, isVideo: true, at: timeline.sourceTime(forEdited: time)) else { return nil }
+        return MainVideoFraming(sourceID: segment.sourceID, framing: SplitPlacement.framing(showing: found.box, content: found.size, area: area))
     }
 
     // MARK: - The layout
@@ -301,33 +335,52 @@ extension OverlaysViewModel {
 
     /// Shows the photo or video `id` another way (Split screen, Window, Full screen), keeping everything set on it, so going back
     /// finds it as it was. Into the split screen only where no other support shows (one at a time); the first time, framed on
-    /// its face.
+    /// its face. The faces are found first; then only the layout (and those framings) is written on the edit as it is then, so
+    /// a slider moved meanwhile keeps its change. The last tap wins: one still finding a face when another comes is dropped.
     func setMediaLayout(_ id: UUID, _ layout: MediaLayout) async {
-        guard let index = edit.media.firstIndex(where: { $0.id == id }), edit.media[index].layout != layout,
+        let request = UUID()
+        layoutRequest = request
+        guard let media = edit.media.first(where: { $0.id == id }), media.layout != layout,
               let span = mediaBars.first(where: { $0.id == id })?.span else { return }
-        if layout == .split, supportSpans.contains(where: { $0.id != id && $0.span.overlaps(span) }) {
-            toast.show(String(localized: "Another support shows then · one at a time in the split screen"), kind: .problem)
-            return
-        }
-        var next = edit
+        guard layout != .split || !anotherSupportShows(besides: id, over: span) else { return }
+        var areaFraming: AreaFraming?
+        var mainFraming: MainVideoFraming?
         if layout == .split {
-            if next.splitScreen.layouts.isEmpty {
-                next.splitScreen.setLayout(SplitLayout(seam: .blur))
-                next.splitScreen.captionsOnSeam = true
-            }
-            let areas = SplitPlacement.areas(next.splitScreen.layout(id: nil), in: frameShape)
-            next.media[index].splitLayoutID = next.splitScreen.layouts.first?.id
-            if next.media[index].areaFraming == nil {
-                let media = next.media[index]
+            let areas = SplitPlacement.areas(splitLayoutToUse(in: edit), in: frameShape)
+            if media.areaFraming == nil {
                 let pick = MediaPick(ImportedMedia(kind: media.kind, fileName: media.fileName, aspect: media.aspect, duration: media.mediaDuration))
-                next.media[index].areaFraming = await framing(of: pick, in: areas.support.size)
+                areaFraming = await framing(of: pick, in: areas.support.size)
             }
-            await frameMainVideo(in: &next, at: span.start, area: areas.main.size)
+            mainFraming = await mainVideoFraming(at: span.start, area: areas.main.size)
         }
-        guard !isClosed, edit.media.contains(where: { $0.id == id }) else { return }
-        next.media[index].layout = layout
-        commit(EditSnapshot(next))
+        guard !isClosed, layoutRequest == request, let now = edit.media.first(where: { $0.id == id }), now.layout != layout else { return }
+        if layout == .split {
+            // Again on the edit as it is now: a support put there meanwhile keeps its place.
+            guard let nowSpan = mediaBars.first(where: { $0.id == id })?.span, !anotherSupportShows(besides: id, over: nowSpan) else { return }
+        }
+        changeEdit { edit in
+            guard let index = edit.media.firstIndex(where: { $0.id == id }) else { return }
+            if layout == .split {
+                if edit.splitScreen.layouts.isEmpty {
+                    edit.splitScreen.setLayout(SplitLayout(seam: .blur))
+                    edit.splitScreen.captionsOnSeam = true
+                }
+                edit.media[index].splitLayoutID = edit.splitScreen.layouts.first?.id
+                if edit.media[index].areaFraming == nil, let areaFraming { edit.media[index].areaFraming = areaFraming }
+                if let mainFraming, !edit.splitScreen.hasFraming(for: mainFraming.sourceID) {
+                    edit.splitScreen.setFraming(mainFraming.framing, for: mainFraming.sourceID)
+                }
+            }
+            edit.media[index].layout = layout
+        }
         if layout == .split { selectedArea = .support }
+    }
+
+    /// Whether a support other than `id` shows over `span` (one at a time in the split screen); says so when it does.
+    private func anotherSupportShows(besides id: UUID, over span: TimeSpan) -> Bool {
+        guard supportSpans.contains(where: { $0.id != id && $0.span.overlaps(span) }) else { return false }
+        toast.show(String(localized: "Another support shows then · one at a time in the split screen"), kind: .problem)
+        return true
     }
 
     // MARK: - Each area's framing

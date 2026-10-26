@@ -87,7 +87,8 @@ extension QuickEditViewModel {
     // MARK: - Performing
 
     func perform(_ action: EditorAction) {
-        guard isReady else { return }
+        // While a narration records the bar is off; nothing reaches the edit another way (VoiceOver, a keyboard) either.
+        guard isReady, !audio.isRecordingVoiceOver else { return }
         if performOnSelection(action) || performOpening(action) { return }
         switch action {
         case .selectClipAtPlayhead: clips.selectClipAtPlayhead()
@@ -230,7 +231,7 @@ extension QuickEditViewModel {
     /// Blur area: adding one (from anywhere), and the picked one's tools. False when `action` isn't one of them.
     private func performOnBlur(_ action: EditorAction) -> Bool {
         switch action {
-        case .addBlurArea: blur.startAdding()
+        case .addBlurArea: blur.startAdding(onMainVideo: isSplitMainAreaPicked)
         case .followBlur: blur.follow()
         case .reviewBlur: blur.review()
         case .deleteBlur: selectedBlurID.map(blur.delete)

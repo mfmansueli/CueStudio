@@ -159,6 +159,7 @@ extension OverlaysViewModel {
     func deleteMedia(_ id: UUID) {
         let wasSupport = edit.media.first { $0.id == id }?.layout == .split
         change { $0.media.removeAll { $0.id == id } }
+        Haptics.delete()
         sayUndoable(wasSupport ? String(localized: "Support removed · the main video fills the frame there") : String(localized: "Media removed"))
     }
 
@@ -269,6 +270,9 @@ extension OverlaysViewModel {
         media.mediaStart = imported.kind == .video && pick.start > 0.000_1 ? pick.start : nil
         media.hasSound = imported.kind == .video ? imported.hasSound : nil
         if imported.kind != .video || !imported.hasSound { media.audioVolume = nil }
+        // Its voice's captions were the old video's words: they go with it (Undo brings both back).
+        let hadVoiceCaptions = old.captionsItsVoice == true
+        media.captionsItsVoice = nil
         // The framing's zoom and fit stay; the new picture starts centered.
         if var framing = media.areaFraming {
             framing.center = .center
@@ -279,6 +283,7 @@ extension OverlaysViewModel {
             media.pictureFraming = framing
         }
         next.media[index] = media
+        next.captions.removeAll { $0.sourceID == id }
         // A Blur area was on the old picture's seconds and places: it doesn't cover the new one (Undo brings both back).
         let hidBlur = next.blurRegions.contains { $0.target.mediaID == id }
         next.blurRegions.removeAll { $0.target.mediaID == id }
@@ -288,8 +293,13 @@ extension OverlaysViewModel {
         }
         next.layMedia(at: index, over: shown)
         commit(EditSnapshot(next))
+        if hadVoiceCaptions { updateFindings { $0.sourceTranscripts.removeAll { $0.sourceID == id } } }
         if hidBlur {
             toast.show(String(localized: "Replaced · its Blur area was on the old one"), kind: .problem, action: undoAction)
+            return
+        }
+        if hadVoiceCaptions {
+            sayUndoable(String(localized: "Replaced · its voice's captions went with the old one"))
             return
         }
         let shorter = shown.duration + 0.05 < span.duration

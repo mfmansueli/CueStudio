@@ -78,6 +78,38 @@ struct QuickEditCaptionsTests {
         await viewModel.jobs.finished(.captions)
     }
 
+    // MARK: - A support's voice
+
+    /// A video over the take whose voice is being listened to is replaced meanwhile: the old video's words never come in on the
+    /// new one. Turned off while listening: it stops, and no line comes in either.
+    @Test func aSupportsVoiceReplacedOrTurnedOffWhileListeningBringsNoLines() async {
+        let editor = FakeTakeEditor()
+        let scenario = await makeScenario(editor: editor)
+        let viewModel = scenario.viewModel
+        viewModel.captions.makeCaptions()
+        await finish(viewModel)
+        #expect(!viewModel.edit.captions.isEmpty)
+        var media = MediaOverlay(kind: .video, fileName: "talk.mov", aspect: 1, mediaDuration: 8, span: TimeSpan(start: 4, end: 7))
+        media.hasSound = true
+        viewModel.change { $0.media = [media] }
+        editor.whileCaptioning = {
+            let other = ImportedMedia(kind: .video, fileName: "other.mov", aspect: 1, duration: 8, hasSound: true)
+            viewModel.overlays.replaceMedia(media.id, with: MediaPick(other))
+        }
+        viewModel.captions.setCaptionsItsVoice(media.id, true)
+        await finish(viewModel)
+        #expect(viewModel.edit.captions.allSatisfy { $0.sourceID != media.id })
+        #expect(viewModel.edit.media.first?.fileName == "other.mov")
+        #expect(viewModel.edit.media.first?.captionsItsVoice == nil)
+        #expect(viewModel.captions.captionState == .idle)
+        editor.whileCaptioning = { viewModel.captions.setCaptionsItsVoice(media.id, false) }
+        viewModel.captions.setCaptionsItsVoice(media.id, true)
+        await finish(viewModel)
+        #expect(viewModel.edit.captions.allSatisfy { $0.sourceID != media.id })
+        #expect(viewModel.edit.media.first?.captionsItsVoice == nil)
+        #expect(!viewModel.captions.captionState.isWorking)
+    }
+
     // MARK: - Making captions
 
     @Test func newStylesAndAdjustmentsDoNotTranscribeAndUndoTogether() async {

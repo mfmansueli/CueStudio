@@ -37,10 +37,10 @@ extension LookViewModel {
         changeEdit { $0.faceFollow = FaceFollow(pace: pace) }
     }
 
-    /// A finger starts moving the frame on the preview: the whole drag is one undo step (`moveCrop(to:)`, `endChange`), and
-    /// following the face would undo it, so it stops (once, with a word).
+    /// A finger starts moving the frame on the preview (only while Format is open): the whole drag is one undo step
+    /// (`moveCrop(to:)`, `endPanelChange`), and following the face would undo it, so it stops (once, with a word).
     func beginCropMove() {
-        beginChange()
+        beginPanelChange()
         guard edit.faceFollow != nil else { return }
         changeEdit { $0.faceFollow = nil }
         toast.show(String(localized: "Follow face is off · You moved the frame"))

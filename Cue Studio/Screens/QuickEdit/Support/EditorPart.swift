@@ -151,13 +151,29 @@ extension EditorPart {
         session.document.updateFindings(update)
     }
 
-    /// A gesture or a sheet starts changing something: all of it is one undo step.
+    /// A gesture on the timeline or the preview, or a sheet, starts changing something: all of it is one undo step.
     func beginChange() {
-        session.document.beginChange()
+        session.document.beginChange(by: .gesture)
     }
 
     /// The gesture or sheet is over.
     func endChange() {
-        session.document.endChange()
+        session.document.endChange(by: .gesture)
+    }
+
+    /// A control of the open panel starts changing something (a slider, a strip, a handle on the preview drawn only while
+    /// the panel is open): one undo step, which also ends when the panel goes away.
+    func beginPanelChange() {
+        session.document.beginChange(by: .panel)
+    }
+
+    /// The panel's control let go.
+    func endPanelChange() {
+        session.document.endChange(by: .panel)
+    }
+
+    /// Whatever is still changing ends here, as its own undo step: before Done, a narration, a step of its own.
+    func endAllChanges() {
+        session.document.endAllChanges()
     }
 }

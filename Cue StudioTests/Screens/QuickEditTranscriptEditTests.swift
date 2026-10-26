@@ -266,6 +266,23 @@ struct QuickEditFreezeFrameTests {
         #expect(viewModel.edit.timeline.segments.count == 1)
     }
 
+    /// A clip picked with the playhead on another: Freeze frame says so and freezes nothing, as Split does.
+    @Test func aFrameFreezesOnlyOnThePickedClip() async {
+        let editor = FakeTakeEditor()
+        let viewModel = makeViewModel(editor: editor)
+        await viewModel.prepare()
+        var timeline = viewModel.edit.timeline
+        timeline.split(atEdited: 5)
+        viewModel.commit(timeline)
+        viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
+        viewModel.player.seek(to: 7)
+        let before = viewModel.edit
+        await viewModel.clips.freezeFrame()
+        #expect(editor.stillClips.isEmpty)
+        #expect(viewModel.edit == before)
+        #expect(viewModel.toast.message == "Move playhead onto the clip")
+    }
+
     @Test func aFrameThatCantBeReadChangesNothing() async {
         let editor = FakeTakeEditor()
         editor.stillClipFails = true

@@ -21,14 +21,14 @@ struct SplitSoundTab: View {
                 label: String(localized: "Main video"), value: (media.mainVolume ?? 1) * 100, range: 0...100, defaultValue: 100,
                 format: .percent, identifier: "edit.split.mainVolume",
                 onChange: { overlays.setMainVolume(media.id, $0 / 100) },
-                onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+                onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
             )
             if media.kind == .video, media.hasSound == true {
                 PanelSlider(
                     label: String(localized: "This support"), value: (media.audioVolume ?? 0) * 100, range: 0...100, defaultValue: 0,
                     format: .percent, identifier: "edit.split.supportVolume",
                     onChange: { overlays.setMediaSoundVolume(media.id, $0 / 100) },
-                    onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+                    onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
                 )
                 .disabled(mutesAll)
                 PanelToggleRow(

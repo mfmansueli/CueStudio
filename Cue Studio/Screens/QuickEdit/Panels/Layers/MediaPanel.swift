@@ -31,14 +31,14 @@ struct MediaPanel: View {
                         range: MediaOverlay.widthRange.lowerBound * 100...MediaOverlay.widthRange.upperBound * 100,
                         format: .percent, identifier: "edit.mediaSize",
                         onChange: { width in viewModel.overlays.updateMedia(media.id) { $0.width = width / 100 } },
-                        onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+                        onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
                     )
                 }
                 PanelSlider(
                     label: String(localized: "Opacity"), value: (media.opacity ?? 1) * 100, range: 10...100, format: .percent,
                     identifier: "edit.mediaOpacity",
                     onChange: { value in viewModel.overlays.updateMedia(media.id) { $0.opacity = value >= 99.5 ? nil : value / 100 } },
-                    onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+                    onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
                 )
                 if media.kind == .video, media.mediaDuration != nil {
                     MediaTrimStrip(viewModel: viewModel, media: media)

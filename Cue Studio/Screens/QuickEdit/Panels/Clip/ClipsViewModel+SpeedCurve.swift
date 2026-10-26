@@ -54,14 +54,14 @@ extension ClipsViewModel {
     /// A point of the curve is picked to be dragged: the drag is one undo step.
     func beginCurveDrag() {
         shapesCurve = true
-        beginChange()
+        beginPanelChange()
     }
 
     /// The point picked to be dragged ends its drag: the clip plays to show the new curve.
     func endCurveDrag() {
         shapesCurve = false
         updateCurveSoundStepping()
-        endChange()
+        endPanelChange()
         previewTargetClip()
     }
 

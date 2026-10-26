@@ -25,6 +25,11 @@ extension AudioViewModel {
 
     func startVoiceOver() async {
         guard isReady, !recorder.isRecording else { return }
+        // A freeze, a reverse or an import still running would land under the narration and move what it was recorded over.
+        guard !isImportingMedia, work == nil else {
+            toast.show(String(localized: "Still working · Record when it finishes"), kind: .problem)
+            return
+        }
         guard await recorder.requestPermission() else {
             toast.show(
                 String(localized: "Mic is off for Cue"), kind: .problem,
@@ -32,8 +37,8 @@ extension AudioViewModel {
             )
             return
         }
-        guard !isClosed else { return }
-        endChange()
+        guard !isClosed, !isImportingMedia, work == nil else { return }
+        endAllChanges()
         reviewedVoiceOverID = nil
         // From the end, it starts over from the beginning.
         if player.currentTime >= edit.editedDuration - 0.1 { player.seek(to: 0) }
@@ -46,6 +51,7 @@ extension AudioViewModel {
             return
         }
         recordingStart = start
+        recordingAnchor = edit.timeline.sourceTime(forEdited: start)
         // The script on screen starts with the recording (`AudioViewModel+NarrationScript`).
         narrationPace.start(at: .now)
         Haptics.record()
@@ -56,7 +62,9 @@ extension AudioViewModel {
     /// Stops recording, adds the narration where it started and plays it back.
     func stopVoiceOver() {
         let start = recordingStart
+        let anchor = recordingAnchor
         recordingStart = nil
+        recordingAnchor = nil
         narrationPace.reset()
         // The microphone stops first: the video stopping under it is then no recording to stop again (`playingStopped`).
         let recorded = recorder.stop()
@@ -72,7 +80,7 @@ extension AudioViewModel {
         }
         let clip = VoiceOverClip(
             fileName: recorded.fileName, duration: recorded.duration,
-            anchor: edit.timeline.sourceTime(forEdited: start)
+            anchor: anchor ?? edit.timeline.sourceTime(forEdited: start)
         )
         change { $0.voiceOvers.append(clip) }
         reviewedVoiceOverID = clip.id
@@ -106,6 +114,7 @@ extension AudioViewModel {
     func cancelVoiceOver() {
         recorder.cancel()
         recordingStart = nil
+        recordingAnchor = nil
         narrationPace.reset()
         player.pause()
         player.isMuted = false
@@ -154,6 +163,7 @@ extension AudioViewModel {
 
     func deleteVoiceOver(_ id: UUID) {
         change { $0.voiceOvers.removeAll { $0.id == id } }
+        Haptics.delete()
         sayUndoable(String(localized: "Voice-over deleted"))
     }
 }

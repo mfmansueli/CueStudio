@@ -88,7 +88,7 @@ struct BlurPanel: View {
             PanelSlider(
                 label: String(localized: "Strength"), value: region.strength * 100, range: 0...100, format: .percent, identifier: "edit.blur.strength",
                 onChange: { blur.setStrength($0 / 100) },
-                onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+                onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
             )
         } else {
             PanelSwatches(label: String(localized: "Color"), colors: OverlayColor.palette, selection: region.color, identifier: "edit.blur.color") { color in
@@ -98,7 +98,7 @@ struct BlurPanel: View {
         PanelSlider(
             label: String(localized: "Soft edge"), value: region.feather * 100, range: 0...100, format: .percent, identifier: "edit.blur.feather",
             onChange: { blur.setFeather($0 / 100) },
-            onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+            onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
         )
         if let first = viewModel.edit.editedSpans(of: region, in: viewModel.edit.timeline).first, !viewModel.edit.isOnPhoto(region) {
             PanelStepper(

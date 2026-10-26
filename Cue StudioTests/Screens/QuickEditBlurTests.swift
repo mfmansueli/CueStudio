@@ -279,6 +279,26 @@ struct QuickEditBlurTests {
         #expect(viewModel.edit.blurRegions.allSatisfy { $0.isFollowed })
     }
 
+    /// One area deleted while the faces are followed one after another, the one running or one waiting its turn: the others
+    /// still get followed.
+    @Test func deletingAnAreaWhileFollowingLetsTheOthersGoOn() async throws {
+        let big = CGRect(x: 0.4, y: 0.3, width: 0.2, height: 0.2)
+        let small = [0.05, 0.25, 0.7, 0.88].map { CGRect(x: $0, y: 0.1, width: 0.05, height: 0.05) }
+        let scenario = await makeScenario(delay: .milliseconds(2), faces: [big] + small)
+        let viewModel = scenario.viewModel
+        viewModel.perform(.addBlurArea)
+        await Wait.until { viewModel.blur.picking?.isSearching == false }
+        viewModel.blur.pickAllButLargest()
+        let regions = viewModel.edit.blurRegions.map(\.id)
+        try #require(regions.count == 4)
+        #expect(viewModel.blur.following?.id == regions[0])
+        viewModel.blur.delete(regions[1])
+        viewModel.blur.delete(regions[0])
+        await Wait.until(timeout: .seconds(60)) { !viewModel.blur.isFollowing && viewModel.blur.followQueue.isEmpty }
+        #expect(viewModel.edit.blurRegions.map(\.id) == [regions[2], regions[3]])
+        #expect(viewModel.edit.blurRegions.allSatisfy { $0.isFollowed })
+    }
+
     @Test func aCopyOfTheClipShowsTheAreaAgainAndEitherBarTrimsIt() async throws {
         let scenario = await makeScenario(faces: [])
         let viewModel = scenario.viewModel, player = scenario.player

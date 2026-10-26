@@ -21,9 +21,11 @@ extension AudioViewModel {
         }
     }
 
-    /// Copies the sound file in and adds it at the playhead.
+    /// Copies the sound file in and adds it at the playhead, or puts it in the clip "Replace" asked for: what the sheet was opened
+    /// for is kept from the start, so closing it while the file copies never turns a Replace into an Add.
     func importMusic(from url: URL) async {
         guard isReady, !isImportingMusic else { return }
+        let replacing = musicReplacementID
         isImportingMusic = true
         defer { isImportingMusic = false }
         do {
@@ -32,7 +34,7 @@ extension AudioViewModel {
                 EditMediaFiles.remove([imported.fileName])
                 return
             }
-            addMusic(imported)
+            addMusic(imported, replacing: replacing)
         } catch {
             noteFailure(error, "importMusic")
             toast.show(EditorErrorMessage.text(for: error, otherwise: String(localized: "Can't add this file")), kind: .problem)
@@ -40,11 +42,11 @@ extension AudioViewModel {
     }
 
     /// Adds a sound file at the playhead, in the free room around it (see `MusicPlacement`), for as
-    /// long as the file or that room lasts. When "Replace" asked for the file, it takes the place
-    /// of that clip instead.
-    func addMusic(_ imported: ImportedAudio) {
+    /// long as the file or that room lasts. When "Replace" asked for the file (`replacing`, by default the clip it asks for
+    /// now), it takes the place of that clip instead.
+    func addMusic(_ imported: ImportedAudio, replacing: UUID?? = nil) {
         importedFiles.insert(imported.fileName)
-        if let replacing = musicReplacementID {
+        if let replacing = replacing ?? musicReplacementID {
             replaceMusic(replacing, with: imported)
             return
         }
@@ -78,7 +80,9 @@ extension AudioViewModel {
     private func replaceMusic(_ id: UUID, with imported: ImportedAudio) {
         musicReplacementID = nil
         guard edit.music.contains(where: { $0.id == id }) else {
+            // The clip went meanwhile (Undo, Delete): nothing to replace, and nothing added in its stead.
             discard(imported)
+            toast.show(String(localized: "The music clip is gone · Nothing replaced"), kind: .problem)
             return
         }
         guard imported.duration >= MusicClip.minimumDuration else {
@@ -95,7 +99,7 @@ extension AudioViewModel {
         }
         selectedMusicID = id
         findBeatsIfNeeded()
-        toast.show(String(localized: "Music replaced"))
+        sayUndoable(String(localized: "Music replaced"))
     }
 
     // MARK: - Sound effects
@@ -140,9 +144,14 @@ extension AudioViewModel {
         importedFiles.remove(imported.fileName)
     }
 
+    /// Takes a music clip, sound effect or extracted sound off the track, said with Undo like every other delete (its file stays
+    /// for Undo until the editor closes).
     func deleteMusic(_ id: UUID) {
+        guard let clip = edit.music.first(where: { $0.id == id }) else { return }
         change { $0.music?.removeAll { $0.id == id } }
         if selectedMusicID == id { selectedMusicID = nil }
+        Haptics.delete()
+        sayUndoable(clip.followsTheVideo ? String(localized: "Sound deleted") : String(localized: "Music deleted"))
     }
 
     func setMusicFadeIn(_ id: UUID, _ seconds: TimeInterval) {
