@@ -111,6 +111,17 @@ extension RealExports {
                 // The preview draws with the analyses ready; the export would make it.
                 let analysis = try await MotionAnalyzer().analyze(videoAt: take, continuing: nil, shouldStop: { false }, checkpoint: { _ in })
                 MotionAnalysisStore.save(analysis, forRecording: take)
+            case .blurArea:
+                // A pixelated area moving across the recording, under a square crop.
+                edit.aspect = .square
+                var region = BlurRegion(
+                    target: .recording(nil), span: TimeSpan(start: 0.5, end: 3.5), box: NormalizedBox(x: 0.3, y: 0.3, width: 0.3, height: 0.15)
+                )
+                region.keyframes = [
+                    BlurKeyframe(time: 0.5, box: NormalizedBox(x: 0.1, y: 0.3, width: 0.3, height: 0.15)),
+                    BlurKeyframe(time: 3.5, box: NormalizedBox(x: 0.6, y: 0.5, width: 0.3, height: 0.15)),
+                ]
+                edit.blurRegions = [region]
             case .followFace:
                 edit.aspect = .square
                 edit.faceFollow = FaceFollow(pace: .quick)
@@ -131,7 +142,7 @@ extension RealExports {
 /// The tools `PreviewMatchesExportTests` compares.
 enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
     case look, crop, fit, clipZoom, shortClipTransition, slide, zoomTransition, flash, fade, push, wipe, blur, punch, speed,
-         text, captions, stabilize, followFace
+         text, captions, stabilize, followFace, blurArea
 
     var testDescription: String { rawValue }
 

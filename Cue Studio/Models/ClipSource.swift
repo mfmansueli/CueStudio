@@ -21,6 +21,8 @@ nonisolated struct ClipSource: Codable, Hashable, Identifiable, Sendable {
     var scriptReference: Script?
     /// Reverse: this recording is another one played backwards (`ClipReversal`); nil for a recording as filmed.
     var reversal: ClipReversal?
+    /// Freeze frame: this recording is a frame of another one held still (`FrameOrigin`); nil for a recording as filmed.
+    var still: FrameOrigin?
 
     init(fileName: String, duration: TimeInterval, title: String, takeID: UUID? = nil) {
         self.fileName = fileName

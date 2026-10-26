@@ -115,6 +115,19 @@ struct QuickEditPreview: View {
             .padding(.top, 12)
             .allowsHitTesting(false)
             .accessibilityIdentifier("edit.originalAudioBadge")
+        } else if viewModel.blur.comparesOriginal || viewModel.overlays.comparesWithoutMask {
+            // ◐ in Blur area or Mask: the video without what they change.
+            HStack(spacing: 6) {
+                Image(systemName: "circle.lefthalf.filled").font(.editorGlyph(EditorGlyph.small, weight: .bold)).foregroundStyle(Palette.accText)
+                Text(viewModel.blur.comparesOriginal ? "Without Blur areas" : "Without the mask").font(.footnote.weight(.semibold))
+            }
+            .padding(.horizontal, 12)
+            .frame(height: 30)
+            .background(Palette.Takes.durationBadge, in: Capsule())
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding(.top, 12)
+            .allowsHitTesting(false)
+            .accessibilityIdentifier("edit.comparedBadge")
         } else if viewModel.look.comparesPicture {
             // ◐ in Adjust, Filters or Background: the picture as recorded.
             HStack(spacing: 6) {

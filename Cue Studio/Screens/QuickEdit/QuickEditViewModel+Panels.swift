@@ -55,9 +55,27 @@ extension QuickEditViewModel {
         case .voiceOver: String(localized: "Records from the playhead · the video plays muted")
         case .beats: audio.beatsSubtitle
         case .media: selectedMedia?.layout == .split ? splitSubtitle : String(localized: "On top of the video")
+        case .mask: maskSubtitle
+        case .blur: blurSubtitle
         case .transition: transitionSubtitle
         case .smart: String(localized: "Quick fixes, made on your iPhone")
         }
+    }
+
+    /// "Video · only what's inside shows", or "· what's outside shows" when inverted.
+    private var maskSubtitle: String {
+        let kind = selectedMedia?.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
+        guard let mask = selectedMedia?.mask else { return String(localized: "\(kind) · pick a shape") }
+        return mask.inverted ? String(localized: "\(kind) · what's outside shows") : String(localized: "\(kind) · only what's inside shows")
+    }
+
+    /// "Face · 00:03.0–00:07.0" (where it first shows), or the first step's instruction.
+    private var blurSubtitle: String {
+        if blur.picking != nil { return String(localized: "Tap a face in the video, or draw an area") }
+        guard let region = selectedBlur, let shown = edit.editedSpans(of: region, in: edit.timeline).first else {
+            return String(localized: "Hides a face, a plate or a name")
+        }
+        return "\(region.subject.label) · \(DurationText.editor(shown.start))–\(DurationText.editor(shown.end))"
     }
 
     private func clipSubtitle(_ panel: EditorPanel) -> String {

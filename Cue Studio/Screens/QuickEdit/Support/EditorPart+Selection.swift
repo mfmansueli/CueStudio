@@ -51,6 +51,17 @@ extension EditorPart {
         set { select(newValue.map(EditorSelection.music), replacing: \.musicID) }
     }
 
+    /// The Blur area picked on the preview or its track.
+    var selectedBlurID: UUID? {
+        get { selection?.blurID }
+        set { select(newValue.map(EditorSelection.blur), replacing: \.blurID) }
+    }
+
+    /// The picked Blur area.
+    var selectedBlur: BlurRegion? {
+        selectedBlurID.flatMap { id in edit.blurRegions.first { $0.id == id } }
+    }
+
     /// The picked text.
     var selectedText: TextOverlay? {
         selectedTextID.flatMap { id in edit.texts.first { $0.id == id } }

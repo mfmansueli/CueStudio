@@ -12,6 +12,8 @@ nonisolated enum TimelineLane: String, CaseIterable, Hashable, Sendable {
     /// Photos and videos laid over the take (B-roll, windows, the split screen's supports), each with its frames; shown only
     /// when there is one.
     case media
+    /// Blur areas (faces, plates hidden); shown only when there is one.
+    case blur
     /// Texts and graphics.
     case text
     case captions
@@ -25,6 +27,7 @@ nonisolated enum TimelineLane: String, CaseIterable, Hashable, Sendable {
         switch self {
         case .main: nil
         case .media: "photo.on.rectangle"
+        case .blur: "eye.slash"
         case .text: "textformat"
         case .captions: "captions.bubble"
         case .music, .audio: "music.note"

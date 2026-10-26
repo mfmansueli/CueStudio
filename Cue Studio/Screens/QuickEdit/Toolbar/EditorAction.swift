@@ -82,4 +82,14 @@ enum EditorAction: Hashable {
     case closeGap
     /// The photo or video kept in the creator's library, to reuse in other videos.
     case saveMediaToLibrary
+    /// Mask: only part of the picked photo or video shows (a split screen's support says why it can't).
+    case openMask
+    // Blur area
+    /// A face, a plate or a name hidden: the faces in the frame to tap, or an area to draw.
+    case addBlurArea
+    /// The picked area follows its subject.
+    case followBlur
+    /// The picked area's stretch plays, to check it.
+    case reviewBlur
+    case deleteBlur
 }

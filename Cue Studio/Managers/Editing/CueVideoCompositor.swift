@@ -158,7 +158,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 frame: instruction.frame, cropFit: instruction.edit.cropFit, look: instruction.look,
                 key: mainArea == nil ? "main-\(moment)" : "main-split-\(moment)",
                 moment: SmoothingMoment(stream: .main, stretch: stretch, time: time), sourceTime: instruction.sourceTime(at: time),
-                lookTime: time - instruction.timeOrigin, area: mainArea.map { ($0, instruction.mainFraming) }
+                lookTime: time - instruction.timeOrigin, area: mainArea.map { ($0, instruction.mainFraming) },
+                blurs: instruction.blurs(at: time)
             ),
             faces: faces
         )
@@ -173,7 +174,8 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                     look: instruction.blendLook ?? instruction.look, key: mainArea == nil ? "blend-\(moment)" : "blend-split-\(moment)",
                     moment: SmoothingMoment(stream: .blend, stretch: stretch, time: time), sourceTime: dissolve.otherSideSourceTime(at: time),
                     lookTime: time - instruction.timeOrigin,
-                    area: mainArea.map { ($0, instruction.blendMainFraming ?? instruction.mainFraming) }
+                    area: mainArea.map { ($0, instruction.blendMainFraming ?? instruction.mainFraming) },
+                    blurs: instruction.blendBlurs(atSource: dissolve.otherSideSourceTime(at: time))
                 ),
                 faces: faces
             )
@@ -186,7 +188,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             }
         }
         if let support, let areas = support.areas {
-            image = splitScreen(main: image, support: support, frame: support.trackID.flatMap { media[$0] }, areas: areas)
+            image = splitScreen(main: image, support: support, frame: support.trackID.flatMap { media[$0] }, areas: areas, at: time)
         }
         // Every other photo and video showing, lowest layer first; the same layer in the order they come in the edit, as the
         // editor stacks them (`QuickEditViewModel.visibleMediaStack`).
@@ -226,9 +228,9 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         }
     }
 
-    /// A photo or video over the take: filling its place (cropped, centered), on top of `image`,
-    /// where its keyframes put it at `time`. A video without a frame at this moment leaves the take
-    /// showing.
+    /// A photo or video over the take: its Blur areas hidden, filling its place (cropped, centered, or as Mask › Picture framed
+    /// it), its mask cut out (where its keyframes have the mask at `time`), on top of `image`, where its keyframes put it at
+    /// `time`. A video without a frame at this moment leaves the take showing.
     nonisolated private static func laid(_ item: MediaFrame, frame: CVPixelBuffer?, over image: CIImage, at time: TimeInterval) -> CIImage {
         var picture: CIImage
         if let photo = item.image {
@@ -240,12 +242,22 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
             return image
         }
         picture = picture.transformed(by: CGAffineTransform(translationX: -picture.extent.minX, y: -picture.extent.minY))
-        let fill = MediaPlacement.fill(picture.extent.size, into: item.rect.size)
+        picture = item.hidingBlurs(picture, at: time)
+        // Always Fill over the place; Core Image's y grows upward, so the picture's top goes `origin.y` below the place's top.
+        var framing = item.areaFraming
+        framing.fit = .fill
+        let placed = SplitPlacement.place(picture.extent.size, in: item.rect.size, framing: framing)
         picture = picture
-            .transformed(by: CGAffineTransform(scaleX: fill.scale, y: fill.scale))
-            .transformed(by: CGAffineTransform(translationX: item.rect.minX + fill.offset.x, y: item.rect.minY + fill.offset.y))
+            .transformed(by: CGAffineTransform(scaleX: placed.scale, y: placed.scale))
+            .transformed(by: CGAffineTransform(
+                translationX: item.rect.minX + placed.origin.x, y: item.rect.maxY - placed.origin.y - placed.size.height
+            ))
             .cropped(to: item.rect)
-        if let motion = item.motion, let state = motion.state(at: time - item.span.start) {
+        let state = item.motion?.state(at: time - item.span.start)
+        if let mask = item.mask {
+            picture = MaskDrawing.apply(mask, placement: state?.mask ?? mask.placement, to: picture, in: item.rect)
+        }
+        if let state {
             // Keyframes: the laid picture moved to their center, scaled around its own, faded.
             let point = state.center.clamped
             let center = CGPoint(x: CGFloat(point.x) * item.frameSize.width, y: (1 - CGFloat(point.y)) * item.frameSize.height)
@@ -264,7 +276,7 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
     /// says, on black where a picture doesn't reach (Fit), and the seam as the layout draws it (`SplitSeamDrawing`). A video
     /// without a frame at this moment leaves its area black rather than moving the main video.
     nonisolated private static func splitScreen(
-        main: CIImage, support: MediaFrame, frame: CVPixelBuffer?, areas: SplitPlacement.Areas
+        main: CIImage, support: MediaFrame, frame: CVPixelBuffer?, areas: SplitPlacement.Areas, at time: TimeInterval
     ) -> CIImage {
         let size = support.frameSize
         // Core Image measures y from the bottom.
@@ -283,7 +295,9 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 .transformed(by: FramePipeline.uprightTransform(support.transform, sourceHeight: CGFloat(CVPixelBufferGetHeight(frame))))
         }
         if let picture {
-            let upright = picture.transformed(by: CGAffineTransform(translationX: -picture.extent.minX, y: -picture.extent.minY))
+            let upright = support.hidingBlurs(
+                picture.transformed(by: CGAffineTransform(translationX: -picture.extent.minX, y: -picture.extent.minY)), at: time
+            )
             let rect = flipped(areas.support)
             canvas = FramePipeline.inArea(upright, size: rect.size, framing: support.areaFraming)
                 .transformed(by: CGAffineTransform(translationX: rect.minX, y: rect.minY))

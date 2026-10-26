@@ -17,14 +17,24 @@ nonisolated struct FaceFinder: FaceFinding {
     func face(in url: URL, isVideo: Bool, at time: TimeInterval) async -> (box: CGRect?, size: CGSize)? {
         guard let image = isVideo ? await Self.frame(of: url, at: time) : Self.photo(at: url) else { return nil }
         let size = CGSize(width: image.width, height: image.height)
+        return (Self.boxes(in: image).first, size)
+    }
+
+    @concurrent
+    func faces(in url: URL, isVideo: Bool, at time: TimeInterval) async -> [CGRect]? {
+        guard let image = isVideo ? await Self.frame(of: url, at: time) : Self.photo(at: url) else { return nil }
+        return Self.boxes(in: image)
+    }
+
+    /// The faces Vision is sure of, largest first, from the top left.
+    private static func boxes(in image: CGImage) -> [CGRect] {
         let request = VNDetectFaceRectanglesRequest()
         try? VNImageRequestHandler(cgImage: image, options: [:]).perform([request])
-        let largest = (request.results ?? [])
+        return (request.results ?? [])
             .filter { $0.confidence > 0.5 }
-            .max { $0.boundingBox.width * $0.boundingBox.height < $1.boundingBox.width * $1.boundingBox.height }
-        // Vision's boxes are from the bottom left.
-        let box = largest.map { CGRect(x: $0.boundingBox.minX, y: 1 - $0.boundingBox.maxY, width: $0.boundingBox.width, height: $0.boundingBox.height) }
-        return (box, size)
+            .sorted { $0.boundingBox.width * $0.boundingBox.height > $1.boundingBox.width * $1.boundingBox.height }
+            // Vision's boxes are from the bottom left.
+            .map { CGRect(x: $0.boundingBox.minX, y: 1 - $0.boundingBox.maxY, width: $0.boundingBox.width, height: $0.boundingBox.height) }
     }
 
     private static func frame(of url: URL, at time: TimeInterval) async -> CGImage? {

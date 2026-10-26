@@ -32,8 +32,16 @@ nonisolated struct MediaFrame: @unchecked Sendable {
     var frameSize: CGSize = .zero
     /// A split screen's areas on the frame (from the top left), when it is a support.
     var areas: SplitPlacement.Areas?
-    /// How a support sits in its area.
+    /// How a support sits in its area, or a window's or full-screen picture in its place (always Fill there).
     var areaFraming = AreaFraming()
+    /// The photo or video over the take this draws (`MediaOverlay.id`).
+    var mediaID: UUID?
+    /// Its pieces with the second of its file each starts at, for the Blur areas on it.
+    var filePieces: [MediaPiece] = []
+    /// The Blur areas on it (`BlurRegion.target`).
+    var blurs: [BlurRegion] = []
+    /// Its mask, when it has one and isn't a support.
+    var mask: MediaMask?
 
     var isSupport: Bool { areas != nil }
 
@@ -46,4 +54,17 @@ nonisolated struct MediaFrame: @unchecked Sendable {
 
     /// Edited seconds it shows, piece by piece.
     var shownSpans: [TimeSpan] { pieces ?? [span] }
+
+    /// The second of its file shown at `time` (edited seconds).
+    func fileTime(at time: TimeInterval) -> TimeInterval {
+        guard let piece = filePieces.first(where: { $0.edited.start - 0.000_1 <= time && time <= $0.edited.end + 0.000_1 }) ?? filePieces.first
+        else { return 0 }
+        return piece.fileStart + max(0, time - piece.edited.start)
+    }
+
+    /// `picture` (upright, its corner at the origin) with the Blur areas on it at `time` hidden.
+    func hidingBlurs(_ picture: CIImage, at time: TimeInterval) -> CIImage {
+        guard !blurs.isEmpty, let mediaID else { return picture }
+        return BlurDrawing.apply(BlurResolver.shown(blurs, onMedia: mediaID, at: fileTime(at: time), isPhoto: !isVideo), to: picture)
+    }
 }

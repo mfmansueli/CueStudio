@@ -102,9 +102,14 @@ extension OverlaysViewModel {
         }
         let base = OverlayMotion.State(center: motionState(of: item).center, scale: 1, opacity: 1)
         let motion = OverlayMotion(keyframes(of: item))
+        // A mask placed by keyframes keeps where it was at each tracked moment.
         let tracked = TrackedMotion.keyframes(for: points) { time in
             let state = motion.state(at: time) ?? base
             return (state.scale, state.opacity)
+        }.map { keyframe in
+            var keyframe = keyframe
+            keyframe.mask = motion.maskState(at: keyframe.time)
+            return keyframe
         }
         updateKeyframes(of: item) { keyframes in
             keyframes.removeAll { $0.time >= first.time - OverlayKeyframe.sameMoment && $0.time <= last.time + OverlayKeyframe.sameMoment }

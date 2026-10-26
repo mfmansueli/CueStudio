@@ -20,6 +20,8 @@ final class EditorJobs {
         case captions
         /// Track following an object.
         case tracking
+        /// Blur area following its subject (one area at a time).
+        case blurFollowing
         /// Drawing the cover for the timeline's cover block.
         case cover
         /// A short part playing to show a change.

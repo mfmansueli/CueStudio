@@ -11,8 +11,8 @@ import Foundation
 /// y is from the top of the timeline. Pure, so the layout is tested without a screen.
 ///
 /// - The ruler on top, then the video track (frames over a waveform), then the tracks under it: photos and videos over the
-///   take (with their frames, when there are any; short spaces between supports marked), texts, captions, music and
-///   voice-over. Each track sits
+///   take (with their frames, when there are any; short spaces between supports marked), Blur areas (when there are any; what's
+///   left unchecked hatched), texts, captions, music and voice-over. Each track sits
 ///   on a strip that stays on screen, with its icon in a gutter on the left; an empty one says
 ///   what a tap on it does ("Tap to add text"). Tapping a track opens its tools.
 /// - With a panel open the timeline is compact: the video track shrinks to 40 pt and the track the
@@ -27,6 +27,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var clips: [ClipInput] = []
         var texts: [ItemInput] = []
         var media: [ItemInput] = []
+        /// Blur areas, once per showing.
+        var blurs: [ItemInput] = []
         var captions: [ItemInput] = []
         /// Captions show in the video (the lines can exist while hidden).
         var showsCaptions = true
@@ -79,6 +81,11 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var isLocked = false
         /// A photo or video: what its frames are drawn from.
         var strip: MediaStrip?
+        /// A Blur area: where it's left unchecked (edited seconds), hatched on its bar.
+        var warnings: [TimeSpan] = []
+        /// What a tap picks when the bar is one showing of something that shows several times (a Blur area on a clip and
+        /// its copy): that thing's id; nil: the bar's own.
+        var owner: UUID?
     }
 
     /// What a photo's or video's bar shows: its frames, piece by piece (each starting at its second of the file), how it shows.
@@ -108,11 +115,12 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     }
 
     enum ItemKind: String, Equatable, Sendable {
-        case text, media, caption, music, voiceOver, recording
+        case text, media, caption, music, voiceOver, recording, blur
 
         var lane: TimelineLane {
             switch self {
             case .media: .media
+            case .blur: .blur
             case .text: .text
             case .caption: .captions
             case .music: .music
@@ -158,6 +166,13 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var isLocked = false
         /// A photo or video's frames.
         var strip: MediaStrip?
+        /// A Blur area's unchecked stretches, from the item's left edge.
+        var warningRanges: [ClosedRange<CGFloat>] = []
+        /// What a tap on it picks (`ItemInput.owner`), else its own id.
+        var owner: UUID?
+
+        /// The id a tap picks.
+        var pickedID: UUID { owner ?? id }
     }
 
     struct Pause: Equatable, Sendable {
@@ -382,7 +397,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                 let x = CGFloat(item.span.start) * pps
                 let width = max(4, CGFloat(item.span.duration) * pps - 2)
                 let id = item.id
-                let isSelected = Self.isSelected(kind, id, selection)
+                let isSelected = Self.isSelected(kind, item.owner ?? id, selection)
                 items.append(Item(
                     kind: kind, id: id,
                     frame: CGRect(x: x, y: lane.y, width: width, height: lane.height),
@@ -392,19 +407,29 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
                     keyframeOffsets: item.keyframes.map { CGFloat($0 - item.span.start) * pps },
                     beatOffsets: item.beats.map { CGFloat($0 - item.span.start) * pps },
                     isLocked: item.isLocked,
-                    strip: item.strip
+                    strip: item.strip,
+                    warningRanges: item.warnings.compactMap { warning in
+                        let from = max(0, CGFloat(warning.start - item.span.start) * pps)
+                        let to = min(width, CGFloat(warning.end - item.span.start) * pps)
+                        return to > from ? from...max(from + 2, to) : nil
+                    },
+                    owner: item.owner
                 ))
-                // A picked item trims by its handles and moves by its body; a locked one keeps its place.
+                // A picked item trims by its handles and moves by its body; a locked one keeps its place. A Blur area stays on
+                // what it covers: it trims, it doesn't move.
                 if isSelected, !item.isLocked {
                     handles.append(Self.handle(.item(kind, id, .start), x: x - Self.itemHandleWidth, width: Self.itemHandleWidth, lane: lane))
                     handles.append(Self.handle(.item(kind, id, .end), x: x + width, width: Self.itemHandleWidth, lane: lane))
-                    let body = CGRect(x: x, y: lane.y, width: width, height: lane.height)
-                    bodies.append(Handle(target: .move(kind, id), frame: body, hitFrame: body))
+                    if kind != .blur {
+                        let body = CGRect(x: x, y: lane.y, width: width, height: lane.height)
+                        bodies.append(Handle(target: .move(kind, id), frame: body, hitFrame: body))
+                    }
                 }
             }
         }
         add(.text, input.texts)
         add(.media, input.media)
+        add(.blur, input.blurs)
         if input.showsCaptions { add(.caption, input.captions) }
         add(.music, input.music)
         add(.voiceOver, input.voiceOvers)
@@ -456,7 +481,9 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     private static func laneOrder(_ input: Input) -> [TimelineLane] {
         let hasMusic = !input.music.isEmpty
         let hasVoice = !input.voiceOvers.isEmpty || input.recording != nil
-        var others: [TimelineLane] = input.media.isEmpty ? [.text, .captions] : [.media, .text, .captions]
+        var others: [TimelineLane] = input.media.isEmpty ? [] : [.media]
+        if !input.blurs.isEmpty { others.append(.blur) }
+        others += [.text, .captions]
         if hasMusic { others.append(.music) }
         if hasVoice { others.append(.voiceOver) }
         if !hasMusic, !hasVoice { others.append(.audio) }
@@ -467,7 +494,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     private static func isSelected(_ kind: ItemKind, _ id: UUID, _ selection: EditorSelection?) -> Bool {
         switch (kind, selection) {
         case (.text, .text(let picked)?), (.media, .media(let picked)?), (.caption, .caption(let picked)?),
-             (.music, .music(let picked)?), (.voiceOver, .voiceOver(let picked)?):
+             (.music, .music(let picked)?), (.voiceOver, .voiceOver(let picked)?), (.blur, .blur(let picked)?):
             picked == id
         default: false
         }
@@ -507,8 +534,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         if let gap = gaps.first(where: { $0.frame.insetBy(dx: -6, dy: 0).contains(point) }) { return .gap(gap.id) }
         if let join = joins.first(where: { $0.hitFrame.contains(point) }) { return .join(join.id) }
         // The picked item first, then from the top layer down.
-        if let item = items.last(where: { $0.isSelected && $0.frame.contains(point) }) { return .item(item.kind, item.id) }
-        if let item = items.last(where: { $0.kind != .recording && $0.frame.contains(point) }) { return .item(item.kind, item.id) }
+        if let item = items.last(where: { $0.isSelected && $0.frame.contains(point) }) { return .item(item.kind, item.pickedID) }
+        if let item = items.last(where: { $0.kind != .recording && $0.frame.contains(point) }) { return .item(item.kind, item.pickedID) }
         if let clip = clips.first(where: { $0.frame.insetBy(dx: -1, dy: 0).contains(point) }) { return .clip(clip.id) }
         return nil
     }
@@ -530,7 +557,7 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         times += input.clips.map(\.start)
         times += input.captions.flatMap { [$0.span.start, $0.span.end] }
         times += input.texts.flatMap { [$0.span.start, $0.span.end] + $0.keyframes }
-        times += (input.media + input.music + input.voiceOvers).flatMap { [$0.span.start, $0.span.end] }
+        times += (input.media + input.blurs + input.music + input.voiceOvers).flatMap { [$0.span.start, $0.span.end] }
         times += input.beatSnaps
         return Array(Set(times)).sorted()
     }

@@ -59,10 +59,14 @@ nonisolated struct MediaOverlay: Codable, Hashable, Identifiable, Sendable {
     /// The window's width as a fraction of the frame's.
     var width: Double = 0.6
     var shape: MediaShape = .original
+    /// A mask showing only part of it (`MediaMask`); nil shows it whole. Kept while it's a support of the split screen (whose
+    /// area is already its shape), for when it's a window or full screen again.
+    var mask: MediaMask?
 
     /// A support's layout (`SplitScreen.layout(id:)`); nil uses the video's.
     var splitLayoutID: UUID?
-    /// How a support sits in its area; nil fills it, centered.
+    /// How its picture sits in its place: a support's in its area (Fill or Fit, zoomed, moved); a window's or a full-screen
+    /// one's under its mask (always Fill, zoomed and moved by Mask › Picture). Nil fills it, centered.
     var areaFraming: AreaFraming?
     /// How loud the main video plays while it shows, 0 to 1; nil leaves the main video as it is. With the support's own sound
     /// up, 0 hears only the support.

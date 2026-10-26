@@ -56,6 +56,9 @@ struct OverlayEditingLayer: View {
             ForEach(viewModel.overlays.visibleTexts) { text in
                 textHandle(text)
             }
+            // Over everything while their panels are open: the mask's handles and the Blur areas.
+            MaskEditingLayer(viewModel: viewModel, size: size)
+            BlurEditingLayer(viewModel: viewModel, size: size)
         }
         .frame(width: size.width, height: size.height)
         .coordinateSpace(name: Self.space)
@@ -65,7 +68,10 @@ struct OverlayEditingLayer: View {
 
     /// The windows showing at the playhead, bottom to top, with the picked one last (on top, so it stays reachable).
     private var handledMedia: [MediaOverlay] {
-        let windows = viewModel.overlays.visibleMediaStack.filter { $0.layout == .window }
+        // While Mask is open, a drag on the picked media moves its mask (`MaskEditingLayer`), not the media.
+        let windows = viewModel.overlays.visibleMediaStack.filter {
+            $0.layout == .window && !(viewModel.panel == .mask && $0.id == viewModel.selection?.mediaID)
+        }
         let picked = viewModel.selection?.mediaID
         return windows.filter { $0.id != picked } + windows.filter { $0.id == picked }
     }

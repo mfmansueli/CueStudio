@@ -82,6 +82,9 @@ enum EditFixtures {
             layouts: [SplitLayout(arrangement: .sideBySide, ratio: .sixtyForty)],
             framings: [RecordingFraming(sourceID: nil, framing: AreaFraming(fit: .fit, zoom: 1.5))], mutesMedia: true
         )
+        var blurArea = BlurRegion(target: .recording(nil), span: TimeSpan(start: 1, end: 3), box: NormalizedBox(x: 0.2, y: 0.2, width: 0.3, height: 0.3))
+        blurArea.style = .solid
+        edit.blurRegions = [blurArea]
         edit.brandKit = AppliedBrandKit(id: UUID(), name: "Acme", colors: [.custom(red: 0.1, green: 0.4, blue: 0.96)])
         edit.voiceOvers = [VoiceOverClip(fileName: "v.m4a", duration: 2, anchor: 1)]
         edit.creatorStyle = .clean

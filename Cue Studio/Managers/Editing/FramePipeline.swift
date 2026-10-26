@@ -8,7 +8,8 @@ import CoreVideo
 import Foundation
 
 /// The one way a frame of a recording becomes the edit's picture, for the video (`CueVideoCompositor`) and the cover
-/// (`CoverRenderer`) alike: upright, held steady (Stabilize), cut to the take's frame where Follow face has it (or fitted on
+/// (`CoverRenderer`) alike: upright, its Blur areas hidden (`BlurDrawing`, on the frame as recorded, so everything after
+/// carries them along), held steady (Stabilize), cut to the take's frame where Follow face has it (or fitted on
 /// black), scaled to the take's frame, Skin Smoothing found on the frame as recorded, the background put behind the creator,
 /// then Adjust and Filters (`FrameLook`). A clip's zoom goes on after (`zoomed`). Whatever frames the video next frames the
 /// cover too.
@@ -34,7 +35,7 @@ nonisolated enum FramePipeline {
         _ upright: CIImage, as framing: Framing, skin: SkinSmoother, mask: (_ image: CIImage, _ key: String) -> CIImage?
     ) -> CIImage {
         let frame = framing.frame, look = framing.look, moment = framing.moment, sourceTime = framing.sourceTime
-        var image = upright
+        var image = BlurDrawing.apply(framing.blurs, to: upright)
         if let steady = frame.steady {
             image = steadied(image, by: steady, at: sourceTime)
         }

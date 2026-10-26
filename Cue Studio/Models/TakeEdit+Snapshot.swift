@@ -44,5 +44,6 @@ extension TakeEdit {
         if step.captionLanguageKnown == true { captionLanguage = step.captionLanguage }
         if let splitScreen = step.splitScreen { self.splitScreen = splitScreen }
         if step.brandKitKnown == true { brandKit = step.brandKit }
+        if let regions = step.blurRegions { blurRegions = regions }
     }
 }

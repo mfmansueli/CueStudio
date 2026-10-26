@@ -30,6 +30,9 @@ extension QuickEditViewModel {
         case .media:
             guard let media = selectedMedia else { return selection.contextLabel }
             return media.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
+        case .blur:
+            guard let region = selectedBlur else { return selection.contextLabel }
+            return region.subject.label
         case .caption, .music, .voiceOver, .join:
             return selection.contextLabel
         }
@@ -64,6 +67,8 @@ extension QuickEditViewModel {
             EditorToolbarItem(id: "text", label: String(localized: "Text"), systemImage: "textformat", action: .openMenu(.text)),
             EditorToolbarItem(id: "smart", label: String(localized: "✦ Smart"), systemImage: "sparkles", style: .smart, action: .open(.smart)),
             EditorToolbarItem(id: "addMedia", label: String(localized: "Media"), systemImage: "photo.badge.plus", action: .addMediaChoice),
+            // Sixth: the five on screen stay the ones a talking-head video is made with (owner's decision, 26/10).
+            EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
             EditorToolbarItem(id: "audio", label: String(localized: "Audio"), systemImage: "music.note", action: .openMenu(.audio)),
             EditorToolbarItem(id: "format", label: String(localized: "Format"), systemImage: "aspectratio", action: .open(.crop)),
             // The whole video's look, side by side: Adjust (light and color) and Filters.
@@ -173,6 +178,7 @@ extension QuickEditViewModel {
                 EditorToolbarItem(
                     id: "background", label: String(localized: "Background"), systemImage: "person.and.background.dotted", action: .open(.background)
                 ),
+                EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
                 EditorToolbarItem(id: "copyLook", label: String(localized: "Copy look"), systemImage: "doc.on.doc", action: .copyLook),
                 EditorToolbarItem(
                     id: "pasteLook", label: String(localized: "Paste look"), systemImage: "doc.on.clipboard",
@@ -225,6 +231,13 @@ extension QuickEditViewModel {
             let isSupport = selectedMedia?.layout == .split
             var items = [
                 EditorToolbarItem(id: "editMedia", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.media)),
+            ]
+            // A support has its area for a shape: no Mask there (it would hold one of the four places on screen for nothing).
+            if !isSupport {
+                items.append(EditorToolbarItem(id: "mask", label: String(localized: "Mask"), systemImage: "circle.rectangle.dashed", action: .openMask))
+            }
+            items += [
+                EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
                 EditorToolbarItem(id: "splitMedia", label: String(localized: "Split"), systemImage: "scissors", action: .splitMedia),
                 EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
             ]
@@ -249,6 +262,14 @@ extension QuickEditViewModel {
             items.append(lockItem)
             items.append(EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMedia))
             return items
+        case .blur:
+            return [
+                EditorToolbarItem(id: "editBlur", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.blur)),
+                EditorToolbarItem(id: "followBlur", label: String(localized: "Track"), systemImage: "scope", action: .followBlur),
+                EditorToolbarItem(id: "reviewBlur", label: String(localized: "Review"), systemImage: "play.rectangle", action: .reviewBlur),
+                EditorToolbarItem(id: "addBlur", label: String(localized: "Add area"), systemImage: "plus.viewfinder", action: .addBlurArea),
+                EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteBlur),
+            ]
         case .join:
             // A cut is picked only with its Transition panel open, which takes the toolbar's place.
             return []
@@ -316,7 +337,7 @@ extension QuickEditViewModel {
 
     /// The actions on the picked item. False when `action` isn't one of them.
     private func performOnSelection(_ action: EditorAction) -> Bool {
-        if performOnClip(action) || performOnMotion(action) || performOnMedia(action) { return true }
+        if performOnClip(action) || performOnMotion(action) || performOnMedia(action) || performOnBlur(action) { return true }
         switch action {
         case .duplicateText: selection?.textID.map(overlays.duplicateText)
         case .toggleLock: toggleLockOfSelection()
@@ -345,6 +366,24 @@ extension QuickEditViewModel {
         case .splitMedia: overlays.splitMedia(id)
         case .closeGap: overlays.closeGap(before: id)
         case .saveMediaToLibrary: Task { await brand.saveMediaToLibrary(id) }
+        case .openMask:
+            if let media = selectedMedia, let reason = overlays.maskUnavailableReason(media) {
+                toast.show(reason, kind: .problem)
+            } else {
+                panel = .mask
+            }
+        default: return false
+        }
+        return true
+    }
+
+    /// Blur area: adding one (from anywhere), and the picked one's tools. False when `action` isn't one of them.
+    private func performOnBlur(_ action: EditorAction) -> Bool {
+        switch action {
+        case .addBlurArea: blur.startAdding()
+        case .followBlur: blur.follow()
+        case .reviewBlur: blur.review()
+        case .deleteBlur: selectedBlurID.map(blur.delete)
         default: return false
         }
         return true

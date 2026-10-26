@@ -546,6 +546,13 @@ final class TimelineContentView: UIView {
             label.frame = CGRect(x: x, y: (item.frame.height - label.frame.height) / 2, width: max(0, item.frame.width - x - 6), height: label.frame.height)
             box.addSublayer(label)
         }
+        // A Blur area's stretches left unchecked: hatched over the bar, under its label.
+        for range in item.warningRanges {
+            let hatch = CALayer()
+            hatch.frame = CGRect(x: range.lowerBound, y: 0, width: range.upperBound - range.lowerBound, height: item.frame.height)
+            hatch.backgroundColor = Self.unchecked().cgColor
+            box.insertSublayer(hatch, at: 0)
+        }
         // The music's beats: short ticks along the bottom, in the label's color.
         for offset in item.beatOffsets where offset >= 0 && offset <= item.frame.width {
             let tick = CALayer()
@@ -682,7 +689,31 @@ final class TimelineContentView: UIView {
         case .music: ItemStyle(fill: UIColor(Palette.Editor.laneMusic), ink: UIColor(Palette.Editor.laneMusicInk), symbol: "music.note")
         case .voiceOver: ItemStyle(fill: UIColor(Palette.Editor.laneVoiceOver), ink: UIColor(Palette.Editor.laneVoiceOverInk), symbol: "mic")
         case .recording: ItemStyle(fill: UIColor(Palette.Editor.laneRecording), ink: .white, symbol: "mic.fill")
+        case .blur: ItemStyle(fill: UIColor(Palette.Editor.laneBlur), ink: UIColor(Palette.Editor.laneBlurInk), symbol: "eye.slash")
         }
+    }
+
+    private static var uncheckedHatch: UIColor?
+
+    /// Orange diagonal stripes: where a Blur area may not cover what it hides.
+    private static func unchecked() -> UIColor {
+        if let uncheckedHatch { return uncheckedHatch }
+        let side: CGFloat = 6 * 2.squareRoot()
+        let image = UIGraphicsImageRenderer(size: CGSize(width: side, height: side)).image { context in
+            UIColor(Palette.Editor.blurUncheckedGap).setFill()
+            context.fill(CGRect(x: 0, y: 0, width: side, height: side))
+            UIColor(Palette.Editor.blurUncheckedStripe).setStroke()
+            let path = UIBezierPath()
+            path.lineWidth = 2.5
+            for offset in [-side, 0, side] {
+                path.move(to: CGPoint(x: offset, y: side))
+                path.addLine(to: CGPoint(x: offset + side, y: 0))
+            }
+            path.stroke()
+        }
+        let color = UIColor(patternImage: image)
+        uncheckedHatch = color
+        return color
     }
 
     private static var hatches: [Bool: UIColor] = [:]

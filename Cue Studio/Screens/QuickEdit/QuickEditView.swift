@@ -136,6 +136,19 @@ struct QuickEditView: View {
             Text("You can change it later in Media › Advanced.")
         }
         .confirmationDialog(
+            "A Blur area may not cover what it hides",
+            isPresented: Bindable(viewModel).showsBlurCheck,
+            titleVisibility: .visible
+        ) {
+            Button("Review") { viewModel.reviewUncheckedBlur() }
+                .accessibilityIdentifier("edit.blurCheck.review")
+            Button("Continue anyway") { viewModel.continueDespiteUncheckedBlur() }
+                .accessibilityIdentifier("edit.blurCheck.continue")
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("For \(DurationText.tenths(viewModel.uncheckedBlurDuration)) Cue couldn't confirm it covers what it hides. One frame is enough to show someone.")
+        }
+        .confirmationDialog(
             "Replace your edited captions?",
             isPresented: Bindable(viewModel.captions).confirmsCaptionReplacement,
             titleVisibility: .visible

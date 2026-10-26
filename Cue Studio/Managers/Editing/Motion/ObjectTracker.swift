@@ -23,7 +23,8 @@ nonisolated final class ObjectTracker: ObjectTracking, @unchecked Sendable {
 
     @concurrent
     func track(
-        videoAt url: URL, box: NormalizedBox, at time: TimeInterval, until: TimeInterval, progress: @escaping @Sendable (Double) -> Void
+        videoAt url: URL, box: NormalizedBox, at time: TimeInterval, until: TimeInterval, shouldStop: @escaping @Sendable () -> Bool,
+        progress: @escaping @Sendable (Double) -> Void
     ) async throws -> [TrackSample] {
         let asset = AVURLAsset(url: url)
         guard let track = try await asset.loadTracks(withMediaType: .video).first else { throw TrackError.noVideo }
@@ -53,12 +54,13 @@ nonisolated final class ObjectTracker: ObjectTracking, @unchecked Sendable {
         if end >= time {
             try await frames.read(from: time, to: end) { buffer, moment in
                 try Task.checkCancellation()
+                if shouldStop() { return false }
                 return moment <= time + 0.000_1 || follow(buffer, at: moment)
             }
         } else {
             var chunkEnd = time
             var lost = false
-            while chunkEnd > end + 0.000_1, !lost {
+            while chunkEnd > end + 0.000_1, !lost, !shouldStop() {
                 let chunkStart = max(end, chunkEnd - 1)
                 var chunk: [(CVPixelBuffer, TimeInterval)] = []
                 try await frames.read(from: chunkStart, to: chunkEnd) { buffer, moment in
