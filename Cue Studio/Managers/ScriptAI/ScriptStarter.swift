@@ -77,14 +77,16 @@ final class ScriptStarter {
         from origin: CGPoint? = nil, whenWritten: ((UUID) -> Void)? = nil
     ) -> UUID? {
         guard let text = idea ?? ideaDraft.submission, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
-        let request = factory.request(
-            idea: text, platform: platform ?? ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length,
-            brand: ideaDraft.brand, brief: brief ?? (idea == nil ? ideaDraft.brief : nil), languageText: comment?.text
-        )
+        let request = IdeaSendTimeline.measure("Idea request") {
+            factory.request(
+                idea: text, platform: platform ?? ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length,
+                brand: ideaDraft.brand, brief: brief ?? (idea == nil ? ideaDraft.brief : nil), languageText: comment?.text
+            )
+        }
         // What Apple Intelligence can't draft (in the request's own language) is told now, not after three seconds of star, and nothing is
         // opened: the idea stays where it was, and "Write it" makes it a draft to write by hand only when the creator asks.
         let asked = request.language.map { [$0.locale.language] } ?? []
-        if case .unavailable(let cause) = writer.drafting(in: asked) {
+        if case .unavailable(let cause) = IdeaSendTimeline.measure("Language check", { writer.drafting(in: asked) }) {
             if let failure = writer.writingFailure(in: asked) {
                 AIFailureReport.note(failure, operation: "script", route: nil, language: request.language?.locale.identifier, seconds: 0, isFinal: true)
             }
@@ -97,11 +99,14 @@ final class ScriptStarter {
             })
             return nil
         }
-        let script = library.create(
-            title: "", text: "", platform: request.platform, type: request.format, language: languages.scriptLanguage, comment: comment
-        )
-        presentation.openScript(script.id, writing: request)
+        let script = IdeaSendTimeline.measure("Script created") {
+            library.create(
+                title: "", text: "", platform: request.platform, type: request.format, language: languages.scriptLanguage, comment: comment
+            )
+        }
         let scriptID = script.id
+        // The star holds the app still as it was at the tap (`IdeaTransitionService.showsBackdrop`), so the page opens under it at once,
+        // without a push to watch (nor its frames to pay for), and Apple Intelligence starts writing into it right away.
         transition.begin(
             from: origin ?? .zero, idea: text, platformName: request.platform.label,
             abort: { [weak self] in self?.abort(scriptID, keeping: comment) },
@@ -110,13 +115,15 @@ final class ScriptStarter {
                 whenWritten?(scriptID)
             }
         )
-        return script.id
+        IdeaSendTimeline.measure("Page opened") { presentation.openScript(scriptID, writing: request, animated: false) }
+        return scriptID
     }
 
     /// Cancel, or an error while the star is on screen: no script is created, and the idea is still in the field. After an error, an
     /// answered comment (whose sheet is gone) is kept in the Logbook.
     private func abort(_ scriptID: UUID, keeping comment: ScriptComment?) {
-        presentation.scriptsPath = []
+        // Under the cover: the live app comes back already on Scripts.
+        presentation.showScriptsList(animated: false)
         library.delete([scriptID])
         if transition.leftBecauseOfError, let comment { keepsComment?(comment) }
     }

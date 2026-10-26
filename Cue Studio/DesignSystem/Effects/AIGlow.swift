@@ -5,10 +5,10 @@
 
 import SwiftUI
 
-/// Apple Intelligence's light on a surface that listens or sends to the AI: a thin rim of colour (`Palette.Scripts.dockGlow`) turning
-/// round `shape`, with a soft halo round it. While a dictation listens it stays, turning slowly, and breathes with the voice (`level`);
-/// when an idea is sent it runs once round, fast, as the star leaves (`sendTurn`). The halo is thin and fades within a few points of the
-/// edge, clear of the words inside. Used on the Scripts dock (its glass); any shape fits.
+/// Apple Intelligence's light on a surface that listens: a thin rim of colour (`Palette.Scripts.dockGlow`) turning round `shape`, with a
+/// soft halo round it, while a dictation listens, slowly, breathing with the voice (`level`). An idea sent from the surface has the star
+/// instead (`StarTransitionOverlay`): the app is held still behind it. The halo is thin and fades within a few points of the edge, clear of
+/// the words inside. Used on the Scripts dock (its glass); any shape fits.
 /// Reduce Motion: the light doesn't turn; it fades in and out. Decorative.
 struct AIGlow<Outline: InsettableShape>: View {
     /// The surface's outline: the light is drawn on it and inside it, never past its frame.
@@ -17,20 +17,15 @@ struct AIGlow<Outline: InsettableShape>: View {
     var isListening: Bool
     /// The voice's level, 0…1, while listening.
     var level: Double
-    /// Goes up with each idea sent: each value runs the light round once.
-    var sendTurn: Int = 0
 
-    /// One run round for a sent idea, about the star's rise (`IdeaTransitionService.riseDuration`).
-    private static var sendDuration: TimeInterval { 1.2 }
     /// One slow turn while listening.
     private static var listeningTurn: TimeInterval { 5 }
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var sentAt: Date?
 
     var body: some View {
         ZStack {
-            if isListening || sentAt != nil {
+            if isListening {
                 TimelineView(.animation) { context in
                     let light = light(at: context.date)
                     rim(angle: light.angle)
@@ -44,27 +39,10 @@ struct AIGlow<Outline: InsettableShape>: View {
         .animation(.easeInOut(duration: 0.35), value: isListening)
         .allowsHitTesting(false)
         .accessibilityHidden(true)
-        // Only a new send runs it: `onChange`, not a task keyed on the count, which would run again each time the surface comes back on
-        // screen (back from the script's page) and light it for nothing.
-        .onChange(of: sendTurn) {
-            let started = Date.now
-            sentAt = started
-            Task {
-                try? await Task.sleep(for: .seconds(Self.sendDuration))
-                if sentAt == started { sentAt = nil }
-            }
-        }
     }
 
     /// Where the colours are round the rim, and how strong the light is now.
     private func light(at date: Date) -> (angle: Angle, strength: Double) {
-        if let sentAt {
-            let progress = min(1, date.timeIntervalSince(sentAt) / Self.sendDuration)
-            // Up fast, a full turn eased out, gone as it ends.
-            let strength = sin(.pi * pow(progress, 0.6))
-            let turn = reduceMotion ? 0 : 360 * (1 - pow(1 - progress, 2.2))
-            return (.degrees(turn - 90), strength)
-        }
         let turn = reduceMotion ? 0 : date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: Self.listeningTurn) / Self.listeningTurn * 360
         return (.degrees(turn), 0.45 + 0.55 * min(1, max(0, level)))
     }

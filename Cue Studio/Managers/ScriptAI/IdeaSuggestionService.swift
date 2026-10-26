@@ -51,6 +51,7 @@ final class IdeaSuggestionService {
     private var shownLogbook: Set<UUID> = []
     private var sinceLogbook = 0
     private var starterRotation = 0
+    @ObservationIgnored private var starterCache: (key: String, ideas: [ThemeIdea])?
     private var seen: [String] = []
     /// The ideas used up or shown, as what tells a repeat (`IdeaSimilarity.repeats`): their title, angle and opening line.
     private var echoes: [IdeaEcho] = []
@@ -123,7 +124,7 @@ final class IdeaSuggestionService {
     }
 
     private var starter: ThemeIdea? {
-        let starters = ThemeCatalog.ideas(for: profile.profile.ideaTopics)
+        let starters = allTopicsStarters
         guard !starters.isEmpty else { return nil }
         return starters[(starterRotation % starters.count + starters.count) % starters.count]
     }
@@ -281,9 +282,20 @@ final class IdeaSuggestionService {
     /// The starters about `filter`: the topic's own (or ones made from its name), or all the creator's topics' in turn.
     private func starters(for filter: IdeaTopicFilter) -> [ThemeIdea] {
         switch filter {
-        case .all: ThemeCatalog.ideas(for: profile.profile.ideaTopics)
+        case .all: allTopicsStarters
         case .topic(let topic): ThemeCatalog.ideas(for: topic)
         }
+    }
+
+    /// The starters of all the creator's topics, made again only when the topics or the language change: each is a handful of localized
+    /// strings, and the dock asks for the card's idea every time it is drawn (25/10/2026, on an iPhone 15 Pro: 33 ms of the frame an idea
+    /// was sent in).
+    private var allTopicsStarters: [ThemeIdea] {
+        let key = currentSignature
+        if let starterCache, starterCache.key == key { return starterCache.ideas }
+        let ideas = ThemeCatalog.ideas(for: profile.profile.ideaTopics)
+        starterCache = (key, ideas)
+        return ideas
     }
 
     /// The next idea for `filter` that isn't `shown`: the model's first, then a starter not shown yet; with the model, an end of the starters is

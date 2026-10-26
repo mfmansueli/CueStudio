@@ -55,6 +55,12 @@ struct IdeaTransitionServiceTests {
         )
     }
 
+    /// The finish's cover, then its ring: two waits, one after the other.
+    private func openRing(_ clock: ManualClock, speed: Double = 1) async {
+        await clock.advance(IdeaTransitionService.coverDuration * speed + 0.01)
+        await clock.advance(IdeaTransitionService.ringDuration * speed + 0.01)
+    }
+
     /// Runs `contentReady()` in the background, so the test can move the clock while it waits.
     private func ready(_ service: IdeaTransitionService) -> Task<Void, Never> {
         Task { await service.contentReady() }
@@ -85,7 +91,7 @@ struct IdeaTransitionServiceTests {
         #expect(service.phase == .revealing)
         #expect(calls.arrived == 1 && calls.aborted == 0)
         // The page may start writing once the cover and the ring are done (`revealLead`).
-        await clock.advance(IdeaTransitionService.revealLead + 0.01)
+        await openRing(clock)
         await finished.value
     }
 
@@ -96,7 +102,7 @@ struct IdeaTransitionServiceTests {
         let finished = ready(service)
         await Task.yield()
         #expect(service.phase == .revealing, "the minimum has passed: it opens at once")
-        await clock.advance(IdeaTransitionService.revealLead + 0.01)
+        await openRing(clock)
         await finished.value
     }
 
@@ -105,11 +111,43 @@ struct IdeaTransitionServiceTests {
         begin(service, calls)
         await clock.advance(5)
         let finished = ready(service)
-        await clock.advance(IdeaTransitionService.revealLead + 0.01)
+        await openRing(clock)
         await finished.value
         #expect(service.phase == .revealing)
         await clock.advance(IdeaTransitionService.landingDuration + IdeaTransitionService.caretHold + 0.01)
         #expect(service.phase == .idle)
+    }
+
+    /// The app is a still picture behind the star from the tap until the finish's cover is solid: the ring opens onto the live page.
+    @Test func theAppIsHeldStillUntilTheCoverIsSolid() async {
+        let (service, clock, calls) = make()
+        #expect(!service.showsBackdrop)
+        begin(service, calls)
+        #expect(service.showsBackdrop)
+        await clock.advance(5)
+        let finished = ready(service)
+        await Task.yield()
+        #expect(service.phase == .revealing && service.showsBackdrop, "the cover is still going solid")
+        await clock.advance(IdeaTransitionService.coverDuration + 0.01)
+        #expect(!service.showsBackdrop)
+        await clock.advance(IdeaTransitionService.ringDuration + 0.01)
+        await finished.value
+    }
+
+    /// Cancel brings the live app back at once, under the cover, already on Scripts.
+    @Test func cancelBringsTheLiveAppBackUnderTheCover() async {
+        let (service, clock, calls) = make()
+        begin(service, calls)
+        await clock.advance(1)
+        service.cancel()
+        #expect(service.phase == .leaving && !service.showsBackdrop)
+    }
+
+    /// The star is born on the arrow before it flies, and catches light just before it stops.
+    @Test func theRiseIsALaunchThenAFlight() {
+        #expect(IdeaTransitionService.riseDuration == IdeaTransitionService.launchDelay + IdeaTransitionService.flightDuration)
+        #expect(IdeaTransitionService.ignitionTime > IdeaTransitionService.launchDelay)
+        #expect(IdeaTransitionService.ignitionTime < IdeaTransitionService.riseDuration)
     }
 
     @Test func nothingHappensForAScriptOpenedAnyOtherWay() async {
@@ -148,7 +186,7 @@ struct IdeaTransitionServiceTests {
         service.cancel()
         #expect(service.phase != .leaving)
         #expect(calls.aborted == 0)
-        await clock.advance(IdeaTransitionService.revealLead + 0.01)
+        await openRing(clock)
         await finished.value
     }
 
@@ -162,7 +200,7 @@ struct IdeaTransitionServiceTests {
         let finished = ready(service)
         await clock.advance(IdeaTransitionService.minimumDuration / 2 - risen + 0.01)
         #expect(service.phase == .revealing, "half the minimum at half speed")
-        await clock.advance(IdeaTransitionService.revealLead)
+        await openRing(clock, speed: 0.5)
         await finished.value
     }
 
@@ -194,7 +232,7 @@ struct IdeaTransitionServiceTests {
         service.track(WritingProgressMeter(expectedWords: 100))
         await clock.advance(5)
         let finished = ready(service)
-        await clock.advance(IdeaTransitionService.revealLead + 0.01)
+        await openRing(clock)
         await finished.value
         #expect(service.progress != nil, "the finish still shows it")
         await clock.advance(IdeaTransitionService.landingDuration + IdeaTransitionService.caretHold + 0.01)

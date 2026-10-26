@@ -6,19 +6,23 @@
 import SwiftUI
 
 /// Draws the star that is the transition from an idea to its script (`IdeaTransitionService`, 09 §8, `motion/README.md`), over the whole
-/// app: the star rises to the middle (34% of the height, 0.6 s, `(0.2, 0.8, 0.2, 1)`) while the screen behind darkens (84%); a halo breathes
-/// around it and twelve specks gather toward it; "Drafting in your voice", the idea, a phrase that changes every 1.6 s and how much of the script
-/// is written ("42%", an estimate: `WritingProgressEstimate`) sit under it, with Cancel at the bottom. When the script is ready the cover goes
-/// solid (0.22 s), the ring opens (0.42 s), the star lands as the caret (0.44 s) and the page writes. Cancel or an error: the star falls 40 pt
-/// (0.3 s), the overlay fades (0.22 s).
+/// app: the star is born on the arrow (a spring and a bloom of light with a ring running out of it, 0.12 s) and rises along a curve to the
+/// middle (34% of the height, 1.2 s, `(0.2, 0.8, 0.2, 1)`), drawing a streak of light behind it while it is fast, while the screen behind
+/// darkens (84%); a halo breathes around it and twelve specks gather toward it; "Drafting in your voice", the idea, a phrase that changes
+/// every 1.6 s and how much of the script is written ("42%", an estimate: `WritingProgressEstimate`) sit under it, with Cancel at the bottom.
+/// When the script is ready the cover goes solid (0.3 s), the ring opens (0.8 s), the star lands as the caret (0.9 s) and the page writes.
+/// Cancel or an error: the star falls 40 pt (0.3 s), the overlay fades (0.22 s).
 ///
 /// Layered over the board's sequence: as the star leaves, the idea's words come apart into a stream of light that runs into it (`dust`);
 /// it ignites where it stops (a flash and a ring of light, with the end of the takeoff's haptic); an orbit round it closes as the script
 /// is written (`ProgressOrbit`), with a light tick at each quarter; flying to the caret it leaves a comet's streak (`CometTrail`), lands
-/// with its haptic, and a light crosses the page once. Slower than the board's (the owner's call, 20/10/2026: the effects should be seen;
-/// the script is written behind them all the while): the rise 1.1 s, the ring 0.8 s, the landing 0.9 s.
+/// with its haptic, and a light crosses the page once. Slower than the board's (the owner's calls, 20/10 and 25/10/2026: the effects should
+/// be seen; the script is written behind them all the while).
 ///
-/// Reduce Motion (09 §7): no rise or ring, no stream, flash, streak or light. The overlay fades in (0.2 s) with the text and Cancel in
+/// What moves here is cheap to draw: glows are gradients, not shadows, and the cover's ring is a shape with a hole, not a mask, so no
+/// picture is drawn off screen each frame; the app behind is a still (`TransitionBackdrop`).
+///
+/// Reduce Motion (09 §7): no rise or ring, no stream, bloom, streaks, flash or light. The overlay fades in (0.2 s) with the text and Cancel in
 /// place, then crossfades into the page (0.3 s). The timings are the board's in every situation (`IdeaTransitionService.speed` is 1; only UI tests shorten it).
 struct StarTransitionOverlay: View {
     let transition: IdeaTransitionService
@@ -27,7 +31,13 @@ struct StarTransitionOverlay: View {
 
     // Everything that moves is a value that is animated to its place.
     @State private var path: CGFloat = 0
+    /// Where the star was a beat ago on its flight: the end of its streak (`RiseTrail`).
+    @State private var tailPath: CGFloat = 0
     @State private var starScale: CGFloat = 0.7
+    /// The star being born on the arrow, 0 → 1 (with a spring's overshoot).
+    @State private var born: CGFloat = 0
+    /// The bloom of light and its ring at the arrow as the star is born, 0 → 1.
+    @State private var launch: CGFloat = 0
     @State private var starFall: CGFloat = 0
     @State private var starOpacity: Double = 1
     @State private var cover: Double = 0
@@ -38,6 +48,8 @@ struct StarTransitionOverlay: View {
     @State private var landed: CGFloat = 0
     @State private var showsCaret = false
     @State private var phraseIndex = 0
+    /// This transition's phrases, made once (each is a localized string).
+    @State private var phrases: [String] = []
     /// The request has taken longer than usual: the phrase says so.
     @State private var isTakingLong = false
     @State private var phraseShown = true
@@ -65,8 +77,9 @@ struct StarTransitionOverlay: View {
                     : CGPoint(x: transition.origin.x - origin.x, y: transition.origin.y - origin.y)
                 let centre = CGPoint(x: size.width / 2, y: size.height * 0.38)
                 let caret = CGPoint(x: Metrics.textGutter + 6, y: proxy.safeAreaInsets.top + 150)
+                let control = CGPoint(x: (from.x + centre.x) / 2 + 40, y: min(from.y, centre.y) - 60)
                 ZStack(alignment: .topLeading) {
-                    coverLayer(size: size, centre: centre)
+                    coverLayer(centre: centre)
                     sweepLayer(size: size)
                     haloLayer(centre: centre)
                     particles(centre: centre)
@@ -75,8 +88,10 @@ struct StarTransitionOverlay: View {
                     textBlock(size: size, centre: centre)
                     cancelButton(size: size)
                     dustLayer(from: from, centre: centre)
+                    launchLayer(from: from)
+                    riseTrailLayer(from: from, control: control, centre: centre, size: size)
                     trailLayer(centre: centre, caret: caret)
-                    starLayer(from: from, centre: centre, caret: caret)
+                    starLayer(from: from, control: control, centre: centre, caret: caret)
                 }
                 .frame(width: size.width, height: size.height, alignment: .topLeading)
                 .opacity(overlayOpacity)
@@ -93,21 +108,10 @@ struct StarTransitionOverlay: View {
     // MARK: - Layers
 
     /// The dark cover. While the ring opens, the cover has a hole growing from the star, so the page shows through it.
-    private func coverLayer(size: CGSize, centre: CGPoint) -> some View {
-        let diagonal = hypot(size.width, size.height)
-        return Rectangle()
-            .fill(Palette.Scripts.transitionCover)
+    private func coverLayer(centre: CGPoint) -> some View {
+        RingCover(ring: ring, centre: centre)
+            .fill(Palette.Scripts.transitionCover, style: FillStyle(eoFill: true))
             .opacity(cover)
-            .mask {
-                Rectangle()
-                    .overlay {
-                        Circle()
-                            .frame(width: ring * diagonal * 2, height: ring * diagonal * 2)
-                            .position(centre)
-                            .blendMode(.destinationOut)
-                    }
-                    .compositingGroup()
-            }
             .ignoresSafeArea()
             .accessibilityHidden(true)
     }
@@ -131,7 +135,8 @@ struct StarTransitionOverlay: View {
 
     /// Twelve specks gathering toward the star: each starts 64–134 pt away (in the upper half of the circle) and shrinks into it.
     private func particles(centre: CGPoint) -> some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
+        // At the display's own rate: at 30 fps the fastest specks stepped 5 pt at a time on a 120 Hz screen.
+        TimelineView(.animation(paused: reduceMotion)) { context in
             Canvas { canvas, _ in
                 guard !reduceMotion else { return }
                 let time = context.date.timeIntervalSinceReferenceDate
@@ -216,7 +221,7 @@ struct StarTransitionOverlay: View {
     private var currentPhrase: String {
         if finishShown { return IdeaTransitionService.finishPhrase }
         if isTakingLong { return IdeaTransitionService.longWaitPhrase }
-        let phrases = IdeaTransitionService.phrases(platform: transition.platformName)
+        guard !phrases.isEmpty else { return "" }
         return phrases[phraseIndex % phrases.count]
     }
 
@@ -237,25 +242,33 @@ struct StarTransitionOverlay: View {
         .accessibilityIdentifier("transition.cancel")
     }
 
-    /// The star: it rises along a curve to the middle, breathes while the AI writes, grows at the finish and flies to the caret.
-    private func starLayer(from: CGPoint, centre: CGPoint, caret: CGPoint) -> some View {
-        let control = CGPoint(x: (from.x + centre.x) / 2 + 40, y: min(from.y, centre.y) - 60)
-        return TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion || transition.phase != .waiting)) { context in
+    /// The star: born on the arrow, it rises along a curve to the middle, breathes while the AI writes, grows at the finish and flies to the
+    /// caret. Its glow is a gradient (two shadows were two pictures drawn off screen each frame).
+    private func starLayer(from: CGPoint, control: CGPoint, centre: CGPoint, caret: CGPoint) -> some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion || transition.phase != .waiting)) { context in
             // `cstBreath`: 1.4 ↔ 1.65 in 1.6 s while it waits.
             let breath = transition.phase == .waiting && !reduceMotion
                 ? 1.4 + 0.25 * (0.5 - 0.5 * cos(context.date.timeIntervalSinceReferenceDate * 2 * .pi / 1.6)) : starScale
             ZStack {
-                Circle()
-                    .fill(.white)
-                    .frame(width: 10, height: 10)
-                    .shadow(color: Palette.World.skyStarYou.opacity(0.8), radius: 14)
-                    .shadow(color: Palette.World.skyStarYou, radius: 1.5)
-                    .scaleEffect(breath)
-                    .modifier(StarCourse(
-                        path: path, landed: landed, from: from, control: control, centre: centre, caret: caret, fall: starFall,
-                        flies: !reduceMotion
-                    ))
-                    .opacity(starOpacity)
+                ZStack {
+                    Circle()
+                        .fill(RadialGradient(
+                            colors: [Palette.World.skyStarYou.opacity(0.85), Palette.World.skyStarYou.opacity(0.28), .clear],
+                            center: .center, startRadius: 2, endRadius: 19
+                        ))
+                        .frame(width: 38, height: 38)
+                    Circle()
+                        .fill(.white)
+                        .frame(width: 10, height: 10)
+                }
+                // Two effects, so the birth's spring and the flight's growth each keep their own animation.
+                .scaleEffect(born)
+                .scaleEffect(breath)
+                .modifier(StarCourse(
+                    path: path, landed: landed, from: from, control: control, centre: centre, caret: caret, fall: starFall,
+                    flies: !reduceMotion
+                ))
+                .opacity(starOpacity)
                 if showsCaret {
                     Capsule()
                         .fill(Palette.acc)
@@ -266,6 +279,46 @@ struct StarTransitionOverlay: View {
                 }
             }
         }
+        .accessibilityHidden(true)
+    }
+
+    /// The star being born on the arrow: a bloom of white and violet light that swells and goes, and a thin ring running out of it.
+    private func launchLayer(from: CGPoint) -> some View {
+        ZStack {
+            Circle()
+                .fill(RadialGradient(
+                    colors: [.white.opacity(0.95), Palette.aiTextStrong.opacity(0.45), .clear], center: .center, startRadius: 0, endRadius: 26
+                ))
+                .frame(width: 52, height: 52)
+                .modifier(LightBurst(progress: launch, from: 0.3, to: 1.8, peak: 1))
+            // Drawn at its widest and grown into it, so its line stays thin (a small ring scaled up thickened with it).
+            Circle()
+                .strokeBorder(Palette.World.skyStarYou, lineWidth: 1.5)
+                .frame(width: 92, height: 92)
+                .modifier(LightBurst(progress: launch, from: 0.18, to: 1, peak: 0.8))
+        }
+        .position(from)
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+
+    /// The streak behind the rising star: a soft wide stroke and a bright thin one, fading toward the arrow.
+    private func riseTrailLayer(from: CGPoint, control: CGPoint, centre: CGPoint, size: CGSize) -> some View {
+        let start = UnitPoint(x: from.x / max(size.width, 1), y: from.y / max(size.height, 1))
+        let end = UnitPoint(x: centre.x / max(size.width, 1), y: centre.y / max(size.height, 1))
+        let trail = RiseTrail(head: path, tail: tailPath, from: from, control: control, centre: centre)
+        return ZStack {
+            trail.stroke(
+                LinearGradient(colors: [Palette.World.skyStarYou.opacity(0), Palette.World.skyStarYou.opacity(0.4)], startPoint: start, endPoint: end),
+                style: StrokeStyle(lineWidth: 7, lineCap: .round, lineJoin: .round)
+            )
+            trail.stroke(
+                LinearGradient(colors: [Color.white.opacity(0), Color.white.opacity(0.9)], startPoint: start, endPoint: end),
+                style: StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round)
+            )
+        }
+        .opacity(reduceMotion ? 0 : starOpacity)
+        .allowsHitTesting(false)
         .accessibilityHidden(true)
     }
 
@@ -288,13 +341,11 @@ struct StarTransitionOverlay: View {
             Circle()
                 .fill(RadialGradient(colors: [.white, Palette.World.skyStarYou.opacity(0.6), .clear], center: .center, startRadius: 0, endRadius: 30))
                 .frame(width: 60, height: 60)
-                .scaleEffect(0.4 + 1.6 * ignition)
-                .opacity(ignition > 0 ? Double(1 - ignition) * 0.9 : 0)
+                .modifier(LightBurst(progress: ignition, from: 0.4, to: 2, peak: 0.9))
             Circle()
-                .stroke(Palette.aiTextStrong, lineWidth: 1.5)
-                .frame(width: 20, height: 20)
-                .scaleEffect(1 + 7 * ignition)
-                .opacity(ignition > 0 ? Double(1 - ignition) * 0.8 : 0)
+                .strokeBorder(Palette.aiTextStrong, lineWidth: 1.5)
+                .frame(width: 160, height: 160)
+                .modifier(LightBurst(progress: ignition, from: 0.125, to: 1, peak: 0.8))
         }
         .position(centre)
         .allowsHitTesting(false)
@@ -315,6 +366,9 @@ struct StarTransitionOverlay: View {
         .allowsHitTesting(false)
         .accessibilityHidden(true)
     }
+
+    /// How far behind the star its streak ends, in time.
+    private static let trailLag = 0.08
 
     private static let dustCount = 34
     /// The last speck leaves this long after the first; each takes `dustFlight` to arrive (the last ones still run into the star after it
@@ -350,24 +404,32 @@ struct StarTransitionOverlay: View {
 
     /// The comet's streak behind the star as it flies to the caret.
     private func trailLayer(centre: CGPoint, caret: CGPoint) -> some View {
-        CometTrail(landed: landed, centre: centre, caret: caret)
-            .stroke(
-                LinearGradient(colors: [Palette.World.skyStarYou.opacity(0), Palette.World.skyStarYou], startPoint: .bottomTrailing, endPoint: .topLeading),
+        let trail = CometTrail(landed: landed, centre: centre, caret: caret)
+        let colours = [Palette.World.skyStarYou.opacity(0), Palette.World.skyStarYou]
+        // Its glow is a wider, fainter stroke under it, not a shadow.
+        return ZStack {
+            trail.stroke(
+                LinearGradient(colors: colours, startPoint: .bottomTrailing, endPoint: .topLeading),
+                style: StrokeStyle(lineWidth: 10, lineCap: .round)
+            )
+            .opacity(0.3)
+            trail.stroke(
+                LinearGradient(colors: colours, startPoint: .bottomTrailing, endPoint: .topLeading),
                 style: StrokeStyle(lineWidth: 3, lineCap: .round)
             )
-            .shadow(color: Palette.World.skyStarYou.opacity(0.7), radius: 6)
-            .opacity(reduceMotion ? 0 : starOpacity)
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
+        }
+        .opacity(reduceMotion ? 0 : starOpacity)
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 
     /// A soft band of light that crosses the page from top to bottom once, as the ring opens it.
     private func sweepLayer(size: CGSize) -> some View {
         LinearGradient(colors: [.clear, Palette.Scripts.transitionSweep, .clear], startPoint: .top, endPoint: .bottom)
             .frame(width: size.width, height: 220)
+            // Off the screen at rest, above it before and below it after: nothing to hide. A plain blend: at 12% over the dark page it
+            // lights what it crosses as much as an additive one, without a filter to composite each frame.
             .position(x: size.width / 2, y: -110 + (size.height + 220) * sweep)
-            .blendMode(.plusLighter)
-            .opacity(sweep > 0 && sweep < 1 ? 1 : 0)
             .ignoresSafeArea()
             .allowsHitTesting(false)
             .accessibilityHidden(true)
@@ -377,6 +439,7 @@ struct StarTransitionOverlay: View {
 
     private func start(centre: CGPoint) {
         path = 0
+        tailPath = 0
         landed = 0
         ring = 0
         starFall = 0
@@ -391,15 +454,20 @@ struct StarTransitionOverlay: View {
         halo = 0
         cover = 0
         starScale = 0.7
+        born = reduceMotion ? 1 : 0
+        launch = 0
+        phrases = IdeaTransitionService.phrases(platform: transition.platformName)
         ignition = 0
         sweep = 0
         dustStart = nil
-        react(to: transition.phase)
         if reduceMotion {
             withAnimation(.easeOut(duration: 0.2 * speed)) { overlayOpacity = 1 }
         } else {
             overlayOpacity = 1
         }
+        // The animations start on the next frame: this one also builds the page opened under the star (on the first send after a launch,
+        // much else for the first time too), and an animation started in it came out of it a third of a second along (26/10/2026).
+        Task { @MainActor in react(to: transition.phase) }
     }
 
     private func react(to phase: IdeaTransitionService.Phase) {
@@ -412,10 +480,12 @@ struct StarTransitionOverlay: View {
         }
     }
 
-    /// The star rises to the middle (0.6 s) and the screen darkens to 84% behind it (0.5 s); the halo comes up with it.
+    /// The star is born on the arrow (a spring, a bloom and its ring) and, a beat later, rises to the middle (1.2 s) while the screen
+    /// darkens to 84% behind it (0.5 s); the halo comes up with it.
     private func rise() {
         if reduceMotion {
             path = 1
+            tailPath = 1
             starScale = 1.4
             withAnimation(.easeOut(duration: 0.2 * speed)) {
                 cover = 0.84
@@ -425,13 +495,17 @@ struct StarTransitionOverlay: View {
             }
             return
         }
-        withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: IdeaTransitionService.riseDuration * speed)) {
+        withAnimation(.spring(duration: 0.32 * speed, bounce: 0.45)) { born = 1 }
+        withAnimation(.easeOut(duration: 0.45 * speed)) { launch = 1 }
+        let flight = Animation.timingCurve(0.2, 0.8, 0.2, 1, duration: IdeaTransitionService.flightDuration * speed)
+        withAnimation(flight.delay(IdeaTransitionService.launchDelay * speed)) {
             path = 1
             starScale = 1.4
         }
+        withAnimation(flight.delay((IdeaTransitionService.launchDelay + Self.trailLag) * speed)) { tailPath = 1 }
         dustStart = .now
         // The star ignites as it stops (the takeoff's haptic ends there with a tap).
-        withAnimation(.easeOut(duration: 1.1 * speed).delay(IdeaTransitionService.riseDuration * 0.95 * speed)) { ignition = 1 }
+        withAnimation(.easeOut(duration: 1.1 * speed).delay(IdeaTransitionService.ignitionTime * speed)) { ignition = 1 }
         Task {
             try? await Task.sleep(for: .seconds((Self.dustSpread + Self.dustFlight + 0.05) * speed))
             dustStart = nil
@@ -460,7 +534,7 @@ struct StarTransitionOverlay: View {
         withAnimation(.easeOut(duration: IdeaTransitionService.coverDuration * speed)) {
             texts = 0
             cancelOpacity = 0
-            cover = reduceMotion ? 1 : 1
+            cover = 1
             starScale = reduceMotion ? 1.4 : 2.6
         }
         if reduceMotion {
@@ -527,7 +601,7 @@ struct StarTransitionOverlay: View {
     /// A new phrase every 1.6 s: the old one goes up and out (0.3 s, 4 pt), the new one comes in from 4 pt below.
     private func rotatePhrases() async {
         guard transition.phase == .waiting else { return }
-        let count = IdeaTransitionService.phrases(platform: transition.platformName).count
+        let count = phrases.count
         let clock = ContinuousClock()
         let began = clock.now
         while !Task.isCancelled {

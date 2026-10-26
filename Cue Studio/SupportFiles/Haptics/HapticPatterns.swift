@@ -22,6 +22,10 @@ enum HapticPatterns {
     }
 
     private static var engine: CHHapticEngine?
+    /// Whether `engine` runs now: it stops by itself when idle, and the system may stop or reset it.
+    private static var isRunning = false
+    /// The engine is being made off the main thread (`prewarm`).
+    private static var isPreparing = false
 
     // MARK: - The patterns
 
@@ -34,12 +38,12 @@ enum HapticPatterns {
         Beat(time: 0.22, intensity: 0.22, sharpness: 1),
     ]
 
-    /// An idea sent as a star (`IdeaTransitionService.riseDuration`): a firm press, a hum that swells as the star rises, and a tap as it
-    /// stops and ignites.
+    /// An idea sent as a star (`IdeaTransitionService.riseDuration`): a firm press as it is born on the arrow, a hum that swells as it
+    /// flies, and a tap as it stops and ignites (`IdeaTransitionService.ignitionTime`).
     static let takeoff: [Beat] = [
         Beat(time: 0, intensity: 0.8, sharpness: 0.5),
-        Beat(time: 0.05, intensity: 0.1, sharpness: 0.25, duration: 0.97, endIntensity: 0.55),
-        Beat(time: 1.04, intensity: 0.5, sharpness: 0.9),
+        Beat(time: 0.12, intensity: 0.1, sharpness: 0.25, duration: 1.1, endIntensity: 0.55),
+        Beat(time: 1.24, intensity: 0.5, sharpness: 0.9),
     ]
 
     /// The star landing as the script's page: a soft, heavy thump and two small glints after it.
@@ -128,9 +132,60 @@ enum HapticPatterns {
     static func playChime() { play(chime, fallback: Haptics.light) }
     static func playBestTake() { play(bestTake, fallback: Haptics.light) }
 
-    private static func play(_ beats: [Beat], fallback: () -> Void) {
+    /// Makes the engine and starts it off the main thread, ahead of the first pattern: made and started on the spot, the takeoff held the
+    /// first idea's star back by ~50 ms after each launch (measured on an iPhone 15 Pro, 26/10/2026). Haptics only (no audio), so it never
+    /// touches the microphone's session, and it stops by itself when idle.
+    static func prewarm() {
+        guard engine == nil, !isPreparing, CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
+        isPreparing = true
+        Task.detached(priority: .utility) {
+            let made = try? CHHapticEngine()
+            made?.playsHapticsOnly = true
+            made?.isAutoShutdownEnabled = true
+            let isStarted = (try? await made?.start()) != nil
+            let prepared = PreparedEngine(engine: made)
+            await MainActor.run { adopt(prepared.engine, isStarted: isStarted) }
+        }
+    }
+
+    /// An engine made off the main thread, handed to it: nothing else touches it on the way.
+    private nonisolated struct PreparedEngine: @unchecked Sendable {
+        let engine: CHHapticEngine?
+    }
+
+    private static func adopt(_ made: CHHapticEngine?, isStarted: Bool) {
+        isPreparing = false
+        guard engine == nil, let made else { return }
+        made.stoppedHandler = { _ in Task { @MainActor in isRunning = false } }
+        made.resetHandler = { Task { @MainActor in isRunning = false } }
+        engine = made
+        isRunning = isStarted
+    }
+
+    /// Plays `beats` now when the engine runs. Never waits for it on the main thread: one stopped (idle, or by the system) starts again off
+    /// it and the pattern plays as soon as it runs; before the first one is made, the nearest tap plays instead.
+    private static func play(_ beats: [Beat], fallback: @escaping @MainActor @Sendable () -> Void) {
         guard Haptics.isEnabled else { return }
-        guard let engine = readyEngine(), let pattern = try? CHHapticPattern(events: beats.map(event), parameterCurves: curves(for: beats)),
+        guard let engine else {
+            fallback()
+            prewarm()
+            return
+        }
+        guard isRunning else {
+            engine.start { error in
+                Task { @MainActor in
+                    guard error == nil else { return fallback() }
+                    isRunning = true
+                    playNow(beats, fallback: fallback)
+                }
+            }
+            return
+        }
+        playNow(beats, fallback: fallback)
+    }
+
+    private static func playNow(_ beats: [Beat], fallback: @MainActor () -> Void) {
+        guard let engine, let pattern = try? CHHapticPattern(events: beats.map(event), parameterCurves: curves(for: beats)),
               let player = try? engine.makePlayer(with: pattern) else {
             fallback()
             return
@@ -138,28 +193,10 @@ enum HapticPatterns {
         do {
             try player.start(atTime: CHHapticTimeImmediate)
         } catch {
+            // It had stopped without saying so: the next pattern starts it again first.
+            isRunning = false
             fallback()
         }
-    }
-
-    /// The engine, started; nil where the hardware can't play patterns. Haptics only (no audio), so it never touches the microphone's
-    /// session, and it stops by itself when idle.
-    private static func readyEngine() -> CHHapticEngine? {
-        guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return nil }
-        if engine == nil {
-            guard let created = try? CHHapticEngine() else { return nil }
-            created.playsHapticsOnly = true
-            created.isAutoShutdownEnabled = true
-            created.resetHandler = { [weak created] in try? created?.start() }
-            engine = created
-        }
-        guard let engine else { return nil }
-        do {
-            try engine.start()
-        } catch {
-            return nil
-        }
-        return engine
     }
 
     private static func event(_ beat: Beat) -> CHHapticEvent {

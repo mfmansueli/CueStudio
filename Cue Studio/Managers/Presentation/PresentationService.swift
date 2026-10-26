@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 /// App-wide navigation state, so any screen can open a script, the prompter or a creation sheet
 /// without knowing who presents it.
@@ -35,10 +36,31 @@ final class PresentationService {
 
     // MARK: - Actions
 
-    func openScript(_ id: UUID, editing: Bool = false, writing: ScriptRequest? = nil) {
+    /// Opens the script's page. `animated: false` puts it there without the push: under the idea's star, where nobody sees it come.
+    func openScript(_ id: UUID, editing: Bool = false, writing: ScriptRequest? = nil, animated: Bool = true) {
         sheet = nil
         selectedTab = .scripts
-        scriptsPath = [ScriptRoute(scriptID: id, startsEditing: editing || writing != nil, writing: writing)]
+        let path = [ScriptRoute(scriptID: id, startsEditing: editing || writing != nil, writing: writing)]
+        if animated {
+            scriptsPath = path
+        } else {
+            withoutAnimation { scriptsPath = path }
+        }
+    }
+
+    /// Back to Scripts' list from whatever is open on it. `animated: false` for a page taken away under the idea's star.
+    func showScriptsList(animated: Bool = true) {
+        if animated {
+            scriptsPath = []
+        } else {
+            withoutAnimation { scriptsPath = [] }
+        }
+    }
+
+    private func withoutAnimation(_ change: () -> Void) {
+        var transaction = Transaction()
+        transaction.disablesAnimations = true
+        withTransaction(transaction, change)
     }
 
     func openPrompter(scriptID: UUID?, mode: PrompterMode) {
