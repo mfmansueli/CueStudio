@@ -24,6 +24,8 @@ struct HapticPatternsTests {
         #expect((hum?.endIntensity ?? 0) > (hum?.intensity ?? 1), "The hum swells")
         let end = beats.map { $0.time + ($0.duration ?? 0) }.max() ?? 0
         #expect(abs(end - IdeaTransitionService.riseDuration) < 0.1, "It ends as the star stops and ignites")
+        #expect(abs((beats.last?.time ?? 0) - IdeaTransitionService.ignitionTime) < 0.02, "Its last tap is the ignition")
+        #expect(abs((hum?.time ?? 0) - IdeaTransitionService.launchDelay) < 0.02, "The hum starts as the star leaves the arrow")
     }
 
     @Test func everyPatternIsShortAndInRange() {

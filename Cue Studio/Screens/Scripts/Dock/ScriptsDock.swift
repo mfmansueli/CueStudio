@@ -50,8 +50,6 @@ struct ScriptsDock: View {
     @State private var voiceSetup: VoiceSetupSheet.Mode?
     /// Where the arrow is on the screen: the star leaves from there.
     @State private var sendCenter = CGPoint.zero
-    /// Goes up with each idea sent: the light runs round the dock once.
-    @State private var sendTurn = 0
     /// Goes up with each "↻": its arrows turn once.
     @State private var anotherTurn = 0
     /// The height of a line of the field's text, which grows with Dynamic Type.
@@ -126,7 +124,7 @@ struct ScriptsDock: View {
         .overlay {
             AIGlow(
                 shape: RoundedRectangle(cornerRadius: Metrics.dockRadius, style: .continuous),
-                isListening: dictation.isActive, level: dictation.level, sendTurn: sendTurn
+                isListening: dictation.isActive, level: dictation.level
             )
         }
         .animation(.smooth(duration: 0.2), value: dictation.notice)
@@ -517,6 +515,10 @@ struct ScriptsDock: View {
     /// a blank draft.
     private func submit() {
         guard canSend else { return }
+        IdeaSendTimeline.measure("Idea send", send)
+    }
+
+    private func send() {
         isFocused = false
         guard hasAI else {
             starter.writeByHand()
@@ -524,12 +526,11 @@ struct ScriptsDock: View {
         }
         let idea = hasTypedIdea ? nil : suggestion
         // An idea in a language Apple Intelligence can't draft in takes nothing off: the starter says why (with "Write it") and it stays.
-        guard starter.drafting(before: idea ?? ideaDraft.submission).isAvailable else {
+        guard IdeaSendTimeline.measure("Drafting check", { starter.drafting(before: idea ?? ideaDraft.submission).isAvailable }) else {
             starter.write(idea: idea, from: sendCenter)
             return
         }
-        HapticPatterns.playTakeoff()
-        sendTurn += 1
+        IdeaSendTimeline.measure("Takeoff haptic") { HapticPatterns.playTakeoff() }
         guard idea != nil else {
             starter.write(idea: nil, from: sendCenter)
             return
@@ -537,7 +538,7 @@ struct ScriptsDock: View {
         // The card's own idea follows its angle and opening line (read before `sent()` brings the next one).
         let brief = suggestions.current?.brief
         // The idea sent is what they like (the next ones lean that way); when it was a note of theirs, the note has become a script.
-        let note = suggestions.sent()
+        let note = IdeaSendTimeline.measure("Next idea") { suggestions.sent() }
         // A suggested idea used for real: its introduction stops (a note of their own is the Logbook's, not the ideas').
         if note == nil { notifications.recordUse(.ideas) }
         starter.write(idea: idea, brief: brief, from: sendCenter) { [logbook] scriptID in

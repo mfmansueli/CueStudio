@@ -14,6 +14,8 @@ enum CueApp {
         case stub
         /// A device without Apple Intelligence.
         case none
+        /// The iPhone's own Apple Intelligence (device runs that measure what a real request costs).
+        case appleIntelligence
     }
 
     /// `sampleVideo` puts small real videos behind the "3 morning habits" takes (for Quick edit).
@@ -42,6 +44,7 @@ enum CueApp {
         switch ai {
         case .stub: app.launchArguments.append("-uiTestStubAI")
         case .none: app.launchArguments.append("-uiTestNoAI")
+        case .appleIntelligence: break
         }
         app.launch()
         return app

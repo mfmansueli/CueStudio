@@ -49,10 +49,10 @@ struct ScriptsView: View {
     private let drafts: QuickEditDraftStoring?
 
     init(
-        library: ScriptLibraryService, toast: ToastService, writer: ScriptWriting? = nil, drafts: QuickEditDraftStoring? = nil,
-        defaults: UserDefaults = .standard
+        library: ScriptLibraryService, toast: ToastService, logbook: LogbookService, writer: ScriptWriting? = nil,
+        drafts: QuickEditDraftStoring? = nil, defaults: UserDefaults = .standard
     ) {
-        _viewModel = State(initialValue: ScriptsViewModel(library: library, toast: toast))
+        _viewModel = State(initialValue: ScriptsViewModel(library: library, toast: toast, logbook: logbook))
         _history = State(initialValue: LibraryHistory(defaults: defaults))
         self.writer = writer
         self.drafts = drafts
@@ -299,9 +299,15 @@ struct ScriptsView: View {
                         }
                         .listSectionSeparator(.hidden)
                     }
-                    if viewModel.filter == .all, !viewModel.isSelecting, viewModel.query.isEmpty {
-                        // The ideas waiting in the Logbook, at the end of the list.
-                        blockRow(top: 22) { ScriptsLogbookSection() }
+                    if viewModel.filter == .all, viewModel.query.isEmpty {
+                        // The ideas waiting in the Logbook, at the end of the list: picked like the scripts while selecting.
+                        blockRow(top: 22) {
+                            ScriptsLogbookSection(
+                                selection: viewModel.isSelecting ? viewModel.selection : nil,
+                                onToggle: { viewModel.toggleSelection(of: $0) },
+                                onDelete: { viewModel.delete($0) }
+                            )
+                        }
                     }
                 }
             }
@@ -328,8 +334,9 @@ struct ScriptsView: View {
                     SelectionBar(
                         count: viewModel.selection.count,
                         folders: library.folders,
+                        canMove: !viewModel.selectedScripts.isEmpty,
                         onMove: { viewModel.moveSelection(to: $0) },
-                        onNewFolder: { viewModel.startNewFolder(moving: viewModel.selection) },
+                        onNewFolder: { viewModel.startNewFolder(moving: viewModel.selectedScripts) },
                         onDuplicate: viewModel.duplicateSelection,
                         onDelete: viewModel.deleteSelection
                     )
@@ -539,7 +546,7 @@ struct ScriptsView: View {
 #if DEBUG
 #Preview {
     NavigationStack {
-        ScriptsView(library: AppServices.preview.library, toast: AppServices.preview.toast)
+        ScriptsView(library: AppServices.preview.library, toast: AppServices.preview.toast, logbook: AppServices.preview.logbook)
     }
     .previewEnvironment()
 }

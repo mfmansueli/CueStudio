@@ -14,6 +14,7 @@ final class ScriptsViewModel {
     var isSelecting = false {
         didSet { if !isSelecting { selection.removeAll() } }
     }
+    /// What is picked while selecting: scripts, and the Logbook's ideas shown at the end of the list.
     var selection = Set<UUID>()
     /// Script whose actions are shown after swiping "More".
     var actionsTarget: Script?
@@ -26,10 +27,12 @@ final class ScriptsViewModel {
 
     private let library: ScriptLibraryService
     private let toast: ToastService
+    private let logbook: LogbookService
 
-    init(library: ScriptLibraryService, toast: ToastService) {
+    init(library: ScriptLibraryService, toast: ToastService, logbook: LogbookService) {
         self.library = library
         self.toast = toast
+        self.logbook = logbook
     }
 
     // MARK: - Reading
@@ -84,9 +87,18 @@ final class ScriptsViewModel {
         remove([script], message: String(localized: "Script deleted"))
     }
 
-    private func remove(_ scripts: [Script], message: String) {
+    private func remove(_ scripts: [Script], ideas: [LogbookEntry] = [], message: String) {
         library.delete(Set(scripts.map(\.id)))
-        toast.show(message, action: ToastAction(title: String(localized: "Undo")) { [library] in library.restore(scripts) })
+        let removedIdeas = logbook.delete(Set(ideas.map(\.id)))
+        toast.show(message, action: ToastAction(title: String(localized: "Undo")) { [library, logbook] in
+            library.restore(scripts)
+            logbook.restore(removedIdeas)
+        })
+    }
+
+    /// An idea of the Logbook's, held away from the end of the list: with Undo for 4 s, as a script.
+    func delete(_ idea: LogbookEntry) {
+        remove([], ideas: [idea], message: String(localized: "Idea deleted"))
     }
 
     func duplicate(_ script: Script) {
@@ -114,23 +126,32 @@ final class ScriptsViewModel {
         if selection.remove(id) == nil { selection.insert(id) }
     }
 
+    /// The scripts among what is picked: folders and Duplicate are theirs (an idea has neither).
+    var selectedScripts: Set<UUID> {
+        Set(library.scripts.lazy.map(\.id).filter(selection.contains))
+    }
+
+    /// Deletes what is picked, scripts and ideas together, with one Undo for all of it.
     func deleteSelection() {
         let doomed = library.scripts.filter { selection.contains($0.id) }
-        guard !doomed.isEmpty else { return }
+        let ideas = logbook.waiting.filter { selection.contains($0.id) }
+        guard !doomed.isEmpty || !ideas.isEmpty else { return }
         isSelecting = false
-        remove(doomed, message: String(localized: "\(doomed.count) deleted"))
+        remove(doomed, ideas: ideas, message: String(localized: "\(doomed.count + ideas.count) deleted"))
     }
 
     func duplicateSelection() {
-        guard !selection.isEmpty else { return }
-        library.duplicate(selection)
+        let scripts = selectedScripts
+        guard !scripts.isEmpty else { return }
+        library.duplicate(scripts)
         isSelecting = false
         toast.show(String(localized: "Duplicated"))
     }
 
     func moveSelection(to folder: String?) {
-        guard !selection.isEmpty else { return }
-        move(selection, to: folder)
+        let scripts = selectedScripts
+        guard !scripts.isEmpty else { return }
+        move(scripts, to: folder)
         isSelecting = false
     }
 

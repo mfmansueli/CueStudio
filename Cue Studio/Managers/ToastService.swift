@@ -26,8 +26,15 @@ final class ToastService {
     /// When the tap of a kind lands, from the toast's arrival: as the ✓ starts to draw and the ! to shake, at the ★'s widest.
     static let tapDelay: Duration = .milliseconds(200)
     static let cueTapDelay: Duration = .milliseconds(350)
+    /// Sheets that show the toast themselves (`toastHost(inSheet: true)`), counted while they are up: the root's host leaves the toast to
+    /// them, so it is shown once, in front, and never half under a sheet.
+    private(set) var sheetHosts = 0
     private var dismissTask: Task<Void, Never>?
     private var tapTask: Task<Void, Never>?
+
+    func sheetHostAppeared() { sheetHosts += 1 }
+
+    func sheetHostDisappeared() { sheetHosts = max(0, sheetHosts - 1) }
 
     func show(_ message: String, kind: ToastKind = .done, duration: Duration? = nil, action: ToastAction? = nil) {
         let endsWork = self.message != nil && self.kind == .working && kind != .working

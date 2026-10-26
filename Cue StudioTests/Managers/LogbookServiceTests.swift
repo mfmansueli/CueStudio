@@ -53,4 +53,25 @@ struct LogbookServiceTests {
         logbook.delete(id)
         #expect(logbook.entries.isEmpty)
     }
+
+    /// Several go at once and come back with an Undo, each where it was among the others (newest first).
+    @Test func deletingSeveralCanBeUndoneInPlace() throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        var clock = TestData.now
+        let logbook = LogbookService(defaults: defaults.defaults, now: { clock })
+        let first = try #require(logbook.add("First"))
+        clock = clock.addingTimeInterval(60)
+        let second = try #require(logbook.add("Second"))
+        clock = clock.addingTimeInterval(60)
+        logbook.add("Third")
+        let removed = logbook.delete([first.id, second.id])
+        #expect(Set(removed.map(\.id)) == [first.id, second.id])
+        #expect(logbook.entries.map(\.text) == ["Third"])
+        logbook.restore(removed)
+        #expect(logbook.entries.map(\.text) == ["Third", "Second", "First"])
+        logbook.restore(removed)
+        #expect(logbook.entries.count == 3, "Restoring twice keeps one of each")
+        #expect(LogbookService(defaults: defaults.defaults).entries.count == 3, "Kept on the iPhone")
+    }
 }

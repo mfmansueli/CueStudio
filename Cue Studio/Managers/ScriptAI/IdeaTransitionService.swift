@@ -5,19 +5,21 @@
 
 import CoreGraphics
 import Foundation
+import os
 
-/// The star that is the transition from an idea to its script (v30 · 09 §8, `motion/README.md`). The idea's star rises from the arrow
-/// to the middle of the screen (0.6 s), Scripts dims behind it, and while Apple Intelligence writes it says what is happening — "Writing in
-/// your voice", the idea and a phrase that changes every 1.6 s. It lasts at least 3.0 s from the tap (longer if the AI needs it); when the
-/// script is ready the ring opens (0.42 s), the screen crossfades into the page (0.22 s) and the star lands as the caret, where the words
-/// begin. Cancel, or an error, leaves the way it came: the star falls 40 pt (0.3 s), the overlay fades (0.22 s), and the idea is still in the
-/// field. This is the clock and the state; `StarTransitionOverlay` draws it.
+/// The star that is the transition from an idea to its script (v30 · 09 §8, `motion/README.md`). The idea's star is born on the arrow and
+/// rises to the middle of the screen (1.32 s), Scripts dims behind it, and while Apple Intelligence writes it says what is happening —
+/// "Drafting in your voice", the idea and a phrase that changes every 1.6 s. It lasts at least 3.0 s from the tap (longer if the AI needs
+/// it); when the script is ready the cover goes solid (0.3 s), the ring opens onto the page (0.8 s) and the star lands as the caret, where
+/// the words begin. Cancel, or an error, leaves the way it came: the star falls 40 pt (0.3 s), the overlay fades (0.22 s), and the idea is
+/// still in the field. While the star covers the app, the app is a still picture of the moment of the tap (`showsBackdrop`), so the page
+/// opened under it is never seen arriving. This is the clock and the state; `StarTransitionOverlay` draws it.
 @MainActor
 @Observable
 final class IdeaTransitionService {
     enum Phase: Equatable {
         case idle
-        /// The star is rising to the middle (0.6 s).
+        /// The star is born on the arrow and rises to the middle (`riseDuration`).
         case rising
         /// The AI is writing: halo, particles, the phrases and Cancel.
         case waiting
@@ -29,14 +31,22 @@ final class IdeaTransitionService {
 
     // MARK: - Timings (09 §8)
 
-    /// Slower than the board's 0.6 s (the owner's call, 20/10/2026): the idea's stream of light and the star's rise are meant to be seen,
-    /// and the script is being written all the while.
-    static let riseDuration: TimeInterval = 1.1
+    /// The star is born on the arrow before it leaves: a beat the eye catches (anticipation), long enough for the page to open under the
+    /// still picture before anything moves.
+    static let launchDelay: TimeInterval = 0.12
+    /// The flight from the arrow to the middle. Slower than the board's 0.6 s (the owner's calls, 20/10 and 25/10/2026: the idea's stream of
+    /// light and the star's rise are meant to be seen, and the script is being written all the while).
+    static let flightDuration: TimeInterval = 1.2
+    /// From the tap to the star resting in the middle.
+    static var riseDuration: TimeInterval { launchDelay + flightDuration }
+    /// When the star catches light where it stops (the flash, the ring and the takeoff haptic's last tap), from the tap: just before the
+    /// flight's long ease-out ends.
+    static var ignitionTime: TimeInterval { launchDelay + flightDuration * 0.935 }
     /// The shortest the transition lasts from the tap, even when the AI answers sooner.
     static let minimumDuration: TimeInterval = 3.0
     /// Seconds each phrase stays.
     static let phraseInterval: TimeInterval = 1.6
-    /// The overlay darkens to cover the screen (0.22 s) before the ring opens.
+    /// The overlay darkens to cover the screen before the ring opens.
     static let coverDuration: TimeInterval = 0.3
     static let ringDuration: TimeInterval = 0.8
     /// The star flying to the caret, and the caret blinking for a moment.
@@ -51,7 +61,9 @@ final class IdeaTransitionService {
 
     // MARK: - State
 
-    private(set) var phase: Phase = .idle
+    private(set) var phase: Phase = .idle {
+        didSet { markMotion(leaving: oldValue) }
+    }
     /// Where the star left from (the arrow), in screen coordinates.
     private(set) var origin: CGPoint = .zero
     private(set) var idea = ""
@@ -60,6 +72,10 @@ final class IdeaTransitionService {
     private(set) var leftBecauseOfError = false
     /// How much of the script is written, for the percentage under the phrase; nil until the page starts writing.
     private(set) var progress: WritingProgressMeter?
+    /// The app behind the star is held still as it was at the tap (`TransitionBackdrop`): from the tap until the cover is solid on the
+    /// finish (the ring then opens onto the live page) or until Cancel or an error starts the exit (the live app, back on Scripts, comes up
+    /// under the cover).
+    private(set) var showsBackdrop = false
     /// A factor on every timing (1 plays the board's own; UI tests shorten it): the transitions keep their order. Low Power Mode does not change it.
     var speed: Double = 1
 
@@ -75,6 +91,11 @@ final class IdeaTransitionService {
     /// Waits `seconds`, and tells the time in seconds: the real ones by default; tests hand in a clock they move by hand.
     private let sleeper: (TimeInterval) async -> Void
     private let clock: () -> TimeInterval
+
+    /// The rise and the finish are animation intervals (`studio.cue` / Motion, "Star rise" and "Star reveal"): Instruments and
+    /// `PerformanceDeviceUITests` count their hitches.
+    private static let signposter = OSSignposter(subsystem: "studio.cue", category: "Motion")
+    @ObservationIgnored private var motion: OSSignpostIntervalState?
 
     init(
         sleep: @escaping (TimeInterval) async -> Void = { try? await Task.sleep(for: .seconds($0)) },
@@ -96,6 +117,7 @@ final class IdeaTransitionService {
         progress = nil
         onAbort = abort
         onArrive = arrive
+        showsBackdrop = true
         phase = .rising
         startedAt = clock()
         timer = Task { [weak self] in
@@ -118,7 +140,10 @@ final class IdeaTransitionService {
         onArrive?()
         onArrive = nil
         onAbort = nil
-        await sleeper(Self.revealLead * speed)
+        await sleeper(Self.coverDuration * speed)
+        // The cover is solid: the ring opens onto the live page, never onto the picture.
+        showsBackdrop = false
+        await sleeper(Self.ringDuration * speed)
         timer = Task { [weak self] in
             await self?.sleeper((Self.landingDuration + Self.caretHold) * (self?.speed ?? 1))
             guard !Task.isCancelled else { return }
@@ -150,6 +175,7 @@ final class IdeaTransitionService {
         timer?.cancel()
         leftBecauseOfError = becauseOfError
         Haptics.light()
+        showsBackdrop = false
         phase = .leaving
         onArrive = nil
         let abort = onAbort
@@ -165,6 +191,23 @@ final class IdeaTransitionService {
     private func end() {
         phase = .idle
         progress = nil
+        showsBackdrop = false
+    }
+
+    private func markMotion(leaving old: Phase) {
+        guard phase != old else { return }
+        if let motion {
+            switch old {
+            case .rising: Self.signposter.endInterval("Star rise", motion)
+            case .revealing: Self.signposter.endInterval("Star reveal", motion)
+            default: break
+            }
+        }
+        switch phase {
+        case .rising: motion = Self.signposter.beginAnimationInterval("Star rise", id: Self.signposter.makeSignpostID())
+        case .revealing: motion = Self.signposter.beginAnimationInterval("Star reveal", id: Self.signposter.makeSignpostID())
+        default: motion = nil
+        }
     }
 
     // MARK: - Phrases

@@ -76,6 +76,9 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
 - **Select** (no cabeçalho do primeiro grupo; vira **Done**): cada linha mostra a sua marca **dentro do card**, 16 pt da borda e centrada na altura
   (`ScriptSelectionMark`: anel `ink2` ou o círculo amarelo com ✓, 22 pt), no lugar da ação do estado; um toque na linha marca ou desmarca (não abre o
   roteiro), sem deslize. Não usa o modo de edição da `List`: o sistema punha o círculo na borda do card. A barra de seleção substitui o dock e a tab bar.
+  As ideias do Logbook no fim da lista **continuam** durante a seleção e são escolhidas como os roteiros (a marca no lugar do ✦ Write, sem
+  "Open Logbook ›"); a lixeira apaga roteiros e ideias juntos, com um Undo só; pasta e Duplicate valem só para roteiros (ficam apagados com só
+  ideias escolhidas). Fora da seleção, segurar uma ideia ali oferece **Delete** ("Idea deleted · Undo").
 - Abaixo da lista: **Logbook · n waiting** (`ScriptsLogbookSection`, até 2 ideias com ✦ Write e "Open Logbook ›"). Carregando: `ScriptRowSkeleton`
   (`SkeletonShine`, 1,4 s). Vazio: §30 e §32.
 - **Folhas da linha 1:** Format, For {Rede}, ✦ Voz e a lâmpada abrem todas em tela inteira (`.large`, sem meia altura).
@@ -84,18 +87,31 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
 
 ## 3. A estrela é a transição (`09` §8)
 
-`IdeaTransitionService` (relógio e estado) + `StarTransitionOverlay` (em `MainView`) + `ScriptStarter.write(from:)`: a estrela sobe da seta ao centro
-(**1,1 s**, mais lento que o quadro por decisão do dono: os efeitos têm de ser vistos e o roteiro é escrito por trás) enquanto 34 pontos de luz saem do
-campo do dock, um após o outro (0,7 s), e correm em curva até ela (1 s cada); ela **acende** onde para (clarão e anel de luz, 1,1 s); o app atrás
-escurece (brilho −0,4, saturação 0,7, desfoque 10 pt, escala 0,94), halo, 12 partículas, "Writing in your voice", a ideia e 7 frases a cada 1,6 s, a porcentagem e,
-em volta da estrela, uma **órbita de progresso** (`ProgressOrbit`, cores `dockGlow`, que fecha com a porcentagem), Cancel. Dura **no mínimo 3,0 s**;
-quando o roteiro chega: frase final, capa sólida (0,3 s), anel (0,8 s) com uma faixa de luz descendo pela página (1,4 s, `transitionSweep`), a estrela
-voa até o cursor amarelo onde começa o título deixando um **rastro de cometa** (`CometTrail`, 0,9 s) e a página escreve (§5.2). **Vibração:** a
-decolagem do dock (zumbido que cresce na subida, toque na ignição), um toque leve a cada 25% escrito, o pouso (baque + dois brilhos) quando a estrela
-vira cursor, um toque suave no Cancel. O teclado desce quando a estrela sobe e a página não o pede de volta. **Cancel ou erro:** a estrela
-cai 40 pt e some (0,3 s), nenhum roteiro fica, a ideia continua no campo (erro: toast "Couldn’t draft it · Try again"). Reduzir Movimento: fade de 0,2 s.
-Sem Apple Intelligence não há overlay. Idioma que o modelo não escreve: a estrela nem sai, nada abre e o toast diz por quê (§8). Scripts
-mostra só o céu de fundo (`skyBackground()`), nada desenha estrelas por cima.
+`IdeaTransitionService` (relógio e estado) + `StarTransitionOverlay` (em `MainView`) + `ScriptStarter.write(from:)`. **Subida (1,32 s, mais lenta que
+o quadro por decisão do dono: os efeitos têm de ser vistos e o roteiro é escrito por trás):** a estrela **nasce na seta** (mola, um clarão branco e
+violeta e um anel fino que corre para fora, 0,45 s) e, 0,12 s depois, voa em curva até o centro (1,2 s, `(0.2, 0.8, 0.2, 1)`) deixando um **rastro**
+(`RiseTrail`: o trecho da curva entre onde está e onde estava 0,08 s antes, longo enquanto é rápida e nada quando para) enquanto 34 pontos de luz
+saem do campo do dock, um após o outro (0,7 s), e correm em curva até ela (1 s cada); ela **acende** onde para (clarão e anel de luz, aos 1,24 s,
+`LightBurst`). **Atrás dela o app é uma foto parada do momento do toque** (`TransitionBackdrop`), que escurece com a curva da subida (brilho −0,4,
+saturação 0,7, desfoque 10 pt, escala 0,94): a página do roteiro abre por baixo, sem o push, e a IA começa a escrever na hora, sem nada à vista;
+o app vivo fica escondido. Depois: halo, 12 partículas, "Drafting in your voice", a ideia e 7 frases a cada 1,6 s, a porcentagem e, em volta da
+estrela, uma **órbita de progresso** (`ProgressOrbit`, cores `dockGlow`, que fecha com a porcentagem), Cancel. Dura **no mínimo 3,0 s**; quando o
+roteiro chega: frase final, capa sólida (0,3 s; a foto sai debaixo dela), anel (0,8 s, a capa é uma forma com furo, `RingCover`) abrindo para a
+página viva com uma faixa de luz descendo por ela (1,4 s, `transitionSweep`), a estrela voa até o cursor amarelo onde começa o título deixando um
+**rastro de cometa** (`CometTrail`, 0,9 s) e a página escreve (§5.2). **Vibração:** a decolagem (toque firme no nascimento, zumbido que cresce
+no voo, toque na ignição), um toque leve a cada 25% escrito, o pouso (baque + dois brilhos) quando a estrela vira cursor, um toque suave no Cancel.
+O teclado desce quando a estrela sobe e a página não o pede de volta. A luz do dock (`AIGlow`) não dá a volta no envio (fica atrás da foto). **Cancel
+ou erro:** a estrela cai 40 pt e some (0,3 s), a foto sai e o app vivo, já em Scripts e sem o roteiro, volta escurecido e vem para a frente
+(a curva da subida) enquanto a capa some; a ideia continua no campo (erro: toast "Couldn’t draft it · Try again"). Reduzir Movimento: fade de
+0,2 s, sem nascimento, rastros, clarões nem faixa. Sem Apple Intelligence não há overlay. Idioma que o modelo não escreve: a estrela nem sai,
+nada abre e o toast diz por quê (§8). Scripts mostra só o céu de fundo (`skyBackground()`), nada desenha estrelas por cima.
+
+**Leve no iPhone:** o que se move por cima é barato (brilhos são gradientes, não sombras; nenhuma máscara) e o que fica atrás é uma imagem só.
+Medido no iPhone 15 Pro (Debug, `PerformanceDeviceUITests.testSendingAnIdea` com o Apple Intelligence de verdade e
+`testTheStarOpeningTheScript`; intervalos de animação `studio.cue` / Motion "Star rise" e "Star reveal"): a subida não engasga (0 em 5 envios;
+com o app vivo atrás eram até 7, 92 ms) e a estrela anda a ~55–60 quadros por segundo (antes ~30, com o app congelando 180 ms); a abertura roda a
+87 fps com 3–4 engasgos curtos (60 ms somados), ainda a melhorar. As animações do SwiftUI ficam perto de 60 Hz mesmo com a tela de 120 Hz
+(`CADisableMinimumFrameDurationOnPhone` não mudou a medida e não está ligado).
 
 **Porcentagem escrita** (pedido do dono, não está no quadro): linha mono `ink2` sob a frase (`WritingProgressLabel`), estimada por `WritingProgressEstimate`
 a partir dos eventos do roteirista (`ScriptWritingEvent`, `WritingProgressMeter`): até 5% em 2 s antes das primeiras palavras; o primeiro rascunho vai de
@@ -398,9 +414,12 @@ trocam na hora. Cores em `Palette.Remote`.
 (`PersonalizeHero`): o céu escolhido (`SkyMiniature`: o mesmo `BgWash` + `StarfieldView` da navegação, estrelas no brilho dos quadros), a luz
 do universo respirando na cor escolhida (`CoreColor.glow`) e o ícone escolhido flutuando (`AppIconArt`; o padrão desenhado das camadas de
 `AppIcon.icon`), com a legenda "Default · Serene sky · Gold light"; trocar o céu esmaece, a luz muda de cor devagar, o ícone entra numa mola.
-**App icon** (`AppIconPicker`, a página própria saiu): os cinco ícones lado a lado como coleção, anel amarelo que desliza (matched geometry) e ✓
-no escolhido, bloqueados apagados com cadeado que balança ao toque (e o aviso de quantos vídeos faltam), "10 · Pro"; Pro sem plano abre os planos.
-**Starry sky** (`SkyPicker`): quatro cartões 2×2, cada um com o próprio céu ao vivo, nome e o que tem. **Your universe's light**: as
+**App icon** (`AppIconPicker`, a página própria saiu): os cinco ícones lado a lado como coleção, o escolhido com o anel amarelo e o ✓ no canto
+(`SelectionRing`, desenhado uma vez por cima da fileira e levado até o escolhido numa mola firme, 0,4 s, quique 0,12: desenhado em cada ícone,
+passava por baixo dos seguintes), bloqueados apagados com cadeado que balança ao toque (e o aviso de quantos vídeos faltam), "10 · Pro"; Pro sem plano abre os planos.
+**Starry sky** (`SkyPicker`): quatro cartões 2×2, cada um com o próprio céu ao vivo, nome e o que tem; o escolhido com o mesmo anel e ✓
+(`SelectionRing`), por cima da grade, que desliza por cima dos outros cartões (nas diagonais também). Reduzir Movimento: o anel esmaece de um
+cartão para o outro. **Your universe's light**: as
 amostras do Profile (`CoreColorSwatches`). **Feel** (`PersonalizeFeelRow`): Celebrations e Haptics com ícone e o que fazem; ligar responde na
 hora (as fagulhas sentidas; o primeiro toque). **Your topics** (`PersonalizeTopics`): os tópicos como etiquetas nas cores de Scripts, Edit (folha
 do My Cue Voice) e a marcação automática. **Getting started** só até o primeiro vídeo. A busca leva aos mesmos lugares (`SettingsRoute.appIcon`
@@ -696,7 +715,11 @@ biblioteca não a recebeu) volta na abertura seguinte como "Freestyle recording"
 pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/take-*.mov` com o nome da câmera ("The take couldn't be saved"), onde a
 recuperação o acha: nunca um vídeo na biblioteca sem take que aponte para ele.
 
-**Logbook:** título grande (`.large`) com "Catch it now. Write it later."; segurar o botão grava e um toque começa/termina ("Tap the button again to
+**Logbook:** título grande da própria página ("Logbook" e "Catch it now. Write it later.", como o título grande do sistema), com a barra sempre
+no modo pequeno: digitando e selecionando, o título recolhe e o pequeno aparece na barra (trocar a barra entre grande e pequeno acontecia num quadro
+e a página pulava). A captura (título, microfone, frase, campo e o vazio) fica **acima da lista de ideias**, fora dela: cada parte recolhe pela
+altura (`FoldAway`) e a lista cresce no lugar (uma parte de linha que recolhia fazia a lista redimensionar a linha num quadro, e tudo pulava ~160 pt);
+a página é alinhada no topo, então o teclado tira altura da lista e não desloca a página. Segurar o botão grava e um toque começa/termina ("Tap the button again to
 finish"; onde nada pode ouvir, diz por quê); embaixo dele, "Hold to talk · tap to start". Enquanto ouve, a linha embaixo é só "Listening…", os anéis
 seguem a voz e as palavras entram no campo. O campo tem a mesma altura vazio ou digitando (ícone centrado; cresce até 4 linhas só com ideia longa;
 cursor amarelo; Return salva). **Digitando** (pedido do dono, 20/10/2026): o microfone grande sai, o título vai para a barra e ao lado do campo fica
@@ -706,7 +729,12 @@ AGO" ou "TYPED · 9:40 PM"; a recém-salva entra no topo com contorno amarelo po
 (`HapticPatterns.listen`), um suave ao parar. **Movimento:** ao abrir, o círculo respira uma vez (1,08); sob o dedo afunda (0,92) e volta numa mola;
 ao começar a ouvir o microfone pula (1,25) e três ondas saem do círculo e somem, mais longe com a voz mais alta (`LogbookRipples`); digitando, o círculo
 encolhe em direção ao botão do lado do campo, que cresce de lá; microfone ↔ seta com um pulo (1,14) e um tick; ✦ Write acende o cartão em violeta e a estrela sai do próprio botão; apagar dá um toque
-firme e a lista fecha numa mola. Reduzir Movimento: sem ondas, pulos nem respiração. Uma ideia salva rola para cima do teclado. Siri sem abrir o app (`AddToLogbookIntent`: "Add an idea to Cue" / "Save an idea in Cue", pergunta
+firme e a lista fecha numa mola, com "Idea deleted · Undo" (4 s) mostrado na própria folha (`toastHost(inSheet:)`). **Select** (à direita do primeiro dia,
+como em Scripts; vira **Done**, e o Done da barra sai): a captura recolhe, cada cartão mostra a marca (`ScriptSelectionMark`) no lugar do ✦ Write e
+um toque marca ou desmarca; a barra de baixo ("Select ideas" / "n selected" e a lixeira) apaga o que foi escolhido com um Undo só. Reduzir
+Movimento: sem ondas, pulos nem respiração. Uma ideia salva rola para cima do teclado. Medido no iPhone 15 Pro (`PerformanceDeviceUITests`,
+intervalos "Logbook fold" e "Logbook listen"): recolher e abrir sem engasgo (~99 fps); começar a ouvir ainda tem 1–3 engasgos curtos (24–60 ms,
+variando muito), a melhorar. Siri sem abrir o app (`AddToLogbookIntent`: "Add an idea to Cue" / "Save an idea in Cue", pergunta
 "What's the idea?", responde "Saved in your Logbook."). Uma nota aberta por notificação vem ao centro com contorno `acc` de 1,5 pt.
 
 ## 23. Ferramentas de IA: o botão faz o que diz

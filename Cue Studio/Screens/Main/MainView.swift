@@ -19,20 +19,37 @@ struct MainView: View {
     @Environment(IdeaTransitionService.self) private var ideaTransition
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
+    /// The app as it was when an idea was sent, held still behind its star (`TransitionBackdrop`); the live app is hidden meanwhile.
+    @State private var backdrop: UIView?
+    /// Goes up each time Cancel or an error brings the live app back from behind the star: it comes back drawn back, and comes forward.
+    @State private var liveAppReturns = 0
 
     var body: some View {
         @Bindable var presentation = presentation
+        let recedes = !reduceMotion
+        let forward = comingForward
         tabs
-            // While the idea's star is on screen the app dims and draws back behind it (0.6 s), as the board has it (09 §8).
-            .scaleEffect(dimsForTransition && !reduceMotion ? 0.94 : 1, anchor: UnitPoint(x: 0.5, y: 0.4))
-            .brightness(dimsForTransition ? -0.4 : 0)
-            .saturation(dimsForTransition ? 0.7 : 1)
-            .blur(radius: dimsForTransition ? 10 : 0)
-            .animation(
-                reduceMotion ? .easeOut(duration: 0.3) : .timingCurve(0.2, 0.8, 0.2, 1, duration: IdeaTransitionService.riseDuration * ideaTransition.speed),
-                value: dimsForTransition
-            )
+            // Back from behind the star (Cancel, an error): from where the still was, forward again with the rise's curve (09 §8).
+            .keyframeAnimator(initialValue: 0.0, trigger: liveAppReturns) { content, amount in
+                content.modifier(TransitionDim(amount: amount, recedes: recedes))
+            } keyframes: { _ in
+                MoveKeyframe(1.0)
+                LinearKeyframe(0.0, duration: forward.duration, timingCurve: forward.curve)
+            }
+            .opacity(backdrop == nil ? 1 : 0)
+            .overlay {
+                if let backdrop { TransitionBackdrop(still: backdrop) }
+            }
             .overlay { StarTransitionOverlay(transition: ideaTransition).ignoresSafeArea() }
+            .onChange(of: ideaTransition.showsBackdrop) { _, shows in
+                if shows {
+                    backdrop = TransitionBackdrop.takeStill()
+                } else if backdrop != nil {
+                    backdrop = nil
+                    // The finish opens the ring onto the page under a solid cover; only an exit shows the live app coming forward.
+                    if ideaTransition.phase == .leaving { liveAppReturns += 1 }
+                }
+            }
             .overlay(alignment: .bottom) { continuePostingCard }
             // "Recorded · Next: pick a take" (a ✓ toast): the first voyage says each step done.
             .background { VoyageAnnouncer() }
@@ -51,6 +68,8 @@ struct MainView: View {
             }
             // The My Cue Voice tip waits until the app has been opened on two different days.
             .task { voiceQuestions.registerAppOpen() }
+            // The patterns' engine is made off the main thread now, not by the first one played (the first idea's takeoff).
+            .task { HapticPatterns.prewarm() }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active { voiceQuestions.registerAppOpen() }
             }
@@ -80,9 +99,11 @@ struct MainView: View {
         toast.show(String(localized: "Saved · post when you’re ready"))
     }
 
-    /// The star is rising or waiting: the app behind it is dimmed.
-    private var dimsForTransition: Bool {
-        ideaTransition.phase == .rising || ideaTransition.phase == .waiting
+    /// The live app coming forward again after an exit: the rise's curve and length (Reduce Motion: 0.3 s, eased out).
+    private var comingForward: (duration: TimeInterval, curve: UnitCurve) {
+        if reduceMotion { return (0.3 * ideaTransition.speed, .easeOut) }
+        let curve = UnitCurve.bezier(startControlPoint: UnitPoint(x: 0.2, y: 0.8), endControlPoint: UnitPoint(x: 0.2, y: 1))
+        return (IdeaTransitionService.riseDuration * ideaTransition.speed, curve)
     }
 
     /// The system's tab bar (Liquid Glass on iOS 26+): content scrolls under it, the selection slides with a drag
@@ -95,7 +116,8 @@ struct MainView: View {
             Tab(value: AppTab.scripts) {
                 NavigationStack(path: $presentation.scriptsPath) {
                     ScriptsView(
-                        library: services.library, toast: services.toast, writer: services.writer, drafts: services.drafts, defaults: services.defaults
+                        library: services.library, toast: services.toast, logbook: services.logbook, writer: services.writer,
+                        drafts: services.drafts, defaults: services.defaults
                     )
                         // On the list (its selection hides the bar), not on the stack: the script page pushed over it hides the bar
                         // itself, the system's way, which a stack-wide setting would override.

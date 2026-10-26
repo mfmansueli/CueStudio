@@ -49,7 +49,24 @@ final class LogbookService {
     }
 
     func delete(_ id: UUID) {
-        entries.removeAll { $0.id == id }
+        delete([id])
+    }
+
+    /// Takes these ideas away and returns them as they were, for an Undo (`restore`).
+    @discardableResult
+    func delete(_ ids: Set<UUID>) -> [LogbookEntry] {
+        let removed = entries.filter { ids.contains($0.id) }
+        guard !removed.isEmpty else { return [] }
+        entries.removeAll { ids.contains($0.id) }
+        persist()
+        return removed
+    }
+
+    /// Puts deleted ideas back where they were, among the others by when each was caught (an Undo).
+    func restore(_ restored: [LogbookEntry]) {
+        let missing = restored.filter { entry in !entries.contains { $0.id == entry.id } }
+        guard !missing.isEmpty else { return }
+        entries = (entries + missing).sorted { $0.createdAt > $1.createdAt }
         persist()
     }
 
