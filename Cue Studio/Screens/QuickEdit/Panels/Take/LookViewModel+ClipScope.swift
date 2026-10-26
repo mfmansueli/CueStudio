@@ -33,18 +33,42 @@ extension LookViewModel {
         }
     }
 
-    /// Whether some clip sets its own value for what `panel` changes, so a change to the whole take
-    /// doesn't reach it.
-    func someClipKeepsItsOwn(for panel: EditorPanel) -> Bool {
-        edit.timeline.segments.contains { clip in
-            guard let look = clip.look else { return false }
-            switch panel {
-            case .adjust: return look.overridesAdjustment
-            case .filters: return look.filter != nil || look.filterAmount != nil
-            case .background: return look.background != nil
-            default: return false
-            }
+    /// The look tool the open panel is: the one it was opened as (Skin), else the panel's own.
+    var openLookTool: EditorLookTool? {
+        guard let panel else { return nil }
+        if let lookTool, lookTool.panel == panel { return lookTool }
+        return EditorLookTool(panel: panel)
+    }
+
+    /// How many clips set their own value for what `tool` changes, so a change to the whole video doesn't reach them.
+    func clipsKeepingTheirOwn(for tool: EditorLookTool) -> Int {
+        edit.timeline.segments.count(where: { clip in clip.look.map { tool.isOwn(in: $0) } ?? false })
+    }
+
+    /// "N clips keep their own · Use this on all", in the whole video's Adjust, Skin, Filters or Background: how many, for the open
+    /// panel's tool; zero while it changes one clip.
+    var clipsKeepingTheirOwnInPanel: Int {
+        guard lookClip == nil, let tool = openLookTool else { return 0 }
+        return clipsKeepingTheirOwn(for: tool)
+    }
+
+    /// "Use this on all": every clip takes the whole video's value for what the open panel's tool changes (Skin, only Skin
+    /// Smoothing; Filters, the filter and its amount), and keeps the rest of its own. A slider still held ends first, as its own
+    /// step; this is one more, said with Undo. Only when asked.
+    func useWholeVideosLookOnAllClips() {
+        guard lookClip == nil, let tool = openLookTool, clipsKeepingTheirOwn(for: tool) > 0 else { return }
+        endChange()
+        var timeline = edit.timeline
+        for var clip in timeline.segments {
+            guard var look = clip.look, tool.isOwn(in: look) else { continue }
+            tool.clear(&look)
+            clip.look = look.normalized
+            timeline.replaceSegment(clip)
         }
+        guard timeline != edit.timeline else { return }
+        commit(timeline)
+        Haptics.apply()
+        sayUndoable(String(localized: "Every clip uses this now"))
     }
 
     // MARK: - Following the picked clip
@@ -67,7 +91,7 @@ extension LookViewModel {
         // Background says its scope and what is behind the creator; its scope's rule is a note inside the panel.
         if panel == .background { return backgroundSubtitle }
         if lookClip != nil { return String(localized: "\(clipScope) · the rest stays as it is") }
-        if someClipKeepsItsOwn(for: panel) { return String(localized: "Whole video · some clips keep their own") }
+        // The clips that keep their own say so under the header, with "Use this on all".
         return String(localized: "Whole video")
     }
 }

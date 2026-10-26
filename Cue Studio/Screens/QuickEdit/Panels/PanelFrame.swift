@@ -23,9 +23,17 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
             title: viewModel.panelTitle(panel), subtitle: viewModel.panelSubtitle(panel), onReset: onReset ?? viewModel.panelReset(panel),
             compare: compare,
             expansion: panel.isExpandable ? expansion : nil, clearsHomeIndicator: panel.scrollsClearOfHomeIndicator, contentKey: viewModel.panelTab,
-            keptOffset: keptOffset, onApply: viewModel.closePanel, fixed: { fixed }, content: { content }, footer: { footer }
+            keptOffset: keptOffset, onApply: viewModel.closePanel, fixed: { keepTheirOwn; fixed }, content: { content }, footer: { footer }
         )
         .accessibilityIdentifier("edit.panel.\(panel.rawValue)")
+    }
+
+    /// The whole video's look panels: the clips that keep their own, and "Use this on all".
+    @ViewBuilder private var keepTheirOwn: some View {
+        let count = panel.hasClipScope ? viewModel.look.clipsKeepingTheirOwnInPanel : 0
+        if count > 0 {
+            KeepTheirOwnRow(count: count, onUseOnAll: viewModel.look.useWholeVideosLookOnAllClips)
+        }
     }
 
     private var expansion: Binding<Bool> {

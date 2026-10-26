@@ -60,15 +60,15 @@ extension LookViewModel {
         }
     }
 
-    /// The rule of the panel's scope, when there is one to tell: a clip with its own background (Reset gives it the take's again), a clip
-    /// showing the take's, or a take with clips that keep their own.
+    /// The rule of the panel's scope, when there is one to tell: a clip with its own background (Reset gives it the take's again), or a
+    /// clip showing the take's. The whole video's clips that keep their own say so under the header (`clipsKeepingTheirOwnInPanel`).
     var backgroundScopeNote: String? {
         if lookClip != nil {
             return clipOverridesBackground
                 ? String(localized: "This clip has its own background. Reset gives it the whole video's again.")
                 : String(localized: "Shows the whole video's background. A change here is for this clip only.")
         }
-        return someClipKeepsItsOwn(for: .background) ? String(localized: "Clips with their own background keep it.") : nil
+        return nil
     }
 
     /// The green or blue screen's Tolerance, Edge or Spill was moved from where it starts.
