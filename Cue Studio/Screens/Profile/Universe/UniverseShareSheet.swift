@@ -15,7 +15,7 @@ struct UniverseShareSheet: View {
 
     var body: some View {
         VStack(spacing: 14) {
-            Text("Share your \(String(viewModel.snapshot.year))").font(.headline)
+            Text("Share your \(String(viewModel.snapshot.year))").cueFont(.headline, weight: .semibold)
             // The board's preview: the card at 150 pt wide.
             viewModel.card()
                 .scaleEffect(Self.previewWidth / UniverseShareOptions.cardSize.width)

@@ -26,7 +26,7 @@ struct RemoteWaitingStatus: View {
                 }
             }
         }
-        .font(.subheadline.weight(.semibold))
+        .cueFont(.subheadline, weight: .semibold)
         .foregroundStyle(Palette.accText)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(verbatim: text))

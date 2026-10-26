@@ -44,7 +44,7 @@ struct ScriptCuesBar: View {
             divider
             Button(action: onAdd) {
                 Image(systemName: "plus")
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.fixed(17, weight: .semibold))
                     .foregroundStyle(Palette.ink)
                     .frame(width: Self.height, height: Self.height)
                     .contentShape(Rectangle())
@@ -91,7 +91,7 @@ struct ScriptCuesBar: View {
             action()
         } label: {
             Image(systemName: symbol)
-                .font(.system(size: 15, weight: .semibold))
+                .font(.fixed(15, weight: .semibold))
                 .foregroundStyle(isEnabled ? Palette.ink : Palette.ink3)
                 .frame(width: Self.historyButton, height: Self.historyButton)
                 .background(Palette.fill, in: Circle())
@@ -120,7 +120,8 @@ struct ScriptCuesBar: View {
                 .foregroundStyle(Palette.accText)
                 .lineLimit(1)
                 .padding(.horizontal, 13)
-                .frame(height: 34)
+                .padding(.vertical, 4)
+                .frame(minHeight: 34)
                 .background(Palette.accSoft, in: Capsule())
                 .frame(minHeight: Metrics.hitTarget)
                 .contentShape(Capsule())

@@ -28,7 +28,7 @@ struct OnboardingHeading: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .motion(pose(0))
             Text(title)
-                .font(.system(size: 30, weight: .bold))
+                .cueFont(30, weight: .bold)
                 .tracking(-0.6)
                 .foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)
@@ -36,7 +36,7 @@ struct OnboardingHeading: View {
                 .accessibilityAddTraits(.isHeader)
             if let subtitle {
                 Text(subtitle)
-                    .font(.system(size: 15))
+                    .cueFont(15)
                     .foregroundStyle(Palette.ink2)
                     .fixedSize(horizontal: false, vertical: true)
                     .motion(pose(2, own: MotionPose(opacity: shown ? 1 : 0)))

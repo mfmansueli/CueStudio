@@ -30,48 +30,55 @@ struct MilestoneView: View {
                 minimumInterval: isSettled ? 1.0 / 30 : nil, paused: reduceMotion || frozenAt != nil || scenePhase != .active
             )) { context in
                 let time = frozenAt ?? (reduceMotion ? MilestoneScript.duration : context.date.timeIntervalSince(start))
-                ZStack(alignment: .top) {
+                // The board's spaces, in proportion to the screen's height: an SE (667 pt) keeps everything above the buttons, a Pro Max
+                // spreads it out and draws the icon a little bigger.
+                let fit = min(1.13, max(0.79, proxy.size.height / 844))
+                VStack(spacing: 0) {
                     Text(eyebrow)
                         .monoFont(size: 11, weight: .semibold)
                         .interfaceTracking(1.3)
                         .foregroundStyle(Palette.accText)
-                        .frame(maxWidth: .infinity)
-                        .offset(y: 96)
-                    hero(time: time).offset(y: 200)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 28)
+                        .padding(.top, max(proxy.safeAreaInsets.top, 20) + 42 * fit)
+                    hero(time: time)
+                        .scaleEffect(fit)
+                        .frame(height: 200 * fit)
+                        .padding(.top, 72 * fit)
                     VStack(spacing: 10) {
                         Text("A new icon is yours.")
-                            .font(.system(size: 30, weight: .bold))
+                            .cueFont(30, weight: .bold)
                             .tracking(-0.6)
                             .foregroundStyle(Palette.ink)
                             .accessibilityAddTraits(.isHeader)
-                        Text(message).font(.system(size: 15)).foregroundStyle(Palette.ink2)
+                        Text(message).cueFont(15).foregroundStyle(Palette.ink2)
                     }
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 28)
-                    .offset(y: 424)
-                    homeScreenRow.offset(y: 548)
-                    VStack(spacing: 0) {
-                        Spacer()
-                        VStack(spacing: 6) {
-                            Button(action: onUse) {
-                                Text(isAvailable ? String(localized: "Use \(icon.title)") : String(localized: "Get \(icon.title) with Pro"))
-                            }
-                                .buttonStyle(.cuePrimary(.large))
-                                .accessibilityIdentifier("milestone.use")
-                            Button(action: onKeep) {
-                                Text("Keep my current icon")
-                                    .font(.system(size: 15, weight: .semibold))
-                                    .foregroundStyle(Palette.ink2)
-                                    .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
-                            }
-                            .buttonStyle(.plain)
-                            .accessibilityIdentifier("milestone.keep")
+                    .padding(.top, 24 * fit)
+                    homeScreenRow
+                        .padding(.top, 40 * fit)
+                    Spacer(minLength: 16)
+                    VStack(spacing: 6) {
+                        Button(action: onUse) {
+                            Text(isAvailable ? String(localized: "Use \(icon.title)") : String(localized: "Get \(icon.title) with Pro"))
                         }
-                        .padding(.horizontal, 16)
-                        .padding(.bottom, 32)
+                            .buttonStyle(.cuePrimary(.large))
+                            .accessibilityIdentifier("milestone.use")
+                        Button(action: onKeep) {
+                            Text("Keep my current icon")
+                                .cueFont(15, weight: .semibold)
+                                .foregroundStyle(Palette.ink2)
+                                .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityIdentifier("milestone.keep")
                     }
-                    .frame(height: proxy.size.height)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, proxy.safeAreaInsets.bottom > 0 ? 32 : 20)
                 }
+                // The icon, its sentence, the row and two buttons share one screen: past the largest standard size an iPhone SE cut them short.
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                 .frame(width: proxy.size.width, height: proxy.size.height, alignment: .top)
                 .onChange(of: time >= MilestoneScript.duration) { _, settled in isSettled = settled }
             }

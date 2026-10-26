@@ -27,6 +27,7 @@ struct ScriptTextEditor: View {
     var undo: ScriptEditorUndo?
 
     @ScaledMetric(relativeTo: .body) private var minimumHeight = 300.0
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     /// Where the editor's words sit inside it: the text view's 8 pt above and below, and 5 pt of line padding at each side. The page's
     /// placeholder and the words the AI writes in (`ArrivingText`) sit there too.
@@ -36,7 +37,7 @@ struct ScriptTextEditor: View {
         ScriptTextViewRepresentable(
             text: $text,
             selection: $selection,
-            style: ScriptTextStyle(size: textSize.points, passage: passage, showsCues: showsCues),
+            style: ScriptTextStyle(size: textSize.points(for: dynamicTypeSize), passage: passage, showsCues: showsCues),
             minimumHeight: minimumHeight,
             focus: focus,
             undo: undo,
@@ -48,7 +49,7 @@ struct ScriptTextEditor: View {
         .overlay(alignment: .topLeading) {
             if text.isEmpty {
                 Text("Just start talking…")
-                    .font(.system(size: textSize.points))
+                    .font(.fixed(textSize.points(for: dynamicTypeSize)))
                     .foregroundStyle(Palette.ink2)
                     .padding(.top, Self.textInsets.top)
                     .padding(.leading, Self.textInsets.leading)
@@ -65,7 +66,7 @@ struct ScriptTextEditor: View {
     /// violet. `ScriptTextStyle` is the same for the text view.
     static func styled(_ text: String, passage: Range<Int>?, size: Double, showsCues: Bool = true) -> AttributedString {
         var result = AttributedString(text)
-        result.font = .system(size: size)
+        result.font = .fixed(size)
         result.foregroundColor = Palette.ink
         let characters = result.characters
         if let passage, passage.upperBound <= text.count, !passage.isEmpty {
@@ -82,12 +83,12 @@ struct ScriptTextEditor: View {
             let end = characters.index(characters.startIndex, offsetBy: upper)
             result[start..<end].backgroundColor = nil
             guard showsCues else {
-                result[start..<end].font = .system(size: 1)
+                result[start..<end].font = .fixed(1)
                 result[start..<end].foregroundColor = .clear
                 continue
             }
             let symbol = ScriptCueSymbol.name(forCue: String(match.output.dropFirst().dropLast()))
-            result[start..<end].font = .system(size: metrics.fontSize, weight: .semibold)
+            result[start..<end].font = .fixed(metrics.fontSize, weight: .semibold)
             result[start..<end].foregroundColor = Palette.Cues.chipInk
             result[start..<end].baselineOffset = metrics.baselineOffset
             result[start..<end][TextChipAttribute.self] = TextChip(id: lower, symbol: symbol)

@@ -20,15 +20,15 @@ struct ShareNetworkRow: View {
                 ZStack {
                     Circle().strokeBorder(Palette.ink3, lineWidth: 2).opacity(isPicked ? 0 : 1)
                     Circle().fill(Palette.acc).opacity(isPicked ? 1 : 0)
-                    Image(systemName: "checkmark").font(.system(size: 12, weight: .heavy)).foregroundStyle(Palette.accInk).opacity(isPicked ? 1 : 0)
+                    Image(systemName: "checkmark").font(.fixed(12, weight: .heavy)).foregroundStyle(Palette.accInk).opacity(isPicked ? 1 : 0)
                 }
                 .frame(width: 26, height: 26)
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 6) {
                         Circle().fill(network.platform.tint).frame(width: 8, height: 8)
-                        Text(network.platform.label).font(.system(size: 17)).foregroundStyle(Palette.ink)
+                        Text(network.platform.label).cueFont(17).foregroundStyle(Palette.ink)
                         if isFromScript {
-                            Text("· from your script").font(.system(size: 14)).foregroundStyle(Palette.ink2)
+                            Text("· from your script").cueFont(14).foregroundStyle(Palette.ink2)
                         }
                     }
                     Text(line).monoFont(size: 10.5, weight: .medium).interfaceTracking(0.6).foregroundStyle(Palette.ink2)

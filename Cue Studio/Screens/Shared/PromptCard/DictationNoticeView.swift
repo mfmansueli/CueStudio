@@ -20,7 +20,7 @@ struct DictationNoticeView: View {
                 Image(systemName: "mic.slash.fill")
                     .foregroundStyle(Palette.ink2)
             }
-            .font(.footnote)
+            .cueFont(.footnote)
             .foregroundStyle(Palette.ink2)
             if notice.offersSettings {
                 Button("Open Settings") { openURL.openAppSettings() }

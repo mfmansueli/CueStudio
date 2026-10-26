@@ -30,7 +30,7 @@ struct SettingsSafeZoneView: View {
                             Text(choice.label).foregroundStyle(Palette.ink)
                             Spacer(minLength: 8)
                             if chosen == choice {
-                                Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(Palette.accText)
+                                Image(systemName: "checkmark").cueFont(.body, weight: .semibold).foregroundStyle(Palette.accText)
                             }
                         }
                         .frame(minHeight: Metrics.listRowContent)

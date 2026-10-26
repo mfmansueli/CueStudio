@@ -51,7 +51,7 @@ struct VoiceEditorSheet: View {
                 .foregroundStyle(Palette.aiText)
                 .accessibilityIdentifier("voice.editor.eyebrow")
             Text(field.title)
-                .font(.system(size: 28, weight: .bold))
+                .cueFont(28, weight: .bold)
                 .tracking(-0.56)
                 .foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)

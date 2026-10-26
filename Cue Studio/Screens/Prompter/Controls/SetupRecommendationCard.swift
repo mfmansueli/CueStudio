@@ -20,18 +20,18 @@ struct SetupRecommendationCard: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "sparkles")
-                    .font(.body.weight(.semibold))
+                    .cueFont(.body, weight: .semibold)
                     .foregroundStyle(Palette.Camera.recommendationIcon)
                     .frame(width: 36, height: 36)
                     .background(Palette.Camera.recommendationIconFill, in: Circle())
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(recommendation.title).font(.headline)
+                    Text(recommendation.title).cueFont(.headline, weight: .semibold)
                     Text(recommendation.summary)
-                        .font(.subheadline.monospacedDigit())
+                        .cueFont(.subheadline).monospacedDigit()
                         .foregroundStyle(Palette.aiTextStrong)
                     Text(detail)
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.aiTextStrong)
                         .padding(.top, 2)
                 }

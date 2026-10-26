@@ -34,7 +34,7 @@ struct EditProfilePhoto: View {
             VStack(spacing: 8) {
                 photo
                 Text(verbatim: draft.trimmedName.isEmpty ? String(localized: "Your name") : draft.trimmedName)
-                    .font(.title2.bold())
+                    .cueFont(.title2, weight: .bold)
                     .foregroundStyle(draft.trimmedName.isEmpty ? Palette.ink2 : Palette.ink)
                     .lineLimit(1)
                     .contentTransition(.opacity)
@@ -44,16 +44,17 @@ struct EditProfilePhoto: View {
                         .lineLimit(1)
                     if let type = draft.creatorType {
                         Text(verbatim: type)
-                            .font(.footnote.weight(.semibold))
+                            .cueFont(.footnote, weight: .semibold)
                             .foregroundStyle(Palette.accText)
                             .lineLimit(1)
                             .padding(.horizontal, 10)
-                            .frame(height: 24)
+                            .padding(.vertical, 2)
+                            .frame(minHeight: 24)
                             .background(Palette.Settings.toolTileTop, in: Capsule())
                             .transition(.scale(scale: 0.8).combined(with: .opacity))
                     }
                 }
-                .font(.subheadline)
+                .cueFont(.subheadline)
             }
             .frame(maxWidth: .infinity)
             .padding(.top, 34)
@@ -116,7 +117,7 @@ struct EditProfilePhoto: View {
     /// The yellow camera badge, with a 44 pt target round it.
     private var camera: some View {
         Image(systemName: "camera.fill")
-            .font(.system(size: 13, weight: .bold))
+            .font(.fixed(13, weight: .bold))
             .foregroundStyle(Palette.accInk)
             .frame(width: 32, height: 32)
             .background(Palette.acc, in: Circle())

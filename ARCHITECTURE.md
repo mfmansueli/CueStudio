@@ -395,7 +395,14 @@ struct HomeView: View {
     tela usa; a cor de uma área só vai no namespace dela (`Palette.Editor`, `.Camera`, `.Scripts`, `.Page`, `.Takes`,
     `.Platform`, `.World`, `.Aurora`, `.Slider`, `.Flight`, `.Universe`, `.Settings`, `.Sky`, um arquivo cada). Um token novo no núcleo recompila os ~290 arquivos
     que usam cor; num namespace, só os daquela área;
-  - `CueStudioFont`: fonte display com `relativeTo:` para escalar com Dynamic Type, registrada no launch;
+  - **Tipo da interface** (`InterfaceType`, `ScreenProportion`): todo texto da interface usa `cueFont(tamanho, weight:)` (o tamanho do quadro
+    no tamanho de texto padrão, crescendo com o Dynamic Type na curva do estilo de texto mais próximo e acompanhando um pouco a largura do
+    iPhone: 0,96 no SE, 1 de 390 a 402 pt, 1,08 no Pro Max), `cueFont(.body)` para um estilo de texto, `monoFont(size:)` para os rótulos
+    mono e `Font.cue(…, for: dynamicTypeSize)` onde se pede um `Font`. Só fica fixo, com `Font.fixed`, o que não pode crescer: o texto do
+    teleprompter, o que é desenhado no vídeo, miniaturas, mapas e cartões de compartilhar, e ícones dentro de botões redondos de tamanho fixo.
+    Uma barra ou chip que não pode crescer além de um ponto usa `dynamicTypeSize(...)`; altura de chip com texto é `minHeight`, nunca `height`.
+    A regra `loose_font_size` do SwiftLint acusa `.system(size:)` fora dos tokens (o Quick edit tem a sua, `editor_loose_font_size`);
+  - `CueStudioFont`: as fontes do teleprompter e do vídeo (OFL), registradas no launch, em tamanho fixo (o controle do próprio teleprompter);
   - `Color+Dynamic`: inits de hex e HSL.
 - **Estilos:** um `ButtonStyle` com `enum Variant` + helpers estáticos (`.appPrimary()`, `.appSoft()`...),
   para as telas nunca construírem o estilo na mão.
@@ -508,6 +515,7 @@ struct OwnProfileStatusServiceTests {
 - [ ] Estados vazio, carregando e erro definidos
 - [ ] Textos localizados; labels e identifiers de acessibilidade
 - [ ] Light e dark mode conferidos; Reduce Motion respeitado
+- [ ] Texto cresce com o Dynamic Type (`cueFont`) e a tela cabe do iPhone SE (375 × 667) ao Pro Max (440 × 956), também no maior tamanho de acessibilidade (`LayoutAuditCaptureTests`)
 - [ ] Campos sensíveis definidos só pelo servidor (quando houver backend)
 - [ ] Testes unitários (Swift Testing) e de UI (XCUITest) na mesma entrega
 - [ ] `DESIGN_PROJECT.md` atualizado se a UI mudou

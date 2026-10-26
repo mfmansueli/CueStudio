@@ -61,7 +61,7 @@ struct ReviewToolbar: ToolbarContent {
                 if onSuggest != nil { Text(verbatim: "✦").foregroundStyle(Palette.aiText) }
                 if hasChoices {
                     Image(systemName: "chevron.down")
-                        .font(.caption2.weight(.bold))
+                        .cueFont(.caption2, weight: .bold)
                         .foregroundStyle(Palette.ink2)
                 }
             }

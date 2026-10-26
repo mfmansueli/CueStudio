@@ -16,7 +16,7 @@ struct NotificationInviteSheet: View {
         VStack(alignment: .leading, spacing: 16) {
             HStack(alignment: .top, spacing: 14) {
                 Image(systemName: "bell.badge")
-                    .font(.system(size: 22, weight: .semibold))
+                    .font(.fixed(22, weight: .semibold))
                     .foregroundStyle(Palette.aiText)
                     .frame(width: 48, height: 48)
                     .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 14, style: .continuous))

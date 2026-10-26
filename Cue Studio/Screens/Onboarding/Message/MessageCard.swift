@@ -20,6 +20,8 @@ struct MessageCard: View {
     var body: some View {
         let outer = Self.clip.pose(of: "L1", at: board)
         content
+            // Its lines are typed into rows of the board's height: past the largest standard size they would run into each other.
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
             .padding(2)
             .background {
                 RoundedRectangle(cornerRadius: 24, style: .continuous).fill(Palette.Universe.nightViolet.mix(with: Palette.Flight.lilac, by: 0.5).opacity(0.32))
@@ -155,7 +157,7 @@ struct MessageCard: View {
                 .rotationEffect(.degrees(-90 + (waiting ? ambient / 0.9 * 360 : 0)))
                 .shadow(color: Palette.acc.opacity(0.7), radius: 2)
             Image(systemName: "checkmark")
-                .font(.system(size: 7, weight: .heavy))
+                .font(.fixed(7, weight: .heavy))
                 .foregroundStyle(Palette.Universe.starGold)
                 .opacity(check)
         }

@@ -95,7 +95,7 @@ struct ProPlansScreen: View {
             .padding(.horizontal, 16)
             .accessibilityIdentifier("paywall.buyButton")
             Text(PaywallCopy.finePrint(for: selectedPlan, displayPrice: price, trialDays: trialDays[selectedPlan]))
-                .font(.system(size: 11.5))
+                .cueFont(11.5)
                 .foregroundStyle(Palette.inkHint)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 16)
@@ -110,7 +110,7 @@ struct ProPlansScreen: View {
                     Button("Privacy") { showsPrivacy = true }.accessibilityIdentifier("paywall.privacyButton")
                 }
             }
-            .font(.system(size: 12.5))
+            .cueFont(12.5)
             .foregroundStyle(Palette.ink2)
             .frame(minHeight: Metrics.hitTarget)
             .padding(.bottom, 4)

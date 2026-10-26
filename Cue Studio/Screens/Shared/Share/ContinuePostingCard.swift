@@ -19,18 +19,18 @@ struct ContinuePostingCard: View {
                     Text("CONTINUE POSTING · \(queue.position(of: current)) OF \(queue.count)")
                         .monoFont(size: 10, weight: .bold).interfaceTracking(0.8).foregroundStyle(Palette.accText).lineLimit(1)
                     Text("Next: \(current.network.platform.label) · \(queue.title)")
-                        .font(.system(size: 15, weight: .semibold)).foregroundStyle(Palette.ink).lineLimit(1)
+                        .cueFont(15, weight: .semibold).foregroundStyle(Palette.ink).lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Button(action: onContinue) {
-                    Text("Continue").font(.system(size: 15, weight: .bold)).foregroundStyle(Palette.accInk)
-                        .padding(.horizontal, 18).frame(height: 38)
+                    Text("Continue").cueFont(15, weight: .bold).foregroundStyle(Palette.accInk)
+                        .padding(.horizontal, 18).padding(.vertical, 4).frame(minHeight: 38)
                         .background(Palette.acc, in: Capsule())
                 }
                 .buttonStyle(.plain)
                 .accessibilityIdentifier("continuePosting.continue")
                 Button(action: onClose) {
-                    Image(systemName: "xmark").font(.system(size: 13, weight: .semibold)).foregroundStyle(Palette.ink2)
+                    Image(systemName: "xmark").cueFont(13, weight: .semibold).foregroundStyle(Palette.ink2)
                         .frame(width: Metrics.hitTarget - 8, height: Metrics.hitTarget)
                         .contentShape(Rectangle())
                 }

@@ -46,7 +46,8 @@ struct StateChip: View {
             .foregroundStyle(kind.ink)
             .lineLimit(1)
             .padding(.horizontal, 8)
-            .frame(height: Metrics.stateChipHeight)
+            .padding(.vertical, 2)
+            .frame(minHeight: Metrics.stateChipHeight)
             .background(kind.fill, in: Capsule())
             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
     }

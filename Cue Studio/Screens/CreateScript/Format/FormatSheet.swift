@@ -20,6 +20,7 @@ struct FormatSheet: View {
     let onConfirm: (FormatChoice) -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(mode: Mode, current: FormatChoice, onConfirm: @escaping (FormatChoice) -> Void) {
         self.mode = mode
@@ -41,15 +42,17 @@ struct FormatSheet: View {
                             .hudFont().textCase(.uppercase).tracking(1.2)
                             .foregroundStyle(Palette.accText)
                         Text(mode == .blank ? "Which video are you making?" : "How should Cue build it?")
-                            .font(.title2.bold())
+                            .cueFont(.title2, weight: .bold)
                             .foregroundStyle(Palette.ink)
                             .accessibilityAddTraits(.isHeader)
                     }
-                    // Not lazy: every tile is in the page for VoiceOver and for tests, two to a row.
+                    // Not lazy: every tile is in the page for VoiceOver and for tests, two to a row (one at the accessibility text sizes,
+                    // where two left a word a line).
+                    let perRow = dynamicTypeSize.isAccessibilitySize ? 1 : 2
                     Grid(horizontalSpacing: 8, verticalSpacing: 8) {
-                        ForEach(Array(stride(from: 0, to: tiles.count, by: 2)), id: \.self) { start in
+                        ForEach(Array(stride(from: 0, to: tiles.count, by: perRow)), id: \.self) { start in
                             GridRow {
-                                ForEach(tiles[start..<min(start + 2, tiles.count)]) { choice in
+                                ForEach(tiles[start..<min(start + perRow, tiles.count)]) { choice in
                                     Button { selection = choice } label: {
                                         FormatTile(choice: choice, isSelected: selection == choice)
                                     }
@@ -61,7 +64,7 @@ struct FormatSheet: View {
                     }
                     moreFormats
                     Text(note)
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                 }
                 .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 28, trailing: Metrics.gutter))
@@ -96,12 +99,12 @@ struct FormatSheet: View {
                     Button { selection = choice } label: {
                         HStack(spacing: 12) {
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(choice.title).font(.body.weight(.semibold)).foregroundStyle(Palette.ink)
-                                Text(choice.summary).font(.footnote).foregroundStyle(Palette.ink2)
+                                Text(choice.title).cueFont(.body, weight: .semibold).foregroundStyle(Palette.ink)
+                                Text(choice.summary).cueFont(.footnote).foregroundStyle(Palette.ink2)
                             }
                             .frame(maxWidth: .infinity, alignment: .leading)
                             if selection == choice {
-                                Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(Palette.accText)
+                                Image(systemName: "checkmark").cueFont(.body, weight: .semibold).foregroundStyle(Palette.accText)
                             }
                         }
                         .padding(.horizontal, 14)

@@ -56,7 +56,8 @@ struct TakeVideoCard: View {
                     .monoFont(size: 10, weight: .semibold)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 7)
-                    .frame(height: 22)
+                    .padding(.vertical, 2)
+                    .frame(minHeight: 22)
                     .background(Palette.Takes.posterPill, in: Capsule())
             }
         }
@@ -66,7 +67,7 @@ struct TakeVideoCard: View {
     private var bottom: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(video.title)
-                .font(.system(size: 14, weight: .bold))
+                .cueFont(14, weight: .bold)
                 .foregroundStyle(.white)
                 .lineLimit(2)
                 .multilineTextAlignment(.leading)

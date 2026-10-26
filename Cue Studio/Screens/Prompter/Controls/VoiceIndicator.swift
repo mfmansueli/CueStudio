@@ -26,11 +26,11 @@ struct VoiceIndicator: View {
             bars(height: fillsWidth ? 20 : 14, width: fillsWidth ? 3 : 2.5)
             if fillsWidth {
                 Text(status.shortLabel(isListening: isListening))
-                    .font(.subheadline.weight(.semibold))
+                    .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.accText)
             } else {
                 Text(hint)
-                    .font(.caption)
+                    .cueFont(.caption)
                     .foregroundStyle(Palette.ink2)
                     .lineLimit(2)
                     .fixedSize(horizontal: false, vertical: true)

@@ -27,7 +27,8 @@ struct WelcomePill: View {
             .lineLimit(1)
             .foregroundStyle((isAI ? Palette.aiTextStrong : Palette.ink2).mix(with: Palette.accInk, by: lit))
             .padding(.horizontal, 9)
-            .frame(height: 26)
+            .padding(.vertical, 4)
+            .frame(minHeight: 26)
             .background {
                 Capsule().fill(isAI ? Palette.aiFill : Palette.fill)
                 Capsule().fill(Palette.acc.opacity(lit))

@@ -20,7 +20,7 @@ struct OnboardingPrimaryButton: View {
     var body: some View {
         Button(action: action) {
             Text(!isEnabled ? disabledTitle ?? title : title)
-                .font(.system(size: 17, weight: .bold))
+                .cueFont(17, weight: .bold)
                 .foregroundStyle(isGrey ? Palette.ink3 : isDimmed && disabledTitle != nil ? Palette.Flight.quietInk : Palette.accInk)
                 .frame(maxWidth: .infinity, minHeight: 54)
                 .background(isGrey ? Palette.fill : Palette.acc.opacity(isDimmed ? 0.2 : 1), in: Capsule())

@@ -19,7 +19,7 @@ struct SettingsFontView: View {
                             Text(verbatim: font.label).foregroundStyle(Palette.ink)
                             Spacer(minLength: 8)
                             if isSelected {
-                                Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(Palette.accText)
+                                Image(systemName: "checkmark").cueFont(.body, weight: .semibold).foregroundStyle(Palette.accText)
                             }
                         }
                         .frame(minHeight: Metrics.listRowContent)

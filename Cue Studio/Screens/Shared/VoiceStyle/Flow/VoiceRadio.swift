@@ -18,7 +18,7 @@ struct VoiceRadio: View {
             .frame(width: 24, height: 24)
             .overlay {
                 if isOn && isCheck {
-                    Image(systemName: "checkmark").font(.system(size: 11, weight: .bold)).foregroundStyle(Palette.accInk)
+                    Image(systemName: "checkmark").font(.fixed(11, weight: .bold)).foregroundStyle(Palette.accInk)
                 }
             }
             .accessibilityHidden(true)

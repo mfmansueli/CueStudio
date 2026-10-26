@@ -106,7 +106,7 @@ struct UniverseMap: View {
                 if onDot != nil { dotTaps(scale: scale, origin: origin) }
                 if let caption { captionText(caption, scale: scale, origin: origin) }
                 Text("YOU")
-                    .monoFont(size: 10, weight: .semibold)
+                    .monoFont(fixedSize: 10, weight: .semibold)
                     .interfaceTracking(1)
                     .foregroundStyle(Palette.inkSoft)
                     .position(x: center.x, y: center.y + 40 * scale)
@@ -146,7 +146,7 @@ struct UniverseMap: View {
     private func captionText(_ text: String, scale: CGFloat, origin: CGPoint) -> some View {
         let hasGhost = ghost != nil
         return Text(text)
-            .font(.system(size: 16, weight: .medium))
+            .font(.fixed(16, weight: .medium))
             .foregroundStyle(Palette.inkSoft)
             .multilineTextAlignment(.center)
             .frame(maxWidth: (hasGhost ? 220 : 330) * scale)

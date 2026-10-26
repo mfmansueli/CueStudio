@@ -15,7 +15,7 @@ struct PrivacyView: View {
         HStack {
             Text(SettingsEntry.privacyPolicy.title).foregroundStyle(Palette.ink)
             Spacer(minLength: 8)
-            Image(systemName: "chevron.forward").font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink3)
+            Image(systemName: "chevron.forward").cueFont(.footnote, weight: .semibold).foregroundStyle(Palette.ink3)
         }
         .frame(minHeight: Metrics.listRowContent)
         .contentShape(Rectangle())

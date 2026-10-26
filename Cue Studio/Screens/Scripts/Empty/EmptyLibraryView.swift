@@ -82,7 +82,7 @@ struct EmptyLibraryView: View {
 
     private func title(_ text: LocalizedStringKey) -> some View {
         Text(text)
-            .font(.title2.weight(.bold))
+            .cueFont(.title2, weight: .bold)
             .tracking(-0.4)
             .foregroundStyle(Palette.ink)
             .multilineTextAlignment(.center)
@@ -94,7 +94,7 @@ struct EmptyLibraryView: View {
 
     private func subtitle(_ text: LocalizedStringKey) -> some View {
         Text(text)
-            .font(.subheadline)
+            .cueFont(.subheadline)
             .foregroundStyle(Palette.ink2)
             .multilineTextAlignment(.center)
             .fixedSize(horizontal: false, vertical: true)

@@ -124,7 +124,7 @@ struct YourUniverseView: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .center, spacing: 12) {
                 Text("Your universe")
-                    .font(.system(size: 34, weight: .bold))
+                    .cueFont(34, weight: .bold)
                     .foregroundStyle(Palette.ink)
                     // One line, as the board's: the system font is a little wider than the board's, so it eases down to fit beside the selector.
                     .lineLimit(1)

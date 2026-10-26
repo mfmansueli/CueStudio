@@ -173,18 +173,18 @@ struct StarTransitionOverlay: View {
     private func textBlock(size: CGSize, centre: CGPoint) -> some View {
         VStack(spacing: 8) {
             Text("Drafting in your voice")
-                .font(.system(size: 20, weight: .bold))
+                .cueFont(20, weight: .bold)
                 .tracking(-0.2)
                 .foregroundStyle(.white)
                 .accessibilityAddTraits(.isHeader)
             Text("“\(transition.idea)”")
-                .font(.system(size: 15))
+                .cueFont(15)
                 .foregroundStyle(Palette.Scripts.transitionInk)
                 .lineLimit(1)
                 .truncationMode(.tail)
                 .frame(maxWidth: 300)
             Text(currentPhrase)
-                .font(.system(size: 16, weight: .medium))
+                .cueFont(16, weight: .medium)
                 .italic()
                 .foregroundStyle(Palette.Scripts.transitionPhrase)
                 .opacity(phraseShown ? 1 : 0)
@@ -228,7 +228,7 @@ struct StarTransitionOverlay: View {
     private func cancelButton(size: CGSize) -> some View {
         Button { transition.cancel() } label: {
             Text("Cancel")
-                .font(.system(size: 15, weight: .semibold))
+                .cueFont(15, weight: .semibold)
                 .foregroundStyle(Palette.Scripts.transitionInk)
                 .padding(.horizontal, 18)
                 .frame(minHeight: Metrics.hitTarget)

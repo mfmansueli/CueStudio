@@ -35,7 +35,7 @@ struct RemotePairingPanel: View {
     private var start: some View {
         VStack(alignment: .leading, spacing: 14) {
             Text("Play, pause, change speed and move through the script from a second iPhone or iPad. Both need Cue, and Wi-Fi on.")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
             Button {
@@ -62,14 +62,14 @@ struct RemotePairingPanel: View {
                     .accessibilityIdentifier("remote.code")
             }
             Text("Scan this on the other device with the Camera.")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
             HStack(spacing: 8) {
                 ProgressView().tint(Palette.ink2)
                 Text(remote.state.label)
-                    .font(.footnote.weight(.semibold))
+                    .cueFont(.footnote, weight: .semibold)
                     .foregroundStyle(Palette.ink2)
             }
             .accessibilityElement(children: .combine)
@@ -84,12 +84,12 @@ struct RemotePairingPanel: View {
     private func connected(_ deviceName: String) -> some View {
         HStack(spacing: 12) {
             Image(systemName: "checkmark.circle.fill")
-                .font(.title2)
+                .cueFont(.title2)
                 .foregroundStyle(Palette.successText)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Remote Connected").font(.headline)
+                Text("Remote Connected").cueFont(.headline, weight: .semibold)
                 Text(deviceName)
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
             }
             Spacer(minLength: 8)
@@ -106,7 +106,7 @@ struct RemotePairingPanel: View {
     private func failed(_ message: String) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Label(message, systemImage: "exclamationmark.triangle.fill")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.warnText)
                 .fixedSize(horizontal: false, vertical: true)
             Button("Try again") { remote.startHosting() }
@@ -119,7 +119,7 @@ struct RemotePairingPanel: View {
     private var remoteHere: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("This device is a remote right now.")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
             HStack(spacing: 8) {
                 Button("Open remote") { presentation.openRemoteController() }

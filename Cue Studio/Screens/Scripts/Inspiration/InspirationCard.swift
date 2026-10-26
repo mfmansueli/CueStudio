@@ -43,7 +43,7 @@ struct InspirationCard: View {
             }
             .rises(isRevealed, step: 0)
             Text(content.title)
-                .font(.title2.weight(.bold))
+                .cueFont(.title2, weight: .bold)
                 .tracking(-0.3)
                 .foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)
@@ -132,7 +132,7 @@ struct InspirationCard: View {
                     // `ink2`, not `inkHint`: under the card's light, `inkHint` falls to about 4.2:1.
                     .foregroundStyle(Palette.ink2)
                 text()
-                    .font(.body)
+                    .cueFont(.body)
                     .foregroundStyle(Palette.ink)
                     .fixedSize(horizontal: false, vertical: true)
             }

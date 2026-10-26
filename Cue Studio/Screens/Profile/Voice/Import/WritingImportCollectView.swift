@@ -14,12 +14,12 @@ struct WritingImportCollectView: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
             Text("Bring scripts, captions or notes you wrote. Cue learns how you write from them, on this iPhone.")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
             pasteBox
             if !model.sources.isEmpty { added }
             Toggle("I wrote these myself", isOn: $model.isOwn)
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .tint(Palette.successText)
                 .accessibilityIdentifier("import.own")
             Button(action: onRead) { Text("Read my writing") }
@@ -27,7 +27,7 @@ struct WritingImportCollectView: View {
                 .disabled(!model.canRead)
                 .accessibilityIdentifier("import.read")
             Text("Only a few sentences are kept, never the originals. Nothing leaves this iPhone.")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
         }
@@ -48,7 +48,7 @@ struct WritingImportCollectView: View {
                 .accessibilityIdentifier("import.field")
             if model.pasteWasEmpty {
                 Text("Nothing Cue could read in that. Texts need a dozen words or more.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.warnText)
                     .accessibilityIdentifier("import.pasteEmpty")
             }
@@ -96,7 +96,7 @@ struct WritingImportCollectView: View {
             ForEach(model.sources, id: \.name) { source in
                 HStack(spacing: 10) {
                     Text("\(source.name.isEmpty ? String(localized: "Pasted") : source.name) · \(source.count)")
-                        .font(.subheadline)
+                        .cueFont(.subheadline)
                         .foregroundStyle(Palette.ink)
                         .frame(maxWidth: .infinity, alignment: .leading)
                     Button { model.remove(source: source.name) } label: {
@@ -111,12 +111,12 @@ struct WritingImportCollectView: View {
             }
             if model.skippedFiles > 0 {
                 Text("Some files had no text Cue could read.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.warnText)
             }
             if model.needsMoreForHabits {
                 Text("Add at least 3 texts to find your phrases and how you open and close.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .accessibilityIdentifier("import.needMore")
             }

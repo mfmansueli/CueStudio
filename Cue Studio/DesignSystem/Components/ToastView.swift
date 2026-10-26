@@ -23,7 +23,7 @@ struct ToastView: View {
                     .id(kind)
                     .transition(.opacity)
                 Text(message)
-                    .font(.subheadline.weight(.semibold))
+                    .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                     .lineLimit(2)
                     .minimumScaleFactor(0.85)
@@ -37,7 +37,7 @@ struct ToastView: View {
             if let action {
                 Button(action: onAction) {
                     Text(action.title)
-                        .font(.subheadline.weight(.semibold))
+                        .cueFont(.subheadline, weight: .semibold)
                         .foregroundStyle(Palette.accInk)
                         .padding(.horizontal, 14)
                         .frame(minHeight: 32)

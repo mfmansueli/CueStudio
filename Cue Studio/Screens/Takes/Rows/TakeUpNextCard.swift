@@ -12,18 +12,21 @@ struct TakeUpNextCard: View {
     let onOpen: () -> Void
     let onAct: () -> Void
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
-        HStack(spacing: 12) {
+        // At the accessibility text sizes the action goes under the take: beside it, the title had room for a word.
+        ReflowStack(spacing: 12) {
             Button(action: onOpen) {
                 HStack(spacing: 12) {
                     poster
                     VStack(alignment: .leading, spacing: 3) {
                         Text(verbatim: eyebrow)
                         Text(next.video.title)
-                            .font(.system(size: 15, weight: .semibold))
+                            .cueFont(15, weight: .semibold)
                             .foregroundStyle(Palette.ink)
-                            .lineLimit(1)
+                            .lineLimit(dynamicTypeSize.isAccessibilitySize ? 3 : 1)
                             .truncationMode(.tail)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -37,10 +40,11 @@ struct TakeUpNextCard: View {
             .accessibilityIdentifier("takes.next")
             Button(action: onAct) {
                 Text(actionTitle)
-                    .font(.system(size: 14, weight: .bold))
+                    .cueFont(14, weight: .bold)
                     .foregroundStyle(Palette.accInk)
                     .padding(.horizontal, 14)
-                    .frame(height: 36)
+                    .padding(.vertical, 6)
+                    .frame(minHeight: 36)
                     .background(Palette.acc, in: Capsule())
                     .frame(minHeight: Metrics.hitTarget)
                     .contentShape(Capsule())

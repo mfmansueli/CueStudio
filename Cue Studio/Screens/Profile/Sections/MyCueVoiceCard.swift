@@ -34,10 +34,10 @@ struct MyCueVoiceCard: View {
     private var newCard: some View {
         VStack(alignment: .leading, spacing: 10) {
             Text("Make scripts sound like you.")
-                .font(.title3.bold())
+                .cueFont(.title3, weight: .bold)
                 .foregroundStyle(Palette.ink)
             Text("4 quick questions, about 20 seconds. No typing needed.")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
             Button { setup = ProfileVoiceSetup(mode: .missing) } label: {
                 Text("Set up My Cue Voice")
@@ -55,7 +55,7 @@ struct MyCueVoiceCard: View {
         VStack(alignment: .leading, spacing: 12) {
             VoiceMeter(strength: profile.profile.voiceStrength, level: profile.profile.voiceLevel)
             Text(profile.profile.voiceSentence)
-                .font(.system(size: 15))
+                .cueFont(15)
                 .foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("profile.voiceSentence")
@@ -65,7 +65,7 @@ struct MyCueVoiceCard: View {
             HStack(spacing: 8) {
                 NavigationLink { MyCueVoicePage() } label: {
                     Text("Edit voice")
-                        .font(.system(size: 14, weight: .semibold))
+                        .cueFont(14, weight: .semibold)
                         .foregroundStyle(Palette.ink)
                         .frame(maxWidth: .infinity, minHeight: 40)
                         .background(Palette.fill, in: Capsule())
@@ -75,7 +75,7 @@ struct MyCueVoiceCard: View {
                 if aiStatus.isAvailable {
                     Button(action: onPreview) {
                         Text("✦ Preview")
-                            .font(.system(size: 14, weight: .semibold))
+                            .cueFont(14, weight: .semibold)
                             .foregroundStyle(Palette.aiTextStrong)
                             .frame(maxWidth: .infinity, minHeight: 40)
                             .background(Palette.aiFill, in: Capsule())
@@ -94,11 +94,11 @@ struct MyCueVoiceCard: View {
             HStack(spacing: 10) {
                 Text(verbatim: "✦").foregroundStyle(Palette.aiText)
                 Text(item.title)
-                    .font(.system(size: 14))
+                    .cueFont(14)
                     .foregroundStyle(Palette.ink2)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Text("Answer")
-                    .font(.system(size: 14, weight: .semibold))
+                    .cueFont(14, weight: .semibold)
                     .foregroundStyle(Palette.accText)
             }
             .padding(.horizontal, 12)

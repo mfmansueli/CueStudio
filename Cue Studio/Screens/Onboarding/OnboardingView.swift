@@ -67,6 +67,8 @@ struct OnboardingView: View {
             }
         }
         .animation(.easeInOut(duration: 0.45), value: onboarding.step)
+        // The chapters are scenes with their words placed in them: the text grows up to the first accessibility size.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .environment(skyDirector)
         .task { HeroDiscCache.prewarm() }
         .accessibilityElement(children: .contain)

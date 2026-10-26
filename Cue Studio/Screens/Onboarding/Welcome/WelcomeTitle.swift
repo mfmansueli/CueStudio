@@ -19,7 +19,7 @@ struct WelcomeTitle: View {
                 ForEach(Array(words.enumerated()), id: \.offset) { index, word in
                     let pose = WelcomeScript.titleWord(index).pose(at: time)
                     Text(word)
-                        .font(.system(size: 34, weight: .bold))
+                        .cueFont(34, weight: .bold)
                         .tracking(-0.85)
                         .foregroundStyle(Palette.ink)
                         .lineLimit(1)
@@ -35,7 +35,7 @@ struct WelcomeTitle: View {
             .accessibilityAddTraits(.isHeader)
             let line = WelcomeScript.subtitle.pose(at: time)
             Text("Write your script, read it while you look at the camera, and record. Then add captions, edit, and share.")
-                .font(.system(size: 16))
+                .cueFont(16)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
                 .opacity(line.opacity)

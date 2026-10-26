@@ -81,7 +81,7 @@ struct UniverseChapter: View {
             .padding(.horizontal, 20)
             OnboardingUniverseCanvas(topics: onboarding.topics, born: born, opening: time, frozenBirthAge: birthFrozenAge)
                 .frame(maxWidth: .infinity)
-                .frame(minHeight: 120, maxHeight: 300)
+                .frame(minHeight: 96, maxHeight: 300)
                 .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.space)) } action: { canvasFrame = $0 }
                 .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { canvasOnScreen = $0 }
                 .motion(Self.clip.pose(of: "L4", at: clock))
@@ -110,6 +110,8 @@ struct UniverseChapter: View {
             .motion(Self.clip.pose(of: "L91", at: clock))
         }
         .coordinateSpace(name: Self.space)
+        // Eleven chips, the universe and the button share one screen: past the largest standard size the button left an iPhone SE.
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         .overlay { TopicBirthOverlay(births: births, frozenAge: birthFrozenAge) }
         .overlay { openingStar(at: clock) }
         .alert("Your own topic", isPresented: $isNamingTopic) {
@@ -163,10 +165,11 @@ struct UniverseChapter: View {
             isNamingTopic = true
         } label: {
             Text("+ Your own")
-                .font(.system(size: 12.5, weight: .semibold))
+                .cueFont(12.5, weight: .semibold)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 11)
-                .frame(height: 32)
+                .padding(.vertical, 4)
+                .frame(minHeight: 32)
                 .overlay(Capsule().strokeBorder(Palette.ink3, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
                 .opacity(onboarding.isFull ? 0.4 : 1)
                 .padding(.vertical, 6)
@@ -236,25 +239,25 @@ struct UniverseChapter: View {
         switch feedback {
         case .message(let text):
             Text(text)
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.warnText)
                 .accessibilityIdentifier("onboarding.topic.feedback")
         case .typo(let suggestion, let original):
             HStack(spacing: 10) {
                 Text("Did you mean “\(suggestion)”?")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink)
                 Button("Use") {
                     customName = suggestion
                     addCustom()
                 }
-                .font(.footnote.weight(.semibold))
+                .cueFont(.footnote, weight: .semibold)
                 .foregroundStyle(Palette.accText)
                 Button("Keep mine") {
                     customName = original
                     addCustom(keepingTyped: true)
                 }
-                .font(.footnote.weight(.semibold))
+                .cueFont(.footnote, weight: .semibold)
                 .foregroundStyle(Palette.ink2)
             }
             .accessibilityElement(children: .contain)

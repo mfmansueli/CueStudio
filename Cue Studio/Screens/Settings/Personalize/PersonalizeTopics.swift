@@ -22,7 +22,7 @@ struct PersonalizeTopics: View {
                         chip(topic.label, color: OnboardingTopic.color(at: index))
                     }
                     if tagging.topics.isEmpty {
-                        Text("No topics yet").font(.subheadline).foregroundStyle(Palette.ink2)
+                        Text("No topics yet").cueFont(.subheadline).foregroundStyle(Palette.ink2)
                     }
                 }
                 Spacer(minLength: 0)
@@ -30,7 +30,7 @@ struct PersonalizeTopics: View {
                     Haptics.light()
                     isEditing = true
                 } label: {
-                    Text("Edit").font(.body.weight(.semibold)).foregroundStyle(Palette.accText).frame(minHeight: Metrics.hitTarget)
+                    Text("Edit").cueFont(.body, weight: .semibold).foregroundStyle(Palette.accText).frame(minHeight: Metrics.hitTarget)
                 }
                 .buttonStyle(.cuePress)
                 .accessibilityIdentifier("settings.topics")
@@ -41,7 +41,7 @@ struct PersonalizeTopics: View {
             Toggle(isOn: $personalization.autoTagsTopics) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Tag new scripts automatically").foregroundStyle(Palette.ink)
-                    Text("Cue picks the topic on this iPhone").font(.footnote).foregroundStyle(Palette.ink2)
+                    Text("Cue picks the topic on this iPhone").cueFont(.footnote).foregroundStyle(Palette.ink2)
                 }
             }
             .tint(Palette.success)
@@ -56,10 +56,11 @@ struct PersonalizeTopics: View {
     private func chip(_ label: String, color: Color) -> some View {
         HStack(spacing: 6) {
             Circle().fill(color).frame(width: 7, height: 7)
-            Text(label).font(.subheadline).foregroundStyle(Palette.ink)
+            Text(label).cueFont(.subheadline).foregroundStyle(Palette.ink)
         }
         .padding(.horizontal, 12)
-        .frame(height: 30)
+        .padding(.vertical, 4)
+        .frame(minHeight: 30)
         .background(color.opacity(0.16), in: Capsule())
     }
 }

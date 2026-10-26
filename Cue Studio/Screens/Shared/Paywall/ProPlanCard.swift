@@ -20,8 +20,8 @@ struct ProPlanCard: View {
         let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
         Button(action: action) {
             VStack(alignment: .leading, spacing: 3) {
-                Text(plan == .annual ? String(localized: "Yearly") : plan.label).font(.system(size: 15, weight: .bold)).foregroundStyle(Palette.ink)
-                Text(detail).font(.system(size: 13)).foregroundStyle(Palette.inkSoft).lineLimit(1).minimumScaleFactor(0.8)
+                Text(plan == .annual ? String(localized: "Yearly") : plan.label).cueFont(15, weight: .bold).foregroundStyle(Palette.ink)
+                Text(detail).cueFont(13).foregroundStyle(Palette.inkSoft).lineLimit(1).minimumScaleFactor(0.8)
             }
             .padding(.horizontal, 14)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -34,7 +34,8 @@ struct ProPlanCard: View {
                         .monoFont(size: 9.5, weight: .semibold)
                         .foregroundStyle(Palette.accInk)
                         .padding(.horizontal, 7)
-                        .frame(height: 20)
+                        .padding(.vertical, 2)
+                        .frame(minHeight: 20)
                         .background(Palette.acc, in: Capsule())
                         .offset(x: -10, y: -9)
                 }

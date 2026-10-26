@@ -71,7 +71,7 @@ struct NotificationRoutineEditor: View {
             }
         } label: {
             Text(calendar.veryShortStandaloneWeekdaySymbols[weekday - 1])
-                .font(.subheadline.weight(.semibold))
+                .cueFont(.subheadline, weight: .semibold)
                 .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
                 .foregroundStyle(isOn ? Palette.accInk : Palette.ink)
                 .background(isOn ? Palette.acc : Palette.surface3, in: Circle())

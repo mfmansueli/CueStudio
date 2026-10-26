@@ -18,7 +18,7 @@ struct TakeVideoRow: View {
             if let best = video.best { thumbnail(best) }
             VStack(alignment: .leading, spacing: 4) {
                 Text(video.title)
-                    .font(.body.weight(.semibold))
+                    .cueFont(.body, weight: .semibold)
                     .lineLimit(2)
                     .foregroundStyle(Palette.ink)
                 HStack(spacing: 6) {
@@ -28,18 +28,18 @@ struct TakeVideoRow: View {
                         Text("· \(best.aspect.label) · \(best.resolution.label)")
                     }
                 }
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 // With the biggest text the platform, format and quality wrap instead of ending in "…".
                 .lineLimit(typeSize.isAccessibilitySize ? 3 : 1)
                 Text(whenLabel)
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                 chips
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             Image(systemName: "chevron.forward")
-                .font(.footnote.weight(.semibold))
+                .cueFont(.footnote, weight: .semibold)
                 .foregroundStyle(Palette.ink3)
         }
         .padding(EdgeInsets(top: 12, leading: 12, bottom: 12, trailing: 14))
@@ -59,7 +59,7 @@ struct TakeVideoRow: View {
             .overlay(alignment: .topLeading) {
                 if take.isBest {
                     Image(systemName: "star.fill")
-                        .font(.system(size: 10, weight: .bold))
+                        .font(.fixed(10, weight: .bold))
                         .foregroundStyle(Palette.accInk)
                         .frame(width: 20, height: 20)
                         .background(Palette.acc, in: Circle())
@@ -68,10 +68,11 @@ struct TakeVideoRow: View {
             }
             .overlay(alignment: .bottomTrailing) {
                 Text(DurationText.clock(take.duration))
-                    .font(.caption2.weight(.semibold).monospacedDigit())
+                    .cueFont(.caption2, weight: .semibold).monospacedDigit()
                     .foregroundStyle(.white)
                     .padding(.horizontal, 5)
-                    .frame(height: 18)
+                    .padding(.vertical, 2)
+                    .frame(minHeight: 18)
                     // A badge on a thumbnail of fixed size: it follows the text size up to a point.
                     .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                     .background(Palette.Takes.durationBadge, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
@@ -109,7 +110,7 @@ struct TakeVideoRow: View {
 
     private func chip(_ text: String, foreground: Color, background: Color) -> some View {
         Text(text)
-            .font(.caption.weight(.semibold))
+            .cueFont(.caption, weight: .semibold)
             .foregroundStyle(foreground)
             .lineLimit(1)
             .padding(.horizontal, 8)

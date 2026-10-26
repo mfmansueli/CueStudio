@@ -46,14 +46,14 @@ struct PracticeMessageCard: View {
     private func card(title: String, lines: [String]) -> some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(title)
-                .font(.system(size: 22, weight: .bold))
+                .cueFont(22, weight: .bold)
                 .tracking(-0.2)
                 .foregroundStyle(.white)
                 .lineLimit(2)
                 .minimumScaleFactor(0.8)
             ForEach(lines, id: \.self) { line in
                 Text(line)
-                    .font(.system(size: 14))
+                    .cueFont(14)
                     .foregroundStyle(Palette.Flight.quietInk)
                     .lineLimit(3)
                     .fixedSize(horizontal: false, vertical: true)

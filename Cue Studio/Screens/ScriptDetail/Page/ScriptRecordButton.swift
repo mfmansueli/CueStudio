@@ -17,7 +17,7 @@ struct ScriptRecordButton: View {
         Button(action: action) {
             HStack(spacing: 8) {
                 Circle().fill(Palette.record).frame(width: 11, height: 11)
-                Text(title).font(.system(size: 17, weight: .bold))
+                Text(title).cueFont(17, weight: .bold)
             }
         }
         .buttonStyle(CueStudioButtonStyle(variant: isPrimary ? .primary : .secondary, size: .large, expands: true))

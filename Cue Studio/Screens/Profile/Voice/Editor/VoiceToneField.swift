@@ -42,7 +42,7 @@ struct VoiceToneField: View {
             }
             Text(current.isChosen(.tone) && current.sounds.count >= VoiceLimits.tones
                 ? "Up to \(VoiceLimits.tones) · \(current.sounds.count) of \(VoiceLimits.tones)" : "Pick up to \(VoiceLimits.tones)")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
         }
@@ -82,7 +82,7 @@ struct VoiceToneField: View {
                     onPick: { answer(.swearing, $0.rawValue, $0.label) }, identifier: "voice.swearing"
                 )
                 Text("Strong swearing and slurs are never written. Apple Intelligence won’t generate them.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 4)
             }

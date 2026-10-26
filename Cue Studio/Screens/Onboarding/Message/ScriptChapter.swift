@@ -41,28 +41,35 @@ struct ScriptChapter: View {
     private func content(_ time: MotionTime) -> some View {
         let board = boardSecond(time)
         let waiting = model.script == nil
-        return VStack(alignment: .leading, spacing: 0) {
-            OnboardingHeading(
-                label: OnboardingStep.script.chapterLabel, title: String(localized: "Your first script. Ready to read."),
-                subtitle: String(localized: "Read it out loud on the teleprompter."), poses: [MotionPose(), MotionPose(), MotionPose()]
-            )
-            .padding(.horizontal, 20)
-            Spacer(minLength: 0).frame(height: 20)
-            MessageCard(script: model.script, platform: model.onboarding.platform, board: board, ambient: time.ambient)
-                .padding(.horizontal, 16)
-            MessageCapsule(board: board, ambient: time.ambient, label: String(localized: "SCRIPT READY · LET’S TRY IT"))
-                .opacity(waiting ? 0 : 1)
-                .padding(.horizontal, 16)
-                .padding(.top, 20)
-            Text("It’s just practice. Nothing is recorded.")
-                .font(.system(size: 12.5))
-                .foregroundStyle(Palette.inkHint)
-                .multilineTextAlignment(.center)
-                .frame(maxWidth: .infinity)
-                .padding(.horizontal, 20)
-                .padding(.top, 12)
-                .opacity(Self.clip.pose(of: "L54", at: board).opacity)
-            Spacer(minLength: 12)
+        return VStack(spacing: 0) {
+            // The words scroll when they don't fit above the button (an iPhone SE, a large text size); the button stays at the bottom.
+            ScrollView {
+                VStack(alignment: .leading, spacing: 0) {
+                    OnboardingHeading(
+                        label: OnboardingStep.script.chapterLabel, title: String(localized: "Your first script. Ready to read."),
+                        subtitle: String(localized: "Read it out loud on the teleprompter."), poses: [MotionPose(), MotionPose(), MotionPose()]
+                    )
+                    .padding(.horizontal, 20)
+                    Spacer(minLength: 0).frame(height: 20)
+                    MessageCard(script: model.script, platform: model.onboarding.platform, board: board, ambient: time.ambient)
+                        .padding(.horizontal, 16)
+                    MessageCapsule(board: board, ambient: time.ambient, label: String(localized: "SCRIPT READY · LET’S TRY IT"))
+                        .opacity(waiting ? 0 : 1)
+                        .padding(.horizontal, 16)
+                        .padding(.top, 20)
+                    Text("It’s just practice. Nothing is recorded.")
+                        .cueFont(12.5)
+                        .foregroundStyle(Palette.inkHint)
+                        .multilineTextAlignment(.center)
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 12)
+                        .opacity(Self.clip.pose(of: "L54", at: board).opacity)
+                }
+                .padding(.bottom, 12)
+            }
+            .scrollBounceBehavior(.basedOnSize)
+            .scrollIndicators(.hidden)
             OnboardingPrimaryButton(
                 title: String(localized: "Try the teleprompter"), isEnabled: !waiting, shines: !waiting, identifier: "onboarding.useScript",
                 action: onUse

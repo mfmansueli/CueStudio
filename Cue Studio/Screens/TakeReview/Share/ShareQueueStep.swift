@@ -37,7 +37,7 @@ struct ShareQueueStep: View {
                     Spacer()
                     postLater
                 }
-                .font(.system(size: 17, weight: .semibold))
+                .cueFont(17, weight: .semibold)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 40)
                 .frame(minHeight: Metrics.hitTarget)
@@ -97,23 +97,23 @@ struct ShareQueueStep: View {
             Text("\(queue.position(of: item)) OF \(queue.count)")
                 .monoFont(size: 10.5, weight: .semibold).interfaceTracking(1).foregroundStyle(Palette.ink2)
                 .accessibilityIdentifier("shareFlow.position")
-            Text("Post to \(network.platform.label)").font(.headline)
+            Text("Post to \(network.platform.label)").cueFont(.headline, weight: .semibold)
         }
     }
 
     private var checklist: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .top, spacing: 12) {
-                Image(systemName: "checkmark").font(.system(size: 15, weight: .bold)).foregroundStyle(Palette.successText).frame(width: 20)
-                Text("Caption copied · paste it in \(network.platform.label)").font(.system(size: 16)).foregroundStyle(Palette.ink)
+                Image(systemName: "checkmark").cueFont(15, weight: .bold).foregroundStyle(Palette.successText).frame(width: 20)
+                Text("Caption copied · paste it in \(network.platform.label)").cueFont(16).foregroundStyle(Palette.ink)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 8)
                 Button("Copy again") { flow.copy() }
-                    .font(.system(size: 15)).foregroundStyle(Palette.aiText)
+                    .cueFont(15).foregroundStyle(Palette.aiText)
                     .accessibilityIdentifier("shareFlow.copyAgain")
             }
             TextField("Post caption", text: $flow.caption, axis: .vertical)
-                .font(.system(size: 15))
+                .cueFont(15)
                 .lineLimit(1...3)
                 .padding(12)
                 .background(Palette.surface3, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
@@ -131,8 +131,8 @@ struct ShareQueueStep: View {
 
     private func row(_ symbol: String, _ tint: Color, _ text: LocalizedStringKey) -> some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: symbol).font(.system(size: 14, weight: .bold)).foregroundStyle(tint).frame(width: 20)
-            Text(text).font(.system(size: 16)).foregroundStyle(Palette.ink)
+            Image(systemName: symbol).cueFont(14, weight: .bold).foregroundStyle(tint).frame(width: 20)
+            Text(text).cueFont(16).foregroundStyle(Palette.ink)
             Spacer(minLength: 0)
         }
     }
@@ -141,8 +141,8 @@ struct ShareQueueStep: View {
     private var reminder: some View {
         HStack(spacing: 12) {
             Text("◀ Cue")
-                .font(.system(size: 13, weight: .bold)).foregroundStyle(Palette.ink)
-                .padding(.horizontal, 10).frame(height: 28)
+                .cueFont(13, weight: .bold).foregroundStyle(Palette.ink)
+                .padding(.horizontal, 10).padding(.vertical, 4).frame(minHeight: 28)
                 .background(Palette.surface3, in: Capsule())
             Group {
                 if let next = queue.next, next.network != network {
@@ -151,7 +151,7 @@ struct ShareQueueStep: View {
                     Text("After posting, tap ◀ Cue at the top left. We'll come back to finish.")
                 }
             }
-            .font(.system(size: 15, weight: .semibold))
+            .cueFont(15, weight: .semibold)
             .foregroundStyle(Palette.ink)
             Spacer(minLength: 0)
         }

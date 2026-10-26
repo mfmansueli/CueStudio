@@ -19,12 +19,12 @@ struct ReadyToTravelView: View {
             poster
                 .padding(.top, 18)
             Text("Ready to travel.")
-                .font(.system(size: 36, weight: .bold))
+                .cueFont(36, weight: .bold)
                 .foregroundStyle(Palette.ink)
                 .padding(.top, 24)
                 .accessibilityAddTraits(.isHeader)
             Text(video.take.scriptTitle)
-                .font(.system(size: 19))
+                .cueFont(19)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
                 .padding(.top, 6)
@@ -43,6 +43,8 @@ struct ReadyToTravelView: View {
         }
         .skyBackground(wash: BgWash.share)
         .accessibilityElement(children: .contain)
+        // A scene with its words placed in it: the text grows up to the first accessibility size.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .accessibilityIdentifier("ready.sheet")
     }
 
@@ -89,7 +91,8 @@ struct ReadyToTravelView: View {
                     .hudFont()
                     .foregroundStyle(.white)
                     .padding(.horizontal, 10)
-                    .frame(height: 28)
+                    .padding(.vertical, 4)
+                    .frame(minHeight: 28)
                     .background(Palette.Takes.posterPill, in: Capsule())
                     .padding(12)
             }

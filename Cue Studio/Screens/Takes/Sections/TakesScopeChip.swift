@@ -14,7 +14,7 @@ struct TakesScopeChip: View {
         Button(action: onClear) {
             HStack(spacing: 6) {
                 Text("\(String(year)) · SHARED")
-                Text(verbatim: "✕").font(.system(size: 13)).foregroundStyle(Palette.Universe.starGold)
+                Text(verbatim: "✕").cueFont(13).foregroundStyle(Palette.Universe.starGold)
             }
             .monoFont(size: 11, weight: .bold)
             .interfaceTracking(0.66)

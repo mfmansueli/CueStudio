@@ -18,6 +18,7 @@ struct TakesView: View {
     private let services: AppServices
 
     @Environment(TakeLibraryService.self) private var takes
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(MilestoneService.self) private var milestones
     @Environment(ScriptLibraryService.self) private var library
     @Environment(PresentationService.self) private var presentation
@@ -173,18 +174,18 @@ struct TakesView: View {
             VStack(spacing: 10) {
                 if let platform = viewModel.filter.platform {
                     // The platform is part of why it is empty: the stage's own words ("Nothing ready yet") would blame the stage alone.
-                    Text("No videos for \(platform.label) here").font(.title3.bold())
+                    Text("No videos for \(platform.label) here").cueFont(.title3, weight: .bold)
                     Text("Pick another stage or platform, or show every video.")
-                        .font(.body)
+                        .cueFont(.body)
                         .foregroundStyle(Palette.ink2)
                 } else if let stage = viewModel.filter.stage {
-                    Text(stage.emptyTitle).font(.title3.bold())
+                    Text(stage.emptyTitle).cueFont(.title3, weight: .bold)
                     Text(stage.emptyDetail)
-                        .font(.body)
+                        .cueFont(.body)
                         .foregroundStyle(Palette.ink2)
                 } else {
                     Text("No takes here yet.")
-                        .font(.subheadline)
+                        .cueFont(.subheadline)
                         .foregroundStyle(Palette.ink2)
                 }
                 if viewModel.isNarrowed {
@@ -212,7 +213,9 @@ struct TakesView: View {
                 emptyStage
                 ForEach(viewModel.sections) { section in
                     dayTitle(section.day)
-                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 14) {
+                    // One column at the accessibility text sizes: in two, a card's title held a word.
+                    let columns = Array(repeating: GridItem(.flexible(), spacing: 10), count: dynamicTypeSize.isAccessibilitySize ? 1 : 2)
+                    LazyVGrid(columns: columns, spacing: 14) {
                         ForEach(section.videos) { video in
                             Button { viewModel.open(video) } label: { TakeVideoCard(video: video) }
                                 .buttonStyle(.plain)
@@ -229,7 +232,7 @@ struct TakesView: View {
 
     private func dayTitle(_ day: TakeDay) -> some View {
         Text(day.label)
-            .font(.title3.bold())
+            .cueFont(.title3, weight: .bold)
             .padding(EdgeInsets(top: 22, leading: Metrics.textGutter, bottom: 8, trailing: Metrics.textGutter))
             .accessibilityAddTraits(.isHeader)
     }
@@ -273,7 +276,7 @@ struct TakesView: View {
                     }
                 } header: {
                     Text(section.day.label)
-                        .font(.title3.bold())
+                        .cueFont(.title3, weight: .bold)
                         .foregroundStyle(Palette.ink)
                         .textCase(nil)
                 }

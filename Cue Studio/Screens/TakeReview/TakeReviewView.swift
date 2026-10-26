@@ -301,7 +301,7 @@ struct TakeReviewView: View {
         let siblings = viewModel.siblings
         let index = (siblings.firstIndex { $0.id == take.id } ?? 0) + 1
         return Text("Take \(index) of \(siblings.count)")
-            .font(.footnote.weight(.semibold))
+            .cueFont(.footnote, weight: .semibold)
             .foregroundStyle(Palette.ink)
             .padding(.horizontal, 12)
             .padding(.vertical, 6)

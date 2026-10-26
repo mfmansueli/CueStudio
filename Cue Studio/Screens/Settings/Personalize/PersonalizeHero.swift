@@ -43,7 +43,7 @@ struct PersonalizeHero: View {
             }
             // White over the sky (its brightest nebula is still dark enough), with a shadow for the stars passing under it.
             Text(summary)
-                .font(.footnote.weight(.medium))
+                .cueFont(.footnote, weight: .medium)
                 .foregroundStyle(Palette.ink)
                 .shadow(color: .black.opacity(0.6), radius: 4)
                 .frame(maxHeight: .infinity, alignment: .bottom)

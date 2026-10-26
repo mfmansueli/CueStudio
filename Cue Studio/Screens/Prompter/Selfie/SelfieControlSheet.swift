@@ -144,7 +144,7 @@ struct SelfieControlSheet: View {
             if viewModel.hasScript {
                 HStack(spacing: 10) {
                     Image(systemName: mode.symbolName)
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.fixed(16, weight: .semibold))
                         .foregroundStyle(followsVoice ? Palette.accText : Palette.ink)
                         .frame(width: 36, height: 36)
                         .background(Palette.overlayFill, in: Circle())
@@ -155,7 +155,7 @@ struct SelfieControlSheet: View {
                 }
             }
             Text("Tap the screen for controls")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)

@@ -17,8 +17,8 @@ struct UniverseMiniStory: View {
                     ForEach(0..<5, id: \.self) { _ in Capsule().fill(.white.opacity(0.7)).frame(height: 1) }
                 }
                 Spacer(minLength: 0)
-                Text("\(count)").font(.system(size: 13, weight: .heavy)).foregroundStyle(.white).minimumScaleFactor(0.6)
-                Text("VIDEOS").monoFont(size: 4.5, weight: .semibold).foregroundStyle(Palette.inkSoft)
+                Text("\(count)").font(.fixed(13, weight: .heavy)).foregroundStyle(.white).minimumScaleFactor(0.6)
+                Text("VIDEOS").monoFont(fixedSize: 4.5, weight: .semibold).foregroundStyle(Palette.inkSoft)
                 Spacer(minLength: 0)
             }
             .padding(3)

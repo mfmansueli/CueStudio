@@ -25,7 +25,7 @@ struct EditProfileSheet: View {
                 VStack(alignment: .leading, spacing: 0) {
                     EditProfilePhoto(draft: $draft, item: $photoItem).padding(.top, 8)
                     Text("The card on the universe you share. Everything here is optional.")
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                         .padding(.horizontal, Metrics.textGutter)
                         .padding(.top, 8)
@@ -76,7 +76,7 @@ struct EditProfileSheet: View {
                     .accessibilityIdentifier("editProfile.nameField")
                 if draft.trimmedName.count > ProfileDraft.nameLimit.upperBound - 10 {
                     Text(verbatim: "\(draft.trimmedName.count)/\(ProfileDraft.nameLimit.upperBound)")
-                        .font(.caption)
+                        .cueFont(.caption)
                         .foregroundStyle(draft.isNameValid ? Palette.ink2 : Palette.warnText)
                         .monospacedDigit()
                 }
@@ -112,7 +112,7 @@ struct EditProfileSheet: View {
             Text(title).foregroundStyle(Palette.ink).frame(width: 96, alignment: .leading)
             value()
         }
-        .font(.system(size: 17))
+        .cueFont(17)
         .foregroundStyle(Palette.ink)
         .padding(.horizontal, 16)
         .frame(minHeight: 52)
@@ -120,7 +120,7 @@ struct EditProfileSheet: View {
 
     private func sectionTitle(_ title: String) -> some View {
         Text(title)
-            .font(.footnote.weight(.semibold))
+            .cueFont(.footnote, weight: .semibold)
             .textCase(.uppercase)
             .foregroundStyle(Palette.ink2)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -136,7 +136,7 @@ struct EditProfileSheet: View {
     private var footer: some View {
         if let error = draft.nameError ?? draft.handleError {
             Text(error)
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.warnText)
                 .padding(.horizontal, Metrics.textGutter)
                 .accessibilityIdentifier("editProfile.handleError")

@@ -51,7 +51,7 @@ struct VoicePreviewStrip: View {
     private func segment(_ title: LocalizedStringKey, _ value: VoicePreview.Showing) -> some View {
         Button { onShow(value) } label: {
             Text(title)
-                .font(.footnote.weight(showing == value ? .semibold : .regular))
+                .cueFont(.footnote, weight: showing == value ? .semibold : .regular)
                 .foregroundStyle(Palette.ink)
                 .frame(maxWidth: .infinity)
                 .frame(height: 30)

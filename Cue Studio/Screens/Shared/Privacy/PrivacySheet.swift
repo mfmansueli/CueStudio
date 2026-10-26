@@ -70,8 +70,8 @@ struct PrivacySheet: View {
     private func item(title: LocalizedStringKey, detail: LocalizedStringKey, systemImage: String) -> some View {
         Label {
             VStack(alignment: .leading, spacing: 4) {
-                Text(title).font(.headline)
-                Text(detail).font(.subheadline).foregroundStyle(Palette.ink2)
+                Text(title).cueFont(.headline, weight: .semibold)
+                Text(detail).cueFont(.subheadline).foregroundStyle(Palette.ink2)
             }
             .padding(.vertical, 4)
         } icon: {

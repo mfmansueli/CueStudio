@@ -13,12 +13,13 @@ struct VoiceMeter: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            HStack {
+            ReflowStack(spacing: 4) {
                 Text("VOICE STRENGTH \(strength)%")
                     .monoFont(size: 10.5, weight: .semibold)
                     .interfaceTracking(1)
                     .foregroundStyle(Palette.ink)
                 Spacer(minLength: 8)
+                    .frame(maxHeight: 0)
                 Text(level.label)
                     .monoFont(size: 10.5, weight: .semibold)
                     .textCase(.uppercase)

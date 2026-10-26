@@ -68,6 +68,14 @@ custom_rules:
     excluded_match_kinds: [comment, doccomment, string]
     message: "Use a text style, @ScaledMetric or an EditorGlyph size, not a number."
     severity: warning
+  loose_font_size:
+    name: "Interface font size"
+    included: ".*/Cue Studio/(Screens|DesignSystem/(Components|Controls|Styles))/.*\\.swift"
+    excluded: ".*/Screens/QuickEdit/.*"
+    regex: "(?<![A-Za-z])\\.system\\(size:"
+    excluded_match_kinds: [comment, doccomment, string]
+    message: "Use cueFont(size, weight:) (grows with the text size and the screen), Font.cue(…, for: dynamicTypeSize) where a Font is asked for, or Font.fixed when the size must not grow (InterfaceType)."
+    severity: warning
   keyed_string_outside_interface_language:
     name: "Keyed string"
     regex: "String\\(localized:\\s*LocalizedStringResource\\("

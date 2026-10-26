@@ -33,7 +33,7 @@ struct TakesFilterChips: View {
         return Button { platform = option } label: {
             HStack(spacing: 6) {
                 if let option { ColorDot(color: option.tint, size: 7) }
-                Text(title).font(.system(size: 13.5, weight: option == nil ? .semibold : .medium))
+                Text(title).cueFont(13.5, weight: option == nil ? .semibold : .medium)
             }
             .foregroundStyle(isOn ? Palette.chipOnInk : Palette.ink)
             .padding(.leading, option == nil ? 13 : 10)

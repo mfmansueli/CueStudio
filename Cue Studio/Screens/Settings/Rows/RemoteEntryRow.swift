@@ -46,7 +46,7 @@ struct RemoteEntryRow: View {
             Text(entry.title).foregroundStyle(Palette.ink)
             Spacer(minLength: 8)
             Image(systemName: "chevron.forward")
-                .font(.footnote.weight(.semibold))
+                .cueFont(.footnote, weight: .semibold)
                 .foregroundStyle(Palette.ink3)
         }
         .frame(minHeight: Metrics.listRowContent)

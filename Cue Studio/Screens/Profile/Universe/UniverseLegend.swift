@@ -20,7 +20,7 @@ struct UniverseLegend: View {
                         Text(entry.topic.label).foregroundStyle(Palette.ink)
                         Text("\(entry.count)").foregroundStyle(Palette.inkHint)
                     }
-                    .font(.system(size: 12.5))
+                    .cueFont(12.5)
                     .frame(minHeight: 14)
                     .contentShape(Rectangle())
                 }

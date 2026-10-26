@@ -21,7 +21,7 @@ struct ProMarketing: View {
                     .interfaceTracking(1.5)
                     .foregroundStyle(Palette.accText)
                 Text(PaywallCopy.title(for: context))
-                    .font(.system(size: 28, weight: .bold))
+                    .cueFont(28, weight: .bold)
                     .tracking(-0.56)
                     .foregroundStyle(Palette.ink)
                     // The calm title breaks after "your": "Keep sharing your / universe."
@@ -29,7 +29,7 @@ struct ProMarketing: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
                 Text(PaywallCopy.subtitle(for: context))
-                    .font(.system(size: 15))
+                    .cueFont(15)
                     .foregroundStyle(Palette.ink2)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -47,12 +47,12 @@ struct ProMarketing: View {
             ForEach(Array(items.enumerated()), id: \.offset) { index, benefit in
                 HStack(spacing: 12) {
                     Image(systemName: benefit.symbol)
-                        .font(.system(size: 15, weight: .semibold))
+                        .font(.fixed(15, weight: .semibold))
                         .foregroundStyle(symbolTint(benefit.tone))
                         .frame(width: 32, height: 32)
                         .background(symbolTint(benefit.tone).opacity(0.14), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
                     Text(benefit.text)
-                        .font(.system(size: 16, weight: .medium))
+                        .cueFont(16, weight: .medium)
                         .foregroundStyle(Palette.ink)
                         .fixedSize(horizontal: false, vertical: true)
                         .frame(maxWidth: .infinity, alignment: .leading)

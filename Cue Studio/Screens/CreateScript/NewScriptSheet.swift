@@ -67,7 +67,7 @@ struct NewScriptSheet: View {
                     Button(action: onFreestyle) {
                         HStack(spacing: 10) {
                             Circle().fill(Palette.record).frame(width: 10, height: 10)
-                            Text("Record without a script").font(.system(size: 18, weight: .medium)).foregroundStyle(Palette.ink2)
+                            Text("Record without a script").cueFont(18, weight: .medium).foregroundStyle(Palette.ink2)
                         }
                         .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
                     }
@@ -92,7 +92,7 @@ struct NewScriptSheet: View {
         return Button(action: action) {
             HStack(spacing: 14) {
                 Image(systemName: systemImage)
-                    .font(.title3)
+                    .cueFont(.title3)
                     .foregroundStyle(style == .ai ? Palette.aiTextStrong : (style == .primary ? Palette.accText : Palette.ink))
                     .frame(width: 42, height: 42)
                     .background(
@@ -101,17 +101,17 @@ struct NewScriptSheet: View {
                     )
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 8) {
-                        Text(title).font(.body.weight(.semibold))
+                        Text(title).cueFont(.body, weight: .semibold)
                         if let badge {
                             Text(badge)
                                 .monoFont(size: 10, weight: .heavy)
                                 .foregroundStyle(Palette.accText)
-                                .padding(.horizontal, 7).frame(height: 20)
+                                .padding(.horizontal, 7).padding(.vertical, 2).frame(minHeight: 20)
                                 .background(Palette.accSoft, in: Capsule())
                         }
                     }
                     Text(detail)
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(style == .ai ? Palette.aiText : Palette.ink2)
                 }
                 Spacer(minLength: 0)

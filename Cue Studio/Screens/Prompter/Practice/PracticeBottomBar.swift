@@ -40,7 +40,7 @@ struct PracticeBottomBar: View {
         Button { onChoose(.recordForReal) } label: {
             HStack(spacing: 10) {
                 Circle().fill(Palette.record).frame(width: 14, height: 14)
-                Text("Record my first video").font(.system(size: 17, weight: .bold))
+                Text("Record my first video").cueFont(17, weight: .bold)
             }
             .foregroundStyle(Palette.accInk)
             .frame(maxWidth: .infinity, minHeight: 58)
@@ -55,7 +55,7 @@ struct PracticeBottomBar: View {
     private var studioButton: some View {
         Button { onChoose(.studio) } label: {
             Text("Explore Cue first")
-                .font(.system(size: 15, weight: .semibold))
+                .cueFont(15, weight: .semibold)
                 .foregroundStyle(Palette.Flight.quietInk)
                 .frame(maxWidth: .infinity, minHeight: 44)
                 .contentShape(Rectangle())
@@ -67,10 +67,10 @@ struct PracticeBottomBar: View {
     private var microphoneNote: some View {
         HStack(spacing: 10) {
             Image(systemName: "mic.slash.fill")
-                .font(.system(size: 14, weight: .semibold))
+                .cueFont(14, weight: .semibold)
                 .foregroundStyle(Palette.warnText)
             Text("Turn on the microphone so the text can follow your voice.")
-                .font(.caption)
+                .cueFont(.caption)
                 .foregroundStyle(Palette.ink2)
                 .lineLimit(2)
                 .fixedSize(horizontal: false, vertical: true)

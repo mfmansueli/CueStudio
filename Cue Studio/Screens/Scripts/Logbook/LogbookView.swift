@@ -66,6 +66,8 @@ struct LogbookView: View {
                 // The capture sits above the ideas, out of their list: as it folds, the list grows into its room as one piece. A part of a
                 // list row that folded made the list resize the row in a single frame, and everything in it jumped.
                 topSection
+                    // The capture sits above the ideas: past the first accessibility size it alone was taller than the sheet.
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                     .padding(.horizontal, Metrics.gutter)
                 ScrollViewReader { proxy in
                     // The ideas are a list, so one can be swiped away the system's way.
@@ -177,7 +179,7 @@ struct LogbookView: View {
                 // One line that never changes size: the words themselves go into the field below (they used to grow here and push the page
                 // down and up while the creator spoke).
                 Text(statusLine)
-                    .font(.system(size: 16))
+                    .cueFont(16)
                     .foregroundStyle(isHolding ? Palette.ink : Palette.ink2)
                     .lineLimit(1)
                     .minimumScaleFactor(0.8)
@@ -185,7 +187,7 @@ struct LogbookView: View {
                     .accessibilityIdentifier(isLocked ? "logbook.tapToFinish" : "logbook.status")
                 if let notice = dictation.notice, !isHolding {
                     Text(notice.message)
-                        .font(.footnote).foregroundStyle(Palette.warnText).multilineTextAlignment(.center)
+                        .cueFont(.footnote).foregroundStyle(Palette.warnText).multilineTextAlignment(.center)
                         .frame(maxWidth: .infinity)
                 }
             }
@@ -223,10 +225,10 @@ struct LogbookView: View {
     private var titleHeader: some View {
         VStack(alignment: .leading, spacing: 2) {
             Text("Logbook")
-                .font(.largeTitle.bold())
+                .cueFont(.largeTitle, weight: .bold)
                 .foregroundStyle(Palette.ink)
             Text("Catch it now. Write it later.")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -241,10 +243,10 @@ struct LogbookView: View {
         let shows = titleFolds
         return VStack(spacing: 1) {
             Text("Logbook")
-                .font(.headline)
+                .cueFont(.headline, weight: .semibold)
                 .foregroundStyle(Palette.ink)
             Text("Catch it now. Write it later.")
-                .font(.caption2)
+                .cueFont(.caption2)
                 .foregroundStyle(Palette.ink2)
         }
         .opacity(shows ? 1 : 0)
@@ -347,7 +349,7 @@ struct LogbookView: View {
         } label: {
             Group {
                 if hasWords {
-                    Image(systemName: "arrow.up").font(.system(size: 22, weight: .bold))
+                    Image(systemName: "arrow.up").cueFont(22, weight: .bold)
                 } else {
                     CueIconView(.dictate, size: 22)
                 }
@@ -426,10 +428,10 @@ struct LogbookView: View {
         VStack(spacing: 14) {
             EmptyStateMark(icon: .book)
             Text("Your Logbook is empty")
-                .font(.system(size: 22, weight: .bold)).tracking(-0.44).foregroundStyle(Palette.ink)
+                .cueFont(22, weight: .bold).tracking(-0.44).foregroundStyle(Palette.ink)
                 .accessibilityAddTraits(.isHeader)
             Text("Hold the mic to catch an idea. Write it later.")
-                .font(.system(size: 15)).foregroundStyle(Palette.ink2)
+                .cueFont(15).foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
@@ -443,12 +445,12 @@ struct LogbookView: View {
         let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
         return HStack(spacing: 14) {
             Image(systemName: entry.isSpoken ? "mic.fill" : "pencil")
-                .font(.system(size: 16))
+                .font(.fixed(16))
                 .foregroundStyle(entry.isSpoken ? Palette.accText : Palette.ink2)
                 .frame(width: 44, height: 44)
                 .background(entry.isSpoken ? Palette.accSoft : Palette.overlayFill, in: Circle())
             VStack(alignment: .leading, spacing: 4) {
-                Text(entry.text).font(.system(size: 18, weight: .medium)).foregroundStyle(Palette.ink).lineLimit(3)
+                Text(entry.text).cueFont(18, weight: .medium).foregroundStyle(Palette.ink).lineLimit(3)
                 HStack(spacing: 6) {
                     Text(verbatim: LogbookDays.meta(for: entry)).hudFont().interfaceTracking(0.8).foregroundStyle(Palette.ink2)
                     if let color = color(for: entry) { Circle().fill(color).frame(width: 9, height: 9) }
@@ -464,10 +466,11 @@ struct LogbookView: View {
                         if aiStatus.isAvailable { Text(verbatim: "✦") }
                         Text(aiStatus.isAvailable ? "Write" : "Write it")
                     }
-                    .font(.system(size: 16, weight: .semibold))
+                    .cueFont(16, weight: .semibold)
                     .foregroundStyle(aiStatus.isAvailable ? Palette.aiTextStrong : Palette.ink)
                     .padding(.horizontal, 14)
-                    .frame(height: 40)
+                    .padding(.vertical, 4)
+                    .frame(minHeight: 40)
                     .background(aiStatus.isAvailable ? Palette.aiFill : Palette.fill, in: Capsule())
                     .overlay { if aiStatus.isAvailable { Capsule().strokeBorder(Palette.aiBorder, lineWidth: 0.5) } }
                 }

@@ -60,7 +60,7 @@ struct VoiceChapter: View {
             rows
                 .padding(.horizontal, 16)
             footnote
-                .font(.system(size: 12.5))
+                .cueFont(12.5)
                 .foregroundStyle(Palette.inkHint)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
@@ -152,7 +152,7 @@ struct VoiceChapter: View {
         let identifier = permission.identifier
         let content = HStack(spacing: 12) {
             Image(systemName: permission.symbol)
-                .font(.system(size: 16, weight: .semibold))
+                .font(.fixed(16, weight: .semibold))
                 .foregroundStyle(permission.tint)
                 .frame(width: 36, height: 36)
                 .background(
@@ -160,8 +160,8 @@ struct VoiceChapter: View {
                     in: RoundedRectangle(cornerRadius: 12, style: .continuous)
                 )
             VStack(alignment: .leading, spacing: 1) {
-                Text(permission.title).font(.system(size: 16, weight: .semibold)).foregroundStyle(Palette.ink)
-                Text(permission.detail).font(.system(size: 12.5)).foregroundStyle(Palette.ink2)
+                Text(permission.title).cueFont(16, weight: .semibold).foregroundStyle(Palette.ink)
+                Text(permission.detail).cueFont(12.5).foregroundStyle(Palette.ink2)
             }
             Spacer(minLength: 8)
             stateBadge(state, isNext: isNext, isFollowUp: permission.identifier == "camera" && model.microphone != .notAsked)
@@ -195,9 +195,9 @@ struct VoiceChapter: View {
         switch state {
         case .allowed:
             Text("✓ Allowed")
-                .font(.system(size: 12.5, weight: .semibold))
+                .cueFont(12.5, weight: .semibold)
                 .foregroundStyle(Palette.successText)
-                .padding(.horizontal, 10).frame(height: 26)
+                .padding(.horizontal, 10).padding(.vertical, 4).frame(minHeight: 26)
                 .background(Palette.success.opacity(0.16), in: Capsule())
                 .transition(.scale(scale: 0.6).combined(with: .opacity))
         case .denied:
@@ -206,9 +206,9 @@ struct VoiceChapter: View {
                 Text(verbatim: "·").accessibilityHidden(true)
                 Text("Turn on")
             }
-            .font(.system(size: 12.5, weight: .semibold))
+            .cueFont(12.5, weight: .semibold)
             .foregroundStyle(Palette.warnText)
-            .padding(.horizontal, 10).frame(height: 26)
+            .padding(.horizontal, 10).padding(.vertical, 4).frame(minHeight: 26)
             .background(Palette.warnSoft, in: Capsule())
         case .notAsked:
             // The board says "Next" on the step that follows an answered one, and "Allow" on the first.
@@ -216,9 +216,9 @@ struct VoiceChapter: View {
                 "step.next", defaultValue: "Next",
                 comment: "Status of the step that comes next (not a button): the first voyage's step list and the onboarding permission pill."
             )) : String(localized: "Allow"))
-                .font(.system(size: 12.5, weight: .semibold))
+                .cueFont(12.5, weight: .semibold)
                 .foregroundStyle(isNext ? Palette.accText : Palette.ink2)
-                .padding(.horizontal, 10).frame(height: 26)
+                .padding(.horizontal, 10).padding(.vertical, 4).frame(minHeight: 26)
                 .overlay(Capsule().strokeBorder(isNext ? Palette.acc.opacity(0.6) : Palette.glassBorder, lineWidth: 1))
         }
     }

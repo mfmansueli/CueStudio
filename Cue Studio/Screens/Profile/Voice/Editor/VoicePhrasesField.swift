@@ -28,9 +28,9 @@ struct VoicePhrasesField: View {
                 GroupedCard(background: Palette.surface2, radius: 16, dividerInset: 16) {
                     ForEach(current.phrases, id: \.self) { phrase in
                         HStack {
-                            Text("“\(phrase)”").font(.body).foregroundStyle(Palette.ink).frame(maxWidth: .infinity, alignment: .leading)
+                            Text("“\(phrase)”").cueFont(.body).foregroundStyle(Palette.ink).frame(maxWidth: .infinity, alignment: .leading)
                             Button { profile.removePhrase(phrase) } label: {
-                                Image(systemName: "xmark").font(.footnote.weight(.bold)).foregroundStyle(Palette.ink2)
+                                Image(systemName: "xmark").cueFont(.footnote, weight: .bold).foregroundStyle(Palette.ink2)
                                     .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                             }
                             .accessibilityLabel(Text("Remove \(phrase)"))

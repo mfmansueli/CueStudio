@@ -14,11 +14,11 @@ struct SheetHeader: View {
         HStack(alignment: .top, spacing: 12) {
             VStack(alignment: .leading, spacing: 5) {
                 Text(title)
-                    .font(.title2.bold())
+                    .cueFont(.title2, weight: .bold)
                     .foregroundStyle(Palette.ink)
                 if let subtitle {
                     Text(subtitle)
-                        .font(.subheadline)
+                        .cueFont(.subheadline)
                         .foregroundStyle(Palette.ink2)
                         .fixedSize(horizontal: false, vertical: true)
                 }

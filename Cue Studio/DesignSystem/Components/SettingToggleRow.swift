@@ -17,7 +17,7 @@ struct SettingToggleRow: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title)
                 if let detail {
-                    Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
+                    Text(detail).cueFont(.footnote).foregroundStyle(Palette.ink2)
                 }
             }
         }
