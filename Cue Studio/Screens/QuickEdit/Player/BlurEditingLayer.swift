@@ -8,8 +8,9 @@ import SwiftUI
 /// Blur area on the preview, while its panel is open or an area is picked and the video is paused. In the first step, the
 /// faces found in the frame, numbered and dashed: a tap hides that one. Then every area showing at the playhead: a tap picks
 /// one; the picked one is outlined in its real shape (yellow, or dashed orange where it may not cover what it hides, with
-/// "Not tracked here"), dragged to move it (at the playhead when it moves), its corners pulled or a pinch to resize it, ✕ to
-/// delete it. Every change shows in the video as it's made: the box is the area itself.
+/// "Not tracked here"), dragged to move it (at the playhead when it moves), a corner pulled or a pinch to resize it, ✕ (its top
+/// left corner) to delete it. Every change shows in the video as it's made: the box is the area itself. A face filling a selfie
+/// makes an area larger than the frame: its handles and ✕ stay on the preview, at its edge, where a finger reaches them.
 struct BlurEditingLayer: View {
     let viewModel: QuickEditViewModel
     let size: CGSize
@@ -114,11 +115,12 @@ struct BlurEditingLayer: View {
                 .accessibilityAddTraits([.isButton, .isSelected])
                 .accessibilityActions { actions }
                 .accessibilityIdentifier("edit.blur.handle")
-            ForEach(Corner.allCases, id: \.self) { corner in
+            // Any corner resizes around the middle: the top left one is ✕'s.
+            ForEach([Corner.topTrailing, .bottomLeading, .bottomTrailing], id: \.self) { corner in
                 cornerHandle(corner, region: region, rect: rect)
             }
             deleteButton(region)
-                .offset(x: -(rect.width / 2 + 6), y: -(rect.height / 2 + 6))
+                .offset(reachable(CGPoint(x: rect.minX, y: rect.minY), from: rect, margin: 14))
             if unchecked {
                 Label(String(localized: "Not tracked here"), systemImage: "exclamationmark.triangle.fill")
                     .font(.system(.caption2, weight: .semibold))
@@ -127,7 +129,7 @@ struct BlurEditingLayer: View {
                     .padding(.vertical, 4)
                     .background(Palette.Toast.fill, in: Capsule())
                     .fixedSize()
-                    .offset(y: rect.height / 2 + 18)
+                    .offset(reachable(CGPoint(x: rect.midX, y: rect.maxY + 18), from: rect, margin: 16))
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)
             }
@@ -210,8 +212,18 @@ struct BlurEditingLayer: View {
                     }
                     .onEnded { _ in end("corner") }
             )
-            .offset(x: corner.direction.width * rect.width / 2, y: corner.direction.height * rect.height / 2)
+            .offset(reachable(
+                CGPoint(x: rect.midX + corner.direction.width * rect.width / 2, y: rect.midY + corner.direction.height * rect.height / 2),
+                from: rect, margin: 12
+            ))
             .accessibilityHidden(true)
+    }
+
+    /// How far from the area's middle to draw a control meant at `point`, brought onto the preview (`margin` points in).
+    private func reachable(_ point: CGPoint, from rect: CGRect, margin: CGFloat) -> CGSize {
+        let x = min(max(point.x, margin), max(margin, size.width - margin))
+        let y = min(max(point.y, margin), max(margin, size.height - margin))
+        return CGSize(width: x - rect.midX, height: y - rect.midY)
     }
 
     private func deleteButton(_ region: BlurRegion) -> some View {

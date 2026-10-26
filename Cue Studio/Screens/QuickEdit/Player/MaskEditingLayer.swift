@@ -185,6 +185,12 @@ struct MaskEditingLayer: View {
         }
     }
 
+    /// A handle meant at `point`, kept on the preview: a mask larger than the frame keeps its handles where a finger reaches.
+    private func onPreview(_ point: CGPoint) -> CGPoint {
+        let margin: CGFloat = 12
+        return CGPoint(x: min(max(point.x, margin), max(margin, size.width - margin)), y: min(max(point.y, margin), max(margin, size.height - margin)))
+    }
+
     private enum Axis {
         case width, height, thickness
     }
@@ -215,7 +221,7 @@ struct MaskEditingLayer: View {
                     }
                     .onEnded { _ in end("side-\(id)") }
             )
-            .position(point)
+            .position(onPreview(point))
             .accessibilityHidden(true)
             .accessibilityIdentifier("edit.mask.handle.\(id)")
     }
@@ -244,7 +250,7 @@ struct MaskEditingLayer: View {
                     }
                     .onEnded { _ in end("turn") }
             )
-            .position(point)
+            .position(onPreview(point))
             .accessibilityHidden(true)
             .accessibilityIdentifier("edit.mask.handle.turn")
     }
@@ -269,7 +275,7 @@ struct MaskEditingLayer: View {
                     }
                     .onEnded { _ in end("feather") }
             )
-            .position(point)
+            .position(onPreview(point))
             .accessibilityHidden(true)
             .accessibilityIdentifier("edit.mask.handle.feather")
     }
@@ -292,7 +298,7 @@ struct MaskEditingLayer: View {
                     }
                     .onEnded { _ in end("corners") }
             )
-            .position(point)
+            .position(onPreview(point))
             .accessibilityHidden(true)
             .accessibilityIdentifier("edit.mask.handle.corners")
     }

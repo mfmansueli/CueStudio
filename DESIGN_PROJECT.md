@@ -2171,7 +2171,21 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   área de um vídeo trocado deixa de aparecer (Undo volta). Rotação das caixas: as áreas ficam de pé (a correção de giro do Stabilize gira a imagem,
   a caixa no quadro de pé continua sobre o alvo).
 - **Desempenho:** força, estilo, forma e borda só redesenham (o item do player fica, só o desenho muda); seguir roda uma vez quando pedido, e
-  formato, estabilização, zoom, cortes e velocidade nunca pedem seguir de novo. Medições no aparelho: ver o relatório da fase.
+  formato, estabilização, zoom, cortes e velocidade nunca pedem seguir de novo. Cada área desenha em poucas passadas do Core Image (a redução
+  começa por um quarto amostrando entre pixels, o que o Core Image junta à passada seguinte; o desfoque se espalha de volta com B-spline; a borda
+  suave de um retângulo são quatro rampas multiplicadas, não um retângulo desfocado): de ~15 para ~11 passadas por área e ~40% menos pixels.
+  **Medido no iPhone 15 Pro** (`BlurAreaDeviceTests`, 26/10, take 1080p de 30 fps): composição da prévia lida o mais rápido possível com três
+  áreas em movimento (Blur, Pixelate, Solid) a **94 quadros por segundo** (eram 49), com áreas e uma máscara a 93 (eram 65), a take sozinha a 268;
+  exportar 10 s em 1080p: 2,0 s sem áreas, **2,9 s** com as três (eram 4,2 s); seguir um rosto pela análise: 29 s de vídeo em 5 ms; pelo Vision:
+  5 s de vídeo em 0,4 s.
+- **Alças sempre ao alcance:** um rosto que enche uma selfie faz uma área maior que o quadro; as alças, o ✕ e "Not tracked here" ficam na borda da
+  prévia (12–16 pt para dentro), e a máscara faz o mesmo. A área tem três alças de canto (qualquer canto redimensiona pelo meio) e o ✕ no canto de
+  cima à esquerda, sem cobrir uma alça.
+- **Fluxo no vídeo real do dono** (`RealFaceBlurUITests`, opt-in: no iPhone `TEST_RUNNER_CUE_REAL_TAKE=<arquivo em Takes> scripts/test.sh
+  device-ui …`, com Ajustes › Desenvolvedor › Enable UI Automation ligado; no Simulador, um caminho no Mac): uma cópia da take aberta em memória
+  (`-uiTestRealTake`, a take nunca muda), Blur area na barra principal, o rosto numerado, um toque, seguida, conferida ao longo do vídeo, os três
+  estilos, ◐, a faixa na linha do tempo e Done, com uma foto de cada passo. No Simulador a captura de tela nunca mostra o vídeo do editor (nem o
+  da demonstração), só o que fica por cima.
 - **Contraste:** `PaletteContrastTests.theBlurAndMaskMarksRead` ("Not tracked here", contornos amarelo, laranja e branco com o halo sobre vídeo
   claro e escuro, o nome da área no seu crachá sobre a hachura, ✓ e ! no cartão), `theLanesInksReadOnTheirFills` (faixa Blur area).
 - **Testes:** `BlurRegionTests`, `BlurFollowingTests` (rosto andando, saindo e voltando, cruzando; caixa perdida; afinar; pontos do criador),

@@ -87,6 +87,13 @@ struct BlurDrawingTests {
         let outside = CGPoint(x: 97, y: 150)
         #expect(hard.rgb(at: outside).red < 255 || hard.rgb(at: outside).green > 200)
         #expect(soft.rgb(at: outside).red > 150 && soft.rgb(at: outside).green < 200, "\(soft.rgb(at: outside))")
+        // It fades: how much red there is (red over green: the checkerboard under it is white or black) falls with the distance,
+        // and the corner of its reach (52 pixels around the area) is as it was.
+        func redness(_ point: CGPoint) -> Double { soft.rgb(at: point).red - soft.rgb(at: point).green }
+        #expect(redness(CGPoint(x: 87, y: 150)) > redness(CGPoint(x: 62, y: 150)) + 40)
+        #expect(redness(CGPoint(x: 62, y: 150)) > 5)
+        let original = RenderedPixels(checkerboard).rgb(at: CGPoint(x: 52, y: 26)), corner = soft.rgb(at: CGPoint(x: 52, y: 26))
+        #expect(abs(corner.red - original.red) < 20 && abs(corner.green - original.green) < 20, "\(corner) vs \(original)")
     }
 
     @Test func anOvalLeavesItsBoxsCornersAsTheyWere() {

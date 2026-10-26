@@ -72,9 +72,7 @@ nonisolated enum BlurDrawing {
         let grid = CGRect(x: left, y: bottom, width: columns * block, height: rows * block)
         let source = image.clampedToExtent().cropped(to: grid)
             .transformed(by: CGAffineTransform(translationX: -grid.minX, y: -grid.minY))
-            .clampedToExtent()
-        let small = source
-            .applyingFilter("CILanczosScaleTransform", parameters: [kCIInputScaleKey: 1 / block, kCIInputAspectRatioKey: 1])
+        let small = shrunk(source, by: 1 / block)
             .cropped(to: CGRect(x: 0, y: 0, width: columns, height: rows))
         return small
             .samplingNearest()
@@ -89,15 +87,26 @@ nonisolated enum BlurDrawing {
         let factor = CGFloat(max(1, steps)) / max(1, short)
         // A little of what's around comes along, so the edge of the area isn't a hard seam.
         let around = reach.insetBy(dx: -short * 0.2, dy: -short * 0.2).intersection(image.extent)
-        let small = image.clampedToExtent().cropped(to: around)
+        let source = image.clampedToExtent().cropped(to: around)
             .transformed(by: CGAffineTransform(translationX: -around.minX, y: -around.minY))
-            .clampedToExtent()
-            .applyingFilter("CILanczosScaleTransform", parameters: [kCIInputScaleKey: factor, kCIInputAspectRatioKey: 1])
-            .applyingGaussianBlur(sigma: 0.8)
-        return small
-            .transformed(by: CGAffineTransform(scaleX: 1 / factor, y: 1 / factor))
+        // Spread back with a B-spline: smooth, without the creases a straight stretch of so few pixels leaves.
+        return shrunk(source, by: factor)
+            .applyingFilter("CIBicubicScaleTransform", parameters: [
+                kCIInputScaleKey: 1 / factor, kCIInputAspectRatioKey: 1, "inputB": 1, "inputC": 0,
+            ])
             .transformed(by: CGAffineTransform(translationX: around.minX, y: around.minY))
             .cropped(to: reach)
+    }
+
+    /// `image` (finite, from the origin) brought down by `factor` in few passes: first a quarter at a time by sampling between
+    /// pixels, which Core Image folds into the next pass, then Lanczos for the rest. Each pass costs the iPhone more than its
+    /// pixels (BlurAreaDeviceTests: three areas took the preview from 224 to 49 frames a second with Lanczos alone).
+    private static func shrunk(_ image: CIImage, by factor: CGFloat) -> CIImage {
+        let first = factor < 0.25 ? 0.25 : 1
+        return image
+            .transformed(by: CGAffineTransform(scaleX: first, y: first))
+            .clampedToExtent()
+            .applyingFilter("CILanczosScaleTransform", parameters: [kCIInputScaleKey: factor / first, kCIInputAspectRatioKey: 1])
     }
 
     /// White over the area (fully over all of it), fading out over `feather` pixels around it.
@@ -107,10 +116,21 @@ nonisolated enum BlurDrawing {
         case .rectangle:
             let hard = CIImage(color: white).cropped(to: rect)
             guard feather >= 1 else { return hard }
-            let soft = CIImage(color: white).cropped(to: rect.insetBy(dx: -feather / 2, dy: -feather / 2))
-                .applyingGaussianBlur(sigma: Double(feather) / 3)
+            // Four smooth ramps from black to white, one per side, multiplied (opaque, so multiplying is a product): drawn in the
+            // same pass as the rest, where a blurred rectangle took eight.
+            let black = CIColor(red: 0, green: 0, blue: 0)
+            let sides = [
+                (CGPoint(x: rect.minX - feather, y: 0), CGPoint(x: rect.minX, y: 0)), (CGPoint(x: rect.maxX + feather, y: 0), CGPoint(x: rect.maxX, y: 0)),
+                (CGPoint(x: 0, y: rect.minY - feather), CGPoint(x: 0, y: rect.minY)), (CGPoint(x: 0, y: rect.maxY + feather), CGPoint(x: 0, y: rect.maxY)),
+            ]
+            let ramps = sides.compactMap { from, to in
+                CIFilter(name: "CISmoothLinearGradient", parameters: [
+                    "inputPoint0": CIVector(cgPoint: from), "inputPoint1": CIVector(cgPoint: to), "inputColor0": black, "inputColor1": white,
+                ])?.outputImage
+            }
+            return ramps.dropFirst()
+                .reduce(ramps.first ?? hard) { $0.applyingFilter("CIMultiplyCompositing", parameters: [kCIInputBackgroundImageKey: $1]) }
                 .cropped(to: rect.insetBy(dx: -feather, dy: -feather))
-            return hard.applyingFilter("CIMaximumCompositing", parameters: [kCIInputBackgroundImageKey: soft])
         case .oval:
             // A circle as wide as the area, its fade beyond its edge, squeezed to the area's height.
             let radius = rect.width / 2
