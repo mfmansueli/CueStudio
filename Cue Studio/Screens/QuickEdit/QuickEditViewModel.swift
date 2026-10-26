@@ -42,6 +42,9 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     }
     private var shownPanel: EditorPanel?
     private var picked: EditorSelection?
+    /// The clip a clip panel picked when it opened with nothing picked (`EditorPanel.pinsClip`): the panel lets go of it when it
+    /// closes, unless the creator picked something else meanwhile.
+    @ObservationIgnored private var panelPick: EditorSelection?
     /// The Text or Audio toolbar, opened from the main one with nothing selected.
     var toolMenu: EditorToolMenu?
     /// The open panel's tab (Text style and Caption style).
@@ -274,6 +277,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     func pick(_ next: EditorSelection?) {
         guard next != picked else { return }
         picked = next
+        // Picked by the creator: no longer the panel's to let go of.
+        if next != panelPick { panelPick = nil }
         if next != nil { toolMenu = nil }
         if next?.joinID != nil {
             if shownPanel != .transition {
@@ -290,6 +295,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         let previous = shownPanel
         guard next != previous else { return }
         shownPanel = next
+        pinClip(for: next)
         showsAdvanced = false
         panelTab = .presets
         // ✦ Smart opens on Tools next time unless a toolbar asks for another tab.
@@ -305,6 +311,19 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         captions.panelChanged(to: next)
         blur.panelChanged(to: next)
         if next != .mask { overlays.comparesWithoutMask = false }
+    }
+
+    /// A clip panel opened with nothing picked picks the clip under the playhead, and lets go of it when it closes (or gives way
+    /// to a panel that isn't a clip's); a clip the creator picked stays picked. The Text or Audio menu stays under it.
+    private func pinClip(for next: EditorPanel?) {
+        if let pin = panelPick {
+            guard !(next.map { $0.pinsClip && look.accepts(pin, in: $0) } ?? false) else { return }
+            panelPick = nil
+            if picked == pin { picked = nil }
+        } else if picked == nil, next?.pinsClip == true, let clip = targetClip {
+            picked = .clip(clip.id)
+            panelPick = picked
+        }
     }
 
     // MARK: - Reading

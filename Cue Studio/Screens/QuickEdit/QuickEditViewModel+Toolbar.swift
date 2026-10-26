@@ -143,6 +143,7 @@ extension QuickEditViewModel {
     /// (the main bar, and an item's badged shortcut, whatever is picked). Skin is Adjust opened on Skin Smoothing.
     private func openLook(_ tool: EditorLookTool, wholeVideo: Bool) {
         look.lookScopeIsClip = !wholeVideo && selection?.clipID != nil
+        look.lookTool = tool
         if tool == .skin { look.adjustOpensOn = .skinSmoothing }
         panel = tool.panel
     }
@@ -257,20 +258,37 @@ extension QuickEditViewModel {
     private func performOnClip(_ action: EditorAction) -> Bool {
         switch action {
         case .splitClip: clips.splitClip()
-        case .duplicateClip: selection?.clipID.map(clips.duplicateClip)
+        case .duplicateClip: pickClipForAction().map(clips.duplicateClip)
         case .reorderClips: clips.openClipOrder()
         case .freezeFrame: startJob { await self.clips.freezeFrame() }
         case .reverseClip:
             // One at a time: a second tap never stops the first.
             if !jobs.isRunning(.reverse) { jobs.start(.reverse) { [weak self] _ in await self?.clips.reverseClip() } }
-        case .replaceClip: clips.askToReplaceClip()
-        case .extractAudio: startJob { await self.audio.extractAudio() }
-        case .copyLook: look.copyClipLook()
-        case .pasteLook: look.askToPasteLook()
+        case .replaceClip:
+            pickClipForAction()
+            clips.askToReplaceClip()
+        case .extractAudio:
+            // A video over the take extracts its own sound; anything else, a clip's.
+            if selection?.mediaID == nil { pickClipForAction() }
+            startJob { await self.audio.extractAudio() }
+        case .copyLook:
+            pickClipForAction()
+            look.copyClipLook()
+        case .pasteLook:
+            if look.canPasteLook { pickClipForAction() }
+            look.askToPasteLook()
         case .deleteClip: selection?.clipID.map(clips.deleteClip)
         default: return false
         }
         return true
+    }
+
+    /// From the main bar (no clip picked) a clip action that works on a picked clip first picks the one under the playhead, so
+    /// it has its clip and its tools show; on a clip's bar, the picked one. The clip's id.
+    @discardableResult
+    private func pickClipForAction() -> UUID? {
+        if selection?.clipID == nil { clips.selectClipAtPlayhead() }
+        return selection?.clipID
     }
 
     private func replaceSelectedMedia() {

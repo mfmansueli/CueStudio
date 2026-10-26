@@ -26,6 +26,9 @@ final class LookViewModel: EditorPart {
     }
     /// The setting Adjust opens on, once (`QuickEditViewModel.open(_:)`); nil opens where it always does.
     var adjustOpensOn: Adjustment?
+    /// The look tool the open panel was opened as, while it's open: Skin is Adjust on Skin Smoothing, and what it counts and
+    /// clears is Skin Smoothing only. Nil for a panel opened another way (the panel's own tool).
+    var lookTool: EditorLookTool?
     /// Whether this iPhone can find people in video; nil until checked.
     var canFindPeople: Bool?
     var isImportingBackground = false
@@ -67,5 +70,6 @@ final class LookViewModel: EditorPart {
         comparesPicture = false
         if next == .crop || next == .stabilize { requestMotionAnalysis() }
         if next == nil { lookScopeIsClip = false }
+        if next != lookTool?.panel { lookTool = nil }
     }
 }

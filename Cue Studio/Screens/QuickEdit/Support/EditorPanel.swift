@@ -65,6 +65,15 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         }
     }
 
+    /// The clip panels: opened with nothing picked (from the main toolbar), they pick the clip under the playhead for as long as
+    /// they're open, so moving the playhead never moves the change to another clip.
+    var pinsClip: Bool {
+        switch self {
+        case .speed, .zoom, .volume, .stabilize: true
+        default: false
+        }
+    }
+
     /// The panels that change the take's look, or one clip's when opened from a picked clip.
     var hasClipScope: Bool {
         switch self {

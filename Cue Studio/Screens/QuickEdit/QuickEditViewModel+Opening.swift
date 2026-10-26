@@ -25,10 +25,12 @@ extension QuickEditViewModel {
             panel = .voice
         case .skinSmoothing:
             look.lookScopeIsClip = false
+            look.lookTool = .skin
             look.adjustOpensOn = .skinSmoothing
             panel = .adjust
         case .background:
             look.lookScopeIsClip = false
+            look.lookTool = .background
             panel = .background
         case .cover:
             cover.openCoverStudio()
