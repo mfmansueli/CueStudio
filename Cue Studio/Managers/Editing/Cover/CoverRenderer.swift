@@ -129,7 +129,8 @@ nonisolated enum CoverRenderer {
             as: Framing(
                 frame: shown.map { framing.frame(of: $0.segment) } ?? framing.frame(forRecording: picked.sourceID), cropFit: edit.cropFit,
                 look: shown.map { edit.lookSettings(for: $0.segment) } ?? LookSettings(edit), key: "cover",
-                moment: SmoothingMoment(stream: .main, stretch: 0, time: editedTime), sourceTime: time
+                moment: SmoothingMoment(stream: .main, stretch: 0, time: editedTime), sourceTime: time,
+                blurs: BlurResolver.shown(edit.blurRegions, onRecording: picked.sourceID, at: time, sources: edit.sources)
             ),
             skin: SkinSmoother(context: context)
         ) { image, _ in

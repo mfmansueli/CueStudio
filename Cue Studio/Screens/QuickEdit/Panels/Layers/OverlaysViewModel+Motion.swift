@@ -135,7 +135,7 @@ extension OverlaysViewModel {
             return
         }
         let state = motionState(of: item)
-        let keyframe = OverlayKeyframe(time: local, center: state.center, scale: state.scale, opacity: state.opacity)
+        let keyframe = OverlayKeyframe(time: local, center: state.center, scale: state.scale, opacity: state.opacity, mask: state.mask)
         updateKeyframes(of: item) { $0.append(keyframe) }
         toast.show(String(localized: "Keyframe added · Now drag"))
     }
@@ -213,11 +213,12 @@ extension OverlaysViewModel {
         setAtPlayhead(of: item, update)
     }
 
-    private func setAtPlayhead(of item: MotionItem, _ update: (inout OverlayKeyframe) -> Void) {
+    /// Changes the item's keyframe at the playhead, adding it first (where the item is now) when there's none.
+    func setAtPlayhead(of item: MotionItem, _ update: (inout OverlayKeyframe) -> Void) {
         guard let local = localTime(of: item) else { return }
         var keyframe = keyframeAtPlayhead(of: item) ?? {
             let state = motionState(of: item)
-            return OverlayKeyframe(time: local, center: state.center, scale: state.scale, opacity: state.opacity)
+            return OverlayKeyframe(time: local, center: state.center, scale: state.scale, opacity: state.opacity, mask: state.mask)
         }()
         update(&keyframe)
         updateKeyframes(of: item) { keyframes in

@@ -239,7 +239,18 @@ extension ClipsViewModel {
         // The clip's look, and the background its recording plays with (the frozen frame is a recording of its own).
         var look = segment.look ?? ClipLook()
         if look.background == nil, let background = edit.background(for: segment) { look.background = background }
-        let source = ClipSource(fileName: name, duration: Self.freezeFileLength, title: String(localized: "Freeze frame"))
+        var source = ClipSource(fileName: name, duration: Self.freezeFileLength, title: String(localized: "Freeze frame"))
+        // Where the frame came from (through a reversed or frozen clip, the recording it shows), so a Blur area on that moment
+        // hides it on the still too.
+        let frozenAt = timeline.sourceTime(forEdited: time)
+        let shown = segment.sourceID.flatMap { id in edit.sources.first { $0.id == id } }
+        if let reversal = shown?.reversal {
+            source.still = FrameOrigin(sourceID: reversal.sourceID, time: reversal.span.end - frozenAt)
+        } else if let still = shown?.still {
+            source.still = still
+        } else {
+            source.still = FrameOrigin(sourceID: segment.sourceID, time: frozenAt)
+        }
         guard let id = next.timeline.insertClip(
             source: source.id, duration: source.duration, span: TimeSpan(start: 0, end: Self.freezeLength), at: at,
             look: look.isEmpty ? nil : look

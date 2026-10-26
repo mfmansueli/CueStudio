@@ -10,8 +10,8 @@ import Foundation
 /// take, their motion and keyframes, Track, and picking, dragging and placing them on the preview. What it keeps is its
 /// panels' state; the overlays themselves are in the edit, and every change is an undo step through the session.
 ///
-/// Each part of the work is in its own extension (`+Text`, `+TextStyle`, `+Style`, `+Media`, `+Motion`, `+Track`, `+Picking`,
-/// `+Preview`, `+Accessibility`).
+/// Each part of the work is in its own extension (`+Text`, `+TextStyle`, `+Style`, `+Media`, `+Mask`, `+Motion`, `+Track`,
+/// `+Picking`, `+Preview`, `+Accessibility`).
 @MainActor
 @Observable
 final class OverlaysViewModel: EditorPart {
@@ -39,6 +39,15 @@ final class OverlaysViewModel: EditorPart {
     var trackingProgress: Double?
     /// A video just added that has its own sound: Media asks whether to keep it.
     var soundChoiceMediaID: UUID?
+    /// What a drag on the preview moves while Mask is open (`+Mask`).
+    var maskDragTarget: MaskDragTarget = .mask
+    /// Mask's ◐: the picked photo or video shows whole, without its mask.
+    var comparesWithoutMask = false {
+        didSet {
+            guard comparesWithoutMask != oldValue else { return }
+            session.showPlayedEdit()
+        }
+    }
 
     let session: EditorSession
     /// Copies a picked photo or video into the edit's media.
@@ -67,5 +76,6 @@ final class OverlaysViewModel: EditorPart {
     /// The edit changed: a video whose sound was being asked about and is gone isn't asked about any more.
     func editChanged() {
         if let id = soundChoiceMediaID, !edit.media.contains(where: { $0.id == id }) { soundChoiceMediaID = nil }
+        if comparesWithoutMask { comparesWithoutMask = false }
     }
 }

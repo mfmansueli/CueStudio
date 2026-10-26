@@ -199,6 +199,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 mediaTrackIDs: mediaTrackIDs,
                 frame: framing.frame(of: playedSegment),
                 blendFrame: blendSegment.map { framing.frame(of: $0) },
+                recordingID: playedSegment.sourceID,
+                blendRecordingID: blendSegment?.sourceID,
                 mainFraming: edit.splitScreen.framing(for: playedSegment.sourceID),
                 blendMainFraming: blendSegment.map { edit.splitScreen.framing(for: $0.sourceID) },
                 edit: edit,
@@ -532,11 +534,16 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             }
             if shown.count > 1 { frame.pieces = shown.map(\.edited) }
             frame.frameSize = size
+            frame.mediaID = entry.media.id
+            frame.filePieces = shown
+            frame.blurs = edit.blurRegions.filter { $0.target.mediaID == entry.media.id }
+            frame.areaFraming = (areas == nil ? entry.media.pictureFraming : entry.media.areaFraming) ?? AreaFraming()
             if let areas {
                 frame.areas = areas
-                frame.areaFraming = entry.media.areaFraming ?? AreaFraming()
-            } else if let motion = Self.motion(of: entry.media, rect: topLeft, span: span, in: size) {
-                frame.motion = motion
+            } else {
+                frame.mask = entry.media.mask
+                frame.opacity = min(max(entry.media.opacity ?? 1, 0.1), 1)
+                frame.motion = Self.motion(of: entry.media, rect: topLeft, span: span, in: size)
             }
             frames.append(frame)
         }

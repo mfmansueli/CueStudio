@@ -17,21 +17,32 @@ nonisolated struct FaceFinder: FaceFinding {
     func face(in url: URL, isVideo: Bool, at time: TimeInterval) async -> (box: CGRect?, size: CGSize)? {
         guard let image = isVideo ? await Self.frame(of: url, at: time) : Self.photo(at: url) else { return nil }
         let size = CGSize(width: image.width, height: image.height)
-        let request = VNDetectFaceRectanglesRequest()
-        try? VNImageRequestHandler(cgImage: image, options: [:]).perform([request])
-        let largest = (request.results ?? [])
-            .filter { $0.confidence > 0.5 }
-            .max { $0.boundingBox.width * $0.boundingBox.height < $1.boundingBox.width * $1.boundingBox.height }
-        // Vision's boxes are from the bottom left.
-        let box = largest.map { CGRect(x: $0.boundingBox.minX, y: 1 - $0.boundingBox.maxY, width: $0.boundingBox.width, height: $0.boundingBox.height) }
-        return (box, size)
+        return (Self.boxes(in: image).first, size)
     }
 
-    private static func frame(of url: URL, at time: TimeInterval) async -> CGImage? {
+    @concurrent
+    func faces(in url: URL, isVideo: Bool, at time: TimeInterval) async -> [CGRect]? {
+        // The very frame: a face moving between nearby frames would be offered where it isn't.
+        guard let image = isVideo ? await Self.frame(of: url, at: time, exactly: true) : Self.photo(at: url) else { return nil }
+        return Self.boxes(in: image)
+    }
+
+    /// The faces Vision is sure of, largest first, from the top left.
+    private static func boxes(in image: CGImage) -> [CGRect] {
+        let request = VNDetectFaceRectanglesRequest()
+        try? VNImageRequestHandler(cgImage: image, options: [:]).perform([request])
+        return (request.results ?? [])
+            .filter { $0.confidence > 0.5 }
+            .sorted { $0.boundingBox.width * $0.boundingBox.height > $1.boundingBox.width * $1.boundingBox.height }
+            // Vision's boxes are from the bottom left.
+            .map { CGRect(x: $0.boundingBox.minX, y: 1 - $0.boundingBox.maxY, width: $0.boundingBox.width, height: $0.boundingBox.height) }
+    }
+
+    private static func frame(of url: URL, at time: TimeInterval, exactly: Bool = false) async -> CGImage? {
         let generator = AVAssetImageGenerator(asset: AVURLAsset(url: url))
         generator.appliesPreferredTrackTransform = true
         generator.maximumSize = CGSize(width: side, height: side)
-        let tolerance = CMTime(seconds: 0.2, preferredTimescale: 600)
+        let tolerance = exactly ? .zero : CMTime(seconds: 0.2, preferredTimescale: 600)
         generator.requestedTimeToleranceBefore = tolerance
         generator.requestedTimeToleranceAfter = tolerance
         return try? await generator.image(at: CMTime(seconds: max(0, time), preferredTimescale: 600)).image

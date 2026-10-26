@@ -14,6 +14,8 @@ nonisolated enum EditorSelection: Hashable, Sendable {
     case music(UUID)
     case voiceOver(UUID)
     case media(UUID)
+    /// A Blur area (`BlurRegion`).
+    case blur(UUID)
     /// A cut between two clips, named by the clip that starts there: its transition is picked in Transition.
     case join(UUID)
 
@@ -23,6 +25,7 @@ nonisolated enum EditorSelection: Hashable, Sendable {
         case .clip, .join: .main
         case .text: .text
         case .media: .media
+        case .blur: .blur
         case .caption: .captions
         case .music: .music
         case .voiceOver: .voiceOver
@@ -38,6 +41,7 @@ nonisolated enum EditorSelection: Hashable, Sendable {
         case .music: String(localized: "Music")
         case .voiceOver: String(localized: "Voice-over")
         case .media: String(localized: "Media")
+        case .blur: String(localized: "Blur area")
         case .join: String(localized: "Transition")
         }
     }
@@ -48,5 +52,6 @@ nonisolated enum EditorSelection: Hashable, Sendable {
     var musicID: UUID? { if case .music(let id) = self { id } else { nil } }
     var voiceOverID: UUID? { if case .voiceOver(let id) = self { id } else { nil } }
     var mediaID: UUID? { if case .media(let id) = self { id } else { nil } }
+    var blurID: UUID? { if case .blur(let id) = self { id } else { nil } }
     var joinID: UUID? { if case .join(let id) = self { id } else { nil } }
 }

@@ -46,6 +46,11 @@ extension QuickEditViewModel {
             input.strip = TimelineGeometry.MediaStrip(fileName: item.fileName, isVideo: item.kind == .video, pieces: pieces, layout: item.layout)
             return input
         }
+        input.blurs = blurInstances.map { instance in
+            TimelineGeometry.ItemInput(
+                id: instance.id, span: instance.span, label: instance.label, warnings: instance.warnings, owner: instance.regionID
+            )
+        }
         input.captions = captions.captionMap.instances.map { line, cueID in
             TimelineGeometry.ItemInput(id: cueID, span: line.span, label: line.text)
         }
@@ -180,6 +185,7 @@ extension QuickEditViewModel {
         case .caption: .caption(id)
         case .music: .music(id)
         case .voiceOver: .voiceOver(id)
+        case .blur: .blur(id)
         case .recording: nil
         }
     }
@@ -227,6 +233,7 @@ extension QuickEditViewModel {
             case .captions: item.captionID != nil
             case .textStyle: item.textID != nil
             case .speed, .zoom, .volume, .stabilize, .voice: item.clipID != nil
+            case .blur: item.blurID != nil
             default: false
             }
             if !keeps { self.panel = nil }
@@ -381,6 +388,7 @@ extension QuickEditViewModel {
         case .caption: captionBars.first { captions.captionCueID(forLine: $0.id) == id }
         case .music: audio.musicBars.first { $0.id == id }
         case .voiceOver: voiceOverBars.first { $0.id == id }
+        case .blur: blurBars.first { $0.id == id }
         case .recording: nil
         }
     }
@@ -394,6 +402,7 @@ extension QuickEditViewModel {
             captionBars.first { captions.captionCueID(forLine: $0.id) == captions.captionCueID(forLine: bar.id) }
         case .music: audio.musicBars.first { $0.id == bar.id }
         case .voiceOver: voiceOverBars.first { $0.id == bar.id }
+        case .blur: blurBars.first { $0.id == bar.id }
         }
     }
 }

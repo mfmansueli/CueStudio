@@ -23,12 +23,15 @@ nonisolated struct Framing {
     /// While a support shows: the main area's size (pixels of the take's frame) and how the recording sits in it. The frame is
     /// then drawn into the area from the whole recording, not from the take's crop.
     var area: (size: CGSize, framing: AreaFraming)?
+    /// The Blur areas on this frame of the recording (`BlurResolver`), hidden before anything else moves the picture.
+    var blurs: [BlurShown] = []
 
     init(
         frame: SourceFrame, cropFit: CropFit, look: LookSettings, key: String, moment: SmoothingMoment, sourceTime: TimeInterval,
-        lookTime: TimeInterval? = nil, area: (size: CGSize, framing: AreaFraming)? = nil
+        lookTime: TimeInterval? = nil, area: (size: CGSize, framing: AreaFraming)? = nil, blurs: [BlurShown] = []
     ) {
         self.area = area
+        self.blurs = blurs
         self.frame = frame
         self.cropFit = cropFit
         self.look = look

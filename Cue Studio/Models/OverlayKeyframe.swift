@@ -22,12 +22,19 @@ nonisolated struct OverlayKeyframe: Codable, Hashable, Identifiable, Sendable {
     var scale: Double = 1
     var opacity: Double = 1
     var easing: KeyframeEasing = .smooth
+    /// A photo's or video's mask here (`MaskPlacement`): between two keyframes that have one, the mask moves from one to the
+    /// other; nil leaves the mask to the keyframes around it (or where the mask itself is).
+    var mask: MaskPlacement?
 
-    init(time: TimeInterval, center: OverlayPoint, scale: Double = 1, opacity: Double = 1, easing: KeyframeEasing = .smooth) {
+    init(
+        time: TimeInterval, center: OverlayPoint, scale: Double = 1, opacity: Double = 1, easing: KeyframeEasing = .smooth,
+        mask: MaskPlacement? = nil
+    ) {
         self.time = max(0, time)
         self.center = center
         self.scale = min(max(scale, Self.scaleRange.lowerBound), Self.scaleRange.upperBound)
         self.opacity = min(max(opacity, 0), 1)
         self.easing = easing
+        self.mask = mask
     }
 }

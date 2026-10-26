@@ -15,7 +15,7 @@ import Foundation
 ///
 /// The editor coordinates its parts (`EditorPart`), each with its own state, working on the edit through the session
 /// (`EditorSession`) the editor hosts (`EditorHost`): `CaptionsViewModel`, `CoverViewModel`, `LookViewModel`, `AudioViewModel`,
-/// `OverlaysViewModel` and `ClipsViewModel`. What is the editor's own: what is picked and which panel, sheet or menu is open
+/// `OverlaysViewModel`, `BlurViewModel` and `ClipsViewModel`. What is the editor's own: what is picked and which panel, sheet or menu is open
 /// (`show(_:)`, `pick(_:)`), what one part's change means for another (a panel left, the edit changed, the editor closed),
 /// what the preview plays, the timeline that draws every part's tracks and its gestures (`+Timeline`, `+Layers`), the
 /// toolbar, Undo, and leaving with the draft.
@@ -75,6 +75,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// The Low Power Mode notice over the preview (`QuickEditViewModel+LowPower`).
     var showsLowPowerNotice = false
+    /// Done was tapped while a Blur area may not cover what it hides somewhere: asked first (`+Blur`).
+    var showsBlurCheck = false
+    /// The creator went on despite it: not asked again until the edit changes.
+    @ObservationIgnored var blurCheckAccepted = false
     /// The creator's handle, for the "@handle" graphic and the cover's series (set by the screen).
     var creatorHandle: String {
         get { session.creatorHandle }
@@ -109,6 +113,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     let overlays: OverlaysViewModel
     /// The creator's own things: the media library, brand kits and imported fonts (`BrandViewModel`).
     let brand: BrandViewModel
+    /// Blur area: faces, plates and names hidden, followed and checked (`BlurViewModel`).
+    let blur: BlurViewModel
     /// Where a failure the creator saw is written down (`noteFailure`): Console and Crashlytics; tests read it.
     @ObservationIgnored var reportFailure: (EditorFailureReport) -> Void = { $0.send() }
     /// Everything the editor started and waits for (`EditorJobs`): Auto, captions, Track, the cover, a short preview, the
@@ -123,7 +129,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         editorPreferences: EditorPreferencesStoring? = nil, prompterLook: PrompterSettings = PrompterSettings(),
         coverPictures: CoverPicturing? = nil, soundPreviews: SoundEffectPreviewing? = nil,
         translations: TranslationAvailabilityChecking = AppleTranslationAvailability(), motion: MotionAnalysisService? = nil,
-        tracker: ObjectTracking = ObjectTracker(),
+        tracker: ObjectTracking = ObjectTracker(), faceFinder: FaceFinding = FaceFinder(),
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script,
         likelySpokenLanguages: @escaping (Script?) -> [CueLanguage] = { _ in [] },
         languageConflict: @escaping (Script?) -> SpeechLanguageConflict? = { _ in nil }
@@ -161,6 +167,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         look = LookViewModel(session: session, editing: editing, motion: motion)
         clips = ClipsViewModel(session: session, editing: editing, takes: takes, library: library, speechLanguage: speechLanguage)
         overlays = OverlaysViewModel(session: session, importer: mediaImporter, styles: styles, library: library, tracker: tracker)
+        blur = BlurViewModel(session: session, tracker: tracker, faces: faceFinder)
         audio = AudioViewModel(
             session: session, editing: editing, importer: mediaImporter, recorder: recorder ?? VoiceOverRecorder(),
             editorPreferences: preferences, prompterLook: prompterLook, soundPreviews: soundPreviews ?? SoundEffectPreviewPlayer()
@@ -229,7 +236,11 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         if let id = selectedCaptionID, !edit.captions.contains(where: { $0.id == id }) { selectedCaptionID = nil }
         if let id = reviewedVoiceOverID, !edit.voiceOvers.contains(where: { $0.id == id }) { reviewedVoiceOverID = nil }
         if let id = selectedMusicID, !edit.music.contains(where: { $0.id == id }) { selectedMusicID = nil }
+        if let id = selectedBlurID, !edit.blurRegions.contains(where: { $0.id == id }) { selectedBlurID = nil }
         overlays.editChanged()
+        blur.editChanged()
+        blur.growWithClips(from: previous)
+        blurCheckAccepted = false
         if selectedJoinID != nil, selectedJoinIndex == nil { selectedJoinID = nil }
         // A new treatment isn't what was being compared.
         audio.editChanged()
@@ -283,6 +294,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         if previous == .transition, picked?.joinID != nil { picked = nil }
         clips.panelChanged(to: next)
         captions.panelChanged(to: next)
+        blur.panelChanged(to: next)
+        if next != .mask { overlays.comparesWithoutMask = false }
     }
 
     // MARK: - Reading
@@ -333,7 +346,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// What the preview plays: the edit (without what a finger is dragging), or while comparing, the take's sound untreated at
     /// the same loudness.
     var playedEdit: TakeEdit {
-        let shown = overlays.hidingDraggedOverlay(in: look.comparesPicture ? edit.withoutPictureLook() : edit)
+        let compared = blur.withoutComparedBlur(overlays.withoutComparedMask(look.comparesPicture ? edit.withoutPictureLook() : edit))
+        let shown = overlays.hidingDraggedOverlay(in: compared)
         guard audio.comparesOriginal, let volume = audio.originalVolume else { return shown }
         var played = shown
         played.audioVersion = VoiceProcessing.currentVersion
@@ -350,6 +364,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// A recording's motion analysis is ready: the preview is drawn again when what it plays reads one.
     func motionAnalysisDidChange() {
+        // A Blur area's handles read Stabilize's and Follow face's paths from the analyses.
+        blur.placements.removeAll()
         guard source == .ready, EditedComposition.usesMotion(playedEdit) else { return }
         player.redraw()
     }
@@ -435,6 +451,16 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         guard isReady else { return }
         endChange()
         player.pause()
+        // A Blur area still being tracked hasn't covered anything yet.
+        if blur.isFollowing {
+            toast.show(String(localized: "A Blur area is still being tracked · Wait a moment"), kind: .problem)
+            return
+        }
+        // A Blur area that may not cover what it hides: one frame is enough to show someone.
+        if !blurCheckAccepted, uncheckedBlurDuration > 0 {
+            showsBlurCheck = true
+            return
+        }
         selection = nil
         panel = nil
         sheet = .done

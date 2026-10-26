@@ -126,6 +126,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var media: [MediaOverlay] = []
     /// The split screen's layout, how the main video sits in its area and whether the media's sound plays.
     var splitScreen = SplitScreen()
+    /// Faces, plates and other parts of the picture hidden (Blur area), each on its footage's own seconds (`BlurRegion`).
+    var blurRegions: [BlurRegion] = []
     /// The brand kit last put on the video, as it was then.
     var brandKit: AppliedBrandKit?
     /// Narrations recorded over the edit.
@@ -394,7 +396,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
         case texts, media, voiceOvers, creatorStyle, textLook, textPreset, cover
-        case splitScreen, brandKit
+        case splitScreen, brandKit, blurRegions
     }
 
     /// Edits saved before the timeline had pieces: trim handles, cut points, deleted sections and
@@ -471,6 +473,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         media = container.decodeLossy([MediaOverlay].self, forKey: .media)
         splitScreen = container.decodeLenient(SplitScreen.self, forKey: .splitScreen, report: report) ?? SplitScreen()
         brandKit = container.decodeLenient(AppliedBrandKit.self, forKey: .brandKit, report: report)
+        blurRegions = container.decodeLossy([BlurRegion].self, forKey: .blurRegions)
         voiceOvers = container.decodeLossy([VoiceOverClip].self, forKey: .voiceOvers)
         creatorStyle = try? container.decodeIfPresent(CreatorStyle.self, forKey: .creatorStyle)
         textLook = container.decodeLenient(TextLook.self, forKey: .textLook, report: report)

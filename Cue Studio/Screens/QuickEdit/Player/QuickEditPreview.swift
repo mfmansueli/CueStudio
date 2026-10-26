@@ -115,6 +115,26 @@ struct QuickEditPreview: View {
             .padding(.top, 12)
             .allowsHitTesting(false)
             .accessibilityIdentifier("edit.originalAudioBadge")
+        } else if viewModel.blur.comparesOriginal || viewModel.overlays.comparesWithoutMask {
+            // ◐ in Blur area or Mask: the video without what they change.
+            HStack(spacing: 6) {
+                Image(systemName: "circle.lefthalf.filled").font(.editorGlyph(EditorGlyph.small, weight: .bold)).foregroundStyle(Palette.accText)
+                // A narrow preview (a panel open) wraps the words instead of cutting them.
+                Text(viewModel.blur.comparesOriginal ? String(localized: "Without Blur areas") : String(localized: "Without the mask"))
+                    .font(.footnote.weight(.semibold))
+                    .lineLimit(2)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .frame(minHeight: 30)
+            .background(Palette.Takes.durationBadge, in: RoundedRectangle(cornerRadius: Metrics.editorCardRadius, style: .continuous))
+            .padding(.horizontal, 8)
+            .frame(maxHeight: .infinity, alignment: .top)
+            .padding(.top, 12)
+            .allowsHitTesting(false)
+            .accessibilityIdentifier("edit.comparedBadge")
         } else if viewModel.look.comparesPicture {
             // ◐ in Adjust, Filters or Background: the picture as recorded.
             HStack(spacing: 6) {

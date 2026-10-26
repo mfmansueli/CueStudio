@@ -6,9 +6,9 @@
 import SwiftUI
 
 /// A photo or video on top of the take, picked: how it shows (a support of the split screen has its own panel,
-/// `SplitScreenPanel`), full screen or in a window (its shape and size;
-/// on the preview, drag it to move it and pinch to resize it), for a video which part of it plays and for how long
-/// (`MediaTrimStrip`), its place among the others, and in Advanced its own sound (a video's), a ready-made motion and keyframes.
+/// `SplitScreenPanel`), full screen or in a window (its shape and size; on the preview, drag it to move it and pinch to resize
+/// it), how opaque it is, for a video which part of it plays and for how long (`MediaTrimStrip`), and its place among the
+/// others. Its sound (Volume), motion (Motion) and mask (Mask) are on its toolbar.
 struct MediaPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -34,6 +34,12 @@ struct MediaPanel: View {
                         onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
                     )
                 }
+                PanelSlider(
+                    label: String(localized: "Opacity"), value: (media.opacity ?? 1) * 100, range: 10...100, format: .percent,
+                    identifier: "edit.mediaOpacity",
+                    onChange: { value in viewModel.overlays.updateMedia(media.id) { $0.opacity = value >= 99.5 ? nil : value / 100 } },
+                    onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+                )
                 if media.kind == .video, media.mediaDuration != nil {
                     MediaTrimStrip(viewModel: viewModel, media: media)
                 }
@@ -48,18 +54,6 @@ struct MediaPanel: View {
                             isEnabled: viewModel.overlays.canRestack(media.id, up: false), identifier: "edit.mediaBackwardButton"
                         ) { viewModel.overlays.restack(media.id, up: false) }
                     }
-                }
-                PanelAdvancedButton(isOpen: viewModel.showsAdvanced) { viewModel.showsAdvanced.toggle() }
-                if viewModel.showsAdvanced {
-                    if media.kind == .video, media.hasSound == true {
-                        PanelSlider(
-                            label: String(localized: "Sound"), value: (media.audioVolume ?? 0) * 100, range: 0...100,
-                            format: .percent, identifier: "edit.mediaSound",
-                            onChange: { viewModel.overlays.setMediaSoundVolume(media.id, $0 / 100) },
-                            onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
-                        )
-                    }
-                    MotionKeyframeControls(viewModel: viewModel)
                 }
             }
         }

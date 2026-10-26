@@ -60,6 +60,12 @@ extension Palette {
         static let laneVoiceOverInk = Color(hex: 0xFFB340)
         static let laneMedia = Color(hex: 0x64D2FF, opacity: 0.3)
         static let laneMediaInk = Color(hex: 0x9FE3FF)
+        /// Blur areas: slate, so the orange of what's left unchecked stands out on them.
+        static let laneBlur = Color(hex: 0x9A9AB8, opacity: 0.32)
+        static let laneBlurInk = Color(hex: 0xDCDCEE)
+        /// What's left unchecked on a Blur area's bar: orange hatch, the warning's color.
+        static let blurUncheckedStripe = Color(hex: 0xFF9F0A, opacity: 0.9)
+        static let blurUncheckedGap = Color(hex: 0xFF9F0A, opacity: 0.25)
 
         /// A voice-over track while it records.
         static let laneRecording = Color(hex: 0xFF453A, opacity: 0.5)

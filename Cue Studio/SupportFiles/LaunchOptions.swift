@@ -22,6 +22,9 @@ import Foundation
 ///   a split screen instead of the window (`SampleEdit.demoSplit`).
 /// - `-uiTestSeedLibrary`: the media library starts with a logo and a photo (`DebugLibrarySeed`); the library, brand kits and
 ///   imported fonts live in a folder of the test's own, kept between launches with `-uiTestAssetRoot <name>`.
+/// - `-uiTestRealTake <file name or path>`: "3 morning habits" Take 3 plays a copy of one of the creator's own recordings (in
+///   Takes, or a path on the Mac for the Simulator; with its motion analysis), in memory: the take itself is never changed
+///   (UI tests of Blur area on a real face).
 /// - `-uiTestSampleVideo`: with the sample takes, writes small real videos behind the "3 morning
 ///   habits" takes, so Quick edit can play, scrub and trim them.
 /// - `-uiTestDemoCamera`: the recorder's camera records with no hardware (a small real video per take), for the Simulator.
@@ -266,6 +269,10 @@ struct LaunchOptions {
                 SampleVideo.writeLong(to: repository.videoURL(named: takes[index].fileName), seconds: seconds)
             }
             UITestLeftovers.removeOldExports()
+            // One of the creator's own recordings opened as "3 morning habits" Take 3, from a copy (a hard link) in the temporary
+            // folder, with its motion analysis: the editor works on it in memory and the take itself, its edit and its draft are
+            // never touched (`-uiTestRealTake <file name in Takes>`, device UI tests of Blur area on a real face).
+            Self.openRealTake(asked: arguments, in: &takes, repository: repository)
             if arguments.contains("-uiTestSampleVideo") {
                 SampleVideo.writeMissing(for: habits, in: repository)
             } else {
@@ -356,4 +363,32 @@ struct LaunchOptions {
         #endif
         return options
     }
+
+    #if DEBUG
+    /// With `-uiTestRealTake <file name>`, "3 morning habits" Take 3 made to play a hard link of the creator's recording (in
+    /// Takes) and its motion analysis, from the temporary folder.
+    private static func openRealTake(asked arguments: [String], in takes: inout [Take], repository: InMemoryTakeRepository) {
+        guard let flag = arguments.firstIndex(of: "-uiTestRealTake"), arguments.indices.contains(flag + 1),
+              let index = takes.firstIndex(where: { $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3 }) else { return }
+        // A file name in Takes on the iPhone; on the Simulator, a path on the Mac.
+        let asked = arguments[flag + 1]
+        let original = asked.hasPrefix("/")
+            ? URL(filePath: asked)
+            : URL.applicationSupportDirectory.appending(path: "Takes", directoryHint: .isDirectory).appending(path: asked)
+        let name = "real-" + original.lastPathComponent
+        let copy = repository.videoURL(named: name)
+        for (from, to) in [(original, copy), (MotionAnalysisStore.url(forRecording: original), MotionAnalysisStore.url(forRecording: copy))] {
+            try? FileManager.default.removeItem(at: to)
+            if (try? FileManager.default.linkItem(at: from, to: to)) == nil { try? FileManager.default.copyItem(at: from, to: to) }
+        }
+        takes[index].fileName = name
+        // Its length and shape from its motion analysis (read at once, as the take's own were when it was saved).
+        if let analysis = MotionAnalysisStore.load(forRecording: copy) {
+            takes[index].duration = analysis.duration
+            takes[index].aspect = analysis.width > analysis.height ? .landscape : .portrait
+        }
+        takes[index].edit = nil
+        try? repository.saveTakes(takes)
+    }
+    #endif
 }

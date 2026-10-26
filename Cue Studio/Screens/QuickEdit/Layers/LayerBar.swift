@@ -15,4 +15,6 @@ struct LayerBar: Identifiable, Equatable {
     let isSelected: Bool
     /// Where its keyframes are, in seconds from its start.
     var keyframes: [TimeInterval] = []
+    /// One showing of something that shows several times (a Blur area): that thing's id; nil: `id` is the thing's.
+    var owner: UUID?
 }

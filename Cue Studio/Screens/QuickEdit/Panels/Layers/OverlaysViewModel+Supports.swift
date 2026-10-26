@@ -422,6 +422,13 @@ extension OverlaysViewModel {
         next.layMedia(at: index, over: TimeSpan(start: span.start, end: time))
         next.media.insert(second, at: index + 1)
         next.layMedia(at: index + 1, over: TimeSpan(start: time, end: span.end))
+        // Both halves play the same file: its Blur areas cover the second half too.
+        next.blurRegions += next.blurRegions.filter { $0.target.mediaID == id }.map { region in
+            var copy = region
+            copy.id = UUID()
+            copy.target = .media(second.id)
+            return copy
+        }
         commit(EditSnapshot(next))
         selection = .media(second.id)
         sayUndoable(String(localized: "Split at \(DurationText.editor(time))"))

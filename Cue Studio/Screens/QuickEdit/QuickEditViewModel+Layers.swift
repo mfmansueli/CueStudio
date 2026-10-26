@@ -24,7 +24,7 @@ extension QuickEditViewModel {
     /// The bar picked on the timeline: a text, a caption line, a photo or video, a voice-over or
     /// music.
     var selectedLayer: LayerBar? {
-        (textBars + captionBars + mediaBars + voiceOverBars + audio.musicBars).first(where: \.isSelected)
+        (textBars + captionBars + mediaBars + blurBars + voiceOverBars + audio.musicBars).first(where: \.isSelected)
     }
 
     /// Moves a bar so it starts at `start` (edited seconds), keeping its length.
@@ -33,6 +33,8 @@ extension QuickEditViewModel {
             audio.moveMusic(bar.id, toStart: start)
             return
         }
+        // A Blur area stays on what it covers.
+        guard bar.kind != .blur else { return }
         let length = bar.span.duration
         let limits = room(for: bar)
         let from = min(max(start, limits.start), max(limits.start, limits.end - length))
@@ -50,6 +52,9 @@ extension QuickEditViewModel {
         case .voiceOver:
             audio.resizeVoiceOver(bar.id, edge: edge, to: time)
             return
+        case .blur:
+            blur.resizeBar(bar.owner ?? bar.id, instance: bar.span, edge: edge, to: time)
+            return
         default: break
         }
         let limits = room(for: bar)
@@ -58,6 +63,7 @@ extension QuickEditViewModel {
         case .caption: CaptionCue.minimumDuration
         case .media, .voiceOver: MediaOverlay.minimumDuration
         case .music: MusicClip.minimumDuration
+        case .blur: BlurRegion.shortest
         }
         var span = bar.span
         switch edge {
@@ -136,6 +142,8 @@ extension QuickEditViewModel {
             }
         case .music:
             audio.moveMusic(bar.id, toStart: span.start)
+        case .blur:
+            break
         }
     }
 

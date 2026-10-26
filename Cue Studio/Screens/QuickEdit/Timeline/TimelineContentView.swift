@@ -527,7 +527,13 @@ final class TimelineContentView: UIView {
         box.opacity = item.isDimmed ? 0.5 : 1
         // The label stays readable while the item's start is scrolled away.
         var x: CGFloat = 7 + min(inset, max(0, item.frame.width - 60))
-        if let strip = item.strip {
+        if item.kind == .blur {
+            // A Blur area: its name on a dark badge, readable over the orange hatch of what's left unchecked.
+            let badge = badgeLayer(item.label, color: .white, weight: .semibold, symbol: style.symbol)
+            badge.frame.origin = CGPoint(x: x - 3, y: (item.frame.height - badge.frame.height) / 2)
+            if badge.frame.maxX > item.frame.width - 2 { badge.frame.size.width = max(0, item.frame.width - 2 - badge.frame.minX) }
+            box.addSublayer(badge)
+        } else if let strip = item.strip {
             // A photo or video: its frames, with its kind and how it shows on a dark badge over them.
             drawStrip(strip, in: item, pointsPerSecond: pointsPerSecond, into: box, waiting: &waiting)
             let symbol = item.isLocked ? "lock.fill" : strip.layout.systemImage
@@ -545,6 +551,13 @@ final class TimelineContentView: UIView {
             let label = textLayer(item.label, size: 11.5, weight: .semibold, color: style.ink)
             label.frame = CGRect(x: x, y: (item.frame.height - label.frame.height) / 2, width: max(0, item.frame.width - x - 6), height: label.frame.height)
             box.addSublayer(label)
+        }
+        // A Blur area's stretches left unchecked: hatched over the bar, under its label.
+        for range in item.warningRanges {
+            let hatch = CALayer()
+            hatch.frame = CGRect(x: range.lowerBound, y: 0, width: range.upperBound - range.lowerBound, height: item.frame.height)
+            hatch.backgroundColor = Self.unchecked().cgColor
+            box.insertSublayer(hatch, at: 0)
         }
         // The music's beats: short ticks along the bottom, in the label's color.
         for offset in item.beatOffsets where offset >= 0 && offset <= item.frame.width {
@@ -682,7 +695,31 @@ final class TimelineContentView: UIView {
         case .music: ItemStyle(fill: UIColor(Palette.Editor.laneMusic), ink: UIColor(Palette.Editor.laneMusicInk), symbol: "music.note")
         case .voiceOver: ItemStyle(fill: UIColor(Palette.Editor.laneVoiceOver), ink: UIColor(Palette.Editor.laneVoiceOverInk), symbol: "mic")
         case .recording: ItemStyle(fill: UIColor(Palette.Editor.laneRecording), ink: .white, symbol: "mic.fill")
+        case .blur: ItemStyle(fill: UIColor(Palette.Editor.laneBlur), ink: UIColor(Palette.Editor.laneBlurInk), symbol: "eye.slash")
         }
+    }
+
+    private static var uncheckedHatch: UIColor?
+
+    /// Orange diagonal stripes: where a Blur area may not cover what it hides.
+    private static func unchecked() -> UIColor {
+        if let uncheckedHatch { return uncheckedHatch }
+        let side: CGFloat = 6 * 2.squareRoot()
+        let image = UIGraphicsImageRenderer(size: CGSize(width: side, height: side)).image { context in
+            UIColor(Palette.Editor.blurUncheckedGap).setFill()
+            context.fill(CGRect(x: 0, y: 0, width: side, height: side))
+            UIColor(Palette.Editor.blurUncheckedStripe).setStroke()
+            let path = UIBezierPath()
+            path.lineWidth = 2.5
+            for offset in [-side, 0, side] {
+                path.move(to: CGPoint(x: offset, y: side))
+                path.addLine(to: CGPoint(x: offset + side, y: 0))
+            }
+            path.stroke()
+        }
+        let color = UIColor(patternImage: image)
+        uncheckedHatch = color
+        return color
     }
 
     private static var hatches: [Bool: UIColor] = [:]

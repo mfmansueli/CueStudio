@@ -30,6 +30,9 @@ struct EditorPanelView: View {
         case .voiceOver: VoiceOverPanel(viewModel: viewModel)
         case .beats: BeatsPanel(viewModel: viewModel)
         case .media: MediaPanel(viewModel: viewModel)
+        case .mask: MaskPanel(viewModel: viewModel)
+        case .motion: MediaMotionPanel(viewModel: viewModel)
+        case .blur: BlurPanel(viewModel: viewModel)
         case .smart: SmartPanel(viewModel: viewModel)
         }
     }

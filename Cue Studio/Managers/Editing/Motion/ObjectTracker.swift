@@ -23,7 +23,8 @@ nonisolated final class ObjectTracker: ObjectTracking, @unchecked Sendable {
 
     @concurrent
     func track(
-        videoAt url: URL, box: NormalizedBox, at time: TimeInterval, until: TimeInterval, progress: @escaping @Sendable (Double) -> Void
+        videoAt url: URL, box: NormalizedBox, at time: TimeInterval, until: TimeInterval, shouldStop: @escaping @Sendable () -> Bool,
+        progress: @escaping @Sendable (Double) -> Void
     ) async throws -> [TrackSample] {
         let asset = AVURLAsset(url: url)
         guard let track = try await asset.loadTracks(withMediaType: .video).first else { throw TrackError.noVideo }
@@ -53,12 +54,13 @@ nonisolated final class ObjectTracker: ObjectTracking, @unchecked Sendable {
         if end >= time {
             try await frames.read(from: time, to: end) { buffer, moment in
                 try Task.checkCancellation()
+                if shouldStop() { return false }
                 return moment <= time + 0.000_1 || follow(buffer, at: moment)
             }
         } else {
             var chunkEnd = time
             var lost = false
-            while chunkEnd > end + 0.000_1, !lost {
+            while chunkEnd > end + 0.000_1, !lost, !shouldStop() {
                 let chunkStart = max(end, chunkEnd - 1)
                 var chunk: [(CVPixelBuffer, TimeInterval)] = []
                 try await frames.read(from: chunkStart, to: chunkEnd) { buffer, moment in
@@ -104,8 +106,11 @@ nonisolated final class ObjectTracker: ObjectTracking, @unchecked Sendable {
         /// Hands each frame from `start` to `end` to `body` (the buffer is reused for the next one), until `body` says stop.
         func read(from start: TimeInterval, to end: TimeInterval, _ body: (CVPixelBuffer, TimeInterval) throws -> Bool) async throws {
             let reader = try AVAssetReader(asset: asset)
+            // The iPhone's reader refuses a range shorter than about a frame (-11800, -12780: following back from the first
+            // frame asked for a thousandth of a second): it reads a little more, and what's past `end` is left out below.
             reader.timeRange = CMTimeRange(
-                start: CMTime(seconds: max(0, start), preferredTimescale: 600), end: CMTime(seconds: end + 0.001, preferredTimescale: 600)
+                start: CMTime(seconds: max(0, start), preferredTimescale: 600),
+                end: CMTime(seconds: max(end + 0.001, max(0, start) + 0.1), preferredTimescale: 600)
             )
             let output = AVAssetReaderTrackOutput(track: track, outputSettings: [
                 kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_420YpCbCr8BiPlanarFullRange,

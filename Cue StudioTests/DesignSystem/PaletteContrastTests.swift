@@ -394,6 +394,7 @@ struct PaletteContrastTests {
             ("Aa", Palette.Editor.laneText, Palette.Editor.laneTextInk), ("Aa selected", Palette.Editor.laneTextSelected, Palette.Editor.laneTextInk),
             ("captions", Palette.Editor.laneCaption, Palette.Editor.laneCaptionInk), ("music", Palette.Editor.laneMusic, Palette.Editor.laneMusicInk),
             ("voice-over", Palette.Editor.laneVoiceOver, Palette.Editor.laneVoiceOverInk), ("overlay", Palette.Editor.laneMedia, Palette.Editor.laneMediaInk),
+            ("blur area", Palette.Editor.laneBlur, Palette.Editor.laneBlurInk),
         ]
         for strip in [Palette.Editor.laneStrip, Palette.Editor.laneStripActive] {
             let base = rgb(strip, in: .dark)
@@ -476,6 +477,36 @@ struct PaletteContrastTests {
                 let icon = ColorContrast.ratio(rgb(Palette.accText, in: appearance, over: pill), pill)
                 #expect(icon >= 3, "◐ icon, \(appearance): \(icon)")
             }
+        }
+    }
+
+    /// Blur area and Mask: the "Not tracked here" tag (warning words on the toast's pill), the picked area's outline (yellow, or
+    /// dashed orange where it isn't tracked) and the mask's, ringed in the outlines' dark halo over any picture (parts that
+    /// inform, 3:1), a Blur area's name on its dark badge over the orange hatch, and the status card's ✓ and ! on the panel's card.
+    @Test func theBlurAndMaskMarksRead() {
+        for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
+            let pill = rgb(Palette.Toast.fill, in: .dark, over: picture)
+            for appearance in Appearance.allCases {
+                let words = ColorContrast.ratio(rgb(Palette.warnText, in: appearance, over: pill), pill)
+                #expect(words >= ColorContrast.textMinimum, "Not tracked here, \(appearance): \(words)")
+            }
+            let halo = rgb(Palette.Editor.overlayOutlineHalo, in: .dark, over: picture)
+            for (name, outline) in [("yellow", Palette.acc), ("orange", Palette.warnText), ("white", Palette.Editor.overlayOutline)] {
+                let line = ColorContrast.ratio(rgb(outline, in: .dark, over: picture), picture)
+                let ring = ColorContrast.ratio(halo, picture)
+                let onRing = ColorContrast.ratio(rgb(outline, in: .dark, over: halo), halo)
+                #expect(max(line, ring) >= ColorContrast.componentMinimum && onRing >= ColorContrast.componentMinimum, "\(name) outline over \(picture)")
+            }
+        }
+        // The bar's name: white on the black badge (70%) over the hatch's orange stripe.
+        let stripe = rgb(Palette.Editor.blurUncheckedStripe, in: .dark, over: rgb(Palette.Editor.laneStrip, in: .dark))
+        let badge = rgb(Color.black.opacity(0.7), in: .dark, over: stripe)
+        #expect(ColorContrast.ratio(rgb(Color.white, in: .dark, over: badge), badge) >= ColorContrast.textMinimum, "a Blur area's name on the hatch")
+        for appearance in Appearance.allCases {
+            let panel = rgb(Palette.Editor.panel, in: appearance)
+            let card = rgb(Palette.Editor.panelCard, in: appearance, over: panel)
+            #expect(ColorContrast.ratio(rgb(Palette.successText, in: appearance, over: card), card) >= ColorContrast.componentMinimum, "✓ tracked")
+            #expect(ColorContrast.ratio(rgb(Palette.warnText, in: appearance, over: card), card) >= ColorContrast.textMinimum, "! not tracked")
         }
     }
 
