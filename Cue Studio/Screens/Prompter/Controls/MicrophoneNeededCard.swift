@@ -13,12 +13,12 @@ struct MicrophoneNeededCard: View {
     var body: some View {
         HStack(spacing: 12) {
             Image(systemName: "mic.slash.fill")
-                .font(.body.weight(.semibold))
+                .cueFont(.body, weight: .semibold)
                 .foregroundStyle(Palette.warnText)
                 .frame(width: 36, height: 36)
                 .background(Palette.warn.opacity(0.18), in: Circle())
             Text("Cue needs the microphone")
-                .font(.subheadline.weight(.semibold))
+                .cueFont(.subheadline, weight: .semibold)
                 .frame(maxWidth: .infinity, alignment: .leading)
             Button("Open Settings") {
                 openURL.openAppSettings()

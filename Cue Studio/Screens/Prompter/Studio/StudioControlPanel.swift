@@ -160,7 +160,7 @@ struct StudioControlPanel: View {
                 status: viewModel.voiceFollowStatus, speedLabel: session.prompter.speedLabel
             )
             Text(voiceStatus)
-                .font(.footnote.monospacedDigit())
+                .cueFont(.footnote).monospacedDigit()
                 .foregroundStyle(Palette.ink2)
                 .lineLimit(2)
                 .multilineTextAlignment(.center)

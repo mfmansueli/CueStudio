@@ -67,7 +67,7 @@ struct VoicePreviewSheet: View {
                     .accessibilityIdentifier("voice.preview.soundsLikeMe")
             }
             Text("Written on this iPhone with Apple Intelligence. Nothing leaves your device.")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
         }
@@ -117,7 +117,7 @@ struct VoicePreviewSheet: View {
                 .interfaceTracking(0.8)
                 .foregroundStyle(isFirst ? Palette.accText : Palette.inkHint)
             Text(text)
-                .font(.system(size: isFirst ? 17 : 15, weight: isFirst ? .semibold : .regular))
+                .cueFont(isFirst ? 17 : 15, weight: isFirst ? .semibold : .regular)
                 .foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -127,10 +127,11 @@ struct VoicePreviewSheet: View {
         FlowLayout(spacing: 6, lineSpacing: 6) {
             ForEach(sample.tags, id: \.self) { tag in
                 Text(tag)
-                    .font(.system(size: 12, weight: .semibold))
+                    .cueFont(12, weight: .semibold)
                     .foregroundStyle(Palette.aiText)
                     .padding(.horizontal, 9)
-                    .frame(height: 24)
+                    .padding(.vertical, 2)
+                    .frame(minHeight: 24)
                     .background(Palette.aiFill, in: Capsule())
             }
         }
@@ -153,7 +154,7 @@ struct VoicePreviewSheet: View {
                 .interfaceTracking(1)
                 .foregroundStyle(Palette.aiText)
             Text(title)
-                .font(.system(size: 28, weight: .bold))
+                .cueFont(28, weight: .bold)
                 .tracking(-0.56)
                 .foregroundStyle(Palette.ink)
                 .fixedSize(horizontal: false, vertical: true)

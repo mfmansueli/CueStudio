@@ -30,7 +30,7 @@ struct CueIconButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         let shape = Circle()
         configuration.label
-            .font(.system(size: diameter * 0.4, weight: .semibold))
+            .cueFont(diameter * 0.4, weight: .semibold)
             .frame(width: diameter, height: diameter)
             .foregroundStyle(foreground)
             .background {

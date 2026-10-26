@@ -28,7 +28,7 @@ struct LabeledSlider: View {
                     .monospacedDigit()
                     .foregroundStyle(Palette.ink)
             }
-            .font(.caption.weight(.semibold))
+            .cueFont(.caption, weight: .semibold)
             .accessibilityHidden(true)
             slider
                 .tint(Palette.acc)

@@ -28,7 +28,7 @@ struct VoyageTipCard: View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: symbol)
-                    .font(.system(size: 17, weight: .semibold))
+                    .font(.fixed(17, weight: .semibold))
                     .foregroundStyle(Palette.aiText)
                     .frame(width: 36, height: 36)
                     .background(Palette.aiFill, in: RoundedRectangle(cornerRadius: 11, style: .continuous))
@@ -37,10 +37,10 @@ struct VoyageTipCard: View {
                     eyebrow
                     VStack(alignment: .leading, spacing: 4) {
                         Text(title)
-                            .font(.body.weight(.semibold))
+                            .cueFont(.body, weight: .semibold)
                             .foregroundStyle(Palette.ink)
                         Text(message)
-                            .font(.subheadline)
+                            .cueFont(.subheadline)
                             .foregroundStyle(Palette.ink2)
                             .fixedSize(horizontal: false, vertical: true)
                     }
@@ -49,7 +49,7 @@ struct VoyageTipCard: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 Button(action: onClose) {
                     Image(systemName: "xmark")
-                        .font(.system(size: 12, weight: .bold))
+                        .font(.fixed(12, weight: .bold))
                         .foregroundStyle(Palette.ink2)
                         .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                         .contentShape(Rectangle())
@@ -65,7 +65,7 @@ struct VoyageTipCard: View {
                     Spacer(minLength: 0)
                     if let secondary {
                         Button(secondary.title, action: secondary.action)
-                            .font(.subheadline.weight(.semibold))
+                            .cueFont(.subheadline, weight: .semibold)
                             .foregroundStyle(Palette.ink2)
                             .frame(minHeight: Metrics.hitTarget)
                             .padding(.horizontal, 8)
@@ -94,7 +94,7 @@ struct VoyageTipCard: View {
         Button { showsSteps = true } label: {
             HStack(spacing: 5) {
                 Image(systemName: "star.fill")
-                    .font(.system(size: 9, weight: .bold))
+                    .cueFont(9, weight: .bold)
                     .foregroundStyle(Palette.acc)
                 Text("\(step.number) OF \(VoyageProgress.stepCount)")
                     .monoFont(size: 10.5, weight: .semibold)

@@ -15,15 +15,15 @@ struct ExportStoppedCard: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(alignment: .center, spacing: 10) {
                 Image(systemName: "exclamationmark.arrow.circlepath")
-                    .font(.system(size: 18))
+                    .cueFont(18)
                     .foregroundStyle(Palette.warnText)
                 Text("The last export stopped")
-                    .font(.system(.subheadline, weight: .semibold))
+                    .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Button(action: onClose) {
                     Image(systemName: "xmark")
-                        .font(.system(size: 13, weight: .bold))
+                        .font(.fixed(13, weight: .bold))
                         .foregroundStyle(Palette.ink2)
                         .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                 }
@@ -32,7 +32,7 @@ struct ExportStoppedCard: View {
                 .accessibilityIdentifier("review.exportStopped.close")
             }
             Text("Cue closed before it finished. Export again to get the video.")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
             Button("Save video", action: onSave)

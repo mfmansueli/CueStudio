@@ -17,11 +17,11 @@ struct ExportProgressCard: View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
                 Text("Exporting")
-                    .font(.system(.subheadline, weight: .semibold))
+                    .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                 Spacer(minLength: 8)
                 Text(progress, format: .percent.precision(.fractionLength(0)))
-                    .font(.system(.subheadline, weight: .semibold))
+                    .cueFont(.subheadline, weight: .semibold)
                     .monospacedDigit()
                     .foregroundStyle(Palette.ink)
             }
@@ -30,14 +30,14 @@ struct ExportProgressCard: View {
                 .accessibilityHidden(true)
             if let mode {
                 Text(mode == .continuesOutside ? "You can leave Cue. The export goes on." : "Keep Cue open until it’s done.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("review.export.mode")
             }
             if let note = DeviceHeat.exportNote(for: heat) {
                 Label(note, systemImage: "thermometer.high")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.warnText)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityIdentifier("review.export.heat")

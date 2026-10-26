@@ -11,7 +11,7 @@ struct SectionHeading: View {
 
     var body: some View {
         Text(text)
-            .font(.footnote.weight(.semibold))
+            .cueFont(.footnote, weight: .semibold)
             .textCase(.uppercase)
             .kerning(0.4)
             .foregroundStyle(Palette.ink2)

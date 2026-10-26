@@ -18,13 +18,13 @@ struct ScriptPreviewCard: View {
                 Text("·")
                 Text("\(script.structure.label) · ~\(DurationText.short(readSeconds))")
             }
-            .font(.footnote)
+            .cueFont(.footnote)
             .foregroundStyle(Palette.ink2)
             Text(script.displayTitle)
-                .font(.title3.bold())
+                .cueFont(.title3, weight: .bold)
                 .foregroundStyle(Palette.ink)
             Text(script.isEmpty ? String(localized: "Empty script") : CueParser.stripCues(script.text))
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .lineLimit(4)
         }

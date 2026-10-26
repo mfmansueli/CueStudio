@@ -18,11 +18,11 @@ struct VoyageStepsSheet: View {
         let progress = voyage.progress
         VStack(alignment: .leading, spacing: 0) {
             Text("Your first voyage")
-                .font(.title2.weight(.bold))
+                .cueFont(.title2, weight: .bold)
                 .foregroundStyle(Palette.ink)
                 .accessibilityAddTraits(.isHeader)
             Text("Six steps from an idea to your first star. Go at your own pace; nothing here is locked.")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 6)
@@ -37,12 +37,12 @@ struct VoyageStepsSheet: View {
                     voyage.setOn(false)
                     dismiss()
                 }
-                .font(.body.weight(.semibold))
+                .cueFont(.body, weight: .semibold)
                 .foregroundStyle(Palette.ink2)
                 .frame(minHeight: Metrics.hitTarget)
                 .accessibilityIdentifier("voyage.hide")
                 Text("You can bring it back in Settings › Personalize.")
-                    .font(.caption)
+                    .cueFont(.caption)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)
             }

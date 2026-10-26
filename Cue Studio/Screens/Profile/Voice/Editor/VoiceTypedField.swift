@@ -80,13 +80,13 @@ struct VoiceTypedField: View {
         switch feedback {
         case .message(let text):
             Text(text)
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.warnText)
                 .accessibilityIdentifier("voice.feedback")
         case .typo(let suggestion, let original):
             HStack(spacing: 10) {
                 Text("Did you mean “\(suggestion)”?")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Button("Use") {
@@ -99,7 +99,7 @@ struct VoiceTypedField: View {
                     text = original
                     add(keepingTyped: true)
                 }
-                .font(.footnote.weight(.semibold))
+                .cueFont(.footnote, weight: .semibold)
                 .foregroundStyle(Palette.ink2)
                 .accessibilityIdentifier("voice.typo.keep")
             }

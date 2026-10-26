@@ -37,7 +37,7 @@ struct RemoteWaitingSteps: View {
     private func row(number: Int, _ text: String) -> some View {
         HStack(spacing: 12) {
             Text(verbatim: "\(number)")
-                .font(.subheadline.weight(.bold))
+                .cueFont(.subheadline, weight: .bold)
                 .foregroundStyle(Palette.accText)
                 .frame(width: 28, height: 28)
                 .background(Palette.Settings.toolTileTop, in: Circle())

@@ -35,7 +35,7 @@ struct RecorderMoreMenu: View {
             .accessibilityIdentifier("prompter.moreThisTake")
         } label: {
             Text("•••")
-                .font(.system(size: 15, weight: .bold))
+                .cueFont(15, weight: .bold)
                 .tracking(1)
         }
         // Liquid Glass, like the round buttons beside it.
@@ -46,7 +46,8 @@ struct RecorderMoreMenu: View {
                     .monoFont(size: 9.5, weight: .heavy)
                     .foregroundStyle(Palette.accInk)
                     .padding(.horizontal, 4)
-                    .frame(height: 16)
+                    .padding(.vertical, 2)
+                    .frame(minHeight: 16)
                     .background(Palette.acc, in: Capsule())
                     .offset(x: 6, y: -4)
             }

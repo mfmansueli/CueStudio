@@ -84,6 +84,8 @@ struct ScriptsView: View {
                         )
                         .accessibilityIdentifier(isFirstVisit ? "empty.promptCard" : "scripts.promptCard")
                     }
+                    // The dock stays over the list: past the largest standard size it would cover most of it.
+                    .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
                     // The list doesn't feel the fold: the room the dock keeps under it stays the same (empty space, which lets touches
                     // through, takes the folded row's place). A list whose end moved with the dock jumped by itself under it, which
                     // unfolded the dock, which moved the list again.
@@ -277,6 +279,7 @@ struct ScriptsView: View {
                         filters: viewModel.filters, selection: $viewModel.filter, count: { viewModel.count(for: $0) },
                         deleteFolder: { viewModel.deleteFolder($0) }
                     )
+                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                 }
                 if let empty = viewModel.emptyResult {
                     Section { emptyResultView(empty) }

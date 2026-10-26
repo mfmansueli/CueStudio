@@ -199,7 +199,7 @@ struct NotificationsSettingsView: View {
         Section {
             if list.isEmpty {
                 Text("No reminders. Set one from a script, a recording, or Post later.")
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink2)
                     .frame(minHeight: Metrics.listRowContent)
                     .cardRowBackground(position: .only)

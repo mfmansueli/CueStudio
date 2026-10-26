@@ -12,7 +12,7 @@ struct ScriptSelectionMark: View {
 
     var body: some View {
         Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-            .font(.system(size: 22, weight: .regular))
+            .cueFont(22, weight: .regular)
             .symbolRenderingMode(isSelected ? .palette : .monochrome)
             .foregroundStyle(isSelected ? Palette.accInk : Palette.ink2, Palette.acc)
             .contentTransition(.symbolEffect(.replace))

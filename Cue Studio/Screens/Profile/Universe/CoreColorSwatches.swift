@@ -23,7 +23,7 @@ struct CoreColorSwatches: View {
                         swatch(color)
                         if showsNames {
                             Text(color.label)
-                                .font(.system(size: 12, weight: .semibold))
+                                .cueFont(12, weight: .semibold)
                                 .foregroundStyle(selection == color ? Palette.ink : Palette.ink2)
                         }
                     }

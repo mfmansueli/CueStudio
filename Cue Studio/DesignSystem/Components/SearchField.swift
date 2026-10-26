@@ -18,12 +18,12 @@ struct SearchField: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .font(.body.weight(.medium))
+                .cueFont(.body, weight: .medium)
                 .foregroundStyle(Palette.ink2)
                 .accessibilityHidden(true)
             // The prompt in `ink2`, measured like any text (the system's placeholder grey is about 2.4:1 on the capsule).
             TextField(text: $text, prompt: Text(prompt).foregroundStyle(Palette.ink2)) { Text(prompt) }
-                .font(.body)
+                .cueFont(.body)
                 .foregroundStyle(Palette.ink)
                 .tint(Palette.accText)
                 .focused(isFocused)

@@ -16,7 +16,7 @@ struct SettingsListToggle: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(title).foregroundStyle(Palette.ink)
                 if let detail {
-                    Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
+                    Text(detail).cueFont(.footnote).foregroundStyle(Palette.ink2)
                 }
             }
         }

@@ -18,7 +18,7 @@ struct SelectionRing<Outline: InsettableShape>: View {
                 ZStack {
                     Circle().fill(Palette.acc)
                     Image(systemName: "checkmark")
-                        .font(.system(size: 10, weight: .heavy))
+                        .font(.fixed(10, weight: .heavy))
                         .foregroundStyle(Palette.accInk)
                 }
                 .frame(width: 22, height: 22)

@@ -27,7 +27,7 @@ struct VoiceRoleField: View {
                 onPick: { profile.setSpeaksAs($0) }, identifier: "voice.speaksAs"
             )
             Text("“We” for a business, a brand or a team. Doing more than one? Pick the one you film most.")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
             if showsCredential { credential }
@@ -45,16 +45,16 @@ struct VoiceRoleField: View {
             SelectableCard(isSelected: current.role == role && current.customRole == nil, radius: 16) {
                 VStack(alignment: .leading, spacing: 8) {
                     Image(systemName: role.systemImage)
-                        .font(.system(size: 17, weight: .medium))
+                        .font(.fixed(17, weight: .medium))
                         .foregroundStyle(Palette.accText)
                         .frame(width: 34, height: 34)
                         .background(Palette.accSoft, in: RoundedRectangle(cornerRadius: 10, style: .continuous))
                     Text(role.label)
-                        .font(.subheadline.weight(.semibold))
+                        .cueFont(.subheadline, weight: .semibold)
                         .foregroundStyle(Palette.ink)
                         .multilineTextAlignment(.leading)
                     Text(role.examples)
-                        .font(.caption)
+                        .cueFont(.caption)
                         .foregroundStyle(Palette.ink2)
                         .multilineTextAlignment(.leading)
                 }
@@ -78,8 +78,8 @@ struct VoiceRoleField: View {
             } label: {
                 SelectableCard(isSelected: true, radius: 16) {
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(custom).font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink)
-                        Text("Your own · tap to change").font(.caption).foregroundStyle(Palette.ink2)
+                        Text(custom).cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
+                        Text("Your own · tap to change").cueFont(.caption).foregroundStyle(Palette.ink2)
                     }
                     .frame(maxWidth: .infinity, minHeight: 56, alignment: .leading)
                     .padding(12)
@@ -98,7 +98,7 @@ struct VoiceRoleField: View {
                 typesRole = true
             } label: {
                 Text("+ Something else")
-                    .font(.body)
+                    .cueFont(.body)
                     .foregroundStyle(Palette.aiText)
                     .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget, alignment: .leading)
                     .padding(.horizontal, 16)
@@ -126,7 +126,7 @@ struct VoiceRoleField: View {
                 initialText: current.credential ?? "", clearsWhenAdded: false, identifier: "voice.credential"
             )
             Text("Cue says it only where it is true of you, and never invents another.")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
         }

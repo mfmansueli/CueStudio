@@ -30,7 +30,7 @@ struct NotificationPermissionRow: View {
                         .foregroundStyle(Palette.ink)
                         .accessibilityIdentifier("notifications.permission.title")
                     Text(detail)
-                        .font(.subheadline)
+                        .cueFont(.subheadline)
                         .foregroundStyle(Palette.ink2)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -48,7 +48,7 @@ struct NotificationPermissionRow: View {
     private var bell: some View {
         AmbientTimeline(interval: nil, paused: mood == .allowed && rangAt == nil) { ambient in
             Image(systemName: "bell")
-                .font(.system(size: 21, weight: .regular))
+                .font(.fixed(21, weight: .regular))
                 .foregroundStyle(Palette.accText)
                 .rotationEffect(.degrees(swing(at: ambient)), anchor: UnitPoint(x: 0.5, y: 0.1))
                 .frame(width: 28, height: 28)
@@ -56,7 +56,7 @@ struct NotificationPermissionRow: View {
         .overlay(alignment: .bottomTrailing) {
             if mood == .allowed {
                 Image(systemName: "checkmark")
-                    .font(.system(size: 7, weight: .heavy))
+                    .font(.fixed(7, weight: .heavy))
                     .foregroundStyle(Palette.ink)
                     .frame(width: 14, height: 14)
                     .background(Palette.success, in: Circle())

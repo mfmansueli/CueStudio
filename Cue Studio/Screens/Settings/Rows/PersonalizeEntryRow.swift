@@ -34,11 +34,11 @@ struct PersonalizeEntryRow: View {
                 HStack(spacing: 12) {
                     VStack(alignment: .leading, spacing: 2) {
                         Text(entry.title).foregroundStyle(Palette.ink)
-                        if let detail = entry.detail { Text(detail).font(.footnote).foregroundStyle(Palette.ink2) }
+                        if let detail = entry.detail { Text(detail).cueFont(.footnote).foregroundStyle(Palette.ink2) }
                     }
                     Spacer(minLength: 8)
                     Text("\(topicCount)").foregroundStyle(Palette.ink2)
-                    Image(systemName: "chevron.forward").font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink3)
+                    Image(systemName: "chevron.forward").cueFont(.footnote, weight: .semibold).foregroundStyle(Palette.ink3)
                 }
                 .frame(minHeight: Metrics.listRowContent)
                 .contentShape(Rectangle())

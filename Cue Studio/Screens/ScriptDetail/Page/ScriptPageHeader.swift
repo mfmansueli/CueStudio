@@ -13,6 +13,7 @@ struct ScriptPageHeader: View {
     let isWriting: Bool
     var focus: FocusState<ScriptPageFocus?>.Binding
     let onSubmitTitle: () -> Void
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     /// The AI's title is arriving (once it is written, it is the field's again).
     private var arrivesTitle: Bool { isWriting && !title.isEmpty }
@@ -20,7 +21,7 @@ struct ScriptPageHeader: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             TextField("Untitled", text: $title, axis: .vertical)
-                .font(.system(size: 27, weight: .bold))
+                .cueFont(27, weight: .bold)
                 .foregroundStyle(Palette.ink)
                 .tint(Palette.accText)
                 .focused(focus, equals: .title)
@@ -30,7 +31,7 @@ struct ScriptPageHeader: View {
                 .opacity(arrivesTitle ? 0 : 1)
                 .overlay(alignment: .topLeading) {
                     if arrivesTitle {
-                        WordsFromLight(text: title, font: .system(size: 27, weight: .bold), color: Palette.ink, stagger: 0.09)
+                        WordsFromLight(text: title, font: .cue(27, weight: .bold, for: dynamicTypeSize), color: Palette.ink, stagger: 0.09)
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .accessibilityHidden(true)
                     }

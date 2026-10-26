@@ -25,7 +25,7 @@ struct ValueSlider: View {
                     .monospacedDigit()
                     .foregroundStyle(Palette.ink2)
             }
-            .font(.body)
+            .cueFont(.body)
             .frame(minHeight: 36)
             Slider(value: $value, in: range, step: step)
                 .tint(Palette.accText)
@@ -38,7 +38,7 @@ struct ValueSlider: View {
                     Spacer()
                     Text(ends.max)
                 }
-                .font(.caption2)
+                .cueFont(.caption2)
                 .foregroundStyle(Palette.ink2)
                 .accessibilityHidden(true)
             }

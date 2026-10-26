@@ -81,7 +81,7 @@ struct RecordingEntryRow: View {
                             .strokeBorder(Palette.ink, lineWidth: 1.6)
                             .frame(width: 22 * min(1, aspect.widthOverHeight), height: 22 * min(1, 1 / aspect.widthOverHeight))
                             .frame(height: 24)
-                        Text(aspect.label).font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink)
+                        Text(aspect.label).cueFont(.footnote, weight: .semibold).foregroundStyle(Palette.ink)
                     }
                     .frame(maxWidth: .infinity, minHeight: 62)
                     .background(isSelected ? Palette.Editor.accTile : Palette.surface2.opacity(0.7), in: RoundedRectangle(cornerRadius: 14, style: .continuous))

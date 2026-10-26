@@ -25,7 +25,7 @@ struct ReadyToggle: View {
                 mark
                 Text("Ready to record")
             }
-            .font(.system(size: 14, weight: .semibold))
+            .cueFont(14, weight: .semibold)
             .foregroundStyle(isOn ? Palette.successText : Palette.ink)
             .padding(.leading, 8)
             .padding(.trailing, 12)
@@ -61,7 +61,7 @@ struct ReadyToggle: View {
                 .scaleEffect(isOn ? 1 : 0.3)
                 .opacity(isOn ? 1 : 0)
             Image(systemName: "checkmark")
-                .font(.system(size: 8.5, weight: .heavy))
+                .font(.fixed(8.5, weight: .heavy))
                 .foregroundStyle(Palette.bg)
                 .scaleEffect(isOn ? 1 : 0.3)
                 .opacity(isOn ? 1 : 0)

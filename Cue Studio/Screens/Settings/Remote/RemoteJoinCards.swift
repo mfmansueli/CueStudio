@@ -35,7 +35,7 @@ struct RemoteJoinCards: View {
             VStack(alignment: .leading, spacing: 10) {
                 Image(systemName: symbol)
                     .symbolRenderingMode(.hierarchical)
-                    .font(.system(size: 18, weight: .semibold))
+                    .font(.fixed(18, weight: .semibold))
                     .foregroundStyle(Palette.Settings.toolGlyph)
                     .frame(width: 36, height: 36)
                     .background(
@@ -44,10 +44,10 @@ struct RemoteJoinCards: View {
                     )
                     .accessibilityHidden(true)
                 Text(title)
-                    .font(.body.weight(.semibold))
+                    .cueFont(.body, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                 Text(detail)
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)

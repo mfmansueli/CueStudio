@@ -70,7 +70,7 @@ struct SendOffMap: View {
         .position(SendOffLayout.you)
         .overlay(alignment: .topLeading) {
             Text("YOU")
-                .monoFont(size: 9, weight: .bold)
+                .monoFont(fixedSize: 9, weight: .bold)
                 .interfaceTracking(1.26)
                 .foregroundStyle(Palette.Universe.sendOffYouName)
                 .frame(width: 100)
@@ -104,7 +104,7 @@ struct SendOffMap: View {
                 .scaleEffect(pulse)
                 .position(center)
             Text(verbatim: "\(platform.label.uppercased()) · \(shown)")
-                .monoFont(size: 9, weight: .bold)
+                .monoFont(fixedSize: 9, weight: .bold)
                 .interfaceTracking(0.9)
                 .foregroundStyle(lit > 0.5 ? Color.white : Palette.Universe.sendOffNameDim)
                 .fixedSize()
@@ -178,7 +178,7 @@ struct SendOffMap: View {
         let pose = SendOffScript.plus(index, at: time)
         let width: CGFloat = spot.isCentred ? 140 : 40
         return Text(verbatim: index == 0 ? "+1 · \(network.platform.label.uppercased())" : "+1")
-            .monoFont(size: 11, weight: .heavy)
+            .monoFont(fixedSize: 11, weight: .heavy)
             .interfaceTracking(0.66)
             .foregroundStyle(Palette.acc)
             .frame(width: width, alignment: spot.isCentred ? .center : .leading)

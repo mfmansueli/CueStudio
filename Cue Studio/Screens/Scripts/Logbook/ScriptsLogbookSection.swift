@@ -45,7 +45,7 @@ struct ScriptsLogbookSection: View {
                     if selection == nil {
                         Button { presentation.present(.logbook) } label: {
                             Text("Open Logbook ›")
-                                .font(.system(size: 14.5, weight: .semibold))
+                                .cueFont(14.5, weight: .semibold)
                                 .foregroundStyle(Palette.inkSoft)
                                 .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
                                 .contentShape(Rectangle())
@@ -64,7 +64,7 @@ struct ScriptsLogbookSection: View {
 
     private func ideaText(_ entry: LogbookEntry) -> some View {
         Text(entry.text)
-            .font(.system(size: 15))
+            .cueFont(15)
             .foregroundStyle(Palette.ink)
             .lineLimit(2)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -97,7 +97,7 @@ struct ScriptsLogbookSection: View {
             ideaText(entry)
             Button { write(entry) } label: {
                 Text(aiStatus.isAvailable ? "✦ Write" : "Write it")
-                    .font(.system(size: 14, weight: .semibold))
+                    .cueFont(14, weight: .semibold)
                     .foregroundStyle(aiStatus.isAvailable ? Palette.aiTextStrong : Palette.accText)
                     .padding(.horizontal, 12)
                     .frame(minHeight: 34)

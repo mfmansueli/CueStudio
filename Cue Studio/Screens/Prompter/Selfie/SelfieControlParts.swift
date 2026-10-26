@@ -36,7 +36,7 @@ struct SelfieControlParts {
 
     var displayButton: some View {
         Button { viewModel.sheet = .display } label: {
-            Text("Aa").font(.system(size: 15, weight: .semibold))
+            Text("Aa").cueFont(15, weight: .semibold)
         }
         .glassIconButton()
         .accessibilityLabel(Text("Display settings"))
@@ -60,9 +60,9 @@ struct SelfieControlParts {
     var freestyleRow: some View {
         HStack {
             VStack(alignment: .leading, spacing: 1) {
-                Text("Freestyle").font(.subheadline.weight(.semibold))
+                Text("Freestyle").cueFont(.subheadline, weight: .semibold)
                 Text("Freestyle · Add a script anytime")
-                    .font(.caption)
+                    .cueFont(.caption)
                     .foregroundStyle(Palette.ink2)
             }
             Spacer()

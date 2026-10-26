@@ -47,7 +47,7 @@ struct StudioAdjustBar: View {
         } label: {
             VStack(spacing: 3) {
                 CueIconView(adjustment.icon, size: 20)
-                Text(adjustment.title).font(.caption2.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.8)
+                Text(adjustment.title).cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(0.8)
             }
         }
         .accessibilityLabel(Text(adjustment.spokenName))
@@ -62,7 +62,7 @@ struct StudioAdjustBar: View {
         } label: {
             VStack(spacing: 3) {
                 CueIconView(.mirrorText, size: 20)
-                Text("Mirror").font(.caption2.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.8)
+                Text("Mirror").cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(0.8)
             }
         }
         .accessibilityLabel(Text("Mirror text"))
@@ -74,9 +74,9 @@ struct StudioAdjustBar: View {
         chipButton(isOn: false, action: onRemote) {
             VStack(spacing: 3) {
                 Image(systemName: "iphone.radiowaves.left.and.right")
-                    .font(.system(size: 17, weight: .semibold))
+                    .cueFont(17, weight: .semibold)
                     .frame(height: 20)
-                Text("Remote").font(.caption2.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.8)
+                Text("Remote").cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(0.8)
             }
             .foregroundStyle(isRemoteConnected ? Palette.accText : Palette.ink)
         }
@@ -88,8 +88,8 @@ struct StudioAdjustBar: View {
     private var moreChip: some View {
         chipButton(isOn: false, action: onMore) {
             VStack(spacing: 3) {
-                Text("Aa").font(.system(size: 17, weight: .semibold)).frame(height: 20)
-                Text("More").font(.caption2.weight(.semibold)).lineLimit(1).minimumScaleFactor(0.8)
+                Text("Aa").cueFont(17, weight: .semibold).frame(height: 20)
+                Text("More").cueFont(.caption2, weight: .semibold).lineLimit(1).minimumScaleFactor(0.8)
             }
         }
         .accessibilityLabel(Text("Display settings"))

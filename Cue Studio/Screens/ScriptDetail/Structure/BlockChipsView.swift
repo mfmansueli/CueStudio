@@ -36,7 +36,7 @@ struct BlockChipsView: View {
             Text(DurationText.short(summary.seconds))
                 .monospacedDigit()
         }
-        .font(.caption.weight(.semibold))
+        .cueFont(.caption, weight: .semibold)
         .foregroundStyle(foreground)
         .padding(.horizontal, 10)
         .frame(minHeight: 28)

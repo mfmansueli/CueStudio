@@ -27,7 +27,7 @@ struct DictationStatusRow: View {
             .frame(height: 14)
             .animation(reduceMotion ? nil : .easeOut(duration: 0.12), value: level)
             Text(label)
-                .font(.footnote.weight(.semibold))
+                .cueFont(.footnote, weight: .semibold)
                 .foregroundStyle(Palette.accText)
         }
         .accessibilityElement(children: .ignore)

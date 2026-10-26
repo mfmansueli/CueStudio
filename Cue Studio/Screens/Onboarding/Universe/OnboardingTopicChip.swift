@@ -35,7 +35,7 @@ struct OnboardingTopicChip: View {
                 Text(title)
             }
             // 32 pt tall, 12.5 pt (09 §14b); the 44 pt target is the chip with 6 pt above and below, which the rows overlap.
-            .font(.system(size: 12.5, weight: .semibold))
+            .cueFont(12.5, weight: .semibold)
             .foregroundStyle(isPicked ? Palette.chipOnInk : Palette.ink2)
             .padding(.leading, isPicked ? 8 : 11)
             .padding(.trailing, isPicked ? 10 : 11)

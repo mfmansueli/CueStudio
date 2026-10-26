@@ -34,7 +34,7 @@ struct LanguageEntryRow: View {
                     Text(entry.title).foregroundStyle(Palette.ink)
                     Spacer(minLength: 8)
                     Text(languages.appLanguage?.nativeName ?? String(localized: "iPhone Language")).foregroundStyle(Palette.ink2)
-                    Image(systemName: "chevron.forward").font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink3)
+                    Image(systemName: "chevron.forward").cueFont(.footnote, weight: .semibold).foregroundStyle(Palette.ink3)
                 }
                 .frame(minHeight: Metrics.listRowContent)
                 .contentShape(Rectangle())
@@ -81,7 +81,7 @@ struct LanguageEntryRow: View {
                 Text(entry.title).foregroundStyle(Palette.ink)
                 Spacer(minLength: 8)
                 Text(verbatim: selection?.nativeName ?? automatic).foregroundStyle(Palette.ink2)
-                Image(systemName: "chevron.up.chevron.down").font(.footnote.weight(.semibold)).foregroundStyle(Palette.ink3)
+                Image(systemName: "chevron.up.chevron.down").cueFont(.footnote, weight: .semibold).foregroundStyle(Palette.ink3)
             }
             .frame(minHeight: Metrics.listRowContent)
             .contentShape(Rectangle())

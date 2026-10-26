@@ -25,7 +25,7 @@ struct LengthMeterView: View {
                     .foregroundStyle(textColor)
                     .lineLimit(1)
             }
-            .font(.footnote)
+            .cueFont(.footnote)
             GeometryReader { proxy in
                 let width = proxy.size.width
                 ZStack(alignment: .leading) {
@@ -64,7 +64,7 @@ struct LengthMeterView: View {
                 }
             }
             .frame(height: 14)
-            .font(.caption2.monospacedDigit())
+            .cueFont(.caption2).monospacedDigit()
             .foregroundStyle(Palette.ink2)
             .padding(.top, 4)
         }

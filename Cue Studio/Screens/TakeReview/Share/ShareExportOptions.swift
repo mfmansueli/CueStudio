@@ -12,7 +12,7 @@ struct ShareExportOptions: View {
 
     var body: some View {
         VStack(spacing: 14) {
-            Text("Export options").font(.headline)
+            Text("Export options").cueFont(.headline, weight: .semibold)
             GroupedCard(background: Palette.surface2, radius: 22) {
                 Toggle("Burn in captions", isOn: $review.burnsInCaptions)
                     .tint(Palette.success)

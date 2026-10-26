@@ -75,7 +75,7 @@ struct VoiceQuestionSheet: View {
                 if model.allowsNone { noneRow(position: CardRowPosition(index: noneIndex, count: count)) }
             } header: {
                 Text(model.title)
-                    .font(.title2.bold())
+                    .cueFont(.title2, weight: .bold)
                     .foregroundStyle(Palette.ink)
                     .textCase(nil)
                     .padding(.bottom, 6)
@@ -84,11 +84,11 @@ struct VoiceQuestionSheet: View {
             } footer: {
                 if case .multiple(let limit) = model.kind {
                     Text("Pick up to \(limit) · tap again to remove")
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                 } else {
                     Text("Change it anytime in Profile › My Cue Voice.")
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                 }
             }
@@ -112,14 +112,14 @@ struct VoiceQuestionSheet: View {
         } label: {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(option.label).font(.body).foregroundStyle(Palette.ink)
+                    Text(option.label).cueFont(.body).foregroundStyle(Palette.ink)
                     if let detail = option.detail {
-                        Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
+                        Text(detail).cueFont(.footnote).foregroundStyle(Palette.ink2)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 if isOn {
-                    Image(systemName: "checkmark").font(.body.weight(.semibold)).foregroundStyle(Palette.accText)
+                    Image(systemName: "checkmark").cueFont(.body, weight: .semibold).foregroundStyle(Palette.accText)
                 }
             }
             .frame(minHeight: Metrics.hitTarget)
@@ -159,7 +159,7 @@ struct VoiceQuestionSheet: View {
                 fieldIsFocused = true
             } label: {
                 Text("+ Something else")
-                    .font(.body)
+                    .cueFont(.body)
                     .foregroundStyle(Palette.aiText)
                     .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget, alignment: .leading)
                     .contentShape(Rectangle())
@@ -173,7 +173,7 @@ struct VoiceQuestionSheet: View {
     private func noneRow(position: CardRowPosition) -> some View {
         Button { model.none() } label: {
             Text("None of these")
-                .font(.body)
+                .cueFont(.body)
                 .foregroundStyle(Palette.ink2)
                 .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget, alignment: .leading)
                 .contentShape(Rectangle())
@@ -188,20 +188,20 @@ struct VoiceQuestionSheet: View {
         switch feedback {
         case .message(let text):
             Text(text)
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.warnText)
                 .accessibilityIdentifier("voice.feedback")
         case .typo(let suggestion, let original):
             HStack(spacing: 10) {
                 Text("Did you mean “\(suggestion)”?")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 Button("Use “\(suggestion)”") { model.useSuggestion(suggestion) }
                     .buttonStyle(.cueSecondary(.compact, expands: false))
                     .accessibilityIdentifier("voice.typo.use")
                 Button("Keep mine") { model.keepTyped(original) }
-                    .font(.footnote.weight(.semibold))
+                    .cueFont(.footnote, weight: .semibold)
                     .foregroundStyle(Palette.ink2)
                     .accessibilityIdentifier("voice.typo.keep")
             }
@@ -216,7 +216,7 @@ struct VoiceQuestionSheet: View {
         VStack(spacing: 18) {
             Spacer(minLength: 0)
             Text("Saved · voice \(strength)%")
-                .font(.title2.bold())
+                .cueFont(.title2, weight: .bold)
                 .foregroundStyle(Palette.ink)
                 .accessibilityIdentifier("voice.saved")
             if model.canAskMore {

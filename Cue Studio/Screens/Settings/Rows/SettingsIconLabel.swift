@@ -14,6 +14,8 @@ struct SettingsIconLabel: View {
     var value: String?
     var badge: String?
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         let tile = RoundedRectangle(cornerRadius: 9, style: .continuous)
         HStack(spacing: 13) {
@@ -32,22 +34,42 @@ struct SettingsIconLabel: View {
                     )
                 }
                 .accessibilityHidden(true)
-            Text(title).foregroundStyle(titleColor)
-            if let badge {
-                Text(badge)
-                    .monoFont(size: 10, weight: .heavy)
-                    .foregroundStyle(Palette.accInk)
-                    .padding(.horizontal, 6)
-                    .frame(height: 18)
-                    .background(Palette.acc, in: Capsule())
-            }
-            Spacer(minLength: 8)
-            if let value {
-                Text(verbatim: value).foregroundStyle(Palette.ink2).lineLimit(1)
+            // At the accessibility text sizes the value goes under the name: beside it, the name broke into syllables.
+            if dynamicTypeSize.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 8) {
+                        Text(title).foregroundStyle(titleColor)
+                        badgeView
+                    }
+                    if let value {
+                        Text(verbatim: value).foregroundStyle(Palette.ink2)
+                    }
+                }
+                Spacer(minLength: 0)
+            } else {
+                Text(title).foregroundStyle(titleColor)
+                badgeView
+                Spacer(minLength: 8)
+                if let value {
+                    Text(verbatim: value).foregroundStyle(Palette.ink2).lineLimit(1)
+                }
             }
         }
         .frame(minHeight: Metrics.listRowContent)
         .contentShape(Rectangle())
+    }
+
+    @ViewBuilder
+    private var badgeView: some View {
+        if let badge {
+            Text(badge)
+                .monoFont(size: 10, weight: .heavy)
+                .foregroundStyle(Palette.accInk)
+                .padding(.horizontal, 6)
+                .padding(.vertical, 2)
+                .frame(minHeight: 18)
+                .background(Palette.acc, in: Capsule())
+        }
     }
 }
 

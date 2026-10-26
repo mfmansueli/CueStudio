@@ -23,6 +23,7 @@ struct ScriptPageView: View {
     @State private var isAddingCue = false
     @State private var newCue = ""
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(FirstVoyageService.self) private var voyage
     @Environment(DraftLearningService.self) private var draftLearning
     /// The editor's own minimum height, kept by the words the AI writes in too.
@@ -181,7 +182,7 @@ struct ScriptPageView: View {
         ToolbarItem(placement: .principal) {
             VStack(spacing: 1) {
                 Text(viewModel.page.title.isEmpty ? String(localized: "Untitled") : viewModel.page.title)
-                    .font(.subheadline.weight(.semibold))
+                    .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                     .lineLimit(1)
                 Text(wordsAndTime)
@@ -215,7 +216,7 @@ struct ScriptPageView: View {
             Button { viewModel.sheet = .destination } label: {
                 HStack(spacing: 6) {
                     PlatformDot(color: script.platform.tint)
-                    Text(script.platform.label).font(.footnote.weight(.semibold))
+                    Text(script.platform.label).cueFont(.footnote, weight: .semibold)
                 }
             }
             .accessibilityLabel(Text("Create for"))
@@ -254,17 +255,31 @@ struct ScriptPageView: View {
 
     /// Hook and Improve: the two ways into the sheets of 4.3 and 4.4 (Improve is the AI's: it goes without Apple Intelligence); then
     /// Cues, which turns the cues on or off in the teleprompter.
+    /// On one line; when the words don't fit it (a narrow iPhone, a large text size) the row scrolls sideways instead of breaking a word.
     private var tools: some View {
+        ViewThatFits(in: .horizontal) {
+            toolRow(spacer: true)
+            ScrollView(.horizontal) {
+                toolRow(spacer: false)
+            }
+            .scrollIndicators(.hidden)
+            .scrollClipDisabled()
+        }
+    }
+
+    private func toolRow(spacer: Bool) -> some View {
         HStack(spacing: 8) {
             Button { Task { await viewModel.openHooks() } } label: {
                 HStack(spacing: 5) {
-                    Image(systemName: "text.quote").font(.system(size: 12, weight: .bold))
+                    Image(systemName: "text.quote").cueFont(12, weight: .bold)
                     Text("Hook")
                 }
-                .font(.system(size: 14, weight: .semibold))
+                .cueFont(14, weight: .semibold)
                 .foregroundStyle(Palette.ink)
+                .lineLimit(1)
                 .padding(.horizontal, 14)
-                .frame(height: 34)
+                .padding(.vertical, 6)
+                .frame(minHeight: 34)
                 .background(Palette.fill, in: Capsule())
                 .frame(minHeight: Metrics.hitTarget)
                 .contentShape(Capsule())
@@ -274,13 +289,15 @@ struct ScriptPageView: View {
             if viewModel.isLanguageModelAvailable {
                 Button { viewModel.sheet = .improve } label: {
                     HStack(spacing: 5) {
-                        Image(systemName: "sparkles").font(.system(size: 12, weight: .bold))
+                        Image(systemName: "sparkles").cueFont(12, weight: .bold)
                         Text("Improve")
                     }
-                    .font(.system(size: 14, weight: .semibold))
+                    .cueFont(14, weight: .semibold)
                     .foregroundStyle(Palette.aiTextStrong)
+                    .lineLimit(1)
                     .padding(.horizontal, 14)
-                    .frame(height: 34)
+                    .padding(.vertical, 6)
+                    .frame(minHeight: 34)
                     .background(Palette.aiFill, in: Capsule())
                     .frame(minHeight: Metrics.hitTarget)
                     .contentShape(Capsule())
@@ -289,11 +306,11 @@ struct ScriptPageView: View {
                 .accessibilityIdentifier("page.improveButton")
             }
             cuesToggle
-            Spacer(minLength: 0)
+            if spacer { Spacer(minLength: 0) }
             // Text size, as round as the tools beside it are long (it was a loose "Aa" in the corner).
             Button { viewModel.cycleTextSize() } label: {
                 Image(systemName: "textformat.size")
-                    .font(.system(size: 14, weight: .semibold))
+                    .font(.fixed(14, weight: .semibold))
                     .foregroundStyle(Palette.ink)
                     .frame(width: 34, height: 34)
                     .background(Palette.fill, in: Circle())
@@ -313,13 +330,15 @@ struct ScriptPageView: View {
         let isOn = viewModel.showsCues
         return Toggle(isOn: $viewModel.showsCues) {
             HStack(spacing: 5) {
-                Image(systemName: isOn ? "eye" : "eye.slash").font(.system(size: 12, weight: .bold)).symbolSwap(value: isOn)
+                Image(systemName: isOn ? "eye" : "eye.slash").cueFont(12, weight: .bold).symbolSwap(value: isOn)
                 Text("Cues")
             }
-            .font(.system(size: 14, weight: .semibold))
+            .cueFont(14, weight: .semibold)
             .foregroundStyle(isOn ? Palette.accText : Palette.ink2)
+            .lineLimit(1)
             .padding(.horizontal, 14)
-            .frame(height: 34)
+            .padding(.vertical, 6)
+            .frame(minHeight: 34)
             .background(isOn ? Palette.accSoft : Palette.fill, in: Capsule())
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Capsule())
@@ -367,7 +386,7 @@ struct ScriptPageView: View {
     /// size and cue tags, so they arrive where they stay. Once written, they are the page's text (the same words, so none arrives again).
     /// Drawn a line of the script at a time (`ArrivingLines`), so a long script never grows too tall to draw.
     private var arrivingWords: some View {
-        let size = viewModel.page.textSize.points
+        let size = viewModel.page.textSize.points(for: dynamicTypeSize)
         let lines = (viewModel.page.revealed ?? viewModel.page.text).components(separatedBy: "\n")
         return ArrivingLines(
             // An empty line keeps a line's height, as the blank line between two paragraphs does in the editor.

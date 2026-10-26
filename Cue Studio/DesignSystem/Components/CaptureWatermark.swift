@@ -19,9 +19,9 @@ struct CaptureWatermark: View {
         GeometryReader { proxy in
             HStack(spacing: 6) {
                 Image(systemName: "sparkle")
-                    .font(.system(size: 12, weight: .bold))
+                    .font(.fixed(12, weight: .bold))
                 Text(verbatim: "CUE STUDIO")
-                    .monoFont(size: 13, weight: .semibold)
+                    .monoFont(fixedSize: 13, weight: .semibold)
                     .interfaceTracking(2)
             }
             .foregroundStyle(.white.opacity(0.7))

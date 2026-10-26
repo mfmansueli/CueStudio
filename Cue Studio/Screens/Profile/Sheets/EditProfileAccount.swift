@@ -21,7 +21,7 @@ struct EditProfileAccount: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(session.isSignedIn ? "Signed in with Apple" : "Optional. Nothing in Cue needs an account; signing in only fills your name.")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
             if session.isSignedIn {
@@ -31,7 +31,7 @@ struct EditProfileAccount: View {
                     toast.show(String(localized: "Signed out"))
                 } label: {
                     Text("Sign out")
-                        .font(.body.weight(.semibold))
+                        .cueFont(.body, weight: .semibold)
                         .frame(maxWidth: .infinity)
                         .frame(height: 46)
                         .overlay(Capsule().strokeBorder(Palette.dangerText, lineWidth: 1))

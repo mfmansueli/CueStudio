@@ -47,6 +47,8 @@ struct SendOffView: View {
         .skyBackground(wash: BgWash.sendOff)
         .task { await play() }
         .accessibilityElement(children: .contain)
+        // A scene with its words placed in it: the text grows up to the first accessibility size.
+        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
         .accessibilityIdentifier("sendoff.sheet")
     }
 
@@ -93,20 +95,20 @@ struct SendOffView: View {
                 .foregroundStyle(Palette.acc)
                 .accessibilityIdentifier("sendoff.headline")
             Text("On its way.")
-                .font(.system(size: 30, weight: .bold))
+                .cueFont(30, weight: .bold)
                 .tracking(-0.6)
                 .foregroundStyle(Palette.ink)
                 .accessibilityAddTraits(.isHeader)
             Text(detail)
-                .font(.system(size: 14))
+                .cueFont(14)
                 .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
             Button(action: onUniverse) {
                 HStack(spacing: 6) {
                     Text(universeLine)
-                    Image(systemName: "chevron.forward").font(.system(size: 12, weight: .bold))
+                    Image(systemName: "chevron.forward").cueFont(12, weight: .bold)
                 }
-                .font(.system(size: 15, weight: .semibold))
+                .cueFont(15, weight: .semibold)
                 .foregroundStyle(Palette.acc)
                 .frame(minHeight: Metrics.hitTarget)
             }

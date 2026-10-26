@@ -46,7 +46,7 @@ struct RecordingSetupSheet: View {
             remoteRow
 
             Text("Changes here apply to this video only.")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
         }
@@ -61,18 +61,18 @@ struct RecordingSetupSheet: View {
         return VStack(alignment: .leading, spacing: 10) {
             HStack(spacing: 8) {
                 Image(systemName: "sparkles").foregroundStyle(Palette.accText)
-                Text(recommendation.title).font(.subheadline.weight(.semibold))
+                Text(recommendation.title).cueFont(.subheadline, weight: .semibold)
             }
             Text(recommendation.summary)
-                .font(.footnote.monospacedDigit())
+                .cueFont(.footnote).monospacedDigit()
                 .foregroundStyle(Palette.ink2)
             if conflicts.isEmpty {
                 Text("Your setup already matches it.")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
             } else {
                 Text("Your usual setup is \(session.usualSummary).")
-                    .font(.footnote)
+                    .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                 HStack(spacing: 8) {
                     choiceChip(String(localized: "Use Recommended"), isSelected: session.choice == .useRecommended, identifier: "setup.useRecommended") {
@@ -114,7 +114,7 @@ struct RecordingSetupSheet: View {
                 .lineLimit(1)
             TagPill(text: source.label, dotColor: dotColor(for: source))
         }
-        .font(.subheadline)
+        .cueFont(.subheadline)
         .padding(.horizontal, 14)
         .frame(minHeight: 46)
         .accessibilityElement(children: .combine)
@@ -142,12 +142,12 @@ struct RecordingSetupSheet: View {
                 VStack(alignment: .leading, spacing: 1) {
                     Text("Remote Control").foregroundStyle(Palette.ink)
                     Text(viewModel.remote.state.label)
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                 }
                 Spacer()
                 Image(systemName: "chevron.forward")
-                    .font(.footnote.weight(.semibold))
+                    .cueFont(.footnote, weight: .semibold)
                     .foregroundStyle(Palette.ink3)
             }
             .padding(.horizontal, 14)

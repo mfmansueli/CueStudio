@@ -29,10 +29,10 @@ struct AISelectionBar: View {
                     if action == .cut { Divider().frame(height: 18).overlay(Palette.Page.selectionBarRim) }
                     Button { onAction(action) } label: {
                         HStack(spacing: 4) {
-                            if action == .rewrite { Image(systemName: "sparkles").font(.system(size: 11, weight: .bold)) }
+                            if action == .rewrite { Image(systemName: "sparkles").cueFont(11, weight: .bold) }
                             Text(action.label)
                         }
-                        .font(.system(size: 14, weight: .semibold))
+                        .cueFont(14, weight: .semibold)
                         .foregroundStyle(action == .cut ? Palette.ink2 : Palette.aiTextStrong)
                         .padding(.horizontal, 11)
                         .frame(minHeight: Metrics.selectionBarHeight)
@@ -71,10 +71,10 @@ struct AISelectionBar: View {
     private func bar(icon: String, title: LocalizedStringKey, id: String, tint: Color, action: @escaping () -> Void) -> some View {
         Button(action: action) {
             HStack(spacing: 4) {
-                Image(systemName: icon).font(.system(size: 11, weight: .bold))
+                Image(systemName: icon).cueFont(11, weight: .bold)
                 Text(title)
             }
-            .font(.system(size: 14, weight: .semibold))
+            .cueFont(14, weight: .semibold)
             .foregroundStyle(tint)
             .padding(.horizontal, 12)
             .frame(minHeight: Metrics.selectionBarHeight)

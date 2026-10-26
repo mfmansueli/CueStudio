@@ -15,11 +15,12 @@ struct TagPill: View {
             if let dotColor { ColorDot(color: dotColor) }
             Text(text)
         }
-        .font(.caption.weight(.medium))
+        .cueFont(.caption, weight: .medium)
         .lineLimit(1)
         .foregroundStyle(Palette.inkSoft)
         .padding(.horizontal, 8)
-        .frame(height: 22)
+        .padding(.vertical, 2)
+        .frame(minHeight: 22)
         .background(Palette.surface2, in: Capsule())
     }
 }

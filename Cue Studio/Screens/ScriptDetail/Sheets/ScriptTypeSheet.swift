@@ -35,15 +35,15 @@ struct ScriptTypeSheet: View {
         Button { onPick(type) } label: {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(structure.label).font(.body)
+                    Text(structure.label).cueFont(.body)
                     Text(structure.blocks.joined(separator: " → "))
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 if type == current {
                     Image(systemName: "checkmark")
-                        .font(.body.weight(.semibold))
+                        .cueFont(.body, weight: .semibold)
                         .foregroundStyle(Palette.accText)
                 }
             }

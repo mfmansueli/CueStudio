@@ -11,7 +11,7 @@ struct ProfileBlockLabel: View {
 
     var body: some View {
         Text(text)
-            .font(.system(size: 12.5, weight: .regular))
+            .cueFont(12.5, weight: .regular)
             .tracking(0.6)
             .foregroundStyle(Palette.inkHint)
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 6, trailing: 4))

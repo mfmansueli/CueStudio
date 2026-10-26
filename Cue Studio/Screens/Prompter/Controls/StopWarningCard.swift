@@ -16,13 +16,13 @@ struct StopWarningCard: View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .top, spacing: 12) {
                 Image(systemName: "stopwatch")
-                    .font(.body.weight(.semibold))
+                    .cueFont(.body, weight: .semibold)
                     .foregroundStyle(Palette.warnText)
                     .frame(width: 36, height: 36)
                     .background(Palette.warn.opacity(0.18), in: Circle())
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(title).font(.headline.monospacedDigit())
-                    Text(message).font(.subheadline).foregroundStyle(Palette.ink2)
+                    Text(title).cueFont(.headline, weight: .semibold).monospacedDigit()
+                    Text(message).cueFont(.subheadline).foregroundStyle(Palette.ink2)
                 }
             }
             HStack(spacing: 8) {

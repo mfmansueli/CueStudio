@@ -42,7 +42,7 @@ struct ScriptDetailsSheet: View {
                         valueRow(String(localized: "Format"), viewModel.preset.captureSummary)
                         valueRow(String(localized: "Version"), versionLabel(script))
                         Toggle("Monetization goals", isOn: $profile.profile.monetizationGoals)
-                            .font(.body)
+                            .cueFont(.body)
                             .tint(Palette.successText)
                             .padding(.horizontal, 14)
                             .frame(minHeight: 52)
@@ -72,10 +72,10 @@ struct ScriptDetailsSheet: View {
 
     private func valueRow(_ title: String, _ value: String) -> some View {
         HStack {
-            Text(title).font(.body)
+            Text(title).cueFont(.body)
             Spacer(minLength: 8)
             Text(value)
-                .font(.body)
+                .cueFont(.body)
                 .foregroundStyle(Palette.ink2)
         }
         .padding(.horizontal, 14)

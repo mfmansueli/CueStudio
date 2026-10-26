@@ -21,17 +21,17 @@ struct WritingFindingRow: View {
                     .interfaceTracking(0.6)
                     .foregroundStyle(Palette.inkHint)
                 Text(finding.value.display)
-                    .font(.subheadline.weight(.semibold))
+                    .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                     .fixedSize(horizontal: false, vertical: true)
                 if let support = finding.support {
                     Text("Texts with it: \(support.found) of \(support.of)")
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                 }
                 if finding.replaces, let current, !current.isEmpty {
                     Text("Replaces: \(current)")
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.warnText)
                         .fixedSize(horizontal: false, vertical: true)
                 }

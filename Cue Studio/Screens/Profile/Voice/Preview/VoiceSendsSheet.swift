@@ -26,7 +26,7 @@ struct VoiceSendsSheet: View {
                             .interfaceTracking(1)
                             .foregroundStyle(Palette.aiText)
                         Text("What Cue sends")
-                            .font(.system(size: 28, weight: .bold))
+                            .cueFont(28, weight: .bold)
                             .tracking(-0.56)
                             .foregroundStyle(Palette.ink)
                             .accessibilityAddTraits(.isHeader)
@@ -34,7 +34,7 @@ struct VoiceSendsSheet: View {
                     briefCard
                     meter
                     Text("Added before every idea you send to Cue (scripts, hooks, replies), with where you post and the format you pick. Never used to train models.")
-                        .font(.footnote)
+                        .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                         .padding(.horizontal, 4)
                     Button {

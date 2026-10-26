@@ -14,7 +14,7 @@ struct ExcerptRow: View {
     var body: some View {
         HStack(alignment: .top, spacing: 10) {
             Text("“\(excerpt.text)”")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .italic()
                 .foregroundStyle(Palette.ink)
                 .frame(maxWidth: .infinity, alignment: .leading)

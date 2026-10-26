@@ -19,7 +19,7 @@ struct UniverseShareCard: View {
             LinearGradient(colors: [Palette.Universe.nightDeep, Palette.Universe.nightIndigo], startPoint: .top, endPoint: .bottom)
             VStack(spacing: 14) {
                 Text("MY \(String(snapshot.year)) UNIVERSE")
-                    .monoFont(size: 13, weight: .bold).interfaceTracking(2).foregroundStyle(Palette.acc)
+                    .monoFont(fixedSize: 13, weight: .bold).interfaceTracking(2).foregroundStyle(Palette.acc)
                     .padding(.top, 34)
                 UniverseMap(
                     snapshot: snapshot, animates: false, coreColor: coreColor, frozenTime: time ?? UniverseShareOptions.buildDuration,
@@ -29,10 +29,10 @@ struct UniverseShareCard: View {
                 if options.showsNumbers { numbers }
                 Spacer(minLength: 0)
                 if options.showsHandle, !handle.isEmpty {
-                    Text(verbatim: "@\(handle)").font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
+                    Text(verbatim: "@\(handle)").font(.fixed(15, weight: .semibold)).foregroundStyle(.white)
                 }
                 Text("MADE IN CUE STUDIO")
-                    .monoFont(size: 9, weight: .semibold).interfaceTracking(1.5).foregroundStyle(Palette.inkHint)
+                    .monoFont(fixedSize: 9, weight: .semibold).interfaceTracking(1.5).foregroundStyle(Palette.inkHint)
                     .padding(.bottom, 26)
             }
             .padding(.horizontal, 24)
@@ -49,8 +49,8 @@ struct UniverseShareCard: View {
 
     private var numbers: some View {
         VStack(spacing: 6) {
-            Text("\(shownCount)").font(.system(size: 64, weight: .heavy)).foregroundStyle(.white).monospacedDigit()
-            Text(subtitle).font(.system(size: 14)).foregroundStyle(Palette.inkSoft).multilineTextAlignment(.center).lineLimit(2)
+            Text("\(shownCount)").font(.fixed(64, weight: .heavy)).foregroundStyle(.white).monospacedDigit()
+            Text(subtitle).font(.fixed(14)).foregroundStyle(Palette.inkSoft).multilineTextAlignment(.center).lineLimit(2)
         }
     }
 

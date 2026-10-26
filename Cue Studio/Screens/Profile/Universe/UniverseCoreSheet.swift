@@ -21,7 +21,7 @@ struct UniverseCoreSheet: View {
                 UniverseCore(color: personalization.coreColor, style: .preview)
                     .padding(.top, 6)
                 Text("Your light. It grows with every video you share. No photo needed.")
-                    .font(.system(size: 15))
+                    .cueFont(15)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 12)
@@ -33,13 +33,13 @@ struct UniverseCoreSheet: View {
                             Spacer()
                             Text("ring").hudFont().foregroundStyle(Palette.ink2)
                         }
-                        .font(.system(size: 17))
+                        .cueFont(17)
                         .padding(.horizontal, 16)
                         .frame(minHeight: 48)
                     }
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Milestones").foregroundStyle(Palette.ink).font(.system(size: 17))
-                        Text(milestoneLine).font(.footnote).foregroundStyle(Palette.ink2)
+                        Text("Milestones").foregroundStyle(Palette.ink).cueFont(17)
+                        Text(milestoneLine).cueFont(.footnote).foregroundStyle(Palette.ink2)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 16)
@@ -48,7 +48,7 @@ struct UniverseCoreSheet: View {
                     .accessibilityIdentifier("universeCore.milestones")
                 }
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Core colour").font(.system(size: 13, weight: .semibold)).foregroundStyle(Palette.ink2)
+                    Text("Core colour").cueFont(13, weight: .semibold).foregroundStyle(Palette.ink2)
                     CoreColorSwatches(selection: $personalization.coreColor)
                         .padding(.horizontal, 6)
                 }

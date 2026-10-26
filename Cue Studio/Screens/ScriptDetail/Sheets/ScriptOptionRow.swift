@@ -17,15 +17,15 @@ struct ScriptOptionRow<Value: View>: View {
         Button(action: action) {
             HStack(spacing: 8) {
                 Text(title)
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink)
                 Spacer(minLength: 8)
                 value
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink2)
                     .lineLimit(1)
                 Image(systemName: "chevron.right")
-                    .font(.caption.weight(.semibold))
+                    .cueFont(.caption, weight: .semibold)
                     .foregroundStyle(Palette.ink2)
                     .accessibilityHidden(true)
             }

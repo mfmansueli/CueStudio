@@ -70,10 +70,10 @@ struct AnswerCommentSheet: View {
             .buttonStyle(.plain)
             .accessibilityIdentifier("answer.paste")
             if let failure = model.failure {
-                Text(failure).font(.footnote).foregroundStyle(Palette.warnText).accessibilityIdentifier("answer.failure")
+                Text(failure).cueFont(.footnote).foregroundStyle(Palette.warnText).accessibilityIdentifier("answer.failure")
             }
             Text("The picture is read here, never kept.")
-                .font(.footnote).foregroundStyle(Palette.inkHint)
+                .cueFont(.footnote).foregroundStyle(Palette.inkHint)
         }
     }
 
@@ -92,7 +92,7 @@ struct AnswerCommentSheet: View {
                 TextField("@name", text: $model.author)
                     .textInputAutocapitalization(.never)
                     .autocorrectionDisabled()
-                    .padding(.horizontal, 14).frame(height: 48)
+                    .padding(.horizontal, 14).padding(.vertical, 4).frame(minHeight: 48)
                     .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .accessibilityIdentifier("answer.author")
             }
@@ -136,7 +136,7 @@ struct AnswerCommentSheet: View {
                     .accessibilityIdentifier("answer.saveToLogbook")
             }
             Button("Choose another") { model.startOver() }
-                .font(.system(size: 16, weight: .medium))
+                .cueFont(16, weight: .medium)
                 .foregroundStyle(Palette.ink2)
                 .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget)
         }
@@ -154,15 +154,15 @@ extension AnswerCommentSheet {
         var body: some View {
             let shape = RoundedRectangle(cornerRadius: Metrics.innerRadius, style: .continuous)
             return HStack(spacing: 14) {
-                Image(systemName: icon).font(.title3)
+                Image(systemName: icon).cueFont(.title3)
                     .foregroundStyle(primary ? Palette.accText : Palette.ink)
                     .frame(width: 42, height: 42)
                     .background(primary ? Palette.accSoft : Palette.overlayFill, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                 VStack(alignment: .leading, spacing: 2) {
                     // Long words and large text wrap; they never end in "…" (German at the accessibility sizes did).
-                    Text(title).font(.body.weight(.semibold)).foregroundStyle(Palette.ink)
+                    Text(title).cueFont(.body, weight: .semibold).foregroundStyle(Palette.ink)
                         .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
-                    Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
+                    Text(detail).cueFont(.footnote).foregroundStyle(Palette.ink2)
                         .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)

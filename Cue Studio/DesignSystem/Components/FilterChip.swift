@@ -18,10 +18,10 @@ struct FilterChip: View {
     var body: some View {
         HStack(spacing: 7) {
             if let dotColor { ColorDot(color: dotColor) }
-            if let systemImage { Image(systemName: systemImage).font(.footnote.weight(.semibold)) }
+            if let systemImage { Image(systemName: systemImage).cueFont(.footnote, weight: .semibold) }
             Text(label)
         }
-        .font(.subheadline.weight(isSelected ? .semibold : .medium))
+        .cueFont(.subheadline, weight: isSelected ? .semibold : .medium)
         .lineLimit(1)
         .padding(.horizontal, 14)
         .frame(height: height)

@@ -47,10 +47,11 @@ struct CreatorTypePicker: View {
             action()
         } label: {
             Text(verbatim: title)
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(isOn ? Palette.accText : Palette.ink)
                 .padding(.horizontal, 14)
-                .frame(height: 36)
+                .padding(.vertical, 4)
+                .frame(minHeight: 36)
                 .background(isOn ? Palette.Settings.toolTileTop : Palette.surface2, in: Capsule())
                 .overlay(Capsule().strokeBorder(isOn ? Palette.acc : Palette.separator, lineWidth: isOn ? 1.5 : 0.5))
                 .contentShape(Capsule())
@@ -62,13 +63,13 @@ struct CreatorTypePicker: View {
     /// Their own type, chosen, with × to take it away.
     private func ownChip(_ title: String) -> some View {
         HStack(spacing: 6) {
-            Text(verbatim: title).font(.subheadline).foregroundStyle(Palette.accText).lineLimit(1)
+            Text(verbatim: title).cueFont(.subheadline).foregroundStyle(Palette.accText).lineLimit(1)
             Button {
                 Haptics.light()
                 draft.customRole = nil
             } label: {
                 Image(systemName: "xmark")
-                    .font(.system(size: 10, weight: .bold))
+                    .font(.fixed(10, weight: .bold))
                     .foregroundStyle(Palette.accText)
                     .frame(width: 24, height: 24)
                     .contentShape(Circle())
@@ -94,10 +95,11 @@ struct CreatorTypePicker: View {
             isTyping = true
         } label: {
             Label("Add your own", systemImage: "plus")
-                .font(.subheadline.weight(.semibold))
+                .cueFont(.subheadline, weight: .semibold)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 14)
-                .frame(height: 36)
+                .padding(.vertical, 4)
+                .frame(minHeight: 36)
                 .overlay(Capsule().strokeBorder(Palette.separator, style: StrokeStyle(lineWidth: 1, dash: [4, 3])))
                 .contentShape(Capsule())
         }
@@ -108,7 +110,7 @@ struct CreatorTypePicker: View {
     /// The chip opened into a field: Return keeps what is typed as their own type; empty, or focus lost with nothing typed, closes it.
     private var field: some View {
         TextField("Podcaster, chef, gamer…", text: $typed)
-            .font(.subheadline)
+            .cueFont(.subheadline)
             .foregroundStyle(Palette.ink)
             .focused($isTyping)
             .submitLabel(.done)

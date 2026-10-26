@@ -71,7 +71,7 @@ struct CameraSettingsSheet: View {
         SectionHeading(text: String(localized: "Lens")).padding(EdgeInsets(top: 8, leading: 4, bottom: 0, trailing: 4))
         if camera.availableLenses.isEmpty {
             Text("Cameras appear here once the camera is running.")
-                .font(.footnote)
+                .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
         } else {
@@ -95,7 +95,7 @@ struct CameraSettingsSheet: View {
                             RoundedRectangle(cornerRadius: 4)
                                 .strokeBorder(Color.white, lineWidth: 2)
                                 .frame(width: 26 * min(1, aspect.widthOverHeight), height: 26 * min(1, 1 / aspect.widthOverHeight))
-                            Text(aspect.label).font(.footnote.weight(.semibold))
+                            Text(aspect.label).cueFont(.footnote, weight: .semibold)
                         }
                         .frame(height: 78)
                     }
@@ -175,7 +175,7 @@ struct CameraSettingsSheet: View {
             Text("Added after filming · Change it in Quick edit.")
                 .foregroundStyle(Palette.ink2)
         }
-        .font(.footnote)
+        .cueFont(.footnote)
         .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
         .task {
             if canFindPeople == nil { canFindPeople = await BackgroundSupport.canFindPeople() }
@@ -210,7 +210,7 @@ struct CameraSettingsSheet: View {
             segmentedRow(VideoCodec.settingLabel, selection: $session.camera.codec, options: VideoCodec.allCases) { $0.label }
         }
         Text("HEVC keeps files small · H.264 suits older editors")
-            .font(.footnote)
+            .cueFont(.footnote)
             .foregroundStyle(Palette.ink2)
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
     }
@@ -218,7 +218,7 @@ struct CameraSettingsSheet: View {
     /// Where the usual setup lives, so a change here isn't mistaken for a new default.
     private var setupNote: some View {
         Text("Changes apply to this take only.")
-            .font(.footnote)
+            .cueFont(.footnote)
             .foregroundStyle(Palette.ink2)
             .padding(EdgeInsets(top: 4, leading: 4, bottom: 0, trailing: 4))
     }
@@ -238,7 +238,7 @@ struct CameraSettingsSheet: View {
             HStack {
                 VStack(alignment: .leading, spacing: 1) {
                     Text(title)
-                    Text(detail).font(.footnote).foregroundStyle(Palette.ink2)
+                    Text(detail).cueFont(.footnote).foregroundStyle(Palette.ink2)
                 }
                 Spacer()
                 if isSelected {

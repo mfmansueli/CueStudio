@@ -16,7 +16,7 @@ struct AIUnavailableNote: View {
             Image(systemName: "sparkles")
                 .foregroundStyle(Palette.ink2)
         }
-        .font(.footnote)
+        .cueFont(.footnote)
         .foregroundStyle(Palette.ink2)
         .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))
         .frame(maxWidth: .infinity, alignment: .leading)

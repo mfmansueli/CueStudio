@@ -54,11 +54,11 @@ struct RemoteControllerView: View {
             .accessibilityIdentifier("remoteController.closeButton")
             Spacer()
             VStack(spacing: 2) {
-                Text("Remote").font(.headline)
+                Text("Remote").cueFont(.headline, weight: .semibold)
                 HStack(spacing: 6) {
                     ColorDot(color: remote.isConnected ? Palette.success : Palette.ink3, size: 6)
                     Text(remote.state.deviceName ?? remote.state.label)
-                        .font(.caption)
+                        .cueFont(.caption)
                         .foregroundStyle(Palette.ink2)
                         .lineLimit(1)
                 }
@@ -74,17 +74,17 @@ struct RemoteControllerView: View {
         VStack(spacing: 12) {
             if case .failed(let message) = remote.state {
                 Image(systemName: "exclamationmark.triangle.fill")
-                    .font(.title)
+                    .cueFont(.title)
                     .foregroundStyle(Palette.warnText)
                 Text(message)
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)
             } else {
                 ProgressView().controlSize(.large).tint(Palette.ink2)
-                Text(remote.state.label).font(.headline)
+                Text(remote.state.label).cueFont(.headline, weight: .semibold)
                 Text("Keep both devices close, with Wi-Fi on.")
-                    .font(.subheadline)
+                    .cueFont(.subheadline)
                     .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)
             }
@@ -95,7 +95,7 @@ struct RemoteControllerView: View {
     private var scriptCard: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(status?.scriptTitle ?? String(localized: "Open a script on the teleprompter"))
-                .font(.title3.weight(.semibold))
+                .cueFont(.title3, weight: .semibold)
                 .foregroundStyle(status?.scriptTitle == nil ? Palette.ink2 : Palette.ink)
                 .lineLimit(2)
             if let status, status.scriptTitle != nil {
@@ -113,7 +113,7 @@ struct RemoteControllerView: View {
                         .monospacedDigit()
                         .foregroundStyle(Palette.ink2)
                 }
-                .font(.subheadline.weight(.semibold))
+                .cueFont(.subheadline, weight: .semibold)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -140,9 +140,9 @@ struct RemoteControllerView: View {
                 commandButton(.slower, systemImage: "minus", variant: .surface, diameter: 56)
                 VStack(spacing: 2) {
                     Text(status?.speedLabel ?? "…")
-                        .font(.title2.weight(.bold).monospacedDigit())
+                        .cueFont(.title2, weight: .bold).monospacedDigit()
                     Text("Speed")
-                        .font(.caption)
+                        .cueFont(.caption)
                         .foregroundStyle(Palette.ink2)
                 }
                 .frame(minWidth: 80)

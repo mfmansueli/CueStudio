@@ -28,10 +28,10 @@ struct EmptyLibraryPathCard: View {
                     icon
                     VStack(alignment: .leading, spacing: 3) {
                         Text(title)
-                            .font(.body.weight(.semibold))
+                            .cueFont(.body, weight: .semibold)
                             .foregroundStyle(Palette.ink)
                         Text(subtitle)
-                            .font(.subheadline)
+                            .cueFont(.subheadline)
                             .foregroundStyle(Palette.ink2)
                     }
                     .multilineTextAlignment(.leading)
@@ -39,7 +39,7 @@ struct EmptyLibraryPathCard: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 Image(systemName: "chevron.forward")
-                    .font(.footnote.weight(.semibold))
+                    .cueFont(.footnote, weight: .semibold)
                     .foregroundStyle(Palette.ink3)
                     .accessibilityHidden(true)
             }
@@ -57,7 +57,7 @@ struct EmptyLibraryPathCard: View {
 
     private var icon: some View {
         Image(systemName: symbol)
-            .font(.system(size: 17, weight: .semibold))
+            .font(.fixed(17, weight: .semibold))
             .foregroundStyle(Palette.ink)
             .frame(width: 40, height: 40)
             .background(Palette.surface3, in: RoundedRectangle(cornerRadius: 12, style: .continuous))

@@ -32,17 +32,17 @@ struct VoiceTipViewStyle: TipViewStyle {
     private func content(_ configuration: Configuration) -> some View {
         HStack(spacing: 12) {
             Text(verbatim: "✦")
-                .font(.system(size: 15, weight: .semibold))
+                .cueFont(15, weight: .semibold)
                 .foregroundStyle(Palette.Scripts.tipGlyph)
                 .frame(width: 30, height: 30)
                 .background(Palette.Scripts.tipGlyphFill, in: Circle())
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 configuration.title
-                    .font(.system(size: 15, weight: .semibold))
+                    .cueFont(15, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                 configuration.message?
-                    .font(.system(size: 13))
+                    .cueFont(13)
                     .foregroundStyle(Palette.inkSoft)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -54,7 +54,7 @@ struct VoiceTipViewStyle: TipViewStyle {
             configuration.tip.invalidate(reason: .tipClosed)
         } label: {
             Image(systemName: "xmark")
-                .font(.system(size: 12, weight: .bold))
+                .font(.fixed(12, weight: .bold))
                 .foregroundStyle(Palette.ink2)
                 .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                 .contentShape(Rectangle())

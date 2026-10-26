@@ -12,7 +12,7 @@ struct DebugShareSheet: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            Text(verbatim: "Share sheet (test)").font(.headline)
+            Text(verbatim: "Share sheet (test)").cueFont(.headline, weight: .semibold)
             Button { onFinish(.completed(activityType: "com.zhiliaoapp.musically.share")) } label: { Text(verbatim: "Complete") }
                 .buttonStyle(.cuePrimary(.large))
                 .accessibilityIdentifier("debug.share.complete")

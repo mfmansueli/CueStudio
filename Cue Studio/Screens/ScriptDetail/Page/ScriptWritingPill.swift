@@ -23,16 +23,17 @@ struct ScriptWritingPill: View {
             // `shimx 1.6s linear`: the highlight travels from the right edge to past the left one.
             let sweep = reduceMotion ? 0.5 : 1 - (time.truncatingRemainder(dividingBy: 1.6) / 1.6)
             HStack(spacing: 8) {
-                Text("✦").font(.system(size: 14)).foregroundStyle(Palette.aiText)
+                Text("✦").cueFont(14).foregroundStyle(Palette.aiText)
                 label(sweep: sweep)
                 if let progress, !progress.isFinished {
                     WritingProgressLabel(meter: progress)
-                        .font(.system(size: 13, weight: .semibold))
+                        .cueFont(13, weight: .semibold)
                         .foregroundStyle(Palette.aiTextStrong)
                 }
             }
             .padding(.horizontal, 14)
-            .frame(height: 34)
+            .padding(.vertical, 4)
+            .frame(minHeight: 34)
             .background(Palette.Page.writingPillFill, in: Capsule())
             .overlay(Capsule().strokeBorder(Palette.Page.writingPillRim.opacity(0.36 + 0.14 * pulse), lineWidth: 0.5))
             .shadow(color: Palette.Page.writingPillGlow.opacity(0.45 * pulse), radius: 24)
@@ -52,7 +53,7 @@ struct ScriptWritingPill: View {
 
     /// The words in `aiTextStrong` (`#E4DEFF`) with a white band (38% → 62% of a gradient 2.4× as wide as the text) sliding across.
     private func label(sweep: Double) -> some View {
-        let text = Text(inMyVoice ? "Drafting in your voice" : "Drafting…").font(.system(size: 13, weight: .semibold))
+        let text = Text(inMyVoice ? "Drafting in your voice" : "Drafting…").cueFont(13, weight: .semibold)
         return text
             .foregroundStyle(Palette.aiTextStrong)
             .overlay {

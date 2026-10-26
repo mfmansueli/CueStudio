@@ -16,16 +16,17 @@ struct UniverseReviewRowView: View {
             HStack(spacing: 12) {
                 UniverseMiniStory(count: row.count)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(row.title).font(.system(size: 16.5, weight: .semibold)).foregroundStyle(Palette.ink).lineLimit(1)
+                    Text(row.title).cueFont(16.5, weight: .semibold).foregroundStyle(Palette.ink).lineLimit(1)
                     Text(row.line).monoFont(size: 10, weight: .medium).interfaceTracking(0.8).foregroundStyle(Palette.ink2).lineLimit(1)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 if !row.isLocked {
                     Label("Play", systemImage: "play.fill")
-                        .font(.system(size: 14, weight: .semibold))
+                        .cueFont(14, weight: .semibold)
                         .foregroundStyle(Palette.ink)
                         .padding(.horizontal, 12)
-                        .frame(height: 32)
+                        .padding(.vertical, 4)
+                        .frame(minHeight: 32)
                         .glassEffect(.regular, in: Capsule())
                 }
             }

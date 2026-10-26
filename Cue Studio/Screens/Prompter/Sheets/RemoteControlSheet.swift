@@ -11,7 +11,7 @@ struct RemoteControlSheet: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("Control your teleprompter from another device.")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.horizontal, 4)

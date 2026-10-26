@@ -16,7 +16,7 @@ struct NotificationGroupRow: View {
                 Text(group.title).foregroundStyle(Palette.ink)
                 if let detail = group.detail {
                     Text(detail)
-                        .font(.subheadline)
+                        .cueFont(.subheadline)
                         .foregroundStyle(Palette.ink2)
                         .fixedSize(horizontal: false, vertical: true)
                 }

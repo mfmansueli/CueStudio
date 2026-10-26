@@ -19,7 +19,7 @@ struct ProfilePlanCard: View {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 7) {
                     HStack {
-                        Text(store.tier.isPro ? "Cue Pro" : "Free plan").font(.system(size: 14)).foregroundStyle(Palette.ink)
+                        Text(store.tier.isPro ? "Cue Pro" : "Free plan").cueFont(14).foregroundStyle(Palette.ink)
                         Spacer(minLength: 8)
                         Text(detail)
                             .monoFont(size: 11, weight: .semibold)
@@ -32,7 +32,7 @@ struct ProfilePlanCard: View {
                     }
                 }
                 Text(store.tier.isPro ? "Manage ›" : "Try Pro ›")
-                    .font(.system(size: 14, weight: .semibold))
+                    .cueFont(14, weight: .semibold)
                     .foregroundStyle(Palette.accText)
                     .fixedSize()
             }

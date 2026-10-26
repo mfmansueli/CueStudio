@@ -84,14 +84,14 @@ struct PracticeBoxOverlay: View {
         ZStack {
             ForEach([("3", "L9"), ("2", "L10"), ("1", "L11")], id: \.0) { number, layer in
                 Text(number)
-                    .font(.system(size: 92, weight: .heavy))
+                    .cueFont(92, weight: .heavy)
                     .tracking(-2.8)
                     .foregroundStyle(.white)
                     .shadow(color: Palette.acc.opacity(0.55), radius: 15)
                     .motion(pose(layer, second))
             }
             Text("READ!")
-                .font(.system(size: 44, weight: .heavy))
+                .cueFont(44, weight: .heavy)
                 .tracking(1.76)
                 .foregroundStyle(Palette.Universe.starGold)
                 .shadow(color: Palette.acc.opacity(0.7), radius: 13)
@@ -106,7 +106,7 @@ struct PracticeBoxOverlay: View {
         return ZStack {
             Button(action: onPlay) {
                 Image(systemName: "play.fill")
-                    .font(.system(size: 28, weight: .bold))
+                    .font(.fixed(28, weight: .bold))
                     .foregroundStyle(Palette.acc)
                     .shadow(color: Palette.acc.opacity(0.8), radius: 6)
                     .offset(x: 2)

@@ -19,10 +19,10 @@ struct LengthNudgeSheet: View {
         VStack(alignment: .leading, spacing: 12) {
             HUDLine(values: ["~\(DurationText.clock(seconds))", "\(platform.label) ideal ≤ \(DurationText.clock(idealUpper))"])
             Text("A bit long for \(platform.label)")
-                .font(.title3.bold())
+                .cueFont(.title3, weight: .bold)
                 .foregroundStyle(Palette.ink)
             Text("Make it shorter, or record as is. You can trim later.")
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(Palette.ink2)
             Button(action: onRecordAnyway) {
                 HStack(spacing: 7) {

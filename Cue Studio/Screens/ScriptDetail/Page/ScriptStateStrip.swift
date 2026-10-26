@@ -21,14 +21,15 @@ struct ScriptStateStrip: View {
     @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        HStack(spacing: 10) {
+        // At the accessibility text sizes the words go under the switch: beside it, "Ready to record" was cut short.
+        ReflowStack(spacing: 10) {
             if strip.showsReadySwitch {
                 ReadyToggle(isOn: strip.isReady, isEnabled: canBeReady && onStop == nil, onChange: onReady)
             } else {
                 StateChip(kind: .recorded)
             }
             Text(strip.info.joined(separator: " · "))
-                .font(.subheadline)
+                .cueFont(.subheadline)
                 .foregroundStyle(strip.isSignal ? Palette.accText : Palette.ink2)
                 .lineLimit(typeSize.isAccessibilitySize ? nil : 1)
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -36,10 +37,11 @@ struct ScriptStateStrip: View {
             if let onStop {
                 Button(action: onStop) {
                     Text("Stop")
-                        .font(.system(size: 14, weight: .semibold))
+                        .cueFont(14, weight: .semibold)
                         .foregroundStyle(Palette.aiTextStrong)
                         .padding(.horizontal, 11)
-                        .frame(height: 32)
+                        .padding(.vertical, 5)
+                        .frame(minHeight: 32)
                         .background(Palette.aiFill, in: Capsule())
                         .frame(minHeight: Metrics.hitTarget)
                         .contentShape(Capsule())
@@ -58,12 +60,13 @@ struct ScriptStateStrip: View {
     private var shapeButton: some View {
         Button(action: onShape) {
             HStack(spacing: 4) {
-                Image(systemName: "sparkles").font(.system(size: 11, weight: .bold))
-                Text("Shape").font(.system(size: 14, weight: .semibold))
+                Image(systemName: "sparkles").cueFont(11, weight: .bold)
+                Text("Shape").cueFont(14, weight: .semibold)
             }
             .foregroundStyle(Palette.aiTextStrong)
             .padding(.horizontal, 11)
-            .frame(height: 32)
+            .padding(.vertical, 5)
+            .frame(minHeight: 32)
             .background(Palette.aiFill, in: Capsule())
             .frame(minHeight: Metrics.hitTarget)
             .contentShape(Capsule())

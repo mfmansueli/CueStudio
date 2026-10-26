@@ -45,7 +45,7 @@ struct SafeZoneOverlay: View {
                 .strokeBorder(Palette.Camera.safeZoneLine, style: StrokeStyle(lineWidth: 1, dash: [5, 4]))
                 .overlay(alignment: .bottomLeading) {
                     Text(label)
-                        .font(.system(size: 9, weight: .bold))
+                        .font(.fixed(9, weight: .bold))
                         .kerning(0.6)
                         .foregroundStyle(Palette.Camera.safeZoneLabel)
                         .shadow(color: Palette.textShadow, radius: 1.5, y: 1)

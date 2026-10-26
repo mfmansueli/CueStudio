@@ -50,7 +50,7 @@ struct ScriptActionsPopover: View {
             Spacer(minLength: 8)
             Image(systemName: systemImage).frame(width: 22)
         }
-        .font(.body)
+        .cueFont(.body)
         .foregroundStyle(role == .destructive ? Palette.dangerText : Palette.ink)
         .padding(.horizontal, 16)
         .frame(minHeight: Metrics.hitTarget)

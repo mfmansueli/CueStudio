@@ -35,9 +35,9 @@ struct ScrollModePicker: View {
         return Button { onSelect(mode) } label: {
             HStack(spacing: 6) {
                 Image(systemName: mode.symbolName)
-                    .font(.system(size: 14, weight: .semibold))
+                    .cueFont(14, weight: .semibold)
                 Text(mode.shortLabel)
-                    .font(.system(size: 15, weight: .semibold))
+                    .cueFont(15, weight: .semibold)
                     .lineLimit(1)
             }
             .foregroundStyle(isSelected ? Palette.ink : Palette.ink2)

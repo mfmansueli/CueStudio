@@ -30,7 +30,7 @@ struct VoiceChoiceRow: View {
                         VStack(alignment: .leading, spacing: 2) { name }
                     }
                     if let detail {
-                        Text(detail).font(.footnote).italic().foregroundStyle(Palette.ink2)
+                        Text(detail).cueFont(.footnote).italic().foregroundStyle(Palette.ink2)
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
@@ -49,9 +49,9 @@ struct VoiceChoiceRow: View {
 
     @ViewBuilder
     private var name: some View {
-        Text(title).font(.body.weight(.semibold)).foregroundStyle(Palette.ink)
+        Text(title).cueFont(.body, weight: .semibold).foregroundStyle(Palette.ink)
         if let tag {
-            Text(tag).font(.caption2.weight(.semibold)).foregroundStyle(Palette.accText).lineLimit(1)
+            Text(tag).cueFont(.caption2, weight: .semibold).foregroundStyle(Palette.accText).lineLimit(1)
         }
     }
 }

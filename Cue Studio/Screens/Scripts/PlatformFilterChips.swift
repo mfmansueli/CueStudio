@@ -47,7 +47,7 @@ struct PlatformFilterChips: View {
         return HStack(spacing: 6) {
             switch filter {
             case .platform(let platform): PlatformDot(color: platform.tint)
-            case .folder: Image(systemName: "folder").font(.system(size: 12, weight: .semibold))
+            case .folder: Image(systemName: "folder").cueFont(12, weight: .semibold)
             case .all: EmptyView()
             }
             Text(filter.label)
@@ -55,7 +55,7 @@ struct PlatformFilterChips: View {
                 .monoFont(size: 11)
                 .foregroundStyle(isSelected ? Palette.inkOnLight : Palette.inkHint)
         }
-        .font(.system(size: 14, weight: .semibold))
+        .cueFont(14, weight: .semibold)
         .lineLimit(1)
         .padding(.leading, hasLeading ? 10 : 14)
         .padding(.trailing, hasLeading ? 12 : 14)
