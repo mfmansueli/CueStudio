@@ -118,6 +118,25 @@ extension RealExports {
                 CGImageDestinationAddImage(destination, image, nil)
                 CGImageDestinationFinalize(destination)
             }
+            // The two other ways, a still each from a short export.
+            for style in [BlurStyle.blur, .solid] {
+                var short = edit
+                short.timeline.trimEnd(to: 3)
+                short.blurRegions = [region]
+                short.blurRegions[0].style = style
+                let video = try await VideoExportService(sounds: RecordingSoundCache()).export(
+                    videoAt: take, options: ExportOptions(aspect: .portrait, edit: short, shortSide: 720, frameRate: 30)
+                )
+                defer { try? FileManager.default.removeItem(at: video) }
+                let stills = AVAssetImageGenerator(asset: AVURLAsset(url: video))
+                stills.appliesPreferredTrackTransform = true
+                let image = try await stills.image(at: CMTime(seconds: 1.5, preferredTimescale: 600)).image
+                let destination = try #require(CGImageDestinationCreateWithURL(
+                    output.appending(path: "real-face-\(style.rawValue).png") as CFURL, "public.png" as CFString, 1, nil
+                ))
+                CGImageDestinationAddImage(destination, image, nil)
+                CGImageDestinationFinalize(destination)
+            }
             say("REALBLUR export and stills in \(output.path(percentEncoded: false))")
             try report.joined(separator: "\n").write(to: output.appending(path: "summary.txt"), atomically: true, encoding: .utf8)
         }
