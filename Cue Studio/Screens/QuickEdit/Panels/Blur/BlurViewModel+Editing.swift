@@ -46,26 +46,31 @@ extension BlurViewModel {
         }
     }
 
+    /// The picked area's look changed by the creator: the next new area starts with it.
+    private func updateLook(_ change: (inout BlurRegion) -> Void, key: String? = nil) {
+        guard let region = selectedBlur else { return }
+        update(region.id, key: key, change)
+        if let changed = edit.blurRegions.first(where: { $0.id == region.id }) { lastLook = BlurLook(changed) }
+    }
+
     func setStyle(_ style: BlurStyle) {
         guard let region = selectedBlur, region.style != style else { return }
         Haptics.selection()
-        update(region.id) { $0.style = style }
+        updateLook { $0.style = style }
     }
 
     func setShape(_ shape: BlurShape) {
         guard let region = selectedBlur, region.shape != shape else { return }
         Haptics.selection()
-        update(region.id) { $0.shape = shape }
+        updateLook { $0.shape = shape }
     }
 
     func setStrength(_ strength: Double) {
-        guard let region = selectedBlur else { return }
-        update(region.id, key: "blurStrength") { $0.strength = min(max(strength, 0), 1) }
+        updateLook({ $0.strength = min(max(strength, 0), 1) }, key: "blurStrength")
     }
 
     func setFeather(_ feather: Double) {
-        guard let region = selectedBlur else { return }
-        update(region.id, key: "blurFeather") { $0.feather = min(max(feather, 0), 1) }
+        updateLook({ $0.feather = min(max(feather, 0), 1) }, key: "blurFeather")
     }
 
     func setColor(_ color: OverlayColor) {

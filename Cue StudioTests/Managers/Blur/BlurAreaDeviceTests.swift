@@ -135,6 +135,35 @@ struct BlurAreaDeviceTests {
         #expect(followed <= 0 || elapsed < followed * 2, "Tracking should run faster than half real time")
     }
 
+    /// An area drawn by hand over the chin, tracked from the take's first frame as the editor does (both ways), on the take
+    /// `CUE_REAL_TAKE` names (else the newest): what Vision followed, or the error it stopped on.
+    @Test func trackingADrawnAreaFromTheFirstFrame() async throws {
+        KeepScreenAwake.enable()
+        let named = ProcessInfo.processInfo.environment["CUE_REAL_TAKE"].map {
+            URL.applicationSupportDirectory.appending(path: "Takes", directoryHint: .isDirectory).appending(path: $0)
+        }
+        let original = try #require(named ?? MotionAnalysisDeviceTests.newestTakes(1).first, "No takes on this iPhone")
+        let take = try link(original)
+        defer { try? FileManager.default.removeItem(at: take) }
+        let duration = try await AVURLAsset(url: take).load(.duration).seconds
+        let box = NormalizedBox(center: CGPoint(x: 0.5, y: 0.47), width: 0.35, height: 0.1)
+        // Each way on its own, so the one that fails is named.
+        let ways = [
+            ("ahead to the end", 0.0, duration), ("ahead short of the end", 0.0, duration - 0.1),
+            ("behind from 0", 0.0, 0.0), ("ahead from 1 s", 1.0, duration),
+        ]
+        for (name, from, to) in ways {
+            do {
+                let samples = try await ObjectTracker().track(videoAt: take, box: box, at: from, until: to) { _ in }
+                print(String(format: "BLUR drawn area %@ · %d samples to %.1f s (last confidence %.2f)",
+                             name, samples.count, samples.last?.time ?? 0, samples.last?.confidence ?? 0))
+            } catch {
+                print("BLUR drawn area \(name) · threw \(error)")
+                Issue.record("\(name) threw \(error)")
+            }
+        }
+    }
+
     @Test func exportingWithAreasTakesAboutAsLong() async throws {
         KeepScreenAwake.enable()
         let originals = MotionAnalysisDeviceTests.newestTakes(1)

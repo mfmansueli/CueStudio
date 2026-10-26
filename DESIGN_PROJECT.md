@@ -2138,9 +2138,12 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   `BlurFollowing`, `BlurFaceWalker`, `BlurViewModel` e partes, `BlurPanel`, `BlurStatusCard`, `BlurEditingLayer`): **sexto botão da barra
   principal** (os cinco da tela não mudam), na barra do clipe (depois de Background) e na de uma foto ou vídeo por cima. Primeiro passo: os rostos
   do quadro numerados e tracejados na prévia (da análise de movimento quando ela chegou ali, senão Vision no quadro): **um toque esconde e já segue
-  aquele rosto**; **All but the largest** esconde todos menos o maior (cada um uma área); **Draw an area** põe uma caixa (Tarja) no meio, para uma
+  aquele rosto**; **All but the largest** esconde todos menos o maior (cada um uma área); **Draw an area** põe uma caixa no meio, para uma
   placa ou um nome. A área nasce do tamanho do clipe sob o cursor (de uma foto ou vídeo por cima: o arquivo todo) e, num rosto, com folga para
-  testa, cabelo e orelhas (`BlurRegion.area(aroundFace:)`, oval).
+  testa, cabelo e orelhas (`BlurRegion.area(aroundFace:)`).
+  - **Visual de uma área nova** (`BlurLook`, decisão do dono, 26/10): a primeira de uma edição, rosto ou desenhada, nasce **oval, Blur, Strength
+    60%, Soft edge 50%**; as seguintes nascem com o visual que o criador deu por último a uma área nesta edição (estilo, forma, força e borda). Ao
+    abrir o editor de novo, volta o visual inicial.
   - **Estilos, nenhum fraco** (pesquisa de privacidade: reconhecimento por IA ainda acerta com mosaico de ~14 blocos no rosto; mosaico em vídeo se
     reverte juntando quadros): **Blur** (a área reduzida a 10–4 pixels no lado menor e espalhada), **Pixelate** (8–4 blocos no lado menor, cada um a
     média do que cobre, a grade presa à área, não à tela), **Solid** (tarja opaca na paleta do editor; recomendada para textos, placas e telas).
@@ -2153,8 +2156,11 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
     Um clipe alongado pela alça leva junto uma área que ia até a ponta dele, com a parte nova marcada para conferir.
   - **Seguir** (Track): um rosto pela análise de movimento que o Cue já guarda (`.cuemotion`, rostos 10×/s: nada analisado de novo), face a face —
     nunca troca pelo mais próximo: quando outro cruza, fica no que vinha e marca o momento; quando some, a área fica parada e marcada, e volta a
-    seguir quando o rosto reaparece perto. Uma área desenhada (ou um rosto onde a análise não chegou) pelo `ObjectTracker` (Vision) para frente e
-    para trás a partir do cursor, com a caixa do tamanho da área. O caminho vira keyframes enxutos (Ramer–Douglas–Peucker), num passo de desfazer;
+    seguir quando o rosto reaparece perto. Uma área **desenhada sobre a maior parte de um rosto** segue esse rosto pela análise do
+    mesmo jeito, mantendo o tamanho que o criador desenhou (pergunta do dono, 26/10: "o Track não era pra reconhecer o rosto todo?"); uma área sobre
+    parte do rosto (olhos, boca), qualquer outra coisa, ou um rosto onde a análise não chegou, pelo `ObjectTracker` (Vision) para frente e
+    para trás a partir do cursor, com a caixa do tamanho da área (do primeiro quadro, só para a frente: o leitor do iPhone recusa um trecho menor
+    que um quadro, e por isso o leitor sempre pede ao menos 0,1 s; achado no aparelho, 26/10, com uma área desenhada no vídeo do dono). O caminho vira keyframes enxutos (Ramer–Douglas–Peucker), num passo de desfazer;
     **Cancel** guarda o que já foi seguido e marca o resto. Pontos postos à mão (arrastar a área num momento) são do criador: seguir de novo não os
     move.
   - **Nunca diz "coberto" sem estar:** onde não foi seguido, onde dois rostos cruzaram, onde a análise não chegou ou a área cresceu além do seguido
@@ -2178,6 +2184,8 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   áreas em movimento (Blur, Pixelate, Solid) a **94 quadros por segundo** (eram 49), com áreas e uma máscara a 93 (eram 65), a take sozinha a 268;
   exportar 10 s em 1080p: 2,0 s sem áreas, **2,9 s** com as três (eram 4,2 s); seguir um rosto pela análise: 29 s de vídeo em 5 ms; pelo Vision:
   5 s de vídeo em 0,4 s.
+- **◐ mostra o vídeo limpo:** enquanto compara, o contorno, as alças e o ✕ da área (e da máscara) somem, e o selo "Without Blur areas" quebra
+  a linha numa prévia estreita em vez de cortar o texto (achado no iPhone, 26/10).
 - **Alças sempre ao alcance:** um rosto que enche uma selfie faz uma área maior que o quadro; as alças, o ✕ e "Not tracked here" ficam na borda da
   prévia (12–16 pt para dentro), e a máscara faz o mesmo. A área tem três alças de canto (qualquer canto redimensiona pelo meio) e o ✕ no canto de
   cima à esquerda, sem cobrir uma alça.

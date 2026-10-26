@@ -71,6 +71,13 @@ final class MaskBlurUITests: XCTestCase {
 
     @MainActor
     private func snapshot(_ app: XCUIApplication, _ name: String) {
+        // On a device, kept in the result bundle (`TEST_RUNNER_CUE_KEEP_SHOTS=1`).
+        if ProcessInfo.processInfo.environment["CUE_KEEP_SHOTS"] != nil {
+            let shot = XCTAttachment(screenshot: app.screenshot())
+            shot.name = name
+            shot.lifetime = .keepAlways
+            add(shot)
+        }
         guard let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] else { return }
         let directory = URL(fileURLWithPath: folder, isDirectory: true)
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)

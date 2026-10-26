@@ -109,15 +109,13 @@ extension BlurViewModel {
             x: 0.5 - Self.drawnSize.width / 2, y: 0.5 - Self.drawnSize.height / 2, width: Self.drawnSize.width, height: Self.drawnSize.height
         )
         let box = footageBox(for: frame, on: footage.target) ?? NormalizedBox(center: CGPoint(x: 0.5, y: 0.5), width: 0.3, height: 0.1)
-        var region = BlurRegion(target: footage.target, span: footage.span, box: box)
-        region.style = .solid
-        add([region], toast: String(localized: "Drag it onto what to hide"))
+        add([lastLook.applied(to: BlurRegion(target: footage.target, span: footage.span, box: box))], toast: String(localized: "Drag it onto what to hide"))
     }
 
     // MARK: - Private
 
     private func makeFaceRegion(_ face: NormalizedBox, on footage: BlurFootage) -> BlurRegion {
-        BlurRegion(target: footage.target, span: footage.span, box: BlurRegion.area(aroundFace: face), subject: .face)
+        lastLook.applied(to: BlurRegion(target: footage.target, span: footage.span, box: BlurRegion.area(aroundFace: face), subject: .face))
     }
 
     /// Adds `regions` in one undo step and picks the first; the first step ends.

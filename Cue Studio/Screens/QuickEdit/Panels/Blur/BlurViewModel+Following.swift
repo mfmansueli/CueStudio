@@ -6,8 +6,9 @@
 import Foundation
 import os
 
-/// Following a Blur area's subject: a face through the recording's motion analysis (the same faces Follow face reads, ten a
-/// second, nothing analyzed again), anything else (or a face the analysis doesn't reach) with Vision's tracker from the
+/// Following a Blur area's subject: a face (tapped, or an area drawn over most of one) through the recording's motion analysis
+/// (the same faces Follow face reads, ten a second, nothing analyzed again), anything else (or a face the analysis doesn't
+/// reach) with Vision's tracker from the
 /// playhead, forwards then backwards. The path lands as the area's keyframes in one undo step, on the footage's own seconds,
 /// so a cut, a speed change or a new crop later never needs it followed again. Cancel keeps what was followed until then
 /// and marks the rest. "Track from here" follows only the stretch left unchecked under the playhead, from where the creator
@@ -64,7 +65,9 @@ extension BlurViewModel {
             range = TimeSpan(start: max(region.span.start, stretch.start - BlurFollowing.frame), end: min(region.span.end, stretch.end + BlurFollowing.frame))
         }
         let box = region.box(at: start)
-        let byFace = region.subject == .face && !region.target.isMedia
+        // A face through the analysis: a tapped one, and an area drawn over most of a face (the creator's size kept, the face's
+        // path followed). Anything else, or part of a face (the eyes, a mouth), with Vision's tracker.
+        let byFace = !region.target.isMedia
         stopFlag.withLock { $0 = false }
         following = (id, 0)
         Haptics.selection()
@@ -86,7 +89,10 @@ extension BlurViewModel {
                 let tracked = NormalizedBox(center: box.center, width: max(0.04, box.width), height: max(0.04, box.height))
                 do {
                     let ahead = try await tracker.track(videoAt: url, box: tracked, at: start, until: range.end, shouldStop: stop) { report($0, true) }
-                    let behind = try await tracker.track(videoAt: url, box: tracked, at: start, until: range.start, shouldStop: stop) { report($0, false) }
+                    // From its first moment there's nothing behind to follow.
+                    let behind = start > range.start + BlurFollowing.frame
+                        ? try await tracker.track(videoAt: url, box: tracked, at: start, until: range.start, shouldStop: stop) { report($0, false) }
+                        : []
                     result = BlurFollowing.followObject(
                         ahead: ahead, behind: Array(behind.dropLast()), area: box, tracked: tracked, at: start, through: range
                     )

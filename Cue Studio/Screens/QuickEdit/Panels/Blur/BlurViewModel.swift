@@ -31,6 +31,8 @@ final class BlurViewModel: EditorPart {
     }
     /// Upright sizes of the footage the handles are drawn on, by file.
     var uprightSizes: [URL: CGSize] = [:]
+    /// What a new area looks like: the look the creator last gave one in this edit (`BlurLook.initial` until then).
+    @ObservationIgnored var lastLook = BlurLook.initial
     /// Areas waiting to be followed after the one following now (every face but the largest).
     @ObservationIgnored var followQueue: [UUID] = []
     /// How each recording lands on the frame, worked out once per setting (`+Preview`).

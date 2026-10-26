@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// Blur area on the preview, while its panel is open or an area is picked and the video is paused. In the first step, the
+/// Blur area on the preview, while its panel is open or an area is picked, the video is paused and ◐ isn't comparing. In the first step, the
 /// faces found in the frame, numbered and dashed: a tap hides that one. Then every area showing at the playhead: a tap picks
 /// one; the picked one is outlined in its real shape (yellow, or dashed orange where it may not cover what it hides, with
 /// "Not tracked here"), dragged to move it (at the playhead when it moves), a corner pulled or a pinch to resize it, ✕ (its top
@@ -23,7 +23,8 @@ struct BlurEditingLayer: View {
     private var blur: BlurViewModel { viewModel.blur }
 
     var body: some View {
-        if !viewModel.player.isPlaying {
+        // ◐ shows the video as it is without the areas: nothing drawn over it then.
+        if !viewModel.player.isPlaying, !blur.comparesOriginal {
             ZStack(alignment: .topLeading) {
                 if blur.picking != nil {
                     faces

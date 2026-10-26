@@ -7,8 +7,9 @@ import XCTest
 
 /// Blur area on one of the creator's own recordings, finger on the glass, on their iPhone: a copy of the take opened in memory
 /// (`-uiTestRealTake`, the take itself never changes), Blur area from the main toolbar, the faces found, a tap on the face, its
-/// tracking, the area checked along the video, the three styles, ◐, the Blur area track on the timeline, and Done. Every step
-/// is photographed (kept in the result bundle) and how long tracking took is attached.
+/// tracking, the area checked along the video, the three styles, ◐, the Blur area track on the timeline, and Done; then an area
+/// drawn by hand and tracked with Vision. Every step is photographed (kept in the result bundle) and how long tracking took is
+/// attached.
 ///
 /// Opt-in: `TEST_RUNNER_CUE_REAL_TAKE=<file name in Takes> CUE_DEVICE="<iPhone>" scripts/test.sh device-ui RealFaceBlurUITests`
 /// (Settings › Developer › Enable UI Automation on), or on the Simulator with a path on the Mac to the recording, its
@@ -39,10 +40,14 @@ final class RealFaceBlurUITests: XCTestCase {
         while progress.exists, Date() < deadline { Thread.sleep(forTimeInterval: 0.2) }
         let tracking = Date().timeIntervalSince(started)
         XCTAssertFalse(progress.exists, "Tracking never finished")
-        add(XCTAttachment(string: String(format: "Tracking took %.1f s", tracking)))
+        let took = XCTAttachment(string: String(format: "Tracking a face took %.1f s", tracking))
+        took.lifetime = .keepAlways
+        add(took)
         shot(app, "3-tracked")
         let state = app.descendants(matching: .any)["edit.blur.state"]
-        add(XCTAttachment(string: "State: \(state.label)"))
+        let said = XCTAttachment(string: "State: \(state.label)")
+        said.lifetime = .keepAlways
+        add(said)
 
         // Along the video, paused at a few moments: the area on the face.
         for (index, points) in [200, 300, 300].enumerated() {
@@ -65,6 +70,39 @@ final class RealFaceBlurUITests: XCTestCase {
         if done.exists {
             done.tap()
             shot(app, "8-done")
+        }
+    }
+
+    /// An area drawn by hand (over whatever is in the middle of the frame) and tracked with Vision's tracker, which runs only on
+    /// a device: how long it took, the state it ended in, and the area along the video.
+    @MainActor
+    func testADrawnAreaIsTrackedOnARealTake() throws {
+        let name = ProcessInfo.processInfo.environment["CUE_REAL_TAKE"] ?? ""
+        let app = EditorApp.open(arguments: ["-uiTestRealTake", name])
+        EditorApp.tapTool(app, "blurArea")
+        let draw = app.buttons["edit.blur.draw"]
+        XCTAssertTrue(draw.exists(within: 15), "No way to draw an area")
+        draw.tap()
+        let follow = app.buttons["edit.blur.follow"]
+        XCTAssertTrue(follow.exists(within: 5), "A drawn area should offer Track")
+        shot(app, "d1-drawn")
+        let started = Date()
+        follow.tap()
+        let progress = app.descendants(matching: .any)["edit.blur.progress"]
+        if progress.exists(within: 3) { shot(app, "d2-tracking") }
+        let deadline = Date().addingTimeInterval(240)
+        while progress.exists, Date() < deadline { Thread.sleep(forTimeInterval: 0.3) }
+        XCTAssertFalse(progress.exists, "Tracking never finished")
+        let note = XCTAttachment(string: String(
+            format: "Tracking a drawn area took %.1f s · %@", Date().timeIntervalSince(started),
+            app.descendants(matching: .any)["edit.blur.state"].label
+        ))
+        note.lifetime = .keepAlways
+        add(note)
+        shot(app, "d3-tracked")
+        for (index, points) in [250, 250].enumerated() {
+            EditorApp.scrub(app, points: CGFloat(points))
+            shot(app, "d4-along-\(index)")
         }
     }
 

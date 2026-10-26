@@ -60,7 +60,8 @@ struct MaskEditingLayer: View {
     }
 
     var body: some View {
-        if viewModel.panel == .mask, !viewModel.player.isPlaying, let media = viewModel.selectedMedia, let mask = media.mask,
+        // ◐ shows the picture as it is without the mask: nothing drawn over it then.
+        if viewModel.panel == .mask, !viewModel.player.isPlaying, !overlays.comparesWithoutMask, let media = viewModel.selectedMedia, let mask = media.mask,
            overlays.localTime(of: .media(media.id)) != nil, let placementNow = overlays.maskPlacementAtPlayhead(of: media) {
             let geometry = geometry(media, placement: placementNow)
             ZStack(alignment: .topLeading) {

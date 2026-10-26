@@ -152,7 +152,60 @@ struct QuickEditBlurTests {
         #expect(region.uncheckedDuration > 1, "the rest is marked")
     }
 
-    @Test func aDrawnAreaStaysPutUntilTrackedAndASolidBarIsWhereItStarts() async throws {
+    @Test func anAreaDrawnOverAFaceFollowsTheFaceAndOnePartOfItTheTracker() async throws {
+        let scenario = await makeScenario(faces: [])
+        let viewModel = scenario.viewModel
+        // The recording's analysis: a face walking right, ten times a second.
+        let url = try #require(viewModel.blur.url(of: .recording(nil)))
+        var analysis = MotionAnalysis(duration: 10, width: 1080, height: 1920)
+        analysis.analyzedUntil = 10
+        analysis.subjects = stride(from: 0.0, through: 10, by: 0.1).map { SubjectSample(time: $0, faces: [Self.walk($0)], bodies: []) }
+        // The analysis is kept only next to a recording that exists: a stand-in file where the take has none.
+        let madeFile = !FileManager.default.fileExists(atPath: url.path(percentEncoded: false))
+        if madeFile { FileManager.default.createFile(atPath: url.path(percentEncoded: false), contents: Data()) }
+        MotionAnalysisStore.save(analysis, forRecording: url)
+        defer {
+            try? FileManager.default.removeItem(at: MotionAnalysisStore.url(forRecording: url))
+            if madeFile { try? FileManager.default.removeItem(at: url) }
+        }
+        viewModel.perform(.addBlurArea)
+        await Wait.until { viewModel.blur.picking?.isSearching == false }
+        viewModel.blur.drawArea()
+        // Dragged over the whole face at 2 s, and followed: the face's path, no tracker.
+        let face = Self.walk(2)
+        viewModel.blur.place(NormalizedBox(center: face.center, width: face.width * 1.3, height: face.height * 1.3))
+        viewModel.perform(.followBlur)
+        await Wait.until(timeout: .seconds(30)) { !viewModel.blur.isFollowing }
+        let region = try #require(viewModel.edit.blurRegions.first)
+        #expect(scenario.tracker.calls.isEmpty)
+        #expect(abs(region.box(at: 7).midX - Self.walk(7).midX) < 0.02)
+        #expect(abs(region.box(at: 7).width - face.width * 1.3) < 0.02, "the size it was drawn")
+        // A small area over part of the face (its mouth): the tracker.
+        viewModel.blur.place(NormalizedBox(center: CGPoint(x: face.midX, y: face.y + face.height - 0.02), width: 0.03, height: 0.02))
+        viewModel.perform(.followBlur)
+        await Wait.until(timeout: .seconds(30)) { !viewModel.blur.isFollowing }
+        #expect(!scenario.tracker.calls.isEmpty)
+        #expect(viewModel.edit.blurRegions.first?.isFollowed == true)
+    }
+
+    @Test func aNewAreaTakesTheLookTheCreatorLastGaveOne() async throws {
+        let scenario = await makeScenario(faces: [])
+        let viewModel = scenario.viewModel
+        viewModel.perform(.addBlurArea)
+        await Wait.until { viewModel.blur.picking?.isSearching == false }
+        viewModel.blur.drawArea()
+        viewModel.blur.setStyle(.solid)
+        viewModel.blur.setShape(.rectangle)
+        viewModel.blur.setFeather(0)
+        viewModel.perform(.addBlurArea)
+        await Wait.until { viewModel.blur.picking?.isSearching == false }
+        viewModel.blur.drawArea()
+        let second = try #require(viewModel.edit.blurRegions.last)
+        #expect(viewModel.edit.blurRegions.count == 2)
+        #expect(BlurLook(second) == BlurLook(style: .solid, shape: .rectangle, strength: 0.6, feather: 0))
+    }
+
+    @Test func aDrawnAreaStaysPutUntilTrackedAndStartsWithTheFirstLook() async throws {
         let scenario = await makeScenario(faces: [])
         let viewModel = scenario.viewModel
         viewModel.perform(.addBlurArea)
@@ -160,7 +213,9 @@ struct QuickEditBlurTests {
         #expect(viewModel.blur.picking?.faces.isEmpty == true)
         viewModel.blur.drawArea()
         let region = try #require(viewModel.edit.blurRegions.first)
-        #expect(region.subject == .area && region.style == .solid && !region.moves && !region.isFollowed)
+        #expect(region.subject == .area && !region.moves && !region.isFollowed)
+        // The first area of an edit: an oval, Blur at 60%, a 50% soft edge.
+        #expect(BlurLook(region) == .initial)
         #expect(!viewModel.blur.isFollowing)
         #expect(scenario.tracker.calls.isEmpty)
         // Its toolbar: Edit, Track, Review, Add area and Delete pinned.
