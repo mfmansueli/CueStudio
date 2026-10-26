@@ -6,14 +6,19 @@
 import Foundation
 
 /// What a toolbar button does. The toolbar lists actions for the current context
-/// (`QuickEditViewModel.toolbarItems`) and the view model performs them (`perform(_:)`), so the
-/// contexts are tested without the screen.
+/// (`QuickEditViewModel.toolbarItems`) and the view model performs them (`perform(_:)`, checking again at the tap that each can
+/// work and saying why when it can't), so the contexts are tested without the screen.
 enum EditorAction: Hashable {
     // Main toolbar
     case selectClipAtPlayhead
     case openMenu(EditorToolMenu)
     case openCaptions
     case open(EditorPanel)
+    /// Adjust, Skin, Filters or Background at the reach the button says: the whole video (the main bar, and the badged shortcut
+    /// on an item's bar) or the picked clip's own (its bar).
+    case openLook(EditorLookTool, wholeVideo: Bool)
+    /// ✦ Smart on one of its tabs: Tools (✦ Smart), Templates, Brand kit.
+    case openSmart(SmartPanelSection)
     case addMedia
     /// "Media" on the main toolbar: a photo or video on top of the video or as a clip, chosen in the sheet.
     case addMediaChoice

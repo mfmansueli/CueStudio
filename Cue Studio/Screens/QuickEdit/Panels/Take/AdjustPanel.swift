@@ -85,14 +85,19 @@ struct AdjustPanel: View {
             // The row runs to the panel's edges, so a chip doesn't stop short of them when it scrolls.
             .padding(.horizontal, -16)
             .contentMargins(.horizontal, 16, for: .scrollContent)
-            .onAppear {
-                // Opened on one setting (a notification's "Try it" for Skin Smoothing): its chip is picked and in view; nothing changes.
-                guard let start = viewModel.look.adjustOpensOn else { return }
-                viewModel.look.adjustOpensOn = nil
-                current = .dial(start)
-                proxy.scrollTo(start, anchor: .trailing)
-            }
+            .onAppear { openOnAskedSetting(proxy) }
+            // Skin on a toolbar while Adjust is already open (an iPad's panel sheet leaves the toolbar in reach).
+            .onChange(of: viewModel.look.adjustOpensOn) { openOnAskedSetting(proxy) }
         }
+    }
+
+    /// Opened on one setting (Skin on a toolbar, a notification's "Try it" for Skin Smoothing): its chip is picked and in view;
+    /// nothing changes.
+    private func openOnAskedSetting(_ proxy: ScrollViewProxy) {
+        guard let start = viewModel.look.adjustOpensOn else { return }
+        viewModel.look.adjustOpensOn = nil
+        current = .dial(start)
+        proxy.scrollTo(start, anchor: .trailing)
     }
 
     /// A setting as a chip: its name and, once it is off zero, its value in yellow. The picked one is

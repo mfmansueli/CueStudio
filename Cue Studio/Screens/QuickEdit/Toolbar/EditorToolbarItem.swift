@@ -18,18 +18,44 @@ struct EditorToolbarItem: Identifiable, Hashable {
         case smart
     }
 
-    /// Stable, for UI tests: `edit.toolbar.<id>`.
+    /// The badge on a tool that reaches past the picked item, so a tool shown with a clip never looks like the clip's own.
+    enum ScopeBadge: Hashable {
+        /// The whole video.
+        case wholeVideo
+
+        /// "Whole video" (drawn in capitals; "Vídeo todo" in Portuguese), the words the panels' headers use for the same reach: when
+        /// it fits over the tool.
+        var label: String { String(localized: "Whole video") }
+
+        /// "All" ("TODOS"): where the long badge would be wider than the tool.
+        var shortLabel: String { String(localized: "All") }
+    }
+
+    /// Stable, for UI tests and for what the toolbar remembers (`edit.toolbar.<id>`); never a localized name.
     let id: String
     let label: String
     let systemImage: String
     var style: Style = .normal
     let action: EditorAction
-    /// A short word on the icon saying it reaches past the picked item ("All": the whole video), so a tool shown with a clip
-    /// never looks like the clip's own.
-    var scopeBadge: String?
+    /// Whether it reaches past the picked item (`ScopeBadge`).
+    var scopeBadge: ScopeBadge?
     /// A thin line before it: the start of a group of tools of another reach.
     var startsGroup = false
 
     /// Delete stays at the end of the bar while the other tools scroll.
     var isPinned: Bool { style == .destructive }
+
+    /// The same tool starting a group (a thin line before it).
+    func startingGroup() -> EditorToolbarItem {
+        var item = self
+        item.startsGroup = true
+        return item
+    }
+
+    /// The same tool with the whole video's badge.
+    func reachingWholeVideo() -> EditorToolbarItem {
+        var item = self
+        item.scopeBadge = .wholeVideo
+        return item
+    }
 }

@@ -253,8 +253,11 @@ struct QuickEditBlurTests {
         #expect(BlurLook(region) == .initial)
         #expect(!viewModel.blur.isFollowing)
         #expect(scenario.tracker.calls.isEmpty)
-        // Its toolbar: Edit, Track, Review, Add area and Delete pinned.
-        #expect(viewModel.toolbarItems.map(\.id) == ["editBlur", "followBlur", "reviewBlur", "addBlur", "delete"])
+        // Its toolbar: Edit, Track, Review, Add area, the editor's other tools after them, and Delete pinned.
+        #expect(Array(viewModel.toolbarItems.map(\.id).prefix(4)) == ["editBlur", "followBlur", "reviewBlur", "addBlur"])
+        #expect(viewModel.toolbarItems[4].startsGroup)
+        #expect(!viewModel.toolbarItems.contains { $0.id == "blurArea" }, "Add area already adds one")
+        #expect(viewModel.toolbarItems.last?.id == "delete")
         viewModel.perform(.deleteBlur)
         #expect(viewModel.edit.blurRegions.isEmpty)
         #expect(viewModel.selection == nil)

@@ -48,6 +48,13 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     var panelTab: EditorPanelTab = .presets
     /// The open panel's "Advanced" section is expanded.
     var showsAdvanced = false
+    /// ✦ Smart's tab: Tools when it opens, unless Templates or Brand kit on a toolbar asked for theirs (`openSmart(on:)`).
+    var smartSection: SmartPanelSection = .tools
+    /// Which whole-video tools already said, on which kind of item's bar, that they change the whole video (once each while the
+    /// editor is open, `tap(_:)`).
+    @ObservationIgnored var scopeNoticesSaid: [EditorToolbarContext: Set<String>] = [:]
+    /// Where each toolbar was scrolled, so the main tools come back where they were left (`EditorToolbarScrollMemory`).
+    @ObservationIgnored var toolbarScroll = EditorToolbarScrollMemory()
     /// The preview fills the screen: tap the video to play or pause, outside to come back.
     var isFullScreen = false
     /// The sheet over the editor: Export, Add music, Add photo or video.
@@ -285,6 +292,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         shownPanel = next
         showsAdvanced = false
         panelTab = .presets
+        // ✦ Smart opens on Tools next time unless a toolbar asks for another tab.
+        if previous == .smart { smartSection = .tools }
         audio.panelChanged(from: previous)
         // Auto, Compare, the recordings' analysis for Format and Stabilize, a clip's scope.
         look.panelChanged(to: next)
