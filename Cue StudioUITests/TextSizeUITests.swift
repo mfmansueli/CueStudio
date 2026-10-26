@@ -17,7 +17,7 @@ final class TextSizeUITests: XCTestCase {
     func testTheScriptsListGrowsWithTheTextSize() {
         let regular = rowTitleHeight(contentSize: nil)
         let large = rowTitleHeight(contentSize: "UICTContentSizeCategoryAccessibilityL")
-        XCTAssertGreaterThan(large, regular * 1.6, "A row's title is \(regular) pt high at the default size and \(large) pt at AX3")
+        XCTAssertGreaterThan(large, regular * 1.6, "A row's title is \(regular) pt high at the default size and \(large) pt at AX2")
     }
 
     /// At the largest text size the first flight's button is on the screen and can be tapped.
@@ -27,7 +27,9 @@ final class TextSizeUITests: XCTestCase {
         )
         let start = app.buttons["onboarding.getStarted"]
         XCTAssertTrue(start.exists(within: 15))
-        XCTAssertTrue(app.windows.firstMatch.frame.contains(start.frame), "Get started is at \(start.frame)")
+        // It rises into place as the opening ends.
+        start.waitUntilStill()
+        XCTAssertTrue(app.frame.contains(start.frame), "Get started is at \(start.frame) on a \(app.frame.size) screen")
         XCTAssertTrue(start.isHittable)
     }
 

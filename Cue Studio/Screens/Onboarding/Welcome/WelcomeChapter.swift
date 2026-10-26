@@ -108,7 +108,8 @@ struct WelcomeChapter: View {
         let words = [
             (String(localized: "TELEPROMPTER"), false), (String(localized: "AUTO CAPTIONS"), false), (String(localized: "✦ AI SCRIPTS"), true),
         ]
-        return HStack(spacing: 6) {
+        // On one line as on the board; on two when they don't fit it (the largest text sizes), never wider than the screen.
+        return FlowLayout(spacing: 6, lineSpacing: 6) {
             ForEach(Array(words.enumerated()), id: \.offset) { index, word in
                 WelcomePill(text: word.0, isAI: word.1, hit: WelcomeScript.wordHits[index], time: time)
                     .onGeometryChange(for: CGPoint.self) { proxy in
@@ -122,7 +123,6 @@ struct WelcomeChapter: View {
                     }
             }
         }
-        .fixedSize()
     }
 
     // MARK: - The button

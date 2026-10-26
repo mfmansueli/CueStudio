@@ -56,7 +56,8 @@ struct TakeUpNextCard: View {
         .interfaceTracking(1)
         .foregroundStyle(Palette.acc)
         .padding(.horizontal, 12)
-        .frame(height: 76)
+        .padding(.vertical, 10)
+        .frame(minHeight: 76)
         .background {
             ZStack {
                 Palette.surface

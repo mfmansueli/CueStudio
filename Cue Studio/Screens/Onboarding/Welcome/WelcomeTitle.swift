@@ -10,10 +10,14 @@ import SwiftUI
 struct WelcomeTitle: View {
     let time: Double
 
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
     var body: some View {
         let title = String(localized: "A teleprompter made for your creative universe.")
         // By dictionary word in a language written without spaces, so the title breaks into lines instead of running off the screen.
         let words = OnboardingWords.pieces(of: title)
+        // The board's 40 pt lines, grown as the title's type grows.
+        let lineHeight = InterfaceType.size(40, relativeTo: InterfaceType.style(for: 34), for: dynamicTypeSize, proportion: ScreenProportion.current)
         VStack(alignment: .leading, spacing: 12) {
             FlowLayout(spacing: OnboardingWords.isUnspaced(title) ? 0 : 34 * 0.26, lineSpacing: 0) {
                 ForEach(Array(words.enumerated()), id: \.offset) { index, word in
@@ -24,7 +28,7 @@ struct WelcomeTitle: View {
                         .foregroundStyle(Palette.ink)
                         .lineLimit(1)
                         .fixedSize()
-                        .frame(height: 40)
+                        .frame(height: lineHeight)
                         .opacity(pose.opacity)
                         .offset(y: pose.y)
                         .blur(radius: pose.blur)

@@ -7,7 +7,7 @@ import SwiftUI
 import UIKit
 
 /// The interface's type: every size of the boards (15.5 pt semibold, a 10 pt label…) drawn at that size at the default text size, grown with
-/// Dynamic Type on the curve of the text style nearest to it (a small label grows less than a title, as the system's do) and following the
+/// Dynamic Type on the curve of the text style nearest to it (a title grows less than body text and a small label more, as the system's do) and following the
 /// iPhone's width a little (`ScreenProportion`). Screens use `cueFont(_:weight:design:)`, or `cueFont(_ style:)` for a text style; a size
 /// that must not grow (the prompter's words, words on the video, a miniature, a drawing) is `Font.fixed`, so it reads as a choice. A screen
 /// whose bar or chip can't grow past a point caps it with `dynamicTypeSize(...)`, and every size here follows the cap.
@@ -33,13 +33,16 @@ nonisolated enum InterfaceType {
         UIFont.preferredFont(forTextStyle: style.uiTextStyle, compatibleWith: UITraitCollection(preferredContentSizeCategory: .large)).pointSize
     }
 
-    /// `points` grown for `dynamicTypeSize` on `style`'s curve, at `proportion` of the board's size.
+    /// `points` grown for `dynamicTypeSize` on `style`'s curve, at `proportion` of the board's size. At the default size it is exactly the
+    /// board's: `UIFontMetrics` rounds what it scales to the screen's pixels (15.5 pt came back 15.67), and its curve isn't a straight
+    /// line, so the growth can't be read once and multiplied.
     static func size(
         _ points: CGFloat, relativeTo style: Font.TextStyle? = nil, for dynamicTypeSize: DynamicTypeSize, proportion: CGFloat = 1
     ) -> CGFloat {
+        let board = points * proportion
+        guard dynamicTypeSize != .large else { return board }
         let traits = UITraitCollection(preferredContentSizeCategory: UIContentSizeCategory(dynamicTypeSize))
-        let metrics = UIFontMetrics(forTextStyle: (style ?? self.style(for: points)).uiTextStyle)
-        return metrics.scaledValue(for: points * proportion, compatibleWith: traits)
+        return UIFontMetrics(forTextStyle: (style ?? self.style(for: points)).uiTextStyle).scaledValue(for: board, compatibleWith: traits)
     }
 }
 

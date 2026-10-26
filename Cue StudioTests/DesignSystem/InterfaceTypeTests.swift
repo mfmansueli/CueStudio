@@ -5,9 +5,10 @@
 
 import SwiftUI
 import Testing
+import UIKit
 @testable import Cue_Studio
 
-/// The interface's type: the board's size at the default text size, grown with Dynamic Type (small labels less than titles), and a
+/// The interface's type: the board's size at the default text size, grown with Dynamic Type on its text style's curve, and a
 /// little smaller or bigger with the iPhone's width.
 @MainActor
 struct InterfaceTypeTests {
@@ -25,12 +26,16 @@ struct InterfaceTypeTests {
         #expect(grown.last ?? 0 > rowTitle * 2, "The largest accessibility size more than doubles a row's title")
     }
 
-    @Test func aSmallLabelGrowsLessThanATitle() {
+    @Test func eachSizeGrowsOnItsTextStylesCurveAsTheSystemsDo() {
         let label = InterfaceType.size(10, for: .accessibility3) / 10
-        let title = InterfaceType.size(27, for: .accessibility3) / 27
         let body = InterfaceType.size(17, for: .accessibility3) / 17
-        #expect(label < body, "A 10 pt label grows on the caption's curve, less than body text")
-        #expect(title < body, "A title grows less than body text, as the system's titles do")
+        let title = InterfaceType.size(27, for: .accessibility3) / 27
+        #expect(title < body, "A title grows less than body text")
+        #expect(label > body, "A small label grows more than body text, as caption 2 does, so it stays readable")
+        // The growth `UIFontMetrics` gives, what `@ScaledMetric` and `Font.custom(_:size:relativeTo:)` use.
+        let metrics = UIFontMetrics(forTextStyle: .body)
+        let traits = UITraitCollection(preferredContentSizeCategory: .accessibilityExtraLarge)
+        #expect(abs(InterfaceType.size(17, relativeTo: .body, for: .accessibility3) - metrics.scaledValue(for: 17, compatibleWith: traits)) < 0.001)
     }
 
     @Test func eachSizeGrowsOnTheNearestTextStyle() {
