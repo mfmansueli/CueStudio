@@ -9,7 +9,7 @@ import Foundation
 /// Mask: only part of the picked photo or video shows (a rectangle with rounded corners, a circle or ellipse, the side of a
 /// line, a band), with a soft edge, inverted when wanted (`MediaMask`). The mask lives on the media's own place, so the media's
 /// moves, keyframes, Track and preset take it along. On the preview a drag moves the mask over a still picture, or (Mask ›
-/// Picture) reframes the picture under a still mask (`areaFraming`). With keyframes, a change to the mask lands on the
+/// Picture) reframes the picture under a still mask (`pictureFraming`). With keyframes, a change to the mask lands on the
 /// keyframe at the playhead, so the mask can move, grow or soften over time; the shape and Invert stay the same throughout.
 /// A support of the split screen has its area for a shape: no mask there. Every change is an undo step; a drag or a slider is
 /// one.
@@ -146,7 +146,7 @@ extension OverlaysViewModel {
         let fresh = MediaMask.starting(mask.shape, onPlaceOfAspect: placeAspect(of: media))
         updateMedia(media.id) { item in
             item.mask?.placement = fresh.placement
-            item.areaFraming = nil
+            item.pictureFraming = nil
             item.keyframes = item.keyframes?.map { keyframe in
                 var keyframe = keyframe
                 keyframe.mask = nil
@@ -160,7 +160,7 @@ extension OverlaysViewModel {
     var maskIsAdjusted: Bool {
         guard let media = selectedMedia, let mask = media.mask else { return false }
         let fresh = MediaMask.starting(mask.shape, onPlaceOfAspect: placeAspect(of: media))
-        return mask.placement != fresh.placement || media.areaFraming != nil || media.keyframes?.contains { $0.mask != nil } == true
+        return mask.placement != fresh.placement || media.pictureFraming != nil || media.keyframes?.contains { $0.mask != nil } == true
     }
 
     // MARK: - The picture under it
@@ -169,22 +169,22 @@ extension OverlaysViewModel {
     /// as it still covers its place.
     func panMaskedPicture(by translation: CGSize, placeSize: CGSize) {
         guard let media = selectedMedia else { return }
-        var framing = media.areaFraming ?? AreaFraming()
+        var framing = media.pictureFraming ?? AreaFraming()
         framing.fit = .fill
         let picture = CGSize(width: media.aspect * 1000, height: 1000)
         let moved = SplitPlacement.dragged(framing, content: picture, area: placeSize, by: translation)
         guard moved != framing else { return }
-        updateMedia(media.id) { $0.areaFraming = moved }
+        updateMedia(media.id) { $0.pictureFraming = moved }
     }
 
     /// Mask › Picture: the picture `factor` times closer under the mask (never smaller than its place).
     func zoomMaskedPicture(by factor: Double) {
         guard let media = selectedMedia else { return }
-        var framing = media.areaFraming ?? AreaFraming()
+        var framing = media.pictureFraming ?? AreaFraming()
         framing.fit = .fill
         framing.zoom = min(max(framing.clampedZoom * factor, AreaFraming.zoomRange.lowerBound), AreaFraming.zoomRange.upperBound)
-        guard framing != media.areaFraming else { return }
-        updateMedia(media.id) { $0.areaFraming = framing }
+        guard framing != media.pictureFraming else { return }
+        updateMedia(media.id) { $0.pictureFraming = framing }
     }
 
     // MARK: - Compare

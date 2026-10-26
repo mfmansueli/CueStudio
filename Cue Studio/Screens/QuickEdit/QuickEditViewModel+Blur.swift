@@ -30,15 +30,25 @@ extension QuickEditViewModel {
         .sorted { $0.span.start < $1.span.start }
     }
 
-    /// How long, all areas together, may not cover what they hide.
+    /// How long the video shows areas where they may not cover what they hide (edited seconds, every showing counted; an
+    /// area whose footage the edit no longer plays doesn't count).
     var uncheckedBlurDuration: TimeInterval {
-        edit.blurRegions.reduce(0) { $0 + $1.uncheckedDuration }
+        edit.blurRegions.reduce(0) { $0 + shownUnchecked(of: $1).reduce(0) { $0 + $1.duration } }
     }
 
-    /// "Review" in the check before Done: the first area left unchecked, picked, at its stretch.
+    /// Where `region`'s unchecked stretches show in the edit (edited seconds).
+    private func shownUnchecked(of region: BlurRegion) -> [TimeSpan] {
+        region.openUnchecked.flatMap { stretch -> [TimeSpan] in
+            var part = region
+            part.span = stretch
+            return edit.editedSpans(of: part, in: edit.timeline)
+        }
+    }
+
+    /// "Go there" in the check before Done: the first area left unchecked where the video shows it, picked, at its stretch.
     func reviewUncheckedBlur() {
         showsBlurCheck = false
-        guard let region = edit.blurRegions.first(where: { !$0.openUnchecked.isEmpty }) else { return }
+        guard let region = edit.blurRegions.first(where: { !shownUnchecked(of: $0).isEmpty }) else { return }
         selection = .blur(region.id)
         panel = .blur
         blur.goToUnchecked()

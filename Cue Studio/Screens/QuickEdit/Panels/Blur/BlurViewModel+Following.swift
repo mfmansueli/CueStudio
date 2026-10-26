@@ -41,6 +41,11 @@ extension BlurViewModel {
 
     private func startFollowing(_ id: UUID?, onlyUnchecked: Bool) {
         guard isReady, let id, let region = edit.blurRegions.first(where: { $0.id == id }) else { return }
+        // One area at a time: another waits its turn instead of stopping the one running (whose path would be lost).
+        if let running = following?.id {
+            if running != id, !followQueue.contains(id) { followQueue.append(id) }
+            return
+        }
         if edit.isOnPhoto(region) {
             toast.show(String(localized: "A photo doesn't move · Nothing to track"), kind: .problem)
             return
@@ -96,10 +101,19 @@ extension BlurViewModel {
     private func followingFinished(_ ticket: EditorJobs.Ticket, id: UUID, result: BlurFollowing.Result?) {
         guard jobs.isCurrent(ticket) else { return }
         following = nil
-        // Deleted meanwhile: nothing to put it on.
-        guard edit.blurRegions.contains(where: { $0.id == id }) else { return }
+        // Deleted meanwhile: nothing to put it on; the next one waiting goes on.
+        guard edit.blurRegions.contains(where: { $0.id == id }) else {
+            if !followQueue.isEmpty { follow(followQueue.removeFirst()) }
+            return
+        }
         guard let result else {
+            // Nothing tracked it: all of it may not cover what it hides, and it says so until it's tracked or checked.
+            update(id) { area in
+                area.isFollowed = true
+                area.markUnchecked(area.span)
+            }
             toast.show(String(localized: "Couldn’t track it here · Move it onto what it hides"), kind: .problem)
+            if !followQueue.isEmpty { follow(followQueue.removeFirst()) }
             return
         }
         change { snapshot in

@@ -25,6 +25,14 @@ struct BlurPanel: View {
             } content: {
                 settings(region)
             }
+        } else {
+            // A photo or video picked while it's open: the way to hide something on it.
+            PanelFrame(viewModel: viewModel, panel: .blur) {
+                PanelNote(text: String(localized: "Hides a face, a plate or a name"))
+                PanelButton(label: String(localized: "Blur area"), systemImage: "eye.slash", isPrimary: true, identifier: "edit.blur.start") {
+                    blur.startAdding()
+                }
+            }
         }
     }
 

@@ -43,7 +43,7 @@ struct QuickEditToolbarTests {
 
     @Test func theMainToolbarHasEveryToolWithNothingPicked() async {
         let viewModel = await makeScenario().viewModel
-        #expect(ids(viewModel) == ["edit", "captions", "text", "smart", "addMedia", "audio", "format", "adjustVideo", "filters", "cover"])
+        #expect(ids(viewModel) == ["edit", "captions", "text", "smart", "addMedia", "blurArea", "audio", "format", "adjustVideo", "filters", "cover"])
         #expect(viewModel.toolbarContextLabel == nil)
     }
 
@@ -96,7 +96,7 @@ struct QuickEditToolbarTests {
         #expect(viewModel.toolbarContextLabel == "Clip")
         #expect(ids(viewModel) == [
             "split", "editByText", "pauses", "speed", "zoom", "volume", "stabilize", "duplicate", "freeze", "reverse", "replace", "extractAudio",
-            "reorder", "adjust", "filters", "background", "copyLook", "pasteLook", "delete",
+            "reorder", "adjust", "filters", "background", "blurArea", "copyLook", "pasteLook", "delete",
         ])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
     }
@@ -181,7 +181,7 @@ struct QuickEditToolbarTests {
         let media = MediaOverlay(kind: .photo, fileName: "p.jpg", aspect: 1, mediaDuration: nil, span: TimeSpan(start: 2, end: 5))
         viewModel.changeEdit { $0.media = [media] }
         viewModel.selection = .media(media.id)
-        #expect(ids(viewModel) == ["editMedia", "splitMedia", "replaceMedia", "track", "duplicate", "saveToLibrary", "lock", "delete"])
+        #expect(ids(viewModel) == ["editMedia", "mask", "blurArea", "splitMedia", "replaceMedia", "track", "duplicate", "saveToLibrary", "lock", "delete"])
         viewModel.perform(.duplicateMedia)
         #expect(viewModel.edit.media.count == 2)
         #expect(viewModel.selection != .media(media.id))

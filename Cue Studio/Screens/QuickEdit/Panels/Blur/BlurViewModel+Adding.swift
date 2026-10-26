@@ -20,7 +20,7 @@ extension BlurViewModel {
         let timeline = edit.timeline
         if let media = selectedMedia, let fileTime = media.fileTime(at: time, in: timeline) {
             let isVideo = media.kind == .video
-            let length = media.mediaDuration ?? 1
+            let length = media.mediaDuration ?? 3600
             return BlurFootage(
                 target: .media(media.id), time: isVideo ? fileTime : 0, url: EditMediaFiles.url(for: media.fileName), isVideo: isVideo,
                 span: TimeSpan(start: 0, end: max(BlurRegion.shortest, length))
@@ -39,12 +39,8 @@ extension BlurViewModel {
             let span = TimeSpan(start: reversal.span.end - segment.sourceEnd, end: reversal.span.end - segment.sourceStart)
             return BlurFootage(target: target, time: reversal.span.end - played, url: url, isVideo: true, span: span)
         }
-        if let source, let still = source.still {
-            let target = BlurTarget.recording(still.sourceID)
-            guard let url = url(of: target) else { return nil }
-            let span = TimeSpan(start: max(0, still.time - BlurRegion.shortest / 2), end: still.time + BlurRegion.shortest / 2)
-            return BlurFootage(target: target, time: still.time, url: url, isVideo: true, span: span)
-        }
+        // A frozen frame is footage of its own: an area put on it stays on it (one on the moment it froze covers it too, through
+        // `ClipSource.still`).
         let target = BlurTarget.recording(segment.sourceID)
         guard let url = url(of: target) else { return nil }
         return BlurFootage(target: target, time: played, url: url, isVideo: true, span: segment.span)

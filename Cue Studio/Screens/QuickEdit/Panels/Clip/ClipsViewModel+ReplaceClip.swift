@@ -64,10 +64,14 @@ extension ClipsViewModel {
         guard let old = next.timeline.replaceSource(ofSegment: id, with: source.id, duration: duration, from: start) else { return }
         next.sources.append(source)
         next.moveOverlays(onSegment: id, from: old, to: source.id, start: next.timeline.segment(id: id)?.sourceStart ?? 0, in: before)
-        // A Blur area is on the old video's seconds: it doesn't cover the new one (Undo brings both back).
-        let hidBlur = edit.blurRegions.contains { region in
-            !region.target.isMedia && region.target.recordingID == segment.sourceID && region.span.overlaps(segment.span)
+        // A Blur area is on the old video's seconds (shown in this clip directly, read backwards or frozen): it doesn't cover the
+        // new one (Undo brings both back).
+        let clipSpan = before.index(ofSegment: id).map { index in
+            TimeSpan(start: before.editedStart(ofSegmentAt: index), end: before.editedStart(ofSegmentAt: index) + segment.duration)
         }
+        let hidBlur = clipSpan.map { shown in
+            edit.blurRegions.contains { region in edit.editedSpans(of: region, in: before).contains { $0.overlaps(shown) } }
+        } ?? false
         commit(EditSnapshot(next))
         if let index = next.timeline.index(ofSegment: id) { player.seek(to: next.timeline.editedStart(ofSegmentAt: index)) }
         if hidBlur {

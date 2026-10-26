@@ -241,6 +241,101 @@ struct QuickEditBlurTests {
         #expect(viewModel.document.history.past.count == steps + 1)
     }
 
+    @Test func anAreaCoversTheClipLengthenedAfterItWasShortened() async throws {
+        let scenario = await makeScenario(faces: [])
+        let viewModel = scenario.viewModel
+        let clip = try #require(viewModel.edit.timeline.segments.first)
+        var timeline = viewModel.edit.timeline
+        timeline.trimSegment(id: clip.id, edge: .end, toSource: 8)
+        viewModel.clips.commit(timeline)
+        viewModel.perform(.addBlurArea)
+        await Wait.until { viewModel.blur.picking?.isSearching == false }
+        viewModel.blur.drawArea()
+        // Shortened to 6 s, then lengthened to 9 s: the area (0–8 s) reaches the new end.
+        for end in [6.0, 9.0] {
+            timeline = viewModel.edit.timeline
+            timeline.trimSegment(id: clip.id, edge: .end, toSource: end)
+            viewModel.beginChange()
+            viewModel.clips.commit(timeline)
+            viewModel.endChange()
+        }
+        let region = try #require(viewModel.edit.blurRegions.first)
+        #expect(abs(region.span.end - 9) < 0.01)
+        // An area the creator ended inside the clip keeps its end.
+        viewModel.selection = .blur(region.id)
+        scenario.player.seek(to: 5)
+        viewModel.blur.endHere()
+        timeline = viewModel.edit.timeline
+        timeline.trimSegment(id: clip.id, edge: .end, toSource: 10)
+        viewModel.clips.commit(timeline)
+        #expect(abs((viewModel.edit.blurRegions.first?.span.end ?? 0) - 5) < 0.01)
+    }
+
+    @Test func onAReversedClipEndHereEndsWhatShowsAfterThePlayhead() async throws {
+        let scenario = await makeScenario(faces: [])
+        let viewModel = scenario.viewModel
+        // The take's 0–10 s played backwards: edited 5 s shows its 5 s, edited 6 s its 4 s.
+        var source = ClipSource(fileName: "reversed.mov", duration: 10, title: "Reversed")
+        source.reversal = ClipReversal(sourceID: nil, span: TimeSpan(start: 0, end: 10))
+        let clip = try #require(viewModel.edit.timeline.segments.first)
+        viewModel.clips.changeEdit { edit in
+            edit.sources = [source]
+            _ = edit.timeline.replaceSource(ofSegment: clip.id, with: source.id, duration: 10, from: 0)
+            let box = NormalizedBox(x: 0.3, y: 0.3, width: 0.3, height: 0.3)
+            edit.blurRegions = [BlurRegion(target: .recording(nil), span: TimeSpan(start: 2, end: 8), box: box)]
+        }
+        let region = try #require(viewModel.edit.blurRegions.first)
+        viewModel.selection = .blur(region.id)
+        scenario.player.seek(to: 5)
+        viewModel.blur.endHere()
+        let ended = try #require(viewModel.edit.blurRegions.first)
+        #expect(abs(ended.span.start - 5) < 0.01 && abs(ended.span.end - 8) < 0.01, "\(ended.span)")
+    }
+
+    @Test func aVideoSplitOrCopiedKeepsItsAreasAndAReplacedOneLosesThem() async throws {
+        let scenario = await makeScenario(faces: [CGRect(x: 0.4, y: 0.4, width: 0.2, height: 0.2)])
+        let viewModel = scenario.viewModel, player = scenario.player
+        viewModel.overlays.addMedia(ImportedMedia(kind: .video, fileName: "v-\(UUID().uuidString).mov", aspect: 9.0 / 16, duration: 6))
+        let media = try #require(viewModel.selectedMedia)
+        viewModel.perform(.addBlurArea)
+        await Wait.until { viewModel.blur.picking?.isSearching == false }
+        viewModel.blur.drawArea()
+        #expect(viewModel.edit.blurRegions.count == 1)
+        player.seek(to: 4)
+        viewModel.overlays.splitMedia(media.id)
+        let halves = viewModel.edit.media.map(\.id)
+        #expect(halves.count == 2)
+        #expect(Set(viewModel.edit.blurRegions.compactMap(\.target.mediaID)) == Set(halves))
+        viewModel.overlays.duplicateMedia(halves[1])
+        #expect(viewModel.edit.blurRegions.count == 3)
+        let copy = try #require(viewModel.selectedMedia)
+        viewModel.overlays.replaceMedia(copy.id, with: MediaPick(ImportedMedia(kind: .photo, fileName: "p-\(UUID().uuidString).jpg", aspect: 1, duration: nil)))
+        #expect(!viewModel.edit.blurRegions.contains { $0.target.mediaID == copy.id })
+        #expect(scenario.toast.message?.contains("Blur area was on the old one") == true)
+    }
+
+    @Test func aSecondTrackWaitsItsTurnAndAFailedOneIsMarked() async throws {
+        let scenario = await makeScenario(delay: .milliseconds(5), faces: [])
+        let viewModel = scenario.viewModel
+        viewModel.perform(.addBlurArea)
+        await Wait.until { viewModel.blur.picking?.isSearching == false }
+        viewModel.blur.drawArea()
+        viewModel.perform(.addBlurArea)
+        await Wait.until { viewModel.blur.picking?.isSearching == false }
+        viewModel.blur.drawArea()
+        let ids = viewModel.edit.blurRegions.map { $0.id }
+        viewModel.blur.follow(ids[0])
+        viewModel.blur.follow(ids[1])
+        await Wait.until(timeout: .seconds(60)) { !viewModel.blur.isFollowing && viewModel.blur.followQueue.isEmpty }
+        #expect(viewModel.edit.blurRegions.allSatisfy { $0.isFollowed && $0.moves }, "both tracked, one after the other")
+        // Done waits while one is tracked.
+        viewModel.blur.follow(ids[0])
+        viewModel.askIfReadyToPost()
+        #expect(viewModel.sheet == nil)
+        #expect(scenario.toast.message?.contains("still being tracked") == true)
+        await Wait.until(timeout: .seconds(60)) { !viewModel.blur.isFollowing }
+    }
+
     @Test func compareShowsTheVideoWithoutItsAreas() async throws {
         let scenario = await makeScenario(faces: [])
         let viewModel = scenario.viewModel

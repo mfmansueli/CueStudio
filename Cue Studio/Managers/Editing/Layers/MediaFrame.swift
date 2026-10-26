@@ -32,7 +32,8 @@ nonisolated struct MediaFrame: @unchecked Sendable {
     var frameSize: CGSize = .zero
     /// A split screen's areas on the frame (from the top left), when it is a support.
     var areas: SplitPlacement.Areas?
-    /// How a support sits in its area, or a window's or full-screen picture in its place (always Fill there).
+    /// How a support sits in its area (`MediaOverlay.areaFraming`), or a window's or full-screen picture in its place
+    /// (`pictureFraming`, always Fill there).
     var areaFraming = AreaFraming()
     /// The photo or video over the take this draws (`MediaOverlay.id`).
     var mediaID: UUID?

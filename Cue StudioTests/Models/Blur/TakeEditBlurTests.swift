@@ -87,6 +87,15 @@ struct TakeEditBlurTests {
         #expect(BlurResolver.shown(edit.blurRegions, onRecording: away.id, at: 1.0, sources: [away]).isEmpty)
     }
 
+    @Test func theOtherSideOfATransitionIsCoveredPastItsClipsEnds() {
+        let regions = [area(TimeSpan(start: 1, end: 2))]
+        // Its clip ends at 2 s; a dissolve's other side shows the recording's 2.6 s.
+        #expect(BlurResolver.shown(regions, onRecording: nil, at: 2.6, sources: []).isEmpty)
+        #expect(BlurResolver.shown(regions, onRecording: nil, at: 2.6, sources: [], reach: CompositionInstruction.transitionReach).count == 1)
+        // Its own end counts (a reversed clip's first frame is the area's last second).
+        #expect(BlurResolver.shown(regions, onRecording: nil, at: 2.0, sources: []).count == 1)
+    }
+
     @Test func eachFrameDrawsOnlyTheAreasOfItsRecordingAndMoment() {
         let other = UUID()
         let regions = [area(TimeSpan(start: 1, end: 2)), area(TimeSpan(start: 1, end: 2), on: .recording(other))]

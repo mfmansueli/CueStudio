@@ -54,6 +54,9 @@ nonisolated enum BlurFollowing {
                 case .found(let found, let ambiguous, let reacquired):
                     if let reacquired {
                         unchecked.append(reacquired.lost)
+                        // Picked up again: the first half second after is checked too (it could be someone else).
+                        let after = forward ? TimeSpan(start: sample.time, end: sample.time + 0.5) : TimeSpan(start: sample.time - 0.5, end: sample.time)
+                        unchecked.append(after)
                         // Held where it was lost until the face is back.
                         keyframes.append(BlurKeyframe(time: sample.time + (forward ? -frame : frame), box: relation.area(around: reacquired.heldFace)))
                     }

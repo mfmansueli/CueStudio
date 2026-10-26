@@ -99,9 +99,15 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
         return BlurResolver.shown(edit.blurRegions, onRecording: recordingID, at: sourceTime(at: time), sources: edit.sources)
     }
 
-    /// The Blur areas on the other side of a dissolve at `time`, which shows its recording's second `sourceTime`.
+    /// The Blur areas on the other side of a transition at `time`, which shows its recording's second `sourceTime`: frames
+    /// from just past its clip's ends, which an area on that clip covers too (as far as a transition reaches).
     func blendBlurs(atSource sourceTime: TimeInterval) -> [BlurShown] {
         guard !edit.blurRegions.isEmpty else { return [] }
-        return BlurResolver.shown(edit.blurRegions, onRecording: blendRecordingID, at: sourceTime, sources: edit.sources)
+        return BlurResolver.shown(
+            edit.blurRegions, onRecording: blendRecordingID, at: sourceTime, sources: edit.sources, reach: Self.transitionReach
+        )
     }
+
+    /// The longest a transition reads past its clips' ends.
+    static let transitionReach: TimeInterval = 2
 }

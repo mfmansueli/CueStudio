@@ -14,7 +14,8 @@ extension BlurViewModel {
     /// The picked area's stretch left unchecked that the panel talks about: the one under the playhead, else the first.
     var focusedUnchecked: TimeSpan? {
         guard let region = selectedBlur else { return nil }
-        let open = region.openUnchecked
+        // Only stretches the video shows: one on footage the edit no longer plays can't be looked at.
+        let open = region.openUnchecked.filter { editedSpan(ofFootage: $0) != nil }
         if let here = edit.footageTime(of: region.target, at: player.currentTime, in: edit.timeline),
            let under = open.first(where: { $0.start - 0.000_1 <= here && here < $0.end }) {
             return under
@@ -112,15 +113,26 @@ extension BlurViewModel {
 
     // MARK: - How long
 
-    /// "End here": the picked area stops at the playhead (its unchecked tail with it).
+    /// "End here": the picked area stops showing at the playhead (its unchecked tail with it). On a reversed clip, where its
+    /// footage runs backwards, that's the area's own start.
     func endHere() {
-        guard let region = selectedBlur, let here = edit.footageTime(of: region.target, at: player.currentTime, in: edit.timeline),
-              here > region.span.start + BlurRegion.shortest, here < region.span.end else {
+        let time = player.currentTime
+        guard let region = selectedBlur, let here = edit.footageTime(of: region.target, at: time, in: edit.timeline),
+              here > region.span.start, here < region.span.end else {
             toast.show(String(localized: "Move the playhead inside the area first"), kind: .problem)
             return
         }
-        update(region.id) { $0.span.end = here }
-        sayUndoable(String(localized: "Ends at \(DurationText.editor(player.currentTime))"))
+        let ahead = edit.footageTime(of: region.target, at: time + 0.05, in: edit.timeline) ?? here
+        let backwards = ahead < here - 0.000_1
+        let room = backwards ? region.span.end - here : here - region.span.start
+        guard room >= BlurRegion.shortest else {
+            toast.show(String(localized: "Move the playhead inside the area first"), kind: .problem)
+            return
+        }
+        update(region.id) { area in
+            if backwards { area.span.start = here } else { area.span.end = here }
+        }
+        sayUndoable(String(localized: "Ends at \(DurationText.editor(time))"))
     }
 
     /// One end of the bar `instance` (edited seconds, one showing of the area) dragged to `time`: the area's own start or end
@@ -156,9 +168,9 @@ extension BlurViewModel {
         update(id) { $0.setSpan(span) }
     }
 
-    /// A clip an area covered to its edge was lengthened (its handle dragged out): the area grows with it, so what the clip
-    /// shows now isn't left uncovered, and the part nothing tracked is marked (`BlurRegion.setSpan`). In the same undo step as
-    /// the drag.
+    /// A clip an area covered to its edge (or past it) was lengthened (its handle dragged out, also after being shortened):
+    /// the area grows with it, so what the clip shows now isn't left uncovered, and the part nothing tracked is marked
+    /// (`BlurRegion.setSpan`). An area the creator ended inside the clip stays where it ends. In the same undo step as the drag.
     func growWithClips(from previous: TakeEdit) {
         guard previous.timeline != edit.timeline, !edit.blurRegions.isEmpty else { return }
         var regions = edit.blurRegions
@@ -167,8 +179,12 @@ extension BlurViewModel {
             var span = regions[index].span
             for old in previous.timeline.segments where old.sourceID == recording {
                 guard let now = edit.timeline.segment(id: old.id), now.sourceID == old.sourceID else { continue }
-                if abs(old.sourceStart - span.start) < 0.05, now.sourceStart < old.sourceStart - 0.01 { span.start = now.sourceStart }
-                if abs(old.sourceEnd - span.end) < 0.05, now.sourceEnd > old.sourceEnd + 0.01 { span.end = now.sourceEnd }
+                if now.sourceStart < old.sourceStart - 0.01, span.start <= old.sourceStart + 0.05, span.end > old.sourceStart {
+                    span.start = min(span.start, now.sourceStart)
+                }
+                if now.sourceEnd > old.sourceEnd + 0.01, span.end >= old.sourceEnd - 0.05, span.start < old.sourceEnd {
+                    span.end = max(span.end, now.sourceEnd)
+                }
             }
             if span != regions[index].span { regions[index].setSpan(span) }
         }

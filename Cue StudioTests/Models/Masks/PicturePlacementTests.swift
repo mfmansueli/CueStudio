@@ -42,12 +42,23 @@ struct PicturePlacementTests {
         #expect(abs(back.x - 0.5) < 0.000_1 && abs(back.y - 0.5) < 0.000_1)
     }
 
+    @Test func aWindowNeverTakesTheFramingItHadAsASupport() {
+        var media = MediaOverlay(kind: .photo, fileName: "a.jpg", aspect: 1, mediaDuration: nil, span: TimeSpan(start: 0, end: 3))
+        media.layout = .window
+        // Framed while it was a support: zoomed into a corner.
+        media.areaFraming = AreaFraming(zoom: 3, center: OverlayPoint(x: 0.1, y: 0.1))
+        let placement = MediaPicturePlacement(media: media, pictureSize: CGSize(width: 1000, height: 1000), frameSize: CGSize(width: 1080, height: 1920))
+        let middle = placement.framePoint(forPicture: CGPoint(x: 0.5, y: 0.5))
+        let place = placement.framePoint(forPlace: OverlayPoint(x: 0.5, y: 0.5))
+        #expect(abs(middle.x - place.x) < 0.001 && abs(middle.y - place.y) < 0.001, "the picture fills its window, centered")
+    }
+
     @Test func aWindowsPictureFollowsItsKeyframesAndFraming() {
         var media = MediaOverlay(kind: .photo, fileName: "a.jpg", aspect: 1, mediaDuration: nil, span: TimeSpan(start: 0, end: 3))
         media.layout = .window
         media.width = 0.5
         media.center = OverlayPoint(x: 0.5, y: 0.5)
-        media.areaFraming = AreaFraming(zoom: 2, center: OverlayPoint(x: 0.25, y: 0.25))
+        media.pictureFraming = AreaFraming(zoom: 2, center: OverlayPoint(x: 0.25, y: 0.25))
         let frame = CGSize(width: 1080, height: 1920)
         let motion = OverlayMotion.State(center: OverlayPoint(x: 0.3, y: 0.6), scale: 1.5, opacity: 1)
         let placement = MediaPicturePlacement(media: media, pictureSize: CGSize(width: 1000, height: 1000), frameSize: frame, motion: motion)

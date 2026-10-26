@@ -364,6 +364,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// A recording's motion analysis is ready: the preview is drawn again when what it plays reads one.
     func motionAnalysisDidChange() {
+        // A Blur area's handles read Stabilize's and Follow face's paths from the analyses.
+        blur.placements.removeAll()
         guard source == .ready, EditedComposition.usesMotion(playedEdit) else { return }
         player.redraw()
     }
@@ -449,6 +451,11 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         guard isReady else { return }
         endChange()
         player.pause()
+        // A Blur area still being tracked hasn't covered anything yet.
+        if blur.isFollowing {
+            toast.show(String(localized: "A Blur area is still being tracked · Wait a moment"), kind: .problem)
+            return
+        }
         // A Blur area that may not cover what it hides: one frame is enough to show someone.
         if !blurCheckAccepted, uncheckedBlurDuration > 0 {
             showsBlurCheck = true

@@ -22,7 +22,8 @@ nonisolated struct FaceFinder: FaceFinding {
 
     @concurrent
     func faces(in url: URL, isVideo: Bool, at time: TimeInterval) async -> [CGRect]? {
-        guard let image = isVideo ? await Self.frame(of: url, at: time) : Self.photo(at: url) else { return nil }
+        // The very frame: a face moving between nearby frames would be offered where it isn't.
+        guard let image = isVideo ? await Self.frame(of: url, at: time, exactly: true) : Self.photo(at: url) else { return nil }
         return Self.boxes(in: image)
     }
 
@@ -37,11 +38,11 @@ nonisolated struct FaceFinder: FaceFinding {
             .map { CGRect(x: $0.boundingBox.minX, y: 1 - $0.boundingBox.maxY, width: $0.boundingBox.width, height: $0.boundingBox.height) }
     }
 
-    private static func frame(of url: URL, at time: TimeInterval) async -> CGImage? {
+    private static func frame(of url: URL, at time: TimeInterval, exactly: Bool = false) async -> CGImage? {
         let generator = AVAssetImageGenerator(asset: AVURLAsset(url: url))
         generator.appliesPreferredTrackTransform = true
         generator.maximumSize = CGSize(width: side, height: side)
-        let tolerance = CMTime(seconds: 0.2, preferredTimescale: 600)
+        let tolerance = exactly ? .zero : CMTime(seconds: 0.2, preferredTimescale: 600)
         generator.requestedTimeToleranceBefore = tolerance
         generator.requestedTimeToleranceAfter = tolerance
         return try? await generator.image(at: CMTime(seconds: max(0, time), preferredTimescale: 600)).image

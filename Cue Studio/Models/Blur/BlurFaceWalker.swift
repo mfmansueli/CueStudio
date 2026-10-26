@@ -38,13 +38,16 @@ nonisolated struct BlurFaceWalker {
         let elapsed = sample.time - time
         let away = lostAt.map { abs(sample.time - $0) } ?? 0
         let size = max(face.width, face.height)
-        let predicted = CGPoint(x: face.midX + velocity.dx * elapsed, y: face.midY + velocity.dy * elapsed)
-        // Further the longer it's been lost, never across the whole frame.
-        let gate = size * (0.9 + 2 * min(away, 1.5)) + 0.02
+        // Where it was going, carried on a few frames at most: a face lost for a while is looked for near where it was lost.
+        let carried = min(max(elapsed, -0.3), 0.3)
+        let predicted = CGPoint(x: face.midX + velocity.dx * carried, y: face.midY + velocity.dy * carried)
+        // Further the longer it's been lost, never across the whole frame; once lost, only a face of about its size.
+        let gate = size * (0.9 + 2 * min(away, 1)) + 0.02
+        let sizes: ClosedRange<Double> = lostAt == nil ? 0.55...1.8 : 0.7...1.45
         let scored = sample.faces.compactMap { candidate -> (box: NormalizedBox, score: Double)? in
             let distance = hypot(candidate.midX - predicted.x, candidate.midY - predicted.y)
             let ratio = max(candidate.width, candidate.height) / max(0.000_1, size)
-            guard distance <= gate, ratio >= 0.55, ratio <= 1.8 else { return nil }
+            guard distance <= gate, sizes.contains(ratio) else { return nil }
             return (candidate, distance / max(0.000_1, size) + abs(log(ratio)) * 0.6)
         }.sorted { $0.score < $1.score }
         guard let best = scored.first else {

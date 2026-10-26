@@ -21,11 +21,13 @@ nonisolated struct MediaPicturePlacement: Sendable {
 
     init(media: MediaOverlay, pictureSize: CGSize, frameSize: CGSize, splitLayout: SplitLayout? = nil, motion: OverlayMotion.State? = nil) {
         self.frameSize = frameSize
-        var framing = media.areaFraming ?? AreaFraming()
+        var framing: AreaFraming
         if media.layout == .split, let splitLayout {
             rect = SplitPlacement.areas(splitLayout, in: frameSize).support
+            framing = media.areaFraming ?? AreaFraming()
         } else {
             rect = MediaPlacement.rect(for: media, in: frameSize)
+            framing = media.pictureFraming ?? AreaFraming()
             framing.fit = .fill
         }
         placed = SplitPlacement.place(pictureSize, in: rect.size, framing: framing)

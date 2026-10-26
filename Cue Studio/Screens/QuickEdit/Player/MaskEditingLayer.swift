@@ -17,8 +17,10 @@ struct MaskEditingLayer: View {
     let size: CGSize
 
     @Environment(VideoThumbnailService.self) private var thumbnails
-    /// The mask as a finger took it (and the picture's last pinch and travel), for the gesture under way.
+    /// The mask as a finger took it (and the picture's last pinch and travel), for the gestures under way: a drag, a pinch and a
+    /// turn can run together, and all read the mask as it was when the first began, until the last ends.
     @State private var start: MaskPlacement?
+    @State private var gestures: Set<String> = []
     @State private var lastTranslation: CGSize = .zero
     @State private var lastMagnification: CGFloat = 1
     /// The picture under the mask, drawn faintly around it in Picture.
@@ -199,7 +201,7 @@ struct MaskEditingLayer: View {
             .gesture(
                 DragGesture(minimumDistance: 1)
                     .onChanged { value in
-                        let from = begin()
+                        let from = begin("side-\(id)")
                         let local = geometry.local(value.translation)
                         overlays.updateMaskPlacement { placement in
                             let place = geometry.rect.size, scale = max(0.001, geometry.scale)
@@ -211,7 +213,7 @@ struct MaskEditingLayer: View {
                             }
                         }
                     }
-                    .onEnded { _ in end() }
+                    .onEnded { _ in end("side-\(id)") }
             )
             .position(point)
             .accessibilityHidden(true)
@@ -231,7 +233,7 @@ struct MaskEditingLayer: View {
             .gesture(
                 DragGesture(minimumDistance: 1, coordinateSpace: .named(Self.space))
                     .onChanged { value in
-                        let from = begin()
+                        let from = begin("turn")
                         let before = atan2(value.startLocation.y - geometry.center.y, value.startLocation.x - geometry.center.x)
                         let now = atan2(value.location.y - geometry.center.y, value.location.x - geometry.center.x)
                         var degrees = from.rotation + Double(now - before) * 180 / .pi
@@ -240,7 +242,7 @@ struct MaskEditingLayer: View {
                         if abs(degrees - nearest) < 3 { degrees = nearest }
                         overlays.updateMaskPlacement { $0.rotation = degrees }
                     }
-                    .onEnded { _ in end() }
+                    .onEnded { _ in end("turn") }
             )
             .position(point)
             .accessibilityHidden(true)
@@ -260,12 +262,12 @@ struct MaskEditingLayer: View {
             .gesture(
                 DragGesture(minimumDistance: 1)
                     .onChanged { value in
-                        let from = begin()
+                        let from = begin("feather")
                         let local = geometry.local(value.translation)
                         let most = MaskDrawing.featherShare * max(1, geometry.short)
                         overlays.updateMaskPlacement { $0.feather = from.feather + Double(local.height * 2 / most) }
                     }
-                    .onEnded { _ in end() }
+                    .onEnded { _ in end("feather") }
             )
             .position(point)
             .accessibilityHidden(true)
@@ -283,12 +285,12 @@ struct MaskEditingLayer: View {
             .gesture(
                 DragGesture(minimumDistance: 1)
                     .onChanged { value in
-                        let from = begin()
+                        let from = begin("corners")
                         let local = geometry.local(value.translation)
                         let half = max(1, min(geometry.width, geometry.height) / 2)
                         overlays.updateMaskPlacement { $0.corners = from.corners + Double((local.width + local.height) / 2 / half) }
                     }
-                    .onEnded { _ in end() }
+                    .onEnded { _ in end("corners") }
             )
             .position(point)
             .accessibilityHidden(true)
@@ -303,8 +305,10 @@ struct MaskEditingLayer: View {
     /// the mask.
     private func dragArea(_ media: MediaOverlay, geometry: Geometry) -> some View {
         let place = geometry.placement.placeOnFrame
-        let frame = CGRect(x: place.minX * size.width, y: place.minY * size.height, width: place.width * size.width, height: place.height * size.height)
+        let placed = CGRect(x: place.minX * size.width, y: place.minY * size.height, width: place.width * size.width, height: place.height * size.height)
             .intersection(CGRect(origin: .zero, size: size))
+        // A place moved off the frame by its keyframes: the whole preview takes the gestures.
+        let frame = placed.isNull || placed.isEmpty ? CGRect(origin: .zero, size: size) : placed
         return Rectangle()
             .fill(Color.clear)
             .contentShape(Rectangle())
@@ -312,7 +316,7 @@ struct MaskEditingLayer: View {
             .gesture(
                 DragGesture(minimumDistance: 3)
                     .onChanged { value in
-                        let from = begin()
+                        let from = begin("drag")
                         if overlays.maskDragTarget == .mask {
                             let startCenter = geometry.placement.framePoint(forPlace: from.center)
                             let moved = CGPoint(
@@ -329,12 +333,12 @@ struct MaskEditingLayer: View {
                             overlays.panMaskedPicture(by: CGSize(width: delta.width / scale, height: delta.height / scale), placeSize: geometry.rect.size)
                         }
                     }
-                    .onEnded { _ in end() }
+                    .onEnded { _ in end("drag") }
             )
             .simultaneousGesture(
                 MagnifyGesture()
                     .onChanged { value in
-                        let from = begin()
+                        let from = begin("pinch")
                         if overlays.maskDragTarget == .mask {
                             let factor = Double(value.magnification)
                             overlays.updateMaskPlacement { placement in
@@ -350,16 +354,16 @@ struct MaskEditingLayer: View {
                             lastMagnification = value.magnification
                         }
                     }
-                    .onEnded { _ in end() }
+                    .onEnded { _ in end("pinch") }
             )
             .simultaneousGesture(
                 RotateGesture()
                     .onChanged { value in
                         guard overlays.maskDragTarget == .mask else { return }
-                        let from = begin()
+                        let from = begin("rotate")
                         overlays.updateMaskPlacement { $0.rotation = from.rotation + value.rotation.degrees }
                     }
-                    .onEnded { _ in end() }
+                    .onEnded { _ in end("rotate") }
             )
             .position(x: frame.midX, y: frame.midY)
             .accessibilityElement()
@@ -379,7 +383,8 @@ struct MaskEditingLayer: View {
     // MARK: - Gesture state
 
     /// The mask as a finger took it: the gesture is one undo step.
-    private func begin() -> MaskPlacement {
+    private func begin(_ gesture: String) -> MaskPlacement {
+        gestures.insert(gesture)
         if let start { return start }
         viewModel.player.pause()
         viewModel.beginChange()
@@ -390,8 +395,10 @@ struct MaskEditingLayer: View {
         return now
     }
 
-    private func end() {
-        guard start != nil else { return }
+    /// A gesture let go; the last one to end closes the undo step.
+    private func end(_ gesture: String) {
+        gestures.remove(gesture)
+        guard start != nil, gestures.isEmpty else { return }
         start = nil
         lastTranslation = .zero
         lastMagnification = 1

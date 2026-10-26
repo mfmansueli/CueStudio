@@ -109,12 +109,12 @@ struct QuickEditMaskTests {
         viewModel.overlays.maskDragTarget = .picture
         viewModel.overlays.zoomMaskedPicture(by: 2)
         viewModel.overlays.panMaskedPicture(by: CGSize(width: 40, height: 0), placeSize: CGSize(width: 300, height: 170))
-        let framing = try #require(viewModel.selectedMedia?.areaFraming)
+        let framing = try #require(viewModel.selectedMedia?.pictureFraming)
         #expect(framing.zoom == 2)
         #expect(framing.center.x < 0.5, "the picture followed the finger right: its left part is in the middle")
         #expect(viewModel.overlays.maskIsAdjusted)
         viewModel.overlays.resetMask()
-        #expect(viewModel.selectedMedia?.areaFraming == nil)
+        #expect(viewModel.selectedMedia?.pictureFraming == nil)
         #expect(!viewModel.overlays.maskIsAdjusted)
     }
 

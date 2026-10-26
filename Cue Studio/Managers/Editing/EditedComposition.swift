@@ -537,7 +537,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             frame.mediaID = entry.media.id
             frame.filePieces = shown
             frame.blurs = edit.blurRegions.filter { $0.target.mediaID == entry.media.id }
-            frame.areaFraming = entry.media.areaFraming ?? AreaFraming()
+            frame.areaFraming = (areas == nil ? entry.media.pictureFraming : entry.media.areaFraming) ?? AreaFraming()
             if let areas {
                 frame.areas = areas
             } else {

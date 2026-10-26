@@ -140,7 +140,17 @@ extension OverlaysViewModel {
         if copy.layout != .fullFrame {
             copy.center = OverlayPoint(x: original.center.x, y: min(0.9, original.center.y + 0.08)).clamped
         }
-        change { $0.media.append(copy) }
+        change { snapshot in
+            snapshot.media.append(copy)
+            // The copy shows the same file: its Blur areas come along.
+            let copies = (snapshot.blurRegions ?? []).filter { $0.target.mediaID == id }.map { region in
+                var area = region
+                area.id = UUID()
+                area.target = .media(copy.id)
+                return area
+            }
+            snapshot.blurRegions = (snapshot.blurRegions ?? []) + copies
+        }
         selection = .media(copy.id)
         sayUndoable(String(localized: "Media duplicated"))
     }
@@ -264,13 +274,24 @@ extension OverlaysViewModel {
             framing.center = .center
             media.areaFraming = framing
         }
+        if var framing = media.pictureFraming {
+            framing.center = .center
+            media.pictureFraming = framing
+        }
         next.media[index] = media
+        // A Blur area was on the old picture's seconds and places: it doesn't cover the new one (Undo brings both back).
+        let hidBlur = next.blurRegions.contains { $0.target.mediaID == id }
+        next.blurRegions.removeAll { $0.target.mediaID == id }
         var shown = span
         if imported.kind == .video, let length = imported.duration {
             shown.end = min(span.end, span.start + max(MediaOverlay.minimumDuration, length - pick.start))
         }
         next.layMedia(at: index, over: shown)
         commit(EditSnapshot(next))
+        if hidBlur {
+            toast.show(String(localized: "Replaced · its Blur area was on the old one"), kind: .problem, action: undoAction)
+            return
+        }
         let shorter = shown.duration + 0.05 < span.duration
         let message = switch (imported.kind, shorter) {
         case (.photo, _): String(localized: "Photo in its place · place and settings kept")

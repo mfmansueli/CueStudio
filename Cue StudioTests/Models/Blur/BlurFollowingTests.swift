@@ -46,7 +46,8 @@ struct BlurFollowingTests {
         #expect(result.unchecked.count == 1)
         let lost = result.unchecked.first
         #expect((lost?.start ?? 0) <= 1.5 && (lost?.end ?? 0) >= 2.5)
-        #expect((lost?.end ?? 9) < 2.7, "picked up again once it's back")
+        // Picked up again once it's back; the half second after is checked too (it could be someone else).
+        #expect((lost?.end ?? 9) < 3.2, "picked up again once it's back")
     }
 
     @Test func anotherFaceCrossingNeverTakesTheArea() {
@@ -60,6 +61,19 @@ struct BlurFollowingTests {
         #expect(abs(region.box(at: 3.8).midX - 0.58) < 0.03, "\(region.box(at: 3.8).midX)")
         // Where they overlap, it's marked to check.
         #expect(result.unchecked.contains { $0.contains(3) }, "\(result.unchecked)")
+    }
+
+    @Test func aFaceLostForAWhileIsNotPickedUpFarAwayOrAtAnotherSize() {
+        // The face walks right fast, vanishes at 1 s; at 2 s someone else appears far to the left, and a big face near.
+        let walk = samples(3) { time in
+            if time < 1 { return [face(0.3 + time * 0.2, 0.4)] }
+            if time < 2 { return [] }
+            return [face(0.05, 0.4), face(0.5, 0.4, side: 0.25)]
+        }
+        let start = face(0.3, 0.4)
+        let result = BlurFollowing.followFace(walk, area: BlurRegion.area(aroundFace: start), face: start, at: 0, through: TimeSpan(start: 0, end: 3))
+        // Never picked up: lost from 0.9 s to the end.
+        #expect(result.unchecked.contains { $0.start <= 1 && $0.end >= 2.95 }, "\(result.unchecked)")
     }
 
     @Test func whereTheAnalysisHasNothingItIsMarked() {

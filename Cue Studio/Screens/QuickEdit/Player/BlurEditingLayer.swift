@@ -14,8 +14,10 @@ struct BlurEditingLayer: View {
     let viewModel: QuickEditViewModel
     let size: CGSize
 
-    /// The picked area's rect (points) when a finger took it, and how a corner pull or a pinch has it now.
+    /// The picked area's rect (points) when a finger first took it: a drag and a pinch can run together, and both read it until
+    /// the last ends.
     @State private var gestureStart: CGRect?
+    @State private var gestures: Set<String> = []
 
     private var blur: BlurViewModel { viewModel.blur }
 
@@ -153,21 +155,25 @@ struct BlurEditingLayer: View {
     private func moveGesture(_ region: BlurRegion, rect: CGRect) -> some Gesture {
         DragGesture(minimumDistance: 3)
             .onChanged { value in
-                let start = begin(rect)
-                let moved = start.offsetBy(dx: value.translation.width, dy: value.translation.height)
+                let start = begin(rect, "move")
+                // The size it has now (a pinch may be changing it meanwhile), around where the finger took it.
+                let moved = CGRect(
+                    x: start.midX + value.translation.width - rect.width / 2, y: start.midY + value.translation.height - rect.height / 2,
+                    width: rect.width, height: rect.height
+                )
                 place(region, rect: moved)
             }
-            .onEnded { _ in end() }
+            .onEnded { _ in end("move") }
     }
 
     /// A pinch resizes it around its middle.
     private func pinchGesture(_ region: BlurRegion, rect: CGRect) -> some Gesture {
         MagnifyGesture()
             .onChanged { value in
-                let start = begin(rect)
+                let start = begin(rect, "pinch")
                 resize(region, from: rect, to: start.size.applying(CGAffineTransform(scaleX: value.magnification, y: value.magnification)))
             }
-            .onEnded { _ in end() }
+            .onEnded { _ in end("pinch") }
     }
 
     private enum Corner: CaseIterable {
@@ -195,14 +201,14 @@ struct BlurEditingLayer: View {
             .gesture(
                 DragGesture(minimumDistance: 1)
                     .onChanged { value in
-                        let start = begin(rect)
+                        let start = begin(rect, "corner")
                         let size = CGSize(
                             width: max(24, start.width + 2 * value.translation.width * corner.direction.width),
                             height: max(24, start.height + 2 * value.translation.height * corner.direction.height)
                         )
                         resize(region, from: rect, to: size)
                     }
-                    .onEnded { _ in end() }
+                    .onEnded { _ in end("corner") }
             )
             .offset(x: corner.direction.width * rect.width / 2, y: corner.direction.height * rect.height / 2)
             .accessibilityHidden(true)
@@ -229,7 +235,8 @@ struct BlurEditingLayer: View {
     // MARK: - Changing
 
     /// The rect a finger took the area at: the gesture is one undo step.
-    private func begin(_ rect: CGRect) -> CGRect {
+    private func begin(_ rect: CGRect, _ gesture: String) -> CGRect {
+        gestures.insert(gesture)
         if let gestureStart { return gestureStart }
         viewModel.player.pause()
         viewModel.beginChange()
@@ -237,8 +244,9 @@ struct BlurEditingLayer: View {
         return rect
     }
 
-    private func end() {
-        guard gestureStart != nil else { return }
+    private func end(_ gesture: String) {
+        gestures.remove(gesture)
+        guard gestureStart != nil, gestures.isEmpty else { return }
         gestureStart = nil
         viewModel.endChange()
     }
