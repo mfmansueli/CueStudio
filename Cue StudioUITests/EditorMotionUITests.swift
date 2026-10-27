@@ -56,9 +56,9 @@ final class EditorMotionUITests: XCTestCase {
         XCTAssertTrue(EditorApp.toastSays(app, "Reversed", timeout: 30))
     }
 
-    /// A tool of the clip under the playhead: Edit picks it when its tools aren't showing.
+    /// A tool of the clip under the playhead: Edit picks it when its tools aren't showing (the main bar has Split too).
     private func openClipTool(_ app: XCUIApplication, _ id: String) {
-        if !app.buttons["edit.toolbar.split"].exists {
+        if !app.buttons["edit.toolbar.back"].exists {
             let edit = app.buttons["edit.toolbar.edit"]
             XCTAssertTrue(edit.exists(within: 5))
             edit.tap()

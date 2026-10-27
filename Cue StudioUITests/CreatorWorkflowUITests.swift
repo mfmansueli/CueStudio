@@ -494,4 +494,68 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue((field.value as? String)?.contains("\n") == true, "The line has no break: \(field.value ?? "")")
         flow.report()
     }
+
+    // MARK: - 10. Every tool in reach
+
+    /// The clip's speed and sound straight from the main bar, nothing picked first (✓ leaves nothing picked, and the bar, back
+    /// where it was, scrolls to its start and stays there); then a hook's bar reaches the whole video's Adjust after its own
+    /// tools, saying once that it changes the whole video, and its Clip goes to the clip under the playhead.
+    func testTheMainBarAndAnItemsBarReachTheOtherTools() {
+        let app = EditorApp.open(demo: true)
+        let flow = CreatorWorkflow("tool-reach", app: app)
+        XCTAssertFalse(app.buttons["edit.toolbar.delete"].exists, "The main bar offers Delete with nothing picked")
+
+        flow.step("Speed on the main bar, nothing picked")
+        flow.scrub()
+        flow.tool("speed")
+        let subtitle = app.staticTexts["edit.panel.subtitle"]
+        XCTAssertTrue(flow.waits(for: subtitle, "Speed"), "Speed didn't open")
+        XCTAssertTrue(subtitle.label.hasPrefix("Clip"), "Speed doesn't say which clip it changes: \(subtitle.label)")
+        flow.tap(app.buttons["edit.panel.apply"], "✓ on Speed")
+        XCTAssertTrue(flow.isOnMainTools(), "✓ on Speed left the clip picked")
+
+        flow.step("Volume on the main bar")
+        flow.tool("volume")
+        XCTAssertTrue(flow.waits(for: subtitle, "Volume"), "Volume didn't open")
+        XCTAssertTrue(subtitle.label.hasPrefix("Clip"), "Volume doesn't say which clip it changes: \(subtitle.label)")
+        flow.tap(app.buttons["edit.panel.apply"], "✓ on Volume")
+        XCTAssertTrue(flow.isOnMainTools(), "✓ on Volume left the clip picked")
+
+        flow.step("Back to the bar's start: Edit")
+        // The bar came back where Volume was; scrolled to its start, it stays there.
+        flow.tool("edit")
+        XCTAssertTrue(flow.waits(for: app.buttons["edit.toolbar.back"], "the clip's tools"), "Edit didn't pick the clip")
+        flow.backToMainTools()
+
+        flow.step("Text › Hook")
+        flow.tool("text")
+        flow.tool("hook")
+        let hookField = app.textFields["edit.textField"]
+        XCTAssertTrue(flow.waits(for: hookField, "the hook's field"))
+        flow.tap(app.buttons["edit.panel.apply"], "✓ on the hook")
+        XCTAssertTrue(flow.waits(for: app.buttons["edit.toolbar.editText"], "the text's tools"), "The new hook isn't picked after ✓")
+
+        flow.step("The whole video's Adjust from the hook's bar")
+        flow.tool("adjustVideo")
+        XCTAssertTrue(flow.toastSays("Applies to the whole video"), "No word that Adjust reaches past the hook")
+        XCTAssertTrue(flow.waits(for: subtitle, "Adjust"), "Adjust didn't open")
+        XCTAssertTrue(subtitle.label.hasPrefix("Whole video"), "Adjust doesn't say it's the whole video's: \(subtitle.label)")
+        flow.tap(app.buttons["edit.panel.apply"], "✓ on Adjust")
+        XCTAssertTrue(flow.waits(for: app.buttons["edit.toolbar.editText"], "the text's tools"), "✓ on Adjust let go of the hook")
+
+        flow.step("Adjust again: said once is enough")
+        let notice = app.staticTexts.matching(NSPredicate(format: "label CONTAINS %@", "Applies to the whole video")).firstMatch
+        XCTAssertTrue(notice.isGone(within: 6), "The first notice stays")
+        flow.tool("adjustVideo")
+        XCTAssertFalse(notice.exists(within: 1.5), "Adjust said again that it reaches the whole video")
+        flow.tap(app.buttons["edit.panel.apply"], "✓ on Adjust")
+
+        flow.step("Clip, from the hook's bar")
+        flow.tool("clipTools")
+        let back = app.buttons["edit.toolbar.back"]
+        XCTAssertTrue(flow.waits(for: app.buttons["edit.toolbar.speed"], "the clip's tools"), "Clip didn't open the clip's tools")
+        XCTAssertTrue((back.value as? String)?.hasPrefix("Clip") == true, "The back button doesn't name the clip: \(back.value ?? "")")
+        flow.backToMainTools()
+        flow.report()
+    }
 }

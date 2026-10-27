@@ -61,14 +61,14 @@ struct EditorToolbarFitTests {
     }
 
     @Test func theScopeBadgeKeepsClearOfTheNextTool() {
-        // 3.5 pt each side of the words, 2 pt from the tool's edges.
-        #expect(EditorToolbarFit.badgeFits(labelWidth: 53, toolWidth: 64))
-        #expect(!EditorToolbarFit.badgeFits(labelWidth: 54, toolWidth: 64))
+        // 3.5 pt each side of the words, 1 pt from the tool's edges.
+        #expect(EditorToolbarFit.badgeFits(labelWidth: 55, toolWidth: 64))
+        #expect(!EditorToolbarFit.badgeFits(labelWidth: 56, toolWidth: 64))
     }
 }
 
-/// The scope badge in the 20 languages: its short words fit over the narrowest tool of every height class (so it never reaches
-/// a neighbour), and the long ones show where a tool at most `badgeGrowth` wider has room for them.
+/// The scope badge in the 20 languages: "ALL" in each one is never wider than the narrowest tool of any height class, so it
+/// never reaches a neighbour.
 @Suite("Toolbar scope badge")
 @MainActor
 struct EditorToolbarBadgeTests {
@@ -78,35 +78,19 @@ struct EditorToolbarBadgeTests {
         return table
     }
 
-    @Test func oneFormOnTheWholeBar() {
-        // "WHOLE VIDEO" (65 pt) over regular tools (68): they grow to 76, within the 12 pt they may; a tool already wider keeps
-        // its width.
-        #expect(EditorToolbarFit.longBadgeFits(labelWidth: 65, toolWidths: [68, 68, 79], preferred: 68))
-        // Words that would need a tool 14 pt wider: the short one, on every tool.
-        #expect(!EditorToolbarFit.longBadgeFits(labelWidth: 71, toolWidths: [68, 90], preferred: 68))
-    }
-
     @Test(arguments: CueLanguage.allCases)
     func theBadgeFitsItsToolInEveryLanguage(language: CueLanguage) {
-        let table = Self.strings(language.interfaceLocalization)
-        let locale = Locale(identifier: language.interfaceLocalization)
-        let long = (table["Whole video"] ?? "Whole video").uppercased(with: locale)
-        let short = (table["All"] ?? "All").uppercased(with: locale)
+        let words = (Self.strings(language.interfaceLocalization)["All"] ?? "All")
+            .uppercased(with: Locale(identifier: language.interfaceLocalization))
+        let width = EditorToolbarBadge.width(of: words)
         var report: [String] = []
         for heightClass in [EditorHeightClass.regular, .compact, .veryCompact] {
-            let padding: CGFloat = heightClass.toolbarShowsLabels ? 4 : 0
-            let narrowest = heightClass.toolbarItemMinimumWidth + padding
-            let preferred = heightClass.toolbarItemWidth + padding
+            let narrowest = heightClass.toolbarItemMinimumWidth + (heightClass.toolbarShowsLabels ? 4 : 0)
             #expect(
-                EditorToolbarFit.badgeFits(labelWidth: EditorToolbarBadge.width(of: short), toolWidth: narrowest),
-                "\(language.interfaceLocalization): “\(short)” is wider than a \(narrowest) pt tool"
+                EditorToolbarFit.badgeFits(labelWidth: width, toolWidth: narrowest),
+                "\(language.interfaceLocalization): “\(words)” is wider than a \(narrowest) pt tool"
             )
-            let longWidth = EditorToolbarBadge.width(of: long)
-            let showsLong = EditorToolbarFit.longBadgeFits(labelWidth: longWidth, toolWidths: [preferred], preferred: preferred)
-            if showsLong {
-                #expect(EditorToolbarFit.badgeRoom(labelWidth: longWidth) <= preferred + EditorToolbarFit.badgeGrowth)
-            }
-            report.append("\(language.interfaceLocalization) \(heightClass) \(preferred) pt: \(showsLong ? long : short) (long \(longWidth) pt)")
+            report.append("\(language.interfaceLocalization) \(heightClass) narrowest \(narrowest) pt: \(words) (\(width) pt)")
         }
         Attachment.record(report.joined(separator: "\n"), named: "badge-\(language.interfaceLocalization).txt")
     }

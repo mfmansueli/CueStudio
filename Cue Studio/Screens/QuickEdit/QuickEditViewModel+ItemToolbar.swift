@@ -8,7 +8,7 @@ import Foundation
 /// A picked item's toolbar: its own tools first, as they always were (the four on screen are the ones a creator uses most on it),
 /// then, after a thin line, the editor's other tools, so any of them is reached without going back to the main bar (owner's
 /// decision, 26/10/2026): Captions, Text, Media, Audio and ✦ Smart first. A tool that changes the whole video carries the
-/// "Whole video" badge, and none that would read as the item's own is added (no Split, Speed, Volume or Zoom of the video next to
+/// "All" badge, and none that would read as the item's own is added (no Split, Speed, Volume or Zoom of the video next to
 /// a text), nor one the item's tools already reach. Delete stays pinned at the end (`EditorToolbarItem.isPinned`).
 extension QuickEditViewModel {
     /// What a clip's bar adds after its own tools.

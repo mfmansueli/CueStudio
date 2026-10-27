@@ -283,6 +283,24 @@ struct QuickEditFreezeFrameTests {
         #expect(viewModel.toast.message == "Move playhead onto the clip")
     }
 
+    /// Duplicate picks the copy with the playhead on it: Freeze frame, next, holds the copy's first frame.
+    @Test func aDuplicatedClipFreezesRightAway() async {
+        let editor = FakeTakeEditor()
+        let viewModel = makeViewModel(editor: editor)
+        await viewModel.prepare()
+        var timeline = viewModel.edit.timeline
+        timeline.split(atEdited: 5)
+        viewModel.commit(timeline)
+        viewModel.player.seek(to: 2)
+        viewModel.clips.duplicateClip(viewModel.edit.timeline.segments[0].id)
+        let copy = viewModel.edit.timeline.segments[1]
+        #expect(viewModel.selection == .clip(copy.id))
+        #expect(abs(viewModel.player.currentTime - 5) < 0.001)
+        await viewModel.clips.freezeFrame()
+        #expect(editor.stillClips.count == 1)
+        #expect(abs((editor.stillClips.first?.time ?? -1) - copy.sourceStart) < 0.001)
+    }
+
     @Test func aFrameThatCantBeReadChangesNothing() async {
         let editor = FakeTakeEditor()
         editor.stillClipFails = true

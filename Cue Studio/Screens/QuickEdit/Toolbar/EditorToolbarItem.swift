@@ -23,12 +23,8 @@ struct EditorToolbarItem: Identifiable, Hashable {
         /// The whole video.
         case wholeVideo
 
-        /// "Whole video" (drawn in capitals; "Vídeo todo" in Portuguese), the words the panels' headers use for the same reach: when
-        /// it fits over the tool.
-        var label: String { String(localized: "Whole video") }
-
-        /// "All" ("TODOS"): where the long badge would be wider than the tool.
-        var shortLabel: String { String(localized: "All") }
+        /// "All" ("Todos" in Portuguese), drawn in capitals on the icon's corner; VoiceOver says "whole video".
+        var label: String { String(localized: "All") }
     }
 
     /// Stable, for UI tests and for what the toolbar remembers (`edit.toolbar.<id>`); never a localized name.

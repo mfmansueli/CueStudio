@@ -23,8 +23,6 @@ struct EditorToolbar: View {
     @State private var tooltipTask: Task<Void, Never>?
     /// Where the tools are scrolled: whether some wait on the left, and on the right.
     @State private var scrollEdges = ScrollEdges()
-    /// The tool at the leading edge, kept and given back by the view model's memory.
-    @State private var scrollPosition = ScrollPosition(idType: String.self)
 
     private struct ScrollEdges: Equatable {
         var hidesLeading = false
@@ -40,12 +38,7 @@ struct EditorToolbar: View {
         }
         // A short crossfade when the tools change.
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.15), value: context)
-        // New tools start from their first one, or where their kind was left (`EditorToolbarScrollMemory`).
-        .onChange(of: context) { _, next in
-            scrollEdges = ScrollEdges()
-            restoreScroll(for: next)
-        }
-        .onAppear { restoreScroll(for: context) }
+        .onChange(of: context) { scrollEdges = ScrollEdges() }
         .background(Palette.bg)
         .overlay(alignment: .top) {
             Rectangle().fill(Palette.Editor.separator).frame(height: 0.5)
@@ -78,50 +71,56 @@ struct EditorToolbar: View {
                 let separators = CGFloat(items.filter(\.startsGroup).count) * 4.5
                 // On an item's bar only its own tools (the first group) narrow to show whole; elsewhere the whole bar, as one.
                 let own = context.isItem ? (items.firstIndex(where: \.startsGroup) ?? items.count) : items.count
-                let fitted = itemWidths(items, fittingFirst: own, available: proxy.size.width - 8 - (own == items.count ? separators : 0))
-                let badge = badgeLayout(items, widths: fitted)
-                let widths = badge.widths
+                let widths = itemWidths(items, fittingFirst: own, available: proxy.size.width - 8 - (own == items.count ? separators : 0))
                 let overflows = widths.reduce(0, +) + 8 + separators > proxy.size.width + 0.5
-                ScrollView(.horizontal) {
-                    HStack(spacing: 0) {
-                        ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                            HStack(spacing: 0) {
-                                if item.startsGroup {
-                                    Rectangle().fill(Palette.Editor.separator).frame(width: 0.5, height: 30).padding(.horizontal, 2)
-                                        .accessibilityHidden(true)
+                ScrollViewReader { reader in
+                    ScrollView(.horizontal) {
+                        HStack(spacing: 0) {
+                            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                                HStack(spacing: 0) {
+                                    if item.startsGroup {
+                                        Rectangle().fill(Palette.Editor.separator).frame(width: 0.5, height: 30).padding(.horizontal, 2)
+                                            .accessibilityHidden(true)
+                                    }
+                                    itemButton(item, width: widths[index])
                                 }
-                                itemButton(item, width: widths[index], badge: badge.words)
                             }
                         }
+                        .scrollTargetLayout()
+                        .padding(.horizontal, 4)
+                        .frame(minHeight: proxy.size.height)
                     }
-                    .scrollTargetLayout()
-                    .padding(.horizontal, 4)
-                    .frame(minHeight: proxy.size.height)
-                }
-                .scrollPosition($scrollPosition, anchor: .leading)
-                .onChange(of: scrollPosition.viewID(type: String.self)) { _, tool in
-                    viewModel.toolbarScroll.scrolled(to: tool, in: context)
-                }
-                .scrollIndicators(.hidden)
-                .onScrollGeometryChange(for: ScrollEdges.self) { geometry in
-                    ScrollEdges(
-                        hidesLeading: geometry.contentOffset.x > 4,
-                        hidesTrailing: geometry.contentOffset.x + geometry.containerSize.width < geometry.contentSize.width - 4
-                    )
-                } action: { _, edges in
-                    scrollEdges = edges
-                }
-                .mask {
-                    // A fade on the side where more tools wait, and only there: at the end of the row the last tool shows whole.
-                    LinearGradient(
-                        stops: [
-                            .init(color: overflows && scrollEdges.hidesLeading ? .clear : .black, location: 0),
-                            .init(color: .black, location: overflows && scrollEdges.hidesLeading ? 0.1 : 0),
-                            .init(color: .black, location: overflows && scrollEdges.hidesTrailing ? 0.84 : 1),
-                            .init(color: overflows && scrollEdges.hidesTrailing ? .clear : .black, location: 1),
-                        ],
-                        startPoint: .leading, endPoint: .trailing
-                    )
+                    // New tools start from their first one, or where their kind was left (`EditorToolbarScrollMemory`): given back
+                    // once as they show, then only followed, so the creator's own scrolling is never pulled back.
+                    .onAppear {
+                        if let tool = viewModel.toolbarScroll.enter(context) { reader.scrollTo(tool, anchor: .leading) }
+                    }
+                    .onScrollTargetVisibilityChange(idType: String.self) { visible in
+                        // The tools fading out after a change of context say nothing.
+                        guard context == viewModel.toolbarContext else { return }
+                        viewModel.toolbarScroll.scrolled(to: items.first { visible.contains($0.id) }?.id, in: context)
+                    }
+                    .scrollIndicators(.hidden)
+                    .onScrollGeometryChange(for: ScrollEdges.self) { geometry in
+                        ScrollEdges(
+                            hidesLeading: geometry.contentOffset.x > 4,
+                            hidesTrailing: geometry.contentOffset.x + geometry.containerSize.width < geometry.contentSize.width - 4
+                        )
+                    } action: { _, edges in
+                        scrollEdges = edges
+                    }
+                    .mask {
+                        // A fade on the side where more tools wait, and only there: at the end of the row the last tool shows whole.
+                        LinearGradient(
+                            stops: [
+                                .init(color: overflows && scrollEdges.hidesLeading ? .clear : .black, location: 0),
+                                .init(color: .black, location: overflows && scrollEdges.hidesLeading ? 0.1 : 0),
+                                .init(color: .black, location: overflows && scrollEdges.hidesTrailing ? 0.84 : 1),
+                                .init(color: overflows && scrollEdges.hidesTrailing ? .clear : .black, location: 1),
+                            ],
+                            startPoint: .leading, endPoint: .trailing
+                        )
+                    }
                 }
             }
             ForEach(pinned) { item in
@@ -176,31 +175,7 @@ struct EditorToolbar: View {
         )
     }
 
-    /// The words of the bar's badges and the tools' widths for them: the long words when every badged tool has room for them,
-    /// a little wider if need be (`EditorToolbarFit.longBadgeFits`), else the short one at the widths as they were.
-    private func badgeLayout(_ items: [EditorToolbarItem], widths: [CGFloat]) -> (words: String, widths: [CGFloat]) {
-        guard let scope = items.lazy.compactMap(\.scopeBadge).first else { return ("", widths) }
-        let long = EditorToolbarBadge.long(scope)
-        let labelWidth = EditorToolbarBadge.width(of: long)
-        let badged = zip(items, widths).filter { $0.0.scopeBadge != nil }.map(\.1)
-        let preferred = heightClass.toolbarItemWidth + (heightClass.toolbarShowsLabels ? 4 : 0)
-        guard EditorToolbarFit.longBadgeFits(labelWidth: labelWidth, toolWidths: badged, preferred: preferred) else {
-            return (EditorToolbarBadge.short(scope), widths)
-        }
-        let room = EditorToolbarFit.badgeRoom(labelWidth: labelWidth)
-        return (long, zip(items, widths).map { item, width in item.scopeBadge == nil ? width : max(width, room) })
-    }
-
-    /// Scrolls `context`'s tools to where their kind was left, or to the first.
-    private func restoreScroll(for context: EditorToolbarContext) {
-        if let tool = viewModel.toolbarScroll.enter(context) {
-            scrollPosition.scrollTo(id: tool, anchor: .leading)
-        } else {
-            scrollPosition.scrollTo(edge: .leading)
-        }
-    }
-
-    private func itemButton(_ item: EditorToolbarItem, width: CGFloat, badge words: String = "") -> some View {
+    private func itemButton(_ item: EditorToolbarItem, width: CGFloat) -> some View {
         let tint: Color = switch item.style {
         case .normal: Palette.ink
         case .dimmed: Palette.ink3
@@ -221,21 +196,19 @@ struct EditorToolbar: View {
                     .font(.editorGlyph(EditorGlyph.add, weight: .light))
                     .foregroundStyle(tint)
                     .frame(height: 24)
-                    .overlay(alignment: .top) {
-                        // Centered over the icon, never wider than the tool: it says the reach, the tool does what it always does.
-                        if item.scopeBadge != nil {
-                            Text(words)
+                    .overlay(alignment: .topTrailing) {
+                        // Above the icon's corner, clear of the icon (the bar has room above it at every height): it says the
+                        // reach, the tool does what it always does.
+                        if let badge = item.scopeBadge {
+                            Text(EditorToolbarBadge.words(badge))
                                 .font(.editorGlyph(EditorGlyph.badge, weight: .heavy))
                                 .foregroundStyle(Palette.accInk)
                                 .lineLimit(1)
                                 .padding(.horizontal, EditorToolbarFit.badgePadding)
                                 .padding(.vertical, 1)
                                 .background(Palette.acc, in: Capsule())
-                                // A ring of the bar's color keeps it apart from the icon under it.
-                                .padding(EditorToolbarFit.badgeRing)
-                                .background(Palette.bg, in: Capsule())
                                 .fixedSize()
-                                .alignmentGuide(.top) { $0[.bottom] - 6 }
+                                .offset(x: 12, y: -10)
                                 .accessibilityHidden(true)
                         }
                     }
