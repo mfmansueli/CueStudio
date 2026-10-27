@@ -45,7 +45,12 @@ extension CaptionsViewModel {
             return
         }
         translationState = .checking
+        let check = UUID()
+        translationCheck = check
         let support = await translations.support(from: source, to: target.locale.language)
+        // Cancelled (or closed) while asking: the answer isn't used.
+        guard translationCheck == check, translationState == .checking, !isClosed else { return }
+        translationCheck = nil
         guard support != .unsupported else {
             translationState = .unsupported(source: Self.name(of: source), target: target)
             return
@@ -104,6 +109,7 @@ extension CaptionsViewModel {
 
     /// Stops translating; what was there stays.
     func cancelTranslation() {
+        translationCheck = nil
         translationRequest = nil
         translationState = .idle
     }

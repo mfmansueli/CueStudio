@@ -253,8 +253,11 @@ struct QuickEditBlurTests {
         #expect(BlurLook(region) == .initial)
         #expect(!viewModel.blur.isFollowing)
         #expect(scenario.tracker.calls.isEmpty)
-        // Its toolbar: Edit, Track, Review, Add area and Delete pinned.
-        #expect(viewModel.toolbarItems.map(\.id) == ["editBlur", "followBlur", "reviewBlur", "addBlur", "delete"])
+        // Its toolbar: Edit, Track, Review, Add area, the editor's other tools after them, and Delete pinned.
+        #expect(Array(viewModel.toolbarItems.map(\.id).prefix(4)) == ["editBlur", "followBlur", "reviewBlur", "addBlur"])
+        #expect(viewModel.toolbarItems[4].startsGroup)
+        #expect(!viewModel.toolbarItems.contains { $0.id == "blurArea" }, "Add area already adds one")
+        #expect(viewModel.toolbarItems.last?.id == "delete")
         viewModel.perform(.deleteBlur)
         #expect(viewModel.edit.blurRegions.isEmpty)
         #expect(viewModel.selection == nil)
@@ -273,6 +276,26 @@ struct QuickEditBlurTests {
         await Wait.until(timeout: .seconds(60)) { !viewModel.blur.isFollowing && viewModel.blur.followQueue.isEmpty }
         #expect(viewModel.edit.blurRegions.count == 2)
         #expect(viewModel.edit.blurRegions.allSatisfy { $0.box.width < 0.15 }, "not the creator's")
+        #expect(viewModel.edit.blurRegions.allSatisfy { $0.isFollowed })
+    }
+
+    /// One area deleted while the faces are followed one after another, the one running or one waiting its turn: the others
+    /// still get followed.
+    @Test func deletingAnAreaWhileFollowingLetsTheOthersGoOn() async throws {
+        let big = CGRect(x: 0.4, y: 0.3, width: 0.2, height: 0.2)
+        let small = [0.05, 0.25, 0.7, 0.88].map { CGRect(x: $0, y: 0.1, width: 0.05, height: 0.05) }
+        let scenario = await makeScenario(delay: .milliseconds(2), faces: [big] + small)
+        let viewModel = scenario.viewModel
+        viewModel.perform(.addBlurArea)
+        await Wait.until { viewModel.blur.picking?.isSearching == false }
+        viewModel.blur.pickAllButLargest()
+        let regions = viewModel.edit.blurRegions.map(\.id)
+        try #require(regions.count == 4)
+        #expect(viewModel.blur.following?.id == regions[0])
+        viewModel.blur.delete(regions[1])
+        viewModel.blur.delete(regions[0])
+        await Wait.until(timeout: .seconds(60)) { !viewModel.blur.isFollowing && viewModel.blur.followQueue.isEmpty }
+        #expect(viewModel.edit.blurRegions.map(\.id) == [regions[2], regions[3]])
         #expect(viewModel.edit.blurRegions.allSatisfy { $0.isFollowed })
     }
 

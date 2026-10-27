@@ -6,7 +6,8 @@
 import Foundation
 
 /// The take's edit while Quick edit is open, with its undo steps: the one place the edit changes. What the creator decides
-/// is an undo step (`changeEdit`, `change`, `commit`; a gesture or a sheet is one step, `beginChange` / `endChange`), Undo
+/// is an undo step (`changeEdit`, `change`, `commit`; a gesture, a panel's control or a sheet is one step, `beginChange` /
+/// `endChange`), Undo
 /// and Redo move between steps (`undo`, `redo`), and what listening found is laid on without one (`updateFindings`). The
 /// editor hears every change (`onChange`) and does the rest: the preview, the draft, the cover, letting go of what's gone.
 @MainActor
@@ -21,6 +22,8 @@ final class EditDocument {
     private(set) var original: TakeEdit
     /// The undo step a gesture or a sheet started from (`beginChange`).
     @ObservationIgnored private(set) var changeBase: EditSnapshot?
+    /// Who is still changing it: the step is taken when the last of them ends.
+    @ObservationIgnored private(set) var changeOwners: Set<EditChangeOwner> = []
     /// Told after every change of the edit, with the edit before it.
     @ObservationIgnored var onChange: (_ previous: TakeEdit) -> Void = { _ in }
 
@@ -121,9 +124,11 @@ final class EditDocument {
         [edit.cleanUpAnalyzed, edit.cleanUpAnalyzedSources, edit.captionTranscript, edit.sourceTranscripts]
     }
 
-    /// A gesture or a sheet starts changing something, maybe many times: all of it is one undo step, taken when it ends
-    /// (`endChange`).
-    func beginChange() {
+    /// A gesture, a panel's control or a sheet starts changing something, maybe many times: all of it is one undo step,
+    /// taken when it ends (`endChange`). Two at once (a slider held while a handle is dragged) are one step, taken when both
+    /// have ended.
+    func beginChange(by owner: EditChangeOwner = .gesture) {
+        changeOwners.insert(owner)
         guard changeBase == nil else { return }
         changeBase = snapshot
     }
@@ -136,8 +141,17 @@ final class EditDocument {
         return steps
     }
 
-    /// The gesture or sheet is over: one undo step back to where it began, when anything changed.
-    func endChange() {
+    /// `owner`'s change is over (a panel's also when the panel goes away, its control may never say it let go): with no one
+    /// else changing, one undo step back to where it began, when anything changed. Never ends another's change.
+    func endChange(by owner: EditChangeOwner = .gesture) {
+        changeOwners.remove(owner)
+        guard changeOwners.isEmpty else { return }
+        endAllChanges()
+    }
+
+    /// Whatever is still changing is over (Undo, Done, another panel opening): one undo step back to where it began.
+    func endAllChanges() {
+        changeOwners = []
         guard let base = changeBase else { return }
         changeBase = nil
         if base != snapshot { history.record(base) }
@@ -148,7 +162,7 @@ final class EditDocument {
     /// Goes back a step (ending a gesture or sheet first); false when there was none.
     @discardableResult
     func undo() -> Bool {
-        endChange()
+        endAllChanges()
         guard let previous = history.undo(from: snapshot) else { return false }
         restore(previous)
         return true
@@ -157,7 +171,7 @@ final class EditDocument {
     /// Goes forward to the step undone last; false when there was none.
     @discardableResult
     func redo() -> Bool {
-        endChange()
+        endAllChanges()
         guard let next = history.redo(from: snapshot) else { return false }
         restore(next)
         return true

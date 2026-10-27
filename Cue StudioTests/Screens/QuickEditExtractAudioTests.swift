@@ -190,6 +190,31 @@ struct QuickEditExtractAudioTests {
         #expect(scenario.toast.kind == .problem)
     }
 
+    /// A video over the take moved while its sound came out (no cut changed): the sound would land off its picture, so nothing
+    /// is added. Turned down meanwhile: the new track takes the level it has now.
+    @Test func aVideoMovedWhileExtractingAddsNothingAndOneTurnedDownKeepsItsNewLevel() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        var media = MediaOverlay(kind: .video, fileName: "broll.mov", aspect: 1, mediaDuration: 8, span: TimeSpan(start: 4, end: 7))
+        media.hasSound = true
+        media.audioVolume = 0.6
+        viewModel.change { $0.media = [media] }
+        viewModel.selection = .media(media.id)
+        scenario.editor.whileExtracting = {
+            viewModel.change { $0.media[0].span = TimeSpan(start: 5, end: 8) }
+        }
+        await viewModel.audio.extractAudio()
+        #expect(viewModel.edit.music.isEmpty)
+        #expect(viewModel.edit.media.first?.audioVolume == 0.6)
+        #expect(scenario.toast.message == "The video changed meanwhile · Extract the sound again")
+        scenario.editor.whileExtracting = {
+            viewModel.change { $0.media[0].audioVolume = 0.3 }
+        }
+        await viewModel.audio.extractAudio()
+        #expect(viewModel.edit.music.first?.volume == 0.3)
+        #expect(viewModel.edit.media.first?.audioVolume == nil)
+    }
+
     @Test func theRingTurnsWhileTheSoundComesOutAndBecomesItsTrack() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel

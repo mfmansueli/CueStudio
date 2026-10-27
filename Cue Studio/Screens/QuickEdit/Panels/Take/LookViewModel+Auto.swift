@@ -87,8 +87,17 @@ extension LookViewModel {
     private func finishAuto(_ ticket: EditorJobs.Ticket, target: AutoTarget, found: AutoCorrection?) {
         guard jobs.isCurrent(ticket) else { return }
         autoState = .idle
-        // The picked clip (or the whole take) is still what it was measured for.
-        guard panel == .adjust, target.clipID == lookClip?.id else { return }
+        // Adjust closed: nothing to put the result in.
+        guard panel == .adjust else { return }
+        // The picked clip (or the whole take) is still what it was measured for: the same clip, part and recording. Trimmed,
+        // replaced or reversed meanwhile, the measure was of other frames, and it says so; another clip picked is the
+        // creator's own move, and nothing lands on it.
+        guard autoTarget == target else {
+            if autoTarget?.clipID == target.clipID {
+                toast.show(String(localized: "The clip changed meanwhile · Tap Auto again"), kind: .problem)
+            }
+            return
+        }
         guard let found else {
             toast.show(String(localized: "Couldn’t measure · No change"), kind: .problem)
             return

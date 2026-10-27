@@ -454,9 +454,11 @@ struct QuickCreatorViewModelTests {
         viewModel.overlays.addMedia(photo())
         let id = viewModel.edit.media[0].id
         viewModel.selection = .media(id)
-        #expect(viewModel.toolbarItems.map(\.id) == [
-            "editMedia", "mediaMotion", "mask", "splitMedia", "replaceMedia", "blurArea", "track", "keyframe", "duplicate", "saveToLibrary", "lock", "delete",
+        let own = viewModel.toolbarItems.prefix { !$0.startsGroup }.map(\.id)
+        #expect(own == [
+            "editMedia", "mediaMotion", "mask", "splitMedia", "replaceMedia", "blurArea", "track", "keyframe", "duplicate", "saveToLibrary", "lock",
         ])
+        #expect(viewModel.toolbarItems.last?.id == "delete")
         viewModel.perform(.replaceMedia)
         #expect(viewModel.photoRequest?.purpose == .replaceMedia(id, kind: .photo))
         // A photo's place can take a video too (and a video's a photo).

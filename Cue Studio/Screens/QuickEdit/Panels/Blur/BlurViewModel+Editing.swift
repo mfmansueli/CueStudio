@@ -231,7 +231,8 @@ extension BlurViewModel {
     /// Takes the area off; nothing else in the edit changes.
     func delete(_ id: UUID) {
         guard edit.blurRegions.contains(where: { $0.id == id }) else { return }
-        if following?.id == id { cancelFollowing() }
+        followQueue.removeAll { $0 == id }
+        if following?.id == id { stopCurrentFollowing() }
         change { snapshot in
             snapshot.blurRegions?.removeAll { $0.id == id }
         }

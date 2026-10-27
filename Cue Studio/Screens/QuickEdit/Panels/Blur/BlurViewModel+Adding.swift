@@ -15,11 +15,12 @@ extension BlurViewModel {
     /// The area a drawn Blur area starts as: a strip like a plate or a line of text, as a share of the frame.
     static let drawnSize = CGSize(width: 0.36, height: 0.12)
 
-    /// The footage a new area would go on now; nil where the playhead shows none (a gap past the end).
-    func footageUnderPlayhead() -> BlurFootage? {
+    /// The footage a new area would go on now; nil where the playhead shows none (a gap past the end). `onMainVideo`: the main
+    /// video's area of a split screen is picked (the selection still names the support), so the area goes on the clip there.
+    func footageUnderPlayhead(onMainVideo: Bool = false) -> BlurFootage? {
         let time = player.currentTime
         let timeline = edit.timeline
-        if let media = selectedMedia, let fileTime = media.fileTime(at: time, in: timeline) {
+        if !onMainVideo, let media = selectedMedia, let fileTime = media.fileTime(at: time, in: timeline) {
             let isVideo = media.kind == .video
             let length = media.mediaDuration ?? 3600
             return BlurFootage(
@@ -47,11 +48,12 @@ extension BlurViewModel {
         return BlurFootage(target: target, time: played, url: url, isVideo: true, span: segment.span)
     }
 
-    /// "Blur area": the faces in the frame under the playhead, to tap one, or an area to draw.
-    func startAdding() {
+    /// "Blur area": the faces in the frame under the playhead, to tap one, or an area to draw. From the main video's area of a split
+    /// screen (`onMainVideo`), on the main video, never on the support beside it.
+    func startAdding(onMainVideo: Bool = false) {
         guard isReady else { return }
         player.pause()
-        guard let footage = footageUnderPlayhead() else {
+        guard let footage = footageUnderPlayhead(onMainVideo: onMainVideo) else {
             toast.show(String(localized: "Move the playhead onto the video"), kind: .problem)
             return
         }
@@ -100,8 +102,8 @@ extension BlurViewModel {
         guard let picking, picking.faces.count > 1 else { return }
         let regions = picking.faces.dropFirst().map { makeFaceRegion($0, on: picking.footage) }
         add(regions, saying: String(localized: "\(regions.count) faces hidden · Tracking them"), inToast: false)
-        followQueue = regions.dropFirst().map(\.id)
-        if let first = regions.first { follow(first.id) }
+        followQueue += regions.map(\.id)
+        followNext()
     }
 
     /// An area drawn in the middle of what shows, to drag onto a plate, a name or anything else; it stays put until followed.

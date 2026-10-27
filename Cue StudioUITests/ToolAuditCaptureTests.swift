@@ -400,6 +400,58 @@ final class ToolAuditCaptureTests: XCTestCase {
         app.terminate()
     }
 
+    /// The toolbar's reach (26 Oct): the main bar at its start and its end, and a clip's and a text's bars at their start and
+    /// scrolled to the pinned Delete (a support's: `test15`), with the "All" badges and the notice a badged tool gives; in
+    /// English and in Arabic (right to left) at the largest text size before the accessibility ones. Each picture has its
+    /// accessibility hierarchy beside it, for `tools/contrast/audit.py`. Run on the iPhone SE for the narrowest bar.
+    func test14ToolbarReach() throws {
+        let large = ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryXXXL"]
+        for (name, arguments, rightToLeft) in [("en", [String](), false), ("ar-xxxl", ["-uiTestAppLanguage", "ar"] + large, true)] {
+            start(arguments: arguments)
+            try captureWithHierarchy("\(name)-bar-main")
+            scrollToolbar(toEnd: true, rightToLeft: rightToLeft)
+            try captureWithHierarchy("\(name)-bar-main-end")
+            scrollToolbar(toEnd: false, rightToLeft: rightToLeft)
+            EditorApp.tapTool(app, "edit")
+            try captureWithHierarchy("\(name)-bar-clip")
+            scrollToolbar(toEnd: true, rightToLeft: rightToLeft)
+            try captureWithHierarchy("\(name)-bar-clip-end")
+            EditorApp.tapTool(app, "format")
+            try captureWithHierarchy("\(name)-bar-clip-format-notice")
+            app.terminate()
+            start(arguments: arguments)
+            EditorApp.tapTool(app, "text")
+            if tap("edit.toolbar.title") {
+                dismissKeyboard()
+                apply()
+                try captureWithHierarchy("\(name)-bar-text")
+                scrollToolbar(toEnd: true, rightToLeft: rightToLeft)
+                try captureWithHierarchy("\(name)-bar-text-end")
+            }
+            app.terminate()
+        }
+    }
+
+    /// A split-screen support's bar at its start and scrolled to the pinned Delete (part of the toolbar's reach, `test14`).
+    func test15SupportBarReach() throws {
+        let large = ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryXXXL"]
+        for (name, arguments, rightToLeft) in [("en", [String](), false), ("ar-xxxl", ["-uiTestAppLanguage", "ar"] + large, true)] {
+            start(arguments: ["-uiTestDemoSplit"] + arguments)
+            // The first support's bar (2–4 s) on the media lane, 3 s after the playhead (44 pt a second; the time runs left to
+            // right in every language): a tap picks it.
+            let timeline = app.descendants(matching: .any)["edit.timeline"]
+            timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0)).withOffset(CGVector(dx: 3 * 44, dy: 89)).tap()
+            if app.buttons["edit.toolbar.delete"].exists(within: 5) {
+                try captureWithHierarchy("\(name)-bar-support")
+                scrollToolbar(toEnd: true, rightToLeft: rightToLeft)
+                try captureWithHierarchy("\(name)-bar-support-end")
+            } else {
+                try captureWithHierarchy("\(name)-bar-support-missing")
+            }
+            app.terminate()
+        }
+    }
+
     func test10DemoTracks() throws {
         start()
         EditorApp.tapTool(app, "edit")
@@ -553,6 +605,21 @@ final class ToolAuditCaptureTests: XCTestCase {
     private func dismissKeyboard() {
         guard app.keyboards.firstMatch.exists else { return }
         if app.toolbars.buttons["Done"].exists { app.toolbars.buttons["Done"].tap() } else { app.swipeDown() }
+    }
+
+    /// The picture and, beside it, the accessibility hierarchy `tools/contrast/audit.py` reads.
+    private func captureWithHierarchy(_ name: String) throws {
+        try capture(name)
+        try app.debugDescription.write(to: directory.appending(path: "\(prefix)-\(name).txt"), atomically: true, encoding: .utf8)
+    }
+
+    /// The toolbar all the way to its end (where Delete is pinned) or back to its start; right to left, the end is on the left.
+    private func scrollToolbar(toEnd: Bool, rightToLeft: Bool) {
+        let toolbar = app.descendants(matching: .any)["edit.toolbar"]
+        guard toolbar.exists else { return }
+        for _ in 0..<8 {
+            if toEnd != rightToLeft { toolbar.swipeLeft() } else { toolbar.swipeRight() }
+        }
     }
 
     private func scrollToolbarToEnd() -> Bool {

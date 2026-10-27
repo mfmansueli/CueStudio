@@ -283,4 +283,77 @@ struct QuickEditSoundTests {
         scenario.viewModel.overlays.addMedia(ImportedMedia(kind: .video, fileName: "quiet-\(UUID().uuidString).mov", aspect: 1, duration: 4))
         #expect(scenario.viewModel.overlays.soundChoiceMediaID == nil)
     }
+
+    // MARK: - Delete and Replace say it with Undo (8.1), and Replace stays Replace (8.5)
+
+    @Test func deletingMusicSaysSoWithUndoAndUndoBringsTheSameFileBack() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        let music = song()
+        viewModel.audio.addMusic(music)
+        let clip = try #require(viewModel.edit.music.first)
+        viewModel.selection = .music(clip.id)
+        viewModel.perform(.deleteMusic)
+        #expect(viewModel.edit.music.isEmpty)
+        #expect(scenario.toast.message == "Music deleted")
+        #expect(scenario.toast.action?.title == "Undo")
+        #expect(viewModel.selection == nil, "nothing else is picked for a second tap to delete")
+        scenario.toast.action?.perform()
+        #expect(viewModel.edit.music.first?.fileName == music.fileName)
+    }
+
+    @Test func deletingASoundEffectSaysSoundDeleted() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.audio.addSoundEffect(.whoosh)
+        let clip = try #require(viewModel.edit.music.first)
+        viewModel.audio.deleteMusic(clip.id)
+        #expect(scenario.toast.message == "Sound deleted")
+        #expect(scenario.toast.action != nil)
+    }
+
+    @Test func replacingMusicSaysSoWithUndo() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        let first = song(), second = song(30)
+        viewModel.audio.addMusic(first)
+        let clip = try #require(viewModel.edit.music.first)
+        viewModel.audio.musicReplacementID = clip.id
+        viewModel.audio.addMusic(second)
+        #expect(viewModel.edit.music.count == 1)
+        #expect(viewModel.edit.music.first?.fileName == second.fileName)
+        #expect(scenario.toast.message == "Music replaced")
+        scenario.toast.action?.perform()
+        #expect(viewModel.edit.music.first?.fileName == first.fileName)
+    }
+
+    @Test func closingTheSheetWhileTheFileCopiesKeepsAReplaceAReplace() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.audio.addMusic(song())
+        let clip = try #require(viewModel.edit.music.first)
+        viewModel.selection = .music(clip.id)
+        viewModel.perform(.replaceMusic)
+        #expect(viewModel.sheet == .music)
+        let replacement = song(30)
+        scenario.importer.audio = replacement
+        // The sheet is swiped down while the file is still copying.
+        scenario.importer.whileImportingAudio = { viewModel.sheet = nil }
+        await viewModel.audio.importMusic(from: URL(fileURLWithPath: "/tmp/new.m4a"))
+        #expect(viewModel.edit.music.count == 1, "replaced, not added beside it")
+        #expect(viewModel.edit.music.first?.id == clip.id)
+        #expect(viewModel.edit.music.first?.fileName == replacement.fileName)
+    }
+
+    @Test func aReplacedClipThatWentMeanwhileAddsNothing() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.audio.addMusic(song())
+        let clip = try #require(viewModel.edit.music.first)
+        viewModel.audio.musicReplacementID = clip.id
+        scenario.importer.whileImportingAudio = { viewModel.audio.deleteMusic(clip.id) }
+        await viewModel.audio.importMusic(from: URL(fileURLWithPath: "/tmp/new.m4a"))
+        #expect(viewModel.edit.music.isEmpty)
+        #expect(scenario.toast.message == "The music clip is gone · Nothing replaced")
+    }
 }

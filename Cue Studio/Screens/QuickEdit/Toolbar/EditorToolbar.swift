@@ -9,9 +9,10 @@ import UIKit
 /// The toolbar under the timeline. With something picked (or the Text, Captions or Audio menu
 /// open), it swaps its whole content for that context's tools, with a yellow "‹ Clip" back to the
 /// main ones. It scrolls sideways, with a fade on each side where more tools wait; Delete,
-/// in red, stays at the right end whatever the scroll. Tools that would only just overflow draw a
-/// little narrower so each shows whole (`EditorToolbarFit`). On the smallest screens it keeps only the
-/// icons; their labels stay for VoiceOver and a long press.
+/// in red, stays at the right end whatever the scroll. A picked item's own tools that would only just overflow draw a
+/// little narrower so each shows whole (`EditorToolbarFit`); the editor's other tools wait after them. Where the tools were
+/// scrolled is remembered (`EditorToolbarScrollMemory`): the main tools come back where they were left. On the smallest
+/// screens it keeps only the icons; their labels stay for VoiceOver and a long press.
 struct EditorToolbar: View {
     let viewModel: QuickEditViewModel
     let heightClass: EditorHeightClass
@@ -29,7 +30,7 @@ struct EditorToolbar: View {
     }
 
     var body: some View {
-        let context = viewModel.toolbarContextLabel
+        let context = viewModel.toolbarContext
         ZStack {
             content(context)
                 .id(context)
@@ -37,7 +38,6 @@ struct EditorToolbar: View {
         }
         // A short crossfade when the tools change.
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.15), value: context)
-        // New tools start from their first one.
         .onChange(of: context) { scrollEdges = ScrollEdges() }
         .background(Palette.bg)
         .overlay(alignment: .top) {
@@ -60,53 +60,71 @@ struct EditorToolbar: View {
         .accessibilityIdentifier("edit.toolbar")
     }
 
-    private func content(_ context: String?) -> some View {
+    private func content(_ context: EditorToolbarContext) -> some View {
         HStack(spacing: 0) {
-            if let context {
-                backButton(viewModel.toolbarContextName ?? context)
+            if context != .main {
+                backButton(viewModel.toolbarContextName ?? "")
             }
             let pinned = viewModel.toolbarItems.filter(\.isPinned)
             GeometryReader { proxy in
                 let items = viewModel.toolbarItems.filter { !$0.isPinned }
                 let separators = CGFloat(items.filter(\.startsGroup).count) * 4.5
-                let widths = itemWidths(items, available: proxy.size.width - 8 - separators)
+                // On an item's bar only its own tools (the first group) narrow to show whole; elsewhere the whole bar, as one.
+                let own = context.isItem ? (items.firstIndex(where: \.startsGroup) ?? items.count) : items.count
+                let widths = itemWidths(items, fittingFirst: own, available: proxy.size.width - 8 - (own == items.count ? separators : 0))
                 let overflows = widths.reduce(0, +) + 8 + separators > proxy.size.width + 0.5
-                ScrollView(.horizontal) {
-                    HStack(spacing: 0) {
-                        ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
-                            if item.startsGroup {
-                                Rectangle().fill(Palette.Editor.separator).frame(width: 0.5, height: 30).padding(.horizontal, 2)
+                ScrollViewReader { reader in
+                    ScrollView(.horizontal) {
+                        HStack(spacing: 0) {
+                            ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                                HStack(spacing: 0) {
+                                    if item.startsGroup {
+                                        Rectangle().fill(Palette.Editor.separator).frame(width: 0.5, height: 30).padding(.horizontal, 2)
+                                            .accessibilityHidden(true)
+                                    }
+                                    itemButton(item, width: widths[index])
+                                }
                             }
-                            itemButton(item, width: widths[index])
                         }
+                        .scrollTargetLayout()
+                        .padding(.horizontal, 4)
+                        .frame(minHeight: proxy.size.height)
                     }
-                    .padding(.horizontal, 4)
-                    .frame(minHeight: proxy.size.height)
-                }
-                .scrollIndicators(.hidden)
-                .onScrollGeometryChange(for: ScrollEdges.self) { geometry in
-                    ScrollEdges(
-                        hidesLeading: geometry.contentOffset.x > 4,
-                        hidesTrailing: geometry.contentOffset.x + geometry.containerSize.width < geometry.contentSize.width - 4
-                    )
-                } action: { _, edges in
-                    scrollEdges = edges
-                }
-                .mask {
-                    // A fade on the side where more tools wait, and only there: at the end of the row the last tool shows whole.
-                    LinearGradient(
-                        stops: [
-                            .init(color: overflows && scrollEdges.hidesLeading ? .clear : .black, location: 0),
-                            .init(color: .black, location: overflows && scrollEdges.hidesLeading ? 0.1 : 0),
-                            .init(color: .black, location: overflows && scrollEdges.hidesTrailing ? 0.84 : 1),
-                            .init(color: overflows && scrollEdges.hidesTrailing ? .clear : .black, location: 1),
-                        ],
-                        startPoint: .leading, endPoint: .trailing
-                    )
+                    // New tools start from their first one, or where their kind was left (`EditorToolbarScrollMemory`): given back
+                    // once as they show, then only followed, so the creator's own scrolling is never pulled back.
+                    .onAppear {
+                        if let tool = viewModel.toolbarScroll.enter(context) { reader.scrollTo(tool, anchor: .leading) }
+                    }
+                    .onScrollTargetVisibilityChange(idType: String.self) { visible in
+                        // The tools fading out after a change of context say nothing.
+                        guard context == viewModel.toolbarContext else { return }
+                        viewModel.toolbarScroll.scrolled(to: items.first { visible.contains($0.id) }?.id, in: context)
+                    }
+                    .scrollIndicators(.hidden)
+                    .onScrollGeometryChange(for: ScrollEdges.self) { geometry in
+                        ScrollEdges(
+                            hidesLeading: geometry.contentOffset.x > 4,
+                            hidesTrailing: geometry.contentOffset.x + geometry.containerSize.width < geometry.contentSize.width - 4
+                        )
+                    } action: { _, edges in
+                        scrollEdges = edges
+                    }
+                    .mask {
+                        // A fade on the side where more tools wait, and only there: at the end of the row the last tool shows whole.
+                        LinearGradient(
+                            stops: [
+                                .init(color: overflows && scrollEdges.hidesLeading ? .clear : .black, location: 0),
+                                .init(color: .black, location: overflows && scrollEdges.hidesLeading ? 0.1 : 0),
+                                .init(color: .black, location: overflows && scrollEdges.hidesTrailing ? 0.84 : 1),
+                                .init(color: overflows && scrollEdges.hidesTrailing ? .clear : .black, location: 1),
+                            ],
+                            startPoint: .leading, endPoint: .trailing
+                        )
+                    }
                 }
             }
             ForEach(pinned) { item in
-                itemButton(item, width: itemWidths([item], available: .infinity)[0])
+                itemButton(item, width: itemWidths([item], fittingFirst: 1, available: .infinity)[0])
                     .padding(.horizontal, 4)
                     // The tools that scroll away fade out under it.
                     .background(
@@ -144,16 +162,16 @@ struct EditorToolbar: View {
     }
 
     /// The room each tool takes, its side padding included (`EditorToolbarFit`): the class's width, a little less when that
-    /// lets every tool show whole.
-    private func itemWidths(_ items: [EditorToolbarItem], available: CGFloat) -> [CGFloat] {
+    /// lets the first `count` tools show whole.
+    private func itemWidths(_ items: [EditorToolbarItem], fittingFirst count: Int, available: CGFloat) -> [CGFloat] {
         let padding: CGFloat = heightClass.toolbarShowsLabels ? 4 : 0
         let font = UIFont.systemFont(ofSize: heightClass.toolbarLabelSize, weight: .medium)
         let labels = items.map { item in
             heightClass.toolbarShowsLabels ? ceil((item.label as NSString).size(withAttributes: [.font: font]).width) : 0
         }
         return EditorToolbarFit.widths(
-            labels: labels, preferred: heightClass.toolbarItemWidth + padding, minimum: heightClass.toolbarItemMinimumWidth + padding,
-            padding: padding, breathing: padding + 6, available: available
+            labels: labels, fittingFirst: count, preferred: heightClass.toolbarItemWidth + padding,
+            minimum: heightClass.toolbarItemMinimumWidth + padding, padding: padding, breathing: padding + 6, available: available
         )
     }
 
@@ -171,7 +189,7 @@ struct EditorToolbar: View {
         case .smart: Palette.aiTextStrong
         }
         return Button {
-            viewModel.perform(item.action)
+            viewModel.tap(item)
         } label: {
             VStack(spacing: 5) {
                 Image(systemName: item.systemImage)
@@ -179,16 +197,18 @@ struct EditorToolbar: View {
                     .foregroundStyle(tint)
                     .frame(height: 24)
                     .overlay(alignment: .topTrailing) {
+                        // Above the icon's corner, clear of the icon (the bar has room above it at every height): it says the
+                        // reach, the tool does what it always does.
                         if let badge = item.scopeBadge {
-                            Text(badge)
+                            Text(EditorToolbarBadge.words(badge))
                                 .font(.editorGlyph(EditorGlyph.badge, weight: .heavy))
-                                .textCase(.uppercase)
                                 .foregroundStyle(Palette.accInk)
-                                .padding(.horizontal, 3.5)
+                                .lineLimit(1)
+                                .padding(.horizontal, EditorToolbarFit.badgePadding)
                                 .padding(.vertical, 1)
                                 .background(Palette.acc, in: Capsule())
                                 .fixedSize()
-                                .offset(x: 12, y: -6)
+                                .offset(x: 12, y: -10)
                                 .accessibilityHidden(true)
                         }
                     }

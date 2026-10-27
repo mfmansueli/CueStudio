@@ -35,6 +35,11 @@ extension LookViewModel {
         edit.backgrounds.first { $0.sourceID == clip.sourceID }?.effect ?? BackgroundEffect()
     }
 
+    /// Where a change of Background goes now: the picked clip's own (opened from it), else the recording under the playhead.
+    var backgroundTarget: BackgroundTarget {
+        lookClip.map { .clip($0.id) } ?? .recording(backgroundSourceID)
+    }
+
     /// The picked clip sets its own background.
     var clipOverridesBackground: Bool {
         lookClip?.look?.background != nil
@@ -60,15 +65,15 @@ extension LookViewModel {
         }
     }
 
-    /// The rule of the panel's scope, when there is one to tell: a clip with its own background (Reset gives it the take's again), a clip
-    /// showing the take's, or a take with clips that keep their own.
+    /// The rule of the panel's scope, when there is one to tell: a clip with its own background (Reset gives it the take's again), or a
+    /// clip showing the take's. The whole video's clips that keep their own say so under the header (`clipsKeepingTheirOwnInPanel`).
     var backgroundScopeNote: String? {
         if lookClip != nil {
             return clipOverridesBackground
                 ? String(localized: "This clip has its own background. Reset gives it the whole video's again.")
                 : String(localized: "Shows the whole video's background. A change here is for this clip only.")
         }
-        return someClipKeepsItsOwn(for: .background) ? String(localized: "Clips with their own background keep it.") : nil
+        return nil
     }
 
     /// The green or blue screen's Tolerance, Edge or Spill was moved from where it starts.
@@ -122,9 +127,11 @@ extension LookViewModel {
         updateBackground { $0.key = $0.key.keying(red: red, green: green, blue: blue) }
     }
 
-    /// Copies the picked photo in and puts it behind the creator.
+    /// Copies the picked photo in and puts it behind the creator, where it was asked for: the clip or recording is kept from the
+    /// start, so closing the panel, picking another clip or moving the playhead while it downloads never puts it elsewhere.
     func importBackgroundImage(_ item: PhotosPickerItem) async {
         guard isReady, !isImportingBackground else { return }
+        let target = backgroundTarget
         isImportingBackground = true
         defer { isImportingBackground = false }
         do {
@@ -134,7 +141,7 @@ extension LookViewModel {
                 if !isClosed { toast.show(String(localized: "Can't add this file"), kind: .problem) }
                 return
             }
-            setBackgroundImage(imported.fileName)
+            setBackgroundImage(imported.fileName, on: target)
         } catch is CancellationError {
             // Cancel on the pill, or the editor closed: nothing to say.
         } catch {
@@ -143,12 +150,33 @@ extension LookViewModel {
         }
     }
 
-    /// Puts a photo already in the edit's media behind the creator.
-    func setBackgroundImage(_ fileName: String) {
-        importedFiles.insert(fileName)
-        updateBackground { effect in
+    /// Puts a photo already in the edit's media behind the creator: on `target` (by default where Background writes now), as one
+    /// undo step. A clip that went meanwhile gets nothing, and says so.
+    func setBackgroundImage(_ fileName: String, on target: BackgroundTarget? = nil) {
+        switch target ?? backgroundTarget {
+        case .clip(let id):
+            guard let clip = edit.timeline.segment(id: id) else {
+                EditMediaFiles.remove([fileName])
+                toast.show(String(localized: "The clip is gone · Pick the photo again"), kind: .problem)
+                return
+            }
+            importedFiles.insert(fileName)
+            var effect = clip.look?.background ?? inheritedBackground(of: clip)
             effect.imageFileName = fileName
             effect.style = .image
+            changeEdit { edit in
+                guard var segment = edit.timeline.segment(id: id) else { return }
+                var look = segment.look ?? ClipLook()
+                look.background = effect
+                segment.look = look.normalized
+                edit.timeline.replaceSegment(segment)
+            }
+        case .recording(let sourceID):
+            importedFiles.insert(fileName)
+            var effect = edit.backgrounds.first { $0.sourceID == sourceID }?.effect ?? BackgroundEffect()
+            effect.imageFileName = fileName
+            effect.style = .image
+            changeEdit { $0.setBackground(effect, for: sourceID) }
         }
     }
 }

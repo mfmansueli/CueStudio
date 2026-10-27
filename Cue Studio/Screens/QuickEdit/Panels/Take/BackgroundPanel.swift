@@ -199,7 +199,7 @@ struct BackgroundPanel: View {
         PanelSlider(
             label: label, value: value * 100, range: range.lowerBound * 100...range.upperBound * 100, format: .percent,
             identifier: identifier, onChange: { set($0 / 100) },
-            onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+            onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
         )
     }
 

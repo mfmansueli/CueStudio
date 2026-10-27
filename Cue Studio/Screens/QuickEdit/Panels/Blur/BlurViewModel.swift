@@ -57,7 +57,7 @@ final class BlurViewModel: EditorPart {
 
     /// The edit changed: an area being followed that's gone stops, and a comparison is no longer of what shows.
     func editChanged() {
-        if let following, !edit.blurRegions.contains(where: { $0.id == following.id }) { cancelFollowing() }
+        if let following, !edit.blurRegions.contains(where: { $0.id == following.id }) { stopCurrentFollowing() }
         followQueue.removeAll { id in !edit.blurRegions.contains { $0.id == id } }
         if comparesOriginal { comparesOriginal = false }
     }

@@ -216,7 +216,7 @@ struct QuickEditPreview: View {
             }
             .onEnded { _ in
                 dragStartOffset = nil
-                viewModel.endChange()
+                viewModel.endPanelChange()
             }
     }
 }

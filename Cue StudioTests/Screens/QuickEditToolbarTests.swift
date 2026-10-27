@@ -39,12 +39,39 @@ struct QuickEditToolbarTests {
         viewModel.toolbarItems.map(\.id)
     }
 
+    /// The main bar, in the owner's order (26/10/2026): the basics, editing, speech and sound, picture and beauty, finishing.
+    private static let mainIDs = [
+        "edit", "split", "captions", "text", "smart", "addMedia", "audio",
+        "speed", "volume", "zoom", "stabilize", "freeze", "reverse", "duplicate", "replace", "reorder",
+        "pauses", "editByText", "extractAudio",
+        "format", "adjustVideo", "skinVideo", "filters", "backgroundVideo", "blurArea", "copyLook", "pasteLook",
+        "templates", "brandKit", "cover",
+    ]
+
+    /// What every item's bar (but a clip's) offers after its own tools.
+    private static let itemShortcutIDs = [
+        "clipTools", "captions", "text", "addMedia", "audio", "smart", "pauses", "editByText",
+        "format", "adjustVideo", "skinVideo", "filters", "backgroundVideo", "blurArea", "templates", "brandKit", "cover",
+    ]
+
+    /// The ids after the bar's first thin line (its own tools come before it), Delete left out.
+    private func shortcuts(_ viewModel: QuickEditViewModel) -> [String] {
+        let items = viewModel.toolbarItems.filter { !$0.isPinned }
+        guard let start = items.firstIndex(where: \.startsGroup) else { return [] }
+        return items[start...].map(\.id)
+    }
+
     // MARK: - Contexts
 
     @Test func theMainToolbarHasEveryToolWithNothingPicked() async {
         let viewModel = await makeScenario().viewModel
-        #expect(ids(viewModel) == ["edit", "captions", "text", "smart", "addMedia", "blurArea", "audio", "format", "adjustVideo", "filters", "cover"])
-        #expect(viewModel.toolbarContextLabel == nil)
+        #expect(ids(viewModel) == Self.mainIDs)
+        #expect(viewModel.toolbarItems.count == 30)
+        #expect(viewModel.toolbarContext == .main)
+        // A thin line starts each group after the basics.
+        #expect(viewModel.toolbarItems.enumerated().filter(\.element.startsGroup).map(\.offset) == [7, 16, 19, 27])
+        // The main bar changes the whole video by itself: no badge, and nothing to delete.
+        #expect(viewModel.toolbarItems.allSatisfy { $0.scopeBadge == nil && !$0.isPinned })
     }
 
     @Test func formatIsOnTheMainBarAndOpensTheFormatPanel() async {
@@ -57,28 +84,34 @@ struct QuickEditToolbarTests {
         #expect(EditorPanel.crop.title == "Format")
     }
 
-    @Test func smartIsAmongTheFirstFiveAndIsTheOnlyVioletOne() async {
+    @Test func smartIsFifthAndIsTheOnlyVioletOne() async {
         let viewModel = await makeScenario().viewModel
         let items = viewModel.toolbarItems
-        #expect(items.prefix(5).map(\.id).contains("smart"))
+        #expect(items[4].id == "smart")
         #expect(items.last?.id == "cover")
         let smart = items.first { $0.id == "smart" }
         #expect(smart?.style == .smart)
-        #expect(smart?.action == .open(.smart))
-        #expect(items.filter { $0.id != "smart" }.allSatisfy { $0.style == .normal })
+        #expect(smart?.action == .openSmart(.tools))
+        // One clip and no look copied: Reorder and Paste look say why when tapped.
+        #expect(items.filter { $0.style == .dimmed }.map(\.id) == ["reorder", "pasteLook"])
+        #expect(items.filter { $0.id != "smart" }.allSatisfy { $0.style != .smart })
         #expect(items.first { $0.id == "cover" }?.action == .openCoverStudio)
-        // Pauses live in Smart.
-        #expect(!items.contains { $0.id == "pauses" })
+        #expect(items.first { $0.id == "templates" }?.action == .openSmart(.templates))
+        #expect(items.first { $0.id == "brandKit" }?.action == .openSmart(.brand))
+        #expect(items.first { $0.id == "skinVideo" }?.action == .openLook(.skin, wholeVideo: true))
+        #expect(items.first { $0.id == "brandKit" }?.label == SmartPanelSection.brand.label)
     }
 
-    @Test func theClipBarHasOnlyTheClipsOwnTools() async {
+    @Test func theClipBarHasItsOwnToolsThenTheOthers() async {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.selectClipAtPlayhead)
         let items = viewModel.toolbarItems
-        #expect(["adjust", "background", "filters"].allSatisfy { id in items.contains { $0.id == id } })
-        // What changes the whole video lives on the main bar; the two cutting tools that reach past the clip say "All".
-        #expect(!items.contains { ["crop", "voice", "media"].contains($0.id) })
-        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == ["editByText", "pauses"])
+        // Its look is the clip's (Adjust, Skin, Filters, Background), right after Reorder.
+        #expect(items.first { $0.id == "adjust" }?.action == .openLook(.adjust, wholeVideo: false))
+        #expect(items.first { $0.id == "skin" }?.action == .openLook(.skin, wholeVideo: false))
+        // What reaches past the clip says so: its two cutting tools, and the whole video's tools after the thin line.
+        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == ["editByText", "pauses", "captions", "format", "templates", "brandKit"])
+        #expect(shortcuts(viewModel) == ["captions", "text", "addMedia", "audio", "smart", "format", "templates", "brandKit", "cover"])
         #expect(items.last?.id == "delete")
     }
 
@@ -93,10 +126,11 @@ struct QuickEditToolbarTests {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.selectClipAtPlayhead)
         #expect(viewModel.selection == .clip(viewModel.edit.timeline.segments[0].id))
-        #expect(viewModel.toolbarContextLabel == "Clip")
+        #expect(viewModel.toolbarContext == .clip)
         #expect(ids(viewModel) == [
             "split", "editByText", "speed", "volume", "pauses", "zoom", "stabilize", "duplicate", "freeze", "reverse", "replace", "extractAudio",
-            "reorder", "adjust", "filters", "background", "blurArea", "copyLook", "pasteLook", "delete",
+            "reorder", "adjust", "skin", "filters", "background", "blurArea", "copyLook", "pasteLook",
+            "captions", "text", "addMedia", "audio", "smart", "format", "templates", "brandKit", "cover", "delete",
         ])
         #expect(viewModel.toolbarItems.last?.style == .destructive)
     }
@@ -126,7 +160,7 @@ struct QuickEditToolbarTests {
         viewModel.perform(.splitClip)
         #expect(viewModel.toolbarContextName == "Clip 2")
         // The kind stays the tools' identity: picking another clip keeps them where they were scrolled.
-        #expect(viewModel.toolbarContextLabel == "Clip")
+        #expect(viewModel.toolbarContext == .clip)
         viewModel.perform(.addText(.hook))
         #expect(viewModel.toolbarContextName == "Hook")
         viewModel.overlays.addMedia(ImportedMedia(kind: .photo, fileName: "photo-\(UUID().uuidString).jpg", aspect: 1, duration: nil))
@@ -146,21 +180,22 @@ struct QuickEditToolbarTests {
     @Test func eachPickedItemHasItsOwnTools() async throws {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.addText(.title))
-        #expect(viewModel.toolbarContextLabel == "Text")
-        #expect(ids(viewModel) == ["editText", "style", "animation", "keyframe", "track", "duplicate", "lock", "delete"])
+        #expect(viewModel.toolbarContext == .text)
+        #expect(ids(viewModel) == ["editText", "style", "animation", "keyframe", "track", "duplicate", "lock"] + Self.itemShortcutIDs + ["delete"])
         let line = CaptionCue(text: "Massa fina, muito recheio", start: 12.4, end: 14.6, origin: .manual)
         viewModel.changeEdit { $0.captions = [line] }
         viewModel.selection = .caption(line.id)
-        #expect(viewModel.toolbarContextLabel == "Caption")
-        #expect(ids(viewModel) == ["editCaption", "split", "join", "emphasis", "style", "delete"])
+        #expect(viewModel.toolbarContext == .caption)
+        // Edit opens the Captions panel on the line already: no second way to the same list.
+        #expect(ids(viewModel) == ["editCaption", "split", "join", "emphasis", "style"] + Self.itemShortcutIDs.filter { $0 != "captions" } + ["delete"])
         let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
         viewModel.changeEdit { $0.music = [music] }
         viewModel.selection = .music(music.id)
-        #expect(ids(viewModel) == ["volume", "beats", "replace", "lock", "delete"])
+        #expect(ids(viewModel) == ["volume", "beats", "replace", "lock"] + Self.itemShortcutIDs + ["delete"])
         let voice = VoiceOverClip(fileName: "v.m4a", duration: 2, anchor: 1)
         viewModel.changeEdit { $0.voiceOvers = [voice] }
         viewModel.selection = .voiceOver(voice.id)
-        #expect(ids(viewModel) == ["volume", "reRecord", "lock", "delete"])
+        #expect(ids(viewModel) == ["volume", "reRecord", "lock"] + Self.itemShortcutIDs + ["delete"])
     }
 
     @Test func aTextsAnimationToolOpensItsStyleOnTheMotionTab() async throws {
@@ -182,8 +217,8 @@ struct QuickEditToolbarTests {
         viewModel.changeEdit { $0.media = [media] }
         viewModel.selection = .media(media.id)
         #expect(ids(viewModel) == [
-            "editMedia", "mediaMotion", "mask", "splitMedia", "replaceMedia", "blurArea", "track", "keyframe", "duplicate", "saveToLibrary", "lock", "delete",
-        ])
+            "editMedia", "mediaMotion", "mask", "splitMedia", "replaceMedia", "blurArea", "track", "keyframe", "duplicate", "saveToLibrary", "lock",
+        ] + Self.itemShortcutIDs.filter { $0 != "blurArea" } + ["delete"])
         viewModel.perform(.duplicateMedia)
         #expect(viewModel.edit.media.count == 2)
         #expect(viewModel.selection != .media(media.id))
@@ -207,7 +242,7 @@ struct QuickEditToolbarTests {
     @Test func textAndAudioMenus() async {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.openMenu(.text))
-        #expect(viewModel.toolbarContextLabel == "Text")
+        #expect(viewModel.toolbarContext == .menu(.text))
         #expect(ids(viewModel) == ["title", "subtitle", "hook", "callout", "graphic.arrow", "graphic.circle", "graphic.tag"])
         viewModel.perform(.addText(.hook))
         viewModel.leaveToolbarContext()
@@ -216,7 +251,7 @@ struct QuickEditToolbarTests {
         viewModel.perform(.openMenu(.audio))
         #expect(ids(viewModel) == ["voice", "music", "voiceOver"])
         viewModel.leaveToolbarContext()
-        #expect(viewModel.toolbarContextLabel == nil)
+        #expect(viewModel.toolbarContext == .main)
         #expect(viewModel.toolMenu == nil)
     }
 
@@ -279,7 +314,7 @@ struct QuickEditToolbarTests {
     @Test func theCaptionsMenuMakesOrManagesTheLines() async {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.openMenu(.captions))
-        #expect(viewModel.toolbarContextLabel == "Captions")
+        #expect(viewModel.toolbarContext == .menu(.captions))
         #expect(ids(viewModel) == ["autoCaptions", "writeCaptions", "editByText"])
         viewModel.changeEdit { $0.captions = [CaptionCue(text: "Oi", start: 1, end: 2, origin: .manual)] }
         #expect(ids(viewModel) == ["addLine", "allLines", "style", "findReplace", "editByText", "deleteAll"])
@@ -477,5 +512,163 @@ struct QuickEditToolbarTests {
         #expect(viewModel.edit.voiceOvers.isEmpty)
         #expect(scenario.player.currentTime == 4)
         #expect(viewModel.panel == .voiceOver)
+    }
+
+    // MARK: - More tools on every bar (26/10/2026)
+
+    /// Every bar the editor can show, with the item picked for it.
+    private func everyBar(_ scenario: Scenario) -> [(String, [EditorToolbarItem])] {
+        let viewModel = scenario.viewModel
+        var bars: [(String, [EditorToolbarItem])] = [("main", viewModel.toolbarItems)]
+        for menu in [EditorToolMenu.text, .captions, .audio] {
+            viewModel.perform(.openMenu(menu))
+            bars.append(("menu \(menu)", viewModel.toolbarItems))
+        }
+        viewModel.leaveToolbarContext()
+        viewModel.perform(.selectClipAtPlayhead)
+        bars.append(("clip", viewModel.toolbarItems))
+        viewModel.perform(.addText(.title))
+        bars.append(("text", viewModel.toolbarItems))
+        let line = CaptionCue(text: "Massa fina, muito recheio", start: 12.4, end: 14.6, origin: .manual)
+        let music = MusicClip(fileName: "m.m4a", title: "Morning loop", fileDuration: 60, start: 0, length: 10)
+        let voice = VoiceOverClip(fileName: "v.m4a", duration: 2, anchor: 1)
+        let window = MediaOverlay(kind: .video, fileName: "v.mov", aspect: 1, mediaDuration: 6, span: TimeSpan(start: 2, end: 5))
+        viewModel.changeEdit { edit in
+            edit.captions = [line]
+            edit.music = [music]
+            edit.voiceOvers = [voice]
+            edit.media = [window]
+        }
+        let picks: [(String, EditorSelection)] = [
+            ("caption", .caption(line.id)), ("music", .music(music.id)), ("voice-over", .voiceOver(voice.id)), ("media", .media(window.id)),
+        ]
+        for (name, selection) in picks {
+            viewModel.selection = selection
+            bars.append((name, viewModel.toolbarItems))
+        }
+        return bars
+    }
+
+    @Test func noBarShowsTheSameToolTwice() async {
+        for (name, items) in everyBar(await makeScenario()) {
+            #expect(Set(items.map(\.id)).count == items.count, "\(name) repeats \(items.map(\.id))")
+            #expect(Set(items.map(\.action)).count == items.count, "\(name) has two buttons doing the same")
+            // Delete, where there is one, is the only pinned tool and the last.
+            #expect(items.filter(\.isPinned).count <= 1, "\(name)")
+            if let pinned = items.firstIndex(where: \.isPinned) { #expect(pinned == items.count - 1, "\(name)") }
+        }
+    }
+
+    /// Next to a text, a caption, a photo or a sound, nothing of the video's own (Split, Speed, Volume, Zoom…) is added: it would read
+    /// as acting on the item. Their own Split and Volume stay.
+    @Test func anItemsBarNeverAddsTheVideosClipTools() async {
+        let videoTools: Set<EditorAction> = [
+            .splitClip, .open(.speed), .open(.zoom), .open(.stabilize), .duplicateClip, .freezeFrame, .reverseClip, .replaceClip,
+            .reorderClips, .copyLook, .pasteLook,
+        ]
+        let bars = everyBar(await makeScenario())
+        for (name, items) in bars where !["main", "clip"].contains(name) && !name.hasPrefix("menu") {
+            #expect(items.allSatisfy { !videoTools.contains($0.action) }, "\(name)")
+            // The volume tool of a sound or a video is its own, before the thin line.
+            let own = items.prefix { !$0.startsGroup }
+            #expect(items.filter { $0.action == .open(.volume) }.allSatisfy { item in own.contains(item) }, "\(name)")
+        }
+        let bar = Dictionary(uniqueKeysWithValues: bars)
+        #expect(bar["caption"]?.contains { $0.action == .splitCaption } == true)
+        #expect(bar["media"]?.contains { $0.action == .splitMedia } == true)
+        #expect(bar["music"]?.first?.action == .open(.volume))
+    }
+
+    @Test func theOtherToolsComeAfterTheItemsOwnAndSayWhenTheyReachTheWholeVideo() async {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.addText(.hook))
+        #expect(shortcuts(viewModel) == Self.itemShortcutIDs)
+        let badged = viewModel.toolbarItems.filter { $0.scopeBadge == .wholeVideo }.map(\.id)
+        #expect(badged == ["captions", "pauses", "editByText", "format", "adjustVideo", "skinVideo", "filters", "backgroundVideo", "templates", "brandKit"])
+        // "Clip" goes to the tools of the clip under the playhead.
+        #expect(viewModel.toolbarItems.first { $0.id == "clipTools" }?.action == .selectClipAtPlayhead)
+        viewModel.perform(.selectClipAtPlayhead)
+        #expect(viewModel.toolbarContext == .clip)
+    }
+
+    @Test func theMainVideosAreaOfASplitScreenAddsTheOthersButNeverDelete() async throws {
+        let viewModel = await makeScenario().viewModel
+        var support = MediaOverlay(kind: .video, fileName: "s.mov", aspect: 1, mediaDuration: 6, span: TimeSpan(start: 2, end: 5))
+        support.layout = .split
+        viewModel.changeEdit { $0.media = [support] }
+        viewModel.selection = .media(support.id)
+        viewModel.overlays.selectedArea = .main
+        #expect(viewModel.toolbarContext == .mainArea)
+        #expect(viewModel.toolbarContextName == "Main video")
+        // Its own Clip and Blur area stay where they were; nothing deletes (the support would go).
+        #expect(Array(ids(viewModel).prefix(5)) == ["framing", "swap", "layout", "clipTools", "blurArea"])
+        #expect(shortcuts(viewModel) == Self.itemShortcutIDs.filter { !["clipTools", "blurArea"].contains($0) })
+        #expect(!viewModel.toolbarItems.contains { $0.isPinned })
+    }
+
+    /// A badged tool on an item's bar says once, per tool and kind of item, that it changes the whole video; the main bar never.
+    @Test func aWholeVideoToolOnAnItemsBarSaysItsReachOnce() async throws {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        let format = try #require(viewModel.toolbarItems.first { $0.id == "format" })
+        viewModel.tap(format)
+        #expect(viewModel.panel == .crop)
+        #expect(scenario.toast.message == nil)
+        viewModel.closePanel()
+        scenario.player.seek(to: 7.1)
+        viewModel.perform(.splitClip)
+        let clipFormat = try #require(viewModel.toolbarItems.first { $0.id == "format" })
+        viewModel.tap(clipFormat)
+        #expect(scenario.toast.message == "Applies to the whole video, not only to Clip 2.")
+        #expect(viewModel.panel == .crop)
+        viewModel.closePanel()
+        scenario.toast.dismiss()
+        viewModel.tap(clipFormat)
+        #expect(scenario.toast.message == nil, "said once per tool and kind of item")
+        viewModel.closePanel()
+        // Another tool, or the same on another kind of item, says it again.
+        let templates = try #require(viewModel.toolbarItems.first { $0.id == "templates" })
+        viewModel.tap(templates)
+        #expect(scenario.toast.message == "Applies to the whole video, not only to Clip 2.")
+        viewModel.closePanel()
+        scenario.toast.dismiss()
+        viewModel.perform(.addText(.hook))
+        viewModel.closePanel()
+        let hookFormat = try #require(viewModel.toolbarItems.first { $0.id == "format" })
+        viewModel.tap(hookFormat)
+        #expect(scenario.toast.message == "Applies to the whole video, not only to Hook.")
+    }
+
+    @Test func templatesAndBrandKitOpenSmartOnTheirTab() async throws {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.openSmart(.templates))
+        #expect(viewModel.panel == .smart)
+        #expect(viewModel.smartSection == .templates)
+        // Already open: the tab changes.
+        viewModel.perform(.openSmart(.brand))
+        #expect(viewModel.smartSection == .brand)
+        viewModel.closePanel()
+        #expect(viewModel.smartSection == .tools, "✦ Smart opens on Tools next time")
+        viewModel.perform(.open(.smart))
+        #expect(viewModel.smartSection == .tools)
+    }
+
+    @Test func skinOpensAdjustOnSkinSmoothingAtTheButtonsReach() async {
+        let viewModel = await makeScenario().viewModel
+        viewModel.perform(.openLook(.skin, wholeVideo: true))
+        #expect(viewModel.panel == .adjust)
+        #expect(viewModel.look.adjustOpensOn == .skinSmoothing)
+        #expect(!viewModel.look.lookScopeIsClip)
+        viewModel.closePanel()
+        viewModel.perform(.selectClipAtPlayhead)
+        viewModel.perform(.openLook(.skin, wholeVideo: false))
+        #expect(viewModel.look.lookScopeIsClip)
+        viewModel.closePanel()
+        // From a text's bar, the badged Skin is the whole video's.
+        viewModel.perform(.addText(.title))
+        viewModel.closePanel()
+        viewModel.perform(.openLook(.skin, wholeVideo: true))
+        #expect(!viewModel.look.lookScopeIsClip)
+        #expect(viewModel.selection?.textID != nil, "the text stays picked: ✓ brings its tools back")
     }
 }

@@ -42,12 +42,22 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     }
     private var shownPanel: EditorPanel?
     private var picked: EditorSelection?
+    /// The clip a clip panel picked when it opened with nothing picked (`EditorPanel.pinsClip`): the panel lets go of it when it
+    /// closes, unless the creator picked something else meanwhile.
+    @ObservationIgnored private var panelPick: EditorSelection?
     /// The Text or Audio toolbar, opened from the main one with nothing selected.
     var toolMenu: EditorToolMenu?
     /// The open panel's tab (Text style and Caption style).
     var panelTab: EditorPanelTab = .presets
     /// The open panel's "Advanced" section is expanded.
     var showsAdvanced = false
+    /// ✦ Smart's tab: Tools when it opens, unless Templates or Brand kit on a toolbar asked for theirs (`openSmart(on:)`).
+    var smartSection: SmartPanelSection = .tools
+    /// Which whole-video tools already said, on which kind of item's bar, that they change the whole video (once each while the
+    /// editor is open, `tap(_:)`).
+    @ObservationIgnored var scopeNoticesSaid: [EditorToolbarContext: Set<String>] = [:]
+    /// Where each toolbar was scrolled, so the main tools come back where they were left (`EditorToolbarScrollMemory`).
+    @ObservationIgnored var toolbarScroll = EditorToolbarScrollMemory()
     /// The preview fills the screen: tap the video to play or pause, outside to come back.
     var isFullScreen = false
     /// The sheet over the editor: Export, Add music, Add photo or video.
@@ -166,7 +176,9 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         )
         look = LookViewModel(session: session, editing: editing, motion: motion)
         clips = ClipsViewModel(session: session, editing: editing, takes: takes, library: library, speechLanguage: speechLanguage)
-        overlays = OverlaysViewModel(session: session, importer: mediaImporter, styles: styles, library: library, tracker: tracker)
+        overlays = OverlaysViewModel(
+            session: session, importer: mediaImporter, styles: styles, library: library, tracker: tracker, faces: faceFinder
+        )
         blur = BlurViewModel(session: session, tracker: tracker, faces: faceFinder)
         audio = AudioViewModel(
             session: session, editing: editing, importer: mediaImporter, recorder: recorder ?? VoiceOverRecorder(),
@@ -262,11 +274,15 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     }
 
     /// Picks `next` (nil lets go). The Text or Audio menu gives way to it; a cut opens its Transition panel; a panel that
-    /// works on the picked item closes when it can't work on `next`. Picking never ends an undo step: a gesture that picks
-    /// (or lets go of what it removed) keeps its one step.
+    /// works on the picked item closes when it can't work on `next`, ending its own control's undo step. Picking never ends a
+    /// gesture's: one that picks (or lets go of what it removed) keeps its one step.
     func pick(_ next: EditorSelection?) {
         guard next != picked else { return }
+        // Another photo or video, or none: a support starts on its own area (a tap on the main video's says so after, `pickArea`).
+        if next?.mediaID != picked?.mediaID { overlays.selectedArea = .support }
         picked = next
+        // Picked by the creator: no longer the panel's to let go of.
+        if next != panelPick { panelPick = nil }
         if next != nil { toolMenu = nil }
         if next?.joinID != nil {
             if shownPanel != .transition {
@@ -283,12 +299,17 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         let previous = shownPanel
         guard next != previous else { return }
         shownPanel = next
+        pinClip(for: next)
         showsAdvanced = false
         panelTab = .presets
+        // ✦ Smart opens on Tools next time unless a toolbar asks for another tab.
+        if previous == .smart { smartSection = .tools }
         audio.panelChanged(from: previous)
         // Auto, Compare, the recordings' analysis for Format and Stabilize, a clip's scope.
         look.panelChanged(to: next)
-        if endingChange { endChange() }
+        // Opening another panel ends any change; a pick that closes it ends only the panel's own (its control may never say it
+        // let go), never a gesture's that picks or lets go of what it removed.
+        if endingChange { endAllChanges() } else { endPanelChange() }
         audio.stopRecordingIfNeeded()
         // A cut is picked only while its Transition panel is open.
         if previous == .transition, picked?.joinID != nil { picked = nil }
@@ -296,6 +317,19 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         captions.panelChanged(to: next)
         blur.panelChanged(to: next)
         if next != .mask { overlays.comparesWithoutMask = false }
+    }
+
+    /// A clip panel opened with nothing picked picks the clip under the playhead, and lets go of it when it closes (or gives way
+    /// to a panel that isn't a clip's); a clip the creator picked stays picked. The Text or Audio menu stays under it.
+    private func pinClip(for next: EditorPanel?) {
+        if let pin = panelPick {
+            guard !(next.map { $0.pinsClip && look.accepts(pin, in: $0) } ?? false) else { return }
+            panelPick = nil
+            if picked == pin { picked = nil }
+        } else if picked == nil, next?.pinsClip == true, let clip = targetClip {
+            picked = .clip(clip.id)
+            panelPick = picked
+        }
     }
 
     // MARK: - Reading
@@ -419,7 +453,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// Saves the edit on the take (its new length, marked Edited) when anything changed.
     func done() {
-        endChange()
+        endAllChanges()
         audio.stopRecordingIfNeeded()
         // Reversed videos nothing plays any more (a clip reversed and put back) were kept for undo; they go now.
         var saved = edit
@@ -449,7 +483,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Done: pauses and asks "Is it ready to post?" (`EditorDoneSheet`); the answer is `finish(_:)`.
     func askIfReadyToPost() {
         guard isReady else { return }
-        endChange()
+        endAllChanges()
         player.pause()
         // A Blur area still being tracked hasn't covered anything yet.
         if blur.isFollowing {
@@ -480,7 +514,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// "Not yet, I'll come back": the draft stays even if nothing changed, so the video is in edit.
     private func keepForLater() {
-        endChange()
+        endAllChanges()
         // A narration being recorded is kept with the draft.
         audio.stopRecordingIfNeeded()
         let kept = saveDraft(forced: true)
@@ -491,7 +525,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// Leaves without saving on the take. Changes stay in a draft that Edit picks up again; the take
     /// is as it was.
     func cancel() {
-        endChange()
+        endAllChanges()
         // A narration being recorded is kept with the draft, like every other change.
         audio.stopRecordingIfNeeded()
         guard source == .ready, hasUnsavedChanges else {

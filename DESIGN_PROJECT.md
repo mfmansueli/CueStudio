@@ -1205,11 +1205,11 @@ auditoria: `reports/editor-award-checklist.md`.
   deleted", "Found 1 pause", "Cut 1 word from the video", "1 word cut · 0.8 s", "Frame frozen for 2 seconds", "3 matches"…) escolhem a forma
   de cada idioma (árabe com as seis); o botão de Edit by text diz "Cut N words from the video" e o toast "N words cut · 0,8 s".
 - **Barras como um editor de celular (decisão do dono, 16/10/2026, depois de comparar com CapCut, Edits e InShot; diverge da ordem do quadro
-  v29 · 7.2).** Principal: **Edit · Captions · Text · ✦ Smart · Media · Blur area · Audio · Format · Adjust · Filters · Cover** (Adjust e Filters do vídeo inteiro, §44; Blur area em sexto, §54) — a ordem em que um vídeo falado é feito, as
-  cinco primeiras na tela do iPhone. **Format** (antes Crop, só na barra do clipe) abre o painel "Format" ("Whole video · format for where you post").
+  v29 · 7.2).** Principal: todas as ferramentas do editor numa barra só, em grupos, na ordem em que um vídeo falado é feito (§55). **Format**
+  abre o painel "Format" ("Whole video · format for where you post").
   Clipe: **Split · Speed · Zoom · Volume · Stabilize · Duplicate · Freeze frame · Reverse · Replace · Extract audio · Reorder · Adjust · Filters ·
-  Background · Blur area · Copy look · Paste look · Delete** (Stabilize e Reverse: §39; Blur area: §54): só o que é do clipe, o mais usado primeiro; o que muda o vídeo inteiro
-  (Format, Studio Voice, Media) fica na principal. Texto ganha **Motion** (Style › Motion); mídia ganha **Mask** e **Blur area** (§54), **Split** (em dois na agulha), **Replace**,
+  Background · Blur area · Copy look · Paste look · Delete** (Stabilize e Reverse: §39; Blur area: §54): o que é do clipe, o mais usado primeiro;
+  depois de uma linha fina, as outras ferramentas, com o selo "All" no que muda o vídeo inteiro (§55). Texto ganha **Motion** (Style › Motion); mídia ganha **Mask** e **Blur area** (§54), **Split** (em dois na agulha), **Replace**,
   **Track** (§39), **Duplicate** (por cima, mesmo arquivo) e, num vídeo com som, **Extract audio**; um apoio da tela dividida não tem Track nem
   Duplicate nem Mask e ganha **Close gap** quando há espaço antes dele (§51).
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
@@ -1620,7 +1620,7 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   UI test: `-uiTestLowPower`.
 - **Barra do player:** ‹ › ao lado do Play andam **um quadro** (pausado; segurar repete), para dividir e aparar no ponto exato
   (`QuickEditViewModel+FrameStep`); somem com texto muito grande.
-- **Barra de ferramentas:** principal com **Adjust** (vídeo inteiro) ao lado de Filters; o esmaecido só no lado onde há mais ferramentas; "Add
+- **Barra de ferramentas:** principal e barras de item em §55; o esmaecido só no lado onde há mais ferramentas; "Add
   line" adiciona uma linha na agulha; Text › **Motion** (antes "Animation"); Subheading e Hook com o símbolo do papel.
 - **Avisos** (`EditorPart+Toasts`, o toast do app, §1): dividir, duplicar, apagar e adicionar dizem o quê e onde ("Clip 2 deleted", "Photo added at
   00:07.0"), com ✓ e **Undo**; o que não pode acontecer diz por quê, com !.
@@ -1747,8 +1747,8 @@ encaixe, Desfazer, rascunho automático, a grade de presets das legendas). O que
 InShot, Edits, Descript e Captions (pesquisa de 24/10: os apps põem a limpeza da fala junto das legendas ou logo depois de importar; o iMovie pergunta
 "por cima ou na sequência" a partir da agulha; o Edits deixa dúvida se o trabalho foi salvo ao sair).
 - **Cortar erros sem saber do ✦ Smart:** as ferramentas do clipe (Edit, a tesoura) trazem, logo depois de Split, **Edit by text** e **Remove
-  pauses**, as mesmas que ✦ Smart abre (a mesma folha e o mesmo painel). Pauses diz o escopo: "Whole video · marked in yellow on the timeline", e
-  o clipe continua escolhido (✓ devolve as ferramentas dele).
+  pauses**, as mesmas que ✦ Smart abre (a mesma folha e o mesmo painel); as duas também estão na barra principal, no grupo da fala (§55). Pauses
+  diz o escopo: "Whole video · marked in yellow on the timeline", e o clipe continua escolhido (✓ devolve as ferramentas dele).
 - **O ‹ diz o que está escolhido** (`toolbarContextName`): "Clip 2" numa montagem ("Clip" com um só), "Photo" ou "Video", o tipo do texto ("Title",
   "Subheading", "Hook", "Callout") ou do gráfico ("Arrow", "Circle", "Tag"); "Caption", "Music", "Voice-over", "Transition"; o menu aberto. O tipo
   continua sendo a identidade das ferramentas (`toolbarContextLabel`): escolher outro clipe não volta a barra para o começo.
@@ -2137,10 +2137,12 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   mask"); **Reset** volta a máscara ao começo da forma e a imagem ao centro. **Apoio da tela dividida:** sem Mask na barra (a área já é a forma);
   a máscara guardada volta quando a mídia vira janela ou tela cheia de novo.
 - **Desfocar área** (`BlurRegion`, `BlurTarget`, `BlurKeyframe`, `BlurStyle`, `BlurShape`, `BlurSubject`, `BlurResolver`, `BlurDrawing`,
-  `BlurFollowing`, `BlurFaceWalker`, `BlurViewModel` e partes, `BlurPanel`, `BlurStatusCard`, `BlurEditingLayer`): **sexto botão da barra
-  principal** (os cinco da tela não mudam), na barra do clipe (depois de Background) e na de uma foto ou vídeo por cima. Primeiro passo: os rostos
+  `BlurFollowing`, `BlurFaceWalker`, `BlurViewModel` e partes, `BlurPanel`, `BlurStatusCard`, `BlurEditingLayer`): na barra principal (grupo
+  da imagem, §55), na barra do clipe (depois de Background), na de uma foto ou vídeo por cima e na da área do vídeo principal de uma tela dividida
+  (ali a área vai para o vídeo principal, nunca para o apoio). Primeiro passo: os rostos
   do quadro numerados e tracejados na prévia (da análise de movimento quando ela chegou ali, senão Vision no quadro): **um toque esconde e já segue
-  aquele rosto**; **All but the largest** esconde todos menos o maior (cada um uma área); **Draw an area** põe uma caixa no meio, para uma
+  aquele rosto**; **All but the largest** esconde todos menos o maior (cada um uma área, seguidas uma depois da outra; apagar uma no meio, a que está sendo
+  seguida ou uma que espera, não para as outras); **Draw an area** põe uma caixa no meio, para uma
   placa ou um nome. A área nasce do tamanho do clipe sob o cursor (de uma foto ou vídeo por cima: o arquivo todo) e, num rosto, com folga para
   testa, cabelo e orelhas (`BlurRegion.area(aroundFace:)`).
   - **Visual de uma área nova** (`BlurLook`, decisões do dono, 26/10): a primeira de um vídeo, rosto ou desenhada, nasce **oval, Blur, Strength
@@ -2248,3 +2250,62 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   Vision só no aparelho), então ali o teste parte do rosto da análise.
 - **Testes das barras:** `QuickEditOverlayBarsTests` (apoio, área do vídeo principal, janela com Volume e Motion, Emphasis), `QuickEditToolbarTests`,
   `QuickEditClipLookTests`; `BlurAreaExportTests.aHalfOpaqueVideoShowsTheTakeThrough`.
+
+## 55. Quick edit: todas as ferramentas na barra (26 de outubro de 2026; pedido do dono)
+
+A barra funciona como antes: uma só, que troca para as ferramentas do item escolhido, com "‹ Nome" e o Delete fixo no fim. O que mudou é o
+alcance: toda ferramenta do editor está na barra principal, e a barra de qualquer item escolhido traz, depois das dele, as outras. Agrupada por
+afinidade, uma barra longa como a do InShot (decisão do dono, 26/10; o desenho com faixa de contexto, lixeira separada e catálogo "All" foi
+recusado).
+- **Barra principal** (`QuickEditViewModel.mainToolGroups`, `EditorToolbarTool`, 30 ferramentas, uma linha fina entre os grupos): **Edit · Split ·
+  Captions · Text · ✦ Smart · Media · Audio** | Speed · Volume · Zoom · Stabilize · Freeze frame · Reverse · Duplicate · Replace · Reorder |
+  Remove pauses · Edit by text · Extract audio | Format · Adjust · Skin · Filters · Background · Blur area · Copy look · Paste look | Templates ·
+  Brand kit · Cover. As cinco primeiras cabem na tela de um iPhone de 6,1"; Delete nunca está nela.
+- **Ferramentas do clipe sem escolher o clipe** (`QuickEditViewModel+Toolbar`): Speed, Volume, Zoom e Stabilize abrem o painel no clipe sob a
+  agulha, que fica contornado como escolhido pelo painel enquanto ele está aberto (mover a agulha não troca o clipe; escolher outro é escolha da
+  pessoa e vale); ✓ devolve como estava, sem nada escolhido. Duplicate, Replace, Extract audio, Copy look e Paste look escolhem o clipe sob a agulha
+  e mostram as ferramentas dele; Reverse e Freeze frame agem nele; Split divide na agulha; Reorder com um clipe só diz por quê. Num vídeo sem
+  cortes, o clipe é o vídeo.
+- **Skin** abre o Adjust do vídeo inteiro já em Suavizar pele (`LookViewModel.lookTool`); **Templates** e **Brand kit** abrem a aba deles no ✦ Smart.
+- **Barras de item** (`clipShortcutGroups`, `itemShortcutGroups`): as ferramentas do item primeiro, como sempre (as quatro na tela são as que um
+  criador mais usa nele); depois de uma linha fina, **Captions · Text · Media · Audio · ✦ Smart** | Format | Templates · Brand kit · Cover na do
+  clipe; nas outras, **Clip** (vai às ferramentas do clipe sob a agulha) | Captions · Text · Media · Audio · ✦ Smart | Remove pauses · Edit by text |
+  Format · Adjust · Skin · Filters · Background · Blur area | Templates · Brand kit · Cover. Nunca o que pareceria agir no item (Split, Speed ou
+  Volume do vídeo ao lado de um texto) nem o que as ferramentas dele já alcançam (a legenda não repete Captions).
+- **Selo "All"** (`EditorToolbarItem.ScopeBadge`, `EditorToolbarBadge`): numa barra de item, o que muda o vídeo inteiro (Captions, Remove
+  pauses, Edit by text, Format, Adjust, Skin, Filters, Background, Templates, Brand kit) leva o selo amarelo curto "ALL" ("TODOS" em português)
+  acima do canto do ícone, sem cobri-lo (no canto espelhado da direita para a esquerda); ele só diz o alcance: a ferramenta faz exatamente o que faz na principal. Medido nos 20 idiomas
+  (`EditorToolbarBadgeTests`): nunca mais largo que a ferramenta mais estreita de cada altura, então nunca chega ao ícone nem ao selo da vizinha.
+  A primeira vez que uma ferramenta com selo é tocada numa barra de item (uma vez por ferramenta e tipo de item enquanto o editor está aberto,
+  `scopeNoticesSaid`), o aviso "Vale para o vídeo todo, não só para o Clipe 2" ("Applies to the whole video, not only to %@.") aparece, sem
+  bloquear; na principal, nada. VoiceOver lê "Captions, whole video".
+- **Rolagem:** a barra principal volta à posição em que estava ao fechar um item ou um painel (`EditorToolbarScrollMemory`), uma vez, ao
+  aparecer; depois só acompanha a rolagem da pessoa, nunca a puxa de volta. Trocar de clipe não volta a barra do item para o começo.
+- **Duplicate** (do clipe) escolhe a cópia com a agulha no começo dela, como Split: as ferramentas dela (Split, Freeze frame) já agem nela.
+- **"N clips keep their own · Use this on all"** (`KeepTheirOwnRow`, `LookViewModel+ClipScope`): no Adjust, Skin, Filters ou Background do vídeo
+  inteiro, quando há clipes com valor próprio para o que o painel muda, uma linha sob o cabeçalho diz quantos (no plural de cada idioma) e **Use
+  this on all** dá a eles o do vídeo inteiro (só os valores daquela ferramenta; em Skin, só a suavização), num passo, com Undo no aviso "Every clip
+  uses this now". Nunca sozinho. O subtítulo do painel diz só "Whole video".
+- **O que chega depois cai onde foi pedido, ou em lugar nenhum, dito:** a tela dividida acha os rostos primeiro e escreve só o que acrescenta na
+  edição como ela está (uma mudança ou um Undo feitos no meio ficam; um corte no meio não acrescenta nada, "The video changed meanwhile · Add it
+  again"; de dois layouts tocados rápido, vale o último); o Auto de um clipe aparado, trocado ou invertido no meio não entra ("The clip changed
+  meanwhile · Tap Auto again"; outro clipe escolhido, sem aviso); a foto de fundo vai para o clipe para o qual foi pedida ("The clip is gone · Pick
+  the photo again" se ele saiu); Extract audio de um vídeo por cima confere lugar, trecho e arquivo e usa o volume de agora; as legendas da voz de um
+  apoio nunca entram num vídeo trocado ou desligado, e trocar o vídeo leva as legendas da voz dele ("Replaced · its voice's captions went with the
+  old one", com Undo); Cancelar durante a checagem da tradução vale; Freeze frame com um clipe escolhido e a agulha em outro diz "Move playhead onto
+  the clip", como Split.
+- **Desfazer:** cada mudança aberta tem dono (`EditChangeOwner`: o controle do painel ou o gesto na timeline ou na prévia); escolher algo que fecha
+  um painel encerra só a mudança do controle dele, nunca a de um gesto; dois ao mesmo tempo são um passo, tomado quando os dois terminam.
+- **Música e narração:** apagar uma música diz "Music deleted" (um efeito ou um som extraído, "Sound deleted"), com Undo e o toque de apagar; Replace
+  diz "Music replaced" com Undo, e uma música que chega depois de o clipe sair não troca nada ("The music clip is gone · Nothing replaced"). Record
+  espera um congelamento, inversão ou importação em andamento ("Still working · Record when it finishes"); a narração fica onde começou; nenhuma
+  ferramenta chega à edição enquanto ela grava.
+- **Testes:** `QuickEditToolbarTests`, `EditorToolbarFitTests`, `EditorToolbarBadgeTests`, `EditorToolbarScrollMemoryTests`,
+  `QuickEditMainBarClipToolsTests`, `QuickEditUseOnAllTests`, `EditDocumentTests.twoChangesAtOnceAreOneStepTakenWhenBothEnd`,
+  `QuickEditUndoPathTests` (escolha que fecha painel, arraste de alça), `QuickEditSoundTests`, `QuickEditOverlayBarsTests`,
+  `QuickEditFreezeFrameTests`, `QuickEditSplitScreenTests`, `QuickEditAutoLookTests`, `QuickEditBackgroundTests`, `QuickEditExtractAudioTests`,
+  `QuickEditCaptionsTests`, `QuickEditTranslationTests`, `QuickEditVoiceOverStopTests`, `QuickEditBlurTests`.
+- **Contraste:** o selo é `accInk` sobre `acc` e a linha "keep their own" é `ink2` e `accText` sobre `Palette.Editor.panel`, pares medidos em
+  `PaletteContrastTests` com e sem Aumentar Contraste. Nas imagens do iPhone SE e do iPhone 17, em inglês e em árabe XXXL
+  (`ToolAuditCaptureTests.test14ToolbarReach` e `test15SupportBarReach`, com a hierarquia para `tools/contrast/audit.py`): 38 selos, 14,88:1
+  inteiros à vista e 13,91:1 no pior, perto do esmaecido da borda da barra; o aviso de alcance, 13,1:1.

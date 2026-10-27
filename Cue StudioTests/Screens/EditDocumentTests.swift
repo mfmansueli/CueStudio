@@ -68,6 +68,33 @@ struct EditDocumentTests {
         #expect(!document.canUndo)
     }
 
+    /// A panel's slider held while a finger drags a handle: one step, taken when both have let go, and one ending never ends
+    /// the other's. Undo ends whatever is still going.
+    @Test func twoChangesAtOnceAreOneStepTakenWhenBothEnd() {
+        let document = EditDocument(EditFixtures.blank())
+        document.beginChange(by: .panel)
+        document.changeEdit { $0.exposure = 20 }
+        document.beginChange(by: .gesture)
+        document.changeEdit { $0.cropOffset = 0.5 }
+        document.endChange(by: .gesture)
+        #expect(!document.canUndo)
+        document.changeEdit { $0.exposure = 30 }
+        // A late "let go" of something else never closes the slider's step.
+        document.endChange(by: .gesture)
+        #expect(!document.canUndo)
+        document.endChange(by: .panel)
+        #expect(document.undo())
+        #expect(document.edit.exposure == 0)
+        #expect(document.edit.cropOffset == 0)
+        #expect(!document.canUndo)
+        document.redo()
+        document.beginChange(by: .panel)
+        document.changeEdit { $0.exposure = 50 }
+        #expect(document.undo())
+        #expect(document.edit.exposure == 30)
+        #expect(document.changeOwners.isEmpty)
+    }
+
     /// The app left in the middle of a drag: the draft's steps take the gesture as a step of its own, so the edit saved with
     /// them goes back to where the gesture began on Undo, even after the draft is read twice.
     @Test func aDraftSavedMidGestureKeepsTheGestureAsAStep() {

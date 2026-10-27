@@ -37,7 +37,7 @@ struct QuickEditUndoPathTests {
         viewModel.look.moveCrop(to: 0.3)
         viewModel.look.moveCrop(to: 0.6)
         viewModel.look.moveCrop(to: 4)
-        viewModel.endChange()
+        viewModel.endPanelChange()
         #expect(viewModel.edit.cropOffset == 1)
         viewModel.undo()
         #expect(viewModel.edit.cropOffset == 0)
@@ -52,7 +52,7 @@ struct QuickEditUndoPathTests {
         viewModel.perform(.addText(.title))
         viewModel.look.beginCropMove()
         viewModel.look.moveCrop(to: 0.5)
-        viewModel.endChange()
+        viewModel.endPanelChange()
         viewModel.undo()
         #expect(viewModel.edit.cropOffset == 0)
         #expect(viewModel.edit.texts.count == 1)
@@ -70,10 +70,58 @@ struct QuickEditUndoPathTests {
         viewModel.look.beginCropMove()
         #expect(viewModel.edit.faceFollow == nil)
         viewModel.look.moveCrop(to: -0.4)
-        viewModel.endChange()
+        viewModel.endPanelChange()
         viewModel.undo()
         #expect(viewModel.edit.faceFollow != nil)
         #expect(viewModel.edit.cropOffset == 0)
+    }
+
+    // MARK: - A panel's change and a pick
+
+    /// The Volume slider held, and another finger picks a text: Volume closes and its slider may never say it let go. Its
+    /// change is its own step all the same, and what the creator does next is never folded into it.
+    @Test func aPickThatClosesAPanelEndsTheChangeItsSliderLeftOpen() async throws {
+        let viewModel = await makeViewModel()
+        viewModel.perform(.addText(.title))
+        let text = try #require(viewModel.selection?.textID)
+        viewModel.closePanel()
+        let clip = viewModel.edit.timeline.segments[0].id
+        viewModel.selection = .clip(clip)
+        viewModel.perform(.open(.volume))
+        #expect(viewModel.panel == .volume)
+        viewModel.beginPanelChange()
+        viewModel.updateClip { $0.volume = 0.5 }
+        viewModel.selection = .text(text)
+        #expect(viewModel.panel == nil)
+        viewModel.overlays.updateText(text) { $0.text = "Changed" }
+        // One Undo takes back the text alone; the next, the volume.
+        viewModel.undo()
+        #expect(viewModel.edit.texts.first?.text != "Changed")
+        #expect(viewModel.edit.timeline.segments[0].volume == 0.5)
+        viewModel.undo()
+        #expect(viewModel.edit.timeline.segments[0].volume == 1)
+        #expect(viewModel.edit.texts.count == 1)
+    }
+
+    /// A handle dragged on the timeline while a pick closes a panel (the drag let go of what was picked): the drag stays one
+    /// step, taken when the finger lifts.
+    @Test func aPickDuringAHandleDragKeepsTheDragOneStep() async {
+        let viewModel = await makeViewModel()
+        let clip = viewModel.edit.timeline.segments[0].id
+        let length = viewModel.edit.editedDuration
+        viewModel.selection = .clip(clip)
+        viewModel.perform(.open(.volume))
+        viewModel.beginTimelineHandle(.clip(clip, .end), snapTimes: [])
+        viewModel.moveTimelineHandle(by: -3)
+        viewModel.selection = nil
+        #expect(viewModel.panel == nil)
+        viewModel.moveTimelineHandle(by: -5)
+        #expect(!viewModel.canUndo)
+        viewModel.endTimelineHandle()
+        #expect(abs(viewModel.edit.editedDuration - (length - 5)) < 0.000_1)
+        viewModel.undo()
+        #expect(abs(viewModel.edit.editedDuration - length) < 0.000_1)
+        #expect(!viewModel.canUndo)
     }
 
     @Test func theCaptionsSwitchIsAnUndoStep() async {

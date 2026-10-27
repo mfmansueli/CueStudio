@@ -129,9 +129,13 @@ struct QuickEditClipLookTests {
         viewModel.panel = nil
         viewModel.selection = nil
         viewModel.perform(.open(.filters))
-        #expect(viewModel.panelSubtitle(.filters) == "Whole video · some clips keep their own")
+        // The header says the reach; the clips that keep their own say so under it, with "Use this on all".
+        #expect(viewModel.panelSubtitle(.filters) == "Whole video")
+        #expect(viewModel.look.clipsKeepingTheirOwnInPanel == 1)
         // Adjust has no clip of its own yet.
+        viewModel.perform(.open(.adjust))
         #expect(viewModel.panelSubtitle(.adjust) == "Whole video")
+        #expect(viewModel.look.clipsKeepingTheirOwnInPanel == 0)
     }
 
     // MARK: - Filters
@@ -266,7 +270,8 @@ struct QuickEditClipLookTests {
         let ids = scenario.viewModel.toolbarItems.map(\.id)
         #expect(ids == [
             "split", "editByText", "speed", "volume", "pauses", "zoom", "stabilize", "duplicate", "freeze", "reverse", "replace", "extractAudio",
-            "reorder", "adjust", "filters", "background", "blurArea", "copyLook", "pasteLook", "delete",
+            "reorder", "adjust", "skin", "filters", "background", "blurArea", "copyLook", "pasteLook",
+            "captions", "text", "addMedia", "audio", "smart", "format", "templates", "brandKit", "cover", "delete",
         ])
     }
 }

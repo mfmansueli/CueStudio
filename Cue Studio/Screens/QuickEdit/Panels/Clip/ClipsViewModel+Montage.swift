@@ -4,7 +4,6 @@
 //
 
 import Foundation
-import PhotosUI
 import SwiftUI
 
 /// Montage: copying a section, putting sections in another order, and adding other takes or
@@ -112,26 +111,6 @@ extension ClipsViewModel {
         addSource(ClipSource(fileName: pick.imported.fileName, duration: duration, title: String(localized: "Video")), part: part)
     }
 
-    /// Copies a video from Photos in and adds it at the playhead, whole.
-    func addClip(importing item: PhotosPickerItem) async {
-        guard isReady else { return }
-        isImportingMedia = true
-        defer { isImportingMedia = false }
-        do {
-            let imported = try await importPicked(item)
-            guard !isClosed else {
-                EditMediaFiles.remove([imported.fileName])
-                return
-            }
-            addClip(MediaPick(imported))
-        } catch is CancellationError {
-            // Cancel on the pill, or the editor closed: nothing to say.
-        } catch {
-            noteFailure(error, "addVideo")
-            toast.show(String(localized: "Can't add this file"), kind: .problem)
-        }
-    }
-
     /// Where a clip added to the sequence goes: at the playhead, the clip there split in two around it; closer to a cut than
     /// a split can leave, at that cut. `index` is its place among the clips once it's in.
     var sequenceInsertion: (index: Int, splits: Bool, time: TimeInterval) {
@@ -194,12 +173,17 @@ extension ClipsViewModel {
     static let freezeFileLength: TimeInterval = 5
 
     /// Holds the frame under the playhead: the clip is split there and the frame plays as a clip of its own, silent, with the
-    /// look of the clip it came from (the music and voice-overs keep going). One undo step; the recording is never touched.
+    /// look of the clip it came from (the music and voice-overs keep going). One undo step; the recording is never touched. A
+    /// picked clip needs the playhead on it, as Split does: never a frame of another clip.
     func freezeFrame() async {
         guard isReady, !isImportingMedia else { return }
         let time = player.currentTime
         let timeline = edit.timeline
         let index = timeline.segmentIndex(atEdited: time)
+        if let id = selection?.clipID, timeline.index(ofSegment: id) != index {
+            toast.show(String(localized: "Move playhead onto the clip"), kind: .problem)
+            return
+        }
         let segment = timeline.segments[index]
         let url = segment.sourceID.flatMap { clipSourceURLs[$0] } ?? videoURL
         isImportingMedia = true
@@ -211,6 +195,9 @@ extension ClipsViewModel {
         let name: String
         do {
             name = try await editing.stillClip(ofVideoAt: url, at: timeline.sourceTime(forEdited: time), length: Self.freezeFileLength)
+        } catch is CancellationError {
+            // The editor closed meanwhile: nothing to say.
+            return
         } catch {
             noteFailure(error, "freezeFrame")
             toast.show(String(localized: "Can't freeze this frame"), kind: .problem)

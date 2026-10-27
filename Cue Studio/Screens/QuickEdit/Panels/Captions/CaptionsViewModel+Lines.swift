@@ -35,6 +35,7 @@ extension CaptionsViewModel {
         let recordings = captionRecordings
         let isAuto = edit.captionLanguage == nil
         captionState = .working(.preparing)
+        listeningSupportID = nil
         jobs.start(.captions) { [weak self, editing] request in
             guard let self else { return }
             // Progress arrives from the recognizer's own tasks; it only lands while this request is on.
@@ -124,6 +125,8 @@ extension CaptionsViewModel {
     func setCaptionsItsVoice(_ id: UUID, _ isOn: Bool) {
         guard isReady, let media = edit.media.first(where: { $0.id == id }), media.kind == .video, media.hasSound == true else { return }
         guard isOn else {
+            // Still being listened to: it stops, so its lines can't come in after all.
+            if listeningSupportID == id { cancelCaptions() }
             changeEdit { edit in
                 guard let index = edit.media.firstIndex(where: { $0.id == id }) else { return }
                 edit.media[index].captionsItsVoice = nil
@@ -140,6 +143,9 @@ extension CaptionsViewModel {
             return
         }
         captionState = .working(.preparing)
+        // What is listened to: this video's file. Removed, replaced or turned off meanwhile, its lines don't come in.
+        let fileName = media.fileName
+        listeningSupportID = id
         jobs.start(.captions) { [weak self, editing] request in
             guard let self else { return }
             let report: @Sendable (CaptionProgress) -> Void = { [weak self] progress in
@@ -149,7 +155,7 @@ extension CaptionsViewModel {
                 let outcome = try await editing.captions(
                     forVideoAt: recording.url, script: "", language: recording.language, spokenAmong: recording.candidates, progress: report
                 )
-                joinSupportVoice(id, outcome: outcome, request: request)
+                joinSupportVoice(id, fileName: fileName, outcome: outcome, request: request)
             } catch is CancellationError {
                 finishCaptions(request, with: .cancelled)
             } catch {
@@ -159,9 +165,15 @@ extension CaptionsViewModel {
         }
     }
 
-    /// The support's lines in place of the ones it had, cut the way the others are; nothing heard is said.
-    private func joinSupportVoice(_ id: UUID, outcome: CaptionOutcome, request: EditorJobs.Ticket) {
+    /// The support's lines in place of the ones it had, cut the way the others are; nothing heard is said. Only while the support
+    /// is still there, still captions its voice and still plays the file that was heard.
+    private func joinSupportVoice(_ id: UUID, fileName: String, outcome: CaptionOutcome, request: EditorJobs.Ticket) {
         guard jobs.isCurrent(request) else { return }
+        listeningSupportID = nil
+        guard let media = edit.media.first(where: { $0.id == id }), media.captionsItsVoice == true, media.fileName == fileName else {
+            captionState = .idle
+            return
+        }
         guard case .captions(let found, var transcript) = outcome, !found.isEmpty else {
             captionState = .idle
             toast.show(String(localized: "No speech in this video"), kind: .problem)
@@ -204,6 +216,7 @@ extension CaptionsViewModel {
     func cancelCaptions() {
         guard captionState.isWorking else { return }
         jobs.cancel(.captions)
+        listeningSupportID = nil
         captionState = .cancelled
     }
 

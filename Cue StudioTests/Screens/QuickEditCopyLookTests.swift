@@ -142,10 +142,10 @@ struct QuickEditCopyLookTests {
         let (viewModel, _) = await makeViewModel()
         viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
         let items = viewModel.toolbarItems
-        // Format and Studio Voice change the whole video: they're on the main bar. The two cutting tools that reach past the clip
-        // (Edit by text, Remove pauses) say "All".
+        // Studio Voice changes the whole video: it's on the main bar. What reaches past the clip (Edit by text, Remove pauses, and
+        // after the thin line Captions, Format, Templates and Brand kit) carries the whole video's badge.
         #expect(!items.contains { $0.id == "crop" || $0.id == "voice" })
-        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == ["editByText", "pauses"])
+        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == ["editByText", "pauses", "captions", "format", "templates", "brandKit"])
         #expect(items.first { $0.id == "pasteLook" }?.style == .dimmed)
         viewModel.perform(.pasteLook)
         #expect(!viewModel.look.showsPasteLook)

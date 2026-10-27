@@ -191,6 +191,28 @@ struct QuickEditAutoLookTests {
         #expect(viewModel.edit.timeline.segments.allSatisfy { $0.look == nil })
         #expect(viewModel.edit.autoCorrection == nil)
         #expect(viewModel.look.autoState == .idle)
+        #expect(scenario.toast.message != "The clip changed meanwhile · Tap Auto again")
+    }
+
+    /// The same clip trimmed while Auto measured it: the measure was of other frames, so nothing lands and the creator is told
+    /// to tap Auto again. (Another clip picked meanwhile drops it without a word, above.)
+    @Test func aResultForAClipTrimmedMeanwhileIsDroppedAndSaysWhy() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        split(scenario)
+        pick(viewModel, clip: 1)
+        let clip = viewModel.edit.timeline.segments[1].id
+        viewModel.perform(.open(.adjust))
+        scenario.editor.whileMeasuring = {
+            viewModel.beginTimelineHandle(.clip(clip, .end), snapTimes: [])
+            viewModel.moveTimelineHandle(by: -1)
+            viewModel.endTimelineHandle()
+        }
+        viewModel.look.autoAdjust()
+        await finish(viewModel)
+        #expect(viewModel.edit.timeline.segments[1].look == nil)
+        #expect(viewModel.look.autoState == .idle)
+        #expect(scenario.toast.message == "The clip changed meanwhile · Tap Auto again")
     }
 
     @Test func closingThePanelStopsMeasuring() async {

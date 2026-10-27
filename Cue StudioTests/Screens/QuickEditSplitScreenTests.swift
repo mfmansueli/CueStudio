@@ -22,8 +22,8 @@ struct QuickEditSplitScreenTests {
         let toast: ToastService
     }
 
-    /// A 64 s take.
-    private func makeScenario() async -> Scenario {
+    /// A 64 s take; `hook` runs while the first face is found.
+    private func makeScenario(hook: FakeFaceFinderHook? = nil) async -> Scenario {
         let script = TestData.script(text: "Okay, real talk.")
         var take = TestData.take(scriptID: script.id, number: 3)
         take.duration = 64
@@ -36,7 +36,7 @@ struct QuickEditSplitScreenTests {
         let viewModel = QuickEditViewModel(
             take: takes.takes[0], takes: takes, library: library, editing: FakeTakeEditor(),
             drafts: FakeDraftStore(), toast: toast, player: player, mediaImporter: FakeMediaImporter(),
-            recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore()
+            recorder: FakeVoiceRecorder(), styles: FakeTextStyleStore(), faceFinder: FakeFaceFinder(hook: hook)
         )
         await viewModel.prepare()
         return Scenario(viewModel: viewModel, player: player, toast: toast)
@@ -73,6 +73,88 @@ struct QuickEditSplitScreenTests {
         #expect(scenario.toast.message?.contains("muted") == true)
         viewModel.undo()
         #expect(viewModel.edit.media.isEmpty)
+    }
+
+    // MARK: - While the faces are found
+
+    /// A support goes in once its face is found, on the edit as it is then: a text added meanwhile stays, as its own step.
+    @Test func aChangeMadeWhileTheFaceIsFoundStays() async {
+        let hook = FakeFaceFinderHook()
+        let scenario = await makeScenario(hook: hook)
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 10)
+        hook.whileFinding = { viewModel.overlays.addText(.callout) }
+        await viewModel.overlays.add([video(4)], as: .split)
+        #expect(viewModel.edit.texts.count == 1)
+        #expect(spans(viewModel) == [TimeSpan(start: 10, end: 14)])
+        viewModel.undo()
+        #expect(viewModel.edit.media.isEmpty)
+        #expect(viewModel.edit.texts.count == 1)
+    }
+
+    /// An Undo made while the face is found stays undone: the support never writes back an older edit.
+    @Test func anUndoMadeWhileTheFaceIsFoundStaysUndone() async {
+        let hook = FakeFaceFinderHook()
+        let scenario = await makeScenario(hook: hook)
+        let viewModel = scenario.viewModel
+        viewModel.overlays.addText(.callout)
+        scenario.player.seek(to: 10)
+        hook.whileFinding = { viewModel.undo() }
+        await viewModel.overlays.add([video(4)], as: .split)
+        #expect(viewModel.edit.texts.isEmpty)
+        #expect(spans(viewModel) == [TimeSpan(start: 10, end: 14)])
+    }
+
+    /// A cut made while the face is found would put the support somewhere else: nothing goes in, and it says so.
+    @Test func aCutMadeWhileTheFaceIsFoundAddsNothing() async {
+        let hook = FakeFaceFinderHook()
+        let scenario = await makeScenario(hook: hook)
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 10)
+        hook.whileFinding = {
+            var timeline = viewModel.edit.timeline
+            timeline.split(atEdited: 30)
+            viewModel.commit(timeline)
+        }
+        await viewModel.overlays.add([video(4)], as: .split)
+        #expect(viewModel.edit.media.isEmpty)
+        #expect(viewModel.edit.timeline.segments.count == 2)
+        #expect(scenario.toast.message == "The video changed meanwhile · Add it again")
+    }
+
+    /// A support put in the split screen meanwhile keeps its place: the second never goes over it.
+    @Test func aSupportPutThereWhileTheFaceIsFoundKeepsItsPlace() async {
+        let hook = FakeFaceFinderHook()
+        let scenario = await makeScenario(hook: hook)
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 10)
+        let first = video(4)
+        hook.whileFinding = { await viewModel.overlays.add([first], as: .split) }
+        await viewModel.overlays.add([video(6)], as: .split)
+        #expect(viewModel.edit.media.map(\.fileName) == [first.imported.fileName])
+        #expect(scenario.toast.message == "Another support shows then · one at a time in the split screen")
+    }
+
+    /// Changing how a video shows finds its face first: a change made meanwhile stays, and of two layouts tapped quickly the
+    /// last wins.
+    @Test func aLayoutChangeKeepsWhatChangedMeanwhileAndTheLastTapWins() async throws {
+        let hook = FakeFaceFinderHook()
+        let scenario = await makeScenario(hook: hook)
+        let viewModel = scenario.viewModel
+        scenario.player.seek(to: 10)
+        await viewModel.overlays.add([video(4, sound: true)], as: .window)
+        let id = try #require(viewModel.edit.media.first?.id)
+        hook.whileFinding = { viewModel.change { $0.media[0].audioVolume = 0.5 } }
+        await viewModel.overlays.setMediaLayout(id, .split)
+        #expect(viewModel.edit.media.first?.layout == .split)
+        #expect(viewModel.edit.media.first?.audioVolume == 0.5)
+        // Another video, whose face is still to be found.
+        scenario.player.seek(to: 30)
+        await viewModel.overlays.add([video(4)], as: .window)
+        let other = try #require(viewModel.edit.media.last?.id)
+        hook.whileFinding = { await viewModel.overlays.setMediaLayout(other, .fullFrame) }
+        await viewModel.overlays.setMediaLayout(other, .split)
+        #expect(viewModel.edit.media.last?.layout == .fullFrame)
     }
 
     @Test func littleRoomFromThePlayheadIsSaidBeforePicking() async {

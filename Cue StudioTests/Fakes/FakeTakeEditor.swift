@@ -34,6 +34,8 @@ final class FakeTakeEditor: TakeEditing {
     var captionProgress: [CaptionProgress] = [.preparing, .transcribing(0.5)]
     /// How long listening takes, so a test can stop it halfway.
     var captionDelay: Duration?
+    /// Runs while the captions are being made (the call is suspended): what the creator does meanwhile.
+    var whileCaptioning: (() -> Void)?
     /// Listening fails (the sound can't be read).
     var captionFails = false
     private(set) var captionScript: String?
@@ -52,6 +54,8 @@ final class FakeTakeEditor: TakeEditing {
     /// Measuring takes this long, so a test can change the selection meanwhile.
     var autoDelay: Duration?
     var autoFails = false
+    /// Runs while Auto measures (the call is suspended): what the creator does meanwhile.
+    var whileMeasuring: (() -> Void)?
     private(set) var autoRequests = 0
     private(set) var autoVideo: URL?
     private(set) var autoSpans: [TimeSpan] = []
@@ -71,6 +75,10 @@ final class FakeTakeEditor: TakeEditing {
         autoVideo = url
         autoSpans = spans
         if let autoDelay { try await Task.sleep(for: autoDelay) }
+        if let whileMeasuring {
+            await Task.yield()
+            whileMeasuring()
+        }
         if autoFails { throw EditSourceError.noDuration }
         return autoResult
     }
@@ -106,6 +114,10 @@ final class FakeTakeEditor: TakeEditing {
         captionRequests += 1
         for step in captionProgress { progress(step) }
         if let captionDelay { try await Task.sleep(for: captionDelay) }
+        if let whileCaptioning {
+            await Task.yield()
+            whileCaptioning()
+        }
         if captionFails { throw EditSourceError.noDuration }
         return captionOutcome ?? .captions(captions, transcript: CaptionTranscript(words: captions.flatMap(\.words), languageCode: "en"))
     }

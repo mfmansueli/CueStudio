@@ -5,15 +5,30 @@
 
 import Foundation
 
-/// The toolbar by context: the main tools with nothing picked; the picked item's own tools (Clip,
-/// Text, Caption, Music, Voice-over, Media) with a yellow "‹" back to the main ones; and the Text,
-/// Captions and Audio menus, which a tap on their track opens too. Speed and Zoom stay two
-/// separate tools. Delete is always the last tool and stays put (see `EditorToolbarItem.isPinned`).
+/// The toolbar by context: the main tools with nothing picked (`+MainToolbar`); the picked item's own tools and then the others
+/// (`+ItemToolbar`), with a yellow "‹" back to the main ones; and the Text, Captions and Audio menus, which a tap on their track
+/// opens too. Every button goes through `perform(_:)`, which checks at the tap that the action can work and says why when it
+/// can't. Delete is always the last tool and stays put (see `EditorToolbarItem.isPinned`).
 extension QuickEditViewModel {
-    /// The kind of tools showing (the picked item's kind or the open menu); nil on the main toolbar. Picking another item of
-    /// the same kind keeps the tools where they were scrolled.
-    var toolbarContextLabel: String? {
-        selection?.contextLabel ?? toolMenu?.contextLabel
+    /// Which tools show (the picked item's kind or the open menu), in code: picking another item of the same kind keeps the
+    /// tools where they were scrolled.
+    var toolbarContext: EditorToolbarContext {
+        guard let selection else { return toolMenu.map(EditorToolbarContext.menu) ?? .main }
+        switch selection {
+        case .clip: return .clip
+        case .text: return .text
+        case .caption: return .caption
+        case .music: return .music
+        case .voiceOver: return .voiceOver
+        case .media: return isSplitMainAreaPicked ? .mainArea : .media
+        case .blur: return .blur
+        case .join: return .transition
+        }
+    }
+
+    /// The main video's area of a split screen is picked (its own tools, never the support's).
+    var isSplitMainAreaPicked: Bool {
+        selectedMedia?.layout == .split && overlays.selectedArea == .main
     }
 
     /// The name next to the back button: which item the tools change ("Clip 2" in a montage, "Photo", "Hook", "Arrow"), or
@@ -29,8 +44,7 @@ extension QuickEditViewModel {
             return text.graphic?.kind.label ?? text.role.label
         case .media:
             guard let media = selectedMedia else { return selection.contextLabel }
-            // The main video's area of a split screen: its own tools, not the support's.
-            if media.layout == .split, overlays.selectedArea == .main { return String(localized: "Main video") }
+            if isSplitMainAreaPicked { return String(localized: "Main video") }
             return media.kind == .photo ? String(localized: "Photo") : String(localized: "Video")
         case .blur:
             guard let region = selectedBlur else { return selection.contextLabel }
@@ -56,292 +70,31 @@ extension QuickEditViewModel {
         toolMenu = nil
     }
 
-    // MARK: - Contexts
+    // MARK: - Tapping
 
-    /// The main tools, in the order a talking-head video is made (owner's decision, 2026-10-16, after comparing with CapCut and
-    /// Edits; the v29 board had CapCut's older order): cut, captions, the hook's text, ✦ Smart (pauses, Studio Voice, Edit by
-    /// text), B-roll — the five on screen on an iPhone — then sound, the format of the whole video, its look (Adjust, Filters)
-    /// and the cover.
-    private var mainItems: [EditorToolbarItem] {
-        [
-            EditorToolbarItem(id: "edit", label: String(localized: "Edit"), systemImage: "scissors", action: .selectClipAtPlayhead),
-            EditorToolbarItem(id: "captions", label: String(localized: "Captions"), systemImage: "captions.bubble", action: .openCaptions),
-            EditorToolbarItem(id: "text", label: String(localized: "Text"), systemImage: "textformat", action: .openMenu(.text)),
-            EditorToolbarItem(id: "smart", label: String(localized: "✦ Smart"), systemImage: "sparkles", style: .smart, action: .open(.smart)),
-            EditorToolbarItem(id: "addMedia", label: String(localized: "Media"), systemImage: "photo.badge.plus", action: .addMediaChoice),
-            // Sixth: the five on screen stay the ones a talking-head video is made with (owner's decision, 26/10).
-            EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
-            EditorToolbarItem(id: "audio", label: String(localized: "Audio"), systemImage: "music.note", action: .openMenu(.audio)),
-            EditorToolbarItem(id: "format", label: String(localized: "Format"), systemImage: "aspectratio", action: .open(.crop)),
-            // The whole video's look, side by side: Adjust (light and color) and Filters.
-            EditorToolbarItem(id: "adjustVideo", label: String(localized: "Adjust"), systemImage: "slider.horizontal.3", action: .open(.adjust)),
-            EditorToolbarItem(id: "filters", label: String(localized: "Filters"), systemImage: "camera.filters", action: .open(.filters)),
-            EditorToolbarItem(id: "cover", label: String(localized: "Cover"), systemImage: "photo.artframe", action: .openCoverStudio),
-        ]
-    }
-
-    private var textMenuItems: [EditorToolbarItem] {
-        var items = [
-            EditorToolbarItem(id: "title", label: String(localized: "Title"), systemImage: "textformat.size.larger", action: .addText(.title)),
-            EditorToolbarItem(
-                id: "subtitle", label: TextOverlayRole.subtitle.label, systemImage: TextOverlayRole.subtitle.systemImage, action: .addText(.subtitle)
-            ),
-            EditorToolbarItem(id: "hook", label: String(localized: "Hook"), systemImage: TextOverlayRole.hook.systemImage, action: .addText(.hook)),
-            EditorToolbarItem(id: "callout", label: String(localized: "Callout"), systemImage: "text.bubble", action: .addText(.callout)),
-        ]
-        items += [CoverItemKind.arrow, .circle, .tag].map { kind in
-            EditorToolbarItem(
-                id: "graphic.\(kind.rawValue)", label: kind.label, systemImage: kind.systemImage, action: .addGraphic(kind),
-                startsGroup: kind == .arrow
-            )
+    /// A toolbar button. A tool with the whole video's badge tapped on an item's bar first says once (per tool and kind of item,
+    /// while the editor is open) that it changes the whole video, not only that item; then it does what it always does.
+    func tap(_ item: EditorToolbarItem) {
+        guard isReady else { return }
+        let context = toolbarContext
+        if item.scopeBadge == .wholeVideo, context.isItem, let name = toolbarContextName,
+           scopeNoticesSaid[context, default: []].insert(item.id).inserted {
+            toast.show(String(localized: "Applies to the whole video, not only to \(name)."), kind: .cue)
         }
-        if overlays.commentForCard != nil {
-            items.append(EditorToolbarItem(id: "comment", label: String(localized: "Comment"), systemImage: "text.bubble.fill", action: .addCommentCard))
-        }
-        if !edit.texts.isEmpty {
-            items.append(EditorToolbarItem(id: "styleAll", label: String(localized: "Style all"), systemImage: "square.grid.2x2", action: .styleAllTexts))
-        }
-        return items
-    }
-
-    /// With lines: add one, the list, the style. Without: make them, or write them.
-    private var captionsMenuItems: [EditorToolbarItem] {
-        if edit.captions.isEmpty {
-            return [
-                EditorToolbarItem(id: "autoCaptions", label: String(localized: "Auto captions"), systemImage: "captions.bubble", action: .openCaptions),
-                EditorToolbarItem(
-                    id: "writeCaptions", label: String(localized: "Write captions"), systemImage: "pencil", action: .writeCaptionsByHand
-                ),
-                EditorToolbarItem(id: "editByText", label: String(localized: "Edit by text"), systemImage: "text.badge.minus", action: .editByText),
-            ]
-        }
-        return [
-            EditorToolbarItem(id: "addLine", label: String(localized: "Add line"), systemImage: "plus.bubble", action: .addCaptionLine),
-            EditorToolbarItem(id: "allLines", label: String(localized: "All lines"), systemImage: "list.bullet", action: .openCaptions),
-            EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
-            EditorToolbarItem(
-                id: "findReplace", label: String(localized: "Find and replace"), systemImage: "text.magnifyingglass", action: .findInCaptions
-            ),
-            EditorToolbarItem(id: "editByText", label: String(localized: "Edit by text"), systemImage: "text.badge.minus", action: .editByText),
-            EditorToolbarItem(
-                id: "deleteAll", label: String(localized: "Delete all"), systemImage: "trash", style: .destructive, action: .deleteAllCaptions
-            ),
-        ]
-    }
-
-    private var audioMenuItems: [EditorToolbarItem] {
-        [
-            EditorToolbarItem(id: "voice", label: String(localized: "Studio Voice"), systemImage: "waveform.and.mic", action: .open(.voice)),
-            EditorToolbarItem(id: "music", label: String(localized: "Music"), systemImage: "music.note", action: .openMusic),
-            EditorToolbarItem(id: "voiceOver", label: String(localized: "Voice-over"), systemImage: "mic", action: .open(.voiceOver)),
-        ]
-    }
-
-    /// Lock or Unlock for the picked layer.
-    private var lockItem: EditorToolbarItem {
-        selectionIsLocked
-            ? EditorToolbarItem(id: "unlock", label: String(localized: "Unlock"), systemImage: "lock.open", action: .toggleLock)
-            : EditorToolbarItem(id: "lock", label: String(localized: "Lock"), systemImage: "lock", action: .toggleLock)
-    }
-
-    private func items(for selection: EditorSelection) -> [EditorToolbarItem] {
-        let delete = String(localized: "Delete")
-        switch selection {
-        case .clip:
-            // The clip's own tools, most used first so they're the ones on screen: Split, then cutting by the words (Edit by text,
-            // which reaches the whole video: "All"), Speed and Volume (a montage's clips rarely sound alike); Remove pauses
-            // (the whole video too) right after, as in ✦ Smart. What changes the whole video otherwise lives on the main bar.
-            return [
-                EditorToolbarItem(
-                    id: "split", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right",
-                    style: clips.canSplitSelectedClip ? .normal : .dimmed, action: .splitClip
-                ),
-                EditorToolbarItem(
-                    id: "editByText", label: String(localized: "Edit by text"), systemImage: "text.badge.minus", action: .editByText,
-                    scopeBadge: String(localized: "All")
-                ),
-                EditorToolbarItem(id: "speed", label: String(localized: "Speed"), systemImage: "gauge.with.dots.needle.67percent", action: .open(.speed)),
-                EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
-                EditorToolbarItem(
-                    id: "pauses", label: String(localized: "Remove pauses"), systemImage: "waveform", action: .open(.pauses),
-                    scopeBadge: String(localized: "All")
-                ),
-                EditorToolbarItem(id: "zoom", label: String(localized: "Zoom"), systemImage: "arrow.up.left.and.arrow.down.right", action: .open(.zoom)),
-                EditorToolbarItem(
-                    id: "stabilize", label: String(localized: "Stabilize"), systemImage: "camera.metering.center.weighted", action: .open(.stabilize)
-                ),
-                EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateClip),
-                EditorToolbarItem(id: "freeze", label: String(localized: "Freeze frame"), systemImage: "pause.rectangle", action: .freezeFrame),
-                EditorToolbarItem(id: "reverse", label: String(localized: "Reverse"), systemImage: "backward.end.alt", action: .reverseClip),
-                EditorToolbarItem(id: "replace", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceClip),
-                EditorToolbarItem(
-                    id: "extractAudio", label: String(localized: "Extract audio"), systemImage: "waveform.badge.plus", action: .extractAudio
-                ),
-                EditorToolbarItem(
-                    id: "reorder", label: String(localized: "Reorder"), systemImage: "arrow.up.arrow.down",
-                    style: edit.timeline.segments.count > 1 ? .normal : .dimmed, action: .reorderClips
-                ),
-                EditorToolbarItem(id: "adjust", label: String(localized: "Adjust"), systemImage: "slider.horizontal.3", action: .open(.adjust)),
-                EditorToolbarItem(id: "filters", label: String(localized: "Filters"), systemImage: "camera.filters", action: .open(.filters)),
-                EditorToolbarItem(
-                    id: "background", label: String(localized: "Background"), systemImage: "person.and.background.dotted", action: .open(.background)
-                ),
-                EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
-                EditorToolbarItem(id: "copyLook", label: String(localized: "Copy look"), systemImage: "doc.on.doc", action: .copyLook),
-                EditorToolbarItem(
-                    id: "pasteLook", label: String(localized: "Paste look"), systemImage: "doc.on.clipboard",
-                    style: look.canPasteLook ? .normal : .dimmed, action: .pasteLook
-                ),
-                EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteClip),
-            ]
-        case .text:
-            return [
-                EditorToolbarItem(id: "editText", label: String(localized: "Edit"), systemImage: "pencil", action: .editText),
-                EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.textStyle)),
-                EditorToolbarItem(id: "animation", label: String(localized: "Motion"), systemImage: "wind", action: .openTextAnimation),
-                EditorToolbarItem(id: "keyframe", label: String(localized: "Keyframe"), systemImage: "diamond", action: .toggleKeyframe),
-                EditorToolbarItem(id: "track", label: String(localized: "Track"), systemImage: "scope", action: .trackItem),
-                EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateText),
-                lockItem,
-                EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteText),
-            ]
-        case .caption:
-            return [
-                EditorToolbarItem(id: "editCaption", label: String(localized: "Edit"), systemImage: "pencil", action: .editCaption),
-                EditorToolbarItem(
-                    id: "split", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right", action: .splitCaption
-                ),
-                EditorToolbarItem(
-                    id: "join", label: String(localized: "Join next"), systemImage: "arrow.right.and.line.vertical.and.arrow.left", action: .joinCaption
-                ),
-                EditorToolbarItem(id: "emphasis", label: String(localized: "Emphasis"), systemImage: "highlighter", action: .emphasizeCaption),
-                EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
-                EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteCaption),
-            ]
-        case .music(let id):
-            // Beats for the creator's music from Files, not for a sound effect or a sound taken out of the video.
-            let isMusic = edit.music.first { $0.id == id }.map { !$0.followsTheVideo } ?? false
-            return [
-                EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
-            ] + (isMusic ? [EditorToolbarItem(id: "beats", label: String(localized: "Beats"), systemImage: "metronome", action: .open(.beats))] : []) + [
-                EditorToolbarItem(id: "replace", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMusic),
-                lockItem,
-                EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMusic),
-            ]
-        case .voiceOver:
-            return [
-                EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
-                EditorToolbarItem(id: "reRecord", label: String(localized: "Re-record"), systemImage: "mic.badge.plus", action: .reRecordVoiceOver),
-                lockItem,
-                EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteVoiceOver),
-            ]
-        case .media:
-            guard let media = selectedMedia else { return [] }
-            return media.layout == .split ? supportItems(media, delete: delete) : overlayItems(media, delete: delete)
-        case .blur:
-            return [
-                EditorToolbarItem(id: "editBlur", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.blur)),
-                EditorToolbarItem(id: "followBlur", label: String(localized: "Track"), systemImage: "scope", action: .followBlur),
-                EditorToolbarItem(id: "reviewBlur", label: String(localized: "Replay"), systemImage: "play.rectangle", action: .reviewBlur),
-                EditorToolbarItem(id: "addBlur", label: String(localized: "Add area"), systemImage: "plus.viewfinder", action: .addBlurArea),
-                EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteBlur),
-            ]
-        case .join:
-            // A cut is picked only with its Transition panel open, which takes the toolbar's place.
-            return []
-        }
-    }
-
-    /// A support of the split screen: what a react or a tutorial changes most, on screen (its layout, its sound, swapping the two
-    /// contents, another video in its place), then its part, cutting it, hiding something on it, its gap. With the main
-    /// video's area picked, that area's own tools instead (never the support's Delete or Replace while the creator's face is
-    /// outlined).
-    private func supportItems(_ media: MediaOverlay, delete: String) -> [EditorToolbarItem] {
-        if overlays.selectedArea == .main {
-            return [
-                EditorToolbarItem(id: "framing", label: EditorPanelTab.framing.label, systemImage: "crop", action: .openSplitTab(.framing)),
-                EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "arrow.up.arrow.down", action: .swapSplit),
-                EditorToolbarItem(id: "layout", label: EditorPanelTab.layout.label, systemImage: "rectangle.split.1x2", action: .openSplitTab(.layout)),
-                EditorToolbarItem(id: "clipTools", label: String(localized: "Clip"), systemImage: "film", action: .selectClipAtPlayhead),
-                EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
-            ]
-        }
-        var items = [
-            EditorToolbarItem(id: "layout", label: EditorPanelTab.layout.label, systemImage: "rectangle.split.1x2", action: .openSplitTab(.layout)),
-            EditorToolbarItem(id: "sound", label: EditorPanelTab.sound.label, systemImage: "speaker.wave.2", action: .openSplitTab(.sound)),
-            EditorToolbarItem(id: "swap", label: String(localized: "Swap places"), systemImage: "arrow.up.arrow.down", action: .swapSplit),
-            EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
-            EditorToolbarItem(id: "part", label: EditorPanelTab.part.label, systemImage: "film", action: .openSplitTab(.part)),
-            EditorToolbarItem(
-                id: "splitMedia", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right", action: .splitMedia
-            ),
-            EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
-        ]
-        if overlays.gapBefore(media.id) != nil {
-            items.append(EditorToolbarItem(id: "closeGap", label: String(localized: "Close gap"), systemImage: "arrow.left.to.line", action: .closeGap))
-        }
-        return items + sharedMediaItems(delete: delete)
-    }
-
-    /// A photo or video in a window or over the whole frame: its panel, its sound and motion and mask on screen, then cutting,
-    /// replacing, hiding something on it, Track and keyframes (as a text has them), a copy.
-    private func overlayItems(_ media: MediaOverlay, delete: String) -> [EditorToolbarItem] {
-        var items = [EditorToolbarItem(id: "editMedia", label: String(localized: "Edit"), systemImage: "pencil", action: .open(.media))]
-        if media.kind == .video {
-            // A video without sound says so when tapped.
-            items.append(EditorToolbarItem(
-                id: "mediaVolume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", style: media.hasSound == false ? .dimmed : .normal,
-                action: .open(.volume)
-            ))
-        }
-        items += [
-            EditorToolbarItem(id: "mediaMotion", label: String(localized: "Motion"), systemImage: "wind", action: .openMediaMotion),
-            EditorToolbarItem(id: "mask", label: String(localized: "Mask"), systemImage: "circle.rectangle.dashed", action: .openMask),
-            EditorToolbarItem(
-                id: "splitMedia", label: String(localized: "Split"), systemImage: "arrow.left.and.line.vertical.and.arrow.right", action: .splitMedia
-            ),
-            EditorToolbarItem(id: "replaceMedia", label: String(localized: "Replace"), systemImage: "arrow.left.arrow.right", action: .replaceMedia),
-            EditorToolbarItem(id: "blurArea", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
-            EditorToolbarItem(id: "track", label: String(localized: "Track"), systemImage: "scope", action: .trackItem),
-            EditorToolbarItem(id: "keyframe", label: String(localized: "Keyframe"), systemImage: "diamond", action: .toggleKeyframe),
-            EditorToolbarItem(id: "duplicate", label: String(localized: "Duplicate"), systemImage: "plus.square.on.square", action: .duplicateMedia),
-        ]
-        return items + sharedMediaItems(delete: delete)
-    }
-
-    /// What every photo or video ends with: the library, its sound taken out (a video with sound), Lock, Delete.
-    private func sharedMediaItems(delete: String) -> [EditorToolbarItem] {
-        var items = [
-            EditorToolbarItem(
-                id: "saveToLibrary", label: String(localized: "Save to library"), systemImage: "tray.and.arrow.down", action: .saveMediaToLibrary
-            ),
-        ]
-        // Only a video with a sound of its own has one to take out.
-        if audio.canExtractAudio {
-            items.append(EditorToolbarItem(
-                id: "extractAudio", label: String(localized: "Extract audio"), systemImage: "waveform.badge.plus", action: .extractAudio
-            ))
-        }
-        items.append(lockItem)
-        items.append(EditorToolbarItem(id: "delete", label: delete, systemImage: "trash", style: .destructive, action: .deleteMedia))
-        return items
+        perform(item.action)
     }
 
     // MARK: - Performing
 
     func perform(_ action: EditorAction) {
-        guard isReady else { return }
-        if performOnSelection(action) { return }
+        // While a narration records the bar is off; nothing reaches the edit another way (VoiceOver, a keyboard) either.
+        guard isReady, !audio.isRecordingVoiceOver else { return }
+        if performOnSelection(action) || performOpening(action) { return }
         switch action {
         case .selectClipAtPlayhead: clips.selectClipAtPlayhead()
-        case .openMenu(let menu):
-            selection = nil
-            toolMenu = menu
-        case .openCaptions: openCaptions()
         case .addCaptionLine:
             openCaptions()
             captions.addCaptionAtPlayhead()
-        case .open(let panel): open(panel)
         case .addMedia, .addMediaChoice:
             overlays.mediaInsertMode = overlays.lastOverlayMode
             sheet = .media
@@ -362,8 +115,22 @@ extension QuickEditViewModel {
         }
     }
 
-    /// A panel from the toolbar. From a picked clip, Adjust, Filters and Background change that clip only; a video over the take
-    /// without sound has no Volume to open, and says so.
+    /// The menus and panels a button opens. False when `action` isn't one of them.
+    private func performOpening(_ action: EditorAction) -> Bool {
+        switch action {
+        case .openMenu(let menu):
+            selection = nil
+            toolMenu = menu
+        case .openCaptions: openCaptions()
+        case .open(let panel): open(panel)
+        case .openLook(let tool, let wholeVideo): openLook(tool, wholeVideo: wholeVideo)
+        case .openSmart(let section): openSmart(on: section)
+        default: return false
+        }
+        return true
+    }
+
+    /// A panel from the toolbar. A video over the take without sound has no Volume to open, and says so.
     private func open(_ panel: EditorPanel) {
         if panel == .volume, selectedMedia?.kind == .video, selectedMedia?.hasSound == false {
             toast.show(String(localized: "This video has no sound"), kind: .problem)
@@ -371,6 +138,21 @@ extension QuickEditViewModel {
         }
         look.lookScopeIsClip = panel.hasClipScope && selection?.clipID != nil
         self.panel = panel
+    }
+
+    /// Adjust, Skin, Filters or Background at the reach the button says: the picked clip's own (its bar), or the whole video's
+    /// (the main bar, and an item's badged shortcut, whatever is picked). Skin is Adjust opened on Skin Smoothing.
+    private func openLook(_ tool: EditorLookTool, wholeVideo: Bool) {
+        look.lookScopeIsClip = !wholeVideo && selection?.clipID != nil
+        look.lookTool = tool
+        if tool == .skin { look.adjustOpensOn = .skinSmoothing }
+        panel = tool.panel
+    }
+
+    /// ✦ Smart on `section` (Templates and Brand kit straight on theirs), also when Smart is already open.
+    private func openSmart(on section: SmartPanelSection) {
+        smartSection = section
+        panel = .smart
     }
 
     /// The Text menu's actions and Edit on a picked text.
@@ -449,7 +231,7 @@ extension QuickEditViewModel {
     /// Blur area: adding one (from anywhere), and the picked one's tools. False when `action` isn't one of them.
     private func performOnBlur(_ action: EditorAction) -> Bool {
         switch action {
-        case .addBlurArea: blur.startAdding()
+        case .addBlurArea: blur.startAdding(onMainVideo: isSplitMainAreaPicked)
         case .followBlur: blur.follow()
         case .reviewBlur: blur.review()
         case .deleteBlur: selectedBlurID.map(blur.delete)
@@ -472,24 +254,42 @@ extension QuickEditViewModel {
         return true
     }
 
-    /// The actions on a picked clip. False when `action` isn't one of them.
+    /// The actions on a clip: the picked one, or from the main bar the one under the playhead. False when `action` isn't one of
+    /// them.
     private func performOnClip(_ action: EditorAction) -> Bool {
         switch action {
         case .splitClip: clips.splitClip()
-        case .duplicateClip: selection?.clipID.map(clips.duplicateClip)
+        case .duplicateClip: pickClipForAction().map(clips.duplicateClip)
         case .reorderClips: clips.openClipOrder()
         case .freezeFrame: startJob { await self.clips.freezeFrame() }
         case .reverseClip:
             // One at a time: a second tap never stops the first.
             if !jobs.isRunning(.reverse) { jobs.start(.reverse) { [weak self] _ in await self?.clips.reverseClip() } }
-        case .replaceClip: clips.askToReplaceClip()
-        case .extractAudio: startJob { await self.audio.extractAudio() }
-        case .copyLook: look.copyClipLook()
-        case .pasteLook: look.askToPasteLook()
+        case .replaceClip:
+            pickClipForAction()
+            clips.askToReplaceClip()
+        case .extractAudio:
+            // A video over the take extracts its own sound; anything else, a clip's.
+            if selection?.mediaID == nil { pickClipForAction() }
+            startJob { await self.audio.extractAudio() }
+        case .copyLook:
+            pickClipForAction()
+            look.copyClipLook()
+        case .pasteLook:
+            if look.canPasteLook { pickClipForAction() }
+            look.askToPasteLook()
         case .deleteClip: selection?.clipID.map(clips.deleteClip)
         default: return false
         }
         return true
+    }
+
+    /// From the main bar (no clip picked) a clip action that works on a picked clip first picks the one under the playhead, so
+    /// it has its clip and its tools show; on a clip's bar, the picked one. The clip's id.
+    @discardableResult
+    private func pickClipForAction() -> UUID? {
+        if selection?.clipID == nil { clips.selectClipAtPlayhead() }
+        return selection?.clipID
     }
 
     private func replaceSelectedMedia() {

@@ -25,7 +25,7 @@ struct VolumePanel: View {
                 label: String(localized: "Sound"), value: (media.audioVolume ?? 0) * 100, range: 0...100, format: .percent,
                 identifier: "edit.mediaSound",
                 onChange: { viewModel.overlays.setMediaSoundVolume(media.id, $0 / 100) },
-                onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+                onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
             )
             PanelNote(text: String(localized: "0% keeps it muted under your voice. Turn it up to hear it."))
         }

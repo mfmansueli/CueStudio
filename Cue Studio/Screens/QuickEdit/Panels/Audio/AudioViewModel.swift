@@ -25,6 +25,8 @@ final class AudioViewModel: EditorPart {
     @ObservationIgnored var comparedProcessing: VoiceProcessing?
     /// Edited seconds where the voice-over being recorded started.
     var recordingStart: TimeInterval?
+    /// Where that is in the take's recording, taken when it starts: a change landing during the take can't move the narration.
+    @ObservationIgnored var recordingAnchor: TimeInterval?
     /// Voice-over's "Show script": the take's script over the preview while a narration records, remembered for every take
     /// (`+NarrationScript`).
     var showsNarrationScript: Bool {

@@ -55,7 +55,7 @@ struct MediaTrimStrip: View {
                     DragGesture(minimumDistance: 2)
                         .onChanged { value in
                             if dragBase == nil {
-                                viewModel.beginChange()
+                                viewModel.beginPanelChange()
                                 dragBase = media.startInFile
                             }
                             let moved = (dragBase ?? 0) + Double(value.translation.width / max(1, width)) * length
@@ -65,7 +65,7 @@ struct MediaTrimStrip: View {
                         }
                         .onEnded { _ in
                             dragBase = nil
-                            viewModel.endChange()
+                            viewModel.endPanelChange()
                         }
                 )
                 .accessibilityElement()

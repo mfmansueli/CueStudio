@@ -51,12 +51,16 @@ extension ClipsViewModel {
         sayUndoable(String(localized: "Split at \(DurationText.editor(time))"))
     }
 
-    /// Copies a clip right after itself, with what plays on it, and picks the copy.
+    /// Copies a clip right after itself, with what plays on it, and picks the copy with the playhead at its start, as Split does:
+    /// its tools (Split, Freeze frame) work on it and the timeline shows where it went.
     func duplicateClip(_ id: UUID) {
         guard isReady, let index = edit.timeline.index(ofSegment: id) else { return }
         duplicateSection(id)
         let segments = edit.timeline.segments
-        if segments.indices.contains(index + 1) { selection = .clip(segments[index + 1].id) }
+        if segments.indices.contains(index + 1) {
+            player.seek(to: edit.timeline.editedStart(ofSegmentAt: index + 1))
+            selection = .clip(segments[index + 1].id)
+        }
         sayUndoable(String(localized: "\(clipName(at: index)) duplicated after it"))
     }
 

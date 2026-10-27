@@ -38,7 +38,7 @@ struct SplitFramingTab: View {
                     next.zoom = zoom / 100
                     overlays.setAreaFraming(next, for: area, of: media.id)
                 },
-                onEditingChanged: { editing in editing ? viewModel.beginChange() : viewModel.endChange() }
+                onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
             )
             PanelButton(
                 label: String(localized: "Center and fill"), systemImage: "arrow.counterclockwise",

@@ -86,7 +86,7 @@ struct WordTimingStrip: View {
                     .onChanged { value in
                         if drag?.index != index {
                             // The whole drag is one undo step.
-                            viewModel.beginChange()
+                            viewModel.beginPanelChange()
                             drag = (index, current)
                         }
                         let origin = drag?.origin ?? current
@@ -94,7 +94,7 @@ struct WordTimingStrip: View {
                     }
                     .onEnded { _ in
                         drag = nil
-                        viewModel.endChange()
+                        viewModel.endPanelChange()
                     }
             )
             .accessibilityElement()
@@ -103,7 +103,7 @@ struct WordTimingStrip: View {
             .accessibilityAdjustableAction { direction in
                 let delta = direction == .increment ? Self.step : -Self.step
                 viewModel.captions.setWordBoundary(cueID, after: index, at: current + delta)
-                viewModel.endChange()
+                viewModel.endPanelChange()
             }
             .accessibilityIdentifier("edit.captionWordBoundary.\(index)")
     }

@@ -42,9 +42,9 @@ enum EditorApp {
 
     /// Taps a toolbar tool, scrolling the toolbar to it first when it's off screen.
     static func tapTool(_ app: XCUIApplication, _ id: String) {
-        // Adjust and Background are Edit's clip tools (the main toolbar is Edit · Captions · Text · ✦ Smart · Media · Audio · Format ·
-        // Filters · Cover); Format, the whole video's crop, is on the main bar.
-        if ["adjust", "background", "reorder", "freeze"].contains(id), !app.buttons["edit.toolbar.\(id)"].exists,
+        // Adjust, Skin and Background at a clip's reach are Edit's clip tools: the main bar has the whole video's (`adjustVideo`,
+        // `skinVideo`, `backgroundVideo`) and the clip actions that work on the clip under the playhead (Reorder, Freeze frame…).
+        if ["adjust", "skin", "background"].contains(id), !app.buttons["edit.toolbar.\(id)"].exists,
            app.buttons["edit.toolbar.edit"].exists {
             app.buttons["edit.toolbar.edit"].tap()
         }
@@ -57,7 +57,7 @@ enum EditorApp {
             screen.contains(button.frame) && (id == "delete" || !(delete.exists && delete.frame.intersects(button.frame.insetBy(dx: 4, dy: 0))))
         }
         var swipes = 0
-        while !reachable(), swipes < 6 {
+        while !reachable(), swipes < 10 {
             // The tools run on past the screen's trailing edge: the right, and the left in Arabic.
             let toolbar = app.descendants(matching: .any)["edit.toolbar"]
             if button.frame.minX < screen.minX { toolbar.swipeRight() } else { toolbar.swipeLeft() }

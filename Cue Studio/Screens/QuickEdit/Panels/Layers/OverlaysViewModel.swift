@@ -21,6 +21,8 @@ final class OverlaysViewModel: EditorPart {
     var lastOverlayMode: MediaInsertMode = .split
     /// The area of the picked support's split screen its panel and the preview's gestures change.
     var selectedArea: SplitArea = .support
+    /// The newest Split screen / Window / Full screen tap (`setMediaLayout`): an older one still finding a face is dropped.
+    @ObservationIgnored var layoutRequest: UUID?
     /// Upright sizes of the recordings the main video plays (nil: the take), for the main area's gestures; read when a split
     /// screen is edited (`loadRecordingSizes`).
     var recordingSizes: [UUID?: CGSize] = [:]

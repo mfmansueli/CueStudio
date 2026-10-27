@@ -102,7 +102,9 @@ struct QuickEditBackgroundPanelTests {
         viewModel.panel = nil
         viewModel.selection = nil
         viewModel.perform(.open(.background))
-        #expect(viewModel.look.backgroundScopeNote == "Clips with their own background keep it.")
+        // The whole video's: the clip that keeps its own says so under the header, with "Use this on all".
+        #expect(viewModel.look.backgroundScopeNote == nil)
+        #expect(viewModel.look.clipsKeepingTheirOwnInPanel == 1)
         // Reset gives the clip the take's again, and the note goes with it.
         openFromClip(viewModel, 1)
         viewModel.look.resetClipBackground()

@@ -39,6 +39,11 @@ extension BlurViewModel {
         stopFlag.withLock { $0 = true }
     }
 
+    /// Stops following the area being followed (it was deleted): the areas waiting their turn still go, one after the other.
+    func stopCurrentFollowing() {
+        stopFlag.withLock { $0 = true }
+    }
+
     // MARK: - Running
 
     private func startFollowing(_ id: UUID?, onlyUnchecked: Bool) {
@@ -112,7 +117,7 @@ extension BlurViewModel {
         following = nil
         // Deleted meanwhile: nothing to put it on; the next one waiting goes on.
         guard edit.blurRegions.contains(where: { $0.id == id }) else {
-            if !followQueue.isEmpty { follow(followQueue.removeFirst()) }
+            followNext()
             return
         }
         guard let result else {
@@ -122,7 +127,7 @@ extension BlurViewModel {
                 area.markUnchecked(area.span)
             }
             say(String(localized: "Couldn’t track it here · Move it onto what it hides"), covered: false, about: id)
-            if !followQueue.isEmpty { follow(followQueue.removeFirst()) }
+            followNext()
             return
         }
         change { snapshot in
@@ -138,7 +143,15 @@ extension BlurViewModel {
                 say(String(localized: "Not tracked for \(left) · Check the marked part"), covered: false, about: id)
             }
         }
-        if !followQueue.isEmpty { follow(followQueue.removeFirst()) }
+        followNext()
+    }
+
+    /// The next area waiting its turn that can be followed: one deleted meanwhile, or one that can't start (a photo, the
+    /// playhead off it, which it says), never holds up the ones after it.
+    func followNext() {
+        while following == nil, !followQueue.isEmpty {
+            follow(followQueue.removeFirst())
+        }
     }
 
     /// How following came out. With the area's card in view (its panel open on it), the card already says it: its sign jumps,

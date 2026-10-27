@@ -59,10 +59,49 @@ struct QuickEditOverlayBarsTests {
         let support = try #require(viewModel.selectedMedia)
         viewModel.overlays.pickArea(.main, of: support.id)
         let ids = viewModel.toolbarItems.map(\.id)
-        #expect(ids == ["framing", "swap", "layout", "clipTools", "blurArea"])
+        #expect(Array(ids.prefix(5)) == ["framing", "swap", "layout", "clipTools", "blurArea"])
+        #expect(!ids.contains("delete"), "nothing on the main video's area deletes the support")
         #expect(viewModel.toolbarContextName == "Main video")
         viewModel.perform(.selectClipAtPlayhead)
         #expect(viewModel.selection?.clipID != nil)
+    }
+
+    /// 8.2: Blur area from the main video's area of a split screen hides something in the main video, never on the support.
+    @Test func blurAreaOnTheMainVideosAreaGoesOnTheMainVideoNeverOnTheSupport() async throws {
+        let (viewModel, _, _) = await makeViewModel()
+        await viewModel.overlays.add([video(sound: false)], as: .split)
+        let support = try #require(viewModel.selectedMedia)
+        viewModel.overlays.pickArea(.main, of: support.id)
+        viewModel.perform(.addBlurArea)
+        let footage = try #require(viewModel.blur.picking?.footage)
+        #expect(footage.target == .recording(nil))
+        #expect(viewModel.selection?.mediaID == nil, "the support is let go of")
+        viewModel.blur.drawArea()
+        #expect(viewModel.edit.blurRegions.first?.target == .recording(nil))
+        #expect(viewModel.edit.media.first?.id == support.id)
+        // From the support's own area, on the support.
+        viewModel.closePanel()
+        viewModel.overlays.pickArea(.support, of: support.id)
+        viewModel.perform(.addBlurArea)
+        #expect(viewModel.blur.picking?.footage.target == .media(support.id))
+    }
+
+    /// The support picked on its track after its main video's area was outlined: the support's own tools and its Delete.
+    @Test func aSupportPickedOnTheTimelineShowsItsOwnToolsAndDelete() async throws {
+        let (viewModel, _, _) = await makeViewModel()
+        await viewModel.overlays.add([video(sound: false)], as: .split)
+        let support = try #require(viewModel.selectedMedia)
+        viewModel.overlays.pickArea(.main, of: support.id)
+        #expect(!viewModel.toolbarItems.contains { $0.isPinned })
+        // Its bar on the timeline, while the main area is still outlined.
+        viewModel.tapTimeline(.item(.media, support.id))
+        #expect(viewModel.toolbarContext == .media)
+        #expect(viewModel.toolbarItems.last?.id == "delete")
+        // Let go, then picked again from the track.
+        viewModel.overlays.pickArea(.main, of: support.id)
+        viewModel.selection = nil
+        viewModel.selection = .media(support.id)
+        #expect(viewModel.toolbarItems.last?.id == "delete")
     }
 
     @Test func aVideoInAWindowHasItsSoundMotionAndMaskOnScreen() async throws {

@@ -13,7 +13,6 @@ import SwiftUI
 /// runs on the iPhone.
 struct SmartPanel: View {
     let viewModel: QuickEditViewModel
-    @State private var section: SmartPanelSection = .tools
     /// A tile's status line ("4 found"), growing with the text size.
     @ScaledMetric(relativeTo: .caption2) private var statusSize: CGFloat = 9.5
     /// A tile's side, so its name keeps its two lines at any text size.
@@ -27,9 +26,10 @@ struct SmartPanel: View {
             content: {
                 PanelSegmented(
                     options: SmartPanelSection.allCases.map { PanelOption($0, $0.label, key: $0.rawValue) },
-                    selection: section, identifier: "edit.smart.section"
-                ) { section = $0 }
-                switch section {
+                    selection: viewModel.smartSection, identifier: "edit.smart.section"
+                ) { viewModel.smartSection = $0 }
+                // The tab is the editor's (`smartSection`), so Templates and Brand kit on a toolbar open straight on theirs.
+                switch viewModel.smartSection {
                 case .tools: tiles.padding(.top, 4)
                 case .templates: templates
                 case .brand: BrandKitsSection(viewModel: viewModel)
