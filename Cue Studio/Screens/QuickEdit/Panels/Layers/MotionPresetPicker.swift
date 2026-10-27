@@ -6,19 +6,31 @@
 import SwiftUI
 
 /// Motion's ready-made ways in (and out) for the picked text or photo or video: None, Fade in, Slide up, Slide in, Gentle zoom,
-/// Pop, In and out; with one picked, how long it takes and how strong it is, and Play to see it. They sit over the keyframes,
-/// which stay for moving it by hand (under them).
+/// Pop, In and out; with one picked, how long it takes and how strong it is ("Preview" in the panel's header plays it,
+/// `PanelPlay.motion`). They sit over the keyframes, which stay for moving it by hand (under them). A text that wears an
+/// effect also has "Effect's own" after None, one of them picked at a time: the effect's way in and out as its card shows,
+/// or a Motion (or None) with the effect still, keeping its finish.
 struct MotionPresetPicker: View {
     let viewModel: QuickEditViewModel
 
     var body: some View {
-        let current = viewModel.overlays.selectedAnimation
+        let overlays = viewModel.overlays
+        let current = overlays.selectedAnimation
+        let effect = overlays.selectedTextID != nil ? overlays.selectedText?.effect : nil
+        let effectMoves = effect?.isAnimated == true && current == nil
         VStack(alignment: .leading, spacing: 12) {
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
-                    tile(nil, label: String(localized: "None"), systemImage: "nosign", isOn: current == nil)
+                    tile(String(localized: "None"), systemImage: "nosign", key: "none", isOn: current == nil && !effectMoves) {
+                        overlays.setMotionPreset(nil)
+                    }
+                    if effect != nil {
+                        tile(Self.effectsOwn, systemImage: "sparkles", key: "effect", isOn: effectMoves, action: overlays.playEffectsOwnMotion)
+                    }
                     ForEach(MotionPreset.allCases) { preset in
-                        tile(preset, label: preset.label, systemImage: preset.systemImage, isOn: current?.preset == preset)
+                        tile(preset.label, systemImage: preset.systemImage, key: preset.rawValue, isOn: current?.preset == preset) {
+                            overlays.setMotionPreset(preset)
+                        }
                     }
                 }
                 .padding(.horizontal, 16)
@@ -26,6 +38,10 @@ struct MotionPresetPicker: View {
             }
             .scrollIndicators(.hidden)
             .padding(.horizontal, -16)
+            if effect != nil, current != nil {
+                PanelNote(text: String(localized: "The effect keeps its finish; this Motion plays instead of its own way in and out."))
+                    .accessibilityIdentifier("edit.motion.effectNote")
+            }
             if let current {
                 PanelSlider(
                     label: current.preset.spansTheWholeItem ? String(localized: "Ease in") : String(localized: "Duration"),
@@ -36,15 +52,16 @@ struct MotionPresetPicker: View {
                     label: String(localized: "Strength"), value: current.intensity * 100, range: 0...100, step: 5, defaultValue: 50,
                     format: .percent, identifier: "edit.motion.intensity", onChange: { viewModel.overlays.setMotionIntensity($0 / 100) }
                 )
-                PanelButton(label: String(localized: "Play it"), systemImage: "play.fill", identifier: "edit.motion.play") {
-                    viewModel.overlays.previewMotion()
-                }
             }
         }
     }
 
-    private func tile(_ preset: MotionPreset?, label: String, systemImage: String, isOn: Bool) -> some View {
-        Button { viewModel.overlays.setMotionPreset(preset) } label: {
+    private static var effectsOwn: String {
+        String(localized: "Effect's own", comment: "Motion: the text effect's own way in and out, in place of None")
+    }
+
+    private func tile(_ label: String, systemImage: String, key: String, isOn: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
             VStack(spacing: 6) {
                 Image(systemName: systemImage).font(.editorGlyph(EditorGlyph.tool, weight: .semibold))
                 Text(label).font(.system(.caption, weight: .semibold)).lineLimit(2).multilineTextAlignment(.center).minimumScaleFactor(0.8)
@@ -57,6 +74,6 @@ struct MotionPresetPicker: View {
         .buttonStyle(.cuePressCard)
         .accessibilityLabel(Text(label))
         .accessibilityAddTraits(isOn ? .isSelected : [])
-        .accessibilityIdentifier("edit.motion.preset.\(preset?.rawValue ?? "none")")
+        .accessibilityIdentifier("edit.motion.preset.\(key)")
     }
 }

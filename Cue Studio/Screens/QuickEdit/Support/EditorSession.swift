@@ -163,4 +163,11 @@ final class EditorSession {
             player.seek(to: back)
         }
     }
+
+    /// A part playing to show a change (`previewPart`, a pause listened to) ends where it is: it never pulls the playhead back,
+    /// and the player no longer stops at the part's end.
+    func endPreview() {
+        jobs.cancel(.preview)
+        player.reviewedPart = nil
+    }
 }

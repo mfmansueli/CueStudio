@@ -710,6 +710,25 @@ dedo, 22/10/2026), com um tique e "Take 2 of 3" por 1,4 s. **Estrela**: pula e s
 `.glassProminent` amarelo com texto `accInk` (`ink2` enquanto carrega). Some em tela cheia. `EditorLayout` usa a altura sob a barra (`EditorHeightClass`:
 regular a partir de 696, compacta de 636). Painéis: §29, §31.
 
+**Uma faixa por vez sob o vídeo** (canvas "Faixas recolhíveis do editor", aprovado pelo dono em 27/10/2026; `TimelineTrackChoice`): com nada
+aberto a timeline mostra a régua, a faixa do vídeo e **a faixa atual** (Texto numa edição nova), e a prévia fica com o resto: no iPhone 17 a timeline
+tem 142 pt em vez de 286 e o vídeo ganha 144 pt (`TimelineGeometry.collapsedHeight`: a régua, o vídeo e a faixa mais alta já crescida, sem o piso de
+32%, para que escolher um item ou trocar de faixa nunca mexa no vídeo; música ou voice-over chegando ou saindo também não). **▾** ao lado do ícone da
+faixa atual (alcance de 44 × 44 pt, sem tocar a faixa do vídeo) põe todas as faixas para fora no lugar, como eram: 32% da altura (184–300 pt) ou o que
+elas pedem, cada faixa tirando o seu espaço da prévia até o mínimo dela (30% da altura, pelo menos 190 pt). Com elas para fora, **um toque numa faixa só
+a escolhe** (nenhuma ferramenta abre, nada é adicionado; a faixa de mídia vazia não abre a biblioteca) e as outras voltam para dentro; **▴** recolhe
+como estava; o toque seguinte faz o que a faixa faz. Trocar de faixa solta o item escolhido na faixa de antes, nunca um clipe do vídeo. **Tudo o que
+escolhe um item traz a faixa dele**: um toque na timeline, um texto, legenda, mídia ou área tocada na prévia (`selection`), um painel sobre uma faixa
+ou o menu de uma faixa (Áudio traz a primeira faixa de música ou voice-over). A faixa atual fica guardada **por vídeo** neste aparelho (as últimas 200
+edições, `EditorPreferencesStore.timelineLane`); se o último item dela sair, Texto aparece, e o Desfazer que o traz de volta traz a faixa. A faixa de
+**Mídia** existe sempre, mesmo vazia: "Tap to add a photo or video". Um painel sobre uma faixa mostra só ela e o vídeo, como antes, sem ▾. A mudança de
+altura é uma animação suave de 0,3 s (instantânea com Reduzir Movimento) e as faixas trocam num esmaecer de 0,2 s. O que não couber (painel aberto com
+todas para fora, janela curta no iPad ou no Mac) rola na vertical sob a régua, que fica fixa (sobre preto quando há faixas por baixo), com um degradê no
+pé enquanto há faixas escondidas; arrastar para cima ou para baixo nunca mexe no tempo, e a faixa do item escolhido (ou a das ferramentas abertas) entra
+sozinha na tela. VoiceOver não escolhe faixas (as faixas nunca foram elementos próprios; os itens sim). Uma divisória arrastável entre o vídeo e a
+timeline ficou para quando o dono pedir. Testes: `TimelineTrackChoiceTests`, `QuickEditTrackChoiceTests`, `EditorLayoutTracksTests`,
+`TimelineTracksUITests`.
+
 **Gravador (Selfie e Studio):** barra de navegação do sistema num `NavigationStack` dentro do `PrompterView` (a revisão fica fora): fechar
 (`Button(role: .close)`) no início, **Selfie | Studio** (`ModeSwitcher`, `Picker` `.segmented`) no meio, e o chip do quadro (Selfie) ou a rede do roteiro
 ("● TikTok", abre Create for) e Remote (Studio) no fim; gravando, o REC ocupa o início; escondida na prática. A caixa do Selfie começa embaixo da barra
@@ -866,16 +885,44 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   painéis enquanto o editor está aberto (`stylePanelIsExpanded`). Altura normal de um painel `.full`: metade da tela (330–420 pt). No iPhone SE o painel é
   folha e o botão troca as duas alturas. O conteúdo para 18 pt acima do Home Indicator (`Metrics.editorStylePanelBottomClearance`) e some em degradê
   (`scrollEdgeEffectStyle(.soft)`).
-- **Abas na largura toda** (Text style: Presets · Font · Color · Motion; Caption style: Styles · Format · Animation · Adjust, §50), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
+- **Abas na largura toda** (Text style: **Animated · Styles · Custom**; Caption style: Styles · Format · Animation · Adjust, §50), 44 pt, com pelo menos 16 pt entre os nomes (sem esse espaço, rolam de lado); campo e abas
   fixos, só o resto rola; trocar de aba volta ao topo (`contentKey`), menos Styles do Caption style, que volta onde estava (`keptOffset`). Em tamanhos de acessibilidade só as abas ficam fixas: o campo rola com o resto
   e os controles da aba vêm antes de "Style applies to". Cores (`PanelSwatches`) de 34 pt, a paleta em linhas (§44), segmentos de 38 pt.
 - **Digitando** (teclado no campo): só cabeçalho, campo e abas sobre o teclado (`EditorLayout.typingPanelHeight`, 180 pt); o vídeo fica com o resto
   e mostra o texto mudando. Tocar numa aba guarda o teclado e mostra os controles dela (como no CapCut). Com texto grande (xxLarge ou
   mais) isso não caberia: os controles ficam e rolam sobre o teclado (`TextStylePanel.hidesControlsWhileTyping`).
 - **Os estilos do Caption style em grade** (colunas de 104 pt: três por linha no iPhone), por grupo, com filtros (§50).
-- **Escopo só do visual:** "Style applies to" **This title | All texts · N** só em Presets, Font e Color ("Words, timing and motion stay with each text.");
-  em Motion: "Motion and timing change only this text".
-- **Apply this style to captions** (`PanelButton` no fim de Presets, Font e Color, quando há legendas): pergunta antes (alerta: o que troca, o que fica, e
+- **Text style abre na aba do que o texto veste** (efeito → Animated; senão Styles); Custom volta à seção em que estava (`lastTextCustomSection`).
+  - **Animated:** grade (104 pt) dos seis efeitos de texto (`TextEffectKind`, `TypePreset.effectPresets`), cada cartão animando nas palavras do
+    criador (`TextEffectCardSamples`; com Reduzir Movimento o cartão fica parado): **Gold metal** (metal com brilho e faíscas curtas), **Type wave**
+    (letras chegam em onda), **Pop 3D** (letras com profundidade que saltam), **Neon** (tubo aceso num halo), **Editorial reveal** (palavras sobem sobre
+    uma faixa e, na saída, voltam para dentro da linha antes de a faixa sair), **Elegant sheen** (faixa de luz atravessa). Embaixo, só o que o efeito usa (`TextEffectControls`): **Animated | Still**, a força com o
+    nome do que muda (Shine, Wave height, Depth, Glow, Band height, Sheen), **Duration** da entrada (só animado), **Direction** (Pop 3D: Depth
+    direction, também parado) e **Remove effect** (a tipografia fica). O efeito vai nas palavras do criador, nunca inventa texto; trocar de efeito
+    mantém palavras, lugar, tamanho posto à mão, giro, tempo, âncora e keyframes. Legendas e gráficos nunca levam efeito.
+  - **Styles:** Save style, os salvos e os estilos clássicos (sem efeito; escolher um tira o efeito).
+  - **Custom:** segmentado **Font · Color · Motion**. Font: **Size** e **Turn** no topo (uma linha cada, sempre à vista), depois as fontes, Import e o
+    peso. Color: as cores e Glow; com efeito, o metal (Gold) ou a cor do texto e a segunda cor, e a nota de que o efeito faz a própria luz e sombra
+    (sem fundo nem contorno). Motion: `MotionKeyframeControls`.
+  - **Um jeito de entrar por vez:** o efeito animado faz o que o cartão promete. Escolher em Animated um efeito que se move, ou pôr **Animated** nele,
+    tira o Motion do texto no mesmo passo, com toast e Undo ("Gold metal on this text · Motion removed, the style moves it"). Em Custom › Motion, um
+    texto com efeito tem **None · Effect's own · os Motions**, um marcado por vez: um Motion (ou None) deixa o efeito **parado** com o acabamento (a
+    aba Animated mostra Still); Effect's own devolve a entrada do efeito. Keyframes convivem com tudo.
+  - Prévia = exportação em qualquer instante (o mesmo `TextEffectComposer`, determinístico); Reduzir Movimento só para os cartões e a interface,
+    nunca o vídeo. Letras por grafema (acento e emoji inteiros); árabe, hindi e tailandês por palavra (nunca quebra a ligação).
+  - **Desenho:** cada camada de cada letra é pintada uma vez (Core Graphics, `TextEffectPainter`) e guardada na GPU; cada quadro só posiciona esses
+    pedaços, numa passada de Metal (`TextEffectRenderer`, programas compilados pelo sistema na primeira vez, sem toolchain no build; o editor os
+    prepara ao abrir), em luz linear como o Core Image, a faixa de luz só sobre as letras e os recortes cobrindo em parte o pixel que cortam.
+    Medido no iPhone 15 Pro (`TextEffectDeviceTests`): um quadro de qualquer efeito leva 1,4–3 ms (antes, montado pelo Core Image, até 25 ms);
+    três efeitos entrando juntos tocam a 77 quadros por segundo na prévia e 78 na exportação (antes 25 e 24); pintar um texto, 3–62 ms
+    (Volume pop o mais caro), uma vez.
+- **Letras** (`TextLettering`): o contorno fica todo por fora das letras, atrás do preenchimento, com cantos redondos, e uma só sombra suave sob letras
+  e contorno (uma caixa com sombra projeta a própria). O que precisa de espaço além da caixa vai na sangria do desenho (`Drawing.bleed`), nunca na
+  caixa. Textos e estilos salvos antes leem `centered` e continuam desenhados como eram (`LegacyCaptionLookTests`); escolher um estilo hoje passa a
+  desenhar do jeito novo.
+- **Escopo só do visual:** "Style applies to" **This title | All texts · N** em Animated, Styles, Font e Color ("Words, timing and motion stay with each
+  text."); em Custom › Motion: "Motion and timing change only this text".
+- **Apply this style to captions** (`PanelButton` no fim de Animated, Styles, Font e Color, quando há legendas): pergunta antes (alerta: o que troca, o que fica, e
   a nova cor de destaque se a atual sumiria, `CaptionAccent.standingOut`); copia **uma vez** (`CaptionStyleCopy`), um passo de desfazer, toast "Captions use
   this style" com Undo; nada fica ligado. A cópia vira mudanças sobre o estilo (`CaptionSettings.adjustments`, `withoutCopiedLook`), desenhadas pelo
   renderizador da coleção: o Caption style a mostra no cartão **This video** e Adjust muda qualquer parte dela; escolher outro estilo a substitui. Uma cópia
@@ -884,7 +931,10 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   de um slider mudava o valor. Vale em todo o app.
 - Contraste: `PaletteContrastTests.theEditorsPanelReads` (`ink`/`ink2` sobre `fill`).
 - Testes: `CaptionStyleCopyTests`, `CaptionAccentTests`, `QuickEditCaptionStyleCopyTests`, `QuickEditTextStyleTests`, `EditorLayoutTests`,
-  `CaptionCollectionRendererTests`, `CaptionCollectionExportTests`, `TextStyleUITests` (6,1" e SE).
+  `CaptionCollectionRendererTests`, `CaptionCollectionExportTests`, `TextStyleUITests` (6,1" e SE); efeitos: `TextEffectModelTests`,
+  `TextEffectRenderingTests`, `TextEffectRendererTests`, `TextPictureDrawerTests`, `QuickEditTextTransformTests`, `QuickEditPanelPreviewTests`,
+  `PreviewMatchesExportTests` (textEffects, turnedText), `TextPresetsUITests`; no aparelho, `TextEffectDeviceTests` e
+  `QuickEditPreviewLatencyTests` (Text effect, Text resized and turned).
 
 ## 30. Find inspiration
 
@@ -1214,7 +1264,8 @@ auditoria: `reports/editor-award-checklist.md`.
   Duplicate nem Mask e ganha **Close gap** quando há espaço antes dele (§51).
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
   clipes com quadro, número, origem e duração, arrastados pela alça; cada mudança é um passo de desfazer e o que toca no clipe vai junto. Um clipe só:
-  "Split or add a clip to reorder".
+  "Split or add a clip to reorder". Segurar só vale sobre um clipe: na régua, numa faixa ou no espaço vazio, o dedo que descansa antes de arrastar
+  continua movendo a agulha (`testAFingerThatRestsBeforeMovingStillScrubs`).
 - **Arrastar no tempo:** com um texto, mídia, legenda ou som escolhido, arrastar o **corpo** do bloco o move (o tamanho fica), grudando nos cortes e
   bordas com toque háptico; as pontas amarelas continuam aparando (`TimelineGeometry.bodies`, `HandleTarget.move`).
 - **Marcas de corte sempre à mão:** com um clipe escolhido, os outros cortes mantêm a marca (tocar abre Transitions); só as bordas do clipe
@@ -1227,7 +1278,7 @@ auditoria: `reports/editor-award-checklist.md`.
   que o vídeo**: **Split screen**, **Window**, **Full screen** (B-roll); ou **Sequence**: **In sequence** ("Adds time: becomes a clip of its own
   at the playhead, and the video gets longer. Videos only.") — e diz, antes de escolher, onde e por quanto tempo (§48).
 - **Animações prontas** (`MotionPreset`, `OverlayAnimation`, `MotionPresetPicker` no topo do painel de movimento de textos, gráficos e mídias):
-  Fade, Slide up, Slide in, Gentle zoom, Pop e In and out, com **Duration** (0,2–1,5 s) e **Strength**, e **Play it**. A animação é calculada por
+  Fade, Slide up, Slide in, Gentle zoom, Pop e In and out, com **Duration** (0,2–1,5 s) e **Strength**; **Preview** no cabeçalho a toca. A animação é calculada por
   cima dos keyframes (base + animação), então a edição manual em **Keyframes** ("To move it your own way") continua valendo junto.
 - **Copiar e colar o look** (`CopiedClipLook`, `ClipLookPart`, `PasteLookSheet`): **Copy look** na barra do clipe guarda Adjust, Filter,
   Background e Zoom do clipe; **Paste look** abre a folha para escolher as partes ("The words, sound and timing stay") e colar no clipe ou em
@@ -1580,6 +1631,14 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **◐ Compare with original** (`PanelCompare`, `PanelCompareButton`) no cabeçalho de Adjust, Filters, Background e Studio Voice: toque mostra
   o original até o próximo toque; segurar mostra só enquanto o dedo está; esmaecido quando não há o que comparar. A prévia diz "Original" (a
   imagem como gravada: sem Auto, Adjust, filtro **nem fundo**, `TakeEdit.withoutPictureLook`) ou "Original audio".
+- **▶ PREVIEW** (`PanelPlay`, `edit.panel.preview`) no cabeçalho, antes de expandir e ✓: redondo e do tamanho deles, com a tag amarela curta
+  "PREVIEW" ("PRÉVIA"; `panel.preview.tag`, uma palavra em cada idioma) no canto de cima, como o "ALL" da barra, para nunca ser lido como o play
+  do vídeo. Toca o que o painel muda e volta: o Motion ou o efeito de um texto entrando (Text style, gráfico, Motion de foto/vídeo), a área de
+  Blur area, o Zoom, a Velocidade fora de 1×, a Transição (de 1 s antes do corte a 1 s depois dela) e a linha atual da legenda (Caption style).
+  Fica ao alcance com o painel rolado; o VoiceOver diz "Preview". Volta só se ninguém mexer: Play, arrastar a timeline ou uma alça, ‹ ›, os
+  saltos do VoiceOver e uma linha tocada na lista encerram a prévia onde está (`QuickEditViewModel.takePlayhead`, `EditorSession.endPreview`;
+  o Listen de Remove pauses também), e o Play corre dali. Um Play nunca é uma arrastada: um deslize da timeline parado por um toque não
+  segura o relógio.
 - **Escolhas de 2 a 4 palavras são segmentados:** Studio Voice (Off · Light · Strong) e o tamanho da legenda (S · M · L · XL). "None" para
   "sem efeito" (Zoom, Stabilize); o giro em graus ("15°"); 9:16 e 4:5 com símbolos na proporção.
 - **Advanced** diz quantos ajustes estão mudados lá dentro ("· 1 changed": Speed, Zoom, fades da música).
@@ -1625,6 +1684,12 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
 - **Avisos** (`EditorPart+Toasts`, o toast do app, §1): dividir, duplicar, apagar e adicionar dizem o quê e onde ("Clip 2 deleted", "Photo added at
   00:07.0"), com ✓ e **Undo**; o que não pode acontecer diz por quê, com !.
 - **Dois toques** num texto ou legenda no vídeo abrem as palavras com o teclado (Text style ou a linha em Captions).
+- **Texto à mão na prévia** (`TextTransformRecognizer`, `TextHandle`, `OverlaysViewModel+TextTransform`): um dedo arrasta; dois dedos aumentam e giram
+  juntos, sem saltos (a cópia sob os dedos é o mesmo desenho do vídeo; num texto com efeito, a pintura que a prévia já fez, 4–7 ms no iPhone 15 Pro);
+  a alça do canto gira e redimensiona; as laterais mudam o comprimento das linhas sem cortar palavra (`TextBlock`); num texto com efeito, a pintura
+  nova (6–65 ms) fica fora da linha principal, uma por vez, e o lado oposto não sai do lugar quando ela chega (`TextPictureDrawer`). Redimensionado como um todo, o texto cresce sem quebrar as linhas de outro jeito. O giro gruda no reto perto de
+  cada 90° (com háptico), e o arraste nas guias do centro. Cada gesto é um passo de desfazer, com os mesmos limites durante e ao soltar; com keyframes, o gesto muda o keyframe da
+  agulha. VoiceOver gira de 15° em 15°; Custom › Font › Turn faz o mesmo por slider.
 - **Folhas:** Translate captions fecha com o X do sistema e escolhe o idioma numa lista com check; Auto captions escolhe o idioma falado numa
   linha que abre a lista no lugar (Automatic primeiro).
 - **Estilos salvos** das legendas, dos textos e das capas: §50.
@@ -1986,7 +2051,7 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   tracejada); arrastar e pinçar movem e dão zoom no que ela mostra, seguindo o dedo (uma cópia desenhada ali; o vídeo redesenha quando o dedo sai),
   resistindo além da borda e com um toque háptico ao centralizar; a pega na emenda arrasta entre 40, 50 e 60%. VoiceOver: Zoom in/out e Move
   up/down/left/right em cada área; a emenda é ajustável.
-- **Timeline**: as mídias têm **faixa própria**, logo abaixo do vídeo (só quando há alguma), com os quadros de cada uma (de cada pedaço, do seu
+- **Timeline**: as mídias têm **faixa própria** (sempre lá, vazia com "Tap to add a photo or video"), com os quadros de cada uma (de cada pedaço, do seu
   segundo do arquivo), o tipo num selo com o símbolo do modo, e escurecido onde ela não aparece dentro da barra.
 - **Substituir** (mídia): um vídeo mais longo que o lugar abre Pick the part; fica o lugar, a duração (um vídeo com menos termina antes: "Video in
   its place · it’s shorter, so it ends sooner"), o modo, a janela, o zoom e o ajuste do enquadramento, o movimento e o volume (se o novo tem som);
@@ -2152,7 +2217,7 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   - **Estilos, nenhum fraco** (pesquisa de privacidade: reconhecimento por IA ainda acerta com mosaico de ~14 blocos no rosto; mosaico em vídeo se
     reverte juntando quadros): **Blur** (a área reduzida a 10–4 pixels no lado menor e espalhada), **Pixelate** (8–4 blocos no lado menor, cada um a
     média do que cobre, a grade presa à área, não à tela), **Solid** (tarja opaca na paleta do editor; recomendada para textos, placas e telas).
-    **Area shape** Rectangle | Oval, **Strength**, **Soft edge** (só para fora: o que é escondido continua coberto), Starts/Ends, **Replay** (toca o trecho).
+    **Area shape** Rectangle | Oval, **Strength**, **Soft edge** (só para fora: o que é escondido continua coberto), Starts/Ends; **Preview** no cabeçalho toca o trecho.
   - **Preso à gravação:** a área guarda a gravação (ou a mídia por cima) e os segundos dela, e as caixas no quadro de pé da gravação. É desenhada
     no quadro de pé antes de Estabilizar, Format, Seguir rosto, Fit, a área da tela dividida e o zoom do clipe (`FramePipeline`), então acompanha
     todos eles; cortes, velocidade e curvas não a tiram do lugar; aparece em cada cópia de um clipe (uma barra por aparição, `BlurInstance`), num

@@ -17,7 +17,7 @@
 #                                    InspirationDeviceTests, QuickEditPreviewLatencyTests, EditorExportDeviceTests, SkinSmoothingDeviceTests,
 #                                    BackgroundDeviceTests, ContinuedTaskDeviceTests, MotionAnalysisDeviceTests, EditorMotionDeviceTests,
 #                                    SplitScreenDeviceTests, BlurAreaDeviceTests, BlurTrackingDeviceTests, CustomFontStoreTests,
-#                                    MediaLibraryStoreTests)
+#                                    MediaLibraryStoreTests, TextEffectDeviceTests)
 #   scripts/test.sh device-ui <class>  a UI test class (or Class/test) on that iPhone (opt-in classes skip without their flag)
 #
 # After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests);
@@ -102,6 +102,8 @@ case "$mode" in
             LanguageModelDeviceTests* | ScriptGenerationFlowDeviceTests* | VoicePersonaDeviceTests* | PromptBudgetDeviceTests* | WritingImportDeviceTests* | PlatformLengthDeviceTests* | LengthVariantsDeviceTests* | ScriptToolsDeviceTests* | IdeaRelevanceDeviceTests* | IdeaSuggestionsDeviceTests* | CreatorDayDeviceTests* | InspirationDeviceTests* | ScriptQualityDeviceTests*)
                 export TEST_RUNNER_CUE_AI_E2E=1 ;;
             QuickEditPreviewLatencyTests*) export TEST_RUNNER_CUE_PREVIEW_LATENCY=1 ;;
+            # The six text effects: painting, a frame of their way in, the picture a gesture picks up, three at once in real time.
+            TextEffectDeviceTests*) export TEST_RUNNER_CUE_TEXT_EFFECTS_E2E=1 ;;
             LongTakeDeviceTests*) export TEST_RUNNER_CUE_LONG_TAKE=1 ;;
             ContinuedTaskDeviceTests*) export TEST_RUNNER_CUE_CONTINUED_TASK=1 ;;
             EditorExportDeviceTests*) export TEST_RUNNER_CUE_EDITOR_EXPORT=1 ;;

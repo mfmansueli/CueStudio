@@ -28,10 +28,13 @@ struct TimelineMediaLaneTests {
         return item
     }
 
-    @Test func mediaHasItsOwnLaneOnlyWhenThereIsSome() {
-        #expect(TimelineGeometry(input()).lanes.map(\.lane) == [.main, .text, .captions, .audio])
+    @Test func mediaHasItsLaneEvenEmptySayingHowToAddTheFirst() {
+        let empty = TimelineGeometry(input())
+        #expect(empty.lanes.map(\.lane) == [.main, .media, .text, .captions, .audio])
+        #expect(empty.ghosts.contains { $0.target == .lane(.media) && $0.label == "Tap to add a photo or video" })
         let geometry = TimelineGeometry(input([support(2, 4)]))
         #expect(geometry.lanes.map(\.lane) == [.main, .media, .text, .captions, .audio])
+        #expect(!geometry.ghosts.contains { $0.target == .lane(.media) })
         let lane = geometry.lane(.media)
         #expect(lane?.y == CGFloat(28 + 56 + 8))
         #expect(lane?.height == 34)

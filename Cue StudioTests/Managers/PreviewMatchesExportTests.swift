@@ -45,6 +45,27 @@ extension RealExports {
             }
         }
 
+        /// The effects compared above are drawn at all: a frame with them is not the frame without them.
+        @Test func theTextEffectsAreDrawn() async throws {
+            let take = try await footage(for: .textEffects)
+            defer { try? FileManager.default.removeItem(at: take) }
+            let styled = try await edit(for: .textEffects, take: take)
+            var plain = styled
+            plain.texts = []
+            let sounds = RecordingSoundCache()
+            for time in [0.6, 1.4] {
+                var frames: [CGImage] = []
+                for edit in [styled, plain] {
+                    let export = try await EditRenderRequest.prepare(
+                        source: take, edit: edit, purpose: .export(burnsInCaptions: true, shortSide: 1080, frameRate: 30), sounds: sounds
+                    ).build()
+                    frames.append(try await RenderParity.frame(export.asset, composition: export.videoComposition, at: time))
+                }
+                let difference = try RenderParity.meanDifference(frames[0], frames[1], size: size)
+                #expect(difference > 2, "at \(time) s: \(difference)")
+            }
+        }
+
         /// Grain sliding a little every frame; a camera shaking for Stabilize; a square walking down for Follow face.
         private func footage(for feature: RenderFeature) async throws -> URL {
             let motion: MovingFootage.Motion = switch feature {
@@ -97,6 +118,31 @@ extension RealExports {
                 var title = TextOverlay(role: .title, look: TypePreset.cue.look(for: .title), preset: .cue, span: TimeSpan(start: 0.2, end: 2.8))
                 title.text = "5 comidas de SP"
                 edit.texts = [title]
+            case .textEffects:
+                // Three effects on their way in, read and on their way out, one with an emoji and accents.
+                let span = TimeSpan(start: 0.2, end: 2.8)
+                var gold = TextOverlay(role: .title, look: TypePreset.gold.look(for: .title), preset: .gold, span: span)
+                gold.text = "Ação 👩🏽‍💻"
+                var wave = TextOverlay(role: .title, look: TypePreset.wave.look(for: .title), preset: .wave, span: span)
+                wave.text = "Onda"
+                wave.center = OverlayPoint(x: 0.5, y: 0.78)
+                var neon = TextOverlay(role: .title, look: TypePreset.neon.look(for: .title), preset: .neon, span: span)
+                neon.text = "Neon"
+                neon.center = OverlayPoint(x: 0.5, y: 0.22)
+                edit.texts = [gold, wave, neon]
+            case .turnedText:
+                // Resized as a whole, turned, its effect's motion off, moved and turned again by its keyframes.
+                var title = TextOverlay(role: .title, look: TypePreset.pop3D.look(for: .title), preset: .pop3D, span: TimeSpan(start: 0.2, end: 2.8))
+                title.text = "Volume pop em duas linhas"
+                title.block = TextBlock(width: 150, size: title.size)
+                title.size *= 1.3
+                title.rotation = 0.3
+                title.effect?.motion = .still
+                title.keyframes = [
+                    OverlayKeyframe(time: 0.2, center: OverlayPoint(x: 0.4, y: 0.4), rotation: -0.2),
+                    OverlayKeyframe(time: 2, center: OverlayPoint(x: 0.6, y: 0.6), scale: 1.3, rotation: 0.5),
+                ]
+                edit.texts = [title]
             case .captions:
                 edit.showsCaptions = true
                 edit.captionCollection = CaptionSettings(theme: .pop)
@@ -142,7 +188,7 @@ extension RealExports {
 /// The tools `PreviewMatchesExportTests` compares.
 enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
     case look, crop, fit, clipZoom, shortClipTransition, slide, zoomTransition, flash, fade, push, wipe, blur, punch, speed,
-         text, captions, stabilize, followFace, blurArea
+         text, textEffects, turnedText, captions, stabilize, followFace, blurArea
 
     var testDescription: String { rawValue }
 
@@ -154,6 +200,8 @@ enum RenderFeature: String, CaseIterable, CustomTestStringConvertible {
         case .slide, .zoomTransition, .flash, .fade, .push, .wipe, .blur, .punch: [0.85, 0.92, 1.0]
         // Sped up, the edit is 2 s.
         case .speed: [0.4, 1.2, 1.8]
+        // On their way in, read, on their way out.
+        case .textEffects: [0.35, 0.6, 1.4, 2.6, 2.75]
         default: [0.4, 1.4, 2.6]
         }
     }

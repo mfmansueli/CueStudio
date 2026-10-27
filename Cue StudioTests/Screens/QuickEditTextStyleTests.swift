@@ -129,16 +129,34 @@ struct QuickEditTextStyleTests {
         #expect(viewModel.panelSubtitle(.textStyle) == "Motion and timing change only this text")
     }
 
-    @Test func aTabFromAnotherPanelShowsPresetsInBothTheTabsAndTheContent() async {
+    @Test func aTabFromAnotherPanelShowsWhatTheTextWearsInBothTheTabsAndTheContent() async {
         let viewModel = await makeViewModel()
         _ = twoTexts(viewModel)
         viewModel.panelTab = .animation
-        #expect(viewModel.overlays.textStyleTab == .presets)
+        #expect(viewModel.overlays.textStyleTab == .styles)
         #expect(viewModel.overlays.textStyleTabChangesLook)
+        viewModel.overlays.pickTextPreset(.neon)
+        #expect(viewModel.overlays.textStyleTab == .animated)
         viewModel.panelTab = .font
-        #expect(viewModel.overlays.textStyleTab == .font)
+        #expect(viewModel.overlays.textStyleTab == .custom)
+        #expect(viewModel.overlays.textCustomSection == .font)
         viewModel.panelTab = .motion
         #expect(viewModel.captions.captionStyleTab == .styles)
+    }
+
+    @Test func customOpensOnTheSectionItLastShowed() async {
+        let viewModel = await makeViewModel()
+        _ = twoTexts(viewModel)
+        viewModel.overlays.showTextStyleTab(.custom)
+        #expect(viewModel.panelTab == .font)
+        viewModel.overlays.showTextStyleTab(.color)
+        viewModel.overlays.showTextStyleTab(.styles)
+        #expect(viewModel.overlays.textStyleTab == .styles)
+        viewModel.overlays.showTextStyleTab(.custom)
+        #expect(viewModel.overlays.textStyleTab == .custom && viewModel.overlays.textCustomSection == .color)
+        // Motion from the toolbar lands in Custom › Motion, which changes this text alone.
+        viewModel.panelTab = .motion
+        #expect(viewModel.overlays.textStyleTab == .custom && !viewModel.overlays.textStyleTabChangesLook)
     }
 
     @Test func theExpandedPanelIsKeptBetweenTheStylingPanels() async {

@@ -41,9 +41,14 @@ extension ClipsViewModel {
     /// A camera move on the picked clip; picking one plays the first seconds of the clip to show
     /// it, then the playhead comes back.
     func setClipZoom(_ zoom: SectionZoom?) {
-        guard let clip = targetClip, let index = edit.timeline.index(ofSegment: clip.id) else { return }
+        guard targetClip != nil else { return }
         updateClip { $0.zoom = zoom }
-        guard zoom != nil else { return }
+        if zoom != nil { previewZoom() }
+    }
+
+    /// "Preview" in Zoom's header: the picked clip's first seconds, its camera move playing, then the playhead comes back.
+    func previewZoom() {
+        guard let clip = targetClip, let index = edit.timeline.index(ofSegment: clip.id) else { return }
         let start = edit.timeline.editedStart(ofSegmentAt: index)
         let end = min(start + edit.timeline.segments[index].duration, start + Self.zoomPreviewLength)
         previewPart(start...end)

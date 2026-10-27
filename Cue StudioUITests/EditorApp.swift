@@ -40,6 +40,19 @@ enum EditorApp {
         XCTAssertTrue(app.descendants(matching: .any)["edit.opening"].isGone(within: 5), "Opening your edit stayed", file: file, line: line)
     }
 
+    /// Shows a tab of Text style (`animated`, `styles`, `custom`) or one of Custom's sections (`font`, `color`, `motion`), Custom
+    /// first when it isn't open.
+    static func showTextTab(_ app: XCUIApplication, _ id: String, file: StaticString = #filePath, line: UInt = #line) {
+        let button = app.buttons["edit.panel.tab.\(id)"]
+        if ["font", "color", "motion"].contains(id), !button.exists {
+            let custom = app.buttons["edit.panel.tab.custom"]
+            XCTAssertTrue(custom.exists(within: 5), "Custom", file: file, line: line)
+            custom.tap()
+        }
+        XCTAssertTrue(button.exists(within: 5), id, file: file, line: line)
+        button.tap()
+    }
+
     /// Taps a toolbar tool, scrolling the toolbar to it first when it's off screen.
     static func tapTool(_ app: XCUIApplication, _ id: String) {
         // Adjust, Skin and Background at a clip's reach are Edit's clip tools: the main bar has the whole video's (`adjustVideo`,
@@ -56,12 +69,17 @@ enum EditorApp {
         func reachable() -> Bool {
             screen.contains(button.frame) && (id == "delete" || !(delete.exists && delete.frame.intersects(button.frame.insetBy(dx: 4, dy: 0))))
         }
-        var swipes = 0
-        while !reachable(), swipes < 10 {
-            // The tools run on past the screen's trailing edge: the right, and the left in Arabic.
+        var drags = 0
+        while !reachable(), drags < 20 {
+            // The tools run on past the screen's trailing edge (the right, and the left in Arabic): the bar is dragged toward the
+            // tool slowly, by half the way and at most 120 pt. The Simulator lets the bar glide on after a drag held still at its
+            // end (up to as far again at 600 pt/s), so a drag of the whole way overshot the tool and the next one came back.
             let toolbar = app.descendants(matching: .any)["edit.toolbar"]
-            if button.frame.minX < screen.minX { toolbar.swipeRight() } else { toolbar.swipeLeft() }
-            swipes += 1
+            let away = button.frame.midX - screen.midX
+            let distance = (away < 0 ? -1 : 1) * min(120, max(40, abs(away) / 2))
+            let start = toolbar.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.3))
+            start.press(forDuration: 0.05, thenDragTo: start.withOffset(CGVector(dx: -distance, dy: 0)), withVelocity: 200, thenHoldForDuration: 0.2)
+            drags += 1
         }
         button.tap()
     }
@@ -76,6 +94,24 @@ enum EditorApp {
         let start = timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.06)).withOffset(CGVector(dx: points / 2, dy: 0))
         let end = start.withOffset(CGVector(dx: -min(points, width - 20), dy: 0))
         start.press(forDuration: 0.1, thenDragTo: end, withVelocity: 400, thenHoldForDuration: 0.4)
+    }
+
+    /// ▾ beside the current track's icon brings every track out (`TimelineTrackChoice`), so each is in its place under the
+    /// video track: media (92 pt from the timeline's top), texts, captions, audio, 36 pt apart. Nothing when they're out.
+    static func showEveryTrack(_ app: XCUIApplication) {
+        let timeline = app.descendants(matching: .any)["edit.timeline"]
+        XCTAssertTrue(timeline.exists(within: 5))
+        // Collapsed, the timeline holds the ruler, the video track and one track (142 pt at most); out, at least 184.
+        let collapsed = { timeline.frame.height < 92 + 2 * 36 + 8 }
+        guard collapsed() else { return }
+        timeline.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 20, dy: 92 + 14)).tap()
+        let end = Date().addingTimeInterval(3)
+        while collapsed(), Date() < end {
+            RunLoop.current.run(until: Date().addingTimeInterval(0.1))
+        }
+        XCTAssertFalse(collapsed(), "▾ didn't bring the tracks out")
+        // The video's room settles (0.3 s) before a track is tapped by its place.
+        RunLoop.current.run(until: Date().addingTimeInterval(0.4))
     }
 
     /// A point on the video track, `x` of the way across the timeline (the playhead is at 0.5).

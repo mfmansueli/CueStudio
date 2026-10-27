@@ -14,6 +14,8 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
     var compare: PanelCompare?
     /// Where the content is kept scrolled to between tabs (`EditorPanelContainer.keptOffset`).
     var keptOffset: Binding<CGFloat>?
+    /// "Preview" in the header (`PanelPlay`).
+    var play: PanelPlay?
     @ViewBuilder var fixed: Fixed
     @ViewBuilder var content: Content
     @ViewBuilder var footer: Footer
@@ -21,7 +23,7 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
     var body: some View {
         EditorPanelContainer(
             title: viewModel.panelTitle(panel), subtitle: viewModel.panelSubtitle(panel), onReset: onReset ?? viewModel.panelReset(panel),
-            compare: compare,
+            compare: compare, play: play,
             expansion: panel.isExpandable ? expansion : nil, clearsHomeIndicator: panel.scrollsClearOfHomeIndicator, contentKey: viewModel.panelTab,
             keptOffset: keptOffset, onApply: viewModel.closePanel, fixed: { keepTheirOwn; fixed }, content: { content }, footer: { footer }
         )
@@ -44,10 +46,10 @@ struct PanelFrame<Fixed: View, Content: View, Footer: View>: View {
 extension PanelFrame where Fixed == EmptyView, Footer == EmptyView {
     init(
         viewModel: QuickEditViewModel, panel: EditorPanel, onReset: (() -> Void)? = nil, compare: PanelCompare? = nil,
-        @ViewBuilder content: () -> Content
+        play: PanelPlay? = nil, @ViewBuilder content: () -> Content
     ) {
         self.init(
-            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, fixed: { EmptyView() }, content: content,
+            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, play: play, fixed: { EmptyView() }, content: content,
             footer: { EmptyView() }
         )
     }
@@ -56,11 +58,11 @@ extension PanelFrame where Fixed == EmptyView, Footer == EmptyView {
 extension PanelFrame where Footer == EmptyView {
     init(
         viewModel: QuickEditViewModel, panel: EditorPanel, onReset: (() -> Void)? = nil, compare: PanelCompare? = nil,
-        keptOffset: Binding<CGFloat>? = nil, @ViewBuilder fixed: () -> Fixed, @ViewBuilder content: () -> Content
+        keptOffset: Binding<CGFloat>? = nil, play: PanelPlay? = nil, @ViewBuilder fixed: () -> Fixed, @ViewBuilder content: () -> Content
     ) {
         self.init(
-            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, keptOffset: keptOffset, fixed: fixed, content: content,
-            footer: { EmptyView() }
+            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, keptOffset: keptOffset, play: play, fixed: fixed,
+            content: content, footer: { EmptyView() }
         )
     }
 }
@@ -68,10 +70,11 @@ extension PanelFrame where Footer == EmptyView {
 extension PanelFrame where Fixed == EmptyView {
     init(
         viewModel: QuickEditViewModel, panel: EditorPanel, onReset: (() -> Void)? = nil, compare: PanelCompare? = nil,
-        @ViewBuilder content: () -> Content, @ViewBuilder footer: () -> Footer
+        play: PanelPlay? = nil, @ViewBuilder content: () -> Content, @ViewBuilder footer: () -> Footer
     ) {
         self.init(
-            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, fixed: { EmptyView() }, content: content, footer: footer
+            viewModel: viewModel, panel: panel, onReset: onReset, compare: compare, play: play, fixed: { EmptyView() }, content: content,
+            footer: footer
         )
     }
 }

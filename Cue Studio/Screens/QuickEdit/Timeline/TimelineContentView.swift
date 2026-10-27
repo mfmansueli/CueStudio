@@ -11,7 +11,8 @@ import UIKit
 /// frames, waveform and badges, the pauses, the track items and their keyframes, the hints on
 /// empty tracks, the "+" and the handles. Lives inside the scroll view, so it scrolls with it. The
 /// track strips and their gutter are not here: they stay on screen (`TimelineLaneBackdropView`,
-/// `TimelineLaneGutterView`).
+/// `TimelineLaneGutterView`). When the tracks are taller than the timeline they scroll up and down too, and the ruler
+/// stays on top, over them.
 ///
 /// Each piece keeps its layer while what it was drawn from is the same (`Piece`): a redraw (another clip picked, a handle
 /// moved, a new window while scrolling) builds only the pieces that changed, and a frame arriving fills the tiles still
@@ -41,6 +42,8 @@ final class TimelineContentView: UIView {
     private var visible: CGRect = .zero
     private var ghostLayers: [CALayer] = []
     private let layersRoot = CALayer()
+    /// The ruler's ticks, kept at the top of what shows (on black while tracks pass under it).
+    private let rulerRoot = CALayer()
     /// What is drawn now, by what it is.
     private var pieces: [PieceKey: Piece] = [:]
 
@@ -77,6 +80,7 @@ final class TimelineContentView: UIView {
         super.init(frame: frame)
         clipsToBounds = false
         layer.addSublayer(layersRoot)
+        layer.addSublayer(rulerRoot)
         frames.onChange = { [weak self] in self?.fillWaitingTiles() }
         waveforms.onChange = { [weak self] in self?.redraw() }
         // Colors and text are drawn for the screen's scale and appearance: when they change, everything is drawn again.
@@ -111,6 +115,7 @@ final class TimelineContentView: UIView {
     func scrolled(to visible: CGRect) {
         self.visible = visible
         layoutGhosts()
+        layoutRuler()
         let margin = visible.width / 2
         if drawn.isNull || visible.minX < drawn.minX + margin || visible.maxX > drawn.maxX - margin {
             redraw()
@@ -127,7 +132,9 @@ final class TimelineContentView: UIView {
         CATransaction.setDisableActions(true)
         defer { CATransaction.commit() }
         let width = max(visible.width, 320)
-        drawn = visible.insetBy(dx: -width, dy: 0)
+        // A window around what shows across, every track up and down (they scroll that way without drawing again).
+        let height = max(visible.maxY, geometry.contentHeight)
+        drawn = CGRect(x: visible.minX - width, y: -height, width: visible.width + 2 * width, height: 3 * height)
         var next: [PieceKey: Piece] = [:]
         var order: [CALayer] = []
         var ghosts: [CALayer] = []
@@ -152,6 +159,8 @@ final class TimelineContentView: UIView {
                 drawTick(tick, x: x, top: top, showsLabel: shows)
             }
         }
+        let ruler = order
+        order.removeAll()
         if geometry.coverFrame.maxX >= drawn.minX {
             let spec = CoverSpec(
                 frame: geometry.coverFrame, take: sources.take, time: sources.coverTime,
@@ -199,8 +208,10 @@ final class TimelineContentView: UIView {
         }
         pieces = next
         if layersRoot.sublayers?.elementsEqual(order, by: ===) != true { layersRoot.sublayers = order }
+        if rulerRoot.sublayers?.elementsEqual(ruler, by: ===) != true { rulerRoot.sublayers = ruler }
         ghostLayers = ghosts
         layoutGhosts()
+        layoutRuler()
         fillWaitingTiles()
     }
 
@@ -590,6 +601,17 @@ final class TimelineContentView: UIView {
     }
 
     /// Hints stay at a fixed place on screen, past the gutter, whatever the scroll.
+    /// The ruler at the top of what shows, across its width: on black once tracks scroll under it.
+    private func layoutRuler() {
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        let height = geometry?.tracksTop ?? 0
+        rulerRoot.frame = CGRect(x: visible.minX, y: visible.minY, width: visible.width, height: height)
+        rulerRoot.bounds.origin = CGPoint(x: visible.minX, y: 0)
+        rulerRoot.backgroundColor = visible.minY > 0.5 ? UIColor.black.cgColor : nil
+        CATransaction.commit()
+    }
+
     private func layoutGhosts() {
         CATransaction.begin()
         CATransaction.setDisableActions(true)

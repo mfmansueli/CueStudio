@@ -36,6 +36,10 @@ struct QuickEditPreviewLatencyTests {
     enum Scenario: String, CaseIterable, Sendable, CustomTestStringConvertible {
         case filter = "Filter · 1080p"
         case text = "Text · 1080p"
+        /// The title in Gold metal, its words changing.
+        case effectText = "Text effect · 1080p"
+        /// The title resized and turned, as two fingers leave it.
+        case textGesture = "Text resized and turned · 1080p"
         case filterOverBlur = "Filter, Blur background · 1080p"
         case filter4K = "Filter · 4K"
         case cut = "Cut · 1080p"
@@ -69,6 +73,14 @@ struct QuickEditPreviewLatencyTests {
         defer { try? FileManager.default.removeItem(at: url) }
         var edit = SampleEdit.make(aspect: .portrait)
         edit.filter = .natural
+        if scenario == .effectText {
+            let title = edit.texts[0]
+            var gold = TextOverlay(role: title.role, look: TypePreset.gold.look(for: .title), preset: .gold, span: title.span)
+            gold.text = title.text
+            gold.center = title.center
+            gold.keyframes = title.keyframes
+            edit.texts[0] = gold
+        }
         if scenario == .filterOverBlur {
             var effect = BackgroundEffect()
             effect.style = .blur
@@ -109,8 +121,11 @@ struct QuickEditPreviewLatencyTests {
         // One change more than measured: the first use of a filter or a text size pays once.
         for change in 0...Self.changes {
             switch scenario {
-            case .text:
+            case .text, .effectText:
                 edit.texts[0].text = change.isMultiple(of: 2) ? "5 comidas de SP!" : "5 comidas de SP"
+            case .textGesture:
+                edit.texts[0].rotation = change.isMultiple(of: 2) ? 0.3 : 0
+                edit.texts[0].size *= change.isMultiple(of: 2) ? 1.2 : 1 / 1.2
             case .cut:
                 edit.timeline = change.isMultiple(of: 2) ? cut : whole
             case .filter, .filterOverBlur, .filter4K:

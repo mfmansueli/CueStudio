@@ -12,6 +12,7 @@ extension QuickEditViewModel {
     /// One frame back (`-1`) or forward (`1`), from the frame the playhead is on.
     func stepFrame(_ direction: Int) {
         guard isReady, !audio.isRecordingVoiceOver else { return }
+        takePlayhead()
         player.pause()
         let frame = 1 / frameRate
         let onFrame = (player.currentTime / frame).rounded() * frame

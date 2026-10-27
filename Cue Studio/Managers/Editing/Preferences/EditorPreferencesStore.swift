@@ -34,4 +34,24 @@ final class EditorPreferencesStore: EditorPreferencesStoring {
         get { defaults.object(forKey: DefaultsKey.lowPowerNoticeShownAt) as? Date }
         set { defaults.set(newValue, forKey: DefaultsKey.lowPowerNoticeShownAt) }
     }
+
+    /// Kept for the takes edited last, so the list never grows without end.
+    static let keptTimelineLanes = 200
+
+    func timelineLane(forTake id: UUID) -> TimelineLane? {
+        let prefix = id.uuidString + "="
+        return timelineLanes.last { $0.hasPrefix(prefix) }.flatMap { TimelineLane(rawValue: String($0.dropFirst(prefix.count))) }
+    }
+
+    func setTimelineLane(_ lane: TimelineLane, forTake id: UUID) {
+        let prefix = id.uuidString + "="
+        var entries = timelineLanes.filter { !$0.hasPrefix(prefix) }
+        entries.append(prefix + lane.rawValue)
+        defaults.set(Array(entries.suffix(Self.keptTimelineLanes)), forKey: DefaultsKey.timelineLanes)
+    }
+
+    /// "take id=track", the take edited last at the end.
+    private var timelineLanes: [String] {
+        defaults.stringArray(forKey: DefaultsKey.timelineLanes) ?? []
+    }
 }

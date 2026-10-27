@@ -13,7 +13,7 @@ struct GraphicStylePanel: View {
     let graphic: TextGraphic
 
     var body: some View {
-        PanelFrame(viewModel: viewModel, panel: .textStyle) {
+        PanelFrame(viewModel: viewModel, panel: .textStyle, play: .motion(viewModel.overlays)) {
             VStack(alignment: .leading, spacing: 14) {
                 if graphic.kind.hasText {
                     TextField(String(localized: "Tag"), text: Binding(

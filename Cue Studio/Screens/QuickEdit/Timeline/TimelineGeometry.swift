@@ -11,10 +11,11 @@ import Foundation
 /// y is from the top of the timeline. Pure, so the layout is tested without a screen.
 ///
 /// - The ruler on top, then the video track (frames over a waveform), then the tracks under it: photos and videos over the
-///   take (with their frames, when there are any; short spaces between supports marked), Blur areas (when there are any; what's
-///   left unchecked hatched), texts, captions, music and voice-over. Each track sits
-///   on a strip that stays on screen, with its icon in a gutter on the left; an empty one says
-///   what a tap on it does ("Tap to add text"). Tapping a track opens its tools.
+///   take (with their frames; short spaces between supports marked), Blur areas (when there are any; what's left unchecked
+///   hatched), texts, captions, music and voice-over. Each track sits on a strip that stays on screen, with its icon in a
+///   gutter on the left; an empty one says what a tap on it does ("Tap to add text"). Tapping a track opens its tools.
+/// - Collapsed (`TimelineTrackChoice`), only the current track shows under the video, ▾ beside its icon; ▾ brings every track
+///   out in place, ▴ puts them away.
 /// - With a panel open the timeline is compact: the video track shrinks to 40 pt and the track the
 ///   panel is about (if any) comes up under the ruler, alone with the video.
 /// - The picked item has a yellow outline and handles (16 pt on a clip, 12 on a track item, held
@@ -45,6 +46,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         var focusedLane: TimelineLane?
         /// The tracks whose tools are open on the toolbar (their strips light up).
         var activeLanes: Set<TimelineLane> = []
+        /// The current track and whether every track is out; nil shows every track, with no ▾.
+        var tracks: TimelineTrackChoice?
         var heightClass: EditorHeightClass = .regular
         var pointsPerSecond: CGFloat = TimelineGeometry.basePointsPerSecond
         /// The music's beats the playhead and the handles stick to (Beats › Snap to beats); empty when off.
@@ -204,6 +207,17 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         case addClip
         /// A track's strip or gutter, or its hint: opens the track's tools.
         case lane(TimelineLane)
+        /// ▾ or ▴ beside the current track's icon: every track out, or put away.
+        case trackChooser
+    }
+
+    /// ▾ (▴ while every track is out) beside the current track's icon, and where a finger reaches it.
+    struct Chooser: Equatable, Sendable {
+        var lane: TimelineLane
+        var isExpanded: Bool
+        /// Across in the timeline's own width (the gutter stays put), down in the content: the icon's column and the start of
+        /// the strip, with the space above the track and, collapsed, the room under it, so it is `chooserReach` square at least.
+        var hitFrame: CGRect
     }
 
     /// A handle being dragged: an end of a clip or of a track item.
@@ -253,6 +267,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     static let stripTrailing: CGFloat = 8
     /// Where an empty track's hint starts, from the left edge of the timeline.
     static let hintLeading: CGFloat = 50
+    /// The least ▾ is reached from, across and down.
+    static let chooserReach: CGFloat = 44
     static let coverWidth: CGFloat = 50
     static let coverGap: CGFloat = 20
     static let addSize: CGFloat = 32
@@ -276,6 +292,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     /// The picked track item's body, held to move it (never drawn: the item itself shows).
     let bodies: [Handle]
     let ghosts: [Ghost]
+    /// ▾ or ▴, when the timeline can collapse to one track.
+    let chooser: Chooser?
     let coverFrame: CGRect
     let addFrame: CGRect
     let contentWidth: CGFloat
@@ -283,6 +301,8 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
 
     var pointsPerSecond: CGFloat { input.pointsPerSecond }
     var isCompact: Bool { input.panelIsOpen }
+    /// Where the tracks start, under the ruler: the ruler stays put while they scroll up and down.
+    var tracksTop: CGFloat { isCompact ? Self.compactRulerHeight : input.heightClass.rulerHeight }
 
     func lane(_ lane: TimelineLane) -> LaneFrame? {
         lanes.first { $0.lane == lane }
@@ -306,27 +326,22 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         let hasMusic = !input.music.isEmpty
         let hasVoice = !input.voiceOvers.isEmpty || input.recording != nil
 
-        let order = Self.laneOrder(input)
+        let (order, chosen) = Self.laneOrder(input)
         // A picked cut is between clips: it raises no lane and dims nothing.
         let selection = input.selection?.joinID == nil ? input.selection : nil
         let selectedLane = selection?.lane
         var lanes: [LaneFrame] = []
-        var y: CGFloat = compact ? 22 : heightClass.rulerHeight
+        var y: CGFloat = compact ? Self.compactRulerHeight : heightClass.rulerHeight
         for lane in order {
-            // The media track is a little taller, for its frames.
-            let extra: CGFloat = lane == .media ? 6 : 0
-            let height: CGFloat = if lane == .main {
-                compact ? heightClass.panelMainTrackHeight : heightClass.mainTrackHeight
-            } else if !compact, lane == selectedLane {
-                heightClass.selectedLaneHeight + extra
-            } else {
-                heightClass.laneHeight + extra
-            }
+            let height = Self.height(of: lane, heightClass: heightClass, compact: compact, isSelected: lane == selectedLane)
             lanes.append(LaneFrame(lane: lane, y: y, height: height))
-            y += height + (compact ? 6 : 8)
+            y += height + Self.laneSpacing(compact: compact)
         }
         self.lanes = lanes
         contentHeight = y
+        chooser = chosen.flatMap { chosen in
+            lanes.first { $0.lane == chosen }.map { Self.chooser(beside: $0, isExpanded: input.tracks?.isExpanded == true, compact: compact) }
+        }
         contentWidth = CGFloat(input.duration) * pps
 
         let main = lanes.first { $0.lane == .main } ?? LaneFrame(lane: .main, y: 0, height: 0)
@@ -448,6 +463,9 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         gaps = lanes.first { $0.lane == .media }.map { Self.gaps(between: input.media, on: $0, pointsPerSecond: pps) } ?? []
 
         var ghosts: [Ghost] = []
+        if input.media.isEmpty, let lane = lanes.first(where: { $0.lane == .media }) {
+            ghosts.append(Ghost(lane: lane, label: String(localized: "Tap to add a photo or video"), target: .lane(.media)))
+        }
         if input.texts.isEmpty, let lane = lanes.first(where: { $0.lane == .text }) {
             ghosts.append(Ghost(lane: lane, label: String(localized: "Tap to add text"), target: .lane(.text)))
         }
@@ -464,6 +482,17 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         addFrame = CGRect(x: contentWidth + Self.addGap, y: main.y + (main.height - Self.addSize) / 2, width: Self.addSize, height: Self.addSize)
     }
 
+    /// ▾ beside `frame`'s icon: reached up to the track above, never into it, and down as far as the reach needs while nothing
+    /// is under it.
+    private static func chooser(beside frame: LaneFrame, isExpanded: Bool, compact: Bool) -> Chooser {
+        let spacing = laneSpacing(compact: compact)
+        let below = isExpanded ? spacing : max(spacing, chooserReach - frame.height - spacing)
+        return Chooser(
+            lane: frame.lane, isExpanded: isExpanded,
+            hitFrame: CGRect(x: 0, y: frame.y - spacing, width: chooserReach, height: spacing + frame.height + below)
+        )
+    }
+
     /// The short spaces between supports of the split screen (`markedGap`), on the media track.
     private static func gaps(between media: [ItemInput], on lane: LaneFrame, pointsPerSecond pps: CGFloat) -> [Gap] {
         let supports = media.filter { $0.strip?.layout == .split }.sorted { $0.span.start < $1.span.start }
@@ -476,19 +505,63 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
         }
     }
 
-    /// The tracks, top to bottom: with a panel about one track open, that track over the video; else the video, then photos
-    /// and videos (when there are any), texts, captions, and music and voice-over (or the shortcut to add them).
-    private static func laneOrder(_ input: Input) -> [TimelineLane] {
-        let hasMusic = !input.music.isEmpty
-        let hasVoice = !input.voiceOvers.isEmpty || input.recording != nil
-        var others: [TimelineLane] = input.media.isEmpty ? [] : [.media]
-        if !input.blurs.isEmpty { others.append(.blur) }
-        others += [.text, .captions]
-        if hasMusic { others.append(.music) }
-        if hasVoice { others.append(.voiceOver) }
-        if !hasMusic, !hasVoice { others.append(.audio) }
-        if input.panelIsOpen, let focus = input.focusedLane { return [focus, .main] }
-        return [.main] + others
+    /// The tracks, top to bottom, and the one ▾ sits beside: with a panel about one track open, that track over the video (no
+    /// ▾); collapsed, the video and the current track; else every track (`lanes`).
+    private static func laneOrder(_ input: Input) -> (lanes: [TimelineLane], chooser: TimelineLane?) {
+        if input.panelIsOpen, let focus = input.focusedLane { return ([focus, .main], nil) }
+        let all = lanes(
+            hasBlurs: !input.blurs.isEmpty, hasMusic: !input.music.isEmpty, hasVoice: !input.voiceOvers.isEmpty || input.recording != nil
+        )
+        guard let tracks = input.tracks else { return (all, nil) }
+        return (tracks.lanes(from: all), tracks.shown(in: all))
+    }
+
+    /// Every track, top to bottom: the video, then photos and videos, Blur areas (when there are any), texts, captions, and
+    /// music and voice-over (or the shortcut to add them). Photos and videos, texts and captions are there empty too, saying
+    /// how to add the first.
+    static func lanes(hasBlurs: Bool, hasMusic: Bool, hasVoice: Bool) -> [TimelineLane] {
+        var lanes: [TimelineLane] = [.main, .media]
+        if hasBlurs { lanes.append(.blur) }
+        lanes += [.text, .captions]
+        if hasMusic { lanes.append(.music) }
+        if hasVoice { lanes.append(.voiceOver) }
+        if !hasMusic, !hasVoice { lanes.append(.audio) }
+        return lanes
+    }
+
+    /// The height of `lane`: the video track's own (shorter while a panel is open), the picked item's track grown so its handles
+    /// are easy to hold, and the media track a little taller, for its frames.
+    private static func height(of lane: TimelineLane, heightClass: EditorHeightClass, compact: Bool, isSelected: Bool) -> CGFloat {
+        if lane == .main { return compact ? heightClass.panelMainTrackHeight : heightClass.mainTrackHeight }
+        let extra: CGFloat = lane == .media ? 6 : 0
+        return (!compact && isSelected ? heightClass.selectedLaneHeight : heightClass.laneHeight) + extra
+    }
+
+    private static func laneSpacing(compact: Bool) -> CGFloat {
+        compact ? 6 : 8
+    }
+
+    /// The ruler's room while a panel is open.
+    private static let compactRulerHeight: CGFloat = 22
+
+    /// What `lanes` take with nothing open, from the top of the ruler to the room under the last, with the picked item's track
+    /// grown whichever it is: the height the editor gives the timeline so every track shows, and picking one never moves the video.
+    static func restingHeight(of lanes: [TimelineLane], heightClass: EditorHeightClass) -> CGFloat {
+        let tracks = lanes.reduce(heightClass.rulerHeight) { total, lane in
+            total + height(of: lane, heightClass: heightClass, compact: false, isSelected: false) + laneSpacing(compact: false)
+        }
+        let growth = lanes.contains { $0 != .main } ? heightClass.selectedLaneHeight - heightClass.laneHeight : 0
+        return tracks + growth
+    }
+
+    /// What the timeline takes collapsed: the video track and one track under it, with room for the tallest of `lanes` picked,
+    /// so choosing another track or picking an item never moves the video.
+    static func collapsedHeight(of lanes: [TimelineLane], heightClass: EditorHeightClass) -> CGFloat {
+        let tallest = lanes.filter { $0 != .main }.max {
+            height(of: $0, heightClass: heightClass, compact: false, isSelected: false)
+                < height(of: $1, heightClass: heightClass, compact: false, isSelected: false)
+        }
+        return restingHeight(of: [.main] + (tallest.map { [$0] } ?? []), heightClass: heightClass)
     }
 
     private static func isSelected(_ kind: ItemKind, _ id: UUID, _ selection: EditorSelection?) -> Bool {
@@ -546,6 +619,11 @@ nonisolated struct TimelineGeometry: Equatable, Sendable {
     func laneHit(atViewportX x: CGFloat, y: CGFloat, viewportWidth width: CGFloat) -> Hit? {
         guard x >= 0, x <= width - Self.stripTrailing else { return nil }
         return lanes.first { $0.lane != .main && y >= $0.y && y <= $0.y + $0.height }.map { Hit.lane($0.lane) }
+    }
+
+    /// ▾ or ▴ under a tap at `x` across the timeline's own width and `y` down the content: it comes before the track and its items.
+    func chooserHit(atViewportX x: CGFloat, y: CGFloat) -> Bool {
+        chooser?.hitFrame.contains(CGPoint(x: x, y: y)) ?? false
     }
 
     // MARK: - Snapping

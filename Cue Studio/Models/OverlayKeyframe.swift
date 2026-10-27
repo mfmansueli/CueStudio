@@ -25,10 +25,12 @@ nonisolated struct OverlayKeyframe: Codable, Hashable, Identifiable, Sendable {
     /// A photo's or video's mask here (`MaskPlacement`): between two keyframes that have one, the mask moves from one to the
     /// other; nil leaves the mask to the keyframes around it (or where the mask itself is).
     var mask: MaskPlacement?
+    /// A text's turn here, in radians (`TextOverlay.rotation`); nil: the text's own turn.
+    var rotation: Double?
 
     init(
         time: TimeInterval, center: OverlayPoint, scale: Double = 1, opacity: Double = 1, easing: KeyframeEasing = .smooth,
-        mask: MaskPlacement? = nil
+        mask: MaskPlacement? = nil, rotation: Double? = nil
     ) {
         self.time = max(0, time)
         self.center = center
@@ -36,5 +38,6 @@ nonisolated struct OverlayKeyframe: Codable, Hashable, Identifiable, Sendable {
         self.opacity = min(max(opacity, 0), 1)
         self.easing = easing
         self.mask = mask
+        self.rotation = rotation.flatMap { $0.isFinite ? $0 : nil }
     }
 }

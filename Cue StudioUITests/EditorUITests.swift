@@ -406,6 +406,25 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue((time.value as? String)?.hasSuffix("/ 01:02.0") ?? false)
     }
 
+    /// A finger that rests before moving (longer than a hold on a clip takes) still scrubs anywhere but on a clip.
+    func testAFingerThatRestsBeforeMovingStillScrubs() {
+        let app = EditorApp.open()
+        let time = app.staticTexts["edit.timeLabel"]
+        XCTAssertEqual(time.value as? String, "00:00.0 / 01:02.0")
+        let timeline = app.descendants(matching: .any)["edit.timeline"]
+        // The ruler, then the empty space under the tracks.
+        for (place, dy) in [("the ruler", 0.06), ("under the tracks", 0.97)] {
+            let before = time.value as? String
+            let start = timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.8, dy: dy))
+            start.press(forDuration: 0.8, thenDragTo: start.withOffset(CGVector(dx: -150, dy: 0)), withVelocity: 300, thenHoldForDuration: 0.3)
+            XCTAssertNotEqual(time.value as? String, before, "A drag after a rest on \(place) didn't move the playhead")
+        }
+        XCTAssertFalse(app.descendants(matching: .any)["edit.reorder.list"].exists, "A rest off a clip opened Reorder")
+        // On the clip a rest is a hold, for Reorder (one clip here: it says how to get a second).
+        EditorApp.mainTrack(app, at: 0.5).press(forDuration: 0.8)
+        XCTAssertTrue(EditorApp.toastSays(app, "Split or add a clip to reorder"), "A hold on the clip did nothing")
+    }
+
     func testTappingTheVideoTrackPicksTheClipAndEmptySpaceLetsGo() {
         let app = EditorApp.open()
         let timeline = app.descendants(matching: .any)["edit.timeline"]

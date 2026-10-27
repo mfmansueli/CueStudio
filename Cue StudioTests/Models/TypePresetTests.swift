@@ -17,7 +17,7 @@ struct TypePresetTests {
         #expect(TypePreset.editorPresets == [.orbit, .logbook, .signal, .launch, .nebula, .comet, .postcard])
         // The eight presets of before still exist for the edits that used them.
         let cue = TypePreset.cue.look(for: .title)
-        #expect(cue.font == .dmSans && cue.weight == .heavy && cue.color == .black)
+        #expect(cue.font == .dmSans && cue.weight == .heavy && cue.color == .offBlack)
         #expect(cue.background == .box && cue.backgroundColor == .yellow)
         let label = TypePreset.label.look(for: .title)
         #expect(label.isUppercase && abs(label.tracking - 0.08) < 0.000_001 && abs(label.sizeScale - 0.62) < 0.000_001)

@@ -105,10 +105,11 @@ struct QuickEditPreviewTests {
         viewModel.perform(.addText(.title))
         let id = try #require(viewModel.selectedTextID)
         let before = try #require(viewModel.selectedText).size
-        viewModel.overlays.scaleText(id, by: CGSize(width: 35, height: 35))
+        viewModel.overlays.scaleText(id, factor: 1.5)
         let after = try #require(viewModel.selectedText).size
         #expect(abs(after - before * 1.5) < 0.001)
-        #expect(OverlaysViewModel.scaleFactor(for: CGSize(width: -500, height: 0)) == 0.4)
+        viewModel.overlays.scaleText(id, factor: 100)
+        #expect(try #require(viewModel.selectedText).size == TextOverlay.sizeRange.upperBound)
     }
 
     @Test func aTextWithKeyframesMovesItsKeyframe() async throws {

@@ -45,8 +45,18 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// The clip a clip panel picked when it opened with nothing picked (`EditorPanel.pinsClip`): the panel lets go of it when it
     /// closes, unless the creator picked something else meanwhile.
     @ObservationIgnored private var panelPick: EditorSelection?
-    /// The Text or Audio toolbar, opened from the main one with nothing selected.
-    var toolMenu: EditorToolMenu?
+    /// The Text or Audio toolbar, opened from the main one with nothing selected. Its track becomes the timeline's current one.
+    var toolMenu: EditorToolMenu? {
+        didSet {
+            if let toolMenu, toolMenu != oldValue { bringTrack(toolMenu.lanes) }
+        }
+    }
+    /// The timeline's current track and whether every track is out (`TimelineTrackChoice`); the current one is kept for the take.
+    var tracks = TimelineTrackChoice() {
+        didSet {
+            if tracks.current != oldValue.current { editorPreferences.setTimelineLane(tracks.current, forTake: take.id) }
+        }
+    }
     /// The open panel's tab (Text style and Caption style).
     var panelTab: EditorPanelTab = .presets
     /// The open panel's "Advanced" section is expanded.
@@ -202,11 +212,13 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         session.host = self
         self.player.playingStopped = { [weak self] in self?.audio.playingStopped() }
         document.onChange = { [weak self] previous in self?.editChanged(from: previous) }
+        if let lane = preferences.timelineLane(forTake: take.id) { tracks.current = lane }
     }
 
     /// Opens the recording, picks up a draft left behind and starts the player.
     func prepare() async {
         guard source == .loading else { return }
+        TextEffectRenderer.prepareInBackground()
         let duration: TimeInterval
         do {
             duration = try await editing.sourceDuration(ofVideoAt: videoURL)
@@ -275,12 +287,14 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     /// Picks `next` (nil lets go). The Text or Audio menu gives way to it; a cut opens its Transition panel; a panel that
     /// works on the picked item closes when it can't work on `next`, ending its own control's undo step. Picking never ends a
-    /// gesture's: one that picks (or lets go of what it removed) keeps its one step.
+    /// gesture's: one that picks (or lets go of what it removed) keeps its one step. An item picked anywhere (the timeline, the
+    /// preview, a tool) brings its track under the video.
     func pick(_ next: EditorSelection?) {
         guard next != picked else { return }
         // Another photo or video, or none: a support starts on its own area (a tap on the main video's says so after, `pickArea`).
         if next?.mediaID != picked?.mediaID { overlays.selectedArea = .support }
         picked = next
+        if let lane = next?.lane, lane != .main { bringTrack([lane]) }
         // Picked by the creator: no longer the panel's to let go of.
         if next != panelPick { panelPick = nil }
         if next != nil { toolMenu = nil }
@@ -299,6 +313,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         let previous = shownPanel
         guard next != previous else { return }
         shownPanel = next
+        if let lane = next?.focusedLane { bringTrack([lane]) }
         pinClip(for: next)
         showsAdvanced = false
         panelTab = .presets
@@ -361,12 +376,21 @@ final class QuickEditViewModel: EditorHost, EditorPart {
 
     func togglePlayback() {
         guard isReady else { return }
+        takePlayhead()
         player.togglePlayback()
+    }
+
+    /// The creator takes the playhead (Play, a drag, a handle, a frame step, a jump to a cut): a part still playing to show a
+    /// change (a text effect's Preview, a pause listened to) ends there and never pulls the playhead back to where it began.
+    func takePlayhead() {
+        session.endPreview()
+        if clips.listeningID != nil { clips.listeningID = nil }
     }
 
     /// VoiceOver: moves the playhead by `seconds`.
     func nudgePlayhead(by seconds: TimeInterval) {
         guard isReady else { return }
+        takePlayhead()
         player.pause()
         player.seek(to: player.currentTime + seconds)
     }

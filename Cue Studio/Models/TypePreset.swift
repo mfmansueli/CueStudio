@@ -8,7 +8,9 @@ import Foundation
 /// Type presets for texts (and for captions when a text's look goes on them too). The editor's
 /// eight, from the v10 design, each readable over any video with a solid background, a soft shadow
 /// or an outline: Cue, Editorial, Bold, Pop, Soft, Minimal, Label and Paper. Impact stays for
-/// texts styled with it before.
+/// texts styled with it before. Every one's colors are the palette's (`OverlayColor.palette`), so Color always shows which.
+/// The six effects (Gold, Wave, Pop 3D, Neon, Headline, Sheen) are presets too: a type and a finished look on it
+/// (`TextEffect`); on captions they are their type alone.
 ///
 /// A preset is type only: filters, Adjust and the cover stay as they are.
 nonisolated enum TypePreset: String, LenientChoice, CaseIterable, Identifiable, Sendable {
@@ -36,11 +38,30 @@ nonisolated enum TypePreset: String, LenientChoice, CaseIterable, Identifiable, 
     /// The v27 styles, each its own free typeface: Unbounded, Instrument Serif italic, Space Mono, Anton, Syne,
     /// Space Grotesk and Caveat.
     case orbit, logbook, signal, launch, nebula, comet, postcard
+    /// The effects: DM Serif Display in gold, Rubik in a wave, Unbounded with depth, Montserrat in neon, DM Sans revealed
+    /// over a band, Instrument Serif with a sheen.
+    case gold, wave, pop3D, neon, headline, sheen
 
     var id: String { rawValue }
 
     /// The presets the editor offers, in order.
     static let editorPresets: [TypePreset] = [.orbit, .logbook, .signal, .launch, .nebula, .comet, .postcard]
+
+    /// The effects the editor offers, in order (Text style › Animated).
+    static let effectPresets: [TypePreset] = [.gold, .wave, .pop3D, .neon, .headline, .sheen]
+
+    /// The effect it puts on a text; nil for type alone.
+    var effect: TextEffectKind? {
+        switch self {
+        case .gold: .gold
+        case .wave: .wave
+        case .pop3D: .pop3D
+        case .neon: .neon
+        case .headline: .headline
+        case .sheen: .sheen
+        default: nil
+        }
+    }
 
     var label: String {
         switch self {
@@ -60,6 +81,7 @@ nonisolated enum TypePreset: String, LenientChoice, CaseIterable, Identifiable, 
         case .nebula: String(localized: "Nebula")
         case .comet: String(localized: "Comet")
         case .postcard: String(localized: "Postcard")
+        case .gold, .wave, .pop3D, .neon, .headline, .sheen: effect?.label ?? ""
         }
     }
 
@@ -81,6 +103,7 @@ nonisolated enum TypePreset: String, LenientChoice, CaseIterable, Identifiable, 
         case .nebula: String(localized: "Soft violet light")
         case .comet: String(localized: "Sharp and blue")
         case .postcard: String(localized: "Handwritten")
+        case .gold, .wave, .pop3D, .neon, .headline, .sheen: effect?.summary ?? ""
         }
     }
 
@@ -96,8 +119,8 @@ nonisolated enum TypePreset: String, LenientChoice, CaseIterable, Identifiable, 
         switch self {
         case .cue:
             TextLook(
-                font: .dmSans, weight: .heavy, sizeScale: 1, tracking: -0.01, color: .black,
-                background: .box, backgroundColor: .yellow, hasShadow: false
+                font: .dmSans, weight: .heavy, sizeScale: 1, tracking: -0.01, color: .offBlack,
+                background: .box, backgroundColor: .yellow, hasShadow: true
             )
         case .impact:
             TextLook(font: .classic, weight: .heavy, sizeScale: 1.25, tracking: -0.02, isUppercase: true, color: .white, hasShadow: true, hasOutline: true)
@@ -108,16 +131,16 @@ nonisolated enum TypePreset: String, LenientChoice, CaseIterable, Identifiable, 
         case .pop:
             TextLook(font: .spaceGrotesk, weight: .bold, sizeScale: 1.05, color: .yellow, hasShadow: true, hasOutline: true)
         case .soft:
-            TextLook(font: .dmSans, weight: .bold, sizeScale: 0.9, color: .offBlack, background: .pill, backgroundColor: .white, hasShadow: false)
+            TextLook(font: .dmSans, weight: .bold, sizeScale: 0.9, color: .offBlack, background: .pill, backgroundColor: .white, hasShadow: true)
         case .minimal:
             TextLook(font: .dmSans, weight: .medium, sizeScale: 0.85, tracking: 0.01, color: .white, hasShadow: true)
         case .label:
             TextLook(
                 font: .spaceGrotesk, weight: .semibold, sizeScale: 0.62, tracking: 0.08, isUppercase: true, color: .white,
-                background: .box, backgroundColor: .black, backgroundOpacity: 0.8, hasShadow: false
+                background: .box, backgroundColor: .offBlack, backgroundOpacity: 0.8, hasShadow: true
             )
         case .paper:
-            TextLook(font: .dmSerif, weight: .regular, sizeScale: 1, color: .offBlack, background: .box, backgroundColor: .paper, hasShadow: false)
+            TextLook(font: .dmSerif, weight: .regular, sizeScale: 1, color: .offBlack, background: .box, backgroundColor: .paper, hasShadow: true)
         case .orbit:
             TextLook(font: .unbounded, weight: .heavy, sizeScale: 0.85, tracking: 0.01, color: .white, hasShadow: true, glow: 0.35)
         case .logbook:
@@ -125,16 +148,35 @@ nonisolated enum TypePreset: String, LenientChoice, CaseIterable, Identifiable, 
         case .signal:
             TextLook(
                 font: .spaceMono, weight: .bold, sizeScale: 0.8, tracking: 0.02, color: .mint, background: .box,
-                backgroundColor: .black, backgroundOpacity: 0.78, hasShadow: false
+                backgroundColor: .offBlack, backgroundOpacity: 0.78, hasShadow: true
             )
         case .launch:
             TextLook(font: .anton, weight: .regular, sizeScale: 1.25, tracking: 0.02, isUppercase: true, color: .white, hasShadow: true, hasOutline: true)
         case .nebula:
-            TextLook(font: .syne, weight: .heavy, sizeScale: 1.1, color: .lavender, hasShadow: false, glow: 0.75)
+            TextLook(font: .syne, weight: .heavy, sizeScale: 1.1, color: .lavender, hasShadow: true, glow: 0.75)
         case .comet:
             TextLook(font: .spaceGrotesk, weight: .bold, sizeScale: 1, tracking: 0.01, color: .cyan, hasShadow: true, glow: 0.3)
         case .postcard:
             TextLook(font: .caveat, weight: .bold, sizeScale: 1.45, color: .paper, hasShadow: true)
+        case .gold:
+            TextLook(
+                font: .dmSerif, weight: .regular, sizeScale: 1.15, tracking: 0.02, isUppercase: true, color: .yellow, hasShadow: true,
+                effect: TextEffect(.gold)
+            )
+        case .wave:
+            TextLook(font: .rubik, weight: .heavy, sizeScale: 1.05, color: .white, hasShadow: true, effect: TextEffect(.wave))
+        case .pop3D:
+            TextLook(
+                font: .unbounded, weight: .heavy, sizeScale: 0.9, tracking: 0.03, isUppercase: true, color: .yellow, hasShadow: true,
+                hasOutline: true,
+                effect: TextEffect(.pop3D)
+            )
+        case .neon:
+            TextLook(font: .montserrat, weight: .semibold, sizeScale: 1.05, color: .blush, hasShadow: true, glow: 0.5, effect: TextEffect(.neon))
+        case .headline:
+            TextLook(font: .dmSans, weight: .heavy, sizeScale: 0.95, tracking: -0.01, color: .offBlack, hasShadow: true, effect: TextEffect(.headline))
+        case .sheen:
+            TextLook(font: .instrumentSerif, weight: .regular, sizeScale: 1.35, color: .white, hasShadow: true, effect: TextEffect(.sheen))
         }
     }
 
@@ -148,8 +190,11 @@ nonisolated enum TypePreset: String, LenientChoice, CaseIterable, Identifiable, 
             // A tag's small capitals are too small for a line read in a second: a little bigger.
             TextLook(
                 font: .spaceGrotesk, weight: .semibold, sizeScale: 0.9, tracking: 0.04, isUppercase: true, color: .white,
-                background: .box, backgroundColor: .black, backgroundOpacity: 0.8, hasShadow: false
+                background: .box, backgroundColor: .offBlack, backgroundOpacity: 0.8, hasShadow: true
             )
+        case .headline:
+            // Without its band a caption line would be dark on the picture: it keeps the band as a box.
+            TextLook(font: .dmSans, weight: .bold, sizeScale: 0.95, color: .offBlack, background: .box, backgroundColor: .paper, hasShadow: true)
         case .nebula:
             // The violet glow alone doesn't separate a line from a bright picture: a soft shadow under it does.
             TextLook(font: .syne, weight: .bold, sizeScale: 1, color: .lavender, hasShadow: true, glow: 0.6)
@@ -158,6 +203,8 @@ nonisolated enum TypePreset: String, LenientChoice, CaseIterable, Identifiable, 
                 var look = titleLook
                 look.sizeScale = min(look.sizeScale, 1.1)
                 look.verticalOffset = 0
+                // A caption line changes every second: its type alone, without an effect's way in and out.
+                look.effect = nil
                 // A heavy title face is too dense for a line read word by word: one step lighter.
                 if look.weight == .heavy { look.weight = .bold }
                 return look

@@ -338,7 +338,7 @@ final class ToolAuditCaptureTests: XCTestCase {
             EditorApp.tapTool(app, "text")
             if tap("edit.toolbar.title") {
                 dismissKeyboard()
-                for tab in ["font", "color"] where tap("edit.panel.tab.\(tab)") { try capture("\(size)-text-\(tab)") }
+                for tab in ["custom", "color"] where tap("edit.panel.tab.\(tab)") { try capture("\(size)-text-\(tab == "custom" ? "font" : tab)") }
                 apply()
             }
             tap("edit.toolbar.back", within: 2)
@@ -371,7 +371,7 @@ final class ToolAuditCaptureTests: XCTestCase {
             try capture("\(language)-text-menu")
             if tap("edit.toolbar.title") {
                 dismissKeyboard()
-                if tap("edit.panel.tab.motion") { try captureScrolling("\(language)-text-motion") }
+                if tap("edit.panel.tab.custom"), tap("edit.panel.tab.motion") { try captureScrolling("\(language)-text-motion") }
                 apply()
                 if tap("edit.toolbar.delete", within: 2) { try capture("\(language)-toast") }
             }
@@ -439,9 +439,7 @@ final class ToolAuditCaptureTests: XCTestCase {
             start(arguments: ["-uiTestDemoSplit"] + arguments)
             // The first support's bar (2–4 s) on the media lane, 3 s after the playhead (44 pt a second; the time runs left to
             // right in every language): a tap picks it.
-            let timeline = app.descendants(matching: .any)["edit.timeline"]
-            timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0)).withOffset(CGVector(dx: 3 * 44, dy: 89)).tap()
-            if app.buttons["edit.toolbar.delete"].exists(within: 5) {
+            if tapTrack(0, secondsAfterPlayhead: 3), app.buttons["edit.toolbar.delete"].exists(within: 5) {
                 try captureWithHierarchy("\(name)-bar-support")
                 scrollToolbar(toEnd: true, rightToLeft: rightToLeft)
                 try captureWithHierarchy("\(name)-bar-support-end")
@@ -498,10 +496,12 @@ final class ToolAuditCaptureTests: XCTestCase {
     }
 
     /// Taps a track under the video, `seconds` after the playhead (44 points a second at the starting zoom). From the timeline's
-    /// top: the ruler (28 pt), the video (56), then 28 pt tracks 8 apart; false when the track is below the timeline's fold.
+    /// top: the ruler (28 pt), the video (56), then 28 pt tracks 8 apart, every track out (▾ beside the current one brings
+    /// them out when the timeline shows one); false when the track is below the timeline's fold.
     private func tapTrack(_ index: Int, secondsAfterPlayhead seconds: CGFloat) -> Bool {
         let timeline = app.descendants(matching: .any)["edit.timeline"]
         guard timeline.exists(within: 3) else { return false }
+        EditorApp.showEveryTrack(app)
         let y = 92 + CGFloat(index) * 36 + 14
         guard y < timeline.frame.height - 4 else { return false }
         timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0)).withOffset(CGVector(dx: seconds * 44, dy: y)).tap()

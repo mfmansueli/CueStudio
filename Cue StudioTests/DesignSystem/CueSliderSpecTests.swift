@@ -28,6 +28,9 @@ struct CueSliderSpecTests {
         Row(name: "music", spec: .music, expected: CueSliderSpec(0...100, step: 5, default: 20)),
         Row(name: "clipSpeed", spec: .clipSpeed, expected: CueSliderSpec(0.5...3, step: 0.1, default: 1)),
         Row(name: "filterIntensity", spec: .filterIntensity, expected: CueSliderSpec(0...100, step: 1, default: 70)),
+        Row(name: "textTurn", spec: .textTurn, expected: CueSliderSpec(-180...180, step: 1, default: 0)),
+        Row(name: "effectStrength", spec: .effectStrength, expected: CueSliderSpec(0...100, step: 5, default: 60)),
+        Row(name: "effectDuration", spec: .effectDuration, expected: CueSliderSpec(0.4...2.4, step: 0.1, default: 1)),
     ]
 
     @Test(arguments: rows)
@@ -37,7 +40,11 @@ struct CueSliderSpecTests {
     }
 
     @Test func theDefaultsLandOnAStep() {
-        for spec in [CueSliderSpec.speed, .textSize, .margins, .textPoints, .textGlow, .voice, .music, .clipSpeed, .filterIntensity] {
+        let specs: [CueSliderSpec] = [
+            .speed, .textSize, .margins, .textPoints, .textGlow, .textTurn, .effectStrength, .effectDuration, .voice, .music, .clipSpeed,
+            .filterIntensity,
+        ]
+        for spec in specs {
             let math = OrbSliderMath(range: spec.range, step: spec.step, defaultValue: spec.defaultValue)
             #expect(math.snapped(spec.defaultValue) == spec.defaultValue, "\(spec)")
         }
