@@ -1,3 +1,9 @@
+# ATUALIZAÇÃO MAIS RECENTE — continuação sem disputar recursos do Claude Code
+
+Trabalhar agora em `/Users/iagoxavierdelima/.codex/worktrees/pcc-offline-review/CueStudio`, branch `codex/pcc-offline-review`. Claude Code usa o checkout principal. A bateria Full anterior terminou: UI386 passaram,2 falharam,95 pulados. Unidade4406 passaram,1 grupo de snapshots falhou,98 pulados,1 falha esperada. Detalhes e correção estática de **13** snapshots em `reports/PCC_OFFLINE_FOLLOWUP_2026-10-28.md`. Não são só duas variantes, conforme o resumo truncado inicial. Nenhum build, simulador ou teste de aparelho foi iniciado nesta continuação; rerun Swift e reprodução das duas falhas de UI permanecem pendentes. Os trechos antigos abaixo descrevem estados anteriores e não significam que os testes ainda estejam rodando.
+
+---
+
 # RETOMAR AQUI — checkpoint solicitado por limite de sessão (28/10/2026)
 
 **ÚLTIMA ATUALIZAÇÃO ANTES DE ENCERRAR:** unidade Full terminou:4406 passaram,1 grupo falhou,98 pulados,1 falha esperada. Grupo `VoiceBriefSnapshotTests/theBriefMatchesTheKeptSnapshot(persona:)`, duas variantes, diferença de snapshot: o factory agora pede duração informativa mas o snapshot ainda espera150–225 palavras. Não corrigido neste checkpoint; ler o diff antes de atualizar o esperado. Resultado `full-unit-20261028-132841.xcresult`. UI começou em `full-ui-20261028-133424.xcresult`, ainda em execução na sessão73360. Logo, não afirmar Full verde. Os trechos mais abaixo dizendo que a unidade ainda estava ativa descrevem a verificação anterior.
