@@ -15,15 +15,18 @@ import Foundation
 nonisolated struct AIModelPlanner: Sendable {
     let capabilities: AIModelCapabilities
 
-    func plan(_ task: AIModelRoute.Task, languages: [Locale]) async -> Result<AIPlan, AIPlanFailure> {
+    func plan(_ task: AIModelRoute.Task, languages: [Locale], checksFallback: Bool = true) async -> Result<AIPlan, AIPlanFailure> {
         let device = capabilities.deviceStatus
         let deviceMissing = languages.first { !capabilities.deviceSupports($0) }
         let deviceUsable = device == .available && deviceMissing == nil
 
         let cloud = capabilities.cloudStatus
+        if task != .freePrompt, deviceUsable, !checksFallback {
+            return .success(AIPlan(route: .onDevice, usable: [.onDevice], deferredCloudLanguages: cloud == .available ? languages : nil))
+        }
         var cloudMissing: Locale?
         if cloud == .available {
-            for locale in languages where !(await capabilities.cloudSupports(locale)) {
+            for locale in languages where !(await cloudSupports(locale)) {
                 cloudMissing = locale
                 break
             }
@@ -35,6 +38,11 @@ nonisolated struct AIModelPlanner: Sendable {
             return .success(AIPlan(route: route, usable: usable))
         }
         return .failure(Self.failure(device: device, deviceMissing: deviceMissing, cloudMissing: cloudMissing))
+    }
+
+    private func cloudSupports(_ locale: Locale) async -> Bool {
+        let capabilities = capabilities
+        return await AIRequestDeadline.value(within: AIRequestPolicy.cloudLookupDeadline) { await capabilities.cloudSupports(locale) } ?? false
     }
 
     /// What can be told at once, without waiting for a request: why no model can take `languages`, or

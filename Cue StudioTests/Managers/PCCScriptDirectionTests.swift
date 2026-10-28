@@ -1,0 +1,124 @@
+//
+//  PCCScriptDirectionTests.swift
+//  Cue StudioTests
+//
+
+import Foundation
+import Testing
+@testable import Cue_Studio
+
+@Suite("PCC script direction and input fidelity")
+struct PCCScriptDirectionTests {
+    private func request() -> ScriptRequest {
+        ScriptRequest(
+            source: .prompt("Explique três passos para iniciantes, cite o projeto Aurora 27 e termine sem pedir para seguir."),
+            platform: .youtube, tone: nil, voice: QualityProfiles.english.full.voice(inLanguage: "pt"),
+            targetRange: 120...180, language: .portugueseBrazil
+        )
+    }
+
+    @Test func currentRequestArrivesIntactOnceAlongsideRelevantVoiceAndOutputChoices() {
+        let original = request()
+        let cloud = AIRequestPolicy.prepare(original, on: .privateCloud)
+        let instructions = ScriptPromptBuilder.instructions(for: cloud)
+        let prompt = ScriptPromptBuilder.prompt(for: cloud)
+        guard case .prompt(let typed) = original.source else { return }
+        #expect(prompt.components(separatedBy: typed).count == 2, "the complete request is supplied once, without a lossy summary")
+        #expect(instructions.contains("Portuguese"))
+        #expect(prompt.contains(cloud.platform.promptName))
+        #expect(prompt.contains("between 300 and 450 spoken words"))
+        #expect(instructions.contains("usual topics, openings, endings and style are defaults"))
+        #expect(instructions.contains("including no call to action"))
+        #expect(prompt.hasSuffix(PCCScriptDirection.finalCheck), "literal requirements are checked after voice/style defaults")
+        #expect(!instructions.contains("Here is how they write"), "PCC does not receive local writing examples")
+    }
+
+    @Test func anIncompleteCloudBriefNeverTurnsFormExamplesIntoTheCreatorsFacts() {
+        var original = request()
+        original.source = .format(.story, brief: ["setup": "The Aurora 27 meeting ended at 14:35!", "twist": "  "])
+        let cloud = AIRequestPolicy.prepare(original, on: .privateCloud)
+        let prompt = ScriptPromptBuilder.prompt(for: cloud)
+        #expect(prompt.contains("The Aurora 27 meeting ended at 14:35!"), "names, quantities and punctuation survive")
+        for field in ScriptType.story.briefFields {
+            #expect(!prompt.contains(field.example), "a missing answer must not become a fictional contract or testimonial")
+        }
+        #expect(prompt.contains("missing answers"))
+    }
+
+    @Test func seriousStatementsDoNotAcquireAnEntertainmentOrEngagementChecklist() {
+        var original = request()
+        original.format = .apology
+        let cloud = AIRequestPolicy.prepare(original, on: .privateCloud)
+        let direction = PCCScriptDirection.instructions(for: cloud).joined(separator: "\n")
+        #expect(direction.contains("Never invent an incident, excuse, remedy or commitment"))
+        #expect(!direction.contains("fresh, relevant angle"))
+        #expect(!direction.contains("invitation"))
+    }
+
+    @Test func brandLimitsAndExactApprovedDetailsRemainAlongsideEditorialDirection() {
+        var original = request()
+        original.format = .ad
+        original.brand = BrandBrief(
+            name: "Aurora 27", product: "Desk light", mustSay: "Three brightness settings",
+            neverSay: "medical benefits", link: "https://example.com/aurora", code: "LIGHT27"
+        )
+        let cloud = AIRequestPolicy.prepare(original, on: .privateCloud)
+        let prompt = ScriptPromptBuilder.prompt(for: cloud)
+        for detail in ["Aurora 27", "Desk light", "Three brightness settings", "medical benefits", "https://example.com/aurora", "LIGHT27", "#ad"] {
+            #expect(prompt.contains(detail))
+        }
+        #expect(PCCScriptDirection.instructions(for: cloud).joined().contains("Do not add a benefit, comparison or urgency"))
+    }
+
+    @Test func localGenerationRetainsItsMeasuredPromptBudget() {
+        let local = AIRequestPolicy.prepare(request(), on: .onDevice)
+        #expect(PCCScriptDirection.instructions(for: local).isEmpty)
+        #expect(!ScriptPromptBuilder.instructions(for: local).contains("Before returning only"))
+    }
+
+    @Test(arguments: [
+        "Me ensine a iluminar o rosto usando uma janela, sem CTA.",
+        "Compare two ways to plan a filming day without inventing a personal test.",
+        "Responde a este comentario con dos razones y una pregunta.",
+        "Raconte une histoire à partir de cette expérience : mon micro était coupé.",
+        "初心者向けに動画の照明を説明してください。",
+    ])
+    func automaticLetsPCCReadIntentInsteadOfLockingItToAnEnglishKeywordGuess(_ idea: String) {
+        var original = request()
+        original.source = .prompt(idea)
+        original.voice?.formats = [.list]
+        let cloud = AIRequestPolicy.prepare(original, on: .privateCloud)
+        let prompt = ScriptPromptBuilder.prompt(for: cloud)
+        #expect(prompt.contains(idea))
+        #expect(prompt.contains("Format is Automatic"))
+        #expect(!prompt.contains("Write a list of tips script"), "the usual format cannot decide before the model reads the request")
+        #expect(!prompt.contains("Blocks, in this order:"), "Auto chooses an appropriate structure in the same generation call")
+        #expect(cloud.format == nil && original.format == nil, "no inferred format is silently saved as a manual choice")
+    }
+
+    @Test func aManualFormatStillDeterminesTheStructureOnPCC() {
+        var original = request()
+        original.format = .story
+        let cloud = AIRequestPolicy.prepare(original, on: .privateCloud)
+        let prompt = ScriptPromptBuilder.prompt(for: cloud)
+        #expect(prompt.contains("Write a storytime script"))
+        #expect(prompt.contains("Blocks, in this order: Hook → Setup → Twist → Payoff"))
+        #expect(!prompt.contains("Format is Automatic"))
+    }
+
+    @Test @MainActor func talkingHeadRemainsAnExplicitChoiceFromTheDockThroughThePrompt() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let factory = ScriptRequestFactory(
+            rules: TestData.rulesService(), profile: CreatorProfileService(defaults: defaults.defaults),
+            scriptLanguage: .english, interfaceLanguage: .english
+        )
+        let original = factory.request(idea: "How to start running", platform: nil, format: nil, formatChoice: .talkingHead)
+        for route in [AIModelRoute.onDevice, .privateCloud] {
+            let prepared = AIRequestPolicy.prepare(original, on: route)
+            #expect(prepared.formatChoice == .talkingHead)
+            #expect(!PCCScriptDirection.usesAutomaticFormat(prepared))
+            #expect(ScriptPromptBuilder.prompt(for: prepared).contains("Write a talking head script"))
+        }
+    }
+}

@@ -71,6 +71,6 @@ struct ContextBudgetTests {
 
     @Test func anotherRouteIsNotCounted() async {
         let service = ScriptAIService(capabilities: FakeAIModelCapabilities(), measure: FakePromptMeasure(factor: 3))
-        #expect(await service.fitted(request(), on: .privateCloud).voiceBudget == nil)
+        #expect(await service.fitted(request(), on: .privateCloud).voiceBudget == 6_000)
     }
 }

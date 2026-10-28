@@ -80,7 +80,8 @@ final class ScriptStarter {
         let request = IdeaSendTimeline.measure("Idea request") {
             factory.request(
                 idea: text, platform: platform ?? ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length,
-                brand: ideaDraft.brand, brief: brief ?? (idea == nil ? ideaDraft.brief : nil), languageText: comment?.text
+                brand: ideaDraft.brand, brief: brief ?? (idea == nil ? ideaDraft.brief : nil), languageText: comment?.text,
+                formatChoice: ideaDraft.formatChoice
             )
         }
         // What Apple Intelligence can't draft (in the request's own language) is told now, not after three seconds of star, and nothing is

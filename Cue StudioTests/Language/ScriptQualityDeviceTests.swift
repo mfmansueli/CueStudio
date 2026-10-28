@@ -69,8 +69,24 @@ struct ScriptQualityDeviceTests {
         KeepScreenAwake.enable()
         // `TEST_RUNNER_CUE_QUALITY_SUBSTANCE=off`: the request as it was before the opening was held to the subject (`forbidsFillerOpening`).
         ScriptPromptBuilder.forbidsFillerOpening = ProcessInfo.processInfo.environment["CUE_QUALITY_SUBSTANCE"] != "off"
-        let service = ScriptAIService()
-        guard service.availability.onDevice else {
+        let localOnly = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"] == "onDevice"
+        let requested = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"]
+        let reasoning = ProcessInfo.processInfo.environment["CUE_QUALITY_REASONING"]
+        try #require(reasoning == nil || ["light", "moderate", "deep"].contains(reasoning ?? ""), "Unknown reasoning level")
+        let level: ContextOptions.ReasoningLevel? = switch reasoning {
+        case "light": .light
+        case "moderate": .moderate
+        case "deep": .deep
+        default: nil
+        }
+        let service = ScriptAIService(
+            usesPrivateCloudCompute: !localOnly, preferredModel: requested == "privateCloud" ? .privateCloud : nil, cloudReasoning: level
+        )
+        if requested == "privateCloud", !service.availability.privateCloud {
+            try Test.cancel("Private Cloud Compute is unavailable: this route is not validated")
+        }
+        let available = localOnly ? service.availability.onDevice : service.availability.isAvailable
+        guard available else {
             try Test.cancel("Apple Intelligence isn't available on this device: \(service.availability.reason ?? "unknown")")
         }
         #if canImport(UIKit)
@@ -81,6 +97,37 @@ struct ScriptQualityDeviceTests {
     }
 
     // MARK: - Scripts
+
+    /// Explicitly opt in to one frozen case per device invocation; never spend the whole dataset's
+    /// quota by accident. Use the same case id for baseline and candidate runs.
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["CUE_QUALITY_INTENT_CASE"] != nil))
+    func writesAnIntentBenchmarkCase() async throws {
+        let wanted = try #require(ProcessInfo.processInfo.environment["CUE_QUALITY_INTENT_CASE"])
+        let cases = try ScriptIntentCase.load()
+        let index = try #require(cases.firstIndex { $0.id == wanted }, "Unknown intent case: \(wanted)")
+        let item = cases[index]
+        let profile = try #require(QualityProfiles.all.first { $0.language == item.language })
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let creator = CreatorProfileService(defaults: defaults.defaults)
+        creator.profile = profile.full
+        let factory = ScriptRequestFactory(
+            rules: TestData.rulesService(), profile: creator, scriptLanguage: item.language, interfaceLanguage: item.language
+        )
+        let request = factory.request(idea: item.prompt, platform: .reels, format: nil, formatChoice: item.formatChoice)
+        var sample = await Self.script(
+            request, idea: item.prompt, language: item.language, condition: "intent", index: index, service: try ready()
+        )
+        sample.caseID = item.id
+        sample.expectedDirection = item.expectedDirection
+        sample.requiredLiterals = item.requiredLiterals
+        sample.reviewChecks = item.reviewChecks
+        Self.record(sample, named: "quality-sample-\(Self.run)-intent-\(item.id).json")
+        #expect(sample.wasWritten, "The model must return a script; semantic quality still requires review")
+        for literal in item.requiredLiterals {
+            #expect(ScriptVerbatimRequirements.contains(literal, in: sample.text ?? ""), "Required literal was not kept: \(literal)")
+        }
+    }
 
     @Test(arguments: ScriptQualityDeviceTests.cases)
     func writesTheScripts(_ item: Case) async throws {
@@ -129,11 +176,20 @@ struct ScriptQualityDeviceTests {
             kind: "script", run: run, language: language.rawValue, condition: condition, index: index, idea: idea, hasBrief: request.brief != nil,
             seconds: 0
         )
-        await measureRequest(request, into: &sample)
+        sample.requestedReasoning = ProcessInfo.processInfo.environment["CUE_QUALITY_REASONING"] ?? "default"
         let started = ContinuousClock.now
         for attempt in 1...3 {
             do {
                 let script = try await service.generate(request)
+                sample.seconds = started.duration(to: .now).inSeconds
+                if let requested = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"], let model = script.model {
+                    #expect(model.rawValue == requested, "The requested model did not return this sample")
+                }
+                sample.model = script.model?.rawValue
+                sample.requestedModel = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"] ?? "automatic"
+                if let route = script.model {
+                    await measureRequest(await service.fitted(request, on: route), into: &sample)
+                }
                 sample.title = script.title
                 sample.text = script.text
                 sample.discardedDraft = script.discardedDraft
@@ -143,7 +199,7 @@ struct ScriptQualityDeviceTests {
                 sample.expandedBlocks = script.expandedBlocks
                 sample.voiceUse = script.voiceUse.rawValue
                 sample.firstResponse = script.timings?.firstResponse?.inSeconds
-                sample.outputTokens = try? await SystemLanguageModel.default.tokenCount(for: script.text)
+                if script.model == .onDevice { sample.outputTokens = try? await SystemLanguageModel.default.tokenCount(for: script.text) }
                 sample.failure = nil
                 break
             } catch ScriptAIError.rateLimited where attempt < 3 {
@@ -154,7 +210,7 @@ struct ScriptQualityDeviceTests {
                 break
             }
         }
-        sample.seconds = started.duration(to: .now).inSeconds
+        if sample.seconds == 0 { sample.seconds = started.duration(to: .now).inSeconds }
         print(line(for: sample))
         return sample
     }
@@ -173,6 +229,17 @@ struct ScriptQualityDeviceTests {
         let prompt = ScriptPromptBuilder.prompt(for: request)
         sample.instructions = instructions
         sample.prompt = prompt
+        sample.responseCap = ScriptAIService.responseTokens(for: request, on: request.modelRoute ?? .onDevice)
+        sample.minimumWords = ReadTime.words(for: request.targetRange.lowerBound)
+        let asked = ScriptPromptBuilder.askedRange(for: request.targetRange, on: request.modelRoute ?? .onDevice)
+        sample.askedWords = [asked.low, asked.high]
+        sample.voiceTrimmed = request.voice.map { voice in
+            VoiceBriefBuilder.brief(
+                for: voice, budget: request.voiceBudget ?? VoiceBrief.budget, register: PlatformRegister(request.platform)
+            ).trimmed.map(\.rawValue)
+        }
+        guard request.modelRoute != .privateCloud else { return }
+        sample.tokenCounter = "onDevice"
         sample.instructionTokens = try? await model.tokenCount(for: Instructions(instructions))
         sample.promptTokens = try? await model.tokenCount(for: prompt)
         sample.schemaTokens = try? await model.tokenCount(for: ScriptDraft.generationSchema)
@@ -180,11 +247,7 @@ struct ScriptQualityDeviceTests {
         let counting = ContinuousClock.now
         _ = await OnDeviceMeasure().tokens(instructions: instructions, prompt: prompt, structure: .script)
         sample.countMilliseconds = counting.duration(to: .now).inSeconds * 1000
-        sample.responseCap = ScriptAIService.responseTokens(for: request)
-        sample.minimumWords = ReadTime.words(for: request.targetRange.lowerBound)
-        let asked = ScriptPromptBuilder.askedRange(for: request.targetRange)
-        sample.askedWords = [asked.low, asked.high]
-        sample.voiceTrimmed = request.voice.map { VoiceBriefBuilder.brief(for: $0, register: PlatformRegister(request.platform)).trimmed.map(\.rawValue) }
+
     }
 
     // MARK: - Find inspiration
@@ -224,12 +287,25 @@ struct ScriptQualityDeviceTests {
         let instructions = ScriptPromptBuilder.themesInstructions(voice: voice)
         sample.instructions = instructions
         sample.prompt = prompt
-        sample.instructionTokens = try? await SystemLanguageModel.default.tokenCount(for: Instructions(instructions))
-        sample.promptTokens = try? await SystemLanguageModel.default.tokenCount(for: prompt)
-        sample.schemaTokens = try? await SystemLanguageModel.default.tokenCount(for: IdeaBriefSuggestions.generationSchema)
         let started = ContinuousClock.now
         do {
             let ideas = try await service.suggestIdeas(slots: slots, language: language, voice: voice, inspiration: inspiration)
+            if let requested = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"], let model = service.lastIdeaModel {
+                #expect(model.rawValue == requested, "The requested model did not return these ideas")
+            }
+            sample.model = service.lastIdeaModel?.rawValue
+            sample.requestedModel = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"] ?? "automatic"
+            let preparedVoice = AIRequestPolicy.voice(voice, on: service.lastIdeaModel ?? .onDevice)
+            let instructions = ScriptPromptBuilder.themesInstructions(
+                voice: preparedVoice, voiceBudget: service.lastIdeaModel == .privateCloud ? AIRequestPolicy.cloudVoiceBudget : nil
+            )
+            sample.instructions = instructions
+            if service.lastIdeaModel == .onDevice {
+                sample.tokenCounter = "onDevice"
+                sample.instructionTokens = try? await SystemLanguageModel.default.tokenCount(for: Instructions(instructions))
+                sample.promptTokens = try? await SystemLanguageModel.default.tokenCount(for: prompt)
+                sample.schemaTokens = try? await SystemLanguageModel.default.tokenCount(for: IdeaBriefSuggestions.generationSchema)
+            }
             sample.ideas = ideas.map { idea in
                 QualityRunSample.Idea(
                     title: idea.title, angle: idea.brief?.angle ?? "", openingLine: idea.brief?.openingLine ?? "", angleKind: idea.angle,

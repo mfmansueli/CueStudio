@@ -47,7 +47,7 @@ struct LanguageModelDeviceTests {
 
     private func service(_ language: CueLanguage) throws -> ScriptAIService {
         KeepScreenAwake.enable()
-        let service = ScriptAIService()
+        let service = ScriptAIService(usesPrivateCloudCompute: false)
         guard service.availability.onDevice else {
             let reason = service.availability.reason ?? "unknown"
             print("AI \(language.rawValue): NOT VALIDATED · \(reason)")

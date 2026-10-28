@@ -149,11 +149,56 @@ não mostra número. Teste: `-uiTestWriterStalls`.
 
 ### 4.1 My Cue Voice → Apple Intelligence
 
+- **Private Cloud Compute:** acesso aprovado pela Apple; `Cue Studio.entitlements` declara
+  `com.apple.developer.private-cloud-compute` e `ScriptAIService.hasPrivateCloudComputeEntitlement` está ligado.
+  O roteamento existente usa a nuvem para prompts livres e assuntos factuais, com fallback conforme disponibilidade,
+  idioma e cota; reescritas, ganchos, ideias e leitura dos textos importados continuam com a política de cada operação.
+  Capability habilitada e conferida no App ID `com.cuestudioteleprompter` da equipe `X5392U638Q` no portal Apple Developer.
+  Build de desenvolvimento assinado conferido: entitlement presente tanto no perfil explícito do app quanto na assinatura do binário.
+  PCC instalado e executado no iago Lima iphone com autorização do dono. Há 16 saídas reais arquivadas nos fixtures de qualidade, incluindo controles e oito casos com proteção literal. A rota foi confirmada como privateCloud. Frases exatas PT/EN/ES passaram na versão protegida (PT precisou de duas tentativas); qualidade editorial geral ainda não aprovada: há formulações artificiais, pontos pouco distintos e detalhes sem suporte no brief transmitido. Os demais idiomas continuam sem validação física. Ver reports/PCC_HANDOFF_2026-10-28.md.
+  **Pedidos por rota:** o fallback prepara de novo o pedido original. No PCC, a voz usa até 6000 unidades, sem exemplos colados, trechos importados
+  ou roteiros aprovados; preferências e medidas de estilo seguem no prompt. A resposta inicial tem até 8192 tokens, com a duração pedida sem o fator
+  corretivo do modelo local. Sem expansão por bloco ou nova tentativa por roteiro curto na nuvem; rascunho e correções dividem até duas chamadas.
+  No aparelho, continuam o orçamento de 2100, teto de 1800 tokens e ajuste pela contagem real perto da janela.
+  **Direção editorial no PCC** (`PCCScriptDirection`): pedido atual define assunto, resultado desejado e exigências explícitas; temas, aberturas e
+  fechos habituais são preferências. Idioma, formato, duração, restrições da marca e itens de Avoid continuam valendo. Orienta um fio condutor,
+  promessa cumprida, informação nova por bloco, utilidade concreta para o público e final coerente (inclusive sem CTA quando pedido), com conferência
+  na mesma resposta, sem chamada extra nem plano exibido. Afirmações não ganham certezas, experiências ou benefícios inventados. Declarações sérias
+  não recebem a direção de entretenimento. Brief de formato enviado ao PCC contém só respostas reais, sem transformar placeholders em fatos;
+  o pedido livre completo segue uma vez, sem resumo intermediário. Essas são instruções de geração, ainda sem comprovação de ganho de qualidade no aparelho.
+  **Formato Automático no PCC:** quando o card não fixa um formato, a própria geração lê a intenção do pedido no idioma em que foi escrito e escolhe
+  a direção e a ordem dos blocos. Recebe as opções de tutorial, lista, história, avaliação/comparação, opinião/resposta, anúncio, mito/fato, POV,
+  declaração séria ou explicação; não fica preso ao `FormatGuess` em inglês nem a Hook/Body/CTA. Formatos habituais só ajudam quando o pedido é vago.
+  Uma menção a produto não implica patrocínio, e uma declaração séria descarta humor e CTA de engajamento. Sem chamada separada para classificar e sem
+  gravar a inferência como escolha manual. Formato escolhido manualmente mantém sua estrutura; Talking head é preservado do card ao pedido
+  (`formatChoice`), mesmo sem `ScriptType` próprio, e não se confunde com Auto. O fallback local conserva a inferência medida existente.
+  **Mapa dos dados:** `ScriptRequestFactory` preserva o pedido digitado e resolve plataforma, duração, idioma e variante; `CreatorProfile.voice`
+  seleciona os temas relevantes, exemplos e medidas do idioma. `AIRequestPolicy` aplica privacidade e orçamento por rota; `VoiceBriefBuilder`
+  transforma identidade, público, motivos, objetivos, estilo e restrições em instruções. `ScriptPromptBuilder` acrescenta estrutura, plataforma,
+  duração, brief de inspiração ainda válido e limites da marca; no PCC, `PCCScriptDirection` explicita a prioridade e a direção editorial.
+  `ScriptDraft` recebe título e blocos estruturados; idioma, regras da voz e escolha de revisão são conferidos depois. Não existe verificação factual
+  externa nem garantia automática de que cada instrução livre foi cumprida; assunto factual continua pedindo revisão antes de gravar.
+  **Resiliência:** tarefas locais não esperam a consulta de idiomas do PCC; só consultam se precisarem de fallback. Cada consulta tem limite de 3 s,
+  inclusive se o framework não cooperar com cancelamento. Timeout permite tentar o outro modelo, quando disponível e compatível com o idioma.
+  **Find inspiration:** mantém preferência local; filtra respostas no idioma errado antes de guardar o pool, e mudanças do perfil invalidam as
+  sugestões antigas por uma assinatura estável. O gosto aprendido continua salvo.
+  **Privacidade e interface:** o controle mestre se chama Apple Intelligence e também bloqueia novos pedidos no Service. Settings, importação e
+  What Cue sends explicam o PCC; esta última mostra dois briefs, do aparelho e da nuvem. O preview da voz é identificado como amostra das preferências.
+  **Medições:** `ScriptQualityDeviceTests` aceita `TEST_RUNNER_CUE_QUALITY_MODEL=onDevice|privateCloud` (sem variável: automático), registra o modelo
+  que respondeu e acusa fallback inesperado em uma medição de rota fixa. Contagem de tokens local nunca é apresentada como contagem do PCC;
+  amostras antigas são marcadas como legacy no relatório. Qualidade, latência e consumo real da cota no iPhone continuam sem validação.
+  **Benchmark de intenção preparado sem aparelho:** `intent-cases.json` fixa 24 pedidos sintéticos (8 por idioma, PT/EN/ES), todos dentro dos
+  200 caracteres do card. Cobre tutorial sem CTA, frase literal, fatos fornecidos, nota séria, produto sem patrocínio, comparação e escolhas manuais
+  de Story/Talking head. `ScriptIntentContractTests` confere o caminho fábrica → preparo por rota → prompt, idioma, formato e privacidade.
+  `ScriptQualityDeviceTests/writesAnIntentBenchmarkCase()` exige seleção explícita de um único `CUE_QUALITY_INTENT_CASE`; preserva id, expectativas,
+  modelo e tempo junto da amostra, sem passar a resposta esperada ao modelo. `tools/quality/check_intent.py` verifica somente literais e mantém
+  qualidade semântica como `not_validated`, mesmo quando passam. Nenhuma resposta real desse benchmark foi gerada ou aprovada.
 - **O prompt** (`Managers/ScriptAI/Voice/*`, `Context/*`): `VoiceBriefBuilder` monta, em inglês e nesta ordem, quem fala → para quem e por quê → temas →
   como soa → como abre e fecha → exemplos → regras, e repete no fim as que não podem falhar ("Remember: …"; o modelo pequeno atende mais ao fim).
   `FormatGuide` diz para que serve cada bloco, `PlatformGuide` dá o registro (LinkedIn sem gíria). Regra de honestidade: nada de história, número, cliente
-  ou credencial inventados. Qualquer resposta de Essentials já liga a voz (`canWriteInMyVoice`). Tudo que o criador digita chega ao modelo
-  (`VoiceTypedValuesTests`; bordões três por vez; o resto em "Also true of them, in their own words").
+  ou credencial inventados. Qualquer resposta de Essentials já liga a voz (`canWriteInMyVoice`). As preferências digitadas chegam ao modelo
+  (`VoiceTypedValuesTests`; bordões três por vez; o resto em "Also true of them, in their own words"); exemplos de escrita e trechos importados
+  só entram nos pedidos do aparelho, nunca nos do PCC.
 - **A ideia manda no assunto, a voz só no jeito** (`IdeaFocus`, `CreatorProfile.voice(inLanguage:idea:)`): temas só vão ao modelo quando a ideia fala
   deles (mesma palavra ou mesmo começo de 5 letras), subtemas só quando a ideia os nomeia; ideia de menos de duas palavras leva todos. O prompt diz "Write
   about this idea and only this one" e termina em "Stay on the idea: …". (Antes um subtema do perfil virava o assunto do roteiro.)
@@ -342,7 +387,7 @@ Ver `CLAUDE.md` (Launch arguments) e `SupportFiles/LaunchOptions.swift`.
 
 Sem tela nova; mensagens nos componentes que já existiam (detalhes em `LOCALIZATION.md` §1.1). **Nenhum rascunho vazio abre só para dizer que a IA não
 escreve:** `DraftingAvailability` (`writer.drafting(in:)`) diz antes de qualquer pedido, por ordem: o interruptor do Cue (Settings › Privacy & AI data ›
-On-device AI), aparelho sem Apple Intelligence, Apple Intelligence desligado no iOS, idioma que o modelo não escreve, modelo se preparando (esperar não
+Apple Intelligence), aparelho sem Apple Intelligence, Apple Intelligence desligado no iOS, idioma que o modelo não escreve, modelo se preparando (esperar não
 ajuda um idioma, então o idioma vem antes). Escrever à mão, importar, teleprompter e legendas nunca dependem disso; o idioma nunca muda sozinho.
 - **Dock** (decisão do dono, 22/10/2026): com a **Script Language** num idioma que o modelo não escreve (ou qualquer motivo do aparelho), o dock fica no
   estado **Write it** de sempre (sem chip de voz, sem sugestão) e a nota `AIUnavailableNote` diz o motivo + "Write it yourself or import a script."
@@ -389,7 +434,7 @@ o pincel do Personalize, o cadeado da política…), em azulejo de 32 pt raio 9 
 que grava (Recording, Prompter, Remote), **violeta** para a IA (My Cue Voice, Personalize), **cinza** para o resto, e Cue Pro em azulejo amarelo cheio
 (`Palette.Settings`, medidos em `PaletteContrastTests`). Páginas: Recording, Prompter, Remote, Personalize (céu §5, Getting started §32; os 5 ícones e as regras de marco do
 app, não as do protótipo), Language & Region (idioma do app abre os Ajustes; Voice following e Script language são menus), Notifications (§27), Privacy &
-AI data (**On-device AI** é a chave de todos os recursos de IA: `PrivacyPreferencesService` → `ScriptWriting.isEnabled`; Help improve Cue decide se os eventos
+AI data (**Apple Intelligence** é a chave de todos os recursos de IA: `PrivacyPreferencesService` → `ScriptWriting.isEnabled`; Help improve Cue decide se os eventos
 vão ao Analytics; **Delete my Cue data**, `DataEraserService`, apaga do iPhone roteiros e pastas, tomadas com vídeos e edições, vídeos exportados à espera
 e a fila de compartilhamento, Logbook, marcas, My Cue Voice, ideias e o gosto aprendido, meus estilos, o setup, as marcas da
 primeira viagem, os rascunhos, as cópias de uma biblioteca danificada e os lembretes; as pastas de takes, mídias do editor e rascunhos saem

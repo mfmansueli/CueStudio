@@ -30,10 +30,11 @@ struct ScriptRequestFactory {
     ///   from them, not from the English around them.
     func request(
         idea: String, platform: Platform?, format: ScriptType?, length: ScriptLength = .auto, brand: BrandBrief? = nil, brief: IdeaBrief? = nil,
-        languageText: String? = nil
+        languageText: String? = nil, formatChoice: FormatChoice? = nil
     ) -> ScriptRequest {
         let text = idea.trimmingCharacters(in: .whitespacesAndNewlines)
         let platform = platform ?? defaultPlatform
+        let format = formatChoice == nil ? format : formatChoice?.scriptType
         let effectiveLength = length == .auto ? (ScriptLength.detected(in: text) ?? .auto) : length
         let preset = rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals)
         let isSerious = format?.structure.isSerious ?? false
@@ -54,7 +55,8 @@ struct ScriptRequestFactory {
             // A brand brief only means something for a sponsored ad.
             brand: format == .ad ? brand : nil,
             // What the creator's text no longer says is not sent: their words win over the card's.
-            brief: brief?.standing(in: text)
+            brief: brief?.standing(in: text),
+            formatChoice: formatChoice
         )
     }
 

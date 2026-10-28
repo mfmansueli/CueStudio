@@ -21,7 +21,7 @@ struct VoiceSendsSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     VStack(alignment: .leading, spacing: 6) {
-                        Text(String(localized: "Apple Intelligence · on this iPhone").uppercased())
+                        Text(String(localized: "Apple Intelligence").uppercased())
                             .monoFont(size: 10.5, weight: .bold)
                             .interfaceTracking(1)
                             .foregroundStyle(Palette.aiText)
@@ -31,8 +31,16 @@ struct VoiceSendsSheet: View {
                             .foregroundStyle(Palette.ink)
                             .accessibilityAddTraits(.isHeader)
                     }
-                    briefCard
+                    Text("Apple Intelligence can use this iPhone or Private Cloud Compute. Your request and voice preferences may be sent to Apple. Writing examples and imported excerpts stay on this iPhone.")
+                        .cueFont(.footnote)
+                        .foregroundStyle(Palette.ink2)
+                    Text("On this iPhone").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
+                    briefCard(brief.text, identifier: "voice.sends.brief")
                     meter
+                    if ScriptAIService.hasPrivateCloudComputeEntitlement {
+                        Text("Private Cloud Compute").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
+                        briefCard(cloudBrief.text, identifier: "voice.sends.cloudBrief")
+                    }
                     Text("Added before every idea you send to Cue (scripts, hooks, replies), with where you post and the format you pick. Never used to train models.")
                         .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
@@ -64,8 +72,12 @@ struct VoiceSendsSheet: View {
         .accessibilityIdentifier("voice.sends")
     }
 
-    private var briefCard: some View {
-        let text = brief.text
+    private var cloudBrief: VoiceBrief {
+        guard let voice = AIRequestPolicy.voice(profile.profile.voice, on: .privateCloud) else { return .empty }
+        return VoiceBriefBuilder.brief(for: voice, budget: AIRequestPolicy.cloudVoiceBudget)
+    }
+
+    private func briefCard(_ text: String, identifier: String) -> some View {
         return Text(text.isEmpty ? String(localized: "Nothing yet. Set up the first questions and it shows here.") : text)
             .monoFont(size: 11.5)
             .lineSpacing(3)
@@ -76,7 +88,7 @@ struct VoiceSendsSheet: View {
             .background(Palette.sheetNight.opacity(0.7), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Palette.aiBorder, lineWidth: 0.5))
             .textSelection(.enabled)
-            .accessibilityIdentifier("voice.sends.brief")
+            .accessibilityIdentifier(identifier)
     }
 
     /// "812 / 1200 CHARACTERS · ✓ ROOM FOR YOUR IDEA", the bar under it, and in orange "LONG · CUE TRIMS EXAMPLES FIRST" when the voice is longer than that.

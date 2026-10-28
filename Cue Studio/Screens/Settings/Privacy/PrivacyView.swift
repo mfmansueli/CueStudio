@@ -26,7 +26,10 @@ struct PrivacyView: View {
             Section {
                 SettingsEntryRows(entries: [.onDeviceAI, .helpImprove], bindings: bindings)
             } footer: {
-                Text("Nothing is sold or shared.")
+                Text(ScriptAIService.hasPrivateCloudComputeEntitlement
+                    ? String(localized: "Apple Intelligence can use this iPhone or Private Cloud Compute. Your request and voice preferences may be sent to Apple. Writing examples and imported excerpts stay on this iPhone.")
+                    : String(localized: "Nothing is sold or shared."))
+                    .foregroundStyle(Palette.ink2)
             }
             Section {
                 if let url = AppLinks.privacyPolicy {

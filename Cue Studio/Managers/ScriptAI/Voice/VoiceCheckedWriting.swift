@@ -10,8 +10,8 @@ import Foundation
 ///
 /// - The model refusing a request that carries the creator's own words (a guardrail) is answered once with a request that has only what Cue offers.
 /// - A script that breaks their rules (`VoiceConstraintChecker`) is written once more, told which rule.
-/// - It never blocks: if the new attempt fails, or is not better where it was asked to be without losing anything else (`RevisionChoice`), the
-///   first script stands.
+/// - If a voice correction fails or loses useful content (`RevisionChoice`), the first script stands.
+/// - Explicit verbatim wording is a delivery requirement: if neither attempt keeps it, report a clear error instead of delivering a changed phrase.
 @MainActor
 struct VoiceCheckedWriting {
     /// Writes the script for a request; the violations are what the last draft got wrong, empty for the first attempt.
@@ -39,7 +39,7 @@ struct VoiceCheckedWriting {
         // What was only measured from their writing is counted and told to a second attempt that happens anyway, never the reason for one.
         guard violations.contains(where: { !$0.isSoft }), script.usedLanguageModel else {
             script.voiceViolations = violations.map(\.kind)
-            return script
+            return try checked(script, for: request)
         }
         do {
             var second = try await draft(request, violations)
@@ -55,7 +55,7 @@ struct VoiceCheckedWriting {
                 second.voiceViolations = remaining.map(\.kind)
                 second.voiceUse = use
                 second.discardedDraft = script.text
-                return second
+                return try checked(second, for: request)
             }
             script.discardedDraft = second.text
         } catch is CancellationError {
@@ -64,13 +64,24 @@ struct VoiceCheckedWriting {
             report(error, "script.voiceRetry")
         }
         script.voiceViolations = violations.map(\.kind)
+        return try checked(script, for: request)
+    }
+
+    private func checked(_ script: GeneratedScript, for request: ScriptRequest) throws -> GeneratedScript {
+        guard request.requiredPhrases.allSatisfy({ ScriptVerbatimRequirements.contains($0, in: script.text) }) else {
+            throw ScriptAIError.requiredWording
+        }
         return script
     }
 
     private func violations(in script: GeneratedScript, for request: ScriptRequest) -> [VoiceViolation] {
-        VoiceConstraintChecker.violations(
+        let voice = VoiceConstraintChecker.violations(
             in: script.text, voice: request.voice, language: request.language,
             minimumWords: ReadTime.words(for: request.targetRange.lowerBound), openingLine: request.brief?.openingLine
         )
+        let required = request.requiredPhrases.filter { !ScriptVerbatimRequirements.contains($0, in: script.text) }.map {
+            VoiceViolation(kind: .requiredPhrase, detail: "Include this exact text unchanged in a spoken block, including capitalization and punctuation: “\($0)”")
+        }
+        return voice + required
     }
 }

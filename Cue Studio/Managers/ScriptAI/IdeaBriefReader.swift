@@ -44,6 +44,17 @@ nonisolated enum IdeaBriefReader {
         return idea
     }
 
+    /// A bad-language item never reaches the shared pool, even if the rest of its batch is valid.
+    static func validated(_ ideas: [ThemeIdea], language: Locale.Language?) throws -> [ThemeIdea] {
+        guard let language else { return ideas }
+        let valid = ideas.filter { idea in
+            let text = [idea.title, idea.brief?.angle ?? "", idea.brief?.openingLine ?? ""].joined(separator: " ")
+            return OutputLanguageCheck.isPlausible(text, in: language)
+        }
+        guard !valid.isEmpty else { throw ScriptAIError.wrongLanguage }
+        return valid
+    }
+
     /// The most a brief of the model's may hold, laid out: a model that runs on is cut here (at a word) so the card stays a card; the field gets
     /// its own 200 (`IdeaBrief.composerText`).
     static let cardLimit = 300

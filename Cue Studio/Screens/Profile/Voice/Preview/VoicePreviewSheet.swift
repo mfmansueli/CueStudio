@@ -66,7 +66,7 @@ struct VoicePreviewSheet: View {
                     .buttonStyle(.cuePrimary(.large))
                     .accessibilityIdentifier("voice.preview.soundsLikeMe")
             }
-            Text("Written on this iPhone with Apple Intelligence. Nothing leaves your device.")
+            Text("A sample built from your voice settings.")
                 .cueFont(.footnote)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)

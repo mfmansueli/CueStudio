@@ -41,6 +41,10 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     /// The most the voice may cost (`VoiceBrief.budget` units) when the request had to be fitted to the model's window (`ContextBudget`); nil is the
     /// usual budget.
     var voiceBudget: Int?
+    /// Set only while preparing a request for an actual attempt; the saved request stays route-independent.
+    var modelRoute: AIModelRoute?
+    /// Retains the dock's explicit Talking head choice, which has no `ScriptType` and must not become Auto.
+    var formatChoice: FormatChoice?
 
     var type: ScriptType? {
         if case .format(let type, _) = source { type } else { format }
@@ -56,8 +60,11 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     /// the idea. Their dashes stay when the model's answer is cleaned (`DashRewriter`).
     var preservedPhrases: [String] {
         let brand = brand.map { [$0.mustSay, $0.link, $0.code] } ?? []
-        return ((voice?.phrases ?? []) + brand + [brief?.openingLine ?? ""]).filter { !$0.isEmpty }
+        return ((voice?.phrases ?? []) + brand + [brief?.openingLine ?? ""] + requiredPhrases).filter { !$0.isEmpty }
     }
+
+    /// Only explicit, recognizable verbatim directives; this is not a general understanding of every requirement.
+    var requiredPhrases: [String] { ScriptVerbatimRequirements.phrases(in: source) }
 
     /// History, science, "how X came to be": needs a fact check before recording.
     var isFactualTopic: Bool {

@@ -116,15 +116,33 @@ off, too long, cancelled (silent). A result that comes back in another language 
 English, a translation handed back untouched) is refused and the script left as it was
 (`OutputLanguageCheck`; only when the text is long enough and Natural Language is sure). Translating has no
 default target. **What can't be drafted is told before anything is sent, and never by opening an empty draft**
-(`DraftingAvailability`, `writer.drafting(in:)`): Cue's own On-device AI switch first, then the planner's order (device, Apple
+(`DraftingAvailability`, `writer.drafting(in:)`): Cue's own Apple Intelligence switch first, then the planner's order (device, Apple
 Intelligence off, the language, model preparing). The language is the **script's**: the Script Language when one is set (the
 Scripts dock then shows the reason in its note and its "Write it" state, and Language & Region marks the languages the model
 doesn't write); on Auto-detect the idea's own, judged only when it is sent (never the interface language as a guess), and then
 the idea stays in the field and a toast gives the reason with "Write it". An answered comment is read in the comment's language;
 ideas (interface text) in the interface's, and a language the model doesn't write ideas in is never asked. `ScriptAIService`
 still builds a format's structured draft when no model can take a `.format` request, but no screen sends one today (every
-request from the app is a prompt). **Private Cloud Compute stays off**
-(`hasPrivateCloudComputeEntitlement = false`): it is only a candidate when the app has the entitlement.
+request from the app is a prompt). **Private Cloud Compute is enabled** for the approved entitlement.
+Local tasks defer cloud-language checks until fallback is needed; cloud lookups are bounded to three seconds. Each actual attempt prepares its own
+voice payload and context, and generated ideas are checked for their output language before entering the pool.
+For route-specific quality measurements, `TEST_RUNNER_CUE_QUALITY_MODEL=onDevice|privateCloud` selects the model; the recorded actual route must match.
+
+The frozen intent benchmark is prepared for later device validation: 24 synthetic PT/EN/ES prompts in
+`Cue StudioTests/Fixtures/ScriptQuality/intent-cases.json`, all within the dock's 200-character limit. Simulator contracts verify inputs, not generation quality.
+When device execution is authorized, select **one case per invocation**, for example:
+
+```sh
+CUE_DEVICE="<iPhone>" TEST_RUNNER_CUE_QUALITY_RUN=intent-baseline \
+  TEST_RUNNER_CUE_QUALITY_MODEL=privateCloud TEST_RUNNER_CUE_QUALITY_INTENT_CASE=pt-BR-tutorial \
+  scripts/test.sh device 'ScriptQualityDeviceTests/writesAnIntentBenchmarkCase()'
+```
+
+Collect with `tools/quality/collect.py`, then run `python3 tools/quality/check_intent.py <quality-run.json>`.
+Literal presence is only one deterministic check. Auto direction, distinct points, grounded facts, voice and absence of unwanted CTA require review of the real output.
+Missing/failed generation never passes, and the checker always leaves semantic quality `not_validated`. Sixteen real PCC outputs are saved in quality-run-pcc fixtures. Eight guarded outputs passed their software checks; exact required wording passed in PT/EN/ES. These checks do not approve semantic quality.
+PCC samples leave tokenizer counts empty because this SDK exposes that tokenizer only for the on-device model. Older reports remain `legacy`.
+Physical PCC execution is confirmed on iago Lima iphone. Overall content quality remains unapproved: awkward phrasing, weak distinctions and unsupported details still need review. Other languages remain physically unvalidated. See reports/PCC_HANDOFF_2026-10-28.md.
 
 **No dashes in what the model writes** (§2.1). Every instruction (script, rewrite tools and hooks, block lengthening, ideas)
 carries `ScriptPromptBuilder.punctuationRule`, and whatever still comes back goes through `DashRewriter`
