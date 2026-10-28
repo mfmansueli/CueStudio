@@ -18,9 +18,9 @@ Contraste: capturas reais de simulador em build/pcc-captures e auditoria build/p
 
 ## Aparelhos
 
-iago Lima iphone: instalado e usado para testes PCC. Autorizado para automação. Teste UI em andamento no checkpoint: sessão 12292, build/results/device-ui-20261028-013138.xcresult, suíte PCCPrivacyUITests. Ver resultado antes de repetir.
+iago Lima iphone: instalado e usado para testes PCC. Autorizado para automação. Teste UI PCCPrivacyUITests concluído: 1 passou, zero falhas; build/results/device-ui-20261028-013138.xcresult.
 
-Mansuelli iPhone 18 Pro Max (00008160-0014398611100036): indisponível na última consulta. Dono autorizou instalar para ele e Mateus testarem manualmente, mantendo automação no Iago. Conectar, desbloquear e confiar no Mac; então executar:
+Mansuelli iPhone 18 Pro Max (00008160-0014398611100036): conectado na nova tentativa, build Debug concluído, app instalado e aberto com sucesso (com.cuestudioteleprompter). Disponível para testes manuais do dono e Mateus; manter automação no Iago. Comando usado:
 
 ```sh
 CUE_DEVICE="Mansuelli iPhone 18 Pro Max" scripts/build.sh install
@@ -28,7 +28,7 @@ CUE_DEVICE="Mansuelli iPhone 18 Pro Max" scripts/build.sh install
 
 ## Próxima sessão
 
-1. Verificar resultado UI acima e disponibilidade Mansuelli; instalar quando acessível.
+1. Colher feedback dos testes manuais no Mansuelli; instalação e abertura concluídas. UI de privacidade no Iago passou.
 2. Revalidar no Iago a última proteção de limpeza (34 testes locais passaram, execução física dessa última alteração ainda pendente).
 3. Rever textos reais por fidelidade, fatos, voz, naturalidade, distinção dos pontos e CTA. Software passar não é aprovação editorial. Ampliar casos/idiomas progressivamente, marcando indisponíveis como não validados.
 4. Quando não houver build ativo, rodar scripts/check-project.sh, scripts/check-warnings.sh e scripts/test.sh full. Não rodar check-warnings enquanto outro build usa o checkout: limpa intermediários antes do lock.
