@@ -1,0 +1,29 @@
+[
+  {
+    "caseID": "pt-BR-editorial-draft",
+    "condition": "lean-raw",
+    "durationPolicy": "informative",
+    "expectedDirection": "developed first-person opinion",
+    "hasBrief": false,
+    "idea": "Por que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.",
+    "index": 0,
+    "instructions": "Ghostwrite an editable video script in Portuguese (Brazil). Write what the creator says, in connected, natural paragraphs.\nThe current request decides the subject, narrator, genre and ending. The profile supplies context and voice, not compulsory topics or a\nbiography to recite. Explicit requests override usual habits.\nDevelop the idea until the listener understands why it matters: make the reasoning progress, use a concrete example when useful, and let\nthe ending follow from that development. A short notice can simply state the supplied correction. Fiction should unfold through actions\nrather than explain its own tension. Do not force a hook, lesson or CTA.\nOpinions, analogies and clearly hypothetical examples are welcome. Do not invent the creator's past, tests, credentials or results. Avoid\nunsupported technical rules and absolute promises. Keep supplied facts and exact wording intact.\nReturn only the script, without a preface, editorial commentary, headings or markdown. No required duration unless the creator explicitly\nselected or requested one. Never use a dash (— or –) between words or sentences: use a full stop, comma, colon or parentheses. Hyphens inside words are fine.",
+    "kind": "script",
+    "language": "pt-BR",
+    "model": "privateCloud",
+    "prompt": "Platform: Instagram Reels.\n\nCurrent request:\nPor que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.",
+    "requestedModel": "privateCloud",
+    "requestedReasoning": "default",
+    "requiredLiterals": [],
+    "responseCap": 4096,
+    "reviewChecks": [
+      "Take an authored first-person position without an invented past testimonial.",
+      "Develop the reasoning and a relevant analogy; do not substitute a list or generic motivation.",
+      "Retain supplied facts; editorial preferences are allowed creative draft material.",
+      "Evaluation settings (not model input): voice=none; reasoning=default; sampling=random-top-p0.95-temperature0.8-seed17"
+    ],
+    "run": "editorial-v2-none-creative",
+    "seconds": 1.7864066250000001,
+    "text": "Às vezes, eu leio um texto em voz alta e ele parece surgir sozinho, como se não tivesse sido escrito. Isso acontece porque o ritmo da leitura imita o jeito que a gente pensa: frases que se encadeiam sem esforço. Imagine que o roteiro é um caminho marcado em pedras; se cada pedra estiver no lugar, eu passo sem olhar para o chão e o movimento flui. O som natural vem dessa fluidez, não de improvisar tudo. Se eu leio algo que respeita minhas pausas, a voz ganha corpo. Por isso, o que é lido pode soar mais autêntico do que o que é falado sem estrutura. No final, o roteiro vira apenas o suporte para a conversa."
+  }
+]

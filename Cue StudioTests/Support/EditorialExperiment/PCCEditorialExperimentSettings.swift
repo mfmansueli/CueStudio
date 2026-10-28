@@ -1,3 +1,8 @@
+//
+//  PCCEditorialExperimentSettings.swift
+//  Cue StudioTests
+//
+
 import FoundationModels
 
 /// Only explicit, recorded configurations enter the native comparison; typos must not silently run a different experiment.
@@ -16,13 +21,15 @@ nonisolated struct PCCEditorialExperimentSettings: Sendable {
         let modes = environment["CUE_QUALITY_ABLATION_MODES"]?.split(separator: ",").map(String.init)
             ?? ["baseline", "stack-guided", "lean-guided", "lean-raw"]
         guard !modes.isEmpty, Set(modes).count == modes.count,
-              modes.allSatisfy({ ["baseline", "stack-guided", "lean-guided", "lean-raw"].contains($0) }),
+              modes.allSatisfy({ Self.allowedModes.contains($0) }),
               sampling != "creative" || !modes.contains("baseline") else { return nil }
         self.voice = voice
         self.reasoning = reasoning
         creativeSampling = sampling == "creative"
         self.modes = modes
     }
+
+    static let allowedModes = ["baseline", "stack-guided", "lean-guided", "lean-raw", "editorial-raw", "editorial-demo-raw"]
 
     var reasoningLevel: ContextOptions.ReasoningLevel? {
         switch reasoning {

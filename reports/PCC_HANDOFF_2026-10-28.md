@@ -1,3 +1,17 @@
+# CHECKPOINT MAIS RECENTE — V3 editorial/demonstração no iPhone
+
+Branch codex/script-editorial-quality, worktree pcc-offline-review. HEAD remoto anterior7c1e9b56. App normal intocado, sem PR/merge. Relatório canônico novo reports/PCC_EDITORIAL_BRANCH_2026-10-29.md.
+
+V2 concluída: raw sem perfil/default, deep e creative,1 resposta cada. Runs editorial-v2-none-default (device-20261029-003028), editorial-v2-none-deep (003420), editorial-v2-none-creative (003600). Default sem perfil um pouco mais desenvolvido, mas vago; deep não melhorou claramente; creative curto/genérico. Não promover. Total15 solicitações,14 textos+1 recusa desde início da branch; inferências do baseline podem ser mais de1. Fixtures coletadas. Nenhuma solução aprovada.
+
+V3 test-only adiciona modos editorial-raw e editorial-demo-raw. Prompt editorial é monólogo com progressão/uma distinção/razão/exemplo/consequência, sem quota. Demo é conversa sintética completa sobre caixas/organização da casa, com papéis reais no Transcript; NÃO é resposta do caso avaliado nem texto de referência. Sample registra demo integral em editorialExampleInstructions. Helpers agora em Support/EditorialExperiment; testes puros em Managers/EditorialExperiment; um tipo por arquivo, headers e lint estrito. Sete testes passaram em only-20261029-004046,195s, sessão10450 exit0.
+
+ATIVA sessão29435: primeira v3 no Iago, build necessário para novo código, run editorial-v3-none-opinion-r1, caso pt-BR-editorial-draft, voice none, modes lean-raw,editorial-raw,editorial-demo-raw. Default reasoning/sampling. Não editar fonte enquanto ativa. Ler resultado e coletar com tools/quality/collect.py; comparar texto integral sem melhorar redação. Se promissor, repetir e testar com voz completa e casos independentes/fidelidade antes de promover. Se falhar, registrar e buscar outra hipótese; não chamar isso de teto definitivo.
+
+Apoio futuro, NÃO implementado: separar conteúdo e adaptação de voz (talvez PCC para conteúdo + reescrita local inMyVoice com exemplos privados locais), ou retirar enquadramento implícito de plataforma curta. Só explorar se dados justificarem. Preservar privacidade e não colocar referências do mesmo caso no prompt. Não rodar Full, não testar automaticamente no Mansuelli, não interromper skin-beauty. Nenhum novo app normal instalado com essas alternativas.
+
+---
+
 # CHECKPOINT ATUAL — nova branch editorial, controle sem perfil na fila
 
 Branch codex/script-editorial-quality (base main0fd19d1a/PR77), worktree isolado pcc-offline-review. Primeiro commit0e41c9d4 enviado; app normal intocado, sem PR/merge nesta branch. Relatório canônico novo: reports/PCC_EDITORIAL_BRANCH_2026-10-29.md.

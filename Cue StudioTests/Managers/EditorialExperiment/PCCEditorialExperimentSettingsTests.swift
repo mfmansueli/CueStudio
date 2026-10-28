@@ -1,3 +1,8 @@
+//
+//  PCCEditorialExperimentSettingsTests.swift
+//  Cue StudioTests
+//
+
 import FoundationModels
 import Testing
 @testable import Cue_Studio

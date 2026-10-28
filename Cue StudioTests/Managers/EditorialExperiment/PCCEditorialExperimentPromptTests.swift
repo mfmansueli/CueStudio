@@ -1,3 +1,8 @@
+//
+//  PCCEditorialExperimentPromptTests.swift
+//  Cue StudioTests
+//
+
 import Testing
 @testable import Cue_Studio
 

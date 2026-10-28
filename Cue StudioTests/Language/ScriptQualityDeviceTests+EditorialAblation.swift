@@ -1,3 +1,8 @@
+//
+//  ScriptQualityDeviceTests+EditorialAblation.swift
+//  Cue StudioTests
+//
+
 import Foundation
 import FoundationModels
 import Testing
@@ -25,9 +30,9 @@ extension ScriptQualityDeviceTests {
         let service = ScriptAIService(usesPrivateCloudCompute: true, preferredModel: .privateCloud, cloudReasoning: settings.reasoningLevel)
         guard service.availability.privateCloud else { try Test.cancel("PCC unavailable: not validated") }
         try #require(UIApplication.shared.applicationState == .active, "Unlock the iPhone and keep the test foreground")
-        let prompt = PCCEditorialExperimentPrompt(request: request)
         let run = environment["CUE_QUALITY_RUN"] ?? "editorial-ablation"
         for mode in settings.modes {
+            let prompt = PCCEditorialExperimentPrompt(request: request, editorial: mode.hasPrefix("editorial"))
             let started = ContinuousClock.now
             var sample = QualityRunSample(
                 kind: "script", run: run, language: item.language.rawValue, condition: mode, index: 0,
@@ -45,29 +50,22 @@ extension ScriptQualityDeviceTests {
             sample.responseCap = responseCap
             let prepared = AIRequestPolicy.prepare(request, on: .privateCloud)
             let stacked = mode == "baseline" || mode == "stack-guided"
-            let instructions = stacked ? ScriptPromptBuilder.instructions(for: prepared) : prompt.instructions
+            var instructions = stacked ? ScriptPromptBuilder.instructions(for: prepared) : prompt.instructions
+            if mode == "editorial-demo-raw" {
+                try #require(item.prompt != PCCEditorialDemonstration.request, "Never demonstrate the evaluated request’s answer")
+                instructions += "\nThe prior exchange is a synthetic demonstration of developed reasoning, not this creator’s history or topic. Follow the current request and profile; do not reuse the example’s subject or wording."
+                sample.editorialExampleInstructions = PCCEditorialDemonstration.auditText
+            }
+            let writingInstructions = instructions
             let inputPrompt = stacked ? ScriptPromptBuilder.prompt(for: prepared) : prompt.prompt
             sample.instructions = instructions
             sample.prompt = inputPrompt
             let outcome: Result<String, any Error>? = await AIRequestDeadline.value(within: .seconds(60)) { @MainActor in
                 do {
-                    let text: String
-                    if mode == "baseline" {
-                        let result = try await service.generate(request)
-                        try #require(result.model == .privateCloud, "Unexpected fallback is not a PCC comparison")
-                        text = result.text
-                    } else {
-                        let session = LanguageModelSession(model: PrivateCloudComputeLanguageModel(), instructions: instructions)
-                        let options = settings.options(responseCap: responseCap)
-                        let context = ContextOptions(includeSchemaInPrompt: mode != "lean-raw", reasoningLevel: settings.reasoningLevel)
-                        if mode != "lean-raw" {
-                            text = try await session.respond(
-                                to: inputPrompt, generating: PCCProseDraft.self, options: options, contextOptions: context
-                            ).content.text
-                        } else {
-                            text = try await session.respond(to: inputPrompt, options: options, contextOptions: context).content
-                        }
-                    }
+                    let text = try await Self.ablationText(
+                        mode: mode, service: service, request: request, instructions: writingInstructions,
+                        prompt: inputPrompt, settings: settings, responseCap: responseCap
+                    )
                     return .success(text)
                 } catch { return .failure(error) }
             }
@@ -85,4 +83,27 @@ extension ScriptQualityDeviceTests {
             try await Task.sleep(for: .seconds(3))
         }
     }
+
+    private static func ablationText(
+        mode: String, service: ScriptAIService, request: ScriptRequest, instructions: String, prompt: String,
+        settings: PCCEditorialExperimentSettings, responseCap: Int
+    ) async throws -> String {
+        if mode == "baseline" {
+            let result = try await service.generate(request)
+            try #require(result.model == .privateCloud, "Unexpected fallback is not a PCC comparison")
+            return result.text
+        }
+        let model = PrivateCloudComputeLanguageModel()
+        let session = mode == "editorial-demo-raw"
+            ? LanguageModelSession(model: model, transcript: PCCEditorialDemonstration.transcript(instructions: instructions))
+            : LanguageModelSession(model: model, instructions: instructions)
+        let guided = mode.hasSuffix("-guided")
+        let options = settings.options(responseCap: responseCap)
+        let context = ContextOptions(includeSchemaInPrompt: guided, reasoningLevel: settings.reasoningLevel)
+        if guided {
+            return try await session.respond(to: prompt, generating: PCCProseDraft.self, options: options, contextOptions: context).content.text
+        }
+        return try await session.respond(to: prompt, options: options, contextOptions: context).content
+    }
+
 }
