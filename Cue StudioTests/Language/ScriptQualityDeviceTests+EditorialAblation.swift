@@ -10,26 +10,24 @@ extension ScriptQualityDeviceTests {
     func comparesEditorialPromptAblations() async throws {
         KeepScreenAwake.enable()
         let environment = ProcessInfo.processInfo.environment
+        let settings = try #require(PCCEditorialExperimentSettings(environment: environment), "Invalid editorial experiment configuration")
         let wanted = try #require(environment["CUE_QUALITY_INTENT_CASE"])
         let item = try #require(ScriptIntentCase.load().first { $0.id == wanted })
         let profile = try #require(QualityProfiles.all.first { $0.language == item.language })
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let creator = CreatorProfileService(defaults: defaults.defaults)
-        creator.profile = profile.full
+        creator.profile = profile.profile(settings.voice)
         let factory = ScriptRequestFactory(
             rules: TestData.rulesService(), profile: creator, scriptLanguage: item.language, interfaceLanguage: item.language
         )
         let request = factory.request(idea: item.prompt, platform: .reels, format: nil, formatChoice: item.formatChoice)
-        let service = ScriptAIService(usesPrivateCloudCompute: true, preferredModel: .privateCloud)
+        let service = ScriptAIService(usesPrivateCloudCompute: true, preferredModel: .privateCloud, cloudReasoning: settings.reasoningLevel)
         guard service.availability.privateCloud else { try Test.cancel("PCC unavailable: not validated") }
         try #require(UIApplication.shared.applicationState == .active, "Unlock the iPhone and keep the test foreground")
         let prompt = PCCEditorialExperimentPrompt(request: request)
         let run = environment["CUE_QUALITY_RUN"] ?? "editorial-ablation"
-        let modes = environment["CUE_QUALITY_ABLATION_MODES"]?.split(separator: ",").map(String.init)
-            ?? ["baseline", "stack-guided", "lean-guided", "lean-raw"]
-        try #require(!modes.isEmpty && modes.allSatisfy { ["baseline", "stack-guided", "lean-guided", "lean-raw"].contains($0) })
-        for mode in modes {
+        for mode in settings.modes {
             let started = ContinuousClock.now
             var sample = QualityRunSample(
                 kind: "script", run: run, language: item.language.rawValue, condition: mode, index: 0,
@@ -38,10 +36,10 @@ extension ScriptQualityDeviceTests {
             sample.caseID = item.id
             sample.expectedDirection = item.expectedDirection
             sample.requiredLiterals = item.requiredLiterals
-            sample.reviewChecks = item.reviewChecks
+            sample.reviewChecks = item.reviewChecks + [settings.description]
             sample.model = "privateCloud"
             sample.requestedModel = "privateCloud"
-            sample.requestedReasoning = "default"
+            sample.requestedReasoning = settings.reasoning
             sample.durationPolicy = request.durationPolicy.rawValue
             let responseCap = ScriptAIService.responseTokens(for: AIRequestPolicy.prepare(request, on: .privateCloud), on: .privateCloud)
             sample.responseCap = responseCap
@@ -60,11 +58,14 @@ extension ScriptQualityDeviceTests {
                         text = result.text
                     } else {
                         let session = LanguageModelSession(model: PrivateCloudComputeLanguageModel(), instructions: instructions)
-                        let options = GenerationOptions(maximumResponseTokens: responseCap)
+                        let options = settings.options(responseCap: responseCap)
+                        let context = ContextOptions(includeSchemaInPrompt: mode != "lean-raw", reasoningLevel: settings.reasoningLevel)
                         if mode != "lean-raw" {
-                            text = try await session.respond(to: inputPrompt, generating: PCCProseDraft.self, options: options).content.text
+                            text = try await session.respond(
+                                to: inputPrompt, generating: PCCProseDraft.self, options: options, contextOptions: context
+                            ).content.text
                         } else {
-                            text = try await session.respond(to: inputPrompt, options: options).content
+                            text = try await session.respond(to: inputPrompt, options: options, contextOptions: context).content
                         }
                     }
                     return .success(text)
