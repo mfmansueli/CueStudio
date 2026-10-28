@@ -86,6 +86,7 @@ struct QuickEditView: View {
         .sheet(item: $viewModel.sheet) { sheet in
             switch sheet {
             case .music: AddMusicSheet(viewModel: viewModel)
+            case .soundEffects: AddMusicSheet(viewModel: viewModel, effectsOnly: true)
             case .media: AddMediaSheet(viewModel: viewModel)
             case .transcript: TranscriptEditSheet(viewModel: viewModel)
             case .findInCaptions: CaptionFindSheet(viewModel: viewModel)
@@ -244,7 +245,8 @@ struct QuickEditView: View {
             panelIsExpanded: viewModel.stylePanelIsExpanded && viewModel.panel?.isExpandable == true,
             typesInHeaderField: viewModel.panel == .textStyle && viewModel.selectedText?.graphic == nil
                 && TextStylePanel.hidesControlsWhileTyping(dynamicTypeSize),
-            timelineLanes: viewModel.timelineLanes, collapsesTimeline: !viewModel.tracks.isExpanded
+            timelineLanes: viewModel.timelineLanes, collapsesTimeline: !viewModel.tracks.isExpanded,
+            timelineReveal: viewModel.panel == nil ? viewModel.timelineReveal : nil
         )
     }
 
@@ -332,7 +334,10 @@ struct QuickEditView: View {
     @ViewBuilder
     private func timeline(_ layout: EditorLayout) -> some View {
         if layout.showsTimeline {
-            EditorTimelineView(viewModel: viewModel, heightClass: layout.heightClass)
+            EditorTimelineView(
+                viewModel: viewModel, heightClass: layout.heightClass, openLaneHeight: layout.openLaneHeight,
+                revealSpan: layout.openTimeline - layout.collapsedTimeline
+            )
         } else {
             Color.clear
         }

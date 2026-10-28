@@ -30,7 +30,7 @@ nonisolated struct EditFraming {
     private let cacheKey: String
     private var backgrounds: [UUID?: BackgroundRender?] = [:]
     private var clipBackgrounds: [UUID: BackgroundRender?] = [:]
-    private var follows: [UUID?: FaceFollowPath?] = [:]
+    private var follows: [Shown: FaceFollowPath?] = [:]
     private var steadyPaths: [String: StabilizationPath?] = [:]
 
     init(edit: TakeEdit, take: URL, takeShape: Shape, shapes: [UUID: Shape], analyses: [UUID?: MotionAnalysis], cacheKey: String) {
@@ -58,24 +58,36 @@ nonisolated struct EditFraming {
         return CGRect(x: topLeft.minX, y: size.height - topLeft.maxY, width: topLeft.width, height: topLeft.height)
     }
 
-    /// How a frame of the recording `id` (nil: the take) lands on the take's frame, with the recording's own background.
-    mutating func frame(forRecording id: UUID?) -> SourceFrame {
+    /// A recording as a clip reshapes it, for its Follow face path.
+    private struct Shown: Hashable {
+        let id: UUID?
+        let orientation: ClipOrientation
+    }
+
+    /// How a frame of the recording `id` (nil: the take) lands on the take's frame, with the recording's own background; reshaped
+    /// as `orientation` says first, the part kept and Follow face's path are of the reshaped picture.
+    mutating func frame(forRecording id: UUID?, orientation: ClipOrientation = .identity) -> SourceFrame {
         guard let played = shapes[id] else { return SourceFrame(transform: .identity, crop: crop, scale: 1) }
-        let own = id == nil ? crop : Self.cropRect(uprightSize: played.uprightSize, edit: edit)
+        let size = orientation.size(of: played.uprightSize)
+        let own = id == nil && orientation.isIdentity ? crop : Self.cropRect(uprightSize: size, edit: edit)
         var result = SourceFrame(
             transform: played.transform, crop: own, scale: own.width > 0 ? crop.width / own.width : 1, background: background(of: id)
         )
-        result.uprightSize = played.uprightSize
-        if follows[id] == nil {
-            follows[id] = EditedComposition.followPath(for: edit, analysis: analyses[id], crop: own, size: played.uprightSize)
+        result.uprightSize = size
+        result.orientation = orientation
+        let shown = Shown(id: id, orientation: orientation)
+        if follows[shown] == nil {
+            let analysis = analyses[id].map { orientation.isIdentity ? $0 : $0.oriented(by: orientation) }
+            follows[shown] = EditedComposition.followPath(for: edit, analysis: analysis, crop: own, size: size)
         }
-        result.follow = follows[id] ?? nil
+        result.follow = follows[shown] ?? nil
         return result
     }
 
-    /// How a frame of `segment` lands on the take's frame: its recording's, with the clip's own background and Stabilize.
+    /// How a frame of `segment` lands on the take's frame: its recording's reshaped as the clip says, with the clip's own
+    /// background and Stabilize.
     mutating func frame(of segment: EditSegment) -> SourceFrame {
-        var result = frame(forRecording: segment.sourceID)
+        var result = frame(forRecording: segment.sourceID, orientation: segment.orientation)
         if let own = clipBackground(of: segment) { result.background = own }
         if let level = segment.stabilization, let analysis = analyses[segment.sourceID] {
             let key = (segment.sourceID?.uuidString ?? "take") + level.rawValue

@@ -9,7 +9,8 @@ import Foundation
 /// How a recording's frames become the edit's frame: its track's transform (portrait recordings
 /// upright), the part of the upright frame to keep, and the scale that brings it to the take's
 /// frame size (1 for the take itself; another take or video of a montage is scaled to match), and
-/// its background effect. With Follow face, the part kept moves over time (`follow`).
+/// its background effect. A clip turned, mirrored or cropped (`orientation`) is reshaped first, and
+/// the part kept is of that. With Follow face, the part kept moves over time (`follow`).
 nonisolated struct SourceFrame: Sendable {
     let transform: CGAffineTransform
     /// Core Image coordinates.
@@ -18,8 +19,10 @@ nonisolated struct SourceFrame: Sendable {
     var background: BackgroundRender?
     /// Follow face: where the crop's center is over the recording's own seconds; nil keeps `crop` still.
     var follow: FaceFollowPath?
-    /// The recording's upright frame, in pixels (for the crop that follows).
+    /// The recording's upright frame as the clip reshapes it, in pixels (for the crop that follows).
     var uprightSize: CGSize = .zero
+    /// Rotate, Mirror and Crop of the clip, done on the upright frame once it is steady.
+    var orientation: ClipOrientation = .identity
     /// Stabilize: how each moment of the recording is held steady; nil plays it as filmed.
     var steady: StabilizationPath?
 

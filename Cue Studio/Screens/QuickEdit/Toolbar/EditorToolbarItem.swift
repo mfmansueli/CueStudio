@@ -37,6 +37,8 @@ struct EditorToolbarItem: Identifiable, Hashable {
     var scopeBadge: ScopeBadge?
     /// A thin line before it: the start of a group of tools of another reach.
     var startsGroup = false
+    /// A switch (a track bar's Show, Compare): lit while on, and VoiceOver hears it as a switch, on or off. Nil: a button.
+    var isOn: Bool?
 
     /// Delete stays at the end of the bar while the other tools scroll.
     var isPinned: Bool { style == .destructive }

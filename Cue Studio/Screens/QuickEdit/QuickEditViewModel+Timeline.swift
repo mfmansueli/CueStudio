@@ -14,8 +14,8 @@ extension QuickEditViewModel {
     // MARK: - What it shows
 
     /// Every track of the edit, the same `timelineInput` gives the timeline: collapsed, the editor makes room for the video
-    /// track and the tallest of them (`TimelineGeometry.collapsedHeight`); with every track out, for them all, the preview
-    /// giving the room.
+    /// track and one of them (`TimelineGeometry.collapsedHeight`); with every track out, they share what leaves the video at
+    /// least as tall as everything under it (`EditorLayout.openLaneHeight`).
     var timelineLanes: [TimelineLane] {
         let timeline = edit.timeline
         return TimelineGeometry.lanes(
@@ -25,9 +25,9 @@ extension QuickEditViewModel {
         )
     }
 
-    /// Everything the timeline draws, for `heightClass`. Reads the playhead only while a
-    /// voice-over records (its track grows with it).
-    func timelineInput(heightClass: EditorHeightClass) -> TimelineGeometry.Input {
+    /// Everything the timeline draws, for `heightClass`, each track `openLaneHeight` tall while every track is out. Reads the
+    /// playhead only while a voice-over records (its track grows with it).
+    func timelineInput(heightClass: EditorHeightClass, openLaneHeight: CGFloat? = nil) -> TimelineGeometry.Input {
         let timeline = edit.timeline
         var input = TimelineGeometry.Input(duration: edit.editedDuration)
         var start: TimeInterval = 0
@@ -38,7 +38,8 @@ extension QuickEditViewModel {
                 // A curve draws its frames at its average pace.
                 sourceStart: segment.sourceStart, sourceEnd: segment.sourceEnd,
                 speed: segment.speedCurve == nil ? segment.speed : segment.sourceLength / max(0.001, segment.duration),
-                sourceID: segment.sourceID, badge: Self.badge(of: segment, background: edit.background(for: segment)), transition: segment.transitionIn
+                sourceID: segment.sourceID, badge: Self.badge(of: segment, background: edit.background(for: segment)), transition: segment.transitionIn,
+                orientation: segment.orientation
             )
         }
         input.texts = edit.editedTexts(in: timeline).map { text, span in
@@ -93,6 +94,8 @@ extension QuickEditViewModel {
         input.activeLanes = toolMenu?.lanes ?? []
         input.tracks = tracks
         input.heightClass = heightClass
+        input.openLaneHeight = openLaneHeight
+        input.reveal = panel == nil ? timelineReveal : nil
         input.pointsPerSecond = TimelineGeometry.basePointsPerSecond * timelineZoom
         return input
     }
@@ -137,6 +140,12 @@ extension QuickEditViewModel {
 
     // MARK: - Tapping
 
+    /// Every track out, or the current track alone: a drag up or down on the timeline let go, or ▾ (the timeline settles
+    /// there by itself, `TimelineScrollingView`).
+    func expandTracks(_ expanded: Bool) {
+        tracks.isExpanded = expanded
+    }
+
     /// A tap on the timeline (a move under `TimelineGeometry.tapSlop`): picks what it lands on, or
     /// lets go on empty space. A track's strip opens (or closes) that track's tools. While Pauses
     /// is open only the pauses answer.
@@ -147,7 +156,7 @@ extension QuickEditViewModel {
             return
         }
         if hit == .trackChooser {
-            Haptics.selection()
+            Haptics.light()
             tracks.isExpanded.toggle()
             return
         }
@@ -181,22 +190,19 @@ extension QuickEditViewModel {
         }
     }
 
-    /// A track's strip: its tools replace the toolbar's, and a second tap puts the toolbar back. While every track is out, a tap
-    /// only chooses the track (an item picked on another track is let go): what it does comes with the next tap.
+    /// A track's strip: its tools replace the toolbar's (every track has its own, `EditorToolMenu`), and a second tap puts the
+    /// toolbar back. While every track is out, a tap chooses the track and puts the others away, and the track comes with its
+    /// tools open, lit in its colour (owner, 28/10/2026); under a panel it only chooses. An item picked on another track is
+    /// let go.
     private func tapLane(_ lane: TimelineLane) {
         if tracks.isExpanded {
             if let item = selection, item.lane != .main, item.lane != lane { selection = nil }
             Haptics.selection()
             tracks.choose(lane)
-            return
-        }
-        if lane == .media {
-            // The media track: add another photo or video, the way it was last added.
+            guard panel == nil, let menu = EditorToolMenu(lane: lane) else { return }
             player.pause()
             selection = nil
-            panel = nil
-            overlays.mediaInsertMode = overlays.lastOverlayMode
-            sheet = .media
+            toolMenu = menu
             return
         }
         guard let menu = EditorToolMenu(lane: lane) else { return }

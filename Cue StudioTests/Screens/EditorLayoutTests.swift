@@ -40,29 +40,37 @@ struct EditorLayoutTests {
         #expect(se.playerBar == 40)
         #expect(!se.heightClass.toolbarShowsLabels)
         #expect(se.heightClass.mainTrackHeight == 44)
-        #expect(se.heightClass.laneHeight == 22)
+        #expect(se.heightClass.laneHeight == 36)
         let mini = EditorLayout(usableHeight: Screen.iPhoneMini.rawValue)
         #expect(mini.heightClass.mainTrackHeight == 48)
-        #expect(mini.heightClass.laneHeight == 24)
+        #expect(mini.heightClass.laneHeight == 40)
         #expect(mini.heightClass.toolbarLabelSize == 10)
         let pro = EditorLayout(usableHeight: Screen.iPhone16Pro.rawValue)
         #expect(pro.heightClass.mainTrackHeight == 56)
+        #expect(pro.heightClass.laneHeight == 44)
+        // Under a panel a track is as tall as the video track there.
+        #expect(pro.heightClass.panelLaneHeight == 40)
+        #expect(se.heightClass.panelLaneHeight == 36)
         #expect(pro.heightClass.toolbarLabelSize == 11)
     }
 
     // MARK: - Nothing open
 
-    @Test func withNothingOpenTheTimelineTakesAThirdWithinLimits() {
+    /// Every track out (a new edit's by default), the video keeps at least half: the timeline takes what the tracks need, up to
+    /// what's left under the video; on a tall window the tracks are as tall as a track alone and the video gets the rest.
+    @Test func withNothingOpenTheVideoKeepsAtLeastHalf() {
         for screen in Screen.allCases {
             let layout = EditorLayout(usableHeight: screen.rawValue)
-            #expect(layout.timeline >= 184 && layout.timeline <= 300, "\(screen)")
+            #expect(layout.preview >= screen.rawValue / 2 - 0.01, "\(screen)")
             #expect(layout.toolbar == 64)
             #expect(layout.panel == 0)
             #expect(abs(layout.preview + layout.playerBar + layout.timeline + layout.toolbar - screen.rawValue) < 0.5, "\(screen)")
             #expect(layout.preview >= EditorLayout.previewMinimum(for: screen.rawValue), "\(screen)")
         }
-        #expect(EditorLayout(usableHeight: 900).timeline == 288)
-        #expect(EditorLayout(usableHeight: 1_200).timeline == 300)
+        // The ruler, the video track and four 44 pt tracks, each with the 6 pt under it.
+        #expect(EditorLayout(usableHeight: 900).timeline == 290)
+        #expect(EditorLayout(usableHeight: 1_200).timeline == 290)
+        #expect(EditorLayout(usableHeight: 1_200).openLaneHeight == 44)
     }
 
     // MARK: - Panels
@@ -199,7 +207,7 @@ struct EditorLayoutTests {
         for screen in Screen.allCases {
             let layout = EditorLayout(usableHeight: screen.rawValue, panel: .medium, panelFocusesLane: true)
             let needed = layout.heightClass.rulerHeight + layout.heightClass.panelMainTrackHeight
-                + EditorLayout.laneGap + layout.heightClass.laneHeight
+                + EditorLayout.laneGap + layout.heightClass.panelLaneHeight
             #expect(layout.timeline >= needed, "\(screen)")
         }
     }

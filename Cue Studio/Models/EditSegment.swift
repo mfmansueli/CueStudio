@@ -46,8 +46,22 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     var look: ClipLook?
     /// Stabilize: how strongly the camera's shake is smoothed out of this clip (`StabilizationPath`); nil plays it as filmed.
     var stabilization: StabilizationLevel?
+    /// Rotate: quarter turns clockwise of the clip's picture, 0 to 3 (a clip filmed on its side).
+    var quarterTurns = 0
+    /// Mirror: the clip's picture (turned) flipped left to right.
+    var isMirrored = false
+    /// Crop: the part of the clip's picture (turned and mirrored) that fills the frame; nil shows all of it.
+    var crop: ClipCrop?
+    /// Animation: how the clip's picture comes in at its start and goes out at its end; nil cuts straight in or out.
+    var animationIn: ClipAnimation?
+    var animationOut: ClipAnimation?
+    /// Its sound rising from silence over its first seconds, and falling to silence over its last.
+    var soundFadeIn: TimeInterval = 0
+    var soundFadeOut: TimeInterval = 0
 
     static let volumeRange: ClosedRange<Double> = 0...2
+    /// The longest a sound fade goes (as music's).
+    static let soundFadeRange: ClosedRange<Double> = 0...5
 
     init(
         id: UUID = UUID(), sourceStart: TimeInterval, sourceEnd: TimeInterval,
@@ -80,6 +94,15 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
         // A part of a curved clip keeps its part of the curve, so it plays exactly as it did.
         if let curve = speedCurve, sourceLength > 0 {
             piece.speedCurve = curve.part(from: (span.start - sourceStart) / sourceLength, to: (span.end - sourceStart) / sourceLength)
+        }
+        // The way in stays with the part that starts the clip, the way out with the part that ends it.
+        if span.start > sourceStart + 0.001 {
+            piece.animationIn = nil
+            piece.soundFadeIn = 0
+        }
+        if span.end < sourceEnd - 0.001 {
+            piece.animationOut = nil
+            piece.soundFadeOut = 0
         }
         return piece
     }
@@ -137,11 +160,29 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
         return min(max(speed, speedRange.lowerBound), speedRange.upperBound)
     }
 
+    /// A sound fade inside `soundFadeRange`.
+    static func clampedFade(_ seconds: TimeInterval) -> TimeInterval {
+        guard seconds.isFinite else { return 0 }
+        return min(max(seconds, soundFadeRange.lowerBound), soundFadeRange.upperBound)
+    }
+
+    /// Reset clip: the same stretch of its recording as filmed, at 1× with its sound at 100% and on (unless `keepsMute`: its sound
+    /// was taken out to a track), without zoom, look, Stabilize, mirror, turn, crop, animation or sound fades. Where it is, what
+    /// it plays and the transition into it stay.
+    func asRecorded(keepsMute: Bool) -> EditSegment {
+        var clip = EditSegment(
+            id: id, sourceStart: sourceStart, sourceEnd: sourceEnd, transitionIn: transitionIn, sourceID: sourceID
+        )
+        clip.transitionDuration = transitionDuration
+        clip.isMuted = keepsMute && isMuted
+        return clip
+    }
+
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
         case id, sourceStart, sourceEnd, transitionIn, transitionDuration, speed, sourceID, zoom, zoomAmount, volume, isMuted, keepsPitch, look
-        case stabilization, speedCurve
+        case stabilization, speedCurve, isMirrored, quarterTurns, crop, animationIn, animationOut, soundFadeIn, soundFadeOut
     }
 
     /// Pieces saved before transitions or speed existed are hard cuts at 1×, and so is a
@@ -167,5 +208,13 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
         stabilization = try? container.decodeIfPresent(StabilizationLevel.self, forKey: .stabilization)
         // Clips saved before curves play at their speed.
         speedCurve = try? container.decodeIfPresent(SpeedCurve.self, forKey: .speedCurve)
+        // Clips saved before Mirror, Rotate, Crop, Animation and the sound's fades play as filmed.
+        isMirrored = (try? container.decodeIfPresent(Bool.self, forKey: .isMirrored)) ?? false
+        quarterTurns = (((try? container.decodeIfPresent(Int.self, forKey: .quarterTurns)) ?? 0) % 4 + 4) % 4
+        crop = try? container.decodeIfPresent(ClipCrop.self, forKey: .crop)
+        animationIn = try? container.decodeIfPresent(ClipAnimation.self, forKey: .animationIn)
+        animationOut = try? container.decodeIfPresent(ClipAnimation.self, forKey: .animationOut)
+        soundFadeIn = Self.clampedFade((try? container.decodeIfPresent(TimeInterval.self, forKey: .soundFadeIn)) ?? 0)
+        soundFadeOut = Self.clampedFade((try? container.decodeIfPresent(TimeInterval.self, forKey: .soundFadeOut)) ?? 0)
     }
 }

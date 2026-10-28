@@ -36,8 +36,8 @@ struct TimelineMediaLaneTests {
         #expect(geometry.lanes.map(\.lane) == [.main, .media, .text, .captions, .audio])
         #expect(!geometry.ghosts.contains { $0.target == .lane(.media) })
         let lane = geometry.lane(.media)
-        #expect(lane?.y == CGFloat(28 + 56 + 8))
-        #expect(lane?.height == 34)
+        #expect(lane?.y == CGFloat(28 + 56 + 6))
+        #expect(lane?.height == 44)
         #expect(geometry.items.first?.frame.minY == lane?.y)
         #expect(geometry.items.first?.strip?.layout == .split)
         // Texts keep their hint.

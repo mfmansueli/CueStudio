@@ -23,6 +23,8 @@ extension ClipsViewModel {
         let sourceID: UUID?
         /// Seconds of its recording shown on its thumbnail.
         let thumbnailTime: TimeInterval
+        /// Its Rotate, Mirror and Crop: the thumbnail shows them.
+        var orientation = ClipOrientation.identity
     }
 
     /// Every section, in play order.
@@ -31,7 +33,8 @@ extension ClipsViewModel {
         return timeline.segments.enumerated().map { index, segment in
             Clip(
                 id: segment.id, index: index, title: title(ofSource: segment.sourceID), duration: segment.duration,
-                sourceID: segment.sourceID, thumbnailTime: (segment.sourceStart + segment.sourceEnd) / 2
+                sourceID: segment.sourceID, thumbnailTime: (segment.sourceStart + segment.sourceEnd) / 2,
+                orientation: segment.orientation
             )
         }
     }
@@ -156,6 +159,18 @@ extension ClipsViewModel {
     }
 
     /// Reorder: the clips in a list to drag, from the clip's tools or holding a clip on the timeline. One clip: nothing to order.
+    /// The picked clip's Transition (its bar): the cut after it, or, on the last clip, the one before it, picked with its panel
+    /// open (a picked clip's own cuts give their marks to its handles). A video of one clip has no cut, and says how to make one.
+    func openClipTransition() {
+        let segments = edit.timeline.segments
+        guard segments.count > 1, let clip = targetClip, let index = segments.firstIndex(where: { $0.id == clip.id }) else {
+            toast.show(String(localized: "Split or add a clip to add a transition"), kind: .problem)
+            return
+        }
+        player.pause()
+        selection = .join(segments[min(index + 1, segments.count - 1)].id)
+    }
+
     func openClipOrder() {
         guard isReady else { return }
         guard edit.timeline.segments.count > 1 else {

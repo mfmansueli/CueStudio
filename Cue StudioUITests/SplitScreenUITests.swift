@@ -68,9 +68,10 @@ final class SplitScreenUITests: XCTestCase {
     func testMediaSaysWhereEachPlaceGoesBeforePicking() {
         app = EditorApp.open(demo: true)
         EditorApp.tapTool(app, "addMedia")
+        EditorApp.tapTool(app, "mediaSplit")
         let cards = app.descendants(matching: .any)["edit.mediaMode"]
-        XCTAssertTrue(cards.exists(within: 5), "Media didn't open Add photo or video")
-        XCTAssertTrue(app.buttons["edit.mediaMode.split"].isSelected, "Media doesn't start on the split screen")
+        XCTAssertTrue(cards.exists(within: 5), "Media › Split screen didn't open Add photo or video")
+        XCTAssertTrue(app.buttons["edit.mediaMode.split"].isSelected, "The sheet doesn't open on the split screen")
         let explanation = app.staticTexts["edit.mediaModeExplanation"]
         XCTAssertTrue(explanation.label.contains("same time"), explanation.label)
         let note = app.descendants(matching: .any)["edit.mediaInsertionNote"]

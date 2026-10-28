@@ -31,12 +31,27 @@ final class CreatorWalksUITests: XCTestCase {
 
     private func source(_ name: String) -> XCUIElement { app.segmentedControls["edit.mediaSource"].buttons[name] }
 
-    /// Media › `mode` › Your library › the named items, in order, then Continue and the step after it.
-    private func addFromLibrary(_ names: [String], as mode: String) {
+    /// Media › one way of adding (`split`, `window`, `fullScreen`, `sequence`): the sheet opens on its card.
+    private func openMedia(_ mode: String) {
         EditorApp.tapTool(app, "addMedia")
+        EditorApp.tapTool(app, "media" + mode.prefix(1).uppercased() + mode.dropFirst())
         let card = app.buttons["edit.mediaMode.\(mode)"]
         waitFor(card, "Add photo or video")
-        card.tap()
+        XCTAssertTrue(card.isSelected, "Media › \(mode) didn't open on it")
+    }
+
+    /// Media › Your library: the sheet opens on it.
+    private func openLibrary() {
+        EditorApp.tapTool(app, "addMedia")
+        EditorApp.tapTool(app, "mediaLibrary")
+        waitFor(source("Your library"), "Add photo or video")
+        XCTAssertTrue(source("Your library").isSelected, "Media › Your library didn't open on the library")
+    }
+
+    /// Media › `mode` (the Media bar's way of adding) › Your library › the named items, in order, then Continue and the step
+    /// after it.
+    private func addFromLibrary(_ names: [String], as mode: String) {
+        openMedia(mode)
         source("Your library").tap()
         for name in names {
             let tile = app.buttons["edit.library.asset.\(name)"]
@@ -164,13 +179,14 @@ final class CreatorWalksUITests: XCTestCase {
     func testABrandKitMadeHereGoesOnAnotherVideo() {
         app = EditorApp.open(demo: true, arguments: ["-uiTestSeedLibrary"])
 
-        EditorApp.tapTool(app, "addMedia")
-        source("Your library").tap()
+        openLibrary()
         let logo = app.buttons["edit.library.asset.Cue logo"]
         waitFor(logo, "The logo in the library")
         logo.tap()
         XCTAssertTrue(EditorApp.toastSays(app, "over the whole video", timeout: 8), "The logo never went in")
 
+        // Back from the Media bar the logo came from.
+        backToMainTools()
         EditorApp.tapTool(app, "smart")
         app.buttons["edit.smart.section.brand"].tap()
         app.buttons["edit.brand.newKit"].tap()
@@ -288,8 +304,7 @@ final class CreatorWalksUITests: XCTestCase {
         XCTAssertTrue(EditorApp.toastSays(app, "Saved to your library", timeout: 8), "The B-roll wasn't saved")
 
         backToMainTools()
-        EditorApp.tapTool(app, "addMedia")
-        source("Your library").tap()
+        openLibrary()
         expandSheet()
         let saved = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.library.asset.Video'")).firstMatch
         waitFor(saved, "The saved video in the library")
@@ -329,8 +344,7 @@ final class CreatorWalksUITests: XCTestCase {
         app.buttons["sheet.closeButton"].firstMatch.tap()
 
         openThePreviousTake()
-        EditorApp.tapTool(app, "addMedia")
-        app.buttons["edit.mediaMode.window"].tap()
+        openMedia("window")
         source("Your library").tap()
         let again = app.buttons["edit.library.asset.B-roll walk"]
         waitFor(again, "The library's video in another take")

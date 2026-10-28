@@ -269,9 +269,11 @@ struct QuickEditClipLookTests {
         scenario.viewModel.perform(.selectClipAtPlayhead)
         let ids = scenario.viewModel.toolbarItems.map(\.id)
         #expect(ids == [
-            "split", "editByText", "speed", "volume", "pauses", "zoom", "stabilize", "duplicate", "freeze", "reverse", "replace", "extractAudio",
-            "reorder", "adjust", "skin", "filters", "background", "blurArea", "copyLook", "pasteLook",
-            "captions", "text", "addMedia", "audio", "smart", "format", "templates", "brandKit", "cover", "delete",
+            "split", "speed", "volume", "mute", "zoom",
+            "adjust", "skin", "filters", "background", "clipCrop", "mirror", "stabilize", "blurArea", "copyLook", "pasteLook",
+            "transition", "clipAnimation", "duplicate", "freeze", "reverse", "replace", "reorder", "extractAudio", "resetClip",
+            "text", "addMedia", "audio", "smart",
+            "editByText", "pauses", "voice", "captions", "format", "templates", "brandKit", "cover", "delete",
         ])
     }
 }

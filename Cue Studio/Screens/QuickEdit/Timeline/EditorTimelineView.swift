@@ -11,6 +11,10 @@ import SwiftUI
 struct EditorTimelineView: UIViewRepresentable {
     let viewModel: QuickEditViewModel
     let heightClass: EditorHeightClass
+    /// Each track's height while every track is out (`EditorLayout.openLaneHeight`).
+    let openLaneHeight: CGFloat
+    /// What the timeline grows by with every track out (`EditorLayout.openTimeline` − `collapsedTimeline`).
+    let revealSpan: CGFloat
 
     func makeCoordinator() -> Coordinator {
         Coordinator(viewModel: viewModel)
@@ -23,7 +27,8 @@ struct EditorTimelineView: UIViewRepresentable {
     }
 
     func updateUIView(_ view: TimelineScrollingView, context: Context) {
-        view.update(input: viewModel.timelineInput(heightClass: heightClass), sources: sources)
+        view.revealSpan = revealSpan
+        view.update(input: viewModel.timelineInput(heightClass: heightClass, openLaneHeight: openLaneHeight), sources: sources)
     }
 
     static func dismantleUIView(_ view: TimelineScrollingView, coordinator: Coordinator) {
@@ -58,7 +63,10 @@ struct EditorTimelineView: UIViewRepresentable {
                 endScrub: { viewModel.endTimelineScrub() },
                 tap: { viewModel.tapTimeline($0) },
                 beginHandle: { viewModel.beginTimelineHandle($0, snapTimes: $1) },
-                moveHandle: { viewModel.moveTimelineHandle(by: $0) },
+                moveHandle: {
+                    let moved = viewModel.moveTimelineHandle(by: $0)
+                    return (moved.label, moved.compensation, viewModel.lastHandleSnap)
+                },
                 endHandle: { viewModel.endTimelineHandle() },
                 holdClip: { id in
                     viewModel.selection = .clip(id)
@@ -69,7 +77,9 @@ struct EditorTimelineView: UIViewRepresentable {
                 selectClipAtPlayhead: { viewModel.clips.selectClipAtPlayhead() },
                 pickNearestCut: { viewModel.pickNearestJoin() },
                 jumpToCut: { viewModel.jumpToCut(forward: $0) },
-                accessibilityValue: { viewModel.clips.timelineAccessibilityValue }
+                accessibilityValue: { viewModel.clips.timelineAccessibilityValue },
+                reveal: { viewModel.timelineReveal = $0 },
+                expandTracks: { viewModel.expandTracks($0) }
             )
             view.show(time: viewModel.player.currentTime)
             followClock()

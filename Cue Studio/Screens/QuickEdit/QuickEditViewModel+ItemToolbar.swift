@@ -11,11 +11,11 @@ import Foundation
 /// "All" badge, and none that would read as the item's own is added (no Split, Speed, Volume or Zoom of the video next to
 /// a text), nor one the item's tools already reach. Delete stays pinned at the end (`EditorToolbarItem.isPinned`).
 extension QuickEditViewModel {
-    /// What a clip's bar adds after its own tools.
+    /// What a clip's bar adds after its own tools (owner, 28/10/2026): what goes on top of it, then everything that changes the
+    /// whole video, together, so no "All" sits among the clip's own.
     static let clipShortcutGroups: [[EditorToolbarTool]] = [
-        [.captions, .text, .media, .audio, .smart],
-        [.format],
-        [.templates, .brandKit, .cover],
+        [.text, .media, .audio, .smart],
+        [.editByText, .pauses, .studioVoice, .captions, .format, .templates, .brandKit, .cover],
     ]
 
     /// What every other item's bar adds: the clip under the playhead's tools first.
@@ -98,31 +98,51 @@ extension QuickEditViewModel {
 
     // MARK: - Own tools
 
-    /// The clip's own tools, most used first so they're the ones on screen: Split, then cutting by the words (Edit by text, which
-    /// reaches the whole video), Speed and Volume (a montage's clips rarely sound alike); Remove pauses (the whole video too) right
-    /// after, as in ✦ Smart; then the clip's moves, copies and order, and its look (Adjust, Skin, Filters, Background: this clip's).
+    /// A clip's own tools in three groups (owner, 28/10/2026): its essentials, the five on screen; its picture; the montage, ending
+    /// with Reset clip. Mute and Mirror are switches, lit while on.
     private var clipItems: [EditorToolbarItem] {
         var split = item(.split)
         split.style = clips.canSplitSelectedClip ? .normal : .dimmed
-        return [
+        let isMuted = targetClip?.isMuted ?? false
+        let essentials = [
             split,
-            item(.editByText).reachingWholeVideo(),
             item(.speed),
             item(.volume),
-            item(.pauses).reachingWholeVideo(),
+            EditorToolbarItem(
+                id: "mute", label: String(localized: "Mute"), systemImage: isMuted ? "speaker.slash.fill" : "speaker.slash",
+                action: .toggleClipMute, isOn: isMuted
+            ),
             item(.zoom),
+        ]
+        let picture = [EditorLookTool.adjust, .skin, .filters, .background].map(clipLookItem) + [
+            item(.crop),
+            EditorToolbarItem(
+                id: "mirror", label: String(localized: "Mirror"), systemImage: "arrow.left.and.right.righttriangle.left.righttriangle.right",
+                action: .toggleClipMirror, isOn: targetClip?.isMirrored ?? false
+            ),
             item(.stabilize),
-            item(.duplicate),
-            item(.freeze),
-            item(.reverse),
-            item(.replace),
-            item(.extractAudio),
-            item(.reorder),
-        ] + [EditorLookTool.adjust, .skin, .filters, .background].map(clipLookItem) + [
             item(.blurArea),
             item(.copyLook),
             item(.pasteLook),
         ]
+        let montage = [
+            EditorToolbarItem(
+                id: "transition", label: String(localized: "Transition"), systemImage: "square.split.diagonal.2x2",
+                style: edit.timeline.segments.count > 1 ? .normal : .dimmed, action: .openClipTransition
+            ),
+            item(.animation),
+            item(.duplicate),
+            item(.freeze),
+            item(.reverse),
+            item(.replace),
+            item(.reorder),
+            item(.extractAudio),
+            EditorToolbarItem(
+                id: "resetClip", label: String(localized: "Reset clip"), systemImage: "arrow.counterclockwise",
+                style: clips.canResetClip ? .normal : .dimmed, action: .resetClip
+            ),
+        ]
+        return Self.grouped([essentials, picture, montage])
     }
 
     /// Adjust, Skin, Filters or Background of the picked clip.

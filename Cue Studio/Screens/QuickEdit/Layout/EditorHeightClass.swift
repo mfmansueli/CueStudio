@@ -47,17 +47,29 @@ nonisolated enum EditorHeightClass: Equatable, Sendable {
     /// The video track while a panel is open (it makes room for the panel).
     var panelMainTrackHeight: CGFloat { 40 }
 
-    /// A track under the video (texts, captions, music, voice-over).
+    /// A track under the video (photos and videos, Blur areas, texts, captions, music, voice-over): all the same height, the
+    /// picked one's too, taller than they were (owner, 28/10/2026), so the current track, its items and ▾ are easy to hit; 44
+    /// on a regular screen, the least a touch target should be.
     var laneHeight: CGFloat {
+        switch self {
+        case .regular: 44
+        case .compact: 40
+        case .veryCompact: 36
+        }
+    }
+
+    /// A track under a panel: as tall as the video track there (owner, 28/10/2026), never taller than it is alone.
+    var panelLaneHeight: CGFloat { min(laneHeight, panelMainTrackHeight) }
+
+    /// The least a track gets while every track is out (they shrink so the video keeps half the screen; past this they
+    /// scroll): the height they had before they grew.
+    var openLaneMinimum: CGFloat {
         switch self {
         case .regular: 28
         case .compact: 24
         case .veryCompact: 22
         }
     }
-
-    /// The track of the selected item grows so its handles are easy to hold.
-    var selectedLaneHeight: CGFloat { laneHeight + 8 }
 
     /// Room for the time labels above the tracks.
     var rulerHeight: CGFloat { self == .regular ? 28 : 24 }

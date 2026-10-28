@@ -53,7 +53,7 @@ struct FiltersPanel: View {
     /// The frame the thumbnails are drawn from: it changes with the clip in scope.
     private var previewKey: String {
         let source = viewModel.look.filterPreviewSource
-        return "\(source.url.path(percentEncoded: false))@\(Int(source.time * 10))"
+        return "\(source.url.path(percentEncoded: false))@\(Int(source.time * 10))@\(source.orientation)"
     }
 
     /// Only for a clip, and only once it sets its own filter.
@@ -105,7 +105,8 @@ struct FiltersPanel: View {
             frame = await thumbnails.frames(for: source.url, at: [source.time], tolerance: 0.25, maxPixelSize: 240).first ?? nil
         }
         guard let frame, !Task.isCancelled else { return }
-        let rendered = await Task.detached { FilterPreviews.render(frame, key: key) }.value
+        let orientation = source.orientation
+        let rendered = await Task.detached { FilterPreviews.render(frame.shaped(by: orientation), key: key) }.value
         if !Task.isCancelled { previews = rendered }
     }
 }

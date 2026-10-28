@@ -761,22 +761,76 @@ regular a partir de 696, compacta de 636). Painéis: §29, §31.
 
 **Uma faixa por vez sob o vídeo** (canvas "Faixas recolhíveis do editor", aprovado pelo dono em 27/10/2026; `TimelineTrackChoice`): com nada
 aberto a timeline mostra a régua, a faixa do vídeo e **a faixa atual** (Texto numa edição nova), e a prévia fica com o resto: no iPhone 17 a timeline
-tem 142 pt em vez de 286 e o vídeo ganha 144 pt (`TimelineGeometry.collapsedHeight`: a régua, o vídeo e a faixa mais alta já crescida, sem o piso de
-32%, para que escolher um item ou trocar de faixa nunca mexa no vídeo; música ou voice-over chegando ou saindo também não). **▾** ao lado do ícone da
-faixa atual (alcance de 44 × 44 pt, sem tocar a faixa do vídeo) põe todas as faixas para fora no lugar, como eram: 32% da altura (184–300 pt) ou o que
-elas pedem, cada faixa tirando o seu espaço da prévia até o mínimo dela (30% da altura, pelo menos 190 pt). Com elas para fora, **um toque numa faixa só
-a escolhe** (nenhuma ferramenta abre, nada é adicionado; a faixa de mídia vazia não abre a biblioteca) e as outras voltam para dentro; **▴** recolhe
-como estava; o toque seguinte faz o que a faixa faz. Trocar de faixa solta o item escolhido na faixa de antes, nunca um clipe do vídeo. **Tudo o que
+tem 144 pt e o vídeo 482 (`TimelineGeometry.collapsedHeight`: a régua, o vídeo e uma faixa, para que escolher um item ou trocar de faixa nunca mexa no
+vídeo; música ou voice-over chegando ou saindo também não). **Faixas altas** (canvas "Faixas mais altas no editor", 28/10/2026): toda faixa sob o vídeo
+tem a mesma altura, a escolhida também (não cresce; o anel, as alças e a faixa acesa mostram o escolhido): **44 pt** (40 na compacta, 36 no SE;
+`EditorHeightClass.laneHeight`); a faixa do vídeo segue com 56. O que está na faixa cresce com ela (`TimelineLaneLook`): a 44 pt, nome 14,5 pt, ícone 14,
+cantos 8; na calha (46 pt de largura, a faixa começa em 48), ícone 17 pt e ▾ 10,5: **a célula inteira da calha é o botão de trocar de faixa**.
+**Cada faixa na sua cor** (canvas "Estilo da faixa e do seletor", proposta C, dono 28/10/2026; `TimelineLaneTint`): o ícone de cada faixa na calha vem
+na tinta dos itens dela (Texto branco, Mídia azul, Desfocar ardósia, Legendas lilás, Música verde, Narração âmbar),
+cada faixa tem um toque da cor dela (6%, a atual 12%), e **a faixa com as ferramentas abertas acende na cor dela** (dono 28/10/2026, no lugar do
+amarelo): contorno de 1,5 pt na cor dela a 85% (3:1 contra a faixa e o preto; o fundo não pode clarear mais, a dica de uma faixa vazia precisa de
+4,5:1) e o quadrado do ícone como apertado (`TimelineLaneTint.litRing`), e o ícone e o ▾ da atual ficam sobre **um quadrado de cantos arredondados** na cor dela (22%,
+contorno de 1 pt a 50%): 40 × 36 pt com cantos de 9 numa faixa de 44 (4 pt menor que a faixa em cada borda, nunca abaixo de 26; cantos de 10 a cada
+40 pt de altura, `TimelineLaneLook.chooserHeight`/`chooserRadius`). **▾** ao lado do ícone da faixa atual (a célula toda, sem tocar a faixa do vídeo) põe todas as faixas
+para fora no lugar, e **todas aparecem, sem rolar** (dono 28/10/2026): elas encolhem para o vídeo ficar pelo menos do tamanho de tudo abaixo dele
+(barra do player + timeline + ferramentas; `EditorLayout.openLaneHeight`), de 44 pt até 28, 6 pt entre elas; se nem com 28 cabem nessa metade, a
+timeline passa da metade e o vídeo cede (só abaixo do mínimo do vídeo, 30% da altura, elas rolariam). No iPhone 17, uma edição nova fica com faixas de
+36 pt, timeline de 258 pt e vídeo de 368 (44 pt no Pro Max, 33 na compacta, 24 no SE); com as seis (Desfocar, música e narração também), faixas de
+28 pt, timeline de 294 e vídeo de 332. Sob um painel sobre uma faixa, ela tem 40 pt, a altura do vídeo ali. **Arrastar a timeline para cima ou para
+baixo** (canvas "Estilo da faixa e do seletor", prancheta F, dono 28/10/2026) faz o que o ▾ faz, seguindo o dedo: arraste claramente vertical (mais
+que 1,2× o lateral; de lado é o tempo), fora de uma alça e do item escolhido; a borda de cima da timeline acompanha o dedo, o vídeo cede, as faixas se
+abrem a partir de onde a atual está (as outras aparecem entre 15% e 65% do caminho) e o ▾ gira na mesma medida (`TimelineGeometry.Input.reveal`,
+`EditorLayout.timelineReveal`); passando das pontas a borda estica até 18 pt e resiste. Ao soltar, vai para o estado mais perto, ou para onde foi
+jogada (mais de 350 pt/s), com uma mola que passa um pouco da marca (`TimelineRevealSpring`, 0,42 s, bounce 0,18) e um toque leve quando muda; o ▾
+abre e fecha com a mesma mola. Com todas para fora e mais faixas que espaço (só sob o mínimo do vídeo), o arraste rola as faixas primeiro e só recolhe
+com a primeira à vista. Um toque durante a mola põe as faixas no lugar e vale. Com elas para fora, **um toque numa faixa a escolhe e ela já
+vem selecionada** (dono 28/10/2026): as outras voltam para dentro na mesma mola do ▾ e as ferramentas dela abrem, acesa na cor dela; com um
+painel aberto o toque só escolhe; nada é adicionado. **Toda faixa tem a sua barra** (`EditorToolMenu`, dono 28/10/2026), aberta pelo toque na faixa
+(recolhida ou para fora) ou pela ferramenta da barra principal, e um segundo toque na faixa a fecha. Cada uma traz o que age na faixa inteira ou
+adiciona nela (o que é de um item vem com o item):
+- **Text**: Title, Subtitle, Hook, Callout, seta, círculo, etiqueta, Comment, Style all e, depois de uma linha fina, **Brand kit** (✦ Smart › Brand kit:
+  as fontes e cores do kit nos textos).
+- **Captions**, com linhas: **Show** (o interruptor do painel: aceso enquanto as linhas aparecem, olho cortado quando escondidas, um passo de desfazer),
+  Add line, All lines, Style, **Translate** (o nome do idioma quando traduzidas; abre o painel com a folha de tradução, o mesmo caminho do "Try it"
+  da notificação), Find and replace, Edit by text e Delete all fixo no fim. Sem linhas: Auto captions, Write captions, Edit by text.
+- **Audio**: Studio Voice, Music, **Sound effects** (a folha só com os efeitos do Cue, título "Sound effects", sem Files), Voice-over e, depois de
+  uma linha fina, o som do clipe sob a agulha: **Volume** e **Extract audio** (as mesmas da barra principal).
+- **Media**: as formas de pôr uma foto ou vídeo, os cartões da folha (**Split screen · Window · Full screen · In sequence**, cada uma abrindo a
+  galeria já nela, com os cartões no topo para trocar); depois de uma linha fina, **Your library** (a folha na biblioteca) e **Brand kit** (o logo do
+  kit). A faixa de mídia não abre mais a folha direto: a barra dela é o caminho (adicionar uma janela: Window e a foto).
+- **Blur area**: **Blur area** (o primeiro passo, os rostos do quadro), **Draw an area** (uma área desenhada no meio, sem passar pelos rostos, assim
+  que o tamanho do vídeo é lido) e, depois de uma linha fina, **Compare** (◐: o vídeo sem as áreas enquanto aceso; apaga quando a barra fecha, e
+  o painel tem o seu).
+- O **vídeo** não tem barra: tocar nele escolhe o clipe, com as ferramentas do clipe.
+
+Um interruptor na barra (Show, Compare; `EditorToolbarItem.isOn`) fica aceso como o ◐ dos painéis: o ícone em `accInk` sobre um quadrado
+arredondado de `acc` (40 × 30, cantos `editorInsetRadius`) e o nome em `accText`; o VoiceOver o ouve como interruptor, "On" ou "Off". Nenhum texto novo: os nomes
+já existiam nos 20 idiomas.
+
+**▴** recolhe como estava. As ferramentas de Áudio abertas pela faixa da narração mantêm a
+narração sob o vídeo (`TimelineTrackChoice.bring` não troca a faixa atual quando ela é uma das da ferramenta). Trocar de faixa solta o item escolhido na faixa de antes, nunca um clipe do vídeo. **Tudo o que
 escolhe um item traz a faixa dele**: um toque na timeline, um texto, legenda, mídia ou área tocada na prévia (`selection`), um painel sobre uma faixa
 ou o menu de uma faixa (Áudio traz a primeira faixa de música ou voice-over). A faixa atual fica guardada **por vídeo** neste aparelho (as últimas 200
 edições, `EditorPreferencesStore.timelineLane`); se o último item dela sair, Texto aparece, e o Desfazer que o traz de volta traz a faixa. A faixa de
-**Mídia** existe sempre, mesmo vazia: "Tap to add a photo or video". Um painel sobre uma faixa mostra só ela e o vídeo, como antes, sem ▾. A mudança de
-altura é uma animação suave de 0,3 s (instantânea com Reduzir Movimento) e as faixas trocam num esmaecer de 0,2 s. O que não couber (painel aberto com
-todas para fora, janela curta no iPad ou no Mac) rola na vertical sob a régua, que fica fixa (sobre preto quando há faixas por baixo), com um degradê no
-pé enquanto há faixas escondidas; arrastar para cima ou para baixo nunca mexe no tempo, e a faixa do item escolhido (ou a das ferramentas abertas) entra
-sozinha na tela. VoiceOver não escolhe faixas (as faixas nunca foram elementos próprios; os itens sim). Uma divisória arrastável entre o vídeo e a
-timeline ficou para quando o dono pedir. Testes: `TimelineTrackChoiceTests`, `QuickEditTrackChoiceTests`, `EditorLayoutTracksTests`,
-`TimelineTracksUITests`.
+**Mídia** existe sempre, mesmo vazia: "Tap to add a photo or video". Um painel sobre uma faixa mostra só ela e o vídeo, como antes, sem ▾. Escolher uma faixa ou um item com elas para fora as recolhe na mesma mola (a timeline segura as faixas para fora até o editor
+dizer se o toque as recolheu); com Reduzir Movimento o ▾ e a escolha trocam no lugar, a altura numa animação suave de 0,3 s, as faixas num esmaecer de
+0,2 s e os ícones da calha deslizando (`TimelineLaneGutterCell`, um por faixa), e o arraste solto assenta sem passar da marca e sem o embalo do dedo. **Movimento leve** (dono 28/10/2026, para julgar no aparelho;
+`TimelineChange` diz o que mexe, `TimelineMotion` mexe): o quadrado do ▾ afunda para 92% enquanto o dedo está nele e volta com mola; o ▾ vira ▴
+girando junto com as faixas, com um toque leve (`Haptics.light`); a faixa trazida para baixo do vídeo sobe 4 pt até o lugar e o quadrado dela volta ao tamanho com
+mola; o item escolhido volta de 96% com uma mola curta e as alças saem dele (o tique de escolher já existia); um item que entra (texto, legenda, mídia,
+um pedaço cortado, um Desfazer) cresce a partir do começo dele, a faixa pisca na cor dela e vem um toque suave; o que sai encolhe e some, e os clipes
+depois de um clipe apagado deslizam para fechar o espaço (0,28 s); onde a agulha ou uma alça gruda (corte, borda, batida) pisca uma linha amarela com o
+tique do encaixe. Só o passo do criador mexe: mais de 3 itens de uma vez (legendas geradas, um Desfazer grande), um aparo ou um zoom ficam no lugar.
+Reduzir Movimento: nada cresce, afunda, sobe, gira ou desliza; o que entra esmaece, o que sai esmaece, a linha do encaixe continua. O que não couber (painel aberto com
+todas para fora, janela muito curta no iPad ou no Mac) rola na vertical sob a régua, que fica fixa (sobre preto quando há faixas por baixo), com um degradê no
+pé enquanto parte de uma faixa está escondida; arrastar para cima ou para baixo nunca mexe no tempo, e a faixa do item escolhido (ou a das ferramentas abertas) entra
+sozinha na tela. VoiceOver não escolhe faixas (as faixas nunca foram elementos próprios; os itens sim). Testes: `TimelineTrackChoiceTests`,
+`QuickEditTrackChoiceTests`, `EditorLayoutTracksTests`, `TimelineRevealTests`, `TimelineLaneLookTests`, `TimelineChangeTests`,
+`TimelineTracksUITests` (o arraste para cima e para baixo e a barra Media pela faixa também), `TrackBarsUITests` (Show das legendas, Sound
+effects), `QuickEditToolbarTests` (o conteúdo de cada barra, Show, Translate, Compare), `QuickEditCopyLookTests`
+(`mediaIsOnTheMainToolbarAndOpensItsBar`); contraste das cores por faixa (dica, itens, ícone e ▾ sobre o quadrado,
+apertado ou não) em `PaletteContrastTests`.
 
 **Gravador (Selfie e Studio):** barra de navegação do sistema num `NavigationStack` dentro do `PrompterView` (a revisão fica fora): fechar
 (`Button(role: .close)`) no início, **Selfie | Studio** (`ModeSwitcher`, `Picker` `.segmented`) no meio, e o chip do quadro (Selfie) ou a rede do roteiro
@@ -1306,9 +1360,8 @@ auditoria: `reports/editor-award-checklist.md`.
 - **Barras como um editor de celular (decisão do dono, 16/10/2026, depois de comparar com CapCut, Edits e InShot; diverge da ordem do quadro
   v29 · 7.2).** Principal: todas as ferramentas do editor numa barra só, em grupos, na ordem em que um vídeo falado é feito (§55). **Format**
   abre o painel "Format" ("Whole video · format for where you post").
-  Clipe: **Split · Speed · Zoom · Volume · Stabilize · Duplicate · Freeze frame · Reverse · Replace · Extract audio · Reorder · Adjust · Filters ·
-  Background · Blur area · Copy look · Paste look · Delete** (Stabilize e Reverse: §39; Blur area: §54): o que é do clipe, o mais usado primeiro;
-  depois de uma linha fina, as outras ferramentas, com o selo "All" no que muda o vídeo inteiro (§55). Texto ganha **Motion** (Style › Motion); mídia ganha **Mask** e **Blur area** (§54), **Split** (em dois na agulha), **Replace**,
+  Clipe: as dele em três grupos, o essencial primeiro (§55; Stabilize e Reverse: §39; Blur area: §54), depois o que vai por cima e, por último,
+  tudo o que muda o vídeo inteiro, com o selo "All"; Delete fixo no fim. Texto ganha **Motion** (Style › Motion); mídia ganha **Mask** e **Blur area** (§54), **Split** (em dois na agulha), **Replace**,
   **Track** (§39), **Duplicate** (por cima, mesmo arquivo) e, num vídeo com som, **Extract audio**; um apoio da tela dividida não tem Track nem
   Duplicate nem Mask e ganha **Close gap** quando há espaço antes dele (§51).
 - **Reordenar clipes** (`ClipOrderSheet`): **segurar um clipe** na timeline (0,45 s, toque háptico) ou **Reorder** na barra do clipe abre a lista dos
@@ -1326,9 +1379,11 @@ auditoria: `reports/editor-award-checklist.md`.
   Edit by text que não ouviu palavras mostra o motivo (`CaptionState.message`, em `warnText`) e só oferece **Try again** quando pode ajudar.
 - **Edit by text à vista:** primeiro bloco de ✦ Smart › Tools, botão "Edit by text · cut words from the video" no painel de legendas, o menu da faixa
   e as ferramentas do clipe (Edit, logo depois de Split, com Remove pauses; §48).
-- **Mídia na barra principal** (**Media**, `.addMediaChoice`): a folha diz primeiro onde a escolha vai (§51) — **Sobreposição, ao mesmo tempo
-  que o vídeo**: **Split screen**, **Window**, **Full screen** (B-roll); ou **Sequence**: **In sequence** ("Adds time: becomes a clip of its own
-  at the playhead, and the video gets longer. Videos only.") — e diz, antes de escolher, onde e por quanto tempo (§48).
+- **Mídia na barra principal** (**Media**, `.openMenu(.media)`): abre a barra Media, como Texto e Áudio (§55 e a timeline acima): as quatro formas
+  de pôr uma foto ou vídeo e **Your library**. Cada forma abre a folha nela (`.addMediaAs`), e a folha diz onde a escolha vai (§51) —
+  **Sobreposição, ao mesmo tempo que o vídeo**: **Split screen**, **Window**, **Full screen** (B-roll); ou **Sequence**: **In sequence** ("Adds
+  time: becomes a clip of its own at the playhead, and the video gets longer. Videos only.") — e diz, antes de escolher, onde e por quanto tempo
+  (§48). **Your library** (`.addMediaFromLibrary`) abre na última sobreposição usada, já na biblioteca.
 - **Animações prontas** (`MotionPreset`, `OverlayAnimation`, `MotionPresetPicker` no topo do painel de movimento de textos, gráficos e mídias):
   Fade, Slide up, Slide in, Gentle zoom, Pop e In and out, com **Duration** (0,2–1,5 s) e **Strength**; **Preview** no cabeçalho a toca. A animação é calculada por
   cima dos keyframes (base + animação), então a edição manual em **Keyframes** ("To move it your own way") continua valendo junto.
@@ -1541,9 +1596,7 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   vai para a batida mais próxima, até 0,5 s, encurtando ou alongando o clipe antes dele, nunca além da gravação nem para dentro da parte seguinte)
   e **Cut on** Every beat · Every 2 · Every 4 › **Cut the video on the beats**. Subtítulo: "112 BPM · 48 beats in the video", "Finding the
   beats…" ou "No steady beat in this music". Cada ação é um passo de desfazer.
-- **Barras** (a de hoje; a ordem de cada uma está em §54 › Barras): Clipe: Split · Edit by text · Speed · Volume · Remove pauses · Zoom ·
-  **Stabilize** · Duplicate · Freeze frame · **Reverse** · Replace · Extract audio · Reorder · Adjust · Filters · Background · Blur area · Copy look ·
-  Paste look · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Foto ou vídeo por cima: Edit · Volume · Motion ·
+- **Barras** (a de hoje; a ordem de cada uma está em §54 › Barras): Clipe: Split · Speed · Volume · **Mute** · Zoom | Adjust · Skin · Filters · Background · Stabilize · Blur area · Copy look · Paste look | **Transition** · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio (e as do vídeo, §55) · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Foto ou vídeo por cima: Edit · Volume · Motion ·
   Mask · Split · Replace · Blur area · **Track** · Keyframe · Duplicate · Save to library · Delete; um apoio da tela dividida e a área do vídeo
   principal: §54. Música: Volume · **Beats** ·
   Replace · Delete (efeitos sonoros e sons extraídos sem Beats).
@@ -2029,7 +2082,7 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   escolhido), uma foto com 3 s, **sem nunca alongar o vídeo principal**: o que não cabe até o fim (ou até o próximo apoio) é dito antes, em
   `warnText` ("the last one is shortened to fit", "1 don’t fit before the end and stay out"), e só isso é encurtado ou fica de fora (`MediaRun`).
   Tudo entra num passo de desfazer, mudo, e o aviso diz "3 added to the split screen from 00:07.0 · muted" com Undo. A última sobreposição usada é
-  a que Media abre de novo; o "+" depois dos clipes abre na sequência.
+  a que Your library (da barra Media) abre de novo; o "+" depois dos clipes abre na sequência.
 - **A folha fica parada** (pedido do dono, 25/10: os elementos pulavam ao trocar de modo e Continue ficava fora da folha): título, cartões, a
   explicação (que guarda o espaço da mais longa das quatro) e a nota de onde entra (duas linhas guardadas) nunca mudam de lugar; a origem é o
   controle segmentado do sistema (**Photos · Your library**, e **Your takes** em In sequence, que abre nelas); a galeria ocupa o que sobra e rola
@@ -2255,8 +2308,9 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
   a máscara guardada volta quando a mídia vira janela ou tela cheia de novo.
 - **Desfocar área** (`BlurRegion`, `BlurTarget`, `BlurKeyframe`, `BlurStyle`, `BlurShape`, `BlurSubject`, `BlurResolver`, `BlurDrawing`,
   `BlurFollowing`, `BlurFaceWalker`, `BlurViewModel` e partes, `BlurPanel`, `BlurStatusCard`, `BlurEditingLayer`): na barra principal (grupo
-  da imagem, §55), na barra do clipe (depois de Background), na de uma foto ou vídeo por cima e na da área do vídeo principal de uma tela dividida
-  (ali a área vai para o vídeo principal, nunca para o apoio). Primeiro passo: os rostos
+  da imagem, §55), na barra do clipe (depois de Background), na de uma foto ou vídeo por cima, na da área do vídeo principal de uma tela dividida
+  (ali a área vai para o vídeo principal, nunca para o apoio) e na barra da faixa **Blur area** (tocada na timeline: **Blur area** e **Draw an
+  area**, que desenha direto, §22). Primeiro passo: os rostos
   do quadro numerados e tracejados na prévia (da análise de movimento quando ela chegou ali, senão Vision no quadro): **um toque esconde e já segue
   aquele rosto**; **All but the largest** esconde todos menos o maior (cada um uma área, seguidas uma depois da outra; apagar uma no meio, a que está sendo
   seguida ou uma que espera, não para as outras); **Draw an area** põe uma caixa no meio, para uma
@@ -2348,8 +2402,7 @@ keyframes; o Cue faz cada uma dessas coisas direto. Plano aprovado pelo dono: ht
     to library · [Extract audio] · Lock · Delete. **Volume** abre o painel de volume com o som do vídeo (0–100%, mudo até subir; um vídeo sem som diz
     "This video has no sound"); **Motion** abre o painel próprio (`MediaMotionPanel`: animações prontas, Track, keyframes, Starts/Ends). O painel
     **Edit** perdeu o Advanced e ganhou **Opacity** (10–100%, `MediaOverlay.opacity`, multiplicada pela dos keyframes).
-  - **Clipe:** Split · Edit by text · Speed · **Volume** · Remove pauses · Zoom… (o volume de cada clipe de uma montagem volta à tela); Edit by text
-    e Remove pauses têm o selo **ALL** (agem no vídeo inteiro).
+  - **Clipe:** Split · Speed · **Volume** · Mute · Zoom… (o volume de cada clipe de uma montagem volta à tela); a ordem inteira está em §55.
   - **Legenda:** Edit · Split · Join next · **Emphasis** · Style · Delete (Emphasis abre a linha com o More aberto, nas palavras a destacar).
   - Split de uma mídia usa o mesmo ícone do Split do clipe; em inglês, Blur area usa "Track" como o resto do app (em português, "Seguir").
 - **Áreas pequenas medidas no iPhone 15 Pro** (`BlurTrackingDeviceTests`, 26/10, na take do dono): ovais desenhadas sobre o nariz (227×269 px),
@@ -2374,23 +2427,64 @@ A barra funciona como antes: uma só, que troca para as ferramentas do item esco
 alcance: toda ferramenta do editor está na barra principal, e a barra de qualquer item escolhido traz, depois das dele, as outras. Agrupada por
 afinidade, uma barra longa como a do InShot (decisão do dono, 26/10; o desenho com faixa de contexto, lixeira separada e catálogo "All" foi
 recusado).
-- **Barra principal** (`QuickEditViewModel.mainToolGroups`, `EditorToolbarTool`, 30 ferramentas, uma linha fina entre os grupos): **Edit · Split ·
-  Captions · Text · ✦ Smart · Media · Audio** | Speed · Volume · Zoom · Stabilize · Freeze frame · Reverse · Duplicate · Replace · Reorder |
-  Remove pauses · Edit by text · Extract audio | Format · Adjust · Skin · Filters · Background · Blur area · Copy look · Paste look | Templates ·
-  Brand kit · Cover. As cinco primeiras cabem na tela de um iPhone de 6,1"; Delete nunca está nela.
-- **Ferramentas do clipe sem escolher o clipe** (`QuickEditViewModel+Toolbar`): Speed, Volume, Zoom e Stabilize abrem o painel no clipe sob a
+- **Barra principal** (`QuickEditViewModel.mainToolGroups`, `EditorToolbarTool`, 33 ferramentas, uma linha fina entre os grupos), na mesma
+  ordem da barra do clipe, para cada ferramenta ficar entre as mesmas vizinhas nas duas (dono, 28/10/2026): **Edit · Split · Captions · Text ·
+  ✦ Smart · Media · Audio** | Speed · Volume · Zoom | Adjust · Skin · Filters · Background · Crop · Stabilize · Blur area · Copy look · Paste look |
+  Animation · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio | Edit by text · Remove pauses · Studio Voice · Format ·
+  Templates · Brand kit · Cover. As cinco primeiras cabem na tela de um iPhone de 6,1"; Delete nunca está nela. Mute, Mirror, Transition e Reset
+  clip são só da barra do clipe (agem no clipe escolhido; sem ele, Mute e Mirror mudariam de estado com a agulha, e Reset clip desfaria um clipe
+  que a pessoa não escolheu).
+- **Ferramentas do clipe sem escolher o clipe** (`QuickEditViewModel+Toolbar`): Speed, Volume, Zoom, Stabilize, Crop e Animation abrem o painel no clipe sob a
   agulha, que fica contornado como escolhido pelo painel enquanto ele está aberto (mover a agulha não troca o clipe; escolher outro é escolha da
   pessoa e vale); ✓ devolve como estava, sem nada escolhido. Duplicate, Replace, Extract audio, Copy look e Paste look escolhem o clipe sob a agulha
   e mostram as ferramentas dele; Reverse e Freeze frame agem nele; Split divide na agulha; Reorder com um clipe só diz por quê. Num vídeo sem
   cortes, o clipe é o vídeo.
 - **Skin** abre o Adjust do vídeo inteiro já em Suavizar pele (`LookViewModel.lookTool`); **Templates** e **Brand kit** abrem a aba deles no ✦ Smart.
-- **Barras de item** (`clipShortcutGroups`, `itemShortcutGroups`): as ferramentas do item primeiro, como sempre (as quatro na tela são as que um
-  criador mais usa nele); depois de uma linha fina, **Captions · Text · Media · Audio · ✦ Smart** | Format | Templates · Brand kit · Cover na do
-  clipe; nas outras, **Clip** (vai às ferramentas do clipe sob a agulha) | Captions · Text · Media · Audio · ✦ Smart | Remove pauses · Edit by text |
+- **Barra do clipe** (`clipItems`, `clipShortcutGroups`; dono, 28/10/2026: estava num bloco só de 20, com o que muda o vídeo inteiro no meio),
+  em cinco grupos:
+  1. **O essencial do clipe**, as cinco na tela de 6,1": Split · Speed · Volume · **Mute** · Zoom. **Mute** é o "Mute this clip" do Volume como
+     interruptor (aceso enquanto o clipe está mudo, alto-falante cortado cheio; um passo de desfazer).
+  2. **A imagem do clipe:** Adjust · Skin · Filters · Background (do clipe) · **Crop** · **Mirror** · Stabilize · Blur area · Copy look · Paste
+     look. Mirror é interruptor, aceso enquanto o clipe está espelhado.
+  3. **A montagem:** **Transition** · **Animation** · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio · **Reset clip**.
+     **Transition** escolhe o corte depois do clipe (no último, o de antes) com o painel aberto: com o clipe escolhido, as marcas dos cortes dele
+     cedem às alças, e era preciso soltá-lo para chegar à transição. Num vídeo de um clipe só fica esmaecida e diz "Split or add a clip to add a
+     transition". Reset clip fica esmaecida enquanto o clipe está como gravado.
+  4. **Por cima:** Text · Media · Audio · ✦ Smart (cada um abre a barra da faixa dele).
+  5. **O vídeo inteiro**, todos com o selo: Edit by text · Remove pauses · **Studio Voice** · Captions · Format · Templates · Brand kit, e Cover.
+- **Barras dos outros itens** (`itemShortcutGroups`): as ferramentas do item primeiro, como sempre (as quatro na tela são as que um criador mais
+  usa nele); depois de uma linha fina, **Clip** (vai às ferramentas do clipe sob a agulha) | Captions · Text · Media · Audio · ✦ Smart | Remove pauses · Edit by text |
   Format · Adjust · Skin · Filters · Background · Blur area | Templates · Brand kit · Cover. Nunca o que pareceria agir no item (Split, Speed ou
   Volume do vídeo ao lado de um texto) nem o que as ferramentas dele já alcançam (a legenda não repete Captions).
+- **Crop do clipe** (`ClipCropPanel`, `ClipCropLayer`, `ClipsViewModel+Shape`; dono, 28/10/2026): Original · Free · 9:16 · 4:5 · 1:1 · 16:9,
+  **Rotate** (um quarto de volta no sentido do relógio) e **Mirror** (aceso enquanto ligado). Com o painel aberto e o vídeo parado, a prévia mostra
+  a imagem inteira do clipe, girada e espelhada, em Fit, sem o zoom nem a animação dele (`showingWholePicture`), e a caixa por cima: o que fica de
+  fora sombreado (`Palette.Editor.cropShade`), terços, cantos em L brancos com halo (`overlayOutline`, como as alças do Blur area). Arrastar
+  dentro move; puxar um canto redimensiona a partir do oposto, mantendo a forma escolhida (puxar um canto do Original faz uma caixa Free); um
+  passo de desfazer por gesto, e mover a caixa nunca refaz o vídeo da prévia. Ao girar, uma caixa de forma volta ao meio da imagem girada e uma
+  Free sai; espelhar leva a caixa junto (a mesma parte da imagem). O que fica (`ClipOrientation`) é desenhado logo depois do Stabilize e antes
+  do corte do formato (`FramePipeline.oriented`): o Fill/Fit, o Follow face (com os rostos da análise levados para a imagem girada), a tela
+  dividida, a pele, o fundo e a cor trabalham sobre a imagem já girada e cortada, e a capa também a mostra. As áreas do Blur continuam presas
+  à gravação; as alças delas, o Track e a área principal da tela dividida passam pela mesma conta (`FramePlacement.orientation`). As miniaturas
+  da timeline, do Reorder, do Filters e da Cover giram, espelham e cortam junto (`UIImage.shaped(by:)`).
+- **Animation do clipe** (`ClipAnimationPanel`, `ClipAnimation`, `ClipAnimationWindow`): In | Out (segmentado), None · Fade in/out · Slide
+  up/down · Slide in/out · Zoom in/out · Blur, e Duration (0,2–1,5 s, 0,5 por padrão). Escolher uma toca aquela ponta do clipe e volta (▶
+  PREVIEW no topo toca de novo). A imagem vem do preto e vai para ele; num clipe curto, entrada e saída dividem o tempo dele. Desenhada depois
+  do zoom do clipe, em cada lado de uma transição (o de chegada também anima), antes da tela dividida, das mídias e dos textos, que não se
+  mexem com ela; não entra na capa. Ao dividir o clipe, a entrada fica na primeira parte e a saída na última. As alças do Blur area e o que o
+  Track segue acompanham o clipe na entrada e na saída, e no Zoom dele (`FramePlacement.animation`, `moment(of:startingAt:at:)`).
+- **Fade do som do clipe** (Volume › Advanced, `EditSegment.soundFadeIn`/`soundFadeOut`): Fade in e Fade out de 0 até 5 s (nunca mais que o
+  clipe); o som sobe do silêncio no começo e desce a ele no fim, nunca menos que a curva curta de um corte (`EditedComposition.levels`). O fade
+  out espera a rampa de abertura do clipe (a do silêncio, a do corte ou a que leva ao volume dele): uma rampa que começa dentro de outra faz o
+  AVFoundation encerrar o app (o fade out no máximo do slider começava 5 ms depois da rampa ao volume do clipe), e `VolumeRamp` ainda as põe uma
+  depois da outra no relógio da composição. O Reset do Volume zera os fades também.
+- **Reset clip** (`ClipsViewModel+Reset`): num passo de desfazer, o clipe volta como gravado: 1×, sem curva, som em 100% e ligado, sem Zoom,
+  Adjust, Skin, Filters e Background próprios, Stabilize, Crop, Rotate, Mirror, Animation e fades, e tocando para a frente se estava em Reverse.
+  Ficam onde começa e termina, o lugar na montagem, a transição de entrada e tudo o que está por cima (textos, legendas, mídias, músicas, áreas
+  do Blur). Um clipe cujo som foi para uma faixa (Extract audio) continua mudo, senão o som tocaria duas vezes. Toast "Clip reset" com Undo;
+  num clipe já como gravado, "This clip is already as filmed".
 - **Selo "All"** (`EditorToolbarItem.ScopeBadge`, `EditorToolbarBadge`): numa barra de item, o que muda o vídeo inteiro (Captions, Remove
-  pauses, Edit by text, Format, Adjust, Skin, Filters, Background, Templates, Brand kit) leva o selo amarelo curto "ALL" ("TODOS" em português)
+  pauses, Edit by text, Studio Voice, Format, Adjust, Skin, Filters, Background, Templates, Brand kit) leva o selo amarelo curto "ALL" ("TODOS" em português)
   acima do canto do ícone, sem cobri-lo (no canto espelhado da direita para a esquerda); ele só diz o alcance: a ferramenta faz exatamente o que faz na principal. Medido nos 20 idiomas
   (`EditorToolbarBadgeTests`): nunca mais largo que a ferramenta mais estreita de cada altura, então nunca chega ao ícone nem ao selo da vizinha.
   A primeira vez que uma ferramenta com selo é tocada numa barra de item (uma vez por ferramenta e tipo de item enquanto o editor está aberto,
@@ -2421,7 +2515,10 @@ recusado).
   `QuickEditMainBarClipToolsTests`, `QuickEditUseOnAllTests`, `EditDocumentTests.twoChangesAtOnceAreOneStepTakenWhenBothEnd`,
   `QuickEditUndoPathTests` (escolha que fecha painel, arraste de alça), `QuickEditSoundTests`, `QuickEditOverlayBarsTests`,
   `QuickEditFreezeFrameTests`, `QuickEditSplitScreenTests`, `QuickEditAutoLookTests`, `QuickEditBackgroundTests`, `QuickEditExtractAudioTests`,
-  `QuickEditCaptionsTests`, `QuickEditTranslationTests`, `QuickEditVoiceOverStopTests`, `QuickEditBlurTests`.
+  `QuickEditCaptionsTests`, `QuickEditTranslationTests`, `QuickEditVoiceOverStopTests`, `QuickEditBlurTests`, `QuickEditClipToolsTests` (Mirror,
+  Crop e a prévia inteira, Rotate, Animation, fades do som, Reset clip), `ClipShapeTests` (girar, espelhar e cortar ida e volta, a caixa, as
+  animações, a divisão, clipes antigos), `ClipShapeDrawingTests` (pixels girados, espelhados, cortados e animados; os fades do som),
+  `RenderPlanTests`, `VolumeRampTests` (o caso que encerrava o app e 3.000 edições sorteadas sem duas rampas ao mesmo tempo); na interface, `ClipBarUITests` (Mute, Transition, e Crop → 1:1 → Rotate → Mirror → Animation → Reset clip, com fotos).
 - **Contraste:** o selo é `accInk` sobre `acc` e a linha "keep their own" é `ink2` e `accText` sobre `Palette.Editor.panel`, pares medidos em
   `PaletteContrastTests` com e sem Aumentar Contraste. Nas imagens do iPhone SE e do iPhone 17, em inglês e em árabe XXXL
   (`ToolAuditCaptureTests.test14ToolbarReach` e `test15SupportBarReach`, com a hierarquia para `tools/contrast/audit.py`): 38 selos, 14,88:1

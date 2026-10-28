@@ -5,18 +5,19 @@
 
 import Foundation
 
-/// The main toolbar (nothing picked) and the menus it opens. Every tool the editor has is on it, in the order a talking-head
-/// video is made, grouped by what they work on (owner's decision, 26/10/2026, after InShot's one long bar): the basics, the five
-/// on screen with ✦ Smart fifth; editing the clip under the playhead; speech and sound; picture and beauty; finishing, the cover
-/// last. A clip tool works on the clip under the playhead without picking it first (`QuickEditViewModel+Toolbar`).
+/// The main toolbar (nothing picked) and the menus it opens. Every tool the editor has is on it, grouped by what they work on
+/// (owner's decision, 26/10/2026, after InShot's one long bar), in the picked clip's order so a tool sits among the same ones
+/// on both bars (owner, 28/10/2026): the basics, the five on screen with ✦ Smart fifth; the clip under the playhead's essentials;
+/// its picture; the montage; the whole video, the cover last. A clip tool works on the clip under the playhead without picking
+/// it first (`QuickEditViewModel+Toolbar`).
 extension QuickEditViewModel {
     /// The groups of the main bar, a thin line between them.
     static let mainToolGroups: [[EditorToolbarTool]] = [
         [.edit, .split, .captions, .text, .smart, .media, .audio],
-        [.speed, .volume, .zoom, .stabilize, .freeze, .reverse, .duplicate, .replace, .reorder],
-        [.pauses, .editByText, .extractAudio],
-        [.format, .adjust, .skin, .filters, .background, .blurArea, .copyLook, .pasteLook],
-        [.templates, .brandKit, .cover],
+        [.speed, .volume, .zoom],
+        [.adjust, .skin, .filters, .background, .crop, .stabilize, .blurArea, .copyLook, .pasteLook],
+        [.animation, .duplicate, .freeze, .reverse, .replace, .reorder, .extractAudio],
+        [.editByText, .pauses, .studioVoice, .format, .templates, .brandKit, .cover],
     ]
 
     var mainItems: [EditorToolbarItem] {
@@ -67,10 +68,41 @@ extension QuickEditViewModel {
         if !edit.texts.isEmpty {
             items.append(EditorToolbarItem(id: "styleAll", label: String(localized: "Style all"), systemImage: "square.grid.2x2", action: .styleAllTexts))
         }
+        // The kit's fonts and colors on every text.
+        items.append(item(.brandKit).startingGroup())
         return items
     }
 
-    /// With lines: add one, the list, the style. Without: make them, or write them.
+    /// The ways to add a photo or video (the sheet's cards), each opening the gallery on it, Your library and the brand kit (its
+    /// logo).
+    var mediaMenuItems: [EditorToolbarItem] {
+        let ways: [(id: String, mode: MediaInsertMode)] = [
+            ("mediaSplit", .split), ("mediaWindow", .window), ("mediaFullScreen", .fullScreen), ("mediaSequence", .sequence),
+        ]
+        return ways.map { way in
+            EditorToolbarItem(id: way.id, label: way.mode.label, systemImage: way.mode.systemImage, action: .addMediaAs(way.mode))
+        } + [
+            EditorToolbarItem(
+                id: "mediaLibrary", label: String(localized: "Your library"), systemImage: "tray.full", action: .addMediaFromLibrary,
+                startsGroup: true
+            ),
+            item(.brandKit),
+        ]
+    }
+
+    /// An area over a face (the faces in the frame to tap), or one drawn; Compare shows the video without them while it's on.
+    var blurMenuItems: [EditorToolbarItem] {
+        [
+            EditorToolbarItem(id: "blurFace", label: String(localized: "Blur area"), systemImage: "eye.slash", action: .addBlurArea),
+            EditorToolbarItem(id: "blurDraw", label: String(localized: "Draw an area"), systemImage: "rectangle.dashed", action: .drawBlurArea),
+            EditorToolbarItem(
+                id: "blurCompare", label: String(localized: "Compare"), systemImage: "circle.lefthalf.filled", action: .compareBlur,
+                startsGroup: true, isOn: blur.comparesOriginal
+            ),
+        ]
+    }
+
+    /// With lines: Show (the panel's switch), add one, the list, the style, Translate. Without: make them, or write them.
     var captionsMenuItems: [EditorToolbarItem] {
         if edit.captions.isEmpty {
             return [
@@ -82,9 +114,16 @@ extension QuickEditViewModel {
             ]
         }
         return [
+            EditorToolbarItem(
+                id: "showCaptions", label: String(localized: "Show"), systemImage: edit.showsCaptions ? "eye" : "eye.slash",
+                action: .toggleCaptionsShown, isOn: edit.showsCaptions
+            ),
             EditorToolbarItem(id: "addLine", label: String(localized: "Add line"), systemImage: "plus.bubble", action: .addCaptionLine),
             EditorToolbarItem(id: "allLines", label: String(localized: "All lines"), systemImage: "list.bullet", action: .openCaptions),
             EditorToolbarItem(id: "style", label: String(localized: "Style"), systemImage: "textformat.alt", action: .open(.captionStyle)),
+            EditorToolbarItem(
+                id: "translate", label: captions.captionTranslationLabel, systemImage: "translate", action: .openCaptionTranslation
+            ),
             EditorToolbarItem(
                 id: "findReplace", label: String(localized: "Find and replace"), systemImage: "text.magnifyingglass", action: .findInCaptions
             ),
@@ -95,11 +134,16 @@ extension QuickEditViewModel {
         ]
     }
 
+    /// The voice, music, sound effects and voice-over; then the clip under the playhead's sound: its volume, or on a track of
+    /// its own.
     var audioMenuItems: [EditorToolbarItem] {
         [
-            EditorToolbarItem(id: "voice", label: String(localized: "Studio Voice"), systemImage: "waveform.and.mic", action: .open(.voice)),
+            item(.studioVoice),
             EditorToolbarItem(id: "music", label: String(localized: "Music"), systemImage: "music.note", action: .openMusic),
+            EditorToolbarItem(id: "soundEffects", label: String(localized: "Sound effects"), systemImage: "speaker.wave.2.bubble", action: .openSoundEffects),
             EditorToolbarItem(id: "voiceOver", label: String(localized: "Voice-over"), systemImage: "mic", action: .open(.voiceOver)),
+            item(.volume).startingGroup(),
+            item(.extractAudio),
         ]
     }
 }

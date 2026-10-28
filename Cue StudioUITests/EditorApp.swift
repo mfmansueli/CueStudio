@@ -86,32 +86,42 @@ enum EditorApp {
 
     /// Moves the playhead forward by dragging the timeline's content to the left, about
     /// `points` (44 points per second at the starting zoom), slowly and held at the end so it
-    /// doesn't glide on.
-    static func scrub(_ app: XCUIApplication, points: CGFloat = 300) {
+    /// doesn't glide on. A loaded Simulator can still lose the hold and glide on from `velocity`
+    /// (points a second): a step that needs the playhead near where it stopped drags slower.
+    static func scrub(_ app: XCUIApplication, points: CGFloat = 300, velocity: XCUIGestureVelocity = 400) {
         let timeline = app.descendants(matching: .any)["edit.timeline"]
         XCTAssertTrue(timeline.exists(within: 5))
         let width = timeline.frame.width
         let start = timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.06)).withOffset(CGVector(dx: points / 2, dy: 0))
         let end = start.withOffset(CGVector(dx: -min(points, width - 20), dy: 0))
-        start.press(forDuration: 0.1, thenDragTo: end, withVelocity: 400, thenHoldForDuration: 0.4)
+        start.press(forDuration: 0.1, thenDragTo: end, withVelocity: velocity, thenHoldForDuration: 0.4)
     }
 
     /// ▾ beside the current track's icon brings every track out (`TimelineTrackChoice`), so each is in its place under the
-    /// video track: media (92 pt from the timeline's top), texts, captions, audio, 36 pt apart. Nothing when they're out.
+    /// video track (`trackMiddle`): media, texts, captions, then the audio ones. Nothing when they're out.
     static func showEveryTrack(_ app: XCUIApplication) {
         let timeline = app.descendants(matching: .any)["edit.timeline"]
         XCTAssertTrue(timeline.exists(within: 5))
-        // Collapsed, the timeline holds the ruler, the video track and one track (142 pt at most); out, at least 184.
-        let collapsed = { timeline.frame.height < 92 + 2 * 36 + 8 }
+        // Collapsed, the timeline holds the ruler, the video track and one 44 pt track (144 pt); out, every track shows.
+        let collapsed = { timeline.frame.height < 144 + 20 }
         guard collapsed() else { return }
-        timeline.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 20, dy: 92 + 14)).tap()
+        timeline.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: 20, dy: 92 + 22)).tap()
         let end = Date().addingTimeInterval(3)
         while collapsed(), Date() < end {
             RunLoop.current.run(until: Date().addingTimeInterval(0.1))
         }
         XCTAssertFalse(collapsed(), "▾ didn't bring the tracks out")
-        // The video's room settles (0.3 s) before a track is tapped by its place.
-        RunLoop.current.run(until: Date().addingTimeInterval(0.4))
+        // The tracks settle (a spring, about 0.5 s) before one is tapped by its place.
+        RunLoop.current.run(until: Date().addingTimeInterval(0.6))
+    }
+
+    /// How far from the timeline's top the middle of track `index` is (0 is the first under the video), every track out and
+    /// `count` of them (the demo has 5): under the ruler (28 pt) and the video track (56), 6 pt apart, sharing the timeline's
+    /// height (each 28–44 pt, every one showing).
+    static func trackMiddle(_ index: Int, of count: Int, in timeline: XCUIElement) -> CGFloat {
+        let fitted = ((timeline.frame.height - 90) / CGFloat(count) - 6).rounded(.down)
+        let height = min(44, max(28, fitted))
+        return 90 + CGFloat(index) * (height + 6) + height / 2
     }
 
     /// A point on the video track, `x` of the way across the timeline (the playhead is at 0.5).

@@ -259,7 +259,12 @@ extension OverlaysViewModel {
         guard !edit.splitScreen.hasFraming(for: segment.sourceID) else { return nil }
         let url = segment.sourceID.flatMap { id in edit.sources.first { $0.id == id } }.map { EditMediaFiles.url(for: $0.fileName) } ?? videoURL
         guard let found = await faces.face(in: url, isVideo: true, at: timeline.sourceTime(forEdited: time)) else { return nil }
-        return MainVideoFraming(sourceID: segment.sourceID, framing: SplitPlacement.framing(showing: found.box, content: found.size, area: area))
+        // Found on the recording as filmed: where it shows once the clip is turned, mirrored or cropped.
+        let orientation = segment.orientation
+        let face = found.box.flatMap(orientation.shownRect)
+        return MainVideoFraming(
+            sourceID: segment.sourceID, framing: SplitPlacement.framing(showing: face, content: orientation.size(of: found.size), area: area)
+        )
     }
 
     // MARK: - The layout
@@ -313,18 +318,20 @@ extension OverlaysViewModel {
     }
 
     /// The picture an area shows at the playhead, upright, for the copy that follows a finger: the support's file at its second,
-    /// or the main video's recording at its moment.
-    func areaPictureSource(_ area: SplitArea, of support: MediaOverlay) -> (url: URL, isVideo: Bool, time: TimeInterval)? {
+    /// or the main video's recording at its moment, reshaped as its clip is (Rotate, Mirror, Crop).
+    func areaPictureSource(
+        _ area: SplitArea, of support: MediaOverlay
+    ) -> (url: URL, isVideo: Bool, time: TimeInterval, orientation: ClipOrientation)? {
         let time = player.currentTime
         switch area {
         case .support:
             let fileTime = support.kind == .video ? (support.fileTime(at: time, in: edit.timeline) ?? support.startInFile) : 0
-            return (EditMediaFiles.url(for: support.fileName), support.kind == .video, fileTime)
+            return (EditMediaFiles.url(for: support.fileName), support.kind == .video, fileTime, .identity)
         case .main:
             let timeline = edit.timeline
             let segment = timeline.segments[timeline.segmentIndex(atEdited: time)]
             let url = segment.sourceID.flatMap { id in edit.sources.first { $0.id == id } }.map { EditMediaFiles.url(for: $0.fileName) } ?? videoURL
-            return (url, true, timeline.sourceTime(forEdited: time))
+            return (url, true, timeline.sourceTime(forEdited: time), segment.orientation)
         }
     }
 
@@ -413,11 +420,14 @@ extension OverlaysViewModel {
         }
     }
 
-    /// The picture's upright size for an area: the main video's recording, or the support's file (its proportions).
+    /// The picture's upright size for an area: the main video's recording as its clip reshapes it, or the support's file (its
+    /// proportions).
     func contentSize(_ area: SplitArea, of id: UUID) -> CGSize {
         switch area {
         case .main:
-            return recordingSizes[mainRecordingAtPlayhead] ?? CGSize(width: 1000 * take.aspect.widthOverHeight, height: 1000)
+            let timeline = edit.timeline
+            let orientation = timeline.segments.isEmpty ? .identity : timeline.segments[timeline.segmentIndex(atEdited: player.currentTime)].orientation
+            return orientation.size(of: recordingSizes[mainRecordingAtPlayhead] ?? CGSize(width: 1000 * take.aspect.widthOverHeight, height: 1000))
         case .support:
             let aspect = edit.media.first { $0.id == id }?.aspect ?? 1
             return CGSize(width: 1000 * aspect, height: 1000)

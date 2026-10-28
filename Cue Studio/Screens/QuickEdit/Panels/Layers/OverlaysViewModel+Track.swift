@@ -41,12 +41,14 @@ extension OverlaysViewModel {
         trackingProgress = 0
         Haptics.selection()
         jobs.start(.tracking) { [weak self, tracker] ticket in
-            guard let placement = await Self.placement(for: url, in: edit, steadiedBy: segment.stabilization) else {
+            guard let placement = await Self.placement(for: url, in: edit, as: segment) else {
                 self?.trackingFinished(ticket, nil, item: item, span: span, timeline: timeline)
                 return
             }
             let sourceAt = segment.sourceStart + segment.sourceOffset(forEdited: playhead - clipStart)
-            let start = placement.recordingPoint(for: center, at: sourceAt)
+            // Where the item sits on the clip as it shows now, and where the object shows at each moment: the clip's zoom and
+            // Animation move the picture under it.
+            let start = placement.moment(of: segment, startingAt: clipStart, at: playhead).recordingPoint(for: center, at: sourceAt)
             let size = placement.recordingSize(forVideoWidth: Self.trackedBoxSide)
             let box = NormalizedBox(center: start, width: size.width, height: size.height)
             let report: @Sendable (Double, Bool) -> Void = { done, forward in
@@ -63,9 +65,10 @@ extension OverlaysViewModel {
                 let behind = try await tracker.track(videoAt: url, box: box, at: sourceAt, until: sourceFrom) { report($0, false) }
                 let samples = (behind + ahead.dropFirst()).sorted { $0.time < $1.time }
                 let points = samples.map { sample in
-                    TrackedMotion.Point(
-                        time: clipStart + segment.editedOffset(forSource: sample.time - segment.sourceStart) - span.start,
-                        center: placement.videoPoint(for: sample.box.center, at: sample.time)
+                    let edited = clipStart + segment.editedOffset(forSource: sample.time - segment.sourceStart)
+                    return TrackedMotion.Point(
+                        time: edited - span.start,
+                        center: placement.moment(of: segment, startingAt: clipStart, at: edited).videoPoint(for: sample.box.center, at: sample.time)
                     )
                 }
                 self?.trackingFinished(
@@ -121,24 +124,11 @@ extension OverlaysViewModel {
             : String(localized: "Tracked · \(tracked.count) keyframes to adjust"), kind: lost ? .problem : .cue)
     }
 
-    /// How the recording at `url` lands on the edit's frame (Stabilize's correction, its crop, Follow face's path, or Fit). Off
-    /// the main thread: it reads the recording's analysis.
+    /// How the recording at `url` lands on the edit's frame as `segment` plays it (its shape, Stabilize's correction, its crop,
+    /// Follow face's path, or Fit). Off the main thread: it reads the recording's analysis.
     @concurrent
-    private nonisolated static func placement(for url: URL, in edit: TakeEdit, steadiedBy level: StabilizationLevel?) async -> FramePlacement? {
-        let asset = AVURLAsset(url: url)
-        guard let track = try? await asset.loadTracks(withMediaType: .video).first,
-              let (natural, transform) = try? await track.load(.naturalSize, .preferredTransform) else { return nil }
-        let rect = CGRect(origin: .zero, size: natural).applying(transform)
-        let size = CGSize(width: abs(rect.width), height: abs(rect.height))
-        let crop = CropMath.crop(in: size, aspect: edit.aspect.widthOverHeight, offset: edit.cropOffset)
-        var placement = FramePlacement(uprightSize: size, crop: crop, fits: edit.cropFit == .fit)
-        placement.steady = level.flatMap { MotionAnalysisStore.stabilizationPath(forRecording: url, level: $0) }
-        if edit.faceFollow != nil, edit.cropFit == .fill {
-            let coreImageCrop = CGRect(x: crop.minX, y: size.height - crop.maxY, width: crop.width, height: crop.height)
-            placement.follow = EditedComposition.followPath(
-                for: edit, analysis: MotionAnalysisStore.complete(forRecording: url), crop: coreImageCrop, size: size
-            )
-        }
-        return placement
+    private nonisolated static func placement(for url: URL, in edit: TakeEdit, as segment: EditSegment) async -> FramePlacement? {
+        guard let size = await EditFraming.shape(of: url)?.uprightSize else { return nil }
+        return FramePlacement.recording(url, size: size, in: edit, steadiedBy: segment.stabilization, orientation: segment.orientation)
     }
 }

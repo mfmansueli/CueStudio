@@ -7,7 +7,8 @@ import SwiftUI
 import UIKit
 
 /// Frames along the edit with a white box to drag onto the one wanted; the picture changes while the finger moves and the
-/// frame is kept when it lifts. Each frame is read from the recording it plays (a montage's other takes and videos too).
+/// frame is kept when it lifts. Each frame is read from the recording it plays (a montage's other takes and videos too), turned,
+/// mirrored and cropped as its clip shows it.
 struct CoverFrameStrip: View {
     let edit: TakeEdit
     let videoURL: URL
@@ -83,15 +84,15 @@ struct CoverFrameStrip: View {
         let total = edit.editedDuration
         guard total > 0 else { return }
         let urls = Dictionary(edit.sources.map { ($0.id, EditMediaFiles.url(for: $0.fileName)) }) { first, _ in first }
-        let samples = (0..<Self.count).map { index -> (url: URL, time: TimeInterval) in
+        let samples = (0..<Self.count).map { index -> (url: URL, time: TimeInterval, orientation: ClipOrientation) in
             let edited = (Double(index) + 0.5) / Double(Self.count) * total
             let segment = timeline.segments[timeline.segmentIndex(atEdited: edited)]
-            return (segment.sourceID.flatMap { urls[$0] } ?? videoURL, timeline.sourceTime(forEdited: edited))
+            return (segment.sourceID.flatMap { urls[$0] } ?? videoURL, timeline.sourceTime(forEdited: edited), segment.orientation)
         }
         var images = [UIImage?](repeating: nil, count: samples.count)
         for (url, indices) in Dictionary(grouping: samples.indices, by: { samples[$0].url }) {
             let frames = await thumbnails.frames(for: url, at: indices.map { samples[$0].time }, tolerance: 0.5, maxPixelSize: 120)
-            for (index, frame) in zip(indices, frames) { images[index] = frame }
+            for (index, frame) in zip(indices, frames) { images[index] = frame?.shaped(by: samples[index].orientation) }
         }
         strip = images
     }

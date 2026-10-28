@@ -376,41 +376,80 @@ struct PaletteContrastTests {
 
     // MARK: - The editor (always dark)
 
-    @Test func theEditorsHintsAndIconsReadOnTheirTracks() {
-        let strip = rgb(Palette.Editor.laneStrip, in: .dark)
-        let active = rgb(Palette.Editor.laneStripActive, in: .dark)
-        for background in [strip, active] {
-            let hint = rgb(Palette.Editor.laneHintInk, in: .dark, over: background)
-            #expect(ColorContrast.ratio(hint, background) >= ColorContrast.textMinimum, "the hint on an empty track")
+    /// The tracks under the video, each strip with a touch of its colour (the current one's more), or the yellow-ringed one of
+    /// a track whose tools are open.
+    private var everyStrip: [(lane: TimelineLane, strip: ColorContrast.RGB)] {
+        let lanes: [TimelineLane] = [.media, .blur, .text, .captions, .music, .voiceOver, .audio]
+        var strips: [(TimelineLane, ColorContrast.RGB)] = []
+        for lane in lanes {
+            // A track whose tools are open is tinted as the current one (its ring is `theLitTracksRingShows`).
+            for isCurrent in [false, true] {
+                strips.append((lane, rgb(Color(uiColor: TimelineLaneTint.strip(of: lane, isCurrent: isCurrent)), in: .dark)))
+            }
         }
-        let black = ColorContrast.RGB(red: 0, green: 0, blue: 0)
-        let icon = rgb(Palette.Editor.laneGutterInk, in: .dark, over: black)
-        #expect(ColorContrast.ratio(icon, black) >= ColorContrast.componentMinimum, "a track's icon in the gutter")
+        return strips
     }
 
-    /// The gutter's cell (`Palette.bg`): a track's icon and the ▾/▴ beside the current one, which is a control, in its ink
-    /// and in the active track's yellow.
-    @Test func theTrackChooserReadsInTheGutter() {
-        for appearance in [Appearance.dark, Appearance.darkIncreased] {
-            let cell = rgb(Palette.bg, in: appearance)
-            for (name, ink) in [("ink", Palette.Editor.laneGutterInk), ("active", Palette.acc)] {
-                let chevron = rgb(ink, in: appearance, over: cell)
-                #expect(ColorContrast.ratio(chevron, cell) >= ColorContrast.componentMinimum, "\(name), \(appearance)")
+    @Test func theEditorsHintsAndIconsReadOnTheirTracks() {
+        for (lane, background) in everyStrip {
+            let hint = rgb(Palette.Editor.laneHintInk, in: .dark, over: background)
+            #expect(ColorContrast.ratio(hint, background) >= ColorContrast.textMinimum, "the hint on an empty \(lane) track")
+        }
+    }
+
+    /// A track whose tools are open lights up with a ring of its hue (a state, WCAG 1.4.11): 3:1 against its strip and the
+    /// timeline's black around it.
+    @Test func theLitTracksRingShows() {
+        let lanes: [TimelineLane] = [.media, .blur, .text, .captions, .music, .voiceOver, .audio]
+        let black = ColorContrast.RGB(red: 0, green: 0, blue: 0)
+        for lane in lanes {
+            let strip = rgb(Color(uiColor: TimelineLaneTint.strip(of: lane, isCurrent: true)), in: .dark)
+            for background in [strip, black] {
+                let ring = rgb(Color(uiColor: TimelineLaneTint.litRing(of: lane)), in: .dark, over: background)
+                #expect(ColorContrast.ratio(ring, background) >= ColorContrast.componentMinimum, "\(lane)'s ring")
             }
         }
     }
 
-    /// v26 lanes: each track's ink on its own fill, over the strip it sits on.
-    @Test func theLanesInksReadOnTheirFills() {
-        let lanes: [(name: String, fill: Color, ink: Color)] = [
-            ("Aa", Palette.Editor.laneText, Palette.Editor.laneTextInk), ("Aa selected", Palette.Editor.laneTextSelected, Palette.Editor.laneTextInk),
-            ("captions", Palette.Editor.laneCaption, Palette.Editor.laneCaptionInk), ("music", Palette.Editor.laneMusic, Palette.Editor.laneMusicInk),
-            ("voice-over", Palette.Editor.laneVoiceOver, Palette.Editor.laneVoiceOverInk), ("overlay", Palette.Editor.laneMedia, Palette.Editor.laneMediaInk),
-            ("blur area", Palette.Editor.laneBlur, Palette.Editor.laneBlurInk),
-        ]
-        for strip in [Palette.Editor.laneStrip, Palette.Editor.laneStripActive] {
-            let base = rgb(strip, in: .dark)
+    /// A toolbar switch while on (Show, Compare): the accent's square on the bar, its icon on it (its name is `accText` on `bg`).
+    @Test func theToolbarsLitSwitchShows() {
+        for appearance in Appearance.allCases {
+            #expect(ratio(Palette.acc, on: Palette.bg, in: appearance) >= ColorContrast.componentMinimum, "acc on bg, \(appearance)")
+            #expect(ratio(Palette.accInk, on: Palette.acc, in: appearance) >= ColorContrast.componentMinimum, "accInk on acc, \(appearance)")
+        }
+    }
+
+    /// The gutter's cell (`Palette.bg`): each track's icon in its ink, and the current one's icon and ▾ (a control) on the
+    /// square of its hue, pressed (or its tools open) or not.
+    @Test func theTrackChooserReadsInTheGutter() {
+        let lanes: [TimelineLane] = [.media, .blur, .text, .captions, .music, .voiceOver, .audio]
+        for appearance in [Appearance.dark, Appearance.darkIncreased] {
+            let cell = rgb(Palette.bg, in: appearance)
             for lane in lanes {
+                let squares = [false, true].map { rgb(TimelineLaneTint.square(of: lane, pressed: $0), in: appearance, over: cell) }
+                for background in [cell] + squares {
+                    let chevron = rgb(TimelineLaneTint.ink(of: lane), in: appearance, over: background)
+                    #expect(ColorContrast.ratio(chevron, background) >= ColorContrast.componentMinimum, "\(lane), \(appearance)")
+                }
+            }
+        }
+    }
+
+    /// v26 lanes: each track's ink on its own fill, over the strips its items sit on (untinted, tinted with its colour, the
+    /// current track's tinted twice as much, and lit with its tools open).
+    @Test func theLanesInksReadOnTheirFills() {
+        let lanes: [(name: String, lane: TimelineLane, fill: Color, ink: Color)] = [
+            ("Aa", .text, Palette.Editor.laneText, Palette.Editor.laneTextInk),
+            ("Aa selected", .text, Palette.Editor.laneTextSelected, Palette.Editor.laneTextInk),
+            ("captions", .captions, Palette.Editor.laneCaption, Palette.Editor.laneCaptionInk),
+            ("music", .music, Palette.Editor.laneMusic, Palette.Editor.laneMusicInk),
+            ("voice-over", .voiceOver, Palette.Editor.laneVoiceOver, Palette.Editor.laneVoiceOverInk),
+            ("overlay", .media, Palette.Editor.laneMedia, Palette.Editor.laneMediaInk),
+            ("blur area", .blur, Palette.Editor.laneBlur, Palette.Editor.laneBlurInk),
+        ]
+        for lane in lanes {
+            let strips = [rgb(Palette.Editor.laneStrip, in: .dark)] + everyStrip.filter { $0.lane == lane.lane }.map(\.strip)
+            for base in strips {
                 let fill = rgb(lane.fill, in: .dark, over: base)
                 let ink = rgb(lane.ink, in: .dark, over: fill)
                 #expect(ColorContrast.ratio(ink, fill) >= ColorContrast.textMinimum, "\(lane.name) on its lane")

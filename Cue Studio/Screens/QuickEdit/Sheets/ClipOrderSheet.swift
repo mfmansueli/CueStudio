@@ -42,7 +42,7 @@ struct ClipOrderSheet: View {
 
     private func row(_ clip: ClipsViewModel.Clip) -> some View {
         HStack(spacing: 12) {
-            ClipOrderThumbnail(url: url(of: clip), time: clip.thumbnailTime, thumbnails: thumbnails)
+            ClipOrderThumbnail(url: url(of: clip), time: clip.thumbnailTime, orientation: clip.orientation, thumbnails: thumbnails)
             VStack(alignment: .leading, spacing: 2) {
                 Text("Clip \(clip.index + 1)").font(.subheadline.weight(.semibold)).foregroundStyle(Palette.ink)
                 Text(verbatim: "\(clip.title) · \(DurationText.tenths(clip.duration))")

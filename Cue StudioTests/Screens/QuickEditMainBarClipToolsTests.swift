@@ -49,7 +49,7 @@ struct QuickEditMainBarClipToolsTests {
 
     // MARK: - A panel keeps its clip
 
-    @Test(arguments: [EditorPanel.speed, .volume, .zoom, .stabilize])
+    @Test(arguments: [EditorPanel.speed, .volume, .zoom, .stabilize, .clipCrop, .clipAnimation])
     func aClipPanelFromTheMainBarKeepsTheClipUnderThePlayhead(panel: EditorPanel) async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel

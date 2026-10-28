@@ -7,9 +7,9 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// The editor's current track (`QuickEditViewModel.tracks`): ▾ brings every track out, a tap on one only chooses it (no
-/// tools, nothing added), an item picked anywhere (timeline, preview, a tool) brings its track, and the current track is kept
-/// for the take.
+/// The editor's current track (`QuickEditViewModel.tracks`): ▾ brings every track out, a tap on one chooses it and opens its
+/// tools (nothing added; under a panel it only chooses), an item picked anywhere (timeline, preview, a tool) brings its track,
+/// and the current track is kept for the take.
 @MainActor
 @Suite("Quick edit · the current track")
 struct QuickEditTrackChoiceTests {
@@ -36,7 +36,7 @@ struct QuickEditTrackChoiceTests {
         return music.id
     }
 
-    @Test func theChevronBringsEveryTrackOutAndATapOnOneOnlyChoosesIt() async {
+    @Test func theChevronBringsEveryTrackOutAndATapOnOneChoosesItWithItsTools() async {
         let viewModel = await makeViewModel()
         #expect(viewModel.tracks == TimelineTrackChoice())
         #expect(viewModel.timelineInput(heightClass: .regular).tracks == viewModel.tracks)
@@ -44,27 +44,38 @@ struct QuickEditTrackChoiceTests {
         #expect(viewModel.tracks.isExpanded)
         viewModel.tapTimeline(.lane(.captions))
         #expect(viewModel.tracks == TimelineTrackChoice(current: .captions))
-        // Choosing only chose: no tools, nothing added.
-        #expect(viewModel.toolMenu == nil)
+        // It comes with its tools open (lit in its colour), nothing added.
+        #expect(viewModel.toolMenu == .captions)
+        #expect(viewModel.timelineInput(heightClass: .regular).activeLanes == [.captions])
         #expect(viewModel.panel == nil)
         #expect(viewModel.sheet == nil)
-        // The next tap does what the track does.
+        // The next tap puts the toolbar back, as on any track.
         viewModel.tapTimeline(.lane(.captions))
-        #expect(viewModel.toolMenu == .captions)
+        #expect(viewModel.toolMenu == nil)
         // ▴ puts the tracks away as they were.
         viewModel.tapTimeline(.trackChooser)
         viewModel.tapTimeline(.trackChooser)
         #expect(viewModel.tracks == TimelineTrackChoice(current: .captions))
     }
 
-    @Test func choosingTheEmptyMediaTrackNeverOpensTheLibrary() async {
+    /// Every track has its own bar: Photos and videos and Blur areas too (owner, 28/10/2026). The library opens from the
+    /// Media bar, never from the track itself.
+    @Test func theMediaAndBlurTracksOpenTheirOwnBars() async {
         let viewModel = await makeViewModel()
         viewModel.tapTimeline(.trackChooser)
         viewModel.tapTimeline(.lane(.media))
         #expect(viewModel.sheet == nil)
         #expect(viewModel.tracks == TimelineTrackChoice(current: .media))
+        #expect(viewModel.toolMenu == .media)
         viewModel.tapTimeline(.lane(.media))
-        #expect(viewModel.sheet == .media)
+        #expect(viewModel.toolMenu == nil)
+        #expect(viewModel.sheet == nil)
+        viewModel.tapTimeline(.lane(.media))
+        #expect(viewModel.toolMenu == .media)
+        viewModel.tapTimeline(.lane(.blur))
+        #expect(viewModel.toolMenu == .blur)
+        #expect(viewModel.toolbarItems.map(\.id) == ["blurFace", "blurDraw", "blurCompare"])
+        #expect(viewModel.tracks.current == .blur)
     }
 
     @Test func anItemPickedAnywhereBringsItsTrack() async {
@@ -93,12 +104,43 @@ struct QuickEditTrackChoiceTests {
         viewModel.tapTimeline(.trackChooser)
         viewModel.tapTimeline(.lane(.captions))
         #expect(viewModel.selection == nil)
+        // Under a panel a tap only chooses: a clip stays picked. Without one the track's tools open and let go of it, as a tap
+        // on its strip does.
         let clip = viewModel.edit.timeline.segments[0].id
+        viewModel.selection = .clip(clip)
+        viewModel.panel = .speed
+        viewModel.tapTimeline(.trackChooser)
+        viewModel.tapTimeline(.lane(.media))
+        #expect(viewModel.selection == .clip(clip))
+        #expect(viewModel.tracks == TimelineTrackChoice(current: .media))
+        viewModel.panel = nil
         viewModel.selection = .clip(clip)
         viewModel.tapTimeline(.trackChooser)
         viewModel.tapTimeline(.lane(.text))
-        #expect(viewModel.selection == .clip(clip))
-        #expect(viewModel.tracks == TimelineTrackChoice(current: .text))
+        #expect(viewModel.selection == nil)
+        #expect(viewModel.toolMenu == .text)
+    }
+
+    /// Audio's tools opened from the voice-over's track keep the voice-over under the video (the music's track doesn't take
+    /// its place).
+    @Test func audiosToolsKeepTheTrackTheyWereOpenedFrom() async {
+        let viewModel = await makeViewModel()
+        _ = addMusic(to: viewModel)
+        viewModel.changeEdit { $0.voiceOvers = [VoiceOverClip(fileName: "voice.m4a", duration: 3, anchor: 0)] }
+        viewModel.tapTimeline(.trackChooser)
+        viewModel.tapTimeline(.lane(.voiceOver))
+        #expect(viewModel.toolMenu == .audio)
+        #expect(viewModel.tracks == TimelineTrackChoice(current: .voiceOver))
+    }
+
+    @Test func underAPanelATapOnATrackOnlyChoosesIt() async {
+        let viewModel = await makeViewModel()
+        viewModel.tapTimeline(.trackChooser)
+        viewModel.panel = .volume
+        viewModel.tapTimeline(.lane(.captions))
+        #expect(viewModel.panel == .volume)
+        #expect(viewModel.toolMenu == nil)
+        #expect(viewModel.tracks.current == .captions)
     }
 
     @Test func theCurrentTrackIsKeptForTheTake() async {
