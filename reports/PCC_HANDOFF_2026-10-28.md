@@ -1,3 +1,11 @@
+# ESTADO ATUAL — Full unidade com uma falha de timing; UI em andamento
+
+Sessão41089 continua ativa. Unidade `full-unit-20261028-211116.xcresult`: **4476 aprovados,1 falha,97 pulados,1 falha esperada**,381s. Única falha: `QuickEditPlayerTests/playingMovesTheClockAndStopsAtTheEndHandle()` linha109, segundo `#expect(player.isPlaying)` após esperar `currentTime > 0.3`. O xcresult capturou **currentTime = 1.0, state = ready, isPlaying = false**, exatamente o final do corte. A reprodução começou (checagem imediata linha107 passou), avançou e parou no corte; ainda não concluir flakiness sem rerun. Não alterar código enquanto Full roda. Depois rodar esse teste isolado com repetição e tratar a verificação do estado intermediário sem perder cobertura de início/avanço/fim.
+
+UI já iniciou em2 clones, resultado `build/results/full-ui-20261028-211834.xcresult`, log `build/logs/test-full-ui.log`, mesmo terminal41089. Não iniciar outro xcodebuild nem modificar fontes; aguardar conclusão e analisar eventuais falhas. Não declarar Full verde. Assinatura/entitlement PCC válidos, normal instalado nos dois iPhones, Iago abriu e Mansuelli estava bloqueado para abertura. Compilações limpas sem warnings aprovadas. Fonte segue igual ao commit de46403a; último checkpoint anterior c825a6eb enviado ao origin.
+
+---
+
 # ESTADO ATUAL — ambos aparelhos instalados; Full na fila
 
 Código atual: branch `codex/pcc-offline-review`, main69df2ac5 incorporada por ae937739; nenhuma alteração de fonte desde os testes dirigidos e a conferência limpa. **Zero warnings aprovado** para simulador, iPhone e Release. Testes dirigidos13 aprovados, instrumentos Python9 aprovados.
