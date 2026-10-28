@@ -6,6 +6,13 @@
 import Foundation
 
 nonisolated struct GeneratedScript: Hashable, Sendable {
+    var isConciseStatement: Bool = false
+    var cloudDraftIntent: String?
+    #if DEBUG
+    var editorialIssues: [String] = []
+    var editorialReviewFailure: String?
+    var editorialRevisionAccepted = false
+    #endif
     var title: String
     var text: String
     /// False when no model was available and the structured draft was used instead.

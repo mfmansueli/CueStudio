@@ -5,12 +5,13 @@
 
 import Foundation
 
-/// The two switches of Settings › Privacy & AI data. "On-device AI" is the master switch of every Apple Intelligence feature
+/// The two switches of Settings › Privacy & AI data. "Apple Intelligence" is the master switch of every Apple Intelligence feature
 /// (`ScriptWriting.isEnabled`); "Help improve Cue" is for anonymous usage numbers. Cue has no server and sends no usage
 /// today, so that one only remembers the choice, off until the creator turns it on.
 @MainActor
 @Observable
 final class PrivacyPreferencesService {
+    /// The stored key keeps its original name so an existing opt-out remains in effect after enabling PCC.
     var usesOnDeviceAI: Bool {
         didSet {
             defaults.set(usesOnDeviceAI, forKey: DefaultsKey.onDeviceAI)

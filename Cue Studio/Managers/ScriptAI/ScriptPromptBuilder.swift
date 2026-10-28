@@ -19,8 +19,12 @@ nonisolated enum ScriptPromptBuilder {
         let structure = request.structure
         let voice = structure.isSerious ? nil : request.voice
         var lines = [
-            "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.",
-            "Write in the first person, as the creator, in natural spoken language\(sentenceClause(for: voice)).",
+            request.modelRoute == .privateCloud
+                ? "You write video scripts that a creator reads from a teleprompter while filming themselves."
+                : "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.",
+            request.modelRoute == .privateCloud
+                ? "Write in natural spoken language\(sentenceClause(for: voice)). Follow the narrator and grammatical perspective requested in the current brief, including a team statement or second-person scene. Use the creator's usual perspective only when the request leaves it unspecified."
+                : "Write in the first person, as the creator, in natural spoken language\(sentenceClause(for: voice)).",
             "Fill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.",
             cueHint,
             punctuationRule,
@@ -29,19 +33,22 @@ nonisolated enum ScriptPromptBuilder {
             lines.append(seriousRule)
         } else {
             // Where it is posted shapes the hook, the pace and the ending; a serious statement has none of those.
-            lines.append(PlatformGuide.line(for: request.platform))
-            lines.append(honestyRule)
+            lines.append(request.modelRoute == .privateCloud
+                ? PCCScriptDirection.platformLine(for: request.platform, durationPolicy: request.durationPolicy)
+                : PlatformGuide.line(for: request.platform, durationPolicy: request.durationPolicy))
+            lines.append(request.modelRoute == .privateCloud ? PCCScriptDirection.draftLicense : honestyRule)
         }
         if request.isFreePrompt {
             lines.append(accuracyRule)
         }
         if let voice {
-            lines += voiceLines(voice, platform: request.platform, budget: request.voiceBudget)
+            lines += voiceLines(voice, platform: request.platform, budget: request.voiceBudget, contextualPreferences: request.modelRoute == .privateCloud)
         }
         if let language = request.language {
             lines.append(languageRule(language, variant: request.languageVariant))
             if insistsOnLanguage || language != .english { lines.append(languageInsistence(language, variant: request.languageVariant)) }
         }
+        lines += PCCScriptDirection.instructions(for: request)
         return lines.joined(separator: "\n")
     }
 
@@ -64,7 +71,8 @@ nonisolated enum ScriptPromptBuilder {
     /// voice may be too: the model has answered in English (measured: a Japanese idea, an English "Hey fam").
     static func languageInsistence(_ language: CueLanguage, variant: Locale? = nil) -> String {
         let name = languageName(language, variant: variant)
-        return "The script is in \(name), not in English: write it in \(name) even though these instructions are in English. Only the creator's catchphrases stay as they are."
+        return "The script is in \(name), not in English: write it in \(name) even though these instructions are in English. "
+            + "The creator's catchphrases stay as they are, as does any wording explicitly requested verbatim."
     }
 
     /// "English (United Kingdom)" for the creator's own variant, "English" for the language Cue offers.
@@ -104,8 +112,15 @@ nonisolated enum ScriptPromptBuilder {
 
     /// The words the request asks the model for when the script must run `range` seconds: the floor as `askedWords` has it, and a ceiling that is not
     /// raised with it (a Short asked for 150 to 300 words wrote 310, two minutes of a script for a video of one), only kept above the floor.
-    static func askedRange(for range: ClosedRange<TimeInterval>) -> (low: Int, high: Int) {
-        let low = askedWords(ReadTime.words(for: range.lowerBound))
+    static func askedRange(for range: ClosedRange<TimeInterval>, on route: AIModelRoute = .onDevice) -> (low: Int, high: Int) {
+        let minimum = ReadTime.words(for: range.lowerBound)
+        if route == .privateCloud {
+            // Owner preference: provide material to edit near the chosen upper duration, at normal
+            // reading pace. A small overrun is acceptable; this is not a platform upload limit.
+            let upper = max(minimum, ReadTime.words(for: range.upperBound))
+            return (max(minimum, Int((Double(upper) * 0.9).rounded(.up))), Int((Double(upper) * 1.05).rounded(.up)))
+        }
+        let low = askedWords(minimum)
         var high = max(ReadTime.words(for: range.upperBound), Int((Double(low) * 1.25).rounded()))
         // A creator whose videos run one to three minutes asked 225 to 450 words for one line of idea (measured on an iPhone 15 Pro): the model
         // padded it with the same sentences and ran into its limit after 45 to 93 s. A short video is asked for no more than this.
@@ -115,7 +130,7 @@ nonisolated enum ScriptPromptBuilder {
 
     static func prompt(for request: ScriptRequest) -> String {
         let structure = request.structure
-        let (low, high) = askedRange(for: request.targetRange)
+        let (low, high) = askedRange(for: request.targetRange, on: request.modelRoute ?? .onDevice)
         var lines: [String] = []
         // On the iPhone 18 Pro Max the model wrote every script in English when the creator's voice (English instructions, an
         // English catchphrase) was on, whatever the instructions said: the language is also asked for in the request itself.
@@ -124,51 +139,92 @@ nonisolated enum ScriptPromptBuilder {
         }
         // The shape: the format the creator chose, or the one the idea asks for (only the AI is told), in English with what each block is for.
         let guide = formatGuide(for: request)
-        lines += [
-            "Write a \(guide.name) script for \(request.platform.promptName).",
-            "Blocks, in this order: \(guide.order).",
-            "What each block does: \(guide.purpose)",
-        ]
+        let automatic = PCCScriptDirection.usesAutomaticFormat(request)
+        if automatic {
+            lines.append("Write a script for \(request.platform.promptName).")
+            lines += PCCScriptDirection.automaticFormatLines(for: request)
+        } else {
+            lines += [
+                "Write a \(guide.name) script for \(request.platform.promptName).",
+                "Blocks, in this order: \(guide.order).",
+                "What each block does: \(guide.purpose)",
+            ]
+        }
         if let tone = request.tone {
             lines.append("Tone: \(tone.promptWord).")
         }
-        lines.append("Length: between \(low) and \(high) spoken words in total.")
-        // Measured on an iPhone: told only the range, the model wrote about a third of it (44 to 82 words for 150 to 225,
-        // in every language). Naming the minimum and what a block holds helps, and so does asking for more than is needed (`askedWords`).
-        lines.append(lengthRule(minimumWords: low, blocks: guide.blocks.count, sentenceWords: sentenceWords(for: request.voice)))
+        if request.durationPolicy == .targeted {
+            lines.append("Length: between \(low) and \(high) spoken words in total.")
+            lines.append(lengthRule(
+                minimumWords: low, blocks: guide.blocks.count, sentenceWords: sentenceWords(for: request.voice), on: request.modelRoute ?? .onDevice
+            ))
+        } else {
+            lines.append("Platform duration is informational, not a writing target. Develop the current request fully and naturally, then stop when it is complete. Do not pad or cut useful content to fit a platform duration. Honor any length explicitly requested by the creator.")
+        }
         let voice = structure.isSerious ? nil : request.voice
         let brief = structure.isSerious ? nil : request.brief
         if !structure.isSerious {
-            lines.append(briefOpeningRule(brief) ?? hookRule(for: voice))
+            if let opening = briefOpeningRule(brief) {
+                lines.append(opening)
+            } else if !automatic {
+                lines.append(hookRule(for: voice))
+            }
         }
+        lines += sourceLines(for: request, voice: voice, brief: brief)
+        if let brand = request.brand {
+            lines += brandLines(brand)
+        }
+        // Said again at the very end, where a small model listens best.
+        var closing = voice.flatMap {
+            closingRule(for: $0, platform: request.platform, contextualPreferences: request.modelRoute == .privateCloud)
+        }
+        if voice != nil, case .prompt = request.source {
+            let focus = request.modelRoute == .privateCloud
+                ? "Keep the current request's subject and explicit requirements; use usual voice preferences only where they fit."
+                : "Stay on the idea: \(videoText(for: request))"
+            closing = [closing, focus].compactMap { $0 }.joined(separator: " ")
+        }
+        if let closing { lines.append(closing) }
+        lines += request.requiredPhrases.map { "Mandatory verbatim wording, unchanged in a spoken block: “\($0)”" }
+        if request.modelRoute == .privateCloud { lines.append(PCCScriptDirection.finalCheck) }
+        return lines.joined(separator: "\n")
+    }
+
+    private static func sourceLines(for request: ScriptRequest, voice: CreatorVoice?, brief: IdeaBrief?) -> [String] {
+        var lines: [String] = []
         switch request.source {
         case .prompt:
             lines.append("The video: \(videoText(for: request))")
             if let angle = briefAngleRule(brief) { lines.append(angle) }
             // The idea is the subject. The voice only changes how it is said: a creator with other topics still gets a script about this one.
-            if voice != nil { lines.append("Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.") }
+            if voice != nil {
+                lines.append(request.modelRoute == .privateCloud
+                    ? "Stay on the current request. Profile information guides the writing style; do not quote or explain the profile instructions in the script."
+                    : "Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.")
+            }
         case .format(let type, let brief):
             if request.brand == nil {
-                let resolved = type.resolvedBrief(brief)
                 lines.append("Brief:")
-                lines += type.briefFields.map { "- \($0.label): \(resolved[$0.key] ?? $0.example)" }
+                if request.modelRoute == .privateCloud {
+                    // Placeholder examples belong to the form, never to the creator's actual facts.
+                    lines += type.briefFields.compactMap { field in
+                        guard let value = brief[field.key]?.trimmingCharacters(in: .whitespacesAndNewlines), !value.isEmpty else { return nil }
+                        return "- \(field.label): \(value)"
+                    }
+                    lines.append("Only the supplied brief answers above are known. Leave unsupported details out; do not fill missing answers with invented facts.")
+                } else {
+                    let resolved = type.resolvedBrief(brief)
+                    lines += type.briefFields.map { "- \($0.label): \(resolved[$0.key] ?? $0.example)" }
+                }
             }
         }
-        if let brand = request.brand {
-            lines += brandLines(brand)
-        }
-        // Said again at the very end, where a small model listens best.
-        var closing = voice.flatMap { closingRule(for: $0, platform: request.platform) }
-        if voice != nil, case .prompt = request.source {
-            closing = [closing, "Stay on the idea: \(videoText(for: request))"].compactMap { $0 }.joined(separator: " ")
-        }
-        if let closing { lines.append(closing) }
-        return lines.joined(separator: "\n")
+        return lines
     }
 
     /// The shape of the script: the chosen format, else the one a free idea asks for (or the creator films most), else the generic one.
     static func formatGuide(for request: ScriptRequest) -> FormatGuide {
         if let type = request.type { return .guide(for: type) }
+        if request.formatChoice == .talkingHead { return .talkingHead }
         guard case .prompt(let idea) = request.source else { return .generic }
         return .guide(for: FormatGuess.format(for: idea, usual: request.voice?.formats ?? []))
     }
@@ -220,8 +276,10 @@ nonisolated enum ScriptPromptBuilder {
     }
 
     /// What must hold whatever else the script does (who is talking, what to avoid), repeated after the idea; nil with nothing to repeat.
-    static func closingRule(for voice: CreatorVoice, platform: Platform? = nil) -> String? {
-        let rules = VoiceBriefBuilder.closingRules(for: voice, register: platform.map(PlatformRegister.init) ?? .casual)
+    static func closingRule(for voice: CreatorVoice, platform: Platform? = nil, contextualPreferences: Bool = false) -> String? {
+        let rules = VoiceBriefBuilder.closingRules(
+            for: voice, register: platform.map(PlatformRegister.init) ?? .casual, contextualPreferences: contextualPreferences
+        )
         return rules.isEmpty ? nil : "Remember: " + rules.joined(separator: " ")
     }
 
@@ -254,7 +312,17 @@ nonisolated enum ScriptPromptBuilder {
     /// A short script asked for "concrete points that name the real thing" instead of words was tried on an iPhone 15 Pro (run `substance`): it came
     /// out shorter (half its minimum, against 0.7), kept its opening's promise less (3 of 18 against 7 of 13) and invented ("filtro físico, como
     /// camuflagem"). Left out.
-    static func lengthRule(minimumWords: Int, blocks: Int = 3, sentenceWords: Int = 12) -> String {
+    static func lengthRule(minimumWords: Int, blocks: Int = 3, sentenceWords: Int = 12, on route: AIModelRoute = .onDevice) -> String {
+        if route == .privateCloud {
+            let development = Int((Double(minimumWords) * 0.85).rounded(.up))
+            return "Budget the spoken script before writing: at least \(development) words belong to the actual development, not the opening or sign-off. "
+                + "Distribute that development across the requested steps or sections; explain each with several connected sentences, a reason and a useful check or example. "
+                + "Keep the requested number of points. A one-sentence tip is not a developed section. "
+                + "Aim near the upper end of the chosen duration at a natural reading pace, with at least \(minimumWords) spoken words. "
+                + "Give the creator substantial material to edit: develop the relevant explanation, practical details and tradeoffs. "
+                + "A small overrun is acceptable. Never stretch the duration with repetition, invented facts or generic motivational filler. "
+                + "If an explicit word or time limit appears in the current request, honor that limit instead."
+        }
         guard asksSentencesPerBlock, minimumWords > shortFormWords else {
             return "Do not stop early: the script must be at least \(minimumWords) words, so write every block in full, with several complete sentences each."
         }
@@ -272,8 +340,13 @@ nonisolated enum ScriptPromptBuilder {
 
     /// My Cue Voice as the lines the model reads (`VoiceBriefBuilder`): who is talking, who is watching, what about, how they sound, how
     /// they open and close, examples and the rules, in at most `VoiceBrief.budget` characters.
-    static func voiceLines(_ voice: CreatorVoice, platform: Platform? = nil, budget: Int? = nil) -> [String] {
-        VoiceBriefBuilder.brief(for: voice, budget: budget ?? VoiceBrief.budget, register: platform.map(PlatformRegister.init) ?? .casual).lines
+    static func voiceLines(
+        _ voice: CreatorVoice, platform: Platform? = nil, budget: Int? = nil, contextualPreferences: Bool = false
+    ) -> [String] {
+        VoiceBriefBuilder.brief(
+            for: voice, budget: budget ?? VoiceBrief.budget, register: platform.map(PlatformRegister.init) ?? .casual,
+            contextualPreferences: contextualPreferences
+        ).lines
     }
 
     /// "What Cue sends" (My Cue Voice): the voice as the model reads it, and what was cut to fit. Empty when nothing of the voice can be used yet.

@@ -5,12 +5,14 @@
 
 import Foundation
 
-/// One way a written script breaks what the creator asked for (`VoiceConstraintChecker`). Never shown to the creator and never blocks them: it
-/// is what the one new attempt is told, and what is counted (the kind, never the text).
+/// One way a written script breaks what the creator asked for. Sent to the bounded correction and
+/// counted without its text. Voice preferences do not block delivery; missing explicit verbatim wording does.
 nonisolated struct VoiceViolation: Hashable, Sendable {
     enum Kind: String, CaseIterable, Hashable, Sendable {
         /// A word or phrase of something the creator asked never to write.
         case avoided
+        /// Wording explicitly requested verbatim is absent or changed.
+        case requiredPhrase
         /// "I" in a script of "we", or "we" in a script of "I".
         case pronoun
         /// The creator's catchphrase opens a script whose opening they chose another way.
@@ -31,7 +33,7 @@ nonisolated struct VoiceViolation: Hashable, Sendable {
         /// counted (the habits measured from their writing) weighs nothing, and the length is judged apart (`DraftAssessment.spokenWords`).
         var severity: Int {
             switch self {
-            case .avoided: 3
+            case .avoided, .requiredPhrase: 3
             case .pronoun, .emoji, .styleName: 2
             case .catchphraseFirst: 1
             case .tooShort, .sentenceLength, .exclamation: 0

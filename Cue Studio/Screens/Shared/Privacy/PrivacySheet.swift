@@ -27,7 +27,7 @@ struct PrivacySheet: View {
                 item(
                     title: "Apple Intelligence, nothing else",
                     detail: usesPrivateCloudCompute
-                        ? "Rewrites, hooks and theme ideas run on the device. A free-form Prompt is written with Apple's Private Cloud Compute, which uses your request only to answer it and doesn't keep it. No other AI service is involved."
+                        ? "Apple Intelligence can use this iPhone or Private Cloud Compute. Your request and voice preferences may be sent to Apple. Writing examples and imported excerpts stay on this iPhone."
                         : "Scripts, rewrites, hooks and theme ideas are all written on this iPhone. No other AI service is involved.",
                     systemImage: "cpu"
                 )

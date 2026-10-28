@@ -5,12 +5,12 @@
 
 import Foundation
 
-/// Which Apple Intelligence model runs a task. Rewrites, hooks and ideas stay on the device (fast,
+/// Which Apple Intelligence model runs a task. Rewrites, hooks and ideas prefer the device (fast,
 /// offline). Free prompts and factual topics go to Private Cloud Compute, which knows more; when it
 /// isn't available the device model writes them, and the fact warning stays on. Each model covers
 /// what the other can't: the device when the cloud is out of reach, the cloud when a long script
 /// or a language doesn't fit the device model.
-nonisolated enum AIModelRoute: Equatable, Sendable {
+nonisolated enum AIModelRoute: String, Hashable, Sendable {
     case onDevice
     case privateCloud
 
@@ -40,6 +40,8 @@ nonisolated enum AIModelRoute: Equatable, Sendable {
     func fallback(after failure: AIFailure) -> AIModelRoute? {
         switch (self, failure) {
         case (.privateCloud, .cloudUnreachable): .onDevice
+        case (.privateCloud, .timedOut): .onDevice
+        case (.onDevice, .timedOut): .privateCloud
         case (.onDevice, .tooLong), (.onDevice, .unsupportedLanguage), (.onDevice, .modelPreparing): .privateCloud
         default: nil
         }

@@ -1,0 +1,22 @@
+[
+  {
+    "caseID": "pt-BR-tiktok-duration",
+    "condition": "section-experiment",
+    "hasBrief": false,
+    "idea": "Ensine três ajustes para gravar com a luz de uma janela. Explique como conferir cada ajuste. Sem pedir para seguir.",
+    "index": 0,
+    "instructions": "Write only what the creator says aloud, in Portuguese (Brazil). This is one section of a continuous video script, not a standalone video.\nThe current request defines the subject. Preserve supplied facts and restrictions. Never invent a biography, personal test, result, source or measurement.\nUse direct, natural speech. Develop the requested action with a reason and a useful observation. Do not add greetings, headings, markdown, stage cues, motivational filler or a follow/like/share CTA.\nThe voice profile controls wording and rhythm, not the subject. Optional habits must not become repeated formulas.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey know some basics: skip the obvious and go one level deeper.\nThey watch to learn something and decide what to buy.\nTheir videos aim to grow their audience and entertain.\nThey sound casual and funny.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: some casual slang; humor: a little.\nNever swear.\nUsual opening preference, only when supported by this request: a common mistake to avoid. A story opening requires an experience supplied in the request; otherwise open directly on the subject.\nUsual ending preference, only if this request permits it and it serves the takeaway: asking them to comment their answer. It is optional, never an automatic sign-off.\nThey film mostly: lists and tips.\nOptional familiar expressions: “Fala, galera!”. Use at most one only if natural here; omission is better than forced repetition.\nThey post on TikTok.\nRules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.",
+    "kind": "script",
+    "language": "pt-BR",
+    "model": "privateCloud",
+    "prompt": "Ensine três ajustes para gravar com a luz de uma janela. Explique como conferir cada ajuste. Sem pedir para seguir.\nOutline: Posicionamento da luz lateral: conferir se o lado iluminado do rosto tem contraste suave e o outro lado apresenta sombra gradual.; Controle da exposição: conferir se os realces da janela não estão estourados e os detalhes da sombra são visíveis no monitor.; Equilíbrio de temperatura: conferir se a imagem tem tom neutro comparando áreas claras da janela com partes brancas do cenário.",
+    "reviewChecks": [
+      "Evaluation only: one outline call and three section calls; 90–110 words asked per section.",
+      "Review factual advice, repeated instructions, coherence and the creator's voice before considering production."
+    ],
+    "run": "pcc-sections-structured",
+    "seconds": 6.978271042,
+    "text": "Eu coloco a luz da janela de lado pra dar volume sem esforço. Isso cria um visual mais vivo que o frontal comum. O lado iluminado ganha destaque e o outro não some. Assim, meu rosto não fica plano na tela.\n\nOlho se o lado claro tem contraste suave, sem cortes bruscos. O lado escuro precisa de sombra gradual, não um buraco. Se o contraste estiver forte, eu giro um pouco o ângulo. Se a sombra for dura, mudo a posição pra suavizar.\n\nEu seguro a exposição pra não estourar o brilho da janela. Isso mantém o visual equilibrado sem perder o clima natural. Se eu deixar subir demais, o rosto fica apagado no fundo. Assim, o vídeo não cansa os olhos da galera.\n\nOlho no monitor se os realces não estão estourados. Preciso ver detalhes nas sombras pra não virar borrão. Se o brilho pular, eu baixo um pouco o ajuste. Se as sombras sumirem, aumento devagar pra recuperar.\n\nEu ajusto o equilíbrio de temperatura pra não puxar pro amarelo ou azul. Isso mantém meu tom natural sem parecer filtro estranho. Se a luz da janela for fria demais, o visual perde o calor. Esse ajuste ajuda a galera a focar no que eu mostro.\n\nEu comparo as áreas claras da janela com as partes brancas do cenário. Se o tom não for neutro, mudo o ajuste devagar. Se o branco puxar pro azul, eu esquento um pouco. Se ficar amarelado, eu resfrio até equilibrar.",
+    "title": "Três ajustes para gravar com luz de janela"
+  }
+]

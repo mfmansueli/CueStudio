@@ -93,7 +93,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .appLanguage: String(localized: "App language")
         case .voiceFollowingLanguage: String(localized: "Voice following")
         case .scriptLanguage: String(localized: "Script language")
-        case .onDeviceAI: String(localized: "On-device AI")
+        case .onDeviceAI: String(localized: "Apple Intelligence")
         case .helpImprove: String(localized: "Help improve Cue")
         case .permissions: String(localized: "Permissions")
         case .deleteData: String(localized: "Delete my Cue data")
@@ -114,7 +114,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .topics: String(localized: "Edit them in My Cue Voice")
         case .autoTag: String(localized: "Cue picks the topic on this iPhone")
         case .firstVoyage: String(localized: "Your next step, until your first video is out")
-        case .onDeviceAI: String(localized: "Scripts and My Cue Voice stay on this iPhone")
+        case .onDeviceAI: String(localized: "Apple Intelligence, nothing else")
         case .helpImprove: String(localized: "Anonymous usage, never videos or scripts")
         default: nil
         }

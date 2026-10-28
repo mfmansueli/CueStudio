@@ -11,6 +11,8 @@ import FoundationModels
 nonisolated enum AIFailure: Equatable, Sendable {
     /// Private Cloud Compute couldn't answer: no network, the quota is used up, or the service is down.
     case cloudUnreachable
+    /// A stalled model may be replaced by the other route, without retrying the cloud twice.
+    case timedOut
     /// The script and the instructions don't fit in the model's context.
     case tooLong
     /// The model doesn't write in the script's language.
@@ -30,6 +32,8 @@ nonisolated enum AIFailure: Equatable, Sendable {
 
     init(_ error: any Error) {
         switch error {
+        case ScriptAIError.timedOut:
+            self = .timedOut
         case is CancellationError:
             self = .cancelled
         case let error as SystemLanguageModel.Error:
@@ -44,6 +48,7 @@ nonisolated enum AIFailure: Equatable, Sendable {
             case .contextSizeExceeded: self = .tooLong
             case .unsupportedLanguageOrLocale: self = .unsupportedLanguage
             case .rateLimited: self = .rateLimited
+            case .timeout: self = .timedOut
             case .guardrailViolation, .refusal: self = .declined
             default: self = .other
             }

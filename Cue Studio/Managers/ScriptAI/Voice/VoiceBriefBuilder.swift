@@ -13,11 +13,14 @@ import Foundation
 /// The text fits `VoiceBrief.budget`: when it doesn't, the examples are shortened or dropped first, then where and how long they post, and the tags
 /// (what the creator typed under "+ Something else") last. One piece of code builds it, measures it and shows it ("What Cue sends").
 nonisolated enum VoiceBriefBuilder {
-    static func brief(for voice: CreatorVoice, budget: Int = VoiceBrief.budget, register: PlatformRegister = .casual) -> VoiceBrief {
-        let parts = Parts(voice, register: register)
+    static func brief(
+        for voice: CreatorVoice, budget: Int = VoiceBrief.budget,
+        register: PlatformRegister = .casual, contextualPreferences: Bool = false
+    ) -> VoiceBrief {
+        let parts = Parts(voice, register: register, contextualPreferences: contextualPreferences)
         guard parts.hasContent else { return .empty }
         let full = parts.text(examples: parts.examples, tags: true, reach: true)
-        let closing = closingRules(for: voice, register: register)
+        let closing = closingRules(for: voice, register: register, contextualPreferences: contextualPreferences)
         if PromptCost.units(of: full) <= budget { return VoiceBrief(text: full, fullText: full, trimmed: [], closingRules: closing) }
 
         // Cutting goes in order: the examples (shortened to the room there is, or dropped), then the reach, then the tags.
@@ -40,8 +43,17 @@ nonisolated enum VoiceBriefBuilder {
     }
 
     /// The rules the request says again at its end.
-    static func closingRules(for voice: CreatorVoice, register: PlatformRegister = .casual) -> [String] {
-        var rules = [voice.resolvedSpeaksAs == .we ? "Say “we”, never “I”." : "Speak as one person (“I”)."]
+    static func closingRules(
+        for voice: CreatorVoice, register: PlatformRegister = .casual, contextualPreferences: Bool = false
+    ) -> [String] {
+        let perspective = voice.resolvedSpeaksAs == .we ? "“we” and “our”" : "“I” and “my”"
+        let narratorRule: String
+        if contextualPreferences {
+            narratorRule = "Default narrator: \(perspective). If the current request specifies another narrator, grammatical person or supplied agency, preserve that instead."
+        } else {
+            narratorRule = voice.resolvedSpeaksAs == .we ? "Say “we”, never “I”." : "Speak as one person (“I”)."
+        }
+        var rules = [narratorRule]
         if register == .professional { rules.append("Keep it professional: no slang, no swearing, no emojis.") }
         if !voice.avoid.isEmpty {
             rules.append("Avoid: \(voice.avoid.map { VoiceAvoidRule.rule(for: $0)?.id.lowercased() ?? $0 }.joined(separator: ", ")).")
@@ -86,12 +98,12 @@ nonisolated enum VoiceBriefBuilder {
         let rules: [String]
         let examples: [String]
 
-        init(_ voice: CreatorVoice, register: PlatformRegister) {
-            identity = Self.identity(voice)
+        init(_ voice: CreatorVoice, register: PlatformRegister, contextualPreferences: Bool) {
+            identity = Self.identity(voice, contextualPreferences: contextualPreferences)
             audience = Self.audience(voice)
             topics = Self.topics(voice)
             self.voice = Self.sound(voice, register: register)
-            structure = Self.structure(voice)
+            structure = Self.structure(voice, contextualPreferences: contextualPreferences)
             reach = Self.reach(voice)
             tags = Self.tags(voice)
             rules = Self.rules(voice)
@@ -122,7 +134,7 @@ nonisolated enum VoiceBriefBuilder {
 
         // MARK: Identity
 
-        private static func identity(_ voice: CreatorVoice) -> [String] {
+        private static func identity(_ voice: CreatorVoice, contextualPreferences: Bool) -> [String] {
             var lines = ["Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about."]
             if let custom = voice.customRole {
                 lines.append("Who they are: \(custom).")
@@ -132,11 +144,15 @@ nonisolated enum VoiceBriefBuilder {
             if let credential = voice.credential {
                 lines.append("Credential: \(credential). Mention it only where it fits; never invent another.")
             }
-            lines.append(
-                voice.resolvedSpeaksAs == .we
+            if contextualPreferences {
+                lines.append(voice.resolvedSpeaksAs == .we
+                    ? "Their default voice is a team narrator (“we” and “our”). Keep this default unless the current request supplies another perspective or narrator."
+                    : "Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.")
+            } else {
+                lines.append(voice.resolvedSpeaksAs == .we
                     ? "They speak as a team: say “we” and “our”, never “I”."
-                    : "They speak as one person: say “I” and “my”."
-            )
+                    : "They speak as one person: say “I” and “my”.")
+            }
             return lines
         }
 
@@ -218,15 +234,19 @@ nonisolated enum VoiceBriefBuilder {
 
         // MARK: How they open, close and what they film
 
-        private static func structure(_ voice: CreatorVoice) -> [String] {
+        private static func structure(_ voice: CreatorVoice, contextualPreferences: Bool) -> [String] {
             var lines: [String] = []
             if !voice.openings.isEmpty {
                 let choices = voice.openings.map { VoiceChoiceCatalog.opening($0).guidance }
-                lines.append("Open with \(list(choices, joiner: " or ")): show it in the script, never write the style's name.")
+                lines.append(contextualPreferences
+                    ? "Usual opening preference, only when supported by this request: \(list(choices, joiner: " or ")). A story opening requires an experience supplied in the request; otherwise open directly on the subject."
+                    : "Open with \(list(choices, joiner: " or ")): show it in the script, never write the style's name.")
             }
             if !voice.endings.isEmpty {
                 let choices = voice.endings.map(VoiceChoiceCatalog.endingAction)
-                lines.append("End by \(list(choices, joiner: " or ")).")
+                lines.append(contextualPreferences
+                    ? "Usual ending preference, only if this request permits it and it serves the takeaway: \(list(choices, joiner: " or ")). It is optional, never an automatic sign-off."
+                    : "End by \(list(choices, joiner: " or ")).")
             }
             let formats = voice.formats.map(\.promptName) + voice.customTags.filter(isFormatTag)
             if !formats.isEmpty {
@@ -235,7 +255,9 @@ nonisolated enum VoiceBriefBuilder {
             if !voice.phrases.isEmpty {
                 let said = voice.phrases.prefix(3).map { "“\($0)”" }.joined(separator: ", ")
                 lines.append(
-                    voice.openings.isEmpty
+                    contextualPreferences
+                        ? "Optional familiar expressions: \(said). Use at most one only if natural here; omission is better than forced repetition."
+                        : voice.openings.isEmpty
                         ? "They often say: \(said). Use one naturally, ideally in the opening."
                         : "They often say: \(said). Use one once after the first sentence, never as the first words."
                 )

@@ -8,7 +8,7 @@ import Foundation
 /// Drafts and rewrites scripts with Apple Intelligence. Screens depend on this protocol so tests
 /// can use a fake writer.
 protocol ScriptWriting: AnyObject {
-    /// The creator's master switch (Settings › Privacy & AI data › On-device AI). Off, no AI feature is offered.
+    /// The creator's master switch (Settings › Privacy & AI data › Apple Intelligence). Off, no AI feature is offered.
     var isEnabled: Bool { get set }
 
     /// Which models can run right now.

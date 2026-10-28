@@ -1,0 +1,23 @@
+[
+  {
+    "caseID": "es-ES-literal",
+    "condition": "intent",
+    "durationPolicy": "informative",
+    "expectedDirection": "explanation",
+    "failure": "requiredWording",
+    "hasBrief": false,
+    "idea": "Explica cómo planificar vídeos e incluye exactamente: Menos prisa, más intención.",
+    "index": 5,
+    "kind": "script",
+    "language": "es-ES",
+    "requestedReasoning": "default",
+    "requiredLiterals": [
+      "Menos prisa, más intención."
+    ],
+    "reviewChecks": [
+      "Required phrase is retained, not used as an unrelated slogan."
+    ],
+    "run": "developed-es-ES-literal",
+    "seconds": 5.126726458
+  }
+]

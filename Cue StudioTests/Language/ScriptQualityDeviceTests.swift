@@ -69,8 +69,37 @@ struct ScriptQualityDeviceTests {
         KeepScreenAwake.enable()
         // `TEST_RUNNER_CUE_QUALITY_SUBSTANCE=off`: the request as it was before the opening was held to the subject (`forbidsFillerOpening`).
         ScriptPromptBuilder.forbidsFillerOpening = ProcessInfo.processInfo.environment["CUE_QUALITY_SUBSTANCE"] != "off"
-        let service = ScriptAIService()
-        guard service.availability.onDevice else {
+        let localOnly = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"] == "onDevice"
+        let requested = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"]
+        let reasoning = ProcessInfo.processInfo.environment["CUE_QUALITY_REASONING"]
+        try #require(reasoning == nil || ["light", "moderate", "deep"].contains(reasoning ?? ""), "Unknown reasoning level")
+        let level: ContextOptions.ReasoningLevel? = switch reasoning {
+        case "light": .light
+        case "moderate": .moderate
+        case "deep": .deep
+        default: nil
+        }
+        let service = ScriptAIService(
+            usesPrivateCloudCompute: !localOnly, preferredModel: requested == "privateCloud" ? .privateCloud : nil, cloudReasoning: level
+        )
+        #if DEBUG
+        service.evaluatesFreeProse = ProcessInfo.processInfo.environment["CUE_QUALITY_FREE_PROSE"] == "1"
+        service.evaluatesDeliveryOnlyVoice = ProcessInfo.processInfo.environment["CUE_QUALITY_DELIVERY_VOICE"] == "1"
+        service.evaluatesEditorialReview = ProcessInfo.processInfo.environment["CUE_QUALITY_EDITORIAL_REVIEW"] == "1"
+        service.evaluatesCloudPlanning = ProcessInfo.processInfo.environment["CUE_QUALITY_PLANNING"] == "1"
+        if let value = ProcessInfo.processInfo.environment["CUE_QUALITY_EDITORIAL_EXAMPLES"] {
+            service.editorialMethodOverride = value == "1"
+        }
+        if service.evaluatesFreeProse || service.evaluatesDeliveryOnlyVoice {
+            try #require(!service.evaluatesCloudPlanning && !service.evaluatesEditorialReview && !service.usesEditorialMethod,
+                         "Evaluate prose/voice independently of planning, review and worked examples")
+        }
+        #endif
+        if requested == "privateCloud", !service.availability.privateCloud {
+            try Test.cancel("Private Cloud Compute is unavailable: this route is not validated")
+        }
+        let available = localOnly ? service.availability.onDevice : service.availability.isAvailable
+        guard available else {
             try Test.cancel("Apple Intelligence isn't available on this device: \(service.availability.reason ?? "unknown")")
         }
         #if canImport(UIKit)
@@ -81,6 +110,100 @@ struct ScriptQualityDeviceTests {
     }
 
     // MARK: - Scripts
+
+    /// Explicitly opt in to one frozen case per device invocation; never spend the whole dataset's
+    /// quota by accident. Use the same case id for baseline and candidate runs.
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["CUE_QUALITY_INTENT_CASE"] != nil))
+    func writesAnIntentBenchmarkCase() async throws {
+        let wanted = try #require(ProcessInfo.processInfo.environment["CUE_QUALITY_INTENT_CASE"])
+        let cases = try ScriptIntentCase.load()
+        let index = try #require(cases.firstIndex { $0.id == wanted }, "Unknown intent case: \(wanted)")
+        let item = cases[index]
+        let profile = try #require(QualityProfiles.all.first { $0.language == item.language })
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let creator = CreatorProfileService(defaults: defaults.defaults)
+        creator.profile = profile.full
+        let factory = ScriptRequestFactory(
+            rules: TestData.rulesService(), profile: creator, scriptLanguage: item.language, interfaceLanguage: item.language
+        )
+        var request = factory.request(idea: item.prompt, platform: .reels, format: nil, formatChoice: item.formatChoice)
+        if let value = ProcessInfo.processInfo.environment["CUE_QUALITY_DURATION"] {
+            request.durationPolicy = try #require(ScriptDurationPolicy(rawValue: value), "Unknown duration policy")
+        }
+        var sample = await Self.script(
+            request, idea: item.prompt, language: item.language, condition: "intent", index: index, service: try ready()
+        )
+        sample.durationPolicy = request.durationPolicy.rawValue
+        sample.caseID = item.id
+        sample.expectedDirection = item.expectedDirection
+        sample.requiredLiterals = item.requiredLiterals
+        sample.reviewChecks = item.reviewChecks
+        Self.record(sample, named: "quality-sample-\(Self.run)-intent-\(item.id).json")
+        #expect(sample.wasWritten, "The model must return a script; semantic quality still requires review")
+        for literal in item.requiredLiterals {
+            #expect(ScriptVerbatimRequirements.contains(literal, in: sample.text ?? ""), "Required literal was not kept: \(literal)")
+        }
+    }
+
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["CUE_QUALITY_SECTION_EXPERIMENT"] == "1"))
+    func evaluatesSectionWritingForTheTikTokDurationCase() async throws {
+        _ = try ready()
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let creator = CreatorProfileService(defaults: defaults.defaults)
+        creator.profile = QualityProfiles.portuguese.full
+        creator.profile.reach.length = nil
+        let idea = "Ensine três ajustes para gravar com a luz de uma janela. Explique como conferir cada ajuste. Sem pedir para seguir."
+        let factory = ScriptRequestFactory(
+            rules: TestData.rulesService(), profile: creator, scriptLanguage: .portugueseBrazil, interfaceLanguage: .portugueseBrazil
+        )
+        let request = factory.request(idea: idea, platform: .tiktok, format: nil, formatChoice: .auto)
+        let started = ContinuousClock.now
+        let result = try await PCCSectionExperiment().write(request)
+        var sample = QualityRunSample(
+            kind: "script", run: Self.run, language: "pt-BR", condition: "section-experiment", index: 0, idea: idea, hasBrief: false,
+            seconds: started.duration(to: .now).inSeconds
+        )
+        sample.title = result.title
+        sample.text = result.text
+        sample.model = "privateCloud"
+        sample.instructions = result.instructions
+        sample.prompt = result.prompts.enumerated().map { "CALL \($0.offset + 1):\n" + $0.element }.joined(separator: "\n\n")
+        sample.reviewChecks = ["Evaluation only: one outline call and three section calls; 90–110 words asked per section.",
+            "Review factual advice, repeated instructions, coherence and the creator's voice before considering production.",
+        ]
+        sample.caseID = "pt-BR-tiktok-duration"
+        Self.record(sample, named: "quality-sample-\(Self.run)-section-experiment.json")
+        #expect(ReadTime.wordCount(in: result.text) >= 203, "A length pass does not approve semantic quality or the four-call cost")
+    }
+
+    /// The owner's TikTok regression: enough spoken material near the 90-second ceiling, without
+    /// changing the normal request factory or treating a length pass as semantic approval.
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"] == "privateCloud"))
+    func writesTikTokNearTheChosenUpperDuration() async throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let creator = CreatorProfileService(defaults: defaults.defaults)
+        creator.profile = QualityProfiles.portuguese.full
+        creator.profile.reach.length = nil
+        let idea = "Ensine três ajustes para gravar com a luz de uma janela. Explique como conferir cada ajuste. Sem pedir para seguir."
+        let factory = ScriptRequestFactory(
+            rules: TestData.rulesService(), profile: creator, scriptLanguage: .portugueseBrazil, interfaceLanguage: .portugueseBrazil
+        )
+        let request = factory.request(idea: idea, platform: .tiktok, format: nil, formatChoice: .auto)
+        #expect(request.targetRange == 60...90, "This regression must exercise the actual TikTok ideal")
+        var sample = await Self.script(
+            request, idea: idea, language: .portugueseBrazil, condition: "tiktok-duration", index: 0, service: try ready()
+        )
+        sample.caseID = "pt-BR-tiktok-duration"
+        sample.reviewChecks = ["Three distinct adjustments with an observable check; no invented experience, repetition or follow CTA."]
+        Self.record(sample, named: "quality-sample-\(Self.run)-tiktok-duration.json")
+        #expect(sample.wasWritten)
+        let words = ReadTime.wordCount(in: sample.text ?? "")
+        let target = ScriptPromptBuilder.askedRange(for: request.targetRange, on: .privateCloud)
+        #expect(words >= target.low, "Expected at least \(target.low) spoken words near the chosen upper duration; got \(words)")
+    }
 
     @Test(arguments: ScriptQualityDeviceTests.cases)
     func writesTheScripts(_ item: Case) async throws {
@@ -129,21 +252,42 @@ struct ScriptQualityDeviceTests {
             kind: "script", run: run, language: language.rawValue, condition: condition, index: index, idea: idea, hasBrief: request.brief != nil,
             seconds: 0
         )
-        await measureRequest(request, into: &sample)
+        sample.durationPolicy = request.durationPolicy.rawValue
+        sample.requestedReasoning = ProcessInfo.processInfo.environment["CUE_QUALITY_REASONING"] ?? "default"
+        sample.freeProse = service.evaluatesFreeProse
+        sample.deliveryOnlyVoice = service.evaluatesDeliveryOnlyVoice
+        sample.editorialMethod = service.usesEditorialMethod
+        sample.editorialReview = service.evaluatesEditorialReview
+        sample.editorialReviewVersion = service.evaluatesEditorialReview ? 2 : nil
+        sample.editorialExampleInstructions = service.usesEditorialMethod ? PCCEditorialExamples.instruction : nil
         let started = ContinuousClock.now
         for attempt in 1...3 {
             do {
                 let script = try await service.generate(request)
+                sample.seconds = started.duration(to: .now).inSeconds
+                if let requested = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"], let model = script.model {
+                    #expect(model.rawValue == requested, "The requested model did not return this sample")
+                }
+                sample.model = script.model?.rawValue
+                sample.requestedModel = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"] ?? "automatic"
+                if let route = script.model {
+                    let fitted = await service.fitted(request, on: route)
+                    await measureRequest(service.editorialEvaluationRequest(fitted, on: route), into: &sample)
+                }
+                sample.cloudDraftIntent = script.cloudDraftIntent
                 sample.title = script.title
                 sample.text = script.text
                 sample.discardedDraft = script.discardedDraft
+                sample.editorialIssues = script.editorialIssues
+                sample.editorialReviewFailure = script.editorialReviewFailure
+                sample.editorialRevisionAccepted = script.editorialRevisionAccepted
                 sample.progressionDefects = script.progressionDefects.map(\.rawValue)
                 sample.attempts = script.attempts
                 sample.violations = script.voiceViolations.map(\.rawValue)
                 sample.expandedBlocks = script.expandedBlocks
                 sample.voiceUse = script.voiceUse.rawValue
                 sample.firstResponse = script.timings?.firstResponse?.inSeconds
-                sample.outputTokens = try? await SystemLanguageModel.default.tokenCount(for: script.text)
+                if script.model == .onDevice { sample.outputTokens = try? await SystemLanguageModel.default.tokenCount(for: script.text) }
                 sample.failure = nil
                 break
             } catch ScriptAIError.rateLimited where attempt < 3 {
@@ -154,7 +298,7 @@ struct ScriptQualityDeviceTests {
                 break
             }
         }
-        sample.seconds = started.duration(to: .now).inSeconds
+        if sample.seconds == 0 { sample.seconds = started.duration(to: .now).inSeconds }
         print(line(for: sample))
         return sample
     }
@@ -173,6 +317,19 @@ struct ScriptQualityDeviceTests {
         let prompt = ScriptPromptBuilder.prompt(for: request)
         sample.instructions = instructions
         sample.prompt = prompt
+        sample.responseCap = ScriptAIService.responseTokens(for: request, on: request.modelRoute ?? .onDevice)
+        if request.durationPolicy == .targeted {
+            sample.minimumWords = ReadTime.words(for: request.targetRange.lowerBound)
+            let asked = ScriptPromptBuilder.askedRange(for: request.targetRange, on: request.modelRoute ?? .onDevice)
+            sample.askedWords = [asked.low, asked.high]
+        }
+        sample.voiceTrimmed = request.voice.map { voice in
+            VoiceBriefBuilder.brief(
+                for: voice, budget: request.voiceBudget ?? VoiceBrief.budget, register: PlatformRegister(request.platform)
+            ).trimmed.map(\.rawValue)
+        }
+        guard request.modelRoute != .privateCloud else { return }
+        sample.tokenCounter = "onDevice"
         sample.instructionTokens = try? await model.tokenCount(for: Instructions(instructions))
         sample.promptTokens = try? await model.tokenCount(for: prompt)
         sample.schemaTokens = try? await model.tokenCount(for: ScriptDraft.generationSchema)
@@ -180,11 +337,7 @@ struct ScriptQualityDeviceTests {
         let counting = ContinuousClock.now
         _ = await OnDeviceMeasure().tokens(instructions: instructions, prompt: prompt, structure: .script)
         sample.countMilliseconds = counting.duration(to: .now).inSeconds * 1000
-        sample.responseCap = ScriptAIService.responseTokens(for: request)
-        sample.minimumWords = ReadTime.words(for: request.targetRange.lowerBound)
-        let asked = ScriptPromptBuilder.askedRange(for: request.targetRange)
-        sample.askedWords = [asked.low, asked.high]
-        sample.voiceTrimmed = request.voice.map { VoiceBriefBuilder.brief(for: $0, register: PlatformRegister(request.platform)).trimmed.map(\.rawValue) }
+
     }
 
     // MARK: - Find inspiration
@@ -224,12 +377,25 @@ struct ScriptQualityDeviceTests {
         let instructions = ScriptPromptBuilder.themesInstructions(voice: voice)
         sample.instructions = instructions
         sample.prompt = prompt
-        sample.instructionTokens = try? await SystemLanguageModel.default.tokenCount(for: Instructions(instructions))
-        sample.promptTokens = try? await SystemLanguageModel.default.tokenCount(for: prompt)
-        sample.schemaTokens = try? await SystemLanguageModel.default.tokenCount(for: IdeaBriefSuggestions.generationSchema)
         let started = ContinuousClock.now
         do {
             let ideas = try await service.suggestIdeas(slots: slots, language: language, voice: voice, inspiration: inspiration)
+            if let requested = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"], let model = service.lastIdeaModel {
+                #expect(model.rawValue == requested, "The requested model did not return these ideas")
+            }
+            sample.model = service.lastIdeaModel?.rawValue
+            sample.requestedModel = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"] ?? "automatic"
+            let preparedVoice = AIRequestPolicy.voice(voice, on: service.lastIdeaModel ?? .onDevice)
+            let instructions = ScriptPromptBuilder.themesInstructions(
+                voice: preparedVoice, voiceBudget: service.lastIdeaModel == .privateCloud ? AIRequestPolicy.cloudVoiceBudget : nil
+            )
+            sample.instructions = instructions
+            if service.lastIdeaModel == .onDevice {
+                sample.tokenCounter = "onDevice"
+                sample.instructionTokens = try? await SystemLanguageModel.default.tokenCount(for: Instructions(instructions))
+                sample.promptTokens = try? await SystemLanguageModel.default.tokenCount(for: prompt)
+                sample.schemaTokens = try? await SystemLanguageModel.default.tokenCount(for: IdeaBriefSuggestions.generationSchema)
+            }
             sample.ideas = ideas.map { idea in
                 QualityRunSample.Idea(
                     title: idea.title, angle: idea.brief?.angle ?? "", openingLine: idea.brief?.openingLine ?? "", angleKind: idea.angle,

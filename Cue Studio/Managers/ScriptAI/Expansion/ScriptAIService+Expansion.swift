@@ -17,7 +17,7 @@ extension ScriptAIService {
     func expandingIfShort(
         _ script: GeneratedScript, for request: ScriptRequest, on model: AIModelRoute, language: String?, meter: WritingProgressMeter? = nil
     ) async -> GeneratedScript {
-        guard script.usedLanguageModel, Self.expandsShortScripts else { return script }
+        guard request.durationPolicy == .targeted, model == .onDevice, script.usedLanguageModel, Self.expandsShortScripts else { return script }
         let minimum = ReadTime.words(for: request.targetRange.lowerBound)
         // A short-form video is not lengthened: the wait is minutes and the sentences added repeat the ones before (`ScriptPromptBuilder.shortFormWords`).
         guard minimum > ScriptPromptBuilder.shortFormWords else { return script }

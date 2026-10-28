@@ -8,6 +8,8 @@ import Foundation
 nonisolated enum ScriptAIError: LocalizedError, Sendable {
     case modelUnavailable(String)
     case emptyResponse
+    /// Explicit verbatim wording was still missing after the bounded correction; do not deliver a misleading result.
+    case requiredWording
     /// The script doesn't fit in the model's context, and no bigger model could take it.
     case tooLong
     /// Apple Intelligence doesn't write in the script's language, on the device or in the cloud.
@@ -31,8 +33,8 @@ nonisolated enum ScriptAIError: LocalizedError, Sendable {
     var explainsItself: Bool {
         switch self {
         case .emptyResponse: false
-        case .modelUnavailable, .tooLong, .unsupportedLanguage, .unsupportedTranslation, .modelPreparing, .wrongLanguage, .rateLimited, .timedOut,
-             .declined: true
+        case .requiredWording, .modelUnavailable, .tooLong, .unsupportedLanguage, .unsupportedTranslation, .modelPreparing,
+             .wrongLanguage, .rateLimited, .timedOut, .declined: true
         }
     }
 
@@ -40,6 +42,7 @@ nonisolated enum ScriptAIError: LocalizedError, Sendable {
         switch self {
         case .modelUnavailable(let reason): reason
         case .emptyResponse: String(localized: "The model didn't return any text. Try again.")
+        case .requiredWording: String(localized: "The script did not keep your required wording. Try again or edit your request.")
         case .tooLong: String(localized: "Too long for Apple Intelligence on this iPhone. Try a shorter script, or one part at a time.")
         case .unsupportedLanguage: String(localized: "Apple Intelligence can’t draft in this script’s language yet.")
         case .unsupportedTranslation(let source, let target):

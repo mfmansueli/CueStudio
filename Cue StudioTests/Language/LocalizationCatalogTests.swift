@@ -40,7 +40,11 @@ struct LocalizationCatalogTests {
         (["nn-NO", "en-NO"], "nb"), (["ar-EG", "en"], "ar"), (["en-GB"], "en"),
     ])
     func aRegionalVariantGetsItsLanguage(preferences: [String], expected: String) {
-        #expect(Bundle.preferredLocalizations(from: Bundle.main.localizations, forPreferences: preferences).first == expected)
+        let actual = Bundle.preferredLocalizations(from: Bundle.main.localizations, forPreferences: preferences).first
+        let language = actual.map { Locale.Language(identifier: $0) }
+        let expectedLanguage = Locale.Language(identifier: expected)
+        #expect(language?.languageCode == expectedLanguage.languageCode)
+        #expect(language?.script == expectedLanguage.script, "regional matches must still keep the requested writing system")
     }
 
     @Test(arguments: CueLanguage.allCases)

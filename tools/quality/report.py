@@ -397,18 +397,19 @@ def summarize(samples):
     scripts = [s for s in samples if s["kind"] == "script" and s["condition"] != SWEEP]
     groups = {}
     for s in scripts:
-        groups.setdefault((s["language"], s["condition"]), []).append(s)
-    if scripts:
-        groups[("all", "all")] = scripts
+        groups.setdefault((s["language"], s["condition"], s.get("model") or "legacy"), []).append(s)
+    for model in sorted({s.get("model") or "legacy" for s in scripts}):
+        groups[("all", "all", model)] = [s for s in scripts if (s.get("model") or "legacy") == model]
     rows = []
     for key in sorted(groups):
         group = groups[key]
         m = [script_metrics(s) for s in group]
         ok = [x for x in m if x["written"]]
         promised = [x for x in ok if "promise" in x]
-        tokens_in = [sum((s.get(k) or 0) for k in ("instructionTokens", "promptTokens", "schemaTokens")) for s in group]
+        token_keys = ("instructionTokens", "promptTokens", "schemaTokens")
+        tokens_in = [sum(s[k] for k in token_keys) for s in group if all(s.get(k) is not None for k in token_keys)]
         rows.append({
-            "group": f"{key[0]}·{key[1]}", "n": f"{len(ok)}/{len(group)}",
+            "group": f"{key[0]}·{key[1]}·{key[2]}", "n": f"{len(ok)}/{len(group)}",
             "words/min": mean([x["ratio"] for x in ok]), "cut": sum(x["cut"] for x in ok),
             "rep": mean([x["rep"] for x in ok]), "xblock": mean([x["xblock"] for x in ok]), "dupsent": sum(x["dupsent"] for x in ok),
             "promise": f"{sum(x['delivered'] for x in promised)}/{len(promised)}",
@@ -425,11 +426,11 @@ def summarize(samples):
     ideas = [s for s in samples if s["kind"] == "ideas" and s["condition"] != SWEEP]
     igroups = {}
     for s in ideas:
-        igroups.setdefault((s["language"], s["condition"]), []).append(s)
+        igroups.setdefault((s["language"], s["condition"], s.get("model") or "legacy"), []).append(s)
     irows = []
     for key in sorted(igroups):
         m = idea_metrics(sorted(igroups[key], key=lambda s: s["index"]))
-        irows.append({"group": f"{key[0]}·{key[1]}", "n": m["n"], "fail": m["fail"], "dup2": m["dup2"], "dupT": m["dupT"],
+        irows.append({"group": f"{key[0]}·{key[1]}·{key[2]}", "n": m["n"], "fail": m["fail"], "dup2": m["dup2"], "dupT": m["dupT"],
                       "restate": m["restate"], "generic": m["generic"], "q": m["q"], "digits": m["digits"], "s": mean(m["s"])})
     return rows, irows
 
@@ -453,15 +454,15 @@ def sweep(samples):
     """The 20-language sweep, by language: what was written and whether it is in the language."""
     rows = []
     swept = [s for s in samples if s["condition"] == SWEEP]
-    for language in sorted({s["language"] for s in swept}):
-        scripts = sorted((s for s in swept if s["language"] == language and s["kind"] == "script"), key=lambda s: s["index"])
-        batches = [s for s in swept if s["language"] == language and s["kind"] == "ideas"]
+    for language, model in sorted({(s["language"], s.get("model") or "legacy") for s in swept}):
+        scripts = sorted((s for s in swept if s["language"] == language and (s.get("model") or "legacy") == model and s["kind"] == "script"), key=lambda s: s["index"])
+        batches = [s for s in swept if s["language"] == language and (s.get("model") or "legacy") == model and s["kind"] == "ideas"]
         m = [script_metrics(s) for s in scripts]
         ok = [x for x in m if x["written"]]
         interj = [x.get("interj") for x in ok]
         ideas = [i for b in batches for i in (b.get("ideas") or [])]
         rows.append({
-            "language": language, "written": f"{len(ok)}/{len(scripts)}",
+            "language": language, "model": model, "written": f"{len(ok)}/{len(scripts)}",
             "fail": sum(1 for s in scripts + batches if s.get("failure")),
             "words/min": mean([x["ratio"] for x in ok]),
             "interj": "–" if any(v is None for v in interj) else f"{sum(1 for v in interj if v)}/{len(ok)}",

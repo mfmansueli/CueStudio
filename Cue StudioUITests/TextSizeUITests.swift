@@ -29,8 +29,22 @@ final class TextSizeUITests: XCTestCase {
         XCTAssertTrue(start.exists(within: 15))
         // It rises into place as the opening ends.
         start.waitUntilStill()
-        XCTAssertTrue(app.frame.contains(start.frame), "Get started is at \(start.frame) on a \(app.frame.size) screen")
-        XCTAssertTrue(start.isHittable)
+        // Cover a whole shine interval: decorative drawing must never enlarge the accessible button's bounds.
+        let deadline = Date().addingTimeInterval(6)
+        repeat {
+            let bounds = start.frame
+            XCTAssertTrue(app.frame.contains(bounds), "Get started is at \(bounds) on a \(app.frame.size) screen")
+            XCTAssertTrue(start.isHittable)
+            Thread.sleep(forTimeInterval: 0.1)
+        } while Date() < deadline
+        let picture = XCTAttachment(screenshot: app.screenshot())
+        picture.name = "welcome-largest-text"
+        picture.lifetime = .keepAlways
+        add(picture)
+        let hierarchy = XCTAttachment(string: app.debugDescription)
+        hierarchy.name = "welcome-largest-text-hierarchy"
+        hierarchy.lifetime = .keepAlways
+        add(hierarchy)
     }
 
     /// At the largest text size the script page's tools are still there to tap, on one line that scrolls instead of breaking a word.

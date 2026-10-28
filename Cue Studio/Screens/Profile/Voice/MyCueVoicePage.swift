@@ -26,7 +26,7 @@ struct MyCueVoicePage: View {
             VStack(alignment: .leading, spacing: 16) {
                 if !aiStatus.isAvailable { needsAI }
                 mainCard
-                Text("What Cue tells Apple Intelligence · on device")
+                Text("What Cue sends")
                     .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 16)

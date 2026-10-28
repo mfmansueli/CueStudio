@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import CryptoKit
 
 /// The ideas Cue suggests: the one on the card in Scripts while its field is empty (and the ones "↻ another idea" brings after it), and the ones
 /// Find inspiration shows, one card at a time, for all the creator's topics or one of them. A creator taps until an idea is one they would film, so
@@ -526,7 +527,12 @@ final class IdeaSuggestionService {
     /// What the ideas were written for: the topics with their subtopics, the language they are in and whether they are in the creator's voice.
     private var currentSignature: String {
         let topics = profile.profile.ideaTopics.map { "\($0.name)(\($0.subtopics.joined(separator: ",")))" }.joined(separator: ";")
-        return [topics, interfaceLanguage()?.rawValue ?? "", profile.writesInMyVoice ? "voice" : "plain"].joined(separator: "|")
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.sortedKeys]
+        let encoded = try? encoder.encode(profile.profile)
+        let digest = encoded.map { SHA256.hash(data: $0).map { String(format: "%02x", $0) }.joined() } ?? ""
+        let voice = profile.writesInMyVoice ? digest : "plain"
+        return [topics, interfaceLanguage()?.rawValue ?? "", voice].joined(separator: "|")
     }
 
     /// Other topics, language or voice make the ideas written before about something else: they go, what was being asked for is cancelled, and

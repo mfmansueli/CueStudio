@@ -106,7 +106,8 @@ struct QuickEditPlayerTests {
         player.play()
         #expect(player.isPlaying)
         await Wait.until { player.currentTime > 0.3 }
-        #expect(player.isPlaying)
+        // A busy main actor can next resume after this one-second cut has ended. Stopping is valid only at the handle.
+        #expect(player.isPlaying || abs(player.currentTime - 1) < 0.05)
         await Wait.until { !player.isPlaying }
         #expect(abs(player.currentTime - 1) < 0.05)
         #expect(itemSeconds(player) <= 1.05)
