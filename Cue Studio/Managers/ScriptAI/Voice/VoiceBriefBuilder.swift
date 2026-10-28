@@ -20,7 +20,7 @@ nonisolated enum VoiceBriefBuilder {
         let parts = Parts(voice, register: register, contextualPreferences: contextualPreferences)
         guard parts.hasContent else { return .empty }
         let full = parts.text(examples: parts.examples, tags: true, reach: true)
-        let closing = closingRules(for: voice, register: register)
+        let closing = closingRules(for: voice, register: register, contextualPreferences: contextualPreferences)
         if PromptCost.units(of: full) <= budget { return VoiceBrief(text: full, fullText: full, trimmed: [], closingRules: closing) }
 
         // Cutting goes in order: the examples (shortened to the room there is, or dropped), then the reach, then the tags.
@@ -43,8 +43,17 @@ nonisolated enum VoiceBriefBuilder {
     }
 
     /// The rules the request says again at its end.
-    static func closingRules(for voice: CreatorVoice, register: PlatformRegister = .casual) -> [String] {
-        var rules = [voice.resolvedSpeaksAs == .we ? "Say “we”, never “I”." : "Speak as one person (“I”)."]
+    static func closingRules(
+        for voice: CreatorVoice, register: PlatformRegister = .casual, contextualPreferences: Bool = false
+    ) -> [String] {
+        let perspective = voice.resolvedSpeaksAs == .we ? "“we” and “our”" : "“I” and “my”"
+        let narratorRule: String
+        if contextualPreferences {
+            narratorRule = "Default narrator: \(perspective). If the current request specifies another narrator, grammatical person or supplied agency, preserve that instead."
+        } else {
+            narratorRule = voice.resolvedSpeaksAs == .we ? "Say “we”, never “I”." : "Speak as one person (“I”)."
+        }
+        var rules = [narratorRule]
         if register == .professional { rules.append("Keep it professional: no slang, no swearing, no emojis.") }
         if !voice.avoid.isEmpty {
             rules.append("Avoid: \(voice.avoid.map { VoiceAvoidRule.rule(for: $0)?.id.lowercased() ?? $0 }.joined(separator: ", ")).")
@@ -90,7 +99,7 @@ nonisolated enum VoiceBriefBuilder {
         let examples: [String]
 
         init(_ voice: CreatorVoice, register: PlatformRegister, contextualPreferences: Bool) {
-            identity = Self.identity(voice)
+            identity = Self.identity(voice, contextualPreferences: contextualPreferences)
             audience = Self.audience(voice)
             topics = Self.topics(voice)
             self.voice = Self.sound(voice, register: register)
@@ -125,7 +134,7 @@ nonisolated enum VoiceBriefBuilder {
 
         // MARK: Identity
 
-        private static func identity(_ voice: CreatorVoice) -> [String] {
+        private static func identity(_ voice: CreatorVoice, contextualPreferences: Bool) -> [String] {
             var lines = ["Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about."]
             if let custom = voice.customRole {
                 lines.append("Who they are: \(custom).")
@@ -135,11 +144,15 @@ nonisolated enum VoiceBriefBuilder {
             if let credential = voice.credential {
                 lines.append("Credential: \(credential). Mention it only where it fits; never invent another.")
             }
-            lines.append(
-                voice.resolvedSpeaksAs == .we
+            if contextualPreferences {
+                lines.append(voice.resolvedSpeaksAs == .we
+                    ? "Their default voice is a team narrator (“we” and “our”). Keep this default unless the current request supplies another perspective or narrator."
+                    : "Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.")
+            } else {
+                lines.append(voice.resolvedSpeaksAs == .we
                     ? "They speak as a team: say “we” and “our”, never “I”."
-                    : "They speak as one person: say “I” and “my”."
-            )
+                    : "They speak as one person: say “I” and “my”.")
+            }
             return lines
         }
 

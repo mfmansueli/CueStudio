@@ -274,6 +274,7 @@ struct ScriptQualityDeviceTests {
                     let fitted = await service.fitted(request, on: route)
                     await measureRequest(service.editorialEvaluationRequest(fitted, on: route), into: &sample)
                 }
+                sample.cloudDraftIntent = script.cloudDraftIntent
                 sample.title = script.title
                 sample.text = script.text
                 sample.discardedDraft = script.discardedDraft

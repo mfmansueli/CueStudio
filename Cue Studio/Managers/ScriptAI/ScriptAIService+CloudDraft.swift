@@ -53,19 +53,30 @@ extension ScriptAIService {
             latest = snapshot.rawContent
             if let meter, counted.map({ $0.duration(to: clock.now) >= .milliseconds(250) }) ?? true {
                 counted = clock.now
-                let parts = [snapshot.content.opening ?? ""] + (snapshot.content.points ?? []).flatMap {
-                    [$0.statement ?? "", $0.explanation ?? "", $0.application ?? ""]
-                } + [snapshot.content.ending ?? ""]
+                let intent = snapshot.content.intent ?? .developed
+                let pointParts: [String] = (snapshot.content.points ?? []).flatMap { point -> [String] in
+                    intent == .developed
+                        ? [point.statement ?? "", point.explanation ?? "", point.application ?? ""]
+                        : [point.statement ?? ""]
+                }
+                let sceneParts: [String] = (snapshot.content.sceneBeats ?? []).flatMap { beat -> [String] in
+                    [beat.moment ?? "", beat.response ?? ""]
+                }
+                let middle = intent == .fictionalScene ? sceneParts : pointParts
+                let ending = intent == .conciseStatement ? "" : snapshot.content.ending ?? ""
+                let parts = [snapshot.content.opening ?? ""] + middle + [ending]
                 meter.record(.wrote(words: ReadTime.wordCount(in: parts.joined(separator: " "))))
             }
         }
         try Task.checkCancellation()
         guard let latest else { throw ScriptAIError.emptyResponse }
         let cloudDraft = try PCCScriptDraft(latest)
+        guard cloudDraft.intent != .fictionalScene || !cloudDraft.sceneBeats.isEmpty else { throw ScriptAIError.emptyResponse }
         var result = try finishedDraft(cloudDraft.scriptDraft, request: request, model: .privateCloud, timings: GenerationTimings(
             prepare: begin.duration(to: started), firstResponse: firstResponse, generation: started.duration(to: clock.now)
         ))
         result.isConciseStatement = cloudDraft.intent == .conciseStatement
+        result.cloudDraftIntent = cloudDraft.intent.measurementName
         return result
     }
 }

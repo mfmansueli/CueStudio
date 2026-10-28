@@ -7,6 +7,7 @@ import Foundation
 
 nonisolated struct GeneratedScript: Hashable, Sendable {
     var isConciseStatement: Bool = false
+    var cloudDraftIntent: String?
     #if DEBUG
     var editorialIssues: [String] = []
     var editorialReviewFailure: String?

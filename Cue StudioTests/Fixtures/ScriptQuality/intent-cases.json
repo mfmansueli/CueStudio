@@ -370,5 +370,43 @@
       "Honor explicitly fictional creative freedom rather than treating it as biography.",
       "Build a connected scene with tension and an everyday ending, not a list of tips."
     ]
+  },
+  {
+    "id": "pt-BR-team-statement",
+    "language": "pt-BR",
+    "prompt": "Escreva um comunicado em nome da equipe: publicamos um horário errado. O correto é 14:35. Use nós; sem justificativa, piada ou CTA.",
+    "format": "auto",
+    "expectedDirection": "team correction overriding personal voice",
+    "requiredLiterals": [
+      "14:35"
+    ],
+    "reviewChecks": [
+      "Preserve the supplied team action and plural narrator despite the profile defaulting to I.",
+      "Only the supplied facts; no invented impact or remedy."
+    ]
+  },
+  {
+    "id": "en-US-second-person",
+    "language": "en-US",
+    "prompt": "Write a second-person POV scene: you rehearse your opening, but the camera was never recording. Stay with you, no first-person narrator or CTA.",
+    "format": "pov",
+    "expectedDirection": "second-person scene overriding personal voice",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Keep second-person narration throughout; profile I is only a default.",
+      "Show a scene instead of switching to advice or a list."
+    ]
+  },
+  {
+    "id": "es-ES-singular-fiction",
+    "language": "es-ES",
+    "prompt": "Escribe una escena ficticia en primera persona singular (yo): preparo una receta y el gato tapa la cámara. Desarrolla la escena sin consejos ni CTA.",
+    "format": "auto",
+    "expectedDirection": "singular first-person fiction overriding team voice",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Use singular first-person narration despite the profile defaulting to we.",
+      "Build a fictional scene without an explanatory checklist or moral."
+    ]
   }
 ]

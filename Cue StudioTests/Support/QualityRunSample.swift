@@ -37,6 +37,7 @@ nonisolated struct QualityRunSample: Codable, Hashable, Sendable {
     var requestedModel: String?
     var requestedReasoning: String?
     var durationPolicy: String?
+    var cloudDraftIntent: String?
     var editorialMethod: Bool?
     var freeProse: Bool?
     var deliveryOnlyVoice: Bool?

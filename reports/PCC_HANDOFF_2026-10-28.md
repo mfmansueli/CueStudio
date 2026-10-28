@@ -1,3 +1,25 @@
+# DECISÃO FINAL DOS PILOTOS — não promover cenas
+
+Fases3/4/5/6/7 totalizaram59 solicitações reais PCC nesta continuação. Prosa livre, projeção de voz e cenas não demonstraram ganho consistente/fidelidade suficiente. O último controle p7-en-real-story-r1 escolheu fictionalScene para relato real e inventou um aprendizado posterior apesar da proibição. Código do candidato será preservado em commit de pesquisa e retirado em seguida. Relatório `PCC_REJECTED_SCENES_2026-10-28.md`.
+
+Manter a correção de perspectiva no prompt PCC, os13 snapshots ajustados e a observabilidade de intent. Perfil completo permanece no app normal. A main agora está em69df2ac5 (PR76 tall-lanes), ainda não integrada nesta escrita; integrar na nossa branch isolada antes da compilação final para evitar regressão do editor. Nenhum merge da nossa branch na main foi autorizado ou feito. Conferência final de warnings, testes e instalação ainda pendente.
+
+---
+
+# EM ANDAMENTO — cena com momentos e reações (fase6)
+
+Fase3:32 solicitações PCC, sem erro técnico, variantes não promovidas. Fase4:10 controles PCC após remover contradição de perspectiva; EN você2/2 e PT equipe preservados, ES singular ainda misturou1/2.72 testes focados passaram. Relatórios PHASE3 e PHASE4 nesta pasta. Fase5 foi um único piloto (p5-es-singular-r1) com4 frases, sem coaching mas pouco desenvolvido.
+
+Agora há um candidato de esquema `PCCSceneBeat` (momento + reação), intent scene separado de developed/conciseStatement, preservando histórias reais limitadas pelo pedido. Compilação/teste físico inicial em andamento na sessão42681, resultado device-20261028-202808. Ainda sem avaliação da fase6, não declarar melhora nem concluir entrega. Os flags antigos seguem desligados. Fontes congeladas durante esse build. Conferência limpa de warnings e testes finais ainda pendentes depois dessas mudanças. Toda a continuação está na worktree pcc-offline-review; não tocar checkout do Claude.
+
+---
+
+# ATUALIZAÇÃO — fila concluída e fase3 medida no iPhone
+
+Os24 testes focados da sessão34323 passaram (only-20261028-185516). A matriz fase3 concluiu32 solicitações, todas privateCloud, sem erros de geração. Relatório `reports/PCC_PHASE3_EVALUATION_2026-10-28.md`; variantes continuam desligadas, sem ganho editorial consistente e com regressão de publicamos para eu publiquei na condição11. Corrigindo agora a contradição de perspectiva do prompt PCC mantendo todo o perfil; nova validação separada em andamento, sem atribuir os resultados fase3 à correção posterior.
+
+---
+
 # FILA ATIVA — compilação e testes focados (28/10)
 
 O dono perguntou se já aguardava o Claude Code; não estava, e autorizou implicitamente enfileirar. Foi iniciado `scripts/test.sh only` na worktree isolada, sessão de terminal **34323**, resultado previsto `build/results/only-20261028-185516.xcresult`, log `build/logs/test-only.log` desta worktree. O script confirmou **Another xcodebuild is running ... waiting for it**. Suites: PCCDeliveryVoiceTests, PCCProseDraftTests, VoiceBriefSnapshotTests, PCCScriptDraftTests, VoiceCheckedWritingTests e ScriptIntentContractTests. A fila aguarda o lock do build/teste atual; não aguarda o encerramento da sessão inteira do Claude. Não iniciar outro build nem modificar fontes enquanto estiver compilando. Conferir resultado/processos antes da próxima ação. A matriz de geração real PCC no iPhone ainda NÃO foi enfileirada: depende de esta etapa passar. Nenhum teste novo foi aprovado ainda.

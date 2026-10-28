@@ -18,13 +18,12 @@ nonisolated enum ScriptPromptBuilder {
     static func instructions(for request: ScriptRequest, insistsOnLanguage: Bool = false) -> String {
         let structure = request.structure
         let voice = structure.isSerious ? nil : request.voice
-        let automatic = PCCScriptDirection.usesAutomaticFormat(request)
         var lines = [
             request.modelRoute == .privateCloud
                 ? "You write video scripts that a creator reads from a teleprompter while filming themselves."
                 : "You write short-form video scripts that a creator reads from a teleprompter while filming themselves.",
-            automatic
-                ? "Write in natural spoken language\(sentenceClause(for: voice)), using the creator's perspective except when the requested scene calls for another perspective, such as a second-person POV."
+            request.modelRoute == .privateCloud
+                ? "Write in natural spoken language\(sentenceClause(for: voice)). Follow the narrator and grammatical perspective requested in the current brief, including a team statement or second-person scene. Use the creator's usual perspective only when the request leaves it unspecified."
                 : "Write in the first person, as the creator, in natural spoken language\(sentenceClause(for: voice)).",
             "Fill in a short title and the script blocks. Block text is only what the creator says: no headings, labels, markdown or quotes around it.",
             cueHint,
@@ -176,7 +175,9 @@ nonisolated enum ScriptPromptBuilder {
             lines += brandLines(brand)
         }
         // Said again at the very end, where a small model listens best.
-        var closing = voice.flatMap { closingRule(for: $0, platform: request.platform) }
+        var closing = voice.flatMap {
+            closingRule(for: $0, platform: request.platform, contextualPreferences: request.modelRoute == .privateCloud)
+        }
         if voice != nil, case .prompt = request.source {
             let focus = request.modelRoute == .privateCloud
                 ? "Keep the current request's subject and explicit requirements; use usual voice preferences only where they fit."
@@ -275,8 +276,10 @@ nonisolated enum ScriptPromptBuilder {
     }
 
     /// What must hold whatever else the script does (who is talking, what to avoid), repeated after the idea; nil with nothing to repeat.
-    static func closingRule(for voice: CreatorVoice, platform: Platform? = nil) -> String? {
-        let rules = VoiceBriefBuilder.closingRules(for: voice, register: platform.map(PlatformRegister.init) ?? .casual)
+    static func closingRule(for voice: CreatorVoice, platform: Platform? = nil, contextualPreferences: Bool = false) -> String? {
+        let rules = VoiceBriefBuilder.closingRules(
+            for: voice, register: platform.map(PlatformRegister.init) ?? .casual, contextualPreferences: contextualPreferences
+        )
         return rules.isEmpty ? nil : "Remember: " + rules.joined(separator: " ")
     }
 

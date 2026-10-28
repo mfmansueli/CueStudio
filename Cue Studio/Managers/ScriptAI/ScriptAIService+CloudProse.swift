@@ -37,6 +37,7 @@ extension ScriptAIService {
             prepare: begin.duration(to: started), firstResponse: firstResponse, generation: started.duration(to: .now)
         ))
         result.isConciseStatement = prose.intent == .conciseStatement
+        result.cloudDraftIntent = prose.intent.measurementName
         return result
     }
 

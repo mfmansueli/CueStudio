@@ -28,4 +28,19 @@ struct PCCScriptDraftTests {
         ).scriptDraft
         #expect(draft.scriptText == "The correct time is 14:35.")
     }
+
+    @Test func aSceneKeepsTheEventsAndDropsExplanatoryCoaching() {
+        let draft = PCCScriptDraft(
+            intent: .fictionalScene, title: "The cat", opening: "I press record.", points: [
+                .init(label: "Unwanted coaching", statement: "Try moving the camera.",
+                      explanation: "This builds tension.", application: "Use a higher tripod."),
+            ], sceneBeats: [
+                .init(moment: "My cat sits in front of the lens.", response: "I stop with the bowl in my hands."),
+                .init(moment: "I lift the phone.", response: "The cat follows it with his eyes."),
+            ], ending: "I start mixing anyway.", statesFacts: false
+        ).scriptDraft
+        #expect(draft.scriptText == "I press record.\n\nMy cat sits in front of the lens. I stop with the bowl in my hands.\n\nI lift the phone. The cat follows it with his eyes.\n\nI start mixing anyway.")
+        #expect(!draft.scriptText.contains("Try moving") && !draft.scriptText.contains("This builds tension"))
+    }
+
 }

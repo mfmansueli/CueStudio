@@ -12,12 +12,12 @@ import Testing
 struct ScriptIntentContractTests {
     @Test func theFrozenCasesFitTheActualDockAndDoNotLoseRequirementsInEitherRoute() throws {
         let cases = try ScriptIntentCase.load()
-        #expect(cases.count == 30)
+        #expect(cases.count == 33)
         #expect(Set(cases.map(\.id)).count == cases.count)
         #expect(Set(cases.map(\.language)) == [.portugueseBrazil, .english, .spanish])
         for item in cases {
             #expect(item.prompt.count <= IdeaPromptDraft.maxCharacters, "\(item.id): must fit the real card")
-            #expect(["auto", "story", "talkingHead"].contains(item.format))
+            #expect(["auto", "story", "talkingHead", "pov"].contains(item.format))
             let defaults = TestDefaults()
             defer { defaults.tearDown() }
             let profile = CreatorProfileService(defaults: defaults.defaults)
