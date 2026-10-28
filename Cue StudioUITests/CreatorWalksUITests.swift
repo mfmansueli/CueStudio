@@ -56,10 +56,11 @@ final class CreatorWalksUITests: XCTestCase {
         return minutes * 60 + rest
     }
 
-    /// Taps the media lane (right under the video's) at `second`.
+    /// Taps the media lane (right under the video's, every track out) at `second`.
     private func tapMediaLane(atSecond second: TimeInterval) {
         let timeline = app.descendants(matching: .any)["edit.timeline"]
         waitFor(timeline, "The timeline")
+        EditorApp.showEveryTrack(app)
         timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0))
             .withOffset(CGVector(dx: CGFloat(second - playhead) * 44, dy: 92 + 17))
             .tap()
@@ -232,9 +233,10 @@ final class CreatorWalksUITests: XCTestCase {
 
         EditorApp.tapTool(app, "text")
         EditorApp.tapTool(app, "styleAll")
-        let fontTab = app.buttons["edit.panel.tab.font"]
-        waitFor(fontTab, "Text style's Font")
-        fontTab.tap()
+        // Custom opens on its Font.
+        let customTab = app.buttons["edit.panel.tab.custom"]
+        waitFor(customTab, "Text style's Custom")
+        customTab.tap()
         let importButton = app.buttons["edit.importFont"]
         waitFor(importButton, "Import font")
         importButton.tap()

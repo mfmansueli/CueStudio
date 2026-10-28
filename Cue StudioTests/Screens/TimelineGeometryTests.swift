@@ -72,13 +72,14 @@ struct TimelineGeometryTests {
 
     // MARK: - Lanes
 
-    @Test func restingOrderIsVideoThenTextCaptionsAndAudio() {
+    @Test func restingOrderIsVideoThenMediaTextCaptionsAndAudio() {
         let geometry = TimelineGeometry(input())
-        #expect(geometry.lanes.map(\.lane) == [.main, .text, .captions, .audio])
+        #expect(geometry.lanes.map(\.lane) == [.main, .media, .text, .captions, .audio])
         let main = geometry.lane(.main)
         #expect(main?.y == 28)
         #expect(main?.height == 56)
-        #expect(geometry.lane(.text)?.y == CGFloat(28 + 56 + 8))
+        #expect(geometry.lane(.media)?.height == 34)
+        #expect(geometry.lane(.text)?.y == CGFloat(28 + 56 + 8 + 34 + 8))
         #expect(geometry.lane(.text)?.height == 28)
     }
 
@@ -87,7 +88,7 @@ struct TimelineGeometryTests {
             input.music = [TimelineGeometry.ItemInput(id: UUID(), span: TimeSpan(start: 0, end: 21.6), label: "Morning loop")]
             input.voiceOvers = [TimelineGeometry.ItemInput(id: UUID(), span: TimeSpan(start: 2, end: 4), label: "Voice-over")]
         })
-        #expect(geometry.lanes.map(\.lane) == [.main, .text, .captions, .music, .voiceOver])
+        #expect(geometry.lanes.map(\.lane) == [.main, .media, .text, .captions, .music, .voiceOver])
         #expect(!geometry.ghosts.contains { $0.target == .lane(.audio) })
     }
 
@@ -239,8 +240,10 @@ struct TimelineGeometryTests {
 
     @Test func emptyTracksSayWhatATapDoes() {
         let geometry = TimelineGeometry(input())
-        #expect(geometry.ghosts.map(\.target) == [.lane(.text), .lane(.captions), .lane(.audio)])
-        #expect(geometry.ghosts.map(\.label) == ["Tap to add text", "Tap to add captions", "Tap to add music or voice-over"])
+        #expect(geometry.ghosts.map(\.target) == [.lane(.media), .lane(.text), .lane(.captions), .lane(.audio)])
+        #expect(geometry.ghosts.map(\.label) == [
+            "Tap to add a photo or video", "Tap to add text", "Tap to add captions", "Tap to add music or voice-over",
+        ])
     }
 
     @Test func aTapOnATracksStripOrGutterOpensThatTrack() throws {

@@ -10,7 +10,7 @@ import UIKit
 /// creator's saved styles, filtered: picking one changes the look and the motion, never where the captions sit), Format (how
 /// the lines are cut, where they sit, how big, wide and aligned: what stays when the style changes), Animation (how they come
 /// in and go out, show and light the word being said) and Adjust (the look's details, over any style). The video stays in
-/// sight, each pick plays the current line, and the panel expands like Text style.
+/// sight, each pick plays the current line ("Preview" in the header plays it again), and the panel expands like Text style.
 struct CaptionStylePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -25,7 +25,8 @@ struct CaptionStylePanel: View {
             viewModel: viewModel, panel: .captionStyle,
             onReset: resetAction,
             // Styles comes back where it was left; the other tabs start at their top.
-            keptOffset: tab == .styles ? catalogOffset : nil
+            keptOffset: tab == .styles ? catalogOffset : nil,
+            play: viewModel.captions.editedCaptionLines.isEmpty ? nil : PanelPlay(action: viewModel.captions.previewCurrentCaptionLine)
         ) {
             PanelTabs(tabs: EditorPanelTab.captionStyle, selection: tab) { viewModel.panelTab = $0 }
         } content: {

@@ -7,18 +7,22 @@ import SwiftUI
 import UIKit
 
 /// Text style for the picked text. Fixed on top: its words (the keyboard comes up when it was just
-/// added) and the tabs, Presets · Font · Color · Motion, spread over the width (with the largest
-/// text sizes, only the tabs). Under the look's tabs,
-/// what the look changes ("This title" or "All texts · 3": the words, timing and motion are always
-/// this text's), the controls, and "Apply this style to captions", which copies the look onto the
-/// captions once, after asking. Motion is the picked text's alone. The panel expands (the header's
-/// button, or a drag) to give the controls the room the video gives up. While the words are typed only
-/// the field and the tabs show, so the video stays big; a tab puts the keyboard away.
+/// added) and the tabs, Animated · Styles · Custom, spread over the width (with the largest text sizes, only the tabs).
+/// Animated has the six effects in a grid (the creator's own first words in each, the picked one playing its way in,
+/// `TextEffectCardSamples`) and the picked one's settings; Styles, "Save style", the creator's styles and Cue's in a grid;
+/// Custom, the creator's own look in three sections: Font (with Size and Turn), Color (with Glow) and Motion. Under the
+/// look's tabs, what the look changes ("This title" or "All texts · 3": the words, timing and motion are always this
+/// text's), the controls, and "Apply this style to captions", which copies the look onto the captions once, after asking.
+/// Motion is the picked text's alone. The panel expands (the header's button, or a drag) to give the controls the room the
+/// video gives up. While the words are typed only the field and the tabs show, so the video stays big; a tab puts the
+/// keyboard away.
 struct TextStylePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
     @Environment(VideoThumbnailService.self) private var thumbnails
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var frame: UIImage?
+    @State private var effectSamples = TextEffectCardSamples()
     @State private var naming: StyleNameRequest?
     @FocusState private var writes: Bool
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -36,14 +40,14 @@ struct TextStylePanel: View {
             // With the largest text sizes only the tabs stay fixed: the words scroll with the rest, and
             // the tab's own controls come before the scope, so Font and Color show what they are for.
             let isLarge = typeSize.isAccessibilitySize
-            PanelFrame(viewModel: viewModel, panel: .textStyle) {
+            PanelFrame(viewModel: viewModel, panel: .textStyle, play: .motion(viewModel.overlays)) {
                 VStack(spacing: 0) {
                     if !isLarge { field(text).padding(.horizontal, 16).padding(.bottom, 4) }
                     // While typing, the words and the tabs (as in CapCut): the video above gets the room the controls
                     // would take (`EditorLayout.typingPanelHeight`); a tab puts the keyboard away and shows its controls.
                     PanelTabs(tabs: EditorPanelTab.textStyle, selection: tab) { picked in
                         writes = false
-                        viewModel.panelTab = picked
+                        viewModel.overlays.showTextStyleTab(picked)
                     }
                 }
             } content: {
@@ -79,18 +83,33 @@ struct TextStylePanel: View {
         }
     }
 
-    /// The look's controls under the tabs: the scope, the tab's own controls, and copying the look to the captions.
+    /// The look's controls under the tabs: Custom's sections, the scope, the tab's own controls, and copying the look to the
+    /// captions.
     @ViewBuilder
     private func lookControls(_ text: TextOverlay, tab: EditorPanelTab, isLarge: Bool) -> some View {
-        if viewModel.overlays.textStyleTabChangesLook, !isLarge { scope }
+        let changesLook = viewModel.overlays.textStyleTabChangesLook
+        if tab == .custom { customSections }
+        if changesLook, !isLarge { scope }
         switch tab {
-        case .font: font(text)
-        case .color: color(text)
-        case .motion: MotionKeyframeControls(viewModel: viewModel)
-        default: presets(text)
+        case .animated: animated(text)
+        case .custom:
+            switch viewModel.overlays.textCustomSection {
+            case .color: color(text)
+            case .motion: MotionKeyframeControls(viewModel: viewModel)
+            default: font(text)
+            }
+        default: styleCards
         }
-        if viewModel.overlays.textStyleTabChangesLook, isLarge { scope }
-        if viewModel.overlays.textStyleTabChangesLook, viewModel.captions.canCopyStyleToCaptions { copyToCaptions }
+        if changesLook, isLarge { scope }
+        if changesLook, viewModel.captions.canCopyStyleToCaptions { copyToCaptions }
+    }
+
+    /// Custom's sections: Font, Color, Motion (`edit.panel.tab.<section>`).
+    private var customSections: some View {
+        PanelSegmented(
+            options: EditorPanelTab.textCustom.map { PanelOption($0, $0.label) }, selection: viewModel.overlays.textCustomSection,
+            height: 38, identifier: "edit.panel.tab"
+        ) { viewModel.overlays.showTextStyleTab($0) }
     }
 
     /// The words are being typed (the keyboard is up for the field).
@@ -154,39 +173,86 @@ struct TextStylePanel: View {
 
     // MARK: - Tabs
 
-    /// The styles in a row, then Size and Glow. The colors are the Color tab's alone.
+    /// Animated: the six effects, then the picked one's settings. Its colors are Custom › Color's.
     @ViewBuilder
-    private func presets(_ text: TextOverlay) -> some View {
-        styleCards
+    private func animated(_ text: TextOverlay) -> some View {
+        effectCards(text)
+        if let effect = text.effect { TextEffectControls(viewModel: viewModel, effect: effect) }
+    }
+
+    /// Cards in a grid that fills the panel: three in a row on an iPhone, as in Caption style.
+    private static let cell: CGFloat = 104
+
+    private var gridColumns: [GridItem] {
+        [GridItem(.adaptive(minimum: Self.cell), spacing: 8, alignment: .top)]
+    }
+
+    /// The size and the turn, in Custom › Font: Turn is always the picked text's.
+    @ViewBuilder
+    private func sizeAndTurn(_ text: TextOverlay) -> some View {
         PanelSlider(
             label: String(localized: "Size"), value: viewModel.overlays.pickedTextPointSize, range: CueSliderSpec.textPoints.range,
             step: CueSliderSpec.textPoints.step ?? 2, defaultValue: CueSliderSpec.textPoints.defaultValue, format: .points, identifier: "edit.textSize"
         ) { viewModel.overlays.restyleText(.size($0), key: "textSize") }
         PanelSlider(
-            label: String(localized: "Glow"), value: text.glow * 100, range: CueSliderSpec.textGlow.range,
-            step: CueSliderSpec.textGlow.step ?? 5, defaultValue: CueSliderSpec.textGlow.defaultValue, format: .percent,
-            identifier: "edit.textGlow"
-        ) { viewModel.overlays.restyleText(.glow($0 / 100), key: "textGlow") }
+            label: String(localized: "Turn"), value: viewModel.overlays.pickedTextTurnDegrees, range: CueSliderSpec.textTurn.range,
+            step: CueSliderSpec.textTurn.step ?? 1, defaultValue: CueSliderSpec.textTurn.defaultValue, format: .degrees,
+            identifier: "edit.textTurn", onChange: { viewModel.overlays.setTextTurn(degrees: $0) },
+            onEditingChanged: { $0 ? viewModel.overlays.beginPanelChange() : viewModel.overlays.endPanelChange() }
+        )
     }
 
-    /// "Save style", the creator's styles (favorites first) and Cue's presets in a row; each held for its menu.
+    /// The six effects, each drawn on the creator's own first words by the export's renderer; the picked one plays its way
+    /// in (still with Reduce Motion). Favorites first; held, a card has the styles' menu.
+    private func effectCards(_ text: TextOverlay) -> some View {
+        let overlays = viewModel.overlays
+        let library = overlays.textStyles
+        let effects = TypePreset.effectPresets.sorted { library.isFavorite(.builtIn($0.rawValue)) && !library.isFavorite(.builtIn($1.rawValue)) }
+        let words = TextEffectCardSamples.sample(of: text, fallback: Self.sample)
+        let picked = text.effect != nil ? overlays.pickedTextPreset : nil
+        return LazyVGrid(columns: gridColumns, spacing: 12) {
+            ForEach(effects) { preset in
+                let key = StyleKey.builtIn(preset.rawValue)
+                PanelPresetCard(
+                    name: preset.label, sample: effectSamples.stills[preset], motion: effectSamples.motions[preset], frame: frame,
+                    isSelected: picked == preset, isFavorite: library.isFavorite(key), isDefault: library.isDefault(key),
+                    summary: preset.effect?.summary, identifier: "edit.style.\(preset.rawValue)",
+                    action: { overlays.pickTextPreset(preset) },
+                    menu: {
+                        StyleCardMenu(
+                            isFavorite: library.isFavorite(key), isDefault: library.isDefault(key),
+                            defaultLabel: String(localized: "Use for new texts"),
+                            onFavorite: { overlays.toggleFavoriteTextStyle(key) },
+                            onDefault: { overlays.toggleDefaultTextStyle(key, name: preset.label) },
+                            onDuplicate: { overlays.duplicateTextStyle(key, name: preset.label) }
+                        )
+                    }
+                )
+            }
+        }
+        .padding(.top, 2)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("edit.textEffects")
+        .task(id: EffectSampleRequest(words: words, picked: picked, plays: !reduceMotion)) {
+            effectSamples.prepare(words: words, picked: picked, plays: !reduceMotion)
+        }
+    }
+
+    /// Styles: "Save style", the creator's styles (favorites first) and Cue's presets in a grid; each held for its menu.
     private var styleCards: some View {
         let library = viewModel.overlays.textStyles
         let saved = library.styles.sorted { library.isFavorite($0.key) && !library.isFavorite($1.key) }
         let presets = TypePreset.editorPresets.sorted { library.isFavorite(.builtIn($0.rawValue)) && !library.isFavorite(.builtIn($1.rawValue)) }
-        return ScrollView(.horizontal) {
-            HStack(alignment: .top, spacing: 8) {
-                PanelSaveStyleCard {
-                    naming = StyleNameRequest(purpose: .save, name: viewModel.overlays.suggestedTextStyleName)
-                }
-                ForEach(saved) { style in savedCard(style, library: library) }
-                ForEach(presets) { preset in presetCard(preset, library: library) }
+        return LazyVGrid(columns: gridColumns, spacing: 12) {
+            PanelSaveStyleCard {
+                naming = StyleNameRequest(purpose: .save, name: viewModel.overlays.suggestedTextStyleName)
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 2)
+            ForEach(saved) { style in savedCard(style, library: library) }
+            ForEach(presets) { preset in presetCard(preset, library: library) }
         }
-        .scrollIndicators(.hidden)
-        .padding(.horizontal, -16)
+        .padding(.top, 2)
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("edit.textStyles")
     }
 
     private func savedCard(_ style: SavedStyle<TextLook>, library: StyleLibrary<TextLook>) -> some View {
@@ -230,8 +296,10 @@ struct TextStylePanel: View {
         )
     }
 
+    /// Size and Turn first, one row each and always in sight; then the fonts, an imported one, and the weight.
     @ViewBuilder
     private func font(_ text: TextOverlay) -> some View {
+        sizeAndTurn(text)
         PanelChips(
             options: TextOverlayFont.pickerFonts(including: text.font).map { PanelOption($0, $0.label) }, selection: text.font,
             font: { CueStudioFont.chip($0, size: $1) }, identifier: "edit.textFont",
@@ -245,8 +313,48 @@ struct TextStylePanel: View {
         ) { viewModel.overlays.restyleText(.weight($0)) }
     }
 
+    /// The colors; for a text without an effect, its Glow too (an effect makes its own light).
     @ViewBuilder
     private func color(_ text: TextOverlay) -> some View {
+        if let effect = text.effect {
+            effectColor(text, effect: effect)
+        } else {
+            typeColor(text)
+            PanelSlider(
+                label: String(localized: "Glow"), value: text.glow * 100, range: CueSliderSpec.textGlow.range,
+                step: CueSliderSpec.textGlow.step ?? 5, defaultValue: CueSliderSpec.textGlow.defaultValue, format: .percent,
+                identifier: "edit.textGlow"
+            ) { viewModel.overlays.restyleText(.glow($0 / 100), key: "textGlow") }
+        }
+    }
+
+    /// An effect's colors: its metal or the text's color, and its second color; it makes its own light and shadow.
+    @ViewBuilder
+    private func effectColor(_ text: TextOverlay, effect: TextEffect) -> some View {
+        if effect.kind.usesTone {
+            PanelSegmented(
+                label: String(localized: "Metal"), options: MetalTone.allCases.map { PanelOption($0, $0.label) },
+                selection: effect.tone, height: 38, identifier: "edit.textEffect.tone"
+            ) { viewModel.overlays.restyleText(.effectTone($0)) }
+        }
+        if effect.kind.usesTextColor {
+            PanelSwatches(
+                label: String(localized: "Text"), colors: OverlayColor.palette, selection: text.color,
+                diameter: Self.swatchDiameter, identifier: "edit.textColor"
+            ) { viewModel.overlays.restyleText(.color($0)) }
+        }
+        if effect.kind.usesAccent {
+            PanelSwatches(
+                label: effect.kind.accentLabel, colors: OverlayColor.palette, selection: effect.accent,
+                diameter: Self.swatchDiameter, identifier: "edit.textEffect.accent"
+            ) { viewModel.overlays.restyleText(.effectAccent($0)) }
+        }
+        PanelNote(text: String(localized: "The effect makes its own light and shadow. Remove it in Animated to use a background or an outline."))
+            .accessibilityIdentifier("edit.textEffect.colorNote")
+    }
+
+    @ViewBuilder
+    private func typeColor(_ text: TextOverlay) -> some View {
         PanelSwatches(
             label: String(localized: "Text"), colors: OverlayColor.palette, selection: text.color,
             diameter: Self.swatchDiameter, identifier: "edit.textColor"

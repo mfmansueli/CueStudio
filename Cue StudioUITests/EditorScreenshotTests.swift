@@ -79,7 +79,7 @@ final class EditorScreenshotTests: XCTestCase {
         EditorApp.tapTool(app, "text")
         EditorApp.tapTool(app, "styleAll")
         try capture("11-text-style")
-        tab("font")
+        tab("custom")
         try capture("12-text-font")
         tab("color")
         try capture("13-text-color")

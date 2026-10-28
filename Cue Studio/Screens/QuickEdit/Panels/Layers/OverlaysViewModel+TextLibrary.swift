@@ -6,7 +6,7 @@
 import Foundation
 
 /// The creator's saved text looks (`StyleLibrary` of `TextLook`), managed like their caption and cover styles: saved with a
-/// name from Text style › Presets, renamed, updated with the picked text's look, duplicated, favored, picked as the one new
+/// name from Text style › Styles, renamed, updated with the picked text's look, duplicated, favored, picked as the one new
 /// texts start in (on a video with no style of its own yet) and deleted with Undo. A text keeps its own look: none of this
 /// changes a text already made.
 extension OverlaysViewModel {

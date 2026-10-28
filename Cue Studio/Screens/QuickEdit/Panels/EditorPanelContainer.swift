@@ -24,6 +24,8 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
     var onReset: (() -> Void)?
     /// ◐ Compare with original, between Reset and ✓ (panels that change the picture or the sound).
     var compare: PanelCompare?
+    /// "Preview" before expand and ✓: plays what the panel changes on the video (`PanelPlay`).
+    var play: PanelPlay?
     var expansion: Binding<Bool>?
     /// The content stops further above the Home Indicator and fades under it while it scrolls (always with `expansion`).
     var clearsHomeIndicator = false
@@ -126,6 +128,7 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
                     .accessibilityIdentifier("edit.panel.reset")
             }
             if let compare { PanelCompareButton(compare: compare) }
+            if let play { playButton(play) }
             if let expansion { expandButton(expansion) }
             Button {
                 Haptics.apply()
@@ -158,6 +161,39 @@ struct EditorPanelContainer<Fixed: View, Content: View, Footer: View>: View {
         }
         .contentShape(Rectangle())
         .gesture(expansionDrag, isEnabled: expansion != nil)
+    }
+
+    /// ▶ as round as expand, with a small "PREVIEW" tag above its corner (as the toolbar's "ALL"), so it never reads as the
+    /// video's own play button and takes no more room than the buttons beside it.
+    private func playButton(_ play: PanelPlay) -> some View {
+        Button {
+            Haptics.selection()
+            play.action()
+        } label: {
+            Image(systemName: "play.fill")
+                .font(.editorGlyph(EditorGlyph.button, weight: .semibold))
+                .foregroundStyle(Palette.ink)
+                .frame(width: Metrics.applyButtonSize, height: Metrics.applyButtonSize)
+                .background(Palette.fill, in: Circle())
+                .overlay(alignment: .topTrailing) {
+                    Text(PanelPlay.tag)
+                        .font(.editorGlyph(EditorGlyph.badge, weight: .heavy))
+                        .foregroundStyle(Palette.accInk)
+                        .lineLimit(1)
+                        .padding(.horizontal, EditorToolbarFit.badgePadding)
+                        .padding(.vertical, 1)
+                        .background(Palette.acc, in: Capsule())
+                        .fixedSize()
+                        .offset(x: 6, y: -7)
+                        .accessibilityHidden(true)
+                }
+                .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text(PanelPlay.label))
+        .accessibilityShowsLargeContentViewer { Label(PanelPlay.label, systemImage: "play.fill") }
+        .accessibilityIdentifier(PanelPlay.identifier)
     }
 
     /// Expand or collapse: arrows out (the panel grows, the video shrinks) or in.

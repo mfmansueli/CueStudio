@@ -28,14 +28,27 @@ extension OverlaysViewModel {
         }
     }
 
-    /// The tab Text style shows: the one picked, when it is one of Text style's (the tabs and what
-    /// shows under them never disagree).
+    /// The tab Text style shows: Animated or Styles when picked, Custom for any of its sections; opened with none of them, what
+    /// the picked text wears (Animated for an effect, else Styles). The tabs and what shows under them never disagree.
     var textStyleTab: EditorPanelTab {
-        EditorPanelTab.textStyle.contains(panelTab) ? panelTab : .presets
+        if EditorPanelTab.textCustom.contains(panelTab) { return .custom }
+        if panelTab == .animated || panelTab == .styles { return panelTab }
+        return selectedText?.effect != nil ? .animated : .styles
     }
 
-    /// Presets, Font and Color change the look, on the scope; Motion is the picked text's.
-    var textStyleTabChangesLook: Bool { textStyleTab != .motion }
+    /// Custom's section on show: the one picked, or the one Custom last showed.
+    var textCustomSection: EditorPanelTab {
+        EditorPanelTab.textCustom.contains(panelTab) ? panelTab : lastTextCustomSection
+    }
+
+    /// Shows a Text style tab, or one of Custom's sections; Custom itself opens on the section it last showed.
+    func showTextStyleTab(_ tab: EditorPanelTab) {
+        if EditorPanelTab.textCustom.contains(tab) { lastTextCustomSection = tab }
+        panelTab = tab == .custom ? lastTextCustomSection : tab
+    }
+
+    /// Animated, Styles, Font and Color change the look, on the scope; Motion is the picked text's.
+    var textStyleTabChangesLook: Bool { !(textStyleTab == .custom && textCustomSection == .motion) }
 
     /// "Type your title".
     var textFieldPlaceholder: String {

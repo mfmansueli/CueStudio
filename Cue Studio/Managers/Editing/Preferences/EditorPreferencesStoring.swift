@@ -14,4 +14,7 @@ protocol EditorPreferencesStoring: AnyObject {
     var narrationScriptSpeed: Double? { get set }
     /// When the Low Power Mode notice last showed (`LowPowerNotice`: once a day).
     var lowPowerNoticeShownAt: Date? { get set }
+    /// The track the timeline showed under the video when the take was last edited (`TimelineTrackChoice.current`).
+    func timelineLane(forTake id: UUID) -> TimelineLane?
+    func setTimelineLane(_ lane: TimelineLane, forTake id: UUID)
 }

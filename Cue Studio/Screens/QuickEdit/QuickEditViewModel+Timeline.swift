@@ -13,6 +13,18 @@ import Foundation
 extension QuickEditViewModel {
     // MARK: - What it shows
 
+    /// Every track of the edit, the same `timelineInput` gives the timeline: collapsed, the editor makes room for the video
+    /// track and the tallest of them (`TimelineGeometry.collapsedHeight`); with every track out, for them all, the preview
+    /// giving the room.
+    var timelineLanes: [TimelineLane] {
+        let timeline = edit.timeline
+        return TimelineGeometry.lanes(
+            hasBlurs: edit.blurRegions.contains { !edit.editedSpans(of: $0, in: timeline).isEmpty },
+            hasMusic: edit.music.contains { $0.span(inEditOf: edit.editedDuration) != nil },
+            hasVoice: edit.voiceOvers.contains { $0.editedSpan(in: timeline) != nil } || audio.recordingStart != nil
+        )
+    }
+
     /// Everything the timeline draws, for `heightClass`. Reads the playhead only while a
     /// voice-over records (its track grows with it).
     func timelineInput(heightClass: EditorHeightClass) -> TimelineGeometry.Input {
@@ -79,6 +91,7 @@ extension QuickEditViewModel {
         input.panelIsOpen = panel != nil
         input.focusedLane = panel?.focusedLane
         input.activeLanes = toolMenu?.lanes ?? []
+        input.tracks = tracks
         input.heightClass = heightClass
         input.pointsPerSecond = TimelineGeometry.basePointsPerSecond * timelineZoom
         return input
@@ -133,6 +146,11 @@ extension QuickEditViewModel {
             if case .pause(let id) = hit { togglePauseMark(id) }
             return
         }
+        if hit == .trackChooser {
+            Haptics.selection()
+            tracks.isExpanded.toggle()
+            return
+        }
         // Anything but a track's own strip closes the tools it opened.
         if case .lane(let lane)? = hit {
             tapLane(lane)
@@ -159,12 +177,19 @@ extension QuickEditViewModel {
         case .item(let kind, let id):
             if kind == .media { overlays.selectedArea = .support }
             Self.selection(of: kind, id).map(pick)
-        case .lane: break
+        case .lane, .trackChooser: break
         }
     }
 
-    /// A track's strip: its tools replace the toolbar's, and a second tap puts the toolbar back.
+    /// A track's strip: its tools replace the toolbar's, and a second tap puts the toolbar back. While every track is out, a tap
+    /// only chooses the track (an item picked on another track is let go): what it does comes with the next tap.
     private func tapLane(_ lane: TimelineLane) {
+        if tracks.isExpanded {
+            if let item = selection, item.lane != .main, item.lane != lane { selection = nil }
+            Haptics.selection()
+            tracks.choose(lane)
+            return
+        }
         if lane == .media {
             // The media track: add another photo or video, the way it was last added.
             player.pause()
@@ -180,6 +205,13 @@ extension QuickEditViewModel {
         panel = nil
         toolMenu = toolMenu == menu ? nil : menu
         Haptics.selection()
+    }
+
+    /// The first of `lanes` the edit has (else the first of them) becomes the timeline's current track, and the others go away.
+    func bringTrack(_ lanes: Set<TimelineLane>) {
+        var next = tracks
+        next.bring(anyOf: TimelineLane.allCases.filter(lanes.contains), in: timelineLanes)
+        if next != tracks { tracks = next }
     }
 
     /// What picking a track item selects (nothing for the voice-over being recorded).
@@ -213,6 +245,7 @@ extension QuickEditViewModel {
         let stops = [0] + clips.cuts.map(\.time) + [edit.editedDuration]
         let target = forward ? stops.first { $0 > time + 0.05 } : stops.last { $0 < time - 0.05 }
         guard let target else { return }
+        takePlayhead()
         player.pause()
         player.seek(to: target)
         AccessibilityNotification.Announcement(clips.timelineAccessibilityValue).post()
@@ -225,6 +258,7 @@ extension QuickEditViewModel {
             toast.show(String(localized: "No cuts yet"), kind: .problem)
             return
         }
+        takePlayhead()
         player.pause()
         player.seek(to: nearest.time)
         pickJoin(edit.timeline.segments[nearest.index].id)
@@ -256,6 +290,7 @@ extension QuickEditViewModel {
     /// The content moved under the playhead: the player follows, paused.
     func scrubTimeline(to time: TimeInterval) {
         guard isReady, !audio.isRecordingVoiceOver else { return }
+        takePlayhead()
         player.scrub(to: min(max(0, time), edit.editedDuration))
     }
 
@@ -269,6 +304,7 @@ extension QuickEditViewModel {
     /// A handle is held: the drag is one undo step, the player shows the edge.
     func beginTimelineHandle(_ target: TimelineGeometry.HandleTarget, snapTimes: [TimeInterval]) {
         guard isReady, handleDrag == nil else { return }
+        takePlayhead()
         player.pause()
         // The undo step begins only once the drag holds something: a stale target never leaves a change open.
         defer { if handleDrag != nil { beginChange() } }

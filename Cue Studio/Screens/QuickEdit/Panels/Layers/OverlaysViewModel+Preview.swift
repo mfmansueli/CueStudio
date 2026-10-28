@@ -7,13 +7,11 @@ import CoreGraphics
 import Foundation
 
 /// Editing right on the preview: tap a text to pick it (again: Text style opens), drag it (with
-/// guides through the middle and the platform's safe area showing), drag its corner to scale it,
-/// ✕ to delete it. The caption on the preview is the Captions part's (`CaptionsViewModel+Preview`).
+/// guides through the middle and the platform's safe area showing), pinch and turn it or drag its corner
+/// (`+TextTransform`), ✕ to delete it. The caption on the preview is the Captions part's (`CaptionsViewModel+Preview`).
 extension OverlaysViewModel {
     /// A text or the caption sticks to the middle within this share of the frame.
     static let centerSnap: Double = 0.025
-    /// How much the corner handle scales per point dragged (down and right grows).
-    static let scalePerPoint: Double = 1.0 / 140
 
     // MARK: - Texts
 
@@ -43,27 +41,12 @@ extension OverlaysViewModel {
         return (point, vertical, horizontal)
     }
 
-    /// The corner handle dragged by `translation` (points): the text grows or shrinks; with
-    /// keyframes, its keyframe at the playhead does.
-    func scaleText(_ id: UUID, by translation: CGSize) {
-        scaleText(id, factor: Self.scaleFactor(for: translation))
-    }
-
-    /// The text `factor` times as big (or its keyframe at the playhead, with keyframes).
+    /// The text `factor` times as big (or its keyframe at the playhead, with keyframes), where it is and as it's turned: what
+    /// VoiceOver's Bigger and Smaller do, the same change as a pinch.
     func scaleText(_ id: UUID, factor: Double) {
         guard let text = edit.texts.first(where: { $0.id == id }) else { return }
-        if text.keyframes.isEmpty {
-            let size = min(max(text.size * factor, TextOverlay.sizeRange.lowerBound), TextOverlay.sizeRange.upperBound)
-            customizeText(id, .size) { $0.size = size }
-        } else {
-            let current = motionState(of: .text(id)).scale
-            selection = .text(id)
-            setKeyframeScale(current * factor)
-        }
-    }
-
-    static func scaleFactor(for translation: CGSize) -> Double {
-        min(max(1 + Double(translation.width + translation.height) * scalePerPoint, 0.4), 3)
+        let center = text.keyframes.isEmpty ? text.center : motionState(of: .text(id)).center
+        transformText(id, center: center, factor: factor, rotation: text.graphic.map(\.rotation) ?? rotation(ofText: text))
     }
 
     // MARK: - Safe area

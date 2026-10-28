@@ -38,6 +38,12 @@ nonisolated struct CueSliderSpec: Equatable, Sendable {
     static let textPoints = CueSliderSpec(24...120, step: 2, default: 64)
     /// Glow of a text, in percent.
     static let textGlow = CueSliderSpec(0...100, step: 5, default: 35)
+    /// A text's turn, in degrees either way: upright by default.
+    static let textTurn = CueSliderSpec(-180...180, step: 1, default: 0)
+    /// A text effect's own strength (shine, depth, glow…), in percent.
+    static let effectStrength = CueSliderSpec(0...100, step: 5, default: 60)
+    /// Seconds a text effect's way in takes (`TextEffectKind.durationRange`).
+    static let effectDuration = CueSliderSpec(TextEffectKind.durationRange, step: 0.1, default: 1)
     /// Your voice, in percent: 100% is as recorded.
     static let voice = CueSliderSpec(0...200, step: 5, default: 100)
     /// Music, in percent: it ducks under your voice.

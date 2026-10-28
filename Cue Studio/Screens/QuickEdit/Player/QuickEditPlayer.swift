@@ -172,6 +172,8 @@ final class QuickEditPlayer: EditPlayback {
 
     func play() {
         guard state == .ready, duration > 0 else { return }
+        // Play is never a scrub: a drag whose end never came (a glide stopped by a touch) doesn't hold the clock still.
+        isScrubbing = false
         isPlaying = true
         var from = currentTime
         if let part = reviewedPart, abs(currentTime - part.upperBound) < 0.02 {
