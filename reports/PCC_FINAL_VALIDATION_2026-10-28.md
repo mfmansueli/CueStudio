@@ -32,7 +32,7 @@ Sem mudar o código: player e ShareTo passaram em 3 repetições cada, resultado
 
 Após os ajustes acima: os 4 casos passaram em 3 execuções cada, **12 execuções aprovadas**, `only-20261028-223213.xcresult`,456s. xcresulttool confirmou “Test case with 3 runs / Passed” para cada caso. SwiftLint estrito e git diff --check passaram.
 
-## Conferência final dirigida — em andamento
+## Conferência final dirigida — concluída
 
 O dono orientou explicitamente rodar somente as partes pertinentes à correção para ser mais rápido: não será repetido o Full. A rodada completa original permanece registrada como falha, com os quatro casos ajustados aprovados nas repetições dirigidas.
 
@@ -44,4 +44,8 @@ A compilação limpa da sessão99400 passou simulador e SDK iPhone com a fonte55
 
 **Validação final dirigida aprovada:** `only-20261028-232531.xcresult`,56 testes,0 falhas,0 pulados,157s. Inclui PaletteContrastTests, o novo teste do componente no pico (mínimo4,5:1 normal/aumentado) e boas-vindas no maior texto. A captura atual foi inspecionada visualmente e medida em `build/inspection/welcome-shine35/audit-visible`:23 textos, mínimo6,52:1, botão14,88:1 no quadro estático; limites370×54pt dentro da tela. A verificação do pico é separada da medição estática.
 
-Compilações limpas finais em andamento na sessão27453. Depois: atualizar instalações normais. Sem nova matriz PCC.
+**Compilações limpas finais aprovadas:** sessão27453 exit0, simulador, SDK iPhone e Release, zero warnings. Correção e teste enviados ao remoto em `f7c90f57`. Sem nova matriz PCC e sem novo Full.
+
+**Instalações finais concluídas:** Iago, sessão40381 exit0, build assinado aprovado, instalado e aberto sem argumentos de teste. Mansuelli, sessão18738 exit0, mesmo binário final instalado diretamente depois de confirmar que o provisioning inclui seu UDID. A recompilação redundante da sessão4681 foi cancelada somente enquanto aguardava o lock; nenhuma compilação da outra sessão foi interrompida. Abertura automática no Mansuelli recusada por aparelho bloqueado (sessão93371); instalação permanece concluída e pode ser aberta manualmente. Assinatura verificada com codesign e entitlement PCC=true.
+
+A sessão paralela skin-beauty voltou a executar testes no Iago depois da nossa instalação; ela pode substituir o app desse aparelho por seu próprio build. O registro acima comprova nossa instalação, não reserva o dispositivo contra alterações posteriores de outra sessão. Nenhum teste automático foi executado no Mansuelli nesta entrega. Não houve PR nem merge na main.

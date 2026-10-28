@@ -1,3 +1,13 @@
+# ENTREGA ENCERRADA — correções validadas, push e instalações concluídos
+
+Fonte final enviada em f7c90f57 na branch codex/pcc-offline-review. Relatório canônico: reports/PCC_FINAL_VALIDATION_2026-10-28.md. 4 casos corrigidos×3=12 execuções aprovadas; última rodada pertinente only-20261028-232531:56 aprovados/0 falhas/0 pulados. Pico do brilho35% renderizado >=4,5:1 normal/aumentado; captura atual23 textos mínimo6,52:1. Check-warnings27453 exit0 nas três compilações limpas (simulador/SDK iPhone/Release), zero warnings. Não repetir Full: dono pediu somente testes pertinentes; Full anterior permanece com falhas documentadas.
+
+Iago: sessão40381 exit0, app NORMAL final instalado e aberto. Mansuelli: mesmo binário normal, provisioning confirmado para seu UDID, codesign válido e entitlement PCC=true; devicectl instalação18738 exit0. Build redundante4681 foi cancelado somente na fila (exit143), sem interromper Claude; abertura93371 recusada por LOCKED. Mansuelli pode abrir manualmente, sem testes automáticos nele. Outra sessão skin-beauty voltou a usar Iago depois de nossa instalação; pode trocar seu app novamente. Não interferir nem prometer que o binário permanecerá lá enquanto outra sessão testa.
+
+Sem novo modelo/provedor, sem candidato experimental promovido, sem alegar paridade ChatGPT ou ausência de alucinações. Qualidade detalhada nos PHASE3/PHASE4/REJECTED_SCENES. Sem PR/merge criado; único PR necessário permanece offline-review→main. Os checkpoints abaixo registram a sequência anterior e seus planos pendentes foram concluídos ou substituídos. Nenhuma execução desta entrega permanece ativa.
+
+---
+
 # RESULTADO ATUAL —56 testes pertinentes passaram; compilação final na fila
 
 Sessão38169 concluiu exit0: `only-20261028-232531.xcresult`,56 aprovados/0 falhas/0 pulados,157s. Inclui contraste real do brilho35% no pico (4,5:1 mínimo normal/aumentado) e bounds/tap do Welcome maior texto. Imagem atual inspecionada e23 textos auditados, mínimo6,52:1; CTA14,88:1 no quadro estático,370×54pt dentro da tela. Artefatos em build/inspection/welcome-shine35. O teste anterior35928 falhou só na compilação por EnvironmentValue readonly; removida a definição, mantém assert faixa presente e renderização real.
