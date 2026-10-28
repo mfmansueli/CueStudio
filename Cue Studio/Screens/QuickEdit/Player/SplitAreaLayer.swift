@@ -136,7 +136,9 @@ struct SplitAreaLayer: View {
         wasCentered = false
         guard let source = overlays.areaPictureSource(area, of: support) else { return }
         Task {
-            let image = await thumbnails.picture(of: source.url, isVideo: source.isVideo, at: source.time, maxPixelSize: 900)
+            let picture = await thumbnails.picture(of: source.url, isVideo: source.isVideo, at: source.time, maxPixelSize: 900)
+            // The main video's clip turned, mirrored or cropped shows so in the copy too.
+            let image = picture?.shaped(by: source.orientation)
             if let image, moving?.area == area { proxy = (area, image) }
         }
     }

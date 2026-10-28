@@ -20,8 +20,12 @@ enum EditorAction: Hashable {
     /// ✦ Smart on one of its tabs: Tools (✦ Smart), Templates, Brand kit.
     case openSmart(SmartPanelSection)
     case addMedia
-    /// "Media" on the main toolbar: a photo or video on top of the video or as a clip, chosen in the sheet.
+    /// A photo or video on top of the video or as a clip, the way chosen in the sheet (on the way it was last added).
     case addMediaChoice
+    /// The Media bar: the gallery opened on one way of adding (the sheet's cards stay to change it).
+    case addMediaAs(MediaInsertMode)
+    /// The Media bar's Your library: the sheet opened on what the creator kept to reuse (a logo goes straight on).
+    case addMediaFromLibrary
     /// Cover Studio, over the editor.
     case openCoverStudio
     // Clip
@@ -39,6 +43,14 @@ enum EditorAction: Hashable {
     case reorderClips
     case copyLook
     case pasteLook
+    /// The picked clip's Mute: its sound off, or on again (Volume's "Mute this clip").
+    case toggleClipMute
+    /// The picked clip's Transition: the cut after it (the last clip's, the one before it), its Transition panel open.
+    case openClipTransition
+    /// The picked clip's Mirror: its picture flipped left to right, or back.
+    case toggleClipMirror
+    /// Reset clip: the picked clip back as filmed (`ClipsViewModel.resetClip`).
+    case resetClip
     case deleteClip
     // Text
     case addText(TextOverlayRole)
@@ -66,6 +78,10 @@ enum EditorAction: Hashable {
     case deleteAllCaptions
     /// Find and replace in every line.
     case findInCaptions
+    /// The Captions bar's Show: every line shown or hidden (the Captions panel's switch).
+    case toggleCaptionsShown
+    /// The Captions bar's Translate: the Captions panel with the translation sheet over it.
+    case openCaptionTranslation
     // Caption
     case editCaption
     case splitCaption
@@ -73,6 +89,8 @@ enum EditorAction: Hashable {
     case deleteCaption
     // Audio
     case openMusic
+    /// The Audio bar's Sound effects: Cue's sound effects alone, to add at the playhead.
+    case openSoundEffects
     case replaceMusic
     case deleteMusic
     case reRecordVoiceOver
@@ -100,6 +118,10 @@ enum EditorAction: Hashable {
     // Blur area
     /// A face, a plate or a name hidden: the faces in the frame to tap, or an area to draw.
     case addBlurArea
+    /// An area drawn in the middle of the frame, to drag onto a plate, a name or anything else (the Blur area bar).
+    case drawBlurArea
+    /// The Blur area bar's Compare: the preview without any Blur area, or with them again.
+    case compareBlur
     /// The picked area follows its subject.
     case followBlur
     /// The picked area's stretch plays, to check it.

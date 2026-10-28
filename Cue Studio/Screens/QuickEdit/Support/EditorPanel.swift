@@ -9,7 +9,7 @@ import Foundation
 /// changes show live in the preview.
 enum EditorPanel: String, CaseIterable, Identifiable {
     // The selected clip
-    case speed, zoom, volume, stabilize
+    case speed, zoom, volume, stabilize, clipCrop, clipAnimation
     // The whole take
     case voice, pauses, adjust, filters, crop, background
     // Captions
@@ -33,6 +33,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         switch self {
         case .zoom, .volume, .filters, .voiceOver, .autoCaptions: .mini
         case .speed, .voice, .pauses, .captions, .adjust, .background, .media, .smart, .transition, .crop, .stabilize, .beats: .medium
+        case .clipCrop, .clipAnimation: .medium
         case .mask, .blur, .motion: .medium
         case .textStyle, .captionStyle: .full
         }
@@ -60,7 +61,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     /// Panels that work on the selected item close when it's let go.
     var followsSelection: Bool {
         switch self {
-        case .speed, .zoom, .volume, .stabilize, .beats, .textStyle, .media, .mask, .motion, .blur, .transition: true
+        case .speed, .zoom, .volume, .stabilize, .clipCrop, .clipAnimation, .beats, .textStyle, .media, .mask, .motion, .blur, .transition: true
         default: false
         }
     }
@@ -69,7 +70,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     /// they're open, so moving the playhead never moves the change to another clip.
     var pinsClip: Bool {
         switch self {
-        case .speed, .zoom, .volume, .stabilize: true
+        case .speed, .zoom, .volume, .stabilize, .clipCrop, .clipAnimation: true
         default: false
         }
     }
@@ -86,7 +87,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     /// something it can't work on is picked).
     func accepts(_ selection: EditorSelection) -> Bool {
         switch self {
-        case .speed, .zoom, .stabilize: selection.clipID != nil
+        case .speed, .zoom, .stabilize, .clipCrop, .clipAnimation: selection.clipID != nil
         case .volume: selection.clipID != nil || selection.musicID != nil || selection.voiceOverID != nil || selection.mediaID != nil
         case .textStyle: selection.textID != nil
         case .media, .mask, .motion: selection.mediaID != nil
@@ -103,6 +104,8 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .speed: String(localized: "Speed")
         case .zoom: String(localized: "Zoom")
         case .stabilize: String(localized: "Stabilize")
+        case .clipCrop: String(localized: "Crop")
+        case .clipAnimation: String(localized: "Animation")
         case .volume: String(localized: "Volume")
         case .voice: String(localized: "Studio Voice")
         case .pauses: String(localized: "Pauses")

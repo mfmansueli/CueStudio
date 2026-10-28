@@ -23,11 +23,12 @@ final class CreatorMediaUseUITests: XCTestCase {
     private var continueButton: XCUIElement { app.buttons["edit.mediaContinue"] }
     private var photosSource: XCUIElement { app.segmentedControls["edit.mediaSource"].buttons["Photos"] }
 
+    /// Media › one way of adding, from the Media bar: the sheet opens on its card.
     private func openSheet(_ mode: String) {
         EditorApp.tapTool(app, "addMedia")
+        EditorApp.tapTool(app, "media" + mode.prefix(1).uppercased() + mode.dropFirst())
         let card = app.buttons["edit.mediaMode.\(mode)"]
         XCTAssertTrue(card.exists(within: 5), "No Add photo or video")
-        card.tap()
         XCTAssertTrue(card.isSelected, "\(mode) isn't picked")
     }
 

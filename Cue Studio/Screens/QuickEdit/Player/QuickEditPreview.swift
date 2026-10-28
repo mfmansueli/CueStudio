@@ -41,8 +41,13 @@ struct QuickEditPreview: View {
             }
             .overlay {
                 // Under Voice-over's script (`NarrationScriptOverlay`) the handles would only draw over the words.
-                if !isFullScreen, viewModel.panel != .crop, !viewModel.showsNarrationScriptOverlay {
+                if !isFullScreen, viewModel.panel != .crop, viewModel.panel != .clipCrop, !viewModel.showsNarrationScriptOverlay {
                     OverlayEditingLayer(viewModel: viewModel, size: size)
+                }
+            }
+            .overlay {
+                if !isFullScreen, viewModel.panel == .clipCrop {
+                    ClipCropLayer(viewModel: viewModel, size: size)
                 }
             }
             .overlay { recordingBadge }
@@ -54,7 +59,7 @@ struct QuickEditPreview: View {
             .onTapGesture {
                 if isFullScreen {
                     if !viewModel.audio.isRecordingVoiceOver { viewModel.togglePlayback() }
-                } else if viewModel.panel != .crop {
+                } else if viewModel.panel != .crop, viewModel.panel != .clipCrop {
                     viewModel.tapOutsideVideo()
                 }
             }

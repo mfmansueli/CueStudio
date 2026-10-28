@@ -14,9 +14,13 @@ import UIKit
 /// order: a handle, a tap (less than 4 pt) that picks or lets go, a scrub, a pinch.
 ///
 /// Collapsed, the video track and the current track show; ▾ beside its icon brings every track out (`TimelineTrackChoice`).
-/// The editor makes the timeline tall enough for the tracks it shows (`EditorLayout`); when they still don't fit (a panel
-/// open, a short window) they scroll up and down under the ruler, a fade at the bottom says there are more, and the picked
-/// item's track (or the one whose tools are open) comes into sight by itself. Scrolling up and down never scrubs.
+/// A finger dragging the timeline up or down (clearly more than across, not on a handle or the picked item) does it too: the
+/// timeline grows or shrinks under the finger as the tracks come out or go away (`TimelineGeometry.Input.reveal`, the editor
+/// giving it the height, `EditorLayout.timelineReveal`), and let go it settles with a spring on the nearer state, or the one it
+/// was thrown toward (`TimelineRevealSpring`); ▾ settles the same way. The editor makes the timeline tall enough for the
+/// tracks it shows; when they still don't fit (a panel open, a very short window) they scroll up and down under the ruler, a
+/// fade at the bottom says there are more, and the picked item's track (or the one whose tools are open) comes into sight by
+/// itself. Scrolling up and down never scrubs.
 @MainActor
 final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecognizerDelegate {
     /// What the timeline asks of the editor.
@@ -25,8 +29,8 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         var endScrub: () -> Void = {}
         var tap: (TimelineGeometry.Hit?) -> Void = { _ in }
         var beginHandle: (TimelineGeometry.HandleTarget, [TimeInterval]) -> Void = { _, _ in }
-        /// The edge moved by these edited seconds; returns the bubble and the content's shift.
-        var moveHandle: (TimeInterval) -> (label: String, compensation: TimeInterval) = { _ in ("", 0) }
+        /// The edge moved by these edited seconds; returns the bubble, the content's shift and the time it stuck to, if any.
+        var moveHandle: (TimeInterval) -> (label: String, compensation: TimeInterval, snap: TimeInterval?) = { _ in ("", 0, nil) }
         var endHandle: () -> Void = {}
         /// A clip held still: Reorder opens (CapCut's long-press).
         var holdClip: (UUID) -> Void = { _ in }
@@ -39,9 +43,16 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         /// VoiceOver: the playhead to the next cut (true) or the one before.
         var jumpToCut: (Bool) -> Void = { _ in }
         var accessibilityValue: () -> String = { "" }
+        /// A finger dragging the timeline up or down, or ▾ settling: how far out every track is (nil once it rests).
+        var reveal: (CGFloat?) -> Void = { _ in }
+        /// Every track out, or the current one alone: a drag let go, or ▾ (the timeline then settles there by itself).
+        var expandTracks: (Bool) -> Void = { _ in }
     }
 
     var actions = Actions()
+    /// What the timeline grows by from the current track alone to every track out (`EditorLayout`): how far a finger drags it
+    /// for every track to come out.
+    var revealSpan: CGFloat = 0
 
     private let backdrop = TimelineLaneBackdropView()
     private let scrollView = UIScrollView()
@@ -75,6 +86,18 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
     /// Setting `contentOffset` from code: not a scrub.
     private var isApplyingOffset = false
     private var lastSnap: TimeInterval?
+    /// Where the held handle stuck last (its yellow line shows once per stick).
+    private var lastHandleSnap: TimeInterval?
+    /// A finger on the current track's square: it sinks until the finger lifts.
+    private var press: UILongPressGestureRecognizer?
+    /// A finger dragging the timeline up or down, and where the tracks were when it took them.
+    private var revealPan: UIPanGestureRecognizer?
+    private var revealStart: CGFloat?
+    /// Settling after the finger let go (or ▾), and the display link stepping it.
+    private var revealSettle: (spring: TimelineRevealSpring, start: CFTimeInterval)?
+    private var revealLink: CADisplayLink?
+    /// A tap with every track out was handed to the editor, the tracks held out: if it put them away they go on the spring.
+    private var awaitsTapResult = false
     /// The handle being dragged, the time it froze the playhead at, and the content's shift.
     private var handle: (target: TimelineGeometry.HandleTarget, time: TimeInterval, compensation: TimeInterval)?
     private var touchDown: CGPoint?
@@ -136,10 +159,25 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         scrollView.addGestureRecognizer(handlePan)
         scrollView.panGestureRecognizer.require(toFail: handlePan)
 
+        let revealPan = UIPanGestureRecognizer(target: self, action: #selector(revealPanned(_:)))
+        revealPan.delegate = self
+        revealPan.maximumNumberOfTouches = 1
+        scrollView.addGestureRecognizer(revealPan)
+        scrollView.panGestureRecognizer.require(toFail: revealPan)
+        self.revealPan = revealPan
+
         let hold = UILongPressGestureRecognizer(target: self, action: #selector(held(_:)))
         hold.minimumPressDuration = 0.45
         hold.delegate = self
         scrollView.addGestureRecognizer(hold)
+
+        let press = UILongPressGestureRecognizer(target: self, action: #selector(pressed(_:)))
+        press.minimumPressDuration = 0
+        press.cancelsTouchesInView = false
+        press.delaysTouchesEnded = false
+        press.delegate = self
+        addGestureRecognizer(press)
+        self.press = press
 
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(pinched(_:)))
         pinch.delegate = self
@@ -193,12 +231,38 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
     func cancelLoading() {
         content.cancelLoading()
         stopTrackScroll()
+        stopRevealLink()
+        // Going away mid-drag: the editor rests too, after this update.
+        if input?.reveal != nil {
+            let reveal = actions.reveal
+            Task { @MainActor in reveal(nil) }
+        }
     }
 
     // MARK: - Updates from the editor
 
     /// New contents (an edit, a selection, a panel, a zoom).
     func update(input: TimelineGeometry.Input, sources: TimelineContentView.Sources) {
+        var input = input
+        if awaitsTapResult {
+            awaitsTapResult = false
+            if input.tracks?.isExpanded == false, !input.panelIsOpen, let held = input.reveal {
+                spring(toExpanded: false, from: held, velocity: 0)
+            } else if input.reveal != nil, revealSettle == nil {
+                // They stayed out: nothing to settle, the editor rests after this update.
+                input.reveal = nil
+                let reveal = actions.reveal
+                Task { @MainActor in reveal(nil) }
+            }
+        }
+        // Settling toward a state the editor no longer has (a track chosen, a panel opened meanwhile): it rests at once, and
+        // the editor after this update.
+        if let settle = revealSettle, input.panelIsOpen || input.tracks?.isExpanded != (settle.spring.to == 1) {
+            stopRevealLink()
+            input.reveal = nil
+            let reveal = actions.reveal
+            Task { @MainActor in reveal(nil) }
+        }
         guard input != self.input || content.geometry == nil else {
             content.show(geometry ?? TimelineGeometry(input), sources: sources)
             return
@@ -210,13 +274,17 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         if pinchStart != nil { shown.pointsPerSecond = TimelineGeometry.basePointsPerSecond * zoom }
         zoom = shown.pointsPerSecond / TimelineGeometry.basePointsPerSecond
         let next = TimelineGeometry(shown)
-        // The tracks coming out or going away cross-fade while the editor gives the timeline its new height.
+        let change = TimelineChange(from: geometry, to: next)
+        // The tracks coming out or going away cross-fade while the editor gives the timeline its new height; their icons glide
+        // to their places on their own (`TimelineLaneGutterView`).
         if choiceChanged, window != nil, geometry.map({ $0.lanes.map(\.lane) != next.lanes.map(\.lane) }) == true {
-            UIView.transition(with: self, duration: 0.2, options: [.transitionCrossDissolve, .allowUserInteraction]) {
-                self.apply(next, sources: sources)
+            let options: UIView.AnimationOptions = [.transitionCrossDissolve, .allowUserInteraction]
+            UIView.transition(with: backdrop, duration: 0.2, options: options) {}
+            UIView.transition(with: scrollView, duration: 0.2, options: options) {
+                self.apply(next, sources: sources, change: change)
             }
         } else {
-            apply(next, sources: sources)
+            apply(next, sources: sources, change: change)
         }
         showWantedLane()
     }
@@ -258,12 +326,12 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         showWantedLane()
     }
 
-    private func apply(_ geometry: TimelineGeometry, sources: TimelineContentView.Sources) {
+    private func apply(_ geometry: TimelineGeometry, sources: TimelineContentView.Sources, change: TimelineChange = .none) {
         self.geometry = geometry
-        backdrop.show(geometry)
-        gutter.show(geometry)
+        backdrop.show(geometry, change: change)
+        gutter.show(geometry, change: change)
         sizeContent()
-        content.show(geometry, sources: sources)
+        content.show(geometry, sources: sources, change: change)
         setOffset(for: displayedTime)
         setNeedsLayout()
     }
@@ -304,7 +372,8 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         max(0, scrollView.contentSize.height - bounds.height)
     }
 
-    /// The strips and the gutter follow the tracks up and down, under the ruler; the fade shows while tracks are hidden below.
+    /// The strips and the gutter follow the tracks up and down, under the ruler; the fade shows while part of a track is
+    /// hidden below (not just the room under the last one).
     private func followTracks() {
         let y = scrollView.contentOffset.y
         let top = geometry?.tracksTop ?? 0
@@ -313,7 +382,9 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
             if view.frame != below { view.frame = below }
             if view.bounds.origin.y != top + y { view.bounds.origin.y = top + y }
         }
-        fade.isHidden = y >= maximumTrackOffset - 0.5
+        let lastTrackEnd = geometry?.lanes.last.map { $0.y + $0.height } ?? 0
+        // Under a finger the editor gives the timeline its height a moment after the tracks move: nothing is hidden for long.
+        fade.isHidden = isRevealing || lastTrackEnd <= y + bounds.height + 0.5
         content.scrolled(to: CGRect(origin: scrollView.contentOffset, size: bounds.size))
     }
 
@@ -327,6 +398,7 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
 
     /// Scrolls the tracks to the one to keep in sight when it changes and is out of sight (above, under the ruler, or below).
     private func showWantedLane() {
+        guard !isRevealing else { return }
         let frame = wantedLane
         guard frame?.lane != shownLane else { return }
         shownLane = frame?.lane
@@ -381,6 +453,119 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         followTracks()
     }
 
+    // MARK: - Every track out, or the current one alone
+
+    /// The tracks are on their way out or away, under a finger or settling.
+    private var isRevealing: Bool { input?.reveal != nil }
+
+    /// Where the tracks are now: under a finger or settling, else 0 or 1.
+    private var currentReveal: CGFloat {
+        input?.reveal ?? (input?.tracks?.isExpanded == true ? 1 : 0)
+    }
+
+    /// A drag up or down (clearly more than across) with nothing open, not on a handle or the picked item, and not while the
+    /// tracks scroll that way themselves (more of them than room, with every one out: up while there are more below, down
+    /// until the first is back in sight).
+    private func canReveal(_ pan: UIPanGestureRecognizer) -> Bool {
+        guard let geometry, geometry.input.tracks != nil, !geometry.isCompact, revealSpan > 1, handle == nil, pinchStart == nil
+        else { return false }
+        if let point = touchDown, geometry.dragTarget(at: point) != nil { return false }
+        // In the window: the timeline itself moves with the finger.
+        let moved = pan.translation(in: nil)
+        let way = moved == .zero ? pan.velocity(in: nil) : moved
+        guard abs(way.y) > abs(way.x) * 1.2 else { return false }
+        if geometry.input.tracks?.isExpanded == true, maximumTrackOffset > 0.5 {
+            return way.y > 0 && scrollView.contentOffset.y <= 0.5
+        }
+        return true
+    }
+
+    @objc private func revealPanned(_ pan: UIPanGestureRecognizer) {
+        switch pan.state {
+        case .began:
+            // A settle the finger catches goes on from where it is.
+            revealStart = currentReveal
+            stopRevealLink()
+            endScrub()
+            gutter.press(false)
+        case .changed:
+            guard let start = revealStart, revealSpan > 0 else { return }
+            setReveal(Self.stretched(start - pan.translation(in: nil).y / revealSpan, span: revealSpan))
+        default:
+            guard revealStart != nil else { return }
+            revealStart = nil
+            // Up is toward every track out.
+            let speed = -pan.velocity(in: nil).y
+            let now = currentReveal
+            let expanded = pan.state == .ended && abs(speed) > Self.throwSpeed ? speed > 0 : now > 0.5
+            settleTracks(expanded: expanded, from: now, velocity: speed / max(1, revealSpan))
+        }
+    }
+
+    /// Points a second past which a finger letting go throws the tracks its way, however far it dragged them.
+    private static let throwSpeed: CGFloat = 350
+
+    /// Past either end the timeline stretches less and less, up to 18 pt (like a list at its edge).
+    private static func stretched(_ reveal: CGFloat, span: CGFloat) -> CGFloat {
+        func band(_ beyond: CGFloat) -> CGFloat { 18 * (1 - exp(-beyond * span / 60)) / span }
+        if reveal > 1 { return 1 + band(reveal - 1) }
+        if reveal < 0 { return -band(-reveal) }
+        return reveal
+    }
+
+    /// Every track out or the current one alone: the editor is told at once (a tick when that changes it), and the timeline
+    /// springs there from `from`, carried on by `velocity` (reveal per second).
+    private func settleTracks(expanded: Bool, from: CGFloat, velocity: CGFloat) {
+        if expanded != (input?.tracks?.isExpanded == true) { Haptics.light() }
+        setReveal(from)
+        actions.expandTracks(expanded)
+        spring(toExpanded: expanded, from: from, velocity: velocity)
+    }
+
+    /// The tracks spring from `from` to every one out, or the current one alone, where the editor has them already.
+    private func spring(toExpanded expanded: Bool, from: CGFloat, velocity: CGFloat) {
+        let spring = TimelineRevealSpring(
+            from: from, to: expanded ? 1 : 0, velocity: velocity, passesTheMark: !UIAccessibility.isReduceMotionEnabled
+        )
+        revealSettle = (spring, CACurrentMediaTime())
+        if revealLink == nil {
+            let link = CADisplayLink(target: self, selector: #selector(stepReveal(_:)))
+            link.add(to: .main, forMode: .common)
+            revealLink = link
+        }
+    }
+
+    @objc private func stepReveal(_ link: CADisplayLink) {
+        guard let settle = revealSettle else {
+            stopRevealLink()
+            return
+        }
+        let time = link.targetTimestamp - settle.start
+        if settle.spring.isSettled(at: time) {
+            // At rest where the editor has them.
+            stopRevealLink()
+            setReveal(nil)
+        } else {
+            setReveal(settle.spring.value(at: time))
+        }
+    }
+
+    private func stopRevealLink() {
+        revealLink?.invalidate()
+        revealLink = nil
+        revealSettle = nil
+    }
+
+    /// The tracks `reveal` of the way out (nil: at rest), drawn at once and told to the editor, which gives the timeline its
+    /// height.
+    private func setReveal(_ reveal: CGFloat?) {
+        guard var input, input.reveal != reveal else { return }
+        input.reveal = reveal
+        self.input = input
+        apply(TimelineGeometry(input), sources: currentSources)
+        actions.reveal(reveal)
+    }
+
     private func layoutBubble() {
         let size = bubble.intrinsicContentSize
         bubble.frame = CGRect(x: bounds.width / 2 + 1 - size.width / 2, y: 0, width: size.width, height: 20)
@@ -415,7 +600,10 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
             fingerX += scrollView.contentOffset.x - lastOffsetX
             let finger = seconds(at: fingerX)
             if let snap = TimelineSnapping.snapped(finger, to: geometry.snapTimes, pointsPerSecond: pointsPerSecond) {
-                if lastSnap.map({ abs($0 - snap) > 0.000_1 }) ?? true { Haptics.snap() }
+                if lastSnap.map({ abs($0 - snap) > 0.000_1 }) ?? true {
+                    Haptics.snap()
+                    content.flashSnap(at: snap)
+                }
                 lastSnap = snap
                 time = snap
                 setOffset(for: snap)
@@ -464,7 +652,21 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         scrollView.contentOffset.y > 0.5 && onScreen.y < (geometry?.tracksTop ?? 0)
     }
 
+    func gestureRecognizer(
+        _ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer
+    ) -> Bool {
+        gestureRecognizer === press || other === press
+    }
+
     override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        if gestureRecognizer === revealPan, let pan = gestureRecognizer as? UIPanGestureRecognizer {
+            return canReveal(pan)
+        }
+        if gestureRecognizer === press {
+            let onScreen = gestureRecognizer.location(in: self)
+            guard let geometry, !isOverRuler(onScreen) else { return false }
+            return geometry.chooserHit(atViewportX: onScreen.x, y: gestureRecognizer.location(in: content).y)
+        }
         if gestureRecognizer is UILongPressGestureRecognizer, gestureRecognizer.view === scrollView {
             // A hold begins only on a clip (Reorder): anywhere else a finger that rests before moving still scrubs.
             guard let geometry, !isOverRuler(gestureRecognizer.location(in: self)) else { return false }
@@ -485,6 +687,12 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
     }
 
     @objc private func tapped(_ recognizer: UITapGestureRecognizer) {
+        // Not while a finger drags the tracks; a tap while they settle puts them in place first (as a tap stops a glide).
+        guard revealStart == nil else { return }
+        if revealSettle != nil {
+            stopRevealLink()
+            setReveal(nil)
+        }
         guard let geometry else { return }
         let point = recognizer.location(in: content)
         let onScreen = recognizer.location(in: self)
@@ -492,20 +700,43 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
             actions.tap(nil)
             return
         }
-        // ▾ beside the current track's icon, before the track and what scrolls under it.
+        // ▾ beside the current track's icon, before the track and what scrolls under it: the tracks come out (or go away) as
+        // under a finger. With Reduce Motion they change in place.
         if geometry.chooserHit(atViewportX: onScreen.x, y: point.y) {
-            actions.tap(.trackChooser)
+            if UIAccessibility.isReduceMotionEnabled || revealSpan <= 1 || geometry.isCompact {
+                actions.tap(.trackChooser)
+            } else {
+                let isExpanded = geometry.input.tracks?.isExpanded == true
+                settleTracks(expanded: !isExpanded, from: currentReveal, velocity: 0)
+            }
             return
         }
         let lane = geometry.laneHit(atViewportX: onScreen.x, y: point.y, viewportWidth: bounds.width)
-        // Items scroll under the gutter: a tap there is for the track.
+        let target: TimelineGeometry.Hit?
         if onScreen.x <= TimelineGeometry.gutterWidth, let lane {
-            actions.tap(lane)
-            return
+            // Items scroll under the gutter: a tap there is for the track.
+            target = lane
+        } else {
+            // A tap on a handle does nothing (the handle is for dragging).
+            guard geometry.handle(at: point) == nil else { return }
+            target = geometry.hit(at: point) ?? lane
         }
-        // A tap on a handle does nothing (the handle is for dragging).
-        guard geometry.handle(at: point) == nil else { return }
-        actions.tap(geometry.hit(at: point) ?? lane)
+        // Every track out: if the tap puts them away (a track chosen, an item picked), they go on ▾'s spring from where they
+        // are, the editor holding them out until the next update says (`update(input:sources:)`).
+        if target != nil, geometry.input.tracks?.isExpanded == true, !geometry.isCompact, revealSpan > 1,
+           !UIAccessibility.isReduceMotionEnabled {
+            setReveal(1)
+            awaitsTapResult = true
+        }
+        actions.tap(target)
+    }
+
+    @objc private func pressed(_ recognizer: UILongPressGestureRecognizer) {
+        switch recognizer.state {
+        case .began: gutter.press(true)
+        case .changed: break
+        default: gutter.press(false)
+        }
     }
 
     @objc private func handlePanned(_ recognizer: UIPanGestureRecognizer) {
@@ -517,12 +748,15 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
             endScrub()
             scrollView.setContentOffset(scrollView.contentOffset, animated: false)
             handle = (found.target, time, 0)
+            lastHandleSnap = nil
             actions.beginHandle(found.target, geometry.snapTimes)
             Haptics.selection()
         case .changed:
             guard var held = handle else { return }
             let offset = TimeInterval(recognizer.translation(in: self).x / pointsPerSecond)
             let result = actions.moveHandle(offset)
+            if let snap = result.snap, lastHandleSnap.map({ abs($0 - snap) > 0.000_1 }) ?? true { content.flashSnap(at: snap) }
+            lastHandleSnap = result.snap
             held.compensation = result.compensation
             handle = held
             bubble.text = result.label

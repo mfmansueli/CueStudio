@@ -9,6 +9,8 @@ import Foundation
 enum EditorSheet: String, Identifiable {
     /// A sound file from Files, under the voice.
     case music
+    /// Cue's sound effects alone (the Audio bar's Sound effects).
+    case soundEffects
     /// A photo or video from Photos, on top of the video or as a clip.
     case media
     /// Done's question: "Is it ready to post?".

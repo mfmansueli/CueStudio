@@ -3,6 +3,7 @@
 //  Cue Studio
 //
 
+import CoreGraphics
 import Foundation
 
 /// Everything a drawing of an edit reads, worked out once from the edit and what it is drawn for (`EditRenderPurpose`): the
@@ -21,6 +22,8 @@ nonisolated struct RenderPlan: Equatable, Sendable {
     /// The transitions and each piece's zoom, measured on the edit as made and placed where the drawing plays them.
     let transitions: [TransitionWindow]
     let zooms: [ZoomWindow?]
+    /// Each piece's Animation, measured as its zoom.
+    let animations: [ClipAnimationWindow?]
     let options: EditedComposition.Options
 
     init(_ made: TakeEdit, options: EditedComposition.Options) {
@@ -33,6 +36,7 @@ nonisolated struct RenderPlan: Equatable, Sendable {
         window = grows ? TimeSpan(start: leadIn, end: leadIn + made.editedDuration) : nil
         transitions = EditedComposition.transitionWindows(of: made.timeline, reachesWholeRecording: grows)
         zooms = EditedComposition.zoomWindows(of: made.timeline, reachesWholeRecording: grows)
+        animations = EditedComposition.animationWindows(of: made.timeline, reachesWholeRecording: grows)
         self.options = options
     }
 
@@ -45,7 +49,7 @@ nonisolated struct RenderPlan: Equatable, Sendable {
     var item: Item { Item(self) }
 
     /// A preview item's identity: the drawn edit without its timeline, the pieces it plays (seamless ones as one), each clip's
-    /// sound, zoom, steadiness and look, the transitions and zooms where they play, and where the edit plays in the drawing
+    /// sound, zoom, steadiness, shape and look, the transitions, zooms and animations where they play, and where the edit plays in the drawing
     /// when music is placed on it. Not the curved sound's rendering, which the player switches on its own; and not where
     /// the edit starts for a filter's grain, which counts from there: grain is noise, drawn from an earlier start it looks
     /// the same, and a handle dragged under a grainy filter would otherwise rebuild the item at every move.
@@ -61,7 +65,9 @@ nonisolated struct RenderPlan: Equatable, Sendable {
         let curves: [SpeedCurve?]
         let transitions: [TransitionWindow]
         let zooms: [ZoomWindow?]
-        /// Each clip's sound, zoom and steadiness (its volume, mute, pitch, zoom and strength, Stabilize).
+        let animations: [ClipAnimationWindow?]
+        /// Each clip's sound, zoom, steadiness and shape (its volume, mute, pitch, fades, zoom and strength, Stabilize, Rotate,
+        /// Mirror and Crop).
         let pieceSettings: [[Double]]
         /// What each clip changes of the take's look (Adjust, Filters, Background).
         let clipLooks: [ClipLook?]
@@ -96,11 +102,16 @@ nonisolated struct RenderPlan: Equatable, Sendable {
             self.curves = curves
             transitions = plan.transitions
             zooms = plan.zooms
+            animations = plan.animations
             pieceSettings = drawn.segments.map { segment in
-                [
-                    segment.volume, segment.isMuted ? 1 : 0, segment.keepsPitch ? 1 : 0,
+                let crop = segment.orientation.crop
+                return [
+                    segment.volume, segment.isMuted ? 1 : 0, segment.keepsPitch ? 1 : 0, segment.soundFadeIn, segment.soundFadeOut,
                     Double(SectionZoom.allCases.firstIndex { $0 == segment.zoom } ?? -1), segment.zoomAmount,
                     Double(StabilizationLevel.allCases.firstIndex { $0 == segment.stabilization } ?? -1),
+                    Double(segment.quarterTurns), segment.isMirrored ? 1 : 0,
+                    crop.map { Double($0.minX) } ?? -1, crop.map { Double($0.minY) } ?? -1, crop.map { Double($0.width) } ?? -1,
+                    crop.map { Double($0.height) } ?? -1,
                 ]
             }
             clipLooks = drawn.segments.map(\.look)

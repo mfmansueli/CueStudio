@@ -45,10 +45,13 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     /// The clip a clip panel picked when it opened with nothing picked (`EditorPanel.pinsClip`): the panel lets go of it when it
     /// closes, unless the creator picked something else meanwhile.
     @ObservationIgnored private var panelPick: EditorSelection?
-    /// The Text or Audio toolbar, opened from the main one with nothing selected. Its track becomes the timeline's current one.
+    /// A track's own toolbar (Text, Captions, Audio, Media, Blur area), opened from the main one or by tapping the track, with
+    /// nothing selected. Its track becomes the timeline's current one.
     var toolMenu: EditorToolMenu? {
         didSet {
             if let toolMenu, toolMenu != oldValue { bringTrack(toolMenu.lanes) }
+            // The Blur area bar's Compare lasts while the bar is open (its panel has its own ◐).
+            if oldValue == .blur, toolMenu != .blur, panel != .blur, blur.comparesOriginal { blur.comparesOriginal = false }
         }
     }
     /// The timeline's current track and whether every track is out (`TimelineTrackChoice`); the current one is kept for the take.
@@ -57,6 +60,9 @@ final class QuickEditViewModel: EditorHost, EditorPart {
             if tracks.current != oldValue.current { editorPreferences.setTimelineLane(tracks.current, forTake: take.id) }
         }
     }
+    /// A finger dragging the timeline up or down, or ▾ settling: how far out every track is (`EditorLayout.timelineReveal`,
+    /// `TimelineGeometry.Input.reveal`); nil while the timeline rests.
+    var timelineReveal: CGFloat?
     /// The open panel's tab (Text style and Caption style).
     var panelTab: EditorPanelTab = .presets
     /// The open panel's "Advanced" section is expanded.
@@ -329,6 +335,8 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         // A cut is picked only while its Transition panel is open.
         if previous == .transition, picked?.joinID != nil { picked = nil }
         clips.panelChanged(to: next)
+        // Crop shows the clip's whole picture while it is open.
+        if previous == .clipCrop || next == .clipCrop { showPlayedEdit() }
         captions.panelChanged(to: next)
         blur.panelChanged(to: next)
         if next != .mask { overlays.comparesWithoutMask = false }
@@ -401,10 +409,11 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         player.retry()
     }
 
-    /// What the preview plays: the edit (without what a finger is dragging), or while comparing, the take's sound untreated at
-    /// the same loudness.
+    /// What the preview plays: the edit (without what a finger is dragging; with the picked clip's whole picture while Crop is
+    /// open), or while comparing, the take's sound untreated at the same loudness.
     var playedEdit: TakeEdit {
-        let compared = blur.withoutComparedBlur(overlays.withoutComparedMask(look.comparesPicture ? edit.withoutPictureLook() : edit))
+        let looked = clips.showingWholePicture(in: look.comparesPicture ? edit.withoutPictureLook() : edit)
+        let compared = blur.withoutComparedBlur(overlays.withoutComparedMask(looked))
         let shown = overlays.hidingDraggedOverlay(in: compared)
         guard audio.comparesOriginal, let volume = audio.originalVolume else { return shown }
         var played = shown

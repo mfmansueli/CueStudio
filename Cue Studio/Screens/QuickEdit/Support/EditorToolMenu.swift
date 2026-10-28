@@ -7,17 +7,23 @@ import Foundation
 
 /// A toolbar of its own opened from the main one, or by tapping a track, with nothing selected:
 /// Text (add a title, subtitle, hook or callout, or style them all), Captions (add a line, the
-/// list, the style; or make them) and Audio (Voice, Music, Voice-over).
+/// list, the style; or make them), Audio (Voice, Music, Voice-over), Media (the ways to add a photo or video, each opening the
+/// gallery on it, and Your library) and Blur area (an area over a face, or one drawn): every track has its own (owner,
+/// 28/10/2026).
 enum EditorToolMenu: Hashable {
     case text
     case captions
     case audio
+    case media
+    case blur
 
     var contextLabel: String {
         switch self {
         case .text: String(localized: "Text")
         case .captions: String(localized: "Captions")
         case .audio: String(localized: "Audio")
+        case .media: String(localized: "Media")
+        case .blur: String(localized: "Blur area")
         }
     }
 
@@ -28,13 +34,17 @@ enum EditorToolMenu: Hashable {
         case .text: [.text]
         case .captions: [.captions]
         case .audio: [.music, .voiceOver, .audio]
+        case .media: [.media]
+        case .blur: [.blur]
         }
     }
 
     /// What tapping a track on the timeline opens (nothing for the video track).
     init?(lane: TimelineLane) {
         switch lane {
-        case .main, .media, .blur: return nil
+        case .main: return nil
+        case .media: self = .media
+        case .blur: self = .blur
         case .text: self = .text
         case .captions: self = .captions
         case .music, .voiceOver, .audio: self = .audio

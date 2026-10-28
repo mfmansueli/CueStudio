@@ -8,25 +8,28 @@ import UniformTypeIdentifiers
 
 /// "Add music or a sound": Cue's sound effects (made by Cue, free to use in any video: tap one to hear it, + to add it at the
 /// playhead, over music too), and a sound file from Files, copied into the app and laid under the voice. The note says why
-/// songs from Apple Music can't be picked (they have no readable track).
+/// songs from Apple Music can't be picked (they have no readable track). From the Audio bar's Sound effects, the effects alone.
 struct AddMusicSheet: View {
     let viewModel: QuickEditViewModel
+    var effectsOnly = false
 
     @Environment(\.dismiss) private var dismiss
     @State private var picksFile = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
-            SheetHeader(title: String(localized: "Add music or a sound"))
+            SheetHeader(title: effectsOnly ? String(localized: "Sound effects") : String(localized: "Add music or a sound"))
                 .padding(.horizontal, 16)
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     effects
-                    filesButton
-                    Text("From Files. Use only music you own or have the rights to. Songs from Apple Music can’t be added.")
-                        .font(.footnote)
-                        .foregroundStyle(Palette.ink2)
-                        .fixedSize(horizontal: false, vertical: true)
+                    if !effectsOnly {
+                        filesButton
+                        Text("From Files. Use only music you own or have the rights to. Songs from Apple Music can’t be added.")
+                            .font(.footnote)
+                            .foregroundStyle(Palette.ink2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 24)

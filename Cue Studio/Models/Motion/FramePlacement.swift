@@ -7,14 +7,17 @@ import CoreGraphics
 import Foundation
 
 /// How a recording's upright frame lands on the edit's frame at a moment: held steady by Stabilize (moved, turned and zoomed as
-/// the compositor does), then cropped (where Format puts the crop, or where Follow face has it then) or fitted whole with bars,
-/// or, while a support of the split screen shows, placed in the main area; then the clip's zoom. Turns a point of the recording
-/// into a point of the video, and back: Track places what follows an object with it, Blur area its box and handles. Pure.
+/// the compositor does), reshaped as the clip says (Rotate, Mirror, Crop: `orientation`), then cropped (where Format puts the
+/// crop, or where Follow face has it then) or fitted whole with bars, or, while a support of the split screen shows, placed in
+/// the main area; then the clip's zoom and its Animation. Turns a point of the recording into a point of the video, and back:
+/// Track places what follows an object with it, Blur area its box and handles. Pure.
 nonisolated struct FramePlacement: Sendable {
     /// The recording's upright frame, in pixels.
     let uprightSize: CGSize
-    /// The part kept, from the top left, in pixels: its size is the edit's frame.
+    /// The part kept of the reshaped picture (`shownSize`), from the top left, in pixels: its size is the edit's frame.
     let crop: CGRect
+    /// Rotate, Mirror and Crop of the clip; the area, Fit and the crop are of the picture they make.
+    var orientation: ClipOrientation = .identity
     var follow: FaceFollowPath?
     var fits = false
     /// Stabilize's path for the clip, when it has one.
@@ -24,27 +27,37 @@ nonisolated struct FramePlacement: Sendable {
     var area: (rect: CGRect, placed: SplitPlacement.Placement)?
     /// The clip's zoom at the moment: times the frame (or the main area), around its middle.
     var zoom = 1.0
+    /// The clip's Animation at the moment, over its zoom: the frame (or the main area) scaled around its middle and moved by
+    /// shares of its size, as `FramePipeline.animated` draws it.
+    var animation = ClipAnimationFrame.still
+
+    /// The recording's picture once the clip reshapes it, in pixels.
+    var shownSize: CGSize { orientation.size(of: uprightSize) }
 
     /// The crop at `time` (seconds of the recording), from the top left.
     func crop(at time: TimeInterval) -> CGRect {
-        guard let follow, uprightSize.width > 0, uprightSize.height > 0 else { return crop }
+        let size = shownSize
+        guard let follow, size.width > 0, size.height > 0 else { return crop }
         let center = follow.center(at: time)
-        let left = min(max(0, center.x * uprightSize.width - crop.width / 2), uprightSize.width - crop.width)
-        let top = min(max(0, center.y * uprightSize.height - crop.height / 2), uprightSize.height - crop.height)
+        let left = min(max(0, center.x * size.width - crop.width / 2), size.width - crop.width)
+        let top = min(max(0, center.y * size.height - crop.height / 2), size.height - crop.height)
         return CGRect(x: left, y: top, width: crop.width, height: crop.height)
     }
 
     /// Fit: the scale of the recording and where it sits in the frame.
     private var fitted: (scale: Double, x: Double, y: Double) {
-        let scale = min(crop.width / max(1, uprightSize.width), crop.height / max(1, uprightSize.height))
-        return (scale, (crop.width - uprightSize.width * scale) / 2, (crop.height - uprightSize.height * scale) / 2)
+        let size = shownSize
+        let scale = min(crop.width / max(1, size.width), crop.height / max(1, size.height))
+        return (scale, (crop.width - size.width * scale) / 2, (crop.height - size.height * scale) / 2)
     }
 
     /// The point of the video showing `point` of the recording (fractions of each, from the top left) at `time`.
     func videoPoint(for point: CGPoint, at time: TimeInterval) -> OverlayPoint {
         guard crop.width > 0, crop.height > 0 else { return .center }
-        let held = steadied(CGPoint(x: point.x * uprightSize.width, y: point.y * uprightSize.height), at: time)
-        let x = held.x, y = held.y
+        let steady = steadied(CGPoint(x: point.x * uprightSize.width, y: point.y * uprightSize.height), at: time)
+        let size = shownSize
+        let held = orientation.shownPoint(CGPoint(x: steady.x / max(1, uprightSize.width), y: steady.y / max(1, uprightSize.height)))
+        let x = held.x * size.width, y = held.y * size.height
         let shown: OverlayPoint
         if let area {
             shown = OverlayPoint(
@@ -58,13 +71,13 @@ nonisolated struct FramePlacement: Sendable {
             let rect = crop(at: time)
             shown = OverlayPoint(x: (x - rect.minX) / rect.width, y: (y - rect.minY) / rect.height)
         }
-        return zoomed(shown)
+        return animated(zoomed(shown))
     }
 
     /// The point of the recording under `point` of the video at `time`.
     func recordingPoint(for point: OverlayPoint, at time: TimeInterval) -> CGPoint {
         guard uprightSize.width > 0, uprightSize.height > 0 else { return CGPoint(x: 0.5, y: 0.5) }
-        let point = unzoomed(point)
+        let point = unzoomed(unanimated(point))
         let held: CGPoint
         if let area {
             let scale = max(0.000_1, area.placed.scale)
@@ -79,7 +92,9 @@ nonisolated struct FramePlacement: Sendable {
             let rect = crop(at: time)
             held = CGPoint(x: rect.minX + point.x * rect.width, y: rect.minY + point.y * rect.height)
         }
-        let filmed = unsteadied(held, at: time)
+        let size = shownSize
+        let upright = orientation.uprightPoint(CGPoint(x: held.x / max(1, size.width), y: held.y / max(1, size.height)))
+        let filmed = unsteadied(CGPoint(x: upright.x * uprightSize.width, y: upright.y * uprightSize.height), at: time)
         return CGPoint(x: filmed.x / uprightSize.width, y: filmed.y / uprightSize.height)
     }
 
@@ -110,6 +125,30 @@ nonisolated struct FramePlacement: Sendable {
         return OverlayPoint(x: area.rect.midX / crop.width, y: area.rect.midY / crop.height)
     }
 
+    /// What the Animation moves, as shares of the frame: the frame, or the main area.
+    private var animatedSize: (width: Double, height: Double) {
+        guard let area, crop.width > 0, crop.height > 0 else { return (1, 1) }
+        return (area.rect.width / crop.width, area.rect.height / crop.height)
+    }
+
+    private func animated(_ point: OverlayPoint) -> OverlayPoint {
+        guard animation != .still else { return point }
+        let middle = zoomCenter, size = animatedSize
+        return OverlayPoint(
+            x: middle.x + (point.x - middle.x) * animation.scale + animation.dx * size.width,
+            y: middle.y + (point.y - middle.y) * animation.scale + animation.dy * size.height
+        )
+    }
+
+    private func unanimated(_ point: OverlayPoint) -> OverlayPoint {
+        guard animation != .still, animation.scale > 0 else { return point }
+        let middle = zoomCenter, size = animatedSize
+        return OverlayPoint(
+            x: middle.x + (point.x - animation.dx * size.width - middle.x) / animation.scale,
+            y: middle.y + (point.y - animation.dy * size.height - middle.y) / animation.scale
+        )
+    }
+
     private func zoomed(_ point: OverlayPoint) -> OverlayPoint {
         guard abs(zoom - 1) > 0.000_1 else { return point }
         let middle = zoomCenter
@@ -122,7 +161,8 @@ nonisolated struct FramePlacement: Sendable {
         return OverlayPoint(x: middle.x + (point.x - middle.x) / zoom, y: middle.y + (point.y - middle.y) / zoom)
     }
 
-    /// How much of the recording's width and height a share `side` of the video's width takes (a square on screen).
+    /// How much of the recording's width and height a share `side` of the video's width takes (a square on screen; a quarter
+    /// turn keeps it square, and a crop doesn't change its pixels).
     func recordingSize(forVideoWidth side: Double) -> (width: Double, height: Double) {
         guard uprightSize.width > 0, uprightSize.height > 0 else { return (side, side) }
         let pixels = side * crop.width / (fits ? max(0.000_1, fitted.scale) : 1) / (steady?.zoom ?? 1)

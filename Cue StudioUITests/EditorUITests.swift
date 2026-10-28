@@ -218,9 +218,10 @@ final class EditorUITests: XCTestCase {
     func testAnotherTakeJoinsTheMontageFromMedia() {
         let app = EditorApp.open()
         EditorApp.tapTool(app, "addMedia")
+        EditorApp.tapTool(app, "mediaSequence")
         let clipMode = app.buttons["edit.mediaMode.sequence"]
         XCTAssertTrue(clipMode.exists(within: 5), "No In sequence")
-        clipMode.tap()
+        XCTAssertTrue(clipMode.isSelected, "Media › In sequence didn't open on it")
         let take = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.addTake.'")).firstMatch
         XCTAssertTrue(take.exists(within: 5), "No other take to add")
         let name = take.label

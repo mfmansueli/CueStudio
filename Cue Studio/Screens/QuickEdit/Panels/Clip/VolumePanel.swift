@@ -6,7 +6,7 @@
 import SwiftUI
 
 /// Volume, 0 to 200%, of the picked clip (with "Mute this clip"), music or voice-over; a video's own sound over the take, 0 to
-/// 100% (muted until it's turned up). Music keeps its fades and "Lower under voice" under Advanced.
+/// 100% (muted until it's turned up). A clip and music keep their fades under Advanced, music "Lower under voice" too.
 struct VolumePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -54,8 +54,13 @@ struct VolumePanel: View {
                     ) { viewModel.clips.setClipMuted(!(viewModel.targetClip?.isMuted ?? false)) }
                 }
             }
-            if case .music(let id) = viewModel.selection, let music = viewModel.edit.music.first(where: { $0.id == id }) {
-                musicAdvanced(music)
+            switch viewModel.selection {
+            case .music(let id):
+                if let music = viewModel.edit.music.first(where: { $0.id == id }) { musicAdvanced(music) }
+            case .voiceOver:
+                EmptyView()
+            default:
+                if let clip = viewModel.targetClip { clipAdvanced(clip) }
             }
         }
     }
@@ -86,6 +91,26 @@ struct VolumePanel: View {
             label: String(localized: "Lower under voice"), detail: String(localized: "Quieter while someone speaks"),
             isOn: music.ducksUnderVoice, identifier: "edit.musicDucks"
         ) { viewModel.audio.setMusicDucks(music.id, !music.ducksUnderVoice) }
+    }
+
+    /// The clip's sound rising from silence at its start and falling to it at its end (no longer than the clip).
+    @ViewBuilder
+    private func clipAdvanced(_ clip: EditSegment) -> some View {
+        let changed = [clip.soundFadeIn > 0, clip.soundFadeOut > 0].filter { $0 }.count
+        let longest = min(EditSegment.soundFadeRange.upperBound, max(0.1, (clip.duration * 10).rounded(.down) / 10))
+        PanelAdvancedButton(isOpen: viewModel.showsAdvanced, detail: changed > 0 ? PanelAdvancedButton.changed(changed) : nil) {
+            viewModel.showsAdvanced.toggle()
+        }
+        if viewModel.showsAdvanced {
+            PanelSlider(
+                label: String(localized: "Fade in"), value: min(clip.soundFadeIn, longest), range: 0...longest, step: 0.1, defaultValue: 0,
+                format: .seconds, identifier: "edit.clipFadeIn"
+            ) { viewModel.clips.setClipSoundFadeIn($0) }
+            PanelSlider(
+                label: String(localized: "Fade out"), value: min(clip.soundFadeOut, longest), range: 0...longest, step: 0.1, defaultValue: 0,
+                format: .seconds, identifier: "edit.clipFadeOut"
+            ) { viewModel.clips.setClipSoundFadeOut($0) }
+        }
     }
 
     @ViewBuilder

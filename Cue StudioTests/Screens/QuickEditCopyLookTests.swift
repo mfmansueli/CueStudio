@@ -142,23 +142,35 @@ struct QuickEditCopyLookTests {
         let (viewModel, _) = await makeViewModel()
         viewModel.selection = .clip(viewModel.edit.timeline.segments[0].id)
         let items = viewModel.toolbarItems
-        // Studio Voice changes the whole video: it's on the main bar. What reaches past the clip (Edit by text, Remove pauses, and
-        // after the thin line Captions, Format, Templates and Brand kit) carries the whole video's badge.
-        #expect(!items.contains { $0.id == "crop" || $0.id == "voice" })
-        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == ["editByText", "pauses", "captions", "format", "templates", "brandKit"])
+        // What reaches past the clip is together in the bar's last group (owner, 28/10/2026), Studio Voice too, and carries the
+        // whole video's badge.
+        #expect(!items.contains { $0.id == "crop" })
+        #expect(items.filter { $0.scopeBadge != nil }.map(\.id) == ["editByText", "pauses", "voice", "captions", "format", "templates", "brandKit"])
         #expect(items.first { $0.id == "pasteLook" }?.style == .dimmed)
         viewModel.perform(.pasteLook)
         #expect(!viewModel.look.showsPasteLook)
     }
 
-    @Test func mediaIsOnTheMainToolbar() async {
+    /// Media on the main bar opens its own bar (as Text and Audio do): the ways to add, each opening the gallery on it, and
+    /// Your library.
+    @Test func mediaIsOnTheMainToolbarAndOpensItsBar() async {
         let (viewModel, _) = await makeViewModel()
         viewModel.selection = nil
         let media = viewModel.toolbarItems.first { $0.id == "addMedia" }
-        #expect(media != nil)
-        viewModel.perform(.addMediaChoice)
+        #expect(media?.action == .openMenu(.media))
+        viewModel.perform(.openMenu(.media))
+        #expect(viewModel.toolMenu == .media)
+        #expect(viewModel.toolbarItems.map(\.id) == ["mediaSplit", "mediaWindow", "mediaFullScreen", "mediaSequence", "mediaLibrary", "brandKit"])
+        #expect(viewModel.timelineInput(heightClass: .regular).activeLanes == [.media])
+        viewModel.perform(.addMediaAs(.window))
         #expect(viewModel.sheet == .media)
-        #expect(viewModel.overlays.mediaInsertMode == .split)
+        #expect(viewModel.overlays.mediaInsertMode == .window)
+        viewModel.sheet = nil
+        viewModel.brand.showsLibrary = false
+        viewModel.perform(.addMediaFromLibrary)
+        #expect(viewModel.sheet == .media)
+        #expect(viewModel.brand.showsLibrary)
+        #expect(viewModel.overlays.mediaInsertMode == viewModel.overlays.lastOverlayMode)
     }
 }
 

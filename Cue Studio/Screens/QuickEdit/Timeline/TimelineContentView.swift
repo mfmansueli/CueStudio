@@ -16,7 +16,7 @@ import UIKit
 ///
 /// Each piece keeps its layer while what it was drawn from is the same (`Piece`): a redraw (another clip picked, a handle
 /// moved, a new window while scrolling) builds only the pieces that changed, and a frame arriving fills the tiles still
-/// waiting for it in place.
+/// waiting for it in place. A creator's step moves the pieces it touched for a moment (`TimelineChange`, `TimelineMotion`).
 @MainActor
 final class TimelineContentView: UIView {
     /// What the clips' frames and waveforms come from.
@@ -42,10 +42,16 @@ final class TimelineContentView: UIView {
     private var visible: CGRect = .zero
     private var ghostLayers: [CALayer] = []
     private let layersRoot = CALayer()
+    /// Pieces that went away, while they fade out.
+    private let leavingRoot = CALayer()
+    /// The line where the playhead or a handle just stuck.
+    private let snapRoot = CALayer()
     /// The ruler's ticks, kept at the top of what shows (on black while tracks pass under it).
     private let rulerRoot = CALayer()
     /// What is drawn now, by what it is.
     private var pieces: [PieceKey: Piece] = [:]
+    /// The motions the next redraw plays.
+    private var pendingChange: TimelineChange?
 
     /// One drawn thing of the timeline (a tick, the cover, a clip, a pause, a cut, an item, a hint, the "+", a handle).
     private enum PieceKey: Hashable {
@@ -59,6 +65,14 @@ final class TimelineContentView: UIView {
         case ghost(Int)
         case add
         case handle(Int)
+
+        /// The clip or item it draws (a cut's mark goes with the clip that starts there).
+        var subject: UUID? {
+            switch self {
+            case .clip(let id), .item(_, let id), .join(let id): id
+            default: nil
+            }
+        }
     }
 
     /// A piece's layer, with what it was drawn from and the frames it still shows a stand-in for.
@@ -80,6 +94,8 @@ final class TimelineContentView: UIView {
         super.init(frame: frame)
         clipsToBounds = false
         layer.addSublayer(layersRoot)
+        layer.addSublayer(leavingRoot)
+        layer.addSublayer(snapRoot)
         layer.addSublayer(rulerRoot)
         frames.onChange = { [weak self] in self?.fillWaitingTiles() }
         waveforms.onChange = { [weak self] in self?.redraw() }
@@ -101,13 +117,24 @@ final class TimelineContentView: UIView {
         waveforms.cancel()
     }
 
-    /// New geometry or sources: draws again.
-    func show(_ geometry: TimelineGeometry, sources: Sources) {
+    /// New geometry or sources: draws again, with the motions of the step that made it.
+    func show(_ geometry: TimelineGeometry, sources: Sources, change: TimelineChange = .none) {
         let changed = geometry != self.geometry || sources.take != self.sources?.take || sources.others != self.sources?.others
             || sources.coverTime != self.sources?.coverTime || sources.coverImage !== self.sources?.coverImage
         self.geometry = geometry
         self.sources = sources
+        if change != .none, window != nil { pendingChange = change }
         if changed { redraw() }
+    }
+
+    /// The playhead or a handle stuck at `time`: a yellow line there, across the tracks, gone in a blink.
+    func flashSnap(at time: TimeInterval) {
+        guard let geometry else { return }
+        let bottom = max(visible.maxY, geometry.contentHeight)
+        TimelineMotion.snapLine(
+            in: snapRoot, x: geometry.x(for: time), top: geometry.tracksTop, height: bottom - geometry.tracksTop,
+            color: UIColor(Palette.acc)
+        )
     }
 
     /// The scroll view moved: shortcuts follow the left edge, and a new window is drawn when the
@@ -131,6 +158,7 @@ final class TimelineContentView: UIView {
         CATransaction.begin()
         CATransaction.setDisableActions(true)
         defer { CATransaction.commit() }
+        let previous = pieces
         let width = max(visible.width, 320)
         // A window around what shows across, every track up and down (they scroll that way without drawing again).
         let height = max(visible.maxY, geometry.contentHeight)
@@ -213,6 +241,48 @@ final class TimelineContentView: UIView {
         layoutGhosts()
         layoutRuler()
         fillWaitingTiles()
+        if let change = pendingChange {
+            pendingChange = nil
+            play(change, previous: previous, geometry: geometry)
+        }
+    }
+
+    /// The motions of a creator's step on the pieces just drawn, and on the ones that went (they fade out over the rest).
+    private func play(_ change: TimelineChange, previous: [PieceKey: Piece], geometry: TimelineGeometry) {
+        for (key, piece) in previous where pieces[key] == nil {
+            guard let id = key.subject, change.removed.contains(id) else { continue }
+            leavingRoot.addSublayer(piece.layer)
+            TimelineMotion.leave(piece.layer)
+        }
+        let lastClip = geometry.clips.last?.id
+        for (key, piece) in pieces {
+            let isNew = previous[key]?.layer !== piece.layer
+            if let distance = (key == .add ? lastClip : key.subject).flatMap({ change.shifts[$0] }) {
+                TimelineMotion.shift(piece.layer, by: distance)
+            }
+            if let id = key.subject, change.added.contains(id) {
+                TimelineMotion.grow(piece.layer)
+                continue
+            }
+            if case .handle = key, change.picked, isNew { TimelineMotion.showHandle(piece.layer) }
+            if change.picked, isNew, Self.isPicked(piece) { TimelineMotion.pick(piece.layer) }
+            if let lane = change.arrivedLane, Self.lane(of: key, piece) == lane { TimelineMotion.rise(piece.layer) }
+        }
+        if !change.added.isEmpty { Haptics.soft() }
+    }
+
+    /// The piece draws what is picked (a clip or an item).
+    private static func isPicked(_ piece: Piece) -> Bool {
+        if let item = piece.spec as? ItemSpec { return item.item.isSelected }
+        if let clip = piece.spec as? ClipSpec { return clip.clip.isSelected }
+        return false
+    }
+
+    /// The track a piece sits on, when it is one of a track's own (an item, an empty track's hint).
+    private static func lane(of key: PieceKey, _ piece: Piece) -> TimelineLane? {
+        if case .item(let kind, _) = key { return kind.lane }
+        if let ghost = piece.spec as? TimelineGeometry.Ghost { return ghost.lane.lane }
+        return nil
     }
 
     /// Frames came in: the tiles showing a stand-in take theirs, and stop waiting once it is their own.
@@ -326,6 +396,21 @@ final class TimelineContentView: UIView {
         return cover
     }
 
+    /// A frame of a clip turned, mirrored and cropped as the video shows it: the layer turned on its middle (lying on its side,
+    /// its bounds swap so it still fills the tile), flipped across, showing the crop's part of the frame as filmed.
+    private static func reshape(_ tile: CALayer, as orientation: ClipOrientation) {
+        guard !orientation.isIdentity else { return }
+        let frame = tile.frame
+        if orientation.turnsSideways {
+            tile.bounds = CGRect(x: 0, y: 0, width: frame.height, height: frame.width)
+            tile.position = CGPoint(x: frame.midX, y: frame.midY)
+        }
+        var transform = CATransform3DMakeRotation(CGFloat(orientation.quarterTurns) * .pi / 2, 0, 0, 1)
+        if orientation.isMirrored { transform = CATransform3DConcat(transform, CATransform3DMakeScale(-1, 1, 1)) }
+        tile.transform = transform
+        if let part = orientation.uprightCrop { tile.contentsRect = part }
+    }
+
     private func drawClip(
         _ clip: TimelineGeometry.Clip, visibleFrame: CGRect, geometry: TimelineGeometry, url: URL, waiting: inout [WaitingTile]
     ) -> CALayer {
@@ -356,6 +441,7 @@ final class TimelineContentView: UIView {
                 tile.frame = CGRect(x: x - originX, y: 0, width: tileWidth, height: clip.thumbnailHeight)
                 tile.contentsGravity = .resizeAspectFill
                 tile.masksToBounds = true
+                Self.reshape(tile, as: clip.orientation)
                 let frameTime = sourceTime + tileSeconds / 2
                 if let image = frames.image(for: url, at: frameTime, grid: grid) {
                     tile.contents = image.cgImage
@@ -520,27 +606,30 @@ final class TimelineContentView: UIView {
         _ item: TimelineGeometry.Item, labelInset inset: CGFloat, pointsPerSecond: CGFloat, waiting: inout [WaitingTile]
     ) -> CALayer {
         let style = Self.style(of: item.kind, selected: item.isSelected)
+        // The name, the symbol and the corners grow with the track.
+        let look = TimelineLaneLook(laneHeight: item.frame.height)
         let group = CALayer()
+        group.opacity = Float(item.opacity)
         if item.isSelected {
             let ring = CALayer()
             ring.frame = item.frame.insetBy(dx: -2, dy: -2)
-            ring.cornerRadius = Metrics.laneItemRadius + 2
+            ring.cornerRadius = look.radius + 2
             ring.borderWidth = 2
             ring.borderColor = UIColor.white.cgColor
             group.addSublayer(ring)
         }
         let box = CALayer()
         box.frame = item.frame
-        box.cornerRadius = Metrics.laneItemRadius
+        box.cornerRadius = look.radius
         box.cornerCurve = .continuous
         box.masksToBounds = true
         box.backgroundColor = style.fill.cgColor
         box.opacity = item.isDimmed ? 0.5 : 1
         // The label stays readable while the item's start is scrolled away.
-        var x: CGFloat = 7 + min(inset, max(0, item.frame.width - 60))
+        var x: CGFloat = look.padding + min(inset, max(0, item.frame.width - 60))
         if item.kind == .blur {
             // A Blur area: its name on a dark badge, readable over the orange hatch of what's left unchecked.
-            let badge = badgeLayer(item.label, color: .white, weight: .semibold, symbol: style.symbol)
+            let badge = badgeLayer(item.label, color: .white, weight: .semibold, symbol: style.symbol, look: look)
             badge.frame.origin = CGPoint(x: x - 3, y: (item.frame.height - badge.frame.height) / 2)
             if badge.frame.maxX > item.frame.width - 2 { badge.frame.size.width = max(0, item.frame.width - 2 - badge.frame.minX) }
             box.addSublayer(badge)
@@ -548,18 +637,18 @@ final class TimelineContentView: UIView {
             // A photo or video: its frames, with its kind and how it shows on a dark badge over them.
             drawStrip(strip, in: item, pointsPerSecond: pointsPerSecond, into: box, waiting: &waiting)
             let symbol = item.isLocked ? "lock.fill" : strip.layout.systemImage
-            let badge = badgeLayer(item.label, color: .white, weight: .semibold, symbol: symbol)
+            let badge = badgeLayer(item.label, color: .white, weight: .semibold, symbol: symbol, look: look)
             badge.frame.origin = CGPoint(x: x - 3, y: (item.frame.height - badge.frame.height) / 2)
             if badge.frame.maxX > item.frame.width - 2 { badge.frame.size.width = max(0, item.frame.width - 2 - badge.frame.minX) }
             box.addSublayer(badge)
         } else {
             // A locked item says so where its kind's symbol was.
-            if let icon = symbolLayer(item.isLocked ? "lock.fill" : style.symbol, size: 10, color: style.ink) {
+            if let icon = symbolLayer(item.isLocked ? "lock.fill" : style.symbol, size: look.symbolSize, color: style.ink) {
                 icon.frame.origin = CGPoint(x: x, y: (item.frame.height - icon.frame.height) / 2)
                 box.addSublayer(icon)
-                x += icon.frame.width + 5
+                x += icon.frame.width + look.gap
             }
-            let label = textLayer(item.label, size: 11.5, weight: .semibold, color: style.ink)
+            let label = textLayer(item.label, size: look.labelSize, weight: .semibold, color: style.ink)
             label.frame = CGRect(x: x, y: (item.frame.height - label.frame.height) / 2, width: max(0, item.frame.width - x - 6), height: label.frame.height)
             box.addSublayer(label)
         }
@@ -594,8 +683,10 @@ final class TimelineContentView: UIView {
 
     /// What an empty track says: plain text, since a tap anywhere on the track does the job.
     private func drawGhost(_ ghost: TimelineGeometry.Ghost) -> CALayer {
-        let label = textLayer(ghost.label, size: 12, weight: .medium, color: UIColor(Palette.Editor.laneHintInk))
+        let size = TimelineLaneLook(laneHeight: ghost.lane.height).hintSize
+        let label = textLayer(ghost.label, size: size, weight: .medium, color: UIColor(Palette.Editor.laneHintInk))
         label.frame.origin = CGPoint(x: 0, y: ghost.lane.y + (ghost.lane.height - label.frame.height) / 2)
+        label.opacity = Float(ghost.lane.opacity)
         label.zPosition = 2
         return label
     }
@@ -637,7 +728,7 @@ final class TimelineContentView: UIView {
         let tab = CALayer()
         tab.frame = handle.frame
         tab.backgroundColor = UIColor(Palette.acc).cgColor
-        let radius: CGFloat = if case .clip = handle.target { Metrics.clipRadius } else { Metrics.laneItemRadius }
+        let radius = if case .clip = handle.target { Metrics.clipRadius } else { TimelineLaneLook(laneHeight: handle.frame.height).radius }
         tab.cornerRadius = radius
         tab.maskedCorners = handle.target.edge == .start
             ? [.layerMinXMinYCorner, .layerMinXMaxYCorner]
@@ -671,21 +762,26 @@ final class TimelineContentView: UIView {
         return text
     }
 
-    /// A dark badge on frames: a clip's "1.5×" and length (in mono), or a photo's or video's kind with its layout's symbol.
-    private func badgeLayer(_ string: String, color: UIColor, weight: UIFont.Weight, symbol: String? = nil) -> CALayer {
-        let text = textLayer(string, size: 10.5, weight: weight, color: color, monospaced: symbol == nil)
+    /// A dark badge on frames: a clip's "1.5×" and length (in mono), or a photo's or video's kind with its layout's symbol, as
+    /// large as `look` makes it on a track (on a clip, the size of a 28 pt track's).
+    private func badgeLayer(
+        _ string: String, color: UIColor, weight: UIFont.Weight, symbol: String? = nil,
+        look: TimelineLaneLook = TimelineLaneLook(laneHeight: TimelineLaneLook.base)
+    ) -> CALayer {
+        let text = textLayer(string, size: look.badgeSize, weight: weight, color: color, monospaced: symbol == nil)
+        let height = look.badgeHeight
         let badge = CALayer()
         var x: CGFloat = 6
-        if let symbol, let icon = symbolLayer(symbol, size: 9.5, color: color) {
-            icon.frame.origin = CGPoint(x: x, y: (18 - icon.frame.height) / 2)
+        if let symbol, let icon = symbolLayer(symbol, size: look.badgeSize - 1, color: color) {
+            icon.frame.origin = CGPoint(x: x, y: (height - icon.frame.height) / 2)
             badge.addSublayer(icon)
             x += icon.frame.width + 4
         }
-        badge.frame = CGRect(x: 0, y: 0, width: x + text.frame.width + 6, height: 18)
+        badge.frame = CGRect(x: 0, y: 0, width: x + text.frame.width + 6, height: height)
         badge.cornerRadius = Metrics.editorMarkRadius
         badge.masksToBounds = true
         badge.backgroundColor = UIColor.black.withAlphaComponent(0.7).cgColor
-        text.frame.origin = CGPoint(x: x, y: (18 - text.frame.height) / 2)
+        text.frame.origin = CGPoint(x: x, y: (height - text.frame.height) / 2)
         badge.addSublayer(text)
         return badge
     }

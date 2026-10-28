@@ -5,10 +5,12 @@
 
 import SwiftUI
 
-/// A clip's frame in Reorder: the moment in its middle, read once and kept by `VideoThumbnailService`.
+/// A clip's frame in Reorder: the moment in its middle, read once and kept by `VideoThumbnailService`, turned, mirrored and
+/// cropped as the clip shows it.
 struct ClipOrderThumbnail: View {
     let url: URL
     let time: TimeInterval
+    var orientation = ClipOrientation.identity
     let thumbnails: VideoThumbnailService
     @State private var image: UIImage?
 
@@ -20,8 +22,8 @@ struct ClipOrderThumbnail: View {
         .frame(width: 36, height: 64)
         .clipShape(RoundedRectangle(cornerRadius: Metrics.editorThumbnailRadius, style: .continuous))
         .accessibilityHidden(true)
-        .task(id: "\(url.path(percentEncoded: false))-\(time)") {
-            image = await thumbnails.frames(for: url, at: [time], tolerance: 0.5).first ?? nil
+        .task(id: "\(url.path(percentEncoded: false))-\(time)-\(orientation)") {
+            image = (await thumbnails.frames(for: url, at: [time], tolerance: 0.5).first ?? nil)?.shaped(by: orientation)
         }
     }
 }

@@ -3,6 +3,7 @@
 //  Cue StudioTests
 //
 
+import CoreGraphics
 import Foundation
 import Testing
 @testable import Cue_Studio
@@ -36,6 +37,13 @@ struct RenderPlanTests {
             segment.look = look
         },
         "stabilization": { $0.stabilization = .strong },
+        "quarterTurns": { $0.quarterTurns = 1 },
+        "isMirrored": { $0.isMirrored = true },
+        "crop": { $0.crop = ClipCrop(CGRect(x: 0.1, y: 0.1, width: 0.5, height: 0.5)) },
+        "animationIn": { $0.animationIn = ClipAnimation(style: .fade) },
+        "animationOut": { $0.animationOut = ClipAnimation(style: .zoom) },
+        "soundFadeIn": { $0.soundFadeIn = 1 },
+        "soundFadeOut": { $0.soundFadeOut = 1 },
     ]
 
     @Test func everyPartOfAClipIsReadOrListed() {

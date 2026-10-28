@@ -89,17 +89,18 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(flow.waits(for: app.buttons["edit.toolbar.editText"], "the text's tools"), "The new hook isn't picked after ✓")
         flow.backToMainTools()
 
-        flow.step("Media › on top of the video (B-roll)")
+        flow.step("Media › Full screen (B-roll), from the Media bar")
         flow.tool("addMedia")
+        flow.tool("mediaFullScreen")
         let mode = flow.element("edit.mediaMode")
-        XCTAssertTrue(flow.waits(for: mode, "Add photo or video"), "Media didn't open Add photo or video")
-        XCTAssertTrue(app.buttons["edit.mediaMode.split"].isSelected, "Media doesn't start over the video, on the split screen")
-        flow.tap(app.buttons["edit.mediaMode.fullScreen"], "Full screen")
+        XCTAssertTrue(flow.waits(for: mode, "Add photo or video"), "Media › Full screen didn't open Add photo or video")
+        XCTAssertTrue(app.buttons["edit.mediaMode.fullScreen"].isSelected, "The sheet doesn't open on Full screen")
         let explanation = flow.element("edit.mediaModeExplanation")
         XCTAssertTrue(explanation.label.contains("B-roll"), explanation.label)
         flow.tap(app.buttons["sheet.closeButton"].firstMatch, "Add photo or video's ×")
         XCTAssertTrue(mode.isGone(within: 5), "Add photo or video didn't go away")
-        XCTAssertTrue(flow.isOnMainTools())
+        XCTAssertTrue(app.buttons["edit.toolbar.mediaSplit"].exists, "Not back on the Media bar")
+        flow.backToMainTools()
 
         flow.step("Cover Studio")
         flow.tool("cover")
@@ -391,7 +392,7 @@ final class CreatorWorkflowUITests: XCTestCase {
 
         flow.step("Media › In sequence › one of your takes")
         flow.tool("addMedia")
-        flow.tap(app.buttons["edit.mediaMode.sequence"], "In sequence")
+        flow.tool("mediaSequence")
         let note = flow.element("edit.mediaInsertionNote")
         XCTAssertTrue(flow.waits(for: note, "where the clip goes"))
         // The playhead is at the start: the take goes in before the first clip.
@@ -433,7 +434,9 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.tool("edit")
         flow.tool("split")
         XCTAssertTrue(flow.toastSays("Split at"))
-        flow.scrub(points: 90)
+        // Slowly: a Simulator that loses the hold at the end glided the playhead onto the clip's last frames, where Split
+        // rightly says "Move playhead onto the clip" (28/10/2026).
+        flow.scrub(points: 90, velocity: 150)
         flow.tool("split")
         XCTAssertTrue(flow.toastSays("Split at"))
         let back = app.buttons["edit.toolbar.back"]

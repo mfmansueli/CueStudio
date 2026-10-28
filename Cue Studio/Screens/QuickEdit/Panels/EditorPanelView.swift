@@ -15,6 +15,8 @@ struct EditorPanelView: View {
         case .speed: SpeedPanel(viewModel: viewModel)
         case .zoom: ZoomPanel(viewModel: viewModel)
         case .stabilize: StabilizePanel(viewModel: viewModel)
+        case .clipCrop: ClipCropPanel(viewModel: viewModel)
+        case .clipAnimation: ClipAnimationPanel(viewModel: viewModel)
         case .volume: VolumePanel(viewModel: viewModel)
         case .transition: TransitionPanel(viewModel: viewModel)
         case .voice: VoicePanel(viewModel: viewModel)
