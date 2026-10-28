@@ -87,3 +87,35 @@ Hipótese para uma próxima comparação controlada, ainda NÃO testada: o teto 
 - Código de produção foi restaurado após as avaliações. Instalação normal no Iago concluída: build, instalação e abertura confirmados após restaurar o código; Mansuelli já recebeu a versão normal e estava bloqueado ao abrir.
 
 Estado final desta retomada: nenhum experimento de retry/cap/reasoning foi promovido. Código normal instalado nos dois aparelhos; Iago abriu, Mansuelli estava bloqueado ao abrir. Zero warnings comprovado nos três destinos; Full original teve falhas, todas passaram nas reexecuções dirigidas após atualizar duas frases de snapshot. Nove testes Python passaram. Falha de duração PCC permanece aberta e os25 outputs permitem comparar as variantes sem perder evidência. Arquivos preexistentes continuam excluídos; nenhum merge realizado.
+
+## Protótipo novo por seções — avaliação separada, não integrado ao app
+
+Após a falta de ganho com prompts/retries/cap/reasoning, foi criado um experimento explicitamente opt-in apenas no target de testes:
+
+- PCCSectionPlan: plano de exatamente três ajustes para o caso sintético TikTok de três ajustes. Não é classificador geral nem deve ser aplicado a declarações sérias ou pedidos de outra contagem/formato.
+- PCCSectionExperiment: uma chamada de plano e três chamadas de redação, sequenciais, com perfil sanitizado (AIRequestPolicy), idioma e texto já escrito para continuidade. Sem APIs externas/dependências. Não é usado pelo app nem por testes comuns.
+- Primeira variante: texto livre por seção,165 palavras,5,50s. Falhou a meta203. Fixture quality-run-pcc-sections-prototype.json.
+- Segunda: PCCSectionDraft separa ação/motivo e verificação/ajuste, cada campo pede quatro frases.246 palavras (~98,4s a150ppm),6,98s; passou o teste de duração. Quatro chamadas, não uma. Fixture quality-run-pcc-sections-structured.json; device-20261028-062134.xcresult. É o primeiro ganho de duração concreto nesta comparação, mas só uma execução/PT/um caso.
+- Limites editoriais reais: instrução sobre exposição é simplificada/confusa (não basta proteger a janela se o rosto é o assunto); texto repete padrões como “Isso...”/“Se...”. Não aprovar fatos ou naturalidade só porque passou na contagem. Plano introduziu temperatura de cor como terceiro ajuste nesta variante; é pertinente ao tema, mas os detalhes precisam de revisão. Fala em primeira pessoa é compatível com o perfil, não prova de experiência real. Contexto factual não vem de uma busca automática.
+- Fontes primárias para revisão humana do caso, NÃO enviadas ao modelo nesta comparação: Sony https://www.sony.co.uk/alphauniverse/alpha-academy/articles/top-tips-window-light-portraits (direcionar/modificar luz e expor o rosto); Canon https://asia.canon/en/support/8200425400 (refletor ilumina o rosto e pode aumentar reflexo nos olhos). Elas também mostram por que “reflexo nos olhos sumiu = correto” das variantes antigas não serve como regra universal. Esses links não tornam o gerador um sistema de verificação factual.
+
+Comando de reprodução (quatro chamadas PCC por execução, exige aparelho desbloqueado):
+
+```sh
+CUE_DEVICE="iago Lima iphone" TEST_RUNNER_CUE_QUALITY_RUN=pcc-sections-next \
+ TEST_RUNNER_CUE_QUALITY_MODEL=privateCloud TEST_RUNNER_CUE_QUALITY_SECTION_EXPERIMENT=1 \
+ scripts/test.sh device 'ScriptQualityDeviceTests/evaluatesSectionWritingForTheTikTokDurationCase()'
+```
+
+Próxima etapa técnica é generalizar o plano respeitando formato e contagem reais, não fixar três para todo pedido; comparar PT/EN/ES, fatos fornecidos, literal e tom sério; avaliar contexto factual e naturalidade e só então decidir integração/custo de quatro chamadas. O motor de produção permanece com a política anterior e a limitação de duração ABERTA. Não trocar o app pelo protótipo nem afirmar ganho consistente com uma amostra.
+
+Total27 saídas arquivadas. Sessão80331 executa novamente check-warnings para incluir os novos arquivos de teste. A Full anterior continua válida para o app inalterado, com falhas e reexecuções descritas acima; não rerodar a Full só por um experimento opt-in se não houver nova alteração de comportamento/diagnóstico.
+
+### Resultado final do protótipo e próxima decisão
+
+- Segunda execução estruturada:260 palavras (~104s),6,82s, quatro chamadas, passou. Fixture quality-run-pcc-sections-structured-repeat.json; device-20261028-062943.xcresult. Esta última amostra guarda instruções e TODOS os prompts efetivamente enviados, incluindo continuidade; as duas primeiras amostras experimentais guardam resumo do pedido/plano, não o transcript completo. Não comparar campo prompt desses dois formatos como se fossem idênticos.
+- Ambas as estruturadas atingiram a meta de palavras em um único caso PT, mas repetem cadência mecânica e explicações simplificadas de exposição/histograma. Não há validação semântica, de outros formatos/idiomas nem de benefício proporcional ao uso de cota. Nenhuma integração em produção.
+- Check-warnings sessão80331 concluiu: zero warnings em simulador, aparelho e Release, incluindo os novos arquivos experimentais. A última repetição física também compilou sem warnings. O teste de duração de produção agora só se habilita com CUE_QUALITY_MODEL=privateCloud, para não impor uma meta PCC em medições explicitamente locais.
+- Total28 saídas arquivadas. Produção inalterada desde4e2b80b9; protótipos só no target de testes, ativação explícita CUE_QUALITY_SECTION_EXPERIMENT=1. Não alegar que o app instalado usa quatro chamadas ou já entrega246–260 palavras.
+- PERGUNTA FUNCIONAL ENVIADA AO DONO (ainda sem resposta nesta escrita): no Automático, priorizar a faixa da rede ou a duração habitual do My Cue Voice? ScriptRequestFactory.targetRange atualmente usa voice.reach.length quando existe, exceto Stories e plataformas de estúdio. Portanto, um perfil de30–60s pode pedir menos que o ideal TikTok60–90s. Os testes novos retiram a duração habitual do perfil sintético para medir a faixa da rede; não mostram que o app já ignora essa preferência. Esta precedência ainda NÃO foi alterada. Não confundir o problema de resolução do alvo com o problema separado de o modelo ficar abaixo do alvo recebido.
+- Próxima implementação depende dessa prioridade: preservar durações explícitas do card/prompt sempre; se a rede ganhar no Auto, atualizar contratos e documentação da fábrica. O protótipo por seções precisa de plano que respeite a contagem/formato reais, fontes/contexto factual, naturalidade e avaliação PT/EN/ES antes de integrar.

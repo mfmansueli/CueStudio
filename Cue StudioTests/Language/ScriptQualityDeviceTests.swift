@@ -129,9 +129,42 @@ struct ScriptQualityDeviceTests {
         }
     }
 
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["CUE_QUALITY_SECTION_EXPERIMENT"] == "1"))
+    func evaluatesSectionWritingForTheTikTokDurationCase() async throws {
+        _ = try ready()
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let creator = CreatorProfileService(defaults: defaults.defaults)
+        creator.profile = QualityProfiles.portuguese.full
+        creator.profile.reach.length = nil
+        let idea = "Ensine três ajustes para gravar com a luz de uma janela. Explique como conferir cada ajuste. Sem pedir para seguir."
+        let factory = ScriptRequestFactory(
+            rules: TestData.rulesService(), profile: creator, scriptLanguage: .portugueseBrazil, interfaceLanguage: .portugueseBrazil
+        )
+        let request = factory.request(idea: idea, platform: .tiktok, format: nil, formatChoice: .auto)
+        let started = ContinuousClock.now
+        let result = try await PCCSectionExperiment().write(request)
+        var sample = QualityRunSample(
+            kind: "script", run: Self.run, language: "pt-BR", condition: "section-experiment", index: 0, idea: idea, hasBrief: false,
+            seconds: started.duration(to: .now).inSeconds
+        )
+        sample.title = result.title
+        sample.text = result.text
+        sample.model = "privateCloud"
+        sample.instructions = result.instructions
+        sample.prompt = result.prompts.enumerated().map { "CALL \($0.offset + 1):\n" + $0.element }.joined(separator: "\n\n")
+        sample.reviewChecks = ["Evaluation only: one outline call and three section calls; 90–110 words asked per section.",
+            "Review factual advice, repeated instructions, coherence and the creator's voice before considering production.",
+        ]
+        sample.caseID = "pt-BR-tiktok-duration"
+        Self.record(sample, named: "quality-sample-\(Self.run)-section-experiment.json")
+        #expect(ReadTime.wordCount(in: result.text) >= 203, "A length pass does not approve semantic quality or the four-call cost")
+    }
+
     /// The owner's TikTok regression: enough spoken material near the 90-second ceiling, without
     /// changing the normal request factory or treating a length pass as semantic approval.
-    @Test func writesTikTokNearTheChosenUpperDuration() async throws {
+    @Test(.enabled(if: ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"] == "privateCloud"))
+    func writesTikTokNearTheChosenUpperDuration() async throws {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         let creator = CreatorProfileService(defaults: defaults.defaults)
