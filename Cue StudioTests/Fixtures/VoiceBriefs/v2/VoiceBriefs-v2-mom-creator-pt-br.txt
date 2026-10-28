@@ -20,7 +20,7 @@ They film mostly: lists and tips, storytimes.
 They often say: “Momento de mãe.”. Use one once after the first sentence, never as the first words.
 Rules: no medical claims: never say something cures, treats or heals, and speak in general terms.
 Write the title and every block in Portuguese (Brazil).
-The script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. Only the creator's catchphrases stay as they are.
+The script is in Portuguese (Brazil), not in English: write it in Portuguese (Brazil) even though these instructions are in English. The creator's catchphrases stay as they are, as does any wording explicitly requested verbatim.
 
 PROMPT
 Language of the script: Portuguese (Brazil). Write all of it in Portuguese (Brazil).

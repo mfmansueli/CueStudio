@@ -129,6 +129,32 @@ struct ScriptQualityDeviceTests {
         }
     }
 
+    /// The owner's TikTok regression: enough spoken material near the 90-second ceiling, without
+    /// changing the normal request factory or treating a length pass as semantic approval.
+    @Test func writesTikTokNearTheChosenUpperDuration() async throws {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let creator = CreatorProfileService(defaults: defaults.defaults)
+        creator.profile = QualityProfiles.portuguese.full
+        creator.profile.reach.length = nil
+        let idea = "Ensine três ajustes para gravar com a luz de uma janela. Explique como conferir cada ajuste. Sem pedir para seguir."
+        let factory = ScriptRequestFactory(
+            rules: TestData.rulesService(), profile: creator, scriptLanguage: .portugueseBrazil, interfaceLanguage: .portugueseBrazil
+        )
+        let request = factory.request(idea: idea, platform: .tiktok, format: nil, formatChoice: .auto)
+        #expect(request.targetRange == 60...90, "This regression must exercise the actual TikTok ideal")
+        var sample = await Self.script(
+            request, idea: idea, language: .portugueseBrazil, condition: "tiktok-duration", index: 0, service: try ready()
+        )
+        sample.caseID = "pt-BR-tiktok-duration"
+        sample.reviewChecks = ["Three distinct adjustments with an observable check; no invented experience, repetition or follow CTA."]
+        Self.record(sample, named: "quality-sample-\(Self.run)-tiktok-duration.json")
+        #expect(sample.wasWritten)
+        let words = ReadTime.wordCount(in: sample.text ?? "")
+        let target = ScriptPromptBuilder.askedRange(for: request.targetRange, on: .privateCloud)
+        #expect(words >= target.low, "Expected at least \(target.low) spoken words near the chosen upper duration; got \(words)")
+    }
+
     @Test(arguments: ScriptQualityDeviceTests.cases)
     func writesTheScripts(_ item: Case) async throws {
         let service = try ready()

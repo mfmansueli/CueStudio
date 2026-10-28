@@ -305,7 +305,11 @@ nonisolated enum ScriptPromptBuilder {
     /// camuflagem"). Left out.
     static func lengthRule(minimumWords: Int, blocks: Int = 3, sentenceWords: Int = 12, on route: AIModelRoute = .onDevice) -> String {
         if route == .privateCloud {
-            return "Aim near the upper end of the chosen duration at a natural reading pace, with at least \(minimumWords) spoken words. "
+            let development = Int((Double(minimumWords) * 0.85).rounded(.up))
+            return "Budget the spoken script before writing: at least \(development) words belong to the actual development, not the opening or sign-off. "
+                + "Distribute that development across the requested steps or sections; explain each with several connected sentences, a reason and a useful check or example. "
+                + "Keep the requested number of points. A one-sentence tip is not a developed section. "
+                + "Aim near the upper end of the chosen duration at a natural reading pace, with at least \(minimumWords) spoken words. "
                 + "Give the creator substantial material to edit: develop the relevant explanation, practical details and tradeoffs. "
                 + "A small overrun is acceptable. Never stretch the duration with repetition, invented facts or generic motivational filler. "
                 + "If an explicit word or time limit appears in the current request, honor that limit instead."

@@ -63,8 +63,9 @@ nonisolated enum PCCScriptDirection {
         if request.brand != nil {
             lines.append("Persuasion comes from the supplied product details and their relevance to the audience. Do not add a benefit, comparison or urgency that the brand brief does not support. Preserve the paid-partnership disclosure.")
         }
-        lines.append("Remove sentences that merely announce helpfulness, calm explanation, community values or the intention to explain. Express the voice through wording and rhythm instead. If a sentence could be pasted unchanged into an unrelated video, replace it with relevant substance or remove it. Never pad a short brief with invented context just to fill duration.",
-            "Before returning only the requested title and script blocks, check that the current request's requirements are covered, the opening's promise is delivered, the details remain faithful, and no block pads the length with repetition. Revise within this answer; do not output a plan, checklist or explanation.")
+        lines += ["Remove sentences that merely announce helpfulness, calm explanation, community values or the intention to explain. Express the voice through wording and rhythm instead. If a sentence could be pasted unchanged into an unrelated video, replace it with relevant substance or remove it. Never pad a short brief with invented context just to fill duration.",
+            "Before returning only the requested title and script blocks, check that the current request's requirements are covered, the opening's promise is delivered, the details remain faithful, and no block pads the length with repetition. Revise within this answer; do not output a plan, checklist or explanation.",
+        ]
         return lines
     }
 
