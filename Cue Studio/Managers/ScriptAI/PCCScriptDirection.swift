@@ -21,16 +21,20 @@ nonisolated enum PCCScriptDirection {
             "Choose a tutorial for teaching a process, a list for distinct tips or reasons, a story for a supplied experience, a review or comparison for evaluating options, an opinion or reply for a viewpoint or comment, an announcement for supplied news, myth vs fact for correcting a belief, POV for a requested scene, or a sincere statement for a serious situation. For a general explanation, build a clear explanatory arc. Combine compatible approaches only when the request needs it.",
             "A product mention alone does not mean sponsorship. Use a sponsored-ad direction only when the request explicitly describes paid promotion, and disclose that paid partnership within the script (#ad). Never invent a brand deal, personal test or experience. A serious statement takes priority over entertainment: no hype, jokes, promotional hook or engagement CTA.",
             "Return blocks in the order that fits the chosen direction, with short descriptive block labels. Do not force Hook / Body / CTA onto every idea, force a twist onto an explanation, or show a format-selection rationale. The chosen structure must serve the creator's request, not change its subject.",
-            "If the request supplies too little detail, use a useful, modest interpretation of the stated subject without inventing the creator's biography. Keep the result within the requested length.",
+            request.durationPolicy == .targeted
+                ? "If the request supplies too little detail, use a useful, modest interpretation of the stated subject without inventing the creator's biography. Keep the result within the requested length."
+                : "If the request supplies too little detail, use a useful, modest interpretation of the stated subject without inventing the creator's biography. Do not invent details just to make it longer.",
         ]
     }
 
     /// Platform controls delivery, not the creator's intention or an automatic engagement ending.
-    static func platformLine(for platform: Platform) -> String {
+    static func platformLine(for platform: Platform, durationPolicy: ScriptDurationPolicy = .targeted) -> String {
         let delivery: String = switch platform {
         case .tiktok: "vertical, immediate, conversational; get to the subject quickly"
         case .reels: "personal but polished; one clear through-line with a useful payoff"
-        case .shorts: "compact and focused; deliver the promised answer within the chosen duration"
+        case .shorts: durationPolicy == .targeted
+            ? "compact and focused; deliver the promised answer within the chosen duration"
+            : "focused on delivering the promised answer"
         case .youtube: "clear sections, with each section developing the subject rather than repeating the hook"
         case .linkedin: "professional and specific; no slang, emojis or swearing"
         case .stories: "casual and immediate, addressing one person with one focused point"
@@ -41,9 +45,11 @@ nonisolated enum PCCScriptDirection {
     static func instructions(for request: ScriptRequest) -> [String] {
         guard request.modelRoute == .privateCloud else { return [] }
         var lines = [
-            "The creator's current request determines this video's subject, intended takeaway and explicit requirements. Their usual topics, openings, endings and style are defaults, not reasons to change that request. Keep the selected language, format, length, brand restrictions and the creator's avoid rules.",
+            "The creator's current request determines this video's subject, intended takeaway and explicit requirements. Their usual topics, openings, endings and style are defaults, not reasons to change that request. Keep the selected language, format, \(request.durationPolicy == .targeted ? "length, " : "")brand restrictions and the creator's avoid rules.",
             "Use the supplied details accurately: keep names, quantities, qualifications and required phrases. Do not turn a possibility into a promise or an opinion into a verified fact. Missing information is unknown, not permission to invent a personal experience, testimonial, result, price or credential.",
+            "The current request's perspective overrides profile pronouns. Preserve a supplied team action as a team action even if the profile usually speaks as one person. General advice can address the viewer directly; a first-person style preference never authorizes a claim that the creator experienced or tested it.",
             "Preserve who did what: a team action must not become a personal action, and someone else's experience must not become the creator's. Do not add a workplace, personal test, learned lesson, future posting plan or commitment unless it was supplied. Clearly hypothetical teaching examples are allowed; never present them as the creator's past.",
+            "Treat unsupplied scene details as conditional examples, not observations. An inspiration angle is a creative direction, not evidence that a particular object or setting exists. Explain conditional outcomes with appropriate uncertainty instead of promising that one adjustment always fixes the issue.",
             "Use the voice profile to choose vocabulary, rhythm, perspective and the audience's level of explanation. Do not recite the profile, insert unrelated interests or repeat a catchphrase to prove you used it.",
         ]
         if request.structure.isSerious {

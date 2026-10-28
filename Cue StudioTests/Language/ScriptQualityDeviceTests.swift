@@ -114,10 +114,14 @@ struct ScriptQualityDeviceTests {
         let factory = ScriptRequestFactory(
             rules: TestData.rulesService(), profile: creator, scriptLanguage: item.language, interfaceLanguage: item.language
         )
-        let request = factory.request(idea: item.prompt, platform: .reels, format: nil, formatChoice: item.formatChoice)
+        var request = factory.request(idea: item.prompt, platform: .reels, format: nil, formatChoice: item.formatChoice)
+        if let value = ProcessInfo.processInfo.environment["CUE_QUALITY_DURATION"] {
+            request.durationPolicy = try #require(ScriptDurationPolicy(rawValue: value), "Unknown duration policy")
+        }
         var sample = await Self.script(
             request, idea: item.prompt, language: item.language, condition: "intent", index: index, service: try ready()
         )
+        sample.durationPolicy = request.durationPolicy.rawValue
         sample.caseID = item.id
         sample.expectedDirection = item.expectedDirection
         sample.requiredLiterals = item.requiredLiterals
@@ -235,6 +239,7 @@ struct ScriptQualityDeviceTests {
             kind: "script", run: run, language: language.rawValue, condition: condition, index: index, idea: idea, hasBrief: request.brief != nil,
             seconds: 0
         )
+        sample.durationPolicy = request.durationPolicy.rawValue
         sample.requestedReasoning = ProcessInfo.processInfo.environment["CUE_QUALITY_REASONING"] ?? "default"
         let started = ContinuousClock.now
         for attempt in 1...3 {
@@ -289,9 +294,11 @@ struct ScriptQualityDeviceTests {
         sample.instructions = instructions
         sample.prompt = prompt
         sample.responseCap = ScriptAIService.responseTokens(for: request, on: request.modelRoute ?? .onDevice)
-        sample.minimumWords = ReadTime.words(for: request.targetRange.lowerBound)
-        let asked = ScriptPromptBuilder.askedRange(for: request.targetRange, on: request.modelRoute ?? .onDevice)
-        sample.askedWords = [asked.low, asked.high]
+        if request.durationPolicy == .targeted {
+            sample.minimumWords = ReadTime.words(for: request.targetRange.lowerBound)
+            let asked = ScriptPromptBuilder.askedRange(for: request.targetRange, on: request.modelRoute ?? .onDevice)
+            sample.askedWords = [asked.low, asked.high]
+        }
         sample.voiceTrimmed = request.voice.map { voice in
             VoiceBriefBuilder.brief(
                 for: voice, budget: request.voiceBudget ?? VoiceBrief.budget, register: PlatformRegister(request.platform)

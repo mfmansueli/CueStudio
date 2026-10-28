@@ -81,6 +81,9 @@ struct ScriptRequestFactoryTests {
         let (factory, _) = makeFactory(defaults: defaults)
         let detected = factory.request(idea: "a 30-second video about tea", platform: .tiktok, format: nil)
         #expect(detected.targetRange == 27...33)
+        #expect(detected.durationPolicy == .targeted)
+        #expect(factory.request(idea: "tea", platform: .shorts, format: nil).durationPolicy == .informative)
+        #expect(factory.request(idea: "tea", platform: .shorts, format: nil, length: .minutes2).durationPolicy == .targeted)
         let preset = TestData.rulesService().preset(for: .shorts, monetizationGoals: factory.profile.profile.monetizationGoals)
         #expect(factory.request(idea: "tea", platform: .shorts, format: nil).targetRange == preset.idealRange)
     }

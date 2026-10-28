@@ -24,6 +24,7 @@ nonisolated enum AIRequestPolicy {
         var request = original
         request.modelRoute = route
         request.voice = voice(original.voice, on: route)
+        if request.durationPolicy == .informative { request.voice?.reach.length = nil }
         request.voiceBudget = route == .privateCloud ? cloudVoiceBudget : nil
         return request
     }

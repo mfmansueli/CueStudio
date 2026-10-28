@@ -36,6 +36,7 @@ nonisolated struct QualityRunSample: Codable, Hashable, Sendable {
     var model: String?
     var requestedModel: String?
     var requestedReasoning: String?
+    var durationPolicy: String?
     /// Local token counts are intentionally absent for PCC: its tokenizer is not exposed by this SDK.
     var tokenCounter: String?
     /// Frozen intent benchmark metadata; expectations are kept outside the model's input.

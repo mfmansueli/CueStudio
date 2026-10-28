@@ -23,6 +23,7 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     var voice: CreatorVoice?
     /// Seconds the script should run.
     var targetRange: ClosedRange<TimeInterval>
+    var durationPolicy: ScriptDurationPolicy = .targeted
     /// The language to write in. The model is told explicitly, so the interface language (in which
     /// the format's labels reach the prompt) never decides it.
     var language: CueLanguage?

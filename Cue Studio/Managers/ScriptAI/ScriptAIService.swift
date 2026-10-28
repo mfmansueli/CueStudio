@@ -31,7 +31,11 @@ final class ScriptAIService: ScriptWriting {
     private let planner: AIModelPlanner
     private let preferredModel: AIModelRoute?
     /// Optional evaluation override. Production keeps the framework default until measured against real outputs.
-    private let cloudReasoning: ContextOptions.ReasoningLevel?
+    let cloudReasoning: ContextOptions.ReasoningLevel?
+    #if DEBUG
+    /// Isolated UI ablation; normal Debug launches and Release retain the request's own policy.
+    var uiTestDurationPolicy: ScriptDurationPolicy?
+    #endif
     /// The on-device model's own count of a request, for fitting it to the window (`ContextBudget`).
     let measure: PromptMeasuring
     private let logger = Logger(subsystem: "studio.cue", category: "ScriptAI")
@@ -79,6 +83,10 @@ final class ScriptAIService: ScriptWriting {
     }
 
     func generate(_ request: ScriptRequest, reporting meter: WritingProgressMeter?) async throws -> GeneratedScript {
+        #if DEBUG
+        var request = request
+        if let uiTestDurationPolicy { request.durationPolicy = uiTestDurationPolicy }
+        #endif
         beginForeground()
         defer { endForeground() }
         let begin = ContinuousClock.now
@@ -136,7 +144,7 @@ final class ScriptAIService: ScriptWriting {
         // A script that is still a sliver of what was asked (the model wrote six words, or stopped after one block) is a failed sample, not a short one:
         // lengthening a block of a few words doesn't fix it, a fresh draft often does. One more, and the longer of the two is kept.
         let minimum = ReadTime.words(for: request.targetRange.lowerBound)
-        if model == .onDevice, script.usedLanguageModel, Self.expandsShortScripts,
+        if request.durationPolicy == .targeted, model == .onDevice, script.usedLanguageModel, Self.expandsShortScripts,
            Double(ScriptExpansion.words(in: script.text)) < Double(minimum) * Self.sliver {
             AIFailureReport.note(
                 ScriptAIError.emptyResponse, operation: "script.sliver", route: model, language: language, seconds: 0, isFinal: false
@@ -250,6 +258,11 @@ final class ScriptAIService: ScriptWriting {
         _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, insistsOnLanguage: Bool,
         correcting violations: [VoiceViolation], progress: GenerationProgress, meter: WritingProgressMeter?
     ) async throws -> GeneratedScript {
+        if model == .privateCloud {
+            return try await streamDevelopedCloudDraft(
+                request, since: begin, insistsOnLanguage: insistsOnLanguage, correcting: violations, progress: progress, meter: meter
+            )
+        }
         let clock = ContinuousClock()
         let session = session(on: model, instructions: ScriptPromptBuilder.instructions(for: request, insistsOnLanguage: insistsOnLanguage))
         var prompt = ScriptPromptBuilder.prompt(for: request)
@@ -315,8 +328,13 @@ final class ScriptAIService: ScriptWriting {
         let timings = GenerationTimings(
             prepare: begin.duration(to: started), firstResponse: firstResponse, generation: started.duration(to: clock.now)
         )
+        return try finishedDraft(draft, request: request, model: model, timings: timings)
+    }
+
+    func finishedDraft(_ draft: ScriptDraft, request: ScriptRequest, model: AIModelRoute, timings: GenerationTimings) throws -> GeneratedScript {
         let language = request.language?.locale.language
-        let protected = ScriptVerbatimProtection(draft.scriptText, phrases: request.requiredPhrases)
+        let spoken = model == .privateCloud ? ScriptVerbatimSlots(phrases: request.requiredPhrases).restoring(in: draft.scriptText) : draft.scriptText
+        let protected = ScriptVerbatimProtection(spoken, phrases: request.requiredPhrases)
         let text = protected.restoring(in: ScriptPromptBuilder.collapsingRepeatedSentences(
             ScriptPromptBuilder.clean(protected.text, language: language, preserving: request.preservedPhrases)
         ))
@@ -727,6 +745,7 @@ final class ScriptAIService: ScriptWriting {
     /// Tokens the answer may take: three a word of the longest script the request asks the model for (more than the platform's own, `askedWords`), and
     /// room for the structure around it. Cut short, a script written for the doubled ask came back with its last block unfinished.
     static func responseTokens(for request: ScriptRequest, on route: AIModelRoute = .onDevice) -> Int {
+        if route == .privateCloud, request.durationPolicy == .informative { return 4_096 }
         let words = ScriptPromptBuilder.askedRange(for: request.targetRange, on: route).high
         return min(route == .privateCloud ? AIRequestPolicy.cloudResponseTokens : 1_800, max(600, words * 3 + 350))
     }

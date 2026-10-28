@@ -35,8 +35,8 @@ nonisolated enum ScriptPromptBuilder {
         } else {
             // Where it is posted shapes the hook, the pace and the ending; a serious statement has none of those.
             lines.append(request.modelRoute == .privateCloud
-                ? PCCScriptDirection.platformLine(for: request.platform)
-                : PlatformGuide.line(for: request.platform))
+                ? PCCScriptDirection.platformLine(for: request.platform, durationPolicy: request.durationPolicy)
+                : PlatformGuide.line(for: request.platform, durationPolicy: request.durationPolicy))
             lines.append(honestyRule)
         }
         if request.isFreePrompt {
@@ -154,12 +154,14 @@ nonisolated enum ScriptPromptBuilder {
         if let tone = request.tone {
             lines.append("Tone: \(tone.promptWord).")
         }
-        lines.append("Length: between \(low) and \(high) spoken words in total.")
-        // Measured on an iPhone: told only the range, the model wrote about a third of it (44 to 82 words for 150 to 225,
-        // in every language). Naming the minimum and what a block holds helps, and so does asking for more than is needed (`askedWords`).
-        lines.append(lengthRule(
-            minimumWords: low, blocks: guide.blocks.count, sentenceWords: sentenceWords(for: request.voice), on: request.modelRoute ?? .onDevice
-        ))
+        if request.durationPolicy == .targeted {
+            lines.append("Length: between \(low) and \(high) spoken words in total.")
+            lines.append(lengthRule(
+                minimumWords: low, blocks: guide.blocks.count, sentenceWords: sentenceWords(for: request.voice), on: request.modelRoute ?? .onDevice
+            ))
+        } else {
+            lines.append("Platform duration is informational, not a writing target. Develop the current request fully and naturally, then stop when it is complete. Do not pad or cut useful content to fit a platform duration. Honor any length explicitly requested by the creator.")
+        }
         let voice = structure.isSerious ? nil : request.voice
         let brief = structure.isSerious ? nil : request.brief
         if !structure.isSerious {

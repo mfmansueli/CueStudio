@@ -12,6 +12,7 @@ import Foundation
 /// - `-uiTestSeedSamples`: with the above, starts with the sample scripts and takes.
 /// - `-uiTestPro`: starts on Cue Pro (read by `StoreManager`).
 /// - `-uiTestStubAI` / `-uiTestNoAI`: instant, predictable AI, or none at all.
+/// - `-uiTestPCCGeneration`: real AI with PCC preferred, only in memory. `-uiTestInformativeDuration` removes the platform length target for A/B UI tests.
 /// - `-uiTestLongTake <seconds>`: "3 morning habits" Take 3 becomes a full-size take that long, with captions (device export
 ///   measurements); `-uiTestContinuedTasks` turns iOS's continued tasks on for exports in UI tests.
 /// - `-uiTestSlowExport`: the review's exports take a few seconds, so its progress can be seen; `-uiTestStoppedExport`: Take 3's
@@ -192,6 +193,13 @@ struct LaunchOptions {
     /// `-uiTestTopics fitness,custom:Daily Routine`: a profile that holds those topics and nothing else.
     /// `-uiTestScriptLanguage` and `-uiTestAIUnavailable`: the Script Language to start on, and why Apple Intelligence can't draft. Cue's own
     /// switch (`cue`) is a preference that Settings › Privacy & AI data reads from the defaults; the others are the stub writer's.
+    private static func readGenerationExperiment(_ arguments: [String], into options: inout LaunchOptions) {
+        guard arguments.contains("-uiTestPCCGeneration") else { return }
+        let writer = ScriptAIService(preferredModel: .privateCloud)
+        writer.uiTestDurationPolicy = arguments.contains("-uiTestInformativeDuration") ? .informative : .targeted
+        options.writer = writer
+    }
+
     private static func readDrafting(_ arguments: [String], into defaults: UserDefaults) -> StubScriptWriter.Unavailable? {
         if let index = arguments.firstIndex(of: "-uiTestScriptLanguage"), arguments.indices.contains(index + 1),
            let language = CueLanguage(rawValue: arguments[index + 1]) {
@@ -348,6 +356,7 @@ struct LaunchOptions {
                 options.prompterSpeech = ScriptedVoiceFollowing(scenario: scenario)
             }
             let unavailable = Self.readDrafting(arguments, into: options.defaults)
+            Self.readGenerationExperiment(arguments, into: &options)
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(
                     available: !arguments.contains("-uiTestNoAI"), stalls: arguments.contains("-uiTestWriterStalls"),

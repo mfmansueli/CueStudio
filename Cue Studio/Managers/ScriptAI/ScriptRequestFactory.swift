@@ -49,6 +49,7 @@ struct ScriptRequestFactory {
             tone: nil,
             voice: voice,
             targetRange: targetRange(for: effectiveLength, platform: platform, preset: preset, voice: voice),
+            durationPolicy: effectiveLength == .auto ? .informative : .targeted,
             language: language,
             languageVariant: writingVariant(for: languageText ?? text),
             format: format,

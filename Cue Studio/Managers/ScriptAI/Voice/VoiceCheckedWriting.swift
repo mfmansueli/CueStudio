@@ -68,7 +68,8 @@ struct VoiceCheckedWriting {
     }
 
     private func checked(_ script: GeneratedScript, for request: ScriptRequest) throws -> GeneratedScript {
-        guard request.requiredPhrases.allSatisfy({ ScriptVerbatimRequirements.contains($0, in: script.text) }) else {
+        guard !ScriptVerbatimSlots(phrases: request.requiredPhrases).hasUnresolvedMarker(in: script.text),
+              request.requiredPhrases.allSatisfy({ ScriptVerbatimRequirements.contains($0, in: script.text) }) else {
             throw ScriptAIError.requiredWording
         }
         return script
@@ -77,11 +78,17 @@ struct VoiceCheckedWriting {
     private func violations(in script: GeneratedScript, for request: ScriptRequest) -> [VoiceViolation] {
         let voice = VoiceConstraintChecker.violations(
             in: script.text, voice: request.voice, language: request.language,
-            minimumWords: ReadTime.words(for: request.targetRange.lowerBound), openingLine: request.brief?.openingLine
+            minimumWords: request.durationPolicy == .targeted ? ReadTime.words(for: request.targetRange.lowerBound) : 0,
+            openingLine: request.brief?.openingLine
         )
         let required = request.requiredPhrases.filter { !ScriptVerbatimRequirements.contains($0, in: script.text) }.map {
             VoiceViolation(kind: .requiredPhrase, detail: "Include this exact text unchanged in a spoken block, including capitalization and punctuation: “\($0)”")
         }
-        return voice + required
+        // A free request can intentionally change perspective (a team statement, a POV scene).
+        // Profile pronouns remain in the prompt, but cannot force a correction that changes who did what.
+        let unresolved = ScriptVerbatimSlots(phrases: request.requiredPhrases).hasUnresolvedMarker(in: script.text)
+            ? [VoiceViolation(kind: .requiredPhrase, detail: "Replace any incomplete exact-wording marker with its complete assigned phrase, unchanged.")] : []
+        let applicable = voice.filter { !(request.modelRoute == .privateCloud && request.isFreePrompt && $0.kind == .pronoun) }
+        return applicable + required + unresolved
     }
 }
