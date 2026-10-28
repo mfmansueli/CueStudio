@@ -61,6 +61,10 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
     /// Where the content was across when the finger took it, and whether it has moved across since (a drag up or down doesn't
     /// scrub).
     private var dragStartX: CGFloat = 0
+    /// Where the finger has taken the content across during a drag, whatever snapping did to the offset, and the offset it
+    /// last left (`scrollViewDidScroll`).
+    private var fingerX: CGFloat = 0
+    private var lastOffsetX: CGFloat = 0
     private var hasScrubbed = false
     /// The track kept in sight last, and the scroll easing to it.
     private var shownLane: TimelineLane?
@@ -219,12 +223,19 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
 
     /// The player's clock: followed unless a finger is moving the content or holding a handle.
     func show(time: TimeInterval) {
-        // With no finger on it and no glide, the content isn't being moved: a scrub whose end never came is over.
-        if isScrubbing, !scrollView.isTracking, !scrollView.isDecelerating { endScrub() }
+        // No finger moving the content and no glide: a scrub whose end never came is over. (`isTracking` can't tell: it turns
+        // off while a finger that rested first still drags.)
+        if isScrubbing, !isContentMoving { endScrub() }
         guard !isScrubbing, handle == nil, pinchStart == nil else { return }
         guard abs(time - self.time) > 0.000_1 || scrollView.contentOffset.x != offset(for: time) else { return }
         self.time = time
         setOffset(for: time)
+    }
+
+    /// A finger is dragging the content, or it still glides.
+    private var isContentMoving: Bool {
+        let pan = scrollView.panGestureRecognizer.state
+        return pan == .began || pan == .changed || scrollView.isDragging || scrollView.isDecelerating
     }
 
     // MARK: - Layout
@@ -281,6 +292,8 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         isApplyingOffset = true
         scrollView.contentOffset = CGPoint(x: offset(for: time), y: min(max(0, scrollView.contentOffset.y), maximumTrackOffset))
         isApplyingOffset = false
+        // Not the finger's doing: a drag adds up only what the finger moves from here.
+        lastOffsetX = scrollView.contentOffset.x
         followTracks()
     }
 
@@ -380,6 +393,8 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         isScrubbing = true
         hasScrubbed = false
         dragStartX = scrollView.contentOffset.x
+        fingerX = dragStartX
+        lastOffsetX = dragStartX
         lastSnap = nil
     }
 
@@ -390,12 +405,26 @@ final class TimelineScrollingView: UIView, UIScrollViewDelegate, UIGestureRecogn
         guard hasScrubbed || abs(scrollView.contentOffset.x - dragStartX) > 0.5 else { return }
         hasScrubbed = true
         let duration = geometry.input.duration
-        var time = min(max(0, TimeInterval((scrollView.contentOffset.x + bounds.width / 2) / pointsPerSecond)), duration)
-        if scrollView.isTracking, let snap = TimelineSnapping.snapped(time, to: geometry.snapTimes, pointsPerSecond: pointsPerSecond) {
-            if lastSnap.map({ abs($0 - snap) > 0.000_1 }) ?? true { Haptics.snap() }
-            lastSnap = snap
-            time = snap
-            setOffset(for: snap)
+        func seconds(at x: CGFloat) -> TimeInterval { min(max(0, TimeInterval((x + bounds.width / 2) / pointsPerSecond)), duration) }
+        var time = seconds(at: scrollView.contentOffset.x)
+        if scrollView.isTracking {
+            // Snapping goes by where the finger has taken the content (the scroll view's own steps added up), not by the offset
+            // a snap left: the playhead holds on a cut only while the finger is within reach of it, so a slow drag leaves it as a
+            // fast one does. Snapping the offset back at every step held it there for good, each slow step being shorter than
+            // the reach.
+            fingerX += scrollView.contentOffset.x - lastOffsetX
+            let finger = seconds(at: fingerX)
+            if let snap = TimelineSnapping.snapped(finger, to: geometry.snapTimes, pointsPerSecond: pointsPerSecond) {
+                if lastSnap.map({ abs($0 - snap) > 0.000_1 }) ?? true { Haptics.snap() }
+                lastSnap = snap
+                time = snap
+                setOffset(for: snap)
+            } else {
+                if lastSnap != nil { setOffset(for: finger) }
+                lastSnap = nil
+                time = finger
+            }
+            lastOffsetX = scrollView.contentOffset.x
         } else {
             lastSnap = nil
         }

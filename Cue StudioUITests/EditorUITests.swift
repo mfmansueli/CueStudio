@@ -425,6 +425,21 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(EditorApp.toastSays(app, "Split or add a clip to reorder"), "A hold on the clip did nothing")
     }
 
+    /// A slow drag from where the playhead snapped (the start of the video) takes it along: the snap holds it only while the
+    /// finger is within reach, not for every step shorter than that reach.
+    func testASlowDragLeavesWhereThePlayheadSnapped() {
+        let app = EditorApp.open()
+        let time = app.staticTexts["edit.timeLabel"]
+        XCTAssertEqual(time.value as? String, "00:00.0 / 01:02.0")
+        let timeline = app.descendants(matching: .any)["edit.timeline"]
+        let start = timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.8, dy: 0.06))
+        // 176 pt at 44 pt a second: 4 s, at 2 points a frame.
+        start.press(forDuration: 0.1, thenDragTo: start.withOffset(CGVector(dx: -176, dy: 0)), withVelocity: 120, thenHoldForDuration: 0.3)
+        let label = time.value as? String ?? ""
+        let seconds = Double(label.prefix(7).dropFirst(3)) ?? 0
+        XCTAssertGreaterThan(seconds, 2, "A slow drag stayed where the playhead snapped: \(label)")
+    }
+
     func testTappingTheVideoTrackPicksTheClipAndEmptySpaceLetsGo() {
         let app = EditorApp.open()
         let timeline = app.descendants(matching: .any)["edit.timeline"]

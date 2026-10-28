@@ -1266,6 +1266,9 @@ auditoria: `reports/editor-award-checklist.md`.
   clipes com quadro, número, origem e duração, arrastados pela alça; cada mudança é um passo de desfazer e o que toca no clipe vai junto. Um clipe só:
   "Split or add a clip to reorder". Segurar só vale sobre um clipe: na régua, numa faixa ou no espaço vazio, o dedo que descansa antes de arrastar
   continua movendo a agulha (`testAFingerThatRestsBeforeMovingStillScrubs`).
+- **Agulha gruda e solta:** arrastando a timeline, a agulha gruda num corte, no começo e no fim, nas pontas de legendas, textos e keyframes quando
+  chega a 6 pt deles (`TimelineSnapping`, com toque háptico) e solta assim que o **dedo** passa desses 6 pt, devagar ou rápido: o encaixe vale pela
+  posição do dedo, não pela da timeline que ele mesmo segurou (`testASlowDragLeavesWhereThePlayheadSnapped`).
 - **Arrastar no tempo:** com um texto, mídia, legenda ou som escolhido, arrastar o **corpo** do bloco o move (o tamanho fica), grudando nos cortes e
   bordas com toque háptico; as pontas amarelas continuam aparando (`TimelineGeometry.bodies`, `HandleTarget.move`).
 - **Marcas de corte sempre à mão:** com um clipe escolhido, os outros cortes mantêm a marca (tocar abre Transitions); só as bordas do clipe
