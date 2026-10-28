@@ -19,9 +19,12 @@ struct PCCScriptDraftTests {
 
     @Test func aFactualNoticeNeedsNoInventedDevelopmentOrSignOff() {
         let draft = PCCScriptDraft(
-            title: "Correction", opening: "", points: [
-                .init(label: "Time", statement: "The correct time is 14:35.", explanation: " ", application: ""),
-            ], ending: "", statesFacts: true
+            intent: .conciseStatement, title: "Correction", opening: "", points: [
+                .init(
+                    label: "Time", statement: "The correct time is 14:35.",
+                    explanation: "Invented impact.", application: "Check an invented updated invitation."
+                ),
+            ], ending: "Invented commitment.", statesFacts: true
         ).scriptDraft
         #expect(draft.scriptText == "The correct time is 14:35.")
     }

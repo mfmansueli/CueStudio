@@ -12,7 +12,7 @@ import Testing
 struct ScriptIntentContractTests {
     @Test func theFrozenCasesFitTheActualDockAndDoNotLoseRequirementsInEitherRoute() throws {
         let cases = try ScriptIntentCase.load()
-        #expect(cases.count == 24)
+        #expect(cases.count == 27)
         #expect(Set(cases.map(\.id)).count == cases.count)
         #expect(Set(cases.map(\.language)) == [.portugueseBrazil, .english, .spanish])
         for item in cases {

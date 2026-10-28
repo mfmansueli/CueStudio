@@ -82,6 +82,9 @@ struct ScriptQualityDeviceTests {
         let service = ScriptAIService(
             usesPrivateCloudCompute: !localOnly, preferredModel: requested == "privateCloud" ? .privateCloud : nil, cloudReasoning: level
         )
+        #if DEBUG
+        service.evaluatesCloudPlanning = ProcessInfo.processInfo.environment["CUE_QUALITY_PLANNING"] == "1"
+        #endif
         if requested == "privateCloud", !service.availability.privateCloud {
             try Test.cancel("Private Cloud Compute is unavailable: this route is not validated")
         }

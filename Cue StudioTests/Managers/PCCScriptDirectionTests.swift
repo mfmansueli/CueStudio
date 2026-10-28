@@ -36,7 +36,7 @@ struct PCCScriptDirectionTests {
     @Test func cloudGhostwritesAnEditableViewpointWithoutFabricatedCredentials() {
         let cloud = AIRequestPolicy.prepare(request(), on: .privateCloud)
         let instructions = ScriptPromptBuilder.instructions(for: cloud)
-        #expect(instructions.contains("Ghostwrite an editable first draft"))
+        #expect(instructions.contains("Ghostwrite a generous, developed first draft"))
         #expect(instructions.contains("first-person opinions, preferences, recommendations"))
         #expect(instructions.contains("do not present an invented testimonial as real"))
         #expect(!instructions.contains("Never say the creator did, tried, discovered"))

@@ -295,5 +295,44 @@
     "reviewChecks": [
       "Honor explicit talking head instead of Auto or usual formats."
     ]
+  },
+  {
+    "id": "pt-BR-editorial-draft",
+    "language": "pt-BR",
+    "prompt": "Por que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero um rascunho com personalidade para lapidar, não uma lista de dicas.",
+    "format": "auto",
+    "expectedDirection": "developed first-person opinion",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Take an authored first-person position without an invented past testimonial.",
+      "Develop the reasoning and a relevant analogy; do not substitute a list or generic motivation.",
+      "Retain supplied facts; editorial preferences are allowed creative draft material."
+    ]
+  },
+  {
+    "id": "en-US-editorial-draft",
+    "language": "en-US",
+    "prompt": "Why can a script read aloud still sound natural? Propose a first-person viewpoint, develop the reasoning and use an analogy. I want a draft with personality to reshape, not a list of tips.",
+    "format": "auto",
+    "expectedDirection": "developed first-person opinion",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Take an authored first-person position without an invented past testimonial.",
+      "Develop the reasoning and a relevant analogy; do not substitute a list or generic motivation.",
+      "Retain supplied facts; editorial preferences are allowed creative draft material."
+    ]
+  },
+  {
+    "id": "es-ES-editorial-draft",
+    "language": "es-ES",
+    "prompt": "¿Por qué puede sonar natural un guion leído? Propón un punto de vista en primera persona, desarrolla el razonamiento y utiliza una analogía. Quiero un borrador con personalidad para pulir, no una lista de consejos.",
+    "format": "auto",
+    "expectedDirection": "developed first-person opinion",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Take an authored first-person position without an invented past testimonial.",
+      "Develop the reasoning and a relevant analogy; do not substitute a list or generic motivation.",
+      "Retain supplied facts; editorial preferences are allowed creative draft material."
+    ]
   }
 ]

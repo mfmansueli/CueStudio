@@ -65,6 +65,9 @@ final class RealScriptDurationDeviceUITests: XCTestCase {
 
     private func keep(_ app: XCUIApplication, fields: [String: String]) throws {
         var fields = fields
+        let review = app.buttons["detail.factCheckedButton"]
+        fields["factReviewVisible"] = String(review.exists)
+        XCTAssertTrue(review.exists, "A free PCC draft must retain the creator's factual-review reminder")
         fields["durationPolicy"] = policy
         fields["model"] = "Real Apple Intelligence; PCC preferred, actual route not observed by this UI test"
         fields["qualityStatus"] = "Requires review of the recorded output, not approved by UI navigation"

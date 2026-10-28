@@ -59,8 +59,8 @@ struct AIRequestPolicyTests {
 
     @Test func cloudCorrectionsCannotExceedTheirSharedRequestAllowance() throws {
         let budget = AIGenerationBudget(maximum: AIRequestPolicy.cloudScriptAttempts)
-        try budget.consume()
-        try budget.consume()
+        for _ in 0..<AIRequestPolicy.cloudScriptAttempts { try budget.consume() }
+        #expect(budget.remaining == 0)
         #expect(throws: ScriptAIError.self) { try budget.consume() }
     }
 

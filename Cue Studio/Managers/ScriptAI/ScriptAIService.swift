@@ -35,6 +35,8 @@ final class ScriptAIService: ScriptWriting {
     #if DEBUG
     /// Isolated UI ablation; normal Debug launches and Release retain the request's own policy.
     var uiTestDurationPolicy: ScriptDurationPolicy?
+    /// Evaluation only: planning has not demonstrated a consistent editorial gain.
+    var evaluatesCloudPlanning = false
     #endif
     /// The on-device model's own count of a request, for fitting it to the window (`ContextBudget`).
     let measure: PromptMeasuring
@@ -128,7 +130,11 @@ final class ScriptAIService: ScriptWriting {
     private func writeChecked(
         _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, language: String?, meter: WritingProgressMeter?
     ) async throws -> GeneratedScript {
-        let budget = AIGenerationBudget(maximum: model == .privateCloud ? AIRequestPolicy.cloudScriptAttempts : .max)
+        var maximum = model == .privateCloud ? AIRequestPolicy.cloudScriptAttempts : .max
+        #if DEBUG
+        if model == .privateCloud, evaluatesCloudPlanning { maximum = 3 }
+        #endif
+        let budget = AIGenerationBudget(maximum: maximum)
         let writing = VoiceCheckedWriting(
             draft: { request, violations in
                 try await self.draftRepeatingLanguageOrEmpty(
@@ -228,7 +234,8 @@ final class ScriptAIService: ScriptWriting {
             : Self.deadlines
         let work = Task {
             try await self.streamDraft(
-                request, on: model, since: begin, insistsOnLanguage: insistsOnLanguage, correcting: violations, progress: progress, meter: meter
+                request, on: model, since: begin, insistsOnLanguage: insistsOnLanguage, correcting: violations,
+                attempt: ScriptDraftAttempt(progress: progress, meter: meter, budget: budget)
             )
         }
         let watchdog = Task {
@@ -256,11 +263,13 @@ final class ScriptAIService: ScriptWriting {
     /// preparation, up to the moment the request goes out.
     private func streamDraft(
         _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, insistsOnLanguage: Bool,
-        correcting violations: [VoiceViolation], progress: GenerationProgress, meter: WritingProgressMeter?
+        correcting violations: [VoiceViolation], attempt: ScriptDraftAttempt
     ) async throws -> GeneratedScript {
+        let progress = attempt.progress
+        let meter = attempt.meter
         if model == .privateCloud {
             return try await streamDevelopedCloudDraft(
-                request, since: begin, insistsOnLanguage: insistsOnLanguage, correcting: violations, progress: progress, meter: meter
+                request, since: begin, insistsOnLanguage: insistsOnLanguage, correcting: violations, attempt: attempt
             )
         }
         let clock = ContinuousClock()
@@ -351,7 +360,7 @@ final class ScriptAIService: ScriptWriting {
             title: title,
             text: text,
             usedLanguageModel: true,
-            needsFactCheck: request.isFreePrompt && (request.isFactualTopic || draft.statesFacts),
+            needsFactCheck: ScriptFactCheckPolicy.needsReview(for: request, on: model, statesFacts: draft.statesFacts),
             model: model,
             timings: timings
         )

@@ -13,6 +13,8 @@ final class AIGenerationBudget {
 
     init(maximum: Int) { self.maximum = maximum }
 
+    var remaining: Int { maximum - used }
+
     func consume() throws {
         guard used < maximum else { throw ScriptAIError.emptyResponse }
         used += 1

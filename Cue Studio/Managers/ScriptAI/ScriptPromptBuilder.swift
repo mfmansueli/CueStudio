@@ -196,7 +196,11 @@ nonisolated enum ScriptPromptBuilder {
             lines.append("The video: \(videoText(for: request))")
             if let angle = briefAngleRule(brief) { lines.append(angle) }
             // The idea is the subject. The voice only changes how it is said: a creator with other topics still gets a script about this one.
-            if voice != nil { lines.append("Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.") }
+            if voice != nil {
+                lines.append(request.modelRoute == .privateCloud
+                    ? "Stay on the current request. Profile information guides the writing style; do not quote or explain the profile instructions in the script."
+                    : "Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.")
+            }
         case .format(let type, let brief):
             if request.brand == nil {
                 lines.append("Brief:")
