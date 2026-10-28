@@ -15,22 +15,22 @@ struct ShineSweep<S: Shape>: ViewModifier {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     func body(content: Content) -> some View {
+        // Draw inside one fixed canvas: a moving child view can enlarge its button's accessibility frame past the clipped pill.
         content.overlay {
             if !reduceMotion {
                 AmbientTimeline { ambient in
-                    GeometryReader { proxy in
-                        let phase = Self.phase(at: ambient.seconds + interval - Self.firstSweep, interval: interval)
-                        if let phase {
-                            let width = proxy.size.width + 140
-                            Rectangle()
-                                .fill(LinearGradient(
-                                    colors: [.white.opacity(0), .white.opacity(0.55), .white.opacity(0)],
-                                    startPoint: .leading, endPoint: .trailing
-                                ))
-                                .frame(width: 70, height: proxy.size.height * 2)
-                                .rotationEffect(.degrees(15))
-                                .position(x: -70 + width * phase, y: proxy.size.height / 2)
-                        }
+                    Canvas { context, size in
+                        guard let phase = Self.phase(at: ambient.seconds + interval - Self.firstSweep, interval: interval) else { return }
+                        let bandWidth: CGFloat = 70
+                        context.translateBy(x: -bandWidth + (size.width + bandWidth * 2) * phase, y: size.height / 2)
+                        context.rotate(by: .degrees(15))
+                        context.fill(
+                            Path(CGRect(x: -bandWidth / 2, y: -size.height, width: bandWidth, height: size.height * 2)),
+                            with: .linearGradient(
+                                Gradient(colors: [.white.opacity(0), .white.opacity(0.55), .white.opacity(0)]),
+                                startPoint: CGPoint(x: -bandWidth / 2, y: 0), endPoint: CGPoint(x: bandWidth / 2, y: 0)
+                            )
+                        )
                     }
                 }
                 .clipShape(shape)

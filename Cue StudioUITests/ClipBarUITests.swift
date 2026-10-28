@@ -74,7 +74,8 @@ final class ClipBarUITests: XCTestCase {
     /// ClipBarUITests/testFadingOutALouderClipPlays` (a copy of the take, in memory).
     func testFadingOutALouderClipPlays() {
         let realTake = ProcessInfo.processInfo.environment["CUE_REAL_TAKE"]
-        let app = EditorApp.open(demo: realTake == nil, arguments: realTake.map { ["-uiTestRealTake", $0] } ?? [])
+        // Begin with one clip: the demo already has a cut at 12.4 s and would leave four clips after these two cuts.
+        let app = EditorApp.open(arguments: realTake.map { ["-uiTestRealTake", $0] } ?? [])
         // Cuts at about 3 s and 5 s (44 points a second at the starting zoom).
         EditorApp.scrub(app, points: 132)
         EditorApp.tapTool(app, "split")

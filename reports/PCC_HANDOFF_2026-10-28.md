@@ -1,3 +1,41 @@
+# ESTADO ATUAL —4 casos corrigidos passaram3 vezes; captura de contraste ativa
+
+Full final da fonte anterior terminou: unidade4476/1 falha/97 pulados/1 esperada, UI392/3 falhas/95 pulados,4047s. Resultado UI `full-ui-20261028-211834.xcresult`; sessão41089 encerrada exit65. Relatório consolidado novo: `reports/PCC_FINAL_VALIDATION_2026-10-28.md`.
+
+Baseline dirigido sem alterar código: player e ShareTo passaram3 vezes, sessão54572 exit0, `only-20261028-222747.xcresult`. Correções aplicadas depois: ShineSweep agora Canvas com mesmo desenho e limites fixos; ClipBar começa com1 clipe em vez da demo de2; player aceita que a espera intermediária retorne já no fim correto do corte; helper ShareTo espera estabilizar botão antes do primeiro toque. Texto/cores/movimento/modelo PCC não mudaram. TestSize verifica bounds durante6s.
+
+**4 casos ×3 execuções passaram** em `only-20261028-223213.xcresult`, sessão71437 exit0,456s. Verificados por xcresulttool como3runs/Passed. Depois só foi acrescentado anexo da hierarquia à captura do teste. Captura de PNG+hierarquia agora em sessão24169, resultado `only-20261028-224031.xcresult`. NÃO modificar fonte durante o teste. SwiftLint estrito e diffcheck passaram.
+
+Próximo: ler sessão24169, exportar PNG/texto, parear em build/inspection para `tools/contrast/audit.py --scale3 --all`; medir contraste real. Em seguida check-warnings integral (aguardar todos builds antes, script remove intermediates antes do lock), possivelmente UI nativa de boas-vindas no Iago se desbloqueado, reinstalar app NORMAL atualizado nos dois iPhones e novo Full conforme AGENTS. O normal instalado anteriormente ainda não tem a correção Canvas; não confundir com atualizações anteriores já concluídas. Não testar automaticamente no Mansuelli. Fonte PCC/59 pedidos permanece a mesma, sem novo candidato de escrita promovido. Sem novo PR ou merge na main.
+
+---
+
+# ORIENTAÇÃO DE PR — conferida pelo Git remoto atualizado
+
+O usuário mostrou cinco branches e perguntou quais precisam de PR/merge. `git fetch origin` concluiu sem mudar fontes. Main continua69df2ac5. `codex/pcc-offline-review` está0 commits atrás/23 à frente da main e contém integralmente `codex/pcc-content-engines` (ebed0ec1). Orientado abrir **somente um PR offline-review → main**, podendo ser draft enquanto validação pendente; nenhum PR criado nem merge autorizado/feito nesta consulta.
+
+`feature/tall-lanes` já é ancestral da main, PR76. `test/fleurs-real-speech` já é ancestral da main (83 atrás/0 à frente). `design/star-transition-smoothness` tem somente um merge exclusivo e7d1a16f (PR68), com ambos os pais f7b65a36 e ca279502 já na main; não tem commit não-merge exclusivo e não precisa novo PR. `main@{1day}...main` na captura é comparação, não branch. Nada foi apagado. Conector GitHub search422/getPR404 nesta consulta, então a confirmação foi por SSH/Git remoto, que continua funcionando; não concluir perda de acesso Git. Não tentar gh auth nem expor credenciais.
+
+Full UI segue sessão41089, resultado `full-ui-20261028-211834.xcresult`; último log parcial220 aprovados/2 falhas. Demais estado e diagnósticos abaixo.
+
+---
+
+# ESTADO ATUAL — Git atualizado; Full UI ativa com duas falhas parciais
+
+Último HEAD/push **554a20f8**, branch `codex/pcc-offline-review`, worktree isolada. Fonte do app permanece a mesma validada por compilação limpa sem warnings (simulador/aparelho/Release) e instalada normalmente nos dois iPhones. Iago abriu; Mansuelli instalado, abertura automática bloqueada por aparelho bloqueado. Atualização de DESIGN_PROJECT removeu a indicação antiga de experimentos aguardando testes: já medidos e desligados.
+
+**Sessão41089 ainda ativa:** Full UI `build/results/full-ui-20261028-211834.xcresult`; log `build/logs/test-full-ui.log`. Após cerca de40 minutos:142 aprovações,2 falhas e43 pulados no log parcial (resultado consolidado ainda pendente). Falhas: `TextSizeUITests.testTheWelcomesButtonIsOnTheScreenAtTheLargestTextSize()` e `ClipBarUITests.testFadingOutALouderClipPlays()`. Não iniciar outro build enquanto Full roda; nenhum arquivo de fonte foi mudado durante a rodada. A unidade já terminou4476/1 falha/97 pulados/1 esperada: diagnóstico preciso da linha109 de QuickEditPlayerTests abaixo.
+
+**Investigação paralela de Welcome:** exportado apenas o vídeo daquele teste da rodada antiga da primary, `full-ui-20261028-133424.xcresult`, para `build/inspection/welcome-previous-all/CB8003B8-745F-4FAC-A953-E9CCAE4835FA.mp4`, quadro final `final.png` na mesma pasta (artefatos ignorados). A imagem mostra botão visual totalmente dentro da tela; xcresult antigo tinha retângulo AX435pt em tela402pt. Hipótese principal: faixa Rectangle do ShineSweep ultrapassa os limites antes do clip e afeta o retângulo AX do Button mesmo accessibilityHidden. Confirmar com anexos da rodada atual antes de alterar. Possível correção delimitada: desenhar faixa dentro de Canvas de tamanho fixo, preservando movimento/cores; ainda NÃO implementada. Não enfraquecer teste só para passar. Lidos LEIA-ME, trecho09§12, DESIGN_PROJECT§10, WelcomeChapter, OnboardingPrimaryButton, ShineSweep. Caminhos desses Swift via rg; não assumir pasta Motion (ShineSweep fica em DesignSystem/Effects).
+
+ClipBar: teste novo da mainPR76, verifica split/volume/fade e app vivo; ainda sem texto da falha pois xcresult aberto não possui Info.plist. Aguarde fechamento para exportar anexos/ler detalhes. Não concluir bug de áudio ou seletor sem evidência.
+
+Usuário perguntou status, melhorias e uso do método ChatGPT. Foi explicado: no fluxo normal há duração informativa, prioridade do pedido/perspectiva, estrutura e proteções; principal correção nova desta continuação foi narrador. Prosa/voz simplificada/planejamento/revisão/cenas foram testados sem ganho consistente e não promovidos. Nenhum novo LLM/provedor externo ou modelo treinado. **Não há paridade editorial comprovada com os textos da comparação.** Usuário perguntou o que falta para terminar e push; respondido que Git já está enviado e falta fechar Full, analisar/repetir3falhas, corrigir o necessário, validar e enviar último relatório/correções. Sem merge na main.
+
+Próximo: aguardar41089, ler resumos e anexos das falhas, rerun isolado de QuickEditPlayer e2UI. Qualquer alteração real do app pede build/check-warnings novamente e reinstalação dos binários normais atualizados. Não declarar Full verde com reruns isolados sem explicar a rodada original. Não tocar checkout primário/Claude nem testar automaticamente no Mansuelli.
+
+---
+
 # ESTADO ATUAL — Full unidade com uma falha de timing; UI em andamento
 
 Sessão41089 continua ativa. Unidade `full-unit-20261028-211116.xcresult`: **4476 aprovados,1 falha,97 pulados,1 falha esperada**,381s. Única falha: `QuickEditPlayerTests/playingMovesTheClockAndStopsAtTheEndHandle()` linha109, segundo `#expect(player.isPlaying)` após esperar `currentTime > 0.3`. O xcresult capturou **currentTime = 1.0, state = ready, isPlaying = false**, exatamente o final do corte. A reprodução começou (checagem imediata linha107 passou), avançou e parou no corte; ainda não concluir flakiness sem rerun. Não alterar código enquanto Full roda. Depois rodar esse teste isolado com repetição e tratar a verificação do estado intermediário sem perder cobertura de início/avanço/fim.
