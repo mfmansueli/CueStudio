@@ -5,7 +5,6 @@
 
 import CoreGraphics
 import Foundation
-import UIKit
 
 /// Text: titles, subtitles, hooks and callouts over the video, in the project's style (Clean
 /// until one is picked). Added at the playhead for the role's length, then written, restyled,
@@ -136,12 +135,6 @@ extension OverlaysViewModel {
             y: CGFloat(center.y) * size.height - box.height / 2,
             width: box.width, height: box.height
         )
-    }
-
-    /// The text as the export draws it, on a preview `width` points wide: what follows the finger
-    /// while it's dragged.
-    func image(ofText text: TextOverlay, width: CGFloat) -> UIImage? {
-        TextOverlayRenderer.image(for: text, frameWidth: width)
     }
 
     /// A stretch of `length` seconds from `start`, inside the edit: moved back when it would run

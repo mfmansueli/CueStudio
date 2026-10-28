@@ -161,7 +161,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         )
         let crop = framing.crop
         let renderSize = outputSize(for: crop.size, shortSide: options.shortSide)
-        var overlays = TextOverlayRenderer.overlays(edit.editedTexts(in: edit.timeline), frame: crop.size)
+        var overlays = TextOverlayRenderer.overlays(shownTexts(of: edit, window: plan.window), frame: crop.size)
         if options.burnsInCaptions, edit.showsCaptions {
             overlays += captionOverlays(for: edit, frame: crop.size)
         }

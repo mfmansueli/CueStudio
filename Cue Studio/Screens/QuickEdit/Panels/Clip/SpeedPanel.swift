@@ -7,14 +7,15 @@ import SwiftUI
 
 /// Speed (this clip): Normal (0.5× to 2× in one tap, the picked one in yellow; with one clip, "Split at playhead to change one
 /// part"; Advanced: any speed from 0.5× to 3×) or Curve (ready-made curves drawn as they play, and the curve to shape by its
-/// points). "Keep voice pitch" for both.
+/// points). "Keep voice pitch" for both. Off 1×, "Preview" in the header plays the clip's first seconds as they play now.
 struct SpeedPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
     var body: some View {
         let clip = viewModel.targetClip
         let speed = clip?.speed ?? 1
-        PanelFrame(viewModel: viewModel, panel: .speed) {
+        let play = viewModel.clips.canPreviewSpeed ? PanelPlay(action: viewModel.clips.previewSpeed) : nil
+        PanelFrame(viewModel: viewModel, panel: .speed, play: play) {
             PanelSegmented(
                 options: [PanelOption(false, String(localized: "Normal"), key: "normal"), PanelOption(true, String(localized: "Curve"), key: "curve")],
                 selection: viewModel.clips.showsCurveTab, identifier: "edit.speed.mode"

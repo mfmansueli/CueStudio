@@ -178,6 +178,9 @@ struct QuickEditView: View {
         .animation(reduceMotion ? nil : .easeOut(duration: 0.22), value: viewModel.panel)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.28), value: viewModel.stylePanelIsExpanded)
         .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: viewModel.isFullScreen)
+        // A track coming or going, or every track out or away: the video gives or takes back its room smoothly.
+        .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: viewModel.timelineLanes)
+        .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: viewModel.tracks.isExpanded)
     }
 
     /// The editor under the navigation bar, laid out from the height it leaves.
@@ -240,7 +243,8 @@ struct QuickEditView: View {
             largeText: dynamicTypeSize >= .xxLarge,
             panelIsExpanded: viewModel.stylePanelIsExpanded && viewModel.panel?.isExpandable == true,
             typesInHeaderField: viewModel.panel == .textStyle && viewModel.selectedText?.graphic == nil
-                && TextStylePanel.hidesControlsWhileTyping(dynamicTypeSize)
+                && TextStylePanel.hidesControlsWhileTyping(dynamicTypeSize),
+            timelineLanes: viewModel.timelineLanes, collapsesTimeline: !viewModel.tracks.isExpanded
         )
     }
 

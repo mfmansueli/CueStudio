@@ -29,7 +29,7 @@ extension ClipsViewModel {
     func setSpeedCurve(_ preset: SpeedCurvePreset?) {
         guard targetCurve?.preset != preset || (preset == nil && targetCurve != nil) else { return }
         updateClip { $0.speedCurve = preset?.curve }
-        if preset != nil { previewTargetClip() }
+        if preset != nil { previewSpeed() }
     }
 
     /// "Custom": five points at the clip's speed, to shape.
@@ -62,7 +62,7 @@ extension ClipsViewModel {
         shapesCurve = false
         updateCurveSoundStepping()
         endPanelChange()
-        previewTargetClip()
+        previewSpeed()
     }
 
     /// Curved clips' sound in steps while a finger shapes the timing (a curve's point, a clip's handle), rendered once it lifts.
@@ -80,7 +80,14 @@ extension ClipsViewModel {
         return clip.sourceOffset(forEdited: local) / clip.sourceLength
     }
 
-    private func previewTargetClip() {
+    /// The picked clip plays at another speed than its own (a speed, or a curve): "Preview" in Speed's header.
+    var canPreviewSpeed: Bool {
+        guard let clip = targetClip else { return false }
+        return clip.speedCurve != nil || abs(clip.speed - 1) > 0.001
+    }
+
+    /// The picked clip's first seconds as they play now, then the playhead comes back.
+    func previewSpeed() {
         guard let clip = targetClip, let index = edit.timeline.index(ofSegment: clip.id) else { return }
         let start = edit.timeline.editedStart(ofSegmentAt: index)
         previewPart(start...(start + min(clip.duration, 6)))

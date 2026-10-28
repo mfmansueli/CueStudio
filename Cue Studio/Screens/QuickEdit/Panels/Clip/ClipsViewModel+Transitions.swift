@@ -29,6 +29,15 @@ extension ClipsViewModel {
         }
     }
 
+    /// "Preview" in Transition's header: plays across the picked cut, from a moment before it to a moment after its
+    /// transition, then the playhead comes back to before the cut.
+    func previewTransition() {
+        guard let index = selectedJoinIndex, let duration = selectedTransitionDuration else { return }
+        let cut = edit.timeline.editedStart(ofSegmentAt: index)
+        let start = max(0, cut - Self.transitionLeadIn)
+        previewPart(start...min(edit.timeline.editedDuration, cut + duration + Self.transitionLeadIn), back: start)
+    }
+
     /// How long the selected cut's transition lasts.
     var selectedTransitionDuration: TimeInterval? {
         guard let index = selectedJoinIndex, let transition = selectedTransition, transition != .hardCut else { return nil }

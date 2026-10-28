@@ -100,13 +100,20 @@ final class TextStyleUITests: XCTestCase {
             XCTAssertLessThan(preview.frame.height, previewHeight - 40)
         }
         // Every tab in view and a full target; the panel's controls stop above the Home Indicator.
-        for tab in ["presets", "font", "color", "motion"] {
+        for tab in ["animated", "styles", "custom"] {
             let button = app.buttons["edit.panel.tab.\(tab)"]
             XCTAssertTrue(button.isHittable, tab)
             assertFullTarget(button, tab)
         }
-        // The text's colors are on the Color tab.
-        app.buttons["edit.panel.tab.color"].tap()
+        // Custom's sections too.
+        EditorApp.showTextTab(app, "font")
+        for section in ["font", "color", "motion"] {
+            let button = app.buttons["edit.panel.tab.\(section)"]
+            XCTAssertTrue(button.isHittable, section)
+            assertFullTarget(button, section)
+        }
+        // The text's colors are in Custom › Color.
+        EditorApp.showTextTab(app, "color")
         let swatch = app.buttons["edit.textColor.white"]
         scrollPanel(app, to: swatch)
         assertFullTarget(swatch)
@@ -135,6 +142,13 @@ final class TextStyleUITests: XCTestCase {
     func testASwipeOverASliderScrollsThePanel() {
         let app = EditorApp.open(demo: true)
         _ = openTextStyle(app)
+        EditorApp.showTextTab(app, "font")
+        // Collapsed, so Font's controls are taller than the panel and it has somewhere to scroll.
+        let expand = app.buttons["edit.panel.expand"]
+        if expand.label == "Collapse panel" {
+            expand.tap()
+            XCTAssertTrue(waitFor { expand.label == "Expand panel" })
+        }
         let size = app.descendants(matching: .any)["edit.textSize"]
         XCTAssertTrue(size.exists(within: 5))
         let value = size.value as? String
@@ -156,13 +170,13 @@ final class TextStyleUITests: XCTestCase {
         XCTAssertEqual(subtitle.label, "All 2 texts change together")
         XCTAssertTrue(app.staticTexts["edit.style.scopeNote"].exists(within: 3))
         // Motion is the picked text's: no scope, no captions action, and the header says so.
-        app.buttons["edit.panel.tab.motion"].tap()
+        EditorApp.showTextTab(app, "motion")
         XCTAssertTrue(waitFor { subtitle.label == "Motion and timing change only this text" }, subtitle.label)
         XCTAssertFalse(app.buttons["edit.style.scope.allTexts"].exists)
         XCTAssertFalse(app.buttons["edit.style.copyToCaptions"].exists)
         XCTAssertTrue(app.buttons["edit.keyframe.toggle"].exists)
         // Back on a look's tab, the scope is where it was left.
-        app.buttons["edit.panel.tab.color"].tap()
+        EditorApp.showTextTab(app, "color")
         XCTAssertTrue(app.buttons["edit.style.scope.allTexts"].exists(within: 3))
         XCTAssertTrue(app.buttons["edit.style.scope.allTexts"].isSelected)
         XCTAssertEqual(subtitle.label, "All 2 texts change together")
@@ -182,11 +196,11 @@ final class TextStyleUITests: XCTestCase {
         keyboard.waitUntilStill()
         app.buttons["edit.panel.apply"].waitUntilStill()
         let top = keyboard.frame.minY
-        for id in ["edit.panel.apply", "edit.panel.tab.presets", "edit.panel.tab.color"] {
+        for id in ["edit.panel.apply", "edit.panel.tab.styles", "edit.panel.tab.custom"] {
             XCTAssertLessThanOrEqual(app.buttons[id].frame.maxY, top + 1, id)
         }
         XCTAssertFalse(app.buttons["edit.style.copyToCaptions"].exists)
-        app.buttons["edit.panel.tab.color"].tap()
+        EditorApp.showTextTab(app, "color")
         XCTAssertTrue(waitFor { !keyboard.exists })
         let outline = app.buttons["edit.textShadow.outline"]
         scrollPanel(app, to: outline)

@@ -55,7 +55,7 @@ extension OverlaysViewModel {
 
     /// Where the item is, how big and how opaque at the playhead.
     func motionState(of item: MotionItem) -> OverlayMotion.State {
-        let base = OverlayMotion.State(center: baseCenter(of: item), scale: 1, opacity: 1)
+        let base = OverlayMotion.State(center: baseCenter(of: item), scale: 1, opacity: 1, rotation: baseRotation(of: item))
         guard let local = localTime(of: item) else { return base }
         let length = editedSpan(of: item)?.duration ?? 0
         return OverlayMotion(keyframes(of: item), animation: animation(of: item), length: length, base: base).state(at: local) ?? base
@@ -76,13 +76,37 @@ extension OverlaysViewModel {
     }
 
     /// Picks a ready-made motion for the picked item (nil: none), keeping its duration and strength when it had one. One undo
-    /// step; the keyframes stay as they are. The playhead goes to the item's start, to see it.
+    /// step; the keyframes stay as they are. The playhead goes to the item's start, to see it. On a text that wears an effect,
+    /// one way in at a time: a Motion (or None) leaves the effect still, its finish kept, and its Animated tab says Still;
+    /// "Effect's own" (`playEffectsOwnMotion`) gives it back.
     func setMotionPreset(_ preset: MotionPreset?) {
         guard let item = motionItem else { return }
         let current = animation(of: item)
         let next = preset.map { OverlayAnimation(preset: $0, duration: current?.duration ?? 0.5, intensity: current?.intensity ?? 0.5) }
-        setAnimation(next, of: item)
+        if case .text(let id) = item, edit.texts.first(where: { $0.id == id })?.effect != nil {
+            customizeText(id, .effect) { text in
+                text.animation = next
+                text.effect?.motion = .still
+            }
+        } else {
+            setAnimation(next, of: item)
+        }
         if next != nil, let span = editedSpan(of: item) {
+            player.pause()
+            player.seek(to: span.start)
+        }
+        Haptics.selection()
+    }
+
+    /// Motion's "Effect's own": the picked text's effect plays its own way in and out again, as its card shows, with no Motion
+    /// over it. One undo step; the playhead goes to the text's start, to see it.
+    func playEffectsOwnMotion() {
+        guard let text = selectedText, text.effect != nil else { return }
+        customizeText(text.id, .effect) { text in
+            text.animation = nil
+            text.effect?.motion = .animated
+        }
+        if let span = editedSpan(ofText: text.id) {
             player.pause()
             player.seek(to: span.start)
         }
@@ -101,10 +125,23 @@ extension OverlaysViewModel {
         setAnimation(animation, of: item, key: "motionIntensity")
     }
 
-    /// Plays the picked item from its start, to see its motion.
+    /// Something moves the picked item in (its Motion, or a text's effect that moves): "Preview" in its panel's header.
+    var canPreviewMotion: Bool {
+        guard let item = motionItem else { return false }
+        return animation(of: item) != nil || (selectedTextID != nil && selectedText?.effect?.isAnimated == true)
+    }
+
+    /// "Preview": plays the picked item from its start, to see its motion, then the playhead goes back. A text's effect comes
+    /// in as the video will show it, for as long as its way in lasts (or its own Motion, which plays instead).
     func previewMotion() {
         guard let item = motionItem, let span = editedSpan(of: item) else { return }
-        previewPart(span.start...min(span.end, span.start + max(1.2, (animation(of: item)?.duration ?? 0.5) * 2.5)), back: span.start)
+        let length: TimeInterval
+        if selectedTextID != nil, let effect = selectedText?.effect {
+            length = (animation(of: item)?.duration ?? effect.duration) + 0.9
+        } else {
+            length = max(1.2, (animation(of: item)?.duration ?? 0.5) * 2.5)
+        }
+        previewPart(span.start...min(span.end, span.start + length))
     }
 
     private func setAnimation(_ animation: OverlayAnimation?, of item: MotionItem, key: String? = nil) {
@@ -134,8 +171,7 @@ extension OverlaysViewModel {
             toast.show(String(localized: "Keyframe removed"))
             return
         }
-        let state = motionState(of: item)
-        let keyframe = OverlayKeyframe(time: local, center: state.center, scale: state.scale, opacity: state.opacity, mask: state.mask)
+        let keyframe = keyframeHere(of: item, at: local)
         updateKeyframes(of: item) { $0.append(keyframe) }
         toast.show(String(localized: "Keyframe added · Now drag"))
     }
@@ -207,6 +243,19 @@ extension OverlaysViewModel {
         }
     }
 
+    /// A text's own turn; photos and videos don't turn.
+    private func baseRotation(of item: MotionItem) -> Double {
+        guard case .text(let id) = item else { return 0 }
+        return edit.texts.first { $0.id == id }?.rotation ?? 0
+    }
+
+    /// A keyframe `local` seconds in, where the item is now (a text's turn included).
+    private func keyframeHere(of item: MotionItem, at local: TimeInterval) -> OverlayKeyframe {
+        let state = motionState(of: item)
+        let turn: Double? = if case .text = item { state.rotation } else { nil }
+        return OverlayKeyframe(time: local, center: state.center, scale: state.scale, opacity: state.opacity, mask: state.mask, rotation: turn)
+    }
+
     /// Changes the keyframe at the playhead of the picked item, adding it first when there's none.
     private func setAtPlayhead(_ update: (inout OverlayKeyframe) -> Void) {
         guard let item = motionItem else { return }
@@ -216,10 +265,7 @@ extension OverlaysViewModel {
     /// Changes the item's keyframe at the playhead, adding it first (where the item is now) when there's none.
     func setAtPlayhead(of item: MotionItem, _ update: (inout OverlayKeyframe) -> Void) {
         guard let local = localTime(of: item) else { return }
-        var keyframe = keyframeAtPlayhead(of: item) ?? {
-            let state = motionState(of: item)
-            return OverlayKeyframe(time: local, center: state.center, scale: state.scale, opacity: state.opacity, mask: state.mask)
-        }()
+        var keyframe = keyframeAtPlayhead(of: item) ?? keyframeHere(of: item, at: local)
         update(&keyframe)
         updateKeyframes(of: item) { keyframes in
             if let index = keyframes.firstIndex(where: { $0.id == keyframe.id }) {

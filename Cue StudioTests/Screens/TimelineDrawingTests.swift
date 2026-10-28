@@ -20,14 +20,15 @@ struct TimelineDrawingTests {
         let content: TimelineContentView
         let sources: TimelineContentView.Sources
 
-        var layers: [CALayer] { content.layer.sublayers?.first?.sublayers ?? [] }
+        /// Every piece's layer: the tracks' and the ruler's.
+        var layers: [CALayer] { content.layer.sublayers?.flatMap { $0.sublayers ?? [] } ?? [] }
 
         func show() {
             content.show(TimelineGeometry(viewModel.timelineInput(heightClass: .regular)), sources: sources)
         }
     }
 
-    /// Ten minutes in three clips, a line every three seconds, a text every thirty, music; seen around the middle.
+    /// Ten minutes in three clips, a line every three seconds, a text every thirty, music; every track out, seen around the middle.
     private func makeScene() async throws -> Scene {
         var take = TestData.take(scriptID: nil, number: 1)
         take.duration = 600
@@ -54,6 +55,8 @@ struct TimelineDrawingTests {
             viewModel.overlays.addText(.title)
         }
         viewModel.selection = nil
+        // Every track out: the whole timeline is drawn, not the video track and the current one.
+        viewModel.tracks.isExpanded = true
         player.seek(to: 300)
         let content = TimelineContentView(frame: CGRect(x: 0, y: 0, width: 600 * 44, height: 260))
         let sources = TimelineContentView.Sources(take: URL.temporaryDirectory.appending(path: "none.mov"))

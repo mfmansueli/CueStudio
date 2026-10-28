@@ -38,6 +38,10 @@ nonisolated struct TextLook: Codable, Hashable, Sendable {
     /// Moves a title up (negative) or down from its role's usual height, as a fraction of the
     /// frame. Captions sit where their position (top, middle, bottom) puts them.
     var verticalOffset: Double = 0
+    /// A finished look on the words (`TextEffect`); nil for none. Captions never wear one (`TextOverlay.caption`).
+    var effect: TextEffect?
+    /// How the letters are drawn (`TextLettering`): a look saved before the outline went outside them keeps the first way.
+    var lettering: TextLettering = .outside
 
     /// Sets `text`'s look, leaving alone what it says, when it shows and the fields in `kept`.
     func apply(to text: inout TextOverlay, keeping kept: Set<TextLookField> = []) {
@@ -58,6 +62,8 @@ nonisolated struct TextLook: Codable, Hashable, Sendable {
         if !kept.contains(.shadow) { text.hasShadow = hasShadow }
         if !kept.contains(.outline) { text.hasOutline = hasOutline }
         if !kept.contains(.glow) { text.glow = glow }
+        if !kept.contains(.effect) { text.effect = text.graphic == nil ? effect : nil }
+        text.lettering = lettering
         if !kept.contains(.position) {
             text.center = OverlayPoint(x: 0.5, y: text.role.defaultY + verticalOffset).clamped
         }
@@ -79,13 +85,15 @@ nonisolated struct TextLook: Codable, Hashable, Sendable {
         hasOutline = text.hasOutline
         glow = text.glow
         verticalOffset = text.center.y - text.role.defaultY
+        effect = text.effect
+        lettering = text.lettering
     }
 
     init(
         font: TextOverlayFont = .classic, weight: TextOverlayWeight = .bold, sizeScale: Double = 1, tracking: Double = 0,
         isUppercase: Bool = false, alignment: LineAlignment = .center, color: OverlayColor = .white,
         background: TextOverlayBackground = .none, backgroundColor: OverlayColor = .black, backgroundOpacity: Double = 1,
-        hasShadow: Bool = true, hasOutline: Bool = false, glow: Double = 0, verticalOffset: Double = 0
+        hasShadow: Bool = true, hasOutline: Bool = false, glow: Double = 0, verticalOffset: Double = 0, effect: TextEffect? = nil
     ) {
         self.font = font
         self.weight = weight
@@ -101,13 +109,14 @@ nonisolated struct TextLook: Codable, Hashable, Sendable {
         self.hasOutline = hasOutline
         self.glow = glow
         self.verticalOffset = verticalOffset
+        self.effect = effect
     }
 
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
         case font, weight, sizeScale, tracking, isUppercase, alignment, color, background, backgroundColor
-        case backgroundOpacity, hasShadow, hasOutline, glow, verticalOffset
+        case backgroundOpacity, hasShadow, hasOutline, glow, verticalOffset, effect, lettering
     }
 
     /// A field this version doesn't know, or a value out of range, falls back rather than failing.
@@ -134,5 +143,7 @@ nonisolated struct TextLook: Codable, Hashable, Sendable {
         hasOutline = (try? container.decodeIfPresent(Bool.self, forKey: .hasOutline)) ?? defaults.hasOutline
         glow = min(max((try? container.decodeIfPresent(Double.self, forKey: .glow)) ?? defaults.glow, 0), 1)
         verticalOffset = (try? container.decodeIfPresent(Double.self, forKey: .verticalOffset)) ?? defaults.verticalOffset
+        effect = try? container.decodeIfPresent(TextEffect.self, forKey: .effect)
+        lettering = TextLettering.read(try? container.decodeIfPresent(String.self, forKey: .lettering))
     }
 }

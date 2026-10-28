@@ -5,8 +5,8 @@
 
 import UIKit
 
-/// A sample of a type look drawn exactly as the export draws it (`TextOverlayRenderer`), at three
-/// pixels per point so it stays sharp in a small card. Kept once drawn: the presets don't change.
+/// A sample of a type look drawn exactly as the export draws it (`TextOverlayRenderer`), its shadow and effect included, at
+/// three pixels per point so it stays sharp in a small card. Kept once drawn (the presets don't change), up to `mostKept`.
 enum TypeLookPreview {
     private struct Key: Hashable {
         let look: TextLook
@@ -15,6 +15,8 @@ enum TypeLookPreview {
     }
 
     private static var cache: [Key: UIImage] = [:]
+    /// Samples kept at most: past it, they're drawn again as they're asked for.
+    private static let mostKept = 96
 
     static func image(_ look: TextLook, use: TextUse, sample: String) -> UIImage? {
         let key = Key(look: look, use: use, sample: sample)
@@ -31,9 +33,10 @@ enum TypeLookPreview {
         }
         let width = TextOverlayRenderer.referenceWidth * 3
         let fraction = use == .caption ? TextOverlayRenderer.captionWidthFraction : TextOverlayRenderer.maxWidthFraction
-        guard let drawn = TextOverlayRenderer.image(for: text, frameWidth: width, widthFraction: fraction),
+        guard let drawn = TextOverlayRenderer.drawing(for: text, frameWidth: width, widthFraction: fraction)?.image,
               let cgImage = drawn.cgImage else { return nil }
         let image = UIImage(cgImage: cgImage, scale: 3, orientation: .up)
+        if cache.count >= mostKept { cache.removeAll() }
         cache[key] = image
         return image
     }

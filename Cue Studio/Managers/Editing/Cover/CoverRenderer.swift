@@ -30,7 +30,7 @@ nonisolated enum CoverRenderer {
             return CoverCompositionRenderer.image(title: cover.title, composition: composition, pictures: pictures, size: size, cutout: cutout)
         }
         if let design = cover.design { return designImage(cover: cover, design: design, picture: picture, size: size) }
-        let title = cover.titleOverlay.flatMap { TextOverlayRenderer.image(for: $0, frameWidth: size.width) }
+        let title = cover.titleOverlay.flatMap { TextOverlayRenderer.drawing(for: $0, frameWidth: size.width)?.image }
         let format = UIGraphicsImageRendererFormat()
         format.scale = 1
         format.opaque = true

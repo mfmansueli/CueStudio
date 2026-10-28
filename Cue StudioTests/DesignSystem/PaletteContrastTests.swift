@@ -388,6 +388,18 @@ struct PaletteContrastTests {
         #expect(ColorContrast.ratio(icon, black) >= ColorContrast.componentMinimum, "a track's icon in the gutter")
     }
 
+    /// The gutter's cell (`Palette.bg`): a track's icon and the ▾/▴ beside the current one, which is a control, in its ink
+    /// and in the active track's yellow.
+    @Test func theTrackChooserReadsInTheGutter() {
+        for appearance in [Appearance.dark, Appearance.darkIncreased] {
+            let cell = rgb(Palette.bg, in: appearance)
+            for (name, ink) in [("ink", Palette.Editor.laneGutterInk), ("active", Palette.acc)] {
+                let chevron = rgb(ink, in: appearance, over: cell)
+                #expect(ColorContrast.ratio(chevron, cell) >= ColorContrast.componentMinimum, "\(name), \(appearance)")
+            }
+        }
+    }
+
     /// v26 lanes: each track's ink on its own fill, over the strip it sits on.
     @Test func theLanesInksReadOnTheirFills() {
         let lanes: [(name: String, fill: Color, ink: Color)] = [

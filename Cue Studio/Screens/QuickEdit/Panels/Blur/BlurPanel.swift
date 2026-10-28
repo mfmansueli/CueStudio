@@ -8,8 +8,8 @@ import SwiftUI
 /// Blur area. First, what to hide: the faces found in the frame (numbered on the preview, a tap on one hides and follows it),
 /// every face but the largest, or an area to draw. Then the picked area: what it covers, first (`BlurStatusCard`), then how it
 /// hides (Blur, Pixelate, Solid, none of them weak), its shape, strength or the bar's color, a soft edge, when it starts and
-/// ends, and Review. ◐ shows the video without what's hidden. The box on the preview is the area itself: drag it, pull its
-/// corners (`BlurEditingLayer`).
+/// ends; "Preview" in the header plays it again. ◐ shows the video without what's hidden. The box on the preview is the area
+/// itself: drag it, pull its corners (`BlurEditingLayer`).
 struct BlurPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -20,7 +20,7 @@ struct BlurPanel: View {
                 choosing(picking)
             }
         } else if let region = viewModel.selectedBlur {
-            PanelFrame(viewModel: viewModel, panel: .blur, compare: blur.blurCompare) {
+            PanelFrame(viewModel: viewModel, panel: .blur, compare: blur.blurCompare, play: PanelPlay(action: blur.review)) {
                 BlurStatusCard(viewModel: viewModel, region: region)
             } content: {
                 settings(region)
@@ -112,7 +112,6 @@ struct BlurPanel: View {
                 onIncrease: { blur.resizeBar(region.id, instance: first, edge: .end, to: first.end + 0.1) }
             )
         }
-        PanelButton(label: String(localized: "Replay"), systemImage: "play.fill", identifier: "edit.blur.review") { blur.review() }
         PanelNote(text: String(localized: "Drag the box in the video to move it, pull a corner to resize it. Where it slipped, drag it back at that moment: that spot is yours, and tracking again keeps it."))
     }
 

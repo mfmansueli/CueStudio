@@ -6,13 +6,14 @@
 import SwiftUI
 
 /// The cut picked on the timeline: None keeps it a hard cut; Dissolve, Fade, Slide, Zoom, Blur, Flash, Push, Punch or Wipe
-/// plays across it (the playhead goes a second before the cut, so Play shows it), as long as its Duration says. With more
-/// cuts, the same on every one.
+/// plays across it (the playhead goes a second before the cut, so Play shows it, and "Preview" in the header plays across
+/// it), as long as its Duration says. With more cuts, the same on every one.
 struct TransitionPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
     var body: some View {
-        PanelFrame(viewModel: viewModel, panel: .transition) {
+        let play = viewModel.clips.selectedTransitionDuration == nil ? nil : PanelPlay(action: viewModel.clips.previewTransition)
+        PanelFrame(viewModel: viewModel, panel: .transition, play: play) {
             PanelTiles(
                 options: EditTransition.allCases.map { PanelOption($0, $0.label, systemImage: $0.systemImage, key: $0.rawValue) },
                 selection: viewModel.selectedTransition, identifier: "edit.transition"

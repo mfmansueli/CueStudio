@@ -135,7 +135,7 @@ struct QuickCreatorViewModelTests {
         scenario.viewModel.overlays.applyPreset(.label, to: .selected)
         let texts = scenario.viewModel.edit.texts
         #expect(texts[1].background == .box)
-        #expect(texts[1].backgroundColor == .black)
+        #expect(texts[1].backgroundColor == .offBlack)
         #expect(texts[1].preset == .label)
         // Only the picked one, and new texts don't follow it.
         #expect(texts[0].preset == .cue)

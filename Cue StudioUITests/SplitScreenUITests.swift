@@ -145,11 +145,12 @@ final class SplitScreenUITests: XCTestCase {
         capture("gap-closed")
     }
 
-    /// Taps the media track (the first under the video) at `second` of the video, from where the playhead is.
+    /// Taps the media track (the first under the video, every track out) at `second` of the video, from where the playhead is.
     private func tapMediaTrack(atSecond second: TimeInterval) {
         let now = playhead
         let timeline = app.descendants(matching: .any)["edit.timeline"]
         XCTAssertTrue(timeline.exists(within: 3))
+        EditorApp.showEveryTrack(app)
         timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0))
             .withOffset(CGVector(dx: CGFloat(second - now) * 44, dy: 92 + 17))
             .tap()

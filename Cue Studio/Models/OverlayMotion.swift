@@ -16,12 +16,15 @@ nonisolated struct OverlayMotion: Hashable, Sendable {
         var opacity: Double
         /// Where the mask is; nil where no keyframe places it (the mask's own placement then).
         var mask: MaskPlacement?
+        /// A text's turn, in radians, clockwise on the screen.
+        var rotation: Double
 
-        init(center: OverlayPoint, scale: Double, opacity: Double, mask: MaskPlacement? = nil) {
+        init(center: OverlayPoint, scale: Double, opacity: Double, mask: MaskPlacement? = nil, rotation: Double = 0) {
             self.center = center
             self.scale = scale
             self.opacity = opacity
             self.mask = mask
+            self.rotation = rotation
         }
     }
 
@@ -79,27 +82,33 @@ nonisolated struct OverlayMotion: Hashable, Sendable {
 
     private func placeState(at time: TimeInterval) -> State? {
         guard let first = keyframes.first, let last = keyframes.last else { return nil }
-        if time <= first.time { return State(first) }
-        if time >= last.time { return State(last) }
-        guard let next = keyframes.firstIndex(where: { $0.time > time }), next > 0 else { return State(last) }
+        // A keyframe without a turn of its own keeps the item's.
+        let turn = base?.rotation ?? 0
+        if time <= first.time { return State(first, rotation: turn) }
+        if time >= last.time { return State(last, rotation: turn) }
+        guard let next = keyframes.firstIndex(where: { $0.time > time }), next > 0 else { return State(last, rotation: turn) }
         let from = keyframes[next - 1]
         let to = keyframes[next]
         let span = to.time - from.time
         let progress = to.easing.apply(span > 0 ? (time - from.time) / span : 1)
+        let fromTurn = from.rotation ?? turn
+        let toTurn = to.rotation ?? turn
         return State(
             center: OverlayPoint(
                 x: from.center.x + (to.center.x - from.center.x) * progress,
                 y: from.center.y + (to.center.y - from.center.y) * progress
             ),
             scale: from.scale + (to.scale - from.scale) * progress,
-            opacity: from.opacity + (to.opacity - from.opacity) * progress
+            opacity: from.opacity + (to.opacity - from.opacity) * progress,
+            rotation: fromTurn + (toTurn - fromTurn) * progress
         )
     }
 }
 
 nonisolated extension OverlayMotion.State {
-    /// The keyframe's place, size and opacity (its mask is read apart, through the keyframes that have one).
-    init(_ keyframe: OverlayKeyframe) {
-        self.init(center: keyframe.center, scale: keyframe.scale, opacity: keyframe.opacity)
+    /// The keyframe's place, size, opacity and turn (`rotation` when it has none of its own); its mask is read apart, through
+    /// the keyframes that have one.
+    init(_ keyframe: OverlayKeyframe, rotation: Double = 0) {
+        self.init(center: keyframe.center, scale: keyframe.scale, opacity: keyframe.opacity, rotation: keyframe.rotation ?? rotation)
     }
 }

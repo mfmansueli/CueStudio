@@ -54,6 +54,16 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
     /// What the creator changed by hand since, kept when a preset is applied to every text with
     /// "Keep my changes".
     var customized: Set<TextLookField> = []
+    /// A finished look drawn on its words (Text style › Animated: Gold metal, Type wave, Pop 3D, Neon, Editorial reveal, Elegant sheen); nil for none.
+    /// Never on a caption or a graphic.
+    var effect: TextEffect?
+    /// How far it is turned around its center, in radians, clockwise on the screen (two fingers in the preview).
+    var rotation: Double = 0
+    /// Its block once resized as a whole or made wider or narrower (`TextBlock`): it then grows with its size, its lines
+    /// breaking where they did. Nil: its lines as long as the frame allows, as texts always were.
+    var block: TextBlock?
+    /// How its letters are drawn (`TextLettering`): a text saved before the outline went outside them keeps the first way.
+    var lettering: TextLettering = .outside
 
     /// A new text for `role` in `style` (edits made before type presets), shown over `span` of the
     /// recording.
@@ -86,6 +96,8 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         overlay.text = line
         overlay.size = min(max(TextLook.captionBaseSize * look.sizeScale, sizeRange.lowerBound), sizeRange.upperBound)
         overlay.center = OverlayPoint(x: 0.5, y: position.verticalFraction + offset)
+        // A caption line changes every second: an effect's way in and out is for a text.
+        overlay.effect = nil
         return overlay
     }
 
@@ -114,11 +126,24 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
     /// The look it has now.
     var look: TextLook { TextLook(of: self) }
 
+    /// Its effect plays its own way in and out: it moves, and no ready-made Motion (`animation`) plays instead. The two never
+    /// add up: one way in at a time.
+    var playsEffectMotion: Bool {
+        guard let effect else { return false }
+        return effect.isAnimated && animation == nil
+    }
+
+    /// Its picture changes over its own time: keyframes, a Motion, or its effect's way in and out.
+    var changesOverItsTime: Bool {
+        !keyframes.isEmpty || animation != nil || playsEffectMotion
+    }
+
     // MARK: - Coding
 
     private enum CodingKeys: String, CodingKey {
         case id, text, role, font, weight, size, tracking, isUppercase, alignment, color, background, backgroundColor
         case backgroundOpacity, hasShadow, hasOutline, glow, center, span, preset, customized, clipAnchor, keyframes, animation, graphic
+        case effect, rotation, block, lettering
     }
 
     /// Texts saved before letter spacing, fill opacity and presets read with none of them.
@@ -149,6 +174,11 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         keyframes = (try? container.decodeIfPresent([OverlayKeyframe].self, forKey: .keyframes)) ?? []
         animation = try? container.decodeIfPresent(OverlayAnimation.self, forKey: .animation)
         graphic = try? container.decodeIfPresent(TextGraphic.self, forKey: .graphic)
+        effect = try? container.decodeIfPresent(TextEffect.self, forKey: .effect)
+        let turn = (try? container.decodeIfPresent(Double.self, forKey: .rotation)) ?? 0
+        rotation = turn.isFinite ? remainder(turn, 2 * .pi) : 0
+        block = try? container.decodeIfPresent(TextBlock.self, forKey: .block)
+        lettering = TextLettering.read(try? container.decodeIfPresent(String.self, forKey: .lettering))
     }
 
     func encode(to encoder: Encoder) throws {
@@ -179,5 +209,11 @@ nonisolated struct TextOverlay: Codable, Hashable, Identifiable, Sendable {
         if !keyframes.isEmpty { try container.encode(keyframes, forKey: .keyframes) }
         try container.encodeIfPresent(animation, forKey: .animation)
         try container.encodeIfPresent(graphic, forKey: .graphic)
+        // Each absent when unset, so an edit made without them encodes as it always did.
+        try container.encodeIfPresent(effect, forKey: .effect)
+        if rotation != 0 { try container.encode(rotation, forKey: .rotation) }
+        try container.encodeIfPresent(block, forKey: .block)
+        // Absent for the first way, as a text saved before it was written.
+        if lettering != .centered { try container.encode(lettering, forKey: .lettering) }
     }
 }

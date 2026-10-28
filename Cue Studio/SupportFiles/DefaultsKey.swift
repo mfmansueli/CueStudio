@@ -54,6 +54,9 @@ nonisolated enum DefaultsKey {
     static let narrationScriptSpeed = "editor.narrationScriptSpeed"
     /// When the editor last said Low Power Mode was on (`LowPowerNotice`: once a day).
     static let lowPowerNoticeShownAt = "editor.lowPowerNoticeShownAt"
+    /// The timeline's current track for each take edited lately (`[String]` of "take id=track", the last edited at the end;
+    /// `EditorPreferencesStore`).
+    static let timelineLanes = "editor.timelineLanes"
     /// Free exports used, before the count moved to the Keychain; migrated and removed at launch.
     static let legacyCleanExportsUsed = "cleanExportsUsed"
     /// Debug builds: this install has launched before. UserDefaults goes with the app and the Keychain stays, so without
