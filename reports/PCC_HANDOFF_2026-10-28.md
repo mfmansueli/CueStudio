@@ -1,3 +1,9 @@
+# PRÓXIMO PONTO DE RETOMADA — variantes de voz e prosa preparadas
+
+Na worktree `pcc-offline-review`, foram preparados dois experimentos Debug **desligados por padrão**: `CUE_QUALITY_FREE_PROSE=1` e `CUE_QUALITY_DELIVERY_VOICE=1`. Nenhum build ou teste de aparelho foi iniciado nesta continuação; SwiftLint passou, compilação/testes/qualidade seguem pendentes. Plano e riscos em `reports/PCC_NEXT_EDITORIAL_EXPERIMENT_2026-10-28.md`. A validação zero warnings anterior NÃO cobre este código novo. Não promover, instalar ou anunciar ganho antes de testar. Esta continuação atende ao pedido de adiantar melhorias sem disputar recursos do Claude Code.
+
+---
+
 # ATUALIZAÇÃO MAIS RECENTE — continuação sem disputar recursos do Claude Code
 
 Trabalhar agora em `/Users/iagoxavierdelima/.codex/worktrees/pcc-offline-review/CueStudio`, branch `codex/pcc-offline-review`. Claude Code usa o checkout principal. A bateria Full anterior terminou: UI386 passaram,2 falharam,95 pulados. Unidade4406 passaram,1 grupo de snapshots falhou,98 pulados,1 falha esperada. Detalhes e correção estática de **13** snapshots em `reports/PCC_OFFLINE_FOLLOWUP_2026-10-28.md`. Não são só duas variantes, conforme o resumo truncado inicial. Nenhum build, simulador ou teste de aparelho foi iniciado nesta continuação; rerun Swift e reprodução das duas falhas de UI permanecem pendentes. Os trechos antigos abaixo descrevem estados anteriores e não significam que os testes ainda estejam rodando.

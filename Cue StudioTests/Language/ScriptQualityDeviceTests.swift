@@ -83,10 +83,16 @@ struct ScriptQualityDeviceTests {
             usesPrivateCloudCompute: !localOnly, preferredModel: requested == "privateCloud" ? .privateCloud : nil, cloudReasoning: level
         )
         #if DEBUG
+        service.evaluatesFreeProse = ProcessInfo.processInfo.environment["CUE_QUALITY_FREE_PROSE"] == "1"
+        service.evaluatesDeliveryOnlyVoice = ProcessInfo.processInfo.environment["CUE_QUALITY_DELIVERY_VOICE"] == "1"
         service.evaluatesEditorialReview = ProcessInfo.processInfo.environment["CUE_QUALITY_EDITORIAL_REVIEW"] == "1"
         service.evaluatesCloudPlanning = ProcessInfo.processInfo.environment["CUE_QUALITY_PLANNING"] == "1"
         if let value = ProcessInfo.processInfo.environment["CUE_QUALITY_EDITORIAL_EXAMPLES"] {
             service.editorialMethodOverride = value == "1"
+        }
+        if service.evaluatesFreeProse || service.evaluatesDeliveryOnlyVoice {
+            try #require(!service.evaluatesCloudPlanning && !service.evaluatesEditorialReview && !service.usesEditorialMethod,
+                         "Evaluate prose/voice independently of planning, review and worked examples")
         }
         #endif
         if requested == "privateCloud", !service.availability.privateCloud {
@@ -248,6 +254,8 @@ struct ScriptQualityDeviceTests {
         )
         sample.durationPolicy = request.durationPolicy.rawValue
         sample.requestedReasoning = ProcessInfo.processInfo.environment["CUE_QUALITY_REASONING"] ?? "default"
+        sample.freeProse = service.evaluatesFreeProse
+        sample.deliveryOnlyVoice = service.evaluatesDeliveryOnlyVoice
         sample.editorialMethod = service.usesEditorialMethod
         sample.editorialReview = service.evaluatesEditorialReview
         sample.editorialReviewVersion = service.evaluatesEditorialReview ? 2 : nil
@@ -263,7 +271,8 @@ struct ScriptQualityDeviceTests {
                 sample.model = script.model?.rawValue
                 sample.requestedModel = ProcessInfo.processInfo.environment["CUE_QUALITY_MODEL"] ?? "automatic"
                 if let route = script.model {
-                    await measureRequest(await service.fitted(request, on: route), into: &sample)
+                    let fitted = await service.fitted(request, on: route)
+                    await measureRequest(service.editorialEvaluationRequest(fitted, on: route), into: &sample)
                 }
                 sample.title = script.title
                 sample.text = script.text

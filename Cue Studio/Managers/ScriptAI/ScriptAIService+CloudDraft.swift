@@ -8,6 +8,11 @@ extension ScriptAIService {
         _ request: ScriptRequest, since begin: ContinuousClock.Instant, insistsOnLanguage: Bool,
         correcting violations: [VoiceViolation], attempt: ScriptDraftAttempt
     ) async throws -> GeneratedScript {
+        #if DEBUG
+        if evaluatesFreeProse, request.isFreePrompt, request.durationPolicy == .informative {
+            return try await streamCloudProse(request, since: begin, insistsOnLanguage: insistsOnLanguage, correcting: violations, attempt: attempt)
+        }
+        #endif
         let progress = attempt.progress
         let meter = attempt.meter
         #if DEBUG

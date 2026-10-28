@@ -38,6 +38,8 @@ nonisolated struct QualityRunSample: Codable, Hashable, Sendable {
     var requestedReasoning: String?
     var durationPolicy: String?
     var editorialMethod: Bool?
+    var freeProse: Bool?
+    var deliveryOnlyVoice: Bool?
     var editorialReview: Bool?
     var editorialReviewVersion: Int?
     var editorialExampleInstructions: String?

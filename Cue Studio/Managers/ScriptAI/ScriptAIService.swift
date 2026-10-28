@@ -38,6 +38,8 @@ final class ScriptAIService: ScriptWriting {
     /// Evaluation only: planning has not demonstrated a consistent editorial gain.
     var evaluatesCloudPlanning = false
     var evaluatesEditorialReview = false
+    var evaluatesFreeProse = false
+    var evaluatesDeliveryOnlyVoice = false
     var editorialMethodOverride: Bool?
     #endif
     var usesEditorialMethod: Bool {
@@ -139,6 +141,9 @@ final class ScriptAIService: ScriptWriting {
     private func writeChecked(
         _ request: ScriptRequest, on model: AIModelRoute, since begin: ContinuousClock.Instant, language: String?, meter: WritingProgressMeter?
     ) async throws -> GeneratedScript {
+        #if DEBUG
+        let request = editorialEvaluationRequest(request, on: model)
+        #endif
         var maximum = model == .privateCloud ? AIRequestPolicy.cloudScriptAttempts : .max
         #if DEBUG
         if model == .privateCloud, evaluatesCloudPlanning { maximum = 3 }
