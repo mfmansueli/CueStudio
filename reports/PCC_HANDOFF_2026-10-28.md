@@ -1,5 +1,9 @@
 # RETOMAR AQUI — checkpoint solicitado por limite de sessão (28/10/2026)
 
+**ÚLTIMA ATUALIZAÇÃO ANTES DE ENCERRAR:** unidade Full terminou:4406 passaram,1 grupo falhou,98 pulados,1 falha esperada. Grupo `VoiceBriefSnapshotTests/theBriefMatchesTheKeptSnapshot(persona:)`, duas variantes, diferença de snapshot: o factory agora pede duração informativa mas o snapshot ainda espera150–225 palavras. Não corrigido neste checkpoint; ler o diff antes de atualizar o esperado. Resultado `full-unit-20261028-132841.xcresult`. UI começou em `full-ui-20261028-133424.xcresult`, ainda em execução na sessão73360. Logo, não afirmar Full verde. Os trechos mais abaixo dizendo que a unidade ainda estava ativa descrevem a verificação anterior.
+
+Checkpoint de código25814300 e documentação cc0d6617 enviados ao origin; este adendo também deve ser enviado antes de finalizar.
+
 O dono informou apenas8% de sessão e pediu salvar tudo para continuar quando a carga voltar. Encerrar trabalho ativo após salvar este checkpoint; não iniciar novos experimentos nesta retomada sem primeiro ler os resultados pendentes.
 
 ## Estado comprovado

@@ -55,3 +55,5 @@ Validação de compilação/testes final é registrada no handoff; não confundi
 ## Checkpoint de validação
 
 Zero warnings em simulador, aparelho e Release;26 testes focados e9 testes Python aprovados. Full iniciado em full-unit-20261028-132841, ainda sem resumo final no checkpoint de créditos. Não declarar regressão completa aprovada. Compilação normal instalada nos dois aparelhos; Mansuelli bloqueado impediu somente a abertura. Três novas referências ilustrativas do assistente estão em research_notes/Roteiros AI melhores no Cue/editorial_next_references.json; não foram usadas como entradas dos ensaios.
+
+Atualização final: Full unidade terminou com4406 aprovados,1 grupo de snapshot divergente (duas variantes),98 pulados e1 falha esperada. A divergência compara a antiga duração150–225 palavras com a nova política informativa; ainda não corrigida. UI começou em full-ui-20261028-133424 e segue pendente. Não declarar Full aprovado.
