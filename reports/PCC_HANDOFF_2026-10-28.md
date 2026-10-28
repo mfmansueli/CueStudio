@@ -1,3 +1,37 @@
+# RETOMAR AQUI — checkpoint solicitado por limite de sessão (28/10/2026)
+
+O dono informou apenas8% de sessão e pediu salvar tudo para continuar quando a carga voltar. Encerrar trabalho ativo após salvar este checkpoint; não iniciar novos experimentos nesta retomada sem primeiro ler os resultados pendentes.
+
+## Estado comprovado
+
+- Branch `codex/pcc-content-engines`. Commit `25814300` já enviado ao origin. Não houve merge desta branch na main. A main cf54716b foi incorporada anteriormente na nossa branch via aa0a8a7f.
+- Mais15 solicitações de roteiro executadas no PCC real do **iago Lima iphone**, todas com rota privateCloud; somadas às seis anteriores do experimento por exemplos,21 solicitações preservadas. Não confundir solicitações com chamadas: revisão pode usar duas.
+- Revisão editorial implementada como experimento **somente Debug**, opt-in `CUE_QUALITY_EDITORIAL_REVIEW=1`; padrão false. Compartilha orçamento de duas chamadas com geração/correções. Exemplos sintéticos ampliados também continuam desligados por padrão (`PCCEditorialExamples.isEnabled=false`). Não promover: resultados mistos, sem ganho consistente. O modelo diagnosticou bem algumas fraquezas, mas frequentemente só parafraseou. Não afirmar que a precisão factual foi resolvida.
+- Relatório principal: `reports/PCC_EDITORIAL_EVALUATION_2026-10-28.md`. Textos sintéticos/diagnósticos em fixtures `quality-run-review*`, `quality-run-examples2*`, `quality-run-method-*`.
+- `scripts/check-warnings.sh` terminou integralmente com **zero warnings em simulador, aparelho e Release**. Sessão51683 concluída. Nenhuma alteração posterior no código do app.
+- Testes focados `only-20261028-132256.xcresult`: **26 passaram**, zero falhas/skips. O primeiro ensaio falhou somente por esperar27 casos; contrato atualizado para30 e rerun aprovado. Nove testes Python de tools/quality passaram. Strings missing=0; SwiftLint e diff --check passaram.
+- Compilação **normal** instalada nos dois iPhones, com experimentos desligados. Iago instalou e abriu. Mansuelli instalou, mas não abriu porque o aparelho estava bloqueado; dono/Mateus podem desbloquear e abrir. Não rodar testes automatizados no Mansuelli, reservado aos testes manuais deles.
+
+## Regressão completa ainda em andamento — NÃO declarar aprovada
+
+- Comando iniciado: `scripts/test.sh full --no-build`, sessão de terminal **73360**. Primeiro resultado: `build/results/full-unit-20261028-132841.xcresult`. Log unidade `build/logs/test-full-unit.log`; UI será `build/logs/test-full-ui.log` e resultado `full-ui-<horário>.xcresult` gerado após a unidade.
+- Última verificação: unidade ainda ativa; xcodebuild PID74393 e host de testes PID74823, CPU ativa. Nenhum resumo final publicado naquele momento. A execução pode terminar enquanto a sessão estiver sem créditos. Antes de iniciar outro build, conferir processos/resultados e tentar ler a sessão73360. Scripts usam lock global; não chamar xcodebuild direto.
+- O script Full roda unidade e depois UI em duas cópias gerenciadas, apagadas ao sair. Se falhar, ler todas as falhas e fazer reruns dirigidos; não chamar a primeira rodada de verde. Não repetir check-warnings se não houve alteração de código.
+- Se o processo deixar de existir sem resumo, consultar os xcresults e logs antes de decidir o que falta. Não perder os resultados nem reiniciar toda a matriz PCC.
+
+## Material novo para a próxima iteração
+
+- `research_notes/Roteiros AI melhores no Cue/editorial_next_references.json`: três redações deste assistente para equipamento PT, bloqueio criativo EN e ficção ES, sem aplicar perfil. Foram escritas **depois** de ler as saídas PCC; comparação ilustrativa, não cega nem independente. Não foram entradas do PCC e não devem ser usadas como resposta-exemplo no mesmo caso avaliado.
+- Hipóteses ainda NÃO implementadas: reduzir interferência de assuntos/estruturas habituais do perfil mantendo estilo/restrições relevantes; testar primeira redação em prosa livre. A ficção continuou expositiva; perfil EN desviou para exercícios e ES trouxe taller/comunidade. A revisão retirou um relato passado inventado e uma distância arbitrária, mas preservou outras afirmações ruins. Critério: desenvolvimento, cobertura, exemplos, naturalidade e fidelidade; tamanho/aceitação mecânica não são qualidade.
+- Campo qualification usado nos ensaios não foi promovido; foi retirado antes da validação final. Não atribuir os resultados coletados ao esquema normal sem esse campo.
+- Textos privados da comparação com o perfil real permanecem somente em `build/private-writing-comparison/E361EFD1-D340-45E7-8AEE-B07D62799E76.json`. **Não publicar no Git nem usar collect.py neles.**
+
+## Preservar alterações alheias
+
+Não incluir em commits: reordenação preexistente de `Cue Studio.xcodeproj/project.pbxproj`, pasta1465706025, MARKETING_POSITIONING_MEMORY.md e reports/claude-code-auditoria-lacunas-e-validacao-2026-10-22.md. Só restam nossos documentos de checkpoint/referências para salvar nesta rodada. Nenhuma worktree nova criada, nenhum agente novo delegado, nenhum provedor/API externa adicionado.
+
+---
+
 # Checkpoint PCC — 28/10/2026
 
 Branch: codex/pcc-content-engines. Checkpoint solicitado pelo dono antes do fim do limite de tokens. Não é aprovação final de qualidade.

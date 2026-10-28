@@ -51,3 +51,7 @@ Reduzir a interferência de assuntos e estruturas habituais do perfil, preservan
 - `pt-BR-tutorial`: 7.55s, 2 chamada(s) contabilizada(s), revisão aceita pelas guardas=True.
 
 Validação de compilação/testes final é registrada no handoff; não confundir os ensaios semânticos com aprovação de toda a suíte.
+
+## Checkpoint de validação
+
+Zero warnings em simulador, aparelho e Release;26 testes focados e9 testes Python aprovados. Full iniciado em full-unit-20261028-132841, ainda sem resumo final no checkpoint de créditos. Não declarar regressão completa aprovada. Compilação normal instalada nos dois aparelhos; Mansuelli bloqueado impediu somente a abertura. Três novas referências ilustrativas do assistente estão em research_notes/Roteiros AI melhores no Cue/editorial_next_references.json; não foram usadas como entradas dos ensaios.
