@@ -1,3 +1,39 @@
+# ESTADO ATUAL — ambos aparelhos instalados; Full na fila
+
+Código atual: branch `codex/pcc-offline-review`, main69df2ac5 incorporada por ae937739; nenhuma alteração de fonte desde os testes dirigidos e a conferência limpa. **Zero warnings aprovado** para simulador, iPhone e Release. Testes dirigidos13 aprovados, instrumentos Python9 aprovados.
+
+**Instalações normais concluídas:** Iago compilou/instalou/abriu com sucesso (sessão43717 exit0). Mansuelli00008160-0014398611100036 compilou/instalou com sucesso (sessão55652 exit0); abertura automática negada exclusivamente por aparelho bloqueado, usuário pode abrir manualmente. Ambos receberam a fonte normal, sem candidato de cenas e com experimentos desligados. Não rodar testes automáticos no Mansuelli, reservado aos testes manuais de Iago/Mateus. `codesign` com acesso ao serviço de confiança confirmou assinatura válida e entitlement `com.apple.developer.private-cloud-compute = true`; a tentativa confinada anterior reportou trust/blob inválido, resolvido ao verificar com acesso ao serviço, sem mudar o binário.
+
+**Full ativo/na fila:** sessão41089, comando `scripts/test.sh full --no-build`. Resultado unidade `build/results/full-unit-20261028-211116.xcresult`, log `build/logs/test-full-unit.log`. Aguarda outro build do Claude no lock compartilhado; quando concluir unidade, o script inicia UI em2 clones e limpa os clones ao fim. Não iniciar outro build ou alterar fontes até terminar. Full pode levar mais de uma hora na UI; não declarar aprovado antes do resultado. Ler a sessão41089 e os logs para continuar.
+
+Editorial:59 solicitações reais nesta continuação, sem comprovação de ganho global de qualidade. Correção condicional do narrador mantida; pilotos de prosa/voz simplificada/cenas não promovidos; relatórios e fixtures preservados. Sem PR/merge na main.
+
+---
+
+# ESTADO ATUAL — zero warnings aprovado; instalação normal na fila
+
+`scripts/check-warnings.sh` concluiu com sucesso na worktree isolada após a integração da main: simulador build-for-testing, SDK genérico de iPhone build-for-testing e Release, **zero warnings/erros**. Logs `build/logs/warnings-simulator.log`, `warnings-device.log`, `warnings-release.log`; sessão5574 concluída exit0.
+
+Os13 testes dirigidos (incluindo as duas falhas antigas de UI) e9 testes Python também passaram, como detalhado abaixo. Fonte não mudou desde esses testes e a conferência limpa; somente este handoff foi editado.
+
+Próxima operação ativa: sessão43717, `CUE_DEVICE='iago Lima iphone' scripts/build.sh install`. Aguarda build do Claude na fila compartilhada, depois compila/instala/abre o app normal; NÃO considerar instalado até ler o resultado. Ambos iPhones apareceram disponíveis em devicectl. Depois atualizar Mansuelli e rodar `scripts/test.sh full --no-build`. Full anterior não serve para declarar esta versão toda aprovada.
+
+Avaliação editorial mantida:59 solicitações reais nesta continuação, variantes de prosa/voz simplificada/cena rejeitadas ou desligadas, correção de perspectiva mantida com limites documentados. Branch codex/pcc-offline-review; sem merge na main.
+
+---
+
+# ESTADO ATUAL — verificações dirigidas aprovadas; conferência limpa em andamento
+
+Branch `codex/pcc-offline-review`, worktree isolada já indicada abaixo. HEAD de46403a enviado ao origin, incluindo o merge da main ae937739. Árvore limpa antes deste adendo. Nenhum merge desta branch na main foi feito.
+
+A sessão30025 terminou com sucesso: **13 testes aprovados, zero falhas/pulados**,227s, resultado `build/results/only-20261028-204705.xcresult`. Inclui as duas falhas antigas de UI (brand kit e boas-vindas no maior texto), que passaram na versão combinada, e os contratos/perspectiva/snapshots selecionados. A saída do runner agrega alguns testes parametrizados; não somar13 ao total72 de outra rodada como se fossem casos diferentes. Os9 testes Python dos instrumentos `tools/quality` também passaram.
+
+Conferência limpa obrigatória agora ativa, sessão5574: `scripts/check-warnings.sh`, após aguardar a compilação do Claude liberar o Xcode. Checagem dos arquivos do projeto passou; simulador recompilando, aparelho e Release ainda pendentes. Não iniciar outro build manual nem modificar fontes durante esta conferência. Depois: instalar app normal no Iago (pode ainda estar com test-host do piloto rejeitado), atualizar Mansuelli se disponível, rodar Full e registrar resultados. Ainda NÃO declarar Full nem zero warnings finais aprovados.
+
+A avaliação de qualidade permanece:59 solicitações PCC nesta continuação; correção de prioridade do narrador mantida, prosa/voz simplificada/exemplos/revisão desligados e candidato de cenas removido. Não alegar que a qualidade global melhorou ou que o modelo deixou de inventar detalhes.
+
+---
+
 # ESTADO ATUAL — merge da main e validação final em andamento
 
 Worktree `/Users/iagoxavierdelima/.codex/worktrees/pcc-offline-review/CueStudio`, branch codex/pcc-offline-review. HEAD ae937739 incorporou origin/main69df2ac5 (PR76 tall-lanes), sem conflitos; não é merge da nossa branch na main. Candidato de cenas reprovado preservado em761be694 e retirado por28922ef6. Não há PCCSceneBeat nem enum scene/fictionalScene no app normal; somente developed/conciseStatement e metadata de medição. Flags de prosa/voz simplificada/exemplos/revisão seguem false.
