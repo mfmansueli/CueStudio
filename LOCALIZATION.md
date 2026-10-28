@@ -140,7 +140,7 @@ CUE_DEVICE="<iPhone>" TEST_RUNNER_CUE_QUALITY_RUN=intent-baseline \
 
 Collect with `tools/quality/collect.py`, then run `python3 tools/quality/check_intent.py <quality-run.json>`.
 Literal presence is only one deterministic check. Auto direction, distinct points, grounded facts, voice and absence of unwanted CTA require review of the real output.
-Missing/failed generation never passes, and the checker always leaves semantic quality `not_validated`. Sixteen real PCC outputs are saved in quality-run-pcc fixtures. Eight guarded outputs passed their software checks; exact required wording passed in PT/EN/ES. These checks do not approve semantic quality.
+Missing/failed generation never passes, and the checker always leaves semantic quality `not_validated`. Twenty-five real PCC outputs are saved in quality-run-pcc fixtures. Eight guarded outputs passed their software checks; exact required wording passed in PT/EN/ES. These checks do not approve semantic quality.
 PCC samples leave tokenizer counts empty because this SDK exposes that tokenizer only for the on-device model. Older reports remain `legacy`.
 Physical PCC execution is confirmed on iago Lima iphone. Overall content quality remains unapproved: awkward phrasing, weak distinctions and unsupported details still need review. Other languages remain physically unvalidated. See reports/PCC_HANDOFF_2026-10-28.md.
 
