@@ -103,8 +103,8 @@ final class CreatorWorkflow {
     }
 
     /// Moves the playhead forward by dragging the timeline (`EditorApp.scrub`).
-    func scrub(points: CGFloat = 300) {
-        EditorApp.scrub(app, points: points)
+    func scrub(points: CGFloat = 300, velocity: XCUIGestureVelocity = 400) {
+        EditorApp.scrub(app, points: points, velocity: velocity)
         drags += 1
     }
 

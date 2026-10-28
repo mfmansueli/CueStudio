@@ -14,11 +14,13 @@ final class BrandLibraryUITests: XCTestCase {
         continueAfterFailure = false
     }
 
+    /// Media › Your library: the sheet opens on it.
     private func openLibrary(_ app: XCUIApplication) {
         EditorApp.tapTool(app, "addMedia")
+        EditorApp.tapTool(app, "mediaLibrary")
         let source = app.segmentedControls["edit.mediaSource"].buttons["Your library"]
         XCTAssertTrue(source.exists(within: 5), "No Your library in Add photo or video")
-        source.tap()
+        XCTAssertTrue(source.isSelected, "Media › Your library didn't open on the library")
     }
 
     func testALogoFromTheLibraryGoesOnTheWholeVideoWithUndo() {

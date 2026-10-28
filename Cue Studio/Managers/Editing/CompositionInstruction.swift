@@ -49,6 +49,9 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
     let dissolve: TransitionWindow?
     /// The slow zoom of the section this stretch plays, if it has one.
     let zoom: ZoomWindow?
+    /// The Animation of the clip this stretch plays, and of the other side's in a transition.
+    let animation: ClipAnimationWindow?
+    let blendAnimation: ClipAnimationWindow?
     /// Every fade in the edit: a frame inside one darkens.
     let fades: [TransitionWindow]
     /// Where the edit starts in the composition (the preview's lead-in): what the look draws over time counts from here.
@@ -61,10 +64,13 @@ final class CompositionInstruction: NSObject, AVVideoCompositionInstructionProto
         mainFraming: AreaFraming = AreaFraming(), blendMainFraming: AreaFraming? = nil,
         edit: TakeEdit, look: LookSettings? = nil, blendLook: LookSettings? = nil,
         overlays: [FrameOverlay], media: [MediaFrame] = [],
-        outputScale: CGFloat, dissolve: TransitionWindow? = nil, zoom: ZoomWindow? = nil, fades: [TransitionWindow] = [],
+        outputScale: CGFloat, dissolve: TransitionWindow? = nil, zoom: ZoomWindow? = nil,
+        animations: (main: ClipAnimationWindow?, blend: ClipAnimationWindow?) = (nil, nil), fades: [TransitionWindow] = [],
         timeOrigin: TimeInterval = 0
     ) {
         self.zoom = zoom
+        animation = animations.main
+        blendAnimation = animations.blend
         self.timeOrigin = timeOrigin
         self.timeRange = timeRange
         self.trackID = trackID

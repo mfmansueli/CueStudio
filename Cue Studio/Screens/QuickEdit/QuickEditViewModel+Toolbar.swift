@@ -60,6 +60,8 @@ extension QuickEditViewModel {
         case .text: return textMenuItems
         case .captions: return captionsMenuItems
         case .audio: return audioMenuItems
+        case .media: return mediaMenuItems
+        case .blur: return blurMenuItems
         case nil: return mainItems
         }
     }
@@ -89,7 +91,7 @@ extension QuickEditViewModel {
     func perform(_ action: EditorAction) {
         // While a narration records the bar is off; nothing reaches the edit another way (VoiceOver, a keyboard) either.
         guard isReady, !audio.isRecordingVoiceOver else { return }
-        if performOnSelection(action) || performOpening(action) { return }
+        if performOnSelection(action) || performOpening(action) || performOnTrackBar(action) { return }
         switch action {
         case .selectClipAtPlayhead: clips.selectClipAtPlayhead()
         case .addCaptionLine:
@@ -113,6 +115,30 @@ extension QuickEditViewModel {
         case .openCoverStudio: cover.openCoverStudio()
         default: break
         }
+    }
+
+    /// The track bars' own tools (`EditorToolMenu`): the ways to add a photo or video, Show and Translate for captions, Sound
+    /// effects, Compare for Blur areas. False when `action` isn't one of them.
+    private func performOnTrackBar(_ action: EditorAction) -> Bool {
+        switch action {
+        case .addMediaAs(let mode):
+            overlays.mediaInsertMode = mode
+            sheet = .media
+        case .addMediaFromLibrary:
+            overlays.mediaInsertMode = overlays.lastOverlayMode
+            brand.showsLibrary = true
+            sheet = .media
+        case .toggleCaptionsShown: captions.toggleCaptions()
+        case .openCaptionTranslation: open(.captionTranslation)
+        case .openSoundEffects:
+            audio.musicReplacementID = nil
+            sheet = .soundEffects
+        case .compareBlur:
+            guard !edit.blurRegions.isEmpty else { return true }
+            blur.comparesOriginal.toggle()
+        default: return false
+        }
+        return true
     }
 
     /// The menus and panels a button opens. False when `action` isn't one of them.
@@ -178,7 +204,9 @@ extension QuickEditViewModel {
 
     /// The actions on the picked item. False when `action` isn't one of them.
     private func performOnSelection(_ action: EditorAction) -> Bool {
-        if performOnClip(action) || performOnMotion(action) || performOnMedia(action) || performOnBlur(action) { return true }
+        if performOnClip(action) || performOnClipBar(action) || performOnMotion(action) || performOnMedia(action) || performOnBlur(action) {
+            return true
+        }
         switch action {
         case .duplicateText: selection?.textID.map(overlays.duplicateText)
         case .toggleLock: toggleLockOfSelection()
@@ -232,6 +260,7 @@ extension QuickEditViewModel {
     private func performOnBlur(_ action: EditorAction) -> Bool {
         switch action {
         case .addBlurArea: blur.startAdding(onMainVideo: isSplitMainAreaPicked)
+        case .drawBlurArea: blur.startDrawing(onMainVideo: isSplitMainAreaPicked)
         case .followBlur: blur.follow()
         case .reviewBlur: blur.review()
         case .deleteBlur: selectedBlurID.map(blur.delete)
@@ -279,6 +308,18 @@ extension QuickEditViewModel {
             if look.canPasteLook { pickClipForAction() }
             look.askToPasteLook()
         case .deleteClip: selection?.clipID.map(clips.deleteClip)
+        default: return false
+        }
+        return true
+    }
+
+    /// The picked clip's bar's Mute and Transition. False when `action` isn't one of them.
+    private func performOnClipBar(_ action: EditorAction) -> Bool {
+        switch action {
+        case .toggleClipMute: clips.setClipMuted(!(targetClip?.isMuted ?? false))
+        case .openClipTransition: clips.openClipTransition()
+        case .toggleClipMirror: clips.toggleClipMirror()
+        case .resetClip: clips.resetClip()
         default: return false
         }
         return true

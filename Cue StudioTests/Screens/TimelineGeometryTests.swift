@@ -78,9 +78,10 @@ struct TimelineGeometryTests {
         let main = geometry.lane(.main)
         #expect(main?.y == 28)
         #expect(main?.height == 56)
-        #expect(geometry.lane(.media)?.height == 34)
-        #expect(geometry.lane(.text)?.y == CGFloat(28 + 56 + 8 + 34 + 8))
-        #expect(geometry.lane(.text)?.height == 28)
+        // Every track out, each as tall, 6 pt apart.
+        #expect(geometry.lane(.media)?.height == 44)
+        #expect(geometry.lane(.text)?.y == CGFloat(28 + 56 + 6 + 44 + 6))
+        #expect(geometry.lane(.text)?.height == 44)
     }
 
     @Test func musicAndVoiceOverReplaceTheAudioShortcut() {
@@ -99,6 +100,7 @@ struct TimelineGeometryTests {
         })
         #expect(geometry.lanes.map(\.lane) == [.captions, .main])
         #expect(geometry.lane(.captions)?.y == 22)
+        #expect(geometry.lane(.captions)?.height == 40)
         #expect(geometry.lane(.main)?.height == 40)
         #expect(geometry.clips[0].waveformHeight == 10)
     }
@@ -112,15 +114,17 @@ struct TimelineGeometryTests {
     @Test func smallScreensGetSmallerTracks() {
         let geometry = TimelineGeometry(input { $0.heightClass = .veryCompact })
         #expect(geometry.lane(.main)?.height == 44)
-        #expect(geometry.lane(.text)?.height == 22)
+        #expect(geometry.lane(.text)?.height == 36)
     }
 
-    @Test func theSelectedTrackGrows() {
+    /// The picked item's track keeps its height: the ring, the handles and the lit strip show what's picked.
+    @Test func theSelectedTrackKeepsItsHeight() {
         let geometry = TimelineGeometry(input { input in
             input.texts = [TimelineGeometry.ItemInput(id: text, span: TimeSpan(start: 0.2, end: 3.8), label: "5 comidas de SP")]
             input.selection = .text(text)
         })
-        #expect(geometry.lane(.text)?.height == 36)
+        #expect(geometry.lane(.text)?.height == 44)
+        #expect(geometry.lane(.text)?.height == geometry.lane(.captions)?.height)
     }
 
     // MARK: - Clips

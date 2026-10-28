@@ -204,11 +204,13 @@ extension LookViewModel {
     }
 
     /// Where the Filters thumbnails come from: a frame of the clip in scope, or of the take.
-    var filterPreviewSource: (url: URL, time: TimeInterval) {
+    var filterPreviewSource: (url: URL, time: TimeInterval, orientation: ClipOrientation) {
         if let clip = lookClip, let url = recordingURL(of: clip.sourceID) {
-            return (url, clip.sourceStart + min(0.5, clip.span.duration / 2))
+            return (url, clip.sourceStart + min(0.5, clip.span.duration / 2), clip.orientation)
         }
-        return (videoURL, 0.3)
+        // The take's frame as the clip that plays it shows it.
+        let playing = edit.timeline.segments.first { $0.sourceID == nil && $0.sourceStart <= 0.3 && 0.3 < $0.sourceEnd }
+        return (videoURL, 0.3, playing?.orientation ?? .identity)
     }
 
     func setFilterAmount(_ amount: Double) {

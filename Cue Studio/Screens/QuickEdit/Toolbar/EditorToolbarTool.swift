@@ -12,9 +12,9 @@ enum EditorToolbarTool: CaseIterable, Hashable {
     // The basics
     case edit, split, captions, text, smart, media, audio
     // Editing the clip under the playhead
-    case speed, volume, zoom, stabilize, freeze, reverse, duplicate, replace, reorder
+    case speed, volume, zoom, stabilize, freeze, reverse, duplicate, replace, reorder, crop, animation
     // Speech and sound
-    case pauses, editByText, extractAudio
+    case pauses, editByText, studioVoice, extractAudio
     // Picture and beauty (the whole video's look)
     case format, adjust, skin, filters, background, blurArea, copyLook, pasteLook
     // Finishing
@@ -40,8 +40,11 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .duplicate: "duplicate"
         case .replace: "replace"
         case .reorder: "reorder"
+        case .crop: "clipCrop"
+        case .animation: "clipAnimation"
         case .pauses: "pauses"
         case .editByText: "editByText"
+        case .studioVoice: "voice"
         case .extractAudio: "extractAudio"
         case .format: "format"
         case .adjust: EditorLookTool.adjust.toolbarID(wholeVideo: true)
@@ -76,8 +79,11 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .duplicate: String(localized: "Duplicate")
         case .replace: String(localized: "Replace")
         case .reorder: String(localized: "Reorder")
+        case .crop: String(localized: "Crop")
+        case .animation: String(localized: "Animation")
         case .pauses: String(localized: "Remove pauses")
         case .editByText: String(localized: "Edit by text")
+        case .studioVoice: String(localized: "Studio Voice")
         case .extractAudio: String(localized: "Extract audio")
         case .format: String(localized: "Format")
         case .adjust: EditorLookTool.adjust.label
@@ -112,8 +118,11 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .duplicate: "plus.square.on.square"
         case .replace: "arrow.left.arrow.right"
         case .reorder: "arrow.up.arrow.down"
+        case .crop: "crop.rotate"
+        case .animation: "rectangle.portrait.and.arrow.forward"
         case .pauses: "waveform"
         case .editByText: "text.badge.minus"
+        case .studioVoice: "waveform.and.mic"
         case .extractAudio: "waveform.badge.plus"
         case .format: "aspectratio"
         case .adjust: EditorLookTool.adjust.systemImage
@@ -137,7 +146,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .captions: .openCaptions
         case .text: .openMenu(.text)
         case .smart: .openSmart(.tools)
-        case .media: .addMediaChoice
+        case .media: .openMenu(.media)
         case .audio: .openMenu(.audio)
         case .speed: .open(.speed)
         case .volume: .open(.volume)
@@ -148,8 +157,11 @@ enum EditorToolbarTool: CaseIterable, Hashable {
         case .duplicate: .duplicateClip
         case .replace: .replaceClip
         case .reorder: .reorderClips
+        case .crop: .open(.clipCrop)
+        case .animation: .open(.clipAnimation)
         case .pauses: .open(.pauses)
         case .editByText: .editByText
+        case .studioVoice: .open(.voice)
         case .extractAudio: .extractAudio
         case .format: .open(.crop)
         case .adjust: .openLook(.adjust, wholeVideo: true)
@@ -168,7 +180,7 @@ enum EditorToolbarTool: CaseIterable, Hashable {
     /// What it changes reaches past a picked item: on an item's bar it carries the whole video's badge.
     var reachesWholeVideo: Bool {
         switch self {
-        case .captions, .pauses, .editByText, .format, .adjust, .skin, .filters, .background, .templates, .brandKit: true
+        case .captions, .pauses, .editByText, .studioVoice, .format, .adjust, .skin, .filters, .background, .templates, .brandKit: true
         default: false
         }
     }

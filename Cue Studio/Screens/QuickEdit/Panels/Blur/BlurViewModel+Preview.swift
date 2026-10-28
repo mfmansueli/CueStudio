@@ -96,38 +96,30 @@ extension BlurViewModel {
         let start = timeline.editedStart(ofSegmentAt: index)
         let played = min(segment.sourceEnd, segment.sourceStart + segment.sourceOffset(forEdited: max(0, time - start)))
         let playedURL = url(of: .recording(segment.sourceID)) ?? footageURL
-        var placement = basePlacement(size: size, playedURL: playedURL, stabilization: segment.stabilization)
-        placement.zoom = segment.zoom.map {
-            ZoomWindow(zoom: $0, start: start, duration: segment.duration, amount: segment.zoomAmount).scale(at: time)
-        } ?? 1
+        var placement = basePlacement(size: size, playedURL: playedURL, stabilization: segment.stabilization, orientation: segment.orientation)
+            .moment(of: segment, startingAt: start, at: time)
         // A support of the split screen showing: the main video sits in its area.
         if let support = edit.placedMedia(in: timeline).first(where: { entry in
             entry.media.layout == .split && entry.pieces.contains { $0.edited.start - 0.000_1 <= time && time < $0.edited.end }
         })?.media {
             let areas = SplitPlacement.areas(edit.splitScreen.layout(id: support.splitLayoutID), in: placement.crop.size)
-            let placed = SplitPlacement.place(size, in: areas.main.size, framing: edit.splitScreen.framing(for: segment.sourceID))
+            let placed = SplitPlacement.place(placement.shownSize, in: areas.main.size, framing: edit.splitScreen.framing(for: segment.sourceID))
             placement.area = (areas.main, placed)
         }
         return .recording(placement, time: played)
     }
 
-    /// The recording's placement without the moment's zoom or split screen: Format's crop, Fit, Follow face's and Stabilize's
-    /// paths, worked out once per setting.
-    private func basePlacement(size: CGSize, playedURL: URL, stabilization: StabilizationLevel?) -> FramePlacement {
+    /// The recording's placement without the moment's zoom or split screen: the clip's shape, Format's crop, Fit, Follow face's
+    /// and Stabilize's paths, worked out once per setting.
+    private func basePlacement(
+        size: CGSize, playedURL: URL, stabilization: StabilizationLevel?, orientation: ClipOrientation
+    ) -> FramePlacement {
         let key = [
             playedURL.path(percentEncoded: false), "\(size)", edit.aspect.rawValue, "\(edit.cropOffset)", edit.cropFit.rawValue,
-            "\(String(describing: edit.faceFollow))", stabilization?.rawValue ?? "-",
+            "\(String(describing: edit.faceFollow))", stabilization?.rawValue ?? "-", "\(orientation)",
         ].joined(separator: "|")
         if let known = placements[key] { return known }
-        let crop = CropMath.crop(in: size, aspect: edit.aspect.widthOverHeight, offset: edit.cropOffset)
-        var placement = FramePlacement(uprightSize: size, crop: crop, fits: edit.cropFit == .fit)
-        placement.steady = stabilization.flatMap { MotionAnalysisStore.stabilizationPath(forRecording: playedURL, level: $0) }
-        if edit.faceFollow != nil, edit.cropFit == .fill {
-            let coreImageCrop = CGRect(x: crop.minX, y: size.height - crop.maxY, width: crop.width, height: crop.height)
-            placement.follow = EditedComposition.followPath(
-                for: edit, analysis: MotionAnalysisStore.complete(forRecording: playedURL), crop: coreImageCrop, size: size
-            )
-        }
+        let placement = FramePlacement.recording(playedURL, size: size, in: edit, steadiedBy: stabilization, orientation: orientation)
         if placements.count > 24 { placements.removeAll() }
         placements[key] = placement
         return placement

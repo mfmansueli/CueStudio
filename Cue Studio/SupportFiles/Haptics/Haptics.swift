@@ -67,7 +67,7 @@ enum Haptics {
         mediumGenerator.impactOccurred()
     }
 
-    /// The star's exit when the idea is cancelled.
+    /// The star's exit when the idea is cancelled, or ▾ beside the timeline's current track.
     static func light() {
         guard isEnabled else { return }
         lightGenerator.impactOccurred()

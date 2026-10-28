@@ -64,6 +64,20 @@ extension BlurViewModel {
         Task { await findFaces(for: footage) }
     }
 
+    /// The Blur area bar's Draw an area: past the faces, an area drawn in the middle of what shows once the footage's size is
+    /// read (so it lands where it shows, not on a guess).
+    func startDrawing(onMainVideo: Bool = false) {
+        startAdding(onMainVideo: onMainVideo)
+        guard let footage = picking?.footage else { return }
+        Task {
+            if footage.isVideo, uprightSizes[footage.url] == nil, let size = await EditFraming.shape(of: footage.url)?.uprightSize {
+                uprightSizes[footage.url] = size
+            }
+            guard picking?.footage == footage else { return }
+            drawArea()
+        }
+    }
+
     /// The faces of `footage` at its second, into `picking`.
     func findFaces(for footage: BlurFootage) async {
         let found = await faces(in: footage)

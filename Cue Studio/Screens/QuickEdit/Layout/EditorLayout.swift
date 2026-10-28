@@ -10,10 +10,13 @@ import CoreGraphics
 /// positions; every screen gets the same rules.
 ///
 /// - Nothing open, the timeline collapsed (`TimelineTrackChoice`): the timeline takes just the ruler, the video track and one
-///   track under it (room for the tallest picked), and the preview the rest.
-/// - Nothing open, every track out: the timeline takes 32% (184–300 pt), more when its tracks need it so every one shows
-///   down to the audio track (each track a Blur area, music or a voice-over adds takes its room from the preview, down to its
-///   minimum; past that the tracks scroll), and the preview the rest.
+///   track under it (every track is as tall), and the preview the rest.
+/// - Nothing open, every track out: every track shows, none to scroll to (owner, 28/10/2026). They shrink so the video stays
+///   at least as tall as everything under it (player bar, timeline and toolbar): `openLaneHeight`, from a track's own height
+///   down to `openLaneMinimum`. When even that doesn't fit the half, the timeline grows past it and the video gives the room,
+///   down to its minimum (only past that do the tracks scroll).
+/// - A finger dragging the timeline up or down (`timelineReveal`): the timeline follows it between those two heights, the
+///   video giving or taking back the room.
 /// - A panel open (it replaces the toolbar): the preview keeps its size and the timeline gives up
 ///   its room. A panel that works on the timeline (all but the full ones) keeps the ruler and the
 ///   video track (and the track it is about) visible, taking that room from the preview down to its
@@ -47,6 +50,11 @@ nonisolated struct EditorLayout: Equatable, Sendable {
     /// The keyboard takes part of the height.
     let keyboardIsUp: Bool
     let heightClass: EditorHeightClass
+    /// How tall each track is while every track is out (`TimelineGeometry.openLaneHeight`).
+    let openLaneHeight: CGFloat
+    /// What the timeline takes with nothing open: the current track alone, and every track out. A drag goes between the two.
+    let collapsedTimeline: CGFloat
+    let openTimeline: CGFloat
     let preview: CGFloat
     let playerBar: CGFloat
     let timeline: CGFloat
@@ -83,11 +91,6 @@ nonisolated struct EditorLayout: Equatable, Sendable {
     /// above the keyboard. The video keeps the room the look's controls would have taken.
     static let typingPanelHeight: CGFloat = 180
 
-    /// The timeline with nothing open.
-    static func restingTimeline(for usable: CGFloat) -> CGFloat {
-        EditorPanelSize.clamp(0.32 * usable, 184, 300)
-    }
-
     /// - Parameters:
     ///   - usableHeight: under the navigation bar, above the bottom safe area, and above the keyboard when it is up.
     ///   - stableHeight: the same without the keyboard; nil when there is none.
@@ -98,13 +101,16 @@ nonisolated struct EditorLayout: Equatable, Sendable {
     ///   - panelIsExpanded: a full panel takes all the room but the smallest preview's.
     ///   - typesInHeaderField: while the keyboard is up the panel shows only its header, the field being typed in and its tabs
     ///     (Text style), so it takes just that and the video gets the rest.
-    ///   - timelineLanes: every track of the edit (`TimelineGeometry.lanes`); with every track out the timeline grows to show
-    ///     them all, and a panel opening keeps the preview at the size they left it.
+    ///   - timelineLanes: every track of the edit (`TimelineGeometry.lanes`, a new edit's by default); with every track out
+    ///     they share the timeline's room, and a panel opening keeps the preview at the size they left it.
     ///   - collapsesTimeline: the timeline shows the video track and the current track alone.
+    ///   - timelineReveal: a finger is dragging the timeline: how far out every track is (0 the current track alone, 1 every
+    ///     track out, a little past either end as it stretches). Nil when it rests.
     init(
         usableHeight: CGFloat, stableHeight: CGFloat? = nil, panel: EditorPanelSize? = nil,
         panelFocusesLane: Bool = false, largeText: Bool = false, panelIsExpanded: Bool = false, typesInHeaderField: Bool = false,
-        timelineLanes: [TimelineLane] = [], collapsesTimeline: Bool = false
+        timelineLanes: [TimelineLane] = TimelineGeometry.lanes(hasBlurs: false, hasMusic: false, hasVoice: false),
+        collapsesTimeline: Bool = false, timelineReveal: CGFloat? = nil
     ) {
         let usable = max(0, usableHeight)
         let stable = max(usable, stableHeight ?? usable)
@@ -118,12 +124,20 @@ nonisolated struct EditorLayout: Equatable, Sendable {
         playerBar = heightClass.playerBarHeight
         let bars = playerBar
         let previewMinimum = min(Self.previewMinimum(for: usable), max(0, usable - bars))
-        // The tracks' own height, the preview giving it down to its minimum; collapsed, just that.
+        // Collapsed, the tracks' own height, the preview giving it down to its minimum. Out, they share what leaves the video
+        // at least as tall as everything under it.
         let trackRoom = usable - bars - Self.toolbarHeight - previewMinimum
-        let restingTimeline = if collapsesTimeline {
-            max(0, min(TimelineGeometry.collapsedHeight(of: timelineLanes, heightClass: heightClass), trackRoom))
+        let halfRoom = max(0, usable / 2 - bars - Self.toolbarHeight)
+        let openLane = TimelineGeometry.openLaneHeight(for: timelineLanes, heightClass: heightClass, room: halfRoom)
+        openLaneHeight = openLane
+        let collapsed = max(0, min(TimelineGeometry.collapsedHeight(heightClass: heightClass), trackRoom))
+        let open = max(0, min(TimelineGeometry.openHeight(of: timelineLanes, heightClass: heightClass, laneHeight: openLane), trackRoom))
+        collapsedTimeline = collapsed
+        openTimeline = open
+        let restingTimeline = if let reveal = timelineReveal {
+            min(max(0, collapsed + (open - collapsed) * reveal), max(0, trackRoom))
         } else {
-            max(Self.restingTimeline(for: usable), min(TimelineGeometry.restingHeight(of: timelineLanes, heightClass: heightClass), trackRoom))
+            collapsesTimeline ? collapsed : open
         }
         let restingPreview = max(0, usable - bars - restingTimeline - Self.toolbarHeight)
 
@@ -178,7 +192,7 @@ nonisolated struct EditorLayout: Equatable, Sendable {
         var needed: CGFloat = 0
         if panel != .full {
             needed = heightClass.rulerHeight + heightClass.panelMainTrackHeight + Self.timelineBottomPadding
-            if panelFocusesLane { needed += Self.laneGap + heightClass.laneHeight }
+            if panelFocusesLane { needed += Self.laneGap + heightClass.panelLaneHeight }
         }
         var inlineHeight = panelHeight
         if largeText, panel != .full {

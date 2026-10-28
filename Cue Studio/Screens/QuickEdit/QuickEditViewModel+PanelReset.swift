@@ -16,6 +16,8 @@ extension QuickEditViewModel {
         case .zoom: zoomReset
         case .volume: volumeReset
         case .stabilize: stabilizeReset
+        case .clipCrop: clipCropReset
+        case .clipAnimation: clipAnimationReset
         case .transition: transitionReset
         case .voice: voiceReset
         default: nil
@@ -56,12 +58,35 @@ extension QuickEditViewModel {
             guard clips.targetVolume != 1 else { return nil }
             return { [weak self] in self?.clips.setTargetVolume(1) }
         default:
-            guard let clip = targetClip, clip.volume != 1 || clip.isMuted else { return nil }
+            guard let clip = targetClip, clip.volume != 1 || clip.isMuted || clip.soundFadeIn > 0 || clip.soundFadeOut > 0 else { return nil }
             return { [weak self] in
                 self?.updateClip {
                     $0.volume = 1
                     $0.isMuted = false
+                    $0.soundFadeIn = 0
+                    $0.soundFadeOut = 0
                 }
+            }
+        }
+    }
+
+    /// Crop's turn and box; Mirror is the toolbar's own switch.
+    private var clipCropReset: (() -> Void)? {
+        guard let clip = targetClip, clip.quarterTurns != 0 || clip.crop != nil else { return nil }
+        return { [weak self] in
+            self?.updateClip {
+                $0.quarterTurns = 0
+                $0.crop = nil
+            }
+        }
+    }
+
+    private var clipAnimationReset: (() -> Void)? {
+        guard let clip = targetClip, clip.animationIn != nil || clip.animationOut != nil else { return nil }
+        return { [weak self] in
+            self?.updateClip {
+                $0.animationIn = nil
+                $0.animationOut = nil
             }
         }
     }

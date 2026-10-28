@@ -179,6 +179,8 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
         tap("edit.toolbar.back", within: 2)
         EditorApp.tapTool(app, "addMedia")
+        try tour("menu-media")
+        EditorApp.tapTool(app, "mediaSplit")
         try tour("sheet-media")
         closeSheet()
         if tap("edit.doneButton") {
@@ -495,14 +497,14 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
     }
 
-    /// Taps a track under the video, `seconds` after the playhead (44 points a second at the starting zoom). From the timeline's
-    /// top: the ruler (28 pt), the video (56), then 28 pt tracks 8 apart, every track out (▾ beside the current one brings
-    /// them out when the timeline shows one); false when the track is below the timeline's fold.
+    /// Taps a track under the video, `seconds` after the playhead (44 points a second at the starting zoom), every track out
+    /// (▾ beside the current one brings them out when the timeline shows one; `EditorApp.trackMiddle`, the demo's five);
+    /// false when the track is below the timeline's fold.
     private func tapTrack(_ index: Int, secondsAfterPlayhead seconds: CGFloat) -> Bool {
         let timeline = app.descendants(matching: .any)["edit.timeline"]
         guard timeline.exists(within: 3) else { return false }
         EditorApp.showEveryTrack(app)
-        let y = 92 + CGFloat(index) * 36 + 14
+        let y = EditorApp.trackMiddle(index, of: 5, in: timeline)
         guard y < timeline.frame.height - 4 else { return false }
         timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0)).withOffset(CGVector(dx: seconds * 44, dy: y)).tap()
         return true

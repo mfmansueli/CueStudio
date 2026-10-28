@@ -188,14 +188,21 @@ struct EditorToolbar: View {
         case .destructive: Palette.dangerText
         case .smart: Palette.aiTextStrong
         }
+        // A switch that is on is lit as the panels' ◐ is: the icon on the accent, its name in the accent's text colour.
+        let isLit = item.isOn == true
         return Button {
             viewModel.tap(item)
         } label: {
             VStack(spacing: 5) {
                 Image(systemName: item.systemImage)
                     .font(.editorGlyph(EditorGlyph.add, weight: .light))
-                    .foregroundStyle(tint)
+                    .foregroundStyle(isLit ? Palette.accInk : tint)
                     .frame(height: 24)
+                    .background {
+                        if isLit {
+                            RoundedRectangle(cornerRadius: Metrics.editorInsetRadius, style: .continuous).fill(Palette.acc).frame(width: 40, height: 30)
+                        }
+                    }
                     .overlay(alignment: .topTrailing) {
                         // Above the icon's corner, clear of the icon (the bar has room above it at every height): it says the
                         // reach, the tool does what it always does.
@@ -215,7 +222,7 @@ struct EditorToolbar: View {
                 if heightClass.toolbarShowsLabels {
                     Text(item.label)
                         .font(.system(size: heightClass.toolbarLabelSize, weight: .medium))
-                        .foregroundStyle(labelTint)
+                        .foregroundStyle(isLit ? Palette.accText : labelTint)
                         .lineLimit(1)
                         .fixedSize()
                 }
@@ -232,6 +239,8 @@ struct EditorToolbar: View {
         .accessibilityShowsLargeContentViewer { Label(item.label, systemImage: item.systemImage) }
         .accessibilityLabel(item.scopeBadge == nil ? Text(item.label) : Text("\(item.label), whole video"))
         .accessibilityHint(item.style == .dimmed ? Text("Not available here") : Text(""))
+        .accessibilityValue(item.isOn.map { $0 ? Text("On") : Text("Off") } ?? Text(""))
+        .accessibilityAddTraits(item.isOn == nil ? [] : .isToggle)
         .accessibilityIdentifier("edit.toolbar.\(item.id)")
     }
 

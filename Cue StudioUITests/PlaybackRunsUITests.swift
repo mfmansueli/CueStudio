@@ -135,7 +135,7 @@ final class PlaybackRunsUITests: XCTestCase {
         let timeline = app.descendants(matching: .any)["edit.timeline"]
         EditorApp.showEveryTrack(app)
         timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0))
-            .withOffset(CGVector(dx: seconds * 44, dy: 92 + CGFloat(index) * 36 + 14))
+            .withOffset(CGVector(dx: seconds * 44, dy: EditorApp.trackMiddle(index, of: 5, in: timeline)))
             .tap()
     }
 

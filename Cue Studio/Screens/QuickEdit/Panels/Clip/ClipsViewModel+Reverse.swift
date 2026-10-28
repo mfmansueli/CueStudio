@@ -18,7 +18,7 @@ extension ClipsViewModel {
     func reverseClip() async {
         guard isReady, !isImportingMedia, let clip = targetClip, let index = edit.timeline.index(ofSegment: clip.id) else { return }
         player.pause()
-        if let source = clip.sourceID.flatMap({ id in edit.sources.first { $0.id == id } }), let reversal = source.reversal {
+        if let reversal = reversal(of: clip) {
             putBack(clip, at: index, from: reversal)
             return
         }
@@ -76,10 +76,20 @@ extension ClipsViewModel {
 
     /// The clip plays its original again.
     private func putBack(_ clip: EditSegment, at index: Int, from reversal: ClipReversal) {
+        playForward(clip, at: index, from: reversal)
+        toast.show(String(localized: "Plays forward again"))
+    }
+
+    /// The reversed clip at `index` plays its original stretch forward again, as one step.
+    func playForward(_ clip: EditSegment, at index: Int, from reversal: ClipReversal) {
         let original = reversal.original(of: clip.span)
         let duration = edit.timeline.duration(ofSource: reversal.sourceID)
         replace(clip, at: index, with: reversal.sourceID, duration: duration, span: original, adding: nil)
-        toast.show(String(localized: "Plays forward again"))
+    }
+
+    /// What `clip` plays backwards, nil when it plays its recording forward.
+    func reversal(of clip: EditSegment) -> ClipReversal? {
+        clip.sourceID.flatMap { id in edit.sources.first { $0.id == id } }?.reversal
     }
 
     /// A reversed video of the edit that covers the clip's stretch of its recording (written by an earlier Reverse of it).

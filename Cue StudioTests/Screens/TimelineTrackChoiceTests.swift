@@ -9,8 +9,8 @@ import Testing
 @testable import Cue_Studio
 
 /// One track under the video at a time (`TimelineTrackChoice`): collapsed, the timeline is the video track and the current
-/// track, ▾ beside its icon, and the preview gets the room the others took; ▾ brings every track out in place, and the room
-/// kept for the current track fits the tallest one picked, so choosing or picking never moves the video.
+/// track, ▾ beside its icon, and the preview gets the room the others took; ▾ brings every track out in place. Every track is
+/// as tall, so choosing one or picking an item never moves the video.
 @Suite("Timeline · one track at a time")
 struct TimelineTrackChoiceTests {
     private let every: [TimelineLane] = [.main, .media, .text, .captions, .music, .voiceOver]
@@ -51,6 +51,10 @@ struct TimelineTrackChoiceTests {
         #expect(choice.current == .blur)
         #expect(choice.shown(in: every) == .text)
         #expect(choice.shown(in: every + [.blur]) == .blur)
+        // The current track stays when it is one of them.
+        var voice = TimelineTrackChoice(current: .voiceOver, isExpanded: true)
+        voice.bring(anyOf: [.music, .voiceOver, .audio], in: every)
+        #expect(voice == TimelineTrackChoice(current: .voiceOver, isExpanded: false))
     }
 
     // MARK: - The timeline
@@ -72,11 +76,14 @@ struct TimelineTrackChoiceTests {
         let chooser = try #require(geometry.chooser)
         #expect(chooser.lane == .captions)
         #expect(!chooser.isExpanded)
-        // A comfortable reach that never takes the video track.
+        // A comfortable reach, the gutter's whole cell, that never takes the video track.
+        #expect(captions.height == 44)
         #expect(chooser.hitFrame.width >= TimelineGeometry.chooserReach)
+        #expect(chooser.hitFrame.width >= TimelineGeometry.gutterWidth)
         #expect(chooser.hitFrame.height >= TimelineGeometry.chooserReach)
         #expect(chooser.hitFrame.minY >= main.y + main.height)
         #expect(geometry.chooserHit(atViewportX: 20, y: captions.y + 14))
+        #expect(geometry.chooserHit(atViewportX: TimelineGeometry.gutterWidth - 1, y: captions.y + captions.height - 2))
         #expect(!geometry.chooserHit(atViewportX: 60, y: captions.y + 14))
         #expect(!geometry.chooserHit(atViewportX: 20, y: main.y + 20))
     }
@@ -102,6 +109,27 @@ struct TimelineTrackChoiceTests {
         })
         #expect(geometry.lanes.map(\.lane) == [.text, .main])
         #expect(geometry.chooser == nil)
+        // As tall as the video track there.
+        #expect(geometry.lane(.text)?.height == 40)
+        #expect(geometry.lane(.main)?.height == 40)
+    }
+
+    /// Out, every track takes the height the editor gave them (`EditorLayout.openLaneHeight`), 6 pt apart; collapsed, the
+    /// current one is as tall as a track alone, whatever that height.
+    @Test func outTheTracksTakeTheHeightTheEditorGaveThem() throws {
+        let out = TimelineGeometry(input(TimelineTrackChoice(current: .captions, isExpanded: true)) { $0.openLaneHeight = 36 })
+        let media = try #require(out.lane(.media))
+        let text = try #require(out.lane(.text))
+        #expect(out.lanes.filter { $0.lane != .main }.allSatisfy { $0.height == 36 })
+        #expect(text.y == media.y + 36 + 6)
+        let collapsed = TimelineGeometry(input(TimelineTrackChoice(current: .captions)) { $0.openLaneHeight = 36 })
+        #expect(collapsed.lane(.captions)?.height == 44)
+        // A panel open with every track out: never taller than the video track there.
+        let underAPanel = TimelineGeometry(input(TimelineTrackChoice(current: .captions, isExpanded: true)) { input in
+            input.openLaneHeight = 44
+            input.panelIsOpen = true
+        })
+        #expect(underAPanel.lane(.captions)?.height == 40)
     }
 
     @Test func withoutAChoiceEveryTrackShows() {
@@ -112,17 +140,17 @@ struct TimelineTrackChoiceTests {
         #expect(geometry.chooser == nil)
     }
 
-    /// The room kept collapsed is the ruler, the video track and the tallest track picked: a picked photo fits it whole.
-    @Test func theCollapsedRoomFitsTheTallestTrackPicked() {
-        // The ruler, the video track and its space, the photos track grown, and the room under it.
-        let room: CGFloat = 28 + 56 + 8 + 34 + 8 + 8
-        #expect(abs(TimelineGeometry.collapsedHeight(of: every, heightClass: .regular) - room) < 0.001)
+    /// The room kept collapsed is the ruler, the video track and one track: a picked photo fits it whole.
+    @Test func theCollapsedRoomFitsATrackPicked() {
+        // The ruler, the video track and its space, the photos track, and the room under it.
+        let room: CGFloat = 28 + 56 + 8 + 44 + 8
+        #expect(abs(TimelineGeometry.collapsedHeight(heightClass: .regular) - room) < 0.001)
         let photo = UUID()
         let geometry = TimelineGeometry(input(TimelineTrackChoice(current: .media)) { input in
             input.media = [TimelineGeometry.ItemInput(id: photo, span: TimeSpan(start: 1, end: 4), label: "Photo")]
             input.selection = .media(photo)
         })
-        #expect(geometry.contentHeight <= TimelineGeometry.collapsedHeight(of: every, heightClass: .regular))
+        #expect(geometry.contentHeight <= TimelineGeometry.collapsedHeight(heightClass: .regular))
     }
 
     // MARK: - The editor's room
@@ -131,17 +159,18 @@ struct TimelineTrackChoiceTests {
     private let screens: [CGFloat] = [603, 684, 715, 734, 816]
 
     @Test func collapsedTheVideoGetsTheRoomTheOtherTracksTook() {
-        // The demo's tracks on an iPhone 17: 286 pt of timeline out, 142 collapsed.
+        // The demo's tracks on an iPhone 17: 260 pt of timeline out (every track showing, at 28 pt), 144 collapsed.
         let out = EditorLayout(usableHeight: 734, timelineLanes: every)
         let collapsed = EditorLayout(usableHeight: 734, timelineLanes: every, collapsesTimeline: true)
-        #expect(out.timeline == 286)
-        #expect(collapsed.timeline == 142)
-        #expect(collapsed.preview == out.preview + 144)
+        #expect(out.timeline == 260)
+        #expect(out.openLaneHeight == 28)
+        #expect(collapsed.timeline == 144)
+        #expect(collapsed.preview == out.preview + 116)
         for usable in screens {
             let out = EditorLayout(usableHeight: usable, timelineLanes: every)
             let collapsed = EditorLayout(usableHeight: usable, timelineLanes: every, collapsesTimeline: true)
             #expect(collapsed.preview > out.preview, "\(usable)")
-            #expect(collapsed.timeline >= TimelineGeometry.collapsedHeight(of: every, heightClass: collapsed.heightClass) - 0.01, "\(usable)")
+            #expect(collapsed.timeline >= TimelineGeometry.collapsedHeight(heightClass: collapsed.heightClass) - 0.01, "\(usable)")
             #expect(abs(collapsed.preview + collapsed.playerBar + collapsed.timeline + collapsed.toolbar - usable) < 0.5, "\(usable)")
         }
     }
@@ -151,11 +180,10 @@ struct TimelineTrackChoiceTests {
     @Test func collapsedTracksComingOrGoingNeverMoveTheVideo() {
         let new = TimelineGeometry.lanes(hasBlurs: false, hasMusic: false, hasVoice: false)
         for usable in screens {
-            #expect(
-                EditorLayout(usableHeight: usable, timelineLanes: new, collapsesTimeline: true)
-                    == EditorLayout(usableHeight: usable, timelineLanes: every, collapsesTimeline: true),
-                "\(usable)"
-            )
+            let few = EditorLayout(usableHeight: usable, timelineLanes: new, collapsesTimeline: true)
+            let more = EditorLayout(usableHeight: usable, timelineLanes: every, collapsesTimeline: true)
+            #expect(few.preview == more.preview, "\(usable)")
+            #expect(few.timeline == more.timeline, "\(usable)")
         }
     }
 }

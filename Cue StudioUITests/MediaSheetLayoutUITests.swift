@@ -22,6 +22,7 @@ final class MediaSheetLayoutUITests: XCTestCase {
     private func openSheet() {
         app = EditorApp.open(demo: true, arguments: ["-uiTestSeedLibrary"])
         EditorApp.tapTool(app, "addMedia")
+        EditorApp.tapTool(app, "mediaSplit")
         XCTAssertTrue(card(.split).exists(within: 5), "No Add photo or video")
     }
 

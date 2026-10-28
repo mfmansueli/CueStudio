@@ -166,8 +166,11 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
         if let zoom = instruction.zoom {
             image = FramePipeline.zoomed(image, by: CGFloat(zoom.scale(at: time)))
         }
+        if let state = instruction.animation?.state(at: time) {
+            image = FramePipeline.animated(image, state)
+        }
         if let other, let dissolve = instruction.dissolve {
-            let otherSide = framed(
+            var otherSide = framed(
                 other,
                 as: Framing(
                     frame: instruction.blendFrame ?? instruction.frame, cropFit: instruction.edit.cropFit,
@@ -179,6 +182,9 @@ final class CueVideoCompositor: NSObject, AVVideoCompositing, @unchecked Sendabl
                 ),
                 faces: faces
             )
+            if let state = instruction.blendAnimation?.state(at: time) {
+                otherSide = FramePipeline.animated(otherSide, state)
+            }
             // Before the cut the main track still shows the outgoing piece; after it, the incoming one.
             let (outgoing, incoming) = time < dissolve.cut ? (image, otherSide) : (otherSide, image)
             switch dissolve.transition {

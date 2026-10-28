@@ -142,6 +142,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
         let windows = plan.transitions
         let zooms = plan.zooms
+        let animations = plan.animations
         var dissolves = windows.filter { $0.transition.showsBothSides }
         var blendTrack = dissolves.isEmpty ? nil : composition.addMutableTrack(withMediaType: .video, preferredTrackID: kCMPersistentTrackID_Invalid)
         if let track = blendTrack, (try? insertOtherSides(of: dissolves, from: recording, into: track)) == nil {
@@ -182,8 +183,13 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             // The piece of the edit as made this one plays (the grown timeline may put one before it).
             let shownIndex = index - leadPieces
             let zoom = zooms.indices.contains(shownIndex) ? zooms[shownIndex] : nil
+            let animation = animations.indices.contains(shownIndex) ? animations[shownIndex] : nil
             // Before the cut the blend track holds the incoming piece; after it, the outgoing one.
-            let blendSegment = stretch.dissolve.map { timeline.segments[middle < $0.cut ? $0.join : $0.join - 1] }
+            let blendIndex = stretch.dissolve.map { middle < $0.cut ? $0.join : $0.join - 1 }
+            let blendSegment = blendIndex.map { timeline.segments[$0] }
+            let blendAnimation = blendIndex.flatMap { index in
+                animations.indices.contains(index - leadPieces) ? animations[index - leadPieces] : nil
+            }
             // The media tracks with a video in this stretch.
             let stretchSpan = TimeSpan(start: stretch.range.start.seconds, end: stretch.range.end.seconds)
             let showing = mediaFrames.filter { frame in
@@ -211,6 +217,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 outputScale: outputScale,
                 dissolve: stretch.dissolve,
                 zoom: zoom,
+                animations: (animation, blendAnimation),
                 fades: fadeWindows,
                 timeOrigin: leadIn
             )
@@ -340,10 +347,11 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     }
 
     /// Stretches cut again where the main track moves to another recording (and, in a dissolve
-    /// between two recordings, at its cut) and where a section with a slow zoom starts or ends, so
-    /// each stretch reads one recording on each track and has one zoom, and where the next clip has
-    /// another look or background (`EditSegment.look`), so each stretch is drawn one way. An edit of
-    /// the take alone without zooms or clip looks stays as it was.
+    /// between two recordings, at its cut) and where a section with a slow zoom or an Animation
+    /// starts or ends, so each stretch reads one recording on each track and has one zoom and one
+    /// animation, and where the next clip has another look or background (`EditSegment.look`),
+    /// steadiness or shape (Rotate, Mirror, Crop), so each stretch is drawn one way. An edit of the
+    /// take alone without any of those stays as it was.
     static func splitBySource(
         _ stretches: [(range: CMTimeRange, dissolve: TransitionWindow?, showsMedia: Bool)], in timeline: EditTimeline
     ) -> [(range: CMTimeRange, dissolve: TransitionWindow?, showsMedia: Bool)] {
@@ -351,7 +359,8 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         var marks: [CMTime] = []
         for index in segments.indices.dropFirst()
         where segments[index].sourceID != segments[index - 1].sourceID || segments[index].zoom != nil || segments[index - 1].zoom != nil
-            || segments[index].look != segments[index - 1].look || segments[index].stabilization != segments[index - 1].stabilization {
+            || segments[index].look != segments[index - 1].look || segments[index].stabilization != segments[index - 1].stabilization
+            || segments[index].orientation != segments[index - 1].orientation || segments[index].animates || segments[index - 1].animates {
             marks.append(CMTime(seconds: timeline.editedStart(ofSegmentAt: index), preferredTimescale: 600))
         }
         guard !marks.isEmpty else { return stretches }
@@ -384,6 +393,19 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             return segment.zoom.map {
                 ZoomWindow(zoom: $0, start: leadIn + made.editedStart(ofSegmentAt: index), duration: segment.duration, amount: segment.zoomAmount)
             }
+        }
+    }
+
+    /// Each piece's Animation, measured on the edit as made (as its zoom), placed where the drawing plays it.
+    static func animationWindows(of made: EditTimeline, reachesWholeRecording: Bool) -> [ClipAnimationWindow?] {
+        let leadIn = reachesWholeRecording ? made.reachableLeadIn : 0
+        return made.segments.indices.map { index in
+            let segment = made.segments[index]
+            guard segment.animationIn != nil || segment.animationOut != nil else { return nil }
+            return ClipAnimationWindow(
+                start: leadIn + made.editedStart(ofSegmentAt: index), duration: segment.duration, entrance: segment.animationIn,
+                exit: segment.animationOut
+            )
         }
     }
 
@@ -710,9 +732,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
 
     /// The take's sound level along the edit on one sound track: each clip at its volume (silent
     /// while muted, or where it plays on another track: `plays` says which clips this track
-    /// carries), the dips at the cuts scaled to it, and a quick ramp where two clips that run on
-    /// from each other have different volumes. A `Fade` without duration sets the level at its
-    /// start.
+    /// carries), the dips at the cuts scaled to it, a clip's own fades from and to silence (as
+    /// long as the dip there at least), and a quick ramp where two clips that run on from each
+    /// other have different volumes. A `Fade` without duration sets the level at its start.
     static func levels(for timeline: EditTimeline, plays: (EditSegment) -> Bool) -> [Fade] {
         var dips: [Int: TransitionWindow] = [:]
         for window in TransitionWindow.windows(in: timeline) where window.transition == .fade {
@@ -724,31 +746,60 @@ nonisolated struct EditedComposition: @unchecked Sendable {
             guard plays(segment), !segment.isMuted else { return 0 }
             return Float(min(max(segment.volume, EditSegment.volumeRange.lowerBound), EditSegment.volumeRange.upperBound))
         }
-        let uniform = segments.indices.allSatisfy { level($0) == 1 }
+        let uniform = segments.indices.allSatisfy { level($0) == 1 && segments[$0].soundFadeIn <= 0 && segments[$0].soundFadeOut <= 0 }
         var fades: [Fade] = []
         var elapsed: TimeInterval = 0
+        // Where the sound was at the end of the clip before: its level, or silence after its fade out.
+        var reached: Float = 1
         for (index, segment) in segments.enumerated() {
             let end = elapsed + segment.duration
             let length = min(cutFade, segment.duration / 2)
             let volume = level(index)
+            let fadeIn = volume > 0 ? min(EditSegment.clampedFade(segment.soundFadeIn), segment.duration) : 0
+            let fadeOut = volume > 0 ? min(EditSegment.clampedFade(segment.soundFadeOut), segment.duration - fadeIn) : 0
+            // How long the sound takes to come up at the start: a dip's half, a cut's click guard, or none.
+            var rise: TimeInterval?
             if let dip = dips[index] {
-                fades.append(Fade(start: elapsed, duration: dip.halfDuration, fromVolume: 0, toVolume: volume))
+                rise = dip.halfDuration
             } else if index > 0, !timeline.isSeamless(index) {
-                fades.append(Fade(start: elapsed, duration: length, fromVolume: 0, toVolume: volume))
+                rise = length
+            }
+            // How long the clip's opening ramp lasts, whichever it is: the fade out waits for it (two ramps at once crash).
+            var opening: TimeInterval = 0
+            if fadeIn > 0 || rise != nil {
+                opening = min(max(fadeIn, rise ?? 0), segment.duration)
+                fades.append(Fade(start: elapsed, duration: opening, fromVolume: 0, toVolume: volume))
             } else if !uniform {
-                let previous = index > 0 ? level(index - 1) : volume
+                let previous = index > 0 ? reached : volume
                 if index > 0, previous != volume {
+                    opening = length
                     fades.append(Fade(start: elapsed, duration: length, fromVolume: previous, toVolume: volume))
                 } else {
                     fades.append(Fade(start: elapsed, duration: 0, fromVolume: volume, toVolume: volume))
                 }
             }
+            var fall: TimeInterval?
             if let dip = dips[index + 1] {
-                fades.append(Fade(start: end - dip.halfDuration, duration: dip.halfDuration, fromVolume: volume, toVolume: 0))
+                fall = dip.halfDuration
             } else if index < segments.count - 1, !timeline.isSeamless(index + 1) {
-                fades.append(Fade(start: end - length, duration: length, fromVolume: volume, toVolume: 0))
+                fall = length
             }
+            if fadeOut > 0 || fall != nil {
+                let out = min(max(fadeOut, fall ?? 0), max(0, segment.duration - opening))
+                fades.append(Fade(start: end - out, duration: out, fromVolume: volume, toVolume: 0))
+            }
+            reached = fadeOut > 0 ? 0 : volume
             elapsed = end
+        }
+        return fades
+    }
+
+    /// A music clip's envelope as volume changes: its first level from the start, then a ramp between each two points.
+    static func musicLevels(_ points: [MusicEnvelope.Point]) -> [Fade] {
+        guard let first = points.first else { return [] }
+        var fades = [Fade(start: 0, duration: 0, fromVolume: Float(first.volume), toVolume: Float(first.volume))]
+        for (from, to) in zip(points, points.dropFirst()) where to.time - from.time > 0.000_1 {
+            fades.append(Fade(start: from.time, duration: to.time - from.time, fromVolume: Float(from.volume), toVolume: Float(to.volume)))
         }
         return fades
     }
@@ -764,17 +815,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         for take in takeTracks {
             let parameters = AVMutableAudioMixInputParameters(track: take.track)
             if let pitch = take.pitch { parameters.audioTimePitchAlgorithm = pitch }
-            for fade in take.levels {
-                let start = CMTime(seconds: fade.start, preferredTimescale: 600)
-                if fade.duration <= 0 {
-                    parameters.setVolume(fade.toVolume, at: start)
-                } else {
-                    parameters.setVolumeRamp(
-                        fromStartVolume: fade.fromVolume, toEndVolume: fade.toVolume,
-                        timeRange: CMTimeRange(start: start, duration: CMTime(seconds: fade.duration, preferredTimescale: 600))
-                    )
-                }
-            }
+            VolumeRamp.apply(VolumeRamp.scheduled(take.levels), to: parameters)
             inputs.append(parameters)
         }
         for voice in voices {
@@ -784,16 +825,7 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         }
         for clip in music {
             let parameters = AVMutableAudioMixInputParameters(track: clip.track)
-            if let first = clip.points.first { parameters.setVolume(Float(first.volume), at: .zero) }
-            for (from, to) in zip(clip.points, clip.points.dropFirst()) where to.time - from.time > 0.000_1 {
-                parameters.setVolumeRamp(
-                    fromStartVolume: Float(from.volume), toEndVolume: Float(to.volume),
-                    timeRange: CMTimeRange(
-                        start: CMTime(seconds: from.time, preferredTimescale: 600),
-                        end: CMTime(seconds: to.time, preferredTimescale: 600)
-                    )
-                )
-            }
+            VolumeRamp.apply(VolumeRamp.scheduled(musicLevels(clip.points)), to: parameters)
             inputs.append(parameters)
         }
         guard !inputs.isEmpty else { return nil }

@@ -39,9 +39,14 @@ nonisolated struct TimelineTrackChoice: Equatable, Sendable {
     }
 
     /// The first of `lanes` that `all` has becomes current (an item picked, a track's tools opened), else the first of them: a
-    /// track whose first item is on its way (Blur area opened to add one) shows once the item is there.
+    /// track whose first item is on its way (Blur area opened to add one) shows once the item is there. The current track stays
+    /// when it is one of them (Audio's tools opened from the voice-over's track keep the voice-over).
     mutating func bring(anyOf lanes: [TimelineLane], in all: [TimelineLane]) {
         let candidates = lanes.filter { $0 != .main }
+        if candidates.contains(current), all.contains(current) {
+            isExpanded = false
+            return
+        }
         guard let lane = candidates.first(where: all.contains) ?? candidates.first else { return }
         choose(lane)
     }

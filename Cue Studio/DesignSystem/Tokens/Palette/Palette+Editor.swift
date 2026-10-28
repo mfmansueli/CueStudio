@@ -50,14 +50,16 @@ extension Palette {
         /// Timeline tracks: a tinted fill with the text in the full color.
         /// v26: Aa white, captions violet, music green, voice-over amber, overlay light blue.
         static let laneText = Color.white.opacity(0.2)
-        static let laneTextSelected = Color.white.opacity(0.32)
+        /// 28%: white text keeps 4.5:1 on it over the current Texts strip, tinted white as it is.
+        static let laneTextSelected = Color.white.opacity(0.28)
         static let laneTextInk = Color.white
         static let laneCaption = Color(hex: 0x9D8CFF, opacity: 0.3)
         static let laneCaptionInk = Color(hex: 0xC9BFFF)
         static let laneMusic = Color(hex: 0x34C759, opacity: 0.3)
         static let laneMusicInk = Color(hex: 0x7CE59A)
         static let laneVoiceOver = Color(hex: 0xFF9F0A, opacity: 0.3)
-        static let laneVoiceOverInk = Color(hex: 0xFFB340)
+        /// Light enough to keep 4.5:1 on its fill over the current track's strip, the amber it is tinted with included.
+        static let laneVoiceOverInk = Color(hex: 0xFFC46B)
         static let laneMedia = Color(hex: 0x64D2FF, opacity: 0.3)
         static let laneMediaInk = Color(hex: 0x9FE3FF)
         /// Blur areas: slate, so the orange of what's left unchecked stands out on them.
@@ -73,13 +75,31 @@ extension Palette {
         /// The dashed outline of "Save as my style" and "Add a line".
         static let laneGhostBorder = Color(hex: 0xEBEBF5, opacity: 0.45)
 
-        /// The strip each track sits on, and the same strip while its tools are open (with its ring).
+        /// The strip each track sits on.
         static let laneStrip = Color(hex: 0x1C1C1E)
-        static let laneStripActive = Color(hex: 0x24231C)
-        static let laneStripRing = Color(hex: 0xFFD60A, opacity: 0.75)
 
-        /// A track's icon in the gutter beside its strip.
-        static let laneGutterInk = Color(hex: 0xEBEBF5, opacity: 0.85)
+        /// Each track's own colour (owner, 28/10/2026): the square behind the current track's icon and ▾, its ring, and a
+        /// touch of it on every strip; its icon in the gutter is in its items' ink (`TimelineLaneTint`). The same hues as the
+        /// items' fills.
+        static let laneTextHue = Color.white
+        static let laneCaptionHue = Color(hex: 0x9D8CFF)
+        static let laneMusicHue = Color(hex: 0x34C759)
+        static let laneVoiceOverHue = Color(hex: 0xFF9F0A)
+        static let laneMediaHue = Color(hex: 0x64D2FF)
+        static let laneBlurHue = Color(hex: 0x9A9AB8)
+        /// How much of its hue the current track's square takes (more while a finger is on it), and its 1 pt ring.
+        static let laneChooserFill: Double = 0.22
+        static let laneChooserFillPressed: Double = 0.34
+        static let laneChooserRing: Double = 0.5
+        /// How much of its hue a strip takes over `laneStrip`: the current track's twice as much.
+        static let laneStripTint: Double = 0.06
+        static let laneStripTintCurrent: Double = 0.12
+        /// The flash on a track's strip when an item comes in.
+        static let laneArrivalFlash: Double = 0.3
+        /// A track whose tools are open lights up in its own colour (owner, 28/10/2026): its strip tinted as the current
+        /// one's, a 1.5 pt ring of its hue at this much (3:1 against the strip, WCAG 1.4.11), and its square as when pressed.
+        /// The strip itself can't take more of the hue: an empty track's hint must keep 4.5:1 on it.
+        static let laneStripRingLit: Double = 0.85
 
         /// "Tap to add text" and the other hints on an empty track. The prototype draws them at 45%,
         /// which is 3.9:1 on the strip; 60% is 5.9:1, past the 4.5:1 text needs.
