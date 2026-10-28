@@ -157,8 +157,7 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   Build de desenvolvimento assinado conferido: entitlement presente tanto no perfil explícito do app quanto na assinatura do binário.
   PCC instalado e executado no iago Lima iphone com autorização do dono. Há 16 saídas reais arquivadas nos fixtures de qualidade, incluindo controles e oito casos com proteção literal. A rota foi confirmada como privateCloud. Frases exatas PT/EN/ES passaram na versão protegida (PT precisou de duas tentativas); qualidade editorial geral ainda não aprovada: há formulações artificiais, pontos pouco distintos e detalhes sem suporte no brief transmitido. Os demais idiomas continuam sem validação física. Ver reports/PCC_HANDOFF_2026-10-28.md.
   **Pedidos por rota:** o fallback prepara de novo o pedido original. No PCC, a voz usa até 6000 unidades, sem exemplos colados, trechos importados
-  ou roteiros aprovados; preferências e medidas de estilo seguem no prompt. A resposta inicial tem até 8192 tokens, com a duração pedida sem o fator
-  corretivo do modelo local. Sem expansão por bloco ou nova tentativa por roteiro curto na nuvem; rascunho e correções dividem até duas chamadas.
+  ou roteiros aprovados; preferências e medidas de estilo seguem no prompt. A resposta inicial tem até 8192 tokens, com meta de 90–105% das palavras do teto da duração escolhida, a 150 palavras/minuto. Isso privilegia material para lapidar (60–90 s: 203–237 palavras); limite explícito no pedido tem prioridade. Não é limite de upload da rede. Sem o fator corretivo do modelo local. Sem expansão por bloco ou nova tentativa por roteiro curto na nuvem; rascunho e correções dividem até duas chamadas.
   No aparelho, continuam o orçamento de 2100, teto de 1800 tokens e ajuste pela contagem real perto da janela.
   **Direção editorial no PCC** (`PCCScriptDirection`): pedido atual define assunto, resultado desejado e exigências explícitas; temas, aberturas e
   fechos habituais são preferências. Idioma, formato, duração, restrições da marca e itens de Avoid continuam valendo. Orienta um fio condutor,
@@ -166,6 +165,7 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   na mesma resposta, sem chamada extra nem plano exibido. Afirmações não ganham certezas, experiências ou benefícios inventados. Declarações sérias
   não recebem a direção de entretenimento. Brief de formato enviado ao PCC contém só respostas reais, sem transformar placeholders em fatos;
   o pedido livre completo segue uma vez, sem resumo intermediário. Essas são instruções de geração, ainda sem comprovação de ganho de qualidade no aparelho.
+  **Preferências sem conflito no PCC:** plataforma define registro e ritmo, sem impor CTA. Aberturas e fechos habituais são condicionais; histórias exigem experiência fornecida e bordões são opcionais. A mesma montagem condicional aparece em What Cue sends. Direção editorial pede ação observável, razão e critério de comparação, e remove metatexto genérico sobre explicar ou ajudar. Ganho editorial desta revisão ainda depende de comparação no aparelho.
   **Formato Automático no PCC:** quando o card não fixa um formato, a própria geração lê a intenção do pedido no idioma em que foi escrito e escolhe
   a direção e a ordem dos blocos. Recebe as opções de tutorial, lista, história, avaliação/comparação, opinião/resposta, anúncio, mito/fato, POV,
   declaração séria ou explicação; não fica preso ao `FormatGuess` em inglês nem a Hook/Body/CTA. Formatos habituais só ajudam quando o pedido é vago.
@@ -186,13 +186,13 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   What Cue sends explicam o PCC; esta última mostra dois briefs, do aparelho e da nuvem. O preview da voz é identificado como amostra das preferências.
   **Medições:** `ScriptQualityDeviceTests` aceita `TEST_RUNNER_CUE_QUALITY_MODEL=onDevice|privateCloud` (sem variável: automático), registra o modelo
   que respondeu e acusa fallback inesperado em uma medição de rota fixa. Contagem de tokens local nunca é apresentada como contagem do PCC;
-  amostras antigas são marcadas como legacy no relatório. Qualidade, latência e consumo real da cota no iPhone continuam sem validação.
+  amostras antigas são marcadas como legacy no relatório. Execução e latências iniciais foram medidas no iPhone; qualidade geral e consumo da cota continuam sem aprovação.
   **Benchmark de intenção preparado sem aparelho:** `intent-cases.json` fixa 24 pedidos sintéticos (8 por idioma, PT/EN/ES), todos dentro dos
   200 caracteres do card. Cobre tutorial sem CTA, frase literal, fatos fornecidos, nota séria, produto sem patrocínio, comparação e escolhas manuais
   de Story/Talking head. `ScriptIntentContractTests` confere o caminho fábrica → preparo por rota → prompt, idioma, formato e privacidade.
   `ScriptQualityDeviceTests/writesAnIntentBenchmarkCase()` exige seleção explícita de um único `CUE_QUALITY_INTENT_CASE`; preserva id, expectativas,
   modelo e tempo junto da amostra, sem passar a resposta esperada ao modelo. `tools/quality/check_intent.py` verifica somente literais e mantém
-  qualidade semântica como `not_validated`, mesmo quando passam. Nenhuma resposta real desse benchmark foi gerada ou aprovada.
+  qualidade semântica como `not_validated`, mesmo quando passam. Há respostas reais arquivadas; a aprovação semântica geral continua pendente.
 - **O prompt** (`Managers/ScriptAI/Voice/*`, `Context/*`): `VoiceBriefBuilder` monta, em inglês e nesta ordem, quem fala → para quem e por quê → temas →
   como soa → como abre e fecha → exemplos → regras, e repete no fim as que não podem falhar ("Remember: …"; o modelo pequeno atende mais ao fim).
   `FormatGuide` diz para que serve cada bloco, `PlatformGuide` dá o registro (LinkedIn sem gíria). Regra de honestidade: nada de história, número, cliente

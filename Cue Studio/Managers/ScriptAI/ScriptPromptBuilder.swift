@@ -34,14 +34,16 @@ nonisolated enum ScriptPromptBuilder {
             lines.append(seriousRule)
         } else {
             // Where it is posted shapes the hook, the pace and the ending; a serious statement has none of those.
-            lines.append(PlatformGuide.line(for: request.platform))
+            lines.append(request.modelRoute == .privateCloud
+                ? PCCScriptDirection.platformLine(for: request.platform)
+                : PlatformGuide.line(for: request.platform))
             lines.append(honestyRule)
         }
         if request.isFreePrompt {
             lines.append(accuracyRule)
         }
         if let voice {
-            lines += voiceLines(voice, platform: request.platform, budget: request.voiceBudget)
+            lines += voiceLines(voice, platform: request.platform, budget: request.voiceBudget, contextualPreferences: request.modelRoute == .privateCloud)
         }
         if let language = request.language {
             lines.append(languageRule(language, variant: request.languageVariant))
@@ -113,7 +115,13 @@ nonisolated enum ScriptPromptBuilder {
     /// raised with it (a Short asked for 150 to 300 words wrote 310, two minutes of a script for a video of one), only kept above the floor.
     static func askedRange(for range: ClosedRange<TimeInterval>, on route: AIModelRoute = .onDevice) -> (low: Int, high: Int) {
         let minimum = ReadTime.words(for: range.lowerBound)
-        let low = route == .privateCloud ? minimum : askedWords(minimum)
+        if route == .privateCloud {
+            // Owner preference: provide material to edit near the chosen upper duration, at normal
+            // reading pace. A small overrun is acceptable; this is not a platform upload limit.
+            let upper = max(minimum, ReadTime.words(for: range.upperBound))
+            return (max(minimum, Int((Double(upper) * 0.9).rounded(.up))), Int((Double(upper) * 1.05).rounded(.up)))
+        }
+        let low = askedWords(minimum)
         var high = max(ReadTime.words(for: range.upperBound), Int((Double(low) * 1.25).rounded()))
         // A creator whose videos run one to three minutes asked 225 to 450 words for one line of idea (measured on an iPhone 15 Pro): the model
         // padded it with the same sentences and ran into its limit after 45 to 93 s. A short video is asked for no more than this.
@@ -296,7 +304,13 @@ nonisolated enum ScriptPromptBuilder {
     /// out shorter (half its minimum, against 0.7), kept its opening's promise less (3 of 18 against 7 of 13) and invented ("filtro físico, como
     /// camuflagem"). Left out.
     static func lengthRule(minimumWords: Int, blocks: Int = 3, sentenceWords: Int = 12, on route: AIModelRoute = .onDevice) -> String {
-        guard route == .onDevice, asksSentencesPerBlock, minimumWords > shortFormWords else {
+        if route == .privateCloud {
+            return "Aim near the upper end of the chosen duration at a natural reading pace, with at least \(minimumWords) spoken words. "
+                + "Give the creator substantial material to edit: develop the relevant explanation, practical details and tradeoffs. "
+                + "A small overrun is acceptable. Never stretch the duration with repetition, invented facts or generic motivational filler. "
+                + "If an explicit word or time limit appears in the current request, honor that limit instead."
+        }
+        guard asksSentencesPerBlock, minimumWords > shortFormWords else {
             return "Do not stop early: the script must be at least \(minimumWords) words, so write every block in full, with several complete sentences each."
         }
         // A count of sentences is for a short script: asked for dozens in every block of a long one the model runs on until its answer is cut off.
@@ -313,8 +327,13 @@ nonisolated enum ScriptPromptBuilder {
 
     /// My Cue Voice as the lines the model reads (`VoiceBriefBuilder`): who is talking, who is watching, what about, how they sound, how
     /// they open and close, examples and the rules, in at most `VoiceBrief.budget` characters.
-    static func voiceLines(_ voice: CreatorVoice, platform: Platform? = nil, budget: Int? = nil) -> [String] {
-        VoiceBriefBuilder.brief(for: voice, budget: budget ?? VoiceBrief.budget, register: platform.map(PlatformRegister.init) ?? .casual).lines
+    static func voiceLines(
+        _ voice: CreatorVoice, platform: Platform? = nil, budget: Int? = nil, contextualPreferences: Bool = false
+    ) -> [String] {
+        VoiceBriefBuilder.brief(
+            for: voice, budget: budget ?? VoiceBrief.budget, register: platform.map(PlatformRegister.init) ?? .casual,
+            contextualPreferences: contextualPreferences
+        ).lines
     }
 
     /// "What Cue sends" (My Cue Voice): the voice as the model reads it, and what was cut to fit. Empty when nothing of the voice can be used yet.

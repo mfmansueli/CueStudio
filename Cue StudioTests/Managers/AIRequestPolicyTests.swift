@@ -49,12 +49,12 @@ struct AIRequestPolicyTests {
         #expect(cloud.voiceBudget != local.voiceBudget)
     }
 
-    @Test func longerCloudScriptsHaveRoomWithoutInflatingTheWordTarget() {
+    @Test func longerCloudScriptsHaveRoomAndAimNearTheChosenUpperDuration() {
         let request = request()
         #expect(ScriptAIService.responseTokens(for: request, on: .privateCloud) > 1_800)
         #expect(ScriptAIService.responseTokens(for: request, on: .onDevice) <= 1_800)
         let cloud = ScriptPromptBuilder.askedRange(for: request.targetRange, on: .privateCloud)
-        #expect(cloud.low == ReadTime.words(for: request.targetRange.lowerBound))
+        #expect(cloud.low == Int((Double(ReadTime.words(for: request.targetRange.upperBound)) * 0.9).rounded(.up)))
     }
 
     @Test func cloudCorrectionsCannotExceedTheirSharedRequestAllowance() throws {

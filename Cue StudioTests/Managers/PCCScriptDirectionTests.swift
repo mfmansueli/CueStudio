@@ -26,11 +26,48 @@ struct PCCScriptDirectionTests {
         #expect(prompt.components(separatedBy: typed).count == 2, "the complete request is supplied once, without a lossy summary")
         #expect(instructions.contains("Portuguese"))
         #expect(prompt.contains(cloud.platform.promptName))
-        #expect(prompt.contains("between 300 and 450 spoken words"))
+        #expect(prompt.contains("between 405 and 473 spoken words"))
         #expect(instructions.contains("usual topics, openings, endings and style are defaults"))
         #expect(instructions.contains("including no call to action"))
         #expect(prompt.hasSuffix(PCCScriptDirection.finalCheck), "literal requirements are checked after voice/style defaults")
         #expect(!instructions.contains("Here is how they write"), "PCC does not receive local writing examples")
+    }
+
+    @Test func cloudDraftProvidesMaterialNearNinetySecondsAtNaturalReadingPace() {
+        let range = ScriptPromptBuilder.askedRange(for: 60...90, on: .privateCloud)
+        #expect(range.low == 203)
+        #expect(range.high == 237)
+        let rule = ScriptPromptBuilder.lengthRule(minimumWords: range.low, on: .privateCloud)
+        #expect(rule.contains("explicit word or time limit"))
+        #expect(rule.contains("Never stretch the duration"))
+        #expect(ScriptPromptBuilder.askedRange(for: 60...90).low == 150)
+    }
+
+    @Test func cloudVoiceDefaultsDoNotForceStoriesCatchphrasesOrEngagement() {
+        let original = request()
+        let cloud = AIRequestPolicy.prepare(original, on: .privateCloud)
+        let instructions = ScriptPromptBuilder.instructions(for: cloud)
+        #expect(instructions.contains("Usual opening preference"))
+        #expect(instructions.contains("Usual ending preference"))
+        #expect(instructions.contains("Optional familiar expressions"))
+        #expect(!instructions.contains("\nOpen with "))
+        #expect(!instructions.contains("\nEnd by "))
+        #expect(!instructions.contains("Use one once after the first sentence"))
+        #expect(instructions.contains("observable action and why it helps"))
+        #expect(instructions.contains("unrelated video"))
+        let local = ScriptPromptBuilder.instructions(for: AIRequestPolicy.prepare(original, on: .onDevice))
+        #expect(local.contains("\nOpen with "))
+        #expect(local.contains("\nEnd by "))
+    }
+
+    @Test(arguments: Platform.allCases)
+    func cloudPlatformConventionsNeverForceAnEngagementEnding(_ platform: Platform) {
+        var original = request()
+        original.platform = platform
+        let instructions = ScriptPromptBuilder.instructions(for: AIRequestPolicy.prepare(original, on: .privateCloud))
+        #expect(instructions.contains("Platform conventions never require an engagement CTA"))
+        #expect(!instructions.contains("an ending that asks to save or share"))
+        #expect(!instructions.contains("close by pointing to the next video"))
     }
 
     @Test func anIncompleteCloudBriefNeverTurnsFormExamplesIntoTheCreatorsFacts() {

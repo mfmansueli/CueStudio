@@ -74,7 +74,7 @@ struct VoiceSendsSheet: View {
 
     private var cloudBrief: VoiceBrief {
         guard let voice = AIRequestPolicy.voice(profile.profile.voice, on: .privateCloud) else { return .empty }
-        return VoiceBriefBuilder.brief(for: voice, budget: AIRequestPolicy.cloudVoiceBudget)
+        return VoiceBriefBuilder.brief(for: voice, budget: AIRequestPolicy.cloudVoiceBudget, contextualPreferences: true)
     }
 
     private func briefCard(_ text: String, identifier: String) -> some View {

@@ -35,3 +35,26 @@ CUE_DEVICE="Mansuelli iPhone 18 Pro Max" scripts/build.sh install
 5. Registrar resultados e commit/push posteriores. Não fazer merge sem avaliar branch/base e validação.
 
 Mudanças preexistentes excluídas do checkpoint: project.pbxproj (reordenação), 1465706025/, MARKETING_POSITIONING_MEMORY.md e reports/claude-code-auditoria-lacunas-e-validacao-2026-10-22.md. Não descartar nem incorporar automaticamente.
+
+## Continuação urgente — últimos ajustes ainda em validação
+
+O dono pediu textos menos genéricos, melhor uso do My Cue Voice/PCC e mais conteúdo para lapidar, mirando o teto da duração escolhida, com pequeno excesso aceitável. Exemplo dele: TikTok de 60–90 s estava entregando menos de 60 s. Tratar esses pedidos como requisitos persistentes.
+
+Implementado APÓS a instalação no Mansuelli, ainda sem comparação física:
+
+- VoiceBriefBuilder recebe contextualPreferences (padrão false). No PCC, abertura/fecho são preferências condicionais e bordão é opcional; abertura narrativa só com experiência fornecida. Identidade, ritmo, fingerprint, vocabulário e restrições continuam no brief. A rota local conserva instruções anteriores. What Cue sends usa o mesmo brief condicional para PCC.
+- PCCScriptDirection.platformLine define registro/ritmo sem impor CTA, história pessoal ou venda. Motivo concreto: fixture es-ES-product mostrava simultaneamente instruções de história, bordão e seguir/salvar, produzindo taller inventado e metatexto genérico. Direção pede ação observável + motivo + critério de comparação e remove frases sobre explicar/ajudar que não entregam substância.
+- askedRange no PCC agora mira 90–105% das palavras do teto escolhido a 150 palavras/minuto: 60–90 s -> 203–237 palavras; 120–180 s -> 405–473. Pequeno excesso é permitido como material para edição. Prompt diz que limite explícito de palavras/tempo no pedido tem prioridade e proíbe preencher com repetição/fatos inventados. Isso é meta de geração, NÃO garantia da duração entregue. Ainda NÃO foi acrescentada tentativa automática por falta de palavras; medir antes de decidir, pois histórico local de expansão teve regressões. Não transferir o fator inflacionado local para nuvem.
+- Novos testes em PCCScriptDirectionTests cobrem preferências condicionais/plataformas e alvo de 90 s; AIRequestPolicyTests ajustado ao alvo. SwiftLint dos arquivos alterados e diff --check passaram. Precisa confirmar execução dos testes.
+
+Pesquisa consultada: https://github.com/microsoft/PromptWizard (Microsoft, MIT), otimização e crítica de prompts por avaliações; inspiração metodológica apenas, nenhuma dependência instalada/copied code. PCC usa o modelo Apple, não instala pesos de modelo GitHub. https://developer.apple.com/documentation/foundationmodels/adding-server-side-intelligence-with-private-cloud-compute descreve janela maior e reasoning configurável; não aumentar reasoning/calls indiscriminadamente sem comparar qualidade, tempo e quota.
+
+### Processos e evidências a recuperar
+
+- Sessão 44856: scripts/check-warnings.sh. Concluiu com sucesso: simulator, device e Release sem warnings. Arquivos foram alterados durante a etapa Release, portanto a rodada NÃO comprova zero warnings de todos os destinos para a última revisão: repetir depois de congelar o código e quando não houver outro build ativo.
+- Sessão 69771: teste focado iniciado após o Release. Resultado build/results/only-20261028-014413.xcresult. Seleciona PCCScriptDirectionTests, ScriptIntentContractTests, VoiceBriefBuilderTests e ScriptVerbatimProtectionTests. Conferir se viu as últimas alterações; AIRequestPolicyTests precisa rodar também. Log build/logs/test-only.log.
+- scripts/check-project.sh passou com acesso adequado; tentativa sem acesso ao serviço Xcode falhou por ambiente, não por estrutura. Nove testes Python em tools/quality passaram nesta continuação.
+- Full final permanece pendente. Depois dos focados, medir no Iago pelo menos pt-BR-tutorial e es-ES-product com os MESMOS inputs baseline; coletar JSON e comparar detalhe/naturalidade/voz/fatos/duração. Escolher um caso literal para regressão. Outros idiomas não devem ser marcados aprovados.
+- Instalar nova revisão no Mansuelli APENAS depois da verificação: a versão que está lá é a do checkpoint anterior. Instalação está autorizada; automação continua no Iago.
+
+Não afirmar que todos os refinamentos foram concluídos nem que qualidade está aprovada. Não fazer merge automático. Preservar os arquivos preexistentes excluídos. Próximo trabalhador deve começar por este documento e git status, recuperar resultados e terminar validação antes de adicionar outra camada de geração.
