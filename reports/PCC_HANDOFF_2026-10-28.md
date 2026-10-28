@@ -1,3 +1,15 @@
+# ESTADO ATUAL — merge da main e validação final em andamento
+
+Worktree `/Users/iagoxavierdelima/.codex/worktrees/pcc-offline-review/CueStudio`, branch codex/pcc-offline-review. HEAD ae937739 incorporou origin/main69df2ac5 (PR76 tall-lanes), sem conflitos; não é merge da nossa branch na main. Candidato de cenas reprovado preservado em761be694 e retirado por28922ef6. Não há PCCSceneBeat nem enum scene/fictionalScene no app normal; somente developed/conciseStatement e metadata de medição. Flags de prosa/voz simplificada/exemplos/revisão seguem false.
+
+Manter a correção de perspectiva condicional no PCC, perfil completo e13 snapshots atualizados.59 solicitações reais nesta continuação, com32 no fatorial fase3,10 na perspectiva fase4 e17 nos pilotos de cena; relatórios e JSONs estão no Git. Não declarar melhora global nem eliminação de alucinações.
+
+Validação combinada iniciada: sessão30025, `only-20261028-204705.xcresult` no build/results desta worktree. Inclui perspectivas, snapshots, contratos33 casos, tipos PCC e as duas falhas antigas de UI. Ainda sem resultado neste checkpoint. Depois: corrigir falhas se houver, check-warnings integral sem concorrência de builds (o script remove intermediates antes do lock), restaurar app normal no Iago, considerar atualização no Mansuelli e executar a regressão final. O Iago ainda pode estar com o binário de teste do candidato rejeitado; não esquecer a reinstalação normal antes de devolver o aparelho.
+
+Não tocar checkout principal usado pelo Claude. Nenhum novo agente foi delegado, provedor externo adicionado ou PR/merge na main criado.
+
+---
+
 # CANDIDATO RETIRADO — fonte normal preserva apenas o ajuste de perspectiva
 
 Código do último piloto de cenas preservado no commit761be694 e retirado em seguida do app: sem PCCSceneBeat, sem enum fictionalScene/scene no caminho normal. A implementação normal voltou a developed/conciseStatement, com a prioridade de perspectiva corrigida e metadata cloudDraftIntent para medição. Variantes anteriores permanecem desligadas. Nenhuma melhora global de qualidade aprovada; reportar limites.
