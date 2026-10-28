@@ -1,3 +1,11 @@
+# CANDIDATO RETIRADO — fonte normal preserva apenas o ajuste de perspectiva
+
+Código do último piloto de cenas preservado no commit761be694 e retirado em seguida do app: sem PCCSceneBeat, sem enum fictionalScene/scene no caminho normal. A implementação normal voltou a developed/conciseStatement, com a prioridade de perspectiva corrigida e metadata cloudDraftIntent para medição. Variantes anteriores permanecem desligadas. Nenhuma melhora global de qualidade aprovada; reportar limites.
+
+Próximo: integrar origin/main69df2ac5 (PR76) na branch isolada, rodar a conferência completa sem warnings e testes apropriados, tratar as duas falhas antigas de UI por reruns dirigidos. Full anterior tinha4406+386 aprovados e3 grupos/casos pendentes; snapshot já corrigido e aprovado em testes focados. Ainda não declarar Full verde. Não alterar checkout principal do Claude. Dados desta rodada:59 solicitações PCC, fixtures p3/p4/p5/p6/p7, e72 testes focados de perspectiva antes do piloto.
+
+---
+
 # DECISÃO FINAL DOS PILOTOS — não promover cenas
 
 Fases3/4/5/6/7 totalizaram59 solicitações reais PCC nesta continuação. Prosa livre, projeção de voz e cenas não demonstraram ganho consistente/fidelidade suficiente. O último controle p7-en-real-story-r1 escolheu fictionalScene para relato real e inventou um aprendizado posterior apesar da proibição. Código do candidato será preservado em commit de pesquisa e retirado em seguida. Relatório `PCC_REJECTED_SCENES_2026-10-28.md`.

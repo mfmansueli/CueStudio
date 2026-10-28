@@ -1,6 +1,6 @@
 # Candidato de cenas reprovado — 28/10/2026
 
-A implementação de cenas não será mantida no app normal. O código experimental foi preservado em um commit de pesquisa antes de sua retirada; o hash é registrado no handoff final. Os JSONs p5/p6/p7 preservam as saídas reais. Não confundir execução sem erro do SDK com qualidade aprovada.
+A implementação de cenas não será mantida no app normal. O código experimental foi preservado em um commit de pesquisa antes de sua retirada; o hash é761be694. Esse commit preserva a última versão do candidato (fase7); os JSONs anteriores refletem as versões anteriores dos campos/nomes de intent descritas neste relatório. Os JSONs p5/p6/p7 preservam as saídas reais. Não confundir execução sem erro do SDK com qualidade aprovada.
 
 ## Amostras
 

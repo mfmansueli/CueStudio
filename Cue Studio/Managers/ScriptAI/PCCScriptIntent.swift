@@ -5,13 +5,11 @@ import FoundationModels
 nonisolated enum PCCScriptIntent {
     case developed
     case conciseStatement
-    case fictionalScene
 
     var measurementName: String {
         switch self {
         case .developed: "developed"
         case .conciseStatement: "conciseStatement"
-        case .fictionalScene: "fictionalScene"
         }
     }
 }
