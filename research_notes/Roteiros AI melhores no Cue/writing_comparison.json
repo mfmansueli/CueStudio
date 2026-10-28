@@ -23,5 +23,6 @@
     }
   ],
   "privatePCCAttachment": "build/private-writing-comparison/E361EFD1-D340-45E7-8AEE-B07D62799E76.json",
-  "privatePCCCondition": "Three actual PCC generations using a read-only clone of the currently saved creator profile, respecting the saved AI and My Cue Voice switches. Only the generated outputs were retained locally. No profile or private outputs are committed."
+  "privatePCCCondition": "Three actual PCC generations using a read-only clone of the currently saved creator profile, respecting the saved AI and My Cue Voice switches. Only the generated outputs were retained locally. No profile or private outputs are committed.",
+  "comparisonInputNote": "The Portuguese editorial prompt had 203 characters in this native-engine comparison. Its current card fixture is shortened to 200 without changing the requirements. The paired assistant and PCC outputs here use the original identical native prompt."
 }

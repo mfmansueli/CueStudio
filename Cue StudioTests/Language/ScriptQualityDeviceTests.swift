@@ -83,7 +83,11 @@ struct ScriptQualityDeviceTests {
             usesPrivateCloudCompute: !localOnly, preferredModel: requested == "privateCloud" ? .privateCloud : nil, cloudReasoning: level
         )
         #if DEBUG
+        service.evaluatesEditorialReview = ProcessInfo.processInfo.environment["CUE_QUALITY_EDITORIAL_REVIEW"] == "1"
         service.evaluatesCloudPlanning = ProcessInfo.processInfo.environment["CUE_QUALITY_PLANNING"] == "1"
+        if let value = ProcessInfo.processInfo.environment["CUE_QUALITY_EDITORIAL_EXAMPLES"] {
+            service.editorialMethodOverride = value == "1"
+        }
         #endif
         if requested == "privateCloud", !service.availability.privateCloud {
             try Test.cancel("Private Cloud Compute is unavailable: this route is not validated")
@@ -244,6 +248,10 @@ struct ScriptQualityDeviceTests {
         )
         sample.durationPolicy = request.durationPolicy.rawValue
         sample.requestedReasoning = ProcessInfo.processInfo.environment["CUE_QUALITY_REASONING"] ?? "default"
+        sample.editorialMethod = service.usesEditorialMethod
+        sample.editorialReview = service.evaluatesEditorialReview
+        sample.editorialReviewVersion = service.evaluatesEditorialReview ? 2 : nil
+        sample.editorialExampleInstructions = service.usesEditorialMethod ? PCCEditorialExamples.instruction : nil
         let started = ContinuousClock.now
         for attempt in 1...3 {
             do {
@@ -260,6 +268,9 @@ struct ScriptQualityDeviceTests {
                 sample.title = script.title
                 sample.text = script.text
                 sample.discardedDraft = script.discardedDraft
+                sample.editorialIssues = script.editorialIssues
+                sample.editorialReviewFailure = script.editorialReviewFailure
+                sample.editorialRevisionAccepted = script.editorialRevisionAccepted
                 sample.progressionDefects = script.progressionDefects.map(\.rawValue)
                 sample.attempts = script.attempts
                 sample.violations = script.voiceViolations.map(\.rawValue)

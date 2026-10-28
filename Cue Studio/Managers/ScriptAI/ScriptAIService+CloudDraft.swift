@@ -14,8 +14,9 @@ extension ScriptAIService {
         let budget = attempt.budget
         #endif
         let clock = ContinuousClock()
-        let instructions = ScriptPromptBuilder.instructions(for: request, insistsOnLanguage: insistsOnLanguage)
+        let baseInstructions = ScriptPromptBuilder.instructions(for: request, insistsOnLanguage: insistsOnLanguage)
             + "\nEvery nonempty content field is spoken script in the selected language and voice. Each point's statement, explanation and application are consecutive parts of the same paragraph. Short sentences do not mean shallow explanations. Complete the requested reasoning; do not force extra content into a simple factual announcement. Never output editorial notes or field names."
+        let instructions = baseInstructions + (usesEditorialMethod ? "\n" + PCCEditorialExamples.instruction : "")
         let started = clock.now
         var firstResponse: Duration?
         let direction: String
@@ -55,9 +56,11 @@ extension ScriptAIService {
         }
         try Task.checkCancellation()
         guard let latest else { throw ScriptAIError.emptyResponse }
-        let draft = try PCCScriptDraft(latest).scriptDraft
-        return try finishedDraft(draft, request: request, model: .privateCloud, timings: GenerationTimings(
+        let cloudDraft = try PCCScriptDraft(latest)
+        var result = try finishedDraft(cloudDraft.scriptDraft, request: request, model: .privateCloud, timings: GenerationTimings(
             prepare: begin.duration(to: started), firstResponse: firstResponse, generation: started.duration(to: clock.now)
         ))
+        result.isConciseStatement = cloudDraft.intent == .conciseStatement
+        return result
     }
 }

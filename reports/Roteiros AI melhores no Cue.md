@@ -95,3 +95,22 @@ Uma avaliação separada começou a testar outra arquitetura: plano mais redaç�
 > Eu ajusto o equilíbrio de temperatura pra não puxar pro amarelo ou azul. Isso mantém meu tom natural sem parecer filtro estranho. Se a luz da janela for fria demais, o visual perde o calor. Esse ajuste ajuda a galera a focar no que eu mostro.
 >
 > Eu comparo as áreas claras da janela com as partes brancas do cenário. Se o tom não for neutro, mudo o ajuste devagar. Se o branco puxar pro azul, eu esquento um pouco. Se ficar amarelado, eu resfrio até equilibrar.
+
+## Comparação com a redação do assistente nesta conversa
+
+Foram usados três pedidos idênticos em cada par: tutorial de luz de janela, opinião sobre leitura natural de roteiro e comparação entre tópicos e texto completo. Há saídas reais PCC com o perfil atualmente salvo no iPhone, clonado em armazenamento de teste sem alterar preferências. Essas saídas permanecem locais em `build/private-writing-comparison/`; o perfil e os textos privados não foram publicados no Git. As redações do assistente, sem aplicar um perfil, e as entradas originais estão em `research_notes/Roteiros AI melhores no Cue/writing_comparison.json`.
+
+**Nesta amostra, a redação do assistente desenvolveu melhor os pedidos.** É uma avaliação qualitativa do próprio assistente, que já havia visto os problemas do Cue: não é teste cego, benchmark independente nem execução do app consumidor ChatGPT. O pedido editorial PT tinha203 caracteres no teste nativo original; a versão atual do fixture cabe nos200 do card. O par original mantém a mesma entrada nos dois lados.
+
+| Pedido | Cue com PCC e perfil salvo | Redação do assistente sem aplicar perfil |
+| --- | --- | --- |
+| Três passos de luz de janela | Entregou três ações, mas duas tratavam principalmente do posicionamento; uma orientação angular era arbitrariamente precisa. | Separou direção, difusão e preenchimento da sombra, explicando como observar cada ajuste. |
+| Por que uma leitura pode soar natural | Desenvolveu ritmo e analogias, mas voltou ao mesmo argumento e atribuiu naturalidade a um ajuste quase automático. | Defendeu escrever para ser falado, mostrou uma troca concreta de frase e explicou como a leitura alimenta a reescrita. |
+| Tópicos versus texto completo | Cobriu benefícios e limitações, com personalização; exemplos nem sempre esclareciam o mecanismo da dificuldade ao gravar. | Diferenciou perder a ideia de perder as palavras, comparou os mesmos critérios e propôs experimentar as duas versões do mesmo trecho. |
+
+O perfil ajuda a escolher registro, perspectiva e exemplos familiares. Ele não substitui um argumento bem construído. A comparação não demonstra que o assistente seria sempre superior nem valida todas as suas afirmações factuais. O nível de raciocínio, cobertura e exemplos concretos é a referência editorial que o Cue deve perseguir; personalização precisa acrescentar voz sem tomar o lugar do conteúdo.
+
+A revisão desta entrega tornou a duração automática informativa, desenvolveu pontos em campos de explicação e aplicação e concedeu mais liberdade autoral ao rascunho. Planejamento separado e reasoning deep foram testados, mas não mostraram melhora consistente e ficaram desativados no app normal. Os resultados técnicos e as limitações factuais continuam documentados no handoff; maior extensão não é aprovação editorial.
+
+
+A extensão dos testes de 28/10 incluiu 15 solicitações PCC com diagnóstico/revisão e exemplos ampliados. Não mostrou ganho editorial consistente que justifique ativá-los por padrão. Resultados, limitações e textos sintéticos estão em [PCC_EDITORIAL_EVALUATION_2026-10-28.md](PCC_EDITORIAL_EVALUATION_2026-10-28.md) e nas fixtures `review*`/`examples2*`. Diagnosticar bem um texto não significou reescrevê-lo com maior profundidade.

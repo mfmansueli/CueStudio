@@ -37,7 +37,16 @@ final class ScriptAIService: ScriptWriting {
     var uiTestDurationPolicy: ScriptDurationPolicy?
     /// Evaluation only: planning has not demonstrated a consistent editorial gain.
     var evaluatesCloudPlanning = false
+    var evaluatesEditorialReview = false
+    var editorialMethodOverride: Bool?
     #endif
+    var usesEditorialMethod: Bool {
+        #if DEBUG
+        editorialMethodOverride ?? PCCEditorialExamples.isEnabled
+        #else
+        PCCEditorialExamples.isEnabled
+        #endif
+    }
     /// The on-device model's own count of a request, for fitting it to the window (`ContextBudget`).
     let measure: PromptMeasuring
     private let logger = Logger(subsystem: "studio.cue", category: "ScriptAI")
@@ -160,6 +169,12 @@ final class ScriptAIService: ScriptWriting {
                 if ScriptExpansion.words(in: second.text) > ScriptExpansion.words(in: script.text) { script = second }
             }
         }
+        #if DEBUG
+        if evaluatesEditorialReview, model == .privateCloud, request.durationPolicy == .informative,
+           !script.isConciseStatement, script.voiceUse != .catalogOnly, budget.remaining > 0 {
+            script = try await reviewingCloudDraft(script, request: request, budget: budget, checker: writing)
+        }
+        #endif
         // Where it stops moving forward is counted, never repaired: written again on its own, the one faulty block of the device run came back
         // with "Depois," in front of every vague sentence until the count was kept, and the script was worse (`ScriptProgressionCheck`).
         if script.usedLanguageModel {
