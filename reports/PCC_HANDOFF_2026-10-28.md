@@ -1,3 +1,9 @@
+# FILA ATIVA — compilação e testes focados (28/10)
+
+O dono perguntou se já aguardava o Claude Code; não estava, e autorizou implicitamente enfileirar. Foi iniciado `scripts/test.sh only` na worktree isolada, sessão de terminal **34323**, resultado previsto `build/results/only-20261028-185516.xcresult`, log `build/logs/test-only.log` desta worktree. O script confirmou **Another xcodebuild is running ... waiting for it**. Suites: PCCDeliveryVoiceTests, PCCProseDraftTests, VoiceBriefSnapshotTests, PCCScriptDraftTests, VoiceCheckedWritingTests e ScriptIntentContractTests. A fila aguarda o lock do build/teste atual; não aguarda o encerramento da sessão inteira do Claude. Não iniciar outro build nem modificar fontes enquanto estiver compilando. Conferir resultado/processos antes da próxima ação. A matriz de geração real PCC no iPhone ainda NÃO foi enfileirada: depende de esta etapa passar. Nenhum teste novo foi aprovado ainda.
+
+---
+
 # PRÓXIMO PONTO DE RETOMADA — variantes de voz e prosa preparadas
 
 Na worktree `pcc-offline-review`, foram preparados dois experimentos Debug **desligados por padrão**: `CUE_QUALITY_FREE_PROSE=1` e `CUE_QUALITY_DELIVERY_VOICE=1`. Nenhum build ou teste de aparelho foi iniciado nesta continuação; SwiftLint passou, compilação/testes/qualidade seguem pendentes. Plano e riscos em `reports/PCC_NEXT_EDITORIAL_EXPERIMENT_2026-10-28.md`. A validação zero warnings anterior NÃO cobre este código novo. Não promover, instalar ou anunciar ganho antes de testar. Esta continuação atende ao pedido de adiantar melhorias sem disputar recursos do Claude Code.
