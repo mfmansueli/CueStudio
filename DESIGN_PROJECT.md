@@ -502,7 +502,7 @@ explosão. Testes de UI mostram o estado final, salvo `-uiTestWelcomeOpening`. *
 título, subtítulo, cápsulas) e o botão guardam seus tamanhos e o espaço do quadro entre eles; o botão fica 82 pt acima da borda (48 pt num iPhone
 sem Home Indicator) e a cena da estrela é desenhada maior ou menor para caber no que sobra acima das palavras (×0,6 a ×1,15; ×1 no quadro, ≈ ×0,63
 num SE, ≈ ×1,13 num Pro Max), com o que sobra dividido acima e abaixo das palavras; a estrela voa até onde as cápsulas realmente estão. O texto
-cresce até o maior tamanho padrão (xxxLarge). O brilho decorativo dos botões primários é desenhado em um `Canvas` com os limites do botão, recortado pela cápsula; a faixa em movimento não amplia o retângulo de acessibilidade.
+cresce até o maior tamanho padrão (xxxLarge). O brilho decorativo dos botões primários é desenhado em um `Canvas` com os limites do botão, recortado pela cápsula; a faixa em movimento não amplia o retângulo de acessibilidade. A faixa branca chega a 35% de opacidade para preservar o contraste da tinta também no pico do brilho; PaletteContrastTests mede o componente renderizado nesse instante, com e sem Aumentar Contraste.
 
 **1.2 Topics become worlds:** marcador do tema é barra de 3 × 14 pt na cor do mundo (nunca bolinha). Ao tocar: brilho no chip, cruz de luz, oito faíscas,
 luz em curva até a órbita, aterrissagem em 1,4 s; o planeta aparece (×1,9 → 1), a órbita desenha (1,4–2,7 s), o nome chega (`TopicBirth`,

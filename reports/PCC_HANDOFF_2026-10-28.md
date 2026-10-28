@@ -1,3 +1,31 @@
+# RESULTADO ATUAL —56 testes pertinentes passaram; compilação final na fila
+
+Sessão38169 concluiu exit0: `only-20261028-232531.xcresult`,56 aprovados/0 falhas/0 pulados,157s. Inclui contraste real do brilho35% no pico (4,5:1 mínimo normal/aumentado) e bounds/tap do Welcome maior texto. Imagem atual inspecionada e23 textos auditados, mínimo6,52:1; CTA14,88:1 no quadro estático,370×54pt dentro da tela. Artefatos em build/inspection/welcome-shine35. O teste anterior35928 falhou só na compilação por EnvironmentValue readonly; removida a definição, mantém assert faixa presente e renderização real.
+
+Conferência final sessão27453 ATIVA: simulador limpo passou sem warnings; SDK iPhone aguardando a sessão Claude skin-beauty que usa Iago. Depois Release. Nenhum novo Full. Instalações normais finais nos dois iPhones ainda pendentes; não instalar no Iago enquanto outra sessão o testa. HEAD8514b446; fonte35%+testeextensão+docs ainda não commitados. Concluir build, instalar, registrar, commit/push. Checkpoints abaixo são anteriores.
+
+---
+
+# CHECKPOINT MAIS RECENTE — brilho35%, teste dirigido ativo, sem novo Full
+
+A orientação do dono continua: somente partes pertinentes à correção. HEAD remoto8514b446. Novo ajuste ainda não commitado: ShineSweep.peakOpacity35% e `PaletteContrastTests+Shine.swift` (arquivo novo, lembrar git add). Testa o componente renderizado no pico, com faixa presente e contraste>=4,5:1 normal/aumentado. A auditoria estática anterior passou23 textos (mínimo6,52), mas vídeo revelou pico da faixa55% com cerca de2,80:1, por isso intensidade foi corrigida. DESIGN_PROJECT e relatório final atualizados.
+
+Sessão35928 ATIVA: PaletteContrastTests + Welcome maior texto; resultado only-20261028-232129.xcresult. Não editar fonte durante execução. Sessão99400 de check-warnings foi interrompida no Release para esse ajuste: sim/device55% passaram, não são aprovação final35%. Tentativa only-20261028-231920 interrompida após lint file_length; extensão separada corrigiu e lint estrito passou. Próximo: concluir35928, auditar captura atual; check-warnings sem outro build em andamento; instalar NORMAL nos dois iPhones, atualizar relatório, commit/push. Não novo Full/PCC nem testes automáticos no Mansuelli. Seções abaixo são checkpoints anteriores e podem ter planos substituídos.
+
+---
+
+# PRIORIDADE ATUAL DO DONO — NÃO REPETIR FULL; somente validação pertinente
+
+Após perguntar se seria preciso outro Full, o usuário instruiu: **“rode somente as partes q são pertinentes a correçao pra ser mais rapido”**. Essa orientação mais recente substitui o plano anterior de novo Full no fim. Foi confirmado ao usuário que NÃO haverá outro Full nesta entrega. Não enfileirar Full nem nova matriz PCC. Os4 casos corrigidos passaram3 vezes cada (12 execuções); captura adicional de boas-vindas com PNG+hierarquia passou em `only-20261028-224031.xcresult`,71s.
+
+HEAD/push atual **8514b446**, inclui correções Canvas, testes e relatório `PCC_FINAL_VALIDATION_2026-10-28.md`. Sessão24169 encerrada exit0. A assinatura/instalações anteriores ainda não têm Canvas e precisam de atualização normal após conferir build.
+
+Conferência final SEM novos testes amplos ativa: sessão99400, `scripts/check-warnings.sh`, aguardou o Xcode ficar livre; projeto passou e recompilação limpa de simulador em andamento; depois SDK iPhone e Release. Isso confirma compilação da fonte corrigida, sem rodar Full. Não modificar fontes nem iniciar outro build enquanto ativa. Medição de contraste em `build/inspection/welcome-canvas/audit-visible/`: foi extraída a subárvore onboarding.root da hierarquia original porque a tela Scripts coberta também aparece no AX e gera falsos pares na imagem. Guardados raw e recorte; não omitir textos visíveis. Sessão35075 da auditoria (ler resultado).
+
+Próximos passos: fechar contraste e check-warnings; instalar versão NORMAL corrigida no Iago e Mansuelli (sem testes automáticos no Mansuelli, sem nova automação opcional que atrase esta entrega); atualizar relatório/handoff, commit e push. Não declarar Full inteiro verde: rodada original4476/1 falha unidade e392/3 falhas UI; informar que os casos corrigidos passaram em reruns dirigidos conforme orientação do dono. Sem PR/merge na main. Único PR indicado continua codex/pcc-offline-review → main; content-engines já incluída, outras branches da captura já incorporadas.
+
+---
+
 # ESTADO ATUAL —4 casos corrigidos passaram3 vezes; captura de contraste ativa
 
 Full final da fonte anterior terminou: unidade4476/1 falha/97 pulados/1 esperada, UI392/3 falhas/95 pulados,4047s. Resultado UI `full-ui-20261028-211834.xcresult`; sessão41089 encerrada exit65. Relatório consolidado novo: `reports/PCC_FINAL_VALIDATION_2026-10-28.md`.

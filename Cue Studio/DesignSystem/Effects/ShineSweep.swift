@@ -27,7 +27,7 @@ struct ShineSweep<S: Shape>: ViewModifier {
                         context.fill(
                             Path(CGRect(x: -bandWidth / 2, y: -size.height, width: bandWidth, height: size.height * 2)),
                             with: .linearGradient(
-                                Gradient(colors: [.white.opacity(0), .white.opacity(0.55), .white.opacity(0)]),
+                                Gradient(colors: [.white.opacity(0), .white.opacity(Self.peakOpacity), .white.opacity(0)]),
                                 startPoint: CGPoint(x: -bandWidth / 2, y: 0), endPoint: CGPoint(x: bandWidth / 2, y: 0)
                             )
                         )
@@ -42,6 +42,9 @@ struct ShineSweep<S: Shape>: ViewModifier {
 
     /// Seconds from the button appearing to its first sweep: it arrives first, then shines.
     static var firstSweep: Double { 1.2 }
+
+    /// The band crosses the ink too: its brightest point must keep 4.5:1, measured in PaletteContrastTests.
+    static var peakOpacity: Double { 0.35 }
 
     /// 0...1 while a sweep is crossing, nil in between.
     static func phase(at time: TimeInterval, interval: Double) -> Double? {

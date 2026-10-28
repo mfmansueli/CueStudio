@@ -20,7 +20,7 @@ Unidade: `full-unit-20261028-211116.xcresult`:4476 aprovados,1 falha,97 pulados,
 | Falha | Evidência | Correção aplicada |
 |---|---|---|
 | QuickEditPlayer / playingMovesTheClockAndStopsAtTheEndHandle | Linha109, verificação intermediária de isPlaying; xcresult capturou currentTime1.0, ready e isPlayingfalse, exatamente no fim do corte de1s. A verificação imediata após play passou. | O teste mantém início, avanço, parada e limites do corte; após a espera aceita reprodução ou chegada ao mesmo fim já exigido no resultado final. Não muda o player. |
-| TextSize / boas-vindas | Retângulo AX(16,703.78,483.12,122.44) numa tela402×874; vídeo mostra cápsula visual inteira na tela. A faixa SwiftUI rotacionada saía do layout antes do clip. | ShineSweep desenha a mesma faixa/gradiente/rotação dentro de Canvas de tamanho fixo, recortado pela mesma forma. Não altera cores, duração, tamanhos ou texto. O teste verifica os limites e toque durante6s, cobrindo um ciclo de brilho. |
+| TextSize / boas-vindas | Retângulo AX(16,703.78,483.12,122.44) numa tela402×874; vídeo mostra cápsula visual inteira na tela. A faixa SwiftUI rotacionada saía do layout antes do clip. | ShineSweep desenha a mesma faixa/gradiente/rotação dentro de Canvas de tamanho fixo, recortado pela mesma forma. Preserva duração, tamanhos e texto. A conferência posterior do pico do brilho exigiu reduzir sua opacidade de55% para35%, descrita abaixo. O teste verifica os limites e toque durante6s, cobrindo um ciclo de brilho. |
 | ClipBar / fade de clipe mais alto | Parou antes do teste de áudio: esperava Clip2of3 e encontrou Clip2of4. SampleEdit.demo já começa com2 clipes, mais os2 cortes criados pelo teste. | Começa com edição simples de1 clipe, mantendo2 cortes, seleção do clipe do meio, volume maior, fade e verificação de reprodução. O vídeo de teste sem áudio não substitui validação de áudio real no aparelho. |
 | ShareTo / Not yet e Yes | Linha121, primeiro Send após Share não apareceu. Vídeo terminou ainda na escolha da rede, sem exportação iniciada. Logs do runner também registraram erros do servidor AX remoto; a causa completa não foi isolada pela gravação. | O helper espera o botão inicial estabilizar e confirma que está alcançável antes do primeiro toque. Mantém exportação, Not yet, reenvio, Yes e tela de envio. |
 
@@ -32,6 +32,16 @@ Sem mudar o código: player e ShareTo passaram em 3 repetições cada, resultado
 
 Após os ajustes acima: os 4 casos passaram em 3 execuções cada, **12 execuções aprovadas**, `only-20261028-223213.xcresult`,456s. xcresulttool confirmou “Test case with 3 runs / Passed” para cada caso. SwiftLint estrito e git diff --check passaram.
 
-## Conferência final — pendente neste checkpoint
+## Conferência final dirigida — em andamento
 
-Captura PNG + hierarquia das boas-vindas em execução: `only-20261028-224031.xcresult`, sessão24169. Depois medir o contraste renderizado, repetir check-warnings para a fonte atual, atualizar as instalações normais e executar o Full final. Não considerar as verificações anteriores como aprovação automática da fonte nova.
+O dono orientou explicitamente rodar somente as partes pertinentes à correção para ser mais rápido: não será repetido o Full. A rodada completa original permanece registrada como falha, com os quatro casos ajustados aprovados nas repetições dirigidas.
+
+Captura PNG + hierarquia das boas-vindas aprovada: `only-20261028-224031.xcresult`,71s. Auditoria da subárvore visível onboarding.root:23 textos, mínimo6,52:1; botão14,88:1 nesse quadro. A árvore AX integral também contém a tela Scripts coberta, cujos retângulos não correspondem ao texto visível da captura; o original foi preservado.
+
+A captura estática não cobria o pior instante da animação. Medição dos pixels do vídeo no pico da faixa branca de55% encontrou cerca de2,80:1 sobre a tinta. A faixa foi reduzida para35%. Um novo teste renderiza o próprio componente no pico, confirma que a faixa está presente e exige4,5:1 tanto no contraste normal quanto aumentado. Não basta medir somente os tokens sem a sobreposição.
+
+A compilação limpa da sessão99400 passou simulador e SDK iPhone com a fonte55%, mas foi interrompida durante Release para corrigir o contraste real; não é aprovação final da fonte35%. Uma tentativa de teste foi interrompida após SwiftLint acusar comprimento do arquivo de testes; o novo caso foi separado em extensão, com lint estrito aprovado. A primeira compilação do novo teste também identificou uma tentativa de definir um EnvironmentValue somente de leitura; a definição foi removida, mantendo a exigência de que a faixa esteja presente na imagem. Não houve falha de produto nessa tentativa.
+
+**Validação final dirigida aprovada:** `only-20261028-232531.xcresult`,56 testes,0 falhas,0 pulados,157s. Inclui PaletteContrastTests, o novo teste do componente no pico (mínimo4,5:1 normal/aumentado) e boas-vindas no maior texto. A captura atual foi inspecionada visualmente e medida em `build/inspection/welcome-shine35/audit-visible`:23 textos, mínimo6,52:1, botão14,88:1 no quadro estático; limites370×54pt dentro da tela. A verificação do pico é separada da medição estática.
+
+Compilações limpas finais em andamento na sessão27453. Depois: atualizar instalações normais. Sem nova matriz PCC.
