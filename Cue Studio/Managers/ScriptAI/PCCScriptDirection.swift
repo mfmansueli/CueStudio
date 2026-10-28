@@ -8,6 +8,8 @@ import Foundation
 /// Editorial direction for PCC's larger request budget. Kept out of the measured local prompt;
 /// it uses the same generation call and never asks for a separate plan or a fabricated biography.
 nonisolated enum PCCScriptDirection {
+    static let draftLicense = "Ghostwrite an editable first draft that the creator can make their own. Speak confidently as the creator: first-person opinions, preferences, recommendations, rhetorical questions, analogies and proposed everyday examples are welcome. Choose a useful point of view and develop it, rather than retreating into neutral advice. Short sentences can build substantial paragraphs. A proposed example is creative material, not evidence of the creator's real past. Keep concrete biographical claims, clients, measured results, credentials and past events grounded in supplied details; do not present an invented testimonial as real."
+
     static func usesAutomaticFormat(_ request: ScriptRequest) -> Bool {
         request.modelRoute == .privateCloud && request.isFreePrompt && request.format == nil && request.formatChoice != .talkingHead
     }
@@ -19,11 +21,11 @@ nonisolated enum PCCScriptDirection {
         return [
             "Format is Automatic. Read the entire current request in its own language and choose the creative direction that best serves its intent. No format has been selected for you. Usual formats are a fallback only when the request gives no direction.",
             "Choose a tutorial for teaching a process, a list for distinct tips or reasons, a story for a supplied experience, a review or comparison for evaluating options, an opinion or reply for a viewpoint or comment, an announcement for supplied news, myth vs fact for correcting a belief, POV for a requested scene, or a sincere statement for a serious situation. For a general explanation, build a clear explanatory arc. Combine compatible approaches only when the request needs it.",
-            "A product mention alone does not mean sponsorship. Use a sponsored-ad direction only when the request explicitly describes paid promotion, and disclose that paid partnership within the script (#ad). Never invent a brand deal, personal test or experience. A serious statement takes priority over entertainment: no hype, jokes, promotional hook or engagement CTA.",
+            "A product mention alone does not mean sponsorship. Use a sponsored-ad direction only when the request explicitly describes paid promotion, and disclose that paid partnership within the script (#ad). Do not invent a real brand deal or testimonial; illustrative scenarios are welcome when they serve the request. A serious statement takes priority over entertainment: no hype, jokes, promotional hook or engagement CTA.",
             "Return blocks in the order that fits the chosen direction, with short descriptive block labels. Do not force Hook / Body / CTA onto every idea, force a twist onto an explanation, or show a format-selection rationale. The chosen structure must serve the creator's request, not change its subject.",
             request.durationPolicy == .targeted
-                ? "If the request supplies too little detail, use a useful, modest interpretation of the stated subject without inventing the creator's biography. Keep the result within the requested length."
-                : "If the request supplies too little detail, use a useful, modest interpretation of the stated subject without inventing the creator's biography. Do not invent details just to make it longer.",
+                ? "If the request supplies too little detail, choose a clear editorial angle and develop a useful, specific draft in the creator's voice. Keep the result within the requested length."
+                : "If the request supplies too little detail, choose a clear editorial angle and develop a useful, specific draft in the creator's voice. Do not invent details just to make it longer.",
         ]
     }
 
@@ -46,9 +48,9 @@ nonisolated enum PCCScriptDirection {
         guard request.modelRoute == .privateCloud else { return [] }
         var lines = [
             "The creator's current request determines this video's subject, intended takeaway and explicit requirements. Their usual topics, openings, endings and style are defaults, not reasons to change that request. Keep the selected language, format, \(request.durationPolicy == .targeted ? "length, " : "")brand restrictions and the creator's avoid rules.",
-            "Use the supplied details accurately: keep names, quantities, qualifications and required phrases. Do not turn a possibility into a promise or an opinion into a verified fact. Missing information is unknown, not permission to invent a personal experience, testimonial, result, price or credential.",
-            "The current request's perspective overrides profile pronouns. Preserve a supplied team action as a team action even if the profile usually speaks as one person. General advice can address the viewer directly; a first-person style preference never authorizes a claim that the creator experienced or tested it.",
-            "Preserve who did what: a team action must not become a personal action, and someone else's experience must not become the creator's. Do not add a workplace, personal test, learned lesson, future posting plan or commitment unless it was supplied. Clearly hypothetical teaching examples are allowed; never present them as the creator's past.",
+            "Use the supplied details accurately: keep names, quantities, qualifications and required phrases. Opinions and proposed preferences can be authored for this draft; verified claims, prices, credentials and testimonials require supplied support. Do not turn a possibility into a guarantee.",
+            "The current request's perspective overrides profile pronouns. Preserve a supplied team action as a team action even if the profile usually speaks as one person. Otherwise write as the creator, using first-person editorial choices and recommendations naturally.",
+            "Preserve who did what in supplied events. You can propose a viewpoint, a practical preference, a relatable analogy or an imagined teaching situation for the creator to edit. Keep imagined scenes distinguishable from claims about their real past; avoid an intrusive disclaimer on every sentence.",
             "Treat unsupplied scene details as conditional examples, not observations. An inspiration angle is a creative direction, not evidence that a particular object or setting exists. Explain conditional outcomes with appropriate uncertainty instead of promising that one adjustment always fixes the issue.",
             "Use the voice profile to choose vocabulary, rhythm, perspective and the audience's level of explanation. Do not recite the profile, insert unrelated interests or repeat a catchphrase to prove you used it.",
         ]
@@ -76,5 +78,5 @@ nonisolated enum PCCScriptDirection {
     }
 
     /// Last in the user prompt: required wording must survive stronger style/profile preferences.
-    static let finalCheck = "Final check against the current request: any text explicitly requested exactly or verbatim must appear in a spoken block character-for-character, including its capitalization and punctuation. Copy that text as a complete unchanged phrase; do not substitute synonyms, change its punctuation or only convey its meaning. Preserve the supplied facts and who did what. Do not add personal history or future commitments to fill the length."
+    static let finalCheck = "Final check against the current request: any text explicitly requested exactly or verbatim must appear in a spoken block character-for-character, including its capitalization and punctuation. Copy that text as a complete unchanged phrase; do not substitute synonyms, change its punctuation or only convey its meaning. Preserve the supplied facts and who did what. Use the creator's voice boldly while keeping supplied facts and real biographical claims faithful."
 }

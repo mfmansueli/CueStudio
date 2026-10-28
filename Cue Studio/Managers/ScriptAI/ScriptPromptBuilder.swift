@@ -37,7 +37,7 @@ nonisolated enum ScriptPromptBuilder {
             lines.append(request.modelRoute == .privateCloud
                 ? PCCScriptDirection.platformLine(for: request.platform, durationPolicy: request.durationPolicy)
                 : PlatformGuide.line(for: request.platform, durationPolicy: request.durationPolicy))
-            lines.append(honestyRule)
+            lines.append(request.modelRoute == .privateCloud ? PCCScriptDirection.draftLicense : honestyRule)
         }
         if request.isFreePrompt {
             lines.append(accuracyRule)

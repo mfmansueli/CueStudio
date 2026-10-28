@@ -1,7 +1,7 @@
 import Foundation
 
 /// Whether platform duration guides composition or is only a reference for the creator.
-/// The app keeps its existing default while the informative variant is evaluated on-device.
+/// Automatic requests use an informative reference; explicit creator choices retain a target.
 nonisolated enum ScriptDurationPolicy: String, Sendable, Hashable {
     case targeted
     case informative

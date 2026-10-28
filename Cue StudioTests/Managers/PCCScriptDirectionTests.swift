@@ -33,6 +33,15 @@ struct PCCScriptDirectionTests {
         #expect(!instructions.contains("Here is how they write"), "PCC does not receive local writing examples")
     }
 
+    @Test func cloudGhostwritesAnEditableViewpointWithoutFabricatedCredentials() {
+        let cloud = AIRequestPolicy.prepare(request(), on: .privateCloud)
+        let instructions = ScriptPromptBuilder.instructions(for: cloud)
+        #expect(instructions.contains("Ghostwrite an editable first draft"))
+        #expect(instructions.contains("first-person opinions, preferences, recommendations"))
+        #expect(instructions.contains("do not present an invented testimonial as real"))
+        #expect(!instructions.contains("Never say the creator did, tried, discovered"))
+    }
+
     @Test func cloudDraftProvidesMaterialNearNinetySecondsAtNaturalReadingPace() {
         let range = ScriptPromptBuilder.askedRange(for: 60...90, on: .privateCloud)
         #expect(range.low == 203)
