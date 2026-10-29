@@ -37,7 +37,7 @@ struct UltraConsentSheet: View {
                     )
                     point(
                         title: "What stays on this iPhone",
-                        detail: "Your writing examples, imported excerpts, approved scripts, other scripts, videos and audio are never sent.",
+                        detail: "Your writing examples, imported excerpts, approved scripts, other scripts, videos and audio are never sent. Fit to time on a script Ultra AI wrote sends that script back, with your edits.",
                         systemImage: "iphone"
                     )
                     point(

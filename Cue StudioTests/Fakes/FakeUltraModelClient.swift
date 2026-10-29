@@ -18,6 +18,7 @@ final class FakeUltraModelClient: UltraModelClient {
         text: #"{"script":"A checked draft with a reason and an example.","corrections":["A universal rule now says when it applies."]}"#,
         finishedNormally: true
     ))
+    var fit: Result<UltraModelReply, any Error> = .success(UltraModelReply(text: #"{"script":"The fitted script."}"#, finishedNormally: true))
     /// Runs inside each call, before it answers.
     var whileCalling: ((UltraStageRequest.Stage) -> Void)?
     private(set) var requests: [UltraStageRequest] = []
@@ -36,6 +37,7 @@ final class FakeUltraModelClient: UltraModelClient {
         case .draft: draft
         case .check: check
         case .review: review
+        case .fit: fit
         }
         let reply = try answer.get()
         progress(ReadTime.wordCount(in: reply.text))

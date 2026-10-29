@@ -119,6 +119,244 @@
         }
       }
     },
+    "[its word count]" : {
+      "comment" : "What Cue sends for Ultra AI: placeholder for the script's word count inside the Fit to time call",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[عدد كلماته]"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[dets antal ord]"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[seine Wortzahl]"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[su número de palabras]"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[son nombre de mots]"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[उसके शब्दों की संख्या]"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[jumlah katanya]"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[il suo numero di parole]"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[その語数]"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[그 단어 수]"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[antall ord i det]"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[het aantal woorden]"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[o número de palavras dele]"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[dess antal ord]"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[จำนวนคำของสคริปต์]"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[kelime sayısı]"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[số từ của nó]"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[它的字数]"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[它的字數]"
+          }
+        }
+      }
+    },
+    "[the script on the page, with your edits]" : {
+      "comment" : "What Cue sends for Ultra AI: placeholder for the script inside the Fit to time call",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[النص الموجود في الصفحة مع تعديلاتك]"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[manuskriptet på siden med dine ændringer]"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[das Skript auf der Seite, mit deinen Änderungen]"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[el guion de la página, con tus cambios]"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[le script de la page, avec vos modifications]"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[पेज पर मौजूद स्क्रिप्ट, आपके बदलावों के साथ]"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[naskah di halaman, beserta suntinganmu]"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[il copione nella pagina, con le tue modifiche]"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[ページの台本（あなたの編集を含む）]"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[페이지의 대본, 수정한 내용 포함]"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[manuset på siden, med endringene dine]"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[het script op de pagina, met je aanpassingen]"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[o roteiro da página, com as suas edições]"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[manuset på sidan, med dina ändringar]"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[สคริปต์ในหน้า พร้อมการแก้ไขของคุณ]"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[sayfadaki senaryo, düzenlemelerinle]"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[kịch bản trên trang, kèm chỉnh sửa của bạn]"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[页面上的脚本，含你的修改]"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[頁面上的腳本，含你的修改]"
+          }
+        }
+      }
+    },
     "[what step 2 corrected]" : {
       "comment" : "What Cue sends for Ultra AI: placeholder for the check's list of corrections inside the third call",
       "localizations" : {
@@ -1558,6 +1796,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "3 · 潤飾"
+          }
+        }
+      }
+    },
+    "4 · Fit to time" : {
+      "comment" : "What Cue sends for Ultra AI: heading of the optional fourth call, Fit to time on a script Ultra AI wrote",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · ملاءمة المدة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Tilpas længden"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Auf Länge bringen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Ajustar a la duración"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Ajuster à la durée"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · समय में फ़िट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Sesuaikan durasi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Adatta alla durata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · 時間に合わせる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · 시간에 맞추기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Tilpass til tid"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Op lengte brengen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Ajustar ao tempo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Anpassa till tid"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · ปรับให้พอดีเวลา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Süreye sığdır"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · Vừa thời lượng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · 适配时长"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4 · 配合時長"
           }
         }
       }
@@ -4195,6 +4552,125 @@
         }
       }
     },
+    "Only when you ask, on a script Ultra AI wrote: that script with your edits, the platform’s length and how you speak." : {
+      "comment" : "What Cue sends for Ultra AI: what the optional fourth call (Fit to time) carries",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فقط عندما تطلب ذلك، على نص كتبه Ultra AI: ذلك النص مع تعديلاتك، ومدة المنصة، وطريقة كلامك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kun når du beder om det, på et manuskript Ultra AI har skrevet: det manuskript med dine ændringer, platformens længde og hvordan du taler."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur wenn du es willst, bei einem Skript von Ultra AI: dieses Skript mit deinen Änderungen, die Länge der Plattform und wie du sprichst."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo cuando lo pides, en un guion escrito por Ultra AI: ese guion con tus cambios, la duración de la plataforma y cómo hablas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seulement quand vous le demandez, sur un script écrit par Ultra AI : ce script avec vos modifications, la durée de la plateforme et votre façon de parler."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सिर्फ़ जब आप कहें, Ultra AI की लिखी स्क्रिप्ट पर: आपके बदलावों के साथ वह स्क्रिप्ट, प्लेटफ़ॉर्म की लंबाई और आप कैसे बोलते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hanya saat kamu minta, pada naskah yang ditulis Ultra AI: naskah itu beserta suntinganmu, durasi platform, dan cara kamu bicara."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo quando lo chiedi, su un copione scritto da Ultra AI: quel copione con le tue modifiche, la durata della piattaforma e come parli."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AIが書いた台本で、あなたが頼んだときだけ。編集を含めたその台本、プラットフォームの長さ、あなたの話し方。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI가 쓴 대본에서 요청할 때만: 수정한 내용을 포함한 그 대본, 플랫폼 길이, 내 말투."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bare når du ber om det, på et manus Ultra AI har skrevet: det manuset med endringene dine, plattformens lengde og hvordan du snakker."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alleen als je erom vraagt, bij een script van Ultra AI: dat script met je aanpassingen, de lengte van het platform en hoe je praat."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só quando você pede, num roteiro que o Ultra AI escreveu: esse roteiro com as suas edições, o tempo da rede e como você fala."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bara när du ber om det, på ett manus som Ultra AI skrev: det manuset med dina ändringar, plattformens längd och hur du pratar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เฉพาะเมื่อคุณขอ ในสคริปต์ที่ Ultra AI เขียน: สคริปต์นั้นพร้อมการแก้ไขของคุณ ความยาวของแพลตฟอร์ม และวิธีพูดของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yalnızca sen istediğinde, Ultra AI’ın yazdığı bir senaryoda: düzenlemelerinle o senaryo, platformun süresi ve nasıl konuştuğun."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chỉ khi bạn yêu cầu, trên kịch bản do Ultra AI viết: kịch bản đó kèm chỉnh sửa của bạn, thời lượng của nền tảng và cách bạn nói."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅在你要求时，针对 Ultra AI 写的脚本：含你修改的该脚本、平台时长，以及你的说话方式。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅在你要求時，針對 Ultra AI 寫的腳本：含你修改的該腳本、平台時長，以及你的說話方式。"
+          }
+        }
+      }
+    },
     "Sent only for the scripts you pick Ultra AI for. Writing examples, imported excerpts and approved scripts are never part of it." : {
       "comment" : "My Cue Voice › What Cue sends: note when Ultra AI is allowed",
       "localizations" : {
@@ -6095,6 +6571,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ultra AI 無法起草 · 請再試一次"
+          }
+        }
+      }
+    },
+    "Ultra AI couldn’t fit it to the time · Try again" : {
+      "comment" : "Error toast: Ultra AI's Fit to time on a script it wrote failed; the script stays as it was",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تعذّر على Ultra AI ملاءمة المدة · حاول مرة أخرى"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI kunne ikke tilpasse længden · Prøv igen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI konnte es nicht auf Länge bringen · Noch mal versuchen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI no pudo ajustarlo a la duración · Inténtalo de nuevo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI n’a pas pu l’ajuster à la durée · Réessayez"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI इसे समय में फ़िट नहीं कर सका · फिर से कोशिश करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI tidak bisa menyesuaikan durasinya · Coba lagi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI non è riuscito ad adattarlo alla durata · Riprova"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AIは時間に合わせられませんでした · もう一度お試しください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI가 시간에 맞추지 못했어요 · 다시 시도하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI kunne ikke tilpasse det til tiden · Prøv igjen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI kon het niet op lengte brengen · Probeer opnieuw"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Ultra AI não conseguiu ajustar ao tempo · Tente de novo"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI kunde inte anpassa det till tiden · Försök igen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI ปรับให้พอดีเวลาไม่ได้ · ลองอีกครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI süreye sığdıramadı · Tekrar dene"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI không thể làm vừa thời lượng · Thử lại"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI 无法适配时长 · 请重试"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI 無法配合時長 · 請再試一次"
           }
         }
       }
@@ -10290,125 +10885,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的口吻，搭配 Ultra AI"
-          }
-        }
-      }
-    },
-    "Your writing examples, imported excerpts, approved scripts, other scripts, videos and audio are never sent." : {
-      "comment" : "Permission sheet for Ultra AI: what is never sent",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لا تُرسَل أبدًا أمثلة كتابتك ولا المقتطفات المستوردة ولا النصوص التي وافقتَ عليها ولا النصوص الأخرى ولا الفيديوهات ولا الصوت."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dine skriveeksempler, importerede uddrag, godkendte manuskripter, andre manuskripter, videoer og lyd sendes aldrig."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deine Schreibbeispiele, importierten Auszüge, bestätigten Skripte, anderen Skripte, Videos und Audios werden nie gesendet."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tus ejemplos de escritura, fragmentos importados, guiones aprobados, otros guiones, videos y audios nunca se envían."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vos exemples de textes, extraits importés, scripts approuvés, autres scripts, vidéos et audios ne sont jamais envoyés."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आपके लेखन के उदाहरण, आयात किए गए अंश, मंज़ूर की गई स्क्रिप्ट, दूसरी स्क्रिप्ट, वीडियो और ऑडियो कभी नहीं भेजे जाते।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Contoh tulisanmu, kutipan yang diimpor, naskah yang kamu setujui, naskah lain, video, dan audio tidak pernah dikirim."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "I tuoi esempi di scrittura, gli estratti importati, i copioni approvati, gli altri copioni, i video e l’audio non vengono mai inviati."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "文章のサンプル、読み込んだ抜粋、承認した台本、ほかの台本、動画、オーディオは一切送信されません。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "글쓰기 예시, 가져온 발췌문, 승인한 대본, 다른 대본, 영상, 오디오는 절대 전송되지 않아요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Skriveeksemplene dine, importerte utdrag, godkjente manus, andre manus, videoer og lyd sendes aldri."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je schrijfvoorbeelden, geïmporteerde fragmenten, goedgekeurde scripts, andere scripts, video’s en audio worden nooit verstuurd."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seus exemplos de escrita, trechos importados, roteiros aprovados, outros roteiros, vídeos e áudios nunca são enviados."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dina skrivexempel, importerade utdrag, godkända manus, andra manus, videor och ljud skickas aldrig."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ตัวอย่างงานเขียน ข้อความที่นำเข้า สคริปต์ที่คุณอนุมัติ สคริปต์อื่นๆ วิดีโอ และเสียงของคุณจะไม่ถูกส่งไปเลย"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yazı örneklerin, içe aktarılan alıntılar, onayladığın senaryolar, diğer senaryolar, videolar ve sesler asla gönderilmez."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ví dụ bài viết, đoạn trích đã nhập, kịch bản bạn đã duyệt, các kịch bản khác, video và âm thanh của bạn không bao giờ được gửi đi."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你的写作示例、导入的摘录、你认可的脚本、其他脚本、视频和音频绝不会被发送。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "你的寫作範例、輸入的摘錄、你認可的腳本、其他腳本、影片和音訊絕不會被傳送。"
           }
         }
       }
@@ -513489,6 +513965,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的話，你的方式。"
+          }
+        }
+      }
+    },
+    "Your writing examples, imported excerpts, approved scripts, other scripts, videos and audio are never sent. Fit to time on a script Ultra AI wrote sends that script back, with your edits." : {
+      "comment" : "Permission sheet for Ultra AI: what is never sent, and the one script that is (Fit to time on a script Ultra AI wrote)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا تُرسَل أبدًا أمثلة كتابتك ولا المقتطفات المستوردة ولا النصوص التي وافقتَ عليها ولا النصوص الأخرى ولا الفيديوهات ولا الصوت. أما «ملاءمة المدة» على نص كتبه Ultra AI فترسل ذلك النص مرة أخرى مع تعديلاتك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine skriveeksempler, importerede uddrag, godkendte manuskripter, andre manuskripter, videoer og lyd sendes aldrig. Tilpas længden på et manuskript, Ultra AI har skrevet, sender det manuskript igen, med dine ændringer."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Schreibbeispiele, importierten Auszüge, bestätigten Skripte, anderen Skripte, Videos und Audios werden nie gesendet. „Auf Länge bringen“ bei einem Skript von Ultra AI sendet dieses Skript erneut, mit deinen Änderungen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus ejemplos de escritura, fragmentos importados, guiones aprobados, otros guiones, videos y audios nunca se envían. Ajustar a la duración un guion escrito por Ultra AI vuelve a enviar ese guion, con tus cambios."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos exemples de textes, extraits importés, scripts approuvés, autres scripts, vidéos et audios ne sont jamais envoyés. Ajuster à la durée un script écrit par Ultra AI renvoie ce script, avec vos modifications."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपके लेखन के उदाहरण, आयात किए गए अंश, मंज़ूर की गई स्क्रिप्ट, दूसरी स्क्रिप्ट, वीडियो और ऑडियो कभी नहीं भेजे जाते। Ultra AI की लिखी स्क्रिप्ट पर «समय में फ़िट करें» वह स्क्रिप्ट आपके बदलावों के साथ फिर से भेजता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contoh tulisanmu, kutipan yang diimpor, naskah yang kamu setujui, naskah lain, video, dan audio tidak pernah dikirim. Sesuaikan durasi pada naskah yang ditulis Ultra AI mengirim naskah itu lagi, beserta suntinganmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "I tuoi esempi di scrittura, gli estratti importati, i copioni approvati, gli altri copioni, i video e l’audio non vengono mai inviati. Adatta alla durata su un copione scritto da Ultra AI rinvia quel copione, con le tue modifiche."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "文章のサンプル、読み込んだ抜粋、承認した台本、ほかの台本、動画、オーディオは一切送信されません。Ultra AIが書いた台本で「時間に合わせる」を使うと、その台本があなたの編集を含めてもう一度送信されます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "글쓰기 예시, 가져온 발췌문, 승인한 대본, 다른 대본, 영상, 오디오는 절대 전송되지 않아요. Ultra AI가 쓴 대본에서 '시간에 맞추기'를 쓰면 그 대본이 수정한 내용과 함께 다시 전송돼요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriveeksemplene dine, importerte utdrag, godkjente manus, andre manus, videoer og lyd sendes aldri. Tilpass til tid på et manus Ultra AI har skrevet, sender det manuset igjen, med endringene dine."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je schrijfvoorbeelden, geïmporteerde fragmenten, goedgekeurde scripts, andere scripts, video’s en audio worden nooit verstuurd. Op lengte brengen van een script van Ultra AI stuurt dat script opnieuw, met je aanpassingen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seus exemplos de escrita, trechos importados, roteiros aprovados, outros roteiros, vídeos e áudios nunca são enviados. Ajustar ao tempo um roteiro que o Ultra AI escreveu envia esse roteiro de novo, com as suas edições."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dina skrivexempel, importerade utdrag, godkända manus, andra manus, videor och ljud skickas aldrig. Anpassa till tid på ett manus som Ultra AI skrev skickar det manuset igen, med dina ändringar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตัวอย่างงานเขียน ข้อความที่นำเข้า สคริปต์ที่คุณอนุมัติ สคริปต์อื่นๆ วิดีโอ และเสียงของคุณจะไม่ถูกส่งไปเลย การปรับให้พอดีเวลาในสคริปต์ที่ Ultra AI เขียนจะส่งสคริปต์นั้นอีกครั้งพร้อมการแก้ไขของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yazı örneklerin, içe aktarılan alıntılar, onayladığın senaryolar, diğer senaryolar, videolar ve sesler asla gönderilmez. Ultra AI’ın yazdığı bir senaryoda Süreye sığdır, o senaryoyu düzenlemelerinle birlikte yeniden gönderir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ví dụ bài viết, đoạn trích đã nhập, kịch bản bạn đã duyệt, các kịch bản khác, video và âm thanh của bạn không bao giờ được gửi đi. Vừa thời lượng trên kịch bản do Ultra AI viết sẽ gửi lại kịch bản đó, kèm các chỉnh sửa của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的写作示例、导入的摘录、你认可的脚本、其他脚本、视频和音频绝不会被发送。对 Ultra AI 写的脚本使用“适配时长”时，会连同你的修改再次发送该脚本。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的寫作範例、輸入的摘錄、你認可的腳本、其他腳本、影片和音訊絕不會被傳送。對 Ultra AI 寫的腳本使用「配合時長」時，會連同你的修改再次傳送該腳本。"
           }
         }
       }

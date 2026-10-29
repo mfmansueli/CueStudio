@@ -22,6 +22,7 @@ final class StubUltraClient: UltraModelClient {
 
     static let draftText = "Ultra draft paragraph one, with a reason and an example.\n\nUltra draft paragraph two, with the consequence."
     static let scriptText = "Ultra polished opening, with a reason and an example.\n\nUltra polished closing, with the consequence that follows."
+    static let fittedText = "Ultra fitted script, with its reason and the consequence."
     static let title = "Ultra stub script"
 
     func generate(_ request: UltraStageRequest, progress: @escaping @MainActor (Int) -> Void) async throws -> UltraModelReply {
@@ -34,6 +35,9 @@ final class StubUltraClient: UltraModelClient {
         case .check:
             let reply = ["script": Self.draftText, "corrections": [String]()] as [String: Any]
             let data = try JSONSerialization.data(withJSONObject: reply)
+            return UltraModelReply(text: String(bytes: data, encoding: .utf8) ?? "", finishedNormally: true)
+        case .fit:
+            let data = try JSONSerialization.data(withJSONObject: ["script": Self.fittedText])
             return UltraModelReply(text: String(bytes: data, encoding: .utf8) ?? "", finishedNormally: true)
         case .review:
             if reviewFails { throw UltraClientError(failure: .provider) }

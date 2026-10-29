@@ -168,6 +168,32 @@ final class UltraScriptService: UltraScriptWriting {
         return (reply, seconds, answer)
     }
 
+    /// "Fit to time" for a script Ultra wrote: one call, counted like the others, only with permission and never after a Stop. The fitted
+    /// speech, cleaned as a script is; a failure leaves the page as it was. A script already in the range comes back as it is, with no call.
+    func fit(_ request: UltraFitRequest) async throws -> String {
+        guard !request.words.contains(ReadTime.wordCount(in: request.script)) else { return request.script }
+        guard isAvailable else { throw UltraError.notAvailable }
+        try mayContinue(started: false)
+        guard budget.allows(1) else { throw UltraError.budgetExhausted }
+        guard let client = client ?? makeClient() else { throw UltraError.notAvailable }
+        self.client = client
+        let start = clock.now
+        let reply: UltraModelReply
+        do {
+            reply = try await call(client, request.stage) { _ in }
+        } catch UltraError.draftFailed(let failure) {
+            throw UltraError.fitFailed(failure)
+        }
+        let seconds = Self.seconds(start.duration(to: clock.now))
+        guard reply.finishedNormally, let fitted = UltraFitReply(json: reply.text) else {
+            note("fit incomplete", reply: reply, seconds: seconds)
+            throw UltraError.fitFailed(.incomplete)
+        }
+        note("fit", reply: reply, seconds: seconds)
+        try mayContinue(started: true)
+        return ScriptPromptBuilder.collapsingRepeatedSentences(ScriptPromptBuilder.clean(fitted.script, language: request.language))
+    }
+
     // MARK: - Steps
 
     /// Throws when nothing more may go out: the run was cancelled, or permission was never given (`started` false) or was taken back.

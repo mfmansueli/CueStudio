@@ -14,6 +14,8 @@ nonisolated struct UltraStageRequest: Hashable, Sendable {
         case check
         /// The polish of that draft, as JSON (`UltraReviewReply`).
         case review
+        /// "Fit to time" on a script Ultra wrote, as JSON (`UltraFitReply`, `UltraFitRequest`).
+        case fit
     }
 
     let stage: Stage

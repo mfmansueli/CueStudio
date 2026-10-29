@@ -23,6 +23,11 @@ import UIKit
 /// `CUE_DEVICE="iago Lima iphone" TEST_RUNNER_CUE_ULTRA_QUALITY_RUN=q1 scripts/test.sh device UltraQualityDeviceTests`, the iPhone unlocked and
 /// awake (Apple Intelligence is rate limited in the background). `TEST_RUNNER_CUE_ULTRA_QUALITY_CASES=t1-window-light,en-0` and
 /// `TEST_RUNNER_CUE_ULTRA_QUALITY_ENGINES=apple,checked` narrow it. Each idea costs 5 of the lab's calls (2 + 3).
+///
+/// `TEST_RUNNER_CUE_ULTRA_QUALITY_FIT=1` runs the other half instead, with no call to Google: the owner's choice (29/10/2026) is that Ultra writes
+/// freely and the creator fits it to the platform's time when they want, with the page's "Fit to time" (Apple Intelligence, on the iPhone). It
+/// fits the checked scripts of run q1 (`Fixtures/UltraScripts`) exactly as the script page does, for `tools/ultra/compare.py` to show what was
+/// cut and kept.
 @MainActor
 @Suite("Ultra AI against Apple Intelligence", .serialized, .enabled(if: ProcessInfo.processInfo.environment["CUE_ULTRA_QUALITY"] != nil))
 struct UltraQualityDeviceTests {
@@ -97,7 +102,13 @@ struct UltraQualityDeviceTests {
 
     // MARK: - Writing
 
-    @Test(.timeLimit(.minutes(5)), arguments: UltraQualityDeviceTests.cases)
+    /// "apple" (the page's Fit to time today) or "ultra" (`UltraScriptService.fit`, one call a script); any other value is "apple".
+    nonisolated private static let fits = ProcessInfo.processInfo.environment["CUE_ULTRA_QUALITY_FIT"] != nil
+    nonisolated private static let fitsWithUltra = ProcessInfo.processInfo.environment["CUE_ULTRA_QUALITY_FIT"] == "ultra"
+
+    private final class BundleToken {}
+
+    @Test(.timeLimit(.minutes(5)), .enabled(if: !fits), arguments: UltraQualityDeviceTests.cases)
     func writesTheIdea(_ item: Case) async throws {
         KeepScreenAwake.enable()
         #if canImport(UIKit)
@@ -126,6 +137,92 @@ struct UltraQualityDeviceTests {
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
         Attachment.record(try encoder.encode(sample), named: "ultra-quality-\(Self.run)-\(item.id).json")
         #expect(sample.engines.values.allSatisfy { $0.text != nil || $0.failure != nil })
+    }
+
+    // MARK: - Fitting
+
+    /// "Fit to time" on an Ultra script: the creator's platform range (TikTok, with their monetization goals) and their voice, by Apple
+    /// Intelligence as the script page runs it (a rate limit is waited out twice) or by Ultra (`TEST_RUNNER_CUE_ULTRA_QUALITY_FIT=ultra`, one of
+    /// the lab's calls for each script outside the range).
+    @Test(.timeLimit(.minutes(5)), .enabled(if: fits), arguments: UltraQualityDeviceTests.cases)
+    func fitsTheUltraScript(_ item: Case) async throws {
+        KeepScreenAwake.enable()
+        #if canImport(UIKit)
+        try #require(UIApplication.shared.applicationState == .active, "The iPhone must be unlocked with the screen on")
+        #endif
+        let url = try #require(Bundle(for: BundleToken.self).url(forResource: "ultra-checked-q1", withExtension: "json"))
+        let scripts = try JSONDecoder().decode([String: [String: String]].self, from: Data(contentsOf: url))
+        guard let text = scripts[item.id]?["text"] else { try Test.cancel("No Ultra script for \(item.id)") }
+        let language = item.language.locale.language
+        let range = TestData.rulesService().preset(for: .tiktok, monetizationGoals: item.creator.monetizationGoals).idealRange
+        let context = RewriteContext(
+            structure: .generic, platform: .tiktok, idealRange: range, sourceLanguage: language,
+            voice: item.creator.voice(inLanguage: language.languageCode?.identifier, idea: text)
+        )
+        var fitted = Fitted(id: item.id, range: [range.lowerBound, range.upperBound], before: text)
+        let started = ContinuousClock.now
+        if Self.fitsWithUltra {
+            let defaults = TestDefaults()
+            defer { defaults.tearDown() }
+            let ultra = try ultraService(defaults: defaults)
+            try #require(ultra.budget.allows(1), "The lab's calls are used up (\(ultra.budget.used) of \(ultra.budget.limit))")
+            do {
+                fitted.after = try await ultra.fit(UltraFitRequest(
+                    script: text, platform: .tiktok, range: range, voice: context.voice, language: language
+                ))
+            } catch {
+                fitted.failure = "\(error)"
+            }
+            fitted.engine = "ultra"
+        } else {
+            try await Self.appleFit(text, context: context, into: &fitted)
+        }
+        fitted.seconds = started.duration(to: .now).inSeconds
+        fitted.wordsAfter = fitted.after.map { ReadTime.wordCount(in: $0) }
+        let encoder = JSONEncoder()
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]
+        Attachment.record(try encoder.encode(fitted), named: "ultra-fit-\(Self.run)-\(item.id).json")
+        #expect(fitted.after != nil || fitted.failure != nil)
+    }
+
+    private static func appleFit(_ text: String, context: RewriteContext, into fitted: inout Fitted) async throws {
+        let service = ScriptAIService()
+        guard service.availability.onDevice else { try Test.cancel("Apple Intelligence isn't available on this device") }
+        for attempt in 1...3 {
+            do {
+                let result = try await service.rewriteReported(text, with: .fitToTime, context: context)
+                fitted.after = result.text
+                fitted.parts = [result.parts, result.leftAsWritten]
+                break
+            } catch ScriptAIError.rateLimited where attempt < 3 {
+                try? await Task.sleep(for: .seconds(30))
+            } catch {
+                fitted.failure = "\(error)"
+                break
+            }
+        }
+        fitted.engine = "apple"
+    }
+
+    private struct Fitted: Encodable {
+        let id: String
+        let range: [Double]
+        let before: String
+        let wordsBefore: Int
+        var engine = ""
+        var after: String?
+        var wordsAfter: Int?
+        /// The parts the script was fitted in, and how many of them were left as they were.
+        var parts: [Int]?
+        var failure: String?
+        var seconds: Double?
+
+        init(id: String, range: [Double], before: String) {
+            self.id = id
+            self.range = range
+            self.before = before
+            wordsBefore = ReadTime.wordCount(in: before)
+        }
     }
 
     /// The request the dock sends for the idea, built by the factory the app uses, the interface in the creator's language.

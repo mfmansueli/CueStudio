@@ -82,4 +82,58 @@ struct ScriptPageUltraTests {
         object["draftedBy"] = "ultra"
         #expect(try JSONDecoder().decode(Script.self, from: JSONSerialization.data(withJSONObject: object)).draftedBy == .ultra)
     }
+
+    // MARK: - Fit to time
+
+    /// The page on a saved script of about 300 words (twice Reels' 30–60 seconds), written by `draftedBy`.
+    private func fitScenario(draftedBy: ScriptEngine?, ultraReady: Bool = true) -> Scenario {
+        let defaults = TestDefaults()
+        var script = TestData.script(title: "Window light", text: Array(repeating: "Light from the side shapes the face and the eyes.", count: 30)
+            .joined(separator: " "))
+        script.platform = .reels
+        script.draftedBy = draftedBy
+        let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]), now: { TestData.now })
+        library.load()
+        let takes = TakeLibraryService(repository: FakeTakeRepository(takes: []))
+        takes.load()
+        let writer = FakeScriptWriter()
+        let ultra = FakeUltraScriptWriter()
+        ultra.isReady = ultraReady
+        let viewModel = ScriptDetailViewModel(
+            scriptID: script.id, startsEditing: false, library: library, takes: takes, preferences: PreferencesService(defaults: defaults.defaults),
+            profile: CreatorProfileService(defaults: defaults.defaults), rules: TestData.rulesService(), writer: writer, ultra: ultra,
+            toast: ToastService()
+        )
+        return Scenario(viewModel: viewModel, library: library, writer: writer, ultra: ultra, defaults: defaults)
+    }
+
+    @Test func ultraFitsAScriptItWroteInThePlatformsRange() async {
+        let scenario = fitScenario(draftedBy: .ultra)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.run(.fitToTime)
+        #expect(scenario.ultra.fits.count == 1 && scenario.writer.lastRewrite == nil)
+        #expect(scenario.ultra.fits.first?.range == scenario.viewModel.preset.idealRange && scenario.ultra.fits.first?.platform == .reels)
+        #expect(scenario.library.script(id: scenario.viewModel.scriptID)?.text == "The Ultra script, fitted.")
+    }
+
+    @Test func appleIntelligenceFitsEveryOtherScript() async {
+        let scenario = fitScenario(draftedBy: nil)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.run(.fitToTime)
+        #expect(scenario.ultra.fits.isEmpty && scenario.writer.lastRewrite?.tool == .fitToTime)
+    }
+
+    @Test func withoutUltrasPermissionAppleIntelligenceFitsIt() async {
+        let scenario = fitScenario(draftedBy: .ultra, ultraReady: false)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.run(.fitToTime)
+        #expect(scenario.ultra.fits.isEmpty && scenario.writer.lastRewrite?.tool == .fitToTime)
+    }
+
+    @Test func otherToolsOnAnUltraScriptStayAppleIntelligences() async {
+        let scenario = fitScenario(draftedBy: .ultra)
+        defer { scenario.defaults.tearDown() }
+        await scenario.viewModel.run(.shorterAndDirect)
+        #expect(scenario.ultra.fits.isEmpty && scenario.writer.lastRewrite?.tool == .shorterAndDirect)
+    }
 }

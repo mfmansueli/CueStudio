@@ -76,6 +76,23 @@ nonisolated enum UltraInstructions {
         return rule + " Corrected by the check:\n" + corrections.map { "- \($0)" }.joined(separator: "\n")
     }
 
+    /// "Fit to time" on a script Ultra wrote (`UltraFitRequest`): the length the platform asks for, keeping what made it worth recording.
+    static let fitter = """
+    You fit a spoken video script to a length, for the creator who will record it. Keep the script's language.
+    Bring it into the word range given. When it is long, keep what makes it worth recording: the main point, the concrete steps or reasons, \
+    the strongest example and the ending it builds to. Cut repetition, side remarks, a second example of a point already shown and long \
+    set-ups, and merge sentences that say the same in more words. When it is short, develop what is already there instead of adding points.
+    Shortening never makes a claim stronger. The script's claims were checked: keep every hedge and condition that makes one true ("can", \
+    "may", "often", "for most people", "much harder", "if the light is strong") with the same meaning, even in fewer words; never turn \
+    "can damage" into "damages" or "more likely" into "will". Keep every name, value and phrase the script quotes literally.
+    Never add facts, numbers, studies, claims, promises or calls to action (no "follow", "comment" or "subscribe" the script didn't have).
+    Keep the first sentence as it is: it is the opening the creator chose. Keep the speaker (a "we" stays "we", an "I" stays "I"), the \
+    tone, and a catchphrase they used, once.
+    The result stands on its own: rewrite the transitions so nothing refers to what was cut, fix the counting words when a point goes \
+    ("five steps", "third", "lastly"), and end where the script ended.
+    Return a JSON object with one key, "script": the fitted speech, with no titles, Markdown, notes or em dashes.
+    """
+
     static let editor = """
     You are a script editor doing the final polish of a draft for a creator, who will still edit it before recording. Keep the language of the \
     draft and the request.

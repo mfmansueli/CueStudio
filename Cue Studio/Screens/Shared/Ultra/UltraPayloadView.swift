@@ -7,7 +7,7 @@ import SwiftUI
 
 /// "What Cue sends" for Ultra: the three calls exactly as they go out (`UltraPayload`, `UltraFlow.checked`), the system instructions and the
 /// request of each, in mono. The check carries the draft Gemini wrote in the first call, and the polish the checked draft and what the check
-/// corrected, shown here as placeholders.
+/// corrected, shown here as placeholders; then the call only a creator's Fit to time on a script Ultra wrote makes (`UltraFitRequest`).
 struct UltraPayloadView: View {
     let payload: UltraPayload
 
@@ -26,6 +26,15 @@ struct UltraPayloadView: View {
                     of: String(localized: "[the draft checked in step 2]"), corrections: [String(localized: "[what step 2 corrected]")]
                 ),
                 identifier: "ultra.payload.review"
+            )
+            stage(
+                title: "4 · Fit to time",
+                detail: "Only when you ask, on a script Ultra AI wrote: that script with your edits, the platform’s length and how you speak.",
+                request: UltraFitRequest(
+                    script: String(localized: "[the script on the page, with your edits]"), platform: payload.request.platform,
+                    range: payload.request.targetRange, voice: payload.request.voice, countShown: String(localized: "[its word count]")
+                ).stage,
+                identifier: "ultra.payload.fit"
             )
         }
     }

@@ -221,5 +221,40 @@ class ScoreTests(unittest.TestCase):
             self.assertEqual((saved["run"], saved["verdicts"], saved["judged"]), ("t", "judge-1", 3))
 
 
+
+class FitTests(unittest.TestCase):
+    def fitted(self, after, before="Guarde seis meses de gastos. Deixe o dinheiro onde ele rende e sai rápido. " * 20):
+        return {"id": "t5", "range": [60, 90], "before": before, "after": after}
+
+    def test_a_fit_in_the_range_with_no_new_numbers(self):
+        m = compare.fit_metrics(self.fitted("Guarde seis meses de gastos. " * 40))
+        self.assertEqual(m["wordsAfter"], 200)
+        self.assertTrue(m["inRange"])
+        self.assertEqual(m["addedNumbers"], [])
+        self.assertLess(m["kept"], 1.4)
+
+    def test_a_fit_that_adds_a_number_or_misses_the_range(self):
+        m = compare.fit_metrics(self.fitted("Guarde 30% do salário por 12 meses."))
+        self.assertFalse(m["inRange"])
+        self.assertEqual(m["addedNumbers"], ["30%", "12"])
+
+    def test_a_failed_fit_has_no_after(self):
+        m = compare.fit_metrics(self.fitted(None))
+        self.assertIsNone(m["wordsAfter"])
+        self.assertIsNone(m["inRange"])
+
+    def test_fits_are_read_by_their_attachment_name(self):
+        with tempfile.TemporaryDirectory() as folder:
+            with open(os.path.join(folder, "a.json"), "w") as handle:
+                json.dump(self.fitted("Guarde seis meses."), handle)
+            with open(os.path.join(folder, "b.json"), "w") as handle:
+                json.dump(dict(self.fitted("x"), id="other"), handle)
+            with open(os.path.join(folder, "manifest.json"), "w") as handle:
+                json.dump([{"attachments": [{"exportedFileName": "a.json", "suggestedHumanReadableName": "ultra-fit-q1-t5.json"},
+                                            {"exportedFileName": "b.json", "suggestedHumanReadableName": "ultra-fit-q2-t5.json"}]}], handle)
+            found = list(compare.read_fit_export(folder, "q1"))
+        self.assertEqual([item["id"] for item in found], ["t5"])
+
+
 if __name__ == "__main__":
     unittest.main()

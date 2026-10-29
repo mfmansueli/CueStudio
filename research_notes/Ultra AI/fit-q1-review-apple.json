@@ -1,0 +1,194 @@
+{
+  "en-US-0": {
+    "scores": {"core": 3, "accuracy": 5, "voice": 5, "flow": 2, "length": 2},
+    "verdict": "redo",
+    "errors": [
+      "\"To actually build strength, you need progressive overload.\" / \"Pick a simple routine...\": the plain-language definition ('making things slightly harder over time') and the how-to ('Add one more rep next week. Or rest thirty seconds less.') were cut, so the jargon is left unexplained and the fix for mistake one has no concrete action.",
+      "\"Your brain thinks the living room is for relaxing.\": the third mistake is never announced ('Third, your space is not set up for success' and the TV/phone example were cut), so the paragraph starts mid-thought after 'three mistakes' were promised.",
+      "\"Track your reps. Clear your space.\": the recap drops 'Slow down your movements', so it recaps only two of the three fixes.",
+      "About 274 words (~110 s), over the 225-word top of the range."
+    ],
+    "lost": [
+      "How to apply progressive overload with body weight (one more rep, thirty seconds less rest)",
+      "The header and example of mistake three (training two feet from the TV with the phone lighting up)"
+    ],
+    "why": "Voice and the tempo section are intact, but the cut fell on section seams: the third mistake is unannounced and progressive overload is left as bare jargon. It is still ~50 words too long."
+  },
+  "en-US-1": {
+    "scores": {"core": 4, "accuracy": 4, "voice": 3, "flow": 3, "length": 5},
+    "verdict": "edit",
+    "errors": [
+      "\"Without rest, you risk continuous muscle breakdown. This causes plateauing, constant tiredness, and no strength gain.\": BEFORE said rest-skipping 'might' and 'can' lead there 'over time'; 'This causes' makes it a flat cause-effect claim (borders on the creator's 'avoid: Medical claims').",
+      "\"Aim for at least one to two rest days every week.\": BEFORE's hedge 'As a general rule' was dropped, turning a rule of thumb into a prescription.",
+      "\"Your system rebuilds fibers slightly thicker and stronger for future stress.\" / \"This causes plateauing, constant tiredness, and no strength gain.\": telegraphic, list-like sentences that don't sound like the creator.",
+      "Ends on 'Aim for at least one to two rest days every week.' with no closing line or call to action."
+    ],
+    "lost": [
+      "The closing message: 'Rest is not wasted time. It is when your body actually builds the strength you are working so hard for.'",
+      "The CTA ('Save this video for the next time you feel guilty about taking a day off')"
+    ],
+    "why": "It fits the range and keeps the mechanism and active recovery, but the intro keeps ~127 words while the payoff is squeezed into telegraphic lines and there is no ending. Fix: trim the intro, restore 'As a general rule' and the 'Rest is not wasted time' closing."
+  },
+  "en-US-2": {
+    "scores": {"core": 4, "accuracy": 3, "voice": 4, "flow": 2, "length": 1},
+    "verdict": "redo",
+    "errors": [
+      "\"Now, push your hips straight back.\": the second move's name and setup ('Second, the hip hinge. Stand feet shoulder-width apart. Keep a soft bend in your knees.') were cut, so the move is unnamed and the next one is called 'Third' with no 'Second'.",
+      "Dropping 'Keep a soft bend in your knees' removes a form cue, so the hinge as written could be done with locked knees.",
+      "\"Step your right foot forward into a long lunge and place your hands on the floor inside your foot.\": the scaling option 'If that is tough, drop your back knee to the floor' was cut, which is what made it the 'modified' stretch the line still names.",
+      "The arm circles (30 s) were cut, so the moves now add up to 4.5 minutes while the script still says 'By the end of these five minutes'.",
+      "About 307 words (~123 s), far over the 225-word top."
+    ],
+    "lost": [
+      "The hip hinge's name and setup",
+      "The easier knee-down option for the world's greatest stretch",
+      "The closing line and CTA ('Save this video... Your body is ready to work.')"
+    ],
+    "why": "Only about a quarter was cut, so it is still ~2 minutes long. The cuts that were made removed a move's name and two form/safety cues instead of the long descriptions."
+  },
+  "es-ES-0": {
+    "scores": {"core": 5, "accuracy": 5, "voice": 5, "flow": 4, "length": 1},
+    "verdict": "redo",
+    "errors": [
+      "About 297 words (~119 s), well over the 225-word top; the tool removed only ~80 words."
+    ],
+    "lost": [
+      "The warm reflective close ('Abrir un pequeño negocio tiene sus dificultades...'), so the third error runs straight into the follow CTA"
+    ],
+    "why": "The content is faithful and in the shop's voice, with all three errors and their explanations, but the fit did not fit: it is still about two minutes long."
+  },
+  "es-ES-1": {
+    "scores": {"core": 4, "accuracy": 5, "voice": 5, "flow": 4, "length": 3},
+    "verdict": "edit",
+    "errors": [
+      "\"Una máquina automatizada no entiende de estas diferencias.\": the concrete examples (la veta de la madera, el grosor de una fibra, la textura de la arcilla) were cut, so 'estas diferencias' points at nothing specific.",
+      "The opening promises three reasons including 'la durabilidad de los objetos', but its payoff ('un objeto resistente, pensado para durar muchos años') was cut.",
+      "About 255 words (~102 s), slightly over the 225-word top."
+    ],
+    "lost": [
+      "The material examples (veta, fibra, arcilla)",
+      "The durability conclusion: not a throwaway product, made to last years"
+    ],
+    "why": "It reads well and keeps the craft and community points, but one of the three promised reasons has no payoff and it is ~30 words long. Fix: trim the long opening question, restore one material example and the 'pensado para durar muchos años' sentence."
+  },
+  "es-ES-2": {
+    "scores": {"core": 3, "accuracy": 4, "voice": 4, "flow": 2, "length": 3},
+    "verdict": "redo",
+    "errors": [
+      "Second sign (the base): AFTER keeps 'dale la vuelta' and why it is unglazed, but cuts what to check (pulida y suave, que no raye la mesa, que no se tambalee), so the sign gives no test.",
+      "\"Si le das un toquecito suave con la uña...\": the third sign is never announced ('Y el tercer secreto es el sonido y la superficie del esmalte' was cut).",
+      "\"hace que tu café de la mañana sea mejor\": BEFORE said 'sepa un poco mejor'; the 'un poco' softener was dropped.",
+      "About 260 words (~104 s), over the 225-word top."
+    ],
+    "lost": [
+      "What a good base feels like and that the mug must not wobble",
+      "The handle check: 'El asa es el punto más crítico... sin uniones bruscas ni pequeñas grietas'",
+      "The invitation to come and try the mugs in person"
+    ],
+    "why": "Of three promised signs, one has no actual check and another is unannounced, and it is still over length. The cuts again fell on the section seams."
+  },
+  "pt-BR-0": {
+    "scores": {"core": 2, "accuracy": 4, "voice": 4, "flow": 1, "length": 5},
+    "verdict": "redo",
+    "errors": [
+      "\"Vou te contar três vacilos clássicos\": AFTER delivers only two; the third mistake (Vitamina C on damp skin, strong acids in the morning) was cut entirely, so the promise in the hook is now false.",
+      "The script ends at 'Espera uns dois minutinhos... antes de vir com o protetor.' with no closing and no question to the audience.",
+      "Small flattening of the voice: 'certinho' became 'certo', 'bonitinho' became 'bem', 'vai de limpador super suave' became 'usa limpador suave'."
+    ],
+    "lost": [
+      "The whole third mistake (Vitamina C / ácidos de manhã)",
+      "The closing idea (adjustments are free and make products work better) and the CTA 'Qual desses erros você estava cometendo? Comenta aqui embaixo!'"
+    ],
+    "why": "It lands in range only by chopping off the last third: one of the three promised mistakes and the ending are gone. A balanced cut would trim each mistake instead."
+  },
+  "pt-BR-1": {
+    "scores": {"core": 4, "accuracy": 3, "voice": 5, "flow": 4, "length": 2},
+    "verdict": "redo",
+    "errors": [
+      "\"O nível de proteção é equivalente.\": BEFORE said 'O nível de proteção contra esses raios é equivalente' (UVB, which FPS measures). Without the qualifier it claims overall equivalence, including UVA, which FPS does not show: a technical error introduced by the cut.",
+      "About 274 words (~110 s), over the 225-word top."
+    ],
+    "lost": [
+      "The question that set up part two ('Mas então, por que um custa o triplo do outro?'); the transition still works but is flatter",
+      "The tip that a cheap serum under a plain sunscreen gives the same skincare actives"
+    ],
+    "why": "Voice and argument are intact, but it is ~50 words too long and the shortened line now overstates sun protection. Restore 'contra esses raios UVB' and cut further."
+  },
+  "pt-BR-2": {
+    "scores": {"core": 3, "accuracy": 4, "voice": 4, "flow": 1, "length": 1},
+    "verdict": "redo",
+    "errors": [
+      "\"Dá para aplicar até sem espelho, deixa um brilho lindo e mantém a boca confortável.\": step five ('Passo cinco: lábios... lip oil com cor ou balm') was cut but its last sentence kept, so it describes a product that was never named.",
+      "\"Cinco minutos, cinco passos simples\": only four steps are now presented.",
+      "\"Dou batidinhas leves nas pálpebras.\": 'O que sobrar nos dedos?' was cut, so it is no longer clear the leftover blush goes on the lids.",
+      "About 286 words (~114 s), well over the 225-word top."
+    ],
+    "lost": [
+      "Step five (lábios: lip oil or balm instead of matte lipstick)",
+      "The blush-on-eyelids trick ('o que sobrar nos dedos')",
+      "The comment CTA 'Me conta aqui nos comentários!'"
+    ],
+    "why": "The cuts fell on seams again: the lips step is gone but its tail remains, 'cinco passos' no longer holds, and it is still nearly two minutes long."
+  },
+  "t2-camera-upgrade": {
+    "scores": {"core": 3, "accuracy": 4, "voice": 3, "flow": 2, "length": 5},
+    "verdict": "edit",
+    "errors": [
+      "\"Para quem grava sozinho, sem equipe, esse trabalho extra consome um tempo precioso.\": the camera workflow it refers to (tirar o cartão, passar para o computador, sincronizar o áudio, corrigir a cor) was cut, so 'esse trabalho extra' dangles.",
+      "\"Para ter aquela imagem de cinema você precisa dominar...\": the premise ('se você usar uma câmera profissional no modo automático, a imagem pode ficar pior ou igual à do seu celular') was cut, so the paragraph opens without its point.",
+      "\"para a maioria dos criadores que gravam em casa, não vale a pena\": the condition section ('Só quando o seu celular se tornar o limitador real...') was cut, so the answer reads as a blanket no; 'sozinhos' was also dropped from the audience.",
+      "Ends on 'entrega um resultado fantástico.' with no conclusion."
+    ],
+    "lost": [
+      "When upgrading IS worth it (light and audio mastered, earning from videos, needing optical control)",
+      "The concrete advice: invest first in a good microphone and a decent light, and learn the phone you have",
+      "The catchphrase 'Simbora' (BEFORE used it once)"
+    ],
+    "why": "In range at ~200 words, with ~25 words of room. Restore one sentence naming the camera workflow, 'Simbora', and a closing line: only upgrade when the phone is the real limit, and buy a mic and a light first."
+  },
+  "t3-teleprompter": {
+    "scores": {"core": 4, "accuracy": 3, "voice": 2, "flow": 2, "length": 1},
+    "verdict": "redo",
+    "errors": [
+      "\"O roteiro precisa ter o ritmo da minha voz.\": BEFORE said 'da sua voz'. The advice to the viewer became a statement about the creator.",
+      "\"Lembre-se de que eu sou um ser humano conversando com outro.\": BEFORE said 'você é um ser humano'; telling the viewer to remember that the creator is human makes no sense.",
+      "\"Esses ajustes fazem meus vídeos ficarem mais naturais.\": BEFORE promised the viewer's videos ('seus vídeos vão ficar muito mais naturais'); the payoff is now about the creator's own videos.",
+      "\"Quanto mais longe o celular estiver...\": the actual instruction ('Afaste o celular. Coloque o aparelho a pelo menos um metro... aumente o tamanho da fonte') was cut, leaving the principle without the step.",
+      "About 294 words (~118 s), well over the 225-word top."
+    ],
+    "lost": [
+      "The one-metre distance and the larger font tip",
+      "The catchphrase 'Simbora resolver isso.'",
+      "The 'imagine the lens is a friend' tip and the closing about human connection"
+    ],
+    "why": "Still about two minutes long, and the rewrite flipped 'você/sua' to 'eu/minha' in the last paragraph, which breaks the advice. The distance tip also lost its concrete number."
+  },
+  "t4-sound": {
+    "scores": {"core": 2, "accuracy": 3, "voice": 4, "flow": 1, "length": 1},
+    "verdict": "redo",
+    "errors": [
+      "\"Nosso cérebro tolera muito bem uma imagem escura ou pixelada. / Na internet, isso significa que é muito mais provável que o espectador passe o seu vídeo...\": the explanation of why bad audio is unbearable (estourado, eco, chiado; o áudio ruim cansa) was cut, so 'isso' now attaches to image tolerance and the logic reads backwards.",
+      "\"Esses tecidos absorvem o som\": the second step (cama arrumada, tapete, cortinas fechadas) was cut, so 'esses tecidos' refers to nothing and step two is never announced.",
+      "\"A imagem atrai a atenção nos primeiros segundos.\": its counterpart 'Mas é o som que segura a pessoa até o final' was cut, so the conclusion's key contrast is gone and the line argues for image.",
+      "About 302 words (~121 s), far over the 225-word top."
+    ],
+    "lost": [
+      "The core reason: bad audio tires the brain and is unbearable after five seconds",
+      "Step two: record facing a made bed, a rug or closed curtains",
+      "The point that the wired earphone mic close to the chest sounds cleaner",
+      "'Mas é o som que segura a pessoa até o final'"
+    ],
+    "why": "The cuts removed the argument's middle and three of its anchors, leaving dangling 'isso' and 'esses tecidos', and it is still over two minutes. Not recordable."
+  },
+  "t6-sleep-spending": {
+    "scores": {"core": 5, "accuracy": 5, "voice": 5, "flow": 5, "length": 2},
+    "verdict": "redo",
+    "errors": [
+      "About 273 words (~109 s), over the 225-word top; only the evening delivery example (~50 words) was removed."
+    ],
+    "lost": [
+      "The evening example (fridge full, R$70 on a delivery app), a fair cut"
+    ],
+    "why": "The cleanest cut of the set: coherent, faithful, with 'Bora lá' and two concrete examples. But it is still ~50 words over, so the fit did not reach the range. Easy candidates: 'Existe uma explicação científica...', 'Passar um café parece um trabalho hercúleo', 'Organizar a vida financeira... corpo funciona'."
+  }
+}

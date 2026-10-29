@@ -22,6 +22,8 @@ nonisolated enum UltraError: LocalizedError, Equatable, Sendable {
     case draftFailed(UltraFailure)
     /// The draft was written but its polish failed: there is no finished script.
     case reviewFailed(UltraFailure, draft: String)
+    /// "Fit to time" failed: the script on the page is as it was.
+    case fitFailed(UltraFailure)
 
     var errorDescription: String? {
         switch self {
@@ -33,6 +35,8 @@ nonisolated enum UltraError: LocalizedError, Equatable, Sendable {
         case .draftFailed(.unreachable): String(localized: "Ultra AI needs the internet · Try again")
         case .draftFailed: String(localized: "Ultra AI couldn’t draft it · Try again")
         case .reviewFailed: String(localized: "Ultra AI couldn’t polish the draft · Try again")
+        case .fitFailed(.unreachable): String(localized: "Ultra AI needs the internet · Try again")
+        case .fitFailed: String(localized: "Ultra AI couldn’t fit it to the time · Try again")
         }
     }
 
@@ -46,6 +50,7 @@ nonisolated enum UltraError: LocalizedError, Equatable, Sendable {
         case .noScriptsLeft: "noScriptsLeft"
         case .draftFailed(let failure): "draftFailed.\(failure.rawValue)"
         case .reviewFailed(let failure, _): "reviewFailed.\(failure.rawValue)"
+        case .fitFailed(let failure): "fitFailed.\(failure.rawValue)"
         }
     }
 }

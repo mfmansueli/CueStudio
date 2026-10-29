@@ -500,7 +500,7 @@ struct ScriptPageView: View {
                 viewModel.commitPage()
                 onRecord()
             },
-            offersShorter: viewModel.canDraft,
+            offersShorter: viewModel.canFitToTime,
             onShorter: {
                 viewModel.page.showsLengthNudge = false
                 Task { await viewModel.run(.fitToTime) }

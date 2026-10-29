@@ -153,6 +153,9 @@ final class ScriptDetailViewModel {
 
     var canDraft: Bool { drafting.isAvailable }
 
+    /// "Fit to time" can run: Apple Intelligence drafts here, or the script is Ultra AI's and Ultra may fit it.
+    var canFitToTime: Bool { canDraft || (script?.draftedBy == .ultra && ultra?.isReady == true) }
+
     /// Whether Apple Intelligence drafts in `language` (a Translate target), asked only of the language: nil when it does, or when the
     /// reason isn't the language (the whole sheet says that one).
     func draftingNote(for language: CueLanguage) -> String? {
@@ -280,8 +283,11 @@ final class ScriptDetailViewModel {
     }
 
     private func rewrite(with tool: ScriptTool) async {
-        guard script != nil else { return }
-        if let reason = drafting.reason {
+        guard let script else { return }
+        // A script Ultra AI wrote is fitted by Ultra, one call and only when asked: on the iPhone, Apple Intelligence's Fit to time left 10 of 13
+        // of them outside the platform's range, cut at the seams (DESIGN_PROJECT §57). Without Ultra's permission it stays Apple Intelligence's.
+        let ultraFits = tool == .fitToTime && script.draftedBy == .ultra && ultra?.isReady == true
+        if !ultraFits, let reason = drafting.reason {
             toast.show(reason, kind: .problem)
             return
         }
@@ -293,7 +299,16 @@ final class ScriptDetailViewModel {
         runningTool = tool
         defer { runningTool = nil }
         do {
-            let result = try await writer.rewriteReported(before, with: tool, context: rewriteContext)
+            let result: RewriteResult
+            if ultraFits, let ultra {
+                let context = rewriteContext
+                let fitted = try await ultra.fit(UltraFitRequest(
+                    script: before, platform: context.platform, range: preset.idealRange, voice: context.voice, language: context.sourceLanguage
+                ))
+                result = RewriteResult(text: fitted, parts: 1, leftAsWritten: fitted == before ? 1 : 0)
+            } else {
+                result = try await writer.rewriteReported(before, with: tool, context: rewriteContext)
+            }
             let notice = RewriteNotice.after(tool, before: before, result: result, done: doneMessage(for: tool), idealRange: preset.idealRange)
             if notice.changesScript {
                 adopt(result.text, message: notice.message)

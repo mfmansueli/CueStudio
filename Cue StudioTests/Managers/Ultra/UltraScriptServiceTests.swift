@@ -241,4 +241,56 @@ struct UltraScriptServiceTests {
         #expect(UltraCheckReply(json: #"{"script":"A draft.","corrections":[1]}"#) == nil)
         #expect(UltraCheckReply(json: "A draft.") == nil)
     }
+
+    // MARK: - Fit to time
+
+    /// 300 words, twice TikTok's 60–90 seconds.
+    private var longScript: String { Array(repeating: "Light from the side shapes the face and the eyes.", count: 30).joined(separator: " ") }
+
+    private func fitRequest(_ script: String) -> UltraFitRequest {
+        UltraFitRequest(script: script, platform: .tiktok, range: 60...90)
+    }
+
+    @Test func aLongScriptIsFittedInOneCallWithItsRange() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        let fitted = try await scenario.service.fit(fitRequest(longScript))
+        #expect(fitted == "The fitted script.")
+        #expect(scenario.client.requests.map(\.stage) == [.fit] && scenario.budget.used == 1)
+        let prompt = scenario.client.requests[0].prompt
+        #expect(prompt.contains("between 150 and 225 words") && prompt.contains("The script has 300 words now."))
+        #expect(prompt.contains("Script to fit:\n\"\"\"\nLight from the side"))
+    }
+
+    @Test func aScriptAlreadyInTheRangeCostsNoCall() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        let script = Array(repeating: "Light from the side shapes the face.", count: 25).joined(separator: " ")
+        #expect(try await scenario.service.fit(fitRequest(script)) == script)
+        #expect(scenario.client.requests.isEmpty && scenario.budget.used == 0)
+    }
+
+    @Test func withoutPermissionNothingIsFitted() async {
+        let scenario = makeScenario(allowed: false)
+        defer { scenario.defaults.tearDown() }
+        await #expect(throws: UltraError.consentRequired) { try await scenario.service.fit(fitRequest(longScript)) }
+        #expect(scenario.client.requests.isEmpty)
+    }
+
+    @Test func aFitThatIsntTheScriptAloneIsAFailure() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.client.fit = .success(UltraModelReply(text: #"{"script":"Short.","note":"cut the middle"}"#, finishedNormally: true))
+        await #expect(throws: UltraError.fitFailed(.incomplete)) { try await scenario.service.fit(fitRequest(longScript)) }
+        scenario.client.fit = .failure(UltraClientError(failure: .unreachable))
+        await #expect(throws: UltraError.fitFailed(.unreachable)) { try await scenario.service.fit(fitRequest(longScript)) }
+        #expect(scenario.budget.used == 2)
+    }
+
+    @Test func theFitIsReadStrictly() {
+        #expect(UltraFitReply(json: #"{"script":" Fitted. "}"#)?.script == "Fitted.")
+        #expect(UltraFitReply(json: #"{"script":""}"#) == nil)
+        #expect(UltraFitReply(json: #"{"script":"Fitted.","title":"x"}"#) == nil)
+        #expect(UltraFitReply(json: "Fitted.") == nil)
+    }
 }

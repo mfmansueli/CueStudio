@@ -961,6 +961,8 @@ promessa por teste) e `ScriptToolsDeviceTests` no iPhone. **Falsos alarmes do ra
   rewording it, or use another tool." (`ScriptAIError.declined`).
 - `RewriteNotice` escolhe o toast pelo que aconteceu (textos em §33): "Shorter · 132 → 53 words", "Closer to 1:00–1:30 · now 0:48", "Already fits 1:00–1:30",
   "No mistakes to fix", "n of m parts left as written", "Couldn’t draft it · Try again" (nada salvo, sem Undo). Roteiro vazio não chama o modelo.
+- **Num roteiro da Ultra AI** (`Script.draftedBy == .ultra`), com a permissão dela, *Fit to time* e o *Shorter* do aviso antes de gravar são da Ultra AI
+  (uma chamada, §57); sem a permissão, e em qualquer outro roteiro, continuam do Apple Intelligence. As outras ferramentas são sempre do Apple Intelligence.
 
 **Ideias do ↻ e do Find inspiration** (`IdeaSuggestionService`, no ambiente; detalhes do pool em §30): ideias do modelo sobre **todos** os assuntos do
 criador (`IdeaTopic`, `CreatorProfile.ideaTopics`: os do primeiro voo, os do My Cue Voice e os digitados, com subtemas); lotes de 6 pedidos quando restam
@@ -2705,9 +2707,9 @@ Ultra AI* (§30). Uma resposta a comentário fica com o Apple Intelligence. Com 
 
 **Permissão** (`UltraConsentSheet`, `UltraConsentService`, chave `ultra.consent.v1`, separada do interruptor do Apple Intelligence): antes do primeiro envio
 diz o que vai (a ideia, rede, formato, duração e as preferências do My Cue Voice), que são **três etapas** (o rascunho volta ao Google para a checagem e para o polimento), o que nunca vai (exemplos,
-trechos importados, roteiros aprovados, outros roteiros, vídeos, áudio), o que o Google pode guardar (não treina sem permissão; cache de até 24 h e registro
+trechos importados, roteiros aprovados, outros roteiros, vídeos, áudio; só o *Fit to time* num roteiro da Ultra AI manda esse roteiro de volta, com as edições), o que o Google pode guardar (não treina sem permissão; cache de até 24 h e registro
 contra abuso; qualquer região; IP, identidade do app e token do App Check) e onde desligar. **What Cue sends** mostra o texto real das três chamadas
-(`UltraPayloadView`: 1 · Draft, 2 · Check, 3 · Polish), também no *What Cue sends* do My Cue Voice. **Allow Ultra AI** (no dock, no My Cue Voice e nos Settings: só escolhe a
+(`UltraPayloadView`: 1 · Draft, 2 · Check, 3 · Polish e, só quando o criador pede, 4 · Fit to time), também no *What Cue sends* do My Cue Voice. **Allow Ultra AI** (no dock, no My Cue Voice e nos Settings: só escolhe a
 Ultra AI) ou **Allow and write with Ultra AI** (Find inspiration, que rascunha na hora) / **Keep Apple Intelligence**. Settings › Privacy & AI
 data tem o interruptor **Ultra AI** (ligar abre a folha; desligar revoga e nada mais sai, nem a próxima chamada de um roteiro em andamento) e, em Debug,
 **Ultra AI · Lab**; o Apple Intelligence passa a dizer "Cue’s default writer. Ultra AI has its own switch." e a folha de privacidade deixa de dizer "nothing
@@ -2728,6 +2730,18 @@ limite e cancelamento. O cliente do Firebase só é criado no primeiro roteiro p
 Crashlytics; o Console (`studio.cue` / `Ultra`) recebe só tipos, tempos e tokens.
 
 **O roteiro salvo** guarda `Script.draftedBy = .ultra` e o aviso de fatos; o toast diz "Ultra AI draft ready · Check facts".
+
+**Duração livre e Fit to time** (decisão do dono, 29/10/2026): a Ultra AI escreve no tamanho que o assunto pede (Auto não corta nem enche); a barra de
+duração da página mostra quanto o roteiro dá ("380 words · ~2:32", longo para a rede), e o criador decide se encaixa. *Fit to time* num roteiro da Ultra AI é
+**uma chamada da Ultra AI, só quando o criador pede** (`UltraScriptService.fit`, `UltraFitRequest`, `UltraInstructions.fitter`): o roteiro da página com as
+edições dele, a rede, a faixa ideal dela em palavras e o jeito de falar; volta só o texto (JSON `{"script"}`), mantém as ressalvas que a checagem pôs, a
+primeira frase, quem fala e o fim, e corrige as contagens ("cinco passos") do que saiu. Um roteiro já na faixa não gasta chamada. Conta no limite do
+laboratório, não nos roteiros do criador. Por que não o do Apple: no iPhone (29/10/2026, 13 roteiros da Ultra de 300–480 palavras, TikTok 60–90 s), o
+*Fit to time* do Apple Intelligence deixou 10 fora da faixa (102–122 s) e cortou nas emendas ("cinco passos" com quatro, "Terceiro" sem "Segundo"; juiz: 0
+para gravar, 10 para refazer); o da Ultra AI pôs os 13 entre 72 e 89 s em 9–30 s (juiz: 8 para gravar como estão, 5 com ajustes pequenos, 0 para refazer; precisão 4,5 de 5,
+depois de a instrução mandar manter as ressalvas, a primeira frase e quem fala: a primeira versão tirava "pode" e "aumenta o risco" e ficava em 3,9).
+Ainda escapa, às vezes, uma ressalva ("muchísimos años" → "siempre") ou um detalhe concreto que vira generalidade (`research_notes/Ultra AI/fit-q1*.json`). Deixar a versão curta sempre pronta custaria uma chamada em todo roteiro; sob demanda só custa quando é usada.
+
 
 **Limite do laboratório:** 300 chamadas neste iPhone (autorizadas pelo dono em 29/10/2026: 30, 80 e depois 300 para medir e melhorar a qualidade),
 contadas antes de sair, falhas incluídas (`UltraCallBudget`, nos defaults padrão do app). É uma trava do experimento, **não** um sistema de créditos: o de produção tem de ser do servidor (compras verificadas,

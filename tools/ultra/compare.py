@@ -9,6 +9,10 @@ polish) and `checked` (Ultra AI, draft, claim check and polish). A device run ke
       writes quality-<run>-pairs.json and quality-<run>-pairs.md (blind: no engine names) and quality-<run>-key.json (who is A and B)
   tools/ultra/compare.py score <run> <verdicts.json>
       joins a judge's verdicts with the key: wins, mean scores and errors per engine, also in quality-<run>-score-<verdicts>.json
+  tools/ultra/compare.py fits <run> build/results/device-….xcresult [more.xcresult …]
+      the Ultra scripts the page's "Fit to time" fitted on the iPhone (`ultra-fit-<run>-<id>.json`, UltraQualityDeviceTests with
+      TEST_RUNNER_CUE_ULTRA_QUALITY_FIT=1) into research_notes/Ultra AI/fit-<run>.json: words and seconds before and after, whether the
+      result lands in the platform's range, numbers the fit added
 
 An idea found in a later xcresult replaces the one of the same id from an earlier one; ideas already in the file are kept unless replaced.
 Pairs: apple against checked for every idea with both texts; polished against checked for every technical idea with both texts.
@@ -228,6 +232,62 @@ def attachments(result, run):
         subprocess.run(["xcrun", "xcresulttool", "export", "attachments", "--path", result, "--output-path", folder],
                        check=True, capture_output=True)
         yield from read_export(folder, run)
+
+
+def read_fit_export(folder, run):
+    """The fitted scripts of the run among the attachments exported into a folder."""
+    names = manifest_names(folder)
+    for path in sorted(glob.glob(os.path.join(folder, "*.json"))):
+        file = os.path.basename(path)
+        if file == "manifest.json" or (names and not names.get(file, "").startswith("ultra-fit-" + run + "-")):
+            continue
+        with open(path, encoding="utf-8") as handle:
+            data = json.load(handle)
+        if isinstance(data, dict) and "id" in data and "before" in data and "range" in data:
+            yield data
+
+
+def fit_attachments(result, run):
+    with tempfile.TemporaryDirectory() as folder:
+        subprocess.run(["xcrun", "xcresulttool", "export", "attachments", "--path", result, "--output-path", folder],
+                       check=True, capture_output=True)
+        yield from read_fit_export(folder, run)
+
+
+def fit_metrics(fitted):
+    """What a rule can tell of one fit: the length before and after against the range, and numbers the fit wrote that the script didn't have."""
+    before, after = fitted.get("before") or "", fitted.get("after")
+    low, high = fitted["range"]
+    seconds_before = estimated_seconds(words(before))
+    if after is None:
+        return {"wordsBefore": words(before), "secondsBefore": seconds_before, "wordsAfter": None, "secondsAfter": None,
+                "inRange": None, "kept": None, "addedNumbers": []}
+    seconds_after = estimated_seconds(words(after))
+    return {"wordsBefore": words(before), "secondsBefore": seconds_before, "wordsAfter": words(after), "secondsAfter": seconds_after,
+            "inRange": low * 0.9 <= seconds_after <= high * 1.1, "kept": round(words(after) / max(1, words(before)), 2),
+            "addedNumbers": new_numbers(after, [before])}
+
+
+def fits(run, results, folder=FOLDER, read=fit_attachments):
+    path = os.path.join(folder, "fit-" + run + ".json")
+    existing = {item["id"]: item for item in (load(path) if os.path.exists(path) else [])}
+    found = [item for result in results for item in read(result, run)]
+    for item in found:
+        existing[item["id"]] = item
+    items = [dict(existing[key], metrics=fit_metrics(existing[key])) for key in sorted(existing)]
+    save(path, items)
+    print(f"{len(found)} fits read, {len(items)} in {shown(path)}")
+    print(f"{'id':<22}{'before':>8}{'≈ s':>7}{'after':>7}{'≈ s':>7}{'kept':>6}  range     in  added  failure")
+    for item in items:
+        m = item["metrics"]
+        low, high = item["range"]
+        after = "–" if m["wordsAfter"] is None else m["wordsAfter"]
+        seconds = "–" if m["secondsAfter"] is None else f"{m['secondsAfter']:.0f}"
+        kept = "–" if m["kept"] is None else f"{m['kept']:.2f}"
+        inside = "–" if m["inRange"] is None else "y" if m["inRange"] else "n"
+        print(f"{item['id']:<22}{m['wordsBefore']:>8}{m['secondsBefore']:>7.0f}{after:>7}{seconds:>7}{kept:>6}  {low:.0f}–{high:.0f} s"
+              f"{inside:>5}{len(m['addedNumbers']):>6}  {item.get('failure') or ''}")
+    return items
 
 
 def shown(path):
@@ -499,11 +559,16 @@ def main(argv=None):
     command = commands.add_parser("score")
     command.add_argument("run")
     command.add_argument("verdicts")
+    command = commands.add_parser("fits")
+    command.add_argument("run")
+    command.add_argument("results", nargs="+")
     args = parser.parse_args(argv)
     if args.command == "collect":
         collect(args.run, args.results)
     elif args.command == "pairs":
         make_pairs(args.run, args.seed)
+    elif args.command == "fits":
+        fits(args.run, args.results)
     else:
         score(args.run, args.verdicts)
 
