@@ -69,33 +69,136 @@ final class EditorUITests: XCTestCase {
         XCTAssertFalse(app.buttons["edit.adjust.resetOne"].exists)
     }
 
-    /// Skin Smoothing is the last chip of Adjust, off at 0, with a ruler and a Reset of its own like the other settings.
-    func testSkinSmoothingIsAnAdjustSettingWithItsOwnRulerAndReset() {
+    /// Skin is a panel of its own: opening it applies nothing; Natural sets every control at once; moving one makes it Custom; Refine
+    /// waits for the smoothing; each control has its own Reset and the panel's Reset turns everything off. Adjust has no smoothing.
+    func testSkinIsItsOwnPanelWithPresetsControlsAndReset() {
         let app = EditorApp.open()
-        EditorApp.tapTool(app, "adjust")
-        let chip = app.buttons["edit.adjust.skinSmoothing"]
-        XCTAssertTrue(chip.exists(within: 5))
-        XCTAssertEqual(chip.label, "Skin Smoothing")
-        XCTAssertEqual(chip.value as? String, "0")
-        // The row of settings scrolls sideways: the last chip comes into reach.
-        // Drag the row of chips from its right to its left, level with the first chip, until the last one is on screen.
-        let window = app.windows.firstMatch.frame
-        let level = app.buttons["edit.adjust.exposure"].frame.midY / window.height
-        for _ in 0..<5 where !window.contains(chip.frame) {
-            app.coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: level))
-                .press(forDuration: 0.1, thenDragTo: app.coordinate(withNormalizedOffset: CGVector(dx: 0.1, dy: level)))
+        EditorApp.tapTool(app, "skinVideo")
+        let smooth = app.buttons["edit.skin.smoothing"]
+        XCTAssertTrue(smooth.exists(within: 5))
+        XCTAssertEqual(smooth.label, "Smooth")
+        XCTAssertEqual(smooth.value as? String, "0", "opening Skin applies nothing")
+        let state = app.descendants(matching: .any)["edit.skin.state"]
+        XCTAssertEqual(state.label, "Off")
+        // Refine waits for the smoothing, in the ruler's room.
+        app.buttons["edit.skin.texture"].tap()
+        XCTAssertTrue(app.descendants(matching: .any)["edit.skin.textureNote"].exists(within: 5))
+        XCTAssertFalse(app.descendants(matching: .any)["edit.skin.ruler"].exists)
+        // Natural: every control at once.
+        app.buttons["edit.skin.preset.natural"].tap()
+        XCTAssertNotEqual(smooth.value as? String, "0")
+        XCTAssertNotEqual(app.buttons["edit.skin.faceLight"].value as? String, "0")
+        XCTAssertTrue(app.buttons["edit.skin.preset.natural"].isSelected)
+        XCTAssertTrue(app.descendants(matching: .any)["edit.skin.ruler"].exists(within: 5), "Refine has its ruler now")
+        // A control moved: Custom.
+        smooth.tap()
+        let ruler = app.descendants(matching: .any)["edit.skin.ruler"]
+        XCTAssertEqual(ruler.label, "Smooth")
+        ruler.coordinate(withNormalizedOffset: CGVector(dx: 0.95, dy: 0.5)).tap()
+        XCTAssertEqual(state.label, "Custom")
+        XCTAssertFalse(app.buttons["edit.skin.preset.natural"].isSelected)
+        // Its own Reset, then the panel's.
+        app.buttons["edit.skin.resetOne"].tap()
+        XCTAssertEqual(smooth.value as? String, "0")
+        let reset = app.buttons["edit.panel.reset"]
+        XCTAssertTrue(reset.exists(within: 5))
+        reset.tap()
+        XCTAssertEqual(app.buttons["edit.skin.faceLight"].value as? String, "0")
+        XCTAssertEqual(state.label, "Off")
+        // Adjust has no smoothing of its own any more.
+        app.buttons["edit.panel.apply"].tap()
+        EditorApp.tapTool(app, "adjustVideo")
+        XCTAssertTrue(app.buttons["edit.adjust.exposure"].exists(within: 5))
+        XCTAssertFalse(app.buttons["edit.adjust.skinSmoothing"].exists)
+    }
+
+    /// The owner's take (29/10/2026): the whole video in Studio, a clip picked. Skin's Reset is there for the Studio the clip shows,
+    /// stays through Natural and Studio, and turns the clip's Skin off; so does Reset clip, and the whole video keeps its Studio.
+    func testSkinResetTurnsAClipsSkinOffThoughTheWholeVideoHasStudio() {
+        let app = EditorApp.open(demo: true)
+        EditorApp.tapTool(app, "skinVideo")
+        let reset = app.buttons["edit.panel.reset"]
+        let state = app.descendants(matching: .any)["edit.skin.state"]
+        app.buttons["edit.skin.preset.natural"].tap()
+        XCTAssertTrue(reset.exists(within: 3))
+        app.buttons["edit.skin.preset.studio"].tap()
+        XCTAssertTrue(reset.exists(within: 3), "Reset went with Studio on the whole video")
+        app.buttons["edit.panel.apply"].tap()
+        EditorApp.goToCaption(app, 2)
+        EditorApp.mainTrack(app, at: 0.5).tap()
+        EditorApp.tapTool(app, "skin")
+        XCTAssertTrue(reset.exists(within: 3), "No Reset for the whole video's Studio on the clip")
+        app.buttons["edit.skin.preset.natural"].tap()
+        app.buttons["edit.skin.preset.studio"].tap()
+        XCTAssertTrue(reset.exists(within: 3), "Reset went with Studio on the clip")
+        reset.tap()
+        XCTAssertEqual(state.label, "Off", "Reset left Skin on the clip")
+        XCTAssertTrue(reset.waitForNonExistence(timeout: 3), "Reset stayed with nothing left to reset")
+        app.buttons["edit.skin.preset.studio"].tap()
+        app.buttons["edit.panel.apply"].tap()
+        EditorApp.tapTool(app, "resetClip")
+        EditorApp.tapTool(app, "skin")
+        XCTAssertEqual(state.label, "Off", "Reset clip left Skin on the clip")
+        app.buttons["edit.panel.apply"].tap()
+        app.buttons["edit.toolbar.back"].tap()
+        EditorApp.tapTool(app, "skinVideo")
+        XCTAssertTrue(app.buttons["edit.skin.preset.studio"].isSelected, "the whole video lost its Studio")
+    }
+
+    /// Swiping the video down takes it to full screen, as the player bar's button does, and up brings it back; the arrow at its
+    /// foot does the same with a tap.
+    func testSwipingTheVideoDownAndUpGoesToFullScreenAndBack() {
+        let app = EditorApp.open(demo: true)
+        let arrow = app.buttons["edit.preview.fullScreenArrow"]
+        let exit = app.descendants(matching: .any)["edit.exitFullScreen"]
+        XCTAssertTrue(arrow.exists(within: 5), "No arrow at the video's foot")
+        XCTAssertEqual(arrow.label, "Full screen")
+        // The preview's whole area: the video in the middle (nothing is laid on it at the start) and beside it.
+        let preview = app.descendants(matching: .any)["edit.preview"].firstMatch
+        func swipe(_ element: XCUIElement, x: CGFloat, from: CGFloat, to: CGFloat) {
+            element.coordinate(withNormalizedOffset: CGVector(dx: x, dy: from))
+                .press(forDuration: 0.05, thenDragTo: element.coordinate(withNormalizedOffset: CGVector(dx: x, dy: to)))
         }
-        chip.tap()
-        XCTAssertTrue(chip.isSelected)
-        let ruler = app.descendants(matching: .any)["edit.adjust.ruler"]
-        XCTAssertTrue(ruler.exists(within: 5))
-        XCTAssertEqual(ruler.label, "Skin Smoothing")
-        ruler.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-        XCTAssertNotEqual(chip.value as? String, "0", "the ruler sets the smoothing")
-        XCTAssertTrue(app.buttons["edit.adjust.resetOne"].exists(within: 5))
-        app.buttons["edit.adjust.resetOne"].tap()
-        XCTAssertEqual(chip.value as? String, "0")
-        XCTAssertFalse(app.buttons["edit.adjust.resetOne"].exists)
+        swipe(preview, x: 0.5, from: 0.2, to: 0.75)
+        XCTAssertTrue(exit.exists(within: 5), "Swiping the video down didn't take it to full screen")
+        XCTAssertEqual(arrow.label, "Exit full screen")
+        swipe(exit, x: 0.05, from: 0.8, to: 0.3)
+        XCTAssertTrue(exit.waitForNonExistence(timeout: 5), "Swiping up didn't bring the editor back")
+        swipe(preview, x: 0.06, from: 0.2, to: 0.75)
+        XCTAssertTrue(exit.exists(within: 5), "Swiping down beside the video didn't take it to full screen")
+        swipe(exit, x: 0.5, from: 0.7, to: 0.2)
+        XCTAssertTrue(exit.waitForNonExistence(timeout: 5), "Swiping the full screen video up didn't bring the editor back")
+        arrow.tap()
+        XCTAssertTrue(exit.exists(within: 5), "The arrow didn't take the video to full screen")
+        arrow.tap()
+        XCTAssertTrue(exit.waitForNonExistence(timeout: 5), "The arrow didn't bring the editor back")
+    }
+
+    /// Natural, then Studio in Filters: Reset stays, on the whole video and on a clip, and on the clip takes off the whole video's
+    /// filter too; so does Reset clip.
+    func testFilterResetTakesAClipsFilterOffThoughTheWholeVideoHasOne() {
+        let app = EditorApp.open(demo: true)
+        let reset = app.buttons["edit.panel.reset"]
+        EditorApp.tapTool(app, "filters")
+        app.buttons["edit.filter.natural"].tap()
+        XCTAssertTrue(reset.exists(within: 3), "No Reset with Natural on the whole video")
+        app.buttons["edit.filter.studio"].tap()
+        XCTAssertTrue(reset.exists(within: 3), "Reset went with Studio on the whole video")
+        app.buttons["edit.panel.apply"].tap()
+        EditorApp.goToCaption(app, 2)
+        EditorApp.mainTrack(app, at: 0.5).tap()
+        EditorApp.tapTool(app, "filters")
+        XCTAssertTrue(reset.exists(within: 3), "No Reset for the whole video's Studio on the clip")
+        app.buttons["edit.filter.natural"].tap()
+        app.buttons["edit.filter.studio"].tap()
+        XCTAssertTrue(reset.exists(within: 3), "Reset went with Studio on the clip")
+        reset.tap()
+        XCTAssertTrue(app.buttons["edit.filter.original"].isSelected, "Reset left a filter on the clip")
+        app.buttons["edit.filter.studio"].tap()
+        app.buttons["edit.panel.apply"].tap()
+        EditorApp.tapTool(app, "resetClip")
+        EditorApp.tapTool(app, "filters")
+        XCTAssertTrue(app.buttons["edit.filter.original"].isSelected, "Reset clip left a filter on the clip")
     }
 
     /// Auto measures the real frames of the clip: it ends with a correction to dial down, or says the picture is

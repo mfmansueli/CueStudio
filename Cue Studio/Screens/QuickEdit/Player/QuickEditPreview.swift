@@ -15,6 +15,8 @@ struct QuickEditPreview: View {
     let size: CGSize
     /// Full screen: a tap plays or pauses, and nothing laid on the video can be picked.
     var isFullScreen = false
+    /// The arrow at the video's foot (`PreviewFullScreenArrow`): in the editor while the video isn't growing or shown full screen.
+    var showsFullScreenArrow = false
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @SceneCaptured private var isSceneCaptured
@@ -26,7 +28,7 @@ struct QuickEditPreview: View {
 
     @ViewBuilder
     private var drawing: some View {
-        QuickEditPlayerView(player: viewModel.player)
+        QuickEditPlayerView(player: viewModel.player, holdsFirstFrame: isFullScreen)
             .frame(width: size.width, height: size.height)
             .background(Palette.Editor.previewWell)
             .overlay {
@@ -54,6 +56,13 @@ struct QuickEditPreview: View {
             .overlay { status }
             // The video, a held frame, the cover and everything laid on them, signed on the free plan while the screen is recorded.
             .captureWatermarked(isSceneCaptured)
+            .overlay(alignment: .bottom) {
+                // In full screen the arrow sits over the screen's hint (`FullScreenLayer`).
+                if showsFullScreenArrow {
+                    PreviewFullScreenArrow(viewModel: viewModel)
+                        .transition(.opacity)
+                }
+            }
             .clipShape(RoundedRectangle(cornerRadius: isFullScreen ? 0 : Metrics.editorPreviewRadius, style: .continuous))
             .gesture(cropDrag, isEnabled: viewModel.panel == .crop && !isFullScreen)
             .onTapGesture {
@@ -140,11 +149,15 @@ struct QuickEditPreview: View {
             .padding(.top, 12)
             .allowsHitTesting(false)
             .accessibilityIdentifier("edit.comparedBadge")
-        } else if viewModel.look.comparesPicture {
-            // ◐ in Adjust, Filters or Background: the picture as recorded.
+        } else if viewModel.look.comparesPicture || viewModel.look.comparesSkin {
+            // ◐ in Adjust, Filters or Background: the picture as recorded; in Skin, the video without Skin.
             HStack(spacing: 6) {
                 Image(systemName: "circle.lefthalf.filled").font(.editorGlyph(EditorGlyph.small, weight: .bold)).foregroundStyle(Palette.accText)
-                Text("Original").font(.footnote.weight(.semibold))
+                if viewModel.look.comparesSkin {
+                    Text("Without Skin", comment: "Video editor preview badge while ◐ in Skin shows the video without Skin").font(.footnote.weight(.semibold))
+                } else {
+                    Text("Original").font(.footnote.weight(.semibold))
+                }
             }
             .padding(.horizontal, 12)
             .frame(height: 30)

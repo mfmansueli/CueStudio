@@ -517,8 +517,8 @@ struct PaletteContrastTests {
         }
     }
 
-    /// The preview's "Original" and "Original audio" badges (◐ held or on): the words and the ◐ / ear icon on the badge's pill,
-    /// over the worst picture (white) and a black one.
+    /// The preview's "Original" and "Original audio" badges (◐ held or on) and the full screen arrow (`PreviewFullScreenArrow`, the same `ink`):
+    /// the words and the icons on the badge's pill, over the worst picture (white) and a black one.
     @Test func theOriginalBadgesReadOverAnyPicture() {
         for picture in [ColorContrast.RGB(red: 0, green: 0, blue: 0), ColorContrast.RGB(red: 1, green: 1, blue: 1)] {
             let pill = rgb(Palette.Takes.durationBadge, in: .dark, over: picture)

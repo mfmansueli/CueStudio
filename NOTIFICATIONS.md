@@ -97,7 +97,7 @@ antes de "Try it". O cooldown e o limite são os de `NotificationPolicy`; "Not n
 | Layers (B-roll) | um vídeo já terminado | folha de mídia (nada entra sem escolher) | uma mídia sobre a take |
 | Voice-over | um vídeo já terminado | Quick edit › Voice-over (gravar exige o botão) | um voice-over |
 | Backgrounds | gravou; segmentação suportada | Quick edit › Background | um fundo |
-| Skin Smoothing | um vídeo já terminado | Adjust no dial Skin Smoothing (começa em 0) | valor > 0 |
+| Skin | um vídeo já terminado | Quick edit › Skin em Smooth (tudo começa em 0) | qualquer controle do Skin > 0 |
 | Safe zones | vídeo ou script para TikTok/Reels/Shorts/Stories | Settings › Prompter › Social safe zone | zona ligada |
 | Remote Control | gravou; **só no app** (sem sinal de segundo aparelho) | Settings › Remote | conexão de controle (evento) |
 | Your universe | ≥ 3 vídeos compartilhados | Your universe | visita (evento) |

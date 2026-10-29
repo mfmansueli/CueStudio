@@ -668,27 +668,75 @@ mínima (9.2).
 - **Um prompter só:** todo caminho que grava (botão da câmera, Record da página, da linha, Retake, Siri) chama `PresentationService.openPrompter(mode:
   .selfie)`. Só o item "Studio mode" abre o Studio, e a prática do onboarding é a outra exceção (`PrompterEntryPointsUITests`).
 
-## 20. Skin Smoothing (Quick edit › Adjust)
+## 20. Skin (Quick edit › Skin)
 
-**Controle:** chip no fim do Adjust (régua 0–100, como Sharpness), mesmo Reset, Compare (◐ mostra sem ele) e escopo (vídeo todo ou o clipe). Começa em 0.
-VoiceOver: "Softens the skin of faces. Eyes, lips, hair and beard stay sharp." Independente dos Filters.
-**Dados:** `TakeEdit.skinSmoothing` (0…100, ausente = 0, cortado ao ler), `ClipLook.skinSmoothing?` (vale em vez do do vídeo; 0 é escolha),
-`LookSettings.skinSmoothing`, `EditLook.skinSmoothing?` (desfazer). Dividir, duplicar e aparar levam o valor; Compare e `withoutPictureLook()` zeram.
-**Ordem** (`FrameLook`): Auto → **Skin Smoothing** → dials do Adjust (Sharpness por último) → filtro → zoom, transições, B-roll → textos e legendas
-(`CueVideoCompositor.decorated`, nunca alisados). Vem antes dos dials e do filtro porque lê os tons da própria imagem. Rostos achados no quadro como foi
-gravado, antes do efeito de fundo. Prévia, exportação e capa usam o mesmo código (`CueVideoCompositor`, `CoverRenderer`).
-**Processamento** (`Managers/Editing/SkinSmoothing/`, só Core Image + Vision): `VisionFaceDetector` (quadro de 640 px, até 4 rostos, pequenos descartados) →
-`SkinFaceTracker` (mesmo rosto entre olhares, movimento suavizado, fade, esquece no corte/seek; entre detecções segue na velocidade que tinha, até 0,1 s à
-frente, ≤ 1,5 larguras/s; a força só baixa se a próxima detecção atrasa) → `SkinMaskRaster` (pele dentro da mandíbula e meia testa, sem olhos,
-sobrancelhas e lábios) + `SkinToneAnalyzer` → `SkinSmoothingFilter` (portão de tom, borrão só de pele, textura atenuada, bordas mantidas). Em sRGB codificado,
-só na região do rosto; tamanhos em frações da largura do rosto. Topo conservador: ≤ 60% do suavizado e ≥ metade do detalhe fino. Sem rosto ou tom
-confiável, o quadro volta idêntico; em 0 nada roda (`SkinSmoother.pass(for:value:…)` devolve `nil`). Detecção ≤ 20 vezes/s.
-**Memória:** o compositor esvazia um autorelease pool por quadro (`autoreleaseFrequency: .workItem`) e a detecção roda no seu: sem isso o iPhone matava a
-exportação (sinal 9).
+**Painel próprio** (`SkinPanel`, `LookViewModel+Skin`), fora do Adjust: do vídeo inteiro pela barra principal (numa barra de item, com o selo ALL,
+§55), do clipe pela barra do clipe (`LookViewModel+ClipScope`). Em cima, **Natural** e **Studio** (`SkinPreset`) põem todos os controles de uma vez;
+ao lado, "Custom" quando um controle sai do preset e "Off" com tudo em 0 (o lugar fica reservado: o painel não pula). Chips **Smooth** · **Face
+light** · **Anti-shine** · **Refine** (a Texture da suavização), cada um com o valor quando ligado; embaixo, o nome, o valor, o Reset daquele
+controle e a régua 0–100. Refine espera a suavização ("Turn up Smooth to refine its texture"). O Reset do painel desliga tudo; ◐ segurado mostra o
+vídeo sem Skin (cor, filtro, fundo e textos ficam; selo "Without Skin"). **Abrir não aplica nada**: tudo começa em 0, e o "Try it" da descoberta
+(`EditorTool.skinSmoothing`, nome mantido para notificações já agendadas) abre o painel do vídeo inteiro em Smooth. Cada mudança é um passo de
+desfazer (os movimentos rápidos de uma régua são um). VoiceOver: nome, valor e uma dica por controle. Presets: **Natural** Smooth 40 · Texture 60 ·
+Face light 15 · Anti-shine 30; **Studio** Smooth 75 · Texture 35 · Face light 30 · Anti-shine 60.
+**Separado do Adjust:** Reset, ◐, Copy look / Paste look (a parte **Skin** de `ClipLookPart`, com textura e motor), os valores próprios de um clipe e
+"Use this on all" (só as partes do Skin) nunca mexem no Adjust, e os do Adjust nunca mexem no Skin. O ◐ de Adjust, Filters e Background mostra a
+imagem como gravada, sem Skin também.
+**Dados:** `TakeEdit.skin` (`SkinLook`: `smoothing` = `SkinSmoothing` com `amount`, `texture` e `engine`; `faceLight`; `antiShine`; 0…100,
+trazidos para dentro ao ler). `ClipLook.skin` (`ClipSkin`), cada parte opcional: **ausente herda** do vídeo, **0 é escolha** (desligado só naquele
+clipe); a suavização de um clipe vale inteira (quantidade, textura e motor juntos). `EditLook.skin` nos passos de desfazer, `LookSettings.skin` no
+que cada trecho é desenhado. Dividir, duplicar, aparar, velocidade, Reverse, Replace e Freeze frame levam o Skin do clipe. **Reset num clipe
+desliga** o Skin que ele mostra, o próprio ou o do vídeo inteiro (dono 29/10/2026: com o vídeo inteiro em Studio, Natural → Studio → Reset num
+clipe devolvia o Studio, e o Reset sumia): aparece enquanto o clipe mostra Skin; com o vídeo inteiro ligado, o clipe ganha um Skin próprio
+desligado (`ClipSkin(SkinLook())`), senão só perde o seu. O Reset de um controle faz o mesmo com ele (o "From the whole video" ao lado diz de
+onde vem o valor). Reset clip também (`SkinLookModelTests`, `QuickEditSkinTests`).
+**Motores e edições antigas** (`ReadingVersion.skin`, hoje 2): o motor 1 é a primeira suavização (`SkinSmoothingFilter`, `SkinSmoothingCalibration`:
+um dial curto que guardava a maior parte da textura); o 2 é o de hoje (`SkinBeautyFilter`, `SkinBeautyCalibration`). Uma edição salva com a chave
+`skinSmoothing` (no `TakeEdit`, no `ClipLook` e nos passos de desfazer) abre no motor 1 e fica **idêntica**; essa chave é lida e nunca escrita
+(salvar grava `skin`). No painel, uma suavização do motor 1 diz "Earlier smoothing" e tem **Update**: vai para o motor 2 com 65% do valor
+(`SkinBeautyCalibration.updatedAmount`; medido em nove rostos, o 100 antigo fica entre o 60 e o 75 de hoje), num passo de desfazer, com o toast
+"Smoothing updated". Um preset, ou desligar e ligar de novo, dá o motor de hoje. Um motor mais novo que o app é guardado e não é desenhado.
+**Ordem** (`FrameLook`): Auto → **Skin** (Anti-shine → Smooth → Face light, rosto a rosto, `SkinSmoothingPass`) → dials do Adjust (Sharpness por
+último) → filtro → zoom, transições, B-roll → textos e legendas (`CueVideoCompositor.decorated`, nunca alisados). Rostos achados no quadro como foi
+gravado, antes do efeito de fundo. Prévia, exportação e capa usam o mesmo código (`FramePipeline`: `CueVideoCompositor`, `CoverRenderer`). Na tela
+dividida, o lado do take leva o Skin; o apoio é uma mídia por cima e não leva, como o Adjust.
+**Uma análise do rosto para os três** (`Managers/Editing/SkinSmoothing/`, só Vision e filtros do próprio Core Image): `VisionFaceDetector` (quadro de
+640 px, até 4 rostos, pequenos descartados, ≤ 20 vezes/s) → `SkinFaceTracker` (o mesmo rosto entre olhares, movimento suavizado, segue entre
+detecções, esquece no corte e no seek) → `SkinMaskRaster` (pele dentro da mandíbula e meia testa, sem olhos, sobrancelhas e lábios) +
+`SkinToneAnalyzer` (tom e ruído da pele, medidos a cada detecção). **Confiança:** a força cresce com a do Vision (`trust`, de 0,3 a 0,6); um rosto
+duvidoso fica como estava. Com tudo em 0 nada roda: `SkinSmoother.pass(for:skin:…)` devolve `nil` sem chamar o Vision.
+**Smooth** (`SkinBeautyFilter`, em sRGB codificado, só na região do rosto, tamanhos em frações da largura dele): (1) só pele, a máscara vezes o
+portão do tom do rosto (cabelo, barba, sombras e fundo ficam); (2) uma base que respeita bordas (filtro guiado de He, Sun e Tang): o que se afasta
+pouco da média local é nivelado, o que se afasta muito (borda, dobra, narina, lábio) fica; a média é só da pele (sem halo escuro de sobrancelha e
+barba), o limiar é relativo ao brilho (o lado da sombra e a pele escura nivelam igual) e nada clareia nem escurece; (3) **Texture à parte**: do que a
+base tirou, o que é maior que o grão (manchas, irregularidade) fica fora, e do grão (poros) volta `textureKept` (de 15% a 100%); só volta o que foi
+tirado, então não é nitidez; (4) a intensidade (`strength`, inteira em 100) sobre a máscara. Intensidade, escala (`baseSigma`, de 1% a 3,5% da
+largura do rosto) e textura são números separados (`SkinBeautyCalibrationTests`).
+**Face light** (`FaceLightFilter`): ganho suave no brilho do rosto (até 20%, mais nos meios-tons que nas sombras e nos realces), na máscara do rosto
+com borda macia; mantém a cor; fora do rosto, nada.
+**Anti-shine** (`SkinShineFilter`): numa cópia pequena do rosto (320 px), o "chão" da pele por abertura morfológica (o que é mais estreito que 12%
+da largura do rosto é um pico); o branco do brilho estimado pela subida dos canais mais claro e mais escuro sobre o chão (reflexo dicromático, com a
+razão do tom do rosto) e limitado pelas duas; só onde o que sobra ainda é pele; tira até 85% desse branco e devolve o detalhe da pele em proporção.
+Olhos, óculos e pele sem brilho ficam.
+**Medido no Mac** (`scratchpad` de 28/10/2026, nove fotos de rosto da pele clara à escura; textura que fica, fina / média, em % do original):
+Smooth 100 do motor 1 → do motor 2: sardas 74/88 → 74/66, lado iluminado 76/92 → 74/78, pele úmida 83/94 → 76/77, oleosa 84/93 → 85/80, leste-asiática
+81/96 → 82/89, médio de óculos 87/96 → 86/87, escura de óculos 88/95 → 84/79, escura com textura 95/99 → 85/91, escura em luz baixa 97/98 → 96/94 (a
+mais conservadora). Com Texture 0, a fina cai a 47–92. Brilho médio do rosto em Smooth 100: −0,002 a +0,001. Face light 100: +0,008 a +0,071.
+Anti-shine 100: −0,002 a −0,009 (conservador). Em vídeo (60 quadros seguidos de cinco vídeos, rostos em todos): a mudança de um quadro para o
+outro, com o efeito, fica entre 0,84 e 1,01 da do próprio vídeo na média (pior 1,07; 1 quadro em 49 a 1,16 com os três no máximo num vídeo quase
+parado; Studio ≤ 0,98); em quadros repetidos, deriva ≤ 0,006.
+**Medido no iPhone 15 Pro** (`SkinSmoothingDeviceTests`, 28/10/2026, uma foto de rosto real movida e ampliada num vídeo): o detalhe que fica na
+pele (grão / manchas) com Smooth 25, 50, 75 e 100 é 97/98 · 92/93 · 85/86 · 78/77%; o primeiro motor em 100 deixa 76/95 (o 100 de hoje tira 4,6×
+mais manchas, com o grão parecido). Quadro inteiro com tudo em 100: 1080p p50 17,8 / p95 37,2 ms (sem Skin 5,2 / 5,7); 4K p50 60,4 / p95 87,4 ms
+(sem 23,7 / 24,9). Só o desenho em 4K, além dos 24 ms sem Skin: primeiro motor +3,6 ms, Smooth 100 +15, Face light +5, Anti-shine +11, Studio +30.
+Exportar 4 s: 1080p 0,8 s sem Skin · 3,8 s com o primeiro motor · 7,2 s com tudo em 100 (memória +25 / +49 / +114 MB); 4K 2,9 · 4,7 · 8,8 s
+(+100 / +207 / +410 MB). Prévia × exportação: 0,5 de 255 em média.
+**Memória:** o compositor esvazia um autorelease pool por quadro (`autoreleaseFrequency: .workItem`) e a detecção roda no seu: sem isso o iPhone
+matava a exportação (sinal 9).
 **Dependência:** YUCIHighPassSkinSmoothing (MIT) avaliado e não adotado; só a ideia do canal verde (`THIRD_PARTY_NOTICES.md`).
-**Medido (iPhone 15 Pro, `SkinSmoothingDeviceTests`):** 1080p p50 15,3 / p95 30,5 ms (sem: 5,6 / 7,0); 4K p50 32,8 / p95 56,5 ms (sem: 13,8 / 16,9), então a
-prévia pode soltar quadros em 4K. Prévia × exportação: 0,4 de 255 em média.
-**Limites:** barba fechada e reflexo ficam fora da máscara; perfil ou rosto pequeno não é alisado. O Vision não acha rostos no Simulator.
+**Limites:** a prévia de um take 4K com Skin solta quadros (perto de 13 por segundo com Studio, 20 com o primeiro motor; em 1080p cabe nos 30, com
+perdas nos quadros em que o Vision roda); barba fechada e brilho largo ficam fora da máscara ou saem pouco; perfil ou rosto pequeno não é tratado; o
+Vision não acha rostos no Simulator; nenhuma comparação com outros apps foi feita.
 
 ## 21. Contraste (WCAG 2.2 AA): medido e corrigido
 
@@ -758,6 +806,23 @@ dedo, 22/10/2026), com um tique e "Take 2 of 3" por 1,4 s. **Estrela**: pula e s
 **Quick edit:** barra do sistema (`EditorTopBar` como `ToolbarContent`, `NavigationStack` próprio): voltar, "● IN EDIT · AUTOSAVED", **Done** em
 `.glassProminent` amarelo com texto `accInk` (`ink2` enquanto carrega). Some em tela cheia. `EditorLayout` usa a altura sob a barra (`EditorHeightClass`:
 regular a partir de 696, compacta de 636). Painéis: §29, §31.
+
+**Tela cheia por deslizar** (dono 29/10/2026; `FullScreenSwipe`, `FullScreenSwipeGesture`, `FullScreenMorph`, `FullScreenLayer`,
+`PreviewFullScreenArrow`): deslizar o vídeo **para baixo** (sobre ele ou ao lado, em toda a área da prévia) faz o que o botão de tela cheia da barra
+do player faz (as duas setinhas; o vídeo ocupa a tela, "Tap video to play · tap outside to exit"), e na tela cheia deslizar **para cima** em qualquer
+ponto volta. Vale o arraste claramente vertical (mais que 1,2× o lateral) a partir de 12 pt. **O vídeo sai do próprio card:** cresce do lugar,
+tamanho e cantos (6 pt) do card até a tela toda, com os cantos ficando retos, o escuro cobrindo o editor na mesma medida, a seta indo da borda do
+card até acima do aviso e girando de ▾ a ▴, e o aviso entrando nos últimos 30%; voltar é o mesmo caminho ao contrário, até pousar no card. O
+vídeo **segue o dedo** (320 pt para o caminho inteiro); ao soltar, passados 45 pt ou jogado (para onde o dedo iria, 200 pt), muda com um toque
+leve, senão volta; uma mola termina o movimento a partir da velocidade do dedo (0,5 s com um leve quique ao entrar, 0,42 s sem quique ao sair) e
+um toque suave marca a chegada. Os botões (barra do player, seta, tocar fora) fazem o mesmo movimento. A tela cheia mostra, até ter a sua, a imagem
+que o card mostrava (`EditPlayback.frameOnScreen`), então o vídeo nunca pisca escuro ao crescer. Com Reduzir Movimento, a tela cheia só aparece e
+some em 0,25 s, sem crescer. O que está sobre o vídeo (textos, legendas, janelas, alças, Crop) segue com os seus arrastes: o gesto de um texto
+não impede outros, então, assim que um texto ou janela pega o arraste (`OverlaysViewModel.draggedOverlay`), o deslizar deixa o resto dele passar,
+e o vídeo fica no card. **A seta** no meio da
+borda de baixo do card do vídeo: pílula escura (`Palette.Takes.durationBadge`, a dos selos sobre o vídeo) com uma seta em `ink`, ▾ no editor e ▴
+na tela cheia (logo acima do aviso); tocar nela faz o mesmo que o botão (VoiceOver: "Full screen" / "Exit full screen"). Some com um painel aberto e
+gravando narração; o aviso de trabalho e o de Pouca Energia ficam acima dela.
 
 **Uma faixa por vez sob o vídeo** (canvas "Faixas recolhíveis do editor", aprovado pelo dono em 27/10/2026; `TimelineTrackChoice`): com nada
 aberto a timeline mostra a régua, a faixa do vídeo e **a faixa atual** (Texto numa edição nova), e a prévia fica com o resto: no iPhone 17 a timeline
@@ -968,7 +1033,7 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   **Set reminder**), nota de quiet hours, lembretes marcados com ✕. Toast "Reminder set · Tomorrow 10:00 AM" só quando o sistema aceitou.
 - **Introdução de uma ferramenta** (`FeatureIntroSheet`): ícone `aiText` em azulejo `surface2`, nome, benefício, o que ela usa ("Free. Nothing changes until
   you choose."), **Try it**, **Not now**, "Don’t suggest this" em `ink2`. Try it abre a ferramenta (Quick edit direto no painel: `EditorTool`,
-  `QuickEditViewModel+Opening`; Adjust já em Skin Smoothing, `adjustOpensOn`).
+  `QuickEditViewModel+Opening`; Skin já em Smooth, `skinOpensOn`).
 - **Convite** (`NotificationInviteSheet`, mesmo desenho): sino `bell.badge`, a pergunta, "One notification when something is waiting, at most one a day. You
   can change it in Settings.", **Allow notifications** (só ele traz a pergunta do sistema) e **Not now**.
 - Contraste: `PaletteContrastTests.theNotificationSheetsReadOnTheirNight`.
@@ -1092,7 +1157,9 @@ Layout do `BackgroundPanel` (valores, prévia, exportação e desfazer são os d
 verde/azul, e num vídeo sem tela verde Color "não fazia nada".
 - **Cabeçalho** fixo com Reset e ✓; subtítulo com alcance e estado ("Whole take · Blur behind you", "This clip · Color on the green or blue screen", "Whole
   take · As recorded"; `backgroundSubtitle` / `backgroundSummary`).
-- **Nota de alcance** (`backgroundScopeNote`), só quando existe: clipe usando o fundo do take; clipe com fundo próprio (só aí o Reset aparece); take com
+- **Reset** só num clipe, enquanto ele mostra um fundo (o próprio ou o da gravação): deixa o clipe como gravado (Original próprio quando a gravação
+  tem fundo). Escolher nele o fundo da gravação volta a herdá-lo.
+- **Nota de alcance** (`backgroundScopeNote`), só quando existe: clipe usando o fundo do take; clipe com fundo próprio ("This clip has its own background."); take com
   clipes que têm o seu.
 - **Behind you:** Original · Blur · Color · Image e só o controle da escolhida (Blur strength, cores, foto; em Original, uma linha).
 - **Cutout** em cartão próprio (`Palette.Editor.panelCard`): **Automatic | Green or blue screen** com uma frase de cada; "Can't find people here" no
@@ -1774,6 +1841,8 @@ iguais ou melhores; o fundo e o recorte num painel só, de propósito.
   **VHS**, Mono Soft, Mono Contrast, **B&W Film**. Os novos (a pesquisa de 2025–26) têm, além da cor (`FilterGrade`), uma textura
   (`FilterTexture`): grão que muda a cada 1/24 s e é o mesmo no mesmo instante na prévia e na exportação (`FrameLook.apply(time:)`), brilho nas
   altas luzes, cantos escuros, nitidez, e no VHS imagem mais macia com franjas de cor e linhas. Nomes sem marcas (nada de Kodak/Fuji/Portra).
+  Reset no cabeçalho aparece enquanto há um filtro à vista e volta a Original no que o painel muda: o vídeo inteiro, ou o clipe, seja o filtro
+  dele ou o do vídeo inteiro (Original próprio quando o vídeo inteiro tem filtro; `LookViewModel.resetFilter`). Reset clip também.
 - **Texto do tamanho do iPhone:** painéis, folhas, avisos, o tempo do player, o chip de status, as palavras da capa e os chips crescem com o
   Dynamic Type (estilos de texto, ou `@ScaledMetric` onde o tamanho do desenho fica entre dois); o tempo para em xxLarge (a barra mantém a
   altura); os blocos do Smart crescem com o nome. A barra de ferramentas mantém a altura: com os maiores tamanhos, segurar mostra o nome grande
@@ -2107,7 +2176,7 @@ máscara do CapCut/InShot (o iMovie tem um "Split Screen" fixo em 50/50).
   no centro), que vale em qualquer formato de área.
 - **Desenho** (`CueVideoCompositor`, `FramePipeline.inArea`, prévia e exportação iguais): com um apoio na agulha, a área do principal é desenhada
   **a partir da gravação inteira**, não do quadro já recortado pelo Format (uma área mais larga que 9:16 alcança o que o Format cortaria), com
-  Estabilizar, fundo, Skin Smoothing, Adjust, filtro, transições e o zoom do clipe aplicados dentro dela; o apoio preenche ou ajusta a sua (preto
+  Estabilizar, fundo, Skin, Adjust, filtro, transições e o zoom do clipe aplicados dentro dela; o apoio preenche ou ajusta a sua (preto
   onde Ajustar não alcança, nunca desfocado nem esticado). **A emenda** (`SplitLayout.seam`, `SplitSeamDrawing`, só a faixa dela é trabalhada):
   **None** (corte seco), **Line** (branca, 0,4% do lado menor), **Blur** (as duas imagens se desfazem uma na outra numa faixa de 6% do lado menor
   para cada lado, mais forte no meio; o padrão da primeira tela dividida) e **Shadow** (faixa escura de 10% para cada lado, até 70% no meio, que também firma a
@@ -2439,7 +2508,7 @@ recusado).
   pessoa e vale); ✓ devolve como estava, sem nada escolhido. Duplicate, Replace, Extract audio, Copy look e Paste look escolhem o clipe sob a agulha
   e mostram as ferramentas dele; Reverse e Freeze frame agem nele; Split divide na agulha; Reorder com um clipe só diz por quê. Num vídeo sem
   cortes, o clipe é o vídeo.
-- **Skin** abre o Adjust do vídeo inteiro já em Suavizar pele (`LookViewModel.lookTool`); **Templates** e **Brand kit** abrem a aba deles no ✦ Smart.
+- **Skin** abre o painel Skin (§20) do vídeo inteiro na barra principal e do clipe na barra do clipe; **Templates** e **Brand kit** abrem a aba deles no ✦ Smart.
 - **Barra do clipe** (`clipItems`, `clipShortcutGroups`; dono, 28/10/2026: estava num bloco só de 20, com o que muda o vídeo inteiro no meio),
   em cinco grupos:
   1. **O essencial do clipe**, as cinco na tela de 6,1": Split · Speed · Volume · **Mute** · Zoom. **Mute** é o "Mute this clip" do Volume como
@@ -2479,10 +2548,12 @@ recusado).
   AVFoundation encerrar o app (o fade out no máximo do slider começava 5 ms depois da rampa ao volume do clipe), e `VolumeRamp` ainda as põe uma
   depois da outra no relógio da composição. O Reset do Volume zera os fades também.
 - **Reset clip** (`ClipsViewModel+Reset`): num passo de desfazer, o clipe volta como gravado: 1×, sem curva, som em 100% e ligado, sem Zoom,
-  Adjust, Skin, Filters e Background próprios, Stabilize, Crop, Rotate, Mirror, Animation e fades, e tocando para a frente se estava em Reverse.
-  Ficam onde começa e termina, o lugar na montagem, a transição de entrada e tudo o que está por cima (textos, legendas, mídias, músicas, áreas
-  do Blur). Um clipe cujo som foi para uma faixa (Extract audio) continua mudo, senão o som tocaria duas vezes. Toast "Clip reset" com Undo;
-  num clipe já como gravado, "This clip is already as filmed".
+  Adjust, Skin, filtro e fundo (os próprios e também os do vídeo inteiro e da gravação, desligados só nele: `ClipLook.asFilmed`; dono 29/10/2026,
+  o Studio do vídeo inteiro ficava e o aviso dizia que o clipe já estava como gravado), Stabilize, Crop, Rotate, Mirror, Animation e fades, e
+  tocando para a frente se estava em Reverse. O vídeo inteiro e os outros clipes ficam como estão. Ficam onde começa e termina, o lugar na
+  montagem, a transição de entrada e tudo o que está por cima (textos, legendas, mídias, músicas, áreas do Blur). Um clipe cujo som foi para uma
+  faixa (Extract audio) continua mudo, senão o som tocaria duas vezes. Toast "Clip reset" com Undo; num clipe já como gravado, "This clip is
+  already as filmed".
 - **Selo "All"** (`EditorToolbarItem.ScopeBadge`, `EditorToolbarBadge`): numa barra de item, o que muda o vídeo inteiro (Captions, Remove
   pauses, Edit by text, Studio Voice, Format, Adjust, Skin, Filters, Background, Templates, Brand kit) leva o selo amarelo curto "ALL" ("TODOS" em português)
   acima do canto do ícone, sem cobri-lo (no canto espelhado da direita para a esquerda); ele só diz o alcance: a ferramenta faz exatamente o que faz na principal. Medido nos 20 idiomas
@@ -2495,8 +2566,12 @@ recusado).
 - **Duplicate** (do clipe) escolhe a cópia com a agulha no começo dela, como Split: as ferramentas dela (Split, Freeze frame) já agem nela.
 - **"N clips keep their own · Use this on all"** (`KeepTheirOwnRow`, `LookViewModel+ClipScope`): no Adjust, Skin, Filters ou Background do vídeo
   inteiro, quando há clipes com valor próprio para o que o painel muda, uma linha sob o cabeçalho diz quantos (no plural de cada idioma) e **Use
-  this on all** dá a eles o do vídeo inteiro (só os valores daquela ferramenta; em Skin, só a suavização), num passo, com Undo no aviso "Every clip
+  this on all** dá a eles o do vídeo inteiro (só os valores daquela ferramenta; em Skin, as três partes), num passo, com Undo no aviso "Every clip
   uses this now". Nunca sozinho. O subtítulo do painel diz só "Whole video".
+- **Reset num clipe tira o efeito que ele mostra** (Adjust e Auto, Skin, Filters, Background; dono 29/10/2026): o próprio ou o do vídeo inteiro.
+  Aparece enquanto o clipe mostra algo daquela ferramenta; quando o vídeo inteiro tem o efeito, o clipe ganha o seu desligado (zero, Auto em 0,
+  Skin desligado, Original), só nele, e o vídeo inteiro e os outros clipes ficam; quando não tem, o clipe só perde o seu. O Reset de um controle
+  faz o mesmo com ele. Voltar a herdar: **Use this on all** no painel do vídeo inteiro (no Background, escolher nele o fundo da gravação).
 - **O que chega depois cai onde foi pedido, ou em lugar nenhum, dito:** a tela dividida acha os rostos primeiro e escreve só o que acrescenta na
   edição como ela está (uma mudança ou um Undo feitos no meio ficam; um corte no meio não acrescenta nada, "The video changed meanwhile · Add it
   again"; de dois layouts tocados rápido, vale o último); o Auto de um clipe aparado, trocado ou invertido no meio não entra ("The clip changed

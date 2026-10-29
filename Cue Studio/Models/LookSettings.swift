@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// The light, color and filter one stretch of the video is drawn with: the take's own (Adjust and
+/// The light, color, skin and filter one stretch of the video is drawn with: the take's own (Adjust, Skin and
 /// Filters with nothing picked), or the take's with a clip's overrides on top (`ClipLook`). The
 /// preview, the export and the cover all draw through `FrameLook` with one of these.
 nonisolated struct LookSettings: Hashable, Sendable {
@@ -18,8 +18,8 @@ nonisolated struct LookSettings: Hashable, Sendable {
     var sharpness: Double = 0
     var vibrance: Double = 0
     var tint: Double = 0
-    /// How much the skin of the faces is smoothed, 0 (off) to 100; drawn after Auto and before the dials (`FrameLook`).
-    var skinSmoothing: Double = 0
+    /// Skin on the faces (smoothing, face light, less shine); drawn after Auto and before the dials (`FrameLook`).
+    var skin = SkinLook()
     /// What Auto measured, and how much of it shows (0 to 1); applied first, before the dials.
     var auto: AutoCorrection?
     var autoAmount: Double = 1
@@ -44,7 +44,7 @@ nonisolated struct LookSettings: Hashable, Sendable {
         sharpness = edit.sharpness
         vibrance = edit.vibrance
         tint = edit.tint
-        skinSmoothing = edit.skinSmoothing
+        skin = edit.skin
         auto = edit.autoCorrection?.readable
         autoAmount = edit.autoAmount
         filter = edit.filter
@@ -58,6 +58,8 @@ nonisolated struct LookSettings: Hashable, Sendable {
         neutral.version = LookSettings.currentVersion
         neutral.filterAmount = 1
         neutral.autoAmount = 1
+        // Skin that draws nothing (a smoothing at 0 on the first engine, one from a newer Cue) is no change.
+        if !skin.isOn { neutral.skin = SkinLook() }
         return neutral == LookSettings()
     }
 
@@ -74,7 +76,7 @@ nonisolated struct LookSettings: Hashable, Sendable {
         result.sharpness = override.sharpness ?? sharpness
         result.vibrance = override.vibrance ?? vibrance
         result.tint = override.tint ?? tint
-        result.skinSmoothing = override.skinSmoothing ?? skinSmoothing
+        result.skin = skin.overridden(by: override.skin)
         // A clip's own measurement this version can't read leaves the clip without Auto (never the take's in its place).
         result.auto = override.auto.map(\.readable) ?? auto
         result.autoAmount = override.autoAmount ?? autoAmount

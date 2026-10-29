@@ -6,8 +6,8 @@
 import Foundation
 
 /// The words that introduce each tool: the notification (title and line) and the introduction in the app (the tool's name, one clear
-/// benefit, and what it uses). Benefit first; the creator's choice in every line. Nothing about how anyone looks: Skin Smoothing is a
-/// finish the creator may choose, starting at zero.
+/// benefit, and what it uses). Benefit first; the creator's choice in every line. Nothing about how anyone looks: Skin is a finish the
+/// creator may choose, each of its controls starting at zero.
 nonisolated extension FeatureID {
     var notificationTitle: String {
         switch self {
@@ -42,7 +42,11 @@ nonisolated extension FeatureID {
         case .autoCaptions: String(localized: "Give your audience a way to follow your video without sound.")
         case .captionTranslation: String(localized: "Try presenting your video with captions in another language.")
         case .studioVoice: String(localized: "Studio Voice works on your recording. You hear it before you keep it.")
-        case .skinSmoothing: String(localized: "A finish you can add in Adjust. You choose the intensity, from zero.")
+        case .skinSmoothing:
+            String(
+                localized: "Smooth the skin, light the face or take off shine, in Skin. Each starts at zero.",
+                comment: "Discovery notification body (Skin); never about anyone's looks"
+            )
         case .backgrounds: String(localized: "Explore your editor’s backgrounds.")
         case .covers: String(localized: "Pick the cover that introduces your video.")
         case .layers: String(localized: "Add images to your video while you talk about them.")
@@ -65,7 +69,7 @@ nonisolated extension FeatureID {
         case .autoCaptions: String(localized: "Auto captions")
         case .captionTranslation: String(localized: "Translated captions")
         case .studioVoice: String(localized: "Studio Voice")
-        case .skinSmoothing: String(localized: "Skin Smoothing")
+        case .skinSmoothing: String(localized: "Skin", comment: "Video editor toolbar: opens Skin (smooths the skin, lights the face, takes off shine)")
         case .backgrounds: String(localized: "Background")
         case .covers: String(localized: "Cover")
         case .layers: String(localized: "Photo or video")
@@ -88,7 +92,11 @@ nonisolated extension FeatureID {
         case .autoCaptions: String(localized: "Drafted from your voice, so people can follow muted.")
         case .captionTranslation: String(localized: "Your captions in another language, next to the originals.")
         case .studioVoice: String(localized: "Explore a clearer sound for your voice. Nothing changes until you choose a level.")
-        case .skinSmoothing: String(localized: "A subtle finish, if you want one. It starts at zero and you choose the intensity.")
+        case .skinSmoothing:
+            String(
+                localized: "Smoother skin, a soft light on the face or less shine, if you want them. Each starts at zero and you choose how much.",
+                comment: "Discovery introduction's benefit (Skin); never about anyone's looks"
+            )
         case .backgrounds: String(localized: "Blur or change the background behind you.")
         case .covers: String(localized: "Choose the first image that introduces your video.")
         case .layers: String(localized: "Show examples while you speak: add a photo or a clip over your video.")

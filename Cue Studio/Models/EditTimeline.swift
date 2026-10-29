@@ -760,15 +760,28 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
 }
 
 nonisolated extension EditTimeline {
-    /// The same pieces without their own Auto, Adjust, filter or background, for ◐ Compare with original.
+    /// The same pieces without their own Auto, Adjust, Skin, filter or background, for ◐ Compare with original.
     func withoutPictureLooks() -> EditTimeline {
+        withLooks { look in
+            look.removeAdjustment()
+            look.removeSkin()
+            look.removeFilter()
+            look.removeBackground()
+        }
+    }
+
+    /// The same pieces without their own Skin, for ◐ in Skin.
+    func withoutSkin() -> EditTimeline {
+        withLooks { $0.removeSkin() }
+    }
+
+    /// The same pieces, each clip's own look changed by `change`.
+    private func withLooks(_ change: (inout ClipLook) -> Void) -> EditTimeline {
         var plain = self
         plain.segments = segments.map { segment in
             var segment = segment
             if var look = segment.look {
-                look.removeAdjustment()
-                look.removeFilter()
-                look.removeBackground()
+                change(&look)
                 segment.look = look.normalized
             }
             return segment

@@ -90,21 +90,26 @@ struct QuickEditUseOnAllTests {
         #expect(scenario.clips[2].look?.filterAmount == 0.3)
     }
 
-    @Test func skinCountsAndClearsOnlySkinSmoothing() async {
+    @Test func skinCountsAndClearsEveryPartOfSkinAndNothingElse() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         setLook(viewModel, clip: 0) { look in
-            look.skinSmoothing = 30
+            look.skin = ClipSkin(smoothing: SkinSmoothing(amount: 30))
             look.exposure = 10
         }
         setLook(viewModel, clip: 1) { $0.contrast = -8 }
+        // A 0 is a choice of the clip's own: it counts.
+        setLook(viewModel, clip: 2) { $0.skin = ClipSkin(faceLight: 0) }
         viewModel.perform(.openLook(.skin, wholeVideo: true))
-        #expect(viewModel.look.clipsKeepingTheirOwnInPanel == 1, "only the clip with its own Skin Smoothing")
+        #expect(viewModel.panel == .skin)
+        #expect(viewModel.look.clipsKeepingTheirOwnInPanel == 2, "the clips with any part of Skin of their own")
         viewModel.look.useWholeVideosLookOnAllClips()
-        #expect(scenario.clips[0].look?.skinSmoothing == nil)
+        #expect(scenario.clips[0].look?.skin == nil && scenario.clips[2].look == nil)
         #expect(scenario.clips[0].look?.exposure == 10)
         #expect(scenario.clips[1].look?.contrast == -8)
-        // Adjust, the same panel opened as Adjust, counts its whole set.
+        viewModel.undo()
+        #expect(scenario.clips[0].look?.skin?.smoothing?.amount == 30 && scenario.clips[2].look?.skin == ClipSkin(faceLight: 0))
+        // Adjust counts its own set, never Skin.
         viewModel.closePanel()
         viewModel.perform(.openLook(.adjust, wholeVideo: true))
         #expect(viewModel.look.clipsKeepingTheirOwnInPanel == 2)
@@ -117,7 +122,7 @@ struct QuickEditUseOnAllTests {
         setLook(viewModel, clip: 1) { look in
             look.exposure = 10
             look.tint = 4
-            look.skinSmoothing = 20
+            look.skin = ClipSkin(antiShine: 20)
             look.autoAmount = 0
             look.filter = .mono
             look.background = background
@@ -127,7 +132,8 @@ struct QuickEditUseOnAllTests {
         viewModel.look.useWholeVideosLookOnAllClips()
         let look = scenario.clips[1].look
         #expect(look?.overridesAdjustment == false)
-        #expect(look?.skinSmoothing == nil && look?.autoAmount == nil)
+        #expect(look?.autoAmount == nil)
+        #expect(look?.skin == ClipSkin(antiShine: 20), "Skin is not Adjust's")
         #expect(look?.filter == .mono)
         #expect(look?.background == background)
     }

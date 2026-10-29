@@ -167,11 +167,9 @@ extension QuickEditViewModel {
     }
 
     /// Adjust, Skin, Filters or Background at the reach the button says: the picked clip's own (its bar), or the whole video's
-    /// (the main bar, and an item's badged shortcut, whatever is picked). Skin is Adjust opened on Skin Smoothing.
+    /// (the main bar, and an item's badged shortcut, whatever is picked).
     private func openLook(_ tool: EditorLookTool, wholeVideo: Bool) {
         look.lookScopeIsClip = !wholeVideo && selection?.clipID != nil
-        look.lookTool = tool
-        if tool == .skin { look.adjustOpensOn = .skinSmoothing }
         panel = tool.panel
     }
 

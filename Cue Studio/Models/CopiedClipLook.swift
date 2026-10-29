@@ -6,8 +6,8 @@
 import Foundation
 
 /// A clip's look as "Copy look" took it: everything it is drawn with (the take's look with the clip's own on top, as explicit
-/// values), its background and its slow zoom, ready to paste on other clips, all of it or only the parts picked. Pure: the
-/// panel and the tests read the same rules.
+/// values; Skin's smoothing with its texture and engine), its background and its slow zoom, ready to paste on other clips, all
+/// of it or only the parts picked. Pure: the panel and the tests read the same rules.
 nonisolated struct CopiedClipLook: Hashable, Sendable {
     /// The clip's light, color and filter, every value written out.
     var look: ClipLook
@@ -28,7 +28,7 @@ nonisolated struct CopiedClipLook: Hashable, Sendable {
         look.sharpness = settings.sharpness
         look.vibrance = settings.vibrance
         look.tint = settings.tint
-        look.skinSmoothing = settings.skinSmoothing
+        look.skin = ClipSkin(settings.skin)
         look.auto = settings.auto
         look.autoAmount = settings.autoAmount
         look.filter = settings.filter
@@ -56,9 +56,15 @@ nonisolated struct CopiedClipLook: Hashable, Sendable {
             own.sharpness = differing(look.sharpness, from: video.sharpness)
             own.vibrance = differing(look.vibrance, from: video.vibrance)
             own.tint = differing(look.tint, from: video.tint)
-            own.skinSmoothing = differing(look.skinSmoothing, from: video.skinSmoothing)
             own.auto = look.auto == video.auto ? nil : look.auto
             own.autoAmount = differing(look.autoAmount, from: video.autoAmount)
+        }
+        if parts.contains(.skin) {
+            let skin = look.skin ?? ClipSkin(SkinLook())
+            own.skin = ClipSkin(
+                smoothing: differing(skin.smoothing, from: video.skin.smoothing), faceLight: differing(skin.faceLight, from: video.skin.faceLight),
+                antiShine: differing(skin.antiShine, from: video.skin.antiShine)
+            ).normalized
         }
         if parts.contains(.filter) {
             own.filter = differing(look.filter, from: video.filter)
@@ -91,9 +97,11 @@ nonisolated struct CopiedClipLook: Hashable, Sendable {
             next.sharpness = look.sharpness ?? next.sharpness
             next.vibrance = look.vibrance ?? next.vibrance
             next.tint = look.tint ?? next.tint
-            next.skinSmoothing = look.skinSmoothing ?? next.skinSmoothing
             next.autoCorrection = look.auto
             next.autoAmount = look.autoAmount ?? next.autoAmount
+        }
+        if parts.contains(.skin) {
+            next.skin = next.skin.overridden(by: look.skin)
         }
         if parts.contains(.filter) {
             next.filter = look.filter ?? next.filter
@@ -118,10 +126,10 @@ nonisolated struct CopiedClipLook: Hashable, Sendable {
                 own.sharpness = nil
                 own.vibrance = nil
                 own.tint = nil
-                own.skinSmoothing = nil
                 own.auto = nil
                 own.autoAmount = nil
             }
+            if parts.contains(.skin) { own.removeSkin() }
             if parts.contains(.filter) {
                 own.filter = nil
                 own.filterAmount = nil

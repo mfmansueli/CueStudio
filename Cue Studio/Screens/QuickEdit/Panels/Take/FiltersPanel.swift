@@ -8,8 +8,8 @@ import SwiftUI
 /// Filters (whole take, or the picked clip alone when opened from it): Original and the collection
 /// (Natural, Studio, Soft, Cinema, Warm Editorial, Retro, Mono Soft, Mono Contrast), each shown on a
 /// real frame of the video in scope, at the intensity it starts with; Intensity for the picked one.
-/// A filter from before the collection shows only while it is the one picked. For a clip, Reset
-/// gives it the take's filter again.
+/// A filter from before the collection shows only while it is the one picked. Reset takes the
+/// filter off what the panel changes: the whole video, or the clip (whatever the whole video has).
 struct FiltersPanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -56,10 +56,10 @@ struct FiltersPanel: View {
         return "\(source.url.path(percentEncoded: false))@\(Int(source.time * 10))@\(source.orientation)"
     }
 
-    /// Only for a clip, and only once it sets its own filter.
+    /// Once there is a filter to take off: the whole video's, or the one a clip shows.
     private var reset: (() -> Void)? {
-        guard viewModel.look.clipOverridesFilter else { return nil }
-        return { viewModel.look.resetClipFilter() }
+        guard viewModel.look.hasFilterSettings else { return nil }
+        return { viewModel.look.resetFilter() }
     }
 
     private func card(_ filter: VideoFilter) -> some View {

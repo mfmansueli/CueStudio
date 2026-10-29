@@ -38,7 +38,7 @@ struct FeatureAdoptionTests {
     @Test func eachToolIsSeenInWhatItLeftInTheEdit() {
         let used = edit {
             $0.captions = [CaptionCue(text: "Hello", start: 0, end: 1)]
-            $0.skinSmoothing = 20
+            $0.skin.faceLight = 20
             $0.voiceEnhancement = .strong
         }
         #expect(FeatureAdoption.tools(in: used) == [.autoCaptions, .skinSmoothing, .studioVoice])

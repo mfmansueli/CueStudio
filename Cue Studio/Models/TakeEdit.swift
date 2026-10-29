@@ -68,9 +68,9 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     var vibrance: Double = 0
     /// −100…+100, green to magenta.
     var tint: Double = 0
-    /// 0 to 100: how much the skin of the faces in the picture is smoothed (`SkinSmoothing`). 0 is off, and what edits
-    /// saved before it have.
-    var skinSmoothing: Double = 0
+    /// Skin, on the faces of the whole video: smoothing, face light and less shine (`SkinLook`), apart from Adjust. Off in a new
+    /// edit; an edit saved with the first smoothing's dial keeps it, on the engine it was made with.
+    var skin = SkinLook()
     /// What Auto measured on the take, played before the dials; nil until Auto is used.
     var autoCorrection: AutoCorrection?
     /// How much of `autoCorrection` shows, 0 to 1.
@@ -393,7 +393,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         audioVersion, voiceEnhancement, noiseReduction, voiceReach, evensOutVoices, music, backgrounds, exposure, contrast, warmth, filter
         case snapsToBeats, lockedLayers
         case saturation, highlights, shadows, sharpness, filterAmount, cropFit, pauseThreshold
-        case vibrance, tint, autoCorrection, autoAmount, lookVersion, skinSmoothing, faceFollow
+        case vibrance, tint, autoCorrection, autoAmount, lookVersion, skin, faceFollow
         case aspect, cropOffset, showsCaptions, captionStyle, captionLook, captionPreset, captionPosition, captions
         case captionTranscript, sourceTranscripts, captionLanguage, captionAnimation, captionTranslations, captionDisplay
         case captionCollection
@@ -405,6 +405,8 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
     /// silences that were either all cut or all kept.
     private enum LegacyKeys: String, CodingKey {
         case sourceDuration, trimStart, trimEnd, splits, removed, silences, removesSilences
+        /// The first smoothing's dial, 0…100, before Skin had a panel of its own: read into `skin`, never written again.
+        case skinSmoothing
     }
 
     init(from decoder: Decoder) throws {
@@ -446,7 +448,7 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         // Added with the calibrated look: edits saved before have none of them.
         vibrance = (try? container.decodeIfPresent(Double.self, forKey: .vibrance)) ?? 0
         tint = (try? container.decodeIfPresent(Double.self, forKey: .tint)) ?? 0
-        skinSmoothing = SkinSmoothingCalibration.clamped((try? container.decodeIfPresent(Double.self, forKey: .skinSmoothing)) ?? 0)
+        skin = Self.skin(in: container, legacy: try decoder.container(keyedBy: LegacyKeys.self), report: report)
         autoCorrection = container.decodeLenient(AutoCorrection.self, forKey: .autoCorrection, report: report)
         autoAmount = (try? container.decodeIfPresent(Double.self, forKey: .autoAmount)) ?? 1
         cropFit = (try? container.decodeIfPresent(CropFit.self, forKey: .cropFit)) ?? .fill
@@ -484,6 +486,15 @@ nonisolated struct TakeEdit: Codable, Hashable, Sendable {
         cover = container.decodeLenient(VideoCover.self, forKey: .cover, report: report)
         // An edit saved before the calibrated dials reads them the first way, unless it never used them.
         lookVersion = ReadingVersion.look.read(try? container.decodeIfPresent(Int.self, forKey: .lookVersion), usedOldNumbers: usesAdjustDials)
+    }
+
+    /// Skin as saved; an edit saved before it had a panel has the first smoothing's dial, read by the engine it was made with.
+    private static func skin(
+        in container: KeyedDecodingContainer<CodingKeys>, legacy: KeyedDecodingContainer<LegacyKeys>, report: DecodingReport?
+    ) -> SkinLook {
+        if container.contains(.skin) { return container.decodeLenient(SkinLook.self, forKey: .skin, report: report) ?? SkinLook() }
+        let dial = (try? legacy.decodeIfPresent(Double.self, forKey: .skinSmoothing)) ?? 0
+        return SkinLook(smoothing: .firstEngine(dial))
     }
 
     /// The same pieces an old edit played, and its silences as pause suggestions.

@@ -22,6 +22,7 @@ struct EditorPanelView: View {
         case .voice: VoicePanel(viewModel: viewModel)
         case .pauses: PausesPanel(viewModel: viewModel)
         case .adjust: AdjustPanel(viewModel: viewModel)
+        case .skin: SkinPanel(viewModel: viewModel)
         case .filters: FiltersPanel(viewModel: viewModel)
         case .crop: CropPanel(viewModel: viewModel)
         case .background: BackgroundPanel(viewModel: viewModel)

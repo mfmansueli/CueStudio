@@ -10,9 +10,9 @@ import Foundation
 /// step; a slider's quick moves are one (`EditHistory.coalescingInterval`). Auto, the measured
 /// correction, is in `LookViewModel+Auto`.
 extension LookViewModel {
-    /// Adjust's settings, −100…+100 (Sharpness and Skin Smoothing 0…100), in the order of the dials.
+    /// Adjust's settings, −100…+100 (Sharpness 0…100), in the order of the dials. Skin is a tool of its own (`LookViewModel+Skin`).
     enum Adjustment: String, CaseIterable, Identifiable {
-        case exposure, contrast, warmth, tint, saturation, vibrance, highlights, shadows, sharpness, skinSmoothing
+        case exposure, contrast, warmth, tint, saturation, vibrance, highlights, shadows, sharpness
 
         var id: String { rawValue }
 
@@ -27,19 +27,10 @@ extension LookViewModel {
             case .highlights: String(localized: "Highlights")
             case .shadows: String(localized: "Shadows")
             case .sharpness: String(localized: "Sharpness")
-            case .skinSmoothing: String(localized: "Skin Smoothing")
             }
         }
 
-        /// What VoiceOver adds for the settings that need it.
-        var hint: String? {
-            switch self {
-            case .skinSmoothing: String(localized: "Softens the skin of faces. Eyes, lips, hair and beard stay sharp.")
-            default: nil
-            }
-        }
-
-        var isBipolar: Bool { self != .sharpness && self != .skinSmoothing }
+        var isBipolar: Bool { self != .sharpness }
     }
 
     // MARK: - Adjust
@@ -47,19 +38,7 @@ extension LookViewModel {
     /// The value the dial shows: the clip's (or the take's, where the clip sets none) when Adjust
     /// is changing a clip, else the take's.
     func adjustment(_ adjustment: Adjustment) -> Double {
-        let look = effectiveLook
-        switch adjustment {
-        case .exposure: return look.exposure
-        case .contrast: return look.contrast
-        case .warmth: return look.warmth
-        case .tint: return look.tint
-        case .saturation: return look.saturation
-        case .vibrance: return look.vibrance
-        case .highlights: return look.highlights
-        case .shadows: return look.shadows
-        case .sharpness: return look.sharpness
-        case .skinSmoothing: return look.skinSmoothing
-        }
+        Self.value(of: adjustment, in: effectiveLook)
     }
 
     /// Whether the picked clip sets this dial itself (it shows the take's value otherwise); false
@@ -69,9 +48,9 @@ extension LookViewModel {
         return Self.overrideValue(of: adjustment, in: look) != nil
     }
 
-    /// The dial has something to reset: off zero for the take, set by the clip for a clip.
+    /// The dial has something to reset: off zero in what the panel shows (on a clip, its own value or the whole video's).
     func canResetAdjustment(_ adjustment: Adjustment) -> Bool {
-        lookClip != nil ? clipOverrides(adjustment) : self.adjustment(adjustment) != 0
+        self.adjustment(adjustment) != 0
     }
 
     func setAdjustment(_ adjustment: Adjustment, _ value: Double) {
@@ -92,25 +71,33 @@ extension LookViewModel {
             case .highlights: edit.highlights = clamped
             case .shadows: edit.shadows = clamped
             case .sharpness: edit.sharpness = clamped
-            case .skinSmoothing: edit.skinSmoothing = clamped
             }
         }
     }
 
-    /// One dial back to where it starts: zero for the take, the take's value for a clip.
+    /// One dial back to zero, on the take or the clip: a clip showing the take's value gets its own zero, one showing its own
+    /// gives it up where the take's is zero too.
     func resetAdjustment(_ adjustment: Adjustment) {
         if lookClip != nil {
-            updateClipLook(key: "adjust.\(adjustment.rawValue)") { Self.setOverride(of: adjustment, to: nil, in: &$0) }
+            let inherits = Self.value(of: adjustment, in: LookSettings(edit)) == 0
+            updateClipLook(key: "adjust.\(adjustment.rawValue)") { Self.setOverride(of: adjustment, to: inherits ? nil : 0, in: &$0) }
         } else {
             setAdjustment(adjustment, 0)
         }
     }
 
-    /// Every dial back to where it starts: all zero for the take; for a clip, none set by the clip,
-    /// so it plays with the take's.
+    /// Every dial at zero and no Auto, on the take or the clip: the clip without Adjust whatever the take has (its own zeros where
+    /// the take's dials aren't, its Auto off where the take has one). "Use this on all" follows the take again.
     func resetAdjustments() {
         if lookClip != nil {
-            updateClipLook { $0.removeAdjustment() }
+            let take = LookSettings(edit)
+            updateClipLook { look in
+                look.removeAdjustment()
+                for adjustment in Adjustment.allCases where Self.value(of: adjustment, in: take) != 0 {
+                    Self.setOverride(of: adjustment, to: 0, in: &look)
+                }
+                if take.auto != nil, take.autoAmount > 0 { look.autoAmount = 0 }
+            }
             return
         }
         changeEdit { edit in
@@ -127,16 +114,29 @@ extension LookViewModel {
                 case .highlights: edit.highlights = 0
                 case .shadows: edit.shadows = 0
                 case .sharpness: edit.sharpness = 0
-                case .skinSmoothing: edit.skinSmoothing = 0
                 }
             }
         }
     }
 
-    /// Something to reset: a dial off zero for the take, a dial the clip sets for a clip.
+    /// Something to reset: a dial off zero for the take, or Auto; on a clip, a dial off zero or Auto showing, its own or the take's.
     var hasAdjustments: Bool {
-        if let clip = lookClip { return clip.look?.overridesAdjustment ?? false }
+        if lookClip != nil { return Adjustment.allCases.contains { adjustment($0) != 0 } || (hasAuto && effectiveLook.autoAmount > 0) }
         return Adjustment.allCases.contains { adjustment($0) != 0 } || edit.autoCorrection != nil
+    }
+
+    private static func value(of adjustment: Adjustment, in look: LookSettings) -> Double {
+        switch adjustment {
+        case .exposure: look.exposure
+        case .contrast: look.contrast
+        case .warmth: look.warmth
+        case .tint: look.tint
+        case .saturation: look.saturation
+        case .vibrance: look.vibrance
+        case .highlights: look.highlights
+        case .shadows: look.shadows
+        case .sharpness: look.sharpness
+        }
     }
 
     private static func overrideValue(of adjustment: Adjustment, in look: ClipLook) -> Double? {
@@ -150,7 +150,6 @@ extension LookViewModel {
         case .highlights: look.highlights
         case .shadows: look.shadows
         case .sharpness: look.sharpness
-        case .skinSmoothing: look.skinSmoothing
         }
     }
 
@@ -165,7 +164,6 @@ extension LookViewModel {
         case .highlights: look.highlights = value
         case .shadows: look.shadows = value
         case .sharpness: look.sharpness = value
-        case .skinSmoothing: look.skinSmoothing = value
         }
     }
 
@@ -222,9 +220,30 @@ extension LookViewModel {
         }
     }
 
-    /// The clip plays with the take's filter again.
-    func resetClipFilter() {
-        updateClipLook { $0.removeFilter() }
+    /// Filters' Reset has something to take off: a filter the panel shows (on a clip, its own or the whole video's).
+    var hasFilterSettings: Bool {
+        currentFilter != .original
+    }
+
+    /// Filters' Reset, in one undo step: the whole video without a filter, or the clip without one whatever the whole video has
+    /// (Original of its own when the whole video has a filter). "Use this on all" in the whole video's Filters gives it the whole
+    /// video's again.
+    func resetFilter() {
+        if lookClip != nil {
+            let videoHasFilter = edit.filter != .original
+            updateClipLook { look in
+                look.removeFilter()
+                if videoHasFilter { look.filter = .original }
+            }
+            return
+        }
+        var next = snapshot
+        next.filter = .original
+        var changed = edit
+        changed.filter = .original
+        changed.filterAmount = 1
+        next.look = EditLook(changed)
+        commit(next)
     }
 
     // MARK: - Crop

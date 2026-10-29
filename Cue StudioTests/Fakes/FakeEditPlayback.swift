@@ -81,4 +81,5 @@ final class FakeEditPlayback: EditPlayback {
     }
 
     func addFrameHolder(_ owner: AnyObject, hold: @escaping @MainActor (CGImage) -> Void) {}
+    func frameOnScreen() -> CGImage? { nil }
 }

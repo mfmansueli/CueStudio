@@ -53,7 +53,7 @@ nonisolated enum SkinMaskRaster {
             context.restoreGState()
             shape.paintFeatures(in: context, gray: 0, transform: toMask, widen: 1.5)
         }
-        return SkinMask(region: region, width: width, height: height, skin: skin, core: core)
+        return SkinMask(region: region, width: width, height: height, skin: skin, core: core, face: soft)
     }
 
     // MARK: - Drawing

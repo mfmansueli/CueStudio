@@ -6,29 +6,35 @@
 import CoreGraphics
 import Foundation
 
-/// The picture (`EditorPart`): Adjust and Auto, Filters, Background, Format with Follow face, Stabilize, Copy and Paste look,
+/// The picture (`EditorPart`): Adjust and Auto, Skin, Filters, Background, Format with Follow face, Stabilize, Copy and Paste look,
 /// for the whole take or the picked clip, and the recordings' motion analysis that Follow face and Stabilize read. What it keeps
 /// is its panels' state; the look itself is in the edit, and every change is an undo step through the session.
 ///
-/// Each part of the work is in its own extension (`+Adjust`, `+Auto`, `+ClipScope`, `+Background`, `+CopyLook`, `+FaceFollow`,
+/// Each part of the work is in its own extension (`+Adjust`, `+Auto`, `+Skin`, `+ClipScope`, `+Background`, `+CopyLook`, `+FaceFollow`,
 /// `+Stabilize`, `+MotionAnalysis`).
 @MainActor
 @Observable
 final class LookViewModel: EditorPart {
     /// Auto measuring the clip (`+Auto`).
     var autoState: AutoAdjustState = .idle
-    /// Adjust › Compare: the preview shows the picture without Auto, Adjust and Filters.
+    /// ◐ in Adjust, Filters or Background: the preview shows the picture without Auto, Adjust, Skin, filter and background.
     var comparesPicture = false {
         didSet {
             guard comparesPicture != oldValue else { return }
+            if comparesPicture { comparesSkin = false }
             session.showPlayedEdit()
         }
     }
-    /// The setting Adjust opens on, once (`QuickEditViewModel.open(_:)`); nil opens where it always does.
-    var adjustOpensOn: Adjustment?
-    /// The look tool the open panel was opened as, while it's open: Skin is Adjust on Skin Smoothing, and what it counts and
-    /// clears is Skin Smoothing only. Nil for a panel opened another way (the panel's own tool).
-    var lookTool: EditorLookTool?
+    /// ◐ in Skin: the preview shows the video without Skin only (the color, the filter, the background and the texts stay).
+    var comparesSkin = false {
+        didSet {
+            guard comparesSkin != oldValue else { return }
+            if comparesSkin { comparesPicture = false }
+            session.showPlayedEdit()
+        }
+    }
+    /// The control Skin opens on, once (a notification's "Try it"); nil opens on the smoothing.
+    var skinOpensOn: SkinControl?
     /// Whether this iPhone can find people in video; nil until checked.
     var canFindPeople: Bool?
     var isImportingBackground = false
@@ -60,6 +66,7 @@ final class LookViewModel: EditorPart {
     /// The edit changed: a comparison is no longer of what is shown, and a recording it plays now is analyzed when it needs to be.
     func editChanged() {
         if comparesPicture { comparesPicture = false }
+        if comparesSkin { comparesSkin = false }
         requestMotionAnalysisIfNeeded()
     }
 
@@ -68,8 +75,8 @@ final class LookViewModel: EditorPart {
     func panelChanged(to next: EditorPanel?) {
         if next != .adjust { cancelAuto() }
         comparesPicture = false
+        comparesSkin = false
         if next == .crop || next == .stabilize { requestMotionAnalysis() }
         if next == nil { lookScopeIsClip = false }
-        if next != lookTool?.panel { lookTool = nil }
     }
 }
