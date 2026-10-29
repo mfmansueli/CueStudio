@@ -76,8 +76,11 @@ All on the shared queue (`scripts/build.sh`, `scripts/test.sh`), simulator iPhon
   neighbours `ScriptStarterTests`, `ScriptStarterBriefTests`, `VoiceBriefBuilderTests`, `ScriptDetailViewModelTests`, `ScriptPageViewModelTests`. Two
   earlier Ultra tests were wrong, not the code: a "say exactly" request without the colon the app requires, and a Find inspiration idea sent without the
   angle its brief needs to stand; both fixed.
-- **UI:** `UltraAIUITests` 7/7 (dock asks first then writes; invitation asks first then picks Ultra; closing it closes it everywhere; none left → the
-  Ultra calm Pro; saying no; Find inspiration; a failed polish). **UISmoke 26/26.**
+- **UI:** `UltraAIUITests` 8/8 (dock asks first then writes; invitation asks first then picks Ultra; closing it closes it everywhere; none left → the
+  Ultra calm Pro; saying no; Find inspiration; a failed polish; Improve › Fit to time on an Ultra script names Ultra AI and puts Ultra's fit on the
+  page). **UISmoke 26/26** (before the three-step default). Evening of 29/10, after the fit: the Ultra and page unit suites (115 + 46 with
+  `ButtonPromisesUITests`) pass, and `scripts/check-warnings.sh` ends with no warnings (simulator, device, Release). Installed on iago Lima iphone and
+  Mansuelli iPhone 18 Pro Max, each with the lab configuration (each phone counts its own 300 calls).
 - **Contrast** (`testCaptureUltraAIScreensForTheContrastAudit`, `…InvitationForTheContrastAudit`, then pixels measured on the rendered PNGs; the
   hierarchy is taken while the invitation still rises, so `audit.py`'s boxes are offset and each new text was measured on its own rectangle): dock
   invitation text 11.9:1, ✦ 5.6:1, "Try it" 6.3:1, × 4.0:1 (control, needs 3:1); Find inspiration card title 13.6:1, body 5.1:1, button 7.9:1; Profile
