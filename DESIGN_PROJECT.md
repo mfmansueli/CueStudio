@@ -817,7 +817,9 @@ vídeo **segue o dedo** (320 pt para o caminho inteiro); ao soltar, passados 45 
 leve, senão volta; uma mola termina o movimento a partir da velocidade do dedo (0,5 s com um leve quique ao entrar, 0,42 s sem quique ao sair) e
 um toque suave marca a chegada. Os botões (barra do player, seta, tocar fora) fazem o mesmo movimento. A tela cheia mostra, até ter a sua, a imagem
 que o card mostrava (`EditPlayback.frameOnScreen`), então o vídeo nunca pisca escuro ao crescer. Com Reduzir Movimento, a tela cheia só aparece e
-some em 0,25 s, sem crescer. O que está sobre o vídeo (textos, legendas, janelas, alças, Crop) segue com os seus arrastes. **A seta** no meio da
+some em 0,25 s, sem crescer. O que está sobre o vídeo (textos, legendas, janelas, alças, Crop) segue com os seus arrastes: o gesto de um texto
+não impede outros, então, assim que um texto ou janela pega o arraste (`OverlaysViewModel.draggedOverlay`), o deslizar deixa o resto dele passar,
+e o vídeo fica no card. **A seta** no meio da
 borda de baixo do card do vídeo: pílula escura (`Palette.Takes.durationBadge`, a dos selos sobre o vídeo) com uma seta em `ink`, ▾ no editor e ▴
 na tela cheia (logo acima do aviso); tocar nela faz o mesmo que o botão (VoiceOver: "Full screen" / "Exit full screen"). Some com um painel aberto e
 gravando narração; o aviso de trabalho e o de Pouca Energia ficam acima dela.
