@@ -6,9 +6,8 @@
 import SwiftUI
 
 /// Adjust (whole take, or the picked clip alone when opened from it): one ruler for the setting picked in a row
-/// of chips (Auto, Exposure, Contrast, Warmth, Tint, Saturation, Vibrance, Highlights, Shadows, Sharpness, Skin
-/// Smoothing: the faces' skin only, drawn before the other settings, see `FrameLook`): the
-/// picked chip is white, one that is off zero shows its value in yellow; for a clip a chip shows the take's value
+/// of chips (Auto, Exposure, Contrast, Warmth, Tint, Saturation, Vibrance, Highlights, Shadows, Sharpness; the faces' skin is
+/// Skin's, `SkinPanel`): the picked chip is white, one that is off zero shows its value in yellow; for a clip a chip shows the take's value
 /// until the clip sets its own, and Reset gives the clip the take's values again. ◐ shows the picture as recorded
 /// for as long as it is held. The Auto chip is the measured correction (a step before the other settings, which
 /// stay as they are on top of it): its ruler is how much of it shows. Auto, ◐ and the picked setting's name, value
@@ -24,8 +23,6 @@ struct AdjustPanel: View {
     }
 
     @State private var current: Pick = .dial(.exposure)
-    /// A setting's name on its chip, growing with the text size.
-    @ScaledMetric(relativeTo: .subheadline) private var chipTitleSize: CGFloat = 14
 
     var body: some View {
         PanelFrame(viewModel: viewModel, panel: .adjust, onReset: reset, compare: viewModel.look.pictureCompare) {
@@ -50,7 +47,7 @@ struct AdjustPanel: View {
         case .dial(let adjustment):
             PanelRulerSlider(
                 label: adjustment.label, value: viewModel.look.adjustment(adjustment), range: range(of: adjustment), bipolar: adjustment.isBipolar,
-                format: format(of: adjustment), identifier: "edit.adjust.ruler", hint: adjustment.hint,
+                format: format(of: adjustment), identifier: "edit.adjust.ruler",
                 onChange: { viewModel.look.setAdjustment(adjustment, $0) }
             )
         }
@@ -72,55 +69,18 @@ struct AdjustPanel: View {
     // MARK: - Pieces
 
     private var dials: some View {
-        ScrollViewReader { proxy in
-            ScrollView(.horizontal) {
-                HStack(spacing: 8) {
-                    autoChip
-                    ForEach(LookViewModel.Adjustment.allCases) { adjustment in
-                        chip(adjustment).id(adjustment)
-                    }
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                autoChip
+                ForEach(LookViewModel.Adjustment.allCases) { adjustment in
+                    chip(adjustment)
                 }
             }
-            .scrollIndicators(.hidden)
-            // The row runs to the panel's edges, so a chip doesn't stop short of them when it scrolls.
-            .padding(.horizontal, -16)
-            .contentMargins(.horizontal, 16, for: .scrollContent)
-            .onAppear { openOnAskedSetting(proxy) }
-            // Skin on a toolbar while Adjust is already open (an iPad's panel sheet leaves the toolbar in reach).
-            .onChange(of: viewModel.look.adjustOpensOn) { openOnAskedSetting(proxy) }
         }
-    }
-
-    /// Opened on one setting (Skin on a toolbar, a notification's "Try it" for Skin Smoothing): its chip is picked and in view;
-    /// nothing changes.
-    private func openOnAskedSetting(_ proxy: ScrollViewProxy) {
-        guard let start = viewModel.look.adjustOpensOn else { return }
-        viewModel.look.adjustOpensOn = nil
-        current = .dial(start)
-        proxy.scrollTo(start, anchor: .trailing)
-    }
-
-    /// A setting as a chip: its name and, once it is off zero, its value in yellow. The picked one is
-    /// white with black text, like every chosen chip.
-    private func chipLabel(_ title: String, valueText: String?, picked isPicked: Bool, isMeasuring: Bool = false) -> some View {
-        HStack(spacing: 6) {
-            Text(title).font(.system(size: chipTitleSize, weight: isPicked ? .semibold : .medium))
-            if isMeasuring {
-                ProgressView().controlSize(.mini).tint(isPicked ? Palette.chipOnInk : Palette.ink)
-            } else if let valueText {
-                Text(valueText)
-                    .font(.system(.caption, weight: .bold).monospacedDigit())
-                    .foregroundStyle(isPicked ? Palette.chipOnInk : Palette.accText)
-            }
-        }
-        .foregroundStyle(isPicked ? Palette.chipOnInk : Palette.ink)
-        .lineLimit(1)
-        .fixedSize()
-        .padding(.horizontal, 13)
-        .frame(height: 34)
-        .background(isPicked ? Palette.chipOn : Palette.fill, in: Capsule())
-        .frame(minHeight: Metrics.hitTarget)
-        .contentShape(Rectangle())
+        .scrollIndicators(.hidden)
+        // The row runs to the panel's edges, so a chip doesn't stop short of them when it scrolls.
+        .padding(.horizontal, -16)
+        .contentMargins(.horizontal, 16, for: .scrollContent)
     }
 
     /// The measured correction: its intensity once there is one.
@@ -131,9 +91,9 @@ struct AdjustPanel: View {
         return Button {
             current = .auto
         } label: {
-            chipLabel(
-                String(localized: "Auto"), valueText: hasAuto && viewModel.look.autoAmount > 0 ? text : nil,
-                picked: isPicked, isMeasuring: viewModel.look.autoState == .analyzing
+            PanelDialChip(
+                title: String(localized: "Auto"), valueText: hasAuto && viewModel.look.autoAmount > 0 ? text : nil,
+                isPicked: isPicked, isMeasuring: viewModel.look.autoState == .analyzing
             )
         }
         .buttonStyle(.plain)
@@ -150,13 +110,12 @@ struct AdjustPanel: View {
         return Button {
             current = .dial(adjustment)
         } label: {
-            chipLabel(adjustment.label, valueText: value != 0 ? format(of: adjustment).text(value) : nil, picked: isPicked)
+            PanelDialChip(title: adjustment.label, valueText: value != 0 ? format(of: adjustment).text(value) : nil, isPicked: isPicked)
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(adjustment.label))
         .accessibilityValue(Text(format(of: adjustment).text(value)))
-        .accessibilityHint(Text(adjustment.hint ?? ""))
         .accessibilityAddTraits(isPicked ? [.isButton, .isSelected] : .isButton)
         .accessibilityIdentifier("edit.adjust.\(adjustment.rawValue)")
     }

@@ -124,4 +124,56 @@ final class EditorScreenshotTests: XCTestCase {
         app.buttons["edit.fullScreenButton"].tap()
         try capture("22-full-screen")
     }
+
+    /// Skin's panel in its states (off with Refine waiting, Natural, a control moved to Custom on its ruler), each picture with the
+    /// accessibility hierarchy beside it for `tools/contrast/audit.py`. Same variables as above.
+    func testCaptureSkinPanel() throws {
+        guard let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] else {
+            throw XCTSkip("Set TEST_RUNNER_CUE_SCREENSHOT_DIR to capture Skin")
+        }
+        let directory = URL(fileURLWithPath: folder, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let size = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_CONTENT_SIZE"]
+        let language = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_LANGUAGE"]
+        let device = UIDevice.current.name.replacingOccurrences(of: " ", with: "-") + (size.map { "-\($0.suffix(16))" } ?? "")
+            + (language.map { "-\($0)" } ?? "")
+        let arguments = (size.map { ["-UIPreferredContentSizeCategoryName", $0] } ?? []) + (language.map { ["-uiTestAppLanguage", $0] } ?? [])
+        let app = EditorApp.open(demo: true, arguments: arguments)
+        sleep(2)
+        func capture(_ name: String) throws {
+            sleep(1)
+            let file = "\(device)-skin-\(name)"
+            try app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(file).png"))
+            try app.debugDescription.write(to: directory.appending(path: "\(file).txt"), atomically: true, encoding: .utf8)
+        }
+        EditorApp.tapTool(app, "skinVideo")
+        XCTAssertTrue(app.buttons["edit.skin.smoothing"].exists(within: 5))
+        app.buttons["edit.skin.texture"].tap()
+        try capture("1-off-refine")
+        app.buttons["edit.skin.preset.natural"].tap()
+        try capture("2-natural")
+        app.buttons["edit.skin.smoothing"].tap()
+        app.descendants(matching: .any)["edit.skin.ruler"].coordinate(withNormalizedOffset: CGVector(dx: 0.9, dy: 0.5)).tap()
+        try capture("3-custom")
+    }
+
+    /// The full screen arrow at the video's foot, in the editor (▾) and in full screen (▴).
+    func testCaptureFullScreenArrow() throws {
+        guard let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] else {
+            throw XCTSkip("Set TEST_RUNNER_CUE_SCREENSHOT_DIR to capture the full screen arrow")
+        }
+        let directory = URL(fileURLWithPath: folder, isDirectory: true)
+        try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        let device = UIDevice.current.name.replacingOccurrences(of: " ", with: "-")
+        let app = EditorApp.open(demo: true)
+        let arrow = app.buttons["edit.preview.fullScreenArrow"]
+        XCTAssertTrue(arrow.exists(within: 5))
+        for (index, name) in ["1-editor", "2-full-screen"].enumerated() {
+            if index > 0 { arrow.tap() }
+            sleep(2)
+            let file = "\(device)-full-screen-arrow-\(name)"
+            try app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(file).png"))
+            try app.debugDescription.write(to: directory.appending(path: "\(file).txt"), atomically: true, encoding: .utf8)
+        }
+    }
 }

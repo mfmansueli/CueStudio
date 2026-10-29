@@ -49,7 +49,7 @@ enum EditFixtures {
         edit.sharpness = 16
         edit.vibrance = 17
         edit.tint = 18
-        edit.skinSmoothing = 19
+        edit.skin = SkinLook(smoothing: SkinSmoothing(amount: 19, texture: 21), faceLight: 22, antiShine: 23)
         edit.autoCorrection = AutoCorrection()
         edit.autoAmount = 0.5
         edit.filter = .warmFilm

@@ -139,6 +139,27 @@ struct QuickEditClipToolsTests {
         #expect(clip(viewModel) == changed)
     }
 
+    /// A clip showing the whole video's look (Studio and a filter, as the owner had it, 29/10/2026) isn't as filmed: Reset clip
+    /// turns them off on it alone, and only then is there nothing to reset.
+    @Test func resetClipTurnsOffTheWholeVideosLookOnTheClip() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.changeEdit { edit in
+            edit.skin = SkinPreset.studio.look
+            edit.filter = .warm
+            edit.exposure = 20
+        }
+        #expect(viewModel.toolbarItems.first { $0.id == "resetClip" }?.style == .normal, "the whole video's look shows on it")
+        viewModel.perform(.resetClip)
+        #expect(scenario.toast.message == "Clip reset")
+        let look = viewModel.edit.lookSettings(for: clip(viewModel))
+        #expect(!look.skin.isOn && look.filter == .original && look.exposure == 0)
+        #expect(viewModel.edit.skin == SkinPreset.studio.look && viewModel.edit.filter == .warm, "the whole video keeps its own")
+        #expect(viewModel.toolbarItems.first { $0.id == "resetClip" }?.style == .dimmed)
+        viewModel.perform(.resetClip)
+        #expect(scenario.toast.message == "This clip is already as filmed")
+    }
+
     @Test func resetClipKeepsAClipMutedWhenItsSoundIsOnATrack() async {
         let viewModel = await makeScenario().viewModel
         viewModel.clips.updateClip { $0.isMuted = true }

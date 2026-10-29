@@ -27,16 +27,16 @@ struct SkinSmootherTests {
     @Test func atZeroItNeverLooksAtThePicture() {
         let detector = FakeFaceDetector(faces: [face])
         let smoother = smoother(detector)
-        #expect(smoother.pass(for: Self.image, value: 0, stream: .main, epoch: 0, time: 0) == nil)
-        #expect(smoother.pass(for: Self.image, value: -3, stream: .main, epoch: 0, time: 1) == nil)
+        #expect(smoother.pass(for: Self.image, skin: .firstEngine(0), stream: .main, epoch: 0, time: 0) == nil)
+        #expect(smoother.pass(for: Self.image, skin: .firstEngine(-3), stream: .main, epoch: 0, time: 1) == nil)
         #expect(detector.calls == 0)
-        #expect(smoother.pass(for: Self.image, value: 1, stream: .main, epoch: 0, time: 2) != nil)
+        #expect(smoother.pass(for: Self.image, skin: .firstEngine(1), stream: .main, epoch: 0, time: 2) != nil)
         #expect(detector.calls == 1)
     }
 
     @Test func aFrameWithNoFaceHasNothingToSmooth() throws {
         let detector = FakeFaceDetector()
-        let pass = try #require(smoother(detector).pass(for: Self.image, value: 100, stream: .main, epoch: 0, time: 0))
+        let pass = try #require(smoother(detector).pass(for: Self.image, skin: .firstEngine(100), stream: .main, epoch: 0, time: 0))
         #expect(pass.faces.isEmpty)
     }
 
@@ -53,7 +53,7 @@ struct SkinSmootherTests {
         tiny.rightBrow = tiny.rightBrow.map(shrink)
         tiny.outerLips = tiny.outerLips.map(shrink)
         tiny.innerLips = tiny.innerLips.map(shrink)
-        let pass = try #require(smoother(FakeFaceDetector(faces: [tiny])).pass(for: Self.image, value: 100, stream: .main, epoch: 0, time: 0))
+        let pass = try #require(smoother(FakeFaceDetector(faces: [tiny])).pass(for: Self.image, skin: .firstEngine(100), stream: .main, epoch: 0, time: 0))
         #expect(pass.faces.isEmpty)
     }
 
@@ -162,7 +162,7 @@ struct SkinSmootherTests {
         let detector = FakeFaceDetector(faces: [
             SkinFaceFixture.landmarks(in: wide), SkinFaceFixture.landmarks(shiftedBy: CGPoint(x: 480, y: 0), in: wide),
         ])
-        let pass = try #require(smoother(detector).pass(for: frame, value: 50, stream: .main, epoch: 0, time: 0))
+        let pass = try #require(smoother(detector).pass(for: frame, skin: .firstEngine(50), stream: .main, epoch: 0, time: 0))
         #expect(pass.faces.count == 2)
         #expect(pass.faces[0].region.minX != pass.faces[1].region.minX)
     }

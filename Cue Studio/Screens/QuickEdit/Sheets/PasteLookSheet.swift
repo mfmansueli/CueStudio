@@ -5,7 +5,7 @@
 
 import SwiftUI
 
-/// "Paste look": which parts of the copied look go (Adjust, Filter, Background, Zoom) and where: the picked clip, or every clip.
+/// "Paste look": which parts of the copied look go (Adjust, Skin, Filter, Background, Zoom) and where: the picked clip, or every clip.
 struct PasteLookSheet: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -36,7 +36,7 @@ struct PasteLookSheet: View {
         .padding(.horizontal, 16)
         .padding(.top, 8)
         .cueSheetChrome()
-        .presentationDetents([.height(420)])
+        .presentationDetents([.height(470)])
         .presentationDragIndicator(.visible)
     }
 }

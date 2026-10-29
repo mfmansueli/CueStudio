@@ -7,7 +7,7 @@ import Foundation
 
 /// The editor opening on one tool (a notification's "Try it"): its panel or sheet, nothing more. Every tool waits for the creator there:
 /// Clean Up listens only because its panel opened at their choice, captions are made from "Generate", a translation needs a language, a
-/// voice-over starts with its button, a photo needs picking, Skin Smoothing starts at zero.
+/// voice-over starts with its button, a photo needs picking, Skin starts at zero.
 extension QuickEditViewModel {
     func open(_ tool: EditorTool) {
         guard isReady else { return }
@@ -24,13 +24,12 @@ extension QuickEditViewModel {
         case .studioVoice:
             panel = .voice
         case .skinSmoothing:
+            // Skin on the whole video, on its smoothing: nothing applied, no preset picked.
             look.lookScopeIsClip = false
-            look.lookTool = .skin
-            look.adjustOpensOn = .skinSmoothing
-            panel = .adjust
+            look.skinOpensOn = .smoothing
+            panel = .skin
         case .background:
             look.lookScopeIsClip = false
-            look.lookTool = .background
             panel = .background
         case .cover:
             cover.openCoverStudio()

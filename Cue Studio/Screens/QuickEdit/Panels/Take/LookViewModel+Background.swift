@@ -65,12 +65,12 @@ extension LookViewModel {
         }
     }
 
-    /// The rule of the panel's scope, when there is one to tell: a clip with its own background (Reset gives it the take's again), or a
-    /// clip showing the take's. The whole video's clips that keep their own say so under the header (`clipsKeepingTheirOwnInPanel`).
+    /// The rule of the panel's scope, when there is one to tell: a clip with its own background, or a clip showing the take's. The
+    /// whole video's clips that keep their own say so under the header (`clipsKeepingTheirOwnInPanel`).
     var backgroundScopeNote: String? {
         if lookClip != nil {
             return clipOverridesBackground
-                ? String(localized: "This clip has its own background. Reset gives it the whole video's again.")
+                ? String(localized: "This clip has its own background.")
                 : String(localized: "Shows the whole video's background. A change here is for this clip only.")
         }
         return nil
@@ -82,9 +82,17 @@ extension LookViewModel {
         return abs(key.tolerance - start.tolerance) > 0.001 || abs(key.softness - start.softness) > 0.001 || abs(key.spill - start.spill) > 0.001
     }
 
-    /// The clip's recording's background again.
+    /// Reset on a clip has something to take off: a background it shows (its own, or its recording's).
+    var canResetClipBackground: Bool {
+        lookClip != nil && currentBackground.isActive
+    }
+
+    /// The clip as recorded behind the creator, whatever its recording has (Original of its own when the recording has a
+    /// background). Picking the recording's background on it again follows it.
     func resetClipBackground() {
-        updateClipLook { $0.background = nil }
+        guard let clip = lookClip else { return }
+        let recordingHasOne = inheritedBackground(of: clip).isActive
+        updateClipLook { $0.background = recordingHasOne ? BackgroundEffect() : nil }
     }
 
     /// Asks once whether this iPhone can find people in video.

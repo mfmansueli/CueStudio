@@ -99,7 +99,7 @@ struct QuickEditClipLookTests {
         #expect(viewModel.edit.warmth == 10)
     }
 
-    @Test func resetGivesTheClipTheTakesValuesAgain() async {
+    @Test func resetTakesTheClipsAdjustOffWhateverTheTakeHas() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         split(scenario)
@@ -112,11 +112,14 @@ struct QuickEditClipLookTests {
         viewModel.look.setAdjustment(.shadows, 15)
         #expect(viewModel.look.hasAdjustments)
         viewModel.look.resetAdjustment(.exposure)
-        #expect(viewModel.look.adjustment(.exposure) == 20)
+        #expect(viewModel.look.adjustment(.exposure) == 0, "zero on the clip, though the take's is 20")
+        #expect(viewModel.edit.timeline.segments[0].look?.exposure == 0)
         #expect(viewModel.edit.timeline.segments[0].look?.shadows == 15)
         viewModel.look.resetAdjustments()
-        #expect(viewModel.edit.timeline.segments[0].look == nil)
+        #expect(viewModel.edit.timeline.segments[0].look?.exposure == 0)
+        #expect(viewModel.edit.timeline.segments[0].look?.shadows == nil, "the take's shadows are zero: nothing of its own")
         #expect(!viewModel.look.hasAdjustments)
+        #expect(viewModel.edit.exposure == 20)
     }
 
     @Test func aWholeTakeSubtitleSaysWhenSomeClipsKeepTheirOwn() async {
@@ -140,7 +143,7 @@ struct QuickEditClipLookTests {
 
     // MARK: - Filters
 
-    @Test func aClipsFilterOverridesTheTakesAndResetInheritsAgain() async {
+    @Test func aClipsFilterOverridesTheTakesAndResetTakesItOff() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         split(scenario)
@@ -158,8 +161,52 @@ struct QuickEditClipLookTests {
         #expect(viewModel.edit.timeline.segments[1].look?.filterAmount == 0.4)
         #expect(viewModel.edit.filterAmount == 1)
         #expect(viewModel.look.clipOverridesFilter)
-        viewModel.look.resetClipFilter()
-        #expect(viewModel.look.currentFilter == .warm)
+        // Off the clip, whatever the whole video has: Original of its own.
+        viewModel.look.resetFilter()
+        #expect(viewModel.look.currentFilter == .original)
+        #expect(viewModel.edit.timeline.segments[1].look?.filter == .original)
+        #expect(viewModel.edit.timeline.segments[1].look?.filterAmount == nil)
+        #expect(viewModel.edit.filter == .warm)
+        #expect(!viewModel.look.hasFilterSettings)
+    }
+
+    /// Natural, then Studio: Filters' Reset is there on the whole video too, and takes its filter off in one step; on a clip it
+    /// takes off the filter the clip shows, its own or the whole video's.
+    @Test func filtersResetTakesTheWholeVideosFilterOffAndAClipsOwn() async {
+        let scenario = await makeScenario()
+        let viewModel = scenario.viewModel
+        viewModel.perform(.open(.filters))
+        #expect(!viewModel.look.hasFilterSettings)
+        viewModel.look.pickFilter(.natural)
+        viewModel.look.pickFilter(.studio)
+        viewModel.look.setFilterAmount(0.4)
+        #expect(viewModel.look.hasFilterSettings)
+        viewModel.look.resetFilter()
+        #expect(viewModel.edit.filter == .original && viewModel.edit.filterAmount == 1)
+        #expect(!viewModel.look.hasFilterSettings)
+        viewModel.undo()
+        #expect(viewModel.edit.filter == .studio && viewModel.edit.filterAmount == 0.4)
+        viewModel.panel = nil
+        split(scenario)
+        pick(viewModel, clip: 1)
+        viewModel.perform(.open(.filters))
+        #expect(viewModel.look.hasFilterSettings, "the whole video's Studio shows on the clip, so Reset is there")
+        viewModel.look.pickFilter(.natural)
+        #expect(viewModel.look.hasFilterSettings)
+        viewModel.look.resetFilter()
+        #expect(viewModel.look.currentFilter == .original && viewModel.edit.filter == .studio)
+        #expect(viewModel.edit.timeline.segments[1].look?.filter == .original)
+        #expect(!viewModel.look.hasFilterSettings)
+        // With no filter on the whole video, Reset on a clip just gives up the clip's own.
+        viewModel.panel = nil
+        viewModel.selection = nil
+        viewModel.perform(.open(.filters))
+        viewModel.look.resetFilter()
+        viewModel.panel = nil
+        pick(viewModel, clip: 1)
+        viewModel.perform(.open(.filters))
+        viewModel.look.pickFilter(.natural)
+        viewModel.look.resetFilter()
         #expect(viewModel.edit.timeline.segments[1].look == nil)
     }
 
@@ -244,9 +291,13 @@ struct QuickEditClipLookTests {
         // Back to what its recording has: the clip inherits again.
         viewModel.look.setBackgroundStyle(.blur)
         #expect(viewModel.edit.timeline.segments[1].look == nil)
+        // Reset: as recorded behind the creator, though its recording has a blur.
         viewModel.look.setBackgroundStyle(.color)
+        #expect(viewModel.look.canResetClipBackground)
         viewModel.look.resetClipBackground()
-        #expect(viewModel.edit.timeline.segments[1].look == nil)
+        #expect(viewModel.edit.timeline.segments[1].look?.background == BackgroundEffect())
+        #expect(viewModel.edit.background(for: viewModel.edit.timeline.segments[1]) == nil)
+        #expect(!viewModel.look.canResetClipBackground)
     }
 
     @Test func aClipCanHaveNoBackgroundEffectWhileItsRecordingHasOne() async {

@@ -49,4 +49,6 @@ protocol EditPlayback: AnyObject {
     /// `hold` gets the picture on screen right before the player swaps to an item with other pieces
     /// or tracks, to show until the new item has a picture of its own. Kept while `owner` lives.
     func addFrameHolder(_ owner: AnyObject, hold: @escaping @MainActor (CGImage) -> Void)
+    /// The picture on screen now, for a new view of the video to show until it has its own (full screen growing out of the card).
+    func frameOnScreen() -> CGImage?
 }

@@ -16,6 +16,8 @@ nonisolated struct SkinMask: Sendable {
     let height: Int
     let skin: [UInt8]
     let core: [UInt8]
+    /// The whole face (the skin's outline with the eyes, brows and lips in), for a light that falls on all of it; the skin's when not drawn.
+    var face: [UInt8]?
 
     /// About how many pixels are surely skin (every fourth one is counted, which is plenty to tell a face from nothing).
     var coreCount: Int {
@@ -27,8 +29,13 @@ nonisolated struct SkinMask: Sendable {
     }
 
     /// The weights as a grey image laid over `region`, to blend with: the values are the weights themselves (no color management).
-    func image() -> CIImage? {
-        guard width > 0, height > 0, let provider = CGDataProvider(data: Data(skin) as CFData) else { return nil }
+    func image() -> CIImage? { image(of: skin) }
+
+    /// The whole face as a grey image laid over `region`.
+    func faceImage() -> CIImage? { image(of: face ?? skin) }
+
+    private func image(of weights: [UInt8]) -> CIImage? {
+        guard width > 0, height > 0, weights.count == width * height, let provider = CGDataProvider(data: Data(weights) as CFData) else { return nil }
         guard let grey = CGImage(
             width: width, height: height, bitsPerComponent: 8, bitsPerPixel: 8, bytesPerRow: width, space: CGColorSpaceCreateDeviceGray(),
             bitmapInfo: CGBitmapInfo(rawValue: CGImageAlphaInfo.none.rawValue), provider: provider, decode: nil, shouldInterpolate: true,

@@ -38,9 +38,9 @@ extension LookViewModel {
     /// The picked clip sets its own Auto (or turns the take's down).
     var clipOverridesAuto: Bool { lookClip?.look?.overridesAuto ?? false }
 
-    /// Auto has something to reset: a correction for the take, one the clip set for a clip.
+    /// Auto has something to reset: a correction for the take; on a clip, one showing (its own or the take's).
     var canResetAuto: Bool {
-        lookClip != nil ? clipOverridesAuto : edit.autoCorrection != nil
+        lookClip != nil ? hasAuto && effectiveLook.autoAmount > 0 : edit.autoCorrection != nil
     }
 
     // MARK: - Measuring
@@ -133,11 +133,15 @@ extension LookViewModel {
         }
     }
 
-    /// Auto back to nothing for the take; for a clip, the take's Auto again.
+    /// Auto back to nothing, for the take or the clip (its Auto off where the take has one).
     func resetAuto() {
         cancelAuto()
         if lookClip != nil {
-            updateClipLook { $0.removeAuto() }
+            let takeHasAuto = LookSettings(edit).auto != nil
+            updateClipLook { look in
+                look.removeAuto()
+                if takeHasAuto { look.autoAmount = 0 }
+            }
         } else {
             changeEdit {
                 $0.autoCorrection = nil

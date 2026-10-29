@@ -68,7 +68,7 @@ nonisolated enum FeatureCatalog {
             requirements: [.recorded, .backgrounds], target: .take(.any, tool: .background), channels: both, note: .nothingChanges
         ),
         FeatureIntro(
-            feature: .skinSmoothing, campaignID: "discover.skinSmoothing.v1", symbol: "slider.horizontal.3",
+            feature: .skinSmoothing, campaignID: "discover.skinSmoothing.v1", symbol: "face.smiling",
             requirements: [.finishedVideo], target: .take(.unfinished, tool: .skinSmoothing), channels: both, note: .nothingChanges
         ),
         FeatureIntro(

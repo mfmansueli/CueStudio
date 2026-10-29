@@ -28,6 +28,11 @@ struct QuickEditView: View {
 
     /// The height the editor has with no keyboard (see `measuresStableHeight`).
     @State private var stableHeight: CGFloat = 0
+    /// How far the video has grown out of its card into full screen (`FullScreenMorph`: 0 the card, 1 full screen), where the card
+    /// is on screen, and how fast a finger let it go (the spring that finishes starts at that speed).
+    @State private var fullScreenShown: CGFloat = 0
+    @State private var cardFrame: CGRect = .zero
+    @State private var releaseSpeed: CGFloat = 0
     /// The height of Done's question: what its content measures, plus the room under the last answer.
     @State private var doneSheetHeight: CGFloat = 520
 
@@ -190,11 +195,9 @@ struct QuickEditView: View {
             let layout = layout(forUsableHeight: proxy.size.height)
             ZStack {
                 editor(layout, width: proxy.size.width)
-                if viewModel.isFullScreen {
-                    fullScreenPreview(in: proxy)
-                        .transition(.opacity)
-                }
+                fullScreenLayer(in: proxy)
             }
+            .onChange(of: viewModel.isFullScreen) { _, isFullScreen in settleFullScreen(isFullScreen, lands: true) }
             .overlay {
                 if viewModel.source == .loading {
                     EditorOpeningOverlay().transition(.opacity)
@@ -252,10 +255,16 @@ struct QuickEditView: View {
 
     private func editor(_ layout: EditorLayout, width: CGFloat) -> some View {
         VStack(spacing: 0) {
-            QuickEditPreview(viewModel: viewModel, size: previewSize(in: CGSize(width: width, height: layout.preview)))
+            QuickEditPreview(
+                viewModel: viewModel, size: previewSize(in: CGSize(width: width, height: layout.preview)),
+                showsFullScreenArrow: fullScreenShown == 0 && !viewModel.isFullScreen && viewModel.swipesFullScreen
+            )
+                .onGeometryChange(for: CGRect.self) { $0.frame(in: .global) } action: { cardFrame = $0 }
                 .frame(width: width, height: layout.preview)
                 .contentShape(Rectangle())
                 .onTapGesture { viewModel.tapOutsideVideo() }
+                // Swiping down on the video, or beside it, grows it into full screen under the finger.
+                .modifier(fullScreenSwipe(isFullScreen: false))
                 .overlay(alignment: .top) {
                     // Voice-over's "Show script": across the preview's whole width (wider than a vertical video), under REC.
                     if viewModel.showsNarrationScriptOverlay {
@@ -274,7 +283,8 @@ struct QuickEditView: View {
                                 .transition(reduceMotion ? .opacity : .opacity.combined(with: .move(edge: .bottom)))
                         }
                     }
-                    .padding(.bottom, 10)
+                    // Above the full screen arrow at the video's foot (`PreviewFullScreenArrow`).
+                    .padding(.bottom, viewModel.swipesFullScreen ? 40 : 10)
                 }
                 .animation(reduceMotion ? .easeOut(duration: 0.15) : .easeOut(duration: 0.25), value: viewModel.showsLowPowerNotice)
                 .task {
@@ -364,29 +374,62 @@ struct QuickEditView: View {
 
     // MARK: - Full screen
 
-    private func fullScreenPreview(in proxy: GeometryProxy) -> some View {
+    /// Full screen, growing out of the video's card and shrinking back into it (`FullScreenLayer`). A swipe up anywhere on it
+    /// brings the editor back.
+    private func fullScreenLayer(in proxy: GeometryProxy) -> some View {
         let screen = CGSize(
             width: proxy.size.width + proxy.safeAreaInsets.leading + proxy.safeAreaInsets.trailing,
             height: proxy.size.height + proxy.safeAreaInsets.top + proxy.safeAreaInsets.bottom
         )
-        return ZStack {
-            Palette.bg
-                .contentShape(Rectangle())
-                .onTapGesture { viewModel.toggleFullScreen() }
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel(Text("Exit full screen"))
-                .accessibilityIdentifier("edit.exitFullScreen")
-            QuickEditPreview(viewModel: viewModel, size: fullScreenSize(in: screen), isFullScreen: true)
-            Text("Tap video to play · tap outside to exit")
-                .font(.system(.footnote, weight: .semibold))
-                .padding(.horizontal, 14)
-                .frame(height: 30)
-                .background(Palette.Takes.durationBadge, in: Capsule())
-                .frame(maxHeight: .infinity, alignment: .bottom)
-                .padding(.bottom, 40)
-                .allowsHitTesting(false)
+        let picture = fullScreenSize(in: screen)
+        let full = CGRect(
+            x: (screen.width - picture.width) / 2, y: (screen.height - picture.height) / 2, width: picture.width, height: picture.height
+        )
+        let morph = FullScreenMorph(
+            card: cardFrame, full: full, screen: screen, cardRadius: Metrics.editorPreviewRadius, moves: !reduceMotion, shown: fullScreenShown
+        )
+        return FullScreenLayer(viewModel: viewModel, morph: morph, pictureSize: picture, swipe: fullScreenSwipe(isFullScreen: true))
+    }
+
+    /// The swipe that grows the video into full screen (down, in the editor) or back into its card (up, in full screen): the video
+    /// follows the finger, and once let go a spring finishes the change, or takes it back, from the finger's speed.
+    private func fullScreenSwipe(isFullScreen: Bool) -> FullScreenSwipeGesture {
+        FullScreenSwipeGesture(
+            isFullScreen: isFullScreen,
+            isEnabled: viewModel.swipesFullScreen && viewModel.isFullScreen == isFullScreen,
+            moved: { follow in
+                var transaction = Transaction()
+                transaction.disablesAnimations = true
+                withTransaction(transaction) { fullScreenShown = isFullScreen ? 1 - follow : follow }
+            },
+            ended: { changes, speed in
+                if changes {
+                    Haptics.light()
+                    releaseSpeed = speed
+                    viewModel.toggleFullScreen()
+                } else {
+                    releaseSpeed = -speed
+                    settleFullScreen(isFullScreen, lands: false)
+                }
+            }
+        )
+    }
+
+    /// The video on to full screen or back into its card, with a spring that starts at the speed a finger let it go with (a touch
+    /// of bounce on the way in), and a soft tap when it `lands` somewhere new. With Reduce Motion, full screen fades.
+    private func settleFullScreen(_ isFullScreen: Bool, lands: Bool) {
+        let target: CGFloat = isFullScreen ? 1 : 0
+        let remaining = abs(target - fullScreenShown)
+        let velocity = remaining > 0.02 ? min(max(releaseSpeed / remaining, 0), 8) : 0
+        releaseSpeed = 0
+        let animation: Animation = reduceMotion
+            ? .easeInOut(duration: 0.25)
+            : .interpolatingSpring(duration: isFullScreen ? 0.5 : 0.42, bounce: isFullScreen ? 0.12 : 0, initialVelocity: velocity)
+        withAnimation(animation, completionCriteria: .logicallyComplete) {
+            fullScreenShown = target
+        } completion: {
+            if lands, !reduceMotion { Haptics.soft() }
         }
-        .ignoresSafeArea()
     }
 
     private func fullScreenSize(in screen: CGSize) -> CGSize {

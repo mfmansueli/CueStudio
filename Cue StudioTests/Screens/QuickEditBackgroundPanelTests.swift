@@ -98,16 +98,21 @@ struct QuickEditBackgroundPanelTests {
         #expect(viewModel.look.backgroundScopeNote == "Shows the whole video's background. A change here is for this clip only.")
         viewModel.look.setBackgroundStyle(.color)
         #expect(viewModel.look.clipOverridesBackground)
-        #expect(viewModel.look.backgroundScopeNote == "This clip has its own background. Reset gives it the whole video's again.")
+        #expect(viewModel.look.backgroundScopeNote == "This clip has its own background.")
         viewModel.panel = nil
         viewModel.selection = nil
         viewModel.perform(.open(.background))
         // The whole video's: the clip that keeps its own says so under the header, with "Use this on all".
         #expect(viewModel.look.backgroundScopeNote == nil)
         #expect(viewModel.look.clipsKeepingTheirOwnInPanel == 1)
-        // Reset gives the clip the take's again, and the note goes with it.
+        // Reset leaves the clip as recorded behind the creator, though the take has a blur: Original of its own.
         openFromClip(viewModel, 1)
         viewModel.look.resetClipBackground()
+        #expect(viewModel.look.currentBackground == BackgroundEffect())
+        #expect(viewModel.look.backgroundScopeNote == "This clip has its own background.")
+        // Picking the take's blur on it again gives it the take's again, and the note says so.
+        viewModel.look.setBackgroundStyle(.blur)
+        #expect(!viewModel.look.clipOverridesBackground)
         #expect(viewModel.look.backgroundScopeNote == "Shows the whole video's background. A change here is for this clip only.")
     }
 

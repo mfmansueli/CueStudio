@@ -42383,125 +42383,6 @@
         }
       }
     },
-    "A finish you can add in Adjust. You choose the intensity, from zero." : {
-      "comment" : "Discovery notification body (Skin Smoothing)",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لمسة يمكنك إضافتها في «ضبط». أنت تختار شدتها، بدءًا من الصفر."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En finish, du kan tilføje i Juster. Du vælger styrken, fra nul."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ein Feinschliff unter „Anpassen“. Du wählst die Stärke, ab null."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un acabado que puedes añadir en Ajustar. Tú eliges la intensidad, desde cero."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une finition à ajouter dans Ajuster. Vous choisissez l’intensité, à partir de zéro."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "एक फ़िनिश जिसे आप एडजस्ट में जोड़ सकते हैं। तीव्रता आप शून्य से चुनते हैं।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sentuhan yang bisa kamu tambahkan di Sesuaikan. Kamu memilih intensitasnya, mulai dari nol."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Una finitura che puoi aggiungere in Regola. Scegli tu l’intensità, da zero."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "「調整」で加えられる仕上げです。強さはゼロからあなたが選べます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "조절에서 더할 수 있는 마무리예요. 강도는 0부터 직접 고르세요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En finish du kan legge til i Juster. Du velger styrken, fra null."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Een afwerking die je toevoegt bij Aanpassen. Jij kiest de sterkte, vanaf nul."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Um acabamento que você pode adicionar em Ajustar. Você escolhe a intensidade, a partir de zero."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En finish du kan lägga till i Justera. Du väljer styrkan, från noll."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "การแต่งภาพที่เพิ่มได้ในเครื่องมือ “ปรับ” คุณเลือกความเข้มเองตั้งแต่ศูนย์"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ayarla’dan ekleyebileceğin bir son dokunuş. Yoğunluğu sıfırdan başlayarak sen seçersin."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Một lớp hoàn thiện bạn có thể thêm trong Điều chỉnh. Bạn chọn cường độ, bắt đầu từ 0."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "可在“调整”中添加的润饰，强度由你从零开始选择。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "可在「調整」中加入的潤飾，強度由你從零開始選擇。"
-          }
-        }
-      }
-    },
     "A first draft. Yours to change." : {
       "comment" : "First voyage tip on the script page right after Cue's first draft",
       "localizations" : {
@@ -45704,125 +45585,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "有個適合你主題的起點在等你。"
-          }
-        }
-      }
-    },
-    "A subtle finish, if you want one. It starts at zero and you choose the intensity." : {
-      "comment" : "Introduction benefit (Skin Smoothing); never about appearance",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "لمسة نهائية خفيفة إن أردتها. تبدأ من الصفر وأنت تختار شدتها."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En diskret finish, hvis du vil have en. Den starter på nul, og du vælger styrken."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ein dezenter Feinschliff, wenn du magst. Er beginnt bei null, und du wählst die Stärke."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Un acabado sutil, si lo quieres. Empieza en cero y tú eliges la intensidad."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Une finition subtile, si vous le souhaitez. Elle commence à zéro et vous choisissez l’intensité."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अगर आप चाहें तो एक हल्का फ़िनिश। यह शून्य से शुरू होता है और तीव्रता आप चुनते हैं।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sentuhan akhir yang halus, jika kamu mau. Mulai dari nol dan kamu memilih intensitasnya."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Una finitura delicata, se la vuoi. Parte da zero e scegli tu l’intensità."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "お好みで、さりげない仕上げを。ゼロから始まり、強さはあなたが選びます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "원한다면 은은한 마무리를. 0에서 시작하며 강도는 직접 고르세요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En diskret finish, hvis du vil. Den starter på null, og du velger styrken."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Een subtiele afwerking, als je wilt. Hij begint op nul en jij kiest de sterkte."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Um acabamento sutil, se você quiser. Começa em zero e você escolhe a intensidade."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "En diskret finish, om du vill. Den börjar på noll och du väljer styrkan."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "การแต่งภาพแบบบางเบา ถ้าคุณต้องการ เริ่มที่ศูนย์ และคุณเลือกความเข้มเอง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "İstersen hafif bir son dokunuş. Sıfırdan başlar, yoğunluğu sen seçersin."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Một lớp hoàn thiện nhẹ nhàng, nếu bạn muốn. Bắt đầu từ 0 và bạn chọn cường độ."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "如果你需要，可以加一点轻柔的润饰。从零开始，强度由你选择。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "如果你需要，可以加一點輕柔的潤飾。從零開始，強度由你選擇。"
           }
         }
       }
@@ -61850,6 +61612,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "簡單回答每個新手都會問的問題。"
+          }
+        }
+      }
+    },
+    "Anti-shine" : {
+      "comment" : "Video editor › Skin: takes the shine off the skin",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إزالة اللمعان"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antiglans"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antiglanz"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antibrillo"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anti-brillance"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "एंटी-शाइन"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anti-kilap"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anti-lucidità"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "テカリ抑え"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "번들거림 제거"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antiglans"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antiglans"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antibrilho"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Antiglans"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลดความมัน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Parlama azaltma"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giảm bóng dầu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "去油光"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "去油光"
           }
         }
       }
@@ -142398,6 +142279,125 @@
         }
       }
     },
+    "Earlier smoothing" : {
+      "comment" : "Video editor › Skin: this smoothing was made with the first, gentler engine",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تنعيم سابق"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidligere udglatning"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Frühere Glättung"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suavizado anterior"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lissage précédent"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पुरानी स्मूदिंग"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Penghalusan lama"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Levigatura precedente"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "以前のなめらか補正"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이전 보정"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidligere utjevning"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eerdere verzachting"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suavização anterior"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidigare utjämning"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การปรับเรียบแบบเดิม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Önceki yumuşatma"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Làm mịn cũ"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "旧版磨皮"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "舊版磨皮"
+          }
+        }
+      }
+    },
     "Ease in" : {
       "comment" : "Motion preset: comes in smoothly",
       "localizations" : {
@@ -159004,6 +159004,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "人臉"
+          }
+        }
+      }
+    },
+    "Face light" : {
+      "comment" : "Video editor › Skin: a soft light on the face",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "إضاءة الوجه"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ansigtslys"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gesichtslicht"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luz del rostro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lumière du visage"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेहरे की रोशनी"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cahaya wajah"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luce sul viso"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顔のライト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "얼굴 조명"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ansiktslys"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gezichtslicht"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Luz do rosto"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ansiktsljus"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แสงบนใบหน้า"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüz ışığı"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ánh sáng khuôn mặt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "面部补光"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "臉部補光"
           }
         }
       }
@@ -194069,6 +194188,125 @@
         }
       }
     },
+    "How much of the skin's fine texture stays under the smoothing." : {
+      "comment" : "VoiceOver hint of Video editor › Skin › Refine › Texture",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مقدار ما يبقى من ملمس البشرة الدقيق تحت التنعيم."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvor meget af hudens fine tekstur der bliver under udglatningen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wie viel von der feinen Textur der Haut unter der Glättung bleibt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuánta textura fina de la piel se mantiene bajo el suavizado."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La part de la texture fine de la peau qui reste sous le lissage."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्मूदिंग के नीचे स्किन का बारीक टेक्सचर कितना बना रहे।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seberapa banyak tekstur halus kulit yang tetap ada di bawah penghalusan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quanta texture fine della pelle resta sotto la levigatura."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "なめらか補正の下に、肌の細かな質感をどれだけ残すか。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보정 아래에 피부의 미세한 질감을 얼마나 남길지 정합니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvor mye av hudens fine tekstur som blir igjen under utjevningen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hoeveel van de fijne textuur van de huid onder de verzachting blijft."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quanto da textura fina da pele fica sob a suavização."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hur mycket av hudens fina textur som finns kvar under utjämningen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "กำหนดว่าพื้นผิวละเอียดของผิวจะยังคงอยู่ใต้การปรับเรียบมากแค่ไหน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yumuşatmanın altında cildin ince dokusunun ne kadarının kalacağı."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giữ lại bao nhiêu kết cấu mịn của da bên dưới lớp làm mịn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磨皮之下保留多少皮肤的细腻质感。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磨皮之下保留多少皮膚的細膩質感。"
+          }
+        }
+      }
+    },
     "How should Cue build it?" : {
       "localizations" : {
         "ar" : {
@@ -220268,6 +220506,125 @@
         }
       }
     },
+    "Lights the face softly, not the rest of the picture." : {
+      "comment" : "VoiceOver hint of Video editor › Skin › Face light",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يضيء الوجه بلطف، دون بقية الصورة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyser ansigtet blødt op, ikke resten af billedet."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hellt das Gesicht sanft auf, nicht den Rest des Bildes."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilumina el rostro con suavidad, no el resto de la imagen."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Éclaire doucement le visage, pas le reste de l’image."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेहरे को हल्की रोशनी देता है, बाकी तस्वीर को नहीं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menerangi wajah dengan lembut, bukan bagian gambar lainnya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Illumina il viso con delicatezza, non il resto dell’immagine."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顔だけをやわらかく明るくします。ほかの部分はそのままです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "얼굴만 부드럽게 밝힙니다. 나머지 화면은 그대로입니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyser opp ansiktet mykt, ikke resten av bildet."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Belicht het gezicht zacht, niet de rest van het beeld."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilumina o rosto com suavidade, não o resto da imagem."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lyser upp ansiktet mjukt, inte resten av bilden."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพิ่มแสงบนใบหน้าอย่างนุ่มนวล ไม่กระทบส่วนอื่นของภาพ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüzü yumuşakça aydınlatır, görüntünün geri kalanını değil."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chiếu sáng khuôn mặt nhẹ nhàng, không ảnh hưởng phần còn lại của hình."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "柔和地照亮面部，画面其余部分不变。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "柔和地照亮臉部，畫面其餘部分不變。"
+          }
+        }
+      }
+    },
     "Lights your first star" : {
       "comment" : "First voyage, step 6 detail",
       "localizations" : {
@@ -241757,6 +242114,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "已移到「%@」"
+          }
+        }
+      }
+    },
+    "Moves this smoothing to the new engine, which goes further and lets you refine its texture." : {
+      "comment" : "VoiceOver hint of Update in Video editor › Skin",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ينقل هذا التنعيم إلى المحرك الجديد، الذي يذهب أبعد ويتيح لك تحسين الملمس."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytter denne udglatning til den nye motor, som går længere og lader dig finjustere teksturen."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Überträgt diese Glättung auf die neue Engine, die weiter geht und dich die Textur verfeinern lässt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pasa este suavizado al nuevo motor, que llega más lejos y te deja refinar la textura."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passe ce lissage au nouveau moteur, qui va plus loin et vous laisse affiner la texture."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "इस स्मूदिंग को नए इंजन पर ले जाता है, जो ज़्यादा असर देता है और आपको टेक्सचर रिफ़ाइन करने देता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Memindahkan penghalusan ini ke mesin baru, yang lebih kuat dan memungkinkan kamu menyempurnakan teksturnya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Porta questa levigatura sul nuovo motore, che va più a fondo e ti lascia rifinire la texture."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このなめらか補正を新しいエンジンに移します。より強くかけられ、質感も微調整できます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이 보정을 새 엔진으로 옮깁니다. 더 강하게 적용되고 질감도 세부 조정할 수 있습니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flytter denne utjevningen til den nye motoren, som går lenger og lar deg finjustere teksturen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zet deze verzachting over naar de nieuwe engine, die verder gaat en je de textuur laat verfijnen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leva esta suavização para o novo motor, que vai mais longe e deixa você refinar a textura."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Flyttar den här utjämningen till den nya motorn, som går längre och låter dig finjustera texturen."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ย้ายการปรับเรียบนี้ไปยังเอนจินใหม่ ซึ่งทำได้มากกว่าและให้คุณปรับพื้นผิวได้ละเอียด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bu yumuşatmayı daha ileri giden ve dokuya ince ayar yapmanı sağlayan yeni motora taşır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chuyển lớp làm mịn này sang công cụ mới, mạnh hơn và cho bạn tinh chỉnh kết cấu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "将此磨皮移到新引擎，效果更强，还能细调质感。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "將此磨皮移到新引擎，效果更強，還能細調質感。"
           }
         }
       }
@@ -318762,6 +319238,125 @@
         }
       }
     },
+    "Refine" : {
+      "comment" : "Video editor › Skin: the chip with the smoothing's finer settings (Texture)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحسين"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finjuster"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verfeinern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refinar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiner"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "रिफ़ाइन"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sempurnakan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rifinisci"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "微調整"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세부 조정"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finjuster"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verfijnen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refinar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finjustera"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ปรับละเอียด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İnce ayar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tinh chỉnh"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "细调"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "細調"
+          }
+        }
+      }
+    },
     "Refine your writing style from texts you wrote. It stays on this iPhone." : {
       "comment" : "Discovery notification body (Import my writing)",
       "localizations" : {
@@ -360882,6 +361477,125 @@
         }
       }
     },
+    "Shows the video without Skin" : {
+      "comment" : "VoiceOver hint of ◐ in Video editor › Skin, held to compare",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يعرض الفيديو دون «البشرة»"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser videoen uden Hud"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zeigt das Video ohne Haut"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Muestra el video sin Piel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Affiche la vidéo sans Peau"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वीडियो को स्किन के बिना दिखाता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menampilkan video tanpa Kulit"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra il video senza Pelle"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「肌」なしの動画を表示します"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'피부' 없이 동영상을 보여줍니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Viser videoen uten Hud"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toont de video zonder Huid"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mostra o vídeo sem Pele"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visar videon utan Hud"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แสดงวิดีโอโดยไม่มี \"ผิว\""
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Videoyu Cilt olmadan gösterir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hiển thị video không có Da"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "显示不含“肌肤”的视频"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顯示不含「肌膚」的影片"
+          }
+        }
+      }
+    },
     "Shows the whole video's background. A change here is for this clip only." : {
       "comment" : "Background panel note, opened from a clip that uses the whole video's background",
       "localizations" : {
@@ -363964,7 +364678,7 @@
       }
     },
     "Skin" : {
-      "comment" : "Quick edit toolbar: the tool that opens Adjust on Skin Smoothing (the clip's, or the whole video's on the main bar). One short word under an icon.",
+      "comment" : "Video editor toolbar: opens Skin (smooths the skin, lights the face, takes off shine)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
@@ -364071,119 +364785,126 @@
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "磨皮"
+            "value" : "肌肤"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "磨皮"
+            "value" : "肌膚"
           }
         }
       }
     },
-    "Skin Smoothing" : {
+    "skin.smooth" : {
+      "comment" : "Video editor › Skin: how much the skin of faces is smoothed (not the easing's Smooth)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "تنعيم البشرة"
+            "value" : "تنعيم"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hudglatning"
+            "value" : "Udglatning"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hautglättung"
+            "value" : "Glätten"
+          }
+        },
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Smooth"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suavizado de piel"
+            "value" : "Suavizar"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lissage de la peau"
+            "value" : "Lissage"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "स्किन स्मूदिंग"
+            "value" : "स्मूदिंग"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Haluskan Kulit"
+            "value" : "Haluskan"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Levigatura pelle"
+            "value" : "Levigatura"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "肌をなめらかに"
+            "value" : "なめらかさ"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "피부 보정"
+            "value" : "매끄럽게"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hudutjevning"
+            "value" : "Utjevning"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Huidverzachting"
+            "value" : "Verzachten"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Suavização de pele"
+            "value" : "Suavização"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hudutjämning"
+            "value" : "Utjämning"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ปรับผิวเรียบเนียน"
+            "value" : "เรียบเนียน"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cilt Yumuşatma"
+            "value" : "Yumuşatma"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Làm mịn da"
+            "value" : "Làm mịn"
           }
         },
         "zh-Hans" : {
@@ -367052,6 +367773,482 @@
         }
       }
     },
+    "Smoother skin, a soft light on the face or less shine, if you want them. Each starts at zero and you choose how much." : {
+      "comment" : "Discovery introduction's benefit (Skin); never about anyone's looks",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بشرة أنعم أو إضاءة ناعمة على الوجه أو لمعان أقل، إن أردت. كلٌّ منها يبدأ من الصفر وأنت تختار المقدار."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glattere hud, et blødt lys på ansigtet eller mindre glans, hvis du vil. Alt starter på nul, og du vælger hvor meget."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glattere Haut, ein sanftes Licht im Gesicht oder weniger Glanz, wenn du willst. Alles startet bei null, du wählst, wie viel."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Piel más suave, una luz suave en el rostro o menos brillo, si quieres. Todo empieza en cero y tú eliges cuánto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une peau plus lisse, une lumière douce sur le visage ou moins de brillance, si vous le souhaitez. Tout commence à zéro et vous choisissez le dosage."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ज़्यादा स्मूद स्किन, चेहरे पर हल्की रोशनी या कम चमक, अगर आप चाहें। हर एक शून्य से शुरू होता है और कितना, यह आप चुनते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kulit lebih halus, cahaya lembut di wajah, atau kilap berkurang, kalau kamu mau. Semuanya mulai dari nol dan kamu yang pilih seberapa banyak."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pelle più levigata, una luce morbida sul viso o meno lucidità, se vuoi. Tutto parte da zero e scegli tu quanto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "なめらかな肌、顔へのやわらかなライト、テカリ抑え。使うかどうかは自由です。どれもゼロから始まり、強さを選べます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "더 매끄러운 피부, 얼굴에 부드러운 조명, 줄어든 번들거림을 원할 때 쓰세요. 모두 0에서 시작하고 강도는 직접 고릅니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glattere hud, et mykt lys i ansiktet eller mindre glans, om du vil. Alt starter på null, og du velger hvor mye."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gladdere huid, zacht licht op het gezicht of minder glans, als je wilt. Alles begint bij nul en jij kiest hoeveel."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pele mais lisa, uma luz suave no rosto ou menos brilho, se você quiser. Cada um começa do zero e você escolhe quanto."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jämnare hy, ett mjukt ljus i ansiktet eller mindre glans, om du vill. Allt börjar på noll och du väljer hur mycket."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ผิวเรียบเนียนขึ้น แสงนุ่มบนใบหน้า หรือความมันน้อยลง ถ้าคุณต้องการ ทุกอย่างเริ่มที่ศูนย์และคุณเลือกได้ว่าจะมากแค่ไหน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Daha pürüzsüz cilt, yüzde yumuşak bir ışık ya da daha az parlama, istersen. Hepsi sıfırdan başlar, ne kadar olacağını sen seçersin."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Da mịn hơn, ánh sáng dịu trên khuôn mặt hoặc ít bóng dầu hơn, nếu bạn muốn. Tất cả bắt đầu từ 0 và bạn chọn mức độ."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更平滑的皮肤、柔和的面部补光或更少的油光，按你的需要。每一项都从零开始，强度由你决定。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更平滑的皮膚、柔和的臉部補光或更少的油光，依你的需要。每一項都從零開始，強度由你決定。"
+          }
+        }
+      }
+    },
+    "Smooth the skin, light the face or take off shine, in Skin. Each starts at zero." : {
+      "comment" : "Discovery notification body (Skin); never about anyone's looks",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نعّم البشرة أو أضئ الوجه أو أزل اللمعان، في «البشرة». كلٌّ منها يبدأ من الصفر."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glat huden, lys ansigtet op eller fjern glans i Hud. Alt starter på nul."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glätte die Haut, hell das Gesicht auf oder nimm Glanz weg, in Haut. Alles startet bei null."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suaviza la piel, ilumina el rostro o quita brillo, en Piel. Todo empieza en cero."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lissez la peau, éclairez le visage ou retirez la brillance, dans Peau. Tout commence à zéro."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्किन में: स्मूदिंग, चेहरे की रोशनी या चमक कम करना। हर एक शून्य से शुरू होता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haluskan kulit, terangi wajah, atau hilangkan kilap di Kulit. Semuanya mulai dari nol."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leviga la pelle, illumina il viso o togli la lucidità, in Pelle. Tutto parte da zero."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「肌」で、肌をなめらかに、顔を明るく、テカリを抑えられます。どれもゼロから始まります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'피부'에서 피부를 매끄럽게, 얼굴을 밝게, 번들거림을 줄일 수 있습니다. 모두 0에서 시작합니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jevn ut huden, lys opp ansiktet eller fjern glans i Hud. Alt starter på null."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verzacht de huid, belicht het gezicht of haal glans weg, in Huid. Alles begint bij nul."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suavize a pele, ilumine o rosto ou tire o brilho, em Pele. Tudo começa do zero."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jämna ut huden, lys upp ansiktet eller ta bort glans i Hud. Allt börjar på noll."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ใน \"ผิว\" ทำผิวให้เรียบเนียน เพิ่มแสงบนใบหน้า หรือลดความมัน ทุกอย่างเริ่มที่ศูนย์"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cilt'te cildi yumuşat, yüzü aydınlat ya da parlamayı al. Hepsi sıfırdan başlar."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trong Da, làm mịn da, chiếu sáng khuôn mặt hoặc giảm bóng dầu. Tất cả bắt đầu từ 0."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“肌肤”中磨皮、提亮面部或去除油光。每一项都从零开始。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在「肌膚」中磨皮、提亮臉部或去除油光。每一項都從零開始。"
+          }
+        }
+      }
+    },
+    "Smooths the skin of faces, from subtle to clearly retouched. Eyes, brows, lips, hair and beard stay sharp." : {
+      "comment" : "VoiceOver hint of Video editor › Skin › Smooth",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ينعّم بشرة الوجوه، من لمسة خفيفة إلى تنقيح واضح. تبقى العيون والحواجب والشفاه والشعر واللحية حادة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glatter huden i ansigter, fra diskret til tydeligt retoucheret. Øjne, bryn, læber, hår og skæg forbliver skarpe."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glättet die Haut von Gesichtern, von dezent bis deutlich retuschiert. Augen, Brauen, Lippen, Haare und Bart bleiben scharf."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suaviza la piel de los rostros, de sutil a claramente retocada. Ojos, cejas, labios, cabello y barba siguen nítidos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lisse la peau des visages, de subtil à nettement retouché. Les yeux, les sourcils, les lèvres, les cheveux et la barbe restent nets."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चेहरों की स्किन को स्मूद करता है, हल्के से लेकर साफ़ रीटच तक। आँखें, भौंहें, होंठ, बाल और दाढ़ी शार्प रहते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menghaluskan kulit wajah, dari tipis hingga jelas diretus. Mata, alis, bibir, rambut, dan janggut tetap tajam."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Leviga la pelle dei visi, da delicata a chiaramente ritoccata. Occhi, sopracciglia, labbra, capelli e barba restano nitidi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "顔の肌をなめらかにします。さりげない補正からはっきりしたレタッチまで。目、眉、唇、髪、ひげはシャープなままです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "얼굴 피부를 매끄럽게 합니다. 은은한 보정부터 확실한 리터치까지. 눈, 눈썹, 입술, 머리카락, 수염은 선명하게 유지됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jevner ut huden i ansikter, fra diskret til tydelig retusjert. Øyne, bryn, lepper, hår og skjegg forblir skarpe."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verzacht de huid van gezichten, van subtiel tot duidelijk geretoucheerd. Ogen, wenkbrauwen, lippen, haar en baard blijven scherp."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suaviza a pele dos rostos, do sutil ao claramente retocado. Olhos, sobrancelhas, lábios, cabelo e barba continuam nítidos."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jämnar ut huden i ansikten, från diskret till tydligt retuscherad. Ögon, bryn, läppar, hår och skägg förblir skarpa."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ทำให้ผิวบนใบหน้าเรียบเนียน ตั้งแต่บางเบาจนถึงรีทัชชัดเจน ดวงตา คิ้ว ริมฝีปาก ผม และหนวดเครายังคมชัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yüzlerdeki cildi yumuşatır, hafiften belirgin rötuşa kadar. Gözler, kaşlar, dudaklar, saç ve sakal net kalır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Làm mịn da trên khuôn mặt, từ nhẹ nhàng đến chỉnh sửa rõ rệt. Mắt, lông mày, môi, tóc và râu vẫn sắc nét."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "让人脸的皮肤更平滑，从轻微到明显修饰。眼睛、眉毛、嘴唇、头发和胡须保持清晰。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "讓人臉的皮膚更平滑，從輕微到明顯修飾。眼睛、眉毛、嘴唇、頭髮和鬍鬚保持清晰。"
+          }
+        }
+      }
+    },
+    "Smoothing updated" : {
+      "comment" : "Toast after moving an older smoothing to the new engine",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تم تحديث التنعيم"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udglatning opdateret"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Glättung aktualisiert"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suavizado actualizado"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lissage mis à jour"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्मूदिंग अपडेट हुई"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Penghalusan diperbarui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Levigatura aggiornata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "なめらか補正を更新しました"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보정을 업데이트했습니다"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utjevning oppdatert"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verzachting bijgewerkt"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suavização atualizada"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utjämning uppdaterad"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อัปเดตการปรับเรียบแล้ว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yumuşatma güncellendi"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đã cập nhật làm mịn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磨皮已更新"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "磨皮已更新"
+          }
+        }
+      }
+    },
     "Snap to beats" : {
       "comment" : "Beats toggle",
       "localizations" : {
@@ -368470,124 +369667,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "柔和的紫光"
-          }
-        }
-      }
-    },
-    "Softens the skin of faces. Eyes, lips, hair and beard stay sharp." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "يُنعّم بشرة الوجوه. تبقى العيون والشفاه والشعر واللحية واضحة."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Blødgør huden i ansigter. Øjne, læber, hår og skæg forbliver skarpe."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Glättet die Haut in Gesichtern. Augen, Lippen, Haare und Bart bleiben scharf."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suaviza la piel de los rostros. Los ojos, los labios, el pelo y la barba siguen nítidos."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Adoucit la peau des visages. Les yeux, les lèvres, les cheveux et la barbe restent nets."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "चेहरों की त्वचा को मुलायम बनाता है। आँखें, होंठ, बाल और दाढ़ी साफ़ रहते हैं।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Menghaluskan kulit wajah. Mata, bibir, rambut, dan jenggot tetap tajam."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Leviga la pelle dei volti. Occhi, labbra, capelli e barba restano nitidi."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "顔の肌をなめらかにします。目、唇、髪、ひげはくっきりしたままです。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "얼굴 피부를 부드럽게 해요. 눈, 입술, 머리카락, 수염은 선명하게 유지돼요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gjør huden i ansikter jevnere. Øyne, lepper, hår og skjegg forblir skarpe."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maakt de huid van gezichten zachter. Ogen, lippen, haar en baard blijven scherp."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Suaviza a pele dos rostos. Olhos, lábios, cabelo e barba continuam nítidos."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mjukar upp huden i ansikten. Ögon, läppar, hår och skägg förblir skarpa."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ทำให้ผิวบนใบหน้าเรียบเนียนขึ้น ดวงตา ริมฝีปาก ผม และหนวดเครายังคงคมชัด"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yüzlerdeki cildi yumuşatır. Gözler, dudaklar, saç ve sakal net kalır."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Làm mịn da trên khuôn mặt. Mắt, môi, tóc và râu vẫn sắc nét."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "柔化人脸上的皮肤。眼睛、嘴唇、头发和胡须保持清晰。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "柔化人臉上的皮膚。眼睛、嘴唇、頭髮和鬍鬚保持清晰。"
           }
         }
       }
@@ -391423,6 +392502,125 @@
         }
       }
     },
+    "Takes the shine off the skin, keeping its color." : {
+      "comment" : "VoiceOver hint of Video editor › Skin › Anti-shine",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يزيل اللمعان عن البشرة مع الحفاظ على لونها."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fjerner glansen fra huden og bevarer dens farve."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nimmt der Haut den Glanz und behält ihre Farbe."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quita el brillo de la piel y conserva su color."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Retire la brillance de la peau en gardant sa couleur."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्किन की चमक हटाता है, उसका रंग बनाए रखते हुए।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Menghilangkan kilap di kulit tanpa mengubah warnanya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toglie la lucidità dalla pelle mantenendone il colore."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "肌のテカリを抑え、肌の色はそのまま保ちます。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "피부 번들거림을 없애고 피부색은 그대로 유지합니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fjerner glansen fra huden og beholder fargen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haalt de glans van de huid en houdt de kleur."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tira o brilho da pele, mantendo a cor dela."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tar bort glansen från huden och behåller dess färg."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลดความมันวาวบนผิว โดยคงสีผิวไว้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cildin parlamasını alır, rengini korur."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Giảm bóng dầu trên da, giữ nguyên màu da."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "去除皮肤油光，保留肤色。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "去除皮膚油光，保留膚色。"
+          }
+        }
+      }
+    },
     "Taking a day off isn’t lazy. It’s part of getting stronger." : {
       "comment" : "Find inspiration: a starter idea's opening line, a first sentence the creator could say to camera",
       "localizations" : {
@@ -401389,6 +402587,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "動畫"
+          }
+        }
+      }
+    },
+    "Texture" : {
+      "comment" : "Video editor › Skin › Refine: how much of the skin's fine texture stays",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الملمس"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tekstur"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Textur"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Textura"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texture"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "टेक्सचर"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tekstur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Texture"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "質感"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "질감"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tekstur"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Textuur"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Textura"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Textur"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "พื้นผิว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Doku"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kết cấu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "质感"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "質感"
           }
         }
       }
@@ -412665,121 +413982,121 @@
         }
       }
     },
-    "This clip has its own background. Reset gives it the whole video's again." : {
+    "This clip has its own background." : {
       "comment" : "Background panel note, on a clip with a background of its own",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "لهذا المقطع خلفيته الخاصة. إعادة الضبط تعيد له خلفية الفيديو كله."
+            "value" : "لهذا المقطع خلفيته الخاصة."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dette klip har sin egen baggrund. Nulstil giver det hele videoens igen."
+            "value" : "Dette klip har sin egen baggrund."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dieser Clip hat einen eigenen Hintergrund. Zurücksetzen gibt ihm wieder den des ganzen Videos."
+            "value" : "Dieser Clip hat einen eigenen Hintergrund."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este clip tiene su propio fondo. Restablecer le devuelve el de todo el video."
+            "value" : "Este clip tiene su propio fondo."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ce clip a son propre arrière-plan. Réinitialiser lui redonne celui de toute la vidéo."
+            "value" : "Ce clip a son propre arrière-plan."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "इस क्लिप का अपना बैकग्राउंड है। रीसेट करने पर इसे फिर पूरे वीडियो वाला मिलेगा।"
+            "value" : "इस क्लिप का अपना बैकग्राउंड है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Klip ini punya latar sendiri. Atur Ulang mengembalikan latar seluruh video."
+            "value" : "Klip ini punya latar sendiri."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Questa clip ha uno sfondo suo. Ripristina le ridà quello di tutto il video."
+            "value" : "Questa clip ha uno sfondo suo."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このクリップには独自の背景があります。リセットすると動画全体の背景に戻ります。"
+            "value" : "このクリップには独自の背景があります。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "이 클립에는 자체 배경이 있어요. 재설정하면 영상 전체의 배경으로 돌아가요."
+            "value" : "이 클립에는 자체 배경이 있어요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dette klippet har sin egen bakgrunn. Tilbakestill gir det hele videoens igjen."
+            "value" : "Dette klippet har sin egen bakgrunn."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deze clip heeft een eigen achtergrond. Herstel geeft hem weer die van de hele video."
+            "value" : "Deze clip heeft een eigen achtergrond."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Este clipe tem fundo próprio. Redefinir devolve o do vídeo todo."
+            "value" : "Este clipe tem fundo próprio."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Det här klippet har en egen bakgrund. Återställ ger det hela videons igen."
+            "value" : "Det här klippet har en egen bakgrund."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "คลิปนี้มีพื้นหลังของตัวเอง รีเซ็ตเพื่อกลับไปใช้พื้นหลังของทั้งวิดีโอ"
+            "value" : "คลิปนี้มีพื้นหลังของตัวเอง"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bu klibin kendi arka planı var. Sıfırla, ona yeniden videonun tamamının arka planını verir."
+            "value" : "Bu klibin kendi arka planı var."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Clip này có nền riêng. Đặt lại để dùng lại nền của toàn bộ video."
+            "value" : "Clip này có nền riêng."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "这个片段有自己的背景。重置后会恢复整个视频的背景。"
+            "value" : "这个片段有自己的背景。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "此片段有自己的背景。重設後會恢復整部影片的背景。"
+            "value" : "此片段有自己的背景。"
           }
         }
       }
@@ -430563,6 +431880,125 @@
         }
       }
     },
+    "Turn up Smooth to refine its texture" : {
+      "comment" : "Video editor › Skin › Refine, while Smooth is at zero (Smooth as in skin.smooth)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ارفع التنعيم لتحسين الملمس"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skru op for Udglatning for at finjustere teksturen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dreh Glätten auf, um die Textur zu verfeinern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sube Suavizar para refinar la textura"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Augmentez le Lissage pour affiner la texture"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "टेक्सचर रिफ़ाइन करने के लिए स्मूदिंग बढ़ाएँ"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naikkan Haluskan untuk menyempurnakan tekstur"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alza la Levigatura per rifinire la texture"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "質感を微調整するには「なめらかさ」を上げてください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "질감을 세부 조정하려면 '매끄럽게'를 올리세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skru opp Utjevning for å finjustere teksturen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zet Verzachten hoger om de textuur te verfijnen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumente a Suavização para refinar a textura"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Höj Utjämning för att finjustera texturen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เพิ่ม \"เรียบเนียน\" เพื่อปรับพื้นผิวอย่างละเอียด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokuya ince ayar yapmak için Yumuşatma'yı artır"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tăng Làm mịn để tinh chỉnh kết cấu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "调高“磨皮”即可细调质感"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "調高「磨皮」即可細調質感"
+          }
+        }
+      }
+    },
     "Turn your script into a video" : {
       "comment" : "Notification title",
       "localizations" : {
@@ -436363,6 +437799,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "最多 40 個字元"
+          }
+        }
+      }
+    },
+    "Update the smoothing to refine its texture" : {
+      "comment" : "Video editor › Skin › Refine, while the smoothing is on the first engine",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حدّث التنعيم لتحسين ملمسه"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opdater udglatningen for at finjustere teksturen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisiere die Glättung, um ihre Textur zu verfeinern"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualiza el suavizado para refinar su textura"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettez à jour le lissage pour affiner sa texture"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "टेक्सचर रिफ़ाइन करने के लिए स्मूदिंग अपडेट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perbarui penghalusan untuk menyempurnakan teksturnya"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiorna la levigatura per rifinirne la texture"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "質感を微調整するには、なめらか補正を更新してください"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "질감을 세부 조정하려면 보정을 업데이트하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oppdater utjevningen for å finjustere teksturen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Werk de verzachting bij om de textuur te verfijnen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualize a suavização para refinar a textura"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppdatera utjämningen för att finjustera texturen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อัปเดตการปรับเรียบเพื่อปรับพื้นผิวอย่างละเอียด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dokuya ince ayar yapmak için yumuşatmayı güncelle"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cập nhật làm mịn để tinh chỉnh kết cấu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新磨皮即可细调质感"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新磨皮即可細調質感"
+          }
+        }
+      }
+    },
+    "Update" : {
+      "comment" : "Video editor › Skin: moves an older smoothing to the new engine",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تحديث"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Opdater"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aktualisieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Actualizar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mettre à jour"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अपडेट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Perbarui"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aggiorna"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "업데이트"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oppdater"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bijwerken"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Atualizar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uppdatera"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "อัปเดต"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Güncelle"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cập nhật"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "更新"
           }
         }
       }
@@ -460422,6 +462096,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "不必手動逐段尋找。保留什麼由你決定。"
+          }
+        }
+      }
+    },
+    "Without Skin" : {
+      "comment" : "Video editor preview badge while ◐ in Skin shows the video without Skin",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بدون «البشرة»"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uden Hud"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ohne Haut"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sin Piel"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sans Peau"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्किन के बिना"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanpa Kulit"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senza Pelle"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「肌」なし"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "'피부' 없음"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uten Hud"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zonder Huid"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sem Pele"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utan Hud"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่มี \"ผิว\""
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cilt olmadan"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không có Da"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无“肌肤”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無「肌膚」"
           }
         }
       }

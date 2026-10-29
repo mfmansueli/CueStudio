@@ -6,8 +6,10 @@
 import Foundation
 
 /// Reset clip (clip toolbar): the picked clip back as filmed in one undo step (`EditSegment.asRecorded`), playing forward if it
-/// was reversed. Where it starts and ends, its place in the montage, the transition into it and everything laid over it stay. A
-/// clip whose sound was taken out to a track (Extract audio) stays muted, or its sound would play twice.
+/// was reversed, and showing none of the whole video's Adjust, Skin, filter or background either (`ClipLook.asFilmed`: the owner
+/// reset a clip with the whole video's Studio and it stayed). Where it starts and ends, its place in the montage, the transition
+/// into it and everything laid over it stay. A clip whose sound was taken out to a track (Extract audio) stays muted, or its
+/// sound would play twice.
 extension ClipsViewModel {
     /// Whether Reset clip has anything to put back on the picked clip.
     var canResetClip: Bool {
@@ -33,7 +35,8 @@ extension ClipsViewModel {
     }
 
     private func asRecorded(_ clip: EditSegment, at index: Int) -> EditSegment {
-        clip.asRecorded(keepsMute: soundIsOnATrack(ofClipAt: index))
+        let look = ClipLook.asFilmed(over: LookSettings(edit), background: edit.background(for: clip.sourceID))
+        return clip.asRecorded(keepsMute: soundIsOnATrack(ofClipAt: index), look: look)
     }
 
     /// A sound taken out of a clip (Extract audio) plays where the clip at `index` does.

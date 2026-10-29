@@ -443,6 +443,16 @@ struct QuickEditToolbarTests {
         #expect(!viewModel.isFullScreen)
     }
 
+    /// The arrow at the video's foot and its swipe: with nothing open over the video and in full screen, not under a panel.
+    @Test func theFullScreenSwipeIsThereWithNothingOverTheVideo() async {
+        let viewModel = await makeScenario().viewModel
+        #expect(viewModel.swipesFullScreen)
+        viewModel.perform(.open(.filters))
+        #expect(!viewModel.swipesFullScreen)
+        viewModel.toggleFullScreen()
+        #expect(viewModel.swipesFullScreen)
+    }
+
     @Test func tappingBesideWhatsOnTheVideoLetsGoOfIt() async {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.addText(.title))
@@ -725,12 +735,13 @@ struct QuickEditToolbarTests {
         #expect(viewModel.smartSection == .tools)
     }
 
-    @Test func skinOpensAdjustOnSkinSmoothingAtTheButtonsReach() async {
+    @Test func skinOpensItsOwnPanelAtTheButtonsReachApplyingNothing() async {
         let viewModel = await makeScenario().viewModel
+        let before = viewModel.edit
         viewModel.perform(.openLook(.skin, wholeVideo: true))
-        #expect(viewModel.panel == .adjust)
-        #expect(viewModel.look.adjustOpensOn == .skinSmoothing)
+        #expect(viewModel.panel == .skin)
         #expect(!viewModel.look.lookScopeIsClip)
+        #expect(viewModel.edit == before && !viewModel.canUndo, "opening Skin applies nothing")
         viewModel.closePanel()
         viewModel.perform(.selectClipAtPlayhead)
         viewModel.perform(.openLook(.skin, wholeVideo: false))

@@ -67,9 +67,9 @@ extension RealExports {
             defer { try? FileManager.default.removeItem(at: clip) }
             var smoothed = TakeEdit(sourceDuration: 1, aspect: .portrait)
             smoothed.voiceEnhancement = .off
-            smoothed.skinSmoothing = 100
+            smoothed.skin = SkinPreset.studio.look
             var plain = smoothed
-            plain.skinSmoothing = 0
+            plain.skin = .off
 
             let service = TakeEditService()
             let previewSmoothed = try await service.previewItem(forVideoAt: clip, edit: smoothed)
