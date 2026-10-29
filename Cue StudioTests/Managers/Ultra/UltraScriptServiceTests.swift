@@ -51,18 +51,20 @@ struct UltraScriptServiceTests {
         #expect(scenario.client.madeCount == 0 && scenario.client.requests.isEmpty)
     }
 
-    @Test func theDraftThenItsPolishAndOnlyThePolishComesBack() async throws {
+    /// The app's flow: the draft, its claims checked, then the polish (the comparison of 29/10/2026 chose the check).
+    @Test func theDraftItsCheckThenItsPolishAndOnlyThePolishComesBack() async throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         let run = try await scenario.service.run(request)
-        #expect(scenario.client.requests.map(\.stage) == [.draft, .review])
+        #expect(run.flow == .checked)
+        #expect(scenario.client.requests.map(\.stage) == [.draft, .check, .review])
         #expect(scenario.client.requests[1].prompt.contains("A developed draft with a reason and an example."))
         #expect(run.script.text == "The polished script.")
         #expect(run.script.title == "Polished title")
         #expect(run.script.engine == .ultra && run.script.needsFactCheck)
         #expect(run.draft == "A developed draft with a reason and an example.")
         #expect(run.changes == ["Tightened the opening."])
-        #expect(scenario.budget.used == 2)
+        #expect(scenario.budget.used == 3)
     }
 
     @Test func revokedWhileTheDraftIsOutThePolishNeverLeaves() async {
@@ -95,7 +97,7 @@ struct UltraScriptServiceTests {
         } catch {
             Issue.record("Unexpected error \(error)")
         }
-        #expect(scenario.budget.used == 2)
+        #expect(scenario.budget.used == 3)
     }
 
     @Test func aScriptIsCountedOnlyOnceWritten() async throws {
@@ -167,7 +169,7 @@ struct UltraScriptServiceTests {
         _ = try await scenario.service.run(automatic)
         #expect(scenario.client.requests[0].prompt.contains("Length: free."))
         _ = try await scenario.service.run(request, length: .required(60...90))
-        #expect(scenario.client.requests[2].prompt.contains("the creator chose 60 to 90 seconds"))
+        #expect(scenario.client.requests.last { $0.stage == .draft }?.prompt.contains("the creator chose 60 to 90 seconds") == true)
     }
 
     // MARK: - The claim check

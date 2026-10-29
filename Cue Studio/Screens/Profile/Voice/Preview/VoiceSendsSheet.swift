@@ -75,7 +75,7 @@ struct VoiceSendsSheet: View {
         .accessibilityIdentifier("voice.sends")
     }
 
-    /// AI Scripts Ultra, where it is offered: the two calls to Google's Gemini as they go out, with the dock's idea and choices.
+    /// AI Scripts Ultra, where it is offered: the three calls to Google's Gemini as they go out, with the dock's idea and choices.
     private var ultraSection: some View {
         VStack(alignment: .leading, spacing: 8) {
             Text("Ultra AI · sent to Google").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)

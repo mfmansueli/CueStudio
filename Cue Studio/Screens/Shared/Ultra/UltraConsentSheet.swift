@@ -31,8 +31,8 @@ struct UltraConsentSheet: View {
                         systemImage: "paperplane"
                     )
                     point(
-                        title: "Two steps",
-                        detail: "Ultra AI writes a draft, then polishes it in your voice: the draft is sent to Google again for the polish. It can get facts wrong, so check them before you record.",
+                        title: "Three steps",
+                        detail: "Ultra AI writes a draft, checks its claims, then polishes it in your voice: the draft goes back to Google for each step. It can still get facts wrong, so check them before you record.",
                         systemImage: "arrow.triangle.2.circlepath"
                     )
                     point(

@@ -1,0 +1,584 @@
+{
+  "run": "q1",
+  "verdicts": "quality-q1-verdicts-judge1",
+  "judged": 21,
+  "missing": [],
+  "unknown": [],
+  "comparisons": {
+    "apple-vs-checked": {
+      "all": {
+        "pairs": 15,
+        "tie": 0,
+        "checked": 15
+      },
+      "kind": {
+        "technical": {
+          "pairs": 6,
+          "tie": 0,
+          "checked": 6
+        },
+        "profile": {
+          "pairs": 9,
+          "tie": 0,
+          "checked": 9
+        }
+      },
+      "language": {
+        "pt-BR": {
+          "pairs": 9,
+          "tie": 0,
+          "checked": 9
+        },
+        "es-ES": {
+          "pairs": 3,
+          "tie": 0,
+          "checked": 3
+        },
+        "en-US": {
+          "pairs": 3,
+          "tie": 0,
+          "checked": 3
+        }
+      }
+    },
+    "polished-vs-checked": {
+      "all": {
+        "pairs": 6,
+        "tie": 0,
+        "checked": 6
+      },
+      "kind": {
+        "technical": {
+          "pairs": 6,
+          "tie": 0,
+          "checked": 6
+        }
+      },
+      "language": {
+        "pt-BR": {
+          "pairs": 6,
+          "tie": 0,
+          "checked": 6
+        }
+      }
+    }
+  },
+  "scores": {
+    "polished-vs-checked": {
+      "polished": {
+        "development": {
+          "mean": 4.5,
+          "n": 6
+        },
+        "fidelity": {
+          "mean": 5.0,
+          "n": 6
+        },
+        "voice": {
+          "mean": 4.0,
+          "n": 6
+        },
+        "naturalness": {
+          "mean": 3.83,
+          "n": 6
+        },
+        "accuracy": {
+          "mean": 3.5,
+          "n": 6
+        },
+        "length": {
+          "mean": 4.0,
+          "n": 6
+        }
+      },
+      "checked": {
+        "development": {
+          "mean": 4.67,
+          "n": 6
+        },
+        "fidelity": {
+          "mean": 5.0,
+          "n": 6
+        },
+        "voice": {
+          "mean": 4.17,
+          "n": 6
+        },
+        "naturalness": {
+          "mean": 4.17,
+          "n": 6
+        },
+        "accuracy": {
+          "mean": 4.67,
+          "n": 6
+        },
+        "length": {
+          "mean": 4.33,
+          "n": 6
+        }
+      }
+    },
+    "all": {
+      "polished": {
+        "development": {
+          "mean": 4.5,
+          "n": 6
+        },
+        "fidelity": {
+          "mean": 5.0,
+          "n": 6
+        },
+        "voice": {
+          "mean": 4.0,
+          "n": 6
+        },
+        "naturalness": {
+          "mean": 3.83,
+          "n": 6
+        },
+        "accuracy": {
+          "mean": 3.5,
+          "n": 6
+        },
+        "length": {
+          "mean": 4.0,
+          "n": 6
+        }
+      },
+      "checked": {
+        "development": {
+          "mean": 4.71,
+          "n": 21
+        },
+        "fidelity": {
+          "mean": 4.95,
+          "n": 21
+        },
+        "voice": {
+          "mean": 4.38,
+          "n": 21
+        },
+        "naturalness": {
+          "mean": 4.05,
+          "n": 21
+        },
+        "accuracy": {
+          "mean": 4.57,
+          "n": 21
+        },
+        "length": {
+          "mean": 4.14,
+          "n": 21
+        }
+      },
+      "apple": {
+        "development": {
+          "mean": 2.4,
+          "n": 15
+        },
+        "fidelity": {
+          "mean": 3.73,
+          "n": 15
+        },
+        "voice": {
+          "mean": 2.67,
+          "n": 15
+        },
+        "naturalness": {
+          "mean": 2.73,
+          "n": 15
+        },
+        "accuracy": {
+          "mean": 3.07,
+          "n": 15
+        },
+        "length": {
+          "mean": 2.6,
+          "n": 15
+        }
+      }
+    },
+    "apple-vs-checked": {
+      "apple": {
+        "development": {
+          "mean": 2.4,
+          "n": 15
+        },
+        "fidelity": {
+          "mean": 3.73,
+          "n": 15
+        },
+        "voice": {
+          "mean": 2.67,
+          "n": 15
+        },
+        "naturalness": {
+          "mean": 2.73,
+          "n": 15
+        },
+        "accuracy": {
+          "mean": 3.07,
+          "n": 15
+        },
+        "length": {
+          "mean": 2.6,
+          "n": 15
+        }
+      },
+      "checked": {
+        "development": {
+          "mean": 4.73,
+          "n": 15
+        },
+        "fidelity": {
+          "mean": 4.93,
+          "n": 15
+        },
+        "voice": {
+          "mean": 4.47,
+          "n": 15
+        },
+        "naturalness": {
+          "mean": 4.0,
+          "n": 15
+        },
+        "accuracy": {
+          "mean": 4.53,
+          "n": 15
+        },
+        "length": {
+          "mean": 4.07,
+          "n": 15
+        }
+      }
+    }
+  },
+  "errors": {
+    "polished": [
+      {
+        "pair": "P01",
+        "id": "t1-window-light",
+        "error": "promise in the ending: \"Pronto, sua imagem vai ficar muito mais profissional\" (creator avoids exaggerated promises)"
+      },
+      {
+        "pair": "P01",
+        "id": "t1-window-light",
+        "error": "says hold to lock only the focus (\"segure para bloquear o foco\") when the long-press also locks exposure, the point of the step"
+      },
+      {
+        "pair": "P04",
+        "id": "t6-sleep-spending",
+        "error": "pop neuroscience stated as fact: \"o cérebro sofre um apagão parcial\", \"a parte do cérebro que busca prazer imediato assume o controle\""
+      },
+      {
+        "pair": "P04",
+        "id": "t6-sleep-spending",
+        "error": "\"O seu cérebro quer uma dose rápida de dopamina\" stated as mechanism"
+      },
+      {
+        "pair": "P04",
+        "id": "t6-sleep-spending",
+        "error": "\"Existe uma relação direta entre a qualidade do seu sono e o tamanho da sua fatura\" overclaimed"
+      },
+      {
+        "pair": "P05",
+        "id": "t4-sound",
+        "error": "pseudo-statistic: \"o áudio é mais da metade da experiência\""
+      },
+      {
+        "pair": "P05",
+        "id": "t4-sound",
+        "error": "\"Existe uma explicação neurológica para isso\" overclaimed"
+      },
+      {
+        "pair": "P05",
+        "id": "t4-sound",
+        "error": "\"use o fone de ouvido que veio na caixa do aparelho\": many phones no longer ship with earphones"
+      },
+      {
+        "pair": "P05",
+        "id": "t4-sound",
+        "error": "hype: \"mudam completamente o jogo\""
+      },
+      {
+        "pair": "P12",
+        "id": "t2-camera-upgrade",
+        "error": "false: \"Na câmera profissional, o processo é manual\" and \"Se você se inclinar dois centímetros para frente, o foco vai embora\" (modern cameras have face/eye autofocus)"
+      },
+      {
+        "pair": "P12",
+        "id": "t2-camera-upgrade",
+        "error": "invented figure: \"Esse processo triplica o seu tempo de produção\""
+      },
+      {
+        "pair": "P12",
+        "id": "t2-camera-upgrade",
+        "error": "typo \"depois do gravando\""
+      },
+      {
+        "pair": "P12",
+        "id": "t2-camera-upgrade",
+        "error": "dramatic \"o verdadeiro assassino de canais pequenos\""
+      },
+      {
+        "pair": "P14",
+        "id": "t3-teleprompter",
+        "error": "long for a TikTok tutorial (about four minutes), with written-essay sentences (\"Escrever para o ouvido, e não para os olhos\")"
+      },
+      {
+        "pair": "P16",
+        "id": "t5-emergency-fund",
+        "error": "overpromise: \"Essa quantia te garante seis meses de fôlego para resolver qualquer problema\""
+      }
+    ],
+    "apple": [
+      {
+        "pair": "P02",
+        "id": "t3-teleprompter",
+        "error": "stage directions inside the spoken text: \"[pausa]\", \"[olhar para a câmera]\""
+      },
+      {
+        "pair": "P02",
+        "id": "t3-teleprompter",
+        "error": "confusing advice: \"Tente parar onde eu ponho ponto final no roteiro\""
+      },
+      {
+        "pair": "P02",
+        "id": "t3-teleprompter",
+        "error": "thin for a free-length tutorial: three generic tips with no phone/teleprompter specifics"
+      },
+      {
+        "pair": "P03",
+        "id": "es-ES-1",
+        "error": "unsupported claim stated as fact: \"Lo hecho a mano dura más\" / \"Al no forzar el material, evitamos tensiones\""
+      },
+      {
+        "pair": "P03",
+        "id": "es-ES-1",
+        "error": "invented test: \"si no hay marcas rígidas, es más probable que no se agriete\""
+      },
+      {
+        "pair": "P03",
+        "id": "es-ES-1",
+        "error": "\"Si usamos máquinas, perdemos matices que solo se ven al tocar la forma\" presented as fact"
+      },
+      {
+        "pair": "P06",
+        "id": "pt-BR-2",
+        "error": "no humor or slang for a casual, funny creator; reads as a terse checklist"
+      },
+      {
+        "pair": "P06",
+        "id": "pt-BR-2",
+        "error": "confusing lines: \"Se parecer muito branca, uso menos na testa\", \"Cor nos lábios fecha a produção sem precisar de corretivo\""
+      },
+      {
+        "pair": "P07",
+        "id": "t4-sound",
+        "error": "vague/odd claims: \"Silêncio ajuda mais que luz\", \"Isso resolve mais que aumentar o brilho\""
+      },
+      {
+        "pair": "P07",
+        "id": "t4-sound",
+        "error": "\"use um pedaço de pano na parede\" offered as an echo fix (a small cloth does little)"
+      },
+      {
+        "pair": "P07",
+        "id": "t4-sound",
+        "error": "thin for the subject: no real explanation of why sound matters more"
+      },
+      {
+        "pair": "P08",
+        "id": "es-ES-2",
+        "error": "wrong: \"Si la base es más gruesa que el borde... la taza puede agrietarse\" (a thicker base is normal)"
+      },
+      {
+        "pair": "P08",
+        "id": "es-ES-2",
+        "error": "impossible test: feeling wall thickness by running a finger \"por dentro y por fuera\""
+      },
+      {
+        "pair": "P08",
+        "id": "es-ES-2",
+        "error": "odd \"Podemos\" for steps the customer does"
+      },
+      {
+        "pair": "P09",
+        "id": "es-ES-0",
+        "error": "impractical advice: \"Podemos probar un local cerca de una parada de autobús y observar si aumenta la entrada en la primera semana\""
+      },
+      {
+        "pair": "P10",
+        "id": "pt-BR-1",
+        "error": "false generalization: \"O frasco barato usa os mesmos ativos\""
+      },
+      {
+        "pair": "P10",
+        "id": "pt-BR-1",
+        "error": "unsafe advice: \"Se brilhar demais, passe menos\" (less sunscreen means less protection)"
+      },
+      {
+        "pair": "P10",
+        "id": "pt-BR-1",
+        "error": "\"Se você esquece de passar, não perde tanto\" makes no sense"
+      },
+      {
+        "pair": "P11",
+        "id": "en-US-1",
+        "error": "thin for a free-length explainer for beginners: no explanation of what a rest day looks like beyond a line"
+      },
+      {
+        "pair": "P15",
+        "id": "pt-BR-0",
+        "error": "stated as fact: the night cream \"entope os poros\" in the morning"
+      },
+      {
+        "pair": "P15",
+        "id": "pt-BR-0",
+        "error": "\"Passar água e pronto é o terceiro erro\" contradicts common gentle-morning advice"
+      },
+      {
+        "pair": "P15",
+        "id": "pt-BR-0",
+        "error": "odd: \"Aplique antes de abrir as cortinas\""
+      },
+      {
+        "pair": "P17",
+        "id": "t6-sleep-spending",
+        "error": "absolute claim: \"Gastar mais não é sorte, é cansaço\""
+      },
+      {
+        "pair": "P17",
+        "id": "t6-sleep-spending",
+        "error": "confusing advice: \"Espere o dia seguinte para decidir\" about a meal"
+      },
+      {
+        "pair": "P17",
+        "id": "t6-sleep-spending",
+        "error": "choppy, list-like; little explanation of why"
+      },
+      {
+        "pair": "P18",
+        "id": "t1-window-light",
+        "error": "wrong: turning the phone changes the light on the face (\"coloco o celular de lado para a luz bater de perfil\", \"gire o celular um pouco mais para o lado\")"
+      },
+      {
+        "pair": "P18",
+        "id": "t1-window-light",
+        "error": "wrong: \"O ângulo para cima capta mais luz do teto e estoura a testa\""
+      },
+      {
+        "pair": "P18",
+        "id": "t1-window-light",
+        "error": "misses exposure control, the main fix for a blown-out face"
+      },
+      {
+        "pair": "P19",
+        "id": "t2-camera-upgrade",
+        "error": "thin: opens by repeating the request as a question and gives little reason or guidance"
+      },
+      {
+        "pair": "P20",
+        "id": "en-US-2",
+        "error": "does not add up to the five-minute warm-up asked (ten circles, one minute, an untimed lean)"
+      },
+      {
+        "pair": "P20",
+        "id": "en-US-2",
+        "error": "outdated cue: \"Watch for knees sliding past toes and pull back\""
+      },
+      {
+        "pair": "P21",
+        "id": "t5-emergency-fund",
+        "error": "far over the 54–66 s asked (about two minutes)"
+      },
+      {
+        "pair": "P21",
+        "id": "t5-emergency-fund",
+        "error": "weak advice: keep the reserve \"na conta do dia a dia\", \"A velocidade vence o rendimento aqui\" (ignores accounts with daily liquidity that pay CDI)"
+      },
+      {
+        "pair": "P21",
+        "id": "t5-emergency-fund",
+        "error": "stage direction in the text: \"[sorriso]\""
+      },
+      {
+        "pair": "P21",
+        "id": "t5-emergency-fund",
+        "error": "awkward meta line: \"Eu vejo jovens adultos começando a montar isso agora\""
+      }
+    ],
+    "checked": [
+      {
+        "pair": "P03",
+        "id": "es-ES-1",
+        "error": "generic materials that do not fit a ceramics studio: \"Una veta en la madera, el grosor de una fibra\""
+      },
+      {
+        "pair": "P03",
+        "id": "es-ES-1",
+        "error": "long written-style opening sentence (\"Seguramente os habéis preguntado alguna vez...\")"
+      },
+      {
+        "pair": "P04",
+        "id": "t6-sleep-spending",
+        "error": "\"Existe uma explicação científica para isso\" slightly overclaimed (the rest is hedged with \"pode\")"
+      },
+      {
+        "pair": "P08",
+        "id": "es-ES-2",
+        "error": "mixes tú and vosotros (\"tus mañanas\", \"Te proponemos\" vs \"mostraros\", \"Pasaos\")"
+      },
+      {
+        "pair": "P10",
+        "id": "pt-BR-1",
+        "error": "\"Sua pele vai estar muito bem protegida\" as a blanket assurance"
+      },
+      {
+        "pair": "P10",
+        "id": "pt-BR-1",
+        "error": "\"você consegue o mesmo resultado aplicando um sérum baratinho\" overclaimed"
+      },
+      {
+        "pair": "P11",
+        "id": "en-US-1",
+        "error": "mentions \"pull-ups\" for a no-equipment creator"
+      },
+      {
+        "pair": "P11",
+        "id": "en-US-1",
+        "error": "\"rebuilds the fibers slightly thicker and stronger\" simplified as fact"
+      },
+      {
+        "pair": "P12",
+        "id": "t2-camera-upgrade",
+        "error": "\"o arquivo bruto da câmera costuma vir cinza\" true only for log/flat profiles (hedged)"
+      },
+      {
+        "pair": "P15",
+        "id": "pt-BR-0",
+        "error": "\"usar a versão pura com a pele úmida aumenta muito o risco de irritação\" overstated"
+      },
+      {
+        "pair": "P16",
+        "id": "t5-emergency-fund",
+        "error": "typo that breaks the sentence: \"o colchão que te segurança\" (missing \"dá\")"
+      },
+      {
+        "pair": "P17",
+        "id": "t6-sleep-spending",
+        "error": "\"Existe uma explicação científica para isso\" slightly overclaimed"
+      },
+      {
+        "pair": "P19",
+        "id": "t2-camera-upgrade",
+        "error": "\"o arquivo bruto da câmera costuma vir cinza\" true only for log/flat profiles (hedged)"
+      },
+      {
+        "pair": "P21",
+        "id": "t5-emergency-fund",
+        "error": "typo that breaks the sentence: \"o colchão que te segurança\" (missing \"dá\")"
+      }
+    ]
+  }
+}

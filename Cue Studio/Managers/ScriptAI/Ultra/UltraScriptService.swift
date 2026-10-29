@@ -16,8 +16,10 @@ import os
 @MainActor
 @Observable
 final class UltraScriptService: UltraScriptWriting {
-    /// The passes a script goes through when the caller doesn't say (the lab and the comparison pick their own).
-    var flow = UltraFlow.polished
+    /// The passes a script goes through when the caller doesn't say (the lab and the comparison pick their own). The check is in: in the blind
+    /// comparison of 29/10/2026 (15 ideas, two judges, `tools/ultra/compare.py`) the checked script won all 6 pairs against the unchecked one,
+    /// its accuracy 4.3 to 4.6 out of 5 against 3.2 to 3.5, and all 15 against Apple Intelligence.
+    var flow = UltraFlow.checked
 
     let consent: UltraConsentService
     let budget: UltraCallBudget

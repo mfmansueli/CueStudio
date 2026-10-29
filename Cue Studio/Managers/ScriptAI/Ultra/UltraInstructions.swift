@@ -41,6 +41,9 @@ nonisolated enum UltraInstructions {
     Do not turn aesthetic choices into physical laws. Do not use a supposed personal experience as proof. Keep names, values, times and any \
     words the request asks for literally exactly as given.
 
+    Keep examples inside the creator's world: their niche, materials, setting and constraints (no exercise that needs equipment they train \
+    without, no material from a craft they don't practise).
+
     Return only the speech, ready for the teleprompter: no assistant introduction, titles, headings, Markdown, stage directions or notes. Keep \
     the requested point of view throughout. Be specific, human and interesting without forcing catchphrases. Do not use em dashes.
     """
@@ -51,7 +54,8 @@ nonisolated enum UltraInstructions {
     Find and fix: technical or factual claims that are false, or stated as universal when they depend on conditions (light, cameras, sound, \
     health, the body, money, law, science); causes and effects that don't follow, and mechanisms that are made up or simplified until they are \
     wrong (such as a single chemical or hormone presented as the whole explanation); numbers, measurements, prices, rates, percentages, dates, \
-    studies, test results, statistics, quotes, endorsements and credentials that the request and its context didn't supply; absolute promises \
+    studies, test results, statistics, quotes, endorsements and credentials that the request and its context didn't supply; appeals to science \
+    ("science explains", "there is a neurological explanation", "studies show") that only lend authority to the next sentence; absolute promises \
     and guarantees the subject can't keep; examples that contradict the point they illustrate.
     Fix each one with the smallest change that makes it true: a condition, an observable check the creator can do on camera or at home, or a \
     plainer statement that is true without the invented detail. Imagined everyday scenes, small stories and first-person opinions are welcome \
@@ -97,6 +101,10 @@ nonisolated enum UltraInstructions {
     useful explanations to satisfy a style habit. Usual openings, formats, catchphrases and calls to action never override the genre and the \
     intent of this request; add a call to action only when the request asks for one. Keep the reasoning, the examples, the caveats and the \
     progression of ideas.
+
+    Before returning, proofread the script as the creator will read it aloud: no missing, doubled or misspelt words, and one form of address \
+    to the audience throughout (in Spanish, tú or vosotros, never both). Examples stay inside the creator's world: their niche, materials, \
+    setting and constraints.
 
     Return a JSON object with three keys: "title", a short title for the script in its language (at most eight words, no quotes or emoji); \
     "script", the final speech; and "changes", a short list of the concrete editorial changes you made (empty if the draft already fulfils the \

@@ -1,0 +1,1288 @@
+# Blind pairs, run q1b
+
+Each pair is two scripts written for the same request. Judge them side by side; the sides are in random order.
+
+## P01
+
+- **Request:** Por que protetor solar barato também funciona
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** free
+- **Creator:** niches: beauty · sounds: casual, funny · role: personal · avoid: Medical claims, Clickbait | phrases: Fala, galera! | openings: Mistake to avoid | endings: Comment your answer
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a lifestyle and personal creator.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: young adults.
+They know some basics: skip the obvious and go one level deeper.
+They watch to learn something and decide what to buy.
+Their videos aim to grow their audience and entertain.
+Rules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and funny.
+Delivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: some casual slang; humor: a little.
+Usual opening preference, only when supported by this request: a common mistake to avoid. A story opening requires an experience supplied in the request; otherwise open directly on the subject.
+Usual ending preference, only if this request permits it and it serves the takeaway: asking them to comment their answer. It is optional, never an automatic sign-off.
+They film mostly: lists and tips.
+Optional familiar expressions: “Fala, galera!”. Use at most one only if natural here; omission is better than forced repetition.
+They post on TikTok.
+
+The creator's request, in their exact words:
+"""
+Por que protetor solar barato também funciona
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Por que protetor solar barato também funciona**
+
+A gente acha que protetor caro é melhor, né? Mas o barato entrega o recado.
+
+O que importa é o filtro, não o preço. Se o rótulo tem o índice, ele bloqueia o sol do mesmo jeito. O frasco barato usa os mesmos ativos, só muda o cheiro ou a textura. Olhe o rótulo e veja se tem o índice. Se tiver, passe igual o caro.
+
+O barato pode ser mais pesado. A diferença é o acabamento. O mais barato às vezes deixa brilho, mas não tira a proteção. Teste no braço antes. Se brilhar demais, passe menos e espalhe bem.
+
+Eu prefiro levar o barato na mochila. Se você esquece de passar, não perde tanto. É mais fácil repor sem gastar muito. Coloque um frasco pequeno na bolsa e passe de duas em duas horas.
+
+### Script B
+
+**Protetor solar barato funciona mesmo**
+
+Sabe aquele erro clássico de achar que protetor solar barato de farmácia não protege nada? Pois é. Eu já gastei rios de dinheiro com importado achando que estava arrasando. Mas a real é que o protetor de trinta reais pode proteger a sua pele tão bem quanto o de cento e cinquenta se eles tiverem o mesmo FPS. Papo reto. Aqui no Brasil, para o produto ser vendido como protetor solar, ele precisa passar por testes super rígidos da Anvisa. Não importa a marca ou o marketing. Se a embalagem diz FPS trinta, ele bloqueia cerca de noventa e sete por cento da radiação UVB. Se diz FPS cinquenta, bloqueia noventa e oito por cento. O nível de proteção contra esses raios é equivalente. A proteção básica é garantida por lei. Mas então, por que um custa o triplo do outro? A diferença real não está na proteção básica, mas sim na experiência sensorial e na tecnologia da fórmula. No mais caro, você paga pela textura que some na pele instantaneamente, pelo controle de oleosidade e por não ficar com aquele cheiro clássico de praia no meio do escritório. Algumas marcas caras também colocam ativos de skincare na fórmula, como ácido hialurônico ou niacinamida. É super prático, mas você consegue o mesmo resultado aplicando um sérum baratinho antes do protetor comum. No final das contas, o melhor protetor é o que você realmente usa todo dia e na quantidade certa. Uma recomendação muito comum é usar de dois a três dedos de produto pro rosto e pescoço. Se você usa o protetor caro de conta-gotas porque tem pena de gastar, sua pele fica bem menos protegida do que se usasse o barato de forma generosa. Se a grana apertar, vai no baratinho de farmácia sem culpa nenhuma. Sua pele vai estar muito bem protegida.
+
+## P02
+
+- **Request:** Por que dormir mal faz você gastar mais no dia seguinte
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** free
+- **Creator:** niches: finance, lifestyle · sounds: casual, confident · role: educator · audience: jovens adultos começando a organizar a rotina e o dinheiro · avoid: Promessas de enriquecimento rápido | phrases: Bora lá
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: jovens adultos começando a organizar a rotina e o dinheiro.
+Rules: never write “Promessas de enriquecimento rápido”.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+Optional familiar expressions: “Bora lá”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Por que dormir mal faz você gastar mais no dia seguinte
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Por que dormir mal custa tão caro**
+
+Já reparou que toda vez que você dorme mal, o seu dia seguinte fica inexplicavelmente mais caro? Não é impressão sua. Existe uma explicação científica para isso e ela tem tudo a ver com o jeito que o seu cérebro lida com o cansaço. Quando a gente dorme mal, uma das áreas do cérebro que mais sofrem é o córtex pré-frontal. Ele é o responsável por controlar nossos impulsos, fazer planos e tomar decisões lógicas. Ao mesmo tempo, a falta de sono pode deixar a nossa busca por recompensa rápida desregulada. O resultado prático disso no seu bolso é o que eu chamo de taxa do cansaço. Bora lá ver como isso acontece. De manhã, você acorda exausto. Passar um café parece um trabalho hercúleo. Você resolve ir à cafeteria e gasta trinta reais em um expresso com um doce. À tarde, bate aquela queda de energia gigante no trabalho. Sua força de vontade para resistir aos impulsos pode ficar extremamente fragilizada. Um anúncio de promoção surge na tela do celular e você clica em comprar sem nem pensar, só para ter um pouquinho de prazer em um dia cinzento. À noite, a geladeira está cheia, mas sua mente está tão esgotada que a única saída viável parece ser gastar setenta reais em um aplicativo de entrega. No fim das contas, uma única noite mal dormida custou muito caro em pequenas conveniências. Cada decisão parecia perfeitamente justificável na hora porque o seu cérebro cansado estava buscando recompensas rápidas para compensar o cansaço. Organizar a vida financeira não é só preencher planilha. É entender como o seu corpo funciona. Se o seu dinheiro está sumindo e você não sabe o motivo, comece olhando para a sua rotina de sono. Proteger o seu descanso é, literalmente, proteger o seu saldo bancário.
+
+### Script B
+
+**Por que dormir mal faz você gastar mais no dia seguinte**
+
+Dormir mal mexe com o bolso no dia seguinte.
+
+Se eu durmo pouco, perco o foco. O cérebro cansa e decide rápido demais. Eu escolho o lanche mais caro só para acabar logo. Observe se você compra por impulso quando acorda cansado. Troque por um café e espere dez minutos.
+
+Cansaço vira gasto extra. Sem sono, o cérebro ignora o plano. Eu já gastei com delivery só para não cozinhar. Teste: se estiver cansado, não abra o app. Espere o dia seguinte para decidir.
+
+O prejuízo é real. Gastar mais não é sorte, é cansaço. Eu vi meu orçamento estourar assim. Anote o que comprou depois de uma noite ruim. Compare com dias bem dormidos.
+
+Melhor sono ajuda a manter o dinheiro no lugar.
+
+## P03
+
+- **Request:** Por que o som importa mais do que a imagem nos seus vídeos
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** free
+- **Creator:** niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas | phrases: Simbora
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: criadores pequenos que gravam com o celular em casa, sem equipe.
+Topics: Gravar vídeos com o celular.
+Rules: never write “Promessas exageradas”.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+They film mostly: tutorials.
+Optional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Por que o som importa mais do que a imagem nos seus vídeos
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Por que o som importa mais que a imagem**
+
+Se você tiver que escolher entre assistir a um vídeo com a imagem linda e o som horrível, ou um vídeo com a imagem borrada e o som perfeito, qual você escolhe? Tenho certeza que você fica com a segunda opção. E eu vou te explicar o motivo. Nosso cérebro tolera muito bem uma imagem escura ou pixelada. A gente assiste a vídeos de câmeras de segurança ou gravações antigas sem reclamar, desde que consiga entender o que está sendo dito. Agora, experimenta colocar um áudio estourado, cheio de eco ou com chiado de vento por cinco segundos. É insuportável. O áudio ruim cansa quem está ouvindo. O cérebro precisa de mais esforço para decifrar as palavras no meio do barulho. Na internet, isso significa que é muito mais provável que o espectador passe o seu vídeo antes de você terminar a primeira frase. Não importa o quanto a sua imagem esteja bonita. Para quem grava em casa com o celular, o áudio é o maior erro invisível. A gente passa muito tempo limpando a lente e procurando a melhor janela para usar a luz natural. Mas esquece que o microfone do aparelho está longe. Ele capta o barulho do ventilador, o motor da geladeira e o eco das paredes vazias. Quando você grava em um quarto com paredes peladas, sua voz bate na parede e volta para o celular. Isso cria aquela sensação de que você está falando de dentro de um banheiro. Esse detalhe pode prejudicar a autoridade do seu conteúdo. Parece amador de imediato, mesmo que a imagem esteja em alta definição. A boa notícia é que resolver isso é muito mais simples e barato do que comprar uma câmera nova ou luzes profissionais. O primeiro passo é diminuir a distância entre você e o microfone. Se o celular está no tripé a dois metros de distância, o microfone vai captar o quarto inteiro antes da sua voz. Se puder, aproxime o celular. Se não puder, use aquele fone de ouvido com fio que você tem em casa. Aquele microfone pequenininho do cabo, perto do seu peito, entrega um som muito mais limpo e focado do que o microfone do celular distante. O segundo passo é ajustar o ambiente sem gastar nada. Grave de frente para uma cama arrumada, coloque um tapete no chão ou grave perto de cortinas fechadas. Esses tecidos funcionam como barreiras. Eles absorvem o som e ajudam a diminuir o eco da sua voz pelo quarto. A imagem atrai a atenção nos primeiros segundos. Mas é o som que segura a pessoa até o final. Se você quer que as pessoas prestem atenção na sua mensagem, garanta que elas consigam te ouvir com clareza e sem esforço.
+
+### Script B
+
+**Por que o som importa mais na gravação**
+
+Se você estiver navegando pelo feed e encontrar um vídeo com a imagem meio embaçada, mas com um assunto interessante e uma voz clara, você provavelmente continua assistindo. Agora, pensa no oposto. Um vídeo gravado na melhor câmera do mundo, mas com o áudio abafado, cheio de eco ou com um ruído de vento ensurdecedor no fundo. Quanto tempo você aguenta? Eu aposto que você arrasta para cima em menos de três segundos. A verdade que quase ninguém te conta quando você começa a gravar com o celular é que o áudio é mais da metade da experiência. Nós toleramos uma imagem ruim com muito mais facilidade do que um som ruim. Existe uma explicação neurológica para isso. O cérebro precisa fazer um esforço enorme para decodificar as palavras quando o som está ruim. Esse esforço cansa quem está assistindo. A pessoa se cansa e vai embora sem nem perceber o motivo real. Quando eu comecei a gravar em casa, eu também achava que precisava de um celular novo ou de uma câmera profissional. Eu passava horas mexendo em configurações de resolução. Tentava entender sobre iluminação complexa enquanto ignorava o barulho da geladeira, o eco do quarto vazio e a distância do aparelho. O microfone do seu celular foi feito para ser usado perto da boca. Quando você coloca o aparelho no tripé a dois metros de distância e começa a falar, o microfone captura tudo. O som batendo nas paredes vazias, o barulho da rua, o ventilador. A sua voz chega fraca e distante. Dá para resolver isso hoje sem gastar rios de dinheiro. Simbora que eu te mostro dois ajustes simples. O primeiro é a distância física. Se você grava com o áudio do celular, fique o mais próximo possível da câmera. Se precisar gravar de longe, use o fone de ouvido que veio na caixa do aparelho como microfone de lapela. Ou invista em um microfone de lapela simples para celular. Eles são super baratos e mudam completamente o jogo. O segundo ajuste é o ambiente. Grave no cômodo da casa com mais superfícies macias para absorver o som. Quartos com cama arrumada, cortinas, tapetes e guarda-roupa aberto são excelentes estúdios improvisados. Eles impedem que a sua voz rebata nas paredes e crie aquele eco desconfortável. Antes de se preocupar com a resolução da imagem, certifique-se de que a sua mensagem pode ser ouvida sem esforço. Uma boa imagem atrai a atenção, mas é o áudio limpo que segura as pessoas até o final.
+
+## P04
+
+- **Request:** Como ler o roteiro no teleprompter sem parecer um robô
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** free
+- **Creator:** niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas | phrases: Simbora
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: criadores pequenos que gravam com o celular em casa, sem equipe.
+Rules: never write “Promessas exageradas”.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+They film mostly: tutorials.
+Optional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Como ler o roteiro no teleprompter sem parecer um robô
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Como ler teleprompter sem parecer um robô**
+
+Você já gravou um vídeo usando o teleprompter e, na hora de assistir, percebeu que parecia uma estátua? Olhos se mexendo rigidamente de um lado para o outro. Eu sei bem como é isso. O teleprompter é incrível para quem grava sozinho em casa. Ele economiza tempo e evita que a gente esqueça o roteiro. Mas ele tem uma armadilha: se você não tomar cuidado, ele rouba toda a sua naturalidade. Simbora resolver isso. O primeiro ajuste é a distância. O erro mais comum é gravar com o celular muito perto do rosto. Quando a tela está colada em você, qualquer movimento dos seus olhos fica gigante no vídeo. Afaste o celular. Coloque o aparelho a pelo menos um metro de você. Só garanta que ainda dá para ler de forma confortável na tela. Se precisar, aumente o tamanho da fonte no aplicativo. Quanto mais longe o celular estiver, menor será o movimento dos seus olhos. O segundo ponto é a posição do texto. Quase todo aplicativo deixa você ajustar a área de rolagem. Configure o aplicativo para o texto passar o mais próximo possível da lente da câmera. Se o texto rolar no meio da tela e a câmera estiver no topo, você vai parecer que está olhando para baixo. Texto colado na lente faz seu olhar se alinhar direto com quem assiste. Mas o segredo principal está na forma como você escreve. Nós não falamos como escrevemos. Se o seu roteiro for formal demais, com frases longas e palavras difíceis, você vai soar artificial. Escreva exatamente do jeito que você conversa. Use gírias leves que você já fala no dia a dia. Fale as frases em voz alta antes de gravar. Se faltar o ar, divida a frase em duas. O roteiro precisa ter o ritmo da sua voz. Por fim, lembre-se de que você é um ser humano conversando com outro. Robôs não piscam e não se movem. Lembre-se de piscar naturalmente. Use as mãos para gesticular. Incline a cabeça para dar ênfase. Mude o tom de voz para destacar o que importa. Antes de dar o play, imagine que a lente do celular é um amigo seu sentado na sua frente. O teleprompter serve para te dar segurança, não para prender a sua expressão. Com esses ajustes de distância, posição e escrita, seus vídeos vão ficar muito mais naturais. E é essa conexão humana que realmente prende a atenção das pessoas.
+
+### Script B
+
+**Como usar teleprompter sem parecer um robô**
+
+Eu sei exatamente como é. Você decide usar o teleprompter para não esquecer as falas, grava o vídeo e, quando vai assistir ao resultado, parece que está lendo um manifesto contra a própria vontade. Os olhos ficam travados. A voz perde o ritmo. Aquela espontaneidade que você tem conversando simplesmente some. O erro não é o aplicativo ou o equipamento que você está usando. O problema real é que nós tentamos ler na tela da mesma forma que lemos um livro. Mas a nossa fala natural funciona de um jeito totalmente diferente. Para quebrar esse efeito robô gravando em casa sozinho, o primeiro ajuste começa antes mesmo de ligar a câmera. Ele começa no seu roteiro. Nós simplesmente não escrevemos do mesmo jeito que falamos. Na escrita, usamos frases longas, termos formais e pontuações complexas. Na fala espontânea, a gente usa abreviações, frases curtas e muitas pausas de transição. Simbora ajustar isso. Quando for escrever o seu texto, escreva exatamente do jeito que você fala no dia a dia. Use palavras como pra, tá, e evite termos difíceis que você nunca usaria em uma conversa de café. Se você precisar dar uma pausa enorme para respirar no meio de uma frase enquanto lê, é sinal de que ela precisa ser dividida em duas. Escrever para o ouvido, e não para os olhos, resolve metade do problema. O segundo ponto é a distância física do seu celular. Se a câmera estiver muito perto do seu rosto, quem assistir vai conseguir ver perfeitamente os seus olhos se movendo da esquerda para a direita, acompanhando as linhas do texto. Isso entrega o uso do teleprompter imediatamente e cria um distanciamento visual. O truque aqui é afastar o celular de você. Coloque o tripé a pelo menos um metro e meio de distância e aumente o tamanho da fonte no aplicativo para conseguir ler sem esforço. Quanto mais longe o aparelho estiver, menor será o ângulo de movimento dos seus olhos, fazendo parecer que você está olhando fixamente para a lente. O terceiro ajuste é comportamental. Na vida real, nós não olhamos para uma pessoa sem piscar ou sem desviar o foco por minutos seguidos. Isso seria desconfortável. Nós piscamos, nós olhamos para cima ou para o lado por um milésimo de segundo quando estamos elaborando um pensamento, e nós movimentamos a cabeça. No teleprompter, você precisa se dar a liberdade de desviar o olhar nas transições de ideias. Quando terminar de explicar um ponto e for começar outro, olhe levemente para o lado, como se estivesse resgatando uma informação na mente, e volte para a lente. Isso traz uma sensação imediata de que você está raciocinando ao vivo, e não apenas reproduzindo um texto pré-programado. Por fim, lembre-se de que a sua voz segue o seu corpo. Se você ficar completamente estático, com medo de se mexer e sair do enquadramento do celular, a sua voz vai soar monótona. Use as mãos para enfatizar pontos importantes, mude levemente a inclinação dos ombros e use a pontuação do texto como um guia para a sua expressão física. Um ponto final no roteiro é o momento de fazer uma pausa, respirar, relaxar os ombros e começar a próxima frase com um tom ligeiramente diferente. O teleprompter deve ser um mapa para te dar segurança, não uma barreira que te engessa. Experimente aplicar essas pequenas mudanças na sua próxima gravação e repare em como a sua comunicação vai parecer muito mais humana, natural e próxima de quem está do outro lado da tela.
+
+## P05
+
+- **Request:** Vale a pena trocar o celular por uma câmera para gravar vídeos?
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** free
+- **Creator:** niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas | phrases: Simbora
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: criadores pequenos que gravam com o celular em casa, sem equipe.
+Topics: Gravar vídeos com o celular.
+Rules: never write “Promessas exageradas”.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+They film mostly: tutorials.
+Optional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Vale a pena trocar o celular por uma câmera para gravar vídeos?
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Celular ou câmera profissional para gravar vídeos**
+
+Você está aí, gravando seus vídeos e editando tudo no celular. De repente, bate aquela dúvida. Será que se eu comprasse uma câmera profissional meu conteúdo daria um salto? Será que vale a pena fazer esse investimento agora? Eu já passei por essa fase. E vejo muita gente cometendo um erro clássico. A resposta curta é: para a grande maioria dos criadores que gravam sozinhos em casa, não vale a pena. Simbora entender o porquê, antes que você gaste um dinheiro que faria muito mais falta no seu bolso. O primeiro ponto é a ilusão da qualidade automática. A gente vê aqueles vídeos lindos na internet e acha que é só comprar a câmera. Mas se você usar uma câmera profissional no modo automático, a imagem pode ficar pior ou igual à do seu celular. Para ter aquela imagem de cinema, você precisa dominar abertura, ISO, velocidade do obturador e, principalmente, foco e colorização. O seu celular já faz todo esse processamento pesado para você, em tempo real. Ele já te entrega a imagem pronta, colorida e focada. O segundo ponto é a barreira da complexidade. E quase ninguém fala disso. Gravar com o celular é extremamente prático. Você coloca no tripé, aperta o play, grava, edita ali mesmo e posta. Com uma câmera, o processo muda totalmente. Você precisa tirar o cartão de memória. Passar os arquivos pesados para o computador. Sincronizar o áudio que gravou separado. E depois fazer a correção de cor, porque o arquivo bruto da câmera costuma vir cinza e sem vida. Para quem grava sozinho, sem equipe, esse trabalho extra consome um tempo precioso. Tempo que deveria ser do seu roteiro. Muitas vezes, a preguiça de montar tudo faz você simplesmente desistir de gravar. Além disso, o que realmente deixa um vídeo com cara de profissional não é o tamanho da câmera. É a luz e o áudio. Uma câmera cara com uma iluminação ruim e áudio abafado vai ficar com cara de amadora. Por outro lado, um celular de dois anos atrás, bem posicionado perto de uma janela e com um microfone de lapela simples, entrega um resultado fantástico. Então, quando realmente vale a pena fazer essa troca? Só quando o seu celular se tornar o limitador real do seu trabalho. Quando você já dominar a iluminação, tiver um áudio perfeito, já gerar receita com seus vídeos e sentir falta de um controle óptico específico que o celular não consegue simular. Se você ainda não chegou nesse teto técnico, o melhor investimento que você pode fazer hoje é em um bom microfone e em um ponto de luz decente. E, acima de tudo, em aprender a usar o que você já tem no bolso. O seu celular é uma ferramenta de produção incrível. Antes de querer trocar de equipamento, certifique-se de que você já extraiu tudo o que ele pode te oferecer.
+
+### Script B
+
+**Vale a pena trocar o celular por uma câmera?**
+
+Vale a pena trocar o celular por uma câmera para gravar?
+
+Eu acho que o celular já entrega muita coisa. A câmera ganha no controle da luz e no foco. Mas o celular resolve rápido, sem ajustar nada. Se você grava em ambientes escuros, teste o modo noturno do celular antes de comprar outra coisa.
+
+Carregar uma câmera muda o ritmo. Eu prefiro o celular porque ele já está na mão. Uma câmera exige mais bagagem e tempo para ligar. Imagine gravar um passo a passo na cozinha: o celular fica apoiado em segundos.
+
+O que importa é o que aparece na tela. Se o vídeo fica bom no celular, a troca pode ser só gasto. Eu edito tudo no mesmo aparelho. Compare um clipe gravado em cada um e veja se a diferença compensa o esforço.
+
+Para quem começa em casa, eu fico com o celular.
+
+## P06
+
+- **Request:** Como ler o roteiro no teleprompter sem parecer um robô
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** free
+- **Creator:** niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas | phrases: Simbora
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: criadores pequenos que gravam com o celular em casa, sem equipe.
+Rules: never write “Promessas exageradas”.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+They film mostly: tutorials.
+Optional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Como ler o roteiro no teleprompter sem parecer um robô
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Como ler o roteiro no teleprompter sem parecer um robô**
+
+Eu uso o teleprompter todo dia e não quero soar mecânico.
+
+Eu marco pausas no texto para respirar. Se eu leio tudo junto, o tom fica plano. Pausas criam ritmo natural, como numa conversa. [pausa] Tente parar onde eu ponho ponto final no roteiro.
+
+Eu olho para a lente como se falasse com um amigo. Olhar fixo gera cara de robô. Eu mudo o tom em cada frase para não soar igual. [olhar para a câmera] Se soar monótono, eu aumento a variação da voz.
+
+Eu leio em voz alta antes de gravar. Isso mostra onde o texto trava. Eu troco palavras difíceis por termos do dia a dia. Teste uma frase com palavras curtas e veja se flui.
+
+Com esses ajustes, o teleprompter vira só um apoio.
+
+### Script B
+
+**Como ler teleprompter sem parecer um robô**
+
+Você já gravou um vídeo usando o teleprompter e, na hora de assistir, percebeu que parecia uma estátua? Olhos se mexendo rigidamente de um lado para o outro. Eu sei bem como é isso. O teleprompter é incrível para quem grava sozinho em casa. Ele economiza tempo e evita que a gente esqueça o roteiro. Mas ele tem uma armadilha: se você não tomar cuidado, ele rouba toda a sua naturalidade. Simbora resolver isso. O primeiro ajuste é a distância. O erro mais comum é gravar com o celular muito perto do rosto. Quando a tela está colada em você, qualquer movimento dos seus olhos fica gigante no vídeo. Afaste o celular. Coloque o aparelho a pelo menos um metro de você. Só garanta que ainda dá para ler de forma confortável na tela. Se precisar, aumente o tamanho da fonte no aplicativo. Quanto mais longe o celular estiver, menor será o movimento dos seus olhos. O segundo ponto é a posição do texto. Quase todo aplicativo deixa você ajustar a área de rolagem. Configure o aplicativo para o texto passar o mais próximo possível da lente da câmera. Se o texto rolar no meio da tela e a câmera estiver no topo, você vai parecer que está olhando para baixo. Texto colado na lente faz seu olhar se alinhar direto com quem assiste. Mas o segredo principal está na forma como você escreve. Nós não falamos como escrevemos. Se o seu roteiro for formal demais, com frases longas e palavras difíceis, você vai soar artificial. Escreva exatamente do jeito que você conversa. Use gírias leves que você já fala no dia a dia. Fale as frases em voz alta antes de gravar. Se faltar o ar, divida a frase em duas. O roteiro precisa ter o ritmo da sua voz. Por fim, lembre-se de que você é um ser humano conversando com outro. Robôs não piscam e não se movem. Lembre-se de piscar naturalmente. Use as mãos para gesticular. Incline a cabeça para dar ênfase. Mude o tom de voz para destacar o que importa. Antes de dar o play, imagine que a lente do celular é um amigo seu sentado na sua frente. O teleprompter serve para te dar segurança, não para prender a sua expressão. Com esses ajustes de distância, posição e escrita, seus vídeos vão ficar muito mais naturais. E é essa conexão humana que realmente prende a atenção das pessoas.
+
+## P07
+
+- **Request:** Por que dormir mal faz você gastar mais no dia seguinte
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** free
+- **Creator:** niches: finance, lifestyle · sounds: casual, confident · role: educator · audience: jovens adultos começando a organizar a rotina e o dinheiro · avoid: Promessas de enriquecimento rápido | phrases: Bora lá
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: jovens adultos começando a organizar a rotina e o dinheiro.
+Rules: never write “Promessas de enriquecimento rápido”.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+Optional familiar expressions: “Bora lá”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Por que dormir mal faz você gastar mais no dia seguinte
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Por que dormir mal custa tão caro**
+
+Já reparou que toda vez que você dorme mal, o seu dia seguinte fica inexplicavelmente mais caro? Não é impressão sua. Existe uma explicação científica para isso e ela tem tudo a ver com o jeito que o seu cérebro lida com o cansaço. Quando a gente dorme mal, uma das áreas do cérebro que mais sofrem é o córtex pré-frontal. Ele é o responsável por controlar nossos impulsos, fazer planos e tomar decisões lógicas. Ao mesmo tempo, a falta de sono pode deixar a nossa busca por recompensa rápida desregulada. O resultado prático disso no seu bolso é o que eu chamo de taxa do cansaço. Bora lá ver como isso acontece. De manhã, você acorda exausto. Passar um café parece um trabalho hercúleo. Você resolve ir à cafeteria e gasta trinta reais em um expresso com um doce. À tarde, bate aquela queda de energia gigante no trabalho. Sua força de vontade para resistir aos impulsos pode ficar extremamente fragilizada. Um anúncio de promoção surge na tela do celular e você clica em comprar sem nem pensar, só para ter um pouquinho de prazer em um dia cinzento. À noite, a geladeira está cheia, mas sua mente está tão esgotada que a única saída viável parece ser gastar setenta reais em um aplicativo de entrega. No fim das contas, uma única noite mal dormida custou muito caro em pequenas conveniências. Cada decisão parecia perfeitamente justificável na hora porque o seu cérebro cansado estava buscando recompensas rápidas para compensar o cansaço. Organizar a vida financeira não é só preencher planilha. É entender como o seu corpo funciona. Se o seu dinheiro está sumindo e você não sabe o motivo, comece olhando para a sua rotina de sono. Proteger o seu descanso é, literalmente, proteger o seu saldo bancário.
+
+### Script B
+
+**Como dormir mal destrói as suas finanças**
+
+Já percebeu que nos dias em que você acorda parecendo um zumbi, a sua conta bancária é quem mais sofre? Não é coincidência. Existe uma relação direta entre a qualidade do seu sono e o tamanho da sua fatura no fim do mês. Quer entender como isso funciona? Bora lá. Quando a gente dorme mal, o cérebro sofre um apagão parcial. O córtex pré-frontal, que é a área responsável pelo autocontrole e pelas decisões lógicas, fica exausto. Ele começa a trabalhar em marcha lenta. Ao mesmo tempo, a parte do cérebro que busca prazer imediato assume o controle. Sem sono, você perde temporariamente o seu gerente financeiro interno. Na prática, o seu dinheiro escorre pelo ralo ao longo do dia sem você perceber. Começa logo cedo. Você dormiu pouco, ignorou o despertador e se atrasou. Para não perder o horário no trabalho, pede um carro de aplicativo em vez de ir de transporte público. Lá se vão vinte reais que não estavam no orçamento. Na hora do almoço, a marmita que você preparou com carinho parece a coisa mais sem graça do mundo. O corpo cansado pede energia rápida. A biologia traduz isso como desejo por gordura e açúcar. Você ignora a marmita na geladeira e gasta quarenta reais em um combo de fast-food. No meio da tarde, o cansaço bate forte de novo. O cafezinho simples do escritório já não parece suficiente. Você sai para comprar aquele café gourmet caro, cheio de calda e chantilly, acompanhado de um doce para dar um gás. À noite, a sua capacidade de tomar decisões sumiu de vez. Cozinhar ou lavar a louça parece uma tarefa impossível. O cansaço vence e você pede mais um delivery para o jantar. E não para por aí. A fadiga destrói a sua resistência a compras por impulso. Aquele anúncio de um produto aleatório na tela do celular, que você ignoraria em um dia normal, de repente parece uma necessidade urgente. O seu cérebro quer uma dose rápida de dopamina para compensar o cansaço. Comprar online entrega essa dopamina em segundos. Somando tudo, um único dia de cansaço extremo pode facilmente custar mais de cem reais em pequenos confortos que você poderia ter evitado. Se você quer organizar a sua rotina e fazer o seu dinheiro render, comece pelo básico. Antes de criar planilhas complexas ou baixar aplicativos de finanças, ajuste o seu horário de ir para a cama. Dormir bem é, antes de tudo, uma estratégia de economia. Proteja o seu sono para proteger o seu bolso das decisões ruins que o cansaço toma por você. Pense nisso hoje à noite, antes de passar mais uma hora rolando a tela do celular.
+
+## P08
+
+- **Request:** 3 erros que estragam sua pele de manhã
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** free
+- **Creator:** niches: beauty · sounds: casual, funny · role: personal · avoid: Medical claims, Clickbait | phrases: Fala, galera! | openings: Mistake to avoid | endings: Comment your answer
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a lifestyle and personal creator.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: young adults.
+They know some basics: skip the obvious and go one level deeper.
+They watch to learn something and decide what to buy.
+Their videos aim to grow their audience and entertain.
+Rules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and funny.
+Delivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: some casual slang; humor: a little.
+Usual opening preference, only when supported by this request: a common mistake to avoid. A story opening requires an experience supplied in the request; otherwise open directly on the subject.
+Usual ending preference, only if this request permits it and it serves the takeaway: asking them to comment their answer. It is optional, never an automatic sign-off.
+They film mostly: lists and tips.
+Optional familiar expressions: “Fala, galera!”. Use at most one only if natural here; omission is better than forced repetition.
+They post on TikTok.
+
+The creator's request, in their exact words:
+"""
+3 erros que estragam sua pele de manhã
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**3 erros que estragam sua pele de manhã**
+
+Minha rotina matinal já salvou minha pele algumas vezes, mas só depois de eu parar com três coisas.
+
+Deixar o protetor de lado é o erro número um. A luz do dia bate mesmo se você ficar dentro de casa. Sem isso, o tom da pele fica irregular e o brilho some rápido. Aplique antes de abrir as cortinas. Se a pele parecer pesada, mude para uma versão leve.
+
+Repetir o creme da noite é o segundo erro. A noite pede algo mais denso. De manhã, isso entope os poros e tira o ar da pele. Troque por algo com textura de gel. Se o rosto brilhar demais, reduza a quantidade.
+
+Passar água e pronto é o terceiro erro. Resíduos da noite ficam ali e atrapalham o que vem depois. O resultado é uma cara sem vida. Use um sabonete suave e massageie por alguns segundos. Se a pele puxar, diminua a força.
+
+### Script B
+
+**Três erros que detonam sua pele de manhã**
+
+Sabe aquela sensação de que você faz tudo certinho no skincare mas a pele ainda acorda de mau humor? Pois é. Às vezes, o erro tá nos pequenos detalhes da sua rotina matinal. Vou te contar três vacilos clássicos que você provavelmente comete logo cedo e que sabotam seu brilho natural. O primeiro erro é acordar e já tacar aquele sabonete super potente no rosto. Calma lá! Se você limpou tudo bonitinho na noite anterior, de manhã você só tem um pouquinho de suor e o sebo natural que sua pele produziu. Usar um gel de limpeza que faz quilos de espuma pode remover sua barreira de hidratação natural. Isso deixa o rosto sensibilizado ou com a barreira desequilibrada. Se sua pele é seca ou sensível, tenta lavar só com água fria. Se for muito oleosa, vai de limpador super suave e hidratante. O segundo erro é a pressa com o protetor solar. Eu sei que a vida é corrida, mas passar o protetor com o hidratante ainda molhado na pele é pedir para dar ruim. O protetor precisa secar e formar uma película uniforme para garantir a proteção. Se a pele tá úmida, os produtos se misturam, o que pode diluir o protetor e comprometer a eficácia contra a radiação. Espera uns dois minutinhos pro hidratante secar completamente antes de vir com o protetor. O terceiro erro é aplicar a Vitamina C do jeito errado ou misturar ativos pesados de manhã. A Vitamina C é ótima pro dia, mas usar a versão pura com a pele úmida aumenta muito o risco de irritação e vermelhidão. Além disso, guarda os ácidos esfoliantes fortes, tipo o glicólico ou salicílico concentrado, para a rotina da noite. De manhã o foco é proteger e hidratar, não sensibilizar a pele antes de enfrentar o sol e a poluição. Ajustar esses detalhes é de graça e faz os produtos que você já comprou funcionarem muito melhor. Trata sua pele com carinho de manhã e você pode notar a diferença na textura e no viço. Qual desses erros você estava cometendo de manhã? Comenta aqui embaixo!
+
+## P09
+
+- **Request:** Reserva de emergência: quanto guardar e onde deixar o dinheiro
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** required 54–66 s
+- **Creator:** niches: finance, lifestyle · sounds: casual, confident · role: educator · audience: jovens adultos começando a organizar a rotina e o dinheiro · avoid: Promessas de enriquecimento rápido | phrases: Bora lá
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: the creator chose 54 to 66 seconds of speech (about 135 to 165 words at a natural pace). Treat it as their intent: develop enough to fill it, without padding, and stay within it.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: jovens adultos começando a organizar a rotina e o dinheiro.
+Rules: never write “Promessas de enriquecimento rápido”.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+Optional familiar expressions: “Bora lá”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Reserva de emergência: quanto guardar e onde deixar o dinheiro
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Reserva de emergência: quanto guardar e onde deixar o dinheiro**
+
+Reserva de emergência é o primeiro passo da minha organização. Eu vejo jovens adultos começando a montar isso agora. Sem esse suporte, qualquer imprevisto derruba o mês. [sorriso]
+
+Eu guardo o equivalente a três meses do meu gasto real. Se você gasta mil por mês, mira três mil. Isso cobre o essencial sem apertar demais. O valor vem do que você usa, não do que ganha. Eu uso o aluguel, o mercado e o transporte como base. Se a conta sobe, ajusto um pouco, mas mantenho os três meses. Teste com o seu extrato de trinta dias. Some o que saiu e multiplique por três. Se faltar dinheiro no mês, reduza um pouco, mas não desça de dois meses.
+
+Eu deixo esse dinheiro na conta do dia a dia, mas separado. O importante é ter acesso rápido. Se você colocar num investimento travado, perde a utilidade. Eu uso um título de curto prazo só se o banco oferecer sem bloqueio. A velocidade vence o rendimento aqui. Faça uma pasta nomeada no app. Se o saque demorar mais de um dia, mude de lugar.
+
+Eu reviso essa reserva quando mudo de rotina. Se o gasto sobe, guardo mais devagar. A vida muda, e o valor precisa acompanhar. Eu observo se um imprevisto passou sem estresse. Se passou, o valor está certo. Olhe o extrato após uma conta extra. Se o saldo caiu demais, aumente o próximo depósito.
+
+Eu mantenho isso como base. Cada ajuste reforça minha calma.
+
+### Script B
+
+**Como montar sua reserva de emergência**
+
+Se você está começando a organizar sua vida financeira, o primeiro passo real não é investir em ações famosas. É construir a sua reserva de emergência. Ela é o colchão que te segurança se o seu computador de trabalho quebrar ou se surgir um imprevisto de saúde. Bora lá entender como fazer isso. Mas quanto guardar? A regra de ouro que eu sempre ensino é somar os seus gastos essenciais do mês, como aluguel, transporte e comida, e multiplicar esse valor por seis. Se o seu custo de vida é de dois mil reais, sua meta de reserva é de doze mil reais. E onde deixar esse dinheiro? Esqueça a poupança. O foco aqui é segurança e liquidez, ou seja, a facilidade de resgatar o dinheiro rapidamente quando precisar. Escolha contas digitais que rendem cem por cento do CDI com resgate diário ou o Tesouro Selic. Comece com o que tiver hoje. O importante é dar o primeiro passo.
+
+## P10
+
+- **Request:** Reserva de emergência: quanto guardar e onde deixar o dinheiro
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** required 54–66 s
+- **Creator:** niches: finance, lifestyle · sounds: casual, confident · role: educator · audience: jovens adultos começando a organizar a rotina e o dinheiro · avoid: Promessas de enriquecimento rápido | phrases: Bora lá
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: the creator chose 54 to 66 seconds of speech (about 135 to 165 words at a natural pace). Treat it as their intent: develop enough to fill it, without padding, and stay within it.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: jovens adultos começando a organizar a rotina e o dinheiro.
+Rules: never write “Promessas de enriquecimento rápido”.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+Optional familiar expressions: “Bora lá”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Reserva de emergência: quanto guardar e onde deixar o dinheiro
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Como montar sua reserva de emergência**
+
+Se você está começando a organizar sua vida financeira, o primeiro passo real não é investir em ações famosas. É construir a sua reserva de emergência. Ela é o colchão que te segurança se o seu computador de trabalho quebrar ou se surgir um imprevisto de saúde. Bora lá entender como fazer isso. Mas quanto guardar? A regra de ouro que eu sempre ensino é somar os seus gastos essenciais do mês, como aluguel, transporte e comida, e multiplicar esse valor por seis. Se o seu custo de vida é de dois mil reais, sua meta de reserva é de doze mil reais. E onde deixar esse dinheiro? Esqueça a poupança. O foco aqui é segurança e liquidez, ou seja, a facilidade de resgatar o dinheiro rapidamente quando precisar. Escolha contas digitais que rendem cem por cento do CDI com resgate diário ou o Tesouro Selic. Comece com o que tiver hoje. O importante é dar o primeiro passo.
+
+### Script B
+
+**Como montar sua reserva de emergência**
+
+Quando comecei a organizar minha vida financeira, a primeira coisa que me salvou de verdade foi a reserva de emergência. Ela não serve para te deixar rico, mas para te dar uma paz de espírito absurda quando o imprevisto bate à porta. Mas quanto guardar? O cálculo é simples. Some todos os seus custos essenciais do mês, como aluguel, mercado e contas básicas. Agora, multiplique esse valor por seis. Pronto. Essa quantia te garante seis meses de fôlego para resolver qualquer problema. E onde deixar essa grana? Esqueça a poupança tradicional, ela rende muito pouco. O seu foco aqui deve ser segurança e liquidez imediata, para resgatar no mesmo dia. Boas opções são contas digitais de bancos confiáveis que rendam pelo menos cem por cento do CDI, ou o Tesouro Selic. Assim, seu dinheiro fica protegido e disponível bem na hora do aperto.
+
+## P11
+
+- **Request:** Por que o som importa mais do que a imagem nos seus vídeos
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** free
+- **Creator:** niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas | phrases: Simbora
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: criadores pequenos que gravam com o celular em casa, sem equipe.
+Topics: Gravar vídeos com o celular.
+Rules: never write “Promessas exageradas”.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+They film mostly: tutorials.
+Optional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Por que o som importa mais do que a imagem nos seus vídeos
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Por que o som importa mais do que a imagem nos seus vídeos**
+
+Às vezes, o som é o que segura o vídeo. Eu prefiro ouvir bem do que ver perfeito.
+
+O som manda na atenção. Se o áudio falha, a pessoa sai rápido. Imagem ruim dá para aguentar, mas ruído irrita. Eu noto isso quando assisto no celular. Teste com fone: se o barulho do ambiente corta sua voz, mude o lugar. Coloque o microfone perto da boca, mesmo que seja o do celular.
+
+Silêncio ajuda mais que luz. Um quarto vazio com eco estraga o som. Eu coloco uma manta atrás de mim para abafar. Isso resolve mais que aumentar o brilho. Escute o vídeo sem imagem. Se o som parece distante, aproxime o celular ou use um pedaço de pano na parede.
+
+Escolha o som primeiro. O resto se ajusta.
+
+### Script B
+
+**Por que o som importa mais que a imagem**
+
+Se você tiver que escolher entre assistir a um vídeo com a imagem linda e o som horrível, ou um vídeo com a imagem borrada e o som perfeito, qual você escolhe? Tenho certeza que você fica com a segunda opção. E eu vou te explicar o motivo. Nosso cérebro tolera muito bem uma imagem escura ou pixelada. A gente assiste a vídeos de câmeras de segurança ou gravações antigas sem reclamar, desde que consiga entender o que está sendo dito. Agora, experimenta colocar um áudio estourado, cheio de eco ou com chiado de vento por cinco segundos. É insuportável. O áudio ruim cansa quem está ouvindo. O cérebro precisa de mais esforço para decifrar as palavras no meio do barulho. Na internet, isso significa que é muito mais provável que o espectador passe o seu vídeo antes de você terminar a primeira frase. Não importa o quanto a sua imagem esteja bonita. Para quem grava em casa com o celular, o áudio é o maior erro invisível. A gente passa muito tempo limpando a lente e procurando a melhor janela para usar a luz natural. Mas esquece que o microfone do aparelho está longe. Ele capta o barulho do ventilador, o motor da geladeira e o eco das paredes vazias. Quando você grava em um quarto com paredes peladas, sua voz bate na parede e volta para o celular. Isso cria aquela sensação de que você está falando de dentro de um banheiro. Esse detalhe pode prejudicar a autoridade do seu conteúdo. Parece amador de imediato, mesmo que a imagem esteja em alta definição. A boa notícia é que resolver isso é muito mais simples e barato do que comprar uma câmera nova ou luzes profissionais. O primeiro passo é diminuir a distância entre você e o microfone. Se o celular está no tripé a dois metros de distância, o microfone vai captar o quarto inteiro antes da sua voz. Se puder, aproxime o celular. Se não puder, use aquele fone de ouvido com fio que você tem em casa. Aquele microfone pequenininho do cabo, perto do seu peito, entrega um som muito mais limpo e focado do que o microfone do celular distante. O segundo passo é ajustar o ambiente sem gastar nada. Grave de frente para uma cama arrumada, coloque um tapete no chão ou grave perto de cortinas fechadas. Esses tecidos funcionam como barreiras. Eles absorvem o som e ajudam a diminuir o eco da sua voz pelo quarto. A imagem atrai a atenção nos primeiros segundos. Mas é o som que segura a pessoa até o final. Se você quer que as pessoas prestem atenção na sua mensagem, garanta que elas consigam te ouvir com clareza e sem esforço.
+
+## P12
+
+- **Request:** A maquiagem de 5 minutos para o dia a dia
+Angle: Mostre uma maquiagem completa em cinco passos rápidos.
+Open with: “Dá pra ficar pronta em cinco minutos, sério.”
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** free
+- **Creator:** niches: beauty · sounds: casual, funny · role: personal · avoid: Medical claims, Clickbait | phrases: Fala, galera! | openings: Mistake to avoid | endings: Comment your answer
+- **Brief:** A maquiagem de 5 minutos para o dia a dia / Mostre uma maquiagem completa em cinco passos rápidos. / opening line: Dá pra ficar pronta em cinco minutos, sério.
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a lifestyle and personal creator.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: young adults.
+They know some basics: skip the obvious and go one level deeper.
+They watch to learn something and decide what to buy.
+Their videos aim to grow their audience and entertain.
+Rules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and funny.
+Delivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: some casual slang; humor: a little.
+Usual opening preference, only when supported by this request: a common mistake to avoid. A story opening requires an experience supplied in the request; otherwise open directly on the subject.
+Usual ending preference, only if this request permits it and it serves the takeaway: asking them to comment their answer. It is optional, never an automatic sign-off.
+They film mostly: lists and tips.
+Optional familiar expressions: “Fala, galera!”. Use at most one only if natural here; omission is better than forced repetition.
+They post on TikTok.
+
+Inspiration this idea came from (Find inspiration):
+Subject: A maquiagem de 5 minutos para o dia a dia
+Follow this angle all the way through: Mostre uma maquiagem completa em cinco passos rápidos.
+Open with this line, as it is or adapted only to the creator's way of speaking: “Dá pra ficar pronta em cinco minutos, sério.” It is the hook: write no other before it.
+
+The creator's request, in their exact words:
+"""
+A maquiagem de 5 minutos para o dia a dia
+Angle: Mostre uma maquiagem completa em cinco passos rápidos.
+Open with: “Dá pra ficar pronta em cinco minutos, sério.”
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Maquiagem de 5 minutos para o dia a dia**
+
+Dá pra ficar pronta em cinco minutos, sério.
+
+Começo com base bem leve. Não quero cobertura pesada logo cedo. A ideia é só nivelar o tom sem peso. Espalho um pouquinho com os dedos, como se fosse hidratante. Se parecer muito branca, uso menos na testa.
+
+Depois, sombra em tom de terra. Uma cor única traz profundidade sem perder tempo. Dá contraste sem esforço. Passo só na pálpebra e puxo para o canto externo. Se borrar, suavizo com o dedo.
+
+Delineador só na linha dos cílios. Um traço curto marca o olhar sem exigir precisão. É mais prático que pintar tudo. Faço um ponto no centro e junto com o dedo. Se for grosso, uso um cotonete para afinar.
+
+Rímel só nos cílios de cima. Um movimento para cima já levanta o rosto. Menos produto evita grudar. Passo da raiz até o meio. Se empelotar, passo um pente de cílios.
+
+Batom ou gloss no fim. Cor nos lábios fecha a produção sem precisar de corretivo. É o toque rápido. Aplico no centro e espalho com o dedo. Se ficar forte, tiro o excesso com um lenço.
+
+### Script B
+
+**Maquiagem completa e rápida em cinco minutos**
+
+Dá pra ficar pronta em cinco minutos, sério. E não estou falando daquela maquiagem sem graça que parece que você não fez nada. É um visual completo, fresco e que dura super bem. O segredo? Focar no que realmente faz diferença e usar produtos práticos. Passo um: correção estratégica. Esquece aquela base pesada que demora um ano para espalhar. Vai direto com um corretivo hidratante nas olheiras, nas abas do nariz e em alguma manchinha. Espalho com os dedos mesmo. O calor da pele ajuda o produto a derreter e aderir melhor, ajudando a evitar aquele aspecto craquelado. Passo dois: o ar de saúde instantâneo. O truque aqui é usar blush cremoso ou em bastão. Aplico no alto das maçãs do rosto, esfumando pras têmporas para dar um efeito mais levantado. O que sobrar nos dedos? Dou batidinhas leves nas pálpebras. Pronto, harmonia de cores sem precisar de paleta de sombras. Passo três: definir o olhar. Esquece perder tempo desenhando a sobrancelha fio a fio. Usa um gel com cor. Ele penteia, fixa os fios e preenche as falhas de um jeito super natural. Depois, passa uma boa máscara de cílios focando nas pontas e no canto externo para abrir bem o olhar. Passo quatro: a selagem cirúrgica. Passar pó no rosto todo vai tirar o viço bonito que a gente acabou de criar. Então pega um pincel pequeno e aplica pó translúcido só na zona T, que é a testa, as laterais do nariz e o queixo. O resto da pele continua iluminado e natural. Passo cinco: lábios. Esquece batom mate que exige contorno perfeito. Vai de lip oil com cor ou balm hidratante. Dá para aplicar até sem espelho, deixa um brilho lindo e mantém a boca confortável. Cinco minutos, cinco passos simples e você está pronta para encarar o dia com cara de quem dormiu oito horas seguidas. Qual desses passos é o seu preferido? Me conta aqui nos comentários!
+
+## P13
+
+- **Request:** 3 mistakes that ruin your home workouts
+- **Language and platform:** en-US, TikTok
+- **Length asked:** free
+- **Creator:** niches: fitness, wellness · sounds: energetic, confident · role: expert · avoid: Hype words, Medical claims | phrases: Okay, real talk. | openings: Question | endings: Save this
+
+**Context:**
+
+```
+Write the script in English (United States).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: an expert, coach or professional in their field.
+Credential: certified personal trainer. Mention it only where it fits; never invent another.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: young adults.
+They are new to the topic: explain terms and keep steps simple.
+They watch to learn something and solve a problem.
+Their videos aim to teach something useful and grow their audience.
+Also true of them, in their own words: no-equipment workouts.
+Rules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words; no medical claims: never say something cures, treats or heals, and speak in general terms.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound energetic and confident.
+Delivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday; humor: a little.
+Usual opening preference, only when supported by this request: a question. A story opening requires an experience supplied in the request; otherwise open directly on the subject.
+Usual ending preference, only if this request permits it and it serves the takeaway: asking viewers to save the video. It is optional, never an automatic sign-off.
+They film mostly: lists and tips, tutorials.
+Optional familiar expressions: “Okay, real talk.”. Use at most one only if natural here; omission is better than forced repetition.
+They post on TikTok, Reels.
+
+The creator's request, in their exact words:
+"""
+3 mistakes that ruin your home workouts
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Three Mistakes Ruining Your Home Workouts**
+
+Are you working out at home but seeing zero results? Okay, real talk. You do not need a large gym setup to get fit. But as a certified personal trainer, I see the same three mistakes ruin home workouts every single day. First up, the random workout trap. We have all done it. You search for a quick fifteen-minute sweat session on a whim. It feels good, but your body adapts. If you do a completely different workout every single day, it is much harder to track your progress. To actually build strength, you need progressive overload. Don't worry, that is just trainer-speak for making things slightly harder over time. Since we are using our own body weight, you can do this easily. Add one more rep next week. Or rest thirty seconds less. Pick a simple routine and stick to it for four to six weeks. That is how you grow. Second mistake, you are rushing. When we do not have heavy weights, we tend to fly through exercises. We bounce at the bottom of our squats. We drop like a stone in our push-ups. We think fast means hard. But when you rush, gravity does the work, not your muscles. Let's fix that with tempo. Next time you squat, take a full three seconds to lower down. Pause for one second at the bottom. Then stand back up. Controlling that movement increases the time your muscles are working. It is a key way to build strength with zero equipment. Third, your space is not set up for success. If you try to exercise two feet from your TV with your phone lighting up on the floor, you will lose focus. Your brain thinks the living room is for relaxing. When it is time to train, clear a dedicated zone. Move the coffee table. Put your phone in another room. Creating a physical boundary helps your mind shift into workout mode. This keeps your form sharp and helps prevent injuries. Home workouts are highly effective, but you need structure. Track your reps. Slow down your movements. Clear your space. You will see a noticeable difference in how your body responds. Save this video so you can check these off during your next session!
+
+### Script B
+
+**3 mistakes that ruin your home workouts**
+
+I see three mistakes wrecking home workouts all the time.
+
+First, starting without a plan. I used to just move around my room and hope for the best. Without a sequence, you skip moves or repeat them. It kills your rhythm. Pick three moves before you start. Try a squat, push, and hold in order. Watch your form instead of guessing.
+
+Second, rushing the moves. Fast reps lose control. I see people bounce through push-ups and miss the work. Slowing down keeps tension. Count two seconds down and one up. If you wobble, slow more.
+
+Third, skipping a warm-up. I used to jump straight in and feel stiff. A quick routine wakes your joints. It sets the pace. Do arm circles and leg swings for a minute. If you feel tight, add more circles.
+
+## P14
+
+- **Request:** Como usar a luz da janela para gravar sem estourar o rosto
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** required 54–66 s
+- **Creator:** niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas | phrases: Simbora
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: the creator chose 54 to 66 seconds of speech (about 135 to 165 words at a natural pace). Treat it as their intent: develop enough to fill it, without padding, and stay within it.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: criadores pequenos que gravam com o celular em casa, sem equipe.
+Topics: Gravar vídeos com o celular.
+Rules: never write “Promessas exageradas”.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+They film mostly: tutorials.
+Optional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Como usar a luz da janela para gravar sem estourar o rosto
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Como gravar com a luz da janela**
+
+Gravar com a luz da janela é ótimo. Mas se o sol estiver batendo direto, sua imagem pode ficar muito marcada ou estourada. Quer resolver isso só com o celular? Simbora. Primeiro, se a luz estiver muito forte, evite ficar totalmente de frente para o vidro. Posicione-se em um ângulo de quarenta e cinco graus em relação à janela. Isso cria uma sombra suave no seu rosto, dando profundidade ao vídeo de forma natural. Se o sol ainda estiver incomodando, feche uma cortina fina e branca. Ela funciona como um difusor profissional gigante e gratuito. Depois, ajuste a câmera. Na maioria dos celulares, basta tocar na tela sobre o seu rosto e segurar para travar o foco e a exposição. Aí, deslize o dedo para baixo para diminuir um pouco o brilho até sua pele parecer natural. Assim, a câmera não vai ficar clareando e escurecendo do nada. Testa aí hoje mesmo.
+
+### Script B
+
+**Como usar a luz da janela para gravar sem estourar o rosto**
+
+Se a luz da janela estourar seu rosto, o vídeo perde o sentido. Eu uso esse ajuste para manter o tom natural na gravação.
+
+Eu coloco o celular de lado para a luz bater de perfil. A luz direta de frente reflete no rosto e apaga detalhes. De lado, ela cria sombra suave e define o contorno sem brilho excessivo. Olhe o reflexo na tela: se o rosto brilhar muito, gire o celular um pouco mais para o lado.
+
+Eu uso uma cortina fina para espalhar o brilho. O tecido reduz a intensidade sem tirar a claridade. Isso evita que o sensor do celular capte pontos brancos. Teste com a cortina fechada pela metade e veja se o rosto fica equilibrado.
+
+Eu inclino o celular para baixo, na altura do peito. O ângulo para cima capta mais luz do teto e estoura a testa. Para baixo, a luz bate no rosto de forma uniforme. Ajuste o suporte para o celular apontar levemente para baixo e observe o tom da pele.
+
+Com esses ajustes, a luz da janela trabalha a seu favor.
+
+## P15
+
+- **Request:** Cómo elegir una taza que dure años
+Angle: Explica tres señales de una taza de cerámica bien hecha.
+Open with: “No todas las tazas de cerámica son iguales.”
+- **Language and platform:** es-ES, TikTok
+- **Length asked:** free
+- **Creator:** niches: Cerámica artesanal · sounds: warmCalm, casual · role: business · avoid: Hype words | phrases: Hola, familia. | openings: Story opener | endings: Follow for more
+- **Brief:** Cómo elegir una taza que dure años / Explica tres señales de una taza de cerámica bien hecha. / opening line: No todas las tazas de cerámica son iguales.
+
+**Context:**
+
+```
+Write the script in Spanish (Spain).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: the owner of a business (a shop, salon, studio or service).
+Their default voice is a team narrator (“we” and “our”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: people in the creator's local community.
+They are new to the topic: explain terms and keep steps simple.
+They watch to get inspired and decide what to buy.
+Their videos aim to sell a product or service and build a community.
+Topics: Cerámica artesanal (Tazas).
+Rules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound warm and calm and casual.
+Delivery: energy: balanced; sentences: a mix of short and longer; words: plain and everyday; humor: none, no jokes.
+Usual opening preference, only when supported by this request: the start of a short story. A story opening requires an experience supplied in the request; otherwise open directly on the subject.
+Usual ending preference, only if this request permits it and it serves the takeaway: inviting them to follow for more. It is optional, never an automatic sign-off.
+They film mostly: storytimes, tutorials.
+Optional familiar expressions: “Hola, familia.”. Use at most one only if natural here; omission is better than forced repetition.
+They post on Reels.
+
+Inspiration this idea came from (Find inspiration):
+Subject: Cómo elegir una taza que dure años
+Follow this angle all the way through: Explica tres señales de una taza de cerámica bien hecha.
+Open with this line, as it is or adapted only to the creator's way of speaking: “No todas las tazas de cerámica son iguales.” It is the hook: write no other before it.
+
+The creator's request, in their exact words:
+"""
+Cómo elegir una taza que dure años
+Angle: Explica tres señales de una taza de cerámica bien hecha.
+Open with: “No todas las tazas de cerámica son iguales.”
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Cómo elegir una taza de cerámica duradera**
+
+No todas las tazas de cerámica son iguales. En nuestro taller pasamos muchas horas modelando cada pieza y sabemos que una taza no es solo un recipiente, sino una compañera para tus mañanas que debería durar años. Para ayudarte a elegir una que pueda acompañarte durante muchísimos años, hoy queremos enseñarte tres detalles sencillos en los que fijarte la próxima vez que vengas a vernos o visites una tienda de artesanía. El primer detalle es el equilibrio y el asa. Al coger la taza, el peso debe sentirse repartido de forma cómoda, sin que tire demasiado hacia abajo ni se sienta frágil en los bordes. El asa es el punto más crítico de una taza. Busca que esté bien integrada en el cuerpo, sin uniones bruscas ni pequeñas grietas alrededor de los puntos de contacto. Si el asa parece nacer del propio cuerpo de la taza de forma natural, es señal de que se ha unido con la humedad correcta y ayuda a que resista mejor el uso diario. El segundo punto está en la base, lo que en alfarería llamamos el pie de la taza. Te proponemos que le des la vuelta. Esta zona se deja sin esmalte para que la pieza no se pegue a las placas del horno durante la cocción. Toca esa arcilla expuesta. Debe estar bien pulida y suave al tacto para ayudar a que no raye tus mesas de madera. Además, al apoyarla sobre una superficie plana, la taza no debe tambalearse en absoluto. Una base firme y bien asentada es el resultado de una elaboración profesional y cuidadosa. Y el tercer secreto es el sonido y la superficie del esmalte. Si le das un toquecito suave con la uña, una taza bien cocida a alta temperatura suele emitir un sonido claro y limpio, casi como una pequeña campana. Si el sonido es sordo u opaco, podría indicar que la pieza tiene alguna tensión interna o una pequeña fisura que no se ve a simple vista. Además, pasa el dedo por todo el interior. El esmalte debe ser liso y continuo, sin pequeñas burbujas ni agujeros donde puedan acumularse los restos de café o té con el tiempo. Elegir una taza artesanal es buscar esa pieza que se adapta perfectamente a tus manos y que hace que tu café de por la mañana sepa un poco mejor. En nuestro espacio nos encanta mostraros estos detalles de cerca y que podáis sentir cada textura antes de decidiros. Pasaos cuando queráis a probarlas en vuestras propias manos y a encontrar vuestra compañera de desayunos definitiva.
+
+### Script B
+
+**Cómo elegir una taza que dure años**
+
+No todas las tazas de cerámica son iguales.
+
+La primera señal es un grosor constante en toda la pieza. Si la base es más gruesa que el borde, el calor se reparte de forma desigual y la taza puede agrietarse con el tiempo. Nosotros buscamos ese equilibrio para que la cerámica aguante el uso diario. Podemos pasar un dedo por dentro y por fuera para sentir si el relieve cambia. Si notamos zonas más finas, mejor elegir otra.
+
+La segunda señal es una base lisa y sin burbujas. Las burbujas indican aire atrapado que debilita la estructura. En nuestro taller, una base regular ayuda a que la taza se apoye sin vibrar. Podemos apoyar la taza sobre una mesa y observar si se tambalea. Si se mueve, la base no es uniforme.
+
+La tercera señal es un esmalte firme y sin grietas. Un acabado sólido evita que la humedad penetre en la arcilla. Nosotros preferimos ese acabado porque protege la pieza durante años. Podemos mirar con luz lateral para ver líneas finas. Si aparecen, la taza podría desgastarse antes.
+
+## P16
+
+- **Request:** Tres errores al abrir una tienda pequeña
+- **Language and platform:** es-ES, TikTok
+- **Length asked:** free
+- **Creator:** niches: Cerámica artesanal · sounds: warmCalm, casual · role: business · avoid: Hype words | phrases: Hola, familia. | openings: Story opener | endings: Follow for more
+
+**Context:**
+
+```
+Write the script in Spanish (Spain).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: the owner of a business (a shop, salon, studio or service).
+Their default voice is a team narrator (“we” and “our”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: people in the creator's local community.
+They are new to the topic: explain terms and keep steps simple.
+They watch to get inspired and decide what to buy.
+Their videos aim to sell a product or service and build a community.
+Rules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound warm and calm and casual.
+Delivery: energy: balanced; sentences: a mix of short and longer; words: plain and everyday; humor: none, no jokes.
+Usual opening preference, only when supported by this request: the start of a short story. A story opening requires an experience supplied in the request; otherwise open directly on the subject.
+Usual ending preference, only if this request permits it and it serves the takeaway: inviting them to follow for more. It is optional, never an automatic sign-off.
+They film mostly: storytimes, tutorials.
+Optional familiar expressions: “Hola, familia.”. Use at most one only if natural here; omission is better than forced repetition.
+They post on Reels.
+
+The creator's request, in their exact words:
+"""
+Tres errores al abrir una tienda pequeña
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Tres errores al abrir tu propia tienda**
+
+Cuando decidimos abrir las puertas de nuestra tienda, cometimos aciertos, pero también algunos errores que hoy vemos con mucha claridad. Si estáis pensando en dar el paso y montar vuestro propio negocio en el barrio, queremos compartir tres fallos muy comunes que nosotros mismos aprendimos a corregir sobre la marcha. El primer error es intentar vender de todo para gustar a todo el mundo. Al principio da miedo dejar fuera a potenciales clientes, pero la realidad es que una tienda pequeña se hace fuerte cuando se especializa. Si intentas que tu espacio sea para cualquiera, puedes terminar sin llamar la atención de nadie. Nosotros aprendimos que es mucho mejor que un grupo de vecinos os elija porque ofrecéis algo concreto, con una calidad y una atención personalizada que las grandes superficies no pueden dar. El segundo error es centrarse únicamente en el producto y descuidar la experiencia dentro del propio local. A veces pensamos que si lo que vendemos es bueno, todo lo demás es secundario. Pero la iluminación, el olor, el volumen de la música y la forma en que distribuimos el espacio influyen en cómo se siente alguien al cruzar la puerta. Una tienda física tiene que ser un lugar agradable donde apetezca quedarse, mirar con calma y charlar, no solo un sitio de paso rápido. El tercer error es esperar al día de la inauguración para empezar a conectar con la comunidad. Muchos proyectos esperan a tener el local perfecto y la persiana subida para presentarse al barrio. El vínculo con vuestros futuros clientes empieza mucho antes. Compartir el proceso de las obras, pedir opinión sobre lo que os gustaría encontrar o simplemente presentarse a los comerciantes de la zona ayuda a que la gente se sienta parte del proyecto desde el primer momento. Abrir un pequeño negocio tiene sus dificultades, pero construirlo poco a poco y ver cómo se integra en la vida de nuestro barrio es una de las experiencias más bonitas que existen. Si queréis conocer más sobre el día a día de un comercio local, os invitamos a seguirnos.
+
+### Script B
+
+**Tres errores al abrir una tienda pequeña**
+
+Cuando empezamos nuestra tienda, pensábamos que todo saldría solo con abrir la puerta.
+
+Un error es elegir un local sin paso de gente. Si nadie pasa por delante, tenemos que atraer a cada cliente con esfuerzo extra. En nuestro barrio, una calle concurrida ayuda a que la gente entre sin plan previo. Podemos probar un local cerca de una parada de autobús y observar si aumenta la entrada en la primera semana.
+
+Otro fallo es comprar mucho stock sin probarlo. Si llenamos el espacio con cosas que no se mueven, perdemos sitio para lo que sí interesa. Nosotros preferimos traer poco de cada cosa y ver qué se elige. Podemos poner tres opciones de un producto y anotar cuál se toca más en tres días.
+
+El tercer error es fijar un horario sin mirar a la gente. Si cerramos cuando más pasa el barrio, perdemos visitas. Nosotros hemos visto que ajustar el cierre a la tarde ayuda aquí. Podemos abrir una hora más un día y comparar cuántas personas entran en ese tiempo.
+
+## P17
+
+- **Request:** The warm-up most people skip
+Angle: Show a five-minute warm-up anyone can do at home.
+Open with: “Your workout starts before the first squat.”
+- **Language and platform:** en-US, TikTok
+- **Length asked:** free
+- **Creator:** niches: fitness, wellness · sounds: energetic, confident · role: expert · avoid: Hype words, Medical claims | phrases: Okay, real talk. | openings: Question | endings: Save this
+- **Brief:** The warm-up most people skip / Show a five-minute warm-up anyone can do at home. / opening line: Your workout starts before the first squat.
+
+**Context:**
+
+```
+Write the script in English (United States).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: an expert, coach or professional in their field.
+Credential: certified personal trainer. Mention it only where it fits; never invent another.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: young adults.
+They are new to the topic: explain terms and keep steps simple.
+They watch to learn something and solve a problem.
+Their videos aim to teach something useful and grow their audience.
+Also true of them, in their own words: no-equipment workouts.
+Rules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words; no medical claims: never say something cures, treats or heals, and speak in general terms.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound energetic and confident.
+Delivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday; humor: a little.
+Usual opening preference, only when supported by this request: a question. A story opening requires an experience supplied in the request; otherwise open directly on the subject.
+Usual ending preference, only if this request permits it and it serves the takeaway: asking viewers to save the video. It is optional, never an automatic sign-off.
+They film mostly: lists and tips, tutorials.
+Optional familiar expressions: “Okay, real talk.”. Use at most one only if natural here; omission is better than forced repetition.
+They post on TikTok, Reels.
+
+Inspiration this idea came from (Find inspiration):
+Subject: The warm-up most people skip
+Follow this angle all the way through: Show a five-minute warm-up anyone can do at home.
+Open with this line, as it is or adapted only to the creator's way of speaking: “Your workout starts before the first squat.” It is the hook: write no other before it.
+
+The creator's request, in their exact words:
+"""
+The warm-up most people skip
+Angle: Show a five-minute warm-up anyone can do at home.
+Open with: “Your workout starts before the first squat.”
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**The warm-up most people skip**
+
+Your workout starts before the first squat.
+
+I start with joint circles. Moving wrists, shoulders, and hips wakes up your body. It gets blood moving without gear. Do ten circles each way while standing in place. If your shoulders feel tight, slow the pace.
+
+Next, march and reach up. This raises your heart rate and stretches your front. It prepares your legs for movement. Lift knees high and swing arms overhead for one minute. Keep steps small if balance feels off.
+
+Finish with a slow squat lean. I use this to open hips and ankles. It builds control before real reps. Bend knees slightly and lean forward with hands on thighs. Watch for knees sliding past toes and pull back if needed.
+
+### Script B
+
+**Five Minute No Equipment Warm Up**
+
+Your workout starts before the first squat. As a certified personal trainer, I see so many people jump straight into heavy lifts or intense cardio. Don't do that. Skipping your warm-up is like redlining a freezing car engine. Not great for the system. You don't need twenty minutes or fancy gym gear. Just five minutes, a tiny bit of floor space, and these five simple moves. First up, torso twists and arm circles. Stand wide. Let your arms hang loose. Swing side to side and let your arms wrap around your body. Do this for thirty seconds to wake up your spine. Next, make big, slow backward circles with your arms for another thirty seconds. This gets blood flowing to your shoulders and upper back. Second, the hip hinge. Stand feet shoulder-width apart. Keep a soft bend in your knees. Now, push your hips straight back. Imagine closing a car door with your butt. Keep your back flat. Slide your hands down to your knees, feel that gentle stretch in the back of your thighs, and squeeze your glutes to stand up. Do this slowly for one minute. Third, shallow lateral lunges. Take a wide stance with your feet pointing forward. Shift your weight to the right, bending your right knee. Keep your left leg straight. Push back up, then switch to the left. Don't go super deep yet. Just rock side to side smoothly for one minute. Fourth, a modified world's greatest stretch. Step your right foot forward into a long lunge and place your hands on the floor inside your foot. If that is tough, drop your back knee to the floor. Lift your right hand and reach straight up, twisting your chest open. Put your hand down, step back, and switch sides. Spend one minute alternating. Finally, we finish with one minute of marching in place with high knees. Pump your arms and drive those knees up. This gently gets your heart rate up and preps your nervous system. By the end of these five minutes, you should feel warmer, your joints should move more easily, and your mind should be focused. Save this video so you do not skip your warm-up next time. Your body is ready to work.
+
+## P18
+
+- **Request:** Why rest days make you stronger
+- **Language and platform:** en-US, TikTok
+- **Length asked:** free
+- **Creator:** niches: fitness, wellness · sounds: energetic, confident · role: expert · avoid: Hype words, Medical claims | phrases: Okay, real talk. | openings: Question | endings: Save this
+
+**Context:**
+
+```
+Write the script in English (United States).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: an expert, coach or professional in their field.
+Credential: certified personal trainer. Mention it only where it fits; never invent another.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: young adults.
+They are new to the topic: explain terms and keep steps simple.
+They watch to learn something and solve a problem.
+Their videos aim to teach something useful and grow their audience.
+Also true of them, in their own words: no-equipment workouts.
+Rules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words; no medical claims: never say something cures, treats or heals, and speak in general terms.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound energetic and confident.
+Delivery: energy: high and lively; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday; humor: a little.
+Usual opening preference, only when supported by this request: a question. A story opening requires an experience supplied in the request; otherwise open directly on the subject.
+Usual ending preference, only if this request permits it and it serves the takeaway: asking viewers to save the video. It is optional, never an automatic sign-off.
+They film mostly: lists and tips, tutorials.
+Optional familiar expressions: “Okay, real talk.”. Use at most one only if natural here; omission is better than forced repetition.
+They post on TikTok, Reels.
+
+The creator's request, in their exact words:
+"""
+Why rest days make you stronger
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Why Rest Days Make You Stronger**
+
+Do you think working out every single day is the fastest way to get fit? If you are doing bodyweight workouts at home, it is super easy to fall into the trap of thinking more is always better. You might think doing push-ups, squats, and planks every day is the secret. Okay, real talk. When I first started out as a certified personal trainer, I saw so many people burn out trying to keep up that pace. But here is the truth. You do not actually get stronger while you are working out. When you exercise, you are doing the opposite of building. Whether you are doing pull-ups or air squats, you are placing stress on your muscles. You are creating microscopic tears in the muscle fibers. The workout itself is actually breaking your muscles down. The actual progress happens when you stop. During your rest days, your body goes to work repairing those tiny tears. Your system does not just patch them up to how they were before. It rebuilds the fibers slightly thicker and stronger so they can handle that stress next time. This rebuilding process is how you build strength. If you do not take rest days, you might not give your body the window of time it needs to do this repair work. Instead, you can end up continuously breaking down already damaged muscle. Over time, this leads to plateauing. You cannot get stronger, and you just feel constantly tired. So what does a rest day actually look like? It does not mean you have to lie completely still on the couch all day, although sometimes a quiet day is exactly what you need. A great option is active recovery. Think low-intensity movement. A gentle walk or some light stretching. This increases blood circulation, which delivers fresh oxygen and nutrients to your recovering muscles, helping them rebuild. As a general rule, aim for at least one to two rest days every week. If you want to see real progress from your home workouts, treat your rest days with the same respect as your training days. Rest is not wasted time. It is when your body actually builds the strength you are working so hard for. Save this video for the next time you feel guilty about taking a day off.
+
+### Script B
+
+**Why rest days make you stronger**
+
+You might think more workouts always mean more strength.
+
+Rest days let your muscles fix themselves. When I train, I create tiny tears in the tissue. Without a break, those tears don’t get fixed. The pause lets your body rebuild stronger. Try one full day off after two hard sessions. You’ll notice smoother movement next time.
+
+Rest restores your energy. I used to push every day and felt sluggish. A break clears that drag. Your next workout gets more power. Watch your pace on the first day back. If it’s slow, add another rest day.
+
+Rest keeps your routine balanced. I treat rest like a workout block. It stops burnout from stacking up. You keep showing up. Pick a fixed day each week to stay off. Use it for light movement like walking.
+
+## P19
+
+- **Request:** Vale a pena trocar o celular por uma câmera para gravar vídeos?
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** free
+- **Creator:** niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas | phrases: Simbora
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: criadores pequenos que gravam com o celular em casa, sem equipe.
+Topics: Gravar vídeos com o celular.
+Rules: never write “Promessas exageradas”.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+They film mostly: tutorials.
+Optional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Vale a pena trocar o celular por uma câmera para gravar vídeos?
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Celular ou câmera para gravar vídeos**
+
+Está pensando em juntar uma grana preta para comprar uma câmera profissional? Acha que isso vai salvar a qualidade dos seus vídeos? Calma lá. Eu vejo muito criador pequeno caindo nessa tentação. Pessoas que gravam sozinhas no quarto e culpam o celular pelo canal não crescer. Mas a verdade é outra. Para quem grava sozinho, trocar o celular por uma câmera agora pode ser o seu pior erro. Uma câmera não é só um celular maior. Ela traz um pacote de complexidades que o seu celular resolve sozinho nos bastidores. O celular foca no seu olho automaticamente. Ele compensa a luz se uma nuvem passar na janela. Ele já entrega a cor pronta para postar. Na câmera profissional, o processo é manual. Se você se inclinar dois centímetros para frente, o foco vai embora. E lá se vai o seu vídeo inteiro para o lixo. Se a luz do dia mudar um pouco, você precisa parar tudo e reajustar a exposição. E tem o fluxo de trabalho. Esse é o verdadeiro assassino de canais pequenos. Quem grava sozinho precisa de agilidade. Com o celular, o processo é direto. Você grava, edita no próprio aparelho, legenda e posta. Tudo em menos de uma hora. Com a câmera, o drama começa depois do gravando. Você precisa tirar o cartão de memória. Conectar no computador. Transferir arquivos gigantescos. Lidar com programas de edição pesados que travam a sua máquina. Ajustar as cores que vêm cinzas e sem graça. Exportar, mandar de volta para o celular e só aí publicar. Esse processo triplica o seu tempo de produção. Para quem faz tudo sozinho, perder essa agilidade é perigoso. Agora, o maior segredo sobre qualidade de imagem que ninguém te conta. Uma câmera de cinco mil reais com uma iluminação ruim entrega um resultado pior do que um celular de dois anos atrás bem iluminado. O sensor da câmera precisa de luz para trabalhar. Se você gastar todo o seu orçamento no corpo da câmera e continuar gravando com a lâmpada fraca do teto do seu quarto, a sua imagem vai continuar parecendo amadora. Só que agora, em altíssima resolução. A câmera só começa a valer a pena quando você já domina a iluminação, tem um áudio impecável e um cenário fixo onde o equipamento pode ficar montado o tempo todo. Simbora para o que realmente importa. Se você tem algum dinheiro para investir agora e quer que seus vídeos pareçam muito mais profissionais, não compre uma câmera. Invista em um bom iluminador de LED com um difusor e em um microfone de qualidade. É a luz e o som que dão o aspecto profissional ao vídeo, não o aparelho que está registrando a cena. O seu celular atual provavelmente é mais do que suficiente para o nível onde você está agora.
+
+### Script B
+
+**Celular ou câmera profissional para gravar vídeos**
+
+Você está aí, gravando seus vídeos e editando tudo no celular. De repente, bate aquela dúvida. Será que se eu comprasse uma câmera profissional meu conteúdo daria um salto? Será que vale a pena fazer esse investimento agora? Eu já passei por essa fase. E vejo muita gente cometendo um erro clássico. A resposta curta é: para a grande maioria dos criadores que gravam sozinhos em casa, não vale a pena. Simbora entender o porquê, antes que você gaste um dinheiro que faria muito mais falta no seu bolso. O primeiro ponto é a ilusão da qualidade automática. A gente vê aqueles vídeos lindos na internet e acha que é só comprar a câmera. Mas se você usar uma câmera profissional no modo automático, a imagem pode ficar pior ou igual à do seu celular. Para ter aquela imagem de cinema, você precisa dominar abertura, ISO, velocidade do obturador e, principalmente, foco e colorização. O seu celular já faz todo esse processamento pesado para você, em tempo real. Ele já te entrega a imagem pronta, colorida e focada. O segundo ponto é a barreira da complexidade. E quase ninguém fala disso. Gravar com o celular é extremamente prático. Você coloca no tripé, aperta o play, grava, edita ali mesmo e posta. Com uma câmera, o processo muda totalmente. Você precisa tirar o cartão de memória. Passar os arquivos pesados para o computador. Sincronizar o áudio que gravou separado. E depois fazer a correção de cor, porque o arquivo bruto da câmera costuma vir cinza e sem vida. Para quem grava sozinho, sem equipe, esse trabalho extra consome um tempo precioso. Tempo que deveria ser do seu roteiro. Muitas vezes, a preguiça de montar tudo faz você simplesmente desistir de gravar. Além disso, o que realmente deixa um vídeo com cara de profissional não é o tamanho da câmera. É a luz e o áudio. Uma câmera cara com uma iluminação ruim e áudio abafado vai ficar com cara de amadora. Por outro lado, um celular de dois anos atrás, bem posicionado perto de uma janela e com um microfone de lapela simples, entrega um resultado fantástico. Então, quando realmente vale a pena fazer essa troca? Só quando o seu celular se tornar o limitador real do seu trabalho. Quando você já dominar a iluminação, tiver um áudio perfeito, já gerar receita com seus vídeos e sentir falta de um controle óptico específico que o celular não consegue simular. Se você ainda não chegou nesse teto técnico, o melhor investimento que você pode fazer hoje é em um bom microfone e em um ponto de luz decente. E, acima de tudo, em aprender a usar o que você já tem no bolso. O seu celular é uma ferramenta de produção incrível. Antes de querer trocar de equipamento, certifique-se de que você já extraiu tudo o que ele pode te oferecer.
+
+## P20
+
+- **Request:** Por qué hacemos cada pieza a mano
+- **Language and platform:** es-ES, TikTok
+- **Length asked:** free
+- **Creator:** niches: Cerámica artesanal · sounds: warmCalm, casual · role: business · avoid: Hype words | phrases: Hola, familia. | openings: Story opener | endings: Follow for more
+
+**Context:**
+
+```
+Write the script in Spanish (Spain).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: the owner of a business (a shop, salon, studio or service).
+Their default voice is a team narrator (“we” and “our”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: people in the creator's local community.
+They are new to the topic: explain terms and keep steps simple.
+They watch to get inspired and decide what to buy.
+Their videos aim to sell a product or service and build a community.
+Rules: no hype words (game-changer, insane, mind-blowing, unbelievable): use plain, specific words.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound warm and calm and casual.
+Delivery: energy: balanced; sentences: a mix of short and longer; words: plain and everyday; humor: none, no jokes.
+Usual opening preference, only when supported by this request: the start of a short story. A story opening requires an experience supplied in the request; otherwise open directly on the subject.
+Usual ending preference, only if this request permits it and it serves the takeaway: inviting them to follow for more. It is optional, never an automatic sign-off.
+They film mostly: storytimes, tutorials.
+Optional familiar expressions: “Hola, familia.”. Use at most one only if natural here; omission is better than forced repetition.
+They post on Reels.
+
+The creator's request, in their exact words:
+"""
+Por qué hacemos cada pieza a mano
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**¿Por qué hacemos cada pieza a mano?**
+
+Cada pieza que sale de nuestro taller se hace a mano.
+
+Hacemos cada pieza a mano para cuidar el detalle. Si usamos máquinas, perdemos matices que solo se ven al tocar la forma. Nosotros preferimos ajustar cada curva con calma. Podéis fijaros en el borde de una pieza: si es suave por todos lados, es señal de ese trabajo pausado.
+
+La mano permite variaciones que nos gustan. Cada pieza tiene pequeñas diferencias, como en una piedra del río. Eso hace que lo que entregamos tenga su propio carácter. Si comparáis dos piezas iguales, notaréis ligeros cambios en la textura, sin que ninguna falle.
+
+Lo hecho a mano dura más en nuestro uso diario. Al no forzar el material, evitamos tensiones que aparecen con la presión rápida. Así la pieza aguanta mejor el paso del tiempo. Podéis probar a tocar la superficie: si no hay marcas rígidas, es más probable que no se agriete.
+
+### Script B
+
+**Por qué creamos cada pieza a mano**
+
+Seguramente os habéis preguntado alguna vez por qué seguimos empeñados en hacer cada pieza a mano en nuestro taller, una a una, cuando hoy en día existen procesos industriales que podrían fabricar cientos de ellas en unos minutos. La respuesta es sencilla: lo hacemos por el carácter de los materiales, por la durabilidad de los objetos y por el respeto al oficio. Cuando trabajas con materias primas, te das cuenta rápidamente de que no hay dos piezas iguales. Una veta en la madera, el grosor de una fibra o la textura de la arcilla cambian constantemente. Una máquina automatizada no entiende de estas diferencias; simplemente presiona, corta y repite el mismo patrón sin importar lo que tenga delante. Nosotros, en cambio, adaptamos la fuerza, el ángulo de la herramienta y el tiempo que le dedicamos a lo que cada pieza nos pide en ese momento. Eso hace que cada objeto que sale de nuestra tienda tenga su propia personalidad. No hay otro exactamente igual en todo el mundo. Además, el proceso manual nos permite cuidar la calidad de una forma que la producción en masa no puede igualar. Si vemos un pequeño defecto de textura o de ajuste durante el proceso, paramos, corregimos y seguimos con paciencia. No nos saltamos pasos para ahorrar tiempo. Esto significa que lo que os lleváis a vuestra casa no es un producto de usar y tirar, sino un objeto resistente, pensado para durar muchos años y para formar parte de vuestra rutina diaria. Para nuestro equipo, cada pieza que hacemos es también una forma de conectar con vosotros, nuestros vecinos. Nos gusta saber que cuando venís a la tienda y os lleváis algo, sabéis exactamente quién ha trabajado en ese objeto, cuántas horas le ha dedicado y con qué cuidado lo ha terminado. Es una relación de confianza que empieza en nuestras manos y termina en vuestras casas. Si queréis ver de cerca cómo trabajamos y sentir la diferencia de los materiales al tacto, las puertas de nuestro espacio están siempre abiertas. Nos encanta enseñaros el proceso de cerca y que forméis parte de nuestra pequeña comunidad.
+
+## P21
+
+- **Request:** Como usar a luz da janela para gravar sem estourar o rosto
+- **Language and platform:** pt-BR, TikTok
+- **Length asked:** required 54–66 s
+- **Creator:** niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas | phrases: Simbora
+
+**Context:**
+
+```
+Write the script in Portuguese (Brazil).
+Platform: TikTok.
+Format: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.
+Length: the creator chose 54 to 66 seconds of speech (about 135 to 165 words at a natural pace). Treat it as their intent: develop enough to fill it, without padding, and stay within it.
+
+About the creator (who they are and who they speak to; not a new request):
+Write in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.
+Who they are: a teacher or explainer.
+Their default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.
+Their audience: criadores pequenos que gravam com o celular em casa, sem equipe.
+Topics: Gravar vídeos com o celular.
+Rules: never write “Promessas exageradas”.
+Never swear.
+
+How the creator speaks (apply it to the form; preferences, not a new request):
+They sound casual and confident.
+Delivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.
+They film mostly: tutorials.
+Optional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.
+
+The creator's request, in their exact words:
+"""
+Como usar a luz da janela para gravar sem estourar o rosto
+"""
+
+Draft to polish:
+"""
+[draft]
+"""
+```
+
+### Script A
+
+**Como gravar com a luz da janela**
+
+Gravar com a luz da janela é ótimo. Mas se o sol estiver batendo direto, sua imagem pode ficar muito marcada ou estourada. Quer resolver isso só com o celular? Simbora. Primeiro, se a luz estiver muito forte, evite ficar totalmente de frente para o vidro. Posicione-se em um ângulo de quarenta e cinco graus em relação à janela. Isso cria uma sombra suave no seu rosto, dando profundidade ao vídeo de forma natural. Se o sol ainda estiver incomodando, feche uma cortina fina e branca. Ela funciona como um difusor profissional gigante e gratuito. Depois, ajuste a câmera. Na maioria dos celulares, basta tocar na tela sobre o seu rosto e segurar para travar o foco e a exposição. Aí, deslize o dedo para baixo para diminuir um pouco o brilho até sua pele parecer natural. Assim, a câmera não vai ficar clareando e escurecendo do nada. Testa aí hoje mesmo.
+
+### Script B
+
+**Como gravar na janela sem estourar o rosto**
+
+Gravar com a luz da janela é ótimo para quem faz vídeos em casa de forma independente. Mas, sem cuidado, seu rosto fica completamente branco e sem detalhes. É o famoso rosto estourado. Para resolver isso de graça, eu uso três técnicas simples. Simbora conferir. Primeiro: evite o sol direto. Não fique de frente para a janela sob o sol forte. Se posicione um pouco de lado, num ângulo de quarenta e cinco graus. Isso cria uma sombra suave que dá profundidade ao rosto. Segundo: use uma cortina fina e clara como barreira. Ela funciona como um difusor profissional, espalhando a luz de forma bem suave. Por fim, controle a câmera do seu celular. Toque na tela sobre o seu rosto, segure para bloquear o foco e arraste o ícone do solzinho para baixo para diminuir a exposição. Pronto, sua imagem vai ficar muito mais profissional.

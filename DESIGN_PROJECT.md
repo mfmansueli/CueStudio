@@ -2704,19 +2704,25 @@ Ultra AI* (§30). Uma resposta a comentário fica com o Apple Intelligence. Com 
 (nem o idioma que ele não escreve).
 
 **Permissão** (`UltraConsentSheet`, `UltraConsentService`, chave `ultra.consent.v1`, separada do interruptor do Apple Intelligence): antes do primeiro envio
-diz o que vai (a ideia, rede, formato, duração e as preferências do My Cue Voice), que o rascunho volta ao Google para o polimento, o que nunca vai (exemplos,
+diz o que vai (a ideia, rede, formato, duração e as preferências do My Cue Voice), que são **três etapas** (o rascunho volta ao Google para a checagem e para o polimento), o que nunca vai (exemplos,
 trechos importados, roteiros aprovados, outros roteiros, vídeos, áudio), o que o Google pode guardar (não treina sem permissão; cache de até 24 h e registro
-contra abuso; qualquer região; IP, identidade do app e token do App Check) e onde desligar. **What Cue sends** mostra o texto real das duas chamadas
-(`UltraPayloadView`), também no *What Cue sends* do My Cue Voice. **Allow Ultra AI** (no dock, no My Cue Voice e nos Settings: só escolhe a
+contra abuso; qualquer região; IP, identidade do app e token do App Check) e onde desligar. **What Cue sends** mostra o texto real das três chamadas
+(`UltraPayloadView`: 1 · Draft, 2 · Check, 3 · Polish), também no *What Cue sends* do My Cue Voice. **Allow Ultra AI** (no dock, no My Cue Voice e nos Settings: só escolhe a
 Ultra AI) ou **Allow and write with Ultra AI** (Find inspiration, que rascunha na hora) / **Keep Apple Intelligence**. Settings › Privacy & AI
-data tem o interruptor **Ultra AI** (ligar abre a folha; desligar revoga e nada mais sai, nem a segunda chamada de um roteiro em andamento) e, em Debug,
+data tem o interruptor **Ultra AI** (ligar abre a folha; desligar revoga e nada mais sai, nem a próxima chamada de um roteiro em andamento) e, em Debug,
 **Ultra AI · Lab**; o Apple Intelligence passa a dizer "Cue’s default writer. Ultra AI has its own switch." e a folha de privacidade deixa de dizer "nothing
 else" onde a Ultra AI existe.
 
-**Como escreve** (`UltraScriptService`, `UltraPayload`, `UltraInstructions`): duas chamadas pelo Firebase AI Logic (Agent Platform, `global`, modelo pedido
-`gemini-3.5-flash`, App Check), sem nova tentativa nem outro modelo: (1) um rascunho desenvolvido com quem o criador é e para quem fala; (2) o polimento
-com o jeito de falar, que devolve título, roteiro e mudanças em JSON. Só o roteiro polido vira o roteiro; um polimento que falha é uma falha ("Ultra AI
-couldn’t polish the draft · Try again"), sem o rascunho no lugar. A duração Auto é informação (não corta nem enche); uma escolhida no cartão ou pedida no
+**Como escreve** (`UltraScriptService`, `UltraPayload`, `UltraInstructions`): três chamadas pelo Firebase AI Logic (Agent Platform, `global`, modelo pedido
+`gemini-3.5-flash`, App Check), sem nova tentativa nem outro modelo (`UltraFlow.checked`): (1) um rascunho desenvolvido com quem o criador é e para quem
+fala, com exemplos dentro do mundo dele; (2) a **checagem das afirmações**, sem o jeito de falar: corrige o que é falso ou universal demais, mecanismo
+inventado, número, estudo, credencial ou "a ciência explica" que o pedido não deu e promessa absoluta, com a menor mudança, e mantém cenas imaginadas,
+opiniões, estrutura e fim (JSON com o roteiro e a lista do que corrigiu); (3) o polimento com o jeito de falar sobre o rascunho checado, que mantém as
+correções, revisa o texto (palavra faltando, uma só forma de tratamento) e devolve título, roteiro e mudanças em JSON. Na comparação às cegas de 29/10/2026
+(15 ideias, dois juízes de IA, `tools/ultra/compare.py`) o roteiro checado venceu os 6 pares contra o sem checagem (precisão 4,3–4,6 contra 3,2–3,5 de 5) e
+os 15 contra o Apple Intelligence; o laboratório ainda escolhe *Draft · polish* para comparar. O título volta a ter os acentos que o próprio roteiro usa
+(`UltraTitleAccents`: o modelo às vezes escreve "camera" sobre um roteiro que diz "câmera"). Só o roteiro polido vira o roteiro; uma checagem ou um
+polimento que falha é uma falha ("Ultra AI couldn’t polish the draft · Try again"), sem o rascunho no lugar. A duração Auto é informação (não corta nem enche); uma escolhida no cartão ou pedida no
 texto é intenção. O pedido do criador vai palavra por palavra e vence o costume do perfil (abertura, formato, CTA). Antes de cada chamada confere permissão,
 limite e cancelamento. O cliente do Firebase só é criado no primeiro roteiro permitido. Nada do pedido, da voz ou da resposta vai ao Analytics ou ao
 Crashlytics; o Console (`studio.cue` / `Ultra`) recebe só tipos, tempos e tokens.

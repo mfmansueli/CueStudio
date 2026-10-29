@@ -7,7 +7,7 @@ import Foundation
 
 /// The creator's explicit permission for Ultra to send their request and voice preferences to Google, apart from the Apple Intelligence switch:
 /// allowing or revoking one never changes the other. Revoking stops any Ultra request from going out from then on, also one waiting between its
-/// two calls (`UltraScriptService` asks again before each).
+/// calls (`UltraScriptService` asks again before each).
 @MainActor
 @Observable
 final class UltraConsentService {

@@ -119,6 +119,244 @@
         }
       }
     },
+    "[what step 2 corrected]" : {
+      "comment" : "What Cue sends for Ultra AI: placeholder for the check's list of corrections inside the third call",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[ما صحّحته الخطوة 2]"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[det, trin 2 rettede]"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[was Schritt 2 korrigiert hat]"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[lo que corrigió el paso 2]"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[ce que l’étape 2 a corrigé]"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[चरण 2 में किए गए सुधार]"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[yang dikoreksi di langkah 2]"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[cosa ha corretto il passaggio 2]"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[ステップ2での修正内容]"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[2단계에서 고친 내용]"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[det trinn 2 rettet]"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[wat stap 2 heeft verbeterd]"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[o que a etapa 2 corrigiu]"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[det som steg 2 rättade]"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[สิ่งที่ขั้นตอนที่ 2 แก้ไข]"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[2. adımda düzeltilenler]"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[những gì bước 2 đã sửa]"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[第 2 步改正的内容]"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[第 2 步更正的內容]"
+          }
+        }
+      }
+    },
+    "[the draft checked in step 2]" : {
+      "comment" : "What Cue sends for Ultra AI: placeholder for the checked draft inside the third call",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[المسودة التي تم التحقق منها في الخطوة 2]"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[udkastet tjekket i trin 2]"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[der in Schritt 2 geprüfte Entwurf]"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[el borrador comprobado en el paso 2]"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[le brouillon vérifié à l’étape 2]"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[चरण 2 में जाँचा गया ड्राफ़्ट]"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[draf yang diperiksa di langkah 2]"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[la bozza verificata nel passaggio 2]"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[ステップ2で確認した下書き]"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[2단계에서 확인한 초안]"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[utkastet sjekket i trinn 2]"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[het in stap 2 gecontroleerde concept]"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[o rascunho verificado na etapa 2]"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[utkastet som kontrollerades i steg 2]"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[ฉบับร่างที่ตรวจแล้วในขั้นตอนที่ 2]"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[2. adımda kontrol edilen taslak]"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[bản nháp đã kiểm tra ở bước 2]"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[第 2 步核查过的草稿]"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "[第 2 步查核過的草稿]"
+          }
+        }
+      }
+    },
     "%lld Ultra AI scripts a month" : {
       "comment" : "Cue Pro benefit line; the number is 30",
       "localizations" : {
@@ -1086,121 +1324,240 @@
         }
       }
     },
-    "2 · Polish" : {
-      "comment" : "Preview of what Ultra AI sends: second request",
+    "2 · Check" : {
+      "comment" : "What Cue sends for Ultra AI: heading of the second call, where the draft's claims are checked",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · التنقيح"
+            "value" : "2 · التحقق"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Finpudsning"
+            "value" : "2 · Tjek"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Feinschliff"
+            "value" : "2 · Prüfung"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Pulido"
+            "value" : "2 · Comprobación"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Finition"
+            "value" : "2 · Vérification"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · निखार"
+            "value" : "2 · जाँच"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Pemolesan"
+            "value" : "2 · Pemeriksaan"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Rifinitura"
+            "value" : "2 · Verifica"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · 仕上げ"
+            "value" : "2 · 確認"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · 다듬기"
+            "value" : "2 · 확인"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Finpuss"
+            "value" : "2 · Sjekk"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Verfijning"
+            "value" : "2 · Controle"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Refinamento"
+            "value" : "2 · Verificação"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Finputs"
+            "value" : "2 · Kontroll"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · การเกลา"
+            "value" : "2 · การตรวจ"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Son rötuş"
+            "value" : "2 · Kontrol"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · Trau chuốt"
+            "value" : "2 · Kiểm tra"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · 润色"
+            "value" : "2 · 核查"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "2 · 潤飾"
+            "value" : "2 · 查核"
+          }
+        }
+      }
+    },
+    "3 · Polish" : {
+      "comment" : "What Cue sends for Ultra AI: heading of the third call, the polish in the creator's voice",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · التنقيح"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Finpudsning"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Feinschliff"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Pulido"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Finition"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · निखार"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Pemolesan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Rifinitura"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · 仕上げ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · 다듬기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Finpuss"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Verfijning"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Refinamento"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Finputs"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · การเกลา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Son rötuş"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · Trau chuốt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · 润色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3 · 潤飾"
           }
         }
       }
@@ -4195,121 +4552,240 @@
         }
       }
     },
-    "The same request, how you speak, and the draft from step 1." : {
-      "comment" : "Preview of what Ultra AI sends: what the second request carries",
+    "The same request and who you are, with the draft from step 1, for its claims to be checked." : {
+      "comment" : "What Cue sends for Ultra AI: what the second call (the claim check) carries",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "الطلب نفسه، وطريقة كلامك، والمسودة من الخطوة 1."
+            "value" : "الطلب نفسه ومن أنت، مع المسودة من الخطوة 1، للتحقق من معلوماتها."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den samme anmodning, hvordan du taler, og udkastet fra trin 1."
+            "value" : "Den samme anmodning og hvem du er, med udkastet fra trin 1, så dets påstande kan blive tjekket."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dieselbe Anfrage, wie du sprichst, und der Entwurf aus Schritt 1."
+            "value" : "Dieselbe Anfrage und wer du bist, mit dem Entwurf aus Schritt 1, damit seine Aussagen geprüft werden."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La misma solicitud, cómo hablas y el borrador del paso 1."
+            "value" : "La misma solicitud y quién eres, con el borrador del paso 1, para comprobar sus afirmaciones."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La même demande, votre façon de parler et le brouillon de l’étape 1."
+            "value" : "La même demande et qui vous êtes, avec le brouillon de l’étape 1, pour vérifier ses affirmations."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "वही अनुरोध, आप कैसे बोलते हैं, और चरण 1 का ड्राफ़्ट।"
+            "value" : "वही अनुरोध और आप कौन हैं, चरण 1 के ड्राफ़्ट के साथ, ताकि उसके दावों की जाँच हो सके।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Permintaan yang sama, cara kamu bicara, dan draf dari langkah 1."
+            "value" : "Permintaan yang sama dan siapa kamu, dengan draf dari langkah 1, untuk memeriksa klaim di dalamnya."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "La stessa richiesta, come parli e la bozza del passaggio 1."
+            "value" : "La stessa richiesta e chi sei, con la bozza del passaggio 1, per verificarne le affermazioni."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "同じリクエスト、あなたの話し方、ステップ1の下書き。"
+            "value" : "内容の正確さを確認するための、同じリクエスト、あなたについての情報、ステップ1の下書き。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "같은 요청, 내 말투, 1단계의 초안."
+            "value" : "내용을 확인하기 위한 같은 요청, 내가 누구인지에 대한 정보, 1단계의 초안."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Den samme forespørselen, hvordan du snakker, og utkastet fra trinn 1."
+            "value" : "Den samme forespørselen og hvem du er, med utkastet fra trinn 1, slik at påstandene i det blir sjekket."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Hetzelfde verzoek, hoe je praat en het concept uit stap 1."
+            "value" : "Hetzelfde verzoek en wie je bent, met het concept uit stap 1, om de beweringen erin te controleren."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O mesmo pedido, como você fala e o rascunho da etapa 1."
+            "value" : "O mesmo pedido e quem você é, com o rascunho da etapa 1, para verificar as afirmações dele."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Samma begäran, hur du pratar och utkastet från steg 1."
+            "value" : "Samma begäran och vem du är, med utkastet från steg 1, så att påståendena i det kontrolleras."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "คำขอเดิม วิธีพูดของคุณ และฉบับร่างจากขั้นตอนที่ 1"
+            "value" : "คำขอเดิมและข้อมูลว่าคุณเป็นใคร พร้อมฉบับร่างจากขั้นตอนที่ 1 เพื่อตรวจข้อกล่าวอ้างในร่าง"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Aynı istek, nasıl konuştuğun ve 1. adımdaki taslak."
+            "value" : "Aynı istek ve kim olduğun, iddiaları kontrol edilsin diye 1. adımdaki taslakla birlikte."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Cùng yêu cầu đó, cách bạn nói và bản nháp từ bước 1."
+            "value" : "Cùng yêu cầu đó và bạn là ai, kèm bản nháp từ bước 1, để kiểm tra các nhận định trong đó."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "同样的请求、你的说话方式，以及第 1 步的草稿。"
+            "value" : "同样的请求和你是谁，以及第 1 步的草稿，用于核查其中的说法。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "同樣的要求、你的說話方式，以及第 1 步的草稿。"
+            "value" : "同樣的要求和你是誰，以及第 1 步的草稿，用於查核其中的說法。"
+          }
+        }
+      }
+    },
+    "The same request, how you speak, the draft checked in step 2 and what it corrected." : {
+      "comment" : "What Cue sends for Ultra AI: what the third call (the polish) carries",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الطلب نفسه، وطريقة كلامك، والمسودة التي تم التحقق منها في الخطوة 2 وما صحّحته."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den samme anmodning, hvordan du taler, udkastet tjekket i trin 2 og det, der blev rettet."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dieselbe Anfrage, wie du sprichst, der in Schritt 2 geprüfte Entwurf und was dabei korrigiert wurde."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La misma solicitud, cómo hablas, el borrador comprobado en el paso 2 y lo que corrigió."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La même demande, votre façon de parler, le brouillon vérifié à l’étape 2 et ce qu’elle a corrigé."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वही अनुरोध, आप कैसे बोलते हैं, चरण 2 में जाँचा गया ड्राफ़्ट और उसमें किए गए सुधार।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permintaan yang sama, cara kamu bicara, draf yang diperiksa di langkah 2, dan apa yang dikoreksinya."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La stessa richiesta, come parli, la bozza verificata nel passaggio 2 e cosa ha corretto."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同じリクエスト、あなたの話し方、ステップ2で確認した下書きと、その修正内容。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "같은 요청, 내 말투, 2단계에서 확인한 초안과 고친 내용."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Den samme forespørselen, hvordan du snakker, utkastet sjekket i trinn 2 og det som ble rettet."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hetzelfde verzoek, hoe je praat, het in stap 2 gecontroleerde concept en wat daarbij is verbeterd."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O mesmo pedido, como você fala, o rascunho verificado na etapa 2 e o que ela corrigiu."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Samma begäran, hur du pratar, utkastet som kontrollerades i steg 2 och det som rättades."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำขอเดิม วิธีพูดของคุณ ฉบับร่างที่ตรวจแล้วในขั้นตอนที่ 2 และสิ่งที่แก้ไข"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aynı istek, nasıl konuştuğun, 2. adımda kontrol edilen taslak ve düzeltilenler."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cùng yêu cầu đó, cách bạn nói, bản nháp đã kiểm tra ở bước 2 và những gì đã sửa."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同样的请求、你的说话方式、第 2 步核查过的草稿，以及它改正的内容。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "同樣的要求、你的說話方式、第 2 步查核過的草稿，以及它更正的內容。"
           }
         }
       }
@@ -4429,6 +4905,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "本月的 Ultra AI 腳本已用完 · 下個月還有"
+          }
+        }
+      }
+    },
+    "Three steps" : {
+      "comment" : "Permission sheet for Ultra AI: heading of the point about the draft, the claim check and the polish",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ثلاث خطوات"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tre trin"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drei Schritte"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tres pasos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Trois étapes"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "तीन चरण"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tiga langkah"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tre passaggi"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "3つのステップ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "세 단계"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tre trinn"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Drie stappen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Três etapas"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tre steg"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สามขั้นตอน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Üç adım"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ba bước"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "三个步骤"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "三個步驟"
           }
         }
       }
@@ -4786,125 +5381,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隨時可以關閉"
-          }
-        }
-      }
-    },
-    "Two steps" : {
-      "comment" : "Permission sheet for Ultra AI: heading of the point about the draft and its polish",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "خطوتان"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "To trin"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Zwei Schritte"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dos pasos"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deux étapes"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "दो चरण"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dua langkah"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Due passaggi"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "2つのステップ"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "두 단계"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "To trinn"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Twee stappen"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Duas etapas"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Två steg"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "สองขั้นตอน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "İki adım"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hai bước"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "两个步骤"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "兩個步驟"
           }
         }
       }
@@ -6456,121 +6932,121 @@
         }
       }
     },
-    "Ultra AI writes a draft, then polishes it in your voice: the draft is sent to Google again for the polish. It can get facts wrong, so check them before you record." : {
-      "comment" : "Permission sheet for Ultra AI: the two requests",
+    "Ultra AI writes a draft, checks its claims, then polishes it in your voice: the draft goes back to Google for each step. It can still get facts wrong, so check them before you record." : {
+      "comment" : "Permission sheet for Ultra AI: the three calls a script makes",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "يكتب Ultra AI مسودة ثم ينقّحها بأسلوبك: تُرسَل المسودة إلى Google مرة أخرى للتنقيح. قد يخطئ في المعلومات، لذا تحقق منها قبل التسجيل."
+            "value" : "يكتب Ultra AI مسودة، ثم يتحقق من معلوماتها، ثم ينقّحها بأسلوبك: تُرسَل المسودة إلى Google مرة أخرى في كل خطوة. وقد يظل يخطئ في المعلومات، لذا تحقق منها قبل التسجيل."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI laver et udkast og finpudser det derefter med din stemme: udkastet sendes igen til Google til finpudsningen. Det kan tage fejl af fakta, så tjek dem, før du optager."
+            "value" : "Ultra AI laver et udkast, tjekker dets påstande og finpudser det derefter med din stemme: udkastet sendes til Google igen ved hvert trin. Det kan stadig tage fejl af fakta, så tjek dem, før du optager."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI erstellt einen Entwurf und überarbeitet ihn dann in deinem Ton: Dafür geht der Entwurf noch einmal an Google. Es kann sich bei Fakten irren, also prüfe sie vor der Aufnahme."
+            "value" : "Ultra AI erstellt einen Entwurf, prüft seine Aussagen und überarbeitet ihn dann in deinem Ton: Dafür geht der Entwurf bei jedem Schritt erneut an Google. Es kann sich trotzdem bei Fakten irren, also prüfe sie vor der Aufnahme."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI redacta un borrador y luego lo pule con tu voz: el borrador se envía de nuevo a Google para pulirlo. Puede equivocarse en los datos, así que revísalos antes de grabar."
+            "value" : "Ultra AI redacta un borrador, comprueba sus afirmaciones y luego lo pule con tu voz: el borrador vuelve a enviarse a Google en cada paso. Aun así puede equivocarse en los datos, así que revísalos antes de grabar."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI rédige un brouillon, puis le peaufine avec votre voix : le brouillon est de nouveau envoyé à Google pour la finition. Il peut se tromper sur les faits, alors vérifiez-les avant de filmer."
+            "value" : "Ultra AI rédige un brouillon, vérifie ses affirmations, puis le peaufine avec votre voix : le brouillon est renvoyé à Google à chaque étape. Il peut quand même se tromper sur les faits, alors vérifiez-les avant de filmer."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI पहले ड्राफ़्ट बनाता है, फिर उसे आपकी आवाज़ में निखारता है: निखारने के लिए ड्राफ़्ट फिर से Google को भेजा जाता है। यह तथ्यों में गलती कर सकता है, इसलिए रिकॉर्ड से पहले उन्हें जाँचें।"
+            "value" : "Ultra AI पहले ड्राफ़्ट बनाता है, फिर उसके दावों की जाँच करता है, और फिर उसे आपकी आवाज़ में निखारता है: हर चरण के लिए ड्राफ़्ट फिर से Google को भेजा जाता है। फिर भी यह तथ्यों में गलती कर सकता है, इसलिए रिकॉर्ड से पहले उन्हें जाँचें।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI menyusun draf, lalu memolesnya dengan suaramu: untuk pemolesan, draf dikirim lagi ke Google. Ultra AI bisa salah soal fakta, jadi cek sebelum merekam."
+            "value" : "Ultra AI menyusun draf, memeriksa klaim di dalamnya, lalu memolesnya dengan suaramu: draf dikirim lagi ke Google di setiap langkah. Ultra AI tetap bisa salah soal fakta, jadi cek sebelum merekam."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI crea una bozza, poi la rifinisce con la tua voce: per la rifinitura la bozza viene inviata di nuovo a Google. Può sbagliare i fatti, quindi controllali prima di registrare."
+            "value" : "Ultra AI crea una bozza, ne verifica le affermazioni, poi la rifinisce con la tua voce: a ogni passaggio la bozza viene inviata di nuovo a Google. Può comunque sbagliare i fatti, quindi controllali prima di registrare."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AIは下書きを作り、あなたらしく仕上げます。仕上げのため、下書きはもう一度Googleに送られます。事実を誤ることがあるので、録画前に確認してください。"
+            "value" : "Ultra AIは下書きを作り、内容の正確さを確認してから、あなたらしく仕上げます。各ステップで下書きはもう一度Googleに送られます。それでも事実を誤ることがあるので、録画前に確認してください。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI는 초안을 만든 뒤 내 목소리로 다듬어요. 다듬기 위해 초안이 Google로 한 번 더 전송돼요. 사실을 틀릴 수 있으니 녹화 전에 확인하세요."
+            "value" : "Ultra AI는 초안을 만들고, 내용이 맞는지 확인한 뒤 내 목소리로 다듬어요. 단계마다 초안이 Google로 다시 전송돼요. 그래도 사실을 틀릴 수 있으니 녹화 전에 확인하세요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI lager et utkast og finpusser det så med stemmen din: utkastet sendes til Google igjen for finpussen. Det kan ta feil om fakta, så sjekk dem før du tar opp."
+            "value" : "Ultra AI lager et utkast, sjekker påstandene i det og finpusser det så med stemmen din: utkastet sendes til Google igjen for hvert trinn. Det kan fortsatt ta feil om fakta, så sjekk dem før du tar opp."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI maakt een concept en verfijnt het daarna in jouw stem: daarvoor gaat het concept nog een keer naar Google. Het kan zich vergissen in feiten, dus check ze vóór het opnemen."
+            "value" : "Ultra AI maakt een concept, controleert de beweringen erin en verfijnt het daarna in jouw stem: bij elke stap gaat het concept opnieuw naar Google. Het kan zich nog steeds vergissen in feiten, dus check ze vóór het opnemen."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "O Ultra AI faz um rascunho e depois o refina na sua voz: o rascunho é enviado de novo ao Google para o refinamento. Ele pode errar fatos, então confira antes de gravar."
+            "value" : "O Ultra AI faz um rascunho, verifica as afirmações dele e depois o refina na sua voz: o rascunho volta ao Google a cada etapa. Ele ainda pode errar fatos, então confira antes de gravar."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI gör ett utkast och finputsar det sedan med din röst: utkastet skickas då till Google igen. Det kan ha fel om fakta, så kolla dem innan du spelar in."
+            "value" : "Ultra AI gör ett utkast, kollar påståendena i det och finputsar det sedan med din röst: utkastet skickas till Google igen i varje steg. Det kan fortfarande ha fel om fakta, så kolla dem innan du spelar in."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI จะร่างก่อน แล้วเกลาให้เป็นแบบของคุณ โดยส่งฉบับร่างไปยัง Google อีกครั้งเพื่อเกลา Ultra AI อาจให้ข้อเท็จจริงผิด จึงควรตรวจก่อนอัด"
+            "value" : "Ultra AI จะร่างก่อน ตรวจข้อกล่าวอ้างในร่าง แล้วเกลาให้เป็นแบบของคุณ โดยส่งฉบับร่างไปยัง Google อีกครั้งในแต่ละขั้นตอน Ultra AI ยังอาจให้ข้อเท็จจริงผิด จึงควรตรวจก่อนอัด"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI önce bir taslak hazırlar, sonra senin tarzınla son rötuşunu yapar: son rötuş için taslak Google’a bir kez daha gönderilir. Bilgilerde yanılabilir, bu yüzden kayıttan önce kontrol et."
+            "value" : "Ultra AI önce bir taslak hazırlar, içindeki iddiaları kontrol eder, sonra senin tarzınla son rötuşunu yapar: taslak her adımda Google’a yeniden gönderilir. Yine de bilgilerde yanılabilir, bu yüzden kayıttan önce kontrol et."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI soạn một bản nháp rồi trau chuốt theo giọng của bạn: bản nháp được gửi đến Google thêm một lần để trau chuốt. Ultra AI có thể sai thông tin, nên hãy kiểm tra trước khi quay."
+            "value" : "Ultra AI soạn một bản nháp, kiểm tra các nhận định trong đó rồi trau chuốt theo giọng của bạn: bản nháp được gửi lại đến Google ở mỗi bước. Ultra AI vẫn có thể sai thông tin, nên hãy kiểm tra trước khi quay."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI 先起草，再用你的口吻润色：润色时草稿会再次发送给 Google。它可能弄错事实，录制前请核对。"
+            "value" : "Ultra AI 先起草，再核查其中的说法，然后用你的口吻润色：每一步草稿都会再次发送给 Google。它仍可能弄错事实，录制前请核对。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Ultra AI 先起草，再用你的口吻潤飾：潤飾時草稿會再次傳送給 Google。它可能出錯，錄影前請核對事實。"
+            "value" : "Ultra AI 先起草，再查核其中的說法，然後用你的口吻潤飾：每一步草稿都會再次傳送給 Google。它仍可能出錯，錄影前請核對事實。"
           }
         }
       }

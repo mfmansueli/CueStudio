@@ -18,6 +18,6 @@ protocol UltraScriptWriting: AnyObject {
     var membership: UltraAllowance.Membership? { get }
     /// Apple Intelligence wrote something for the creator (the invitation to try Ultra comes after the first time).
     func noteAIUse()
-    /// Writes the developed draft and polishes it; only the polished script comes back. Throws `UltraError`, or `CancellationError`.
+    /// Writes the developed draft, checks its claims and polishes it; only the polished script comes back. Throws `UltraError`, or `CancellationError`.
     func generate(_ request: ScriptRequest, reporting meter: WritingProgressMeter?) async throws -> GeneratedScript
 }

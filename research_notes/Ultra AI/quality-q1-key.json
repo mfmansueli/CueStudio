@@ -1,0 +1,170 @@
+{
+  "P01": {
+    "comparison": "polished-vs-checked",
+    "A": "polished",
+    "B": "checked",
+    "id": "t1-window-light",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P02": {
+    "comparison": "apple-vs-checked",
+    "A": "apple",
+    "B": "checked",
+    "id": "t3-teleprompter",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P03": {
+    "comparison": "apple-vs-checked",
+    "A": "apple",
+    "B": "checked",
+    "id": "es-ES-1",
+    "kind": "profile",
+    "language": "es-ES"
+  },
+  "P04": {
+    "comparison": "polished-vs-checked",
+    "A": "polished",
+    "B": "checked",
+    "id": "t6-sleep-spending",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P05": {
+    "comparison": "polished-vs-checked",
+    "A": "checked",
+    "B": "polished",
+    "id": "t4-sound",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P06": {
+    "comparison": "apple-vs-checked",
+    "A": "checked",
+    "B": "apple",
+    "id": "pt-BR-2",
+    "kind": "profile",
+    "language": "pt-BR"
+  },
+  "P07": {
+    "comparison": "apple-vs-checked",
+    "A": "apple",
+    "B": "checked",
+    "id": "t4-sound",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P08": {
+    "comparison": "apple-vs-checked",
+    "A": "checked",
+    "B": "apple",
+    "id": "es-ES-2",
+    "kind": "profile",
+    "language": "es-ES"
+  },
+  "P09": {
+    "comparison": "apple-vs-checked",
+    "A": "apple",
+    "B": "checked",
+    "id": "es-ES-0",
+    "kind": "profile",
+    "language": "es-ES"
+  },
+  "P10": {
+    "comparison": "apple-vs-checked",
+    "A": "checked",
+    "B": "apple",
+    "id": "pt-BR-1",
+    "kind": "profile",
+    "language": "pt-BR"
+  },
+  "P11": {
+    "comparison": "apple-vs-checked",
+    "A": "apple",
+    "B": "checked",
+    "id": "en-US-1",
+    "kind": "profile",
+    "language": "en-US"
+  },
+  "P12": {
+    "comparison": "polished-vs-checked",
+    "A": "polished",
+    "B": "checked",
+    "id": "t2-camera-upgrade",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P13": {
+    "comparison": "apple-vs-checked",
+    "A": "checked",
+    "B": "apple",
+    "id": "en-US-0",
+    "kind": "profile",
+    "language": "en-US"
+  },
+  "P14": {
+    "comparison": "polished-vs-checked",
+    "A": "checked",
+    "B": "polished",
+    "id": "t3-teleprompter",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P15": {
+    "comparison": "apple-vs-checked",
+    "A": "checked",
+    "B": "apple",
+    "id": "pt-BR-0",
+    "kind": "profile",
+    "language": "pt-BR"
+  },
+  "P16": {
+    "comparison": "polished-vs-checked",
+    "A": "checked",
+    "B": "polished",
+    "id": "t5-emergency-fund",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P17": {
+    "comparison": "apple-vs-checked",
+    "A": "checked",
+    "B": "apple",
+    "id": "t6-sleep-spending",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P18": {
+    "comparison": "apple-vs-checked",
+    "A": "checked",
+    "B": "apple",
+    "id": "t1-window-light",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P19": {
+    "comparison": "apple-vs-checked",
+    "A": "apple",
+    "B": "checked",
+    "id": "t2-camera-upgrade",
+    "kind": "technical",
+    "language": "pt-BR"
+  },
+  "P20": {
+    "comparison": "apple-vs-checked",
+    "A": "checked",
+    "B": "apple",
+    "id": "en-US-2",
+    "kind": "profile",
+    "language": "en-US"
+  },
+  "P21": {
+    "comparison": "apple-vs-checked",
+    "A": "checked",
+    "B": "apple",
+    "id": "t5-emergency-fund",
+    "kind": "technical",
+    "language": "pt-BR"
+  }
+}

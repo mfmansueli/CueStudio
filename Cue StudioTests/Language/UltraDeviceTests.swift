@@ -9,8 +9,8 @@ import Testing
 
 /// Ultra AI for real on the iPhone, with synthetic data only (a made-up creator, never the owner's profile): the real Firebase client, the lab's
 /// configuration and App Check token copied into the app's Documents, and the app's own call count (the 300 calls the owner authorized, kept in the
-/// app's standard defaults, so these calls are counted with the ones made by hand). Each case is two calls (draft and polish); the five together
-/// are ten.
+/// app's standard defaults, so these calls are counted with the ones made by hand). Each case is three calls (draft, check and polish, the app's
+/// flow); the five together are fifteen.
 ///
 /// - `scriptsDock`: an idea typed on the dock, Auto length (information, not a target), the synthetic voice.
 /// - `findInspiration`: an idea from Find inspiration with its angle and opening line, one minute chosen.

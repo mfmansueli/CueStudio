@@ -16,7 +16,7 @@ nonisolated struct UltraRun: Hashable, Sendable {
     var reviewSeconds: Double
     var draftReply: UltraModelReply
     var reviewReply: UltraModelReply
-    var flow = UltraFlow.polished
+    var flow = UltraFlow.checked
     /// The draft after the claim check (nil without one).
     var checked: String?
     var corrections: [String] = []
