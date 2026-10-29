@@ -167,14 +167,16 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     }
 
     /// Reset clip: the same stretch of its recording as filmed, at 1× with its sound at 100% and on (unless `keepsMute`: its sound
-    /// was taken out to a track), without zoom, look, Stabilize, mirror, turn, crop, animation or sound fades. Where it is, what
-    /// it plays and the transition into it stay.
-    func asRecorded(keepsMute: Bool) -> EditSegment {
+    /// was taken out to a track), without zoom, look of its own, Stabilize, mirror, turn, crop, animation or sound fades. `look` is
+    /// what it needs to show none of the whole video's look either (`ClipLook.asFilmed`). Where it is, what it plays and the
+    /// transition into it stay.
+    func asRecorded(keepsMute: Bool, look: ClipLook? = nil) -> EditSegment {
         var clip = EditSegment(
             id: id, sourceStart: sourceStart, sourceEnd: sourceEnd, transitionIn: transitionIn, sourceID: sourceID
         )
         clip.transitionDuration = transitionDuration
         clip.isMuted = keepsMute && isMuted
+        clip.look = look
         return clip
     }
 

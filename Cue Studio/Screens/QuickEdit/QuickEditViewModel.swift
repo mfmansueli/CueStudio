@@ -410,11 +410,13 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     }
 
     /// What the preview plays: the edit (without what a finger is dragging; with the picked clip's whole picture while Crop is
-    /// open), or while comparing, the take's sound untreated at the same loudness.
+    /// open), while ◐ is held the picture as recorded (Adjust, Filters, Background) or without Skin (Skin), or while comparing
+    /// the sound, the take's sound untreated at the same loudness.
     var playedEdit: TakeEdit {
-        let looked = clips.showingWholePicture(in: look.comparesPicture ? edit.withoutPictureLook() : edit)
-        let compared = blur.withoutComparedBlur(overlays.withoutComparedMask(looked))
-        let shown = overlays.hidingDraggedOverlay(in: compared)
+        let compared = look.comparesPicture ? edit.withoutPictureLook() : look.comparesSkin ? edit.withoutSkin() : edit
+        let looked = clips.showingWholePicture(in: compared)
+        let unmasked = blur.withoutComparedBlur(overlays.withoutComparedMask(looked))
+        let shown = overlays.hidingDraggedOverlay(in: unmasked)
         guard audio.comparesOriginal, let volume = audio.originalVolume else { return shown }
         var played = shown
         played.audioVersion = VoiceProcessing.currentVersion
@@ -452,6 +454,12 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         toolMenu = nil
         panel = nil
         isFullScreen.toggle()
+    }
+
+    /// The arrow at the video's foot and the swipe it stands for: while the editor shows the video with nothing open over it
+    /// (and in full screen), not while a voice-over records.
+    var swipesFullScreen: Bool {
+        isReady && panel == nil && !audio.isRecordingVoiceOver
     }
 
     /// A tap on the preview beside what's laid on the video: lets go of a picked text, caption or

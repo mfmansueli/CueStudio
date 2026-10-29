@@ -216,19 +216,16 @@ struct QuickEditMainBarClipToolsTests {
 
     // MARK: - Skin
 
-    @Test func skinKeepsItsFocusWhileAdjustIsOpen() async {
+    @Test func skinIsItsOwnPanelAndLookToolApartFromAdjust() async {
         let scenario = await makeScenario()
         let viewModel = scenario.viewModel
         viewModel.perform(.openLook(.skin, wholeVideo: true))
-        #expect(viewModel.look.lookTool == .skin)
-        // Adjust takes its one-time scroll target; the focus stays.
-        viewModel.look.adjustOpensOn = nil
-        #expect(viewModel.look.lookTool == .skin)
+        #expect(viewModel.panel == .skin && viewModel.look.openLookTool == .skin)
         viewModel.closePanel()
-        #expect(viewModel.look.lookTool == nil)
+        #expect(viewModel.look.openLookTool == nil)
         viewModel.perform(.openLook(.adjust, wholeVideo: true))
-        #expect(viewModel.look.lookTool == .adjust)
+        #expect(viewModel.panel == .adjust && viewModel.look.openLookTool == .adjust)
         viewModel.perform(.open(.filters))
-        #expect(viewModel.look.lookTool == nil)
+        #expect(viewModel.look.openLookTool == .filters)
     }
 }

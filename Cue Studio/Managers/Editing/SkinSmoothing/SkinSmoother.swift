@@ -27,6 +27,7 @@ nonisolated final class SkinSmoother: @unchecked Sendable {
         var center: CGPoint
         var region: CGRect
         var mask: CIImage
+        var faceMask: CIImage
         var tone: SkinTone
         var width: Double
     }
@@ -57,9 +58,9 @@ nonisolated final class SkinSmoother: @unchecked Sendable {
         self.detector = detector
     }
 
-    /// `pass(for:stream:epoch:time:)` when the dial is above 0, and nothing, without looking at the picture, when it is 0: the bypass.
-    func pass(for image: CIImage, value: Double, stream: Stream, epoch: Double, time: TimeInterval) -> SkinSmoothingPass? {
-        guard SkinSmoothingCalibration.isOn(value) else { return nil }
+    /// `pass(for:stream:epoch:time:)` when Skin has something on, and nothing, without looking at the picture, when everything is at 0: the bypass.
+    func pass(for image: CIImage, skin: SkinLook, stream: Stream, epoch: Double, time: TimeInterval) -> SkinSmoothingPass? {
+        guard skin.isOn else { return nil }
         return pass(for: image, stream: stream, epoch: epoch, time: time)
     }
 
@@ -89,10 +90,12 @@ nonisolated final class SkinSmoother: @unchecked Sendable {
             // A frame between two detections: the face's mask moves with the face, a little each frame.
             let dx = (now.landmarks.center.x - face.center.x) * size.width, dy = (now.landmarks.center.y - face.center.y) * size.height
             let moved = dx != 0 || dy != 0
+            let shift = CGAffineTransform(translationX: dx, y: dy)
             return SkinFace(
                 region: moved ? face.region.offsetBy(dx: dx, dy: dy) : face.region,
-                mask: moved ? face.mask.transformed(by: CGAffineTransform(translationX: dx, y: dy)) : face.mask,
-                tone: face.tone, width: face.width, presence: now.presence
+                mask: moved ? face.mask.transformed(by: shift) : face.mask,
+                faceMask: moved ? face.faceMask.transformed(by: shift) : face.faceMask,
+                tone: face.tone, width: face.width, presence: now.presence, trust: SkinBeautyCalibration.trust(now.landmarks.confidence)
             )
         })
     }
@@ -128,7 +131,7 @@ nonisolated final class SkinSmoother: @unchecked Sendable {
         let extent = image.extent
         guard face.landmarks.box.width * extent.width >= SkinSmoothingCalibration.minimumFaceWidth,
               let mask = SkinMaskRaster.make(face.landmarks, frame: extent.size), mask.coreCount >= SkinToneAnalyzer.minimumSamples,
-              let maskImage = mask.image()
+              let maskImage = mask.image(), let faceImage = mask.faceImage()
         else { return nil }
         let scale = reduced.scale
         let region = CGRect(x: mask.region.minX * scale, y: mask.region.minY * scale, width: mask.region.width * scale, height: mask.region.height * scale)
@@ -136,7 +139,8 @@ nonisolated final class SkinSmoother: @unchecked Sendable {
         let patch = noisePatch(of: image, mask: mask)
         guard let tone = SkinToneAnalyzer.measure(rgba: pixels, core: mask.core, noise: patch) else { return nil }
         return Prepared(
-            id: face.id, center: face.landmarks.center, region: mask.region, mask: maskImage, tone: tone, width: face.landmarks.box.width * extent.width
+            id: face.id, center: face.landmarks.center, region: mask.region, mask: maskImage, faceMask: faceImage, tone: tone,
+            width: face.landmarks.box.width * extent.width
         )
     }
 

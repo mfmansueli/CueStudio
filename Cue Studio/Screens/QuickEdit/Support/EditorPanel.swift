@@ -11,7 +11,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     // The selected clip
     case speed, zoom, volume, stabilize, clipCrop, clipAnimation
     // The whole take
-    case voice, pauses, adjust, filters, crop, background
+    case voice, pauses, adjust, skin, filters, crop, background
     // Captions
     case captions, autoCaptions, captionStyle
     // Texts
@@ -32,7 +32,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     var size: EditorPanelSize {
         switch self {
         case .zoom, .volume, .filters, .voiceOver, .autoCaptions: .mini
-        case .speed, .voice, .pauses, .captions, .adjust, .background, .media, .smart, .transition, .crop, .stabilize, .beats: .medium
+        case .speed, .voice, .pauses, .captions, .adjust, .skin, .background, .media, .smart, .transition, .crop, .stabilize, .beats: .medium
         case .clipCrop, .clipAnimation: .medium
         case .mask, .blur, .motion: .medium
         case .textStyle, .captionStyle: .full
@@ -78,7 +78,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     /// The panels that change the take's look, or one clip's when opened from a picked clip.
     var hasClipScope: Bool {
         switch self {
-        case .adjust, .filters, .background: true
+        case .adjust, .skin, .filters, .background: true
         default: false
         }
     }
@@ -110,6 +110,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .voice: String(localized: "Studio Voice")
         case .pauses: String(localized: "Pauses")
         case .adjust: String(localized: "Adjust")
+        case .skin: EditorLookTool.skin.label
         case .filters: String(localized: "Filters")
         case .crop: String(localized: "Format")
         case .background: String(localized: "Background")

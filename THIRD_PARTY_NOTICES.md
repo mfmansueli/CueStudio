@@ -2,7 +2,7 @@
 
 ## YUCIHighPassSkinSmoothing (evaluated; not adopted, no code copied)
 
-Skin Smoothing (Quick edit › Adjust) was built after evaluating
+Skin's first smoothing (engine 1, `SkinSmoothingFilter`; Quick edit › Skin keeps it for the edits made with it) was built after evaluating
 [YuAo/YUCIHighPassSkinSmoothing](https://github.com/YuAo/YUCIHighPassSkinSmoothing) (version 1.4, last commit 26 Feb 2020),
 a Core Image implementation of the photo editors' *high-pass skin smoothing* (frequency separation).
 
@@ -22,6 +22,8 @@ detail. Everything else is Cue's own, written with Core Image's built-in filters
 landmarks to find the skin and take out the eyes, brows and lips; a skin-tone gate measured on each face; a masked blur that counts only skin;
 edge-aware coring of the texture (small detail is softened, edges and hair are kept); a capped strength. See `Cue Studio/Managers/Editing/SkinSmoothing/`
 and `FrameLook`'s documentation. None of the reference's source (`.cikernel` or Objective-C) is copied, and its constants are not used.
+Today's smoothing (engine 2, `SkinBeautyFilter`), the face light and the anti-shine owe nothing to it either: an edge-aware evening after the
+published guided filter of He, Sun and Tang, and morphology, written with Core Image's built-in filters.
 
 Because the technique, and not the code, was taken from it, no part of the MIT license has to travel with Cue's binary; the license is kept here
 anyway, with the evaluation, so the origin of the idea is on record.

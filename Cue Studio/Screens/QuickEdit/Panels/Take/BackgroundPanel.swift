@@ -31,9 +31,9 @@ struct BackgroundPanel: View {
         .task { await viewModel.look.checkBackgroundSupport() }
     }
 
-    /// Only for a clip, and only once it sets its own background: back to its recording's.
+    /// Only for a clip, and only while it shows a background: back to as recorded.
     private var reset: (() -> Void)? {
-        guard viewModel.look.clipOverridesBackground else { return nil }
+        guard viewModel.look.canResetClipBackground else { return nil }
         return { viewModel.look.resetClipBackground() }
     }
 

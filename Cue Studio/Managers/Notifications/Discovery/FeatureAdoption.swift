@@ -18,7 +18,7 @@ nonisolated enum FeatureAdoption {
         if !edit.captions.isEmpty { used.insert(.autoCaptions) }
         if !edit.captionTranslations.isEmpty { used.insert(.captionTranslation) }
         if edit.voiceEnhancement != .soft || edit.noiseReduction != .off { used.insert(.studioVoice) }
-        if edit.skinSmoothing > 0 || edit.timeline.segments.contains(where: { ($0.look?.skinSmoothing ?? 0) > 0 }) { used.insert(.skinSmoothing) }
+        if edit.hasSkin { used.insert(.skinSmoothing) }
         if !edit.backgrounds.isEmpty { used.insert(.backgrounds) }
         if edit.cover != nil { used.insert(.covers) }
         if !edit.media.isEmpty { used.insert(.layers) }

@@ -6,13 +6,15 @@
 import AVFoundation
 import CoreImage
 import Foundation
+import os
 import Testing
 import UIKit
 @testable import Cue_Studio
 
-/// Skin Smoothing on a real face, with the real Vision detector, on this device: how long a frame takes at 1080p and 4K, whether the smoothing holds
-/// steady while the face moves, and whether the preview and the export match. Needs a portrait photo with a face (it is moved and zoomed into a video:
-/// there is no footage of people in the repository); the results are printed as `SKIN SMOOTHING …` lines.
+/// Skin on a real face, with the real Vision detector, on this device: how much each step of Smooth takes off the skin (and today's top against the
+/// first engine's), how long a frame takes at 1080p and 4K with every control at its top, whether it holds steady while the face moves, whether the
+/// preview and the export match, and what an export costs in time and memory. Needs a portrait photo with a face (it is moved and zoomed into a
+/// video: there is no footage of people in the repository); the results are printed as `SKIN SMOOTHING …` lines.
 ///
 /// Opt-in: `TEST_RUNNER_CUE_SKIN_E2E=1 TEST_RUNNER_CUE_SKIN_MEDIA=<photo> xcodebuild … -only-testing:"Cue StudioTests/SkinSmoothingDeviceTests" test`.
 /// On a device the photo is a file in the app's Documents folder (`xcrun devicectl device copy to … --domain-type appDataContainer
@@ -33,6 +35,9 @@ struct SkinSmoothingDeviceTests {
     }
 
     private static let frames = 90
+
+    /// Every control of Skin at its top: the heaviest a frame gets.
+    private static let top = SkinLook(smoothing: SkinSmoothing(amount: 100), faceLight: 100, antiShine: 100)
 
     private func photo() throws -> CIImage {
         let path = try #require(ProcessInfo.processInfo.environment["CUE_SKIN_MEDIA"], "CUE_SKIN_MEDIA names the photo")
@@ -82,13 +87,55 @@ struct SkinSmoothingDeviceTests {
         #expect(inFrame.count == 1, "…and in the frame the video is made of")
     }
 
+    /// Smooth's steps on the real face (0, 25, 50, 75 and 100 on today's engine, Texture as it starts) and the first engine at 100: the detail left
+    /// on the skin, in two bands (the grain, |picture − blur 0.4%|, and the spots and unevenness, |blur 0.4% − blur 3%|, in fractions of the face's
+    /// width), under the skin mask, relative to the picture's own. Each step takes more, and today's top takes more of the spots than the first's.
+    @Test func eachStepSmoothsMoreAndTodaysTopGoesFurtherThanTheFirst() throws {
+        let source = try photo()
+        let image = frame(0, of: source, size: Resolution.hd.size)
+        let context = CIContext(options: [.cacheIntermediates: false])
+        let pass = SkinSmoother(context: context).pass(for: image, stream: .main, epoch: 0, time: 0)
+        let face = try #require(pass.faces.first, "Vision finds the face")
+        let region = face.region
+        let mask = face.mask.cropped(to: region)
+        func mean(_ picture: CIImage) -> Double {
+            var pixel = [Float](repeating: 0, count: 4)
+            let average = picture.applyingFilter("CIAreaAverage", parameters: [kCIInputExtentKey: CIVector(cgRect: region)])
+            context.render(average, toBitmap: &pixel, rowBytes: 16, bounds: CGRect(x: 0, y: 0, width: 1, height: 1), format: .RGBAf, colorSpace: nil)
+            return Double(pixel[0] + pixel[1] + pixel[2]) / 3
+        }
+        func blurred(_ picture: CIImage, _ share: Double) -> CIImage {
+            picture.clampedToExtent().applyingGaussianBlur(sigma: max(1, face.width * share)).cropped(to: region)
+        }
+        func band(_ first: CIImage, _ second: CIImage) -> Double {
+            let difference = first.applyingFilter("CIDifferenceBlendMode", parameters: [kCIInputBackgroundImageKey: second])
+            return mean(difference.applyingFilter("CIMultiplyCompositing", parameters: [kCIInputBackgroundImageKey: mask])) / max(mean(mask), 0.000_1)
+        }
+        func detail(_ skin: SkinLook) -> (grain: Double, spots: Double) {
+            let picture = pass.apply(skin, to: image).cropped(to: region)
+            let fine = blurred(picture, 0.004)
+            return (band(picture, fine), band(fine, blurred(picture, 0.03)))
+        }
+        let steps = [0.0, 25, 50, 75, 100].map { detail(.smoothing($0)) }
+        let first = detail(.firstEngine(100))
+        let base = steps[0]
+        func percent(_ value: Double, of whole: Double) -> String { String(format: "%.0f", value / max(whole, 0.000_001) * 100) }
+        note(
+            "SKIN SMOOTHING detail left on the skin, grain / spots % · today 0, 25, 50, 75, 100: "
+                + steps.map { percent($0.grain, of: base.grain) + "/" + percent($0.spots, of: base.spots) }.joined(separator: " · ")
+                + " · first engine at 100: " + percent(first.grain, of: base.grain) + "/" + percent(first.spots, of: base.spots)
+        )
+        #expect(zip(steps, steps.dropFirst()).allSatisfy { $1.spots < $0.spots }, "each step takes more of the spots")
+        #expect(steps[4].spots < first.spots * 0.9, "today's top goes clearly further than the first engine's")
+    }
+
     @Test(arguments: Resolution.allCases)
     func aFrameCostsLittleAndTheSmoothingHoldsSteady(_ resolution: Resolution) throws {
         let source = try photo()
         let context = CIContext(options: [.cacheIntermediates: false])
         let smoother = SkinSmoother(context: context)
         var look = LookSettings()
-        look.skinSmoothing = 100
+        look.skin = Self.top
         var buffer: CVPixelBuffer?
         CVPixelBufferCreate(nil, Int(resolution.size.width), Int(resolution.size.height), kCVPixelFormatType_32BGRA, nil, &buffer)
         let target = try #require(buffer)
@@ -113,7 +160,10 @@ struct SkinSmoothingDeviceTests {
         }
         // The first frames pay for loading Vision's models and compiling the filters, once.
         let warm = Array(smoothed.dropFirst(5)), warmBaseline = Array(baseline.dropFirst(5))
-        note("SKIN SMOOTHING \(resolution.rawValue) · faces \(faces.min() ?? 0)–\(faces.max() ?? 0) · frame with it \(report(warm)) · without \(report(warmBaseline))")
+        note(
+            "SKIN SMOOTHING \(resolution.rawValue) · faces \(faces.min() ?? 0)–\(faces.max() ?? 0) · frame with every control at 100 \(report(warm))"
+                + " · without \(report(warmBaseline))"
+        )
         #expect(faces.min() ?? 0 >= 1, "the face is found in every frame")
         // Steady: the face is there in full all the time and its region never jumps by more than a few percent of the frame in one frame.
         #expect(presences.allSatisfy { $0 == 1 })
@@ -122,19 +172,23 @@ struct SkinSmoothingDeviceTests {
         #expect((jumps.max() ?? 0) < 0.04)
     }
 
-    /// Where the time of a frame goes: Vision finding the face, the face prepared (mask, tone, noise: Vision left out), and the picture drawn with and
-    /// without the smoothing. Each at 1080p and 4K, p50 and p95 over the frames.
+    /// Where the time of a frame goes: Vision finding the face, the face prepared (mask, tone, noise: Vision left out; here every frame is a
+    /// detection, so the tone is measured on each), and the picture drawn without Skin and with each look: the first engine at 100, today's Smooth at
+    /// 100 alone, Studio, every control at 100. Each at 1080p and 4K, p50 and p95 over the frames.
     @Test(arguments: Resolution.allCases)
     func whereTheTimeOfAFrameGoes(_ resolution: Resolution) throws {
         let source = try photo()
         let context = CIContext(options: [.cacheIntermediates: false])
         let detector = VisionFaceDetector()
-        var look = LookSettings()
-        look.skinSmoothing = 100
+        let looks: [(name: String, skin: SkinLook)] = [
+            ("first engine at 100", .firstEngine(100)), ("Smooth at 100", .smoothing(100)), ("Face light at 100", SkinLook(faceLight: 100)),
+            ("Anti-shine at 100", SkinLook(antiShine: 100)), ("Studio", SkinPreset.studio.look), ("every control at 100", Self.top),
+        ]
         var buffer: CVPixelBuffer?
         CVPixelBufferCreate(nil, Int(resolution.size.width), Int(resolution.size.height), kCVPixelFormatType_32BGRA, nil, &buffer)
         let target = try #require(buffer)
-        var found: [Double] = [], prepared: [Double] = [], drawn: [Double] = [], plain: [Double] = []
+        var found: [Double] = [], prepared: [Double] = [], plain: [Double] = []
+        var drawn = Array(repeating: [Double](), count: looks.count)
         var smoother: SkinSmoother?
         for index in 0..<45 {
             let image = frame(index, of: source, size: resolution.size)
@@ -145,9 +199,13 @@ struct SkinSmoothingDeviceTests {
             started = ProcessInfo.processInfo.systemUptime
             let pass = smoother?.pass(for: image, stream: .main, epoch: 0, time: Double(index) / 30) ?? .none
             prepared.append((ProcessInfo.processInfo.systemUptime - started) * 1000)
-            started = ProcessInfo.processInfo.systemUptime
-            context.render(FrameLook.apply(look, to: image, skin: pass), to: target)
-            drawn.append((ProcessInfo.processInfo.systemUptime - started) * 1000)
+            for (index, entry) in looks.enumerated() {
+                var look = LookSettings()
+                look.skin = entry.skin
+                started = ProcessInfo.processInfo.systemUptime
+                context.render(FrameLook.apply(look, to: image, skin: pass), to: target)
+                drawn[index].append((ProcessInfo.processInfo.systemUptime - started) * 1000)
+            }
             started = ProcessInfo.processInfo.systemUptime
             context.render(FrameLook.apply(LookSettings(), to: image), to: target)
             plain.append((ProcessInfo.processInfo.systemUptime - started) * 1000)
@@ -155,7 +213,8 @@ struct SkinSmoothingDeviceTests {
         let warm = { (values: [Double]) in Array(values.dropFirst(5)) }
         note(
             "SKIN SMOOTHING \(resolution.rawValue) breakdown · Vision \(report(warm(found))) · face prepared (no Vision) \(report(warm(prepared)))"
-                + " · drawn with smoothing \(report(warm(drawn))) · drawn without \(report(warm(plain)))"
+                + " · drawn without \(report(warm(plain)))"
+                + looks.indices.map { " · drawn with \(looks[$0].name) \(report(warm(drawn[$0])))" }.joined()
         )
     }
 
@@ -168,9 +227,9 @@ struct SkinSmoothingDeviceTests {
         defer { try? FileManager.default.removeItem(at: clip) }
         var smoothed = TakeEdit(sourceDuration: 3, aspect: .portrait)
         smoothed.voiceEnhancement = .off
-        smoothed.skinSmoothing = 100
+        smoothed.skin = SkinPreset.studio.look
         var plain = smoothed
-        plain.skinSmoothing = 0
+        plain.skin = .off
         let service = TakeEditService()
         let preview = try await service.previewItem(forVideoAt: clip, edit: smoothed)
         let previewPlain = try await service.previewItem(forVideoAt: clip, edit: plain)
@@ -191,14 +250,53 @@ struct SkinSmoothingDeviceTests {
         }
     }
 
+    /// A 4-second video exported without Skin, with the first engine at 100 and with every control of Skin at 100: how long each takes and the most
+    /// memory the app took meanwhile (above what it had before), at 1080p and 4K.
+    @Test(arguments: Resolution.allCases)
+    func anExportWithSkinFinishesWithinItsMemory(_ resolution: Resolution) async throws {
+        let source = try photo()
+        let size = resolution.size
+        let clip = try await SkinTestClip.make(seconds: 4, width: Int(size.width), height: Int(size.height)) { index in
+            frame(index, of: source, size: size)
+        }
+        defer { try? FileManager.default.removeItem(at: clip) }
+        var plain = TakeEdit(sourceDuration: 4, aspect: .portrait)
+        plain.voiceEnhancement = .off
+        var first = plain
+        first.skin = .firstEngine(100)
+        var skinned = plain
+        skinned.skin = Self.top
+        var lines: [String] = []
+        for (name, edit) in [("without Skin", plain), ("first engine at 100", first), ("every control at 100", skinned)] {
+            let base = MotionAnalysisDeviceTests.footprint()
+            let peak = OSAllocatedUnfairLock(initialState: base)
+            let watching = Task.detached {
+                while !Task.isCancelled {
+                    let now = MotionAnalysisDeviceTests.footprint()
+                    peak.withLock { $0 = max($0, now) }
+                    try? await Task.sleep(for: .milliseconds(100))
+                }
+            }
+            let started = ContinuousClock.now
+            let exported = try await VideoExportService().export(
+                videoAt: clip, options: ExportOptions(aspect: .portrait, edit: edit, shortSide: size.width, frameRate: 30)
+            )
+            let took = (ContinuousClock.now - started) / .seconds(1)
+            watching.cancel()
+            try? FileManager.default.removeItem(at: exported)
+            lines.append("\(name) \(String(format: "%.1f", took)) s, memory +\((peak.withLock { $0 } - base) / 1_000_000) MB")
+        }
+        note("SKIN SMOOTHING export \(resolution.rawValue), 4 s · " + lines.joined(separator: " · "))
+    }
+
     @Test func aVideoWithNoFaceIsUntouched() async throws {
         let clip = try await TestFootage.make(seconds: 2, width: 1080, height: 1920)
         defer { try? FileManager.default.removeItem(at: clip) }
         var smoothed = TakeEdit(sourceDuration: 2, aspect: .portrait)
         smoothed.voiceEnhancement = .off
-        smoothed.skinSmoothing = 100
+        smoothed.skin = SkinPreset.studio.look
         var plain = smoothed
-        plain.skinSmoothing = 0
+        plain.skin = .off
         let service = TakeEditService()
         let on = try await service.previewItem(forVideoAt: clip, edit: smoothed)
         let off = try await service.previewItem(forVideoAt: clip, edit: plain)

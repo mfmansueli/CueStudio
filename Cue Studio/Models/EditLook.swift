@@ -6,7 +6,7 @@
 import Foundation
 
 /// The settings undo also takes back in the v10 editor: light and color (Adjust, the filter's
-/// intensity), the frame (Crop) and the take's sound (Voice). Edits made before kept these out of
+/// intensity), Skin, the frame (Crop) and the take's sound (Voice). Edits made before kept these out of
 /// undo; their steps don't have it and leave them as they are.
 nonisolated struct EditLook: Codable, Hashable, Sendable {
     var exposure: Double
@@ -19,7 +19,10 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
     /// Added with the calibrated look: nil in steps saved before, which leave them as they are.
     var vibrance: Double?
     var tint: Double?
-    /// Added with Skin Smoothing: nil in steps saved before, which leave it as it is.
+    /// Added with Skin's own panel: nil in steps saved before, which leave it as it is (or have `skinSmoothing`).
+    var skin: SkinLook?
+    /// The first smoothing's dial, in steps saved while it was one of Adjust's: read into `skin` (on the engine it was made
+    /// with), and never written by a new step.
     var skinSmoothing: Double?
     var autoCorrection: AutoCorrection?
     /// Set in every step that has Auto (it tells a step with no correction from one saved before).
@@ -56,7 +59,7 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         sharpness = edit.sharpness
         vibrance = edit.vibrance
         tint = edit.tint
-        skinSmoothing = edit.skinSmoothing
+        skin = edit.skin
         autoCorrection = edit.autoCorrection
         autoAmount = edit.autoAmount
         lookVersion = edit.lookVersion
@@ -88,7 +91,11 @@ nonisolated struct EditLook: Codable, Hashable, Sendable {
         edit.highlights = highlights
         edit.shadows = shadows
         edit.sharpness = sharpness
-        if let skinSmoothing { edit.skinSmoothing = skinSmoothing }
+        if let skin {
+            edit.skin = skin
+        } else if let skinSmoothing {
+            edit.skin.smoothing = .firstEngine(skinSmoothing)
+        }
         if let autoAmount {
             edit.vibrance = vibrance ?? 0
             edit.tint = tint ?? 0

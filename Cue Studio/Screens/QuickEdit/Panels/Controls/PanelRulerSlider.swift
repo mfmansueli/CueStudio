@@ -24,6 +24,8 @@ struct PanelRulerSlider: View {
 
     @State private var isDragging = false
 
+    /// What the ruler takes up and down: a panel that puts something else in its place keeps this height.
+    static let height: CGFloat = 56
     private static let tickCount = 40
     private static let knobSize: CGFloat = 28
 
@@ -57,7 +59,7 @@ struct PanelRulerSlider: View {
                     .shadow(color: Palette.textShadow, radius: 4, y: 2)
                     .offset(x: fraction * width - Self.knobSize / 2, y: 21)
             }
-            .frame(width: width, height: 56, alignment: .topLeading)
+            .frame(width: width, height: Self.height, alignment: .topLeading)
             .contentShape(Rectangle())
             .gesture(
                 DragGesture(minimumDistance: 0)
@@ -74,7 +76,7 @@ struct PanelRulerSlider: View {
                     }
             )
         }
-        .frame(height: 56)
+        .frame(height: Self.height)
         // The ends of the knob's travel sit at the ends of the ruler, a little inside the panel.
         .padding(.horizontal, 6)
         .accessibilityElement(children: .ignore)

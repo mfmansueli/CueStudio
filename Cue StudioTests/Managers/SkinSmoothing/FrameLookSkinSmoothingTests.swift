@@ -8,9 +8,9 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// Where Skin Smoothing sits in the look: after Auto, before the dials and the filter, independent of the filter picked, and never changing how a
-/// filter looks when it is off.
-@Suite("Frame look with Skin Smoothing", .serialized, .timeLimit(.minutes(5)))
+/// Where Skin sits in the look: after Auto, before the dials and the filter, independent of the filter picked, and never changing how a
+/// filter looks when it is off. Drawn with the first engine (its numbers are the ones these were measured with); the order is the same for today's.
+@Suite("Frame look with Skin", .serialized, .timeLimit(.minutes(5)))
 struct FrameLookSkinSmoothingTests {
     private static let context = CIContext(options: [.useSoftwareRenderer: true, .cacheIntermediates: false])
     private static let image = SkinFaceFixture.image()
@@ -21,7 +21,7 @@ struct FrameLookSkinSmoothingTests {
     private func look(filter: VideoFilter = .original, skin: Double = 0, exposure: Double = 0) -> LookSettings {
         var look = LookSettings()
         look.filter = filter
-        look.skinSmoothing = skin
+        look.skin = .firstEngine(skin)
         look.exposure = exposure
         return look
     }
@@ -64,18 +64,18 @@ struct FrameLookSkinSmoothingTests {
         #expect(both.greatestDifference(from: thenGraded, in: Self.bounds) <= 2)
         // Smoothing a picture already turned to black and white finds no skin tone to work on, so it would do nearly nothing: it can't come after.
         let gradedFirst = FrameLook.apply(look(filter: .mono), to: Self.image)
-        let thenSmoothed = RenderedPixels(Self.pass.apply(value: 100, to: gradedFirst))
+        let thenSmoothed = RenderedPixels(Self.pass.apply(.firstEngine(100), to: gradedFirst))
         let smoothedFirst = render(look(filter: .mono, skin: 100), skin: Self.pass)
         #expect(smoothedFirst.texture(in: cheek) < thenSmoothed.texture(in: cheek) * 0.97)
     }
 
     @Test func theTakesLookReachesTheSmoothingOfTheClipThatPlays() {
         var take = TakeEdit(sourceDuration: 20, aspect: .portrait)
-        take.skinSmoothing = 70
+        take.skin = .smoothing(70)
         var clip = take.timeline.segments[0]
-        #expect(take.lookSettings(for: clip).skinSmoothing == 70)
+        #expect(take.lookSettings(for: clip).skin.smoothing.amount == 70)
         var override = ClipLook()
-        override.skinSmoothing = 0
+        override.skin = ClipSkin(smoothing: .off)
         clip.look = override
         let cheek = SkinFaceFixture.cheek
         let off = RenderedPixels(FrameLook.apply(take.lookSettings(for: clip), to: Self.image, skin: Self.pass)).texture(in: cheek)

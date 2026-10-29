@@ -5,20 +5,20 @@
 
 import Foundation
 
-/// Adjust, Filters and Background at two scopes: the whole take, and one clip. Opened from the main
+/// Adjust, Skin, Filters and Background at two scopes: the whole take, and one clip. Opened from the main
 /// toolbar they change the take (the base every clip plays with); opened from a picked clip they
 /// change that clip only, as overrides (`ClipLook`) that the take's values show through wherever
 /// the clip doesn't set its own. The panels, the sliders and the rendering are the same for both:
 /// only where a change is written differs. Every change is an undo step (a clip's overrides live in
 /// the timeline's clips, which undo already keeps).
 extension LookViewModel {
-    /// The clip Adjust, Filters or Background is changing, or nil when they change the whole take.
+    /// The clip Adjust, Skin, Filters or Background is changing, or nil when they change the whole take.
     var lookClip: EditSegment? {
         guard lookScopeIsClip, let id = selection?.clipID else { return nil }
         return edit.timeline.segment(id: id)
     }
 
-    /// The light, color and filter the panels show: the clip's (over the take's) or the take's.
+    /// The light, color, skin and filter the panels show: the clip's (over the take's) or the take's.
     var effectiveLook: LookSettings {
         lookClip.map { edit.lookSettings(for: $0) } ?? LookSettings(edit)
     }
@@ -33,11 +33,9 @@ extension LookViewModel {
         }
     }
 
-    /// The look tool the open panel is: the one it was opened as (Skin), else the panel's own.
+    /// The look tool the open panel is.
     var openLookTool: EditorLookTool? {
-        guard let panel else { return nil }
-        if let lookTool, lookTool.panel == panel { return lookTool }
-        return EditorLookTool(panel: panel)
+        panel.flatMap(EditorLookTool.init(panel:))
     }
 
     /// How many clips set their own value for what `tool` changes, so a change to the whole video doesn't reach them.
@@ -52,8 +50,8 @@ extension LookViewModel {
         return clipsKeepingTheirOwn(for: tool)
     }
 
-    /// "Use this on all": every clip takes the whole video's value for what the open panel's tool changes (Skin, only Skin
-    /// Smoothing; Filters, the filter and its amount), and keeps the rest of its own. A slider still held ends first, as its own
+    /// "Use this on all": every clip takes the whole video's value for what the open panel's tool changes (Skin, every part of
+    /// Skin and nothing of Adjust; Filters, the filter and its amount), and keeps the rest of its own. A slider still held ends first, as its own
     /// step; this is one more, said with Undo. Only when asked.
     func useWholeVideosLookOnAllClips() {
         guard lookClip == nil, let tool = openLookTool, clipsKeepingTheirOwn(for: tool) > 0 else { return }
@@ -86,7 +84,7 @@ extension LookViewModel {
 
     // MARK: - Header
 
-    /// What an Adjust, Filters or Background panel says it changes.
+    /// What an Adjust, Skin, Filters or Background panel says it changes.
     func lookSubtitle(for panel: EditorPanel) -> String {
         // Background says its scope and what is behind the creator; its scope's rule is a note inside the panel.
         if panel == .background { return backgroundSubtitle }

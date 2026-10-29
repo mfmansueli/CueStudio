@@ -25,8 +25,11 @@ nonisolated enum ReadingVersion: CaseIterable, Sendable {
     /// Auto's measurement (`AutoCorrection`): a correction from a newer version means numbers this one can't read, and is
     /// left out rather than drawn wrong.
     case autoCorrection
+    /// Skin's smoothing (`SkinSmoothing.engine`): 1 the first smoothing (`SkinSmoothingCalibration`: a short dial that always kept
+    /// most of the texture), kept for the edits made with it; 2 the beauty engine (`SkinBeautyCalibration`: intensity, scale and
+    /// texture apart, up to a clearly retouched skin).
+    case skin
 
-    /// What a new edit is made with.
     var current: Int {
         switch self {
         case .look: 2
@@ -34,6 +37,7 @@ nonisolated enum ReadingVersion: CaseIterable, Sendable {
         case .captionStyle: 3
         case .captionTranscript: 2
         case .autoCorrection: 1
+        case .skin: 2
         }
     }
 

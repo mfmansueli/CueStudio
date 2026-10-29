@@ -47,7 +47,7 @@ nonisolated final class VisionFaceDetector: FaceDetecting, @unchecked Sendable {
         let landmarks = FaceLandmarks(
             box: face.boundingBox, contour: points(found.faceContour), leftEye: points(found.leftEye), rightEye: points(found.rightEye),
             leftBrow: points(found.leftEyebrow), rightBrow: points(found.rightEyebrow),
-            outerLips: points(found.outerLips), innerLips: points(found.innerLips)
+            outerLips: points(found.outerLips), innerLips: points(found.innerLips), confidence: Double(face.confidence)
         )
         return landmarks.isUsable ? landmarks : nil
     }

@@ -10,7 +10,7 @@ import Foundation
 /// The one way a frame of a recording becomes the edit's picture, for the video (`CueVideoCompositor`) and the cover
 /// (`CoverRenderer`) alike: upright, its Blur areas hidden (`BlurDrawing`, on the frame as recorded, so everything after
 /// carries them along), held steady (Stabilize), turned, mirrored and cropped as the clip says, cut to the take's frame where Follow face has it (or fitted on
-/// black), scaled to the take's frame, Skin Smoothing found on the frame as recorded, the background put behind the creator,
+/// black), scaled to the take's frame, Skin's faces found on the frame as recorded, the background put behind the creator,
 /// then Adjust and Filters (`FrameLook`). A clip's zoom goes on after (`zoomed`). Whatever frames the video next frames the
 /// cover too.
 nonisolated enum FramePipeline {
@@ -29,7 +29,7 @@ nonisolated enum FramePipeline {
     }
 
     /// An upright frame (corner at the origin) steadied, cropped and scaled to the take's frame, with its background effect,
-    /// Skin Smoothing, Adjust and Filters, as `framing` says. `mask` finds the person in a frame for a background (the key
+    /// Skin, Adjust and Filters, as `framing` says. `mask` finds the person in a frame for a background (the key
     /// names the moment, for a cache).
     static func framed(
         _ upright: CIImage, as framing: Framing, skin: SkinSmoother, mask: (_ image: CIImage, _ key: String) -> CIImage?
@@ -53,8 +53,8 @@ nonisolated enum FramePipeline {
         if framing.area == nil, abs(frame.scale - 1) > 0.000_1 {
             image = image.transformed(by: CGAffineTransform(scaleX: frame.scale, y: frame.scale))
         }
-        // The faces of the frame as recorded (before a background is put behind the creator), found only when the dial is above 0.
-        let smoothing = skin.pass(for: image, value: look.skinSmoothing, stream: moment.stream, epoch: moment.stretch, time: moment.time)
+        // The faces of the frame as recorded (before a background is put behind the creator), found only when Skin has something on.
+        let smoothing = skin.pass(for: image, skin: look.skin, stream: moment.stream, epoch: moment.stretch, time: moment.time)
         if let background = frame.background {
             image = BackgroundCompositing.apply(image, render: background) { image in
                 mask(image, background.cacheKey + framing.key)

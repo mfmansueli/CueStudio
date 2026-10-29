@@ -25,7 +25,7 @@ struct SkinSmoothingFilterTests {
             let smoother = SkinSmoother(context: SkinSmoothingFilterTests.context, detector: FakeFaceDetector(faces: [SkinFaceFixture.landmarks()]))
             let pass = smoother.pass(for: image, stream: .main, epoch: 0, time: 0)
             original = RenderedPixels(image)
-            results = Dictionary(uniqueKeysWithValues: values.map { ($0, RenderedPixels(pass.apply(value: $0, to: image))) })
+            results = Dictionary(uniqueKeysWithValues: values.map { ($0, RenderedPixels(pass.apply(.firstEngine($0), to: image))) })
         }
     }
 
@@ -125,14 +125,14 @@ struct SkinSmoothingFilterTests {
         let smoother = SkinSmoother(context: Self.context, detector: FakeFaceDetector(faces: [SkinFaceFixture.landmarks()]))
         let pass = smoother.pass(for: image, stream: .main, epoch: 0, time: 0)
         #expect(!pass.faces.isEmpty)
-        let result = pass.apply(value: 0, to: image)
+        let result = pass.apply(.firstEngine(0), to: image)
         #expect(result.extent == image.extent)
         #expect(RenderedPixels(result).greatestDifference(from: RenderedPixels(image), in: CGRect(origin: .zero, size: SkinFaceFixture.size)) == 0)
     }
 
     @Test func aFrameWithNoFaceComesBackAsItWas() {
         let image = SkinFaceFixture.image()
-        let result = SkinSmoothingPass.none.apply(value: 100, to: image)
+        let result = SkinSmoothingPass.none.apply(.firstEngine(100), to: image)
         #expect(RenderedPixels(result).greatestDifference(from: RenderedPixels(image), in: CGRect(origin: .zero, size: SkinFaceFixture.size)) == 0)
     }
 
@@ -143,7 +143,7 @@ struct SkinSmoothingFilterTests {
         func texture(at presence: Double) -> Double {
             var faces = pass.faces
             for index in faces.indices { faces[index].presence = presence }
-            return RenderedPixels(SkinSmoothingPass(faces: faces).apply(value: 100, to: image)).texture(in: cheek)
+            return RenderedPixels(SkinSmoothingPass(faces: faces).apply(.firstEngine(100), to: image)).texture(in: cheek)
         }
         let none = texture(at: 0), half = texture(at: 0.5), full = texture(at: 1)
         #expect(none == Self.standard.original.texture(in: cheek))
@@ -186,7 +186,7 @@ struct SkinSmoothingFilterTests {
         let detector = FakeFaceDetector(faces: [SkinFaceFixture.landmarks(in: wide), SkinFaceFixture.landmarks(shiftedBy: CGPoint(x: 480, y: 0), in: wide)])
         let pass = SkinSmoother(context: Self.context, detector: detector).pass(for: frame, stream: .main, epoch: 0, time: 0)
         #expect(pass.faces.count == 2)
-        let before = RenderedPixels(frame), after = RenderedPixels(pass.apply(value: 100, to: frame))
+        let before = RenderedPixels(frame), after = RenderedPixels(pass.apply(.firstEngine(100), to: frame))
         for offset in [0.0, 480] {
             let area = CGRect(x: cheek.minX + offset, y: cheek.minY, width: cheek.width, height: cheek.height)
             #expect(after.texture(in: area) < before.texture(in: area) * 0.85, "the face at \(offset) isn't smoothed")

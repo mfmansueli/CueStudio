@@ -18,10 +18,12 @@ nonisolated struct FaceLandmarks: Hashable, Sendable {
     var rightBrow: [CGPoint]
     var outerLips: [CGPoint]
     var innerLips: [CGPoint]
+    /// How sure Vision was that this is a face, 0…1 (1 for faces a test gives).
+    var confidence: Double
 
     init(
         box: CGRect, contour: [CGPoint], leftEye: [CGPoint], rightEye: [CGPoint], leftBrow: [CGPoint], rightBrow: [CGPoint],
-        outerLips: [CGPoint], innerLips: [CGPoint]
+        outerLips: [CGPoint], innerLips: [CGPoint], confidence: Double = 1
     ) {
         self.box = box
         self.contour = contour
@@ -31,6 +33,7 @@ nonisolated struct FaceLandmarks: Hashable, Sendable {
         self.rightBrow = rightBrow
         self.outerLips = outerLips
         self.innerLips = innerLips
+        self.confidence = confidence
     }
 
     /// Enough of a face to draw a mask: a jaw, both eyes and the lips.
@@ -45,7 +48,8 @@ nonisolated struct FaceLandmarks: Hashable, Sendable {
         func shift(_ points: [CGPoint]) -> [CGPoint] { points.map { CGPoint(x: $0.x + offset.dx, y: $0.y + offset.dy) } }
         return FaceLandmarks(
             box: box.offsetBy(dx: offset.dx, dy: offset.dy), contour: shift(contour), leftEye: shift(leftEye), rightEye: shift(rightEye),
-            leftBrow: shift(leftBrow), rightBrow: shift(rightBrow), outerLips: shift(outerLips), innerLips: shift(innerLips)
+            leftBrow: shift(leftBrow), rightBrow: shift(rightBrow), outerLips: shift(outerLips), innerLips: shift(innerLips),
+            confidence: confidence
         )
     }
 
@@ -65,7 +69,8 @@ nonisolated struct FaceLandmarks: Hashable, Sendable {
             box: CGRect(x: origin.x, y: origin.y, width: corner.x - origin.x, height: corner.y - origin.y),
             contour: mix(contour, other.contour), leftEye: mix(leftEye, other.leftEye), rightEye: mix(rightEye, other.rightEye),
             leftBrow: mix(leftBrow, other.leftBrow), rightBrow: mix(rightBrow, other.rightBrow),
-            outerLips: mix(outerLips, other.outerLips), innerLips: mix(innerLips, other.innerLips)
+            outerLips: mix(outerLips, other.outerLips), innerLips: mix(innerLips, other.innerLips),
+            confidence: confidence + (other.confidence - confidence) * Double(amount)
         )
     }
 }

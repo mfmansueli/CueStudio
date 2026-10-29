@@ -274,13 +274,15 @@ final class QuickEditPlayer: EditPlayback {
         frameHolders.append(FrameHolder(owner: owner, hold: hold))
     }
 
+    func frameOnScreen() -> CGImage? {
+        (avPlayer.currentItem?.customVideoCompositor as? CueVideoCompositor)?.lastFrame()
+    }
+
     /// Hands the picture on screen to the views right before the item is swapped, so the preview
     /// never goes blank while the new item gets its first frame ready.
     private func holdFrame() {
         frameHolders.removeAll { $0.owner == nil }
-        guard !frameHolders.isEmpty,
-              let compositor = avPlayer.currentItem?.customVideoCompositor as? CueVideoCompositor,
-              let frame = compositor.lastFrame() else { return }
+        guard !frameHolders.isEmpty, let frame = frameOnScreen() else { return }
         for holder in frameHolders { holder.hold(frame) }
     }
 

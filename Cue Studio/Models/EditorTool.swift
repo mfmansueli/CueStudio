@@ -16,7 +16,7 @@ nonisolated enum EditorTool: String, Codable, CaseIterable, Hashable, Sendable {
     case captionTranslation
     /// Studio Voice: voice enhancement and noise reduction.
     case studioVoice
-    /// Adjust, on the Skin Smoothing dial.
+    /// Skin, on its smoothing (the name a notification saved before Skin had its own panel still opens it).
     case skinSmoothing
     /// The take's background.
     case background
