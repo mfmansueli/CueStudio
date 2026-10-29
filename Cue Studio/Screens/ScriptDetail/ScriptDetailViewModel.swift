@@ -286,7 +286,7 @@ final class ScriptDetailViewModel {
     }
 
     private func rewrite(with tool: ScriptTool) async {
-        guard let script else { return }
+        guard script != nil else { return }
         // A script Ultra AI wrote is fitted by Ultra, one call and only when asked: on the iPhone, Apple Intelligence's Fit to time left 10 of 13
         // of them outside the platform's range, cut at the seams (DESIGN_PROJECT §57). Without Ultra's permission it stays Apple Intelligence's.
         let ultraFits = tool == .fitToTime && ultraFitsToTime
