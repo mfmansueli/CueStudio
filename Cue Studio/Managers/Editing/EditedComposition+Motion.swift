@@ -60,17 +60,21 @@ nonisolated extension EditedComposition {
     /// says), by clip, with the assets to keep while the composition is built. A clip whose sound can't be rendered is stretched
     /// in steps. Throws `CancellationError` when the build is dropped meanwhile.
     static func curveSounds(
-        for segments: [EditSegment], sound: (UUID?) -> AVAssetTrack?
+        for segments: [EditSegment], sound: (UUID?) -> AVAssetTrack?, effects: [UUID: AVAssetTrack] = [:]
     ) async throws -> (assets: [AVURLAsset], tracks: [UUID: AVAssetTrack]) {
         var assets: [AVURLAsset] = []
         var tracks: [UUID: AVAssetTrack] = [:]
         for segment in segments where segment.speedCurve != nil {
-            // The file the sound is read from: the recording, or Studio Voice's treatment of it.
-            guard let curve = segment.speedCurve, let track = sound(segment.sourceID), let file = (track.asset as? AVURLAsset)?.url else { continue }
+            // The file the sound is read from: the recording, or Studio Voice's treatment of it, or the clip's stretch of it
+            // through its voice effect.
+            let effected = effects[segment.id]
+            guard let curve = segment.speedCurve, let track = effected ?? sound(segment.sourceID),
+                  let file = (track.asset as? AVURLAsset)?.url else { continue }
+            let span = effected == nil ? segment.span : TimeSpan(start: 0, end: segment.sourceLength)
             let url: URL
             do {
                 url = try await CurveSoundRenderer.render(
-                    file: file, trackID: track.trackID, span: segment.span, curve: curve, keepsPitch: segment.keepsPitch,
+                    file: file, trackID: track.trackID, span: span, curve: curve, keepsPitch: segment.keepsPitch,
                     clip: segment.id.uuidString
                 )
             } catch is CancellationError {

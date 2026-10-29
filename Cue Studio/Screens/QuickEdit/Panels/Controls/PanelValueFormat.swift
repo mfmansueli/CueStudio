@@ -21,6 +21,8 @@ enum PanelValueFormat {
     case points
     /// "−15°", "0°", "90°": a turn.
     case degrees
+    /// "12 dB": how far something goes down.
+    case decibels
 
     func text(_ value: Double) -> String {
         switch self {
@@ -31,6 +33,7 @@ enum PanelValueFormat {
         case .speed: SpeedScale.label(forMultiple: value)
         case .points: String(localized: "\(Int(value.rounded())) pt")
         case .degrees: "\(Int(value.rounded()))°"
+        case .decibels: String(localized: "\(Int(value.rounded())) dB")
         }
     }
 }

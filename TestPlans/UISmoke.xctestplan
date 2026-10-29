@@ -33,6 +33,7 @@
         "TakesUITests/testDeletingATakeMovesToAnother()",
         "EditorUITests/testTheEditorOpensWithTheMainTools()",
         "CaptionToolsUITests/testFindAndReplaceFixesAWordInEveryLine()",
+        "AudioMixUITests/testTextIsSpokenIntoAVoiceOverAtThePlayhead()",
         "FirstRunUITests/testRecordingWithoutAScript()",
         "FreePlanUITests/testSuggestBestPicksATake()",
         "ProfileUITests/testSignInWithAppleIsOfferedWhenSignedOut()",

@@ -218,6 +218,25 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(settings.isSelected)
     }
 
+    /// The sample libraries behind the music and the effects are credited, and each one's CC0 licence is one tap away.
+    func testSoundLibraryLicensesAreReachableFromSettings() {
+        let app = CueApp.launch(seeded: true)
+        let settings = tab(app, label: "Settings")
+        XCTAssertTrue(settings.exists(within: 15))
+        settings.tap()
+        let acknowledgements = row(app, "settings.acknowledgements")
+        app.scroll(to: acknowledgements)
+        acknowledgements.tap()
+        let orchestra = app.buttons["acknowledgements.sound.vsco2"]
+        app.scroll(to: orchestra)
+        orchestra.tap()
+        XCTAssertTrue(app.descendants(matching: .any)["acknowledgements.license"].exists(within: 5))
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label CONTAINS 'CC0 1.0 Universal'")).firstMatch.exists(within: 5))
+        app.navigationBars.buttons.firstMatch.tap()
+        // The effects' library is credited too.
+        app.scrollAboveTabBar(to: app.buttons["acknowledgements.sound.kenney"])
+    }
+
     // MARK: - Helpers
 
     private func assertTabs(_ app: XCUIApplication, labels: [String]) {

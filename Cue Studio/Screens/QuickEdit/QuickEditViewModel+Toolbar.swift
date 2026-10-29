@@ -133,6 +133,13 @@ extension QuickEditViewModel {
         case .openSoundEffects:
             audio.musicReplacementID = nil
             sheet = .soundEffects
+        case .openTextToSpeech:
+            audio.spokenReplacementID = nil
+            sheet = .textToSpeech
+        case .editSpokenText:
+            guard let id = selection?.voiceOverID else { return true }
+            audio.spokenReplacementID = id
+            sheet = .textToSpeech
         case .compareBlur:
             guard !edit.blurRegions.isEmpty else { return true }
             blur.comparesOriginal.toggle()

@@ -58,6 +58,8 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     /// Its sound rising from silence over its first seconds, and falling to silence over its last.
     var soundFadeIn: TimeInterval = 0
     var soundFadeOut: TimeInterval = 0
+    /// A creative effect on its sound (Voice effects); nil plays it as recorded (or as Studio Voice treats it).
+    var voiceEffect: VoiceEffectSetting?
 
     static let volumeRange: ClosedRange<Double> = 0...2
     /// The longest a sound fade goes (as music's).
@@ -185,6 +187,7 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
     private enum CodingKeys: String, CodingKey {
         case id, sourceStart, sourceEnd, transitionIn, transitionDuration, speed, sourceID, zoom, zoomAmount, volume, isMuted, keepsPitch, look
         case stabilization, speedCurve, isMirrored, quarterTurns, crop, animationIn, animationOut, soundFadeIn, soundFadeOut
+        case voiceEffect
     }
 
     /// Pieces saved before transitions or speed existed are hard cuts at 1×, and so is a
@@ -218,5 +221,7 @@ nonisolated struct EditSegment: Codable, Hashable, Identifiable, Sendable {
         animationOut = try? container.decodeIfPresent(ClipAnimation.self, forKey: .animationOut)
         soundFadeIn = Self.clampedFade((try? container.decodeIfPresent(TimeInterval.self, forKey: .soundFadeIn)) ?? 0)
         soundFadeOut = Self.clampedFade((try? container.decodeIfPresent(TimeInterval.self, forKey: .soundFadeOut)) ?? 0)
+        // Clips saved before Voice effects, or with an effect this version doesn't know, sound as recorded.
+        voiceEffect = try? container.decodeIfPresent(VoiceEffectSetting.self, forKey: .voiceEffect)
     }
 }

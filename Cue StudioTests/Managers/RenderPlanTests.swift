@@ -44,6 +44,7 @@ struct RenderPlanTests {
         "animationOut": { $0.animationOut = ClipAnimation(style: .zoom) },
         "soundFadeIn": { $0.soundFadeIn = 1 },
         "soundFadeOut": { $0.soundFadeOut = 1 },
+        "voiceEffect": { $0.voiceEffect = VoiceEffectSetting(effect: .robot) },
     ]
 
     @Test func everyPartOfAClipIsReadOrListed() {

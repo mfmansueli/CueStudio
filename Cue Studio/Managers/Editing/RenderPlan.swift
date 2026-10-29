@@ -71,6 +71,8 @@ nonisolated struct RenderPlan: Equatable, Sendable {
         let pieceSettings: [[Double]]
         /// What each clip changes of the take's look (Adjust, Filters, Background).
         let clipLooks: [ClipLook?]
+        /// Each clip's voice effect.
+        let voiceEffects: [VoiceEffectSetting?]
         /// Where the edit plays in the drawing, when music is placed on it.
         let musicWindow: TimeSpan?
 
@@ -115,6 +117,7 @@ nonisolated struct RenderPlan: Equatable, Sendable {
                 ]
             }
             clipLooks = drawn.segments.map(\.look)
+            voiceEffects = drawn.segments.map(\.voiceEffect)
             musicWindow = plan.drawn.music.isEmpty ? nil : plan.window
         }
 

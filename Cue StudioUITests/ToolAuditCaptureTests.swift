@@ -169,6 +169,8 @@ final class ToolAuditCaptureTests: XCTestCase {
         }
         if tap("edit.toolbar.music") {
             try tour("sheet-music")
+            let parts = app.segmentedControls["edit.addSoundPart"]
+            if parts.waitForExistence(timeout: 2) { parts.buttons.element(boundBy: 1).tap() }
             if tap("edit.effect.add.whoosh") {
                 try capture("music-effect-picked")
                 if tap("edit.toolbar.volume") {

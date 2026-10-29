@@ -27,8 +27,11 @@ case "$mode" in
             destination="platform=iOS,name=$CUE_DEVICE"
         fi
         configuration="${CUE_CONFIGURATION:-Debug}"
-        xcb "build-install" -configuration "$configuration" -destination "$destination" -allowProvisioningUpdates build
         app="$DERIVED_DATA/Build/Products/$configuration-iphoneos/Cue Studio.app"
+        # A device test run embeds the unit test bundle and its symbols in the app (PlugIns, ~290 MB), and a plain build keeps them:
+        # the app is put together again so the iPhone gets only the app.
+        rm -rf "$app"
+        xcb "build-install" -configuration "$configuration" -destination "$destination" -allowProvisioningUpdates build
         echo "▸ Installing on $CUE_DEVICE"
         xcrun devicectl device install app --device "$CUE_DEVICE" "$app"
         xcrun devicectl device process launch --device "$CUE_DEVICE" --terminate-existing com.cuestudioteleprompter ||

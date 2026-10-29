@@ -322,7 +322,7 @@ struct QuickEditClipLookTests {
         #expect(ids == [
             "split", "speed", "volume", "mute", "zoom",
             "adjust", "skin", "filters", "background", "clipCrop", "mirror", "stabilize", "blurArea", "copyLook", "pasteLook",
-            "transition", "clipAnimation", "duplicate", "freeze", "reverse", "replace", "reorder", "extractAudio", "resetClip",
+            "transition", "clipAnimation", "duplicate", "freeze", "reverse", "replace", "reorder", "extractAudio", "voiceEffects", "resetClip",
             "text", "addMedia", "audio", "smart",
             "editByText", "pauses", "voice", "captions", "format", "templates", "brandKit", "cover", "delete",
         ])

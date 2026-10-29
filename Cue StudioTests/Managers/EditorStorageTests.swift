@@ -47,7 +47,7 @@ struct EditorStorageTests {
     @Test func aLevelThatChangedNothingNeverDeletesItsInput() async throws {
         let cache = RecordingSoundCache()
         let input = URL.temporaryDirectory.appending(path: "level-input-\(UUID().uuidString).caf")
-        try FileManager.default.copyItem(at: try SoundEffectSynth.file(for: .whoosh), to: input)
+        try FileManager.default.copyItem(at: try SoundEffectFiles.file(for: .whoosh), to: input)
         defer { try? FileManager.default.removeItem(at: input) }
         // No change: the same file comes back, under its own key.
         #expect(try await cache.leveled(input, gain: 0) == input)

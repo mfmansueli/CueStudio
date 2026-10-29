@@ -58,7 +58,7 @@ extension QuickEditViewModel {
             // Edit already opens the Captions panel on this line: Captions would open the same list.
             return withShortcuts(own, Self.itemShortcutGroups, leaving: [.captions], delete: deleteItem(delete, .deleteCaption))
         case .music(let id):
-            // Beats for the creator's music from Files, not for a sound effect or a sound taken out of the video.
+            // Beats for music (from Files or the library), not for a sound effect or a sound taken out of the video.
             let isMusic = edit.music.first { $0.id == id }.map { !$0.followsTheVideo } ?? false
             var own = [EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume))]
             if isMusic { own.append(EditorToolbarItem(id: "beats", label: String(localized: "Beats"), systemImage: "metronome", action: .open(.beats))) }
@@ -67,10 +67,16 @@ extension QuickEditViewModel {
                 lockItem,
             ]
             return withShortcuts(own, Self.itemShortcutGroups, delete: deleteItem(delete, .deleteMusic))
-        case .voiceOver:
+        case .voiceOver(let id):
+            // A spoken voice-over changes its text and says it again; a recorded one records again.
+            let isSpoken = edit.voiceOvers.first { $0.id == id }?.spoken != nil
+            let again = isSpoken
+                ? EditorToolbarItem(id: "editSpoken", label: String(localized: "Edit text"), systemImage: "text.bubble", action: .editSpokenText)
+                : EditorToolbarItem(id: "reRecord", label: String(localized: "Re-record"), systemImage: "mic.badge.plus", action: .reRecordVoiceOver)
             let own = [
                 EditorToolbarItem(id: "volume", label: String(localized: "Volume"), systemImage: "speaker.wave.2", action: .open(.volume)),
-                EditorToolbarItem(id: "reRecord", label: String(localized: "Re-record"), systemImage: "mic.badge.plus", action: .reRecordVoiceOver),
+                again,
+                voiceEffectsItem,
                 lockItem,
             ]
             return withShortcuts(own, Self.itemShortcutGroups, delete: deleteItem(delete, .deleteVoiceOver))
@@ -97,6 +103,12 @@ extension QuickEditViewModel {
     }
 
     // MARK: - Own tools
+
+    private var voiceEffectsItem: EditorToolbarItem {
+        EditorToolbarItem(
+            id: "voiceEffects", label: String(localized: "Voice effects"), systemImage: "waveform.badge.magnifyingglass", action: .open(.voiceEffects)
+        )
+    }
 
     /// A clip's own tools in three groups (owner, 28/10/2026): its essentials, the five on screen; its picture; the montage, ending
     /// with Reset clip. Mute and Mirror are switches, lit while on.
@@ -137,6 +149,7 @@ extension QuickEditViewModel {
             item(.replace),
             item(.reorder),
             item(.extractAudio),
+            voiceEffectsItem,
             EditorToolbarItem(
                 id: "resetClip", label: String(localized: "Reset clip"), systemImage: "arrow.counterclockwise",
                 style: clips.canResetClip ? .normal : .dimmed, action: .resetClip

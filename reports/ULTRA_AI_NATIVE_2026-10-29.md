@@ -4,7 +4,7 @@ Branch `codex/ultra-native-integration` (from `origin/codex/firebase-script-qual
 `.claude/worktrees/ultra-native-integration`. Not merged to `main`; nothing published; no charges enabled.
 
 Supersedes the "New unvalidated native implementation" part of `ULTRA_NATIVE_HANDOFF_2026-10-29.md` (kept for history). Design state:
-`DESIGN_PROJECT.md` §56 (and §2, §5.2, §30).
+`DESIGN_PROJECT.md` §57 (and §2, §5.2, §30).
 
 ## Owner decisions in this delivery
 

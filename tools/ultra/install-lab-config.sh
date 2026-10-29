@@ -1,6 +1,6 @@
 #!/bin/bash
 # Copies the Ultra AI lab's Firebase configuration and its registered App Check debug token into Cue's Documents on an iPhone where Cue
-# (a Debug build) is installed, so Ultra AI is offered there (DESIGN_PROJECT §56). The files stay out of the app bundle and of git
+# (a Debug build) is installed, so Ultra AI is offered there (DESIGN_PROJECT §57). The files stay out of the app bundle and of git
 # (build/firebase-quality/, ignored); their contents are never printed. Checks the configuration is the lab's (project cue-script-ai-lab, Cue's
 # bundle id) before copying.
 #

@@ -11,6 +11,8 @@ enum EditorSheet: String, Identifiable {
     case music
     /// Cue's sound effects alone (the Audio bar's Sound effects).
     case soundEffects
+    /// Text to speech: a voice-over said by a voice on this iPhone.
+    case textToSpeech
     /// A photo or video from Photos, on top of the video or as a clip.
     case media
     /// Done's question: "Is it ready to post?".

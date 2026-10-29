@@ -12,7 +12,7 @@ import Foundation
 /// (`ExportLedgerService`).
 nonisolated enum EditStorageCleaner {
     /// Files of the sound cache, by the prefix their makers give them.
-    static let soundPrefixes = ["Cue-audio-", "Cue-level-", "Cue-master-", "Cue-mix-", "Cue-curve-"]
+    static let soundPrefixes = ["Cue-audio-", "Cue-level-", "Cue-master-", "Cue-mix-", "Cue-curve-", "Cue-voicefx-", "Cue-speech-"]
 
     /// Analyses kept next to the recordings by a tool Cue no longer has: Eye Contact's (removed 22/10/2026). Nothing reads them,
     /// so each goes by its extension alone, whatever its date.

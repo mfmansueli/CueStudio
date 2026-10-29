@@ -26,6 +26,11 @@ nonisolated struct VoiceOverClip: Codable, Hashable, Identifiable, Sendable {
     var offset: TimeInterval?
     /// How long it plays (its end trimmed); nil to the end of the recording.
     var length: TimeInterval?
+    /// A creative effect on the voice (Voice effects); nil plays it as recorded.
+    var voiceEffect: VoiceEffectSetting?
+    /// What it says when Cue spoke it from text (Text to speech): the text, voice and speed it was made with, so it can be
+    /// changed and made again. Nil for a narration recorded with the microphone.
+    var spoken: SpokenNarration?
 
     /// How long it plays: the recording after `offset`, up to `length`.
     var playedDuration: TimeInterval {

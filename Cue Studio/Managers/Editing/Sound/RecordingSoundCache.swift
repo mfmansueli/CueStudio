@@ -88,6 +88,15 @@ actor RecordingSoundCache {
         return found
     }
 
+    /// Where someone speaks in a sound file of the edit's own (a voice-over, a sound taken out of a clip), found once per file;
+    /// nil when it can't be read (the caller then counts the whole of it).
+    func speechSpans(inSound file: URL) async -> [TimeSpan]? {
+        if let found = speech[file] { return found }
+        guard let found = await Task.detached(operation: { try? VoiceActivity.spans(inAudio: file) }).value else { return nil }
+        speech[file] = found
+        return found
+    }
+
     /// The recording's sound as an audio file; nil when it has none.
     func audio(of video: URL) async throws -> URL? {
         try await file(for: .audio(video)) {

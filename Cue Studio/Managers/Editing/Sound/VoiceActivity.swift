@@ -23,6 +23,8 @@ nonisolated struct VoiceActivity: Hashable, Sendable {
     var take: [TimeSpan] = []
     /// A montage's other recordings, by `ClipSource.id`.
     var sources: [UUID: [TimeSpan]] = [:]
+    /// The voice-overs and the sounds taken out of clips (Extract audio), by their name in `EditMediaFiles`: their own seconds.
+    var files: [String: [TimeSpan]] = [:]
 
     /// Where someone speaks in a recording read as `levels` (dBFS, one every `interval` seconds).
     static func spans(levels: [Float], interval: TimeInterval = interval) -> [TimeSpan] {
@@ -54,11 +56,16 @@ nonisolated struct VoiceActivity: Hashable, Sendable {
         spans(levels: try AudioLevelReader.levels(of: url, interval: interval))
     }
 
-    /// Where the speech plays in `timeline` (edited seconds), joined where it touches.
-    func editedSpans(in timeline: EditTimeline) -> [TimeSpan] {
+    /// Where the speech plays in `timeline` (edited seconds), joined where it touches. `heardOnly` leaves out clips whose
+    /// sound doesn't play (muted, at 0%, or taken out to a track of its own).
+    func editedSpans(in timeline: EditTimeline, heardOnly: Bool = false) -> [TimeSpan] {
         var result: [TimeSpan] = []
         var elapsed: TimeInterval = 0
         for segment in timeline.segments {
+            if heardOnly, segment.isMuted || segment.volume <= 0.001 {
+                elapsed += segment.duration
+                continue
+            }
             let spoken = segment.sourceID.map { sources[$0] ?? [] } ?? take
             for span in spoken where span.overlaps(segment.span) {
                 let from = max(span.start, segment.sourceStart), until = min(span.end, segment.sourceEnd)

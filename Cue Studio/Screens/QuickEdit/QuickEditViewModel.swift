@@ -153,7 +153,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         mediaImporter: EditMediaImporting? = nil, recorder: VoiceOverRecording? = nil, styles: TextStyleStoring? = nil,
         mediaLibrary: MediaLibraryStore? = nil, brandKits: BrandKitStore? = nil, fonts: CustomFontStore? = nil,
         editorPreferences: EditorPreferencesStoring? = nil, prompterLook: PrompterSettings = PrompterSettings(),
-        coverPictures: CoverPicturing? = nil, soundPreviews: SoundEffectPreviewing? = nil,
+        coverPictures: CoverPicturing? = nil, soundPreviews: SoundPreviewing? = nil,
         translations: TranslationAvailabilityChecking = AppleTranslationAvailability(), motion: MotionAnalysisService? = nil,
         tracker: ObjectTracking = ObjectTracker(), faceFinder: FaceFinding = FaceFinder(),
         speechLanguage: @escaping (Script?) -> SpeechLanguageRequest = SpeechLanguageRequest.script,
@@ -198,7 +198,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         blur = BlurViewModel(session: session, tracker: tracker, faces: faceFinder)
         audio = AudioViewModel(
             session: session, editing: editing, importer: mediaImporter, recorder: recorder ?? VoiceOverRecorder(),
-            editorPreferences: preferences, prompterLook: prompterLook, soundPreviews: soundPreviews ?? SoundEffectPreviewPlayer()
+            editorPreferences: preferences, prompterLook: prompterLook, soundPreviews: soundPreviews ?? SoundPreviewPlayer()
         )
         // Without the app's stores (tests, previews): ones of their own in a temporary folder, never the creator's.
         let scratch = URL.temporaryDirectory.appending(path: "EditorAssets-\(UUID().uuidString)", directoryHint: .isDirectory)
@@ -300,6 +300,10 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         // Another photo or video, or none: a support starts on its own area (a tap on the main video's says so after, `pickArea`).
         if next?.mediaID != picked?.mediaID { overlays.selectedArea = .support }
         picked = next
+        // ◐ on a music clip compares that clip only.
+        if let compared = audio.comparedDuckingID, next?.musicID != compared { audio.endDuckingComparison() }
+        // ◐ in Voice effects compares the picked voice only.
+        if audio.comparedVoiceEffect != nil { audio.endVoiceEffectComparison() }
         if let lane = next?.lane, lane != .main { bringTrack([lane]) }
         // Picked by the creator: no longer the panel's to let go of.
         if next != panelPick { panelPick = nil }
@@ -410,10 +414,12 @@ final class QuickEditViewModel: EditorHost, EditorPart {
     }
 
     /// What the preview plays: the edit (without what a finger is dragging; with the picked clip's whole picture while Crop is
-    /// open), while ◐ is held the picture as recorded (Adjust, Filters, Background) or without Skin (Skin), or while comparing
-    /// the sound, the take's sound untreated at the same loudness.
+    /// open), while ◐ is held the picture as recorded (Adjust, Filters, Background) or without Skin (Skin), a music clip without
+    /// lowering under the voice (Volume), a voice without its effect (Voice effects), or while comparing the sound, the take's
+    /// sound untreated at the same loudness.
     var playedEdit: TakeEdit {
-        let compared = look.comparesPicture ? edit.withoutPictureLook() : look.comparesSkin ? edit.withoutSkin() : edit
+        let pictured = look.comparesPicture ? edit.withoutPictureLook() : look.comparesSkin ? edit.withoutSkin() : edit
+        let compared = audio.withoutComparedVoiceEffect(audio.withoutComparedDucking(pictured))
         let looked = clips.showingWholePicture(in: compared)
         let unmasked = blur.withoutComparedBlur(overlays.withoutComparedMask(looked))
         let shown = overlays.hidingDraggedOverlay(in: unmasked)
