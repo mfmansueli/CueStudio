@@ -1,0 +1,11 @@
+<!doctype html><html lang="pt-BR"><meta charset="utf-8"><meta name="viewport" content="width=device-width">
+<title>Cue · Firebase quality lab</title>
+<style>body{font:17px/1.6 system-ui;max-width:960px;margin:32px auto;padding:0 20px;background:#fff;color:#171717}button,select{font:inherit;padding:10px;margin:5px 0}pre{white-space:pre-wrap;overflow-wrap:anywhere}article{border-top:1px solid #777;margin-top:24px}button:disabled{opacity:.6}label{display:block}#status{font-weight:600}</style>
+<h1>Cue · Firebase quality lab</h1><p>Laboratório isolado com dados sintéticos. Nenhuma alteração na IA do aplicativo. Respostas PCC e critérios de avaliação nunca são enviados ao Gemini.</p>
+<p id="status" role="status">Carregando SDK e casos…</p>
+<label for="modelChoice">Modelo Gemini (sem troca automática)</label><select id="modelChoice"><option value="gemini-3.8-flash">Gemini 3.8 Flash</option><option value="gemini-3.5-flash">Gemini 3.5 Flash</option></select>
+<label for="case">Caso congelado</label><select id="case"></select><br>
+<button id="run" disabled>Gerar uma resposta no Firebase</button>
+<p>Modelo: <strong id="model"></strong>. Uma chamada por clique, sem repetição automática. Limite local: 20 chamadas por sessão. Resultados salvos em build/firebase-quality.</p>
+<details><summary>Entrada exata desta comparação</summary><pre id="input"></pre></details>
+<section id="results"></section><script type="module" src="/client.js"></script></html>
