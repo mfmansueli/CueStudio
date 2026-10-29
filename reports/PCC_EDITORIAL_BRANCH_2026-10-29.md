@@ -64,3 +64,23 @@ V3 adiciona editorial-raw (orientação de monólogo desenvolvido, distinção/r
 Código de apoio e testes foram agrupados em Support/EditorialExperiment e Managers/EditorialExperiment conforme arquitetura. Sete testes aprovados em only-20261029-004046,195s, sem warnings observados. Incluem papéis do transcript, preservação das instruções, inexistência de pedido idêntico na base congelada e igualdade do conteúdo do pedido quando só muda o enquadramento editorial.
 
 Primeira v3 em andamento: sessão29435, run editorial-v3-none-opinion-r1, opiniãoPT sem perfil, modos lean-raw/editorial-raw/editorial-demo-raw, raciocínio e amostragem padrão. Fonte congelada durante execução; ainda sem resultado neste checkpoint. Nenhuma alteração no writer normal/Release, nenhum provedor externo, nenhum treino, nenhuma flexibilização de guardrails.
+
+## Leitura v3: monólogo e demonstração
+
+Run editorial-v3-none-opinion-r1, device-20261029-004430,1 teste aprovado tecnicamente,131s total. Três respostas preservadas: lean-raw2,33s; editorial-raw2,90s; editorial-demo-raw2,37s. Houve mais texto na orientação editorial, mas ainda pouco raciocínio útil. O exemplo de café da manhã não demonstra bem naturalidade da leitura; volta a trilha/partitura. A demonstração introduziu a afirmação sem suporte “o ouvido percebe o cansaço antes de entender o conteúdo” e explicação frágil sobre pedras/respiração. Não promover. A conversa sintética foi aceita pelo framework, mas aceitação e extensão não aprovam qualidade. Total18 solicitações registradas na branch,17 textos e1 recusa (não contar inferências internas extras de baseline como medidas).
+
+## V4: continuações sem quota de duração
+
+Novo modo staged-raw, explicitamente limitado aos dois casos de opinião PT nesta triagem. Três chamadas independentes: abertura/distinção; conexão causal+contraste hipotético/analogia; implicação/limite+fecho. Cada chamada recebe o pedido/contexto original e tudo já escrito. Sem contagem mínima de palavras, sem duração exigida e sem plano externo separado. O teto4096 é dividido entre as três chamadas (1365 cada,4095 total), não multiplicado. Há limite externo compartilhado60s e cancelamento conferido antes de cada etapa. Não aplica isso a avisos curtos, ficção ou todos os formatos por suposição.
+
+A diferença para o antigo PCCSectionExperiment é material: aquele piloto era só tutorial de três ajustes com90–110 palavras por seção, objetivando duração, e não demonstrou precisão técnica. Este testa progressão semântica de argumento sem quota de palavras. Difere também do antigo planejamento seguido de uma redação única: aqui cada continuação é escrita separadamente e vê as anteriores. Aumento de chamadas/latência precisa ser justificado por conteúdo melhor, não por contagem de palavras.
+
+Harness agora preserva todos os prompts de cada etapa no sample, em ordem, e conta chamadas diretas no campo attempts. Baseline não recebe contagem inferida. Primeira v4 solicitada na sessão76960, device-20261029-005407.xcresult, run editorial-v4-none-staged-r1, sem perfil/defaults, modos editorial-raw/staged-raw. Fonte congelada durante execução. Ainda não há resultado neste checkpoint; não afirmar melhoria. Scripts/check-project.sh passou; diff de produção/config/projeto contra main está vazio.
+
+## V4 outcome and V5 checkpoint
+
+V4 completed: device-20261029-005407, 1 technical test passed, 52s. Single draft 3.21s/1 call; staged draft 4.77s/3 calls. The longer draft repeats rhythm/score/freedom and ignores the first stage's instruction to defer analogies. It does not justify three calls. Do not promote. Twenty recorded requests now contain nineteen texts and one refusal; a recorded request may contain several model inferences.
+
+V5 angle-search-raw compares three substantive explanations before choosing one and drafting. Two calls divide the 4096 response-token ceiling into 1536 and 2560. No duration quota. Test scope remains the two PT opinion cases. This differs from the old single-angle plan and from progressive drafting. Intermediate candidates and selection are stored in optional QualityRunSample.experimentalTrace, separate from model inputs. PCCEditorialExperimentOutput stores text/prompts/trace.
+
+Seven contracts passed in only-20261029-010057 (127s), session90060 exit0. Strict SwiftLint passed. Native V5 is active in session18389, device-20261029-010542.xcresult, run editorial-v5-none-angle-r1, modes editorial-raw/angle-search-raw, no voice/default reasoning and sampling. No result yet at this checkpoint. Production app, Release, project and configuration remain unchanged.

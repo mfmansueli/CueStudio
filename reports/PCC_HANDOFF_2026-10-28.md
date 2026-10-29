@@ -1,3 +1,29 @@
+# LATEST CHECKPOINT: V5 angle search running, nothing promoted
+
+Branch codex/script-editorial-quality; isolated worktree pcc-offline-review. Previous remote HEAD7491225a. Canonical report: reports/PCC_EDITORIAL_BRANCH_2026-10-29.md. No production/config/project changes, PR or merge.
+
+V4 finished: session76960 exit0, device-20261029-005407,52s. Fixture editorial-v4-none-staged-r1: single3.21s/1call, staged4.77s/3calls. Longer but repetitive; not promoted. V3 fixture editorial-v3-none-opinion-r1 also collected, no sufficient gain. Twenty requests total: nineteen texts and one refusal; do not confuse requests with inference count.
+
+V4/V5 sources compiled with seven contracts passing in only-20261029-010057,127s, session90060 exit0. Strict lint passed. New test-only classes: PCCEditorialAngle, PCCEditorialAngleSelection, PCCAngleSearchExperiment, PCCEditorialExperimentOutput, PCCProgressiveDraftExperiment. Optional QualityRunSample.experimentalTrace keeps intermediate outputs separate from inputs. Two-call angle search budgets1536+2560=4096, compares three explanations then writes selected one. Restricted to the two PT opinion case IDs. It may fail; no quality approval yet.
+
+ACTIVE session18389: native run editorial-v5-none-angle-r1, result device-20261029-010542.xcresult, Iago, modes editorial-raw,angle-search-raw, voice none/defaults. Read result, collect.py, inspect text and experimentalTrace. Do not change sources while active. If promising repeat with voice and independent cases before promotion. No Full, no automated Mansuelli tests, no interrupting skin-beauty.
+
+Next hypotheses are NOT implemented: explicit editorial lenses for alternative claims (distinction/mechanism/boundary), independent local selection, content-first/local voice adaptation, instruction language, omitting short-platform cue. No claim that PCC reached a definitive ceiling or GPT parity.
+
+---
+
+# CHECKPOINT MAIS RECENTE — V4 por continuações em teste, nada promovido
+
+Branch codex/script-editorial-quality; worktree pcc-offline-review. HEAD remoto7491225a. Relatório canônico reports/PCC_EDITORIAL_BRANCH_2026-10-29.md. Produto/config/Xcodeproj continuam sem diff contra main; check-project passou. Sem PR/merge.
+
+V3 terminou: sessão29435 exit0, device-20261029-004430,131s,3 respostas. Coletado quality-run-editorial-v3-none-opinion-r1.json (ainda não commitado neste checkpoint). Editorial-raw mais longo mas explicação fraca; demo introduz afirmação sobre ouvido/cansaço sem suporte. Nenhum ganho suficiente. Total18 solicitações na branch,17 textos+1 recusa. Unitários v3:7 aprovados (only-20261029-004046), lint estrito passou; sem warnings observados. Não dizer que PCC chegou ao teto nem que exemplos/deep foram promovidos.
+
+Nova fonte v4 NÃO COMMITADA ainda: Support/EditorialExperiment/PCCProgressiveDraftExperiment.swift, settings inclui staged-raw, harness ablation retorna tuple(text,prompts) e registra prompts múltiplos/call count. Modo limitado a IDs pt-BR-editorial-draft/pt-BR-equipment. Três continuações com funções distintas, sem mínimo de palavras/duração: distinção; causa+exemplo; implicação+fecho. Cada uma vê pedido original+texto anterior; sem plano separado. Cap4096 dividido3×1365, prazo externo60s, Task.checkCancellation antes de cada chamada. Ainda só teste, NÃO integrar app sem ganho real. É diferente do piloto antigo com quota90–110 palavras por seção. Novos testes unitários não rodaram após essa mudança; build nativo compilará o target todo e validará o experimento real. SwiftLint estrito passou.
+
+ATIVA sessão76960: run editorial-v4-none-staged-r1, result device-20261029-005407.xcresult, Iago, modes editorial-raw,staged-raw, voz none/defaults. Não editar fonte durante execução. Ler resultado, collect.py, avaliar progressão/repetição/fidelidade/latência contra referência e uma redação única. Se promissor, repetir e testar com voz; se ruim, registrar sem vender só comprimento como qualidade. Depois rodar contratos adequados, preservar fixtures e commit/push. Não testes automáticos Mansuelli, não Full, não interromper skin-beauty.
+
+---
+
 # CHECKPOINT MAIS RECENTE — V3 editorial/demonstração no iPhone
 
 Branch codex/script-editorial-quality, worktree pcc-offline-review. HEAD remoto anterior7c1e9b56. App normal intocado, sem PR/merge. Relatório canônico novo reports/PCC_EDITORIAL_BRANCH_2026-10-29.md.

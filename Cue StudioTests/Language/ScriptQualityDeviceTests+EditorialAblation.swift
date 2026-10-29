@@ -32,7 +32,11 @@ extension ScriptQualityDeviceTests {
         try #require(UIApplication.shared.applicationState == .active, "Unlock the iPhone and keep the test foreground")
         let run = environment["CUE_QUALITY_RUN"] ?? "editorial-ablation"
         for mode in settings.modes {
-            let prompt = PCCEditorialExperimentPrompt(request: request, editorial: mode.hasPrefix("editorial"))
+            if mode == "staged-raw" || mode == "angle-search-raw" {
+                try #require(["pt-BR-editorial-draft", "pt-BR-equipment"].contains(item.id), "These probes are limited to opinions")
+            }
+            let editorial = mode.hasPrefix("editorial") || mode == "staged-raw" || mode == "angle-search-raw"
+            let prompt = PCCEditorialExperimentPrompt(request: request, editorial: editorial)
             let started = ContinuousClock.now
             var sample = QualityRunSample(
                 kind: "script", run: run, language: item.language.rawValue, condition: mode, index: 0,
@@ -60,18 +64,24 @@ extension ScriptQualityDeviceTests {
             let inputPrompt = stacked ? ScriptPromptBuilder.prompt(for: prepared) : prompt.prompt
             sample.instructions = instructions
             sample.prompt = inputPrompt
-            let outcome: Result<String, any Error>? = await AIRequestDeadline.value(within: .seconds(60)) { @MainActor in
+            let outcome: Result<PCCEditorialExperimentOutput, any Error>? = await AIRequestDeadline.value(within: .seconds(60)) { @MainActor in
                 do {
-                    let text = try await Self.ablationText(
+                    let output = try await Self.ablationText(
                         mode: mode, service: service, request: request, instructions: writingInstructions,
                         prompt: inputPrompt, settings: settings, responseCap: responseCap
                     )
-                    return .success(text)
+                    return .success(output)
                 } catch { return .failure(error) }
             }
             sample.seconds = started.duration(to: .now).inSeconds
             do {
-                sample.text = try #require(outcome, "PCC evaluation exceeded 60 seconds").get()
+                let output = try #require(outcome, "PCC evaluation exceeded 60 seconds").get()
+                sample.text = output.text
+                sample.experimentalTrace = output.trace
+                if output.prompts.count > 1 {
+                    sample.prompt = output.prompts.enumerated().map { "CALL \($0.offset + 1):\n\($0.element)" }.joined(separator: "\n\n")
+                }
+                if mode != "baseline" { sample.attempts = output.prompts.count }
             } catch {
                 sample.failure = String(describing: error)
             }
@@ -87,11 +97,21 @@ extension ScriptQualityDeviceTests {
     private static func ablationText(
         mode: String, service: ScriptAIService, request: ScriptRequest, instructions: String, prompt: String,
         settings: PCCEditorialExperimentSettings, responseCap: Int
-    ) async throws -> String {
+    ) async throws -> PCCEditorialExperimentOutput {
         if mode == "baseline" {
             let result = try await service.generate(request)
             try #require(result.model == .privateCloud, "Unexpected fallback is not a PCC comparison")
-            return result.text
+            return PCCEditorialExperimentOutput(text: result.text, prompts: [prompt])
+        }
+        if mode == "staged-raw" {
+            return try await PCCProgressiveDraftExperiment().write(
+                instructions: instructions, original: prompt, settings: settings, responseCap: responseCap
+            )
+        }
+        if mode == "angle-search-raw" {
+            return try await PCCAngleSearchExperiment().write(
+                instructions: instructions, original: prompt, settings: settings, responseCap: responseCap
+            )
         }
         let model = PrivateCloudComputeLanguageModel()
         let session = mode == "editorial-demo-raw"
@@ -101,9 +121,13 @@ extension ScriptQualityDeviceTests {
         let options = settings.options(responseCap: responseCap)
         let context = ContextOptions(includeSchemaInPrompt: guided, reasoningLevel: settings.reasoningLevel)
         if guided {
-            return try await session.respond(to: prompt, generating: PCCProseDraft.self, options: options, contextOptions: context).content.text
+            let text = try await session.respond(
+                to: prompt, generating: PCCProseDraft.self, options: options, contextOptions: context
+            ).content.text
+            return PCCEditorialExperimentOutput(text: text, prompts: [prompt])
         }
-        return try await session.respond(to: prompt, options: options, contextOptions: context).content
+        let text = try await session.respond(to: prompt, options: options, contextOptions: context).content
+        return PCCEditorialExperimentOutput(text: text, prompts: [prompt])
     }
 
 }

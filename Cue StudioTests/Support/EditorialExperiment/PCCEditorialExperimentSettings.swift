@@ -29,7 +29,7 @@ nonisolated struct PCCEditorialExperimentSettings: Sendable {
         self.modes = modes
     }
 
-    static let allowedModes = ["baseline", "stack-guided", "lean-guided", "lean-raw", "editorial-raw", "editorial-demo-raw"]
+    static let allowedModes = ["baseline", "stack-guided", "lean-guided", "lean-raw", "editorial-raw", "editorial-demo-raw", "staged-raw", "angle-search-raw"]
 
     var reasoningLevel: ContextOptions.ReasoningLevel? {
         switch reasoning {

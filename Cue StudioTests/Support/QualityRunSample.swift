@@ -38,6 +38,8 @@ nonisolated struct QualityRunSample: Codable, Hashable, Sendable {
     var requestedReasoning: String?
     var durationPolicy: String?
     var cloudDraftIntent: String?
+    /// Test-only intermediate outputs, kept separate from what the model was actually sent.
+    var experimentalTrace: String?
     var editorialMethod: Bool?
     var freeProse: Bool?
     var deliveryOnlyVoice: Bool?

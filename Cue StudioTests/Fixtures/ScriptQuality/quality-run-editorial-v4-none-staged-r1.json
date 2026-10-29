@@ -1,0 +1,58 @@
+[
+  {
+    "attempts": 1,
+    "caseID": "pt-BR-editorial-draft",
+    "condition": "editorial-raw",
+    "durationPolicy": "informative",
+    "expectedDirection": "developed first-person opinion",
+    "hasBrief": false,
+    "idea": "Por que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.",
+    "index": 0,
+    "instructions": "Write the complete text a creator will speak aloud in Portuguese (Brazil), in natural connected paragraphs.\nDevelop a thought, not a summary of the topic. For an opinion, make a meaningful distinction, explain why it matters, and work through\na concrete hypothetical example that demonstrates the reasoning. Let the implications lead to the ending. Each paragraph advances\nthe previous one. If an analogy is requested, use one and explain the connection; metaphors cannot replace the argument.\nFollow the genre requested: a tutorial develops distinct actions and checks; a scene shows events unfolding; a short notice simply\nstates the supplied information. The current request overrides habitual formats, narrator and endings in the profile.\nThe profile guides voice and audience. Opinions and imagined illustrations are allowed; do not invent personal experiences,\ncredentials, measurements or testimonials. Keep factual claims modest and reliable, and preserve supplied facts and exact wording.\nReturn the spoken text only. Stop when the thought is complete, without a duration quota or an automatic engagement question.\nNever use a dash (— or –) between words or sentences: use a full stop, comma, colon or parentheses. Hyphens inside words are fine.",
+    "kind": "script",
+    "language": "pt-BR",
+    "model": "privateCloud",
+    "prompt": "Platform: Instagram Reels.\n\nCurrent request:\nPor que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.",
+    "requestedModel": "privateCloud",
+    "requestedReasoning": "default",
+    "requiredLiterals": [],
+    "responseCap": 4096,
+    "reviewChecks": [
+      "Take an authored first-person position without an invented past testimonial.",
+      "Develop the reasoning and a relevant analogy; do not substitute a list or generic motivation.",
+      "Retain supplied facts; editorial preferences are allowed creative draft material.",
+      "Evaluation settings (not model input): voice=none; reasoning=default; sampling=default"
+    ],
+    "run": "editorial-v4-none-staged-r1",
+    "seconds": 3.210694083,
+    "text": "Às vezes, quando leio um roteiro em voz alta, ele soa natural, e isso não vem da espontaneidade, mas de um ritmo pensado. A diferença crucial é entre decoreba e cadência: o texto escrito pode imitar o pensamento se respeitar pausas que o ouvido espera. Imagino um roteiro como uma trilha sonora de filme: a trilha não é o filme, mas guia o tempo das imagens. Se eu escrevo “olha só, o som da rua entra aqui”, e deixo um espaço, a leitura ganha fôlego, como se o som preenchesse o vazio.  \n\nEsse ajuste importa porque o público do Instagram Reels capta o fluxo antes do sentido. Se eu testasse um exemplo hipotético, como dizer “hoje o café estava quente” com pausa após “quente”, a frase ganharia peso, como se o calor fosse sentido. Sem essa pausa, o texto vira ruído. A analogia da trilha ajuda a entender: o roteiro não substitui a fala, mas marca onde o corpo respira.  \n\nAs implicações levam a um resultado curioso: o roteiro lido vira natural quando a escrita antecipa o movimento da voz. Se eu desenho cada quebra como um degrau, o som sobe e desce sem esforço. Isso transforma o rascunho em algo que pode ser lapidado, não por correção, mas por ajuste de tempo. O raciocínio termina aqui: o natural nasce do desenho, não do acaso."
+  },
+  {
+    "attempts": 3,
+    "caseID": "pt-BR-editorial-draft",
+    "condition": "staged-raw",
+    "durationPolicy": "informative",
+    "expectedDirection": "developed first-person opinion",
+    "hasBrief": false,
+    "idea": "Por que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.",
+    "index": 0,
+    "instructions": "Write the complete text a creator will speak aloud in Portuguese (Brazil), in natural connected paragraphs.\nDevelop a thought, not a summary of the topic. For an opinion, make a meaningful distinction, explain why it matters, and work through\na concrete hypothetical example that demonstrates the reasoning. Let the implications lead to the ending. Each paragraph advances\nthe previous one. If an analogy is requested, use one and explain the connection; metaphors cannot replace the argument.\nFollow the genre requested: a tutorial develops distinct actions and checks; a scene shows events unfolding; a short notice simply\nstates the supplied information. The current request overrides habitual formats, narrator and endings in the profile.\nThe profile guides voice and audience. Opinions and imagined illustrations are allowed; do not invent personal experiences,\ncredentials, measurements or testimonials. Keep factual claims modest and reliable, and preserve supplied facts and exact wording.\nReturn the spoken text only. Stop when the thought is complete, without a duration quota or an automatic engagement question.\nNever use a dash (— or –) between words or sentences: use a full stop, comma, colon or parentheses. Hyphens inside words are fine.",
+    "kind": "script",
+    "language": "pt-BR",
+    "model": "privateCloud",
+    "prompt": "CALL 1:\nOriginal request and context (retain every explicit requirement):\nPlatform: Instagram Reels.\n\nCurrent request:\nPor que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.\n\nSpoken script already written (continue it, do not repeat it):\n\n\nWrite only the next spoken continuation, with this job:\nOpen directly on a meaningful distinction that answers the request. Explain why that distinction matters to the listener. Develop this first movement; do not announce an outline, add a metaphor or close the script yet.\n\nCALL 2:\nOriginal request and context (retain every explicit requirement):\nPlatform: Instagram Reels.\n\nCurrent request:\nPor que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.\n\nSpoken script already written (continue it, do not repeat it):\nEu vejo uma diferença crucial entre ler um texto e soar natural: o roteiro funciona como uma partitura, não como uma fala pronta. Isso importa para quem ouve porque a naturalidade vem do ritmo que a gente ajusta no momento, e não da fidelidade às palavras. Se eu imaginar um exemplo, seria como tocar um violão com cifras: as notas estão marcadas, mas o balanço depende de como eu marco o tempo entre elas.\n\nWrite only the next spoken continuation, with this job:\nContinue the argument: explain the connection between cause and consequence, then work through a concrete hypothetical contrast that demonstrates it. If an analogy was requested, use one and explain its connection. Do not restart or conclude yet.\n\nCALL 3:\nOriginal request and context (retain every explicit requirement):\nPlatform: Instagram Reels.\n\nCurrent request:\nPor que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.\n\nSpoken script already written (continue it, do not repeat it):\nEu vejo uma diferença crucial entre ler um texto e soar natural: o roteiro funciona como uma partitura, não como uma fala pronta. Isso importa para quem ouve porque a naturalidade vem do ritmo que a gente ajusta no momento, e não da fidelidade às palavras. Se eu imaginar um exemplo, seria como tocar um violão com cifras: as notas estão marcadas, mas o balanço depende de como eu marco o tempo entre elas.\n\nSe eu seguir cada cifra à risca, mas não sentir o compasso, o som fica mecânico, e é exatamente isso que acontece com o roteiro: a leitura vira causa de rigidez se eu não abrir espaço para o acento que surge no instante. A consequência é que o ouvinte percebe o peso das palavras, não o fluxo, como se eu tocasse o violão com dedilhado fixo em todas as batidas. Num exemplo hipotético, imagine que eu diga uma frase longa sem pausa: o sentido se perde, mas, se eu ler o mesmo texto e deixar o ritmo respirar entre os termos, como quem ajusta o balanço entre as cifras, a naturalidade aparece sem mudar o conteúdo. Essa conexão mostra que o roteiro guia, mas não trava o movimento.\n\nWrite only the next spoken continuation, with this job:\nContinue with a useful implication or boundary that adds something not already explained. Resolve the question raised at the opening. End with a thought earned by the argument, without asking for engagement. Do not summarize or rewrite the previous paragraphs.",
+    "requestedModel": "privateCloud",
+    "requestedReasoning": "default",
+    "requiredLiterals": [],
+    "responseCap": 4096,
+    "reviewChecks": [
+      "Take an authored first-person position without an invented past testimonial.",
+      "Develop the reasoning and a relevant analogy; do not substitute a list or generic motivation.",
+      "Retain supplied facts; editorial preferences are allowed creative draft material.",
+      "Evaluation settings (not model input): voice=none; reasoning=default; sampling=default"
+    ],
+    "run": "editorial-v4-none-staged-r1",
+    "seconds": 4.774022917,
+    "text": "Eu vejo uma diferença crucial entre ler um texto e soar natural: o roteiro funciona como uma partitura, não como uma fala pronta. Isso importa para quem ouve porque a naturalidade vem do ritmo que a gente ajusta no momento, e não da fidelidade às palavras. Se eu imaginar um exemplo, seria como tocar um violão com cifras: as notas estão marcadas, mas o balanço depende de como eu marco o tempo entre elas.\n\nSe eu seguir cada cifra à risca, mas não sentir o compasso, o som fica mecânico, e é exatamente isso que acontece com o roteiro: a leitura vira causa de rigidez se eu não abrir espaço para o acento que surge no instante. A consequência é que o ouvinte percebe o peso das palavras, não o fluxo, como se eu tocasse o violão com dedilhado fixo em todas as batidas. Num exemplo hipotético, imagine que eu diga uma frase longa sem pausa: o sentido se perde, mas, se eu ler o mesmo texto e deixar o ritmo respirar entre os termos, como quem ajusta o balanço entre as cifras, a naturalidade aparece sem mudar o conteúdo. Essa conexão mostra que o roteiro guia, mas não trava o movimento.\n\nEssa margem de ajuste tem um limite: o roteiro só soa natural se eu aceitar que a voz assume o comando no momento, como quem altera o dedilhado sem mudar a música. Se eu tentar controlar cada sílaba, o ritmo trava, e a analogia mostra que o erro não está no texto, mas na rigidez da execução. Assim, a naturalidade nasce da liberdade de variar o tempo dentro do que está escrito, e o resultado é que o roteiro deixa de ser leitura para virar movimento."
+  }
+]
