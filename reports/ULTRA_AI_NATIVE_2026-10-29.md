@@ -154,6 +154,20 @@ for production (none of this is built):
 5. **Identity**: welcome credits bound to an account (Sign in with Apple, or `appAccountToken`), not to the install, so reinstalling doesn't refill them.
 6. **Abuse and cost guards**: per-user rate limits, maximum tokens per call, a monthly budget alert on the Google Cloud project.
 
+**Cost per script, from the tokens the iPhone recorded** (15 three-step scripts of the comparison, `research_notes/Ultra AI/quality-q1.json`; prices
+published by third parties for `gemini-3.5-flash` on Agent Platform, USD 1.50 per million input tokens and 9.00 per million output, thinking billed
+as output; Google's own page didn't load here, so confirm in Cloud Billing › Reports for `cue-script-ai-lab`):
+
+| Per script | Input | Output | Thinking | ≈ USD |
+|---|---|---|---|---|
+| Three steps (draft, check, polish), mean | 3,865 | 1,639 | 6,153 | 0.076 (max 0.105) |
+| Two steps (draft, polish), mean | 2,474 | 1,099 | 3,344 | 0.044 |
+| Fit to time (estimated: its tokens weren't recorded) | ~1,300 | ~300 | ~2,000 | ~0.02–0.03 |
+
+Thinking is about 80% of the cost (the check thinks most, ~2,500 tokens). A thinking budget per stage could halve it; untried, because it may cost
+quality and would need the same blind comparison. A paid Pro using its 30 scripts costs about USD 2.30 a month plus fits. The lab has spent about
+USD 3 so far.
+
 ## Quality comparison (29/10, blind)
 
 Same 15 ideas (9 pt-BR creators' requests, 3 es-ES, 3 en-US; 6 technical, 9 from creator profiles), written on the iPhone by Apple Intelligence, by
