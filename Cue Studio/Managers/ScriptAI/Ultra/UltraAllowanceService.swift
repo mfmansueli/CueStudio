@@ -58,14 +58,15 @@ final class UltraAllowanceService {
         defaults.set(month, forKey: Self.monthKey)
     }
 
-    /// The lab's "Start the preview again": every free script back, to see the first use again. Never the lab's call count (`UltraCallBudget`).
+    /// The lab's "Give the free scripts back": every free script back, to see the first use again. Never the lab's call count (`UltraCallBudget`).
     func resetPreview() {
         freeUsed = 0
         monthUsed = 0
         for key in [Self.freeUsedKey, Self.monthUsedKey, Self.monthKey] { defaults.removeObject(forKey: key) }
     }
 
-    /// Sets how many free scripts are left, for the UI tests (`-uiTestUltraScriptsLeft`).
+    /// Sets how many free scripts are left: the UI tests (`-uiTestUltraScriptsLeft`), and the lab's "Use up the free scripts" (the used-up Pro
+    /// without spending test calls).
     func setFreeLeft(_ left: Int) {
         freeUsed = max(0, UsagePolicy.freeUltraScripts - left)
         defaults.set(freeUsed, forKey: Self.freeUsedKey)

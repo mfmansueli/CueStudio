@@ -8,7 +8,7 @@ import Testing
 @testable import Cue_Studio
 
 /// Ultra AI for real on the iPhone, with synthetic data only (a made-up creator, never the owner's profile): the real Firebase client, the lab's
-/// configuration and App Check token copied into the app's Documents, and the app's own call count (the 30 calls the owner authorized, kept in the
+/// configuration and App Check token copied into the app's Documents, and the app's own call count (the 300 calls the owner authorized, kept in the
 /// app's standard defaults, so these calls are counted with the ones made by hand). Each case is two calls (draft and polish); the five together
 /// are ten.
 ///
@@ -99,7 +99,7 @@ struct UltraDeviceTests {
 
     private func write(_ name: String, request: ScriptRequest, length: UltraLength? = nil, defaults: TestDefaults) async throws {
         let ultra = try service(defaults: defaults)
-        try #require(ultra.budget.allows(UltraScriptService.callsPerScript), "The lab's calls are used up (\(ultra.budget.used) of \(ultra.budget.limit))")
+        try #require(ultra.budget.allows(ultra.flow.calls), "The lab's calls are used up (\(ultra.budget.used) of \(ultra.budget.limit))")
         let payload = UltraPayload(request, length: length)
         for text in [payload.draft.prompt, payload.review(of: "").prompt] { #expect(!text.contains(Self.privateMarker)) }
         let run = try await ultra.run(request, length: length)

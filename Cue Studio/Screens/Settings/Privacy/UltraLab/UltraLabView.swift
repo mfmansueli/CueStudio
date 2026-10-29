@@ -42,7 +42,7 @@ struct UltraLabView: View {
                 LabeledContent { Text(verbatim: "\(model.ultra.budget.remaining) / \(model.ultra.budget.limit)") } label: { Text(verbatim: "Test calls left") }
                     .accessibilityIdentifier("ultraLab.budget")
             } footer: {
-                Text(verbatim: "Two calls a script: the draft and its polish. Failed calls count too.")
+                Text(verbatim: "Two or three calls a script (the steps below). Failed calls count too.")
                     .foregroundStyle(Palette.ink2)
             }
             if let allowance = model.ultra.allowance {
@@ -55,6 +55,8 @@ struct UltraLabView: View {
                     .accessibilityIdentifier("ultraLab.allowance")
                     Button { allowance.resetPreview() } label: { Text(verbatim: "Give the free scripts back") }
                         .accessibilityIdentifier("ultraLab.resetAllowance")
+                    Button { allowance.setFreeLeft(0) } label: { Text(verbatim: "Use up the free scripts") }
+                        .accessibilityIdentifier("ultraLab.useUpAllowance")
                     Button { model.ultra.invite?.reopen() } label: { Text(verbatim: "Show the invitation again") }
                         .accessibilityIdentifier("ultraLab.resetInvite")
                 } header: {
@@ -77,6 +79,15 @@ struct UltraLabView: View {
                 .pickerStyle(.segmented)
                 .disabled(model.isWorking)
                 .accessibilityIdentifier("ultraLab.length")
+                Picker(selection: $model.flow) {
+                    Text(verbatim: "Draft · check · polish").tag(UltraFlow.checked)
+                    Text(verbatim: "Draft · polish").tag(UltraFlow.polished)
+                } label: {
+                    Text(verbatim: "Steps")
+                }
+                .pickerStyle(.segmented)
+                .disabled(model.isWorking)
+                .accessibilityIdentifier("ultraLab.flow")
                 DisclosureGroup("What Cue sends") {
                     UltraPayloadView(payload: model.payload)
                 }
@@ -143,6 +154,16 @@ struct UltraLabView: View {
         } header: {
             Text(verbatim: "Draft")
         }
+        if run.checked != nil {
+            Section {
+                if run.corrections.isEmpty {
+                    Text(verbatim: "Nothing to correct.").foregroundStyle(Palette.ink2)
+                }
+                ForEach(Array(run.corrections.enumerated()), id: \.offset) { Text($0.element).foregroundStyle(Palette.ink2) }
+            } header: {
+                Text(verbatim: "What the check corrected")
+            }
+        }
         if !run.changes.isEmpty {
             Section {
                 ForEach(Array(run.changes.enumerated()), id: \.offset) { Text($0.element).foregroundStyle(Palette.ink2) }
@@ -152,6 +173,7 @@ struct UltraLabView: View {
         }
         Section {
             callRow("Draft", seconds: run.draftSeconds, reply: run.draftReply)
+            if let seconds = run.checkSeconds, let reply = run.checkReply { callRow("Check", seconds: seconds, reply: reply) }
             callRow("Polish", seconds: run.reviewSeconds, reply: run.reviewReply)
         } header: {
             Text(verbatim: "Calls")

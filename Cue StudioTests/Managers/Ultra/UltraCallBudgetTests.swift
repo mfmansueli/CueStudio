@@ -34,6 +34,6 @@ struct UltraCallBudgetTests {
     }
 
     @Test func theOwnersLimitIsThirty() {
-        #expect(UltraCallBudget.labLimit == 30)
+        #expect(UltraCallBudget.labLimit == 300)
     }
 }

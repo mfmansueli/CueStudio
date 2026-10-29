@@ -5,11 +5,13 @@
 
 import Foundation
 
-/// The system instructions of Ultra's two calls. A port of the web lab's `content-first-v4-reviewed` (`tools/quality/firebase_lab/writerFlow.mjs`):
+/// The system instructions of Ultra's calls. A port of the web lab's `content-first-v4-reviewed` (`tools/quality/firebase_lab/writerFlow.mjs`):
 /// the writer develops the request from who the creator is and who they speak to, with the owner's creative licence (imagined first-person scenes
 /// and opinions are welcome draft material), and the editor applies the creator's way of speaking without cutting what was developed. Two
 /// deliberate differences from the lab: the instructions are in English with the output language named in the request (the lab's were Brazilian
-/// Portuguese only), and the editor also returns a title (the script page needs one).
+/// Portuguese only), and the editor also returns a title (the script page needs one). The checker is the step the lab's report asked for next
+/// (`UltraFlow.checked`): the claims checked on their own, before the voice polish, without touching what the owner wants kept (imagined
+/// everyday scenes, first-person opinions, the creator's voice).
 nonisolated enum UltraInstructions {
     static let writer = """
     You write first drafts of spoken video scripts for a creator, who will edit them before recording. Write in the language the request names.
@@ -42,6 +44,33 @@ nonisolated enum UltraInstructions {
     Return only the speech, ready for the teleprompter: no assistant introduction, titles, headings, Markdown, stage directions or notes. Keep \
     the requested point of view throughout. Be specific, human and interesting without forcing catchphrases. Do not use em dashes.
     """
+
+    static let checker = """
+    You check the content of a draft of a spoken video script before it is polished in the creator's voice. You are not the editor: keep the \
+    draft's language, structure, length, stories, voice and wording, and change only what is wrong.
+    Find and fix: technical or factual claims that are false, or stated as universal when they depend on conditions (light, cameras, sound, \
+    health, the body, money, law, science); causes and effects that don't follow, and mechanisms that are made up or simplified until they are \
+    wrong (such as a single chemical or hormone presented as the whole explanation); numbers, measurements, prices, rates, percentages, dates, \
+    studies, test results, statistics, quotes, endorsements and credentials that the request and its context didn't supply; absolute promises \
+    and guarantees the subject can't keep; examples that contradict the point they illustrate.
+    Fix each one with the smallest change that makes it true: a condition, an observable check the creator can do on camera or at home, or a \
+    plainer statement that is true without the invented detail. Imagined everyday scenes, small stories and first-person opinions are welcome \
+    creative material and are not errors, as long as they don't present invented data as fact: keep them. Keep every fact, name, value and \
+    literal phrase the request gives, exactly. Never add sources, studies or numbers of your own. There is no research tool in this step: when \
+    you are not sure a claim is true, make it conditional instead of asserting it.
+    Do not polish the style, shorten, summarize, add or remove a call to action, or change the opening or the ending.
+    Return a JSON object with two keys: "script", the whole draft with your corrections (the same draft when nothing needed fixing); and \
+    "corrections", one short line per change, in the draft's language, saying what was claimed and what it says now (empty when nothing \
+    changed). No other keys, ratings, approvals or reasoning.
+    """
+
+    /// Added to the polish when the claims were checked first: what was corrected stays corrected.
+    static func checkedClaims(_ corrections: [String]) -> String {
+        let rule = "The draft's claims were already checked. While polishing, keep those corrections and add no new facts, numbers, studies or "
+            + "technical claims."
+        guard !corrections.isEmpty else { return rule }
+        return rule + " Corrected by the check:\n" + corrections.map { "- \($0)" }.joined(separator: "\n")
+    }
 
     static let editor = """
     You are a script editor doing the final polish of a draft for a creator, who will still edit it before recording. Keep the language of the \

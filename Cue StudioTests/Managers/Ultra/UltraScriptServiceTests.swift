@@ -7,8 +7,9 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// Ultra AI's two calls with a fake client: nothing goes out without permission or past the cap, a revoked permission or a Stop keeps the second
-/// call from leaving, only the polished script comes back (a failed polish is a failure, never the draft), and every call is counted.
+/// Ultra AI's calls with a fake client: nothing goes out without permission or past the cap, a revoked permission or a Stop keeps the next call
+/// from leaving, only the polished script comes back (a failed check or polish is a failure, never the draft), and every call is counted. With
+/// the claim check (`UltraFlow.checked`) the polish works on the checked draft and keeps its corrections.
 @MainActor
 @Suite("Ultra AI script service")
 struct UltraScriptServiceTests {
@@ -167,5 +168,75 @@ struct UltraScriptServiceTests {
         #expect(scenario.client.requests[0].prompt.contains("Length: free."))
         _ = try await scenario.service.run(request, length: .required(60...90))
         #expect(scenario.client.requests[2].prompt.contains("the creator chose 60 to 90 seconds"))
+    }
+
+    // MARK: - The claim check
+
+    @Test func theCheckedDraftIsWhatThePolishWorksOn() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        let run = try await scenario.service.run(request, flow: .checked)
+        #expect(scenario.client.requests.map(\.stage) == [.draft, .check, .review])
+        #expect(scenario.client.requests[1].prompt.contains("Draft to check:\n\"\"\"\nA developed draft with a reason and an example."))
+        let polish = scenario.client.requests[2].prompt
+        #expect(polish.contains("Draft to polish:\n\"\"\"\nA checked draft with a reason and an example."))
+        #expect(polish.contains("Corrected by the check:\n- A universal rule now says when it applies."))
+        #expect(run.checked == "A checked draft with a reason and an example." && run.corrections.count == 1 && run.flow == .checked)
+        #expect(run.script.text == "The polished script." && scenario.budget.used == 3)
+    }
+
+    @Test func withoutTheCheckThePolishIsToldNothingWasChecked() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        _ = try await scenario.service.run(request, flow: .polished)
+        #expect(!scenario.client.requests[1].prompt.contains("already checked"))
+    }
+
+    @Test func aCheckWithNothingToCorrectStillHoldsThePolishToTheFacts() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.client.check = .success(UltraModelReply(text: #"{"script":"Same draft.","corrections":[]}"#, finishedNormally: true))
+        _ = try await scenario.service.run(request, flow: .checked)
+        let polish = scenario.client.requests[2].prompt
+        #expect(polish.contains("add no new facts, numbers, studies or technical claims") && !polish.contains("Corrected by the check"))
+    }
+
+    @Test func aFailedCheckIsAFailureAndThePolishNeverLeaves() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.client.check = .success(UltraModelReply(text: #"{"script":"Checked.","corrections":[],"verdict":"ok"}"#, finishedNormally: true))
+        do {
+            _ = try await scenario.service.run(request, flow: .checked)
+            Issue.record("A failed check returned a script")
+        } catch let UltraError.reviewFailed(failure, draft) {
+            #expect(failure == .incomplete && draft == "A developed draft with a reason and an example.")
+        } catch {
+            Issue.record("Unexpected error \(error)")
+        }
+        #expect(scenario.client.requests.map(\.stage) == [.draft, .check] && scenario.budget.used == 2)
+    }
+
+    @Test func revokedWhileTheCheckIsOutThePolishNeverLeaves() async {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        scenario.client.whileCalling = { stage in if stage == .check { scenario.consent.revoke() } }
+        await #expect(throws: UltraError.consentRevoked) { try await scenario.service.run(request, flow: .checked) }
+        #expect(scenario.client.requests.map(\.stage) == [.draft, .check])
+    }
+
+    @Test func withoutRoomForAllThreeCallsNoneGoesOut() async {
+        let scenario = makeScenario(limit: 2)
+        defer { scenario.defaults.tearDown() }
+        await #expect(throws: UltraError.budgetExhausted) { try await scenario.service.run(request, flow: .checked) }
+        #expect(scenario.client.requests.isEmpty && scenario.budget.used == 0)
+    }
+
+    @Test func theCheckIsReadStrictly() {
+        #expect(UltraCheckReply(json: #"{"script":" A draft. ","corrections":["One."," "]}"#)?.corrections == ["One."])
+        #expect(UltraCheckReply(json: #"{"script":"A draft.","corrections":[]}"#)?.script == "A draft.")
+        #expect(UltraCheckReply(json: #"{"script":"","corrections":[]}"#) == nil)
+        #expect(UltraCheckReply(json: #"{"script":"A draft."}"#) == nil)
+        #expect(UltraCheckReply(json: #"{"script":"A draft.","corrections":[1]}"#) == nil)
+        #expect(UltraCheckReply(json: "A draft.") == nil)
     }
 }

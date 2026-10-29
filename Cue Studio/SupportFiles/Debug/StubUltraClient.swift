@@ -31,6 +31,10 @@ final class StubUltraClient: UltraModelClient {
         case .draft:
             progress(ReadTime.wordCount(in: Self.draftText))
             return UltraModelReply(text: Self.draftText, finishedNormally: true)
+        case .check:
+            let reply = ["script": Self.draftText, "corrections": [String]()] as [String: Any]
+            let data = try JSONSerialization.data(withJSONObject: reply)
+            return UltraModelReply(text: String(bytes: data, encoding: .utf8) ?? "", finishedNormally: true)
         case .review:
             if reviewFails { throw UltraClientError(failure: .provider) }
             let reply = ["title": Self.title, "script": Self.scriptText, "changes": ["Tightened the opening."]] as [String: Any]

@@ -10,6 +10,8 @@ nonisolated struct UltraStageRequest: Hashable, Sendable {
     enum Stage: String, Hashable, Sendable {
         /// The developed draft, as plain speech.
         case draft
+        /// The draft's claims checked on their own, as JSON (`UltraCheckReply`).
+        case check
         /// The polish of that draft, as JSON (`UltraReviewReply`).
         case review
     }

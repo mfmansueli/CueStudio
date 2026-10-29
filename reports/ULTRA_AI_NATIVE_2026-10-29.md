@@ -9,6 +9,8 @@ Supersedes the "New unvalidated native implementation" part of `ULTRA_NATIVE_HAN
 ## Owner decisions in this delivery
 
 - 29/10: App Check debug token registered through the official Firebase CLI (owner's choice); the lab's native call cap raised to 30 (owner's choice).
+- 29/10: cap raised to 80, then to **300** ("the credits are for testing and improving the tool as much as it takes") for the quality comparison Codex left pending (claim check apart from the voice polish, more topics, Apple
+  Intelligence on the same ideas, blind) plus the owner's hand test; ~USD 1 expected, from the Cloud credits (Agent Platform, not the Developer API).
 - 29/10: the feature is **Ultra AI** in the UI; the model's brand (Gemini) never appears on screen. Privacy texts name **Google** as the processor
   (App Store 5.1.2(i) requires naming who data is shared with, including third-party AI).
 - 29/10: the owner wants to test, on the phone, the same experience a creator will see (real screens, not only the lab).
@@ -33,7 +35,7 @@ Supersedes the "New unvalidated native implementation" part of `ULTRA_NATIVE_HAN
 | Find inspiration: "Draft with Ultra AI" (Draft it now stays Apple Intelligence) | `FindInspirationSheet.swift` |
 | Star, page pill, fact-check banner, toast say "Ultra AI"; `Script.draftedBy` | `StarTransitionOverlay`, `ScriptWritingPill`, `FactCheckBanner`, `Script.swift` |
 | Lab (Debug): free / ~90 s reference / 60–90 s required, draft + final + changes + tokens, save once with language, format, provenance, fact check | `Screens/Settings/Privacy/UltraLab/` |
-| Lab call cap 30 (counted before sending, failures included, never lowered, standard defaults) | `UltraCallBudget.swift` |
+| Lab call cap 300 (counted before sending, failures included, never lowered, standard defaults) | `UltraCallBudget.swift` |
 | Free scripts + Pro's monthly ones as a Debug preview (5 free for everyone, trial included; +30/month paid; free first; counted only when written) | `UltraAllowance.swift`, `UltraAllowanceService.swift`, `UsagePolicy`, `Models/UltraAllowanceLabels.swift` |
 | Used up: the calm Pro for Ultra AI (`PaywallContext.ultra`) on the free plan, a toast in the trial and on paid Pro | `ScriptStarter.showUltraUsedUp`, `PaywallCopy`, `PresentationService.paywall` |
 | Pro screen where Ultra AI is offered: "30 Ultra AI scripts a month", "Free to try · 5 exports and 5 Ultra AI scripts included…"; plan card line | `PaywallCopy.visibleBenefits`, `ProMarketing`, `ProfilePlanCard` |
@@ -154,7 +156,8 @@ for production (none of this is built):
   here is configured for real users.
 - **App Check** runs only with the debug provider, for the lab app, from a token copied to the app's Documents (never in Git or the bundle). Release
   has no Ultra AI at all.
-- **The lab's 30 calls:** 18 left after these tests (2 per script, failures included). At 30 Ultra AI stops; raising it is the owner's call. The web
+- **The lab's 300 calls** (30, then 80, until the owner raised it): 18 of the first 30 were left after these tests (2 per script, failures included). At the cap
+  Ultra AI stops; raising it is the owner's call. The web
   lab's batch of 8 was used earlier and its ledger is untouched.
 - **Privacy texts** (policy paragraph, App Store label) are drafts below, not published. No zero-retention promise: Google processes the request
   under its terms.

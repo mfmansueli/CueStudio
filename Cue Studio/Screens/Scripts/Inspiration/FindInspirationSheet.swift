@@ -146,7 +146,9 @@ struct FindInspirationSheet: View {
         .sheet(isPresented: $editsTopics) { VoiceEditorSheet(field: .topics) }
         .fullScreenCover(item: $paywall) { PaywallView(context: $0) }
         .sheet(item: $ultraConsentFor, onDismiss: writeAllowedUltra) { idea in
-            UltraConsentSheet(payload: starter.ultraPreview(idea: FindInspirationViewModel.writingText(of: idea), brief: idea.brief)) {
+            UltraConsentSheet(
+                payload: starter.ultraPreview(idea: FindInspirationViewModel.writingText(of: idea), brief: idea.brief), writesNow: true
+            ) {
                 ultra.consent.grant()
                 allowedUltraIdea = idea
             }

@@ -2630,7 +2630,8 @@ Ultra AI* (§30). Uma resposta a comentário fica com o Apple Intelligence. Com 
 diz o que vai (a ideia, rede, formato, duração e as preferências do My Cue Voice), que o rascunho volta ao Google para o polimento, o que nunca vai (exemplos,
 trechos importados, roteiros aprovados, outros roteiros, vídeos, áudio), o que o Google pode guardar (não treina sem permissão; cache de até 24 h e registro
 contra abuso; qualquer região; IP, identidade do app e token do App Check) e onde desligar. **What Cue sends** mostra o texto real das duas chamadas
-(`UltraPayloadView`), também no *What Cue sends* do My Cue Voice. **Allow and write with Ultra AI** / **Keep Apple Intelligence**. Settings › Privacy & AI
+(`UltraPayloadView`), também no *What Cue sends* do My Cue Voice. **Allow Ultra AI** (no dock, no My Cue Voice e nos Settings: só escolhe a
+Ultra AI) ou **Allow and write with Ultra AI** (Find inspiration, que rascunha na hora) / **Keep Apple Intelligence**. Settings › Privacy & AI
 data tem o interruptor **Ultra AI** (ligar abre a folha; desligar revoga e nada mais sai, nem a segunda chamada de um roteiro em andamento) e, em Debug,
 **Ultra AI · Lab**; o Apple Intelligence passa a dizer "Cue’s default writer. Ultra AI has its own switch." e a folha de privacidade deixa de dizer "nothing
 else" onde a Ultra AI existe.
@@ -2645,8 +2646,8 @@ Crashlytics; o Console (`studio.cue` / `Ultra`) recebe só tipos, tempos e token
 
 **O roteiro salvo** guarda `Script.draftedBy = .ultra` e o aviso de fatos; o toast diz "Ultra AI draft ready · Check facts".
 
-**Limite do laboratório:** 30 chamadas neste iPhone (autorizadas pelo dono em 29/10/2026), contadas antes de sair, falhas incluídas (`UltraCallBudget`, nos
-defaults padrão do app). É uma trava do experimento, **não** um sistema de créditos: o de produção tem de ser do servidor (compras verificadas,
+**Limite do laboratório:** 300 chamadas neste iPhone (autorizadas pelo dono em 29/10/2026: 30, 80 e depois 300 para medir e melhorar a qualidade),
+contadas antes de sair, falhas incluídas (`UltraCallBudget`, nos defaults padrão do app). É uma trava do experimento, **não** um sistema de créditos: o de produção tem de ser do servidor (compras verificadas,
 saldo e operações idempotentes lá; uma falha sem roteiro não debita). Plano em `reports/ULTRA_AI_NATIVE_2026-10-29.md`.
 
 **Roteiros grátis e Cue Pro** (decisão do dono, 29/10/2026; **prévia em Debug**, sem cobrança): todo mundo tem **5 roteiros Ultra AI grátis**
@@ -2656,7 +2657,7 @@ contam). `UltraAllowance` (puro) e `UltraAllowanceService` (contagem em UserDefa
 dono julgar o produto no iPhone; não protege créditos (a reinstalação zera, qualquer um edita). Onde aparece: o menu do chip de quem escreve ("Ultra AI ·
 4 of 5 free left"; Pro pago "Ultra AI · 28 left this month"), a folha de permissão sob o título ("Your first 5 scripts are free." / "4 of 5 free scripts
 left."), o cartão do plano no Profile (linha mono violeta "ULTRA AI · 4 OF 5 FREE LEFT", laranja quando acaba) e o laboratório (*Give the free scripts back*,
-*Show the invitation again*; os roteiros do laboratório não contam aqui, e as chamadas de teste nunca voltam). **Sem nenhum restante:** escolher a Ultra AI
+*Use up the free scripts* para ver o Pro sem gastar chamadas, *Show the invitation again*; os roteiros do laboratório não contam aqui, e as chamadas de teste nunca voltam). **Sem nenhum restante:** escolher a Ultra AI
 (chip, *Draft with Ultra AI*, o convite) abre no plano grátis o **Pro calmo da Ultra AI** (`PaywallContext.ultra`: "ULTRA AI", "Keep writing with Ultra
 AI.", "Your 5 free scripts are written. Cue Pro adds 30 a month, from the first paid month."); no teste, o toast "Your free Ultra AI scripts are used · Pro’s
 monthly ones start after the free week"; no Pro pago, "This month’s Ultra AI scripts are used · More next month". A ideia vai para o Apple Intelligence.

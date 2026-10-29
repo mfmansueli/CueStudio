@@ -15,6 +15,8 @@ import Foundation
 final class UltraLabViewModel {
     var prompt = ""
     var length: UltraLabLength = .free
+    /// The lab compares the passes by hand: the claim check on its own (the step the quality comparison measures) or folded into the polish.
+    var flow = UltraFlow.checked
 
     private(set) var run: UltraRun?
     /// What went wrong, in the creator's words; never the provider's message.
@@ -43,7 +45,7 @@ final class UltraLabViewModel {
     private var trimmedPrompt: String { prompt.trimmingCharacters(in: .whitespacesAndNewlines) }
 
     var canGenerate: Bool {
-        ultra.isReady && !isWorking && !trimmedPrompt.isEmpty && ultra.budget.allows(UltraScriptService.callsPerScript)
+        ultra.isReady && !isWorking && !trimmedPrompt.isEmpty && ultra.budget.allows(flow.calls)
     }
 
     /// The idea as the Scripts screen would send it (the dock's platform, no format), for Ultra.
@@ -81,7 +83,7 @@ final class UltraLabViewModel {
                 task = nil
             }
             do {
-                run = try await ultra.run(request, length: length, reporting: meter)
+                run = try await ultra.run(request, length: length, flow: flow, reporting: meter)
             } catch is CancellationError {
                 failure = "Stopped · Nothing more was sent"
             } catch let error as UltraError {

@@ -91,6 +91,14 @@ struct UltraPayloadTests {
         #expect(payload.review(of: "Draft.").prompt.contains("Draft to polish:\n\"\"\"\nDraft.\n\"\"\""))
     }
 
+    @Test func theCheckKnowsWhoTheyAreButNotHowTheySpeak() {
+        let check = UltraPayload(request("A night routine", voice: voice)).check(of: "Draft.")
+        #expect(check.stage == .check && check.instructions == UltraInstructions.checker)
+        #expect(check.prompt.contains("people starting their first budget"))
+        #expect(!check.prompt.contains("How the creator speaks"))
+        #expect(check.prompt.hasSuffix("Draft to check:\n\"\"\"\nDraft.\n\"\"\""))
+    }
+
     @Test func preferencesNeverMakeTheScriptShort() {
         let review = UltraPayload(request("A night routine", voice: voice)).review(of: "Draft.").prompt
         // Their usual video length isn't sent, and short sentences are a rhythm, never a limit.

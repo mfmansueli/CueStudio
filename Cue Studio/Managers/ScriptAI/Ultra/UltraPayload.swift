@@ -24,9 +24,18 @@ nonisolated struct UltraPayload: Hashable, Sendable {
         UltraStageRequest(stage: .draft, instructions: UltraInstructions.writer, prompt: sections(includingDelivery: false).joined(separator: "\n\n"))
     }
 
-    /// The second call: the polish of `draftText`, with the whole voice.
-    func review(of draftText: String) -> UltraStageRequest {
-        let sections = sections(includingDelivery: true) + ["Draft to polish:\n\"\"\"\n\(draftText)\n\"\"\""]
+    /// The claim check of `draftText` (`UltraFlow.checked`): what the draft had, without how the creator speaks (the check never touches the form).
+    func check(of draftText: String) -> UltraStageRequest {
+        let sections = sections(includingDelivery: false) + ["Draft to check:\n\"\"\"\n\(draftText)\n\"\"\""]
+        return UltraStageRequest(stage: .check, instructions: UltraInstructions.checker, prompt: sections.joined(separator: "\n\n"))
+    }
+
+    /// The last call: the polish of `draftText`, with the whole voice.
+    /// - Parameter corrections: what the claim check corrected, when there was one (nil: no check, the polish corrects claims itself).
+    func review(of draftText: String, corrections: [String]? = nil) -> UltraStageRequest {
+        var sections = sections(includingDelivery: true)
+        if let corrections { sections.append(UltraInstructions.checkedClaims(corrections)) }
+        sections.append("Draft to polish:\n\"\"\"\n\(draftText)\n\"\"\"")
         return UltraStageRequest(stage: .review, instructions: UltraInstructions.editor, prompt: sections.joined(separator: "\n\n"))
     }
 

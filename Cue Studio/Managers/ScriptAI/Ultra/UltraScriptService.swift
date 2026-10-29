@@ -6,17 +6,18 @@
 import Foundation
 import os
 
-/// AI Scripts Ultra: a developed draft from Google's Gemini, then its polish in the creator's way of speaking, two calls through Firebase
-/// (`UltraModelClient`). Apple Intelligence stays the default and is never replaced or fallen back from: a script is written here only when the
-/// creator chose Ultra for it, and only with their permission (`UltraConsentService`). Before every call it asks again whether it may go out
-/// (permission, the lab's cap, cancellation), so a revoked permission or a Stop never lets the next call leave. Only the polished script comes
-/// back; a failed polish is a failure, with the draft kept apart in the error (`UltraError.reviewFailed`), never handed over as the script.
+/// AI Scripts Ultra: a developed draft from Google's Gemini, then (`UltraFlow.checked`) its claims checked on their own, then its polish in the
+/// creator's way of speaking, two or three calls through Firebase (`UltraModelClient`). Apple Intelligence stays the default and is never
+/// replaced or fallen back from: a script is written here only when the creator chose Ultra for it, and only with their permission
+/// (`UltraConsentService`). Before every call it asks again whether it may go out (permission, the lab's cap, cancellation), so a revoked
+/// permission or a Stop never lets the next call leave. Only the polished script comes back; a failed check or polish is a failure, with the
+/// draft kept apart in the error (`UltraError.reviewFailed`), never handed over as the script.
 /// Nothing of the request, the voice or the answer is logged or sent to Analytics or Crashlytics: the Console hears kinds, times and token counts.
 @MainActor
 @Observable
 final class UltraScriptService: UltraScriptWriting {
-    /// Two calls per script: the draft and its polish.
-    static let callsPerScript = 2
+    /// The passes a script goes through when the caller doesn't say (the lab and the comparison pick their own).
+    var flow = UltraFlow.polished
 
     let consent: UltraConsentService
     let budget: UltraCallBudget
@@ -82,11 +83,16 @@ final class UltraScriptService: UltraScriptWriting {
     }
 
     /// The whole run, for the lab: the polished script with its draft, the editor's changes and each call's numbers.
-    /// - Parameter length: the lab's comparison overrides the request's own length policy; nil keeps it.
-    func run(_ request: ScriptRequest, length: UltraLength? = nil, reporting meter: WritingProgressMeter? = nil) async throws -> UltraRun {
+    /// - Parameters:
+    ///   - length: the lab's comparison overrides the request's own length policy; nil keeps it.
+    ///   - flow: the passes; nil is `flow`.
+    func run(
+        _ request: ScriptRequest, length: UltraLength? = nil, flow: UltraFlow? = nil, reporting meter: WritingProgressMeter? = nil
+    ) async throws -> UltraRun {
+        let flow = flow ?? self.flow
         guard isAvailable else { throw UltraError.notAvailable }
         try mayContinue(started: false)
-        guard budget.allows(Self.callsPerScript) else { throw UltraError.budgetExhausted }
+        guard budget.allows(flow.calls) else { throw UltraError.budgetExhausted }
         guard let client = client ?? makeClient() else { throw UltraError.notAvailable }
         self.client = client
         let payload = UltraPayload(request, length: length)
@@ -102,14 +108,21 @@ final class UltraScriptService: UltraScriptWriting {
         }
         note("draft", reply: draftReply, seconds: draftSeconds)
 
-        // The polish goes out only if the creator still lets it: Stop, Cancel or a revoked permission end the run here.
-        try mayContinue(started: true)
+        // The check and the polish go out only if the creator still lets them: Stop, Cancel or a revoked permission end the run here.
         let draftWords = max(1, ReadTime.wordCount(in: draft))
-        meter?.record(.lengthening(done: 0, of: draftWords))
+        let total = draftWords * (flow == .checked ? 2 : 1)
+        var check: (reply: UltraCheckReply, seconds: Double, call: UltraModelReply)?
+        if flow == .checked { check = try await checked(draft, payload: payload, client: client, words: draftWords, of: total, meter) }
+
+        try mayContinue(started: true)
+        let before = total - draftWords
+        meter?.record(.lengthening(done: before, of: total))
         let reviewStart = clock.now
         let reviewReply: UltraModelReply
         do {
-            reviewReply = try await call(client, payload.review(of: draft)) { meter?.record(.lengthening(done: min($0, draftWords), of: draftWords)) }
+            reviewReply = try await call(client, payload.review(of: check?.reply.script ?? draft, corrections: check?.reply.corrections)) {
+                meter?.record(.lengthening(done: before + min($0, draftWords), of: total))
+            }
         } catch UltraError.draftFailed(let failure) {
             throw UltraError.reviewFailed(failure, draft: draft)
         }
@@ -126,8 +139,31 @@ final class UltraScriptService: UltraScriptWriting {
         guard !script.text.isEmpty else { throw UltraError.reviewFailed(.incomplete, draft: draft) }
         return UltraRun(
             script: script, draft: draft, changes: reply.changes, draftSeconds: draftSeconds, reviewSeconds: reviewSeconds,
-            draftReply: draftReply, reviewReply: reviewReply
+            draftReply: draftReply, reviewReply: reviewReply, flow: flow, checked: check?.reply.script, corrections: check?.reply.corrections ?? [],
+            checkSeconds: check?.seconds, checkReply: check?.call
         )
+    }
+
+    /// The claim check (`UltraFlow.checked`): the draft with its claims corrected, or a failure that keeps the draft apart.
+    private func checked(
+        _ draft: String, payload: UltraPayload, client: any UltraModelClient, words: Int, of total: Int, _ meter: WritingProgressMeter?
+    ) async throws -> (reply: UltraCheckReply, seconds: Double, call: UltraModelReply) {
+        try mayContinue(started: true)
+        meter?.record(.lengthening(done: 0, of: total))
+        let start = clock.now
+        let answer: UltraModelReply
+        do {
+            answer = try await call(client, payload.check(of: draft)) { meter?.record(.lengthening(done: min($0, words), of: total)) }
+        } catch UltraError.draftFailed(let failure) {
+            throw UltraError.reviewFailed(failure, draft: draft)
+        }
+        let seconds = Self.seconds(start.duration(to: clock.now))
+        guard answer.finishedNormally, let reply = UltraCheckReply(json: answer.text) else {
+            note("check incomplete", reply: answer, seconds: seconds)
+            throw UltraError.reviewFailed(.incomplete, draft: draft)
+        }
+        note("check", reply: answer, seconds: seconds)
+        return (reply, seconds, answer)
     }
 
     // MARK: - Steps

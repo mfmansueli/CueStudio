@@ -11,7 +11,9 @@ import SwiftUI
 struct UltraConsentSheet: View {
     /// What the calls would carry now (the dock's idea and choices, or a placeholder for the idea).
     let payload: UltraPayload
-    /// "Allow and write with Ultra": the permission is given by the caller (`UltraConsentService.grant`), which then goes on.
+    /// Allowing it writes the script at once (Find inspiration's idea), and the button says so; elsewhere it only picks Ultra AI.
+    var writesNow = false
+    /// The permission is given by the caller (`UltraConsentService.grant`), which then goes on.
     let onAllow: () -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -104,7 +106,7 @@ struct UltraConsentSheet: View {
             Button {
                 onAllow()
                 dismiss()
-            } label: { Text("Allow and write with Ultra AI") }
+            } label: { Text(allowTitle) }
                 .buttonStyle(.cuePrimary(.large))
                 .accessibilityIdentifier("ultra.consent.allow")
             Button { dismiss() } label: { Text("Keep Apple Intelligence") }
@@ -113,6 +115,8 @@ struct UltraConsentSheet: View {
         }
         .padding(.top, 4)
     }
+
+    private var allowTitle: LocalizedStringKey { writesNow ? "Allow and write with Ultra AI" : "Allow Ultra AI" }
 
     private func point(title: LocalizedStringKey, detail: LocalizedStringKey, systemImage: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 12) {

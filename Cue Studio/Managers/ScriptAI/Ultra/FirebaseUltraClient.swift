@@ -87,10 +87,18 @@ final class FirebaseUltraClient: UltraModelClient {
         switch stage {
         case .draft:
             GenerationConfig(maxOutputTokens: UltraStageRequest.responseTokens)
+        case .check:
+            GenerationConfig(maxOutputTokens: UltraStageRequest.responseTokens, responseMIMEType: "application/json", responseSchema: checkSchema)
         case .review:
             GenerationConfig(maxOutputTokens: UltraStageRequest.responseTokens, responseMIMEType: "application/json", responseSchema: reviewSchema)
         }
     }
+
+    /// `UltraCheckReply`'s two keys.
+    private static let checkSchema = Schema.object(properties: [
+        "script": .string(),
+        "corrections": .array(items: .string()),
+    ])
 
     /// `UltraReviewReply`'s three keys.
     private static let reviewSchema = Schema.object(properties: [
