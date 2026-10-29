@@ -110,6 +110,7 @@ struct ScriptPageUltraTests {
     @Test func ultraFitsAScriptItWroteInThePlatformsRange() async {
         let scenario = fitScenario(draftedBy: .ultra)
         defer { scenario.defaults.tearDown() }
+        #expect(scenario.viewModel.ultraFitsToTime && scenario.viewModel.canFitToTime)
         await scenario.viewModel.run(.fitToTime)
         #expect(scenario.ultra.fits.count == 1 && scenario.writer.lastRewrite == nil)
         #expect(scenario.ultra.fits.first?.range == scenario.viewModel.preset.idealRange && scenario.ultra.fits.first?.platform == .reels)
@@ -119,6 +120,7 @@ struct ScriptPageUltraTests {
     @Test func appleIntelligenceFitsEveryOtherScript() async {
         let scenario = fitScenario(draftedBy: nil)
         defer { scenario.defaults.tearDown() }
+        #expect(!scenario.viewModel.ultraFitsToTime)
         await scenario.viewModel.run(.fitToTime)
         #expect(scenario.ultra.fits.isEmpty && scenario.writer.lastRewrite?.tool == .fitToTime)
     }
@@ -126,6 +128,7 @@ struct ScriptPageUltraTests {
     @Test func withoutUltrasPermissionAppleIntelligenceFitsIt() async {
         let scenario = fitScenario(draftedBy: .ultra, ultraReady: false)
         defer { scenario.defaults.tearDown() }
+        #expect(!scenario.viewModel.ultraFitsToTime)
         await scenario.viewModel.run(.fitToTime)
         #expect(scenario.ultra.fits.isEmpty && scenario.writer.lastRewrite?.tool == .fitToTime)
     }

@@ -60,6 +60,31 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
     }
 
+    /// On a script Ultra AI wrote, Improve's "Fit to time" says it is Ultra AI's, and fitting it puts Ultra's answer on the page.
+    func testUltraFitsAScriptItWroteToTheTime() {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed"])
+        pickUltra(app)
+        let field = element(app, "ideaCard.field")
+        XCTAssertTrue(field.exists(within: 5))
+        field.tap()
+        field.typeText("Why I stopped buying bottled water")
+        app.buttons["ideaCard.submit"].tap()
+        let editor = element(app, "page.editor")
+        XCTAssertTrue(editor.exists(within: 20), "No page written by Ultra AI")
+        expectation(for: NSPredicate(format: "value CONTAINS %@", "Ultra polished opening"), evaluatedWith: editor)
+        waitForExpectations(timeout: 10)
+        let improve = app.buttons["page.improveButton"]
+        XCTAssertTrue(improve.exists(within: 5), "No Improve on a script Ultra AI wrote")
+        improve.tap()
+        let fit = app.buttons["improve.tool.fitToTime"]
+        XCTAssertTrue(fit.exists(within: 5), "Improve has no Fit to time")
+        XCTAssertTrue(fit.label.contains("Ultra AI"), "Fit to time doesn't say Ultra AI fits this script: \(fit.label)")
+        fit.tap()
+        expectation(for: NSPredicate(format: "value CONTAINS %@", "Ultra fitted script"), evaluatedWith: editor)
+        waitForExpectations(timeout: 15)
+        XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
+    }
+
     /// From the second use of the AI the dock invites to Ultra AI with its free scripts; "Try it" asks first (saying the first five are free),
     /// and allowing it puts the chip on Ultra AI and ends the invitation.
     func testTheInvitationAsksFirstThenPicksUltra() {

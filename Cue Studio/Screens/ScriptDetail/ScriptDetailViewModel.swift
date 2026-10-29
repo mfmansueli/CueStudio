@@ -153,8 +153,11 @@ final class ScriptDetailViewModel {
 
     var canDraft: Bool { drafting.isAvailable }
 
-    /// "Fit to time" can run: Apple Intelligence drafts here, or the script is Ultra AI's and Ultra may fit it.
-    var canFitToTime: Bool { canDraft || (script?.draftedBy == .ultra && ultra?.isReady == true) }
+    /// Ultra AI fits this script ("Fit to time", and the record nudge's Shorter): it wrote it, and the creator allowed Ultra.
+    var ultraFitsToTime: Bool { script?.draftedBy == .ultra && ultra?.isReady == true }
+
+    /// "Fit to time" can run: Apple Intelligence drafts here, or Ultra AI fits this script.
+    var canFitToTime: Bool { canDraft || ultraFitsToTime }
 
     /// Whether Apple Intelligence drafts in `language` (a Translate target), asked only of the language: nil when it does, or when the
     /// reason isn't the language (the whole sheet says that one).
@@ -286,7 +289,7 @@ final class ScriptDetailViewModel {
         guard let script else { return }
         // A script Ultra AI wrote is fitted by Ultra, one call and only when asked: on the iPhone, Apple Intelligence's Fit to time left 10 of 13
         // of them outside the platform's range, cut at the seams (DESIGN_PROJECT §57). Without Ultra's permission it stays Apple Intelligence's.
-        let ultraFits = tool == .fitToTime && script.draftedBy == .ultra && ultra?.isReady == true
+        let ultraFits = tool == .fitToTime && ultraFitsToTime
         if !ultraFits, let reason = drafting.reason {
             toast.show(reason, kind: .problem)
             return

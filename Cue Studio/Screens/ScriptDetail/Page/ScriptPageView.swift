@@ -286,7 +286,8 @@ struct ScriptPageView: View {
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("page.hookButton")
-            if viewModel.isLanguageModelAvailable {
+            // A script Ultra AI wrote keeps "Improve" for its Fit to time even where Apple Intelligence doesn't run.
+            if viewModel.isLanguageModelAvailable || viewModel.ultraFitsToTime {
                 Button { viewModel.sheet = .improve } label: {
                     HStack(spacing: 5) {
                         Image(systemName: "sparkles").cueFont(12, weight: .bold)

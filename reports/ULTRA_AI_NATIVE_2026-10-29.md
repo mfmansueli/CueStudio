@@ -19,18 +19,23 @@ Supersedes the "New unvalidated native implementation" part of `ULTRA_NATIVE_HAN
   of the list stays for a later review, as deferred on 15/10).
 - 29/10: an **invitation** to Ultra AI from the second use of the AI, linked across the Scripts dock, Find inspiration and My Cue Voice (closed once,
   closed everywhere), with the owner's refined motion standard (layered motion in time with Core Haptics).
+- 29/10, after reviewing the Portuguese pairs: Ultra AI **writes freely** (no length cap); the page's length bar shows how long the script takes, and
+  the creator decides whether to fit it. **Fit to time on a script Ultra AI wrote is one Ultra AI call, only when asked** (pre-writing a short version
+  on every script would cost a call each time; on demand costs only when used).
 
 ## What exists now
 
 | Piece | Where |
 |---|---|
-| Two-call writer (draft → polish), consent/budget/cancellation checked before each call, typed failures, Console-only logs | `Managers/ScriptAI/Ultra/UltraScriptService.swift` |
+| Three-call writer (draft → claim check → polish; `UltraFlow.checked`, the default since the comparison below), consent/budget/cancellation checked before each call, typed failures, Console-only logs | `Managers/ScriptAI/Ultra/UltraScriptService.swift` |
+| Fit to time on an Ultra script: one call on demand, the platform's range in words, the creator's delivery; keeps hedges, first sentence, speaker; no call when already in range | `UltraScriptService.fit`, `UltraFitRequest.swift`, `UltraFitReply.swift`, `UltraInstructions.fitter`, `ScriptDetailViewModel.rewrite(with:)` |
+| Title accents restored from the script when the model drops them ("manhas" → "manhãs") | `UltraTitleAccents.swift` |
 | Exact payload (request verbatim, language, platform, format, length policy, Find inspiration angle/opening, literal phrases, brand brief, voice split content/delivery; never examples, excerpts, approved scripts) | `UltraPayload.swift`, `VoiceBriefBuilder.ultraProjection` |
 | Instructions (port of the web lab's content-first-v4-reviewed: development, request wins, no habitual CTA, creative licence, careful claims, JSON polish) | `UltraInstructions.swift` |
 | Firebase boundary (Debug only): named app `CueUltraLab`, Agent Platform `global`, `gemini-3.5-flash`, App Check debug provider only for that app, data collection off, token auto-refresh off, streaming progress, JSON schema for the polish, error kinds only | `FirebaseUltraClient.swift`, `UltraLabConfiguration.swift`, `UltraLabAppCheckFactory.swift` |
 | Product `FirebaseAILogic` (the `FirebaseAI` wrapper emits a rename warning) + `FirebaseAppCheck`, SDK 12.19.2 | `project.pbxproj` |
 | Consent, separate from Apple Intelligence; revocable in Settings | `UltraConsentService.swift`, `Screens/Shared/Ultra/UltraConsentSheet.swift` |
-| "What Cue sends" with the real text of both calls | `UltraPayloadView.swift`, consent sheet, My Cue Voice › What Cue sends |
+| "What Cue sends" with the real text of the three calls and the optional fourth (Fit to time) | `UltraPayloadView.swift`, consent sheet, My Cue Voice › What Cue sends |
 | Scripts dock: writer chip (native menu) | `ScriptsDock.swift`, `ScriptStarter.choose/writesWithUltra` |
 | Find inspiration: "Draft with Ultra AI" (Draft it now stays Apple Intelligence) | `FindInspirationSheet.swift` |
 | Star, page pill, fact-check banner, toast say "Ultra AI"; `Script.draftedBy` | `StarTransitionOverlay`, `ScriptWritingPill`, `FactCheckBanner`, `Script.swift` |
@@ -149,6 +154,35 @@ for production (none of this is built):
 5. **Identity**: welcome credits bound to an account (Sign in with Apple, or `appAccountToken`), not to the install, so reinstalling doesn't refill them.
 6. **Abuse and cost guards**: per-user rate limits, maximum tokens per call, a monthly budget alert on the Google Cloud project.
 
+## Quality comparison (29/10, blind)
+
+Same 15 ideas (9 pt-BR creators' requests, 3 es-ES, 3 en-US; 6 technical, 9 from creator profiles), written on the iPhone by Apple Intelligence, by
+Ultra without the check (draft → polish) and by Ultra with it (draft → check → polish). Pairs shuffled and unlabelled (`tools/ultra/compare.py pairs`),
+judged by two independent AI judges with different seeds and by the owner (Portuguese pairs only, on a review page). Records in
+`research_notes/Ultra AI/quality-q1*.json`.
+
+| Comparison | Judge 1 | Judge 2 | Owner (pt) |
+|---|---|---|---|
+| Ultra (checked) vs Apple Intelligence | 15–0 | 15–0 | 8–1 |
+| Checked vs unchecked Ultra | 6–0 | 6–0 | 3–3 |
+
+- Scores (1–5), Ultra checked vs Apple: development 4.7 vs 2.4–2.5, voice 4.4–4.5 vs 2.7, accuracy 4.2–4.5 vs 3.1–3.2, length 4.0–4.1 vs 2.6–2.8.
+- The check raises accuracy from 3.2–3.5 to 4.5–4.7 without costing development or voice; that made it the default (3 calls per script).
+- The owner's one Apple win (t5, emergency fund) was Ultra's typo "o colchão que te segurança"; the polish now proofreads before returning. The owner's
+  3–3 between checked and unchecked reads as the check's hedging ("pode", "costuma") sounding less firm: a possible next refinement.
+- The owner marked "too long" four times on free-length Ultra scripts (2–3 min on TikTok), which led to the decision above.
+
+**Fit to time on Ultra's scripts** (13 checked scripts of 300–480 words, TikTok 60–90 s, on the iPhone; same blind rubric):
+
+| Fitter | In range | Judge: record / edit / redo | Accuracy | Seconds |
+|---|---|---|---|---|
+| Apple Intelligence (`RewriteRunner`) | 4 of 15 | 0 / 3 / 10 | lower than before (2 new errors) | — |
+| Ultra, first instruction | 15 of 15 (72–82 s) | 4 / 9 / 0 | 3.9 (hedges dropped: "pode remover" → "destrói") | 9–30 |
+| Ultra, keeping hedges, first sentence, speaker | 15 of 15 (72–89 s) | **8 / 5 / 0** | **4.5** | 9–30 |
+
+Still slipping, at times: a hedge ("muchísimos años" → "siempre"), a safety cue in a workout, concrete criteria thinned into a generality. Two of the
+15 were already in range and cost no call.
+
 ## Limits and pending
 
 - **A preview, not protection.** The free scripts and Pro's monthly ones are counted in the iPhone's defaults (Debug only). Shipping needs the count on
@@ -156,8 +190,8 @@ for production (none of this is built):
   here is configured for real users.
 - **App Check** runs only with the debug provider, for the lab app, from a token copied to the app's Documents (never in Git or the bundle). Release
   has no Ultra AI at all.
-- **The lab's 300 calls** (30, then 80, until the owner raised it): 18 of the first 30 were left after these tests (2 per script, failures included). At the cap
-  Ultra AI stops; raising it is the owner's call. The web
+- **The lab's 300 calls** (30, then 80, until the owner raised it): about 120 used after the comparison and the two fit runs (3 per script, 1 per fit,
+  failures included), so about 180 left for the owner's hand test. At the cap Ultra AI stops; raising it is the owner's call. The web
   lab's batch of 8 was used earlier and its ledger is untouched.
 - **Privacy texts** (policy paragraph, App Store label) are drafts below, not published. No zero-retention promise: Google processes the request
   under its terms.
@@ -165,6 +199,6 @@ for production (none of this is built):
 - **Contrast:** My Cue Voice's invitation wasn't captured (the seeded profile has no voice); it is the same component and colours as Find
   inspiration's, measured above.
 - **Pro list:** only the Ultra AI line was added; the other lines still promise things that don't exist (deferred by the owner on 15/10).
-- **For the owner's judgement:** the catchphrase and closing question in every script, the unchecked pop-science claims, and the length a "free"
-  TikTok script takes (above).
+- **For the owner's judgement:** the catchphrase and closing question in every script (the synthetic creator's preferences); whether the check's
+  hedging reads too soft; whether Ultra's Fit to time keeps enough (try it on a long script: the length bar, then Fit to time).
 
