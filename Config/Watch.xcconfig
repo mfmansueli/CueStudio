@@ -34,3 +34,5 @@ SWIFT_VERSION                                   = 6.0
 // Everything else
 ENABLE_PREVIEWS        = YES
 LD_RUNPATH_SEARCH_PATHS = @executable_path/Frameworks
+// Xcode's metadata extractor requires the framework dependency even when the companion declares no intents.
+OTHER_LDFLAGS = $(inherited) -framework AppIntents

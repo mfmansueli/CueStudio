@@ -19,6 +19,7 @@ final class VoiceV29UITests: XCTestCase {
         try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         sleep(1)
         try? app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(name).png"))
+        try? app.debugDescription.write(to: directory.appending(path: "\(name).txt"), atomically: true, encoding: .utf8)
     }
 
     private func element(_ app: XCUIApplication, _ id: String) -> XCUIElement {
@@ -92,6 +93,10 @@ final class VoiceV29UITests: XCTestCase {
         XCTAssertTrue(element(app, "voice.sends.brief").exists)
         XCTAssertTrue(element(app, "voice.sends.meter").exists)
         capture(app, "9.3_what_cue_sends")
+        let cloud = element(app, "voice.sends.cloudBrief")
+        app.scroll(to: cloud)
+        XCTAssertTrue(cloud.isHittable)
+        capture(app, "9.3_what_cue_sends_cloud")
         let again = element(app, "voice.sends.again")
         app.scroll(to: again)
         again.tap()

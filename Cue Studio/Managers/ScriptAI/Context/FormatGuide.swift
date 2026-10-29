@@ -33,6 +33,14 @@ nonisolated struct FormatGuide: Hashable, Sendable {
         ]
     )
 
+    static let talkingHead = FormatGuide(
+        name: "talking head", blocks: ["Hook", "Point", "Why it matters", "CTA"],
+        purposes: [
+            "open on the requested subject.", "state one clear point.",
+            "explain why it matters to this audience.", "close in the way the request asks for, without forcing engagement.",
+        ]
+    )
+
     static func guide(for type: ScriptType?) -> FormatGuide {
         guard let type else { return .generic }
         switch type {

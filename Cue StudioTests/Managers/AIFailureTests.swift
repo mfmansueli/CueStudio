@@ -50,8 +50,8 @@ struct AIFailureTests {
         #expect(AIModelRoute.privateCloud.fallback(after: .cancelled) == nil)
     }
 
-    @Test func anythingElseIsNotRetried() {
-        #expect(AIFailure(LanguageModelError.timeout(.init(debugDescription: "slow"))) == .other)
+    @Test func aTimeoutIsDifferentFromAnEmptyAnswer() {
+        #expect(AIFailure(LanguageModelError.timeout(.init(debugDescription: "slow"))) == .timedOut)
         #expect(AIFailure(ScriptAIError.emptyResponse) == .other)
     }
 

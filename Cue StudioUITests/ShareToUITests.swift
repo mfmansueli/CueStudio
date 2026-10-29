@@ -186,7 +186,11 @@ final class ShareToUITests: XCTestCase {
         let share = app.buttons["review.shareButton"]
         XCTAssertTrue(share.exists(within: 10))
         share.tap()
-        XCTAssertTrue(element(app, "shareFlow.start").exists(within: 120))
+        let start = element(app, "shareFlow.start")
+        XCTAssertTrue(start.exists(within: 120))
+        // With real animations the button exists while its sheet is still moving into place.
+        start.waitUntilStill()
+        XCTAssertTrue(start.isHittable, "Share is not reachable after the sheet settles")
         return app
     }
 }

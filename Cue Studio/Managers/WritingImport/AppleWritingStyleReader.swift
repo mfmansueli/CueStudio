@@ -20,7 +20,7 @@ final class AppleWritingStyleReader: WritingStyleReading {
 
     /// - Parameters:
     ///   - isBusy: a script the creator is waiting for is being written.
-    ///   - isEnabled: Settings › Privacy & AI data › On-device AI is on: with it off no AI feature runs, this one included.
+    ///   - isEnabled: Settings › Privacy & AI data › Apple Intelligence is on: with it off no AI feature runs, this one included.
     init(isBusy: @escaping () -> Bool = { false }, isEnabled: @escaping () -> Bool = { true }) {
         self.isBusy = isBusy
         self.isEnabled = isEnabled

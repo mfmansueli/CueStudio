@@ -26,7 +26,7 @@ nonisolated struct ScriptDraft {
         @Guide(description: "The block name from the requested structure, for example Hook, Body or CTA.")
         var label: String
 
-        @Guide(description: "Exactly what the creator says in this block, in the first person, with short stage cues in square brackets such as [pause], [smile], [emphasis], [confident] or [look at camera].")
+        @Guide(description: "Exactly what the creator says in this block, preserving the perspective requested and who did what, with short stage cues in square brackets such as [pause], [smile], [emphasis], [confident] or [look at camera].")
         var text: String
     }
 

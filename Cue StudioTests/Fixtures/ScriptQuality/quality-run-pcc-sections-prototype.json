@@ -1,0 +1,22 @@
+[
+  {
+    "caseID": "pt-BR-tiktok-duration",
+    "condition": "section-experiment",
+    "hasBrief": false,
+    "idea": "Ensine três ajustes para gravar com a luz de uma janela. Explique como conferir cada ajuste. Sem pedir para seguir.",
+    "index": 0,
+    "instructions": "Write only what the creator says aloud, in Portuguese (Brazil). This is one section of a continuous video script, not a standalone video.\nThe current request defines the subject. Preserve supplied facts and restrictions. Never invent a biography, personal test, result, source or measurement.\nUse direct, natural speech. Develop the requested action with a reason and a useful observation. Do not add greetings, headings, markdown, stage cues, motivational filler or a follow/like/share CTA.\nThe voice profile controls wording and rhythm, not the subject. Optional habits must not become repeated formulas.\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a lifestyle and personal creator.\nThey speak as one person: say “I” and “my”.\nTheir audience: young adults.\nThey know some basics: skip the obvious and go one level deeper.\nThey watch to learn something and decide what to buy.\nTheir videos aim to grow their audience and entertain.\nThey sound casual and funny.\nDelivery: energy: high and lively; sentences: short and punchy (under twelve words); words: some casual slang; humor: a little.\nNever swear.\nUsual opening preference, only when supported by this request: a common mistake to avoid. A story opening requires an experience supplied in the request; otherwise open directly on the subject.\nUsual ending preference, only if this request permits it and it serves the takeaway: asking them to comment their answer. It is optional, never an automatic sign-off.\nThey film mostly: lists and tips.\nOptional familiar expressions: “Fala, galera!”. Use at most one only if natural here; omission is better than forced repetition.\nThey post on TikTok.\nRules: no medical claims: never say something cures, treats or heals, and speak in general terms; no clickbait (“you won't believe…”, “what happens next”): say the real point up front.",
+    "kind": "script",
+    "language": "pt-BR",
+    "model": "privateCloud",
+    "prompt": "Ensine três ajustes para gravar com a luz de uma janela. Explique como conferir cada ajuste. Sem pedir para seguir.\nOutline: Posicionamento da luz lateral: conferir se o rosto tem sombras equilibradas, com o lado voltado para a janela mais iluminado.; Controle de exposição: observar se o brilho da janela não está estourado, verificando áreas brancas sem detalhes na imagem.; Uso de refletor ou difusor: conferir se o contraste diminui, com sombras mais suaves e tom uniforme na pele.",
+    "reviewChecks": [
+      "Evaluation only: one outline call and three section calls; 90–110 words asked per section.",
+      "Review factual advice, repeated instructions, coherence and the creator's voice before considering production."
+    ],
+    "run": "pcc-sections-prototype",
+    "seconds": 5.500475792,
+    "text": "A luz lateral da janela precisa de ajuste rápido. Eu coloco meu rosto de lado e olho se o lado virado para o vidro brilha mais. Se as sombras equilibram, tá certo. Se um lado fica escuro demais, eu mudo o ângulo só um pouco. É o jeito mais fácil de não ficar com cara de metade apagada.\n\nNo controle de exposição, eu olho se o brilho da janela não estourou. Se tem áreas brancas sem detalhe, o ajuste tá errado. Eu checo o visor e diminuo o brilho só até aparecer textura. Isso evita aquele clarão que apaga tudo. É o pulo do gato pra não perder o rosto no excesso.\n\nNo refletor ou difusor, eu vejo o contraste cair. Se as sombras ficam suaves, tá valendo. Eu checo se a pele ganha tom uniforme, sem aquele salto entre claro e escuro. Às vezes uso só um papel branco por perto e pronto. Isso salva o rosto de ficar com cara de contrastada demais.",
+    "title": "Três ajustes para gravar com luz de janela"
+  }
+]

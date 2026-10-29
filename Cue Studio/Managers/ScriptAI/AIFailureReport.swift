@@ -130,6 +130,7 @@ nonisolated struct AIFailureReport: Equatable, Sendable {
         switch error {
         case .modelUnavailable: "modelUnavailable"
         case .emptyResponse: "emptyResponse"
+        case .requiredWording: "requiredWording"
         case .tooLong: "tooLong"
         case .unsupportedLanguage: "unsupportedLanguage"
         case .unsupportedTranslation: "unsupportedTranslation"

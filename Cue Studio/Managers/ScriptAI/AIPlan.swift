@@ -12,6 +12,7 @@ nonisolated struct AIPlan: Equatable, Sendable {
     let route: AIModelRoute
     /// Every model that is available and writes all the languages of the request.
     let usable: Set<AIModelRoute>
+    var deferredCloudLanguages: [Locale]?
 
     /// Where a request that failed on `model` may try again: the model's own fallback, when the plan
     /// knows it is available and writes the languages (never one already known to refuse the request).

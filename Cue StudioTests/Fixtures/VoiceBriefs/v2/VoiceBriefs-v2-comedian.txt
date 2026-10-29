@@ -27,8 +27,7 @@ Language of the script: English (United States). Write all of it in English (Uni
 Write a storytime script for TikTok.
 Blocks, in this order: Hook → Setup → Twist → Payoff.
 What each block does: Hook: the most surprising line first. Setup: where, when and who, briefly. Twist: the one thing that went differently. Payoff: what it meant, in a line the viewer remembers.
-Length: between 75 and 150 spoken words in total.
-Do not stop early: the script must be at least 75 words, so write every block in full, with several complete sentences each.
+Platform duration is informational, not a writing target. Develop the current request fully and naturally, then stop when it is complete. Do not pad or cut useful content to fit a platform duration. Honor any length explicitly requested by the creator.
 Open with a hook that works in the first 3 seconds, in the creator's own way of opening. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.
 The video: Things I pretended to understand as an adult
 Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.

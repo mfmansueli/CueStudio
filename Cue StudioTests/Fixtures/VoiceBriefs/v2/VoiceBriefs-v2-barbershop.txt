@@ -27,8 +27,7 @@ Language of the script: English (United States). Write all of it in English (Uni
 Write a tutorial script for TikTok.
 Blocks, in this order: Hook → Promise → Steps → CTA.
 What each block does: Hook: show the result or the problem. Promise: say exactly what they will be able to do. Steps: one action per step, concrete. CTA: ask them to save it or try step one.
-Length: between 150 and 225 spoken words in total.
-Do not stop early: the script must be at least 150 words, so write every block in full, with several complete sentences each.
+Platform duration is informational, not a writing target. Develop the current request fully and naturally, then stop when it is complete. Do not pad or cut useful content to fit a platform duration. Honor any length explicitly requested by the creator.
 Open with a hook that works in the first 3 seconds, in the creator's own way of opening. The first words are already about the subject (a claim, a question or a number), never a greeting or a filler word such as “hey”, “hi”, “so” or “look”.
 The video: How to ask your barber for exactly the cut you want
 Write about this idea and only this one: the creator's voice is how they sound, never what to talk about.

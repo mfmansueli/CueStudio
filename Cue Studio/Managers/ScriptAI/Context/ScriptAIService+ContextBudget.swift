@@ -14,6 +14,7 @@ extension ScriptAIService {
     /// `request` made to fit the window of the model that writes it: as it is when its estimate is well inside, else with less of the voice's optional
     /// parts until the model's own count says it fits (`ContextBudget`). Only the on-device model is counted; another route goes as it is.
     func fitted(_ request: ScriptRequest, on route: AIModelRoute) async -> ScriptRequest {
+        let request = AIRequestPolicy.prepare(request, on: route)
         guard route == .onDevice, request.voice != nil, let window = measure.window else { return request }
         let answer = Self.responseTokens(for: request)
         let estimate = PromptCost.tokens(of: ScriptPromptBuilder.instructions(for: request))

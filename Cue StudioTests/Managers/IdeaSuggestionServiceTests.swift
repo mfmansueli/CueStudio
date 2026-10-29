@@ -257,6 +257,23 @@ struct IdeaSuggestionServiceTests {
         #expect(rig.service.taste.angles[IdeaAngle.myth.rawValue, default: 0] > 0)
     }
 
+    @Test func changingTheVoiceInvalidatesIdeasButKeepsWhatTheCreatorLiked() async {
+        let rig = rig {
+            $0.customTopics = ["Daily Routine"]
+            $0.audienceNote = "Beginners"
+        }
+        defer { rig.defaults.tearDown() }
+        rig.writer.suggestionBatches = [batch("Old voice", angle: .myth)]
+        await rig.service.refill()
+        rig.service.sent()
+        var profile = rig.profile.profile
+        profile.audienceNote = "Experienced teachers who need concrete examples"
+        rig.profile.profile = profile
+        rig.service.prepare()
+        #expect(rig.service.pool.isEmpty)
+        #expect(rig.service.taste.angles[IdeaAngle.myth.rawValue, default: 0] > 0)
+    }
+
     @Test func theIdeasNotYetShownAndTheTasteAreThereWhenTheAppOpensAgain() async {
         let rig = rig { $0.customTopics = ["Daily Routine"] }
         defer { rig.defaults.tearDown() }

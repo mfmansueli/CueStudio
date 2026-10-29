@@ -1,0 +1,412 @@
+[
+  {
+    "id": "pt-BR-tutorial",
+    "language": "pt-BR",
+    "prompt": "Ensine três passos para iluminar o rosto com uma janela. Sem pedir para seguir.",
+    "format": "auto",
+    "expectedDirection": "tutorial",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Three distinct actionable steps; no request to follow.",
+      "Do not invent a personal experiment."
+    ]
+  },
+  {
+    "id": "en-US-tutorial",
+    "language": "en-US",
+    "prompt": "Teach three steps to light a face with a window. Do not ask viewers to follow.",
+    "format": "auto",
+    "expectedDirection": "tutorial",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Three distinct actionable steps; no request to follow.",
+      "Do not invent a personal experiment."
+    ]
+  },
+  {
+    "id": "es-ES-tutorial",
+    "language": "es-ES",
+    "prompt": "Enseña tres pasos para iluminar el rostro con una ventana. No pidas que sigan la cuenta.",
+    "format": "auto",
+    "expectedDirection": "tutorial",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Three distinct actionable steps; no request to follow.",
+      "Do not invent a personal experiment."
+    ]
+  },
+  {
+    "id": "pt-BR-literal",
+    "language": "pt-BR",
+    "prompt": "Explique planejamento de vídeos e inclua exatamente: Menos pressa, mais intenção.",
+    "format": "auto",
+    "expectedDirection": "explanation",
+    "requiredLiterals": [
+      "Menos pressa, mais intenção."
+    ],
+    "reviewChecks": [
+      "Required phrase is retained, not used as an unrelated slogan."
+    ]
+  },
+  {
+    "id": "en-US-literal",
+    "language": "en-US",
+    "prompt": "Explain video planning and include exactly: Less rush, more intention.",
+    "format": "auto",
+    "expectedDirection": "explanation",
+    "requiredLiterals": [
+      "Less rush, more intention."
+    ],
+    "reviewChecks": [
+      "Required phrase is retained, not used as an unrelated slogan."
+    ]
+  },
+  {
+    "id": "es-ES-literal",
+    "language": "es-ES",
+    "prompt": "Explica cómo planificar vídeos e incluye exactamente: Menos prisa, más intención.",
+    "format": "auto",
+    "expectedDirection": "explanation",
+    "requiredLiterals": [
+      "Menos prisa, más intención."
+    ],
+    "reviewChecks": [
+      "Required phrase is retained, not used as an unrelated slogan."
+    ]
+  },
+  {
+    "id": "pt-BR-facts",
+    "language": "pt-BR",
+    "prompt": "Anuncie o encontro Aurora27 em 18 de novembro às 14:35. A entrada custa 27 euros. Não invente local ou desconto.",
+    "format": "auto",
+    "expectedDirection": "announcement",
+    "requiredLiterals": [
+      "Aurora27",
+      "14:35"
+    ],
+    "reviewChecks": [
+      "Preserve date and price; no invented venue, discount or scarcity."
+    ]
+  },
+  {
+    "id": "en-US-facts",
+    "language": "en-US",
+    "prompt": "Announce the Aurora27 meetup on November 18 at 14:35. Entry costs 27 euros. Do not invent a venue or discount.",
+    "format": "auto",
+    "expectedDirection": "announcement",
+    "requiredLiterals": [
+      "Aurora27",
+      "14:35"
+    ],
+    "reviewChecks": [
+      "Preserve date and price; no invented venue, discount or scarcity."
+    ]
+  },
+  {
+    "id": "es-ES-facts",
+    "language": "es-ES",
+    "prompt": "Anuncia el encuentro Aurora27 el 18 de noviembre a las 14:35. La entrada cuesta 27 euros. No inventes lugar ni descuento.",
+    "format": "auto",
+    "expectedDirection": "announcement",
+    "requiredLiterals": [
+      "Aurora27",
+      "14:35"
+    ],
+    "reviewChecks": [
+      "Preserve date and price; no invented venue, discount or scarcity."
+    ]
+  },
+  {
+    "id": "pt-BR-serious",
+    "language": "pt-BR",
+    "prompt": "Escreva uma nota séria: publicamos o horário errado do encontro Aurora27. O correto é 14:35. Sem piadas, justificativas ou CTA.",
+    "format": "auto",
+    "expectedDirection": "serious statement",
+    "requiredLiterals": [
+      "Aurora27",
+      "14:35"
+    ],
+    "reviewChecks": [
+      "Sincere correction overrides playful voice preferences.",
+      "No invented impact, remedy or commitment."
+    ]
+  },
+  {
+    "id": "en-US-serious",
+    "language": "en-US",
+    "prompt": "Write a serious statement: we published the wrong time for Aurora27. The correct time is 14:35. No jokes, excuses or CTA.",
+    "format": "auto",
+    "expectedDirection": "serious statement",
+    "requiredLiterals": [
+      "Aurora27",
+      "14:35"
+    ],
+    "reviewChecks": [
+      "Sincere correction overrides playful voice preferences.",
+      "No invented impact, remedy or commitment."
+    ]
+  },
+  {
+    "id": "es-ES-serious",
+    "language": "es-ES",
+    "prompt": "Escribe un comunicado serio: publicamos mal la hora de Aurora27. La correcta es 14:35. Sin bromas, excusas ni CTA.",
+    "format": "auto",
+    "expectedDirection": "serious statement",
+    "requiredLiterals": [
+      "Aurora27",
+      "14:35"
+    ],
+    "reviewChecks": [
+      "Sincere correction overrides playful voice preferences.",
+      "No invented impact, remedy or commitment."
+    ]
+  },
+  {
+    "id": "pt-BR-product",
+    "language": "pt-BR",
+    "prompt": "Explique como escolher uma luminária para gravar em casa. Cite luz difusa e ajuste de altura. Não é publicidade nem teste pessoal.",
+    "format": "auto",
+    "expectedDirection": "explanation or checklist",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "No sponsorship, invented brand, personal use claim or discount."
+    ]
+  },
+  {
+    "id": "en-US-product",
+    "language": "en-US",
+    "prompt": "Explain how to choose a light for filming at home. Cover diffused light and height adjustment. This is not an ad or a personal test.",
+    "format": "auto",
+    "expectedDirection": "explanation or checklist",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "No sponsorship, invented brand, personal use claim or discount."
+    ]
+  },
+  {
+    "id": "es-ES-product",
+    "language": "es-ES",
+    "prompt": "Explica cómo elegir una lámpara para grabar en casa. Habla de luz difusa y altura ajustable. No es publicidad ni una prueba personal.",
+    "format": "auto",
+    "expectedDirection": "explanation or checklist",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "No sponsorship, invented brand, personal use claim or discount."
+    ]
+  },
+  {
+    "id": "pt-BR-comparison",
+    "language": "pt-BR",
+    "prompt": "Compare roteiro em tópicos e texto completo para quem trava ao gravar. Dê uma vantagem e uma limitação de cada, sem declarar vencedor universal.",
+    "format": "auto",
+    "expectedDirection": "comparison",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Cover both alternatives with balanced benefits and limits.",
+      "Do not invent quantitative performance claims."
+    ]
+  },
+  {
+    "id": "en-US-comparison",
+    "language": "en-US",
+    "prompt": "Compare bullet-point and full-text scripts for creators who freeze while recording. Give one advantage and one limit of each; no universal winner.",
+    "format": "auto",
+    "expectedDirection": "comparison",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Cover both alternatives with balanced benefits and limits.",
+      "Do not invent quantitative performance claims."
+    ]
+  },
+  {
+    "id": "es-ES-comparison",
+    "language": "es-ES",
+    "prompt": "Compara un guion por puntos y un texto completo para quien se bloquea al grabar. Da una ventaja y un límite de cada uno; no hay ganador universal.",
+    "format": "auto",
+    "expectedDirection": "comparison",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Cover both alternatives with balanced benefits and limits.",
+      "Do not invent quantitative performance claims."
+    ]
+  },
+  {
+    "id": "pt-BR-manual-story",
+    "language": "pt-BR",
+    "prompt": "Conte a história deste fato: comecei a gravar e percebi que o microfone estava desligado. Não invente o que aconteceu depois.",
+    "format": "story",
+    "expectedDirection": "story",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Honor manual story structure without fabricating a twist or outcome."
+    ]
+  },
+  {
+    "id": "en-US-manual-story",
+    "language": "en-US",
+    "prompt": "Tell the story of this fact: I started recording and noticed the microphone was off. Do not invent what happened afterward.",
+    "format": "story",
+    "expectedDirection": "story",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Honor manual story structure without fabricating a twist or outcome."
+    ]
+  },
+  {
+    "id": "es-ES-manual-story",
+    "language": "es-ES",
+    "prompt": "Cuenta esta historia: empecé a grabar y noté que el micrófono estaba apagado. No inventes lo que pasó después.",
+    "format": "story",
+    "expectedDirection": "story",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Honor manual story structure without fabricating a twist or outcome."
+    ]
+  },
+  {
+    "id": "pt-BR-manual-talking",
+    "language": "pt-BR",
+    "prompt": "Explique por que testar o áudio antes de gravar evita retrabalho. Um ponto central, sem lista numerada.",
+    "format": "talkingHead",
+    "expectedDirection": "talking head",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Honor explicit talking head instead of Auto or usual formats."
+    ]
+  },
+  {
+    "id": "en-US-manual-talking",
+    "language": "en-US",
+    "prompt": "Explain why testing audio before recording prevents rework. One central point, no numbered list.",
+    "format": "talkingHead",
+    "expectedDirection": "talking head",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Honor explicit talking head instead of Auto or usual formats."
+    ]
+  },
+  {
+    "id": "es-ES-manual-talking",
+    "language": "es-ES",
+    "prompt": "Explica por qué probar el audio antes de grabar evita repetir el trabajo. Una idea central, sin lista numerada.",
+    "format": "talkingHead",
+    "expectedDirection": "talking head",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Honor explicit talking head instead of Auto or usual formats."
+    ]
+  },
+  {
+    "id": "pt-BR-editorial-draft",
+    "language": "pt-BR",
+    "prompt": "Por que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.",
+    "format": "auto",
+    "expectedDirection": "developed first-person opinion",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Take an authored first-person position without an invented past testimonial.",
+      "Develop the reasoning and a relevant analogy; do not substitute a list or generic motivation.",
+      "Retain supplied facts; editorial preferences are allowed creative draft material."
+    ]
+  },
+  {
+    "id": "en-US-editorial-draft",
+    "language": "en-US",
+    "prompt": "Why can a script read aloud still sound natural? Propose a first-person viewpoint, develop the reasoning and use an analogy. I want a draft with personality to reshape, not a list of tips.",
+    "format": "auto",
+    "expectedDirection": "developed first-person opinion",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Take an authored first-person position without an invented past testimonial.",
+      "Develop the reasoning and a relevant analogy; do not substitute a list or generic motivation.",
+      "Retain supplied facts; editorial preferences are allowed creative draft material."
+    ]
+  },
+  {
+    "id": "es-ES-editorial-draft",
+    "language": "es-ES",
+    "prompt": "¿Por qué puede sonar natural un guion leído? Propón una postura en primera persona, desarrolla la idea y utiliza una analogía. Quiero un borrador con personalidad para pulir, no una lista de consejos.",
+    "format": "auto",
+    "expectedDirection": "developed first-person opinion",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Take an authored first-person position without an invented past testimonial.",
+      "Develop the reasoning and a relevant analogy; do not substitute a list or generic motivation.",
+      "Retain supplied facts; editorial preferences are allowed creative draft material."
+    ]
+  },
+  {
+    "id": "pt-BR-equipment",
+    "language": "pt-BR",
+    "prompt": "Defenda que comprar outra câmera nem sempre melhora um vídeo. Desenvolva um exemplo hipotético e diga quando a troca faz sentido. Sem inventar testes ou preços.",
+    "format": "auto",
+    "expectedDirection": "developed opinion with counterpoint",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Explain an alternative cause of weak videos and a concrete hypothetical example.",
+      "Give a real decision criterion for an equipment change; no invented prices or past tests."
+    ]
+  },
+  {
+    "id": "en-US-creative-block",
+    "language": "en-US",
+    "prompt": "Explain why collecting endless video ideas can become procrastination. Use a concrete hypothetical example and suggest one small next action, without shaming the creator.",
+    "format": "auto",
+    "expectedDirection": "connected explanation with application",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Explain how collection can delay a creative decision, without claiming it always does.",
+      "Develop a hypothetical example and one actionable next step; avoid generic motivation."
+    ]
+  },
+  {
+    "id": "es-ES-small-story",
+    "language": "es-ES",
+    "prompt": "Escribe una escena ficticia en primera persona: intento grabar una receta y el gato se sienta frente a la cámara. Desarrolla la tensión y un final cotidiano, sin moraleja ni CTA.",
+    "format": "auto",
+    "expectedDirection": "fictional first-person scene",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Honor explicitly fictional creative freedom rather than treating it as biography.",
+      "Build a connected scene with tension and an everyday ending, not a list of tips."
+    ]
+  },
+  {
+    "id": "pt-BR-team-statement",
+    "language": "pt-BR",
+    "prompt": "Escreva um comunicado em nome da equipe: publicamos um horário errado. O correto é 14:35. Use nós; sem justificativa, piada ou CTA.",
+    "format": "auto",
+    "expectedDirection": "team correction overriding personal voice",
+    "requiredLiterals": [
+      "14:35"
+    ],
+    "reviewChecks": [
+      "Preserve the supplied team action and plural narrator despite the profile defaulting to I.",
+      "Only the supplied facts; no invented impact or remedy."
+    ]
+  },
+  {
+    "id": "en-US-second-person",
+    "language": "en-US",
+    "prompt": "Write a second-person POV scene: you rehearse your opening, but the camera was never recording. Stay with you, no first-person narrator or CTA.",
+    "format": "pov",
+    "expectedDirection": "second-person scene overriding personal voice",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Keep second-person narration throughout; profile I is only a default.",
+      "Show a scene instead of switching to advice or a list."
+    ]
+  },
+  {
+    "id": "es-ES-singular-fiction",
+    "language": "es-ES",
+    "prompt": "Escribe una escena ficticia en primera persona singular (yo): preparo una receta y el gato tapa la cámara. Desarrolla la escena sin consejos ni CTA.",
+    "format": "auto",
+    "expectedDirection": "singular first-person fiction overriding team voice",
+    "requiredLiterals": [],
+    "reviewChecks": [
+      "Use singular first-person narration despite the profile defaulting to we.",
+      "Build a fictional scene without an explanatory checklist or moral."
+    ]
+  }
+]

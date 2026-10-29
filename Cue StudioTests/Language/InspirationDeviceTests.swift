@@ -25,7 +25,7 @@ struct InspirationDeviceTests {
 
     private func writer() throws -> ScriptAIService {
         KeepScreenAwake.enable()
-        let service = ScriptAIService()
+        let service = ScriptAIService(usesPrivateCloudCompute: false)
         guard service.availability.onDevice else { try Test.cancel("Apple Intelligence isn't available on this device") }
         #if canImport(UIKit)
         let isActive = UIApplication.shared.applicationState == .active

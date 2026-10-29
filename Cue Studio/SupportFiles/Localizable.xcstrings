@@ -44996,6 +44996,125 @@
         }
       }
     },
+    "A sample built from your voice settings." : {
+      "comment" : "Voice preview uses a deterministic sample, not a live model generation.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نموذج مبني على إعدادات أسلوبك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et eksempel bygget ud fra dine stilindstillinger."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ein Beispiel auf Basis deiner Stileinstellungen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una muestra creada con tus preferencias de estilo."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un exemple créé à partir de vos préférences de style."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपकी शैली की सेटिंग से बनाया गया एक नमूना।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Contoh yang dibuat dari pengaturan gaya Anda."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un esempio creato dalle tue preferenze di stile."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "あなたの文体設定から作成したサンプルです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "문체 설정을 바탕으로 만든 예시입니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et eksempel laget ut fra stilinnstillingene dine."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een voorbeeld op basis van je stijlinstellingen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma amostra criada com suas preferências de estilo."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ett exempel byggt utifrån dina stilinställningar."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตัวอย่างที่สร้างจากการตั้งค่าสไตล์ของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Üslup ayarlarınızdan oluşturulan bir örnek."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một mẫu được tạo từ tùy chọn phong cách của bạn."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "根据你的文风设置创建的示例。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "根據你的文風設定建立的範例。"
+          }
+        }
+      }
+    },
     "a small moon" : {
       "localizations" : {
         "ar" : {
@@ -62443,6 +62562,125 @@
         }
       }
     },
+    "Apple Intelligence" : {
+      "comment" : "Apple Intelligence brand name, without claiming processing is always local.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence"
+          }
+        }
+      }
+    },
     "Apple Intelligence · Check facts before recording" : {
       "localizations" : {
         "ar" : {
@@ -62794,6 +63032,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Apple Intelligence · 在你的 iPhone 上執行"
+          }
+        }
+      }
+    },
+    "Apple Intelligence can use this iPhone or Private Cloud Compute. Your request and voice preferences may be sent to Apple. Writing examples and imported excerpts stay on this iPhone." : {
+      "comment" : "Privacy disclosure for PCC: style preferences may be sent, raw writing samples stay local.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يمكن لـ Apple Intelligence استخدام هذا الـ iPhone أو Private Cloud Compute. قد يُرسل طلبك وتفضيلات أسلوبك إلى Apple. تبقى أمثلة كتابتك والمقتطفات المستوردة على هذا الـ iPhone."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan bruge denne iPhone eller Private Cloud Compute. Din anmodning og dine stilpræferencer kan blive sendt til Apple. Skriveeksempler og importerede uddrag bliver på denne iPhone."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kann dieses iPhone oder Private Cloud Compute nutzen. Deine Anfrage und Stilpräferenzen können an Apple gesendet werden. Schreibbeispiele und importierte Auszüge bleiben auf diesem iPhone."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence puede usar este iPhone o Private Cloud Compute. Tu solicitud y tus preferencias de estilo pueden enviarse a Apple. Los ejemplos de escritura y los fragmentos importados permanecen en este iPhone."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence peut utiliser cet iPhone ou Private Cloud Compute. Votre demande et vos préférences de style peuvent être envoyées à Apple. Les exemples de textes et les extraits importés restent sur cet iPhone."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence इस iPhone या Private Cloud Compute का उपयोग कर सकता है। आपका अनुरोध और शैली संबंधी प्राथमिकताएँ Apple को भेजी जा सकती हैं। लेखन के उदाहरण और आयात किए गए अंश इस iPhone पर ही रहते हैं।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence dapat menggunakan iPhone ini atau Private Cloud Compute. Permintaan dan preferensi gaya Anda dapat dikirim ke Apple. Contoh tulisan dan kutipan yang diimpor tetap di iPhone ini."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence può usare questo iPhone o Private Cloud Compute. La richiesta e le preferenze di stile possono essere inviate ad Apple. Gli esempi di scrittura e gli estratti importati restano su questo iPhone."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple IntelligenceはこのiPhoneまたはPrivate Cloud Computeを使用できます。リクエストと文体の設定がAppleに送信される場合があります。文章のサンプルと読み込んだ抜粋は、このiPhoneに保存されたままです。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence는 이 iPhone 또는 Private Cloud Compute를 사용할 수 있습니다. 요청과 문체 설정이 Apple에 전송될 수 있습니다. 글쓰기 예시와 가져온 발췌문은 이 iPhone에만 보관됩니다."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan bruke denne iPhonen eller Private Cloud Compute. Forespørselen og stilpreferansene dine kan sendes til Apple. Skriveeksempler og importerte utdrag blir på denne iPhonen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan deze iPhone of Private Cloud Compute gebruiken. Je verzoek en stijlvoorkeuren kunnen naar Apple worden gestuurd. Schrijfvoorbeelden en geïmporteerde fragmenten blijven op deze iPhone."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Apple Intelligence pode usar este iPhone ou o Private Cloud Compute. Seu pedido e suas preferências de estilo podem ser enviados à Apple. Exemplos de escrita e trechos importados ficam neste iPhone."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence kan använda denna iPhone eller Private Cloud Compute. Din begäran och dina stilpreferenser kan skickas till Apple. Skrivexempel och importerade utdrag stannar på denna iPhone."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence สามารถใช้ iPhone เครื่องนี้หรือ Private Cloud Compute ได้ คำขอและการตั้งค่าสไตล์ของคุณอาจถูกส่งไปยัง Apple ตัวอย่างงานเขียนและข้อความที่นำเข้าจะอยู่บน iPhone เครื่องนี้"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence bu iPhone’u veya Private Cloud Compute’u kullanabilir. İsteğiniz ve üslup tercihleriniz Apple’a gönderilebilir. Yazı örnekleri ve içe aktarılan alıntılar bu iPhone’da kalır."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence có thể dùng iPhone này hoặc Private Cloud Compute. Yêu cầu và tùy chọn phong cách của bạn có thể được gửi đến Apple. Ví dụ bài viết và đoạn trích đã nhập vẫn ở trên iPhone này."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 可以使用此 iPhone 或 Private Cloud Compute。你的请求和文风偏好可能会发送给 Apple。写作示例和导入的摘录会保留在此 iPhone 上。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apple Intelligence 可以使用此 iPhone 或 Private Cloud Compute。你的要求和文風偏好可能會傳送給 Apple。寫作範例和輸入的摘錄會保留在此 iPhone 上。"
           }
         }
       }
@@ -303128,6 +303485,125 @@
         }
       }
     },
+    "Private Cloud Compute" : {
+      "comment" : "Apple private cloud model service brand name.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Private Cloud Compute"
+          }
+        }
+      }
+    },
     "Pro" : {
       "localizations" : {
         "ar" : {
@@ -409352,6 +409828,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "場景"
+          }
+        }
+      }
+    },
+    "The script did not keep your required wording. Try again or edit your request." : {
+      "comment" : "Required verbatim wording was not preserved after the bounded correction; the script is not delivered.",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لم يحافظ النص على الصياغة التي طلبتها. حاول مرة أخرى أو عدّل طلبك."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manuskriptet beholdt ikke din angivne ordlyd. Prøv igen, eller rediger din anmodning."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Das Skript hat deinen vorgegebenen Wortlaut nicht beibehalten. Versuche es erneut oder bearbeite deine Anfrage."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El guion no mantuvo el texto que pediste. Inténtalo de nuevo o edita tu solicitud."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le script n’a pas conservé le texte demandé. Réessayez ou modifiez votre demande."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "स्क्रिप्ट में आपके दिए हुए शब्द ज्यों के त्यों नहीं रखे गए। फिर से कोशिश करें या अपना अनुरोध बदलें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naskah tidak mempertahankan teks yang kamu minta. Coba lagi atau edit permintaanmu."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il copione non ha mantenuto il testo richiesto. Riprova o modifica la richiesta."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "台本に指定された文言がそのまま含まれていません。もう一度試すか、リクエストを編集してください。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "대본에 요청한 문구가 그대로 유지되지 않았어요. 다시 시도하거나 요청을 수정해 주세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manuset beholdt ikke ordlyden du ba om. Prøv igjen eller rediger forespørselen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het script heeft je opgegeven tekst niet behouden. Probeer het opnieuw of pas je verzoek aan."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O roteiro não manteve o texto que você exigiu. Tente novamente ou edite seu pedido."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Manuset behöll inte din angivna formulering. Försök igen eller ändra din begäran."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สคริปต์ไม่ได้คงข้อความที่คุณระบุไว้ตามเดิม ลองอีกครั้งหรือแก้ไขคำขอของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Senaryoda istediğin ifade aynen korunmadı. Yeniden dene veya isteğini düzenle."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kịch bản chưa giữ nguyên câu chữ bạn yêu cầu. Hãy thử lại hoặc chỉnh sửa yêu cầu."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "脚本未保留你要求的原文。请重试或修改你的请求。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "腳本未保留你要求的原文。請重試或修改你的要求。"
           }
         }
       }

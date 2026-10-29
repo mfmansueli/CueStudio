@@ -32,6 +32,29 @@ nonisolated struct QualityRunSample: Codable, Hashable, Sendable {
     /// The idea came from Find inspiration with its angle and opening line.
     let hasBrief: Bool
 
+    /// Actual model that returned this sample; absent in measurements recorded before route tracking.
+    var model: String?
+    var requestedModel: String?
+    var requestedReasoning: String?
+    var durationPolicy: String?
+    var cloudDraftIntent: String?
+    var editorialMethod: Bool?
+    var freeProse: Bool?
+    var deliveryOnlyVoice: Bool?
+    var editorialReview: Bool?
+    var editorialReviewVersion: Int?
+    var editorialExampleInstructions: String?
+    var editorialReviewFailure: String?
+    var editorialIssues: [String]?
+    var editorialRevisionAccepted: Bool?
+    /// Local token counts are intentionally absent for PCC: its tokenizer is not exposed by this SDK.
+    var tokenCounter: String?
+    /// Frozen intent benchmark metadata; expectations are kept outside the model's input.
+    var caseID: String?
+    var expectedDirection: String?
+    var requiredLiterals: [String]?
+    var reviewChecks: [String]?
+
     // What was sent.
     var instructions: String?
     var prompt: String?
