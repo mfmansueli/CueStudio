@@ -93,6 +93,10 @@ enum EditorAction: Hashable {
     case openSoundEffects
     case replaceMusic
     case deleteMusic
+    /// Text to speech: a new voice-over said from text.
+    case openTextToSpeech
+    /// Edit text on a spoken voice-over: says it again in place.
+    case editSpokenText
     case reRecordVoiceOver
     case deleteVoiceOver
     // Media

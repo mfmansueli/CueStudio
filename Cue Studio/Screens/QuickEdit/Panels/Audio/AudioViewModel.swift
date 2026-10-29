@@ -23,6 +23,10 @@ final class AudioViewModel: EditorPart {
     var originalVolume: Double?
     /// The treatment being compared; changing it ends the comparison.
     @ObservationIgnored var comparedProcessing: VoiceProcessing?
+    /// ◐ in Volume on a music clip: that clip plays without lowering under the voice (`+Ducking`).
+    var comparedDuckingID: UUID?
+    /// ◐ in Voice effects: that voice plays without its effect (`+VoiceEffects`).
+    var comparedVoiceEffect: VoiceEffectTarget?
     /// Edited seconds where the voice-over being recorded started.
     var recordingStart: TimeInterval?
     /// Where that is in the take's recording, taken when it starts: a change landing during the take can't move the narration.
@@ -53,12 +57,19 @@ final class AudioViewModel: EditorPart {
     /// How the creator's teleprompter draws a script (font, colour, spacing, speed): the script shown while a narration records
     /// is drawn the same way.
     let prompterLook: PrompterSettings
-    /// Hears a sound effect before it's added.
-    let soundPreviews: SoundEffectPreviewing
+    /// Hears a sound effect, a library track or a spoken narration's first sentence before it's added.
+    let soundPreviews: SoundPreviewing
+    /// The voices Text to speech speaks with (`+TextToSpeech`).
+    let narrationSpeaker: any NarrationSpeaking
+    /// The music library's files (`+Music`).
+    let musicFiles: any MusicLibraryFiles
+    /// The spoken voice-over Text to speech replaces (Edit text on its bar); nil adds a new one.
+    @ObservationIgnored var spokenReplacementID: UUID?
 
     init(
         session: EditorSession, editing: TakeEditing, importer: EditMediaImporting, recorder: VoiceOverRecording,
-        editorPreferences: EditorPreferencesStoring, prompterLook: PrompterSettings, soundPreviews: SoundEffectPreviewing
+        editorPreferences: EditorPreferencesStoring, prompterLook: PrompterSettings, soundPreviews: SoundPreviewing,
+        narrationSpeaker: any NarrationSpeaking = SystemNarrationSpeaker(), musicFiles: any MusicLibraryFiles = CueMusicLibraryFiles()
     ) {
         self.session = session
         self.editing = editing
@@ -67,6 +78,8 @@ final class AudioViewModel: EditorPart {
         self.editorPreferences = editorPreferences
         self.prompterLook = prompterLook
         self.soundPreviews = soundPreviews
+        self.narrationSpeaker = narrationSpeaker
+        self.musicFiles = musicFiles
         showsNarrationScript = editorPreferences.showsNarrationScript
         narrationPace = NarrationScriptPace(speed: editorPreferences.narrationScriptSpeed ?? prompterLook.speed)
         recorder.stoppedByItself = { [weak self] reason in self?.voiceOverStoppedByItself(reason) }
@@ -77,14 +90,18 @@ final class AudioViewModel: EditorPart {
         if comparesOriginal, edit.voiceProcessing != comparedProcessing { endComparison() }
     }
 
-    /// The panel `previous` was left: leaving Studio Voice ends its comparison.
+    /// The panel `previous` was left: leaving Studio Voice ends its comparison, leaving Volume the music's, leaving Voice effects
+    /// the voice's.
     func panelChanged(from previous: EditorPanel?) {
         if previous == .voice { endComparison() }
+        if previous == .volume { endDuckingComparison() }
+        if previous == .voiceEffects { endVoiceEffectComparison() }
     }
 
-    /// The sheet changed: "Replace" asks for the file only for the sheet it opened.
+    /// The sheet changed: "Replace" asks for the file, and Edit text for the spoken text, only for the sheet it opened.
     func sheetChanged(to sheet: EditorSheet?) {
         if sheet != .music { musicReplacementID = nil }
+        if sheet != .textToSpeech { spokenReplacementID = nil }
     }
 
     /// A narration being recorded stops and is kept (leaving a panel, the editor or the app).

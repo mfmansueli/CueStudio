@@ -20,6 +20,18 @@ nonisolated final class SoundChunkReader {
     private var waitingStart = 0
     private var isFinished = false
 
+    enum ReadError: Error { case unreadable }
+
+    /// The format the sound is read and rendered in: its own rate, its channels (up to two), 32-bit float.
+    static func format(of track: AVAssetTrack) async throws -> AVAudioFormat {
+        let descriptions = try await track.load(.formatDescriptions)
+        let basic = descriptions.first.flatMap { CMAudioFormatDescriptionGetStreamBasicDescription($0)?.pointee }
+        let rate = basic.map { $0.mSampleRate > 0 ? $0.mSampleRate : 44_100 } ?? 44_100
+        let channels = AVAudioChannelCount(min(2, max(1, Int(basic?.mChannelsPerFrame ?? 1))))
+        guard let format = AVAudioFormat(standardFormatWithSampleRate: rate, channels: channels) else { throw ReadError.unreadable }
+        return format
+    }
+
     init(asset: AVAsset, track: AVAssetTrack, span: TimeSpan, format: AVAudioFormat, chunkSeconds: Double) throws {
         reader = try AVAssetReader(asset: asset)
         reader.timeRange = CMTimeRange(

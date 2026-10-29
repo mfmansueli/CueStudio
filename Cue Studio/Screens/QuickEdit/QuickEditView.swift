@@ -92,6 +92,7 @@ struct QuickEditView: View {
             switch sheet {
             case .music: AddMusicSheet(viewModel: viewModel)
             case .soundEffects: AddMusicSheet(viewModel: viewModel, effectsOnly: true)
+            case .textToSpeech: TextToSpeechSheet(viewModel: viewModel)
             case .media: AddMediaSheet(viewModel: viewModel)
             case .transcript: TranscriptEditSheet(viewModel: viewModel)
             case .findInCaptions: CaptionFindSheet(viewModel: viewModel)

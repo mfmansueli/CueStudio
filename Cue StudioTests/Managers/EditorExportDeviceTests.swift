@@ -36,7 +36,7 @@ struct EditorExportDeviceTests {
         let freezing = uptime
         let stillName = try await StillClipWriter.write(frameOf: other, at: 2.5, length: 5)
         let froze = uptime - freezing
-        let soundName = try EditMediaFiles.link(try SoundEffectSynth.file(for: .whoosh))
+        let soundName = try EditMediaFiles.link(try SoundEffectFiles.file(for: .whoosh))
         defer { EditMediaFiles.remove([otherName, brollName, stillName, soundName]) }
         var edit = EditorMontage.edit(files: EditorMontage.Files(other: otherName, broll: brollName, still: stillName, sound: soundName))
         edit.voiceEnhancement = .soft

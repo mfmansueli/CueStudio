@@ -122,13 +122,16 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         let varispeed = hasSound && edit.timeline.segments.contains(where: playsVarispeed)
             ? composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
             : nil
+        // Clips with a voice effect play their stretch through it (`+VoiceEffects`); curved ones then along the curve.
+        let (effectAssets, effectSounds) = try await effectSounds(for: edit.timeline.segments, sound: recordingSound(of:))
+        defer { withExtendedLifetime(effectAssets) {} }
         // Curved clips get their sound rendered along the curve (see `CurveSoundRenderer`), unless it's wanted at once.
         let curved = options.rendersCurveSound ? edit.timeline.segments : []
-        let (curveAssets, curveSounds) = try await curveSounds(for: curved, sound: recordingSound(of:))
+        let (curveAssets, curveSounds) = try await curveSounds(for: curved, sound: recordingSound(of:), effects: effectSounds)
         defer { withExtendedLifetime(curveAssets) {} }
         let cursor = try insertPieces(
-            of: edit.timeline, recording: recording, sound: recordingSound(of:), curveSounds: curveSounds, video: video,
-            soundTrack: { playsVarispeed($0) ? varispeed : audio }
+            of: edit.timeline, recording: recording, sound: recordingSound(of:), effectSounds: effectSounds, curveSounds: curveSounds,
+            video: video, soundTrack: { playsVarispeed($0) ? varispeed : audio }
         )
         // The main video turned down while a support shows with the main's volume lowered.
         let quieter = mainSoundWindows(of: edit)
@@ -168,9 +171,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         }
         let (mediaTracks, mediaFrames, mediaSounds) = await placeMedia(of: edit, frame: crop.size, in: composition, duration: cursor)
         let videoMedia = mediaFrames.filter(\.isVideo).flatMap(\.shownSpans)
-        let voices = await placeVoiceOvers(of: edit, in: composition)
+        let voices = try await placeVoiceOvers(of: edit, in: composition)
         let window = plan.window ?? TimeSpan(start: 0, end: cursor.seconds)
-        let spoken = speech.editedSpans(in: edit.timeline) + edit.voiceOvers.compactMap { $0.editedSpan(in: edit.timeline) }
+        let spoken = SpokenSpans(edit: edit, speech: speech, window: window)
         let music = await placeMusic(of: edit, window: window, speech: spoken, in: composition)
         let fadeWindows = windows.filter { $0.transition == .fade }
         let outputScale = crop.width > 0 ? renderSize.width / crop.width : 1
@@ -237,10 +240,12 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     }
 
     /// Lays the timeline's pieces one after the other: picture on `video`, sound on the track
-    /// `soundTrack` picks for each, each stretched to its speed. Returns where the edit ends.
+    /// `soundTrack` picks for each (a voice effect's when the clip has one: its stretch alone, from its start), each stretched
+    /// to its speed. Returns where the edit ends.
     private static func insertPieces(
         of timeline: EditTimeline, recording: (UUID?) -> Recording?, sound soundOf: (UUID?) -> AVAssetTrack?,
-        curveSounds: [UUID: AVAssetTrack] = [:], video: AVMutableCompositionTrack, soundTrack track: (EditSegment) -> AVMutableCompositionTrack?
+        effectSounds: [UUID: AVAssetTrack] = [:], curveSounds: [UUID: AVAssetTrack] = [:], video: AVMutableCompositionTrack,
+        soundTrack track: (EditSegment) -> AVMutableCompositionTrack?
     ) throws -> CMTime {
         var cursor = CMTime.zero
         for segment in timeline.segments {
@@ -259,6 +264,11 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                     if CMTimeCompare(cursor, filled) > 0 { soundTrack.insertEmptyTimeRange(CMTimeRange(start: filled, end: cursor)) }
                     let length = CMTime(seconds: segment.duration, preferredTimescale: 60_000)
                     try? soundTrack.insertTimeRange(CMTimeRange(start: .zero, duration: length), of: rendered, at: cursor)
+                } else if let soundTrack, let effected = effectSounds[segment.id] {
+                    let filled = soundTrack.timeRange.end
+                    if CMTimeCompare(cursor, filled) > 0 { soundTrack.insertEmptyTimeRange(CMTimeRange(start: filled, end: cursor)) }
+                    let stretch = CMTimeRange(start: .zero, duration: range.duration)
+                    soundInserted = (try? soundTrack.insertTimeRange(stretch, of: effected, at: cursor)) != nil
                 } else if let soundTrack, let sound {
                     let filled = soundTrack.timeRange.end
                     if CMTimeCompare(cursor, filled) > 0 { soundTrack.insertEmptyTimeRange(CMTimeRange(start: filled, end: cursor)) }
@@ -662,9 +672,10 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     }
 
     /// Each music clip that isn't muted on its own sound track, on the edit's seconds within
-    /// `window`, with how loud it is over time.
+    /// `window`, with how loud it is over time: one that ducks goes down under `speech` (a clip saved before `MusicClip.duck`
+    /// under what it always went down under).
     private static func placeMusic(
-        of edit: TakeEdit, window: TimeSpan, speech: [TimeSpan], in composition: AVMutableComposition
+        of edit: TakeEdit, window: TimeSpan, speech: SpokenSpans, in composition: AVMutableComposition
     ) async -> [(track: AVMutableCompositionTrack, points: [MusicEnvelope.Point])] {
         var placed: [(track: AVMutableCompositionTrack, points: [MusicEnvelope.Point])] = []
         for clip in edit.music where !clip.isMuted {
@@ -685,9 +696,10 @@ nonisolated struct EditedComposition: @unchecked Sendable {
                 composition.removeTrack(track)
                 continue
             }
+            let spoken = clip.duck == nil ? speech.legacySpans : speech.spans
             let points = MusicEnvelope.points(
                 span: TimeSpan(start: start, end: end), volume: clip.volume, fadeIn: clip.fadeIn, fadeOut: clip.fadeOut,
-                speech: clip.ducksUnderVoice ? speech : nil
+                speech: clip.ducksUnderVoice ? spoken : nil, duck: clip.duck
             )
             placed.append((track, points))
         }
@@ -698,12 +710,17 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     /// end of the edit.
     private static func placeVoiceOvers(
         of edit: TakeEdit, in composition: AVMutableComposition
-    ) async -> [(track: AVMutableCompositionTrack, volume: Float)] {
+    ) async throws -> [(track: AVMutableCompositionTrack, volume: Float)] {
         var voices: [(track: AVMutableCompositionTrack, volume: Float)] = []
+        var effectAssets: [AVURLAsset] = []
+        defer { withExtendedLifetime(effectAssets) {} }
         for clip in edit.voiceOvers {
             guard let span = clip.editedSpan(in: edit.timeline) else { continue }
             let asset = AVURLAsset(url: EditMediaFiles.url(for: clip.fileName))
-            guard let source = try? await asset.loadTracks(withMediaType: .audio).first,
+            // With a voice effect, its recording through it (`+VoiceEffects`), as long as the recording.
+            let effected = try await effectSound(of: clip, keeping: &effectAssets)
+            let recorded = effected == nil ? try? await asset.loadTracks(withMediaType: .audio).first : nil
+            guard let source = effected ?? recorded,
                   let track = composition.addMutableTrack(withMediaType: .audio, preferredTrackID: kCMPersistentTrackID_Invalid)
             else { continue }
             let range = CMTimeRange(

@@ -5,8 +5,11 @@
 
 import SwiftUI
 
-/// Settings › Acknowledgements: the fonts Cue ships and the work its code adapts, and the license of each.
+/// Settings › Acknowledgements: the fonts Cue ships, the sample libraries its music and sound effects are played on, the work its
+/// code adapts, and the license of each.
 struct AcknowledgementsView: View {
+    private let sounds = SoundSource.inUse
+
     var body: some View {
         List {
             Section {
@@ -27,6 +30,27 @@ struct AcknowledgementsView: View {
                 }
             } footer: {
                 Text("The free fonts Cue ships with.")
+            }
+            Section {
+                ForEach(Array(sounds.enumerated()), id: \.element.id) { index, source in
+                    ZStack(alignment: .leading) {
+                        NavigationLink {
+                            LicenseTextView(
+                                name: source.library, copyright: "\(source.author)\n\(source.url.absoluteString)", text: source.licenceText
+                            )
+                        } label: { EmptyView() }.opacity(0)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(verbatim: source.library).foregroundStyle(Palette.ink)
+                            Text(verbatim: source.instruments).cueFont(.footnote).foregroundStyle(Palette.ink2)
+                            Text(verbatim: "\(source.author) · \(source.licence.name)").cueFont(.footnote).foregroundStyle(Palette.ink2)
+                        }
+                        .frame(minHeight: Metrics.listRowContent, alignment: .leading)
+                    }
+                    .accessibilityIdentifier("acknowledgements.sound.\(source.rawValue)")
+                    .cardRowBackground(position: CardRowPosition(index: index, count: sounds.count))
+                }
+            } footer: {
+                Text("Cue’s music and sound effects are played on recordings from these free sample libraries.")
             }
             Section {
                 ForEach(Array(CodeCredit.all.enumerated()), id: \.element.id) { index, credit in

@@ -121,7 +121,7 @@ struct QuickEditToolbarTests {
     @Test func theAudioMenuNamesStudioVoice() async {
         let viewModel = await makeScenario().viewModel
         viewModel.perform(.openMenu(.audio))
-        #expect(ids(viewModel) == ["voice", "music", "soundEffects", "voiceOver", "volume", "extractAudio"])
+        #expect(ids(viewModel) == ["voice", "music", "soundEffects", "voiceOver", "textToSpeech", "volume", "voiceEffects", "extractAudio"])
         #expect(viewModel.toolbarItems.first?.label == "Studio Voice")
         #expect(viewModel.toolbarItems.first { $0.id == "volume" }?.startsGroup == true)
         viewModel.perform(.openSoundEffects)
@@ -168,7 +168,7 @@ struct QuickEditToolbarTests {
         #expect(ids(viewModel) == [
             "split", "speed", "volume", "mute", "zoom",
             "adjust", "skin", "filters", "background", "clipCrop", "mirror", "stabilize", "blurArea", "copyLook", "pasteLook",
-            "transition", "clipAnimation", "duplicate", "freeze", "reverse", "replace", "reorder", "extractAudio", "resetClip",
+            "transition", "clipAnimation", "duplicate", "freeze", "reverse", "replace", "reorder", "extractAudio", "voiceEffects", "resetClip",
             "text", "addMedia", "audio", "smart",
             "editByText", "pauses", "voice", "captions", "format", "templates", "brandKit", "cover", "delete",
         ])
@@ -235,7 +235,7 @@ struct QuickEditToolbarTests {
         let voice = VoiceOverClip(fileName: "v.m4a", duration: 2, anchor: 1)
         viewModel.changeEdit { $0.voiceOvers = [voice] }
         viewModel.selection = .voiceOver(voice.id)
-        #expect(ids(viewModel) == ["volume", "reRecord", "lock"] + Self.itemShortcutIDs + ["delete"])
+        #expect(ids(viewModel) == ["volume", "reRecord", "voiceEffects", "lock"] + Self.itemShortcutIDs + ["delete"])
     }
 
     @Test func aTextsAnimationToolOpensItsStyleOnTheMotionTab() async throws {
@@ -290,7 +290,7 @@ struct QuickEditToolbarTests {
         viewModel.perform(.openMenu(.text))
         #expect(ids(viewModel).suffix(2) == ["styleAll", "brandKit"])
         viewModel.perform(.openMenu(.audio))
-        #expect(ids(viewModel) == ["voice", "music", "soundEffects", "voiceOver", "volume", "extractAudio"])
+        #expect(ids(viewModel) == ["voice", "music", "soundEffects", "voiceOver", "textToSpeech", "volume", "voiceEffects", "extractAudio"])
         viewModel.leaveToolbarContext()
         #expect(viewModel.toolbarContext == .main)
         #expect(viewModel.toolMenu == nil)

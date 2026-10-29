@@ -17,7 +17,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     // Texts
     case textStyle
     // Audio
-    case voiceOver, beats
+    case voiceOver, beats, voiceEffects
     // Added on top: a photo or video over the take, its mask and its motion
     case media, mask, motion
     // Blur area: a face, a plate, a name hidden
@@ -33,6 +33,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         switch self {
         case .zoom, .volume, .filters, .voiceOver, .autoCaptions: .mini
         case .speed, .voice, .pauses, .captions, .adjust, .skin, .background, .media, .smart, .transition, .crop, .stabilize, .beats: .medium
+        case .voiceEffects: .medium
         case .clipCrop, .clipAnimation: .medium
         case .mask, .blur, .motion: .medium
         case .textStyle, .captionStyle: .full
@@ -62,6 +63,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     var followsSelection: Bool {
         switch self {
         case .speed, .zoom, .volume, .stabilize, .clipCrop, .clipAnimation, .beats, .textStyle, .media, .mask, .motion, .blur, .transition: true
+        case .voiceEffects: true
         default: false
         }
     }
@@ -70,7 +72,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
     /// they're open, so moving the playhead never moves the change to another clip.
     var pinsClip: Bool {
         switch self {
-        case .speed, .zoom, .volume, .stabilize, .clipCrop, .clipAnimation: true
+        case .speed, .zoom, .volume, .stabilize, .clipCrop, .clipAnimation, .voiceEffects: true
         default: false
         }
     }
@@ -94,6 +96,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         // Choosing what to hide on a photo or video over the take keeps it picked meanwhile.
         case .blur: selection.blurID != nil || selection.mediaID != nil
         case .beats: selection.musicID != nil
+        case .voiceEffects: selection.clipID != nil || selection.voiceOverID != nil
         case .transition: selection.joinID != nil
         default: true
         }
@@ -120,6 +123,7 @@ enum EditorPanel: String, CaseIterable, Identifiable {
         case .textStyle: String(localized: "Text")
         case .voiceOver: String(localized: "Voice-over")
         case .beats: String(localized: "Beats")
+        case .voiceEffects: String(localized: "Voice effects")
         case .media: String(localized: "Photo or video")
         case .mask: String(localized: "Mask")
         case .motion: String(localized: "Motion")

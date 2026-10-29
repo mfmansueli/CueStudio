@@ -100,7 +100,7 @@ extension RealExports {
             let otherName = try EditMediaFiles.link(other)
             let brollName = try EditMediaFiles.link(broll)
             let stillName = try await StillClipWriter.write(frameOf: other, at: 2.5, length: 5)
-            let soundName = try EditMediaFiles.link(try SoundEffectSynth.file(for: .whoosh))
+            let soundName = try EditMediaFiles.link(try SoundEffectFiles.file(for: .whoosh))
             defer { EditMediaFiles.remove([otherName, brollName, stillName, soundName]) }
             let edit = EditorMontage.edit(files: EditorMontage.Files(other: otherName, broll: brollName, still: stillName, sound: soundName))
 

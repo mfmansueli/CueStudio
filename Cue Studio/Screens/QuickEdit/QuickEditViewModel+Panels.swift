@@ -20,6 +20,8 @@ extension QuickEditViewModel {
         guard let panel else { return nil }
         if panel == .captions && captions.isPickingCaptions { return .full }
         if panel == .voiceOver && audio.offersNarrationScript { return .medium }
+        // Music's Volume has its lowering under the voice too.
+        if panel == .volume, selection?.musicID != nil { return .medium }
         return panel.size
     }
 
@@ -54,6 +56,7 @@ extension QuickEditViewModel {
         case .textStyle: textStyleSubtitle
         case .voiceOver: String(localized: "Records from the playhead · the video plays muted")
         case .beats: audio.beatsSubtitle
+        case .voiceEffects: audio.voiceEffectsSubtitle
         case .media: selectedMedia?.layout == .split ? splitSubtitle : String(localized: "On top of the video")
         case .mask: maskSubtitle
         case .motion: String(localized: "Ready-made motion, Track and keyframes")
@@ -92,7 +95,11 @@ extension QuickEditViewModel {
         case .clipAnimation: return String(localized: "\(clipScope) · how it comes in and goes out")
         default:
             switch selection {
-            case .music: return String(localized: "Music · under your voice")
+            case .music(let id):
+                guard let music = edit.music.first(where: { $0.id == id }), let span = music.span(inEditOf: edit.editedDuration) else {
+                    return String(localized: "Music · under your voice")
+                }
+                return "\(music.title) · \(DurationText.editor(span.start))–\(DurationText.editor(span.end))"
             case .voiceOver: return String(localized: "Voice-over")
             case .media: return String(localized: "Video · its own sound")
             default: return clipScope

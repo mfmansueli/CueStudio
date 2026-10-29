@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// A sound file of the creator's own (music, an effect) laid under the video. It belongs to the
+/// A sound laid under the video (music from Files or Cue's library, an effect, a sound taken out of a clip). It belongs to the
 /// project, not to what is said: it's placed on the edit's own seconds and stays there when
 /// something is cut before it. Its file is copied into the edit's media.
 nonisolated struct MusicClip: Codable, Hashable, Identifiable, Sendable {
@@ -17,9 +17,9 @@ nonisolated struct MusicClip: Codable, Hashable, Identifiable, Sendable {
     static let fadeRange: ClosedRange<Double> = 0...5
     /// Shortest it can play.
     static let minimumDuration: TimeInterval = 0.5
-    /// How far it goes down while someone speaks, as a factor (about −12 dB).
+    /// How far a clip saved before `duck` goes down while someone speaks, as a factor (about −12 dB).
     static let duckedLevel: Double = 0.25
-    /// How long it takes to go down, and to come back.
+    /// How long such a clip takes to go down, and to come back.
     static let duckRamp: TimeInterval = 0.25
 
     var id = UUID()
@@ -40,8 +40,14 @@ nonisolated struct MusicClip: Codable, Hashable, Identifiable, Sendable {
     var isMuted = false
     /// Goes down while the voice or a voice-over speaks.
     var ducksUnderVoice = true
-    /// The sound effect it is (`SoundEffectSynth`); nil for the creator's own file. Effects can play over music and each other.
+    /// How far it goes down and what it does in pauses; nil for a clip saved before these settings, which keeps the first way
+    /// (`MusicEnvelope.Timing.legacy`) until its lowering is changed.
+    var duck: MusicDuck?
+    /// The sound effect it is (`SoundEffectFiles`); nil for the creator's own file. Effects can play over music and each other.
     var effect: SoundEffect?
+    /// The library track it is (`CueTrack`, with its origin and licence); nil for a file from Files, an effect or an extracted
+    /// sound.
+    var libraryTrack: CueTrack?
     /// The sound of a clip or a video taken out to this track (Extract audio); nil for music and effects.
     var extractedFrom: ExtractedSoundOrigin?
 
