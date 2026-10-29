@@ -99,3 +99,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## Sample libraries (recorded instruments and sounds in the music library and the sound effects)
+
+The music library's tracks are composed by Cue and played, offline, on recorded instruments from free sample libraries; most sound
+effects are made from recordings in free libraries (`tools/music/`, `AUDIO_LIBRARY.md` §1–§2). The rendered files ship in the app
+(`Cue Studio/SupportFiles/Sounds/`); the libraries themselves do not. Settings › Acknowledgements lists the ones in use with their license
+(`SoundSource`; legal text in `Cue Studio/SupportFiles/Licenses/CC0-1.0.txt`). Every library is CC0 (owner's decision, 29 October 2026):
+nothing in the app or in a video made with it owes credit, and Cue credits them anyway.
+
+| Library | Author | License | Used for |
+|---|---|---|---|
+| [VSCO 2 Community Edition](https://github.com/sgossner/VSCO-2-CE) | Versilian Studios | CC0 1.0 | Music, effects |
+| [Versilian Community Sample Library (VCSL)](https://github.com/sgossner/VCSL) | Versilian Studios | CC0 1.0 | Music (its Steinway and Knight upright pianos too), effects |
+| [Virtuosity Drums](https://github.com/sfzinstruments/virtuosity_drums) | Versilian Studios and Karoryfer Samples, played by Austin McMahon | CC0 1.0 | Music, effects |
+| [Swirly Drums](https://github.com/sfzinstruments/karoryfer.swirly-drums) | Karoryfer Samples | CC0 1.0 | Music |
+| [Spanish Classical Guitar](https://freepats.zenvoid.org) | FreePats project | CC0 1.0 | Music |
+| [Kenney sound packs](https://kenney.nl) (Interface, UI, RPG, Casino) | Kenney | CC0 1.0 | Effects |
+

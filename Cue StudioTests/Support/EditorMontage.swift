@@ -55,7 +55,7 @@ enum EditorMontage {
             CaptionCue(text: "The crust matters most", start: 3.4, end: 4.9),
         ]
         if let sound = files.sound {
-            let length = Double(SoundEffectSynth.samples(for: .whoosh).count) / SoundEffectSynth.sampleRate
+            let length = SoundEffectFiles.duration(ofFile: EditMediaFiles.url(for: sound)) ?? 1
             var clip = MusicClip(fileName: sound, title: "Whoosh", fileDuration: length, start: 2.6, length: length)
             clip.effect = .whoosh
             clip.fadeIn = 0

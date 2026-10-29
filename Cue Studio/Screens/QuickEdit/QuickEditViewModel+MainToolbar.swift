@@ -134,15 +134,19 @@ extension QuickEditViewModel {
         ]
     }
 
-    /// The voice, music, sound effects and voice-over; then the clip under the playhead's sound: its volume, or on a track of
-    /// its own.
+    /// The voice, music, sound effects, voice-over and a voice-over spoken from text; then the clip under the playhead's sound:
+    /// its volume, a voice effect on it, or on a track of its own.
     var audioMenuItems: [EditorToolbarItem] {
         [
             item(.studioVoice),
             EditorToolbarItem(id: "music", label: String(localized: "Music"), systemImage: "music.note", action: .openMusic),
             EditorToolbarItem(id: "soundEffects", label: String(localized: "Sound effects"), systemImage: "speaker.wave.2.bubble", action: .openSoundEffects),
             EditorToolbarItem(id: "voiceOver", label: String(localized: "Voice-over"), systemImage: "mic", action: .open(.voiceOver)),
+            EditorToolbarItem(id: "textToSpeech", label: String(localized: "Text to speech"), systemImage: "text.bubble", action: .openTextToSpeech),
             item(.volume).startingGroup(),
+            EditorToolbarItem(
+                id: "voiceEffects", label: String(localized: "Voice effects"), systemImage: "waveform.badge.magnifyingglass", action: .open(.voiceEffects)
+            ),
             item(.extractAudio),
         ]
     }

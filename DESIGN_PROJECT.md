@@ -859,8 +859,8 @@ adiciona nela (o que é de um item vem com o item):
 - **Captions**, com linhas: **Show** (o interruptor do painel: aceso enquanto as linhas aparecem, olho cortado quando escondidas, um passo de desfazer),
   Add line, All lines, Style, **Translate** (o nome do idioma quando traduzidas; abre o painel com a folha de tradução, o mesmo caminho do "Try it"
   da notificação), Find and replace, Edit by text e Delete all fixo no fim. Sem linhas: Auto captions, Write captions, Edit by text.
-- **Audio**: Studio Voice, Music, **Sound effects** (a folha só com os efeitos do Cue, título "Sound effects", sem Files), Voice-over e, depois de
-  uma linha fina, o som do clipe sob a agulha: **Volume** e **Extract audio** (as mesmas da barra principal).
+- **Audio**: Studio Voice, Music, **Sound effects** (a folha só com os efeitos do Cue, título "Sound effects", sem a música), Voice-over, **Text to
+  speech** e, depois de uma linha fina, o som do clipe sob a agulha: **Volume**, **Voice effects** e **Extract audio** (§56).
 - **Media**: as formas de pôr uma foto ou vídeo, os cartões da folha (**Split screen · Window · Full screen · In sequence**, cada uma abrindo a
   galeria já nela, com os cartões no topo para trocar); depois de uma linha fina, **Your library** (a folha na biblioteca) e **Brand kit** (o logo do
   kit). A faixa de mídia não abre mais a folha direto: a barra dela é o caminho (adicionar uma janela: Window e a foto).
@@ -1462,10 +1462,10 @@ auditoria: `reports/editor-award-checklist.md`.
   video** mostra a faixa do arquivo com o trecho ("0:03 to 0:05 of 0:06"); arrastar escolhe de onde começa sem mudar onde ele está no vídeo,
   **Plays for** muda a duração; nunca passa do fim do arquivo. Mover a barra mantém o trecho; aparar o começo dela apara o começo do trecho junto
   (o que aparece em cada momento que fica não muda), como no CapCut. Edições antigas: do 0.
-- **Efeitos sonoros** (`SoundEffect`, `SoundEffectSynth`, na folha "Add music or a sound"): 11 sons **sintetizados no aparelho pelo próprio Cue**
-  (Whoosh, Pop, Click, Ding, Sparkle, Riser, Boom, Ping, Typing, Shutter, Wrong), agrupados por uso (Transitions, Text appears, Big moment, Right
-  answer, Mistake, Taps, steps…) — "Made by Cue · free to use in your videos": nenhum arquivo de terceiros, nenhum download. Ouvir antes ("Hear …"),
-  adicionar na agulha; entram na faixa de música como clipes curtos (mínimo 0,5 s, pico −3 dBFS).
+- **Efeitos sonoros** (`SoundEffect`, `SoundEffectSynth`, parte **Sound effects** da folha "Add music or a sound"): 25 sons **sintetizados no
+  aparelho pelo próprio Cue**, em cinco grupos por uso (§56) — "Made by Cue · free to use in your videos": nenhum arquivo de terceiros, nenhum
+  download. Ouvir antes, adicionar na agulha; entram na faixa de música como clipes curtos (mínimo 0,5 s, mesma intensidade percebida, pico até
+  −3 dBFS).
 - **Gráficos no vídeo** (`TextOverlay.graphic`, desenhados por `CoverCompositionRenderer` como na capa): o menu de texto ganha **Arrow, Circle e
   Tag**; mover, pinçar, girar, cor e animação como um texto (`GraphicStylePanel`); "Style all" não muda gráficos.
 - **Edit by text** (`TranscriptEditSheet`, `TranscriptEditing`, menu de legendas): **Listen to the video** transcreve no aparelho (Speech, nada sai
@@ -1656,17 +1656,18 @@ Prévia e exportação passam pelo mesmo compositor (`CueVideoCompositor`), ent�
   cima ficam onde estavam no vídeo. **Reverse de novo** volta ao original; mais uma vez, toca o vídeo invertido já escrito (ir e voltar nunca escreve
   outro arquivo). Vídeos invertidos que nada toca saem da edição no Done; se o editor fecha enquanto um é escrito, ele é apagado. Até 2 minutos ("Reverse works on clips up to 2 minutes · Split it first"). Um passo
   de desfazer; a gravação nunca muda.
-- **Beats** (só para música trazida dos Files: o Cue não tem biblioteca de música; efeitos sonoros e sons extraídos do vídeo não têm; `BeatDetector`, `BeatTracker`, `BeatStore`, `BeatCuts`,
-  `BeatsPanel`): as batidas são achadas no iPhone quando a música entra (fluxo espectral, tempo pela autocorrelação entre 60 e 200 BPM, batidas
+- **Beats** (para música, dos Files ou da biblioteca do Cue; efeitos sonoros e sons extraídos do vídeo não têm; `BeatDetector`, `BeatTracker`, `BeatStore`, `BeatCuts`,
+  `BeatsPanel`): as de uma faixa da biblioteca vêm da partitura dela, exatas, sem procurar; as de um arquivo dos Files são achadas no iPhone quando a música entra (fluxo espectral, tempo pela autocorrelação entre 60 e 200 BPM, batidas
   por programação dinâmica), guardadas ao lado do arquivo (`<arquivo>.cuebeats`) e aparecem como risquinhos na faixa da música. **Beats** na barra
   da música: **Snap to beats** (a agulha e as bordas grudam nas batidas; `TakeEdit.snapsToBeats`, ligado), **Move cuts to the beats** (cada corte
   vai para a batida mais próxima, até 0,5 s, encurtando ou alongando o clipe antes dele, nunca além da gravação nem para dentro da parte seguinte)
   e **Cut on** Every beat · Every 2 · Every 4 › **Cut the video on the beats**. Subtítulo: "112 BPM · 48 beats in the video", "Finding the
   beats…" ou "No steady beat in this music". Cada ação é um passo de desfazer.
-- **Barras** (a de hoje; a ordem de cada uma está em §54 › Barras): Clipe: Split · Speed · Volume · **Mute** · Zoom | Adjust · Skin · Filters · Background · Stabilize · Blur area · Copy look · Paste look | **Transition** · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio (e as do vídeo, §55) · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Foto ou vídeo por cima: Edit · Volume · Motion ·
+- **Barras** (a de hoje; a ordem de cada uma está em §54 › Barras): Clipe: Split · Speed · Volume · **Mute** · Zoom | Adjust · Skin · Filters · Background · Stabilize · Blur area · Copy look · Paste look | **Transition** · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio · Voice effects (e as do vídeo, §55) · Delete. Texto: Edit · Style · Motion · Keyframe · **Track** · Duplicate · Delete. Foto ou vídeo por cima: Edit · Volume · Motion ·
   Mask · Split · Replace · Blur area · **Track** · Keyframe · Duplicate · Save to library · Delete; um apoio da tela dividida e a área do vídeo
   principal: §54. Música: Volume · **Beats** ·
-  Replace · Delete (efeitos sonoros e sons extraídos sem Beats).
+  Replace · Delete (efeitos sonoros e sons extraídos sem Beats). Voice-over: Volume · Re-record (ou **Edit text**, se foi falado a partir de
+  texto) · **Voice effects** · Lock · Delete (§56).
 - **Comparação com CapCut, Edits e InShot** (17/10/2026): Follow face é o "Auto reframe" do CapCut (formato + velocidade do acompanhamento), no
   painel de formato; Stabilize tem três níveis como o do CapCut, por clipe, e ganha "Use on every clip"; Track: no CapCut se arrasta uma caixa
   sobre o objeto; no Cue o próprio item é a caixa (põe e toca Track), um passo a menos, sem caixa de tamanho ajustável; Speed com Normal | Curve
@@ -2515,7 +2516,8 @@ recusado).
      interruptor (aceso enquanto o clipe está mudo, alto-falante cortado cheio; um passo de desfazer).
   2. **A imagem do clipe:** Adjust · Skin · Filters · Background (do clipe) · **Crop** · **Mirror** · Stabilize · Blur area · Copy look · Paste
      look. Mirror é interruptor, aceso enquanto o clipe está espelhado.
-  3. **A montagem:** **Transition** · **Animation** · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio · **Reset clip**.
+  3. **A montagem:** **Transition** · **Animation** · Duplicate · Freeze frame · Reverse · Replace · Reorder · Extract audio · **Voice effects**
+     (§56) · **Reset clip**.
      **Transition** escolhe o corte depois do clipe (no último, o de antes) com o painel aberto: com o clipe escolhido, as marcas dos cortes dele
      cedem às alças, e era preciso soltá-lo para chegar à transição. Num vídeo de um clipe só fica esmaecida e diz "Split or add a clip to add a
      transition". Reset clip fica esmaecida enquanto o clipe está como gravado.
@@ -2598,3 +2600,78 @@ recusado).
   `PaletteContrastTests` com e sem Aumentar Contraste. Nas imagens do iPhone SE e do iPhone 17, em inglês e em árabe XXXL
   (`ToolAuditCaptureTests.test14ToolbarReach` e `test15SupportBarReach`, com a hierarquia para `tools/contrast/audit.py`): 38 selos, 14,88:1
   inteiros à vista e 13,91:1 no pior, perto do esmaecido da borda da barra; o aviso de alcance, 13,1:1.
+
+## 56. Áudio: música sob a fala, biblioteca, efeitos, narração por texto e efeitos de voz (Fase 8 do refinamento, 29 de outubro de 2026; pedido do dono)
+
+O que já existia continua igual e não é apresentado como novo: Studio Voice e redução de ruído, nivelamento entre gravações, música dos Files
+com volume e fades, música abaixando sob a fala, voice-over gravado, Extract audio, efeitos sonoros do Cue e Beats. Origem e licença de cada
+som, decisões técnicas e limites: `AUDIO_LIBRARY.md`.
+
+- **Música sob a fala** (Volume de uma música, `VolumePanel`, `AudioViewModel+Ducking`, `MusicDuck`, `MusicEnvelope`, `SpokenSpans`):
+  **Lower under voice** (interruptor) com o alcance embaixo, pelo que toca sob aquela música: "Under your voice", "Under your voice and 2
+  voice-overs", "Under 2 voice-overs" ou "Nobody speaks while it plays". Ligado: **Lower by** 3–30 dB (12 por padrão) e **In pauses** (segmentado):
+  **Stays low** (pausas de até ~3 s não trazem a música de volta: nada de "bombear" entre frases) ou **Comes back up** (volta em pausas a partir de
+  ~1,2 s). As rampas são suaves (em dB, começam 0,4 s antes da voz e voltam em 1 s; em Comes back up, 0,25 e 0,4 s). Conta como voz a fala dos
+  clipes que tocam (um clipe mudo, a 0% ou cujo som foi para uma faixa não conta) e cada voice-over, gravado ou falado a partir de texto, onde ele
+  realmente tem som. **◐** toca aquela música sem abaixar, a partir de um pouco antes da primeira voz sob ela (as outras músicas continuam como
+  estão); apaga ao sair do painel. **Use on all music** aparece quando outra música abaixa diferente e copia o interruptor, a profundidade e as
+  pausas para todas (efeitos sonoros e sons extraídos ficam de fora), num passo de desfazer, "Used on all 3 music clips". Música nova entra
+  com 12 dB e Stays low. Uma música de uma edição salva antes continua abaixando como sempre (a 25%, rampas de 0,25 s, só sob a fala da
+  gravação) até alguém mexer num desses controles; aí passa aos novos com o que tinha (12 dB). Volume, fades, cortes e sincronia não mudam.
+- **Biblioteca de música** (folha "Add music or a sound", parte **Music** do segmentado nativo `Music | Sound effects`; `AddMusicSheet`,
+  `MusicLibraryViewModel`, `MusicTrackRow`, `CueTrack`, `CueTrackFacts`): campo **Search music** (nome, estilo, uso ou humor, sem diferenciar
+  maiúsculas e acentos), chips **All · For talking · Calm · Chill · Focus · Upbeat · Playful · Cinematic**, título "Made by Cue · Free to use in
+  your videos" e as vinte faixas (compostas pelo Cue e tocadas por instrumentos gravados de bibliotecas de samples gratuitas, embutidas no app;
+  `AUDIO_LIBRARY.md` §1), cada uma num cartão: ▶ (toca do começo; ■ enquanto toca, outro toque ou outra faixa para), nome, "Lo-fi hip-hop ·
+  1:28", o uso ("Study, explainers · For talking" nas quinze feitas para ficar sob a fala), **ⓘ** (abre no cartão: "Covers the whole video" ou
+  "Covers 1:12 of 2:30", humor e BPM, a origem "Composed by Cue and played on recorded instruments from free sample libraries (credited in
+  Settings › Acknowledgements).", os termos, o crédito ("No credit needed.": as bibliotecas são todas CC0) e "Sample libraries: …") e **+** (adiciona na agulha a 40%, abaixando 12 dB sob a
+  voz, com as batidas da partitura, do manifesto da biblioteca, prontas para Beats; a folha fecha). Nos tamanhos de texto de
+  acessibilidade o ▶ fica acima do texto e ⓘ e + embaixo, para o texto ter a largura do cartão. Sem resultado: "No track matches · Try
+  another word or filter". Embaixo, **Browse Files** e a nota de direitos, como antes. Pelo **Replace** de uma música, a folha se chama "Replace
+  music" e mostra só a música (a faixa entra no lugar do clipe, com o lugar, o volume e o abaixar dele). O clipe guarda qual faixa é
+  (`MusicClip.libraryTrack`).
+- **Efeitos sonoros** (parte **Sound effects**, ou a folha sozinha pela barra do Audio; `SoundEffectsSection`, `SoundEffectCell`,
+  `SoundEffectCategory`, `SoundEffectFiles`): título "Sound effects" com "Free to use in your videos · no credit needed"; chips **All ·
+  Transitions · Text & graphics · Reactions · Comedy · Big moments · Alerts & time** (a fila rola para o lado); em All, cada grupo com o
+  nome em cima. Duas colunas (uma nos tamanhos de acessibilidade; o nome numa linha, um pouco menor se precisar, nunca partido): tocar o
+  cartão ouve (o ícone vira um alto-falante animado e o cartão fica marcado enquanto toca; outro toque para), **+** adiciona na agulha. 42
+  efeitos, 32 gravados e 10 sintetizados (`AUDIO_LIBRARY.md` §2): Transitions (Whoosh, Swish, Riser, Bass drop, Glitch, Page turn, Dream
+  harp, Footsteps), Text & graphics (Pop, Click, Double click, Bloop, Typing, Tick), Reactions (Ding, Wrong, Ta-da, Fanfare, Coin, Cash
+  register, Referee whistle), Comedy (Ba-dum-tss, Record scratch, Boing, Sad trombone, Slap, Clang, Slide whistle, Cartoon run, Sneaky), Big
+  moments (Boom, Hit, Sparkle, Drum roll, Heartbeat, Dramatic sting, Gong), Alerts & time (Ping, Shutter, Countdown, Tick-tock, Bleep).
+- **Ajustes › Acknowledgements** (`AcknowledgementsView`, `SoundSource`): entre as fontes e o código, uma seção com as bibliotecas de
+  samples que o app usa (as das faixas e as dos efeitos, todas CC0, creditadas por cortesia), cada uma com o nome, o que tem ("Drum kit"…),
+  o autor e a licença (CC0 1.0); tocar abre o texto da licença, com o autor e o endereço. Rodapé: "Cue’s music and sound effects are played on
+  recordings from these free sample libraries."
+- **Text to speech** (Audio › Text to speech; `TextToSpeechSheet`, `TextToSpeechViewModel`, `NarrationMaker`): "Spoken by a voice on this
+  iPhone, offline". O texto (até 3.000 caracteres, com o contador "120 / 3,000" ao lado; **Use the script** quando a take tem roteiro), **Language** e
+  **Voice** (só as que o iPhone tem, as melhores primeiro, com "Enhanced"/"Premium"; na mesma qualidade, a voz padrão do idioma
+  primeiro e as Eloquence, como Eddy e Flo, por último; quando um idioma só tem vozes compactas, a nota diz onde
+  baixar melhores; sem voz no idioma, "No voice for this language on this iPhone."), **Speed** 0.75× · 1× · 1.25× · 1.5×, **Hear** (a primeira
+  frase, na voz e na velocidade escolhidas; pílula cinza do editor) e **Add** (amarela, na agulha), lado a lado (um sobre o outro nos tamanhos de acessibilidade). Enquanto é feito, "Making the voice-over…" com **Cancel**; a folha não fecha
+  arrastando. Entra como um voice-over ("Voice-over added" · Undo), escolhido, que se apara, move, muda de volume e apaga como um gravado; na
+  barra dele, **Edit text** no lugar de Re-record reabre a folha com o texto, a voz e a velocidade, e o novo entra no mesmo lugar, com o volume e
+  o efeito de voz ("Voice-over replaced").
+- **Voice effects** (painel `.voiceEffects`, `VoiceEffectsPanel`, `AudioViewModel+VoiceEffects`, `VoiceEffectRenderer`): na barra do clipe, de um
+  voice-over e no menu do Audio (o clipe sob a agulha). Ladrilhos numa fila que rola para o lado (o próximo aparece na borda) **None · Radio · Megaphone · Robot · Deep voice · Chipmunk · Echo · Big hall**,
+  **Amount** 10–100% (70% por padrão; trocar de efeito mantém) e a nota "Studio Voice keeps working underneath." (num clipe mudo: "This clip
+  is muted: turn its sound on to hear an effect.", ladrilhos esmaecidos). O subtítulo diz onde vale e para que serve o escolhido ("Voice-over
+  1 · A machine talking"; sem efeito, "… · a creative effect on the voice"). Com a fila de ladrilhos e o uso no subtítulo, o Amount aparece sem rolar o painel. **◐** toca
+  sem o efeito; **None** volta à voz como era. Separado do Studio Voice: o efeito é aplicado depois do tratamento, com a mesma duração da voz e a
+  mesma intensidade (±1,5 dB). Um clipe com curva de velocidade toca a curva sobre a voz já com efeito; Reset clip tira o efeito.
+- **Ouvir antes de adicionar** (um efeito, uma faixa da biblioteca, o Hear da narração; `SoundPreviewPlayer`): um som por vez, o novo para o
+  anterior. Como o player do editor, prepara a sessão de reprodução fora da thread principal e toca com AVPlayer: toca com o iPhone no
+  silencioso e não trava a tela no toque.
+- **Barras:** Voice-over: Volume · Re-record ou Edit text · Voice effects · Lock · Delete. Clipe: Voice effects depois de Extract audio (§55).
+  Música: Volume · Beats (também nas faixas da biblioteca) · Replace · Lock · Delete.
+- **Testes:** unidade `MusicDuckingTests`, `SpokenSpansTests`, `MusicEnvelopeTests`, `AudioMixPartTests` (abaixar e Use on all, ◐, efeitos num
+  clipe e num voice-over, narração no lugar e substituída, faixa da biblioteca com origem e batidas, reabrir a edição), `MusicLibraryViewModelTests`,
+  `VoiceEffectRendererTests` (duração, intensidade, pico, tom do Deep voice e do Chipmunk, cancelar), `NarrationMakerTests` (velocidade exata,
+  silêncio cortado, nível, cancelar), `TextToSpeechViewModelTests`, `SoundPreviewPlayerTests`, `SoundEffectSynthTests`, `SoundEffectFilesTests`, `MusicLibraryBundleTests`,
+  `SoundSourceTests`, `EditMediaFilesTests` (um arquivo do bundle entra ligado ou copiado), `RenderPlanTests` (o efeito de
+  voz de um clipe refaz a prévia); exportação real `AudioMixExportTests` (a música cai o pedido sob uma narração e só ali, efeito de voz no
+  arquivo e na mesma intensidade, clipe curvo com efeito, narração no lugar, sem clipping); UI `AudioMixUITests` (Text to speech no UISmoke; os cinco também no iPhone 15 Pro, `device-ui`);
+  layout `LayoutAuditCaptureTests.testEditorSound` (conferido no SE com texto padrão e com o maior de acessibilidade e no Pro Max com o maior;
+  no SE o teste não alcança a música na linha do tempo, então o Volume dela foi conferido no iPhone 17 e no Pro Max); aparelho
+  `AudioMixDeviceTests` (narração entendida em cada velocidade, palavras sob cada efeito de voz, tempo para abrir e decodificar cada faixa).

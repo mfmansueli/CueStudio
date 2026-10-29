@@ -8,8 +8,8 @@ import AVFoundation
 import Foundation
 
 /// What the editor's demo (`-uiTestDemoEdit`, `SampleEdit.demo`) lays on its take, made at launch into the edit's media
-/// (`EditMediaFiles`), since no sound or picture ships with the app: music with a steady beat at 120 BPM (Cue's own sound
-/// effects, `SoundEffectSynth`, on every beat), so Beats has something to find; a hummed narration for the voice-over track; and
+/// (`EditMediaFiles`): music with a steady beat at 120 BPM (Cue's own sound effects, `SoundEffectFiles`, on every beat), so
+/// Beats has something to find; a hummed narration for the voice-over track; and
 /// a small B-roll video (`SampleVideo`'s colours). Written once; a file already there is kept. Never shipped.
 enum SampleEditMedia {
     static let musicFile = "sample-demo-music.caf"
@@ -38,8 +38,8 @@ enum SampleEditMedia {
     /// A pop on every beat and a boom on the first of every four, at `tempo`.
     private static func music() -> [Float] {
         var samples = [Float](repeating: 0, count: Int(musicDuration * sampleRate))
-        let pop = SoundEffectSynth.samples(for: .pop)
-        let boom = SoundEffectSynth.samples(for: .boom)
+        let pop = effectSamples(.pop)
+        let boom = effectSamples(.boom)
         let beatLength = 60 / tempo
         var beat = 0
         while Double(beat) * beatLength < musicDuration {
@@ -62,6 +62,16 @@ enum SampleEditMedia {
             let edges = min(1, time / 0.1, (voiceDuration - time) / 0.1)
             return Float(tone * syllables * edges)
         })
+    }
+
+    /// An effect's sound, mono at `sampleRate` (every effect's file is), or silence if it can't be read.
+    private static func effectSamples(_ effect: SoundEffect) -> [Float] {
+        guard let url = try? SoundEffectFiles.file(for: effect),
+              let file = try? AVAudioFile(forReading: url),
+              let buffer = AVAudioPCMBuffer(pcmFormat: file.processingFormat, frameCapacity: AVAudioFrameCount(file.length)),
+              (try? file.read(into: buffer)) != nil,
+              let channel = buffer.floatChannelData?[0] else { return [] }
+        return Array(UnsafeBufferPointer(start: channel, count: Int(buffer.frameLength)))
     }
 
     private static func mix(_ sound: [Float], into samples: inout [Float], at start: Int, gain: Float) {

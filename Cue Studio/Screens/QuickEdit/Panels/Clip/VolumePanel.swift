@@ -6,7 +6,9 @@
 import SwiftUI
 
 /// Volume, 0 to 200%, of the picked clip (with "Mute this clip"), music or voice-over; a video's own sound over the take, 0 to
-/// 100% (muted until it's turned up). A clip and music keep their fades under Advanced, music "Lower under voice" too.
+/// 100% (muted until it's turned up). A clip and music keep their fades under Advanced. Music has "Lower under voice" with who
+/// it goes down under, how far ("Lower by") and what it does in pauses, the same on every music clip at once, and ◐ to hear it
+/// without lowering.
 struct VolumePanel: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -32,7 +34,7 @@ struct VolumePanel: View {
     }
 
     private var clipVolume: some View {
-        PanelFrame(viewModel: viewModel, panel: .volume) {
+        PanelFrame(viewModel: viewModel, panel: .volume, compare: pickedMusic.map(viewModel.audio.duckingCompare(for:))) {
             // The slider and the switch under it, 8 pt apart and without the 0%/200% captions (the value is written above the
             // track): "Mute this clip" then shows whole above the Home Indicator in the short panel of an iPhone 17 or SE.
             VStack(alignment: .leading, spacing: 8) {
@@ -65,6 +67,11 @@ struct VolumePanel: View {
         }
     }
 
+    private var pickedMusic: MusicClip? {
+        guard case .music(let id) = viewModel.selection else { return nil }
+        return viewModel.edit.music.first { $0.id == id }
+    }
+
     /// Your voice and a voice-over go to 200% (a soft tick at 100%, as recorded); music, which sits under the
     /// voice, to 100% (a soft tick at 20%).
     private var spec: CueSliderSpec {
@@ -86,11 +93,32 @@ struct VolumePanel: View {
         return .cleanVoice
     }
 
+    /// Whether it goes down under the voice (and under whom), how far, what it does in pauses, and the same on every music clip.
+    @ViewBuilder
     private func ducking(_ music: MusicClip) -> some View {
         PanelToggleRow(
-            label: String(localized: "Lower under voice"), detail: String(localized: "Quieter while someone speaks"),
+            label: String(localized: "Lower under voice"), detail: viewModel.audio.loweringScope(of: music),
             isOn: music.ducksUnderVoice, identifier: "edit.musicDucks"
         ) { viewModel.audio.setMusicDucks(music.id, !music.ducksUnderVoice) }
+        if music.ducksUnderVoice {
+            let duck = viewModel.audio.duck(of: music)
+            PanelSlider(
+                label: String(localized: "Lower by"), value: duck.depth, range: MusicDuck.depthRange, step: 1,
+                defaultValue: MusicDuck.standard.depth, format: .decibels, identifier: "edit.musicDuckDepth",
+                onChange: { viewModel.audio.setMusicDuckDepth(music.id, $0) },
+                onEditingChanged: { editing in editing ? viewModel.beginPanelChange() : viewModel.endPanelChange() }
+            )
+            PanelSegmented(
+                label: String(localized: "In pauses"),
+                options: MusicDuckPauses.allCases.map { PanelOption($0, $0.label, key: $0.rawValue) },
+                selection: duck.pauses, identifier: "edit.musicDuckPauses"
+            ) { viewModel.audio.setMusicDuckPauses(music.id, $0) }
+        }
+        if viewModel.audio.musicLoweringDifferently(from: music) > 0 {
+            PanelButton(
+                label: String(localized: "Use on all music"), systemImage: "square.on.square", isCompact: true, identifier: "edit.musicDuckAll"
+            ) { viewModel.audio.useLoweringOnAllMusic(from: music.id) }
+        }
     }
 
     /// The clip's sound rising from silence at its start and falling to it at its end (no longer than the clip).

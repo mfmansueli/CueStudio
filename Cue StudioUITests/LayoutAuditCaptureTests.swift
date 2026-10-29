@@ -6,7 +6,7 @@
 import XCTest
 
 /// Pictures of the app's fixed screens (Scripts, the script page, Takes, a take's review, Pro, Profile, Your universe, My Cue Voice,
-/// Settings, the first flight, the celebrations) at the size of the iPhone it runs on and at a text size, to see what doesn't fit on the
+/// Settings, the first flight, the celebrations, the editor's sound) at the size of the iPhone it runs on and at a text size, to see what doesn't fit on the
 /// smallest iPhone or doesn't grow with the text. Each screen starts from its own launch, so one that doesn't open never leaves the rest
 /// behind it; a control it couldn't find is written to `<name>-misses.txt`, never a failure. Opt-in:
 /// `TEST_RUNNER_CUE_AUDIT_DIR=<folder> TEST_RUNNER_CUE_AUDIT_NAME=se [TEST_RUNNER_CUE_AUDIT_SIZE=UICTContentSizeCategoryAccessibilityXXXL]
@@ -222,10 +222,97 @@ final class LayoutAuditCaptureTests: XCTestCase {
         }
     }
 
+    // MARK: - Editor sound
+
+    /// The editor's sound on the demo edit: the music's Volume (how far it goes down under the voice), Voice effects on the
+    /// voice-over, Cue's music library with a track's ⓘ open down to Browse Files, the sound effects, and Text to speech.
+    func testEditorSound() throws {
+        try begin()
+        var app = openEditor()
+        if pick(app, track: 3, showing: "edit.toolbar.beats") {
+            EditorApp.tapTool(app, "volume")
+            panelShots(app, "volume", "sound-volume")
+        }
+        app.terminate()
+        app = openEditor()
+        // On the voice-over; where it's out of sight, from the Audio bar, on the clip under the playhead (the same panel).
+        if !pick(app, track: 4, showing: "edit.toolbar.reRecord") {
+            app.terminate()
+            app = openEditor()
+            EditorApp.tapTool(app, "audio")
+        }
+        EditorApp.tapTool(app, "voiceEffects")
+        if tap(app, "edit.voiceEffect.radio") { panelShots(app, "voiceEffects", "sound-voice-effects") }
+        app.terminate()
+        app = openEditor()
+        EditorApp.tapTool(app, "audio")
+        EditorApp.tapTool(app, "music")
+        if tap(app, "edit.library.info.morningNotes") {
+            shot(app, "sound-library")
+            // Down to the last track (each page about a third of the list on the smallest iPhone).
+            let last = app.descendants(matching: .any)["edit.library.info.stillWater"].firstMatch
+            for page in 2...12 {
+                scrollDown(app)
+                shot(app, "sound-library-\(page)")
+                if last.exists && last.isHittable { break }
+            }
+            if !last.isHittable { miss("edit.library.info.stillWater (last track not reached)") }
+        }
+        let parts = app.segmentedControls["edit.addSoundPart"]
+        if parts.exists(within: 3) {
+            parts.buttons.element(boundBy: 1).tap()
+            sleep(1)
+            shot(app, "sound-effects")
+        } else {
+            miss("edit.addSoundPart")
+        }
+        app.terminate()
+        app = openEditor()
+        EditorApp.tapTool(app, "audio")
+        EditorApp.tapTool(app, "textToSpeech")
+        if wait(app, "tts.add") {
+            sleep(1)
+            shot(app, "sound-text-to-speech")
+        }
+        app.terminate()
+    }
+
     // MARK: - Helpers
 
     private func launch(seeded: Bool, sampleVideo: Bool = false, extra: [String] = []) -> XCUIApplication {
         CueApp.launch(seeded: seeded, sampleVideo: sampleVideo, contentSize: size, extraArguments: extra)
+    }
+
+    /// The editor on the demo edit (music under the whole video, a voice-over at 0.5–4.5 s), at the text size asked.
+    private func openEditor() -> XCUIApplication {
+        EditorApp.open(demo: true, arguments: size.map { ["-UIPreferredContentSizeCategoryName", $0] } ?? [])
+    }
+
+    /// Picks track `index` of the demo edit's five (media, texts, captions, music, voice-over) 2.5 s after the playhead; on a small
+    /// iPhone the lower tracks are out of the timeline's sight, which is written down with a picture.
+    private func pick(_ app: XCUIApplication, track index: Int, showing id: String) -> Bool {
+        let timeline = app.descendants(matching: .any)["edit.timeline"]
+        guard timeline.exists(within: 10) else { miss("edit.timeline"); return false }
+        EditorApp.showEveryTrack(app)
+        let y = EditorApp.trackMiddle(index, of: 5, in: timeline)
+        timeline.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0)).withOffset(CGVector(dx: 110, dy: y)).tap()
+        guard app.descendants(matching: .any)[id].firstMatch.exists(within: 3) else {
+            miss(id)
+            shot(app, "missed-\(id)")
+            return false
+        }
+        return true
+    }
+
+    /// An editor panel at its top, then once more pushed up to its end.
+    private func panelShots(_ app: XCUIApplication, _ panel: String, _ label: String) {
+        sleep(1)
+        shot(app, label)
+        let element = app.descendants(matching: .any)["edit.panel.\(panel)"]
+        guard element.exists else { miss("edit.panel.\(panel)"); return }
+        element.swipeUp(velocity: .slow)
+        sleep(1)
+        shot(app, "\(label)-end")
     }
 
     private func openTab(_ app: XCUIApplication, _ title: String) -> Bool {

@@ -22,7 +22,7 @@ struct AudioPartTests {
         recorder = FakeVoiceRecorder()
         part = AudioViewModel(
             session: host.session, editing: FakeTakeEditor(), importer: FakeMediaImporter(), recorder: recorder,
-            editorPreferences: FakeEditorPreferencesStore(), prompterLook: PrompterSettings(), soundPreviews: SoundEffectPreviewPlayer()
+            editorPreferences: FakeEditorPreferencesStore(), prompterLook: PrompterSettings(), soundPreviews: SoundPreviewPlayer()
         )
     }
 

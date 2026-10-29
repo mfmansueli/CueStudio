@@ -30,13 +30,16 @@ nonisolated enum EditMediaFiles {
         return (name, url(for: name))
     }
 
-    /// Brings a recording into the edit's media for a montage: a hard link to the same file (no
-    /// space used, and it stays if the take is deleted from the library), or a copy where a link
-    /// can't be made. Returns the new name.
-    static func link(_ source: URL) throws -> String {
+    /// Brings a file into the edit's media: a recording for a montage, a library track or a sound effect. A hard link to the same
+    /// file (no space used, and it stays if the take is deleted from the library), or a copy where a link can't be made: across
+    /// volumes, or from the app's bundle where the system doesn't allow one into the data container. `linking` is the link,
+    /// replaceable so the tests can refuse it. Returns the new name.
+    static func link(
+        _ source: URL, linking: (URL, URL) throws -> Void = { try FileManager.default.linkItem(at: $0, to: $1) }
+    ) throws -> String {
         let (name, destination) = try newFile(pathExtension: source.pathExtension)
         do {
-            try FileManager.default.linkItem(at: source, to: destination)
+            try linking(source, destination)
         } catch {
             try FileManager.default.copyItem(at: source, to: destination)
         }

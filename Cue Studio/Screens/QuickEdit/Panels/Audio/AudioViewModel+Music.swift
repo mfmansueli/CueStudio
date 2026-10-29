@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Music: the creator's own sound files (from Files, copied into the app) under the video. Added at
+/// Music: Cue's library tracks or the creator's own sound files (from Files, copied into the app) under the video. Added at
 /// the playhead for as long as the file or the edit lasts, then moved or trimmed on the music
 /// track, with its volume, fades, mute and whether it goes down while someone speaks. Music is
 /// placed on the edit's own seconds: cutting something before it doesn't move it. Every change is
@@ -41,6 +41,38 @@ extension AudioViewModel {
         }
     }
 
+    /// The music library's sheet model: its previews play through the same player as the effects'.
+    func makeMusicLibrary() -> MusicLibraryViewModel {
+        MusicLibraryViewModel(files: musicFiles, previews: soundPreviews, editDuration: edit.editedDuration) { [weak self] track in
+            await self?.addLibraryTrack(track) ?? false
+        }
+    }
+
+    /// Adds a library track at the playhead, or puts it in the clip "Replace" asked for, as a file from Files: its file
+    /// (`musicFiles`, the app's bundle) is linked into the edit's media, and its beats are the score's, from the library's
+    /// manifest (none are looked for). The clip keeps which track it is, so its origin and licence stay with the edit. Returns
+    /// whether it went in.
+    func addLibraryTrack(_ track: CueTrack) async -> Bool {
+        guard isReady, !isImportingMusic else { return false }
+        let replacing = musicReplacementID
+        isImportingMusic = true
+        defer { isImportingMusic = false }
+        do {
+            let file = try await musicFiles.file(for: track)
+            guard !isClosed else { return false }
+            let name = try EditMediaFiles.link(file)
+            BeatStore.save(BeatTracker.Result(beats: track.beats, tempo: track.tempo), forSound: name)
+            addMusic(ImportedAudio(fileName: name, title: track.title, duration: track.duration, libraryTrack: track), replacing: replacing)
+            return edit.music.contains { $0.fileName == name }
+        } catch is CancellationError {
+            return false
+        } catch {
+            noteFailure(error, "addLibraryTrack")
+            toast.show(String(localized: "Can't add this track"), kind: .problem)
+            return false
+        }
+    }
+
     /// Adds a sound file at the playhead, in the free room around it (see `MusicPlacement`), for as
     /// long as the file or that room lasts. When "Replace" asked for the file (`replacing`, by default the clip it asks for
     /// now), it takes the place of that clip instead.
@@ -67,6 +99,8 @@ extension AudioViewModel {
             fileName: imported.fileName, title: imported.title, fileDuration: imported.duration, start: slot.start, length: length
         )
         clip.volume = Self.newMusicVolume
+        clip.duck = .standard
+        clip.libraryTrack = imported.libraryTrack
         change { $0.music = ($0.music ?? []) + [clip] }
         findBeatsIfNeeded()
         selectedMusicID = clip.id
@@ -94,6 +128,7 @@ extension AudioViewModel {
             clip.fileName = imported.fileName
             clip.title = imported.title
             clip.fileDuration = imported.duration
+            clip.libraryTrack = imported.libraryTrack
             clip.offset = 0
             clip.length = min(clip.length, imported.duration)
         }
@@ -104,15 +139,15 @@ extension AudioViewModel {
 
     // MARK: - Sound effects
 
-    /// Adds a sound effect at the playhead (over music or another effect), at 80%, never going down under the voice. The file is
-    /// made by Cue (`SoundEffectSynth`) and linked into the edit's media.
+    /// Adds a sound effect at the playhead (over music or another effect), at 80%, never going down under the voice. Its file
+    /// (`SoundEffectFiles`: a recording in the bundle or one Cue synthesizes) is linked into the edit's media.
     func addSoundEffect(_ effect: SoundEffect) {
         guard isReady else { return }
         do {
-            let file = try SoundEffectSynth.file(for: effect)
+            let file = try SoundEffectFiles.file(for: effect)
             let name = try EditMediaFiles.link(file)
             importedFiles.insert(name)
-            let duration = SoundEffectSynth.duration(ofFile: file) ?? Double(SoundEffectSynth.samples(for: effect).count) / SoundEffectSynth.sampleRate
+            let duration = SoundEffectFiles.duration(ofFile: file) ?? 0
             let total = edit.editedDuration
             let start = min(player.currentTime, max(0, total - MusicClip.minimumDuration))
             let length = min(duration, total - start)
@@ -160,10 +195,6 @@ extension AudioViewModel {
 
     func setMusicFadeOut(_ id: UUID, _ seconds: TimeInterval) {
         updateMusic(id) { $0.fadeOut = min(max(seconds, MusicClip.fadeRange.lowerBound), MusicClip.fadeRange.upperBound) }
-    }
-
-    func setMusicDucks(_ id: UUID, _ ducks: Bool) {
-        updateMusic(id) { $0.ducksUnderVoice = ducks }
     }
 
     /// Moves a clip so it starts at `start` (edited seconds), keeping its length, within the edit.
