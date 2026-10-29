@@ -84,3 +84,27 @@ V4 completed: device-20261029-005407, 1 technical test passed, 52s. Single draft
 V5 angle-search-raw compares three substantive explanations before choosing one and drafting. Two calls divide the 4096 response-token ceiling into 1536 and 2560. No duration quota. Test scope remains the two PT opinion cases. This differs from the old single-angle plan and from progressive drafting. Intermediate candidates and selection are stored in optional QualityRunSample.experimentalTrace, separate from model inputs. PCCEditorialExperimentOutput stores text/prompts/trace.
 
 Seven contracts passed in only-20261029-010057 (127s), session90060 exit0. Strict SwiftLint passed. Native V5 is active in session18389, device-20261029-010542.xcresult, run editorial-v5-none-angle-r1, modes editorial-raw/angle-search-raw, no voice/default reasoning and sampling. No result yet at this checkpoint. Production app, Release, project and configuration remain unchanged.
+
+## V5: divergent angle search, observed result
+
+Run editorial-v5-none-angle-r1 completed on Iago; device-20261029-010542.xcresult, one technical test passed. Two texts collected. Editorial one-shot took 2.33s; angle search took 5.57s across two calls. All three proposed angles stayed around breath, accents and intentions; selected breathing explanation claimed a physiological mechanism without supplied evidence. The final text repeated this claim and the trail/air metaphor instead of developing a stronger argument. No editorial improvement established; do not promote. This brings the recorded comparison to 22 requests, 21 texts and one refusal, including earlier runs. Requests are not the number of underlying model calls.
+
+Next diagnostic: bare-raw sends only the frozen original request, no application system instructions, platform, schema or profile. It is restricted to voice=none. This deliberately removes context to diagnose the model/application boundary and is not a proposed production writer. Current code is under validation; no result yet.
+
+## V6: original request without application instructions
+
+Run editorial-v6-none-bare-r1, device-20261029-041406.xcresult, passed technically with two recorded texts. The bare condition sends only the original frozen request, no profile/platform/application instructions/schema; framework guardrails remain default. Bare took 1.86s, editorial control 3.51s. Bare still repeated rhythm/music/bicycle metaphors rather than developing an argument. The editorial control again asserted without evidence that Reels audiences perceive flow before meaning. Neither meets the reference target. No quality gain established by removing application scaffolding on this case. This does not establish a universal model ceiling.
+
+The configuration unit suite passed three tests (only-20261029-041140.xcresult). Two SwiftLint formatting warnings in that build were corrected; strict lint then passed, and the subsequent device build completed without reported warnings. A second-topic V6 comparison is running. Production sources remain unchanged.
+
+V6 second topic: editorial-v6-none-equipment-r1, device-20261029-041551.xcresult, passed with two texts (editorial 2.75s; bare 2.02s). Bare was organized and included the requested example and upgrade boundary, but used headings instead of spoken delivery and overgeneralized that another camera would not fix audio/light limitations. Editorial offered a functional-limit distinction, but overstated that upgrade is worthwhile only if essential and used vague image-rhythm phrasing. This topic is stronger than the opinion about natural reading, so the negative outcome is not identical across topics. Neither establishes consistent reference-level quality.
+
+V7 now compares the same editorial instructions in English and Portuguese, no profile, same platform/current request/cap/default reasoning. Portuguese is a close translation, not a new trained model. Mode editorial-pt-raw is restricted to pt-BR cases. Native result pending. So far 26 recorded requests, 25 texts and one refusal across V1-V6.
+
+## V7 result and checkpoint
+
+Run editorial-v7-none-portuguese-r1, device-20261029-041731.xcresult, passed technically with two texts (English instructions 2.69s; Portuguese 2.89s). The translation did not solve the editorial weakness. Both centered on rhythm/partitura; Portuguese asserted that Reels audiences perceive intention before content without supporting evidence. Neither developed a sufficiently concrete, useful contrast. No production promotion, no claim of parity, no new provider. The branch now records 28 comparison requests, 27 texts and one refusal. This count includes repeated controls and is not a count of independent prompts or model inferences.
+
+Useful next decision: do not keep tuning against the same opinion alone. A future candidate needs an independent set of opinion/tutorial/story/notice cases, with full/partial/no voice and factual/literal controls, then multilingual verification. Current evidence rules out these tested configurations as a demonstrated solution; it does not prove no better PCC pipeline can exist. No new Full was run. Existing app behavior and other developers' changes remain intact.
+
+Final checkpoint validation: four configuration tests passed in only-20261029-041909.xcresult (108s), no reported warnings. Strict lint, project configuration and diff whitespace checks passed. Only pertinent tests were run; no Full or clean simulator/device/Release warning sweep is claimed for this experimental test-only branch. No own build remains active.

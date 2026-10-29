@@ -1,3 +1,11 @@
+## Latest checkpoint: V7 completed, no candidate promoted
+
+2026-10-29, codex/script-editorial-quality. V5/V6/V7 results collected under Cue StudioTests/Fixtures/ScriptQuality and assessed in reports/PCC_EDITORIAL_BRANCH_2026-10-29.md. V5 angle selection, V6 bare prompt (opinion and equipment), V7 translated Portuguese instructions did not demonstrate reference-level quality. Equipment was more organized, but technical overgeneralizations persist. 28 recorded comparison requests, 27 texts, one refusal, including repeated controls; not 28 independent prompts/inferences. App production sources untouched. No PR/merge/Mansuelli or external model added. The new bare mode requires voice none; Portuguese mode is restricted to pt-BR. Strict lint passed; V6/V7 device builds passed without reported warnings. Final configuration suite passed four tests, only-20261029-041909.xcresult (108s), after explicit bare-mode validation; no warnings reported. Project check and diff whitespace check passed. No own test remains running at this checkpoint. Prior historical checkpoints follow and are superseded by this one.
+
+## Latest checkpoint 2026-10-29: V7 native-language probe running
+
+Branch codex/script-editorial-quality, production untouched. V5 and V6 collected and reviewed in PCC_EDITORIAL_BRANCH_2026-10-29.md. V5 divergent angles did not improve the opinion; V6 bare prompt did not fix that case, while equipment was more organized but still overgeneralized. No candidate promoted. V7 session30441 compares editorial-raw/editorial-pt-raw on pt-BR-editorial-draft, voice none; result path will be printed by scripts/test.sh. Poll session before source edits. All new outputs are synthetic. Native probe settings permit bare-raw only with no voice. Strict lint passes. Three configuration contracts passed before formatting-only fixes; subsequent device build passed without reported warnings. No Full rerun, PR, merge, external provider or Mansuelli tests. Resume by collecting V7 and judging actual prose, then independent controls only if a gain appears.
+
 # LATEST CHECKPOINT: V5 angle search running, nothing promoted
 
 Branch codex/script-editorial-quality; isolated worktree pcc-offline-review. Previous remote HEAD7491225a. Canonical report: reports/PCC_EDITORIAL_BRANCH_2026-10-29.md. No production/config/project changes, PR or merge.

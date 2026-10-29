@@ -10,7 +10,7 @@ import UIKit
 @testable import Cue_Studio
 
 extension ScriptQualityDeviceTests {
-    /// Four conditions for one frozen case. None of these alternatives is installed in the normal writer.
+    /// Explicit experimental conditions for one frozen case. None of these alternatives is installed in the normal writer.
     @Test(.enabled(if: ProcessInfo.processInfo.environment["CUE_QUALITY_EDITORIAL_ABLATION"] == "1"))
     func comparesEditorialPromptAblations() async throws {
         KeepScreenAwake.enable()
@@ -60,8 +60,14 @@ extension ScriptQualityDeviceTests {
                 instructions += "\nThe prior exchange is a synthetic demonstration of developed reasoning, not this creator’s history or topic. Follow the current request and profile; do not reuse the example’s subject or wording."
                 sample.editorialExampleInstructions = PCCEditorialDemonstration.auditText
             }
+            if mode == "bare-raw" { instructions = "" }
+            if mode == "editorial-pt-raw" {
+                try #require(item.language.rawValue == "pt-BR", "Portuguese instruction probe only")
+                instructions = PCCPortugueseEditorialInstructions.text
+            }
             let writingInstructions = instructions
-            let inputPrompt = stacked ? ScriptPromptBuilder.prompt(for: prepared) : prompt.prompt
+            let inputPrompt = mode == "bare-raw" ? item.prompt
+                : (stacked ? ScriptPromptBuilder.prompt(for: prepared) : prompt.prompt)
             sample.instructions = instructions
             sample.prompt = inputPrompt
             let outcome: Result<PCCEditorialExperimentOutput, any Error>? = await AIRequestDeadline.value(within: .seconds(60)) { @MainActor in
@@ -114,6 +120,14 @@ extension ScriptQualityDeviceTests {
             )
         }
         let model = PrivateCloudComputeLanguageModel()
+        if mode == "bare-raw" {
+            let session = LanguageModelSession(model: model)
+            let text = try await session.respond(
+                to: prompt, options: settings.options(responseCap: responseCap),
+                contextOptions: ContextOptions(includeSchemaInPrompt: false, reasoningLevel: settings.reasoningLevel)
+            ).content
+            return PCCEditorialExperimentOutput(text: text, prompts: [prompt])
+        }
         let session = mode == "editorial-demo-raw"
             ? LanguageModelSession(model: model, transcript: PCCEditorialDemonstration.transcript(instructions: instructions))
             : LanguageModelSession(model: model, instructions: instructions)

@@ -1,0 +1,59 @@
+[
+  {
+    "attempts": 2,
+    "caseID": "pt-BR-editorial-draft",
+    "condition": "angle-search-raw",
+    "durationPolicy": "informative",
+    "expectedDirection": "developed first-person opinion",
+    "experimentalTrace": "CANDIDATE 0:\nClaim: Um roteiro lido soa natural quando a minha leitura se ajusta ao ritmo da respiração, como se o texto fosse um trilho que guia o ar.\nExplanation: A naturalidade vem do encaixe entre pausas do roteiro e ciclos respiratórios; o texto não dita palavras, mas intervalos que eu preencho sem esforço.\nDemonstration: Gravar o mesmo roteiro com pausas marcadas pela respiração e depois com pausas fixas por contagem; o contraste mostra onde o ritmo respira.\n\nCANDIDATE 1:\nClaim: A naturalidade surge quando eu transformo o roteiro em uma partitura de acentos, como se cada frase fosse uma nota que eu ajusto no tom.\nExplanation: O que parece espontâneo é o alinhamento entre acentuação escrita e minha entonação habitual; o roteiro funciona como referência de altura, não de conteúdo.\nDemonstration: Ler o roteiro com acentos exagerados e depois com acentos naturais; o contraste revela o ajuste tonal que gera fluidez.\n\nCANDIDATE 2:\nClaim: O roteiro soa natural porque eu o trato como um mapa de intenções, como se fosse um rastro que eu sigo sem olhar os passos.\nExplanation: A naturalidade vem da substituição de palavras por direções de sentido; eu não decorei frases, mas caminhos de ideia que preencho no momento.\nDemonstration: Gravar o roteiro focando em intenções e depois lendo palavra por palavra; o contraste expõe o deslocamento entre sentido e texto.\n\nSELECTED: 0\nA primeira opção isola um mecanismo fisiológico demonstrável — o alinhamento respiração-pausa — que gera contraste direto entre ritmos, sem depender de interpretação subjetiva.",
+    "hasBrief": false,
+    "idea": "Por que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.",
+    "index": 0,
+    "instructions": "Write the complete text a creator will speak aloud in Portuguese (Brazil), in natural connected paragraphs.\nDevelop a thought, not a summary of the topic. For an opinion, make a meaningful distinction, explain why it matters, and work through\na concrete hypothetical example that demonstrates the reasoning. Let the implications lead to the ending. Each paragraph advances\nthe previous one. If an analogy is requested, use one and explain the connection; metaphors cannot replace the argument.\nFollow the genre requested: a tutorial develops distinct actions and checks; a scene shows events unfolding; a short notice simply\nstates the supplied information. The current request overrides habitual formats, narrator and endings in the profile.\nThe profile guides voice and audience. Opinions and imagined illustrations are allowed; do not invent personal experiences,\ncredentials, measurements or testimonials. Keep factual claims modest and reliable, and preserve supplied facts and exact wording.\nReturn the spoken text only. Stop when the thought is complete, without a duration quota or an automatic engagement question.\nNever use a dash (— or –) between words or sentences: use a full stop, comma, colon or parentheses. Hyphens inside words are fine.",
+    "kind": "script",
+    "language": "pt-BR",
+    "model": "privateCloud",
+    "prompt": "CALL 1:\nPLANNING INSTRUCTIONS:\nDevelop three different substantive answers to the current request, then select the strongest explanation.\nThey must differ in what explains the result, not just in imagery or vocabulary. Prefer a claim that can be demonstrated through\nan observable contrast. Preserve the current request's facts, narrator and requirements. Do not invent biography, credentials,\nmeasurements or evidence. This is an internal editorial brief, not the spoken script. Delivery habits must not replace substance.\nUSER INPUT:\nPlatform: Instagram Reels.\n\nCurrent request:\nPor que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.\n\nCALL 2:\nPlatform: Instagram Reels.\n\nCurrent request:\nPor que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.\n\nSelected substantive direction (develop it, do not recite these labels):\nClaim: Um roteiro lido soa natural quando a minha leitura se ajusta ao ritmo da respiração, como se o texto fosse um trilho que guia o ar.\nExplanation: A naturalidade vem do encaixe entre pausas do roteiro e ciclos respiratórios; o texto não dita palavras, mas intervalos que eu preencho sem esforço.\nDemonstration: Gravar o mesmo roteiro com pausas marcadas pela respiração e depois com pausas fixas por contagem; o contraste mostra onde o ritmo respira.\nWrite the complete spoken text. Honor every explicit requirement of the original request, including its analogy if asked.",
+    "requestedModel": "privateCloud",
+    "requestedReasoning": "default",
+    "requiredLiterals": [],
+    "responseCap": 4096,
+    "reviewChecks": [
+      "Take an authored first-person position without an invented past testimonial.",
+      "Develop the reasoning and a relevant analogy; do not substitute a list or generic motivation.",
+      "Retain supplied facts; editorial preferences are allowed creative draft material.",
+      "Evaluation settings (not model input): voice=none; reasoning=default; sampling=default"
+    ],
+    "run": "editorial-v5-none-angle-r1",
+    "seconds": 5.5735465,
+    "text": "Para mim, um roteiro lido soa natural quando minha leitura se ajusta ao ritmo da respiração, como se o texto fosse um trilho que guia o ar. Não é sobre decorar palavras, mas sobre o encaixe entre as pausas do papel e meus ciclos respiratórios, como se o roteiro desenhasse intervalos que eu preencho sem esforço. Se eu gravar o mesmo texto com pausas marcadas pela respiração e depois com pausas fixas por contagem, o contraste revela onde o ritmo respira e onde trava. Essa distinção importa porque o trilho não empurra o corpo, apenas oferece o caminho, e a naturalidade surge desse alinhamento. Se o ritmo não acompanha o ar, o som vira mecânico, mas, se acompanha, o texto ganha vida sem que eu precise forçar nada."
+  },
+  {
+    "attempts": 1,
+    "caseID": "pt-BR-editorial-draft",
+    "condition": "editorial-raw",
+    "durationPolicy": "informative",
+    "expectedDirection": "developed first-person opinion",
+    "hasBrief": false,
+    "idea": "Por que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.",
+    "index": 0,
+    "instructions": "Write the complete text a creator will speak aloud in Portuguese (Brazil), in natural connected paragraphs.\nDevelop a thought, not a summary of the topic. For an opinion, make a meaningful distinction, explain why it matters, and work through\na concrete hypothetical example that demonstrates the reasoning. Let the implications lead to the ending. Each paragraph advances\nthe previous one. If an analogy is requested, use one and explain the connection; metaphors cannot replace the argument.\nFollow the genre requested: a tutorial develops distinct actions and checks; a scene shows events unfolding; a short notice simply\nstates the supplied information. The current request overrides habitual formats, narrator and endings in the profile.\nThe profile guides voice and audience. Opinions and imagined illustrations are allowed; do not invent personal experiences,\ncredentials, measurements or testimonials. Keep factual claims modest and reliable, and preserve supplied facts and exact wording.\nReturn the spoken text only. Stop when the thought is complete, without a duration quota or an automatic engagement question.\nNever use a dash (— or –) between words or sentences: use a full stop, comma, colon or parentheses. Hyphens inside words are fine.",
+    "kind": "script",
+    "language": "pt-BR",
+    "model": "privateCloud",
+    "prompt": "Platform: Instagram Reels.\n\nCurrent request:\nPor que um roteiro lido pode soar natural? Crie um ponto de vista em primeira pessoa, desenvolva o raciocínio e use uma analogia. Quero rascunho com personalidade para lapidar, não uma lista de dicas.",
+    "requestedModel": "privateCloud",
+    "requestedReasoning": "default",
+    "requiredLiterals": [],
+    "responseCap": 4096,
+    "reviewChecks": [
+      "Take an authored first-person position without an invented past testimonial.",
+      "Develop the reasoning and a relevant analogy; do not substitute a list or generic motivation.",
+      "Retain supplied facts; editorial preferences are allowed creative draft material.",
+      "Evaluation settings (not model input): voice=none; reasoning=default; sampling=default"
+    ],
+    "run": "editorial-v5-none-angle-r1",
+    "seconds": 2.326997625,
+    "text": "Eu percebo que um roteiro lido pode soar natural quando a leitura vira um ritmo interno, e não uma repetição mecânica. Isso importa porque o ouvido aceita pausas que parecem pensadas, e não impostas. Imagino um exemplo: se eu disser uma frase longa sem respirar, o som trava; se eu dividir o texto como se estivesse contando algo para um amigo, o tom se solta. É como um ensaio de dança: os passos estão marcados, mas o movimento só ganha vida quando o corpo ajusta o peso entre eles. A analogia ajuda porque o papel é o mapa, mas o corpo é quem decide onde o peso cai. Se o ritmo imita o pensamento, o roteiro deixa de ser lido para ser sentido. Isso leva a uma conclusão: o natural vem da harmonia entre o que está escrito e o que o corpo escolhe acentuar."
+  }
+]

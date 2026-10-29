@@ -22,14 +22,18 @@ nonisolated struct PCCEditorialExperimentSettings: Sendable {
             ?? ["baseline", "stack-guided", "lean-guided", "lean-raw"]
         guard !modes.isEmpty, Set(modes).count == modes.count,
               modes.allSatisfy({ Self.allowedModes.contains($0) }),
-              sampling != "creative" || !modes.contains("baseline") else { return nil }
+              sampling != "creative" || !modes.contains("baseline"),
+              !modes.contains("bare-raw") || voice == .none else { return nil }
         self.voice = voice
         self.reasoning = reasoning
         creativeSampling = sampling == "creative"
         self.modes = modes
     }
 
-    static let allowedModes = ["baseline", "stack-guided", "lean-guided", "lean-raw", "editorial-raw", "editorial-demo-raw", "staged-raw", "angle-search-raw"]
+    static let allowedModes = [
+        "baseline", "stack-guided", "lean-guided", "lean-raw", "editorial-raw",
+        "editorial-demo-raw", "staged-raw", "angle-search-raw", "bare-raw", "editorial-pt-raw",
+    ]
 
     var reasoningLevel: ContextOptions.ReasoningLevel? {
         switch reasoning {
