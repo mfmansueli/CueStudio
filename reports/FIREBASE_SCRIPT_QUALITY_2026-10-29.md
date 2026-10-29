@@ -42,3 +42,56 @@ The owner explicitly values the richer, generous draft material and authorized r
 - Technical cross-check, source size/distance and soft light: https://lightroom.adobe.com/academy/genres/food/love-the-light
 
 No production provider switch, privacy-policy replacement, full-language claim, native app integration, PR or merge has been made. All new executable files are outside Xcode targets; no Xcode build is required for the standalone lab. Three offline input-contract tests and JS syntax checks pass. Further controlled refinement is now authorized and in progress.
+
+## Refinement authorized while testing
+
+The owner values the richer arguments/material and explicitly requested making better use of Firebase AI, including an in-app polishing phase during generation. They accept20–30seconds and more margin if helpful. This authorizes experimental workflow refinement; it does not erase the original condition that a production provider migration/privacy change follow actual evaluation.
+
+New SDK boundary `FirebaseProbe.mjs`, pure `writerFlow.mjs` and `voiceContext.mjs`; no Swift files or iOS dependencies changed. Revision output is strict JSON (`changes`, `script`), with every actual stage request/output/token usage/timing retained. A malformed/failed review is not silently replaced with a supposedly finished script. Current request and literals remain exact in the context transformation; no stored profile is edited and no duration/word-count quota is introduced.
+
+V1 opinion with full voice:27.35s for two calls (draft18.59s, edit8.76s). Invented past experience removed, but both draft/final remained too thin. Reviewer explicitly prioritized the old twelve-word sentence preference. This is not the desired richness, despite successful technical completion. V1 tutorial: draft generated, review failed with provider500/high-demand error. The draft still contained the questionable two-steps-away/light-spreading rule. No final text or correction approval is claimed.
+
+V2 now separates content development from delivery habits. The first stage retains identity/audience/context/current request and defers style/opening/CTA habits. The second stage receives full voice context with the numeric habitual sentence cap interpreted as a short, varied sentence preference, not a limit on substance. The user’s exact prompt is never normalized or shortened. All adapted input is recorded. This is a deliberate workflow change, not a pure same-input model comparison. Seven pure JS contracts and three Python input contracts pass; live V2 results are being assessed in the local web lab (not the iPhone).
+
+V2 opinion result:23.71s across two calls, 332-word draft and247-word final (counts are descriptive, not a duration quota or quality score). Substantially more developed than V1's thin full-voice result; casual tone and analogy retained, invented past avoided, habitual CTA omitted. Still overstates that text style is the sole reason reading sounds robotic and that reading becomes invisible; first-person stance also drifts into general second-person exposition. Useful progress, not universal approval.
+
+V2 equipment request failed with provider500/high demand before any draft. V2 tutorial then failed with429 daily free-tier quota20. All generation requests were stopped at that point. The local record has14 experiment runs and17 top-level generation attempts, yielding9 final texts plus preserved drafts. The provider's quota accounting reached20; internal SDK/server retries or pooling were not measured, so do not invent an exact explanation for the discrepancy. The quota response labels its dimension gemini-3.6-flash even though the requested model name was gemini-3.5-flash. Record requested names faithfully and do not claim exact resolved model version from this metadata.
+
+## Credits-backed continuation
+
+The owner subsequently explicitly requested linking the isolated lab to their existing billing account and personally completed the financial confirmation. Firebase verified Blaze and Agent Platform Gemini API enabled. The lab now requires AgentPlatformBackend with global location; no automatic Gemini Developer API fallback. No upgrade of the underlying Cloud trial billing account was performed by the agent. Welcome credits apply only to eligible Cloud services, not Gemini Developer API usage; actual credit consumption must be checked in Cloud billing, not inferred from successful inference.
+
+This named continuation batch reserves at most eight top-level SDK calls on the loopback server, including failures, persisted across page reload/server restart. This is an application guard, not a Google billing hard cap or measured count of transport retries. Only the two Flash models are allowed. Draft/stage checkpoints are saved before editing and upserted by sample ID; failed reviews remain drafts. Production and native iPhone are unchanged.
+
+
+### Owner clarification: imagination is part of the draft
+
+After seeing the conservative review direction, the owner explicitly clarified that My Cue Voice should
+imagine for the creator and embody their voice: invented everyday scenes/personal expression can be useful
+editable material. From this point, an imagined first-person anecdote alone is not a quality failure.
+Earlier flags remain records of the then-current experimental rules, not the new acceptance criterion.
+V4 permits creative first-person expression but still respects supplied facts and explicit restrictions;
+technical errors and manufactured studies/test results remain quality failures. No training or provider
+model modification occurred: this is prompt/workflow design in the standalone lab.
+
+
+### Agent Platform batch outcome
+
+Four completed polished scripts, eight SDK calls total, requested Gemini3.5Flash/global. No failed stage in this batch.
+V2 equipment20.31s, tutorial24.18s; V3 equipment19.72s; owner-directed creative V4 equipment22.14s.
+These are exploratory examples, not repeated/blinded evidence of a universal winner. V3's stricter review removed
+its explicit invented history but still added an unsolicited comment CTA and kept “only upgrade at the physical limit”.
+V2 tutorial retained categorical front-window prohibition and an overpromised professional result; not technically approved.
+
+V4 equipment develops the room/light/audio example and more concrete upgrade situations. Creative freedom did not
+force an invented life story; it used an imagined scene and a conversational stance. Material is substantially richer
+than the short PCC control. Remaining weaknesses: categorical “only at physical limit”, expensive-camera-in-dark
+comparison rhetoric, unsolicited CTA, and “phone noisy at night means you need a bigger sensor” is too deterministic
+(exposure, light, processing and the task also matter). The model's own polishing did not reliably catch those issues.
+First-person authorial stance remains weaker than requested: much of the text addresses generic “you”.
+Do not label this production-ready or fully hallucination-free. The next quality experiment should isolate technical
+claim checking from voice polish and test additional topics/repetitions without changing the owner's creative policy.
+All eight reserved calls are consumed; no hidden retry batch or provider fallback is launched.
+
+Validation: three Python input-contract tests, eight pure JS tests and JS/Python syntax checks pass.
+No Xcode builds, production SDK integration or iPhone Firebase tests were performed in this batch.

@@ -4,8 +4,9 @@
 <h1>Cue · Firebase quality lab</h1><p>Laboratório isolado com dados sintéticos. Nenhuma alteração na IA do aplicativo. Respostas PCC e critérios de avaliação nunca são enviados ao Gemini.</p>
 <p id="status" role="status">Carregando SDK e casos…</p>
 <label for="modelChoice">Modelo Gemini (sem troca automática)</label><select id="modelChoice"><option value="gemini-3.8-flash">Gemini 3.8 Flash</option><option value="gemini-3.5-flash">Gemini 3.5 Flash</option></select>
+<label for="flow">Fluxo experimental</label><select id="flow"><option value="recorded-control">Controle: entrada original</option><option value="editorial-v1">Roteirista generoso v1</option><option value="editorial-v1-reviewed">Roteirista v1 + lapidação (duas chamadas)</option><option value="content-first-v2">Conteúdo primeiro v2</option><option value="content-first-v2-reviewed">Conteúdo primeiro v2 + My Cue Voice e lapidação</option><option value="content-first-v4-reviewed">Conteúdo v4 + liberdade criativa na voz do criador</option><option value="content-first-v3-reviewed">Conteúdo v3 + revisão de vivências e afirmações</option></select>
 <label for="case">Caso congelado</label><select id="case"></select><br>
 <button id="run" disabled>Gerar uma resposta no Firebase</button>
-<p>Modelo: <strong id="model"></strong>. Uma chamada por clique, sem repetição automática. Limite local: 20 chamadas por sessão. Resultados salvos em build/firebase-quality.</p>
+<p>Modelo: <strong id="model"></strong>. Uma ou duas chamadas por clique, conforme o fluxo escolhido; sem repetição automática. Limite persistente deste lote: 8 chamadas SDK, inclusive falhas; não reinicia ao recarregar. Resultados salvos em build/firebase-quality.</p>
 <details><summary>Entrada exata desta comparação</summary><pre id="input"></pre></details>
 <section id="results"></section><script type="module" src="/client.js"></script></html>

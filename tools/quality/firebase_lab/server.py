@@ -20,6 +20,7 @@ def main():
     cases = load_cases()
     output = ROOT / 'build/firebase-quality/results.json'
     output.parent.mkdir(parents=True, exist_ok=True)
+    ledger = output.with_name('agent-platform-budget.json')
     origin = f'http://127.0.0.1:{args.port}'
 
     class Handler(BaseHTTPRequestHandler):
@@ -43,25 +44,38 @@ def main():
                 return self.reply(json.dumps(config))
             if self.path == '/cases.json':
                 return self.reply(json.dumps(cases, ensure_ascii=False))
-            assets = {'/': ('index.html', 'text/html; charset=utf-8'), '/client.js': ('client.js', 'text/javascript')}
+            assets = {'/': ('index.html', 'text/html; charset=utf-8'), '/client.js': ('client.js', 'text/javascript'),
+                      '/writerFlow.mjs': ('writerFlow.mjs', 'text/javascript'),
+                      '/voiceContext.mjs': ('voiceContext.mjs', 'text/javascript'), '/FirebaseProbe.mjs': ('FirebaseProbe.mjs', 'text/javascript')}
             if self.path not in assets:
                 return self.reply('{}', status=404)
             name, kind = assets[self.path]
             self.reply((ASSETS / name).read_bytes(), kind)
 
         def do_POST(self):
-            if self.path != '/results' or self.headers.get('Origin') != origin:
+            if self.path not in ('/results', '/reserve') or self.headers.get('Origin') != origin or self.headers.get('Host') != f'127.0.0.1:{args.port}':
                 return self.reply('{}', status=403)
             length = int(self.headers.get('Content-Length', '0'))
             if not 0 < length <= 2_000_000:
                 return self.reply('{}', status=413)
             try:
                 samples = json.loads(self.rfile.read(length))
+                if self.path == '/reserve':
+                    if samples.get('model') not in ('gemini-3.5-flash', 'gemini-3.8-flash'):
+                        return self.reply('{}', status=400)
+                    used = json.loads(ledger.read_text()).get('used', 0) if ledger.exists() else 0
+                    if used >= 8:
+                        return self.reply('{"error":"Batch limit reached"}', status=429)
+                    temporary = ledger.with_suffix('.tmp')
+                    temporary.write_text(json.dumps({'used': used + 1, 'limit': 8}))
+                    temporary.replace(ledger)
+                    return self.reply(json.dumps({'used': used + 1, 'limit': 8}))
                 if not isinstance(samples, list) or len(samples) > 20:
                     raise ValueError('Unexpected batch')
                 previous = json.loads(output.read_text()) if output.exists() else []
-                known = {x['id'] for x in previous}
-                merged = previous + [x for x in samples if x['id'] not in known]
+                merged_by_id = {x['id']: x for x in previous}
+                merged_by_id.update({x['id']: x for x in samples})
+                merged = list(merged_by_id.values())
                 temporary = output.with_suffix('.tmp')
                 temporary.write_text(json.dumps(merged, ensure_ascii=False, indent=2) + '\n')
                 temporary.replace(output)
