@@ -201,7 +201,9 @@ final class UltraScriptService: UltraScriptWriting {
         let text = protected.restoring(in: ScriptPromptBuilder.collapsingRepeatedSentences(
             ScriptPromptBuilder.clean(protected.text, language: language, preserving: request.preservedPhrases)
         ))
-        var title = ScriptPromptBuilder.cleanTitle(reply.title, language: language, preserving: request.preservedPhrases)
+        var title = UltraTitleAccents.restored(
+            ScriptPromptBuilder.cleanTitle(reply.title, language: language, preserving: request.preservedPhrases), from: text
+        )
         if title.isEmpty, case .prompt(let idea) = request.source {
             title = idea.split(whereSeparator: \.isWhitespace).prefix(8).joined(separator: " ")
         }

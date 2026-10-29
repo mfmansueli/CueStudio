@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Blind comparison of the scripts three engines wrote for the same ideas: `apple` (Apple Intelligence), `polished` (Ultra AI, draft and
-polish) and `checked` (Ultra AI, draft, claim check and polish). A device run keeps one attachment per idea, `ultra-quality-<run>-<id>.json`.
+polish) and `checked` (Ultra AI, draft, claim check and polish). A device run keeps one attachment per idea,
+`ultra-quality-<run>-<id>.json`.
 
   tools/ultra/compare.py collect <run> build/results/device-….xcresult [more.xcresult …]
       merges the ideas into research_notes/Ultra AI/quality-<run>.json, each engine with its `metrics`, and prints them
@@ -14,7 +15,8 @@ Pairs: apple against checked for every idea with both texts; polished against ch
 The metrics are leads to read the texts with, never a verdict: seconds are words at 150 a minute, new numbers are numbers the request did
 not supply (maybe invented, maybe common knowledge).
 
-Verdicts: {"P01": {"winner": "A" | "B" | "tie", "scores": {"A": {"development": 1-5, …}, "B": {…}}, "errors": {"A": ["…"], "B": []}}, …}
+Verdicts: {"P01": {"winner": "A" | "B" | "tie", "scores": {"A": {"development": 1-5, …}, "B": {…}},
+                   "errors": {"A": ["…"], "B": []}}, …}
 """
 
 import argparse
@@ -228,6 +230,11 @@ def attachments(result, run):
         yield from read_export(folder, run)
 
 
+def shown(path):
+    path = os.path.abspath(path)
+    return os.path.relpath(path, ROOT) if path.startswith(ROOT + os.sep) else path
+
+
 def path_for(folder, run, suffix=""):
     return os.path.join(folder, "quality-" + run + suffix + ".json")
 
@@ -257,7 +264,7 @@ def collect(run, results, folder=FOLDER, read=attachments):
     found = [idea for result in results for idea in read(result, run)]
     ideas = merge(existing, found)
     save(path, ideas)
-    print(f"{len(found)} ideas read, {len(ideas)} in {os.path.relpath(path, ROOT)}")
+    print(f"{len(found)} ideas read, {len(ideas)} in {shown(path)}")
     print(table(ideas))
     return ideas
 
@@ -281,6 +288,34 @@ def table(ideas):
                          f"{'y' if m['endsWithQuestion'] else 'n':>3}  {cta[:17]:<18}{sum(m['catchphrases'].values()):>6}"
                          f"{len(m['newNumbers']):>5}  {engine.get('failure') or ''}")
     return "\n".join(lines)
+
+
+def accents_restored(title, text):
+    """The app's `UltraTitleAccents`: a title word written without accents takes the script's spelling when the script has that word only
+    with its accents (runs before 29/10/2026 lack it, and a plain title would tell Ultra apart in a blind pair)."""
+    if not title or not text:
+        return title
+
+    def folded(word):
+        return "".join(c for c in unicodedata.normalize("NFD", word.lower()) if not unicodedata.combining(c))
+
+    spellings = {}
+    for word in re.findall(r"\w+", text.lower()):
+        spellings.setdefault(folded(word), set()).add(word)
+
+    def restore(match):
+        word = match.group(0)
+        found = spellings.get(folded(word))
+        if folded(word) != word.lower() or not found or len(found) != 1:
+            return word
+        accented = next(iter(found))
+        if accented == word.lower():
+            return word
+        if len(word) > 1 and word == word.upper():
+            return accented.upper()
+        return accented[:1].upper() + accented[1:] if word[:1].isupper() else accented
+
+    return re.sub(r"\w+", restore, title)
 
 
 def has_text(idea, name):
@@ -307,8 +342,8 @@ def build_pairs(ideas, seed=29):
             "pair": name, "id": idea["id"], "language": idea.get("language"), "platform": idea.get("platform"),
             "lengthAsked": idea.get("lengthAsked"), "idea": idea.get("idea"), "brief": idea.get("brief"),
             "creator": idea.get("creator"), "context": idea.get("context"),
-            "A": {"title": engines[a].get("title"), "text": engines[a]["text"]},
-            "B": {"title": engines[b].get("title"), "text": engines[b]["text"]},
+            "A": {"title": accents_restored(engines[a].get("title"), engines[a]["text"]), "text": engines[a]["text"]},
+            "B": {"title": accents_restored(engines[b].get("title"), engines[b]["text"]), "text": engines[b]["text"]},
         })
         key[name] = {"comparison": comparison, "A": a, "B": b, "id": idea["id"], "kind": idea.get("kind"),
                      "language": idea.get("language")}
@@ -360,7 +395,7 @@ def make_pairs(run, seed=29, folder=FOLDER):
     with open(os.path.join(folder, "quality-" + run + "-pairs.md"), "w", encoding="utf-8") as handle:
         handle.write(render_markdown(run, pairs))
     counts = {c: sum(1 for k in key.values() if k["comparison"] == c) for c in COMPARISONS}
-    print(f"{len(pairs)} pairs ({', '.join(f'{c} {n}' for c, n in counts.items())}), seed {seed}, in {os.path.relpath(folder, ROOT)}")
+    print(f"{len(pairs)} pairs ({', '.join(f'{c} {n}' for c, n in counts.items())}), seed {seed}, in {shown(folder)}")
     for name in revealing(pairs):
         print(f"warning: {name} names an engine in its texts")
     return pairs, key
@@ -412,7 +447,7 @@ def summarize(verdicts, key):
 
 def wins_line(label, bucket, engines):
     parts = [f"{engine} {bucket.get(engine, 0)}" for engine in engines] + [f"tie {bucket.get('tie', 0)}"]
-    return f"  {label:<14}" + "  ".join(f"{p:<12}" for p in parts) + f"({bucket['pairs']} pairs)"
+    return f"  {label:<14}" + "  ".join(f"{p:<12}" for p in parts) + f"({bucket['pairs']} {'pair' if bucket['pairs'] == 1 else 'pairs'})"
 
 
 def report(summary):
