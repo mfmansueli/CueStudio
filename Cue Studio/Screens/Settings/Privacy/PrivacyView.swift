@@ -23,6 +23,12 @@ struct PrivacyView: View {
 
     var body: some View {
         List {
+            #if DEBUG
+            Section {
+                NavigationLink { UltraLabView() } label: { Text(verbatim: "AI Scripts Ultra · Lab") }
+                    .accessibilityIdentifier("privacy.ultraLab")
+            }
+            #endif
             Section {
                 SettingsEntryRows(entries: [.onDeviceAI, .helpImprove], bindings: bindings)
             } footer: {
