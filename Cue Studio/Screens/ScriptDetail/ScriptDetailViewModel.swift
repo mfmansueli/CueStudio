@@ -49,6 +49,8 @@ final class ScriptDetailViewModel {
     let profile: CreatorProfileService
     let rules: PlatformRulesService
     let writer: ScriptWriting
+    /// Writes the page when the request chose Ultra (`ScriptRequest.engine`); nil where Ultra can't be reached (previews, older tests).
+    let ultra: UltraScriptWriting?
     let toast: ToastService
     /// Where the voice questions learn that a script was written in the creator's voice, or edited after.
     let voiceQuestions: VoiceQuestionScheduler?
@@ -69,6 +71,7 @@ final class ScriptDetailViewModel {
         profile: CreatorProfileService,
         rules: PlatformRulesService,
         writer: ScriptWriting,
+        ultra: UltraScriptWriting? = nil,
         toast: ToastService,
         voiceQuestions: VoiceQuestionScheduler? = nil,
         transition: IdeaTransitionService? = nil,
@@ -84,6 +87,7 @@ final class ScriptDetailViewModel {
         self.profile = profile
         self.rules = rules
         self.writer = writer
+        self.ultra = ultra
         self.toast = toast
         self.ideaDraft = ideaDraft
         self.revealPause = revealPause

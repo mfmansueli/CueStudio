@@ -30,6 +30,9 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
     var topic: String?
     /// The audience comment this script answers ("Answer a comment").
     var comment: ScriptComment?
+    /// Ultra (Google's Gemini) wrote its first draft; nil for everything else (Apple Intelligence, the creator, an import). The page's fact-check
+    /// reminder says so.
+    var draftedBy: ScriptEngine?
     /// The creator finished it (Done), or the AI delivered a complete script. With takes the script is RECORDED
     /// whatever this says (`ScriptState`). Saved before v29: finished when there is text.
     var isFinished: Bool
@@ -74,6 +77,8 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         language = (try? container.decodeIfPresent(CueLanguage.self, forKey: .language)) ?? nil
         topic = try container.decodeIfPresent(String.self, forKey: .topic)
         comment = try? container.decodeIfPresent(ScriptComment.self, forKey: .comment)
+        // An engine this build doesn't know (saved by a newer one) reads as none.
+        draftedBy = try? container.decodeIfPresent(ScriptEngine.self, forKey: .draftedBy)
         // Saved before v29: a script with text is finished (READY), an empty one is a draft.
         isFinished = try container.decodeIfPresent(Bool.self, forKey: .isFinished)
             ?? !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty

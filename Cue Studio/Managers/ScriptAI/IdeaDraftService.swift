@@ -27,6 +27,9 @@ final class IdeaDraftService {
     }
     /// The brand brief of a sponsored ad picked on the card: the ad is written from it, and from nothing else.
     var brand: BrandBrief?
+    /// Who writes the idea: Apple Intelligence, or Ultra when the creator picked it on the dock (and allowed it). Back to Apple with the other
+    /// choices once a script is written: every Ultra script is an explicit choice.
+    var engine: ScriptEngine = .apple
     /// "Let Cue draft it" in Start a video: the card takes the keyboard (it turns false again once it has).
     var wantsFocus = false
     /// The inspiration the text came from ("Start with it" in Find inspiration). Kept as it was given; what is sent is only what the text
@@ -105,6 +108,7 @@ final class IdeaDraftService {
         length = .auto
         formatChoice = .auto
         brand = nil
+        engine = .apple
         brief = nil
         replacedText = nil
     }

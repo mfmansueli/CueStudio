@@ -68,6 +68,8 @@ final class IdeaTransitionService {
     private(set) var origin: CGPoint = .zero
     private(set) var idea = ""
     private(set) var platformName = ""
+    /// Who is writing: the star says "Drafting with Ultra" for Google's Gemini, never Apple Intelligence's words.
+    private(set) var engine: ScriptEngine = .apple
     /// Whether the exit is because of an error (the toast says so) and not a Cancel.
     private(set) var leftBecauseOfError = false
     /// How much of the script is written, for the percentage under the phrase; nil until the page starts writing.
@@ -108,11 +110,15 @@ final class IdeaTransitionService {
     // MARK: - Starting
 
     /// The arrow was tapped: the star rises. `abort` removes the script that was opened for it (Cancel or an error).
-    func begin(from origin: CGPoint, idea: String, platformName: String, abort: @escaping () -> Void, arrive: @escaping () -> Void) {
+    func begin(
+        from origin: CGPoint, idea: String, platformName: String, engine: ScriptEngine = .apple, abort: @escaping () -> Void,
+        arrive: @escaping () -> Void
+    ) {
         timer?.cancel()
         self.origin = origin
         self.idea = idea
         self.platformName = platformName
+        self.engine = engine
         leftBecauseOfError = false
         progress = nil
         onAbort = abort

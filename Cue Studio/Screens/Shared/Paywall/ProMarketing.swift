@@ -10,6 +10,8 @@ import SwiftUI
 struct ProMarketing: View {
     let context: PaywallContext
     var aiIsAvailable = true
+    /// Ultra AI is offered on this iPhone: its free scripts and Pro's monthly ones are listed.
+    var ultraIsOffered = false
     /// The second of the opening (`ProOpeningScript`); the end of it shows everything in place.
     var time = ProOpeningScript.settled
 
@@ -28,7 +30,7 @@ struct ProMarketing: View {
                     .frame(maxWidth: context == .export ? 250 : .infinity, alignment: .leading)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
-                Text(PaywallCopy.subtitle(for: context))
+                Text(PaywallCopy.subtitle(for: context, ultraIsOffered: ultraIsOffered))
                     .cueFont(15)
                     .foregroundStyle(Palette.ink2)
                     .fixedSize(horizontal: false, vertical: true)
@@ -42,7 +44,7 @@ struct ProMarketing: View {
 
     /// Each line with its symbol in a tinted tile, the line in 16 pt and its tag.
     private var benefits: some View {
-        let items = PaywallCopy.visibleBenefits(aiIsAvailable: aiIsAvailable)
+        let items = PaywallCopy.visibleBenefits(aiIsAvailable: aiIsAvailable, ultraIsOffered: ultraIsOffered)
         return VStack(spacing: 0) {
             ForEach(Array(items.enumerated()), id: \.offset) { index, benefit in
                 HStack(spacing: 12) {

@@ -50,6 +50,9 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
 
 `Screens/Scripts/Dock/ScriptsDock.swift`: vidro limpo (sem céu dentro, `09` §2), em `.safeAreaInset(.bottom)` acima da tab bar.
 - **Linha 1:** Format ⌄ · For {Rede} ⌄ · ✦ Voz nn% · lâmpada do Find inspiration (§30). Chips de 36 pt de toque; aparecem também na primeira visita.
+  Onde a Ultra AI é oferecida (§56; hoje só Debug com o laboratório configurado), um chip a mais, **Apple Intelligence ⌄** / **✦ Ultra AI ⌄** (violeta),
+  é um menu nativo de quem escreve o próximo roteiro; o item da Ultra AI diz quantos roteiros restam, e sem nenhum ele oferece o Pro (§56). Do segundo uso
+  da IA em diante, enquanto a Ultra AI não foi permitida, uma linha violeta sob o campo a apresenta com os 5 grátis (o convite, §56).
 - **Linha 2:** o campo (2 linhas em repouso, até 5 editando, 200 caracteres: §25; a ideia sugerida enquanto vazio), ↻, microfone e a seta amarela
   (**Write it** sem Apple Intelligence ou com a Script Language num idioma que o modelo não escreve, com a nota do motivo: §8). Uma sugestão nova (↻, ou a seguinte depois de enviar) chega palavra por palavra saindo da luz violeta
   (`WordsFromLight`, 50 ms entre palavras; a que já estava quando Scripts abre só aparece); o ↻ é `arrow.triangle.2.circlepath` e gira a cada toque.
@@ -331,6 +334,9 @@ perto de onde ele está agora). Forma: a foto do protótipo animado que o dono m
 
 ## 5.2. A IA escrevendo na página (4.1)
 
+Um roteiro da Ultra AI (§56) diz isso: a estrela e a pílula dizem **"Drafting with Ultra AI"**, e o aviso de fatos, **"Ultra AI can get facts wrong · Check
+before you record"**; a pergunta "Does it sound like you?" não aparece nele (compara com reescritas do Apple Intelligence).
+
 Enquanto o roteiro é escrito, `ArrivingText` substitui o editor: cada palavra entra de blur 7 pt e 5 pt abaixo em 0,3 s, com brilho violeta (`Palette.Page.arrivalGlow`
 a 95%, some em 0,8 s), a cada 0,17 s (mais rápido quando chegam muitas, nunca > ~1 s atrás do modelo); cursor violeta de 2 pt pisca depois da última.
 Pílula **"✦ Drafting in your voice"** (`ScriptWritingPill`, 34 pt): brilho de borda 2,4 s e brilho branco a cada 1,6 s; sem a estrela por cima (Try again)
@@ -533,6 +539,9 @@ a exportação segue sozinha. Pro e teste: "PRO · UNLIMITED EXPORTS", sem Go Pr
   planos (Yearly com SAVE n%, Monthly; largura 1,2 : 1, 72 pt, `ProPlanRow`), "Start free trial · export now", Restore · Terms · Privacy.
 - Reduzir Movimento: fade de 0,3 s. `-uiTestProAt <s>`. **"Remote from Apple Watch, iPad & Mac sync" não aparece** (`ProBenefit.isAvailable = false`):
   não se vende o que não existe.
+- **Onde a Ultra AI existe** (§56): a lista ganha "30 Ultra AI scripts a month" em segundo, a linha sob o título passa a "Free to try · 5 exports and 5
+  Ultra AI scripts included. Then 7 days free.", e há um terceiro contexto, o **Pro calmo da Ultra AI** (`.ultra`: "ULTRA AI", "Keep writing with Ultra
+  AI.", os mensais só a partir do primeiro mês pago), aberto quando os roteiros grátis acabam.
 
 ## 13. Profile (9.1) e Edit Profile
 
@@ -1105,6 +1114,10 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   `QuickEditPreviewLatencyTests` (Text effect, Text resized and turned).
 
 ## 30. Find inspiration
+
+Onde a Ultra AI é oferecida (§56), embaixo de *Draft it now* (que é sempre do Apple Intelligence) vem **✦ Draft with Ultra AI**: escreve a mesma ideia, com o
+brief, pela Ultra AI; na primeira vez abre antes a folha de permissão. Do segundo uso da IA em diante, um cartão acima da ideia convida a escrevê-la com a
+Ultra AI (o convite, §56); sem roteiros restantes, o Pro da Ultra AI abre sobre a folha.
 
 Cada inspiração é um brief (`IdeaBrief`): título, **ângulo** (instrução curta) e **frase de abertura** (sugestão para dizer, nunca afirmação sobre o criador:
 nada de história, resultado, número ou tendência inventados).
@@ -2598,3 +2611,76 @@ recusado).
   `PaletteContrastTests` com e sem Aumentar Contraste. Nas imagens do iPhone SE e do iPhone 17, em inglês e em árabe XXXL
   (`ToolAuditCaptureTests.test14ToolbarReach` e `test15SupportBarReach`, com a hierarquia para `tools/contrast/audit.py`): 38 selos, 14,88:1
   inteiros à vista e 13,91:1 no pior, perto do esmaecido da borda da barra; o aviso de alcance, 13,1:1.
+
+## 56. Ultra AI: o roteirista experimental (29 de outubro de 2026; pedido do dono)
+
+**Nome:** a função se chama **Ultra AI** em toda a interface; a marca do modelo (Gemini) nunca aparece na tela (decisão do dono, 29/10/2026). As telas de
+privacidade dizem que o pedido vai ao **Google** (a empresa que processa), como pede a App Store (5.1.2(i)). Código: `Managers/ScriptAI/Ultra/`,
+`Screens/Shared/Ultra/`, `Screens/Settings/Privacy/UltraLab/`.
+
+**Onde existe:** só em Debug, num iPhone com a configuração do laboratório (`Documents/UltraLab-GoogleService-Info.plist`, projeto `cue-script-ai-lab`, o
+bundle do app; `UltraLabConfiguration.isPresent`) ou num teste de UI (`-uiTestUltra`). Release não tem nada dela. O Apple Intelligence continua o padrão
+e nunca é trocado por ela em silêncio (nem ela por ele): cada roteiro da Ultra AI é uma escolha explícita.
+
+**Como se escolhe:** no dock, o chip de quem escreve (§2), que volta ao Apple Intelligence depois de cada roteiro da Ultra AI; no Find inspiration, *Draft with
+Ultra AI* (§30). Uma resposta a comentário fica com o Apple Intelligence. Com a Ultra AI escolhida, a disponibilidade do Apple Intelligence não importa
+(nem o idioma que ele não escreve).
+
+**Permissão** (`UltraConsentSheet`, `UltraConsentService`, chave `ultra.consent.v1`, separada do interruptor do Apple Intelligence): antes do primeiro envio
+diz o que vai (a ideia, rede, formato, duração e as preferências do My Cue Voice), que o rascunho volta ao Google para o polimento, o que nunca vai (exemplos,
+trechos importados, roteiros aprovados, outros roteiros, vídeos, áudio), o que o Google pode guardar (não treina sem permissão; cache de até 24 h e registro
+contra abuso; qualquer região; IP, identidade do app e token do App Check) e onde desligar. **What Cue sends** mostra o texto real das duas chamadas
+(`UltraPayloadView`), também no *What Cue sends* do My Cue Voice. **Allow and write with Ultra AI** / **Keep Apple Intelligence**. Settings › Privacy & AI
+data tem o interruptor **Ultra AI** (ligar abre a folha; desligar revoga e nada mais sai, nem a segunda chamada de um roteiro em andamento) e, em Debug,
+**Ultra AI · Lab**; o Apple Intelligence passa a dizer "Cue’s default writer. Ultra AI has its own switch." e a folha de privacidade deixa de dizer "nothing
+else" onde a Ultra AI existe.
+
+**Como escreve** (`UltraScriptService`, `UltraPayload`, `UltraInstructions`): duas chamadas pelo Firebase AI Logic (Agent Platform, `global`, modelo pedido
+`gemini-3.5-flash`, App Check), sem nova tentativa nem outro modelo: (1) um rascunho desenvolvido com quem o criador é e para quem fala; (2) o polimento
+com o jeito de falar, que devolve título, roteiro e mudanças em JSON. Só o roteiro polido vira o roteiro; um polimento que falha é uma falha ("Ultra AI
+couldn’t polish the draft · Try again"), sem o rascunho no lugar. A duração Auto é informação (não corta nem enche); uma escolhida no cartão ou pedida no
+texto é intenção. O pedido do criador vai palavra por palavra e vence o costume do perfil (abertura, formato, CTA). Antes de cada chamada confere permissão,
+limite e cancelamento. O cliente do Firebase só é criado no primeiro roteiro permitido. Nada do pedido, da voz ou da resposta vai ao Analytics ou ao
+Crashlytics; o Console (`studio.cue` / `Ultra`) recebe só tipos, tempos e tokens.
+
+**O roteiro salvo** guarda `Script.draftedBy = .ultra` e o aviso de fatos; o toast diz "Ultra AI draft ready · Check facts".
+
+**Limite do laboratório:** 30 chamadas neste iPhone (autorizadas pelo dono em 29/10/2026), contadas antes de sair, falhas incluídas (`UltraCallBudget`, nos
+defaults padrão do app). É uma trava do experimento, **não** um sistema de créditos: o de produção tem de ser do servidor (compras verificadas,
+saldo e operações idempotentes lá; uma falha sem roteiro não debita). Plano em `reports/ULTRA_AI_NATIVE_2026-10-29.md`.
+
+**Roteiros grátis e Cue Pro** (decisão do dono, 29/10/2026; **prévia em Debug**, sem cobrança): todo mundo tem **5 roteiros Ultra AI grátis**
+(`UsagePolicy.freeUltraScripts`), o teste de 7 dias do Pro incluído (o teste **não** dá roteiros a mais); o Pro pago soma **30 por mês**
+(`proUltraScriptsPerMonth`), a partir do primeiro mês pago; os grátis são gastos primeiro. Um roteiro só conta quando chega polido (falha ou Stop não
+contam). `UltraAllowance` (puro) e `UltraAllowanceService` (contagem em UserDefaults, mês de calendário): é **só a prévia** do que o criador verá, para o
+dono julgar o produto no iPhone; não protege créditos (a reinstalação zera, qualquer um edita). Onde aparece: o menu do chip de quem escreve ("Ultra AI ·
+4 of 5 free left"; Pro pago "Ultra AI · 28 left this month"), a folha de permissão sob o título ("Your first 5 scripts are free." / "4 of 5 free scripts
+left."), o cartão do plano no Profile (linha mono violeta "ULTRA AI · 4 OF 5 FREE LEFT", laranja quando acaba) e o laboratório (*Give the free scripts back*,
+*Show the invitation again*; os roteiros do laboratório não contam aqui, e as chamadas de teste nunca voltam). **Sem nenhum restante:** escolher a Ultra AI
+(chip, *Draft with Ultra AI*, o convite) abre no plano grátis o **Pro calmo da Ultra AI** (`PaywallContext.ultra`: "ULTRA AI", "Keep writing with Ultra
+AI.", "Your 5 free scripts are written. Cue Pro adds 30 a month, from the first paid month."); no teste, o toast "Your free Ultra AI scripts are used · Pro’s
+monthly ones start after the free week"; no Pro pago, "This month’s Ultra AI scripts are used · More next month". A ideia vai para o Apple Intelligence.
+
+**Convite** (`UltraInviteService`, `UltraInviteCard`; pedido do dono, 29/10/2026): a partir da **segunda vez** que o criador usa a IA (conta um roteiro que o
+Apple Intelligence escreveu e uma visita ao Find inspiration com o Apple Intelligence), os lugares onde a IA escreve apresentam a Ultra AI com os 5
+grátis: no **dock**, uma linha violeta sob o campo ("✦ Meet Ultra AI · 5 free scripts", **Try it**, ×), escondida enquanto o campo está aberto; no **Find
+inspiration**, um cartão acima da ideia ("Draft this idea with Ultra AI", **Draft it with Ultra AI**, que escreve aquela ideia); no **My Cue Voice**, um cartão
+sob a voz ("Your voice, with Ultra AI", **Try Ultra AI free**; ao permitir, a próxima ideia vai para a Ultra AI e o toast diz "Ultra AI writes your next
+idea"). Todo botão do convite passa pela folha de permissão. É **um convite só**: o × em qualquer lugar fecha em todos; permitir a Ultra AI ou gastar os
+grátis também o encerra. No Find inspiration ele é decidido ao abrir, antes de contar a visita (a primeira visita não o mostra).
+
+**Movimento** (`UltraMotion`, padrão refinado do dono, 20/10/2026): na primeira vez que o convite aparece em cada lugar na sessão
+(`UltraInviteService.takesArrival`), ele **acende**: o ✦ entra pequeno e girado, passa do tamanho e volta (mola), com um brilho violeta que se apaga em
+0,9 s; o fundo sobe de 97%; as linhas saem do desfoque, 8 pt abaixo, uma depois da outra (curva da luz, 0,07 s entre elas); e uma luz curta dá **uma volta
+na borda** (1,2 s, depois de 0,18 s), sem passar sobre o texto. Depois disso ele só está lá. O × **dobra** o cartão (some e encolhe para o topo, 0,32 s) com
+um toque suave. No dock, ao permitir a Ultra AI pelo convite, quando a folha de permissão já saiu (0,35 s depois), a linha se dobra e o **✦ voa num arco
+até o chip** de quem escreve (0,46 s; cresce ao decolar e encolhe ao pousar, brilhando), e o chip acende ao recebê-lo: cresce 10% e volta, e solta **um anel
+violeta** que se abre e some (0,7 s); `HapticPatterns.ultraOn` acompanha (brilho na decolagem, zumbido fraco no voo, toque firme no pouso, assentar).
+Escolhida direto no chip (ou permitida no My Cue Voice), só o acender, com `ultraIgnite`. Os números do saldo rolam (`numericText`). Reduzir Movimento:
+só fades de 0,2 s, sem voo nem anel (os hápticos continuam).
+
+**O Pro onde a Ultra AI existe:** a lista ganha, em segundo lugar, "30 Ultra AI scripts a month" (tag AI, violeta; aparece mesmo sem o Apple
+Intelligence) e a linha sob o título passa a "Free to try · 5 exports and 5 Ultra AI scripts included. Then 7 days free." Assinando pelo Pro da Ultra AI,
+o toast diz que os mensais começam no primeiro mês pago (teste) ou "Welcome to Cue Pro · 30 Ultra AI scripts this month". O resto da lista do Pro não mudou
+(revisão das linhas adiada pelo dono).
+

@@ -34,6 +34,8 @@ enum AppSheet: Identifiable, Hashable {
     case importWriting
     /// Cue's invitation to allow notifications, before the system's question.
     case notificationInvite(NotificationInviteReason)
+    /// AI Scripts Ultra's disclosure, before anything goes to Google: from the dock's writer chip.
+    case ultraConsent
 
     var id: String {
         switch self {
@@ -51,6 +53,7 @@ enum AppSheet: Identifiable, Hashable {
         case .voiceSetup: "voiceSetup"
         case .importWriting: "importWriting"
         case .notificationInvite(let reason): "notificationInvite.\(reason.rawValue)"
+        case .ultraConsent: "ultraConsent"
         }
     }
 }

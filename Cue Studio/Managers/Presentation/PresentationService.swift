@@ -22,6 +22,8 @@ final class PresentationService {
     /// Takes opens filtered this way (from "Your universe"); Takes takes it and clears it.
     var takesRequest: TakesRequest?
     var prompter: PrompterLaunch?
+    /// Cue Pro over the whole app, from somewhere that isn't a sheet (the dock's writer chip when Ultra AI's free scripts are used up).
+    var paywall: PaywallContext?
     /// This device is the remote of a teleprompter on another one.
     var showsRemoteController = false
     /// How many screens ask for the tab bar to be out of the way (the script page, a list in selection mode).

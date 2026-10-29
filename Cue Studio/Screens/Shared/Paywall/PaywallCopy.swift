@@ -11,6 +11,7 @@ nonisolated enum PaywallCopy {
         switch context {
         case .export: String(localized: "Keep sharing your universe.")
         case .profile: String(localized: "Take your universe further.")
+        case .ultra: String(localized: "Keep writing with Ultra AI.")
         }
     }
 
@@ -19,15 +20,20 @@ nonisolated enum PaywallCopy {
         switch context {
         case .export: String(localized: "YOUR VIDEO IS READY")
         case .profile: String(localized: "CUE PRO")
+        case .ultra: String(localized: "ULTRA AI")
         }
     }
 
-    static func subtitle(for context: PaywallContext) -> String {
+    /// - Parameter ultraIsOffered: Ultra AI is offered on this iPhone (its free scripts are part of trying Cue).
+    static func subtitle(for context: PaywallContext, ultraIsOffered: Bool = false) -> String {
         switch context {
         case .export:
             String(localized: "Start the trial and export it now.")
         case .profile:
-            freeToTry
+            ultraIsOffered ? freeToTryWithUltra : freeToTry
+        case .ultra:
+            // The trial has the free scripts only (owner, 29/10/2026): said here, before anyone starts it for Ultra AI.
+            String(localized: "Your \(UsagePolicy.freeUltraScripts) free scripts are written. Cue Pro adds \(UsagePolicy.proUltraScriptsPerMonth) a month, from the first paid month.")
         }
     }
 
@@ -48,15 +54,28 @@ nonisolated enum PaywallCopy {
         ProBenefit(symbol: "sparkle", text: String(localized: "Every milestone app icon"), tag: String(localized: "UNIVERSE"), tone: .universe),
     ]
 
+    /// Ultra AI's monthly scripts, second in the list where Ultra AI is offered (it doesn't need Apple Intelligence).
+    static let ultraBenefit = ProBenefit(
+        symbol: "sparkles", text: String(localized: "\(UsagePolicy.proUltraScriptsPerMonth) Ultra AI scripts a month"), tag: String(localized: "AI"),
+        tone: .ai
+    )
+
     /// The lines for this iPhone: the ones about AI stay out where Apple Intelligence can't run, and the ones for what the app cannot do yet stay out
-    /// (the Apple Watch and Mac remote), so the paywall never sells what is not there.
-    static func visibleBenefits(aiIsAvailable: Bool) -> [ProBenefit] {
-        benefits.filter { $0.isAvailable && (aiIsAvailable || $0.tone != .ai) }
+    /// (the Apple Watch and Mac remote), so the paywall never sells what is not there. Ultra AI's line is there only where Ultra AI is offered.
+    static func visibleBenefits(aiIsAvailable: Bool, ultraIsOffered: Bool = false) -> [ProBenefit] {
+        var lines = benefits.filter { $0.isAvailable && (aiIsAvailable || $0.tone != .ai) }
+        if ultraIsOffered { lines.insert(ultraBenefit, at: min(1, lines.count)) }
+        return lines
     }
 
     /// The line under the title of the regular Pro.
     static var freeToTry: String {
         String(localized: "Free to try · \(UsagePolicy.freeExports) exports included. Then 7 days free.")
+    }
+
+    /// The same, where Ultra AI is offered: its free scripts are part of trying Cue.
+    static var freeToTryWithUltra: String {
+        String(localized: "Free to try · \(UsagePolicy.freeExports) exports and \(UsagePolicy.freeUltraScripts) Ultra AI scripts included. Then 7 days free.")
     }
 
     static func welcome(for context: PaywallContext, startedTrial: Bool) -> String {
@@ -72,6 +91,12 @@ nonisolated enum PaywallCopy {
                 String(localized: "Trial started · Enjoy Cue Pro")
             } else {
                 String(localized: "Welcome to Cue Pro")
+            }
+        case .ultra:
+            if startedTrial {
+                String(localized: "Trial started · Ultra AI’s monthly scripts start with the first paid month")
+            } else {
+                String(localized: "Welcome to Cue Pro · \(UsagePolicy.proUltraScriptsPerMonth) Ultra AI scripts this month")
             }
         }
     }

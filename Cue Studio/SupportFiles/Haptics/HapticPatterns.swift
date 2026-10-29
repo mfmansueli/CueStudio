@@ -116,6 +116,21 @@ enum HapticPatterns {
         Beat(time: 0.09, intensity: 0.3, sharpness: 0.95),
     ]
 
+    /// Ultra AI taken from the dock's invitation (`UltraMotion`): a glint as the ✦ leaves the line, a faint hum as it flies, a crisp tap as the
+    /// writer chip lights where it lands, and a soft settle as the ring goes out.
+    static let ultraOn: [Beat] = [
+        Beat(time: 0, intensity: 0.4, sharpness: 0.9),
+        Beat(time: 0.05, intensity: 0.06, sharpness: 0.4, duration: UltraMotion.hop - 0.08, endIntensity: 0.28),
+        Beat(time: UltraMotion.hop, intensity: 0.65, sharpness: 0.75),
+        Beat(time: UltraMotion.hop + 0.1, intensity: 0.22, sharpness: 0.25),
+    ]
+
+    /// Ultra AI picked straight on the chip, or allowed from My Cue Voice: the chip lighting (the end of `ultraOn`).
+    static let ultraIgnite: [Beat] = [
+        Beat(time: 0, intensity: 0.6, sharpness: 0.75),
+        Beat(time: 0.1, intensity: 0.22, sharpness: 0.25),
+    ]
+
     // MARK: - Playing
 
     static func playSparkles() { play(sparkles, fallback: Haptics.selection) }
@@ -131,6 +146,8 @@ enum HapticPatterns {
     static func playNotificationsOn() { play(notificationsOn, fallback: Haptics.success) }
     static func playChime() { play(chime, fallback: Haptics.light) }
     static func playBestTake() { play(bestTake, fallback: Haptics.light) }
+    static func playUltraOn() { play(ultraOn, fallback: Haptics.success) }
+    static func playUltraIgnite() { play(ultraIgnite, fallback: Haptics.light) }
 
     /// Makes the engine and starts it off the main thread, ahead of the first pattern: made and started on the spot, the takeoff held the
     /// first idea's star back by ~50 ms after each launch (measured on an iPhone 15 Pro, 26/10/2026). Haptics only (no audio), so it never

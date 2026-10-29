@@ -18,6 +18,7 @@ struct ScriptsView: View {
     @Environment(LanguageService.self) private var languages
     @Environment(TopicTaggingService.self) private var tagging
     @Environment(IdeaDraftService.self) private var ideaDraft
+    @Environment(ScriptStarter.self) private var starter
     @Environment(LogbookService.self) private var logbook
     @Environment(ToastService.self) private var toast
     @Environment(FirstVoyageService.self) private var voyage
@@ -244,6 +245,8 @@ struct ScriptsView: View {
     /// while the model gets ready, every half a minute (`availabilityCheck`): nothing tells the screen when those change.
     private var writerUnavailableReason: String? {
         _ = availabilityCheck
+        // Ultra picked (and allowed) writes without Apple Intelligence.
+        if starter.writesWithUltra { return nil }
         return writer?.drafting(in: languages.scriptLanguage).note
     }
 

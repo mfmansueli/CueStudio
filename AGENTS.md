@@ -79,7 +79,9 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   - Fluxos: `-uiTestOnboarding` (+ `-uiTestOnboardingStep <capítulo>`, `-uiTestPermissions granted|denied`), `-uiTestVoyage` (sem ele nenhum teste vê
     as dicas da primeira viagem), `-uiTestVoiceTip`, `-uiTestNotificationInvite`, `-uiTestNotificationAuth <estado>`, `-uiTestNotificationTap <destino>`
     (`NOTIFICATIONS.md`), `-uiTestShareQueue`, `-uiTestFakeShareSheet`, `-uiTestAppsInstalled` (`SHARING.md`), `-uiTestRemoteConnects`.
-  - IA de teste: `-uiTestStubAI`, `-uiTestSlowWriting`, `-uiTestWriterStalls`, `-uiTestIdeasSlow`, `-uiTestIdeasFail`.
+  - IA de teste: `-uiTestStubAI`, `-uiTestSlowWriting`, `-uiTestWriterStalls`, `-uiTestIdeasSlow`, `-uiTestIdeasFail`; Ultra AI sem rede:
+    `-uiTestUltra` (+ `-uiTestUltraAllowed`, `-uiTestUltraReviewFails`, `-uiTestUltraSlow`, `-uiTestUltraScriptsLeft <0…5>`,
+    `-uiTestUltraInvite`; DESIGN_PROJECT §56).
   - Tempo e animação: `-uiTestFastAnimations` (padrão do `CueApp.launch`; `animations: true` pede as reais), `-uiTestStarTransition`,
     `-uiTestWelcomeOpening`, e os que congelam uma cena num segundo (`-uiTestWelcomeAt`, `-uiTestProAt`, `-uiTestChapterAt`, `-uiTestStoryAt`,
     `-uiTestSendOffAt`, `-uiTestFirstStar`, `-uiTestMilestone <n>`).

@@ -12,6 +12,7 @@ struct PrivacyEntryRow: View {
 
     @Environment(PrivacyPreferencesService.self) private var privacy
     @Environment(DataEraserService.self) private var eraser
+    @Environment(UltraScriptService.self) private var ultra
 
     var body: some View {
         @Bindable var privacy = privacy
@@ -23,7 +24,11 @@ struct PrivacyEntryRow: View {
     private func content(privacy: Bindable<PrivacyPreferencesService>) -> some View {
         switch entry {
         case .onDeviceAI:
-            SettingsListToggle(title: entry.title, detail: entry.detail, isOn: privacy.usesOnDeviceAI)
+            // Where Ultra is offered, Apple Intelligence isn't the only AI any more: the row says it is the default one.
+            SettingsListToggle(
+                title: entry.title, detail: ultra.isAvailable ? String(localized: "Cue’s default writer. Ultra AI has its own switch.") : entry.detail,
+                isOn: privacy.usesOnDeviceAI
+            )
         case .helpImprove:
             SettingsListToggle(title: entry.title, detail: entry.detail, isOn: privacy.helpsImproveCue)
         case .permissions:

@@ -23,6 +23,7 @@
         "ScriptsV29UITests/testTheListIsGroupedByState()",
         "GenerateScriptUITests/testTheFormatChipChoosesHowCueBuildsTheScript()",
         "StarTransitionUITests/testTheStarCoversTheScreenThenOpensTheScript()",
+        "UltraAIUITests/testTheDocksUltraAsksFirstThenWritesTheScript()",
         "ScriptPageUITests/testAReadyScriptShowsReadyAndOneYellowRecord()",
         "ScriptLibraryUITests/testFilteringByDestination()",
         "CreateScriptUITests/testRecordTabOffersRecentScriptsAndFreestyle()",

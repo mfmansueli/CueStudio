@@ -18,6 +18,8 @@ final class StoreManager {
     private(set) var activePlan: ProPlan?
     /// Renewal (or expiry) date of the active subscription.
     private(set) var renewalDate: Date?
+    /// Pro is the 7-day free trial, not yet paid: Ultra AI's monthly scripts start with the first paid month (owner, 29/10/2026).
+    private(set) var isInFreeTrial = false
     private(set) var isLoadingProducts = false
     private(set) var purchasingPlan: ProPlan?
     var errorMessage: String?
@@ -182,6 +184,7 @@ final class StoreManager {
         var newTier = MembershipTier.free
         var plan: ProPlan?
         var renewal: Date?
+        var trial = false
         for await entitlement in Transaction.currentEntitlements {
             guard case .verified(let transaction) = entitlement,
                   transaction.revocationDate == nil,
@@ -191,6 +194,7 @@ final class StoreManager {
                 newTier = .subscriber
                 plan = owned
                 renewal = transaction.expirationDate
+                trial = transaction.offer?.type == .introductory && transaction.offer?.paymentMode == .freeTrial
             }
         }
         if newTier == .free, let grace = await gracePeriodPlan() {
@@ -201,6 +205,7 @@ final class StoreManager {
         tier = newTier
         activePlan = plan
         renewalDate = renewal
+        isInFreeTrial = trial
     }
 
     /// Apple's billing grace period: the renewal failed and is being retried, and the creator keeps Pro meanwhile. The current

@@ -8,16 +8,21 @@ import SwiftUI
 /// 9.3 · My Cue Voice, the full page: what Cue uses with its switch, the meter and the next question, the three layers — Essentials (kind of creator,
 /// topics, audience, why they watch, tone), Personality (style, formats, openings, endings, what the videos are for, phrases, what to avoid, reach) and
 /// Proof (examples) — each row opening the one editor on its field, and, under them, **✦ Preview my voice** and **What Cue sends**. Without Apple
-/// Intelligence the data stays saved and editable, and the page says the voice needs it.
+/// Intelligence the data stays saved and editable, and the page says the voice needs it. Where Ultra AI is offered and its invitation is due, a card
+/// under the voice offers it for the next idea.
 struct MyCueVoicePage: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(VoiceQuestionScheduler.self) private var scheduler
     @Environment(AIStatus.self) private var aiStatus
+    @Environment(UltraScriptService.self) private var ultra
+    @Environment(ScriptStarter.self) private var starter
+    @Environment(ToastService.self) private var toast
 
     @State private var setup: ProfileVoiceSetup?
     @State private var editing: VoiceEditorField?
     @State private var showsPreview = false
     @State private var showsSends = false
+    @State private var asksUltra = false
 
     private var current: CreatorProfile { profile.profile }
 
@@ -26,6 +31,10 @@ struct MyCueVoicePage: View {
             VStack(alignment: .leading, spacing: 16) {
                 if !aiStatus.isAvailable { needsAI }
                 mainCard
+                if ultra.showsInvite {
+                    UltraInviteCard(placement: .voice) { asksUltra = true } onClose: { ultra.invite?.close() }
+                        .transition(.ultraFold)
+                }
                 Text("What Cue sends")
                     .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
@@ -42,6 +51,16 @@ struct MyCueVoicePage: View {
         }
         .sheet(item: $editing) { VoiceEditorSheet(field: $0) }
         .sheet(isPresented: $showsPreview) { VoicePreviewSheet() }
+        .sheet(isPresented: $asksUltra) {
+            UltraConsentSheet(payload: starter.ultraPreview()) {
+                HapticPatterns.playUltraIgnite()
+                withAnimation(UltraMotion.fold) {
+                    ultra.consent.grant()
+                    starter.choose(.ultra)
+                }
+                toast.show(String(localized: "Ultra AI writes your next idea"))
+            }
+        }
         .sheet(isPresented: $showsSends) {
             VoiceSendsSheet {
                 // "Answer the 4 questions again": the sheet goes and the guided questions come.

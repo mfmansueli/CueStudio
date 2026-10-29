@@ -172,7 +172,7 @@ struct StarTransitionOverlay: View {
 
     private func textBlock(size: CGSize, centre: CGPoint) -> some View {
         VStack(spacing: 8) {
-            Text("Drafting in your voice")
+            Text(transition.engine == .ultra ? "Drafting with Ultra AI" : "Drafting in your voice")
                 .cueFont(20, weight: .bold)
                 .tracking(-0.2)
                 .foregroundStyle(.white)
@@ -519,7 +519,9 @@ struct StarTransitionOverlay: View {
     /// The AI is writing: the words come up (0.4 s, a beat late) and Cancel fades in 0.3 s after them.
     private func wait() {
         // VoiceOver hears what is happening, then each phrase (polite), and starts on Cancel.
-        AccessibilityNotification.Announcement(String(localized: "Drafting in your voice")).post()
+        AccessibilityNotification.Announcement(
+            transition.engine == .ultra ? String(localized: "Drafting with Ultra AI") : String(localized: "Drafting in your voice")
+        ).post()
         cancelHasFocus = true
         if reduceMotion { return }
         withAnimation(.easeOut(duration: 0.4 * speed).delay(0.1 * speed)) { texts = 1 }

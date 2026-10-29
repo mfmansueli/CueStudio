@@ -38,6 +38,7 @@ struct ScriptsDock: View {
     @Environment(DictationService.self) private var dictation
     @Environment(LanguageService.self) private var languages
     @Environment(PresentationService.self) private var presentation
+    @Environment(UltraScriptService.self) private var ultra
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(IdeaTransitionService.self) private var transition
     @Environment(\.scenePhase) private var scenePhase
@@ -53,6 +54,17 @@ struct ScriptsDock: View {
     @State private var sendCenter = CGPoint.zero
     /// Goes up with each "↻": its arrows turn once.
     @State private var anotherTurn = 0
+    /// What the dock shows of Ultra AI, a step behind the service so it moves where it is seen (`syncUltra`): the writer chip lit, and the
+    /// invitation's line.
+    @State private var showsUltraLit = false
+    @State private var showsUltraInvite = false
+    /// Go up to fly the ✦ from the invitation to the chip, and to send the chip's ring out.
+    @State private var ultraHop = 0
+    @State private var ultraRing = 0
+    /// Where the ✦ leaves from (the invitation's) and lands (the chip's), in the dock's own space.
+    @State private var inviteStar: CGPoint?
+    @State private var chipStar: CGPoint?
+    nonisolated private static let ultraSpace = "ultraDock"
     /// The height of a line of the field's text, which grows with Dynamic Type.
     @ScaledMetric(relativeTo: .body) private var lineHeight = 21.0
 
@@ -118,9 +130,24 @@ struct ScriptsDock: View {
                 if let unavailableReason {
                     AIUnavailableNote(reason: unavailableReason)
                 }
+                // From the second time the AI was used: Ultra AI and its free scripts, until it is tried or closed (here or elsewhere).
+                if showsUltraInvite, !isExpanded, !transition.isActive {
+                    UltraInviteCard(placement: .dock) { chooseWriter(.ultra) } onClose: { ultra.invite?.close() }
+                        .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.ultraSpace)) } action: {
+                            inviteStar = CGPoint(x: $0.minX + 20, y: $0.midY)
+                        }
+                        .transition(.ultraFold)
+                }
             }
         }
         .padding(EdgeInsets(top: 16, leading: 12, bottom: 12, trailing: 12))
+        // Ultra AI allowed from the invitation: its ✦ flies to the writer chip.
+        .overlay {
+            if let inviteStar, let chipStar {
+                UltraStarHop(from: inviteStar, to: chipStar, trigger: ultraHop)
+            }
+        }
+        .coordinateSpace(.named(Self.ultraSpace))
         .dockSurface()
         .overlay {
             AIGlow(
@@ -129,6 +156,20 @@ struct ScriptsDock: View {
             )
         }
         .animation(.smooth(duration: 0.2), value: dictation.notice)
+        .onAppear {
+            showsUltraLit = starter.writesWithUltra
+            showsUltraInvite = ultra.showsInvite
+        }
+        .onChange(of: starter.writesWithUltra) { syncUltra() }
+        .onChange(of: ultra.showsInvite) { syncUltra() }
+        // The permission's sheet going: the ✦ waits for it to be out of the way.
+        .onChange(of: presentation.sheet == nil) { _, gone in
+            guard gone else { return }
+            Task {
+                try? await Task.sleep(for: .seconds(UltraMotion.afterSheet))
+                syncUltra()
+            }
+        }
         .animation(reduceMotion ? nil : .smooth(duration: 0.25), value: isExpanded)
         .accessibilityElement(children: .contain)
         .sheet(item: $voiceSetup) { mode in
@@ -253,6 +294,90 @@ struct ScriptsDock: View {
         if showsFormat { formatChip }
         platformChip(short: shortPlatform)
         if hasAI { MyCueVoiceChip(setup: $voiceSetup, hitHeight: Self.topRowHeight) }
+        if starter.offersUltra { writerChip }
+    }
+
+    /// Who writes the next idea, where Ultra is offered (Debug, with the lab set up): Apple Intelligence, or "✦ Ultra AI" in violet once
+    /// picked. The menu says how many Ultra AI scripts are left. Picking Ultra the first time asks first (`UltraConsentSheet`); with none left
+    /// it offers Cue Pro instead; after a script it is back on Apple Intelligence.
+    private var writerChip: some View {
+        let writesWithUltra = starter.writesWithUltra
+        let lit = showsUltraLit
+        let ultraItem = ultra.allowance.map { UltraAllowanceLabels.menu($0.allowance) } ?? String(localized: "Ultra AI")
+        return Menu {
+            Picker(selection: Binding(get: { writesWithUltra ? ScriptEngine.ultra : .apple }, set: chooseWriter)) {
+                Text("Apple Intelligence").tag(ScriptEngine.apple)
+                Text(verbatim: ultraItem).tag(ScriptEngine.ultra)
+            } label: {
+                Text("Writes the next script")
+            }
+        } label: {
+            IdeaCardChip(
+                label: lit ? String(localized: "Ultra AI") : String(localized: "Apple Intelligence"),
+                style: lit ? .ai : .neutral, glyph: lit ? "✦" : nil, showsChevron: true, hitHeight: Self.topRowHeight
+            )
+            // Lighting: the chip swells a little as the ✦ lands and sends its ring out.
+            .keyframeAnimator(initialValue: 1.0, trigger: ultraRing) { chip, scale in
+                chip.scaleEffect(scale)
+            } keyframes: { _ in
+                SpringKeyframe(1.1, duration: 0.12, spring: .snappy)
+                SpringKeyframe(1, duration: 0.4, spring: .bouncy)
+            }
+            .overlay { UltraChipRing(trigger: ultraRing) }
+            .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.ultraSpace)) } action: {
+                chipStar = CGPoint(x: $0.minX + 15, y: $0.midY)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(Text("Writer, \(writesWithUltra ? ultraItem : String(localized: "Apple Intelligence"))"))
+        .accessibilityIdentifier("ideaCard.writerChip")
+    }
+
+    /// Brings what the dock shows of Ultra AI up to the service, where it is seen (never under a sheet). Allowed from the invitation, the
+    /// invitation folds as its ✦ leaves for the writer chip, which lights as it lands (`UltraMotion`, `HapticPatterns.ultraOn`); picked on the chip,
+    /// the chip lights where it is. Under Reduce Motion it only fades.
+    private func syncUltra() {
+        guard presentation.sheet == nil else { return }
+        let lit = starter.writesWithUltra
+        let invited = ultra.showsInvite
+        guard lit != showsUltraLit || invited != showsUltraInvite else { return }
+        let lights = lit && !showsUltraLit
+        if lights, showsUltraInvite, !reduceMotion, inviteStar != nil, chipStar != nil {
+            HapticPatterns.playUltraOn()
+            ultraHop += 1
+            withAnimation(UltraMotion.fold) { showsUltraInvite = invited }
+            Task {
+                try? await Task.sleep(for: .seconds(UltraMotion.hop))
+                withAnimation(UltraMotion.chipLight) { showsUltraLit = starter.writesWithUltra }
+                ultraRing += 1
+            }
+            return
+        }
+        if lights {
+            HapticPatterns.playUltraIgnite()
+            if !reduceMotion { ultraRing += 1 }
+        }
+        var animation = lit != showsUltraLit ? UltraMotion.chipLight : UltraMotion.fold
+        if reduceMotion { animation = .easeInOut(duration: 0.2) }
+        withAnimation(animation) {
+            showsUltraLit = lit
+            showsUltraInvite = invited
+        }
+    }
+
+    /// Ultra AI with none left offers Cue Pro (or says when more come); the first time it asks for the permission.
+    private func chooseWriter(_ engine: ScriptEngine) {
+        guard engine == .ultra, !starter.writesWithUltra else {
+            starter.choose(engine)
+            return
+        }
+        if starter.ultraUsedUp {
+            starter.showUltraUsedUp()
+        } else if !starter.ultraAllowed {
+            presentation.present(.ultraConsent)
+        } else {
+            starter.choose(.ultra)
+        }
     }
 
     private func platformChip(short: Bool) -> some View {

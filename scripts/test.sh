@@ -17,7 +17,7 @@
 #                                    InspirationDeviceTests, QuickEditPreviewLatencyTests, EditorExportDeviceTests, SkinSmoothingDeviceTests,
 #                                    BackgroundDeviceTests, ContinuedTaskDeviceTests, MotionAnalysisDeviceTests, EditorMotionDeviceTests,
 #                                    SplitScreenDeviceTests, BlurAreaDeviceTests, BlurTrackingDeviceTests, CustomFontStoreTests,
-#                                    MediaLibraryStoreTests, TextEffectDeviceTests)
+#                                    MediaLibraryStoreTests, TextEffectDeviceTests, UltraDeviceTests)
 #   scripts/test.sh device-ui <class>  a UI test class (or Class/test) on that iPhone (opt-in classes skip without their flag)
 #
 # After the mode: --no-build reuses the last build; --repeat N runs until a failure, at most N times (for flaky tests);
@@ -118,6 +118,8 @@ case "$mode" in
             MotionAnalysisDeviceTests* | EditorMotionDeviceTests*) export TEST_RUNNER_CUE_MOTION_E2E=1 ;;
             # A portrait in the app's Documents on the device: TEST_RUNNER_CUE_SKIN_MEDIA=Documents/skin.jpg (see SkinSmoothingDeviceTests).
             SkinSmoothingDeviceTests* | BackgroundDeviceTests*) export TEST_RUNNER_CUE_SKIN_E2E=1 ;;
+            # Ultra AI's real calls (synthetic data, counted in the lab's 30): the lab's configuration in the app's Documents (DESIGN_PROJECT §56).
+            UltraDeviceTests*) export TEST_RUNNER_CUE_ULTRA_E2E=1 ;;
             # Real exports that only an iPhone can run (an HLG take: the Simulator's VideoToolbox can't convert it), with no flag.
             RealExports/*) ;;
             *) usage ;;

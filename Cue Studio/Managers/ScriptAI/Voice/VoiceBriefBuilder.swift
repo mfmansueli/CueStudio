@@ -42,6 +42,28 @@ nonisolated enum VoiceBriefBuilder {
         return VoiceBrief(text: best.text, fullText: full, trimmed: trimmed, closingRules: closing)
     }
 
+    /// Ultra's two stages (`UltraPayload`): who the creator is, who they speak to and what they won't say (`content`, from which the draft develops
+    /// the request), and how they speak (`delivery`, which only the polishing stage applies). The web lab's content-first variant split the formatted
+    /// brief by its line prefixes; here the same split is made from the profile's values. A sentence-length preference reads as rhythm, never as a
+    /// limit on how much the script develops, and the usual video length is left out (the request's own length policy decides). Examples, imported
+    /// excerpts and approved scripts are never part of either: they stay on this iPhone.
+    static func ultraProjection(for voice: CreatorVoice, register: PlatformRegister) -> (content: String, delivery: String) {
+        var voice = voice
+        voice.examples = []
+        voice.excerpts = []
+        voice.approvedSamples = []
+        voice.reach.length = nil
+        let parts = Parts(voice, register: register, contextualPreferences: true)
+        let sound = Sound(voice, register: register, sentenceName: { length in
+            length == .short
+                ? "short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops)"
+                : length.promptName
+        })
+        let content = parts.identity + parts.audience + parts.topics + parts.tags + parts.rules + sound.rules
+        let delivery = sound.delivery + parts.structure + parts.reach
+        return (content.joined(separator: "\n"), delivery.joined(separator: "\n"))
+    }
+
     /// The rules the request says again at its end.
     static func closingRules(
         for voice: CreatorVoice, register: PlatformRegister = .casual, contextualPreferences: Bool = false
@@ -80,6 +102,46 @@ nonisolated enum VoiceBriefBuilder {
     }
 
     // MARK: - The pieces
+
+    /// How they sound, by what each line is: how they deliver (`delivery`) and what they never say (`rules`, the swearing line). `lines` is the
+    /// order every brief has always had.
+    private struct Sound {
+        let sounds: [String]
+        let deliveryLine: [String]
+        let fingerprint: [String]
+        let swearing: [String]
+        let style: [String]
+
+        var lines: [String] { sounds + deliveryLine + fingerprint + swearing + style }
+        var delivery: [String] { sounds + deliveryLine + fingerprint + style }
+        var rules: [String] { swearing }
+
+        init(_ voice: CreatorVoice, register: PlatformRegister, sentenceName: (SentenceLength) -> String) {
+            sounds = voice.sounds.isEmpty ? [] : ["They sound \(Parts.list(voice.sounds.map(\.promptWord)))."]
+            var delivery: [String] = []
+            if let energy = voice.style.energy { delivery.append("energy: \(energy.promptName)") }
+            if let sentences = voice.style.sentences { delivery.append("sentences: \(sentenceName(sentences))") }
+            // A professional platform has no slang, whatever the creator's words are elsewhere.
+            if let words = voice.style.words {
+                delivery.append("words: \((register == .professional && words == .someSlang ? .plain : words).promptName)")
+            }
+            if let humor = voice.reach.humor { delivery.append("humor: \(humor.promptName)") }
+            deliveryLine = delivery.isEmpty ? [] : ["Delivery: \(delivery.joined(separator: "; "))."]
+            fingerprint = VoiceFingerprintRules.lines(for: voice)
+            if let swearing = voice.style.swearing ?? voice.swearing {
+                self.swearing = [
+                    swearing == .never || register == .professional
+                        ? "Never swear."
+                        : "Mild swearing is fine now and then. Never write strong swearing or slurs.",
+                ]
+            } else {
+                self.swearing = []
+            }
+            // The legacy styles the creator can't have meant as a default: short sentences and conversational are what every new profile holds.
+            let hints = voice.styles.filter { $0 != .shortSentences && $0 != .conversational }
+            style = hints.isEmpty ? [] : ["Style: \(hints.map(\.promptName).joined(separator: ", "))."]
+        }
+    }
 
     /// The lines of the brief, by what they are about.
     private struct Parts {
@@ -207,29 +269,7 @@ nonisolated enum VoiceBriefBuilder {
         // MARK: How they sound
 
         private static func sound(_ voice: CreatorVoice, register: PlatformRegister) -> [String] {
-            var lines: [String] = []
-            if !voice.sounds.isEmpty {
-                lines.append("They sound \(list(voice.sounds.map(\.promptWord))).")
-            }
-            var delivery: [String] = []
-            if let energy = voice.style.energy { delivery.append("energy: \(energy.promptName)") }
-            if let sentences = voice.style.sentences { delivery.append("sentences: \(sentences.promptName)") }
-            // A professional platform has no slang, whatever the creator's words are elsewhere.
-            if let words = voice.style.words { delivery.append("words: \((register == .professional && words == .someSlang ? .plain : words).promptName)") }
-            if let humor = voice.reach.humor { delivery.append("humor: \(humor.promptName)") }
-            if !delivery.isEmpty { lines.append("Delivery: \(delivery.joined(separator: "; ")).") }
-            lines += VoiceFingerprintRules.lines(for: voice)
-            if let swearing = voice.style.swearing ?? voice.swearing {
-                lines.append(
-                    swearing == .never || register == .professional
-                        ? "Never swear."
-                        : "Mild swearing is fine now and then. Never write strong swearing or slurs."
-                )
-            }
-            // The legacy styles the creator can't have meant as a default: short sentences and conversational are what every new profile holds.
-            let hints = voice.styles.filter { $0 != .shortSentences && $0 != .conversational }
-            if !hints.isEmpty { lines.append("Style: \(hints.map(\.promptName).joined(separator: ", ")).") }
-            return lines
+            Sound(voice, register: register, sentenceName: \.promptName).lines
         }
 
         // MARK: How they open, close and what they film
@@ -299,7 +339,7 @@ nonisolated enum VoiceBriefBuilder {
             VoiceQuestion.formatTags.values.contains { VoiceTextValidator.key($0) == VoiceTextValidator.key(tag) }
         }
 
-        private static func list(_ items: [String], joiner: String = " and ") -> String {
+        static func list(_ items: [String], joiner: String = " and ") -> String {
             guard let last = items.last else { return "" }
             return items.count == 1 ? last : items.dropLast().joined(separator: ", ") + joiner + last
         }

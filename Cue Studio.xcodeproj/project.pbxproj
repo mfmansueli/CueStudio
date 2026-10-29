@@ -11,7 +11,7 @@
 		000000000000000000000502 /* TikTokOpenShareSDK in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000000000512 /* TikTokOpenShareSDK */; };
 		000000000000000411000000 /* FirebaseAnalyticsCore in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000410000000 /* FirebaseAnalyticsCore */; };
 		000000000000000421000000 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000420000000 /* FirebaseCrashlytics */; };
-		000000000000000443100000 /* FirebaseAI in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000443000000 /* FirebaseAI */; };
+		000000000000000443100000 /* FirebaseAILogic in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000443000000 /* FirebaseAILogic */; };
 		000000000000000444100000 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 000000000000000444000000 /* FirebaseAppCheck */; };
 /* End PBXBuildFile section */
 
@@ -111,7 +111,7 @@
 				000000000000000411000000 /* FirebaseAnalyticsCore in Frameworks */,
 				000000000000000421000000 /* FirebaseCrashlytics in Frameworks */,
 				000000000000000444100000 /* FirebaseAppCheck in Frameworks */,
-				000000000000000443100000 /* FirebaseAI in Frameworks */,
+				000000000000000443100000 /* FirebaseAILogic in Frameworks */,
 			);
 		};
 		000000000000000230000000 /* Frameworks */ = {
@@ -197,7 +197,7 @@
 				000000000000000410000000 /* FirebaseAnalyticsCore */,
 				000000000000000420000000 /* FirebaseCrashlytics */,
 				000000000000000444000000 /* FirebaseAppCheck */,
-				000000000000000443000000 /* FirebaseAI */,
+				000000000000000443000000 /* FirebaseAILogic */,
 			);
 			productName = "Cue Studio";
 			productReference = 000000000000000000000120 /* Cue Studio.app */;
@@ -602,7 +602,7 @@
 			package = 000000000000000400000000 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseCrashlytics;
 		};
-		000000000000000443000000 /* FirebaseAI */ = {isa = XCSwiftPackageProductDependency; package = 000000000000000400000000; productName = FirebaseAI; };
+		000000000000000443000000 /* FirebaseAILogic */ = {isa = XCSwiftPackageProductDependency; package = 000000000000000400000000; productName = FirebaseAILogic; };
 		000000000000000444000000 /* FirebaseAppCheck */ = {isa = XCSwiftPackageProductDependency; package = 000000000000000400000000; productName = FirebaseAppCheck; };
 /* End XCSwiftPackageProductDependency section */
 	};

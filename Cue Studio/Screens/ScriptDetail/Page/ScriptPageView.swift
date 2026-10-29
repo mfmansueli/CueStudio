@@ -85,7 +85,7 @@ struct ScriptPageView: View {
                             .padding(.top, 14)
                             .dimmedWhileTyping(isTyping)
                         if viewModel.needsFactCheck {
-                            FactCheckBanner(onChecked: viewModel.markFactChecked)
+                            FactCheckBanner(engine: script.draftedBy ?? .apple, onChecked: viewModel.markFactChecked)
                                 .disabled(viewModel.page.isWriting)
                                 .padding(.top, 12)
                                 .dimmedWhileTyping(isTyping)
@@ -446,7 +446,9 @@ struct ScriptPageView: View {
             }
             if viewModel.page.isWriting {
                 // The percentage only while the model works: once the words arrive, they are the progress.
-                ScriptWritingPill(inMyVoice: viewModel.profile.writesInMyVoice, progress: viewModel.page.progress)
+                ScriptWritingPill(
+                    inMyVoice: viewModel.profile.writesInMyVoice, engine: viewModel.pendingRequest?.engine ?? .apple, progress: viewModel.page.progress
+                )
                     .padding(.bottom, 12)
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
             }

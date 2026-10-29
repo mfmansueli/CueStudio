@@ -12,6 +12,8 @@ struct VoiceSendsSheet: View {
     let onAnswerAgain: () -> Void
 
     @Environment(CreatorProfileService.self) private var profile
+    @Environment(UltraScriptService.self) private var ultra
+    @Environment(ScriptStarter.self) private var starter
     @Environment(\.dismiss) private var dismiss
 
     private var brief: VoiceBrief { ScriptPromptBuilder.brief(for: profile.profile) }
@@ -45,6 +47,7 @@ struct VoiceSendsSheet: View {
                         .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                         .padding(.horizontal, 4)
+                    if ultra.isAvailable { ultraSection }
                     Button {
                         dismiss()
                         onAnswerAgain()
@@ -70,6 +73,21 @@ struct VoiceSendsSheet: View {
         .cueSheetSurface()
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("voice.sends")
+    }
+
+    /// AI Scripts Ultra, where it is offered: the two calls to Google's Gemini as they go out, with the dock's idea and choices.
+    private var ultraSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text("Ultra AI · sent to Google").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
+            Text(ultra.consent.isGranted
+                ? "Sent only for the scripts you pick Ultra AI for. Writing examples, imported excerpts and approved scripts are never part of it."
+                : "Not allowed: nothing goes to Google. If you allow it, this is what a script you pick Ultra AI for sends.")
+                .cueFont(.footnote)
+                .foregroundStyle(Palette.ink2)
+            UltraPayloadView(payload: starter.ultraPreview())
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("voice.sends.ultra")
     }
 
     private var cloudBrief: VoiceBrief {
