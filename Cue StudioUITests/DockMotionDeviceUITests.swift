@@ -58,7 +58,7 @@ final class DockMotionDeviceUITests: XCTestCase {
     func testFilmingUltraAIsWait() {
         let app = launch(ai: .stub, extra: ["-uiTestStarTransition", "-uiTestUltraPacedLong"])
         pickWriter(app, "Ultra AI")
-        send(app, "Why I stopped buying bottled water")
+        send(app, "Why I stopped buying bottled water", quietWait: 38)
     }
 
     // MARK: - Steps
@@ -92,7 +92,9 @@ final class DockMotionDeviceUITests: XCTestCase {
         sleep(3)
     }
 
-    private func send(_ app: XCUIApplication, _ idea: String) {
+    /// `quietWait`: seconds the test sleeps once the star is up, before it looks for its end (under the wait, about 46 s for Ultra AI's
+    /// long pace).
+    private func send(_ app: XCUIApplication, _ idea: String, quietWait: UInt32 = 0) {
         let field = app.descendants(matching: .any)["ideaCard.field"].firstMatch
         XCTAssertTrue(field.exists(within: 10))
         field.tap()
@@ -103,6 +105,9 @@ final class DockMotionDeviceUITests: XCTestCase {
         let star = app.buttons["transition.cancel"]
         XCTAssertTrue(star.exists(within: 4), "No star for “\(idea)”")
         mark("star")
+        // Asleep through most of the wait: a test looking for the star once a second held the app's main thread 40 ms each time, and the
+        // film stuttered with it (Instruments, 30/10/2026).
+        sleep(quietWait)
         XCTAssertTrue(star.waitForNonExistence(timeout: 60), "The star stayed for “\(idea)”")
         mark("star gone")
         XCTAssertTrue(app.pageBackButton.exists(within: 5))
