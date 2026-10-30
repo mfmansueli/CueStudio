@@ -261,4 +261,31 @@ Decided by the owner on the phone (29–30/10); built, installed on both iPhones
   (Debug, the stub paced as Gemini's with a 22 s check, the screen filmed over the cable at up to 60 fps): the star's 46 s ran at **49.4 fps**,
   steady from start to finish (48–52 in every 5 s); 80% of the frames on time, 20% one frame late (33 ms), 9 gaps over 34 ms, the longest
   67 ms: no visible stutter, but below the Apple Intelligence star's ~55–60 (§3). The scene's drawing per frame is the place to win it back if
-  the owner wants 60. No real Ultra AI call was made.
+  the owner wants 60. No real Ultra AI call was made. *(Measured again in the morning with Instruments: the screen showed 60 fps; the film loses frames. See "30 October, morning".)*
+
+## 30 October, morning — the wait measured again; the Scripts list's topic bar, filters and bar colours
+
+Branch `perf/ultra-wait-60fps`, from main 3f40276b.
+
+- **Ultra AI's wait already runs at 60 fps on the iPhone 15 Pro.** The night's 49.4 fps came from the cable film, not the screen. Instruments'
+  Animation Hitches on the whole iPhone (`tools/motion/screen_frames.sh`, 30 s in the middle of the wait, Debug, the stub paced long) counts
+  the frames the screen shows. The test now sleeps through the wait: XCUITest looking for the star once a second held the app's main thread
+  for ~40 ms each time (Accessibility in 617 of 640 samples), and that was the film's regular stutter.
+
+  | | main (3f40276b) | with a frame interval under 1/60 and the star on the scene's clock |
+  |---|---|---|
+  | Frames on screen | 69.0 a second (≥ 60 always; the rest are 120 Hz frames of other layers) | 68.6 |
+  | Held past 16.7 ms | 5 of 2,105 (0.2%), the longest 50 ms | 7 of 2,090 (0.3%), the longest 100 ms (the automation's own banner) |
+  | App main thread | 37% busy; stretches median 5 ms, the longest 14 | 37%; median 5 ms, the longest 11 |
+
+  The change made no difference, so it was not kept: the scene is main's, untouched. The same film tool, rerun with the change, gave
+  49.4 fps and 20% of frames "one late" again, the signature of the recorder. `film.sh` now says so.
+- **Scripts list (the owner's calls):** the topic is again the **bar at the start of the card** (`ThemeRail`, the world's colour, grey without a
+  topic; VoiceOver reads the topic after the title); the world colours pass 3:1 on the card (`theTopicsBarShowsOnTheScriptCard`). The network
+  filters show **only networks with scripts** (Scripts) **or videos** (Takes), no chip with 0; the chosen one keeps its chip while chosen. In
+  the bar, **only the Logbook is yellow** (`accText`); the magnifier and "+" take the light lilac the Logbook had (`aiTextStrong`).
+- **Checks:** `check-project`, `check-warnings` (simulator, device, Release: zero warnings). Full: unit 4,701 passed, 1 failed; UI 414 passed,
+  3 failed, 106 skipped (opt-in device and capture suites). The four failures pass alone (8 of 8, `only`), and none touches the list:
+  `ObjectTrackerTests.followsTheSquareBothWays` went past its 5 minutes, two `ScriptLibraryUITests` that open "Script details" from the page's
+  menu (one of them also failed in the night's Full on main), and `MaskBlurUITests.testASmallMaskKeepsItsHandlesAFingerApart` (no video at the
+  playhead yet). They go to the cleanup branch to be made steady. Installed on iago Lima iphone.

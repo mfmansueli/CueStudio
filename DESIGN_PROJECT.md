@@ -16,7 +16,7 @@ removida); só o **Reduzir Movimento** mostra o estado final. `speed` só serve 
 | Onde | Como é |
 |---|---|
 | Tab bar | `TabView` do sistema, `.tabBarMinimizeBehavior(.never)` (decisão do criador; o `07` §1 pedia `.onScrollDown`); Record é aba normal no meio (`09` §4), nunca `role: .search` |
-| Barras de navegação | `NavigationStack` + `.toolbar` em Scripts, Takes, Profile, Settings, página do script, revisão da take, Quick edit, gravador, Pro. Scripts: só Logbook e + na barra; a busca é um campo na lista (§2) |
+| Barras de navegação | `NavigationStack` + `.toolbar` em Scripts, Takes, Profile, Settings, página do script, revisão da take, Quick edit, gravador, Pro. Scripts: lupa, Logbook e + na barra; a lupa abre o campo de busca na lista (§2) |
 | Sheets | `cueSheetChrome()`: `NavigationStack`, `Button(role: .close)` à esquerda, fundo `Palette.sheetNight`, raio `Metrics.sheetRadius`; as que têm navegação própria usam `cueSheetSurface()`. `fittedSheet()` soma `Metrics.sheetBarHeight`. `SheetHeader` é só título e subtítulo |
 | Botões | `CueStudioButtonStyle`: primário (amarelo) e secundário em Liquid Glass (`.glassEffect(.regular.tint(acc).interactive())`); `.glass` sobre vídeo |
 | Controles | `Menu`, `Picker` (`.segmented` em Selfie \| Studio, Voice \| Steady, List \| Grid, Camera \| Recording), `.contextMenu`, `Slider` do sistema (`LabeledSlider`), botões redondos `.glass` (`glassIconButton()`) |
@@ -77,19 +77,22 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
   0,2 s). **O espaço reservado embaixo da lista não muda com a dobra**: quando mudava, a lista pulava ~205 pt e o dock abria e fechava sem parar. O quique
   no fim não conta como subida. Lista curta (rola < 80 pt) recolhe ao passar da metade; uma que rola < 16 pt nunca recolhe. Log: `studio.cue` / `DockFold`.
 - Campo focado: a lista escurece e desfoca (0,25 s). Durante a seleção o dock sai.
+- **Barra:** lupa, Logbook e "+" no mesmo vidro; só o **Logbook em amarelo** (`accText`), a lupa e o "+" no lilás claro (`aiTextStrong`)
+  (decisão do dono, 30/10/2026: as cores invertidas, o Logbook é o que se destaca).
 - **Busca:** lupa na barra, no mesmo vidro do Logbook e do "+" (à esquerda deles; só com a lista, não no Scripts vazio). Ela abre o `SearchField` no
   topo da lista (logo abaixo do título grande, acima dos filtros, rola com ela), já com o teclado, e leva a lista ao topo; o campo some quando fica sem
   teclado e sem palavras (teclado fechado, ✕ ou "Clear search"); com palavras ele fica. O dock fica durante a busca e, com o teclado da busca, fica
   embaixo dele. Por que não `.searchable`: com `.searchToolbarBehavior(.minimize)` o ✕ do iOS 27 só minimizava a busca (a lista ficava filtrada e o
   dock não voltava). Dica do campo em `ink2`.
-- **Filtros** (`PlatformFilterChips`): All, as redes que têm roteiros e as pastas. Segurar o chip de uma pasta (ou a ação do VoiceOver) mostra
+- **Filtros** (`PlatformFilterChips`): All, só as redes que têm roteiros (nenhum chip com 0, decisão do dono, 30/10/2026; o escolhido fica enquanto
+  escolhido, mesmo que o último roteiro saia) e as pastas. Segurar o chip de uma pasta (ou a ação do VoiceOver) mostra
   **Delete folder**: a pasta sai, os roteiros ficam (em All), e "Folder deleted" tem Undo por 4 s (volta no mesmo lugar, com os seus roteiros).
 - **Uma lista leve (decisões do dono, 30/10/2026):** sob o título grande não há contagem. Os grupos se chamam **Ready to record**, **Drafts** e
   **Recorded**, sem números, em letra normal de 15 pt, `ink2` (como **Select**, e **Logbook** no violeta dele, sem o "n waiting"). A linha mono de um
   roteiro pronto diz só **● TIKTOK** (a duração e os cues ficam na página do roteiro); rascunho "● SHORTS · 2H AGO", gravado "● TIKTOK · 3 TAKES ·
-  READY" (`ScriptRowLine`). O card não tem mais a barra do tópico no início: o tópico é um **✦ na cor do mundo dele** logo depois da última palavra
-  do título (`ScriptRow`, `TopicTaggingService.world(of:)`; quebra junto com a palavra, então todo título começa na mesma borda; sem tópico, sem ✦;
-  o VoiceOver lê o tópico como valor do título). As cores dos mundos passam de 3:1 sobre o card (`PaletteContrastTests+Scripts`).
+  READY" (`ScriptRowLine`). O tópico é a **barra no início do card** (`ThemeRail`, 3 × 30 pt) na cor do mundo dele, cinza (`separator`) sem
+  tópico (`ScriptRow`, `TopicTaggingService.world(of:)`; o VoiceOver lê o tópico como valor do título). As cores dos mundos passam de 3:1 sobre o
+  card (`PaletteContrastTests+Scripts`).
 - **Linhas:** um toque abre a página do roteiro em qualquer estado (rascunho já abre escrevendo); a ponta direita é a ação do estado: **● REC** grava,
   um **›** no rascunho é só sinal (o VoiceOver diz "Continue"), **×3 ›** (com takes) é botão para Takes. Deslizar mostra **Record** (vermelho) e **More** (cinza), sem deslize longo; More abre
   `ScriptActionsPopover` na linha (Record, Studio mode, Edit · Duplicate, Move to folder, Script Language, Share · Delete); o que abre outra coisa fecha
@@ -682,7 +685,7 @@ botões parados desde o início; redes que não receberam ficam a 38%.
 
 **6.2 Takes:** título + "12 TAKES · 5 VIDEOS"; **trilha de status** (`TakePipelineCard`: quatro nós de 28 pt, TO PICK cinza, IN EDIT ciano, READY verde com
 anel que pulsa a cada 2 s, ✦ SHARED lilás; tocar filtra, de novo limpa); **Up next** (`TakeUpNextCard`: pôster 40 × 56, "UP NEXT · POST IT", botão amarelo
-Share/Edit/Pick que abre a take naquele passo); **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, All e uma por rede; a
+Share/Edit/Pick que abre a take naquele passo); **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, All e uma por rede que tem vídeos, nenhuma com 0; a
 escolhida branca com texto preto). **List | Grid** é `Picker` `.segmented` (`TakesLayoutToggle`). Card da grade (`TakeVideoCard`, 177:270): anel de 1 pt na
 cor do estágio, pílula do estágio, título e "● TIKTOK · 1:02" no pé. Lista: §24. Lista vazia por filtro: "No videos for Shorts here" + **Show every video**.
 Segurar um vídeo abre o menu de contexto (a prévia recebe `.environment(services)` e o pôster lê os serviços como opcionais: o sistema redesenha o cartão

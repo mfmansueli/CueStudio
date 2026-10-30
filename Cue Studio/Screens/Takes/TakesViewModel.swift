@@ -109,10 +109,11 @@ final class TakesViewModel {
         [String(localized: "\(takes.takes.count.formatted()) takes"), String(localized: "\(allVideos.count.formatted()) videos")]
     }
 
-    /// The platform chips: All, then the primary platforms (Stories only once a take uses it).
+    /// The platform chips: All, then each platform a video was made for, none for a network with no videos (the owner, 30/10/2026); the
+    /// chosen one keeps its chip while it is chosen.
     var platformOptions: [Platform?] {
         let used = Set(allVideos.compactMap(\.platform))
-        return [nil] + Platform.allCases.filter { Platform.primary.contains($0) || used.contains($0) }
+        return [nil] + Platform.allCases.filter { used.contains($0) || filter.platform == $0 }
     }
 
     /// "Today · 9:12 AM", "Sep 18 · 4:10 PM"

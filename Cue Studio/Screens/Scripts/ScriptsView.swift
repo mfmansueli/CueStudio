@@ -173,7 +173,8 @@ struct ScriptsView: View {
         withAnimation(reduceMotion ? nil : .smooth(duration: 0.25)) { isSearchOpen = false }
     }
 
-    /// The search's magnifier, Logbook and "+" in the bar's glass.
+    /// The search's magnifier, Logbook and "+" in the bar's glass: the Logbook in Cue's yellow, the magnifier and "+" in the light lilac
+    /// (the owner swapped them, 30/10/2026: the Logbook is the one that stands out).
     @ToolbarContentBuilder
     private var toolbarItems: some ToolbarContent {
         ToolbarItemGroup(placement: .topBarTrailing) {
@@ -181,6 +182,7 @@ struct ScriptsView: View {
             if emptyState == .list {
                 Button(action: openSearch) {
                     Image(systemName: "magnifyingglass")
+                        .foregroundStyle(Palette.aiTextStrong)
                 }
                 .accessibilityLabel(Text("Search"))
                 .accessibilityIdentifier("scripts.searchButton")
@@ -188,7 +190,7 @@ struct ScriptsView: View {
             // Always there, the first visit included (the owner's call, 6/10/2026: the empty Scripts has its Logbook too).
             Button { presentation.present(.logbook) } label: {
                 CueIconView(.logbook, size: 20)
-                    .foregroundStyle(Palette.aiTextStrong)
+                    .foregroundStyle(Palette.accText)
                     .overlay(alignment: .topTrailing) { logbookBadge }
             }
             .accessibilityLabel(Text("Logbook"))
@@ -196,6 +198,7 @@ struct ScriptsView: View {
             .accessibilityIdentifier("scripts.logbookButton")
             Button { presentation.present(.newScript) } label: {
                 Image(systemName: "plus")
+                    .foregroundStyle(Palette.aiTextStrong)
             }
             .accessibilityLabel(Text("New script"))
             .accessibilityIdentifier("scripts.newButton")

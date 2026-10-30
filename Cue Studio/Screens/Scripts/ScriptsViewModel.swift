@@ -42,7 +42,7 @@ final class ScriptsViewModel {
     }
 
     var filters: [ScriptFilter] {
-        [.all] + ScriptFilter.platformFilters(for: library.scripts) + library.folders.map(ScriptFilter.folder)
+        [.all] + ScriptFilter.platformFilters(for: library.scripts, chosen: filter) + library.folders.map(ScriptFilter.folder)
     }
 
     /// The visible scripts in READY TO RECORD, DRAFTS and RECORDED.

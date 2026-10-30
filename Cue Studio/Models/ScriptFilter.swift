@@ -27,11 +27,12 @@ nonisolated enum ScriptFilter: Hashable, Sendable {
         }
     }
 
-    /// One chip per primary platform, plus any other platform a script already uses (Stories).
-    static func platformFilters(for scripts: [Script]) -> [ScriptFilter] {
+    /// One chip for each platform a script uses, in the platforms' order: none for a network with no scripts (the owner, 30/10/2026). The
+    /// chosen one keeps its chip while it is chosen, so it doesn't go from under the creator's finger as its last script goes.
+    static func platformFilters(for scripts: [Script], chosen: ScriptFilter = .all) -> [ScriptFilter] {
         let used = Set(scripts.map(\.platform))
         return Platform.allCases
-            .filter { Platform.primary.contains($0) || used.contains($0) }
+            .filter { used.contains($0) || chosen == .platform($0) }
             .map(ScriptFilter.platform)
     }
 
