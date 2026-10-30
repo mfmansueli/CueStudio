@@ -7,7 +7,7 @@ import SwiftUI
 import Testing
 @testable import Cue_Studio
 
-/// Where a row sits in the card its section makes (`CardRows`, `CardRowSlice`, the Scripts groups).
+/// Where a row sits in the card its section makes (`CardRowPosition`, `CardRowSlice`, the Scripts groups).
 @MainActor
 @Suite("CardRowPosition")
 struct CardRowPositionTests {

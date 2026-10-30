@@ -335,14 +335,6 @@ nonisolated struct EditTimeline: Codable, Hashable, Sendable {
         return editedTime(following: source, in: segment.sourceID)
     }
 
-    /// `count` moments of the recording spread evenly across the edit, one from the middle of
-    /// each equal stretch: what a filmstrip of the edited video shows. Cut pieces never appear.
-    func sourceTimes(evenlyAcross count: Int) -> [TimeInterval] {
-        let length = editedDuration
-        guard count > 0, length > 0 else { return [] }
-        return (0..<count).map { sourceTime(forEdited: length * (Double($0) + 0.5) / Double(count)) }
-    }
-
     /// The parts of the recording that play between two edited moments, in order: what "Remove
     /// part" takes out. A range across a cut gives one span per piece.
     func sourceSpans(forEdited range: ClosedRange<TimeInterval>) -> [TimeSpan] {

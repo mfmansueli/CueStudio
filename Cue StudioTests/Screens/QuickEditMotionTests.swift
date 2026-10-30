@@ -108,8 +108,10 @@ struct QuickEditMotionTests {
         viewModel.overlays.toggleKeyframe()
         scenario.player.currentTime = 7
         viewModel.overlays.toggleKeyframe()
-        viewModel.overlays.setKeyframeOpacity(0.25)
-        viewModel.overlays.setKeyframeEasing(.linear)
+        viewModel.overlays.setAtPlayhead(of: .text(viewModel.edit.texts[0].id)) { keyframe in
+            keyframe.opacity = 0.25
+            keyframe.easing = .linear
+        }
         let keyframes = viewModel.edit.texts[0].keyframes
         #expect(keyframes[1].opacity == 0.25)
         #expect(keyframes[1].easing == .linear)

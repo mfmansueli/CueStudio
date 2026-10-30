@@ -16,10 +16,5 @@ final class InMemoryWatchTransport: WatchTransport {
     func send(_ state: WatchPhoneState) {
         sent.append(state)
     }
-
-    /// A command as the watch would send it; the answer it got.
-    func receive(_ action: WatchAction) -> WatchPhoneState? {
-        onCommand?(WatchCommand(action: action))
-    }
 }
 #endif

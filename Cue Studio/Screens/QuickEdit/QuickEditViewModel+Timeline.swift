@@ -146,7 +146,7 @@ extension QuickEditViewModel {
         tracks.isExpanded = expanded
     }
 
-    /// A tap on the timeline (a move under `TimelineGeometry.tapSlop`): picks what it lands on, or
+    /// A tap on the timeline (the system's tap, `TimelineScrollingView`): picks what it lands on, or
     /// lets go on empty space. A track's strip opens (or closes) that track's tools. While Pauses
     /// is open only the pauses answer.
     func tapTimeline(_ hit: TimelineGeometry.Hit?) {

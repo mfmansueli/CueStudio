@@ -73,27 +73,6 @@ final class LanguageCapabilityService {
         }
     }
 
-    /// Everything this device does in `language`.
-    func capabilities(of language: CueLanguage) async -> LanguageCapabilities {
-        var support: [LanguageFeature: FeatureSupport] = [:]
-        for feature in LanguageFeature.allCases {
-            support[feature] = await self.support(feature, for: language)
-        }
-        return LanguageCapabilities(language: language, support: support)
-    }
-
-    /// What was last answered, for a screen that shows it without waiting; nil until asked.
-    func known(_ feature: LanguageFeature, for language: CueLanguage) -> FeatureSupport? {
-        let key = Key(feature: feature, language: language, pair: nil)
-        guard let entry = entries[key], isFresh(entry) else { return nil }
-        return entry.support
-    }
-
-    /// Asks again next time, whatever was kept (the creator came back from Settings, or a model arrived).
-    func invalidate() {
-        entries = [:]
-    }
-
     // MARK: - Keeping answers
 
     private func answer(_ key: Key, _ ask: @escaping @Sendable () async -> FeatureSupport) async -> FeatureSupport {

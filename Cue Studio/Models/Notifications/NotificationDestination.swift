@@ -6,7 +6,7 @@
 import Foundation
 
 /// Where a notification takes the creator: always a place inside Cue, named by its kind and the IDs of real objects, never a URL.
-/// Every destination is checked again when it is opened (the object may be gone, the tool unavailable); `NotificationRouteResolver`
+/// Every destination is checked again when it is opened (the object may be gone, the tool unavailable); `NotificationService.open`
 /// decides what opens then. Part of the payload (`NotificationPayload.version`), so cases are only ever added.
 nonisolated enum NotificationDestination: Codable, Hashable, Sendable {
     /// The script's page, with Record at its foot (recording preparation: nothing starts the camera).

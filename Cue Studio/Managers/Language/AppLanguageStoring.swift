@@ -9,7 +9,7 @@ import Foundation
 /// so tests and UI tests use one in memory and never change the simulator's.
 protocol AppLanguageStoring: AnyObject {
     /// The `.lproj` the creator picked for Cue ("pt", "zh-Hans"), or nil to follow the iPhone.
-    var chosenLocalization: String? { get set }
+    var chosenLocalization: String? { get }
     /// The `.lproj` the iPhone's languages pick among Cue's, used while nothing is chosen.
     var systemLocalization: String { get }
     /// The iPhone's own languages, most preferred first, whatever Cue's interface is in. Voice

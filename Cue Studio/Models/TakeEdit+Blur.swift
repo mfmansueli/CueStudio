@@ -83,37 +83,4 @@ nonisolated extension TakeEdit {
         }
         return spans
     }
-
-    /// The first place the edit shows second `time` of the area's footage (edited seconds); nil when it never does.
-    func editedTime(ofFootage time: TimeInterval, of region: BlurRegion, in timeline: EditTimeline) -> TimeInterval? {
-        for span in editedSpans(of: region, in: timeline) {
-            let probe = (span.start + span.end) / 2
-            guard let middle = footageTime(of: region.target, at: probe, in: timeline) else { continue }
-            // Walk from the middle of this showing to the moment, at its own pace (reversed footage runs the other way).
-            let startFootage = footageTime(of: region.target, at: span.start, in: timeline) ?? middle
-            let endFootage = footageTime(of: region.target, at: max(span.start, span.end - 0.000_1), in: timeline) ?? middle
-            let low = min(startFootage, endFootage), high = max(startFootage, endFootage)
-            guard time >= low - 0.000_1, time <= high + 0.000_1 else { continue }
-            guard high - low > 0.000_1 else { return span.start }
-            // Bisect: the footage runs one way through a showing.
-            var from = span.start, to = span.end
-            let rising = endFootage >= startFootage
-            for _ in 0..<40 {
-                let mid = (from + to) / 2
-                let at = footageTime(of: region.target, at: mid, in: timeline) ?? middle
-                if (at < time) == rising { from = mid } else { to = mid }
-            }
-            return (from + to) / 2
-        }
-        return nil
-    }
-
-    /// The areas whose footage the edit shows at `time` (edited seconds), with the second of it there.
-    func blurRegions(showingAt time: TimeInterval, in timeline: EditTimeline) -> [(region: BlurRegion, footage: TimeInterval)] {
-        blurRegions.compactMap { region in
-            guard let footage = footageTime(of: region.target, at: time, in: timeline) else { return nil }
-            guard isOnPhoto(region) || region.span.contains(footage) else { return nil }
-            return (region, footage)
-        }
-    }
 }

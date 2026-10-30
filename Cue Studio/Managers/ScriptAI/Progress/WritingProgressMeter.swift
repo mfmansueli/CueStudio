@@ -36,9 +36,6 @@ final class WritingProgressMeter {
 
     var isFinished: Bool { estimate.isFinished }
 
-    /// The meter's time now, in seconds: what `passStarts` and `arrivals` are counted in.
-    var now: TimeInterval { clock() }
-
     /// The words the script is expected to have.
     var expectedWords: Int { estimate.expectedWords }
 

@@ -176,11 +176,6 @@ nonisolated struct CaptionStyleSpec: Equatable, Sendable {
             && emphasisScale == other.emphasisScale && wordSpacing == other.wordSpacing && widthScalesWithSize == other.widthScalesWithSize
     }
 
-    /// How this reading plays when the edit says only `animation` (an edit saved before motion, or a first reading).
-    func motion(playing animation: CaptionAnimation) -> CaptionMotion {
-        motion ?? CaptionMotion(playing: animation, spec: self)
-    }
-
     // MARK: - The presets
 
     /// The reading a new look is made from (version 3: the catalogue).

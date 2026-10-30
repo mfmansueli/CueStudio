@@ -109,9 +109,10 @@ struct VoiceStrengthTests {
 
     @Test func theWeightsAddUpToOneHundred() {
         #expect(VoiceField.allCases.reduce(0) { $0 + $1.weight } == 100)
-        #expect(VoiceField.fields(of: .essentials).reduce(0) { $0 + $1.weight } == 40)
-        #expect(VoiceField.fields(of: .personality).reduce(0) { $0 + $1.weight } == 40)
-        #expect(VoiceField.fields(of: .proof).reduce(0) { $0 + $1.weight } == 20)
+        // The essentials, the personality and the proof: 40, 40 and 20.
+        let essentials: [VoiceField] = [.role, .topics, .audience, .tone]
+        #expect(essentials.reduce(0) { $0 + $1.weight } == 40)
+        #expect(VoiceField.examples.weight == 20)
     }
 
     @Test func swearingMigratesIntoTheStyle() throws {

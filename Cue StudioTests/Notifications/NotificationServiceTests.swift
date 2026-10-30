@@ -109,7 +109,7 @@ struct NotificationServiceTests {
         harness.facts.facts.scripts = []
         await harness.service.reconcile()
         #expect(harness.service.state.reminders.isEmpty)
-        #expect(harness.center.requests.values.allSatisfy { !NotificationIdentifier.isReminder($0.identifier) })
+        #expect(harness.center.requests.values.allSatisfy { !$0.identifier.hasPrefix(NotificationIdentifier.reminderPrefix) })
     }
 
     @Test func aPostLaterReminderGoesOnceThatNetworkIsPosted() async {

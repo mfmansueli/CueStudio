@@ -25,7 +25,7 @@ nonisolated extension TextOverlayRenderer {
         let spaced = TextShaping.allowsLetterSpacing(in: words)
         if abs(text.tracking) > 0.000_1, spaced { attributes[.kern] = CGFloat(text.tracking) * pointSize }
         let padding = effectPadding(for: effect.kind, unit: unit * scale, pointSize: pointSize)
-        let maxWidth = lineLength(for: text, frameWidth: frameWidth, widthFraction: widthFraction) ?? (frameWidth * widthFraction - padding.width * 2)
+        let maxWidth = lineLength(for: text, frameWidth: frameWidth) ?? (frameWidth * widthFraction - padding.width * 2)
         let letters = words.filter { !$0.isWhitespace }.count
         let byWords = effect.kind.movesWords || !spaced || letters > mostEffectLetters
         // Everything the painting depends on: its motion and duration only move it, so they aren't part of it.

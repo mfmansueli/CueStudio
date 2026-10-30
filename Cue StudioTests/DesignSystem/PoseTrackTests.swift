@@ -17,7 +17,6 @@ struct PoseTrackTests {
         #expect(track.pose(at: 0.99).scale == 0)
         #expect(track.pose(at: 2).scale == 2)
         #expect(track.pose(at: 99).opacity == 1)
-        #expect(track.duration == 2)
     }
 
     @Test func linearTracksGoStraightBetweenKeyframes() {

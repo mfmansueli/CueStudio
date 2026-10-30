@@ -88,7 +88,7 @@ struct QuickEditSkinTests {
         viewModel.undo()
         #expect(viewModel.look.skinState == .preset(.natural))
         viewModel.undo()
-        #expect(viewModel.edit.skin == .off)
+        #expect(viewModel.edit.skin == SkinLook())
     }
 
     /// Natural, then Studio: Skin's Reset and each control's stay, on the whole video and on a clip; Reset clip takes the clip's own Skin.
@@ -101,7 +101,7 @@ struct QuickEditSkinTests {
         #expect(viewModel.look.hasSkinSettings, "Skin's Reset shows")
         #expect(LookViewModel.SkinControl.allCases.allSatisfy { viewModel.look.canResetSkin($0) })
         viewModel.look.resetSkin()
-        #expect(viewModel.edit.skin == .off)
+        #expect(viewModel.edit.skin == SkinLook())
         split(scenario)
         openOnClip(viewModel, 1)
         viewModel.look.applySkinPreset(.natural)
@@ -163,7 +163,7 @@ struct QuickEditSkinTests {
         #expect(viewModel.edit.exposure == 15 && viewModel.edit.filter == .studio)
         // Skin's Reset: Skin off, Adjust and the filter stay.
         viewModel.look.resetSkin()
-        #expect(viewModel.edit.skin == .off && viewModel.edit.exposure == 15 && viewModel.edit.filter == .studio)
+        #expect(viewModel.edit.skin == SkinLook() && viewModel.edit.exposure == 15 && viewModel.edit.filter == .studio)
         viewModel.undo()
         #expect(viewModel.edit.skin == SkinPreset.natural.look)
         // Adjust's Reset: the dials back, Skin stays.
@@ -194,14 +194,14 @@ struct QuickEditSkinTests {
         viewModel.look.applySkinPreset(.studio)
         #expect(scenario.player.shown.last?.skin == SkinPreset.studio.look)
         viewModel.look.holdSkinComparison(true)
-        #expect(scenario.player.shown.last?.skin == .off)
+        #expect(scenario.player.shown.last?.skin == SkinLook())
         #expect(scenario.player.shown.last?.contrast == 20, "only Skin is held back")
         #expect(viewModel.edit.skin == SkinPreset.studio.look, "what is saved doesn't change")
         viewModel.look.holdSkinComparison(false)
         #expect(scenario.player.shown.last?.skin == SkinPreset.studio.look)
         // The picture's ◐ (Adjust's) holds Skin back too.
         viewModel.look.holdPictureComparison(true)
-        #expect(scenario.player.shown.last?.skin == .off && scenario.player.shown.last?.contrast == 0)
+        #expect(scenario.player.shown.last?.skin == SkinLook() && scenario.player.shown.last?.contrast == 0)
         viewModel.look.holdPictureComparison(false)
         #expect(scenario.player.shown.last?.skin == SkinPreset.studio.look)
     }
@@ -226,7 +226,7 @@ struct QuickEditSkinTests {
         openOnClip(viewModel, 1)
         #expect(viewModel.look.lookClip != nil)
         viewModel.look.setSkin(.faceLight, 50)
-        #expect(viewModel.edit.skin == .off)
+        #expect(viewModel.edit.skin == SkinLook())
         #expect(viewModel.edit.timeline.segments[1].look?.skin == ClipSkin(faceLight: 50))
         #expect(viewModel.edit.timeline.segments[0].look == nil && viewModel.edit.timeline.segments[2].look == nil)
         #expect(viewModel.look.clipOverridesSkin(.faceLight) && !viewModel.look.clipOverridesSkin(.smoothing))
@@ -291,7 +291,7 @@ struct QuickEditSkinTests {
         openOnClip(viewModel, 0)
         viewModel.look.applySkinPreset(.studio)
         #expect(viewModel.edit.timeline.segments[0].look?.skin == ClipSkin(SkinPreset.studio.look))
-        #expect(viewModel.edit.skin == .off)
+        #expect(viewModel.edit.skin == SkinLook())
         viewModel.look.resetSkin()
         #expect(viewModel.edit.timeline.segments[0].look == nil)
     }

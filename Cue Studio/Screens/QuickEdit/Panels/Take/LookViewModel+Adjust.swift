@@ -175,12 +175,6 @@ extension LookViewModel {
 
     var currentFilterAmount: Double { effectiveLook.filterAmount }
 
-    /// The picked clip sets its own filter or intensity.
-    var clipOverridesFilter: Bool {
-        guard let look = lookClip?.look else { return false }
-        return look.filter != nil || look.filterAmount != nil
-    }
-
     /// A filter, at the intensity it starts with (`VideoFilter.defaultAmount`) the first time it's
     /// picked; picking it again keeps the intensity the creator set.
     func pickFilter(_ filter: VideoFilter) {

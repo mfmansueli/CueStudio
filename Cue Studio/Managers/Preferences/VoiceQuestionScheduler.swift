@@ -170,9 +170,6 @@ final class VoiceQuestionScheduler {
 
     // MARK: - Done
 
-    /// Every question is answered or skipped (or the voice is at 100%): nothing more to ask.
-    var isFinished: Bool { profile.profile.voiceStrength >= 100 || remaining.isEmpty }
-
     /// At 100% there is one ✓ toast, "Cue Voice complete", and never again.
     func completionToastIsDue() -> Bool {
         profile.profile.voiceStrength >= 100 && !state.completeToastShown

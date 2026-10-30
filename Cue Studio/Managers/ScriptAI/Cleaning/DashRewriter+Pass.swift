@@ -12,8 +12,8 @@ nonisolated extension DashRewriter {
         var replacement: String
     }
 
-    /// One text being rewritten: each dash is turned into an edit, decided inside its own sentence only (what `displayable` relies on), and the
-    /// edits are applied from the end.
+    /// One text being rewritten: each dash is turned into an edit, decided inside its own sentence only, and the edits are applied from the
+    /// end.
     struct Pass {
         let characters: [Character]
         let mask: [Bool]

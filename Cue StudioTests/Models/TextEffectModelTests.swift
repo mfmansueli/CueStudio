@@ -82,12 +82,6 @@ struct TextEffectModelTests {
         #expect(TextEffectKind.fallback.directions.contains(effect.direction))
     }
 
-    @Test func aDirectionTheKindDoesntOfferIsLeftOut() {
-        let effect = TextEffect(kind: .pop3D, direction: .middle)
-        #expect(effect.direction == TextEffectKind.pop3D.directions[0])
-        #expect(TextEffect(kind: .wave, direction: .middle).direction == .middle)
-    }
-
     @Test func aKeyframeWithoutATurnReadsAsBefore() throws {
         let data = Data(#"{"id":"7B1C4A0B-6C5D-4E7A-9C11-3E2F5A6B7C8D","time":1,"center":{"x":0.5,"y":0.5},"scale":1,"opacity":1,"easing":"smooth"}"#.utf8)
         let keyframe = try JSONDecoder().decode(OverlayKeyframe.self, from: data)

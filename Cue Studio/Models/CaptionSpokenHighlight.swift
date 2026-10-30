@@ -40,9 +40,8 @@ nonisolated enum CaptionSpokenHighlight: String, LenientChoice, CaseIterable, Id
     /// Draws a box behind the word.
     var boxes: Bool { self == .box || self == .glide }
 
-    /// How much bigger a popped word is drawn, and how long it takes to land.
+    /// How much bigger a popped word is drawn.
     static let popScale = 1.12
-    static let popDuration: TimeInterval = 0.14
     /// How long the sliding box takes from one word to the next.
     static let glideDuration: TimeInterval = 0.09
 }

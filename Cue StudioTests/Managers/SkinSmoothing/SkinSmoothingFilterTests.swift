@@ -132,7 +132,7 @@ struct SkinSmoothingFilterTests {
 
     @Test func aFrameWithNoFaceComesBackAsItWas() {
         let image = SkinFaceFixture.image()
-        let result = SkinSmoothingPass.none.apply(.firstEngine(100), to: image)
+        let result = SkinSmoothingPass(faces: []).apply(.firstEngine(100), to: image)
         #expect(RenderedPixels(result).greatestDifference(from: RenderedPixels(image), in: CGRect(origin: .zero, size: SkinFaceFixture.size)) == 0)
     }
 

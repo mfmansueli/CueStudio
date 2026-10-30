@@ -42,9 +42,4 @@ struct CaptionStyleCard: Identifiable, Hashable {
         case .saved(let id): .saved(id)
         }
     }
-
-    var isSaved: Bool {
-        if case .saved = kind { return true }
-        return false
-    }
 }

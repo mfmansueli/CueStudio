@@ -34,7 +34,7 @@ struct CardDepth<S: InsettableShape>: ViewModifier {
                 // Room for the shadow all around (cut at the open edges), minus the card itself: a translucent card on top
                 // would otherwise show the black shape under it.
                 ZStack {
-                    Rectangle().padding(.depthMask(openEdges: openEdges, closed: -EdgeInsets.depthReachDistance, open: 0))
+                    Rectangle().padding(.depthReach(openEdges: openEdges))
                     shape.fill(.black).blendMode(.destinationOut)
                 }
                 .compositingGroup()

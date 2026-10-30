@@ -108,7 +108,7 @@ struct VoiceEditTests {
         let before = service.profile.voiceStrength
         #expect(service.toggle(format: .tutorial) == .added)
         // Swearing alone doesn't fill the style: it needs energy, sentences and words too.
-        service.setSwearing(.mild)
+        service.answer(.swearing, with: VoiceOption(id: Swearing.mild.rawValue, label: Swearing.mild.label))
         #expect(service.profile.voiceStrength == before + 6)
         #expect(service.toggle(format: .tutorial) == .removed)
     }
@@ -124,17 +124,5 @@ struct VoiceEditTests {
         service.removeExample(service.profile.examples[0].id)
         #expect(service.addExample("A shit caption that I wrote on a bad day for the page.") == .rejected(.blocked))
         #expect(service.profile.examples.count == 2)
-    }
-
-    @Test func noneOfTheseRetiresTheQuestionWithoutFillingIt() {
-        let (service, defaults) = service()
-        defer { defaults.tearDown() }
-        #expect(service.profile.nextQuestion == .endings)
-        service.decline(.endings)
-        #expect(service.profile.nextQuestion == .openings)
-        #expect(!service.profile.isFilled(VoicePersonalityItem.endings))
-        // A real answer later takes it off the declined list.
-        service.toggle("Save this", for: .endings)
-        #expect(!service.profile.declinedVoiceItems.contains(.endings))
     }
 }

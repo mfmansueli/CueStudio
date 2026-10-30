@@ -164,9 +164,4 @@ extension LookViewModel {
             identifier: "edit.compare.picture"
         ) { [weak self] in self?.holdPictureComparison($0) }
     }
-
-    func togglePictureComparison() {
-        guard comparesPicture || edit.hasPictureLook else { return }
-        comparesPicture.toggle()
-    }
 }

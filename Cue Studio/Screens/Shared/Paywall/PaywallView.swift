@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// Cue Pro (11.4): two subscriptions, each starting with a 7-day free trial. Opens from the Profile's plan card and Settings, with the opening
-/// (`ProOpening`) and the system's `SubscriptionStoreView` (`ProStoreView`); or, when the free exports have run out and a video is waiting, as
-/// the calm Pro (`ProCalmView`); the same calm Pro when Ultra AI's free scripts are used up. Never while recording. Full screen, dismissible from
+/// (`ProOpening`) and the plans (`ProPlansScreen`); or, when the free exports have run out and a video is waiting, as the calm Pro (the
+/// same plans, without the opening's motion); the same calm Pro when Ultra AI's free scripts are used up. Never while recording. Full screen, dismissible from
 /// the close button in its navigation bar, always offers Restore.
 struct PaywallView: View {
     let context: PaywallContext

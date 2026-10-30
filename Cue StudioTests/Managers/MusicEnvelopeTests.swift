@@ -50,10 +50,10 @@ struct MusicEnvelopeTests {
 
     @Test func staysDownBetweenCloseStretchesOfSpeech() {
         let speech = [TimeSpan(start: 2, end: 3), TimeSpan(start: 3.6, end: 5)]
-        let ducks = MusicEnvelope.duckSpans(speech)
+        let ducks = MusicEnvelope.duckSpans(speech, timing: .legacy)
         #expect(ducks == [TimeSpan(start: 2, end: 5)])
         // Far apart, it comes back in between.
-        #expect(MusicEnvelope.duckSpans([TimeSpan(start: 2, end: 3), TimeSpan(start: 6, end: 7)]).count == 2)
+        #expect(MusicEnvelope.duckSpans([TimeSpan(start: 2, end: 3), TimeSpan(start: 6, end: 7)], timing: .legacy).count == 2)
     }
 
     @Test func withoutDuckingSpeechChangesNothing() {

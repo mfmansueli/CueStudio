@@ -7,7 +7,7 @@ import Foundation
 
 /// A family the creator imported (one file or several: Regular, Bold…), named by its family name, which is how videos,
 /// saved styles and brand kits refer to it (`TextOverlayFont.custom`). Removed, it leaves the pickers but stays on this
-/// iPhone while anything still uses it (`CustomFontCleaner`).
+/// iPhone while anything still uses it (`CustomFontStore.sweepRemoved`).
 nonisolated struct CustomFontFamily: Codable, Identifiable, Hashable, Sendable {
     var name: String
     var faces: [CustomFontFace]

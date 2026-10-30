@@ -42,7 +42,7 @@ struct UltraWaitScene: View {
 
     @Environment(\.accessibilityReduceMotion) private var still
 
-    /// The scene's clock: the meter's own (`WritingProgressMeter.now`), the time since the iPhone started.
+    /// The scene's clock: the meter's own (`WritingProgressMeter`), the time since the iPhone started.
     static var now: TimeInterval { ProcessInfo.processInfo.systemUptime }
 
     /// The scene's reach on a screen: about a third of its width, never past 17% of its height (the words go under it) or 160 pt.

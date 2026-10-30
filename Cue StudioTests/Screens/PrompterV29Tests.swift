@@ -89,12 +89,12 @@ struct PrompterV29Tests {
     @Test func theCompactBarIsRecordingAndNotPeeking() async {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
-        #expect(!scenario.viewModel.isCompact)
+        #expect(!scenario.viewModel.showsCompactBar)
         await scenario.viewModel.appear()
         await scenario.viewModel.recordButtonTapped()
-        #expect(scenario.viewModel.isRecording && scenario.viewModel.isCompact)
+        #expect(scenario.viewModel.isRecording && scenario.viewModel.showsCompactBar)
         scenario.viewModel.bar.expand()
-        #expect(!scenario.viewModel.isCompact)
+        #expect(!scenario.viewModel.showsCompactBar)
     }
 
     // MARK: - Studio

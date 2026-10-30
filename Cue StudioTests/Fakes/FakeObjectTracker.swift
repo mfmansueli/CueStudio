@@ -7,8 +7,8 @@ import Foundation
 @testable import Cue_Studio
 
 /// Follows whatever a test says: each call gets the samples `path` gives for the stretch asked (forwards or backwards), lost
-/// where `lostAfter` says, stopping early when told (and then only after `stopAfter` samples, to test Cancel keeping what was
-/// followed).
+/// where `lostAfter` says, stopping as soon as `shouldStop` says (with a `delay` per sample, a test cancels meanwhile and sees Cancel keep
+/// what was followed).
 nonisolated final class FakeObjectTracker: ObjectTracking, @unchecked Sendable {
     /// The object's box at a second of the recording.
     let path: @Sendable (TimeInterval) -> NormalizedBox

@@ -54,8 +54,6 @@ final class OverlaysViewModel: EditorPart {
     }
 
     let session: EditorSession
-    /// Copies a picked photo or video into the edit's media.
-    let importer: EditMediaImporting
     let styles: TextStyleStoring
     /// The scripts, for the audience comment a take's script answers (Comment card).
     let library: ScriptLibraryService
@@ -65,11 +63,10 @@ final class OverlaysViewModel: EditorPart {
     let faces: FaceFinding
 
     init(
-        session: EditorSession, importer: EditMediaImporting, styles: TextStyleStoring, library: ScriptLibraryService, tracker: ObjectTracking,
+        session: EditorSession, styles: TextStyleStoring, library: ScriptLibraryService, tracker: ObjectTracking,
         faces: FaceFinding = FaceFinder()
     ) {
         self.session = session
-        self.importer = importer
         self.styles = styles
         self.library = library
         self.tracker = tracker

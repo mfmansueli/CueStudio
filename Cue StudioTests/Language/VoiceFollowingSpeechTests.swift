@@ -141,11 +141,11 @@ struct VoiceFollowingSpeechTests {
     /// What this device offers for each language, asked without downloading anything: ready,
     /// downloads the first time, or not available, and through which recognizer.
     @Test func availabilityOnThisDevice() async {
-        let speech = SpeechRecognitionManager()
+        let checker = SpeechCapabilityChecker()
         let resolver = SpeechLocaleResolver()
         var lines: [String] = []
         for language in CueLanguage.allCases {
-            let availability = await speech.availability(of: language)
+            let availability = VoiceFollowingAvailability(await checker.support(for: language))
             let engine: String = switch await resolver.resolve(.language(language)) {
             case .success(let route): "\(route.engine) \(route.locale.identifier(.bcp47))"
             case .failure: "no recognizer"

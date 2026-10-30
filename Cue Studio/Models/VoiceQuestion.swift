@@ -31,8 +31,6 @@ nonisolated enum VoiceQuestion: String, CaseIterable, Identifiable, Sendable {
         }
     }
 
-    var layer: VoiceLayer { field.layer }
-
     var title: String {
         switch self {
         case .role: String(localized: "What kind of creator are you?")

@@ -18,8 +18,8 @@ import SwiftUI
 /// **Color roles** (enforced in review): **violet is AI** (`aiText`, `aiFill`, the aurora of the idea
 /// card), **solid yellow is the one primary action or ✓ of a screen** (`acc`), **yellow text is a HUD
 /// signal** (`accText`: counters, time, status), **red is recording only**, **green is ready**, **cyan is in
-/// edit**. Topics are worlds (`World`) and platforms are galaxies (`Platform`): a topic is a bar (`themeRail`) in its
-/// world's color, a network a dot (`platformDot`) in its galaxy's; sizes are in `Metrics`.
+/// edit**. Topics are worlds (`World`) and platforms are galaxies (`Platform`): a topic is a bar (`ThemeRail`) in its
+/// world's color, a network a dot (`PlatformDot`) in its galaxy's; sizes are in `Metrics`.
 ///
 /// The core tokens below are the ones every screen uses; an area's own colors live in a namespace of their own
 /// (`Palette.Editor`, `Palette.Camera`…, one file each beside this one), so a token added for one area rebuilds that

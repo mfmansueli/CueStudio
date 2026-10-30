@@ -40,7 +40,7 @@ struct FrameLookSkinSmoothingTests {
 
     @Test func aDialAboveZeroWithNoFaceTouchesNothing() {
         let plain = render(look(filter: .studio, exposure: 10), skin: nil)
-        let none = render(look(filter: .studio, skin: 80, exposure: 10), skin: SkinSmoothingPass.none)
+        let none = render(look(filter: .studio, skin: 80, exposure: 10), skin: SkinSmoothingPass(faces: []))
         #expect(plain.greatestDifference(from: none, in: Self.bounds) == 0)
         let withoutAPass = render(look(filter: .studio, skin: 80, exposure: 10), skin: nil)
         #expect(plain.greatestDifference(from: withoutAPass, in: Self.bounds) == 0, "no pass, no smoothing: filter previews and the like")

@@ -89,18 +89,6 @@ extension CreatorProfileService {
         return .added
     }
 
-    func setSwearing(_ swearing: Swearing?) {
-        var updated = profile
-        updated.swearing = swearing
-        if swearing != nil { updated.declinedVoiceItems.remove(.swearing) }
-        profile = updated
-    }
-
-    /// "None of these": the question is not asked again, and nothing is filled in.
-    func decline(_ item: VoicePersonalityItem) {
-        profile.declinedVoiceItems.insert(item)
-    }
-
     // MARK: - Examples (Proof)
 
     /// Adds something the creator wrote (a caption, a post, a past script). Up to three; nothing with words the model won't learn.

@@ -147,7 +147,7 @@ final class PrompterViewModel {
     var speechTracker = ScriptSpeechTracker(words: [])
     /// Vertical extent of each paragraph in the text, for placing words on the guide.
     private(set) var paragraphFrames: [Range<Double>] = []
-    /// The word each mode was left on (see `keepPlace`).
+    /// The word each mode was left on (see `putBackPlace(of:)`).
     private var readingPlaces: [PrompterMode: Int] = [:]
     /// The word to put back on the guide until the layout of the mode just entered has settled.
     private var layoutAnchor: LayoutAnchor?

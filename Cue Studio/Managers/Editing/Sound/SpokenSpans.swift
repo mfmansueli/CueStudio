@@ -17,13 +17,6 @@ nonisolated struct SpokenSpans: Hashable, Sendable {
     var spans: [TimeSpan]
     var legacySpans: [TimeSpan]
 
-    static let none = SpokenSpans(spans: [], legacySpans: [])
-
-    init(spans: [TimeSpan], legacySpans: [TimeSpan]) {
-        self.spans = spans
-        self.legacySpans = legacySpans
-    }
-
     init(edit: TakeEdit, speech: VoiceActivity, window: TimeSpan) {
         let narrations = edit.voiceOvers.compactMap { clip in clip.editedSpan(in: edit.timeline).map { (clip, $0) } }
         legacySpans = speech.editedSpans(in: edit.timeline) + narrations.map(\.1)

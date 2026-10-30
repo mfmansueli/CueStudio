@@ -67,18 +67,11 @@ nonisolated struct EditedComposition: @unchecked Sendable {
         case tooWarm
     }
 
-    /// `sound` replaces the sound of the recordings Studio Voice treated (`RecordingSounds`). A montage's
-    /// other recordings (`TakeEdit.sources`) are read from the edit's media; one that can't be read
-    /// plays black and silent for its length. `speech` is where someone speaks in the recordings,
-    /// for music that ducks. Built off the main thread (`@concurrent`): the preview rebuilds while a finger drags a
+    /// The composition of `plan` (`RenderPlan`), which is all it reads of the edit. `sound` replaces the sound of the
+    /// recordings Studio Voice treated (`RecordingSounds`). A montage's other recordings (`TakeEdit.sources`) are read from the
+    /// edit's media; one that can't be read plays black and silent for its length. `speech` is where someone speaks in the
+    /// recordings, for music that ducks. Built off the main thread (`@concurrent`): the preview rebuilds while a finger drags a
     /// handle, a slider or the frame, and the screen keeps following the finger meanwhile.
-    static func build(
-        source: URL, edit: TakeEdit, sound: RecordingSounds = .none, speech: VoiceActivity = .none, options: Options
-    ) async throws -> EditedComposition {
-        try await build(source: source, plan: RenderPlan(edit, options: options), sound: sound, speech: speech)
-    }
-
-    /// The composition of `plan` (`RenderPlan`), which is all it reads of the edit.
     @concurrent
     static func build(
         source: URL, plan: RenderPlan, sound: RecordingSounds = .none, speech: VoiceActivity = .none
@@ -463,16 +456,9 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     }
 
     /// The edit cut into stretches the compositor renders the same way: each dissolve on its own
-    /// (reading both tracks), the rest from the main track alone. They follow on without gaps
-    /// from the start to `duration`.
-    static func instructionRanges(
-        for dissolves: [TransitionWindow], duration: CMTime
-    ) -> [(range: CMTimeRange, dissolve: TransitionWindow?)] {
-        stretches(for: dissolves, media: [], duration: duration).map { ($0.range, $0.dissolve) }
-    }
-
-    /// Like `instructionRanges`, also cut where a video over the take (`media`, edited seconds)
-    /// starts and ends, so the media track is only read while one shows.
+    /// (reading both tracks), the rest from the main track alone, also cut where a video over the take
+    /// (`media`, edited seconds) starts and ends, so the media track is only read while one shows. They
+    /// follow on without gaps from the start to `duration`.
     static func stretches(
         for dissolves: [TransitionWindow], media: [TimeSpan], duration: CMTime
     ) -> [(range: CMTimeRange, dissolve: TransitionWindow?, showsMedia: Bool)] {
@@ -738,14 +724,6 @@ nonisolated struct EditedComposition: @unchecked Sendable {
     }
 
     // MARK: - Sound at the cuts
-
-    /// A short dip in the sound at each seam where something was removed, so joining two
-    /// waveforms mid-cycle never clicks. Cuts that removed nothing play straight through. A fade
-    /// takes the sound down to silence and back with the picture instead. (The ramps of `levels`,
-    /// with every clip at full volume.)
-    static func fades(for timeline: EditTimeline) -> [Fade] {
-        levels(for: timeline) { _ in true }.filter { $0.duration > 0 }
-    }
 
     /// The take's sound level along the edit on one sound track: each clip at its volume (silent
     /// while muted, or where it plays on another track: `plays` says which clips this track

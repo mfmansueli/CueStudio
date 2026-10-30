@@ -7,8 +7,8 @@ import Foundation
 @testable import Cue_Studio
 
 /// The twelve made-up creators My Cue Voice is measured on (plan §5 · stage 0, §6), each with three ideas, plus two of them in
-/// another language to exercise the language checks. Every profile is what the app can hold *today*: the fields added later are
-/// given to the same people in `VoicePersona+Enriched`, so before and after talk about the same creator.
+/// another language to exercise the language checks. Every profile is what the app can hold today, so measurements before and after a change talk
+/// about the same creator.
 ///
 /// The `styles` of a profile are left at the app's default (short sentences, conversational): that is what nearly every real
 /// profile carries, and it is part of what the measurements must show.

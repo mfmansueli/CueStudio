@@ -69,7 +69,7 @@ extension RealExports {
             smoothed.voiceEnhancement = .off
             smoothed.skin = SkinPreset.studio.look
             var plain = smoothed
-            plain.skin = .off
+            plain.skin = SkinLook()
 
             let service = TakeEditService()
             let previewSmoothed = try await service.previewItem(forVideoAt: clip, edit: smoothed)

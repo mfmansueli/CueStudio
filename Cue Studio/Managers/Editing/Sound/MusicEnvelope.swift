@@ -88,11 +88,6 @@ nonisolated enum MusicEnvelope {
             }
     }
 
-    /// The stretches the music is fully down for, the first way: speech joined across short gaps.
-    static func duckSpans(_ speech: [TimeSpan]) -> [TimeSpan] {
-        duckSpans(speech, timing: .legacy)
-    }
-
     /// The stretches the music is fully down for: speech joined where the quiet between is shorter than `timing` bridges.
     static func duckSpans(_ speech: [TimeSpan], timing: Timing) -> [TimeSpan] {
         var result: [TimeSpan] = []
@@ -104,11 +99,6 @@ nonisolated enum MusicEnvelope {
             }
         }
         return result
-    }
-
-    /// How far down the music is at `time`, the first way: 1 in the clear, `MusicClip.duckedLevel` under speech.
-    static func duck(at time: TimeInterval, spans: [TimeSpan]) -> Double {
-        duck(at: time, spans: spans, low: MusicClip.duckedLevel, timing: .legacy)
     }
 
     /// How far down the music is at `time`: 1 in the clear, `low` under speech, and on the way between.

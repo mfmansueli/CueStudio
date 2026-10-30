@@ -18,7 +18,7 @@ nonisolated struct Framing {
     let moment: SmoothingMoment
     let sourceTime: TimeInterval
     /// The edit's own seconds, for what the look draws over time (film grain): the moment's, unless the video starts before
-    /// the edit does (the editor's preview, `EditedComposition.Options.shownTimeline`).
+    /// the edit does (the editor's preview, `EditedComposition.Options.reachesWholeRecording`).
     let lookTime: TimeInterval
     /// While a support shows: the main area's size (pixels of the take's frame) and how the recording sits in it. The frame is
     /// then drawn into the area from the whole recording, not from the take's crop.

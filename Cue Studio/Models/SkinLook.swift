@@ -22,9 +22,6 @@ nonisolated struct SkinLook: Codable, Hashable, Sendable {
         self.antiShine = SkinBeautyCalibration.clamped(antiShine)
     }
 
-    /// Everything off: a new edit's, and what Reset gives back.
-    static let off = SkinLook()
-
     /// Something changes the picture.
     var isOn: Bool { smoothing.isOn || faceLight > 0 || antiShine > 0 }
 

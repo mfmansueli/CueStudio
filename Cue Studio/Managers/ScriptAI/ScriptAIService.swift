@@ -312,7 +312,7 @@ final class ScriptAIService: ScriptWriting {
                 if firstResponse == nil { firstResponse = started.duration(to: clock.now) }
                 progress.noteProgress()
                 latest = snapshot.rawContent
-                // Never shown: the page replays the finished, cleaned script. Words shown as they arrive go through `DashRewriter.displayable`.
+                // Never shown: the page replays the finished, cleaned script.
                 partial = snapshot.content
                 // The words are counted a few times a second, not at every token: counting Japanese or Chinese runs a tokenizer.
                 if let meter, counted.map({ $0.duration(to: clock.now) >= Self.countInterval }) ?? true {

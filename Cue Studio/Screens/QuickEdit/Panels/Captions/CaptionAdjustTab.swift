@@ -27,7 +27,7 @@ struct CaptionAdjustTab: View {
                 PanelNote(text: String(localized: "Hard to read on bright scenes. Add a background, a thick outline or a halo."), tint: Palette.warnText)
                     .accessibilityIdentifier("edit.captionContrastWarning")
             }
-            font(settings, spec: spec, changes: changes)
+            font(settings, spec: spec)
             colors(spec, changes: changes)
             background(spec, changes: changes)
             edges(spec, changes: changes)
@@ -57,7 +57,7 @@ struct CaptionAdjustTab: View {
     // MARK: - Sections
 
     @ViewBuilder
-    private func font(_ settings: CaptionSettings, spec: CaptionStyleSpec, changes: CaptionAdjustments) -> some View {
+    private func font(_ settings: CaptionSettings, spec: CaptionStyleSpec) -> some View {
         PanelChips(
             options: [PanelOption(nil, String(localized: "Style's font"), key: "preset")]
                 + TextOverlayFont.pickerFonts(including: settings.face).map { PanelOption(Optional($0), $0.label, key: $0.rawValue) },

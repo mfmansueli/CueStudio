@@ -13,9 +13,6 @@ nonisolated struct ScriptGroup: Identifiable, Equatable, Sendable {
 
     var id: ScriptState { state }
 
-    /// "READY TO RECORD · 3", "DRAFTS · 4 · IN PROGRESS", "RECORDED · 2".
-    var count: Int { scripts.count }
-
     static func groups(of scripts: [Script], takeCount: (UUID) -> Int) -> [ScriptGroup] {
         let byState = Dictionary(grouping: scripts) { $0.state(takeCount: takeCount($0.id)) }
         return ScriptState.allCases

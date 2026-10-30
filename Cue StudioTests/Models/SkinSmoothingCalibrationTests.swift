@@ -23,13 +23,10 @@ struct SkinSmoothingCalibrationTests {
         #expect(Calibration.range == 0...100)
     }
 
-    @Test func zeroIsOffAndAnythingAboveItIsOn() {
-        #expect(!Calibration.isOn(0))
-        #expect(!Calibration.isOn(-20))
-        #expect(!Calibration.isOn(.nan))
-        #expect(Calibration.isOn(1))
-        #expect(Calibration.isOn(100))
+    @Test func zeroDoesNothing() {
         #expect(Calibration.strength(0) == 0)
+        #expect(Calibration.strength(-20) == 0)
+        #expect(Calibration.strength(.nan) == 0)
     }
 
     @Test func theStrengthGrowsWithTheDialAndStopsWellShortOfFull() {

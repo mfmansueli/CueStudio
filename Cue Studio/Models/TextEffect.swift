@@ -21,7 +21,7 @@ nonisolated struct TextEffect: Codable, Hashable, Sendable {
     /// 0 to 1: the kind's own strength (`TextEffectKind.intensityLabel`).
     var intensity: Double
     var motion: TextEffectMotion = .animated
-    /// Seconds its way in takes; the way out takes a little less (`TextEffectTiming`).
+    /// Seconds its way in takes; the way out takes a little less (`TextEffectChoreography.timing`).
     var duration: TimeInterval
     var direction: TextEffectDirection
 
@@ -32,19 +32,6 @@ nonisolated struct TextEffect: Codable, Hashable, Sendable {
         intensity = kind.defaultIntensity
         duration = kind.defaultDuration
         direction = kind.directions.first ?? .start
-    }
-
-    init(
-        kind: TextEffectKind, accent: OverlayColor? = nil, tone: MetalTone = .gold, intensity: Double? = nil,
-        motion: TextEffectMotion = .animated, duration: TimeInterval? = nil, direction: TextEffectDirection? = nil
-    ) {
-        self.init(kind)
-        if let accent { self.accent = accent }
-        self.tone = tone
-        if let intensity { self.intensity = min(max(intensity, Self.intensityRange.lowerBound), Self.intensityRange.upperBound) }
-        self.motion = motion
-        if let duration { self.duration = min(max(duration, TextEffectKind.durationRange.lowerBound), TextEffectKind.durationRange.upperBound) }
-        if let direction, kind.directions.contains(direction) { self.direction = direction }
     }
 
     /// Whether it plays its own way in and out.

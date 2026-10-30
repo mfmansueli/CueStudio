@@ -229,7 +229,7 @@ struct SkinSmoothingDeviceTests {
         smoothed.voiceEnhancement = .off
         smoothed.skin = SkinPreset.studio.look
         var plain = smoothed
-        plain.skin = .off
+        plain.skin = SkinLook()
         let service = TakeEditService()
         let preview = try await service.previewItem(forVideoAt: clip, edit: smoothed)
         let previewPlain = try await service.previewItem(forVideoAt: clip, edit: plain)
@@ -296,7 +296,7 @@ struct SkinSmoothingDeviceTests {
         smoothed.voiceEnhancement = .off
         smoothed.skin = SkinPreset.studio.look
         var plain = smoothed
-        plain.skin = .off
+        plain.skin = SkinLook()
         let service = TakeEditService()
         let on = try await service.previewItem(forVideoAt: clip, edit: smoothed)
         let off = try await service.previewItem(forVideoAt: clip, edit: plain)

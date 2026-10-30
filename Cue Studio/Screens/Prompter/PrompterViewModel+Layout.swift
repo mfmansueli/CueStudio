@@ -74,9 +74,6 @@ extension PrompterViewModel {
     /// Recording with the compact bar: the whole one is back for a few seconds after a tap.
     var showsCompactBar: Bool { isRecording && !bar.isExpanded }
 
-    /// The v29 name for the compact bar (`PrompterViewModel.isCompact` = recording and not peeking).
-    var isCompact: Bool { showsCompactBar }
-
     /// The reading line as a fraction of the screen's height, 0.10 to 0.50 (the pinch on the right edge moves it).
     var readingLineFraction: Double {
         let screen = screenMetrics.screen

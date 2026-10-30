@@ -100,7 +100,8 @@ struct TextEffectRenderingTests {
         let again = try pixels(TextEffectComposer.image(sprites, effect: effect, time: 0.37, length: 4))
         #expect(first == again)
         // A fresh painting of the same text draws it the same.
-        let fresh = try #require(TextEffectSprites.make(request))
+        let layout = try #require(TextEffectCache.shared.layout(for: request))
+        let fresh = try #require(TextEffectSprites.make(request, layout: layout))
         #expect(try pixels(TextEffectComposer.image(fresh, effect: effect, time: 0.37, length: 4)) == first)
     }
 

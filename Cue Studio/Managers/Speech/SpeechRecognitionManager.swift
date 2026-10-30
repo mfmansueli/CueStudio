@@ -16,7 +16,7 @@ import Synchronization
 /// `DictationTranscriber`, from the same framework, takes the languages (and devices) it doesn't.
 /// The first time a language is used its model may need a download, of that language only, and
 /// the prompter says so while it runs; until it's ready, Voice follow falls back to the microphone
-/// level. The model is kept only while in use: keeping it loaded after a stop (`lingering`) was
+/// level. The model is kept only while in use: keeping it loaded after a stop was
 /// measured on an iPhone 18 Pro Max and restarted no faster (the system keeps it warm), so the
 /// original retention stays.
 @MainActor
@@ -32,12 +32,10 @@ final class SpeechRecognitionManager: SpeechTranscribing {
     private let transcriptEpoch = Epoch()
 
     private let resolver: SpeechLocaleResolver
-    private let catalog: SpeechLocaleCatalog
     private let use: SpeechUse
     private var downloads = DownloadCooldown()
 
     init(catalog: SpeechLocaleCatalog = AppleSpeechLocaleCatalog(), use: SpeechUse = .following) {
-        self.catalog = catalog
         resolver = SpeechLocaleResolver(catalog: catalog)
         self.use = use
     }
@@ -141,14 +139,6 @@ final class SpeechRecognitionManager: SpeechTranscribing {
 
     func discardHeard() {
         transcriptEpoch.advance()
-    }
-
-    // MARK: - Availability
-
-    /// Whether Voice Following can follow the words in `language` here, and whether its model is
-    /// already on the device.
-    func availability(of language: CueLanguage) async -> VoiceFollowingAvailability {
-        VoiceFollowingAvailability(await SpeechCapabilityChecker(catalog: catalog).support(for: language))
     }
 
     // MARK: - Recognizers
@@ -284,8 +274,8 @@ final class SpeechRecognitionManager: SpeechTranscribing {
     /// takes over when the buffers change format (the camera's audio and Studio's meter differ), so
     /// one recognition runs across a switch between Selfie and Studio. The inputs carry no start
     /// time of their own: the analyzer places them one after the other, so a new converter never
-    /// sends it back in time (`AnalyzerInputConverter` stamps each buffer from its own clock, which
-    /// starts at zero again, and the analyzer ends the recognition: "timestamp overlaps or precedes").
+    /// sends it back in time (stamped from a converter's own clock, which starts at zero again, the
+    /// analyzer ends the recognition: "timestamp overlaps or precedes").
     private nonisolated final class AudioFeed: Sendable {
         private let lock = NSLock()
         // Only touched while holding `lock`. A `Mutex` can't hold them: converting ties each

@@ -69,8 +69,6 @@ nonisolated struct TextEffectLayout: @unchecked Sendable {
 
     /// The drawing's size: the box with its room.
     var drawingSize: CGSize { CGSize(width: boxSize.width + room * 2, height: boxSize.height + room * 2) }
-    /// The box inside the drawing.
-    var boxRect: CGRect { CGRect(x: room, y: room, width: boxSize.width, height: boxSize.height) }
     /// Every piece's letters together.
     var textBounds: CGRect { lines.reduce(CGRect.null) { $0.union($1.bounds) } }
 

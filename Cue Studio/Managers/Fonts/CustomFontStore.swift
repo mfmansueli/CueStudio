@@ -10,7 +10,7 @@ import UIKit
 /// The creator's imported font families: read at launch, their files registered with Core Text for Cue and handed to the
 /// renderers (`CustomFontRegistry`). Importing copies each picked file in only once it reads as a whole font; a family that
 /// grows a style (Bold after Regular) keeps its name. Removing takes a family out of the pickers but keeps its files: the
-/// videos, saved styles and brand kits that use it keep drawing in it until nothing names it (`CustomFontCleaner`). Fonts
+/// videos, saved styles and brand kits that use it keep drawing in it until nothing names it (`sweepRemoved`). Fonts
 /// are never shared with other apps and never leave this iPhone; the creator vouches for the right to use them.
 @MainActor
 @Observable

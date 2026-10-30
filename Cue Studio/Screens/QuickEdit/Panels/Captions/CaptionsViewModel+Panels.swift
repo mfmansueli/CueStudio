@@ -136,33 +136,6 @@ extension CaptionsViewModel {
 
     // MARK: - Caption style
 
-    /// The style of the catalogue the captions wear as it is; nil while they wear it changed (Adjust, a text's look copied
-    /// onto them, set by an older version) or the old caption style.
-    var captionTheme: CaptionTheme? {
-        guard let settings = edit.captionCollection, settings.customLook == nil, settings.changedLookCount == 0 else { return nil }
-        return settings.theme
-    }
-
-    /// The look the captions draw with when it isn't a preset of the collection: a text's look copied
-    /// onto them, or (before the collection) their type look. Caption style shows it as Custom.
-    var captionCustomLook: TextLook? {
-        guard let settings = edit.captionCollection else { return edit.captionLook }
-        return settings.customLook
-    }
-
-    /// What Caption style › Font changes besides the highlight color: a copied look, or the type look
-    /// of captions from before the collection (Cue's until one is set). A preset has none.
-    var captionEditableLook: TextLook? {
-        guard let settings = edit.captionCollection else { return edit.captionLook ?? TypePreset.cue.look(for: .caption) }
-        return settings.customLook
-    }
-
-    /// Custom's name: a type preset an older version put on the captions keeps its own.
-    var captionCustomLookName: String {
-        if edit.captionCollection == nil, let preset = edit.captionPreset { return preset.label }
-        return String(localized: "Custom")
-    }
-
     /// The tab Caption style shows: the one picked, when it is one of Caption style's.
     var captionStyleTab: EditorPanelTab {
         EditorPanelTab.captionStyle.contains(panelTab) ? panelTab : .styles
@@ -258,28 +231,5 @@ extension CaptionsViewModel {
     /// The highlight color back to the style's own.
     func resetCaptionAccent() {
         change { $0.captionCollection?.accent = nil }
-    }
-}
-
-extension CaptionsViewModel {
-    /// Captions drawn with a text's look (copied with "Apply this style to captions", or an edit from
-    /// before the collection): Font changes it for every line (one undo step).
-    func updateCaptionLook(_ update: (inout TextLook) -> Void) {
-        let aspect = edit.aspect
-        change { snapshot in
-            if var settings = snapshot.captionCollection {
-                guard var look = settings.customLook else { return }
-                let before = settings
-                update(&look)
-                settings.customLook = look
-                snapshot.captionCollection = settings
-                Self.refit(&snapshot, from: before, aspect: aspect)
-                return
-            }
-            var look = snapshot.captionLook ?? TypePreset.cue.look(for: .caption)
-            update(&look)
-            snapshot.captionLook = look
-            snapshot.captionPreset = nil
-        }
     }
 }

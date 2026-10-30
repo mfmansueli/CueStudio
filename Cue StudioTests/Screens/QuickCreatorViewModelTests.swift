@@ -461,8 +461,6 @@ struct QuickCreatorViewModelTests {
         #expect(viewModel.toolbarItems.last?.id == "delete")
         viewModel.perform(.replaceMedia)
         #expect(viewModel.photoRequest?.purpose == .replaceMedia(id, kind: .photo))
-        // A photo's place can take a video too (and a video's a photo).
-        #expect(viewModel.photoRequest?.offersVideos == true)
     }
 
     @Test func duplicatingAMediaPutsACopyOnTopThatSharesTheFile() async throws {

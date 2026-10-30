@@ -94,7 +94,7 @@ struct ScriptsViewModelTests {
         let groups = viewModel.groups(takeCount: { $0 == recorded.id ? 3 : 0 })
         #expect(groups.map(\.state) == [.ready, .draft, .recorded])
         #expect(groups[0].scripts.map(\.title) == ["Ready", "More ready"])
-        #expect(groups[1].count == 1 && groups[2].count == 1)
+        #expect(groups[1].scripts.count == 1 && groups[2].scripts.count == 1)
     }
 
     @Test func aGroupWithNoScriptIsNotThere() {

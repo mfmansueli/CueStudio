@@ -17,6 +17,11 @@ struct LanguageServiceTests {
         LanguageService(defaults: defaults.defaults, store: store)
     }
 
+    /// The app language picked in the iPhone's Settings (Cue › Language), on an iPhone in Italian.
+    private func makeService(defaults: TestDefaults, appLanguage: String) -> LanguageService {
+        makeService(defaults: defaults, store: InMemoryAppLanguageStore(chosenLocalization: appLanguage, systemLocalization: "it", systemLanguages: ["it-IT"]))
+    }
+
     @Test func followsTheIPhoneUntilALanguageIsPicked() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
@@ -38,9 +43,8 @@ struct LanguageServiceTests {
     @Test func italianIPhoneEnglishCuePortugueseScriptAndVoice() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
-        let store = InMemoryAppLanguageStore(systemLocalization: "it", systemLanguages: ["it-IT"])
+        let store = InMemoryAppLanguageStore(chosenLocalization: "en", systemLocalization: "it", systemLanguages: ["it-IT"])
         let service = makeService(defaults: defaults, store: store)
-        service.setAppLanguage(.english)
         service.scriptLanguage = .portugueseBrazil
         service.voiceFollowingLanguage = .portugueseBrazil
         #expect(service.interfaceLanguage == .english)
@@ -50,23 +54,10 @@ struct LanguageServiceTests {
         #expect(service.speechRequest(for: script) == .language(.portugueseBrazil))
     }
 
-    @Test func changingTheAppLanguageChangesNothingElse() {
-        let defaults = TestDefaults()
-        defer { defaults.tearDown() }
-        let service = makeService(defaults: defaults)
-        service.voiceFollowingLanguage = .portugueseBrazil
-        service.scriptLanguage = .portugueseBrazil
-        service.setAppLanguage(.japanese)
-        #expect(service.interfaceLanguage == .japanese)
-        #expect(service.voiceFollowingLanguage == .portugueseBrazil)
-        #expect(service.scriptLanguage == .portugueseBrazil)
-    }
-
     @Test func changingVoiceFollowingChangesNothingElse() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
-        let service = makeService(defaults: defaults)
-        service.setAppLanguage(.english)
+        let service = makeService(defaults: defaults, appLanguage: "en")
         service.scriptLanguage = .portugueseBrazil
         service.voiceFollowingLanguage = .english
         #expect(service.interfaceLanguage == .english)
@@ -77,8 +68,7 @@ struct LanguageServiceTests {
     @Test func changingTheScriptLanguageChangesNothingElse() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
-        let service = makeService(defaults: defaults)
-        service.setAppLanguage(.italian)
+        let service = makeService(defaults: defaults, appLanguage: "it")
         service.voiceFollowingLanguage = .english
         service.scriptLanguage = .japanese
         #expect(service.interfaceLanguage == .italian)
@@ -88,9 +78,8 @@ struct LanguageServiceTests {
     @Test func everyLanguageSurvivesARelaunch() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
-        let store = InMemoryAppLanguageStore(systemLocalization: "it", systemLanguages: ["it-IT"])
+        let store = InMemoryAppLanguageStore(chosenLocalization: "en", systemLocalization: "it", systemLanguages: ["it-IT"])
         let first = makeService(defaults: defaults, store: store)
-        first.setAppLanguage(.english)
         first.voiceFollowingLanguage = .portugueseBrazil
         first.scriptLanguage = .spanish
         let relaunched = makeService(defaults: defaults, store: store)
@@ -100,41 +89,23 @@ struct LanguageServiceTests {
         #expect(relaunched.scriptLanguage == .spanish)
     }
 
-    @Test func iPhoneLanguageForgetsThePick() {
-        let defaults = TestDefaults()
-        defer { defaults.tearDown() }
-        let store = InMemoryAppLanguageStore(systemLocalization: "it", systemLanguages: ["it-IT"])
-        let service = makeService(defaults: defaults, store: store)
-        service.setAppLanguage(.german)
-        service.setAppLanguage(nil)
-        #expect(store.chosenLocalization == nil)
-        #expect(service.interfaceLanguage == .italian)
-        #expect(service.systemInterfaceLanguage == .italian)
-    }
-
-    @Test func switchingTheInterfaceAppliesItOnce() {
+    @Test func theInterfaceIsAppliedOnceAtLaunch() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
         var applied: [CueLanguage] = []
-        let service = LanguageService(
+        _ = LanguageService(
             defaults: defaults.defaults,
-            store: InMemoryAppLanguageStore(systemLocalization: "en", systemLanguages: ["en-US"]),
+            store: InMemoryAppLanguageStore(chosenLocalization: "ar", systemLocalization: "en", systemLanguages: ["en-US"]),
             apply: { applied.append($0) }
         )
-        service.setAppLanguage(.arabic)
-        service.setAppLanguage(.arabic)
-        // English picked on an English iPhone shows the same interface: nothing to rebuild.
-        service.setAppLanguage(nil)
-        service.setAppLanguage(.english)
-        #expect(applied == [.english, .arabic, .english])
+        #expect(applied == [.arabic])
     }
 
     /// The app language is never what Voice Following listens for.
     @Test func voiceFollowingNeverUsesTheAppLanguage() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
-        let service = makeService(defaults: defaults)
-        service.setAppLanguage(.japanese)
+        let service = makeService(defaults: defaults, appLanguage: "ja")
         let script = TestData.script(text: "Here are three habits that changed my mornings.")
         #expect(service.speechRequest(for: script) == .detect(text: script.text, systemLanguages: ["it-IT"]))
     }
@@ -145,8 +116,7 @@ struct LanguageServiceTests {
     @Test func captionsListenInTheScriptsLanguage() {
         let defaults = TestDefaults()
         defer { defaults.tearDown() }
-        let service = makeService(defaults: defaults)
-        service.setAppLanguage(.english)
+        let service = makeService(defaults: defaults, appLanguage: "en")
         service.voiceFollowingLanguage = .english
         let script = TestData.script(text: "Oi, gente!", language: .portugueseBrazil)
         #expect(service.speechRequest(for: script) == .language(.english))

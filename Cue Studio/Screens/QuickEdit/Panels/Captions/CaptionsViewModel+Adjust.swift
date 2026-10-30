@@ -15,11 +15,6 @@ extension CaptionsViewModel {
         edit.captionCollection.map(\.withoutCopiedLook)
     }
 
-    /// The changes over the style.
-    var captionAdjustments: CaptionAdjustments {
-        captionAdjustSettings?.adjustments ?? CaptionAdjustments()
-    }
-
     /// How many parts of the look are changed ("· N changed"); 0 for the style's own.
     var changedCaptionLookCount: Int {
         captionAdjustSettings?.changedLookCount ?? 0
@@ -57,9 +52,6 @@ extension CaptionsViewModel {
         previewCurrentCaptionLine()
         checkCaptionContrast()
     }
-
-    /// The family Adjust shows as picked: the one over the style, nil for the style's own.
-    var captionFace: TextOverlayFont? { captionAdjustSettings?.face }
 
     /// "Back to <style>'s look": the family and every change over the style go (one undo step); how it moves, where it sits
     /// and the highlight color stay.

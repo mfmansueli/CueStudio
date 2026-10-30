@@ -111,7 +111,7 @@ struct BlurEditingLayer: View {
                 .contentShape(Rectangle())
                 .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
                 .gesture(moveGesture(region, rect: rect))
-                .simultaneousGesture(pinchGesture(region, rect: rect))
+                .simultaneousGesture(pinchGesture(rect: rect))
                 .accessibilityElement()
                 .accessibilityLabel(Text("\(region.subject.label), \(region.style.label)"))
                 .accessibilityValue(unchecked ? Text("Not tracked here") : Text(""))
@@ -122,7 +122,7 @@ struct BlurEditingLayer: View {
             leaders(places, rect: rect)
             // Any corner resizes around the middle: the top left one is ✕'s.
             ForEach([Corner.topTrailing, .bottomLeading, .bottomTrailing], id: \.self) { corner in
-                cornerHandle(corner, region: region, rect: rect, at: places[corner] ?? corner.point(of: rect))
+                cornerHandle(corner, rect: rect, at: places[corner] ?? corner.point(of: rect))
             }
             deleteButton(region)
                 .offset(offset(places[.topLeading] ?? Corner.topLeading.point(of: rect), from: rect))
@@ -175,11 +175,11 @@ struct BlurEditingLayer: View {
     }
 
     /// A pinch resizes it around its middle.
-    private func pinchGesture(_ region: BlurRegion, rect: CGRect) -> some Gesture {
+    private func pinchGesture(rect: CGRect) -> some Gesture {
         MagnifyGesture()
             .onChanged { value in
                 let start = begin(rect, "pinch")
-                resize(region, from: rect, to: start.size.applying(CGAffineTransform(scaleX: value.magnification, y: value.magnification)))
+                resize(from: rect, to: start.size.applying(CGAffineTransform(scaleX: value.magnification, y: value.magnification)))
             }
             .onEnded { _ in end("pinch") }
     }
@@ -241,7 +241,7 @@ struct BlurEditingLayer: View {
     }
 
     /// A corner pulled out grows the area around its middle (both sides at once), pushed in shrinks it.
-    private func cornerHandle(_ corner: Corner, region: BlurRegion, rect: CGRect, at place: CGPoint) -> some View {
+    private func cornerHandle(_ corner: Corner, rect: CGRect, at place: CGPoint) -> some View {
         Circle()
             .fill(Color.white)
             .frame(width: 14, height: 14)
@@ -256,7 +256,7 @@ struct BlurEditingLayer: View {
                             width: max(24, start.width + 2 * value.translation.width * corner.direction.width),
                             height: max(24, start.height + 2 * value.translation.height * corner.direction.height)
                         )
-                        resize(region, from: rect, to: size)
+                        resize(from: rect, to: size)
                     }
                     .onEnded { _ in end("corner") }
             )
@@ -315,7 +315,7 @@ struct BlurEditingLayer: View {
     }
 
     /// The area brought from its size now (`rect`) to `target`, around its middle.
-    private func resize(_ region: BlurRegion, from rect: CGRect, to target: CGSize) {
+    private func resize(from rect: CGRect, to target: CGSize) {
         guard rect.width > 0, rect.height > 0 else { return }
         blur.resize(width: max(24, target.width) / rect.width, height: max(24, target.height) / rect.height)
     }

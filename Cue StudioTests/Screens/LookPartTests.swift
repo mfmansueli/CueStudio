@@ -42,7 +42,7 @@ struct LookPartTests {
     @Test func compareShowsThePreviewAgainAndEndsWithAChange() {
         part.setAdjustment(.contrast, 40)
         let shown = host.playedEditShown
-        part.togglePictureComparison()
+        part.holdPictureComparison(true)
         #expect(part.comparesPicture)
         #expect(host.playedEditShown == shown + 1)
         part.editChanged()

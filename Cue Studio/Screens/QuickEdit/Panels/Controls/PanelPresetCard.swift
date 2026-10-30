@@ -139,11 +139,3 @@ struct PanelPresetCard<Menu: View>: View {
         return marks.joined(separator: ", ")
     }
 }
-
-extension PanelPresetCard where Menu == EmptyView {
-    init(
-        name: String, sample: UIImage?, frame: UIImage?, isSelected: Bool, identifier: String, action: @escaping () -> Void
-    ) {
-        self.init(name: name, sample: sample, frame: frame, isSelected: isSelected, identifier: identifier, action: action) { EmptyView() }
-    }
-}

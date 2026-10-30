@@ -189,18 +189,6 @@ extension OverlaysViewModel {
         player.seek(to: min(span.end, span.start + target))
     }
 
-    func setKeyframeEasing(_ easing: KeyframeEasing) {
-        setAtPlayhead { $0.easing = easing }
-    }
-
-    func setKeyframeOpacity(_ opacity: Double) {
-        setAtPlayhead { $0.opacity = min(max(opacity, 0), 1) }
-    }
-
-    func setKeyframeScale(_ scale: Double) {
-        setAtPlayhead { $0.scale = min(max(scale, OverlayKeyframe.scaleRange.lowerBound), OverlayKeyframe.scaleRange.upperBound) }
-    }
-
     /// A text dragged on the preview: its keyframe at the playhead when it moves, else its place.
     func moveText(_ id: UUID, to center: OverlayPoint) {
         guard edit.texts.first(where: { $0.id == id })?.keyframes.isEmpty == false else {
@@ -257,11 +245,6 @@ extension OverlaysViewModel {
     }
 
     /// Changes the keyframe at the playhead of the picked item, adding it first when there's none.
-    private func setAtPlayhead(_ update: (inout OverlayKeyframe) -> Void) {
-        guard let item = motionItem else { return }
-        setAtPlayhead(of: item, update)
-    }
-
     /// Changes the item's keyframe at the playhead, adding it first (where the item is now) when there's none.
     func setAtPlayhead(of item: MotionItem, _ update: (inout OverlayKeyframe) -> Void) {
         guard let local = localTime(of: item) else { return }
