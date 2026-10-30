@@ -256,8 +256,9 @@ Decided by the owner on the phone (29–30/10); built, installed on both iPhones
   The group titles use `ink2`, a measured text token. List captures: `HandoffCaptureTests.test3_1_ScriptsList`.
 - **Strings:** three new keys in the 20 languages (`scripts.group.ready`, `Drafts`, `scripts.group.recorded`, taken from the old count strings);
   16 entries no code used any more removed; `scripts/strings.py missing` reports none.
-- **Not measured: the wait's frame rate on the iPhone.** `DockMotionDeviceUITests/testFilmingUltraAIsWait` (the stub paced as Gemini's, with a
-  long check) is ready for `tools/motion/film.sh`, but twice the iPhone 15 Pro didn't let the UI test runner in ("Timed out while enabling
-  automation mode": iOS asks the owner on the phone). Run it with the phone in hand:
-  `CUE_DEVICE="iago Lima iphone" tools/motion/film.sh DockMotionDeviceUITests/testFilmingUltraAIsWait build/captures/motion/ultra-wait`, then
-  `python3 tools/motion/gaps.py build/captures/motion/ultra-wait/film.mov`. No real Ultra AI call was made tonight.
+- **The wait on the iPhone 15 Pro** (morning of 30/10, with the owner at the phone: overnight iOS twice refused the UI test runner, "Timed out
+  while enabling automation mode"). `CUE_DEVICE="iago Lima iphone" tools/motion/film.sh DockMotionDeviceUITests/testFilmingUltraAIsWait …`
+  (Debug, the stub paced as Gemini's with a 22 s check, the screen filmed over the cable at up to 60 fps): the star's 46 s ran at **49.4 fps**,
+  steady from start to finish (48–52 in every 5 s); 80% of the frames on time, 20% one frame late (33 ms), 9 gaps over 34 ms, the longest
+  67 ms: no visible stutter, but below the Apple Intelligence star's ~55–60 (§3). The scene's drawing per frame is the place to win it back if
+  the owner wants 60. No real Ultra AI call was made.
