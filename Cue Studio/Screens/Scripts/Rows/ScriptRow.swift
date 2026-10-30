@@ -35,7 +35,7 @@ struct ScriptRow: View {
             ThemeRail(color: topic?.color ?? Palette.separator)
             VStack(alignment: .leading, spacing: 3) {
                 Text(script.displayTitle)
-                    .cueFont(15.5, weight: .semibold)
+                    .cueFont(15.5, weight: .medium)
                     .foregroundStyle(Palette.ink)
                     .lineLimit(large ? 4 : 2)
                     .fixedSize(horizontal: false, vertical: true)
@@ -47,7 +47,7 @@ struct ScriptRow: View {
                         .monoFont(size: 10, weight: .semibold)
                         .textCase(.uppercase)
                         .tracking(0.6)
-                        .foregroundStyle(Palette.inkHint)
+                        .foregroundStyle(Palette.ink2)
                         .lineLimit(large ? 2 : 1)
                 }
                 .accessibilityElement(children: .ignore)

@@ -177,7 +177,7 @@ struct AppServices {
             isAvailable: options.ultraAvailable, consent: UltraConsentService(defaults: options.defaults),
             budget: UltraCallBudget(defaults: options.ultraBudgetDefaults),
             allowance: UltraAllowanceService(defaults: options.defaults) { [store] in
-                UltraAllowance.Membership(tier: store.tier, isInFreeTrial: store.isInFreeTrial)
+                UltraAllowance.Membership(tier: store.tier)
             },
             invite: UltraInviteService(defaults: options.defaults), makeClient: options.makeUltraClient
         )

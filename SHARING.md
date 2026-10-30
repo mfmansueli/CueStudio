@@ -1,6 +1,6 @@
 # Cue Studio — Compartilhar e contar exportações
 
-Como um vídeo sai do Cue, quando uma das 5 exportações grátis é descontada e o que cada plataforma permite de verdade. Leia com
+Como um vídeo sai do Cue, quando uma das 3 exportações grátis é descontada e o que cada plataforma permite de verdade. Leia com
 `ARCHITECTURE.md` e `DESIGN_PROJECT.md` (a tela "Share to" não mudou de layout).
 
 ## 1. A regra de contagem

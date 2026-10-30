@@ -129,7 +129,6 @@ struct InspirationCard: View {
                     .monoFont(.caption2, weight: .semibold)
                     .textCase(.uppercase)
                     .tracking(1)
-                    // `ink2`, not `inkHint`: under the card's light, `inkHint` falls to about 4.2:1.
                     .foregroundStyle(Palette.ink2)
                 text()
                     .cueFont(.body)

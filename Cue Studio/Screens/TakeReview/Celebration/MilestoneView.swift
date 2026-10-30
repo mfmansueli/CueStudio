@@ -167,7 +167,7 @@ struct MilestoneView: View {
             Text("ON YOUR HOME SCREEN")
                 .monoFont(size: 10, weight: .semibold)
                 .interfaceTracking(1)
-                .foregroundStyle(Palette.inkHint)
+                .foregroundStyle(Palette.ink2)
             HStack(spacing: 20) {
                 ForEach(0..<4, id: \.self) { index in
                     let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)

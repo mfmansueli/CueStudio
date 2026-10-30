@@ -49,7 +49,7 @@ struct SettingsSliderRow: View {
     private func endLabel(_ text: String) -> some View {
         Text(text)
             .cueFont(.caption)
-            .foregroundStyle(Palette.inkHint)
+            .foregroundStyle(Palette.ink2)
             .fixedSize()
             .accessibilityHidden(true)
     }

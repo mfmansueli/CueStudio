@@ -8,7 +8,8 @@ import UIKit
 
 /// 9.2 · Your universe, one per year: the live year grows with every video shared, the years before it are sealed. The core in the middle, the
 /// platforms as planets that grow with the videos, a dot for every video, the themes, the next milestone (or the year's card), "Your {year} in review"
-/// and one yellow button. The year selector is in the toolbar; a swipe on the map changes year too. Built from what is on this iPhone.
+/// and one yellow button, under the system's large title. The year selector is in the bar; a swipe on the map changes year too. Built from
+/// what is on this iPhone.
 struct YourUniverseView: View {
     @Environment(MilestoneService.self) private var milestones
     @Environment(TakeLibraryService.self) private var takes
@@ -66,8 +67,20 @@ struct YourUniverseView: View {
         .skyBackground(wash: BgWash.yourUniverse)
         .accessibilityIdentifier("universe.screen")
         .safeAreaInset(edge: .bottom) { actionButton(content).padding(.horizontal, Metrics.gutter).padding(.bottom, 8) }
-        .toolbar(.hidden, for: .navigationBar)
-        .background { InteractivePopEnabler() }
+        // The system's bar, large title and back: going back follows the finger the way every pushed page does (a page of its own with the bar
+        // hidden slid its title over Profile's, 30/10/2026).
+        .navigationTitle("Your universe")
+        .navigationBarTitleDisplayMode(.large)
+        .toolbar {
+            if content.showsSelector {
+                ToolbarItem(placement: .topBarTrailing) {
+                    UniverseYearSelector(years: content.years, selected: content.selectedYear) { year in
+                        withAnimation(.easeInOut(duration: 0.25)) { chosenYear = year }
+                    }
+                }
+                .sharedBackgroundVisibility(.hidden)
+            }
+        }
         .task(id: content.selectedYear) { await notePlanets(content.snapshot) }
         .onAppear {
             // Visiting is what "Your universe" is for: its introduction stops.
@@ -119,32 +132,14 @@ struct YourUniverseView: View {
         .transition(.opacity)
     }
 
-    /// The large title, the year selector on its right (once something was shared), and the line under them.
+    /// The line under the system's large title ("1 VIDEO SHARED IN 2026"); the year selector is in the bar.
     private func header(_ content: UniverseContent) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack(alignment: .center, spacing: 12) {
-                Text("Your universe")
-                    .cueFont(34, weight: .bold)
-                    .foregroundStyle(Palette.ink)
-                    // One line, as the board's: the system font is a little wider than the board's, so it eases down to fit beside the selector.
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-                    .accessibilityAddTraits(.isHeader)
-                Spacer(minLength: 0)
-                if content.showsSelector {
-                    UniverseYearSelector(years: content.years, selected: content.selectedYear) { year in
-                        withAnimation(.easeInOut(duration: 0.25)) { chosenYear = year }
-                    }
-                }
-            }
-            Text(content.headline)
-                .monoFont(size: 11, weight: .semibold)
-                .interfaceTracking(1.2)
-                .foregroundStyle(Palette.accText)
-                .padding(.horizontal, 2)
-                .accessibilityIdentifier("universe.headline")
-        }
-        .padding(.top, -6)
+        Text(content.headline)
+            .monoFont(size: 11, weight: .semibold)
+            .interfaceTracking(1.2)
+            .foregroundStyle(Palette.accText)
+            .padding(.horizontal, 2)
+            .accessibilityIdentifier("universe.headline")
     }
 
     @ViewBuilder

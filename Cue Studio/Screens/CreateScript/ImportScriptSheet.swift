@@ -156,7 +156,7 @@ struct ImportScriptSheet: View {
             if text.isEmpty {
                 Text("Paste, scan or pick a script. You can fix it before you use it.")
                     .cueFont(16)
-                    .foregroundStyle(Palette.inkHint)
+                    .foregroundStyle(Palette.ink2)
                     .padding(.horizontal, 15).padding(.vertical, 18)
                     .allowsHitTesting(false)
                     .accessibilityHidden(true)

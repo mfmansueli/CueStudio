@@ -6,7 +6,7 @@ visual). Pacotes antigos só no git (commit `bb39f35`). **Como manter:** ao muda
 daqui (o histórico fica no git). Os números das seções são citados no código: não renumere.
 
 O app roda no **iPhone e no iPad** (`TARGETED_DEVICE_FAMILY = 1,2`; decisão do dono, 26/10/2026): no iPad, nativo em tela cheia e em todas as
-orientações; no iPhone, só em retrato; no Mac, como "Designed for iPad". O app é **só escuro**. Regras de negócio: 5 exportações grátis (contador no Keychain), 7 dias de teste, preço da StoreKit, cota de IA, pipeline das
+orientações; no iPhone, só em retrato; no Mac, como "Designed for iPad". O app é **só escuro**. Regras de negócio: 3 exportações e 3 roteiros Ultra AI grátis (contador das exportações no Keychain), sem teste grátis (decisão do dono, 30/10/2026), preço da StoreKit, cota de IA, pipeline das
 takes (`TakeStage`). **Tamanho do texto e da tela:** todo texto da interface cresce com o Dynamic Type e acompanha um pouco a largura do
 iPhone; cada tela cabe do SE ao Pro Max (§53). **Movimento:** o Modo de Baixo Consumo não tira nem encurta nenhuma animação (decisão do dono, 6/10/2026; a regra do `09` §7 foi
 removida); só o **Reduzir Movimento** mostra o estado final. `speed` só serve para encurtar nos testes de UI.
@@ -16,7 +16,7 @@ removida); só o **Reduzir Movimento** mostra o estado final. `speed` só serve 
 | Onde | Como é |
 |---|---|
 | Tab bar | `TabView` do sistema, `.tabBarMinimizeBehavior(.never)` (decisão do criador; o `07` §1 pedia `.onScrollDown`); Record é aba normal no meio (`09` §4), nunca `role: .search` |
-| Barras de navegação | `NavigationStack` + `.toolbar` em Scripts, Takes, Profile, Settings, página do script, revisão da take, Quick edit, gravador, Pro. Scripts: lupa, Logbook e + na barra; a lupa abre o campo de busca na lista (§2) |
+| Barras de navegação | `NavigationStack` + `.toolbar` em Scripts, Logbook, Takes, Profile, Your universe, Settings, página do script, revisão da take, Quick edit, gravador, Pro. Scripts: lupa, Logbook e + na barra; a lupa abre o campo de busca na lista (§2) |
 | Sheets | `cueSheetChrome()`: `NavigationStack`, `Button(role: .close)` à esquerda, fundo `Palette.sheetNight`, raio `Metrics.sheetRadius`; as que têm navegação própria usam `cueSheetSurface()`. `fittedSheet()` soma `Metrics.sheetBarHeight`. `SheetHeader` é só título e subtítulo |
 | Botões | `CueStudioButtonStyle`: primário (amarelo) e secundário em Liquid Glass (`.glassEffect(.regular.tint(acc).interactive())`); `.glass` sobre vídeo |
 | Controles | `Menu`, `Picker` (`.segmented` em Selfie \| Studio, Voice \| Steady, List \| Grid, Camera \| Recording), `.contextMenu`, `Slider` do sistema (`LabeledSlider`), botões redondos `.glass` (`glassIconButton()`) |
@@ -49,11 +49,15 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
 ## 2. Scripts (3.1, 3.2) — o dock
 
 `Screens/Scripts/Dock/ScriptsDock.swift`: vidro limpo (sem céu dentro, `09` §2), em `.safeAreaInset(.bottom)` acima da tab bar.
-- **Linha 1:** Format · a rede **com o logo dela** (`Platform.logo`, "For TikTok" ou "TikTok") · ✦ Voz nn% · lâmpada do Find inspiration (§30). Chips
-  de 36 pt de toque; aparecem também na primeira visita. Com pouco espaço, cada chip encurta (`ScriptsDock.RowWords`: "TikTok" no lugar de "For TikTok",
-  "✦ Voice", o Format só com o símbolo ⊞); a linha é escolhida pela versão **mais larga** de cada chip (`WidthSlack`), então trocar a rede ou quem escreve
-  nunca muda os outros chips nem tira a lâmpada do lugar. Onde a Ultra AI é oferecida (§57; hoje só Debug com o laboratório configurado), um chip a mais
-  (`DockWriterChip`, com uma largura só para os dois estados, `EqualWidthStack`) é um menu nativo de quem escreve o próximo roteiro: o símbolo do Apple
+- **Linha 1:** Format · a rede **com o logo dela** (`Platform.logo`, 15 pt; "For TikTok" ou "TikTok") · ✦ Voz nn% · lâmpada do Find inspiration (§30).
+  Chips de 30 pt (36 de toque), aparecem também na primeira visita, **8 pt entre eles em todo iPhone** (`ScriptsDock.chipGap`, dono, 30/10/2026): o
+  espaço que sobra fica depois da lâmpada. **Cor pelo papel** (`IdeaCardChip`, contornos de 1 pt, decorativos): os ajustes do roteiro (Format, a rede)
+  em vidro claro (`Palette.Scripts.heroChipGlass` + `heroChipStroke`), o da IA em violeta (`heroChipAI` + `heroChipAIStroke`), a lâmpada em amarelo
+  (cápsula de 44 × 30 pt em `accSoft` com contorno `accLine`). Menus com `chevron.up.chevron.down`; o valor do ✦ Voice ("65%") em sans medium violeta.
+  Com pouco espaço, cada chip encurta (`ScriptsDock.RowWords`: "TikTok" no lugar de "For TikTok", depois "✦ Voice" sem a porcentagem, que o VoiceOver
+  continua dizendo, e o Format só com o símbolo `rectangle.stack`, primeiro no Auto e depois com qualquer formato); a linha inteira cabe sem rolar
+  (`ViewThatFits`), e só quando nem a versão mais curta cabe (texto muito grande) os chips rolam com a lâmpada fixa no fim. Onde a Ultra AI é
+  oferecida (§57; hoje só Debug com o laboratório configurado), um chip a mais (`DockWriterChip`, com uma largura só para os dois estados, `EqualWidthStack`) é um menu nativo de quem escreve o próximo roteiro: o símbolo do Apple
   Intelligence (com espaço, o nome) ou **✦ Ultra** em violeta; o item da Ultra AI diz quantos roteiros restam, e sem nenhum ele oferece o Pro (§57). A
   escolha fica até o criador trocar, também entre aberturas (`DefaultsKey.dockWriter`). Do segundo uso da IA em diante, enquanto a Ultra AI não foi
   permitida, uma linha violeta sob o campo a apresenta com os 5 grátis (o convite, §57).
@@ -87,9 +91,10 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
 - **Filtros** (`PlatformFilterChips`): All, só as redes que têm roteiros (nenhum chip com 0, decisão do dono, 30/10/2026; o escolhido fica enquanto
   escolhido, mesmo que o último roteiro saia) e as pastas. Segurar o chip de uma pasta (ou a ação do VoiceOver) mostra
   **Delete folder**: a pasta sai, os roteiros ficam (em All), e "Folder deleted" tem Undo por 4 s (volta no mesmo lugar, com os seus roteiros).
-- **Uma lista leve (decisões do dono, 30/10/2026):** sob o título grande não há contagem. Os grupos se chamam **Ready to record**, **Drafts** e
-  **Recorded**, sem números, em letra normal de 15 pt, `ink2` (como **Select**, e **Logbook** no violeta dele, sem o "n waiting"). A linha mono de um
-  roteiro pronto diz só **● TIKTOK** (a duração e os cues ficam na página do roteiro); rascunho "● SHORTS · 2H AGO", gravado "● TIKTOK · 3 TAKES ·
+- **Uma lista leve (decisões do dono, 30/10/2026):** sob o título grande não há contagem. Os grupos são **READY TO RECORD** verde (`successText`),
+  **DRAFTS** roxo (`Palette.Scripts.draftText`, só dele: 7,4:1 sobre `bg`, 11:1 com Aumentar Contraste) e **RECORDED** `ink2`, sem números, em mono
+  semibold de 12 pt em maiúsculas com espaçamento largo (1,4); **SELECT** no fim do primeiro na mesma letra, em `ink2`. O título de um roteiro é
+  15,5 medium (§53). A linha mono de um roteiro pronto diz só **● TIKTOK** (a duração e os cues ficam na página do roteiro); rascunho "● SHORTS · 2H AGO", gravado "● TIKTOK · 3 TAKES ·
   READY" (`ScriptRowLine`). O tópico é a **barra no início do card** (`ThemeRail`, 3 × 30 pt) na cor do mundo dele, cinza (`separator`) sem
   tópico (`ScriptRow`, `TopicTaggingService.world(of:)`; o VoiceOver lê o tópico como valor do título). As cores dos mundos passam de 3:1 sobre o
   card (`PaletteContrastTests+Scripts`).
@@ -100,11 +105,8 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
 - **Select** (no cabeçalho do primeiro grupo; vira **Done**): cada linha mostra a sua marca **dentro do card**, 16 pt da borda e centrada na altura
   (`ScriptSelectionMark`: anel `ink2` ou o círculo amarelo com ✓, 22 pt), no lugar da ação do estado; um toque na linha marca ou desmarca (não abre o
   roteiro), sem deslize. Não usa o modo de edição da `List`: o sistema punha o círculo na borda do card. A barra de seleção substitui o dock e a tab bar.
-  As ideias do Logbook no fim da lista **continuam** durante a seleção e são escolhidas como os roteiros (a marca no lugar do ✦ Write, sem
-  "Open Logbook ›"); a lixeira apaga roteiros e ideias juntos, com um Undo só; pasta e Duplicate valem só para roteiros (ficam apagados com só
-  ideias escolhidas). Fora da seleção, segurar uma ideia ali oferece **Delete** ("Idea deleted · Undo").
-- Abaixo da lista: **Logbook** (`ScriptsLogbookSection`, até 2 ideias com ✦ Write e "Open Logbook ›"). Carregando: `ScriptRowSkeleton`
-  (`SkeletonShine`, 1,4 s). Vazio: §30 e §32.
+- As ideias do Logbook não ficam na lista: moram na página do Logbook (o botão da barra, §22). Carregando: `ScriptRowSkeleton` (`SkeletonShine`,
+  1,4 s). Vazio: §30 e §32.
 - **Folhas da linha 1:** Format, For {Rede}, ✦ Voz e a lâmpada abrem todas em tela inteira (`.large`, sem meia altura).
 - **Formatos (`09` §1):** grade de 9 (Auto · Talking head · Tutorial · Storytime · List / tips · Review · Myth vs fact · POV · Sponsored ad, com o selo
   "needs brand info" numa linha própria) e **More formats** com os `ScriptType` que a grade não mostra. *Talking head* = sem `ScriptType`.
@@ -327,7 +329,7 @@ diagonal (24°, 150 pt, 5%, 70 grãos, ±18 pt em 90 s; `InterstellarSkyPainter`
 **A nave** (`SpaceshipPainter`, no lugar do comet) é **pequena, lenta e rara** (algo para achar, nunca algo que chama): 16–22 pt, casco facetado, asas delta
 índigo com luz ciano, luzes de ponta de asa rosa e menta (2,8 s); rastro de 1,1 pt do azul ao violeta que segue o caminho feito (4,5 s, ≈ 125 pt).
 Atravessa em 16–22 s num arco na metade de cima, a 90%; a primeira aos 90 s e depois a cada 4–7 min (`StarfieldMath.spaceship`).
-Contraste: `ink`, `ink2`, `inkHint` passam 4,5:1 no ponto mais claro (`PaletteContrastTests`). Debug: `-uiTestCatalogue sky -uiTestSky interstellar`
+Contraste: `ink` e `ink2` passam 4,5:1 no ponto mais claro (`PaletteContrastTests`). Debug: `-uiTestCatalogue sky -uiTestSky interstellar`
 ("Send a spaceship").
 
 ## 5.0.1. O astronauta do Adrift
@@ -339,7 +341,7 @@ Só no Adrift: um astronauta flutuando e batendo de leve nas bordas.
 - **Desenho** (`AstronautPainter`, 37,5 pt): traje branco opaco (`Palette.Sky.astronautSuit` → `astronautSuitShade`, mochila `astronautSuitDeep`), cordão
   solto, painel no peito (luz amarela e ciano que pulsa a cada 3 s), remendo amarelo; capacete com visor quadrado espelhado (índigo ao preto, dois
   reflexos, brilho em cruz, aro prateado). Close-up de 170 pt no catálogo; **Skip 30 s** avança o relógio.
-- **Exceção de contraste aceita pelo dono para teste (rever):** o traje mede ≈ 1,1:1 contra `ink`/`ink2`/`inkHint`; só ocorre por segundos quando ele passa
+- **Exceção de contraste aceita pelo dono para teste (rever):** o traje mede ≈ 1,1:1 contra `ink`/`ink2`; só ocorre por segundos quando ele passa
   atrás de texto direto no céu.
 
 ## 5.1. Your universe (9.2) e o núcleo YOU
@@ -461,7 +463,7 @@ to post it"); Instagram: "Opened X with your video · Cue can't see if you post 
 ## 10. Settings (11.1), 1.1 Welcome e 1.2 Topics
 
 **Settings** (`09` §11): `List` `.insetGrouped` sobre o céu (`cueGroupedList()`, `cardRowBackground()`, `CueSectionHeader`), toda página empurrada
-(`SettingsRoute`; nenhuma sheet). Título grande do sistema (`.large`); a busca (`SettingsSearchField`) é a primeira linha da lista e rola com ela, e os
+(`SettingsRoute`; nenhuma sheet). Título grande na linha da barra (`.inlineLarge`, na mesma altura das outras abas; pedido do dono, 30/10/2026); a busca (`SettingsSearchField`) é a primeira linha da lista, logo abaixo do título (onde as outras abas começam o primeiro cartão), e rola com ela, e os
 resultados são seções da mesma lista (o teclado não cai). Cada linha é um `SettingsEntry` (título, detalhe, caminho, palavras-chave) desenhado por
 `SettingsEntryRow`, igual na página e na busca (`SettingsSearchGroup`); linhas de 52 pt; rodapé ≤ 60 caracteres, sem botão amarelo sólido. A raiz
 começa em Create (sem card de setup: cada linha já diz o que está escolhido, "Front · 1080p", "Voice"; decisão do dono, 21/10/2026). **Ícones**
@@ -543,39 +545,62 @@ luz em curva até a órbita, aterrissagem em 1,4 s; o planeta aparece (×1,9 →
 
 ## 11. Exportações grátis acabando (`09` "Free exports running out")
 
-Rótulos de `FreeExportLabels` (9.1 plano, 8.1 medidor, 6.3 linha sob Share): neutro, amarelo na última, laranja quando acabam. **Com 0**, Share / Save
-video / compartilhar abrem **"Your video is ready"** (`ExportReadySheet`: miniatura "✓ READY", **Start free trial · export now** com brilho, **See what's
-in Pro** em vidro, **Not now**, "7 days free, then $39.99/year. Cancel anytime." com o preço da StoreKit). Fechar ou Not now deixa a take pronta (6.3:
-"READY · EXPORT WITH PRO") e toast "Saved in Takes · export with Pro anytime"; Start e See abrem o **Pro calmo** (`PaywallContext.export`, §12); comprando,
-a exportação segue sozinha. Pro e teste: "PRO · UNLIMITED EXPORTS", sem Go Pro.
+São **3** (`UsagePolicy.freeExports`, decisão do dono, 30/10/2026: experimentar o Cue são as exportações grátis e os roteiros grátis da Ultra AI; **não há
+teste grátis** do Pro). Rótulos de `FreeExportLabels` (9.1 plano, 8.1 medidor, 6.3 linha sob Share): "2 OF 3 …" neutro, amarelo na última, laranja quando
+acabam. **Com 0**, Share / Save video / compartilhar abrem **"Your video is ready"** (`ExportReadySheet`: miniatura "✓ READY", "Saved in Takes · nothing is
+lost. You've used your 3 free exports.", **Export with Cue Pro** com brilho e **Not now**). Fechar ou Not now deixa a take pronta (6.3: "READY · EXPORT WITH
+PRO") e toast "Saved in Takes · export with Pro anytime"; Export with Cue Pro abre o **Pro calmo** (`PaywallContext.export`, §12), que diz os preços;
+assinando, a exportação segue sozinha. Pro: "PRO · UNLIMITED EXPORTS", sem Go Pro.
 
 ## 12. Pro (11.4)
 
-`PaywallView` escolhe pelo contexto, num `NavigationStack` próprio com `Button(role: .close)` em `.topBarTrailing` (o texto devolve
-`ProPlansScreen.barHeight` para a arte não se mover).
-- **Pro normal** (`.profile`): `ProOpening` (luz até 3 s, tocável a partir de 1,4 s) sobre o `SubscriptionStoreView` (`ProStoreView`, `.prominentPicker`,
-  Restore, links do app). `ProOpeningScript`: 42 riscos (0–1,1 s), uma estrela dourada acende no foco (0,2 → 1,6, 0,7–1,4 s) com a onda ×0,4 → ×14
-  (1,25–2,35 s), voa até o planeta com o rastro do primeiro voo (`StarRibbon`, 1,5–2,1 s, curvando para a direita); um anel de luz se fecha no ponto e o
-  planeta nasce ali branco incandescente (0,3 → 1,08 → 1, 2,12–2,85 s), esfria ao dourado e solta 14 faíscas; as órbitas se desenham (2,3–3 s) e os
-  planetinhas entram (`settled` 3,1 s); conteúdo sobe 18 pt nítido a cada 70 ms; háptico `.soft` 1,25 s e `.success` quando o planeta nasce (2,16 s). A luz
-  é desenhada na tela inteira (`ProOpeningCanvas`): foco a 44% da altura, planeta a 150 pt (`PaywallView.planetY`). `ProPlanetArt` (220 pt de altura):
-  planeta de 68 pt com atmosfera que respira, faixas, lado escuro, borda de luz e brilho a cada 7 s; órbitas 350 × 58 e 236 × 40 pt com poeira; planetinhas
-  com rastro curto. O cartão de benefícios aparece junto com as linhas (`revealed`). `ProMarketing`: "CUE PRO", "Take your universe further.", "Free to
-  try · 5 exports included. Then 7 days free." (15 pt), linhas de 16 pt com um símbolo num quadrado colorido (`ProBenefit.symbol`) e a tag mono.
-- **Pro calmo** (`.export`, `ProCalmView`): sem abertura; "YOUR VIDEO IS READY", "Keep sharing your universe.", "Start the trial and export it now.",
-  planos (Yearly com SAVE n%, Monthly; largura 1,2 : 1, 72 pt, `ProPlanRow`), "Start free trial · export now", Restore · Terms · Privacy.
-- Reduzir Movimento: fade de 0,3 s. `-uiTestProAt <s>`. **"Remote from Apple Watch, iPad & Mac sync" não aparece** (`ProBenefit.isAvailable = false`):
-  não se vende o que não existe.
-- **Onde a Ultra AI existe** (§57): a lista ganha "30 Ultra AI scripts a month" em segundo, a linha sob o título passa a "Free to try · 5 exports and 5
-  Ultra AI scripts included. Then 7 days free.", e há um terceiro contexto, o **Pro calmo da Ultra AI** (`.ultra`: "ULTRA AI", "Keep writing with Ultra
-  AI.", os mensais só a partir do primeiro mês pago), aberto quando os roteiros grátis acabam.
+O canvas aprovado pelo dono em 30/10/2026 ("Cue Pro · galáxia": https://claude.ai/artifact/P3eLstUqttK2p34wnuYmr3) troca o planeta pelo universo da Ultra
+AI. `PaywallView` escolhe pelo contexto, num `NavigationStack` próprio com `Button(role: .close)` em `.topBarTrailing` (na tinta clara `ink` de onde quer que abra); mede a
+tela inteira (a área segura mais as margens das barras) e passa um `ProLayout` (15 Pro, Pro Max e, entre eles, pela largura; tela baixa, como o SE de 667 pt, pega as medidas do SE; o Pro calmo tem a galáxia menor e as palavras mais
+acima). Tudo cabe sem rolar do SE ao Pro Max (a rolagem só existe para o Dynamic Type grande).
+- **Galáxia** (`ProGalaxyArt`, `Canvas`): no centro um **planeta dourado fixo**, igual para todos (decisão do dono, 30/10/2026: não é a cor do Profile; 22 pt, lado noturno e borda de luz, brilho de 100 pt que respira em 6 s), dois braços em espiral
+  de 2,5 voltas com 70 estrelas cada (uma em onze maior e com brilho) e 14 luzes suaves, do dourado no núcleo ao lilás e ao violeta da Ultra AI nas pontas
+  (`Palette.Scripts.proGalaxy`), 46 estrelas fracas entre eles; inclinada (altura 0,42 da largura, −10°), uma volta por minuto. Raio 115 pt no 15 Pro, 130
+  no Pro Max, 90 no SE; núcleo a 148 / 174 / 92 pt do topo da tela. Em volta, o **anel do ano** (×1,11 do raio): 12 nós, todos acesos no Yearly e só o do
+  mês no Monthly; trocando de plano a luz corre pelo anel a partir da frente (35 ms por nó) com um tique háptico por nó, e cada nó que acende **cintila** (pedido do dono,
+  30/10/2026: clarão, brilho de quatro pontas que gira ao apagar e cinco faíscas saindo pelo plano, 0,75 s); os acesos pegam a luz de vez em quando (um
+  brilho pequeno de 1/3 s, cada nó no seu tempo, a cada 2,6–4,4 s). Reduzir Movimento: sem cintilar. Uma estrela cadente a cada 11 s.
+- **Abertura** (`.profile`, `ProOpening`, `ProOpeningScript`, tocável a partir de 1,4 s): 42 riscos, dois em três dourados e o resto lilás (0–1,1 s); a
+  estrela acende no foco a 44% da altura (0,2 → 1,6, 0,7–1,4 s) com a onda ×0,4 → ×14 e o clarão; voa até o núcleo com o rastro (`StarRibbon`, 1,5–2,1 s) e
+  vira o planeta, branco incandescente esfriando ao dourado (0 → 1,5 → 1, 1,98–2,68 s); os braços se abrem de frente, de um décimo do tamanho girados
+  −220° (1,98–2,83 s), as estrelas acendendo do núcleo para fora; a galáxia deita na inclinação com mola (2,25–3,05 s); o anel entra da esquerda (2,4–3,1
+  s) e os nós saltam a cada 45 ms (2,5 s). O conteúdo sobe 18 pt saindo do desfoque (0,55 s) em sua vez: título 2,32 s, linha 2,4, cartões 2,52 / 2,58,
+  lista 2,64 + 60 ms por linha, planos 2,72, botão 2,8, letras miúdas 2,86, links 2,9; "SAVE 58%" salta às 3 s; o ✦ da Ultra AI dá meia volta (2,8 s).
+  `settled` 3,5 s. Háptico: `.soft` na ignição, um zumbido que cresce enquanto os braços abrem e um toque firme quando a galáxia assenta
+  (`HapticPatterns.proUnfurl`), e um tique por nó (`ringTicks`).
+- **Conteúdo** (`ProMarketing`): "CUE PRO" (mono 12, amarelo), "Take your universe further." (28 bold), "Free to try · 3 exports included." (15, `ink2`);
+  **dois destaques** (`ProHighlightCard`, 88 pt; 64 no SE, 100 no Pro Max): **EXPORTS / Unlimited / up to 4K** com borda dourada fina e, onde a Ultra AI
+  existe, **✦ ULTRA AI / 30 scripts / every month** com a borda violeta e dourada girando (4 s); sem a Ultra AI, o das exportações ocupa a linha toda. O
+  resto em linhas simples (✓ fraco, 15 pt `ink2`): "Full My Cue Voice and ad drafts", "Hook and platform versions" (as duas só com Apple Intelligence),
+  "Covers, series tags and “Text behind me”", "Every milestone app icon". **"Remote from Apple Watch, iPad & Mac sync" não aparece**
+  (`ProBenefit.isAvailable = false`): não se vende o que não existe.
+- **Rodapé**: planos lado a lado (1,2 : 1, 72 pt; `ProPlanRow`, `ProPlanCard`), "SAVE n%" ao lado de "Yearly" dentro do cartão; o anel amarelo desliza
+  entre eles com mola (`matchedGeometryEffect`); botão amarelo "Subscribe for $39.99/year" (ou /month) com brilho; "Renews yearly at $39.99. Cancel anytime
+  in Settings."; Restore · Terms · Privacy.
+- **Assinando**: os nós correm para o núcleo, um clarão e uma onda dourada no plano da galáxia (0,9 s, `HapticPatterns.proWelcome`), e o Pro sai com o
+  toast "Welcome to Cue Pro" ("· video exported" no calmo da exportação, "· 30 Ultra AI scripts this month" no da Ultra AI).
+- **Pro calmo** (`.export` e `.ultra`): sem abertura; galáxia de 105 pt. Da exportação: "YOUR VIDEO IS READY", "Keep sharing your universe.", "Subscribe
+  and export it now.", o vídeo esperando como uma estrela pulsando na frente do anel, botão "Subscribe · export now". Da Ultra AI (§57): eyebrow violeta
+  "ULTRA AI", "Keep writing with Ultra AI.", "Your 3 free scripts are written. Cue Pro adds 30 a month.", galáxia violeta com o anel dos 30 roteiros do mês
+  aceso, o destaque da Ultra AI primeiro.
+- Onde a Ultra AI existe, a linha sob o título do Pro normal é "Free to try · 3 exports and 3 Ultra AI scripts included."
+- Reduzir Movimento: nada gira nem voa, a abertura é um fade de 0,3 s e a compra fecha na hora. `-uiTestProAt <s>`.
 
 ## 13. Profile (9.1) e Edit Profile
 
-Rolagem de blocos sólidos sobre o céu (`profileBlock()`; redesenho do dono 21/10/2026, **enxuto**: "muita informação escrita"; **Plan e My Cue
-Voice ficam como eram**). Sem Edit na toolbar: ele fica no cartão. **Você** (`ProfileIdentityContent`): avatar de 72 pt (foto, inicial ou o
-astronauta) num anel da luz do universo que respira; nome; "@usuário · tipo" (o próprio, `customRole`, ou o da lista), ou, sem nenhum dos dois,
-"+ Add a username" em amarelo (sem números: o dono os tirou). Perfil vazio: o astronauta, "Your name" apagado e **Set up your profile**. **Your universe**
+Rolagem de blocos sólidos sobre o céu (`profileBlock()`; redesenho do dono 21/10/2026, **enxuto**: "muita informação escrita"). **Plan**
+(`ProfilePlanCard`): "Free plan" e **Try Pro ›** (ou "Cue Pro", o plano e **Manage ›**) sobre uma barra por limite (dono, 30/10/2026): as
+exportações em cinza ("2 OF 3 EXPORTS LEFT", amarela na última, laranja sem nenhuma; só no grátis) e, onde a Ultra AI é oferecida, os roteiros dela
+em violeta ("ULTRA AI · 2 OF 3 FREE LEFT", laranja quando acabam), cada uma com o rótulo mono em cima. Nenhum botão Edit: **o cartão Você inteiro
+abre o Edit Profile**, com uma seta › no fim como a do Your universe (`ink3`, decorativa; nos tamanhos de acessibilidade, no canto de cima).
+**Você** (`ProfileIdentityContent`): avatar de 72 pt (foto, inicial ou o astronauta) num anel da luz do universo que respira; nome; "@usuário ·
+tipo" (o próprio, `customRole`, ou o da lista), ou, sem nenhum dos dois,
+"+ Add a username" em amarelo (sem números: o dono os tirou). Perfil vazio: o astronauta, "Your name" apagado e **Set up your profile** (sem a seta). **Your universe**
 (`ProfileUniverseRow`): o universo em miniatura ao vivo (`ProfileMiniUniverse`, 104 pt com folga da borda: o núcleo na cor escolhida respirando, três órbitas e **um planeta por
 rede** compartilhada no ano, na cor da rede, a mais usada mais perto, com uma lua), o título e uma linha ("2026 · 1 video", singular/plural no
 catálogo); conta nova: "Your universe is waiting", órbitas pontilhadas girando e um planeta tracejado esperando. Os marcos e ícones não aparecem
@@ -598,7 +623,9 @@ cartão discreto dizendo que é opcional e só preenche o nome, com o botão bra
 Cada compartilhamento confirmado é um `ShareRecord` (take, data, redes, tema); um vídeo conta uma vez, cada rede confirmada soma no seu planeta; vídeos
 antigos usam data, plataforma e tema da take. `UniverseContent` (puro, testado) decide a tela: **vivo** (ano corrente; o anterior como fantasma), **selado**
 (saturação .75, brilho .92, nada se mexe, "◆ SEALED · DEC 31, {ano}", cartão "{ano} · YOUR YEAR"), **conta nova** (sem seletor, órbitas a 55%, "FIRST STAR ·
-0 / 1", "Record your first video") e **ano novo** ("FIRST STAR OF {ano}", a review fala do ano anterior). Seletor segmentado na toolbar e deslize no mapa.
+0 / 1", "Record your first video") e **ano novo** ("FIRST STAR OF {ano}", a review fala do ano anterior). **Barra de navegação do sistema**
+(`YourUniverseView`): título grande "Your universe", o botão de voltar (voltar segue o dedo como em toda página empurrada) e o seletor de ano
+(`UniverseYearSelector`, a cápsula de vidro com os anos em mono) como item da barra (sem o fundo compartilhado da barra); sob o título, a linha mono amarela ("1 VIDEO SHARED IN 2026"). Deslize no mapa também troca o ano.
 **Planetas** (`PlanetSize`, `PlanetPainter`): `d = 14 + 24·ln(min(n,365))/ln(365)` pt, brilho a 52, anel a 156, lua a 365; crescem em 0,6 s
 `cubic-bezier(.3,1.4,.5,1)` na primeira abertura depois de um share (`MilestoneService.seenPlanetCounts`), `.soft` ao ganhar um detalhe.
 **Toques:** planeta → `PlanetPopover` ("n VIDEOS IN {ano}", "k more to unlock …" no ano vivo, **See in Takes ›**); ponto → revisão da take; tema na legenda e
@@ -683,11 +710,12 @@ giradas −9°, YOU de 56 pt, planetas de 20/18/17/16/14/12 pt por ordem de víd
 "+1", contagem sobe na chegada, estrela nova 0,3 s depois do primeiro pulso. "SHARED TO 3 NETWORKS", "On its way." e o link para a nova estrela; texto e
 botões parados desde o início; redes que não receberam ficam a 38%.
 
-**6.2 Takes:** título + "12 TAKES · 5 VIDEOS"; **trilha de status** (`TakePipelineCard`: quatro nós de 28 pt, TO PICK cinza, IN EDIT ciano, READY verde com
+**6.2 Takes:** título com **Import video** à esquerda (ícone em `Palette.ink`, como os outros botões de barra, dono 30/10/2026) e List | Grid à
+direita; sob o título, nenhuma contagem (dono, 30/10/2026); **trilha de status** (`TakePipelineCard`: quatro nós de 28 pt, TO PICK cinza, IN EDIT ciano, READY verde com
 anel que pulsa a cada 2 s, ✦ SHARED lilás; tocar filtra, de novo limpa); **Up next** (`TakeUpNextCard`: pôster 40 × 56, "UP NEXT · POST IT", botão amarelo
 Share/Edit/Pick que abre a take naquele passo); **fichas** (`TakesFilterChips`: "2026 · SHARED ✕" primeiro quando vem do universo, All e uma por rede que tem vídeos, nenhuma com 0; a
 escolhida branca com texto preto). **List | Grid** é `Picker` `.segmented` (`TakesLayoutToggle`). Card da grade (`TakeVideoCard`, 177:270): anel de 1 pt na
-cor do estágio, pílula do estágio, título e "● TIKTOK · 1:02" no pé. Lista: §24. Lista vazia por filtro: "No videos for Shorts here" + **Show every video**.
+cor do estágio, pílula do estágio, título e "● TIKTOK · 1:02" no pé. Lista (`TakeVideoRow`, título 16 medium, §53): §24. Lista vazia por filtro: "No videos for Shorts here" + **Show every video**.
 Segurar um vídeo abre o menu de contexto (a prévia recebe `.environment(services)` e o pôster lê os serviços como opcionais: o sistema redesenha o cartão
 fora do ambiente do app). **Não feito (decisão do dono):** Select (sem seleção em massa), bolinha de tema no card; títulos de dia (Today, Yesterday) ficam.
 
@@ -698,7 +726,7 @@ mínima (9.2).
 
 - **Pôsteres** (`PosterImage`): a imagem vai em `.overlay` de um fundo flexível; com `scaledToFill()` + `.clipped()` num `ZStack` um vídeo horizontal
   alargava a folha "Ready to travel" e o retorno da folha de compartilhamento travava e dava zoom. Testes: `PosterLayoutTests`, `ShareReturnUITests`.
-- **My Cue Voice** (4 perguntas e folha de perguntas): fundo da noite, título 28 bold, chips brancos quando escolhidos, a nota "Common for …" desce para
+- **My Cue Voice** (4 perguntas e folha de perguntas): fundo da noite, título 22 bold, chips brancos quando escolhidos, a nota "Common for …" desce para
   baixo do nome quando não cabe. SF em todo o app (sem serifa).
 - **Import (+ › Import):** campo em cartão `Palette.surface` com borda; "Use this script" desabilitado pelo estado do botão.
 - **Um prompter só:** todo caminho que grava (botão da câmera, Record da página, da linha, Retake, Siri) chama `PresentationService.openPrompter(mode:
@@ -776,8 +804,8 @@ Vision não acha rostos no Simulator; nenhuma comparação com outros apps foi f
 
 ## 21. Contraste (WCAG 2.2 AA): medido e corrigido
 
-Regra em `CLAUDE.md`. **Tokens** (`PaletteContrastTests`, com e sem Aumentar Contraste): `ink`, `inkSoft` (branco 80%, o degrau sob `ink` de etiquetas, do mapa e das palavras quietas do voo; `Flight.quietInk` é ele), `ink2` e `inkHint` passam 4,5:1 em todas as superfícies
-(`inkHint` 5,15 no fundo, 5,02 no cartão, 4,77 na faixa `1F2236`); **`inkHint` não vai no azulejo `surface3`** (4,3:1; use `ink2`). `ink3` (3,8:1) só para o
+Regra em `CLAUDE.md`. **Tokens** (`PaletteContrastTests`, com e sem Aumentar Contraste): `ink`, `inkSoft` (branco 80%, o degrau sob `ink` de etiquetas, do mapa e das palavras quietas do voo; `Flight.quietInk` é ele), `ink2` passa 4,5:1 em todas as superfícies
+(6,3 no fundo, 5,0 no azulejo `surface3`; dicas e rótulos mono também são `ink2`, sem um cinza próprio). `ink3` (3,8:1) só para o
 que não precisa ser lido. `inkOnLight` (preto 62%, 6:1) para texto secundário sobre chip branco.
 **Auditoria** (`tools/contrast/audit.py` sobre `HandoffCaptureTests`, `UserReportCaptureTests`, `ExploratoryTourTests`): a ferramenta **subestima** texto fino
 e pequeno (um `ink2` de 6,3:1 sai ~3 em mono de 10 pt) e erra sob telas escurecidas e sobre vídeo; confira à mão os falsos positivos.
@@ -947,27 +975,32 @@ biblioteca não a recebeu) volta na abertura seguinte como "Freestyle recording"
 pode ser gravada (iPhone cheio), a take não entra e o vídeo volta para `tmp/take-*.mov` com o nome da câmera ("The take couldn't be saved"), onde a
 recuperação o acha: nunca um vídeo na biblioteca sem take que aponte para ele.
 
-**Logbook:** título grande da própria página ("Logbook" e "Catch it now. Write it later.", como o título grande do sistema), com a barra sempre
-no modo pequeno: digitando e selecionando, o título recolhe e o pequeno aparece na barra (trocar a barra entre grande e pequeno acontecia num quadro
-e a página pulava). A captura (título, microfone, frase, campo e o vazio) fica **acima da lista de ideias**, fora dela: cada parte recolhe pela
-altura (`FoldAway`) e a lista cresce no lugar (uma parte de linha que recolhia fazia a lista redimensionar a linha num quadro, e tudo pulava ~160 pt);
-a página é alinhada no topo, então o teclado tira altura da lista e não desloca a página. Segurar o botão grava e um toque começa/termina ("Tap the button again to
-finish"; onde nada pode ouvir, diz por quê); embaixo dele, "Hold to talk · tap to start". Enquanto ouve, a linha embaixo é só "Listening…", os anéis
-seguem a voz e as palavras entram no campo. O campo tem a mesma altura vazio ou digitando (ícone centrado; cresce até 4 linhas só com ideia longa;
-cursor amarelo; Return salva). **Digitando** (pedido do dono, 20/10/2026): o microfone grande sai, o título vai para a barra e ao lado do campo fica
-um botão amarelo de 56 pt, como no Mensagens: microfone com o campo vazio, seta ↑ que salva no Logbook quando há palavras (o microfone ali parecia o
-botão de confirmar). As ideias ficam **por dia** (TODAY, YESTERDAY, o dia da semana, a data; `LogbookDays`), cada uma com "SPOKEN · 0:06 · 2 HR.
-AGO" ou "TYPED · 9:40 PM"; a recém-salva entra no topo com contorno amarelo por 1,4 s. Vibração: dois toques ao começar a ouvir
-(`HapticPatterns.listen`), um suave ao parar. **Movimento:** ao abrir, o círculo respira uma vez (1,08); sob o dedo afunda (0,92) e volta numa mola;
-ao começar a ouvir o microfone pula (1,25) e três ondas saem do círculo e somem, mais longe com a voz mais alta (`LogbookRipples`); digitando, o círculo
-encolhe em direção ao botão do lado do campo, que cresce de lá; microfone ↔ seta com um pulo (1,14) e um tick; ✦ Write acende o cartão em violeta e a estrela sai do próprio botão; apagar dá um toque
-firme e a lista fecha numa mola, com "Idea deleted · Undo" (4 s) mostrado na própria folha (`toastHost(inSheet:)`). **Select** (à direita do primeiro dia,
-como em Scripts; vira **Done**, e o Done da barra sai): a captura recolhe, cada cartão mostra a marca (`ScriptSelectionMark`) no lugar do ✦ Write e
-um toque marca ou desmarca; a barra de baixo ("Select ideas" / "n selected" e a lixeira) apaga o que foi escolhido com um Undo só. Reduzir
-Movimento: sem ondas, pulos nem respiração. Uma ideia salva rola para cima do teclado. Medido no iPhone 15 Pro (`PerformanceDeviceUITests`,
-intervalos "Logbook fold" e "Logbook listen"): recolher e abrir sem engasgo (~99 fps); começar a ouvir ainda tem 1–3 engasgos curtos (24–60 ms,
-variando muito), a melhorar. Siri sem abrir o app (`AddToLogbookIntent`: "Add an idea to Cue" / "Save an idea in Cue", pergunta
-"What's the idea?", responde "Saved in your Logbook."). Uma nota aberta por notificação vem ao centro com contorno `acc` de 1,5 pt.
+**Logbook** (`LogbookView`, folha em `.large`): título grande do sistema ("Logbook", `navigationSubtitle` "Catch it now. Write it later.") e Done na
+barra (sai durante a seleção). As ideias enchem a página, **por dia** (TODAY, YESTERDAY, o dia da semana, a data; `LogbookDays`, rótulo mono `ink2`),
+numa `List`; sem nenhuma, o vazio fica **no meio** do espaço da lista (sobreposto, acima do teclado ao digitar; o livro, "Your Logbook is empty",
+"Hold the mic to catch an idea. Write it later."; entra e sai num esmaecer de 0,35 s). **Embaixo, como no Mensagens, um compositor de vidro só**
+(`.safeAreaInset(.bottom)`, `glassEffect`, raio 28): o campo, com a dica "Type, or hold the mic to talk" em `ink2` (o cinza do sistema dava ~2,4:1 no
+vidro), 17 pt, cursor amarelo, cresce até 4 linhas e Return salva; no fim dele um **botão amarelo de 44 pt**: o microfone, que **segurado** ouve (as
+palavras entram no campo, depois do que já estava digitado, e soltar salva) e **tocado** (menos de 0,35 s) continua ouvindo até o próximo toque; com
+palavras digitadas ele vira a **seta ↑ que salva** (troca `replace` do sistema e um tique). Ouvindo ou digitando, o vidro ganha contorno `accLine` de
+1 pt. Sobre o campo, **uma linha só quando há o que dizer** (footnote semibold, esmaece em 0,25 s): "Listening…", "Tap the button again to finish"
+ou, onde nada pode ouvir, o porquê (`warnText`). O compositor fica no tamanho até o 1º tamanho de acessibilidade (o campo cresce pelas linhas).
+**Teclado** (dono, 30/10/2026): rolar não o fecha; um toque em qualquer lugar da página fecha (esse primeiro toque só fecha, mesmo num Delete à mostra; sem
+teclado o toque é do que está embaixo); digitando, deslizar para baixo não fecha a folha
+(`interactiveDismissDisabled`). Uma ideia salva entra no topo da lista, a lista rola até ela e ela fica com contorno amarelo por 1,4 s. **Cartão**
+(`surface`, raio 22, `cardDepth`): ícone de 44 pt (microfone amarelo se falada, lápis se digitada), o texto em **16 medium** até 3 linhas,
+"SPOKEN · 0:06 · 2 HR. AGO" ou "TYPED · 9:40 PM" com a bolinha do tópico, e **✦ Write** violeta (sem Apple Intelligence, "Write it", que abre um
+rascunho em branco com a ideia no título). **Vibração:** dois toques ao começar a ouvir (`HapticPatterns.listen`), um suave ao parar, sucesso ao salvar
+uma ideia falada, um toque ao salvar uma digitada, um tique ao travar. **Movimento:** ao abrir, o círculo respira uma vez (1,12); sob o dedo afunda
+(0,9) e volta; ouvindo, cresce (1,12) com brilho, o microfone pula (1,25) e anéis saem do botão por cima da borda do campo, sem mover nada, mais longe
+com a voz mais alta (`LogbookRipples`); ✦ Write acende o cartão em violeta e a estrela sai do próprio botão; apagar dá um toque firme e a lista fecha
+numa mola, com "Idea deleted · Undo" (4 s) mostrado na própria folha (`toastHost(inSheet:)`). Apagar: deslizar (inteiro apaga) ou segurar o cartão.
+**Select** (mono em maiúsculas, à direita do primeiro dia, como em Scripts; vira **Done**): o compositor dá lugar à barra de seleção ("Select ideas" /
+"n selected" e a lixeira, sobe de baixo em 0,3 s), cada cartão mostra a marca (`ScriptSelectionMark`) no lugar do ✦ Write e um toque marca ou
+desmarca; a lixeira apaga o que foi escolhido com um Undo só. Reduzir Movimento: sem respiração, mudanças sem animação, e um anel parado no lugar das
+ondas. Começar a ouvir é o intervalo "Logbook listen" (`studio.cue` / Motion), contado por `PerformanceDeviceUITests`. Siri sem abrir o app
+(`AddToLogbookIntent`: "Add an idea to Cue" / "Save an idea in Cue", pergunta "What's the idea?", responde "Saved in your Logbook."). Uma nota aberta
+por notificação vem ao centro com contorno `acc` de 1,5 pt.
 
 ## 23. Ferramentas de IA: o botão faz o que diz
 
@@ -1016,7 +1049,7 @@ Profile, todas as páginas de Settings, Remote): o translúcido de Settings deix
   22 a borda sumia nos cantos).
 - **Lista de Takes** nativa: `List` `.insetGrouped`, um cartão por dia, `swipeActions` (Share em `Palette.Takes.shareAction`, azul 5,2:1; Delete em
   `dangerFill`), menu de contexto do sistema; a linha é `Button` (a revisão é apresentação, `PresentationService.openReview`).
-- **Onde:** Scripts (grupos e Logbook), folha do Logbook (linhas 6/8 pt), Takes, Profile e My Cue Voice, todas as páginas de Settings, as listas das
+- **Onde:** Scripts, folha do Logbook (linhas 6/8 pt), Takes, Profile e My Cue Voice, todas as páginas de Settings, as listas das
   perguntas, `GroupedCard` e `SelectableCard` das folhas, Pick the best take. **Fora:** controles das folhas do editor, Privacy & AI data e Translate captions
   (listas do sistema), o dock e o Pro.
 - Testes: `CardDepthTests`, `CardRowPositionTests`, `CardDepthCaptureTests` (opt-in, `TEST_RUNNER_CUE_FIDELITY_DIR`).
@@ -1159,8 +1192,8 @@ nada de história, resultado, número ou tendência inventados).
   read: 10 of 23" fica embaixo do texto lido.
 - **Lâmpada no dock** (`InspirationDockButton`, `CueIcon.findInspiration` 20 pt, `FindInspirationSheet.icon`: lâmpada com uma órbita que passa
   atrás dela, mais suave, e na frente; também na nota "Starter ideas" e na introdução da ferramenta): à direita do My Cue Voice na linha 1, **em qualquer
-  estado de Scripts**, contorno amarelo em vidro discreto, 44 pt, "Find inspiration"; dobra com a linha. Sem largura, o chip da rede perde o "For" e depois os
-  chips rolam com a lâmpada fixa. Sem dica de primeiro uso.
+  estado de Scripts**, 8 pt depois do último chip, cápsula amarela de 44 × 30 pt (`accSoft`, contorno `accLine` de 1 pt, 44 × 44 de toque), "Find
+  inspiration" para o VoiceOver; dobra com a linha. Sem largura, os chips encurtam (§2) e só por último rolam com a lâmpada fixa. Sem dica de primeiro uso.
 - **A folha** (`Screens/Scripts/Inspiration/`; abre pela lâmpada, por + › Let Cue draft it e pela notificação de ideia): título, "Ideas to start from.",
   chips de tema ("All my topics" e os salvos, escolhido em violeta; "Topics" abre o editor do My Cue Voice), **um cartão** violeta (TEMA ·
   SUBTEMA · TIPO, título, YOUR POINT OF VIEW, OPENING LINE), e embaixo, fixos, **Another idea** (círculo de vidro ↻ de 54 pt à esquerda; não sobe
@@ -1191,7 +1224,7 @@ nada de história, resultado, número ou tendência inventados).
 - **Medido** (`InspirationDeviceTests`): lote de 6 briefs 8,6 s (6 títulos: 8,3 s); nenhum cortado, nenhuma abertura com afirmação; o roteiro abriu com a
   frase em 2 de 2. **Falta no aparelho:** a explosão de estrelas, o foco do teclado depois de Start with it, o VoiceOver do cartão, uma rodada maior.
 - Contraste: tokens `inspirationCard`, `…Glow`, `…Border`, `inspirationChipOn` em
-  `PaletteContrastTests.findInspirationReadsOnItsCardItsChipsAndItsWaysIn`; rótulos de seção em `ink2` (`inkHint` dava ~4,2 sob o brilho).
+  `PaletteContrastTests.findInspirationReadsOnItsCardItsChipsAndItsWaysIn`; rótulos de seção em `ink2`.
 
 ## 31. Background (Quick edit)
 
@@ -1283,7 +1316,7 @@ Mais expressão nas cenas de descoberta e celebração, discrição no roteiro, 
   param com o app inativo.
 - **Toasts** (`AnyTransition.toast`, app e editor): entram descendo 8 pt em 0,25 s e saem em fade de 0,2 s (`motion/README.md`); o ícone faz o gesto do
   seu tipo (§1, Avisos), e o fim de um trabalho troca ícone e texto na mesma pílula.
-- **Ícones que trocam** (`symbolSwap`, `CueMotion.symbolSwap`): play/pause do gravador e do editor, o olho dos cues, o microfone do Logbook, a conexão do
+- **Ícones que trocam** (`symbolSwap`, `CueMotion.symbolSwap`): play/pause do gravador e do editor, o olho dos cues, a conexão do
   controle remoto e a estrela de melhor take (com um pequeno pulo) usam o `replace` do sistema.
 - **Chips e cartões** (`CuePressButtonStyle`, `.cuePress` / `.cuePressCard`): chips de filtro (Scripts, Takes, voz, blocos, painéis do editor) e cartões que são
   um botão só (planos do Pro e do Perfil, caminhos da biblioteca vazia, presets do editor) afundam como os botões (cartão 1,5%).
@@ -2383,11 +2416,18 @@ Profile, Pro, celebrações) tinha tamanho fixo copiado do quadro, e várias tel
   botões redondos de tamanho fixo. A regra `loose_font_size` do SwiftLint acusa um tamanho solto.
 - **Proporção da tela** (`ScreenProportion`): de 390 a 402 pt de largura o tamanho é o do quadro; menor até ×0,96 no SE e no mini (375 pt), maior até
   ×1,08 no Pro Max (440 pt; o Air, 420 pt, fica no meio). As cenas desenhadas num quadro (1.1, 1.7, 8.3) também crescem ou encolhem com a tela.
+  **O Quick edit não segue a largura** (dono, 30/10/2026): as ferramentas têm o mesmo tamanho em todo iPhone, e um controle do app dentro dele (o
+  slider, um chip, as folhas dele) usa o tamanho do editor (`typeFollowsScreenWidth`); o Dynamic Type continua valendo.
+- **Papéis, não tamanhos iguais** (dono, 30/10/2026): o que tem a mesma função segue a mesma regra. Títulos de folha 22 bold (`SheetHeader`; as
+  folhas de My Cue Voice e da Ultra AI também, o rótulo violeta acima diz que é IA); 30 bold só nas apresentações (onboarding, celebrações).
+  Títulos de item de lista em medium: Scripts 15,5 (a referência), Takes (lista) e Logbook 16; as músicas do editor ficam 15 semibold (lista
+  compacta) e os cartões da grade de Takes 14 bold sobre a miniatura. Nome e valor de um slider em 15 semibold, o valor branco com dígitos fixos
+  (o amarelo fica na trilha, nos chips mexidos e no ✓). Texto secundário, dicas e rótulos mono em `ink2` (não há um segundo cinza).
 - **Até onde cresce:** o app inteiro até o 3º tamanho de acessibilidade (`RootView`; além dele uma linha guarda uma ou duas palavras). Cenas com as
   palavras dentro (primeiro voo, 1.7, 8.2, Your year, Ready to travel) até o 1º; a 1.1, o capítulo dos tópicos, o cartão do roteiro de prática, a
   8.3, a fileira de ícones do app, o dock de Scripts e o cartão de etapas de Takes até o maior tamanho padrão (xxxLarge; o dock fica por cima da
   lista); os chips de plataforma até o 1º. O Quick edit e o gravador seguem como estavam (§44).
-- **Nos tamanhos de acessibilidade** o que ficava lado a lado empilha (`ReflowStack`): a foto e o nome no Profile (Edit embaixo), o universo e o
+- **Nos tamanhos de acessibilidade** o que ficava lado a lado empilha (`ReflowStack`): a foto e o nome no Profile (a seta › no canto), o universo e o
   texto em "Your universe", o nome e o valor nas linhas de Settings, "Ready to record" e as informações na página do roteiro, a ação embaixo do
   "Up next" de Takes, a força da voz. Os formatos e os vídeos de Takes ficam um por linha; o título de um roteiro na lista vai a 4 linhas e a
   linha mono a 2. Chips com texto têm altura mínima (com 2–4 pt em cima e embaixo), não fixa: no tamanho padrão ficam iguais.
@@ -2778,21 +2818,19 @@ Ainda escapa, às vezes, uma ressalva ("muchísimos años" → "siempre") ou um 
 contadas antes de sair, falhas incluídas (`UltraCallBudget`, nos defaults padrão do app). É uma trava do experimento, **não** um sistema de créditos: o de produção tem de ser do servidor (compras verificadas,
 saldo e operações idempotentes lá; uma falha sem roteiro não debita). Plano em `reports/ULTRA_AI_NATIVE_2026-10-29.md`.
 
-**Roteiros grátis e Cue Pro** (decisão do dono, 29/10/2026; **prévia em Debug**, sem cobrança): todo mundo tem **5 roteiros Ultra AI grátis**
-(`UsagePolicy.freeUltraScripts`), o teste de 7 dias do Pro incluído (o teste **não** dá roteiros a mais); o Pro pago soma **30 por mês**
-(`proUltraScriptsPerMonth`), a partir do primeiro mês pago; os grátis são gastos primeiro. Um roteiro só conta quando chega polido (falha ou Stop não
+**Roteiros grátis e Cue Pro** (decisões do dono, 29/10 e 30/10/2026; **prévia em Debug**, sem cobrança): todo mundo tem **3 roteiros Ultra AI grátis**
+(`UsagePolicy.freeUltraScripts`; não há teste grátis do Pro); o Pro soma **30 por mês** (`proUltraScriptsPerMonth`); os grátis são gastos primeiro. Um roteiro só conta quando chega polido (falha ou Stop não
 contam). `UltraAllowance` (puro) e `UltraAllowanceService` (contagem em UserDefaults, mês de calendário): é **só a prévia** do que o criador verá, para o
 dono julgar o produto no iPhone; não protege créditos (a reinstalação zera, qualquer um edita). Onde aparece: o menu do chip de quem escreve ("Ultra AI ·
-4 of 5 free left"; Pro pago "Ultra AI · 28 left this month"), a folha de permissão sob o título ("Your first 5 scripts are free." / "4 of 5 free scripts
-left."), o cartão do plano no Profile (linha mono violeta "ULTRA AI · 4 OF 5 FREE LEFT", laranja quando acaba) e o laboratório (*Give the free scripts back*,
+2 of 3 free left"; Pro "Ultra AI · 28 left this month"), a folha de permissão sob o título ("Your first 3 scripts are free." / "2 of 3 free scripts
+left."), o cartão do plano no Profile (barra violeta "ULTRA AI · 2 OF 3 FREE LEFT", laranja quando acaba) e o laboratório (*Give the free scripts back*,
 *Use up the free scripts* para ver o Pro sem gastar chamadas, *Show the invitation again*; os roteiros do laboratório não contam aqui, e as chamadas de teste nunca voltam). **Sem nenhum restante:** escolher a Ultra AI
 (chip, *Draft with Ultra AI*, o convite) abre no plano grátis o **Pro calmo da Ultra AI** (`PaywallContext.ultra`: "ULTRA AI", "Keep writing with Ultra
-AI.", "Your 5 free scripts are written. Cue Pro adds 30 a month, from the first paid month."); no teste, o toast "Your free Ultra AI scripts are used · Pro’s
-monthly ones start after the free week"; no Pro pago, "This month’s Ultra AI scripts are used · More next month". A ideia vai para o Apple Intelligence.
+AI.", "Your 3 free scripts are written. Cue Pro adds 30 a month.", §12); no Pro, o toast "This month’s Ultra AI scripts are used · More next month". A ideia vai para o Apple Intelligence.
 
 **Convite** (`UltraInviteService`, `UltraInviteCard`; pedido do dono, 29/10/2026): a partir da **segunda vez** que o criador usa a IA (conta um roteiro que o
-Apple Intelligence escreveu e uma visita ao Find inspiration com o Apple Intelligence), os lugares onde a IA escreve apresentam a Ultra AI com os 5
-grátis: no **dock**, uma linha violeta sob o campo ("✦ Meet Ultra AI · 5 free scripts", **Try it**, ×), escondida enquanto o campo está aberto; no **Find
+Apple Intelligence escreveu e uma visita ao Find inspiration com o Apple Intelligence), os lugares onde a IA escreve apresentam a Ultra AI com os 3
+grátis: no **dock**, uma linha violeta sob o campo ("✦ Meet Ultra AI · 3 free scripts", **Try it**, ×), escondida enquanto o campo está aberto; no **Find
 inspiration**, um cartão acima da ideia ("Draft this idea with Ultra AI", **Draft it with Ultra AI**, que escreve aquela ideia); no **My Cue Voice**, um cartão
 sob a voz ("Your voice, with Ultra AI", **Try Ultra AI free**; ao permitir, a próxima ideia vai para a Ultra AI e o toast diz "Ultra AI writes your next
 idea"). Todo botão do convite passa pela folha de permissão. É **um convite só**: o × em qualquer lugar fecha em todos; permitir a Ultra AI ou gastar os
@@ -2839,8 +2877,7 @@ mediana (25–69 s), 10–12 s por etapa. Reduzir Movimento: nada gira, voa ou c
 cena medido na imagem (`UltraAIUITests.testCaptureTheUltraWaitScene` + `tools/contrast/audit.py`): título 12,3:1, ideia 11,2:1, frase 4,9:1, Cancel 12,4:1.
 Para ver sem gastar chamadas: `-uiTestUltra -uiTestUltraAllowed -uiTestUltraPaced` (cerca de 24 s) ou `-uiTestUltraPacedLong` (checagem que pensa 22 s sem palavras, com cometa; a captura confere que a galáxia muda em todos os quadros).
 
-**O Pro onde a Ultra AI existe:** a lista ganha, em segundo lugar, "30 Ultra AI scripts a month" (tag AI, violeta; aparece mesmo sem o Apple
-Intelligence) e a linha sob o título passa a "Free to try · 5 exports and 5 Ultra AI scripts included. Then 7 days free." Assinando pelo Pro da Ultra AI,
-o toast diz que os mensais começam no primeiro mês pago (teste) ou "Welcome to Cue Pro · 30 Ultra AI scripts this month". O resto da lista do Pro não mudou
-(revisão das linhas adiada pelo dono).
+**O Pro onde a Ultra AI existe** (§12): o destaque "✦ ULTRA AI · 30 scripts · every month" ao lado do das exportações (aparece mesmo sem o Apple
+Intelligence) e a linha sob o título "Free to try · 3 exports and 3 Ultra AI scripts included."; assinando pelo Pro da Ultra AI, o toast "Welcome to Cue
+Pro · 30 Ultra AI scripts this month".
 

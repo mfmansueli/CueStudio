@@ -19,7 +19,7 @@ struct WritingFindingRow: View {
                 Text(finding.id.title.uppercased())
                     .hudFont()
                     .interfaceTracking(0.6)
-                    .foregroundStyle(Palette.inkHint)
+                    .foregroundStyle(Palette.ink2)
                 Text(finding.value.display)
                     .cueFont(.subheadline, weight: .semibold)
                     .foregroundStyle(Palette.ink)

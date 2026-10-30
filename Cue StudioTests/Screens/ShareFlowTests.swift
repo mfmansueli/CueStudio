@@ -108,10 +108,10 @@ struct ShareFlowTests {
     }
 
     @Test func theCostLineSaysWhatIsLeft() async throws {
-        let scenario = makeScenario(usedExports: 2)
+        let scenario = makeScenario(usedExports: 1)
         defer { scenario.defaults.tearDown() }
         scenario.flow.openPicker(with: try #require(await rendered(scenario)))
-        #expect(scenario.flow.costLine?.text == "Uses 1 free export · 2 left after this")
+        #expect(scenario.flow.costLine?.text == "Uses 1 free export · 1 left after this")
     }
 
     // MARK: - One export for every network
@@ -125,7 +125,7 @@ struct ShareFlowTests {
         await scenario.flow.start()
         #expect(scenario.exporter.exports.count == 1, "one file for the three networks")
         #expect(scenario.photos.savedURLs.count == 1)
-        #expect(scenario.quota.exportsLeft(for: .free) == 4, "one export, not three")
+        #expect(scenario.quota.exportsLeft(for: .free) == 2, "one export, not three")
         #expect(scenario.queues.queue(forTake: scenario.take.id)?.items.map(\.network) == [.tiktok, .reels, .linkedin])
         #expect(scenario.flow.step == .explainer, "two or more networks, the first time")
     }

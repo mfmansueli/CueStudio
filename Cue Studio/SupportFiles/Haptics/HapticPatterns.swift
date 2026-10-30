@@ -191,6 +191,29 @@ enum HapticPatterns {
 
     static func playPlatformOn() { play(platformOn, fallback: Haptics.soft) }
 
+    /// The Pro's galaxy unfurling (`ProOpeningScript`): a hum that swells as the arms open and a firm tap as it settles at its slant.
+    static let proUnfurl: [Beat] = [
+        Beat(time: 0, intensity: 0.05, sharpness: 0.3, duration: ProOpeningScript.settleBeat - ProOpeningScript.unfurlBeat - 0.03, endIntensity: 0.45),
+        Beat(time: ProOpeningScript.settleBeat - ProOpeningScript.unfurlBeat, intensity: 0.7, sharpness: 0.7),
+    ]
+
+    /// The year's ring lighting, node after node (`ProGalaxyArt`): a light tick each, fading as the light goes round.
+    static func ringTicks(count: Int, every gap: TimeInterval) -> [Beat] {
+        (0..<count).map { Beat(time: Double($0) * gap, intensity: 0.32 - 0.18 * Float($0) / Float(max(1, count - 1)), sharpness: 0.9) }
+    }
+
+    /// Cue Pro bought (`ProGalaxyArt.finish`): a hum that swells as the ring's nodes run into the core, a firm tap as it flashes, a soft settle
+    /// as the gold wave runs out.
+    static let proWelcome: [Beat] = [
+        Beat(time: 0, intensity: 0.06, sharpness: 0.3, duration: 0.45, endIntensity: 0.6),
+        Beat(time: 0.48, intensity: 0.9, sharpness: 0.6),
+        Beat(time: 0.62, intensity: 0.3, sharpness: 0.2),
+    ]
+
+    static func playProUnfurl() { play(proUnfurl, fallback: Haptics.medium) }
+    static func playRingTicks(count: Int, every gap: TimeInterval) { play(ringTicks(count: count, every: gap), fallback: Haptics.selection) }
+    static func playProWelcome() { play(proWelcome, fallback: Haptics.success) }
+
     /// Makes the engine and starts it off the main thread, ahead of the first pattern: made and started on the spot, the takeoff held the
     /// first idea's star back by ~50 ms after each launch (measured on an iPhone 15 Pro, 26/10/2026). Haptics only (no audio), so it never
     /// touches the microphone's session, and it stops by itself when idle.

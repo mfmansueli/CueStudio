@@ -6,9 +6,9 @@
 import Foundation
 
 /// Ultra AI's scripts left (`UltraAllowance`), as each place says it: the writer chip's menu, the permission sheet and the Profile's plan card. The
-/// free scripts are counted "4 of 5"; Pro's month says what is left this month.
+/// free scripts are counted "2 of 3"; Pro's month says what is left this month.
 nonisolated enum UltraAllowanceLabels {
-    /// The writer chip's menu: "Ultra AI · 4 of 5 free left", "Ultra AI · 28 left this month".
+    /// The writer chip's menu: "Ultra AI · 2 of 3 free left", "Ultra AI · 28 left this month".
     static func menu(_ allowance: UltraAllowance) -> String {
         allowance.membership == .paid
             ? String(localized: "Ultra AI · \(allowance.left) left this month")

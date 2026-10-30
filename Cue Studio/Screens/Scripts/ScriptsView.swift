@@ -305,16 +305,6 @@ struct ScriptsView: View {
                         }
                         .listSectionSeparator(.hidden)
                     }
-                    if viewModel.filter == .all, viewModel.query.isEmpty {
-                        // The ideas waiting in the Logbook, at the end of the list: picked like the scripts while selecting.
-                        blockRow(top: 22) {
-                            ScriptsLogbookSection(
-                                selection: viewModel.isSelecting ? viewModel.selection : nil,
-                                onToggle: { viewModel.toggleSelection(of: $0) },
-                                onDelete: { viewModel.delete($0) }
-                            )
-                        }
-                    }
                 }
             }
             .listStyle(.plain)
@@ -439,13 +429,15 @@ struct ScriptsView: View {
         .accessibilityIdentifier("scripts.row.\(script.id.uuidString)")
     }
 
-    /// "READY TO RECORD · 3" in green, "DRAFTS · 4 — IN PROGRESS" and "RECORDED · 2" quiet (mono 10, wide tracking); Select ends the first one.
-    /// "Ready to record", "Drafts", "Recorded" and Select: plain words in grey, no counts (the owner wanted the list lighter, 30/10/2026).
+    /// "READY TO RECORD" in green, "DRAFTS" in purple and "RECORDED" quiet: mono capitals at 12 with wide tracking, no counts (the owner,
+    /// 30/10/2026); Select ends the first one in the same type.
     private func groupHeader(_ group: ScriptGroup, showsSelect: Bool) -> some View {
         HStack(alignment: .center, spacing: 10) {
             Text(groupTitle(group))
-                .cueFont(15, weight: .semibold)
-                .foregroundStyle(Palette.ink2)
+                .monoFont(size: 12, weight: .semibold)
+                .textCase(.uppercase)
+                .interfaceTracking(1.4)
+                .foregroundStyle(groupColor(group))
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityIdentifier("scripts.group.\(group.state.rawValue)")
             Spacer()
@@ -453,7 +445,9 @@ struct ScriptsView: View {
                 Button(viewModel.isSelecting ? "Done" : "Select") {
                     viewModel.toggleSelecting()
                 }
-                .cueFont(15, weight: .semibold)
+                .monoFont(size: 12, weight: .semibold)
+                .textCase(.uppercase)
+                .interfaceTracking(1.4)
                 .foregroundStyle(Palette.ink2)
                 .frame(minHeight: Metrics.hitTarget)
                 .padding(.vertical, -16)
@@ -470,6 +464,14 @@ struct ScriptsView: View {
         case .ready: String(inInterfaceLanguage: LocalizedStringResource("scripts.group.ready", defaultValue: "Ready to record"))
         case .draft: String(localized: "Drafts")
         case .recorded: String(inInterfaceLanguage: LocalizedStringResource("scripts.group.recorded", defaultValue: "Recorded"))
+        }
+    }
+
+    private func groupColor(_ group: ScriptGroup) -> Color {
+        switch group.state {
+        case .ready: Palette.successText
+        case .draft: Palette.Scripts.draftText
+        case .recorded: Palette.ink2
         }
     }
 

@@ -292,7 +292,7 @@ struct VoicePermissionsArt: View {
             context.draw(
                 Text(verbatim: text).font(.mono(size: 9.5, weight: .semibold, locale: context.environment.locale))
                     .interfaceTracking(1.33, locale: context.environment.locale)
-                    .foregroundStyle(Palette.inkHint),
+                    .foregroundStyle(Palette.ink2),
                 at: CGPoint(x: centre, y: 156)
             )
         }

@@ -7,8 +7,9 @@ import SwiftUI
 
 /// The Profile's first card (9.1; owner's redesign, 21/10/2026, kept short: "too much written"), on the solid surface of the others: the
 /// photo in a ring of their universe's light, breathing; the name; "@handle · what you make", or, when there is neither, one yellow
-/// invitation ("+ Add a username"). Edit sits in the card. An empty profile (no name, username, photo or type) is the photo, "Your name"
-/// and "Set up your profile". The long-press menu shows the same card.
+/// invitation ("+ Add a username"), and a chevron at its end, as Your universe's below: the whole card opens Edit Profile (the owner took the
+/// Edit button off, 30/10/2026). An empty profile (no name, username, photo or type) is the photo, "Your name" and "Set up your profile". The
+/// long-press menu shows the same card.
 struct ProfileIdentityContent: View {
     let profile: CreatorProfile
     var onEdit: () -> Void = {}
@@ -26,7 +27,7 @@ struct ProfileIdentityContent: View {
 
     private var creatorType: String? { profile.customRole ?? profile.role?.creatorLabel }
 
-    /// At the accessibility text sizes the photo goes above the name and Edit under it: side by side, the name had room for a word.
+    /// At the accessibility text sizes the photo goes above the name: side by side, the name had room for a word.
     private var isStacked: Bool { dynamicTypeSize.isAccessibilitySize }
 
     var body: some View {
@@ -53,6 +54,7 @@ struct ProfileIdentityContent: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                if !isEmpty && !isStacked { chevron }
             }
             .padding(.top, isEmpty ? 18 : 20)
             .padding(.horizontal, 16)
@@ -62,12 +64,7 @@ struct ProfileIdentityContent: View {
             .accessibilityAddTraits(.isButton)
             .accessibilityHint(Text("Edits your name and username"))
             .accessibilityIdentifier("profile.creatorCard")
-            .overlay(alignment: .topTrailing) { if !isEmpty && !isStacked { editPill } }
-            if !isEmpty && isStacked {
-                editPill
-                    .padding(.horizontal, 4)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
+            .overlay(alignment: .topTrailing) { if !isEmpty && isStacked { chevron.padding(.top, 20).padding(.trailing, 16) } }
             if isEmpty {
                 Button(action: onEdit) {
                     Label("Set up your profile", systemImage: "plus")
@@ -106,20 +103,12 @@ struct ProfileIdentityContent: View {
         .accessibilityHidden(true)
     }
 
-    private var editPill: some View {
-        Button(action: onEdit) {
-            Label("Edit", systemImage: "pencil")
-                .cueFont(.subheadline, weight: .semibold)
-                .foregroundStyle(Palette.ink)
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .frame(minHeight: 32)
-                .background(Palette.surface2, in: Capsule())
-                .contentShape(Capsule())
-        }
-        .buttonStyle(.cuePress)
-        .padding(12)
-        .accessibilityIdentifier("profile.editButton")
+    /// The card opens Edit Profile, as Your universe's chevron says of its card (`ProfileUniverseRow`).
+    private var chevron: some View {
+        Image(systemName: "chevron.forward")
+            .cueFont(.footnote, weight: .semibold)
+            .foregroundStyle(Palette.ink3)
+            .accessibilityHidden(true)
     }
 
     // MARK: - Words

@@ -5,7 +5,7 @@
 
 import Foundation
 
-/// Cue Pro purchase options: two subscriptions, each with a 7-day free trial. Prices come from the
+/// Cue Pro purchase options: two subscriptions, with no free trial. Prices come from the
 /// App Store; these are identifiers and copy only.
 nonisolated enum ProPlan: String, Codable, CaseIterable, Identifiable, Sendable {
     case annual, monthly

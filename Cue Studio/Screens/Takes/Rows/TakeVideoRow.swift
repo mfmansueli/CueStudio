@@ -18,7 +18,7 @@ struct TakeVideoRow: View {
             if let best = video.best { thumbnail(best) }
             VStack(alignment: .leading, spacing: 4) {
                 Text(video.title)
-                    .cueFont(.body, weight: .semibold)
+                    .cueFont(16, weight: .medium)
                     .lineLimit(2)
                     .foregroundStyle(Palette.ink)
                 HStack(spacing: 6) {

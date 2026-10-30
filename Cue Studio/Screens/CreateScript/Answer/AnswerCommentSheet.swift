@@ -73,7 +73,7 @@ struct AnswerCommentSheet: View {
                 Text(failure).cueFont(.footnote).foregroundStyle(Palette.warnText).accessibilityIdentifier("answer.failure")
             }
             Text("The picture is read here, never kept.")
-                .cueFont(.footnote).foregroundStyle(Palette.inkHint)
+                .cueFont(.footnote).foregroundStyle(Palette.ink2)
         }
     }
 

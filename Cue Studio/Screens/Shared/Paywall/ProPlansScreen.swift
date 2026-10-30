@@ -5,19 +5,20 @@
 
 import SwiftUI
 
-/// Cue Pro, as the prototype draws it (11.4): the eyebrow, the title and the line under it, what Pro offers, the two plans side by side, the yellow
-/// button, the small print and Restore · Terms · Privacy. The same screen for both: the regular Pro ("CUE PRO", after the opening) and the calm one
-/// ("YOUR VIDEO IS READY", from the free exports running out). The system's `SubscriptionStoreView` can't be drawn like this, so the plans, the button
-/// and the small print are Cue's own, over StoreKit 2 (`StoreManager`).
+/// Cue Pro, as the owner's canvas draws it (11.4, 30/10/2026): the galaxy (`ProGalaxyArt`), the eyebrow, the title and the line under it, the two
+/// highlights and the plain list (`ProMarketing`), the two plans side by side, the yellow button, the small print and Restore · Terms · Privacy;
+/// everything fits without scrolling from the SE to the Pro Max (`ProLayout`). The same screen for all three: the regular Pro ("CUE PRO", after
+/// the opening) and the calm ones ("YOUR VIDEO IS READY" when the free exports ran out, "ULTRA AI" when its free scripts did). Picking a plan
+/// lights the galaxy's ring: the whole year for Yearly, this month for Monthly. Subscribing plays the galaxy's finish, then the Pro goes away
+/// with the welcome. The system's `SubscriptionStoreView` can't be drawn like this, so the plans, the button and the small print are Cue's own,
+/// over StoreKit 2 (`StoreManager`). There is no free trial (owner, 30/10/2026): trying Cue is its free exports and Ultra AI scripts.
 struct ProPlansScreen: View {
     let context: PaywallContext
+    var layout = ProLayout.regular
     /// The second of the opening (`ProOpeningScript`); the end of it shows everything in place.
     var time = ProOpeningScript.settled
-    /// How far down the screen the content starts (under the navigation bar): the art is placed from the top of the screen, not of
-    /// the content.
+    /// How far down the screen the content starts (under the navigation bar): the galaxy and the words are placed from the top of the screen.
     var topInset: CGFloat = 0
-    /// The navigation bar's height: the copy's room above it is the board's, measured from under the status bar.
-    var barHeight: CGFloat = 0
     let onPurchased: () -> Void
 
     @Environment(StoreManager.self) private var store
@@ -25,33 +26,36 @@ struct ProPlansScreen: View {
     @Environment(AIStatus.self) private var aiStatus
     @Environment(UltraScriptService.self) private var ultra
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Namespace private var selection
     @State private var selectedPlan: ProPlan = .annual
-    @State private var trialDays: [ProPlan: Int] = [:]
+    @State private var ring = ProGalaxyArt.RingLight(lit: 12, was: 12, since: .distantPast)
+    @State private var finishedAt: Date?
     @State private var showsPrivacy = false
 
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-                ProMarketing(context: context, aiIsAvailable: aiStatus.isAvailable, ultraIsOffered: ultra.isAvailable, time: time)
-                    .padding(.top, max(0, 146 - barHeight))
-                    .padding(.bottom, 20)
+                ProMarketing(context: context, layout: layout, aiIsAvailable: aiStatus.isAvailable, ultraIsOffered: ultra.isAvailable, time: time)
+                    .padding(.top, max(0, layout.contentY - topInset))
+                    .padding(.bottom, 12)
             }
             .scrollIndicators(.hidden)
-            // The planet that is you, above the title, its centre `PaywallView.planetY` from the top of the screen.
+            .scrollBounceBehavior(.basedOnSize)
+            // The galaxy, above the title, its core `layout.galaxyY` from the top of the screen.
             .overlay(alignment: .top) {
-                ProPlanetArt(time: time).offset(y: PaywallView.planetY - ProPlanetArt.centreY - topInset)
+                let height = ProGalaxyArt.height(radius: layout.galaxyRadius)
+                ProGalaxyArt(style: galaxyStyle, radius: layout.galaxyRadius, ring: ring, time: time, finishedAt: finishedAt)
+                    .frame(height: height)
+                    .offset(y: layout.galaxyY - topInset - height / 2)
             }
             // The footer (the plans, the button and the small print) stops growing at a large size: at the biggest it left no room above it.
-            footer.dynamicTypeSize(...DynamicTypeSize.xxxLarge).revealed(7, at: time)
+            footer.dynamicTypeSize(...DynamicTypeSize.xxxLarge)
         }
-        .task {
-            await store.loadProducts()
-            for plan in ProPlan.allCases {
-                if let days = await store.freeTrialDays(for: plan) { trialDays[plan] = days }
-            }
-        }
+        .task { await store.loadProducts() }
+        .onChange(of: selectedPlan) { _, plan in light(for: plan) }
         .onChange(of: store.tier.isPro) { _, isPro in
-            if isPro, context == .profile { complete(startedTrial: true) }
+            if isPro, context == .profile { complete() }
         }
         .alert("Purchase", isPresented: Binding(get: { store.errorMessage != nil }, set: { if !$0 { store.errorMessage = nil } })) {
             Button("OK", role: .cancel) {}
@@ -59,6 +63,14 @@ struct ProPlansScreen: View {
             Text(store.errorMessage ?? "")
         }
         .sheet(isPresented: $showsPrivacy) { PrivacySheet() }
+    }
+
+    private var galaxyStyle: ProGalaxyArt.Style {
+        switch context {
+        case .profile: .pro
+        case .export: .export
+        case .ultra: .ultra
+        }
     }
 
     // MARK: - Footer
@@ -72,35 +84,35 @@ struct ProPlansScreen: View {
                         plan: plan,
                         detail: plan == .annual ? yearlyDetail : PaywallCopy.price(for: plan, displayPrice: store.displayPrice(for: plan)),
                         badge: plan == .annual ? PaywallCopy.savingsBadge(percent: store.annualSavingsPercent) : nil,
-                        isSelected: selectedPlan == plan
-                    ) { selectedPlan = plan }
+                        isSelected: selectedPlan == plan, height: layout.planHeight, isCompact: layout.isCompact, selection: selection, time: time
+                    ) { pick(plan) }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.top, 12)
-            .padding(.bottom, 14)
+            .padding(.top, layout.footerTop)
+            .revealed(.plans, at: time)
             Button {
                 Task { await purchase() }
             } label: {
                 if store.purchasingPlan != nil {
                     ProgressView().tint(Palette.accInk)
                 } else {
-                    Text(PaywallCopy.callToAction(for: selectedPlan, displayPrice: price, trialDays: trialDays[selectedPlan], context: context))
+                    Text(PaywallCopy.callToAction(for: selectedPlan, displayPrice: price, context: context))
                         .fontWeight(.bold)
                 }
             }
-            .buttonStyle(.cuePrimary(.large))
+            .buttonStyle(.cuePrimary(layout.isCompact ? .regular : .large))
             .shadow(color: Palette.acc.opacity(0.3), radius: 22)
             .shineSweep(interval: 3.6)
-            .disabled(price == nil || store.purchasingPlan != nil)
-            .padding(.horizontal, 16)
+            .disabled(price == nil || store.purchasingPlan != nil || finishedAt != nil)
+            .padding(.top, layout.buttonGap)
             .accessibilityIdentifier("paywall.buyButton")
-            Text(PaywallCopy.finePrint(for: selectedPlan, displayPrice: price, trialDays: trialDays[selectedPlan]))
+            .revealed(.button, at: time)
+            Text(PaywallCopy.finePrint(for: selectedPlan, displayPrice: price))
                 .cueFont(11.5)
-                .foregroundStyle(Palette.inkHint)
+                .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
-                .padding(.horizontal, 16)
-                .padding(.top, 14)
+                .padding(.top, layout.fineGap)
+                .revealed(.finePrint, at: time)
             HStack(spacing: 28) {
                 Button("Restore") { Task { await restore() } }
                 if let terms = AppLinks.termsOfUse { Link("Terms", destination: terms) }
@@ -115,7 +127,9 @@ struct ProPlansScreen: View {
             .foregroundStyle(Palette.ink2)
             .frame(minHeight: Metrics.hitTarget)
             .padding(.bottom, 4)
+            .revealed(.links, at: time)
         }
+        .padding(.horizontal, 16)
     }
 
     /// "$39.99 · $3.33/mo"
@@ -127,10 +141,26 @@ struct ProPlansScreen: View {
 
     // MARK: - Actions
 
+    /// The ring glides to the plan, a tick for each node the light reaches (or a plain one for Monthly's single node).
+    private func pick(_ plan: ProPlan) {
+        guard plan != selectedPlan else { return }
+        withAnimation(.spring(duration: 0.42, bounce: 0.3)) { selectedPlan = plan }
+        if plan == .annual, context != .ultra {
+            HapticPatterns.playRingTicks(count: 11, every: 0.035)
+        } else {
+            Haptics.selection()
+        }
+    }
+
+    /// The whole year lit for Yearly, this month for Monthly; Ultra AI's ring is the month's scripts, always lit.
+    private func light(for plan: ProPlan) {
+        guard context != .ultra else { return }
+        ring = ProGalaxyArt.RingLight(lit: plan == .annual ? 12 : 1, was: ring.lit, since: .now)
+    }
+
     private func purchase() async {
-        let startsTrial = trialDays[selectedPlan] != nil
         guard await store.purchase(selectedPlan) else { return }
-        complete(startedTrial: startsTrial)
+        complete()
     }
 
     private func restore() async {
@@ -143,9 +173,25 @@ struct ProPlansScreen: View {
         }
     }
 
-    private func complete(startedTrial: Bool) {
+    /// The galaxy's finish (the nodes run into the core, the flash, the gold wave), then the welcome; at once under Reduce Motion.
+    private func complete() {
+        guard finishedAt == nil else { return }
+        finishedAt = .now
+        guard !reduceMotion else {
+            Haptics.success()
+            finish()
+            return
+        }
+        HapticPatterns.playProWelcome()
+        Task {
+            try? await Task.sleep(for: .seconds(ProGalaxyArt.finishLength))
+            finish()
+        }
+    }
+
+    private func finish() {
         dismiss()
-        toast.show(PaywallCopy.welcome(for: context, startedTrial: startedTrial))
+        toast.show(PaywallCopy.welcome(for: context))
         onPurchased()
     }
 }

@@ -26,7 +26,7 @@ final class UltraAIUITests: XCTestCase {
         let chip = app.buttons["ideaCard.writerChip"]
         XCTAssertTrue(chip.exists(within: 15), "No writer chip where Ultra AI is offered")
         chip.tap()
-        // "Ultra AI · 5 of 5 free left": the menu says how many are left.
+        // "Ultra AI · 3 of 3 free left": the menu says how many are left.
         let option = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Ultra AI")).firstMatch
         XCTAssertTrue(option.exists(within: 5), "The writer menu has no Ultra AI")
         option.tap()
@@ -81,15 +81,15 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
     }
 
-    /// From the second use of the AI the dock invites to Ultra AI with its free scripts; "Try it" asks first (saying the first five are free),
+    /// From the second use of the AI the dock invites to Ultra AI with its free scripts; "Try it" asks first (saying the first three are free),
     /// and allowing it puts the chip on Ultra AI and ends the invitation.
     func testTheInvitationAsksFirstThenPicksUltra() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraInvite"])
         XCTAssertTrue(element(app, "ultra.invite").exists(within: 15), "No invitation on the dock after the AI was used")
-        XCTAssertTrue(text(app, containing: "5 free scripts").exists, "The invitation doesn't say the scripts are free")
+        XCTAssertTrue(text(app, containing: "3 free scripts").exists, "The invitation doesn't say the scripts are free")
         app.buttons["ultra.invite.try"].tap()
         XCTAssertTrue(element(app, "ultra.consent").exists(within: 5), "Ultra AI was tried without asking")
-        XCTAssertTrue(text(app, containing: "Your first 5 scripts are free.").exists, "The permission doesn't say what is free")
+        XCTAssertTrue(text(app, containing: "Your first 3 scripts are free.").exists, "The permission doesn't say what is free")
         let allow = app.buttons["ultra.consent.allow"]
         app.scroll(to: allow)
         allow.tap()
@@ -109,7 +109,7 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertFalse(element(app, "ultra.invite").exists, "Closed on the dock, the invitation is still in Find inspiration")
     }
 
-    /// With the free scripts used up, picking Ultra AI offers Cue Pro (its own calm Pro, honest about the trial), and the chip stays on Apple
+    /// With the free scripts used up, picking Ultra AI offers Cue Pro (its own calm Pro), and the chip stays on Apple
     /// Intelligence.
     func testWithNoFreeScriptsLeftUltraOffersCuePro() {
         let app = CueApp.launch(
@@ -117,7 +117,7 @@ final class UltraAIUITests: XCTestCase {
         )
         pickUltra(app)
         XCTAssertTrue(text(app, containing: "Keep writing with Ultra AI.").exists(within: 5), "No Cue Pro when the free scripts are used up")
-        XCTAssertTrue(text(app, containing: "from the first paid month").exists, "The Pro doesn't say when Ultra AI's monthly scripts start")
+        XCTAssertTrue(text(app, containing: "Cue Pro adds 30 a month.").exists, "The Pro doesn't say how many scripts Cue Pro brings")
         app.buttons["paywall.closeButton"].tap()
         let chip = app.buttons["ideaCard.writerChip"]
         XCTAssertTrue(chip.exists(within: 5))
@@ -222,9 +222,9 @@ final class UltraAIUITests: XCTestCase {
         lab.tap()
         let giveBack = element(app, "ultraLab.resetAllowance")
         app.scroll(to: giveBack)
-        XCTAssertTrue(app.staticTexts["Ultra AI · 0 of 5 free left"].exists(within: 5))
+        XCTAssertTrue(app.staticTexts["Ultra AI · 0 of 3 free left"].exists(within: 5))
         giveBack.tap()
-        XCTAssertTrue(app.staticTexts["Ultra AI · 5 of 5 free left"].exists(within: 5))
+        XCTAssertTrue(app.staticTexts["Ultra AI · 3 of 3 free left"].exists(within: 5))
     }
 
     /// Ultra AI's scene round the star, in pictures through a whole run (`TEST_RUNNER_CUE_FIDELITY_DIR=<folder>`): the stub paced as Gemini's

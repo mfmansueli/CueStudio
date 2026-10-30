@@ -74,7 +74,7 @@ struct AppIconPicker: View {
                 if let note = note(icon, isUnlocked: isUnlocked) {
                     Text(verbatim: note)
                         .cueFont(.caption2)
-                        .foregroundStyle(Palette.inkHint)
+                        .foregroundStyle(Palette.ink2)
                 }
             }
             .contentShape(Rectangle())

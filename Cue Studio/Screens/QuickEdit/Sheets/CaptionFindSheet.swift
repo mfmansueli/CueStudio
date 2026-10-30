@@ -75,7 +75,7 @@ struct CaptionFindSheet: View {
                 .font(.editorGlyph(EditorGlyph.row, weight: .semibold))
                 .foregroundStyle(Palette.ink2)
                 .accessibilityHidden(true)
-            // The prompt in `ink2`, as `SearchField`: `inkHint` is 4.3:1 on the field's fill over the sheet.
+            // The prompt in `ink2`, as `SearchField`: the system's grey is far under 4.5:1 on the field's fill.
             TextField(label, text: text, prompt: Text(prompt).foregroundStyle(Palette.ink2))
                 .font(.system(.body))
                 .foregroundStyle(Palette.ink)

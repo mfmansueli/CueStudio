@@ -5,23 +5,20 @@
 
 import SwiftUI
 
-/// Cue Pro (11.4): two subscriptions, each starting with a 7-day free trial. Opens from the Profile's plan card and Settings, with the opening
-/// (`ProOpening`) and the plans (`ProPlansScreen`); or, when the free exports have run out and a video is waiting, as the calm Pro (the
-/// same plans, without the opening's motion); the same calm Pro when Ultra AI's free scripts are used up. Never while recording. Full screen, dismissible from
-/// the close button in its navigation bar, always offers Restore.
+/// Cue Pro (11.4): two subscriptions, with no free trial. Opens from the Profile's plan card and Settings, with the opening (`ProOpening`) and
+/// the plans (`ProPlansScreen`); or, when the free exports have run out and a video is waiting, as the calm Pro (the same plans, without the
+/// opening's motion); the same calm Pro when Ultra AI's free scripts are used up. Never while recording. Full screen, dismissible from the close
+/// button in its navigation bar, always offers Restore.
 struct PaywallView: View {
     let context: PaywallContext
     var onPurchased: (() -> Void)?
 
     @Environment(\.dismiss) private var dismiss
     @Environment(PersonalizationService.self) private var personalization
-    /// Where the content starts (under the navigation bar), read from the background (the one layer that spans the whole screen).
+    /// Where the content starts (under the navigation bar) and the screen's size, read from the background (the one layer that spans the
+    /// whole screen).
     @State private var topInset: CGFloat = 0
-    /// Where the safe area starts without the navigation bar (the status bar's height).
-    @State private var statusInset: CGFloat = 0
-
-    /// The planet that is you sits here, from the top of the screen.
-    static let planetY: CGFloat = 150
+    @State private var screen = CGSize(width: 393, height: 852)
 
     var body: some View {
         // A navigation stack of its own: the close button is the system's, in the bar's Liquid Glass.
@@ -30,12 +27,12 @@ struct PaywallView: View {
                 background
                 switch context {
                 case .profile:
-                    ProOpening(plays: true, planetY: Self.planetY) { time in
-                        ProPlansScreen(context: context, time: time, topInset: topInset, barHeight: barHeight) { onPurchased?() }
+                    ProOpening(plays: true, coreY: layout.galaxyY) { time in
+                        ProPlansScreen(context: context, layout: layout, time: time, topInset: topInset) { onPurchased?() }
                     }
                 case .export, .ultra:
-                    ProOpening(plays: false, planetY: Self.planetY) { _ in
-                        ProPlansScreen(context: context, topInset: topInset, barHeight: barHeight) { onPurchased?() }
+                    ProOpening(plays: false, coreY: layout.galaxyY) { _ in
+                        ProPlansScreen(context: context, layout: layout, topInset: topInset) { onPurchased?() }
                     }
                 }
             }
@@ -43,20 +40,20 @@ struct PaywallView: View {
             .toolbarBackgroundVisibility(.hidden, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
+                    // The app's light ink wherever the Pro opens from (the Profile's tint is gold).
                     Button(role: .close) { dismiss() }
+                        .tint(Palette.ink)
                         .accessibilityLabel(Text("Close"))
                         .accessibilityIdentifier("paywall.closeButton")
                 }
             }
         }
         .foregroundStyle(Palette.ink)
-        .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { statusInset = $0 }
     }
 
-    /// The navigation bar's height: the board's layout is measured from under the status bar, so the copy gives this room back.
-    private var barHeight: CGFloat { max(0, topInset - statusInset) }
+    private var layout: ProLayout { ProLayout(screen: screen, calm: context != .profile) }
 
-    /// The board's night: the haze falls from the top, behind the planet that is you, with the sky over it.
+    /// The board's night: the haze falls from the top, behind the galaxy, with the sky over it.
     private var background: some View {
         ZStack {
             BgWash(lights: BgWash.pro, base: Palette.bg)
@@ -64,6 +61,11 @@ struct PaywallView: View {
         }
         .ignoresSafeArea()
         .onGeometryChange(for: CGFloat.self) { $0.safeAreaInsets.top } action: { topInset = $0 }
+        // Its size is the safe area's (under the bar, above the home indicator); the screen adds the insets back.
+        .onGeometryChange(for: CGSize.self) { proxy in
+            let insets = proxy.safeAreaInsets
+            return CGSize(width: proxy.size.width + insets.leading + insets.trailing, height: proxy.size.height + insets.top + insets.bottom)
+        } action: { screen = $0 }
     }
 }
 

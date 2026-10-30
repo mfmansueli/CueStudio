@@ -82,7 +82,7 @@ final class UsageQuotaService {
     }
 
     /// The Keychain keeps the count through a reinstall, which is the point in Release; testing the free plan needs the
-    /// five exports back. UserDefaults goes with the app, so a missing marker means this is the install's first launch.
+    /// free exports back. UserDefaults goes with the app, so a missing marker means this is the install's first launch.
     private func resetOnNewInstall() {
         guard defaults.object(forKey: DefaultsKey.installLaunched) == nil else { return }
         defaults.set(true, forKey: DefaultsKey.installLaunched)

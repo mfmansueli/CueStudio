@@ -28,8 +28,7 @@ struct VoiceSendsSheet: View {
                             .interfaceTracking(1)
                             .foregroundStyle(Palette.aiText)
                         Text("What Cue sends")
-                            .cueFont(28, weight: .bold)
-                            .tracking(-0.56)
+                            .cueFont(.title2, weight: .bold)
                             .foregroundStyle(Palette.ink)
                             .accessibilityAddTraits(.isHeader)
                     }
@@ -99,7 +98,7 @@ struct VoiceSendsSheet: View {
         return Text(text.isEmpty ? String(localized: "Nothing yet. Set up the first questions and it shows here.") : text)
             .monoFont(size: 11.5)
             .lineSpacing(3)
-            .foregroundStyle(text.isEmpty ? Palette.inkHint : Palette.ink)
+            .foregroundStyle(text.isEmpty ? Palette.ink2 : Palette.ink)
             .frame(maxWidth: .infinity, alignment: .leading)
             .fixedSize(horizontal: false, vertical: true)
             .padding(EdgeInsets(top: 12, leading: 14, bottom: 12, trailing: 14))

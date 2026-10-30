@@ -111,13 +111,13 @@ final class CreationSheetsUITests: XCTestCase {
         let field = element(app, "logbook.field")
         XCTAssertTrue(field.exists(within: 5))
         field.tap()
-        XCTAssertTrue(app.buttons["logbook.compactMic"].exists(within: 5), "No microphone beside the empty field")
+        XCTAssertTrue(element(app, "logbook.captureButton").exists(within: 5), "No microphone beside the empty field")
         field.typeText("Tiny desk setups")
         let save = app.buttons["logbook.save"]
         XCTAssertTrue(save.exists(within: 5), "The button beside the field didn't become Save")
         save.tap()
         XCTAssertTrue(element(app, "logbook.entry").exists(within: 5), "The typed idea didn't reach the Logbook")
-        XCTAssertTrue(app.buttons["logbook.compactMic"].exists(within: 5), "The field didn't empty for the next idea")
+        XCTAssertTrue(element(app, "logbook.captureButton").exists(within: 5), "The field didn't empty for the next idea")
     }
 
     /// An idea swiped to the left is deleted, the system's way.
@@ -131,6 +131,9 @@ final class CreationSheetsUITests: XCTestCase {
         XCTAssertTrue(entry.exists(within: 5))
         // The keyboard stays up for the next idea, and the one just saved comes into view above it.
         XCTAssertTrue(entry.matches(NSPredicate(format: "hittable == true"), within: 5), "The saved idea is under the keyboard")
+        // A tap on the page puts the keyboard away; then the idea is swiped.
+        app.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.45)).tap()
+        XCTAssertTrue(app.keyboards.firstMatch.waitForNonExistence(timeout: 5), "A tap on the page didn't put the keyboard away")
         entry.swipeLeft()
         let delete = app.buttons["Delete"]
         XCTAssertTrue(delete.exists(within: 5))

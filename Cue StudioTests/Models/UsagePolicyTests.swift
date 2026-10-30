@@ -8,8 +8,8 @@ import Testing
 
 @Suite("UsagePolicy")
 struct UsagePolicyTests {
-    @Test func freePlanGetsFiveExports() {
-        #expect(UsagePolicy.exportLimit(for: .free) == 5)
+    @Test func freePlanGetsThreeExports() {
+        #expect(UsagePolicy.exportLimit(for: .free) == 3)
     }
 
     @Test func subscribersExportWithoutLimit() {

@@ -167,41 +167,6 @@ final class PerformanceDeviceUITests: XCTestCase {
         }
     }
 
-    /// The Logbook as a creator uses it, every movement real: the sheet comes up, typing (the microphone steps aside), two ideas saved,
-    /// the keyboard swiped away (the microphone comes back), one idea swiped away, the other picked with Select and deleted, the sheet
-    /// closed. It ends as it began (an empty Logbook), so each run is the same. Hitches while the capture folds and unfolds ("Logbook fold").
-    func testUsingTheLogbook() {
-        let app = CueApp.launch(seeded: true, animations: true)
-        let open = app.buttons["scripts.logbookButton"]
-        XCTAssertTrue(open.exists(within: 15))
-        let field = app.descendants(matching: .any)["logbook.field"].firstMatch
-        let entries = app.descendants(matching: .any).matching(identifier: "logbook.entry")
-        // XCTest runs the block on the main thread.
-        let fold = XCTOSSignpostMetric(subsystem: "studio.cue", category: "Motion", name: "Logbook fold")
-        // Its hitches, over the fold of the capture each way (XCTest's own `XCTHitchMetric` read none, even where these found some).
-        measure(metrics: [fold], options: options) {
-            MainActor.assumeIsolated {
-                open.tap()
-                XCTAssertTrue(field.exists(within: 5))
-                // Where a finger would: an element's own tap scrolls the list to it first, which no finger does.
-                field.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
-                field.typeText("Slow mornings\n")
-                field.typeText("Tiny desk setups\n")
-                XCTAssertTrue(entries.element(boundBy: 1).exists(within: 5))
-                // Down on the list (the keyboard follows the finger away), not on the sheet, which would be dragged.
-                entries.element(boundBy: 0).swipeDown(velocity: .slow)
-                entries.element(boundBy: 1).swipeLeft()
-                app.buttons["Delete"].tap()
-                app.buttons["logbook.selectButton"].tap()
-                entries.element(boundBy: 0).tap()
-                app.buttons["logbook.deleteSelectionButton"].tap()
-                XCTAssertTrue(app.descendants(matching: .any)["logbook.empty"].firstMatch.exists(within: 5))
-                app.navigationBars.buttons["logbook.doneButton"].tap()
-                XCTAssertTrue(open.exists(within: 5))
-            }
-        }
-    }
-
     /// The Logbook's microphone held for a moment and let go, five times: the iPhone's own microphone and speech recognition start under
     /// the circle's jump and its rings, and stop. Silence is heard, so nothing is saved and each run is the same. Hitches as listening
     /// starts ("Logbook listen").

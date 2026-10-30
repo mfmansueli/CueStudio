@@ -75,6 +75,8 @@ struct TakesView: View {
                 PhotosPicker(selection: $importing, matching: .videos, photoLibrary: .shared()) {
                     Label("Import video", systemImage: "square.and.arrow.down")
                 }
+                // In the bar's ink like the app's other bar buttons, not the yellow of an action (owner, 30/10/2026).
+                .tint(Palette.ink)
                 .disabled(viewModel.isImporting)
                 .accessibilityIdentifier("takes.importVideo")
             }
@@ -136,13 +138,12 @@ struct TakesView: View {
 
     // MARK: - Header
 
-    /// The count in yellow mono, the pipeline, what to do next and the filters: above both layouts (6.2).
+    /// The pipeline, what to do next and the filters: above both layouts (6.2; the count of takes and videos above it is gone, owner 30/10/2026:
+    /// it added nothing).
     private var header: some View {
         @Bindable var viewModel = viewModel
         let pipeline = viewModel.pipeline
         return VStack(alignment: .leading, spacing: 14) {
-            HUDLine(values: viewModel.summaryValues, separator: " · ")
-                .padding(.horizontal, 4)
             TakePipelineCard(pipeline: pipeline, selected: viewModel.filter.stage, onSelect: { viewModel.toggle($0) })
             if let next = pipeline.next {
                 TakeUpNextCard(

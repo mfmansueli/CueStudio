@@ -16,7 +16,7 @@ import Foundation
 ///   `-uiTestUltraSlow` holds each call for two seconds, `-uiTestUltraPaced` paces each call as Gemini's usually go (a think, then the words
 ///   in steps: about 24 s in all, the scene round the star filmed), `-uiTestUltraPacedLong` with a check of 26 s (its comet),
 ///   `-uiTestUltraAllowed` starts with Google processing already allowed,
-///   `-uiTestUltraScriptsLeft <0...5>` with that many free scripts left (5 without it), `-uiTestUltraInvite` with the AI used once before (the
+///   `-uiTestUltraScriptsLeft <0...3>` with that many free scripts left (3 without it), `-uiTestUltraInvite` with the AI used once before (the
 ///   invitation to try Ultra AI is due).
 /// - `-uiTestPCCGeneration`: real AI with PCC preferred, only in memory. `-uiTestInformativeDuration` removes the platform length target for A/B UI tests.
 /// - `-uiTestLongTake <seconds>`: "3 morning habits" Take 3 becomes a full-size take that long, with captions (device export
@@ -57,7 +57,7 @@ import Foundation
 ///   a minute and a half: together, how a long script is written, followed and settled on the page.
 /// - `-uiTestFastAnimations`: with the above, no animations (UIKit's sheets and pushes, SwiftUI's transactions), so a UI test
 ///   never waits for one to end; `CueApp.launch` passes it unless a test asks for real animations.
-/// - `-uiTestExportsLeft <0...5>`: the free exports that are left (5 without it): 1 is the last one, 0 asks "Your video is ready" on export.
+/// - `-uiTestExportsLeft <0...3>`: the free exports that are left (3 without it): 1 is the last one, 0 asks "Your video is ready" on export.
 /// - `-uiTestUniverse <sample|newYear|newAccount>`: what "Your universe" holds (the board's APP DATA panel; see `UniverseSeed`).
 /// - `-uiTestFakeShareSheet`: a stand-in with Complete and Cancel takes the place of the system share sheet.
 /// - `-uiTestLowPower`: the editor reads Low Power Mode as on (its notice shows; the Simulator can't turn the mode on).

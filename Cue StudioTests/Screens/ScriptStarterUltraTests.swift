@@ -147,16 +147,16 @@ struct ScriptStarterUltraTests {
         #expect(scenario.presentation.paywall == .ultra && scenario.ideaDraft.engine == .apple)
     }
 
-    @Test func inTheTrialTheToastSaysWhenMoreCome() {
+    @Test func onProTheToastSaysWhenMoreCome() {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.ultra.scriptsLeft = 0
-        scenario.ultra.membership = .trial
+        scenario.ultra.membership = .paid
         scenario.starter.choose(.ultra)
         #expect(scenario.ideaDraft.engine == .apple)
         scenario.starter.showUltraUsedUp()
         #expect(scenario.presentation.paywall == nil)
-        #expect(scenario.toast.message == "Your free Ultra AI scripts are used · Pro’s monthly ones start after the free week")
+        #expect(scenario.toast.message == "This month’s Ultra AI scripts are used · More next month")
     }
 
     @Test func anAppleIntelligenceScriptCountsTowardsTheInvitation() async throws {

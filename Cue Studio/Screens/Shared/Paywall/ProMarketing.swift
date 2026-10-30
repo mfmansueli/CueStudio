@@ -5,101 +5,101 @@
 
 import SwiftUI
 
-/// What the Pro screen says above its plans (11.4): "CUE PRO", the title, the line under it and the list of what Pro
-/// offers. On the regular Pro each block comes up in its turn after the opening's light (`time`); the calm Pro shows it all at once.
+/// What the Pro screen says above its plans (11.4, with the owner's hierarchy of 30/10/2026): the eyebrow, the title and the line under it; the
+/// two highlights (unlimited exports and, where Ultra AI is offered, its 30 scripts a month: `ProHighlightCard`), side by side, Ultra AI's
+/// first in its own calm Pro; then the rest in plain lines. On the regular Pro each block rises in its turn as the galaxy unfurls (`time`); the
+/// calm Pro shows it all at once.
 struct ProMarketing: View {
     let context: PaywallContext
+    var layout = ProLayout.regular
     var aiIsAvailable = true
-    /// Ultra AI is offered on this iPhone: its free scripts and Pro's monthly ones are listed.
+    /// Ultra AI is offered on this iPhone: its free scripts and Pro's monthly ones are said.
     var ultraIsOffered = false
     /// The second of the opening (`ProOpeningScript`); the end of it shows everything in place.
     var time = ProOpeningScript.settled
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
+        VStack(alignment: .leading, spacing: 0) {
+            heading
+            highlights.padding(.top, layout.cardsGap)
+            plainList.padding(.top, layout.listGap)
+        }
+        .padding(.horizontal, 16)
+    }
+
+    private var heading: some View {
+        VStack(alignment: .leading, spacing: 0) {
             VStack(alignment: .leading, spacing: 6) {
                 Text(verbatim: PaywallCopy.eyebrow(for: context))
-                    .monoFont(size: 12, weight: .semibold)
+                    .monoFont(size: layout.isCompact ? 11.5 : 12, weight: .semibold)
                     .interfaceTracking(1.5)
-                    .foregroundStyle(Palette.accText)
+                    .foregroundStyle(context == .ultra ? Palette.aiText : Palette.accText)
                 Text(PaywallCopy.title(for: context))
-                    .cueFont(28, weight: .bold)
+                    .cueFont(layout.isCompact ? 27 : 28, weight: .bold)
                     .tracking(-0.56)
                     .foregroundStyle(Palette.ink)
                     // The calm title breaks after "your": "Keep sharing your / universe."
                     .frame(maxWidth: context == .export ? 250 : .infinity, alignment: .leading)
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
-                Text(PaywallCopy.subtitle(for: context, ultraIsOffered: ultraIsOffered))
-                    .cueFont(15)
-                    .foregroundStyle(Palette.ink2)
-                    .fixedSize(horizontal: false, vertical: true)
             }
-            .padding(.horizontal, 8)
-            .revealed(0, at: time)
-            benefits
+            .revealed(.title, at: time)
+            Text(PaywallCopy.subtitle(for: context, ultraIsOffered: ultraIsOffered))
+                .cueFont(layout.isCompact ? 14 : 15)
+                .foregroundStyle(Palette.ink2)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 6)
+                .revealed(.subtitle, at: time)
         }
-        .padding(.horizontal, 16)
+        .padding(.horizontal, 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    /// Each line with its symbol in a tinted tile, the line in 16 pt and its tag.
-    private var benefits: some View {
-        let items = PaywallCopy.visibleBenefits(aiIsAvailable: aiIsAvailable, ultraIsOffered: ultraIsOffered)
-        return VStack(spacing: 0) {
-            ForEach(Array(items.enumerated()), id: \.offset) { index, benefit in
-                HStack(spacing: 12) {
-                    Image(systemName: benefit.symbol)
-                        .font(.fixed(15, weight: .semibold))
-                        .foregroundStyle(symbolTint(benefit.tone))
-                        .frame(width: 32, height: 32)
-                        .background(symbolTint(benefit.tone).opacity(0.14), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+    private var showsUltra: Bool { context == .ultra || ultraIsOffered }
+
+    private var highlights: some View {
+        HStack(spacing: 8) {
+            if context == .ultra { ultraCard }
+            ProHighlightCard(kind: .exports, height: layout.cardHeight, isCompact: layout.isCompact, time: time)
+                .revealed(.exports, at: time)
+            if context != .ultra, showsUltra { ultraCard }
+        }
+    }
+
+    private var ultraCard: some View {
+        ProHighlightCard(kind: .ultra, height: layout.cardHeight, isCompact: layout.isCompact, time: time)
+            .revealed(.ultra, at: time)
+    }
+
+    /// The rest of what Pro offers: a faint ✓ and the line, plain.
+    private var plainList: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            ForEach(Array(PaywallCopy.visibleBenefits(aiIsAvailable: aiIsAvailable).enumerated()), id: \.offset) { index, benefit in
+                HStack(spacing: 10) {
+                    Image(systemName: "checkmark")
+                        .font(.fixed(11, weight: .semibold))
+                        .foregroundStyle(Palette.ink2)
+                        .accessibilityHidden(true)
                     Text(benefit.text)
-                        .cueFont(16, weight: .medium)
-                        .foregroundStyle(Palette.ink)
+                        .cueFont(layout.isCompact ? 14 : 15)
+                        .foregroundStyle(Palette.ink2)
                         .fixedSize(horizontal: false, vertical: true)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                    Text(benefit.tag)
-                        .monoFont(size: 10.5, weight: .bold)
-                        .interfaceTracking(0.6)
-                        .foregroundStyle(tint(benefit.tone))
                 }
-                .padding(.vertical, 8)
-                .frame(minHeight: 50)
-                .overlay(alignment: .top) { if index > 0 { Rectangle().fill(Palette.separator).frame(height: 0.5) } }
-                .revealed(index + 1, at: time)
+                .frame(minHeight: layout.rowHeight)
+                .revealed(.list, line: index, at: time)
             }
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 4)
-        // The card comes up with its first row, not before it: an empty box under the warp spoils the opening.
-        .background {
-            let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
-            shape.fill(Palette.surface)
-                .overlay(shape.strokeBorder(Palette.separator, lineWidth: 0.5))
-                .revealed(1, at: time)
-        }
+        .padding(.horizontal, 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("paywall.benefits")
-    }
-
-    /// The symbol's colour: Cue's yellow, or the lilac of the AI.
-    private func symbolTint(_ tone: ProBenefit.Tone) -> Color {
-        tone == .ai ? Palette.aiText : Palette.accText
-    }
-
-    private func tint(_ tone: ProBenefit.Tone) -> Color {
-        switch tone {
-        case .plain: Palette.ink2
-        case .ai: Palette.aiText
-        case .universe: Palette.accText
-        }
     }
 }
 
 extension View {
-    /// Fades this block up 18 pt and out of the blur at its turn (`ProOpeningScript.reveal`).
-    func revealed(_ index: Int, at time: Double) -> some View {
-        let pose = ProOpeningScript.reveal(index).pose(at: time)
+    /// Rises this block 18 pt and out of the blur at its turn (`ProOpeningScript.reveal`).
+    func revealed(_ block: ProOpeningScript.Block, line: Int = 0, at time: Double) -> some View {
+        let pose = ProOpeningScript.reveal(block, line: line).pose(at: time)
         return opacity(pose.opacity).offset(y: pose.y).blur(radius: pose.blur)
     }
 }

@@ -147,10 +147,11 @@ final class HandoffCaptureTests: XCTestCase {
 
     // MARK: - 4 · Pro (11.4)
 
-    /// The regular Pro held still at the seconds of its opening, then the end of it, and the calm Pro from the free exports.
+    /// The regular Pro held still at the seconds of its opening (the galaxy unfurling, lying back, its ring coming in), then the end of it, and
+    /// the calm Pro from the free exports.
     func test11_4_Pro() throws {
         _ = try requireFolder()
-        for second in [0.3, 0.6, 0.9, 1.2, 1.4, 1.6, 1.9, 2.4] {
+        for second in [0.6, 1.2, 1.6, 2.1, 2.4, 2.7, 3.0, 3.5] {
             let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestProAt", String(second)])
             app.cueTabBar.buttons["Profile"].tap()
             let upgrade = element(app, "profile.upgradeButton")
@@ -170,7 +171,7 @@ final class HandoffCaptureTests: XCTestCase {
         calm.buttons["review.saveButton"].tap()
         XCTAssertTrue(calm.buttons["exportReady.notNow"].exists(within: 5))
         try shot(calm, "8.1_your-video-is-ready", wait: 1)
-        calm.buttons["exportReady.seePro"].tap()
+        calm.buttons["exportReady.pro"].tap()
         XCTAssertTrue(calm.buttons["paywall.buyButton"].exists(within: 8))
         try shot(calm, "11.4_pro-calm", wait: 1)
     }

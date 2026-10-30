@@ -53,7 +53,7 @@ struct PlatformFilterChips: View {
             Text(filter.label)
             Text(verbatim: "\(count(filter))")
                 .monoFont(size: 11)
-                .foregroundStyle(isSelected ? Palette.inkOnLight : Palette.inkHint)
+                .foregroundStyle(isSelected ? Palette.inkOnLight : Palette.ink2)
         }
         .cueFont(14, weight: .semibold)
         .lineLimit(1)

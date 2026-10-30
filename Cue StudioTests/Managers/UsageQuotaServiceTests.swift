@@ -10,11 +10,11 @@ import Testing
 @MainActor
 @Suite("UsageQuotaService")
 struct UsageQuotaServiceTests {
-    @Test func freePlanStartsWithFiveExports() {
+    @Test func freePlanStartsWithThreeExports() {
         let store = TestDefaults()
         defer { store.tearDown() }
         let quota = UsageQuotaService(counter: FakeExportCountStore(), defaults: store.defaults)
-        #expect(quota.exportsLeft(for: .free) == 5)
+        #expect(quota.exportsLeft(for: .free) == 3)
         #expect(quota.canExport(tier: .free))
     }
 
@@ -55,13 +55,13 @@ struct UsageQuotaServiceTests {
         #expect(store.defaults.object(forKey: DefaultsKey.legacyCleanExportsUsed) == nil)
     }
 
-    /// Debug builds: a reinstall (empty UserDefaults, the Keychain count still there) starts with the five exports again.
+    /// Debug builds: a reinstall (empty UserDefaults, the Keychain count still there) starts with the free exports again.
     @Test func aNewDebugInstallGetsItsFreeExportsBack() {
         let store = TestDefaults()
         defer { store.tearDown() }
         let counter = FakeExportCountStore(count: 5)
         let quota = UsageQuotaService(counter: counter, defaults: store.defaults, resetsOnNewInstall: true)
-        #expect(quota.exportsLeft(for: .free) == 5)
+        #expect(quota.exportsLeft(for: .free) == 3)
         #expect(counter.count == 0)
     }
 
@@ -75,7 +75,7 @@ struct UsageQuotaServiceTests {
         first.recordExport(tier: .free)
         let next = UsageQuotaService(counter: counter, defaults: store.defaults, resetsOnNewInstall: true)
         #expect(next.exportsUsed == 2)
-        #expect(next.exportsLeft(for: .free) == 3)
+        #expect(next.exportsLeft(for: .free) == 1)
     }
 
     /// Release builds keep the count through a reinstall.
@@ -118,12 +118,12 @@ struct UsageQuotaServiceTests {
     @Test func theNextExportAfterTheUnlockReadsTheCountFirst() {
         let store = TestDefaults()
         defer { store.tearDown() }
-        let counter = FakeExportCountStore(count: 2)
+        let counter = FakeExportCountStore(count: 1)
         counter.isLocked = true
         let quota = UsageQuotaService(counter: counter, defaults: store.defaults)
         counter.isLocked = false
         quota.recordExport(tier: .free)
-        #expect(counter.count == 3)
-        #expect(quota.exportsLeft(for: .free) == 2)
+        #expect(counter.count == 2)
+        #expect(quota.exportsLeft(for: .free) == 1)
     }
 }

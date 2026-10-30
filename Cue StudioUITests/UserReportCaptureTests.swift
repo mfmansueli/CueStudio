@@ -126,7 +126,8 @@ final class UserReportCaptureTests: XCTestCase {
         tab.tap()
         sleep(2)
         try shot(app, "u14_profile-new-account")
-        let edit = element(app, "profile.editButton")
+        // A new account has no name yet: its card asks to set the profile up.
+        let edit = element(app, "profile.setUpButton")
         if edit.exists(within: 3) {
             edit.tap()
             sleep(2)

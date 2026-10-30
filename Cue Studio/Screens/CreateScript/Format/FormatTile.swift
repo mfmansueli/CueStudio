@@ -31,7 +31,7 @@ struct FormatTile: View {
                     .monoFont(size: 9, weight: .semibold)
                     .textCase(.uppercase)
                     .tracking(0.5)
-                    .foregroundStyle(isSelected ? Palette.accText : Palette.inkHint)
+                    .foregroundStyle(isSelected ? Palette.accText : Palette.ink2)
                     .multilineTextAlignment(.leading)
             }
             .frame(maxWidth: .infinity, minHeight: 92, alignment: .topLeading)

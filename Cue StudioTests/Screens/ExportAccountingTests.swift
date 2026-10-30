@@ -207,7 +207,7 @@ struct ExportAccountingTests {
         #expect(scenario.used == 1)
         #expect(scenario.viewModel.phase == .delivered(.activity(type: airDrop)))
         #expect(scenario.viewModel.take?.isExported == true)
-        #expect(scenario.toast.message == "Shared · 4 of 5 free exports left")
+        #expect(scenario.toast.message == "Shared · 2 of 3 free exports left")
         // Another app than the tile's: no send-off.
         #expect(scenario.viewModel.celebration == nil)
     }
@@ -225,7 +225,7 @@ struct ExportAccountingTests {
             Issue.record("Expected the send-off, got \(String(describing: scenario.viewModel.celebration))")
             return
         }
-        #expect(scenario.toast.message == "Shared with YouTube · 4 of 5 free exports left")
+        #expect(scenario.toast.message == "Shared with YouTube · 2 of 3 free exports left")
     }
 
     @Test func theShareSheetDoesNotNeedPhotos() async throws {
@@ -255,7 +255,7 @@ struct ExportAccountingTests {
         #expect(scenario.viewModel.take?.isExported == true)
         // Instagram says nothing: no send-off, and the message says only that it opened.
         #expect(scenario.viewModel.celebration == nil)
-        #expect(scenario.toast.message == "Opened Reels with your video · Cue can’t see if you post it · 4 of 5 free exports left")
+        #expect(scenario.toast.message == "Opened Reels with your video · Cue can’t see if you post it · 2 of 3 free exports left")
         // Doing it again with the same file is not a second export.
         await scenario.viewModel.share(to: .reels)
         #expect(scenario.used == 1)
@@ -281,7 +281,7 @@ struct ExportAccountingTests {
         #expect(scenario.photos.savedURLs.count == 1)
         #expect(scenario.sharing.sent.isEmpty)
         #expect(scenario.used == 1)
-        #expect(scenario.toast.message == "Saved to Photos · Open LinkedIn to post it · 4 of 5 free exports left")
+        #expect(scenario.toast.message == "Saved to Photos · Open LinkedIn to post it · 2 of 3 free exports left")
         guard case .readyToTravel? = scenario.viewModel.celebration else {
             Issue.record("Expected Ready to travel, got \(String(describing: scenario.viewModel.celebration))")
             return
@@ -578,11 +578,11 @@ struct ExportAccountingTests {
     }
 
     @Test func existingUsageIsKeptAcrossTheNewAccounting() async {
-        let scenario = makeScenario(used: 3)
+        let scenario = makeScenario(used: 1)
         defer { scenario.defaults.tearDown() }
         #expect(scenario.quota.exportsLeft(for: .free) == 2)
         await scenario.viewModel.save()
-        #expect(scenario.used == 4)
+        #expect(scenario.used == 2)
     }
 
     // MARK: - Files

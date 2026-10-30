@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-/// The dock's way to Find inspiration: the yellow bulb with an orbit (`CueIcon.findInspiration`, 20 pt) in a small glass capsule, right after
-/// the "✦ Voice" chip. As tall as the dock's chips to see (36 × 30 pt) and 44 × 44 to touch (the touch area reaches past it, the way Select does on the
-/// list). Icon only: its name is VoiceOver's, and the large content viewer shows it at the biggest text sizes.
+/// The dock's way to Find inspiration: the yellow bulb with an orbit (`CueIcon.findInspiration`, 20 pt) in a capsule of Cue's yellow (fill,
+/// hairline and bulb of one colour, as the chips before it take theirs), one gap after the last chip. As tall as the dock's chips to see
+/// (44 × 30 pt) and 44 × 44 to touch (the touch area reaches over and under it, the way Select does on the list). Icon only: its name is
+/// VoiceOver's, and the large content viewer shows it at the biggest text sizes.
 struct InspirationDockButton: View {
     let action: () -> Void
 
@@ -18,16 +19,15 @@ struct InspirationDockButton: View {
         } label: {
             CueIconView(FindInspirationSheet.icon, size: 20)
                 .foregroundStyle(Palette.accText)
-                .frame(width: 36, height: 30)
-                .background(Palette.Scripts.heroChip, in: Capsule())
-                .overlay { Capsule().strokeBorder(Palette.glassBorder, lineWidth: 0.5) }
+                .frame(width: Metrics.hitTarget, height: 30)
+                .background(Palette.accSoft, in: Capsule())
+                .overlay { Capsule().strokeBorder(Palette.accLine, lineWidth: 1) }
                 .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        // 44 × 44 to touch in a 36 pt row, taking 36 pt of its width: the extra reaches into the gaps around it, not the chips.
+        // 44 × 44 to touch in a 36 pt row: the extra height reaches over and under the row, not into the chips.
         .padding(.vertical, -4)
-        .padding(.horizontal, -4)
         .accessibilityLabel(Text("Find inspiration"))
         .accessibilityHint(Text("Ideas to start from."))
         .accessibilityShowsLargeContentViewer {

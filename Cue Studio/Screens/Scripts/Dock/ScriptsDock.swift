@@ -289,8 +289,6 @@ struct ScriptsDock: View {
         case short
         /// Format as its symbol even with a format picked (its name is in the sheet and VoiceOver's label).
         case fewest
-        /// The same, 4 pt between the chips instead of 6 (an iPhone SE with Ultra AI and the voice's percentage).
-        case tightest
 
         static func < (lhs: Self, rhs: Self) -> Bool { lhs.rawValue < rhs.rawValue }
     }
@@ -311,10 +309,9 @@ struct ScriptsDock: View {
                 fittedRow(.shortPlatform)
                 fittedRow(.short)
                 fittedRow(.fewest)
-                fittedRow(.tightest)
-                HStack(spacing: 6) {
+                HStack(spacing: Self.chipGap) {
                     ScrollView(.horizontal) {
-                        HStack(spacing: 6) { choiceChips(.tightest) }
+                        HStack(spacing: Self.chipGap) { choiceChips(.fewest) }
                     }
                     .scrollIndicators(.hidden)
                     if showsInspiration { InspirationDockButton { presentation.present(.ideas) } }
@@ -324,26 +321,15 @@ struct ScriptsDock: View {
         }
     }
 
+    /// Between the row's chips and the lightbulb, on every iPhone (the owner, 30/10/2026): what the row doesn't use stays after the lightbulb.
+    private static let chipGap: CGFloat = 8
+
     private func fittedRow(_ words: RowWords) -> some View {
-        HStack(spacing: words == .tightest ? 4 : 6) {
+        HStack(spacing: Self.chipGap) {
             choiceChips(words)
-            rowSlack(words)
             if showsInspiration { InspirationDockButton { presentation.present(.ideas) } }
         }
         .fixedSize()
-    }
-
-    /// Room for the network's widest name (`WidthSlack`): the row is laid out for it, so another network changes only its own chip (the
-    /// writer chip keeps one width of its own, `EqualWidthStack`).
-    private func rowSlack(_ words: RowWords) -> some View {
-        let short = words >= .shortPlatform
-        let tight = words >= .short
-        return WidthSlack {
-            platformLook(shownPlatform ?? starter.platform, short: short, tight: tight, flips: false)
-            ForEach(Platform.allCases) { platformLook($0, short: short, tight: tight, flips: false) }
-        }
-        .hidden()
-        .accessibilityHidden(true)
     }
 
     @ViewBuilder
@@ -547,10 +533,10 @@ struct ScriptsDock: View {
     }
 
     /// The platform chip as it looks for `platform`: its logo and name ("For TikTok", or "TikTok" `short`).
-    private func platformLook(_ platform: Platform, short: Bool, tight: Bool, flips: Bool = true) -> IdeaCardChip {
+    private func platformLook(_ platform: Platform, short: Bool, tight: Bool) -> IdeaCardChip {
         IdeaCardChip(
             label: short ? platform.label : String(localized: "For \(platform.label)"), hitHeight: Self.topRowHeight, isTight: tight,
-            logo: platform.logo, logoFlip: flips ? platformFlip : 0
+            logo: platform.logo, logoFlip: platformFlip
         )
     }
 
@@ -588,8 +574,8 @@ struct ScriptsDock: View {
         .accessibilityIdentifier("ideaCard.formatChip")
     }
 
-    /// Format's symbol where the row is short of room: the formats laid out to pick from.
-    private static let formatSymbol = "square.grid.2x2"
+    /// Format's symbol where the row is short of room: the formats stacked to pick from (the owner's pick, 30/10/2026).
+    private static let formatSymbol = "rectangle.stack"
 
     // MARK: - Row 2
 
@@ -704,7 +690,7 @@ struct ScriptsDock: View {
     /// Shown while the field is empty and nothing is suggested (no Apple Intelligence, or while it listens): what to do.
     private var placeholder: Text {
         if suggestion != nil { return Text(verbatim: "") }
-        return Text(hasAI ? "Say it or type your idea…" : "Type or say a title…").foregroundStyle(Palette.inkHint)
+        return Text(hasAI ? "Say it or type your idea…" : "Type or say a title…").foregroundStyle(Palette.ink2)
     }
 
     /// The arrow that sends the idea (`DockSendArrow`: yellow, or violet while Ultra AI writes the next idea); "Write it" when Apple

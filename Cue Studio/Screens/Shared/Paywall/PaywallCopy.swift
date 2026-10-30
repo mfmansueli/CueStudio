@@ -28,76 +28,44 @@ nonisolated enum PaywallCopy {
     static func subtitle(for context: PaywallContext, ultraIsOffered: Bool = false) -> String {
         switch context {
         case .export:
-            String(localized: "Start the trial and export it now.")
+            String(localized: "Subscribe and export it now.")
         case .profile:
             ultraIsOffered ? freeToTryWithUltra : freeToTry
         case .ultra:
-            // The trial has the free scripts only (owner, 29/10/2026): said here, before anyone starts it for Ultra AI.
-            String(localized: "Your \(UsagePolicy.freeUltraScripts) free scripts are written. Cue Pro adds \(UsagePolicy.proUltraScriptsPerMonth) a month, from the first paid month.")
+            String(localized: "Your \(UsagePolicy.freeUltraScripts) free scripts are written. Cue Pro adds \(UsagePolicy.proUltraScriptsPerMonth) a month.")
         }
     }
 
-    /// What Pro offers, as the board lists it (11.4).
+    /// The rest of what Pro offers, under its two highlights (the exports and Ultra AI's scripts, `ProHighlightCard`), in plain lines.
     static let benefits: [ProBenefit] = [
-        ProBenefit(symbol: "square.and.arrow.up", text: String(localized: "Unlimited exports, up to 4K"), tag: String(localized: "EXPORT"), tone: .plain),
-        ProBenefit(symbol: "waveform", text: String(localized: "Full My Cue Voice + sponsored-ad drafts"), tag: String(localized: "AI"), tone: .ai),
-        ProBenefit(
-            symbol: "wand.and.stars", text: String(localized: "Hook variations, platform versions, best-take picks"), tag: String(localized: "AI"), tone: .ai
-        ),
-        ProBenefit(
-            symbol: "paintpalette", text: String(localized: "Cover styles, series tags, “Text behind me”"), tag: String(localized: "EDIT"), tone: .plain
-        ),
-        ProBenefit(
-            symbol: "applewatch", text: String(localized: "Remote from Apple Watch, iPad & Mac sync"), tag: String(localized: "STUDIO"), tone: .plain,
-            isAvailable: false
-        ),
-        ProBenefit(symbol: "sparkle", text: String(localized: "Every milestone app icon"), tag: String(localized: "UNIVERSE"), tone: .universe),
+        ProBenefit(text: String(localized: "Full My Cue Voice and ad drafts"), needsAppleIntelligence: true),
+        ProBenefit(text: String(localized: "Hook and platform versions"), needsAppleIntelligence: true),
+        ProBenefit(text: String(localized: "Covers, series tags and “Text behind me”")),
+        ProBenefit(text: String(localized: "Remote from Apple Watch, iPad & Mac sync"), isAvailable: false),
+        ProBenefit(text: String(localized: "Every milestone app icon")),
     ]
 
-    /// Ultra AI's monthly scripts, second in the list where Ultra AI is offered (it doesn't need Apple Intelligence).
-    static let ultraBenefit = ProBenefit(
-        symbol: "sparkles", text: String(localized: "\(UsagePolicy.proUltraScriptsPerMonth) Ultra AI scripts a month"), tag: String(localized: "AI"),
-        tone: .ai
-    )
-
-    /// The lines for this iPhone: the ones about AI stay out where Apple Intelligence can't run, and the ones for what the app cannot do yet stay out
-    /// (the Apple Watch and Mac remote), so the paywall never sells what is not there. Ultra AI's line is there only where Ultra AI is offered.
-    static func visibleBenefits(aiIsAvailable: Bool, ultraIsOffered: Bool = false) -> [ProBenefit] {
-        var lines = benefits.filter { $0.isAvailable && (aiIsAvailable || $0.tone != .ai) }
-        if ultraIsOffered { lines.insert(ultraBenefit, at: min(1, lines.count)) }
-        return lines
+    /// The lines for this iPhone: the ones about Apple Intelligence stay out where it can't run, and the ones for what the app cannot do yet stay out
+    /// (the Apple Watch and Mac remote), so the paywall never sells what is not there.
+    static func visibleBenefits(aiIsAvailable: Bool) -> [ProBenefit] {
+        benefits.filter { $0.isAvailable && (aiIsAvailable || !$0.needsAppleIntelligence) }
     }
 
-    /// The line under the title of the regular Pro.
+    /// The line under the title of the regular Pro: trying Cue is its free exports (there is no free trial).
     static var freeToTry: String {
-        String(localized: "Free to try · \(UsagePolicy.freeExports) exports included. Then 7 days free.")
+        String(localized: "Free to try · \(UsagePolicy.freeExports) exports included.")
     }
 
     /// The same, where Ultra AI is offered: its free scripts are part of trying Cue.
     static var freeToTryWithUltra: String {
-        String(localized: "Free to try · \(UsagePolicy.freeExports) exports and \(UsagePolicy.freeUltraScripts) Ultra AI scripts included. Then 7 days free.")
+        String(localized: "Free to try · \(UsagePolicy.freeExports) exports and \(UsagePolicy.freeUltraScripts) Ultra AI scripts included.")
     }
 
-    static func welcome(for context: PaywallContext, startedTrial: Bool) -> String {
+    static func welcome(for context: PaywallContext) -> String {
         switch context {
-        case .export:
-            if startedTrial {
-                String(localized: "Trial started · video exported")
-            } else {
-                String(localized: "Welcome to Cue Pro · video exported")
-            }
-        case .profile:
-            if startedTrial {
-                String(localized: "Trial started · Enjoy Cue Pro")
-            } else {
-                String(localized: "Welcome to Cue Pro")
-            }
-        case .ultra:
-            if startedTrial {
-                String(localized: "Trial started · Ultra AI’s monthly scripts start with the first paid month")
-            } else {
-                String(localized: "Welcome to Cue Pro · \(UsagePolicy.proUltraScriptsPerMonth) Ultra AI scripts this month")
-            }
+        case .export: String(localized: "Welcome to Cue Pro · video exported")
+        case .profile: String(localized: "Welcome to Cue Pro")
+        case .ultra: String(localized: "Welcome to Cue Pro · \(UsagePolicy.proUltraScriptsPerMonth) Ultra AI scripts this month")
         }
     }
 
@@ -112,9 +80,8 @@ nonisolated enum PaywallCopy {
         }
     }
 
-    static func callToAction(for plan: ProPlan, displayPrice: String?, trialDays: Int?, context: PaywallContext = .profile) -> String {
-        if context == .export, trialDays != nil { return String(localized: "Start free trial · export now") }
-        if let trialDays { return String(localized: "Start \(trialDays)-day free trial") }
+    static func callToAction(for plan: ProPlan, displayPrice: String?, context: PaywallContext = .profile) -> String {
+        if context == .export { return String(localized: "Subscribe · export now") }
         let price = displayPrice ?? "…"
         return switch plan {
         case .annual: String(localized: "Subscribe for \(price)/year")
@@ -122,19 +89,11 @@ nonisolated enum PaywallCopy {
         }
     }
 
-    static func finePrint(for plan: ProPlan, displayPrice: String?, trialDays: Int?) -> String {
+    static func finePrint(for plan: ProPlan, displayPrice: String?) -> String {
         let price = displayPrice ?? "…"
-        switch plan {
-        case .annual:
-            if let trialDays {
-                return String(localized: "Free for \(trialDays) days, then \(price)/year. Cancel anytime in Settings.")
-            }
-            return String(localized: "Renews yearly at \(price). Cancel anytime in Settings.")
-        case .monthly:
-            if let trialDays {
-                return String(localized: "Free for \(trialDays) days, then \(price)/month. Cancel anytime in Settings.")
-            }
-            return String(localized: "Renews monthly at \(price). Cancel anytime in Settings.")
+        return switch plan {
+        case .annual: String(localized: "Renews yearly at \(price). Cancel anytime in Settings.")
+        case .monthly: String(localized: "Renews monthly at \(price). Cancel anytime in Settings.")
         }
     }
 

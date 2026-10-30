@@ -43,6 +43,14 @@ extension Palette {
         static let ultraDust: [Color] = [Color(hex: 0x9D8CFF), Color(hex: 0xE4DEFF), Color(hex: 0x7B6CFF), Color(hex: 0xB4A7FF)]
         static let ultraMoons: [Color] = [Color(hex: 0x9D8CFF), Color(hex: 0xF4F2FF), Color(hex: 0xFFD60A)]
         static let ultraBeam = Color(hex: 0xEDEAFF)
+        /// The Pro's galaxy (`ProGalaxyArt`), core to tips: Cue's gold warming out to Ultra AI's lilac and violet; and the violet one of
+        /// Ultra AI's calm Pro. Each stop is a colour and where along the arm it sits. Decorative.
+        static let proGalaxy: [(color: Color, at: Double)] = [
+            (Color(hex: 0xFFF0A8), 0), (Color(hex: 0xFFD60A), 0.16), (Color(hex: 0xE4DEFF), 0.42), (Color(hex: 0xB4A7FF), 0.66), (Color(hex: 0x7B6CFF), 1),
+        ]
+        static let proGalaxyUltra: [(color: Color, at: Double)] = [
+            (Color(hex: 0xF2EEFF), 0), (Color(hex: 0xCFC6FF), 0.3), (Color(hex: 0x9D8CFF), 0.65), (Color(hex: 0x7B6CFF), 1),
+        ]
         /// The comets passing outside the ring while Ultra AI writes: the star's gold, a lilac and an icy blue. Decorative.
         static let ultraComets: [Color] = [Color(hex: 0xFFE680), Color(hex: 0xCFC6FF), Color(hex: 0x8FD3FF)]
 
@@ -62,13 +70,20 @@ extension Palette {
         static let transitionInk = Color(normal: Color(hex: 0xEBEBF5, opacity: 0.86), increasedContrast: Color(hex: 0xEBEBF5))
         static let dockField = Color(hex: 0x05060C, opacity: 0.45)
 
-        /// A chip on the idea card (`rgba(5,6,12,0.42)`) and the voice chip's violet.
-        static let heroChip = Color(hex: 0x05060C, opacity: 0.42)
+        /// A chip of the script's settings in the dock (Format, the network): a light glass with its hairline, raised off the dock as the AI's
+        /// violet ones are (`heroChipAI`), so none looks smaller than the others (a dark one did, 30/10/2026). Find inspiration takes Cue's
+        /// yellow (`accSoft`, `accLine`). The hairline is decorative: the chip's words say what it is.
+        static let heroChipGlass = Color(hex: 0xEBEBF5, opacity: 0.1)
+        static let heroChipStroke = Color(hex: 0xEBEBF5, opacity: 0.22)
         static let heroChipAI = Color(hex: 0x9D8CFF, opacity: 0.2)
         static let heroChipAIStroke = Color(hex: 0xC4B8FF, opacity: 0.4)
 
         /// The soft shadow that drifts across the prompt box's golden wash.
         static let insetShade = Color.black.opacity(0.38)
+
+        /// The "DRAFTS" group's title on the list: a purple of its own, apart from the AI's violet (`aiText`) and Reels (`Platform.reels`).
+        /// 7.4:1 on `bg`, 11:1 with Increase Contrast.
+        static let draftText = Color(normal: Color(hex: 0xC084FC), increasedContrast: Color(hex: 0xD8B4FE))
 
         /// The "#AD" / "AD" tag: black on yellow.
         static let adTagFill = Palette.acc

@@ -30,8 +30,7 @@ struct ExportPresentations: ViewModifier {
             )) {
                 if let take = viewModel.take {
                     ExportReadySheet(
-                        take: take, onTrial: { Task { await viewModel.openProFromExportReady() } },
-                        onSeePro: { Task { await viewModel.openProFromExportReady() } },
+                        take: take, onPro: { Task { await viewModel.openProFromExportReady() } },
                         onDecline: { viewModel.declineExport() }
                     )
                 }

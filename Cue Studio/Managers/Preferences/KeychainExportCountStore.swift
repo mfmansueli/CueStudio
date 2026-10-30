@@ -8,7 +8,7 @@ import os
 import Security
 
 /// Free exports used, kept in the Keychain: unlike UserDefaults it survives deleting and
-/// reinstalling the app, so the five free exports can't be reset that way. This device only (never
+/// reinstalling the app, so the free exports can't be reset that way. This device only (never
 /// synced), readable after the first unlock.
 final class KeychainExportCountStore: ExportCountStoring {
     private let service: String

@@ -104,11 +104,6 @@ final class TakesViewModel {
 
     var isEmpty: Bool { takes.takes.isEmpty }
 
-    /// "12 TAKES · 5 VIDEOS" (the separator is the view's).
-    var summaryValues: [String] {
-        [String(localized: "\(takes.takes.count.formatted()) takes"), String(localized: "\(allVideos.count.formatted()) videos")]
-    }
-
     /// The platform chips: All, then each platform a video was made for, none for a network with no videos (the owner, 30/10/2026); the
     /// chosen one keeps its chip while it is chosen.
     var platformOptions: [Platform?] {

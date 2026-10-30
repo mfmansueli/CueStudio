@@ -28,7 +28,7 @@ struct DataEraserServiceTests {
         #expect(!profile.profile.excerpts.isEmpty && profile.profile.fingerprint != nil && !profile.profile.approvedSamples.isEmpty)
         let preferences = PreferencesService(defaults: defaults.defaults)
         preferences.customCues = ["laugh"]
-        let quota = UsageQuotaService(counter: FakeExportCountStore(count: 3), defaults: defaults.defaults)
+        let quota = UsageQuotaService(counter: FakeExportCountStore(count: 1), defaults: defaults.defaults)
         let brands = BrandStore(repository: InMemoryBrandRepository())
         _ = brands.save(BrandBrief(name: "Acme", product: "Soap"))
         defaults.defaults.set(Data("stars".utf8), forKey: DefaultsKey.skyMemory)
@@ -47,7 +47,7 @@ struct DataEraserServiceTests {
         #expect(profile.profile.excerpts.isEmpty && profile.profile.fingerprint == nil && profile.profile.approvedSamples.isEmpty)
         #expect(preferences.customCues.isEmpty)
         #expect(PreferencesService(defaults: defaults.defaults).customCues.isEmpty)
-        // The 3 exports used are still used: deleting data can't hand back free exports.
+        // The export used is still used: deleting data can't hand back free exports.
         #expect(quota.exportsLeft(for: .free) == 2)
     }
 
@@ -129,7 +129,7 @@ struct DataEraserServiceTests {
         #expect(defaults.defaults.object(forKey: DefaultsKey.ideaSuggestions) == nil)
         #expect(defaults.defaults.object(forKey: DefaultsKey.myCoverStudioStyle) == nil)
         // The ledger keeps its ids so deleting data can't hand back free exports.
-        #expect(quota.exportsLeft(for: .free) == 4)
+        #expect(quota.exportsLeft(for: .free) == 2)
     }
 
     /// What no take names any more goes too: a video and a draft left by a take deleted before, an editor file a failed import
