@@ -31,7 +31,7 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
 
 - **Texto:** pelo menos **4,5:1** contra o que realmente está atrás dele (texto grande, de 18 pt ou mais, ou 14 pt em negrito ou mais, **3:1**). Isso vale para textos pequenos, rótulos mono, placeholders, textos legais e para texto sobre vidro, aurora, céu ou vídeo: o fundo é o **pior ponto** da superfície, não o token médio.
 - **Partes de controle, ícones que informam e bordas de campo:** **3:1** (WCAG 1.4.11). Só o que é decorativo (setas de disclosure, separadores, pontos) pode ficar abaixo.
-- **Use os tokens de texto de `Palette`** (`ink`, `inkSoft`, `ink2`, `inkHint`, `accText`, `aiText`, `warnText`, …); eles já são medidos em `PaletteContrastTests` com e sem Aumentar Contraste. `ink3` é só para o que não precisa ser lido (nunca para texto). **Não invente** `Color.white.opacity(x)`, `Palette.Flight.ink.opacity(x)` etc. para texto: se um token não serve, crie ou ajuste o token e meça.
+- **Use os tokens de texto de `Palette`** (`ink`, `inkSoft`, `ink2`, `accText`, `aiText`, `warnText`, …); eles já são medidos em `PaletteContrastTests` com e sem Aumentar Contraste. `ink3` é só para o que não precisa ser lido (nunca para texto). **Não invente** `Color.white.opacity(x)`, `Palette.Flight.ink.opacity(x)` etc. para texto: se um token não serve, crie ou ajuste o token e meça.
 - **Meça de verdade:** um token novo entra em `PaletteContrastTests`; uma tela com fundo translúcido (dock, cartões sobre o céu, vidro, onboarding) é conferida na imagem renderizada (`UserReportCaptureTests` / `HandoffCaptureTests` gravam o PNG e a hierarquia; `tools/contrast/audit.py` mede cada texto). Qualquer par abaixo do mínimo é corrigido na mesma entrega, e o relatório final diz o que foi medido.
 
 ## Build e testes
@@ -74,20 +74,20 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   (`AppleIntelligence.<operação>.<motivo>`). Nunca o texto.
 - O build Release também precisa compilar: previews usam dados de `SupportFiles/Debug/` e ficam em `#if DEBUG`.
 - **Launch arguments** (só Debug; a lista completa e o que cada um faz está em `SupportFiles/LaunchOptions.swift`). Os mais usados:
-  - Estado: `-uiTestInMemory`, `-uiTestSeedSamples`, `-uiTestPro`, `-uiTestSampleVideo`, `-uiTestAppLanguage <lproj>`, `-uiTestExportsLeft <0…5>`,
+  - Estado: `-uiTestInMemory`, `-uiTestSeedSamples`, `-uiTestPro`, `-uiTestSampleVideo`, `-uiTestAppLanguage <lproj>`, `-uiTestExportsLeft <0…3>`,
     `-uiTestUniverse sample|newYear|newAccount`, `-uiTestTopics …`, `-uiTestSky off|serene|adrift|interstellar` (off nos testes).
   - Fluxos: `-uiTestOnboarding` (+ `-uiTestOnboardingStep <capítulo>`, `-uiTestPermissions granted|denied`), `-uiTestVoyage` (sem ele nenhum teste vê
     as dicas da primeira viagem), `-uiTestVoiceTip`, `-uiTestNotificationInvite`, `-uiTestNotificationAuth <estado>`, `-uiTestNotificationTap <destino>`
     (`NOTIFICATIONS.md`), `-uiTestShareQueue`, `-uiTestFakeShareSheet`, `-uiTestAppsInstalled` (`SHARING.md`), `-uiTestRemoteConnects`.
   - IA de teste: `-uiTestStubAI`, `-uiTestSlowWriting`, `-uiTestWriterStalls`, `-uiTestIdeasSlow`, `-uiTestIdeasFail`; Ultra AI sem rede:
-    `-uiTestUltra` (+ `-uiTestUltraAllowed`, `-uiTestUltraReviewFails`, `-uiTestUltraSlow`, `-uiTestUltraScriptsLeft <0…5>`,
+    `-uiTestUltra` (+ `-uiTestUltraAllowed`, `-uiTestUltraReviewFails`, `-uiTestUltraSlow`, `-uiTestUltraScriptsLeft <0…3>`,
     `-uiTestUltraInvite`; DESIGN_PROJECT §57).
   - Tempo e animação: `-uiTestFastAnimations` (padrão do `CueApp.launch`; `animations: true` pede as reais), `-uiTestStarTransition`,
     `-uiTestWelcomeOpening`, e os que congelam uma cena num segundo (`-uiTestWelcomeAt`, `-uiTestProAt`, `-uiTestChapterAt`, `-uiTestStoryAt`,
     `-uiTestSendOffAt`, `-uiTestFirstStar`, `-uiTestMilestone <n>`).
   - `-uiTestCatalogue <seção>` (transition, writing, universe, sky, inspire…) e `-uiTestSceneCapture on|off` (`DESIGN_PROJECT.md` §26).
 - **Idiomas:** `LOCALIZATION.md` (três idiomas independentes, terminologia, RTL). Todo texto novo entra nos 20 idiomas dos String Catalogs.
-- Compras são testadas localmente com `Cue StudioTests/Fixtures/CueStudio.storekit` (selecionado no scheme; `StoreManagerTests` o usa num `SKTestSession`). Em Debug, uma instalação nova volta a ter as 5 exportações
+- Compras são testadas localmente com `Cue StudioTests/Fixtures/CueStudio.storekit` (selecionado no scheme; `StoreManagerTests` o usa num `SKTestSession`). Em Debug, uma instalação nova volta a ter as 3 exportações
   grátis (o contador fica no Keychain; `UsageQuotaService` o zera no primeiro lançamento, `DefaultsKey.installLaunched`). Release não zera.
 
 ### Testes no aparelho (opt-in)

@@ -30,7 +30,7 @@ struct EditorOpeningOverlay: View {
                 skeleton
                 Text("Your take is read and put on the timeline in a moment.")
                     .font(.footnote)
-                    .foregroundStyle(Palette.inkHint)
+                    .foregroundStyle(Palette.ink2)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 28)
                     .padding(.vertical, 18)

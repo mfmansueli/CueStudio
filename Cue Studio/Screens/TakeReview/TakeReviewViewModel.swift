@@ -7,7 +7,7 @@ import Foundation
 import UIKit
 
 /// Save a take, or share it to a platform ("Share to"). Every feature is free; the free plan
-/// includes five exports, then exporting asks for Cue Pro (7 days free). Takes are never locked.
+/// includes `UsagePolicy.freeExports` exports, then exporting asks for Cue Pro. Takes are never locked.
 ///
 /// An export counts when the video provably leaves Cue (`DeliveryEvidence`), once per operation (`ExportLedgerService`):
 /// saved to Photos, accepted by a share-sheet activity, received by TikTok. Preparing the file, opening an app,
@@ -202,7 +202,7 @@ final class TakeReviewViewModel {
         toast.show(String(localized: "Saved in Takes · export with Pro anytime"))
     }
 
-    /// "Start free trial · export now" and "See what's in Pro": the calm Pro, with the video waiting.
+    /// "Export with Cue Pro": the calm Pro, with the video waiting.
     func openProFromExportReady() async {
         showsExportReady = false
         // The sheet has to be gone before the full-screen cover can come up.
@@ -359,7 +359,7 @@ final class TakeReviewViewModel {
         await export(.share(destination))
     }
 
-    /// Continues the export that opened the paywall, now that Pro (or its trial) is on.
+    /// Continues the export that opened the paywall, now that Pro is on.
     func continueAfterPurchase() async {
         guard let action = pendingAction else { return }
         pendingAction = nil

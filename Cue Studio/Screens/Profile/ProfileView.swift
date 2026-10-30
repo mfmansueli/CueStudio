@@ -20,7 +20,6 @@ struct ProfileView: View {
     @State private var showsManageSubscriptions = false
     @State private var showsVoicePreview = false
     @State private var paywall: PaywallContext?
-    @State private var trialDays: Int?
     /// The My Cue Voice questions opened from the card (all that is missing, or one row to edit).
     @State private var voiceSetup: ProfileVoiceSetup?
     /// Where the identity row is (in the screen's own space), and whether its menu is open.
@@ -71,10 +70,7 @@ struct ProfileView: View {
         }
         .navigationTitle("Profile")
         .toolbarTitleDisplayMode(.inlineLarge)
-        .task {
-            await store.loadProducts()
-            trialDays = await store.freeTrialDays(for: .annual)
-        }
+        .task { await store.loadProducts() }
         .sheet(isPresented: $showsEditProfile) { EditProfileSheet() }
         .sheet(isPresented: $showsVoicePreview) { VoicePreviewSheet() }
         .sheet(item: $voiceSetup) { setup in

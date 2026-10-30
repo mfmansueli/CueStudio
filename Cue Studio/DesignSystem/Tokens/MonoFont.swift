@@ -58,14 +58,16 @@ private struct MonoFont: ViewModifier {
     let weight: Font.Weight
     @Environment(\.locale) private var locale
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.typeFollowsScreenWidth) private var followsWidth
 
     func body(content: Content) -> some View {
         let design: Font.Design = TextShaping.hasMonospacedLetters(in: locale.language) ? .monospaced : .default
+        let proportion = followsWidth ? ScreenProportion.current : 1
         let points = switch size {
-        case .board(let points): InterfaceType.size(points, for: dynamicTypeSize, proportion: ScreenProportion.current)
+        case .board(let points): InterfaceType.size(points, for: dynamicTypeSize, proportion: proportion)
         case .fixed(let points): points
         case .style(let style):
-            InterfaceType.size(InterfaceType.defaultSize(of: style), relativeTo: style, for: dynamicTypeSize, proportion: ScreenProportion.current)
+            InterfaceType.size(InterfaceType.defaultSize(of: style), relativeTo: style, for: dynamicTypeSize, proportion: proportion)
         }
         content.font(.system(size: points, weight: weight, design: design)).monospacedDigit()
     }

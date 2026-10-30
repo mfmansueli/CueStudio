@@ -91,7 +91,7 @@ struct FormatSheet: View {
         VStack(alignment: .leading, spacing: 8) {
             Text("More formats")
                 .hudFont().textCase(.uppercase).tracking(1.2)
-                .foregroundStyle(Palette.inkHint)
+                .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
                 .accessibilityAddTraits(.isHeader)
             GroupedCard(background: Palette.surface2, radius: 18, dividerInset: 14) {

@@ -18,7 +18,7 @@ struct UniverseLegend: View {
                     HStack(spacing: 7) {
                         Capsule().fill(OnboardingTopic.color(at: index)).frame(width: 3, height: 12)
                         Text(entry.topic.label).foregroundStyle(Palette.ink)
-                        Text("\(entry.count)").foregroundStyle(Palette.inkHint)
+                        Text("\(entry.count)").foregroundStyle(Palette.ink2)
                     }
                     .cueFont(12.5)
                     .frame(minHeight: 14)

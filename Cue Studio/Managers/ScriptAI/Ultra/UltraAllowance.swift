@@ -5,19 +5,17 @@
 
 import Foundation
 
-/// How many Ultra AI scripts the creator may still write, as the owner set it (29/10/2026): the free ones for everyone, the Pro trial included,
-/// and with Cue Pro, from the first paid month, `UsagePolicy.proUltraScriptsPerMonth` more each month. The free ones are spent first. Pure: the
+/// How many Ultra AI scripts the creator may still write, as the owner set it (29/10/2026, 30/10/2026): the free ones for everyone, and with
+/// Cue Pro `UsagePolicy.proUltraScriptsPerMonth` more each month. The free ones are spent first. Pure: the
 /// counts come from `UltraAllowanceService`, the membership from `StoreManager`.
 nonisolated struct UltraAllowance: Equatable, Sendable {
     enum Membership: Equatable, Sendable {
         case free
-        /// Cue Pro's free week: the free scripts only.
-        case trial
-        /// Cue Pro, paid.
+        /// Cue Pro.
         case paid
 
-        init(tier: MembershipTier, isInFreeTrial: Bool) {
-            self = tier.isPro ? (isInFreeTrial ? .trial : .paid) : .free
+        init(tier: MembershipTier) {
+            self = tier.isPro ? .paid : .free
         }
     }
 

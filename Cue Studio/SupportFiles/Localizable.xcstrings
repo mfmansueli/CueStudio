@@ -595,8 +595,8 @@
         }
       }
     },
-    "%lld Ultra AI scripts a month" : {
-      "comment" : "Cue Pro benefit line; the number is 30",
+    "%lld scripts" : {
+      "comment" : "Cue Pro's Ultra AI highlight, the big line: Ultra AI scripts a month with Cue Pro (30)",
       "localizations" : {
         "ar" : {
           "variations" : {
@@ -604,37 +604,37 @@
               "few" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld نصوص من Ultra AI شهريًا"
+                  "value" : "%lld نصوص"
                 }
               },
               "many" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld نصًا من Ultra AI شهريًا"
+                  "value" : "%lld نصًا"
                 }
               },
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld نص من Ultra AI شهريًا"
+                  "value" : "%lld نص"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld نص من Ultra AI شهريًا"
+                  "value" : "%lld نص"
                 }
               },
               "two" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld نصوص من Ultra AI شهريًا"
+                  "value" : "%lld نصوص"
                 }
               },
               "zero" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld نص من Ultra AI شهريًا"
+                  "value" : "%lld نص"
                 }
               }
             }
@@ -646,13 +646,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI-manuskript om måneden"
+                  "value" : "%lld manuskript"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI-manuskripter om måneden"
+                  "value" : "%lld manuskripter"
                 }
               }
             }
@@ -664,13 +664,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI-Skript pro Monat"
+                  "value" : "%lld Skript"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI-Skripte pro Monat"
+                  "value" : "%lld Skripte"
                 }
               }
             }
@@ -682,13 +682,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI script a month"
+                  "value" : "%lld script"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI scripts a month"
+                  "value" : "%lld scripts"
                 }
               }
             }
@@ -700,13 +700,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld guion de Ultra AI al mes"
+                  "value" : "%lld guion"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld guiones de Ultra AI al mes"
+                  "value" : "%lld guiones"
                 }
               }
             }
@@ -718,13 +718,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld script Ultra AI par mois"
+                  "value" : "%lld script"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld scripts Ultra AI par mois"
+                  "value" : "%lld scripts"
                 }
               }
             }
@@ -736,13 +736,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "हर महीने %lld Ultra AI स्क्रिप्ट"
+                  "value" : "%lld स्क्रिप्ट"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "हर महीने %lld Ultra AI स्क्रिप्ट"
+                  "value" : "%lld स्क्रिप्ट"
                 }
               }
             }
@@ -751,7 +751,7 @@
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld naskah Ultra AI per bulan"
+            "value" : "%lld naskah"
           }
         },
         "it" : {
@@ -760,13 +760,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld copione Ultra AI al mese"
+                  "value" : "%lld copione"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld copioni Ultra AI al mese"
+                  "value" : "%lld copioni"
                 }
               }
             }
@@ -775,13 +775,13 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "毎月%lld件のUltra AI台本"
+            "value" : "台本%lld件"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "매달 Ultra AI 대본 %lld개"
+            "value" : "대본 %lld개"
           }
         },
         "nb" : {
@@ -790,13 +790,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI-manus i måneden"
+                  "value" : "%lld manus"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI-manus i måneden"
+                  "value" : "%lld manus"
                 }
               }
             }
@@ -808,13 +808,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI-script per maand"
+                  "value" : "%lld script"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI-scripts per maand"
+                  "value" : "%lld scripts"
                 }
               }
             }
@@ -826,13 +826,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld roteiro do Ultra AI por mês"
+                  "value" : "%lld roteiro"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld roteiros do Ultra AI por mês"
+                  "value" : "%lld roteiros"
                 }
               }
             }
@@ -844,13 +844,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI-manus i månaden"
+                  "value" : "%lld manus"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "%lld Ultra AI-manus i månaden"
+                  "value" : "%lld manus"
                 }
               }
             }
@@ -859,7 +859,7 @@
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "สคริปต์ Ultra AI เดือนละ %lld รายการ"
+            "value" : "%lld สคริปต์"
           }
         },
         "tr" : {
@@ -868,13 +868,13 @@
               "one" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ayda %lld Ultra AI senaryosu"
+                  "value" : "%lld senaryo"
                 }
               },
               "other" : {
                 "stringUnit" : {
                   "state" : "translated",
-                  "value" : "Ayda %lld Ultra AI senaryosu"
+                  "value" : "%lld senaryo"
                 }
               }
             }
@@ -883,19 +883,19 @@
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld kịch bản Ultra AI mỗi tháng"
+            "value" : "%lld kịch bản"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每月 %lld 个 Ultra AI 脚本"
+            "value" : "%lld 个脚本"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "每月 %lld 份 Ultra AI 腳本"
+            "value" : "%lld 份腳本"
           }
         }
       }
@@ -3057,6 +3057,125 @@
         }
       }
     },
+    "Covers, series tags and “Text behind me”" : {
+      "comment" : "Cue Pro benefit, a plain line under the two highlights; “Text behind me” is the editor's tool",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الأغلفة ووسوم السلاسل و«النص خلفي»"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Covers, serietags og ”Tekst bag mig”"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cover, Serien-Tags und „Text hinter mir“"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Portadas, etiquetas de serie y “Texto detrás de mí”"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Couvertures, étiquettes de série et « Texte derrière moi »"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कवर, सीरीज़ टैग और “मेरे पीछे टेक्स्ट”"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sampul, tag seri, dan “Teks di belakangku”"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copertine, tag di serie e “Testo dietro di me”"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "カバー、シリーズタグ、「人物の後ろに文字」"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "커버, 시리즈 태그, “내 뒤의 텍스트”"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omslag, serietagger og «Tekst bak meg»"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Covers, serietags en “Tekst achter mij”"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Capas, tags de série e “Texto atrás de mim”"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Omslag, serietaggar och ”Text bakom mig”"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ปก แท็กซีรีส์ และ “ข้อความอยู่หลังตัวฉัน”"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kapaklar, seri etiketleri ve “Yazı arkamda”"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ảnh bìa, thẻ series và “Chữ phía sau tôi”"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "封面、系列标签和“文字在我身后”"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "封面、系列標籤和「文字在我身後」"
+          }
+        }
+      }
+    },
     "Cue’s default writer. Ultra AI has its own switch." : {
       "comment" : "Settings › Privacy & AI data: subtitle of the Apple Intelligence switch when Ultra AI exists",
       "localizations" : {
@@ -3771,121 +3890,716 @@
         }
       }
     },
-    "Free to try · %lld exports and %lld Ultra AI scripts included. Then 7 days free." : {
-      "comment" : "Line under the Cue Pro title; 5 free exports and 5 free Ultra AI scripts, then a 7-day free trial",
+    "EXPORTS" : {
+      "comment" : "Cue Pro's exports highlight, the mono key over “Unlimited”",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "مجاني للتجربة · %1$lld عمليات تصدير و%2$lld نصوص من Ultra AI مشمولة. ثم 7 أيام مجانًا."
+            "value" : "التصدير"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis at prøve · %1$lld eksporter og %2$lld Ultra AI-manuskripter inkluderet. Derefter 7 dage gratis."
+            "value" : "EKSPORT"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Kostenlos testen · %1$lld Exporte und %2$lld Ultra AI-Skripte inklusive. Danach 7 Tage kostenlos."
+            "value" : "EXPORTE"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis para probar · %1$lld exportaciones y %2$lld guiones de Ultra AI incluidos. Luego 7 días gratis."
+            "value" : "EXPORTACIONES"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Essai gratuit · %1$lld exports et %2$lld scripts Ultra AI inclus. Puis 7 jours gratuits."
+            "value" : "EXPORTS"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आज़माना मुफ़्त · %1$lld एक्सपोर्ट और %2$lld Ultra AI स्क्रिप्ट शामिल। फिर 7 दिन मुफ़्त।"
+            "value" : "एक्सपोर्ट"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis dicoba · termasuk %1$lld ekspor dan %2$lld naskah Ultra AI. Lalu gratis 7 hari."
+            "value" : "EKSPOR"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis da provare · %1$lld esportazioni e %2$lld copioni Ultra AI inclusi. Poi 7 giorni gratis."
+            "value" : "ESPORTAZIONI"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "無料でお試し · 書き出し%1$lld回とUltra AIの台本%2$lld件付き。その後7日間無料。"
+            "value" : "書き出し"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "무료 체험 · 내보내기 %1$lld회와 Ultra AI 대본 %2$lld개 포함. 이후 7일 무료."
+            "value" : "내보내기"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis å prøve · %1$lld eksporter og %2$lld Ultra AI-manus inkludert. Deretter 7 dager gratis."
+            "value" : "EKSPORT"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis proberen · %1$lld exports en %2$lld Ultra AI-scripts inbegrepen. Daarna 7 dagen gratis."
+            "value" : "EXPORTS"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Grátis para testar · %1$lld exportações e %2$lld roteiros do Ultra AI incluídos. Depois, 7 dias grátis."
+            "value" : "EXPORTAÇÕES"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Gratis att prova · %1$lld exporter och %2$lld Ultra AI-manus ingår. Sedan 7 dagar gratis."
+            "value" : "EXPORT"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ลองใช้ฟรี · รวมการส่งออก %1$lld ครั้งและสคริปต์ Ultra AI %2$lld รายการ จากนั้นฟรี 7 วัน"
+            "value" : "การส่งออก"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Denemesi ücretsiz · %1$lld dışa aktarma ve %2$lld Ultra AI senaryosu dahil. Sonra 7 gün ücretsiz."
+            "value" : "DIŞA AKTARMA"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dùng thử miễn phí · gồm %1$lld lượt xuất và %2$lld kịch bản Ultra AI. Sau đó miễn phí 7 ngày."
+            "value" : "XUẤT VIDEO"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "免费试用 · 含 %1$lld 次导出和 %2$lld 个 Ultra AI 脚本。之后免费 7 天。"
+            "value" : "导出"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "免費試用 · 含 %1$lld 次匯出和 %2$lld 份 Ultra AI 腳本。之後免費 7 天。"
+            "value" : "匯出"
+          }
+        }
+      }
+    },
+    "every month" : {
+      "comment" : "Cue Pro's Ultra AI highlight, small line under “30 scripts”",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "كل شهر"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hver måned"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "jeden Monat"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "cada mes"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "chaque mois"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हर महीने"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "setiap bulan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ogni mese"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毎月"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "매달"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hver måned"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "elke maand"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "todo mês"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "varje månad"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ทุกเดือน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "her ay"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "mỗi tháng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每月"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "每月"
+          }
+        }
+      }
+    },
+    "Export with Cue Pro" : {
+      "comment" : "“Your video is ready” sheet (free exports used up): opens Cue Pro to subscribe and export",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "صدّر مع Cue Pro"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksporter med Cue Pro"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Cue Pro exportieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar con Cue Pro"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporter avec Cue Pro"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro के साथ एक्सपोर्ट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ekspor dengan Cue Pro"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Esporta con Cue Pro"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Proで書き出す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro로 내보내기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eksporter med Cue Pro"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exporteren met Cue Pro"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportar com o Cue Pro"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Exportera med Cue Pro"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ส่งออกด้วย Cue Pro"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cue Pro ile dışa aktar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xuất với Cue Pro"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 Cue Pro 导出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 Cue Pro 匯出"
+          }
+        }
+      }
+    },
+    "Free to try · %lld exports and %lld Ultra AI scripts included." : {
+      "comment" : "Cue Pro where Ultra AI is offered: the line under the title; the free exports (3) and the free Ultra AI scripts (3). There is no free trial",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مجاني للتجربة · %1$lld عمليات تصدير و%2$lld نصوص من Ultra AI مشمولة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis at prøve · %1$lld eksporter og %2$lld Ultra AI-manuskripter inkluderet."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kostenlos testen · %1$lld Exporte und %2$lld Ultra AI-Skripte inklusive."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis para probar · %1$lld exportaciones y %2$lld guiones de Ultra AI incluidos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essai gratuit · %1$lld exports et %2$lld scripts Ultra AI inclus."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आज़माना मुफ़्त · %1$lld एक्सपोर्ट और %2$lld Ultra AI स्क्रिप्ट शामिल।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis dicoba · termasuk %1$lld ekspor dan %2$lld naskah Ultra AI."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis da provare · %1$lld esportazioni e %2$lld copioni Ultra AI inclusi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料でお試し · 書き出し%1$lld回とUltra AIの台本%2$lld件付き。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료 체험 · 내보내기 %1$lld회와 Ultra AI 대본 %2$lld개 포함."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis å prøve · %1$lld eksporter og %2$lld Ultra AI-manus inkludert."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis proberen · %1$lld exports en %2$lld Ultra AI-scripts inbegrepen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grátis para testar · %1$lld exportações e %2$lld roteiros do Ultra AI incluídos."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis att prova · %1$lld exporter och %2$lld Ultra AI-manus ingår."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลองใช้ฟรี · รวมการส่งออก %1$lld ครั้งและสคริปต์ Ultra AI %2$lld รายการ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denemesi ücretsiz · %1$lld dışa aktarma ve %2$lld Ultra AI senaryosu dahil."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dùng thử miễn phí · gồm %1$lld lượt xuất và %2$lld kịch bản Ultra AI."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费试用 · 含 %1$lld 次导出和 %2$lld 个 Ultra AI 脚本。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免費試用 · 含 %1$lld 次匯出和 %2$lld 份 Ultra AI 腳本。"
+          }
+        }
+      }
+    },
+    "Free to try · %lld exports included." : {
+      "comment" : "Cue Pro: the line under the title; the number is the free exports (3). There is no free trial",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مجاني للتجربة · %lld عمليات تصدير مشمولة."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis at prøve · %lld eksporter inkluderet."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kostenlos testen · %lld Exporte inklusive."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis para probar · %lld exportaciones incluidas."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Essai gratuit · %lld exports inclus."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आज़माना मुफ़्त · %lld एक्सपोर्ट शामिल।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis dicoba · termasuk %lld ekspor."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis da provare · %lld esportazioni incluse."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無料でお試し · 書き出し%lld回付き。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무료 체험 · 내보내기 %lld회 포함."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis å prøve · %lld eksporter inkludert."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis proberen · %lld exports inbegrepen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Grátis para testar · %lld exportações incluídas."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gratis att prova · %lld exporter ingår."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ลองใช้ฟรี · รวมการส่งออก %lld ครั้ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Denemesi ücretsiz · %lld dışa aktarma dahil."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dùng thử miễn phí · gồm %lld lượt xuất."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免费试用 · 含 %lld 次导出。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "免費試用 · 含 %lld 次匯出。"
+          }
+        }
+      }
+    },
+    "Full My Cue Voice and ad drafts" : {
+      "comment" : "Cue Pro benefit, a plain line under the two highlights",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voice كامل ومسودات الإعلانات"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fuld My Cue Voice og annonceudkast"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volles My Cue Voice und Werbeentwürfe"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voice completo y borradores de anuncios"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voice complet et brouillons de pubs"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "पूरा My Cue Voice और ऐड के ड्राफ़्ट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voice lengkap dan draf iklan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voice completo e bozze di pubblicità"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voiceのすべてと広告の下書き"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voice 전체와 광고 초안"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Full My Cue Voice og annonseutkast"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volledige My Cue Voice en advertentieconcepten"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voice completo e rascunhos de publicidade"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hela My Cue Voice och annonsutkast"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voice เต็มรูปแบบและร่างโฆษณา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tam My Cue Voice ve reklam taslakları"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voice đầy đủ và bản nháp quảng cáo"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整 My Cue Voice 和广告草稿"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "完整 My Cue Voice 和廣告草稿"
           }
         }
       }
@@ -4005,6 +4719,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "未經許可，Google 不會用它訓練模型，但可能會將其快取最多 24 小時，並為監測濫用而保留。它可能在任何地區處理。每次要求都會附帶你的 IP 位址、此 App 的身分和一個 App Check 權杖。"
+          }
+        }
+      }
+    },
+    "Hook and platform versions" : {
+      "comment" : "Cue Pro benefit, a plain line under the two highlights",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "نسخ للافتتاحية ولكل منصة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hook- og platformsversioner"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hook- und Plattformversionen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versiones de gancho y por plataforma"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versions d’accroche et par plateforme"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "हुक और प्लेटफ़ॉर्म वर्शन"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versi hook dan per platform"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versioni del gancio e per piattaforma"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "フックとプラットフォーム別のバージョン"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "훅 버전과 플랫폼별 버전"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hook- og plattformversjoner"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hook- en platformversies"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Versões de gancho e por plataforma"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hook- och plattformsversioner"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เวอร์ชันฮุกและตามแพลตฟอร์ม"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kanca ve platform sürümleri"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Phiên bản hook và theo nền tảng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "钩子版本和各平台版本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開場鉤子版本和各平台版本"
           }
         }
       }
@@ -5635,6 +6468,244 @@
         }
       }
     },
+    "Subscribe · export now" : {
+      "comment" : "Calm Pro's button (free exports used up): subscribes and exports the waiting video",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اشترك · صدّر الآن"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abonner · eksporter nu"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abonnieren · jetzt exportieren"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suscribirse · exportar ahora"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "S’abonner · exporter"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सब्सक्राइब करें · अभी एक्सपोर्ट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berlangganan · ekspor sekarang"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbonati · esporta ora"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登録 · 今すぐ書き出す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구독 · 지금 내보내기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abonner · eksporter nå"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abonneren · exporteer nu"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assinar · exportar agora"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prenumerera · exportera nu"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สมัครสมาชิก · ส่งออกเลย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abone ol · şimdi dışa aktar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đăng ký · xuất ngay"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订阅 · 立即导出"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "訂閱 · 立即匯出"
+          }
+        }
+      }
+    },
+    "Subscribe and export it now." : {
+      "comment" : "Calm Pro (free exports used up, a video waiting): the line under the title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اشترك وصدّره الآن."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abonner, og eksporter den nu."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abonniere und exportiere es jetzt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suscríbete y expórtalo ahora."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abonnez-vous et exportez-la maintenant."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सब्सक्राइब करें और अभी एक्सपोर्ट करें।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berlangganan dan ekspor sekarang."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abbonati ed esportalo ora."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "登録して、今すぐ書き出しましょう。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "구독하고 지금 내보내세요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abonner og eksporter den nå."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Neem een abonnement en exporteer hem nu."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Assine e exporte agora."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Prenumerera och exportera den nu."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สมัครสมาชิกแล้วส่งออกได้ทันที"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Abone ol ve şimdi dışa aktar."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Đăng ký và xuất ngay."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "订阅，立即导出。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "訂閱，立即匯出。"
+          }
+        }
+      }
+    },
     "The same request and who you are, with the draft from step 1, for its claims to be checked." : {
       "comment" : "What Cue sends for Ultra AI: what the second call (the claim check) carries",
       "localizations" : {
@@ -6111,125 +7182,6 @@
         }
       }
     },
-    "Trial started · Ultra AI’s monthly scripts start with the first paid month" : {
-      "comment" : "Toast after starting the Cue Pro trial from the Ultra AI paywall; Pro's monthly Ultra AI scripts start only with the first paid month",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "بدأت التجربة · تبدأ نصوص Ultra AI الشهرية مع أول شهر مدفوع"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prøveperiode startet · De månedlige Ultra AI-manuskripter starter med første betalte måned"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Testphase gestartet · Die monatlichen Ultra AI-Skripte starten mit dem ersten bezahlten Monat"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prueba iniciada · Los guiones mensuales de Ultra AI empiezan con el primer mes de pago"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Essai lancé · Les scripts mensuels d’Ultra AI commencent avec le premier mois payant"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ट्रायल शुरू · Ultra AI की मासिक स्क्रिप्ट पहले पेड महीने से शुरू होंगी"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uji coba dimulai · Naskah bulanan Ultra AI mulai di bulan berbayar pertama"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prova avviata · I copioni mensili di Ultra AI partono dal primo mese a pagamento"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "トライアル開始 · Ultra AIの毎月の台本は最初の有料月から始まります"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "체험 시작 · Ultra AI 월간 대본은 첫 유료 달부터 시작돼요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prøveperiode startet · De månedlige Ultra AI-manusene starter med første betalte måned"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Proefperiode gestart · De maandelijkse Ultra AI-scripts starten in de eerste betaalde maand"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teste iniciado · Os roteiros mensais do Ultra AI começam no primeiro mês pago"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Provperiod startad · De månatliga Ultra AI-manusen börjar med första betalda månaden"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เริ่มทดลองใช้แล้ว · สคริปต์รายเดือนของ Ultra AI เริ่มในเดือนแรกที่ชำระเงิน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deneme başladı · Aylık Ultra AI senaryoları ilk ücretli ayda başlar"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã bắt đầu dùng thử · Kịch bản hằng tháng của Ultra AI bắt đầu từ tháng trả phí đầu tiên"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "试用已开始 · Ultra AI 的每月脚本从首个付费月开始"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "試用已開始 · Ultra AI 的每月腳本從第一個付費月開始"
-          }
-        }
-      }
-    },
     "Try Ultra AI free" : {
       "comment" : "Invitation button on My Cue Voice: opens the Ultra AI permission sheet",
       "localizations" : {
@@ -6464,6 +7416,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "隨時可以關閉"
+          }
+        }
+      }
+    },
+    "Type, or hold the mic to talk" : {
+      "comment" : "Logbook composer's placeholder: type an idea, or hold the microphone button to dictate it",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اكتب، أو اضغط مطولًا على الميكروفون لتتحدث"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv, eller hold mikrofonen nede for at tale"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tippe oder halte das Mikro gedrückt, um zu sprechen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Escribe o mantén pulsado el micrófono para hablar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tapez, ou maintenez le micro pour parler"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "टाइप करें, या बोलने के लिए माइक दबाकर रखें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketik, atau tahan mik untuk bicara"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Scrivi, o tieni premuto il microfono per parlare"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力するか、マイクを長押しして話す"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "입력하거나 마이크를 길게 눌러 말하기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv, eller hold inne mikrofonen for å snakke"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Typ, of houd de microfoon ingedrukt om te praten"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Digite ou segure o microfone para falar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skriv, eller håll in mikrofonen för att prata"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "พิมพ์ หรือแตะไมค์ค้างไว้เพื่อพูด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yaz ya da konuşmak için mikrofonu basılı tut"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nhập, hoặc giữ mic để nói"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "输入，或按住麦克风说话"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "輸入，或按住麥克風說話"
           }
         }
       }
@@ -9696,6 +10767,244 @@
         }
       }
     },
+    "up to 4K" : {
+      "comment" : "Cue Pro's exports highlight, small line under “Unlimited”",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "حتى 4K"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "op til 4K"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bis 4K"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hasta 4K"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "jusqu’en 4K"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K तक"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "hingga 4K"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "fino a 4K"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最大4K"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "최대 4K"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "opptil 4K"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "tot 4K"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "até 4K"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "upp till 4K"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สูงสุด 4K"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "4K’ya kadar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "lên đến 4K"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最高 4K"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最高 4K"
+          }
+        }
+      }
+    },
+    "Unlimited" : {
+      "comment" : "Cue Pro's exports highlight, big line under “EXPORTS” (unlimited exports)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "غير محدود"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ubegrænset"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Unbegrenzt"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilimitadas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Illimités"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अनलिमिटेड"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tanpa batas"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Illimitate"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "無制限"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "무제한"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ubegrenset"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Onbeperkt"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ilimitadas"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Obegränsat"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่จำกัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sınırsız"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không giới hạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "无限次"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "不限次數"
+          }
+        }
+      }
+    },
     "Welcome to Cue Pro · %lld Ultra AI scripts this month" : {
       "comment" : "Toast after subscribing from the Ultra AI paywall; the number is 30",
       "localizations" : {
@@ -10834,121 +12143,121 @@
         }
       }
     },
-    "Your %lld free scripts are written. Cue Pro adds %lld a month, from the first paid month." : {
-      "comment" : "Ultra AI paywall subtitle; the first number is 5 (free Ultra AI scripts), the second 30 (Ultra AI scripts a month with Cue Pro, from the first paid month, not during the trial)",
+    "Your %lld free scripts are written. Cue Pro adds %lld a month." : {
+      "comment" : "Ultra AI's calm Pro: the line under the title; the first number is the free scripts (3), the second Pro's monthly ones (30)",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "كُتبت نصوصك المجانية الـ %1$lld. يضيف Cue Pro %2$lld نصًا شهريًا، بدءًا من أول شهر مدفوع."
+            "value" : "كُتبت نصوصك المجانية الـ %1$lld. يضيف Cue Pro %2$lld نصًا شهريًا."
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dine %1$lld gratis manuskripter er skrevet. Cue Pro giver %2$lld om måneden fra første betalte måned."
+            "value" : "Dine %1$lld gratis manuskripter er skrevet. Cue Pro giver %2$lld om måneden."
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Deine %1$lld kostenlosen Skripte sind geschrieben. Cue Pro bringt %2$lld pro Monat, ab dem ersten bezahlten Monat."
+            "value" : "Deine %1$lld kostenlosen Skripte sind geschrieben. Cue Pro bringt %2$lld pro Monat."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Tus %1$lld guiones gratis ya están redactados. Cue Pro suma %2$lld al mes, desde el primer mes de pago."
+            "value" : "Tus %1$lld guiones gratis ya están redactados. Cue Pro suma %2$lld al mes."
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Vos %1$lld scripts gratuits sont rédigés. Cue Pro en ajoute %2$lld par mois, dès le premier mois payant."
+            "value" : "Vos %1$lld scripts gratuits sont rédigés. Cue Pro en ajoute %2$lld par mois."
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "आपकी %1$lld मुफ़्त स्क्रिप्ट ड्राफ़्ट हो चुकी हैं। Cue Pro पहले पेड महीने से हर महीने %2$lld और देता है।"
+            "value" : "आपकी %1$lld मुफ़्त स्क्रिप्ट ड्राफ़्ट हो चुकी हैं। Cue Pro हर महीने %2$lld और देता है।"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld naskah gratismu sudah dibuat. Cue Pro menambah %2$lld per bulan, mulai bulan berbayar pertama."
+            "value" : "%1$lld naskah gratismu sudah dibuat. Cue Pro menambah %2$lld per bulan."
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "I tuoi %1$lld copioni gratis sono pronti. Cue Pro ne aggiunge %2$lld al mese, dal primo mese a pagamento."
+            "value" : "I tuoi %1$lld copioni gratis sono pronti. Cue Pro ne aggiunge %2$lld al mese."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "無料の台本%1$lld件は作成済みです。Cue Proは最初の有料月から毎月%2$lld件を追加します。"
+            "value" : "無料の台本%1$lld件は作成済みです。Cue Proは毎月%2$lld件を追加します。"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "무료 대본 %1$lld개를 모두 만들었어요. Cue Pro는 첫 유료 달부터 매달 %2$lld개를 더해요."
+            "value" : "무료 대본 %1$lld개를 모두 만들었어요. Cue Pro는 매달 %2$lld개를 더해요."
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "De %1$lld gratis manusene dine er skrevet. Cue Pro gir %2$lld i måneden fra første betalte måned."
+            "value" : "De %1$lld gratis manusene dine er skrevet. Cue Pro gir %2$lld i måneden."
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Je %1$lld gratis scripts zijn geschreven. Cue Pro geeft er %2$lld per maand, vanaf de eerste betaalde maand."
+            "value" : "Je %1$lld gratis scripts zijn geschreven. Cue Pro geeft er %2$lld per maand."
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Seus %1$lld roteiros grátis já foram rascunhados. O Cue Pro dá %2$lld por mês, a partir do primeiro mês pago."
+            "value" : "Seus %1$lld roteiros grátis já foram rascunhados. O Cue Pro dá %2$lld por mês."
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dina %1$lld gratis manus är skrivna. Cue Pro ger %2$lld i månaden från första betalda månaden."
+            "value" : "Dina %1$lld gratis manus är skrivna. Cue Pro ger %2$lld i månaden."
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "สคริปต์ฟรี %1$lld รายการเขียนครบแล้ว Cue Pro เพิ่มให้เดือนละ %2$lld สคริปต์ ตั้งแต่เดือนแรกที่ชำระเงิน"
+            "value" : "สคริปต์ฟรี %1$lld รายการเขียนครบแล้ว Cue Pro เพิ่มให้เดือนละ %2$lld สคริปต์"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%1$lld ücretsiz senaryon yazıldı. Cue Pro, ilk ücretli aydan itibaren ayda %2$lld ekler."
+            "value" : "%1$lld ücretsiz senaryon yazıldı. Cue Pro ayda %2$lld ekler."
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bạn đã dùng hết %1$lld kịch bản miễn phí. Cue Pro thêm %2$lld kịch bản mỗi tháng, từ tháng trả phí đầu tiên."
+            "value" : "Bạn đã dùng hết %1$lld kịch bản miễn phí. Cue Pro thêm %2$lld kịch bản mỗi tháng."
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的 %1$lld 个免费脚本已写完。Cue Pro 从首个付费月起每月再给 %2$lld 个。"
+            "value" : "你的 %1$lld 个免费脚本已写完。Cue Pro 每月再给 %2$lld 个。"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "你的 %1$lld 份免費腳本已寫完。Cue Pro 從第一個付費月起每月再給 %2$lld 份。"
+            "value" : "你的 %1$lld 份免費腳本已寫完。Cue Pro 每月再給 %2$lld 份。"
           }
         }
       }
@@ -11373,125 +12682,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "前 %lld 份腳本免費。"
-          }
-        }
-      }
-    },
-    "Your free Ultra AI scripts are used · Pro’s monthly ones start after the free week" : {
-      "comment" : "Toast during the Cue Pro free trial when the 5 free Ultra AI scripts are used; Pro's monthly Ultra AI scripts start only after the 7-day trial",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "استُخدمت نصوص Ultra AI المجانية · نصوص Pro الشهرية تبدأ بعد الأسبوع المجاني"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dine gratis Ultra AI-manuskripter er brugt · Pros månedlige starter efter den gratis uge"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deine kostenlosen Ultra AI-Skripte sind verbraucht · Die monatlichen von Pro starten nach der Gratiswoche"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Usaste tus guiones gratis de Ultra AI · Los mensuales de Pro empiezan tras la semana gratis"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Vos scripts Ultra AI gratuits sont utilisés · Les mensuels de Pro arrivent après la semaine gratuite"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आपकी मुफ़्त Ultra AI स्क्रिप्ट इस्तेमाल हो गईं · Pro की मासिक स्क्रिप्ट मुफ़्त हफ़्ते के बाद शुरू होंगी"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Naskah Ultra AI gratismu sudah terpakai · Jatah bulanan Pro mulai setelah minggu gratis"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hai usato i copioni Ultra AI gratis · Quelli mensili di Pro partono dopo la settimana gratuita"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ultra AIの無料台本を使い切りました · Proの毎月分は無料の1週間のあとに始まります"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "무료 Ultra AI 대본을 모두 사용했어요 · Pro 월간 대본은 무료 1주일 후에 시작돼요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "De gratis Ultra AI-manusene dine er brukt · Pros månedlige starter etter gratisuken"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Je gratis Ultra AI-scripts zijn gebruikt · De maandelijkse van Pro starten na de gratis week"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seus roteiros grátis do Ultra AI foram usados · Os mensais do Pro começam após a semana grátis"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dina gratis Ultra AI-manus är använda · Pros månatliga börjar efter gratisveckan"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ใช้สคริปต์ Ultra AI ฟรีครบแล้ว · สคริปต์รายเดือนของ Pro เริ่มหลังสัปดาห์ทดลองฟรี"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ücretsiz Ultra AI senaryoların kullanıldı · Pro’nun aylık senaryoları ücretsiz haftadan sonra başlar"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bạn đã dùng hết kịch bản Ultra AI miễn phí · Kịch bản hằng tháng của Pro bắt đầu sau tuần miễn phí"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "免费的 Ultra AI 脚本已用完 · Pro 的每月额度在免费周结束后开始"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "免費的 Ultra AI 腳本已用完 · Pro 的每月額度在免費週結束後開始"
           }
         }
       }
@@ -48990,124 +50180,6 @@
         }
       }
     },
-    "✦ Write" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ اكتب مسودة"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Lav udkast"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Entwerfen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Escribir"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Rédiger"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ ड्राफ़्ट बनाएँ"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Buat draf"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Crea bozza"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 下書き"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 초안 쓰기"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Lag utkast"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Opstellen"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Escrever"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Gör utkast"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ ร่าง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Yaz"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ Soạn nháp"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 起草"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "✦ 起草"
-          }
-        }
-      }
-    },
     "0:00" : {
       "localizations" : {
         "ar" : {
@@ -52196,124 +53268,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "6 秒影片"
-          }
-        }
-      }
-    },
-    "7 days free, then %@/year. Cancel anytime." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 أيام مجانًا، ثم %@ سنويًا. يمكنك الإلغاء في أي وقت."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 dage gratis, derefter %@/år. Opsig når som helst."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 Tage kostenlos, danach %@/Jahr. Jederzeit kündbar."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 días gratis, luego %@/año. Cancela cuando quieras."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 jours gratuits, puis %@/an. Résiliable à tout moment."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 दिन मुफ़्त, फिर %@/साल। कभी भी रद्द करें।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis 7 hari, lalu %@/tahun. Batalkan kapan saja."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 giorni gratis, poi %@/anno. Annulla quando vuoi."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7日間無料、その後は年額%@。いつでもキャンセルできます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7일 무료, 이후 연 %@. 언제든 취소할 수 있어요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 dager gratis, deretter %@/år. Si opp når som helst."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 dagen gratis, daarna %@/jaar. Altijd opzegbaar."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 dias grátis, depois %@/ano. Cancele quando quiser."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 dagar gratis, sedan %@/år. Avsluta när som helst."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ฟรี 7 วัน จากนั้น %@/ปี ยกเลิกได้ทุกเมื่อ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "7 gün ücretsiz, sonra yılda %@. İstediğin zaman iptal et."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miễn phí 7 ngày, sau đó %@/năm. Hủy bất cứ lúc nào."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "免费 7 天，之后每年 %@。可随时取消。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "免費 7 天，之後每年 %@。可隨時取消。"
           }
         }
       }
@@ -66908,124 +67862,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "發布後，輕點左上角的 ◀ Cue，接著會開啟 %@。"
-          }
-        }
-      }
-    },
-    "AI" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "KI"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "IA"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "IA"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "IA"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "KI"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "IA"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Yapay zekâ"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "AI"
           }
         }
       }
@@ -132704,124 +133540,6 @@
         }
       }
     },
-    "Cover styles, series tags, “Text behind me”" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أنماط الأغلفة، وسوم السلاسل، «النص خلفي»"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coverstile, serietags, ”Tekst bag mig”"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Cover-Stile, Serien-Tags, „Text hinter mir“"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estilos de portada, etiquetas de serie, “Texto detrás de mí”"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Styles de couverture, étiquettes de série, « Texte derrière moi »"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "कवर स्टाइल, सीरीज़ टैग, “मेरे पीछे टेक्स्ट”"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gaya sampul, tag seri, “Teks di belakangku”"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Stili di copertina, tag di serie, “Testo dietro di me”"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "カバースタイル、シリーズタグ、「人物の後ろに文字」"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "커버 스타일, 시리즈 태그, “내 뒤의 텍스트”"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Omslagsstiler, serietagger, «Tekst bak meg»"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Coverstijlen, serietags, “Tekst achter mij”"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Estilos de capa, tags de série, “Texto atrás de mim”"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Omslagsstilar, serietaggar, ”Text bakom mig”"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "สไตล์ปก แท็กซีรีส์ “ข้อความอยู่หลังตัวฉัน”"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kapak stilleri, seri etiketleri, “Yazı arkamda”"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kiểu ảnh bìa, thẻ series, “Chữ phía sau tôi”"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "封面样式、系列标签、“文字在我身后”"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "封面樣式、系列標籤、「文字在我身後」"
-          }
-        }
-      }
-    },
     "Covers the whole video" : {
       "comment" : "Music library, a track's details: the track lasts at least as long as the video (it is cut at the video's end)",
       "localizations" : {
@@ -161604,124 +162322,6 @@
         }
       }
     },
-    "EDIT" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تعديل"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "REDIGER"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SCHNITT"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EDICIÓN"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MONTAGE"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "एडिट"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EDIT"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "MODIFICA"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "編集"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "편집"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "REDIGER"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "BEWERKEN"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EDIÇÃO"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "REDIGERA"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ตัดต่อ"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "KURGU"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DỰNG"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "剪辑"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "剪輯"
-          }
-        }
-      }
-    },
     "Edit brand kit" : {
       "comment" : "Title of the brand kit sheet when it edits an existing kit",
       "localizations" : {
@@ -176668,124 +177268,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "看看編輯器裡的背景。"
-          }
-        }
-      }
-    },
-    "EXPORT" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تصدير"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EKSPORT"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EXPORT"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EXPORTAR"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EXPORT"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "एक्सपोर्ट"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EKSPOR"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ESPORTA"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "書き出し"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "내보내기"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EKSPORT"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EXPORT"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EXPORTAR"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EXPORT"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ส่งออก"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "DIŞA AKTAR"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "XUẤT"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "导出"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "匯出"
           }
         }
       }
@@ -194655,248 +195137,6 @@
         }
       }
     },
-    "Free for %lld days, then %@/month. Cancel anytime in Settings." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مجانًا لمدة %1$lld أيام، ثم %2$@/شهر. يمكنك الإلغاء في أي وقت من الإعدادات."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis i %lld dage, derefter %@/måned. Opsig når som helst i Indstillinger."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld Tage kostenlos, danach %2$@/Monat. Jederzeit in den Einstellungen kündbar."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis durante %1$lld días y luego %2$@/mes. Cancela cuando quieras en Ajustes."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratuit pendant %1$lld jours, puis %2$@/mois. Résiliable à tout moment dans Réglages."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld दिन मुफ़्त, फिर %2$@/महीना। सेटिंग्ज़ में कभी भी रद्द करें।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis %1$lld hari, lalu %2$@/bulan. Batalkan kapan saja di Pengaturan."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis per %1$lld giorni, poi %2$@/mese. Annulla quando vuoi in Impostazioni."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld日間無料、その後は%2$@／月。設定からいつでもキャンセルできます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld일 무료, 이후 %2$@/월. 설정에서 언제든 취소할 수 있어요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis i %lld dager, deretter %@/måned. Si opp når som helst i Innstillinger."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld dagen gratis, daarna %@/maand. Altijd opzegbaar in Instellingen."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grátis por %1$lld dias, depois %2$@/mês. Cancele quando quiser em Ajustes."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis i %lld dagar, sedan %@/månad. Avsluta när du vill i Inställningar."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ฟรี %1$lld วัน จากนั้น %2$@/เดือน ยกเลิกได้ทุกเมื่อในการตั้งค่า"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld gün ücretsiz, ardından %2$@/ay. İstediğin zaman Ayarlar’dan iptal et."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miễn phí %1$lld ngày, sau đó %2$@/tháng. Hủy bất cứ lúc nào trong Cài đặt."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "免费 %1$lld 天，之后 %2$@/月。可随时在“设置”中取消。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "免費 %lld 天，之後每月 %@。可隨時在「設定」中取消。"
-          }
-        }
-      }
-    },
-    "Free for %lld days, then %@/year. Cancel anytime in Settings." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مجانًا لمدة %1$lld أيام، ثم %2$@/سنة. يمكنك الإلغاء في أي وقت من الإعدادات."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis i %1$lld dage, derefter %2$@/år. Opsig når som helst i Indstillinger."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld Tage kostenlos, danach %2$@/Jahr. Jederzeit in den Einstellungen kündbar."
-          }
-        },
-        "en" : {
-          "stringUnit" : {
-            "state" : "new",
-            "value" : "Free for %1$lld days, then %2$@/year. Cancel anytime in Settings."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis durante %1$lld días y luego %2$@/año. Cancela cuando quieras en Ajustes."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratuit pendant %1$lld jours, puis %2$@/an. Résiliable à tout moment dans Réglages."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld दिन मुफ़्त, फिर %2$@/साल। सेटिंग्ज़ में कभी भी रद्द करें।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis %1$lld hari, lalu %2$@/tahun. Batalkan kapan saja di Pengaturan."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis per %1$lld giorni, poi %2$@/anno. Annulla quando vuoi in Impostazioni."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld日間無料、その後は%2$@／年。設定からいつでもキャンセルできます。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld일 무료, 이후 %2$@/년. 설정에서 언제든 취소할 수 있어요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis i %1$lld dager, deretter %2$@/år. Si opp når som helst i Innstillinger."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld dagen gratis, daarna %2$@/jaar. Altijd opzegbaar in Instellingen."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grátis por %1$lld dias, depois %2$@/ano. Cancele quando quiser em Ajustes."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis i %1$lld dagar, sedan %2$@/år. Avsluta när du vill i Inställningar."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ฟรี %1$lld วัน จากนั้น %2$@/ปี ยกเลิกได้ทุกเมื่อในการตั้งค่า"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld gün ücretsiz, ardından %2$@/yıl. İstediğin zaman Ayarlar’dan iptal et."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Miễn phí %1$lld ngày, sau đó %2$@/năm. Hủy bất cứ lúc nào trong Cài đặt."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "免费 %1$lld 天，之后 %2$@/年。可随时在“设置”中取消。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "免費 %1$lld 天，之後每年 %2$@。可隨時在「設定」中取消。"
-          }
-        }
-      }
-    },
     "Free plan" : {
       "localizations" : {
         "ar" : {
@@ -195011,124 +195251,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "免費方案"
-          }
-        }
-      }
-    },
-    "Free to try · %lld exports included. Then 7 days free." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "مجاني للتجربة · %lld عمليات تصدير مشمولة. ثم 7 أيام مجانًا."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis at prøve · %lld eksporter inkluderet. Derefter 7 dage gratis."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kostenlos testen · %lld Exporte inklusive. Danach 7 Tage kostenlos."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis para probar · %lld exportaciones incluidas. Luego 7 días gratis."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Essai gratuit · %lld exports inclus. Puis 7 jours gratuits."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "आज़माना मुफ़्त · %lld एक्सपोर्ट शामिल। फिर 7 दिन मुफ़्त।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis dicoba · termasuk %lld ekspor. Lalu gratis 7 hari."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis da provare · %lld esportazioni incluse. Poi 7 giorni gratis."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無料でお試し · 書き出し%lld回付き。その後7日間無料。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "무료 체험 · 내보내기 %lld회 포함. 이후 7일 무료."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis å prøve · %lld eksporter inkludert. Deretter 7 dager gratis."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis proberen · %lld exports inbegrepen. Daarna 7 dagen gratis."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Grátis para testar · %lld exportações incluídas. Depois, 7 dias grátis."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Gratis att prova · %lld exporter ingår. Sedan 7 dagar gratis."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ลองใช้ฟรี · รวมการส่งออก %lld ครั้ง จากนั้นฟรี 7 วัน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Denemesi ücretsiz · %lld dışa aktarma dahil. Sonra 7 gün ücretsiz."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Dùng thử miễn phí · gồm %lld lượt xuất. Sau đó miễn phí 7 ngày."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "免费试用 · 含 %lld 次导出。之后免费 7 天。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "免費試用 · 含 %lld 次匯出。之後免費 7 天。"
           }
         }
       }
@@ -198335,125 +198457,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "前置"
-          }
-        }
-      }
-    },
-    "Full My Cue Voice + sponsored-ad drafts" : {
-      "comment" : "Pro benefit line",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My Cue Voice كامل + مسودات الإعلانات الممولة"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Fuld My Cue Voice + udkast til sponsorerede annoncer"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Volles My Cue Voice + Entwürfe für Werbung"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My Cue Voice completo + borradores de anuncios patrocinados"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My Cue Voice complet + brouillons de pubs sponsorisées"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "पूरा My Cue Voice + स्पॉन्सर्ड ऐड के ड्राफ़्ट"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My Cue Voice lengkap + draf iklan berbayar"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My Cue Voice completo + bozze di pubblicità sponsorizzate"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My Cue Voiceのすべて＋スポンサー広告の下書き"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My Cue Voice 전체 + 협찬 광고 초안"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Full My Cue Voice + utkast til sponsede annonser"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Volledige My Cue Voice + concepten voor gesponsorde advertenties"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My Cue Voice completo + rascunhos de publicidade"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hela My Cue Voice + utkast till sponsrade annonser"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My Cue Voice เต็มรูปแบบ + ร่างโฆษณาสปอนเซอร์"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tam My Cue Voice + sponsorlu reklam taslakları"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "My Cue Voice đầy đủ + bản nháp quảng cáo tài trợ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完整 My Cue Voice + 推广广告草稿"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "完整 My Cue Voice + 贊助廣告草稿"
           }
         }
       }
@@ -213177,125 +213180,6 @@
         }
       }
     },
-    "Hold to talk · tap to start" : {
-      "comment" : "Logbook: the line under the microphone button at rest",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اضغط مطولًا للتحدث · اضغط للبدء"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hold for at tale · tryk for at starte"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Halten zum Sprechen · Tippen zum Starten"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mantén pulsado para hablar · toca para empezar"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Maintenez pour parler · touchez pour commencer"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "बोलने के लिए दबाए रखें · शुरू करने के लिए टैप करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tahan untuk bicara · ketuk untuk mulai"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Tieni premuto per parlare · tocca per iniziare"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "長押しで話す · タップで開始"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "길게 눌러 말하기 · 탭하여 시작"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hold inne for å snakke · trykk for å starte"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Houd vast om te praten · tik om te starten"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Segure para falar · toque para começar"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Håll in för att prata · tryck för att börja"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "กดค้างเพื่อพูด · แตะเพื่อเริ่ม"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Konuşmak için basılı tut · başlamak için dokun"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Giữ để nói · chạm để bắt đầu"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "按住说话 · 轻点开始"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "按住說話 · 輕點開始"
-          }
-        }
-      }
-    },
     "Holidays, gifts, recipes" : {
       "comment" : "Music library: what a track suits (a few kinds of video), on its row under the style: year-end holidays (Christmas), gifts and recipes",
       "localizations" : {
@@ -214359,124 +214243,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開場鉤子已替換 · 約 %@"
-          }
-        }
-      }
-    },
-    "Hook variations, platform versions, best-take picks" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "نسخ متعددة للافتتاحية، ونسخ لكل منصة، واختيار أفضل لقطة"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hook-varianter, platformsversioner, valg af bedste optagelse"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hook-Varianten, Plattformversionen, Auswahl der besten Takes"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Variaciones de gancho, versiones por plataforma, selección de la mejor toma"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Variantes d’accroche, versions par plateforme, choix de la meilleure prise"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "हुक के विकल्प, प्लेटफ़ॉर्म वर्शन, बेस्ट टेक की पसंद"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Variasi hook, versi per platform, pilihan take terbaik"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Varianti del gancio, versioni per piattaforma, scelta della ripresa migliore"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "フックのバリエーション、プラットフォーム別バージョン、ベストテイク選び"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "훅 변형, 플랫폼별 버전, 베스트 테이크 선택"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hook-varianter, plattformversjoner, valg av beste opptak"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hookvarianten, platformversies, keuze van de beste opname"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Variações de gancho, versões por plataforma, escolha do melhor take"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hook-varianter, plattformsversioner, val av bästa tagning"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ฮุกหลายแบบ เวอร์ชันตามแพลตฟอร์ม และการเลือกเทคที่ดีที่สุด"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kanca varyasyonları, platform sürümleri, en iyi çekim seçimi"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Biến thể hook, phiên bản theo nền tảng, chọn cảnh quay tốt nhất"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "钩子变体、各平台版本、最佳镜头推荐"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開場鉤子變化、各平台版本、最佳鏡頭推薦"
           }
         }
       }
@@ -299618,124 +299384,6 @@
         }
       }
     },
-    "Open Logbook ›" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "افتح دفتر اليوميات ›"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Åbn Logbogen ›"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logbuch öffnen ›"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir Bitácora ›"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ouvrir le Journal de bord ›"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "लॉगबुक खोलें ›"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Buka Buku log ›"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Apri il Diario di bordo ›"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "航海日誌を開く ›"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "항해 일지 열기 ›"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Åpne Loggboken ›"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Logboek openen ›"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Abrir Diário de bordo ›"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Öppna loggboken ›"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เปิดสมุดบันทึก ›"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Seyir defterini aç ›"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mở Nhật ký ›"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打开航行日志 ›"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "打開航行日誌 ›"
-          }
-        }
-      }
-    },
     "Open remote" : {
       "localizations" : {
         "ar" : {
@@ -302688,124 +302336,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "或在錄影介面拖動這條線。"
-          }
-        }
-      }
-    },
-    "Or type an idea…" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "أو اكتب فكرة…"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eller skriv en idé…"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oder tipp eine Idee ein …"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "O escribe una idea…"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ou écrivez une idée…"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "या कोई आइडिया लिखें…"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Atau ketik ide…"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Oppure scrivi un’idea…"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "またはアイデアを入力…"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "또는 아이디어를 입력…"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eller skriv en idé…"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Of typ een idee…"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ou digite uma ideia…"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Eller skriv en idé…"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "หรือพิมพ์ไอเดีย…"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ya da bir fikir yaz…"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Hoặc gõ một ý tưởng…"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "或输入一个想法…"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "或輸入一個想法…"
           }
         }
       }
@@ -372792,124 +372322,6 @@
         }
       }
     },
-    "See what's in Pro" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "اطّلع على ما يتضمنه Pro"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se, hvad Pro indeholder"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Sieh, was in Pro steckt"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mira qué incluye Pro"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Découvrez ce que contient Pro"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pro में क्या है, देखें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lihat isi Pro"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Scopri cosa c’è in Pro"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Proの内容を見る"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pro 혜택 보기"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se hva Pro inneholder"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bekijk wat er in Pro zit"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Veja o que há no Pro"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Se vad som ingår i Pro"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ดูว่า Pro มีอะไรบ้าง"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Pro’da neler olduğunu gör"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Xem Pro có gì"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "了解 Pro 包含的功能"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "查看 Pro 的內容"
-          }
-        }
-      }
-    },
     "See where TikTok, Reels and Shorts put their buttons while you record." : {
       "comment" : "Introduction benefit (safe zones)",
       "localizations" : {
@@ -404855,124 +404267,6 @@
         }
       }
     },
-    "Start %lld-day free trial" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "بدء تجربة مجانية لمدة %lld أيام"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start %lld dages gratis prøveperiode"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld Tage kostenlos testen"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Empezar prueba gratis de %lld días"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Commencer l’essai gratuit de %lld jours"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld दिन का मुफ़्त ट्रायल शुरू करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mulai uji coba gratis %lld hari"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inizia la prova gratuita di %lld giorni"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld日間の無料トライアルを開始"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld일 무료 체험 시작"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start %lld dagers gratis prøveperiode"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start gratis proefperiode van %lld dagen"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Começar teste grátis de %lld dias"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starta %lld dagars gratis provperiod"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เริ่มทดลองใช้ฟรี %lld วัน"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld günlük ücretsiz denemeyi başlat"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bắt đầu dùng thử miễn phí %lld ngày"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开始 %lld 天免费试用"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開始 %lld 天免費試用"
-          }
-        }
-      }
-    },
     "Start a new script whichever way suits you." : {
       "comment" : "Empty Scripts (returning): the line under the heading",
       "localizations" : {
@@ -405324,124 +404618,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "提早開始"
-          }
-        }
-      }
-    },
-    "Start free trial · export now" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ابدأ التجربة المجانية · صدّر الآن"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start gratis prøveperiode · eksporter nu"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Kostenlos testen · jetzt exportieren"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Empezar prueba gratis · exportar ahora"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Commencer l’essai gratuit · exporter"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "मुफ़्त ट्रायल शुरू करें · अभी एक्सपोर्ट करें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mulai uji coba gratis · ekspor sekarang"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Inizia la prova gratuita · esporta ora"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無料トライアルを開始 · 今すぐ書き出す"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "무료 체험 시작 · 지금 내보내기"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start gratis prøveperiode · eksporter nå"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start gratis proefperiode · exporteer nu"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Começar teste grátis · exportar agora"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starta gratis provperiod · exportera nu"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เริ่มทดลองใช้ฟรี · ส่งออกเลย"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ücretsiz denemeyi başlat · şimdi dışa aktar"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bắt đầu dùng thử miễn phí · xuất ngay"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开始免费试用 · 立即导出"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開始免費試用 · 立即匯出"
           }
         }
       }
@@ -406388,124 +405564,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "開始錄影時一併開始捲動"
-          }
-        }
-      }
-    },
-    "Start the trial and export it now." : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ابدأ التجربة وصدّره الآن."
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start prøveperioden, og eksporter den nu."
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starte die Testphase und exportiere es jetzt."
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Empieza la prueba y expórtalo ahora."
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Lancez l’essai et exportez-la maintenant."
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ट्रायल शुरू करें और अभी एक्सपोर्ट करें।"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Mulai uji coba dan ekspor sekarang."
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Avvia la prova ed esportalo ora."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "トライアルを始めて、今すぐ書き出しましょう。"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "체험을 시작하고 지금 내보내세요."
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start prøveperioden og eksporter den nå."
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Start de proefperiode en exporteer hem nu."
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Comece o teste e exporte agora."
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Starta provperioden och exportera den nu."
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เริ่มทดลองใช้แล้วส่งออกได้ทันที"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Denemeyi başlat ve şimdi dışa aktar."
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Bắt đầu dùng thử và xuất ngay."
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "开始试用，立即导出。"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "開始試用，立即匯出。"
           }
         }
       }
@@ -414577,124 +413635,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Studio"
-          }
-        }
-      }
-    },
-    "STUDIO" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "STUDIO"
           }
         }
       }
@@ -459322,243 +458262,6 @@
         }
       }
     },
-    "Trial started · Enjoy Cue Pro" : {
-      "comment" : "Paywall: toast after the free trial starts. No dashes in any language.",
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "بدأت التجربة، استمتع بـ Cue Pro"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prøveperioden er startet. God fornøjelse med Cue Pro"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Testphase gestartet · Viel Spaß mit Cue Pro"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prueba iniciada · Disfruta de Cue Pro"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Essai démarré : profitez de Cue Pro"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ट्रायल शुरू · Cue Pro का मज़ा लें"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uji coba dimulai · nikmati Cue Pro"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prova avviata: goditi Cue Pro"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "トライアル開始。Cue Proをお楽しみください"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "체험 시작 · Cue Pro를 즐기세요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prøveperioden har startet. Kos deg med Cue Pro"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Proefperiode gestart · Veel plezier met Cue Pro"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teste iniciado · aproveite o Cue Pro"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Provperioden har startat. Njut av Cue Pro"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เริ่มทดลองใช้แล้ว · สนุกกับ Cue Pro"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deneme başladı · Cue Pro’nun keyfini çıkar"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã bắt đầu dùng thử · Tận hưởng Cue Pro nhé"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "试用已开始 · 尽情使用 Cue Pro"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "已開始試用 · 盡情享受 Cue Pro"
-          }
-        }
-      }
-    },
-    "Trial started · video exported" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "بدأت التجربة · تم تصدير الفيديو"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prøveperiode startet · videoen er eksporteret"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Testphase gestartet · Video exportiert"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prueba iniciada · video exportado"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Essai lancé · vidéo exportée"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ट्रायल शुरू · वीडियो एक्सपोर्ट हुआ"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Uji coba dimulai · video diekspor"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prova avviata · video esportato"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "トライアル開始 · 動画を書き出しました"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "체험 시작 · 영상을 내보냈어요"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Prøveperiode startet · videoen er eksportert"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Proefperiode gestart · video geëxporteerd"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Teste iniciado · vídeo exportado"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Provperiod startad · videon exporterad"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "เริ่มทดลองใช้แล้ว · ส่งออกวิดีโอแล้ว"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Deneme başladı · video dışa aktarıldı"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Đã bắt đầu dùng thử · đã xuất video"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "试用已开始 · 视频已导出"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "試用已開始 · 影片已匯出"
-          }
-        }
-      }
-    },
     "Trimming the extra words" : {
       "localizations" : {
         "ar" : {
@@ -467292,124 +465995,6 @@
         }
       }
     },
-    "UNIVERSE" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "الكون"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UNIVERS"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UNIVERSUM"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UNIVERSO"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UNIVERS"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "यूनिवर्स"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "SEMESTA"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UNIVERSO"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "宇宙"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "유니버스"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UNIVERS"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UNIVERSUM"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UNIVERSO"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "UNIVERSUM"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "จักรวาล"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "EVREN"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "VŨ TRỤ"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "宇宙"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "宇宙"
-          }
-        }
-      }
-    },
     "University life" : {
       "comment" : "My Cue Voice: a more specific topic inside a topic",
       "localizations" : {
@@ -467643,124 +466228,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "匯出不限次數"
-          }
-        }
-      }
-    },
-    "Unlimited exports, up to 4K" : {
-      "localizations" : {
-        "ar" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "تصدير غير محدود، حتى 4K"
-          }
-        },
-        "da" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ubegrænset eksport, op til 4K"
-          }
-        },
-        "de" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Unbegrenzte Exporte, bis 4K"
-          }
-        },
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exportaciones ilimitadas, hasta 4K"
-          }
-        },
-        "fr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exports illimités, jusqu’en 4K"
-          }
-        },
-        "hi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "अनलिमिटेड एक्सपोर्ट, 4K तक"
-          }
-        },
-        "id" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ekspor tanpa batas, hingga 4K"
-          }
-        },
-        "it" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Esportazioni illimitate, fino a 4K"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "無制限の書き出し、最大4K"
-          }
-        },
-        "ko" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "무제한 내보내기, 최대 4K"
-          }
-        },
-        "nb" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Ubegrenset eksport, opptil 4K"
-          }
-        },
-        "nl" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Onbeperkt exporteren, tot 4K"
-          }
-        },
-        "pt" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Exportações ilimitadas, até 4K"
-          }
-        },
-        "sv" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Obegränsad export, upp till 4K"
-          }
-        },
-        "th" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ส่งออกไม่จำกัด สูงสุด 4K"
-          }
-        },
-        "tr" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "4K’ya kadar sınırsız dışa aktarma"
-          }
-        },
-        "vi" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Xuất không giới hạn, lên đến 4K"
-          }
-        },
-        "zh-Hans" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "无限导出，最高 4K"
-          }
-        },
-        "zh-Hant" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "不限次數匯出，最高 4K"
           }
         }
       }

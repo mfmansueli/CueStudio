@@ -5,14 +5,11 @@
 
 import Foundation
 
-/// A line of what Pro offers (11.4): the SF Symbol in front of it, the line, its mono tag, and which colour the symbol and the tag take.
+/// A plain line of what Pro offers (11.4), under its two highlights.
 nonisolated struct ProBenefit: Sendable {
-    enum Tone: Sendable { case plain, ai, universe }
-
-    let symbol: String
     let text: String
-    let tag: String
-    let tone: Tone
+    /// About Apple Intelligence: left out where it can't run.
+    var needsAppleIntelligence = false
     /// False for a line the board lists that the app cannot do yet: it stays out of the paywall until it can, so the paywall never sells what is not there.
     var isAvailable = true
 }

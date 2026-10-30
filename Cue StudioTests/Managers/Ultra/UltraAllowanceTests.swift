@@ -7,7 +7,7 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// Ultra AI's scripts (owner, 29/10/2026): five free ones for everyone, the Pro trial included; thirty a month more from Pro's first paid month; the
+/// Ultra AI's scripts (owner, 29/10 and 30/10/2026): three free ones for everyone; thirty a month more with Pro; the
 /// free ones are spent first; a script is counted only once written; the preview's counts and the invitation to try it.
 @MainActor
 @Suite("Ultra AI allowance")
@@ -18,31 +18,29 @@ struct UltraAllowanceTests {
         var now = TestData.now
     }
 
-    @Test func everyoneGetsFiveFreeAndOnlyAPaidProAddsThirtyAMonth() {
-        #expect(UltraAllowance(membership: .free, freeUsed: 0, monthUsed: 0).left == 5)
-        #expect(UltraAllowance(membership: .trial, freeUsed: 0, monthUsed: 0).left == 5)
-        #expect(UltraAllowance(membership: .paid, freeUsed: 0, monthUsed: 0).left == 35)
-        #expect(UltraAllowance(membership: .paid, freeUsed: 5, monthUsed: 30).left == 0)
+    @Test func everyoneGetsThreeFreeAndProAddsThirtyAMonth() {
+        #expect(UltraAllowance(membership: .free, freeUsed: 0, monthUsed: 0).left == 3)
+        #expect(UltraAllowance(membership: .paid, freeUsed: 0, monthUsed: 0).left == 33)
+        #expect(UltraAllowance(membership: .paid, freeUsed: 3, monthUsed: 30).left == 0)
         #expect(UltraAllowance(membership: .free, freeUsed: 9, monthUsed: 0).left == 0)
     }
 
     @Test func theFreeOnesAreSpentFirst() {
-        var allowance = UltraAllowance(membership: .paid, freeUsed: 4, monthUsed: 0)
+        var allowance = UltraAllowance(membership: .paid, freeUsed: 2, monthUsed: 0)
         allowance = allowance.spending()
-        #expect(allowance.freeUsed == 5 && allowance.monthUsed == 0)
+        #expect(allowance.freeUsed == 3 && allowance.monthUsed == 0)
         allowance = allowance.spending()
-        #expect(allowance.freeUsed == 5 && allowance.monthUsed == 1 && allowance.left == 29)
+        #expect(allowance.freeUsed == 3 && allowance.monthUsed == 1 && allowance.left == 29)
     }
 
     @Test func nothingLeftStaysNothingLeft() {
-        let used = UltraAllowance(membership: .free, freeUsed: 5, monthUsed: 0)
+        let used = UltraAllowance(membership: .free, freeUsed: 3, monthUsed: 0)
         #expect(used.spending() == used)
     }
 
     @Test func theMembershipFollowsTheStore() {
-        #expect(UltraAllowance.Membership(tier: .free, isInFreeTrial: false) == .free)
-        #expect(UltraAllowance.Membership(tier: .subscriber, isInFreeTrial: true) == .trial)
-        #expect(UltraAllowance.Membership(tier: .subscriber, isInFreeTrial: false) == .paid)
+        #expect(UltraAllowance.Membership(tier: .free) == .free)
+        #expect(UltraAllowance.Membership(tier: .subscriber) == .paid)
     }
 
     @Test func thePreviewCountsWhatWasWrittenAndANewMonthBringsProsBack() {
@@ -50,7 +48,7 @@ struct UltraAllowanceTests {
         defer { defaults.tearDown() }
         let plan = Plan()
         let service = UltraAllowanceService(defaults: defaults.defaults, membership: { plan.membership }, now: { plan.now })
-        for _ in 0..<5 { service.spend() }
+        for _ in 0..<3 { service.spend() }
         #expect(service.left == 0)
         plan.membership = .paid
         #expect(service.left == 30)
@@ -68,23 +66,23 @@ struct UltraAllowanceTests {
         let service = UltraAllowanceService(defaults: defaults.defaults, membership: { .free })
         service.spend()
         service.spend()
-        #expect(service.left == 3)
+        #expect(service.left == 1)
         service.resetPreview()
-        #expect(service.left == 5)
+        #expect(service.left == 3)
         service.setFreeLeft(1)
         #expect(service.left == 1)
     }
 
     @Test func eachPlaceSaysWhatIsLeft() {
         let fresh = UltraAllowance(membership: .free, freeUsed: 0, monthUsed: 0)
-        let used = UltraAllowance(membership: .trial, freeUsed: 1, monthUsed: 0)
-        let pro = UltraAllowance(membership: .paid, freeUsed: 5, monthUsed: 2)
-        #expect(UltraAllowanceLabels.consent(fresh) == "Your first 5 scripts are free.")
-        #expect(UltraAllowanceLabels.consent(used) == "4 of 5 free scripts left.")
+        let used = UltraAllowance(membership: .free, freeUsed: 1, monthUsed: 0)
+        let pro = UltraAllowance(membership: .paid, freeUsed: 3, monthUsed: 2)
+        #expect(UltraAllowanceLabels.consent(fresh) == "Your first 3 scripts are free.")
+        #expect(UltraAllowanceLabels.consent(used) == "2 of 3 free scripts left.")
         #expect(UltraAllowanceLabels.consent(pro) == "28 scripts left this month.")
-        #expect(UltraAllowanceLabels.menu(used) == "Ultra AI · 4 of 5 free left")
+        #expect(UltraAllowanceLabels.menu(used) == "Ultra AI · 2 of 3 free left")
         #expect(UltraAllowanceLabels.menu(pro) == "Ultra AI · 28 left this month")
-        #expect(UltraAllowanceLabels.plan(used) == "ULTRA AI · 4 OF 5 FREE LEFT")
+        #expect(UltraAllowanceLabels.plan(used) == "ULTRA AI · 2 OF 3 FREE LEFT")
     }
 
     // MARK: - Invitation

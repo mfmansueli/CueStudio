@@ -60,7 +60,7 @@ struct PaletteContrastTests {
     ]
 
     private let textTokens: [(name: String, color: Color)] = [
-        ("ink", Palette.ink), ("inkSoft", Palette.inkSoft), ("ink2", Palette.ink2), ("inkHint", Palette.inkHint), ("accText", Palette.accText),
+        ("ink", Palette.ink), ("inkSoft", Palette.inkSoft), ("ink2", Palette.ink2), ("accText", Palette.accText),
         ("warnText", Palette.warnText),
         ("dangerText", Palette.dangerText), ("infoText", Palette.infoText), ("successText", Palette.successText),
         ("aiText", Palette.aiText), ("aiTextStrong", Palette.aiTextStrong),
@@ -84,16 +84,15 @@ struct PaletteContrastTests {
         }
     }
 
-    /// Where the hint text sits in the app: the sheets and the soft control fill are lighter than the page.
-    /// (Not the tile surface: `inkHint` is 4.3:1 there, so tiles use `ink2`.)
-    @Test func hintInkReadsOnTheLighterFillsItSitsOn() {
+    /// Where hints and mono labels sit in the app: the sheets and the soft control fill are lighter than the page.
+    @Test func secondaryInkReadsOnTheLighterFillsItSitsOn() {
         let fills: [(name: String, color: Color)] = [
             ("sheetNight", Palette.sheetNight), ("fill", Palette.fill),
         ]
         for appearance in Appearance.allCases {
             for fill in fills {
-                let value = ratio(Palette.inkHint, on: fill.color, in: appearance)
-                #expect(value >= ColorContrast.textMinimum, "inkHint on \(fill.name), \(appearance): \(value)")
+                let value = ratio(Palette.ink2, on: fill.color, in: appearance)
+                #expect(value >= ColorContrast.textMinimum, "ink2 on \(fill.name), \(appearance): \(value)")
             }
         }
     }
@@ -837,7 +836,7 @@ struct PaletteContrastTests {
             #expect(chip >= ColorContrast.textMinimum, "the chosen chip's words, \(appearance): \(chip)")
             let chipEdge = ratio(Palette.Scripts.inspirationChipOn, on: Palette.sheetNight, in: appearance)
             #expect(chipEdge >= ColorContrast.componentMinimum, "the chosen chip on the sheet, \(appearance): \(chipEdge)")
-            let bulb = ratio(Palette.accText, onTint: Palette.Scripts.heroChip, over: Palette.Scripts.dockBase, in: appearance)
+            let bulb = ratio(Palette.accText, onTint: Palette.accSoft, over: Palette.Scripts.dockBase, in: appearance)
             #expect(bulb >= ColorContrast.componentMinimum, "the dock's lightbulb, \(appearance): \(bulb)")
             for surface in [Palette.surface, Palette.sheetNight] {
                 #expect(ratio(Palette.ink, on: surface, in: appearance) >= ColorContrast.textMinimum, "a way in's title, \(appearance)")
@@ -860,7 +859,7 @@ struct PaletteContrastTests {
         let nebulae: [(name: String, hue: NebulaHue)] = [("blue", .blue), ("magenta", .magenta), ("teal", .teal)]
         let nebulaPeak = StarfieldMath.interstellarNebulaOpacity.upperBound
         let band = Palette.Sky.interstellarBand.opacity(StarfieldMath.bandPeakOpacity)
-        let tokens: [(name: String, color: Color)] = [("ink", Palette.ink), ("ink2", Palette.ink2), ("inkHint", Palette.inkHint)]
+        let tokens: [(name: String, color: Color)] = [("ink", Palette.ink), ("ink2", Palette.ink2)]
 
         for appearance in Appearance.allCases {
             let base = rgb(Palette.Sky.interstellarBg, in: appearance)

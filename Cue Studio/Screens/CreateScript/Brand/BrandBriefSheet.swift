@@ -113,7 +113,7 @@ struct BrandBriefSheet: View {
                 .cueFont(12.5, weight: .semibold)
                 .foregroundStyle(Palette.ink2)
                 .padding(.horizontal, 4)
-            TextField("", text: text, prompt: Text(verbatim: prompt).foregroundStyle(Palette.inkHint))
+            TextField("", text: text, prompt: Text(verbatim: prompt).foregroundStyle(Palette.ink2))
                 .cueFont(15)
                 .foregroundStyle(Palette.ink)
                 .tint(Palette.accText)

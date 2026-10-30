@@ -6,7 +6,7 @@
 import XCTest
 
 /// On the free plan every feature works, with no PRO badges: the full My Cue Voice, versions for
-/// other platforms and best-take suggestions. Only exporting past the free five opens the paywall.
+/// other platforms and best-take suggestions. Only exporting past the free ones opens the paywall.
 @MainActor
 final class FreePlanUITests: XCTestCase {
     override func setUp() {

@@ -109,10 +109,10 @@ struct UltraScriptServiceTests {
         let allowance = UltraAllowanceService(defaults: defaults.defaults, membership: { .free })
         let service = UltraScriptService(client: client, consent: consent, budget: UltraCallBudget(defaults: defaults.defaults), allowance: allowance)
         _ = try await service.generate(request, reporting: nil)
-        #expect(allowance.left == 4 && service.scriptsLeft == 4)
+        #expect(allowance.left == 2 && service.scriptsLeft == 2)
         client.review = .failure(UltraClientError(failure: .provider))
         _ = try? await service.generate(request, reporting: nil)
-        #expect(allowance.left == 4)
+        #expect(allowance.left == 2)
     }
 
     @Test func withNoScriptsLeftNothingGoesOut() async {

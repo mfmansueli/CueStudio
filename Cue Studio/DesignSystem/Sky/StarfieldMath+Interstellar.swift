@@ -16,7 +16,7 @@ nonisolated extension StarfieldMath {
     // MARK: - Nebulae
 
     /// How strong a Interstellar nebula is at its heart. Kept low on purpose: with the wash under it and the band over it, the brightest
-    /// point of the night still has to read `inkHint` text (`PaletteContrastTests`).
+    /// point of the night still has to read `ink2` text (`PaletteContrastTests`).
     static let interstellarNebulaOpacity = 0.06...0.10
 
     /// Three nebulae, one in each colour, in three different parts of the sky: bigger and slower than the violet ones.

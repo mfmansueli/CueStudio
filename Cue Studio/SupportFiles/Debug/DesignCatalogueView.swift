@@ -182,7 +182,7 @@ struct DesignCatalogueView: View {
             ("bg", Palette.bg), ("surface", Palette.surface), ("surface2", Palette.surface2), ("surface3", Palette.surface3),
             ("acc", Palette.acc), ("aiText", Palette.aiText), ("record", Palette.record), ("success", Palette.success),
             ("info", Palette.info), ("warn", Palette.warn), ("danger", Palette.danger), ("ink", Palette.ink),
-            ("ink2", Palette.ink2), ("inkHint", Palette.inkHint), ("ink3", Palette.ink3), ("separator", Palette.separator),
+            ("ink2", Palette.ink2), ("ink3", Palette.ink3), ("separator", Palette.separator),
             ("warm", Palette.World.warm), ("mint", Palette.World.mint), ("pink", Palette.World.pink), ("sky", Palette.World.sky),
             ("TikTok", Palette.Platform.tikTok), ("Reels", Palette.Platform.reels), ("Shorts", Palette.Platform.shorts),
             ("YouTube", Palette.Platform.youTube), ("LinkedIn", Palette.Platform.linkedIn), ("Stories", Palette.Platform.stories),
@@ -218,7 +218,7 @@ struct DesignCatalogueView: View {
                 ForEach([12.0, 16, 20, 22, 26, 30, 44], id: \.self) { size in
                     VStack(spacing: 4) {
                         CueIconView(.editCut, size: size).foregroundStyle(Palette.ink)
-                        Text("\(Int(size))").monoFont(size: 9).foregroundStyle(Palette.inkHint)
+                        Text("\(Int(size))").monoFont(size: 9).foregroundStyle(Palette.ink2)
                     }
                 }
             }

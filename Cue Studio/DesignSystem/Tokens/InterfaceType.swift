@@ -8,9 +8,10 @@ import UIKit
 
 /// The interface's type: every size of the boards (15.5 pt semibold, a 10 pt label…) drawn at that size at the default text size, grown with
 /// Dynamic Type on the curve of the text style nearest to it (a title grows less than body text and a small label more, as the system's do) and following the
-/// iPhone's width a little (`ScreenProportion`). Screens use `cueFont(_:weight:design:)`, or `cueFont(_ style:)` for a text style; a size
-/// that must not grow (the prompter's words, words on the video, a miniature, a drawing) is `Font.fixed`, so it reads as a choice. A screen
-/// whose bar or chip can't grow past a point caps it with `dynamicTypeSize(...)`, and every size here follows the cap.
+/// iPhone's width a little (`ScreenProportion`; not in the editor, `typeFollowsScreenWidth`). Screens use `cueFont(_:weight:design:)`, or
+/// `cueFont(_ style:)` for a text style; a size that must not grow (the prompter's words, words on the video, a miniature, a drawing) is
+/// `Font.fixed`, so it reads as a choice. A screen whose bar or chip can't grow past a point caps it with `dynamicTypeSize(...)`, and every
+/// size here follows the cap.
 nonisolated enum InterfaceType {
     /// The text style whose curve a size of `points` grows on: the one whose default size is nearest.
     static func style(for points: CGFloat) -> Font.TextStyle {
@@ -99,9 +100,10 @@ private struct InterfaceFont: ViewModifier {
     let weight: Font.Weight
     let design: Font.Design
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @Environment(\.typeFollowsScreenWidth) private var followsWidth
 
     func body(content: Content) -> some View {
-        let size = InterfaceType.size(points, relativeTo: style, for: dynamicTypeSize, proportion: ScreenProportion.current)
+        let size = InterfaceType.size(points, relativeTo: style, for: dynamicTypeSize, proportion: followsWidth ? ScreenProportion.current : 1)
         content.font(.system(size: size, weight: weight, design: design))
     }
 }

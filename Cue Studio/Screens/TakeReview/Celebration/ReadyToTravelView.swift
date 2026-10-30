@@ -32,7 +32,7 @@ struct ReadyToTravelView: View {
             Text(detailLine)
                 .hudFont()
                 .interfaceTracking(1)
-                .foregroundStyle(Palette.inkHint)
+                .foregroundStyle(Palette.ink2)
                 .padding(.top, 8)
             Spacer(minLength: 12)
             exportsCard(left: review.exportsLeft).padding(.horizontal, 16)
@@ -115,7 +115,7 @@ struct ReadyToTravelView: View {
             HStack(spacing: 6) {
                 if left != nil {
                     Text("FREE EXPORTS").foregroundStyle(Palette.ink2)
-                    Text("·").foregroundStyle(Palette.inkHint)
+                    Text("·").foregroundStyle(Palette.ink2)
                 }
                 Text(label.text).foregroundStyle(tint)
             }

@@ -6,14 +6,14 @@
 import os
 import SwiftUI
 
-/// The Logbook: "Catch it now. Write it later." Hold the button and say an idea (its words arrive in the field, after anything typed
-/// there, and letting go saves them; or tap it once to start and again to finish), or type it; each waits as a card with
-/// "✦ Write", which turns it into a script on the script page (Shape is only for adding cues). Without Apple Intelligence
-/// the card says "Write it" and opens a blank draft titled with the idea. Speaking is on-device recognition: only the words are
-/// kept, never the sound. Swipe an idea to delete it (or hold it), or Select (beside the first day, as on Scripts) to pick several and
-/// delete them together; a deletion has Undo for 4 s, shown in the sheet. The ideas are grouped by day (`LogbookDays`), in a list under the
-/// capture. While the field has the keyboard, the title and the big microphone fold away (into the bar, and into a small microphone beside
-/// the field), so the ideas have the room above the keyboard.
+/// The Logbook: "Catch it now. Write it later." under the system's large title. Its ideas fill the page, grouped by day (`LogbookDays`),
+/// and with none yet the empty state sits in its middle. At its foot, as in Messages, one field catches the next idea: type it, or hold
+/// the yellow button at the field's end and say it (its words arrive in the field, after anything typed there, and letting go saves them;
+/// or tap it once to start and again to finish); with words typed, the button is the arrow that saves them. Each idea waits as a card with
+/// "✦ Write", which turns it into a script on the script page (Shape is only for adding cues). Without Apple Intelligence the card says
+/// "Write it" and opens a blank draft titled with the idea. Speaking is on-device recognition: only the words are kept, never the sound.
+/// Swipe an idea to delete it (or hold it), or Select (beside the first day, as on Scripts) to pick several and delete them together; a
+/// deletion has Undo for 4 s, shown in the sheet.
 struct LogbookView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(LogbookService.self) private var logbook
@@ -52,79 +52,79 @@ struct LogbookView: View {
     @State private var writingID: UUID?
     /// Where each card's Write button is on the screen: the star leaves from there.
     @State private var writeCenters: [UUID: CGPoint] = [:]
-    /// Select is on: a tap picks an idea, and the capture steps aside for the bar that deletes what is picked.
+    /// Select is on: a tap picks an idea, and the field gives its place to the bar that deletes what is picked.
     @State private var isSelecting = false
     @State private var selection = Set<UUID>()
-    /// `isCompact` as the page draws it, set with an animation of its own: the field taking the keyboard is the system's change, and it
-    /// arrives with animations turned off (the title and the microphone left in a single frame).
-    @State private var showsCompact = false
     @FocusState private var typing: Bool
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                // The capture sits above the ideas, out of their list: as it folds, the list grows into its room as one piece. A part of a
-                // list row that folded made the list resize the row in a single frame, and everything in it jumped.
-                topSection
-                    // The capture sits above the ideas: past the first accessibility size it alone was taller than the sheet.
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                    .padding(.horizontal, Metrics.gutter)
-                ScrollViewReader { proxy in
-                    // The ideas are a list, so one can be swiped away the system's way.
-                    List {
-                        ForEach(Array(LogbookDays.days(of: logbook.waiting).enumerated()), id: \.element.id) { index, day in
-                            dayHeader(day.title, showsSelect: index == 0)
-                            ForEach(day.entries) { entry in
-                                entryRow(entry)
-                                    .listRowBackground(Color.clear)
-                                    .listRowSeparator(.hidden)
-                                    .listRowInsets(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 6, trailing: Metrics.gutter))
-                                    .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                                        if !isSelecting {
-                                            Button(role: .destructive) { delete(entry) } label: {
-                                                Label("Delete", systemImage: "trash")
-                                            }
+            ScrollViewReader { proxy in
+                // The ideas are a list, so one can be swiped away the system's way.
+                List {
+                    ForEach(Array(LogbookDays.days(of: logbook.waiting).enumerated()), id: \.element.id) { index, day in
+                        dayHeader(day.title, showsSelect: index == 0)
+                        ForEach(day.entries) { entry in
+                            entryRow(entry)
+                                .listRowBackground(Color.clear)
+                                .listRowSeparator(.hidden)
+                                .listRowInsets(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 6, trailing: Metrics.gutter))
+                                .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+                                    if !isSelecting {
+                                        Button(role: .destructive) { delete(entry) } label: {
+                                            Label("Delete", systemImage: "trash")
                                         }
                                     }
-                            }
+                                }
                         }
                     }
-                    .listStyle(.plain)
-                    .scrollContentBackground(.hidden)
-                    .scrollDismissesKeyboard(.interactively)
-                    .task {
-                        guard let id = presentation.logbookFocus else { return }
-                        presentation.logbookFocus = nil
-                        focused = id
-                        proxy.scrollTo(id, anchor: .center)
-                    }
-                    .onChange(of: justSaved) { _, id in
-                        guard let id else { return }
-                        justSaved = nil
-                        withAnimation(reduceMotion ? nil : .smooth(duration: 0.3)) { proxy.scrollTo(id, anchor: .bottom) }
+                }
+                .listStyle(.plain)
+                .scrollContentBackground(.hidden)
+                // The keyboard goes with a tap anywhere on the page, not with a swipe: a swipe down that took the keyboard went on to take
+                // the sheet with it (the owner, 30/10/2026).
+                .scrollDismissesKeyboard(.never)
+                // With no idea yet, the empty state in the middle of the room the list has (above the keyboard while typing).
+                .overlay {
+                    if logbook.waiting.isEmpty {
+                        emptyState.transition(.opacity)
                     }
                 }
+                // Only while typing: on, it takes the tap a swiped idea's Delete needs.
+                .simultaneousGesture(TapGesture().onEnded { typing = false }, isEnabled: typing)
+                .animation(reduceMotion ? nil : .smooth(duration: 0.35), value: logbook.waiting.isEmpty)
+                .task {
+                    guard let id = presentation.logbookFocus else { return }
+                    presentation.logbookFocus = nil
+                    focused = id
+                    proxy.scrollTo(id, anchor: .center)
+                }
+                .onChange(of: justSaved) { _, id in
+                    guard let id else { return }
+                    justSaved = nil
+                    withAnimation(reduceMotion ? nil : .smooth(duration: 0.3)) { proxy.scrollTo(id, anchor: .top) }
+                }
             }
-            // From the top: when the keyboard leaves less room than the capture and the list take, the list gives it up below (centred,
-            // the whole page slid up under the bar, and back down as the capture folded).
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .safeAreaInset(edge: .bottom) {
+            .safeAreaInset(edge: .bottom, spacing: 0) {
                 if isSelecting {
                     SelectionBar(
                         count: selection.count, prompt: String(localized: "Select ideas"), onDelete: deleteSelection,
                         deleteIdentifier: "logbook.deleteSelectionButton"
                     )
                     .transition(.move(edge: .bottom).combined(with: .opacity))
+                } else {
+                    composer
+                        // The field and its button keep their size past the first accessibility size (the field grows by its lines).
+                        .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
             .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: isSelecting)
             .background(Palette.bg)
-            // The big title is the page's own first part (`titleHeader`), and the bar's small one comes in as it folds away (typing,
-            // selecting): switching the bar between large and inline happened in a single frame, and the whole page jumped.
             .navigationTitle("Logbook")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationSubtitle("Catch it now. Write it later.")
+            .navigationBarTitleDisplayMode(.large)
             .toolbar {
-                ToolbarItem(placement: .principal) { barTitle }
                 // While selecting, Done beside the first day ends the selection: one Done on screen at a time.
                 if !isSelecting {
                     ToolbarItem(placement: .confirmationAction) {
@@ -136,6 +136,8 @@ struct LogbookView: View {
         }
         // A deletion's Undo shows here, in front of the sheet, not under it.
         .toastHost(inSheet: true)
+        // While typing, a swipe down doesn't close the sheet with the idea half written: a tap on the page puts the keyboard away first.
+        .interactiveDismissDisabled(typing)
         .onChange(of: logbook.waiting.isEmpty) { _, empty in
             if empty { isSelecting = false }
         }
@@ -159,122 +161,120 @@ struct LogbookView: View {
             inviteTurn += 1
         }
         .onChange(of: hasWords) { _, now in
-            // The button beside the field turns into the arrow that saves: felt as well as seen.
-            if now, isCompact { Haptics.selection() }
+            // The button turns into the arrow that saves: felt as well as seen.
+            if now, !isHolding { Haptics.selection() }
         }
         .accessibilityIdentifier("logbook.sheet")
     }
 
     // MARK: - Parts
 
-    /// The top of the page, above the ideas: the title, the microphone and its line, the field and, with no idea yet, the empty state. Each
-    /// part folds away by its height (`FoldAway`) and the rest slides with it: typing, the title and the microphone go (the microphone
-    /// shrinking toward the small one beside the field); selecting, the capture steps aside for the ideas and the bar.
-    private var topSection: some View {
-        VStack(spacing: 0) {
-            titleHeader
-                .foldAway(titleFolds)
-            VStack(spacing: 0) {
-                captureButton.padding(.top, 8)
-                // One line that never changes size: the words themselves go into the field below (they used to grow here and push the page
-                // down and up while the creator spoke).
-                Text(statusLine)
-                    .cueFont(16)
-                    .foregroundStyle(isHolding ? Palette.ink : Palette.ink2)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.8)
-                    .frame(maxWidth: .infinity, minHeight: 44)
+    /// The page's foot: one glass field to type an idea in, the button at its end to say it (or, with words typed, to save them), and over
+    /// them, while it listens or can't, one line saying so.
+    private var composer: some View {
+        VStack(spacing: 8) {
+            if let line = composerLine {
+                Text(line)
+                    .cueFont(.footnote, weight: .semibold)
+                    .foregroundStyle(dictation.notice != nil && !isHolding ? Palette.warnText : Palette.ink2)
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                    .transition(.opacity)
                     .accessibilityIdentifier(isLocked ? "logbook.tapToFinish" : "logbook.status")
-                if let notice = dictation.notice, !isHolding {
-                    Text(notice.message)
-                        .cueFont(.footnote).foregroundStyle(Palette.warnText).multilineTextAlignment(.center)
-                        .frame(maxWidth: .infinity)
+            }
+            HStack(alignment: .bottom, spacing: 8) {
+                // The prompt in `ink2`: the system's grey is about 2.4:1 on the glass.
+                TextField(text: $typed, prompt: Text("Type, or hold the mic to talk").foregroundStyle(Palette.ink2), axis: .vertical) {
+                    Text("Type, or hold the mic to talk")
                 }
+                    .lineLimit(1...4)
+                    .cueFont(17)
+                    .tint(Palette.accText)
+                    .focused($typing)
+                    .submitLabel(.done)
+                    .onSubmit(addTyped)
+                    // The field grows to show a long idea, and Return still saves it (in a field that grows it would start a new line).
+                    .onChange(of: typed) { _, text in
+                        guard text.contains("\n"), !isHolding else { return }
+                        typed = text.replacingOccurrences(of: "\n", with: "")
+                        addTyped()
+                    }
+                    .padding(.leading, 12)
+                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity, minHeight: Metrics.hitTarget, alignment: .leading)
+                    .accessibilityIdentifier("logbook.field")
+                captureButton
             }
-            // Typing, it shrinks toward the small one beside the field (and grows back from there).
-            .scaleEffect(showsCompact ? 0.25 : 1, anchor: .bottomTrailing)
-            .foldAway(showsCompact || isSelecting, clips: false)
-            // Selecting, the field leaves (folded, its text view would still be found by VoiceOver); the row closes over it.
-            if !isSelecting {
-                HStack(spacing: 10) {
-                    typeField
-                    if showsCompact { compactMic.transition(.scale(scale: 2.2, anchor: .topLeading).combined(with: .opacity)) }
-                }
-                .padding(.top, showsCompact ? 8 : 12)
-                .transition(.opacity)
+            .padding(6)
+            .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 28, style: .continuous))
+            .overlay {
+                RoundedRectangle(cornerRadius: 28, style: .continuous)
+                    .strokeBorder(isHolding || typing ? Palette.accLine : .clear, lineWidth: 1)
             }
-            emptyState
-                .foldAway(!logbook.waiting.isEmpty || isSelecting)
         }
-        .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: isSelecting)
-        .animation(reduceMotion ? nil : .smooth(duration: 0.35), value: logbook.waiting.isEmpty)
-        .onChange(of: isCompact) { _, compact in
-            // A beat later, once the frame that brings the keyboard is out (a long one): an animation started before it came out of it
-            // halfway done.
-            Task { @MainActor in
-                Self.markMotion("Logbook fold", seconds: 0.4)
-                withAnimation(reduceMotion ? nil : .smooth(duration: 0.35)) { showsCompact = compact }
-            }
-        }
+        .animation(reduceMotion ? nil : .smooth(duration: 0.25), value: composerLine)
+        .padding(.horizontal, Metrics.gutter)
+        .padding(.bottom, 8)
     }
 
-    /// The title folds into the bar while the field has the keyboard (the ideas get the room above it) and while selecting.
-    private var titleFolds: Bool { showsCompact || isSelecting }
-
-    /// "Logbook" and "Catch it now. Write it later.", as the system's large title and its subtitle look.
-    private var titleHeader: some View {
-        VStack(alignment: .leading, spacing: 2) {
-            Text("Logbook")
-                .cueFont(.largeTitle, weight: .bold)
-                .foregroundStyle(Palette.ink)
-            Text("Catch it now. Write it later.")
-                .cueFont(.subheadline)
-                .foregroundStyle(Palette.ink2)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, 2)
-        .accessibilityElement(children: .combine)
-        .accessibilityAddTraits(.isHeader)
-        .accessibilityIdentifier("logbook.title")
+    /// What the line over the field says: listening, how to finish, or why nothing can listen. Nothing otherwise (the field's prompt says how).
+    private var composerLine: String? {
+        if isLocked { return String(localized: "Tap the button again to finish") }
+        if isHolding { return String(localized: "Listening…") }
+        return dictation.notice?.message
     }
 
-    /// The bar's small title, there once the big one has folded away.
-    private var barTitle: some View {
-        let shows = titleFolds
-        return VStack(spacing: 1) {
-            Text("Logbook")
-                .cueFont(.headline, weight: .semibold)
-                .foregroundStyle(Palette.ink)
-            Text("Catch it now. Write it later.")
-                .cueFont(.caption2)
-                .foregroundStyle(Palette.ink2)
-        }
-        .opacity(shows ? 1 : 0)
-        .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: shows)
-        .accessibilityHidden(!shows)
-    }
+    /// There are words in the field to save.
+    private var hasWords: Bool { !typed.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
 
-    /// Hold to talk: the circle grows and its rings follow the voice while the finger stays. They grow by scale inside an area of a fixed
-    /// height (the largest ring fits), so the animation never resizes anything around it (it used to push the field and the list).
+    /// The yellow button at the field's end. With words typed it is the arrow that saves them (where to confirm is never in doubt);
+    /// otherwise hold it to talk, or tap it to start and again to finish: it grows and its rings follow the voice while it listens.
+    @ViewBuilder
     private var captureButton: some View {
-        ZStack {
-            if isHolding {
-                // Ripples leave the circle while it listens, further with a louder voice.
-                LogbookRipples(level: dictation.level).transition(.opacity)
+        if hasWords, !isHolding {
+            Button(action: addTyped) {
+                captureFace(saves: true)
             }
+            .buttonStyle(.plain)
+            .accessibilityLabel(Text("Save to Logbook"))
+            .accessibilityIdentifier("logbook.save")
+        } else {
+            captureFace(saves: false)
+                .onLongPressGesture(minimumDuration: .infinity, maximumDistance: 80, pressing: { pressing in
+                    pressing ? press() : release()
+                }, perform: {})
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(Text("Capture an idea by voice"))
+                .accessibilityHint(Text("Double tap to start, double tap again to finish"))
+                .accessibilityAddTraits(.isButton)
+                .accessibilityAction(named: Text("Start or stop")) { isHolding ? stopCapture() : beginCapture() }
+                .accessibilityIdentifier("logbook.captureButton")
+        }
+    }
+
+    /// The button's yellow circle round its microphone (the arrow, when it `saves`): it breathes once as the page opens, sinks under the
+    /// finger, grows while it listens (rings leaving it, further with a louder voice, `LogbookRipples`) and its icon jumps as listening starts.
+    private func captureFace(saves: Bool) -> some View {
+        ZStack {
             Circle()
                 .fill(Palette.acc)
-                .frame(width: 112, height: 112)
-                .scaleEffect((isHolding ? 130.0 / 112.0 : 1) * (isPressed ? 0.92 : 1))
-                .shadow(color: Palette.acc.opacity(isHolding ? 0.6 : 0.3), radius: isHolding ? 28 : 18)
+                .scaleEffect((isHolding ? 1.12 : 1) * (isPressed ? 0.9 : 1))
+                .shadow(color: Palette.acc.opacity(isHolding ? 0.6 : 0.25), radius: isHolding ? 16 : 8)
                 .keyframeAnimator(initialValue: 1.0, trigger: inviteTurn) { circle, scale in
                     circle.scaleEffect(scale)
                 } keyframes: { _ in
-                    CubicKeyframe(1.08, duration: 0.35)
+                    CubicKeyframe(1.12, duration: 0.35)
                     SpringKeyframe(1.0, duration: 0.6, spring: .bouncy)
                 }
-            CueIconView(.dictate, size: 40)
+            Group {
+                if saves {
+                    Image(systemName: "arrow.up").cueFont(19, weight: .bold)
+                } else {
+                    CueIconView(.dictate, size: 22)
+                }
+            }
                 .foregroundStyle(Palette.accInk)
+                .contentTransition(.symbolEffect(.replace))
                 .keyframeAnimator(initialValue: 1.0, trigger: listenTurn) { icon, scale in
                     icon.scaleEffect(scale)
                 } keyframes: { _ in
@@ -282,95 +282,18 @@ struct LogbookView: View {
                     SpringKeyframe(1.0, duration: 0.4, spring: .bouncy)
                 }
         }
-        .frame(maxWidth: .infinity)
-        .frame(height: 220)
+        .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+        .overlay {
+            // The rings spread past the button, over the field's edge: drawn on top, they move nothing.
+            if isHolding {
+                LogbookRipples(level: dictation.level, radius: 25)
+                    .frame(width: 140, height: 140)
+                    .transition(.opacity)
+            }
+        }
         .contentShape(Circle())
         .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: isHolding)
         .animation(isPressed ? CueMotion.pressIn : CueMotion.pressRelease, value: isPressed)
-        .onLongPressGesture(minimumDuration: .infinity, maximumDistance: 80, pressing: { pressing in
-            pressing ? press() : release()
-        }, perform: {})
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Capture an idea by voice"))
-        .accessibilityHint(Text("Double tap to start, double tap again to finish"))
-        .accessibilityAddTraits(.isButton)
-        .accessibilityAction(named: Text("Start or stop")) { isHolding ? stopCapture() : beginCapture() }
-        .accessibilityIdentifier("logbook.captureButton")
-    }
-
-    /// Where an idea is typed, and where the words of a spoken one arrive while the button is held. It is one line high whether empty or
-    /// not (the icon centred on it; it used to sit taller while empty and jump as typing began) and grows only for a longer idea.
-    private var typeField: some View {
-        let shape = RoundedRectangle(cornerRadius: 28, style: .continuous)
-        return HStack(alignment: .center, spacing: 12) {
-            Image(systemName: isHolding ? "mic.fill" : "pencil")
-                .symbolSwap(value: isHolding)
-                .foregroundStyle(isHolding ? Palette.accText : Palette.ink2)
-                .frame(width: 18)
-                .accessibilityHidden(true)
-            TextField("Or type an idea…", text: $typed, axis: .vertical)
-                .lineLimit(1...4)
-                .tint(Palette.accText)
-                .focused($typing)
-                .submitLabel(.done)
-                .onSubmit(addTyped)
-                // The field grows to show a long idea, and Return still saves it (in a field that grows it would start a new line).
-                .onChange(of: typed) { _, text in
-                    guard text.contains("\n"), !isHolding else { return }
-                    typed = text.replacingOccurrences(of: "\n", with: "")
-                    addTyped()
-                }
-                .accessibilityIdentifier("logbook.field")
-        }
-        .padding(.horizontal, 18)
-        .padding(.vertical, 14)
-        .frame(minHeight: 56)
-        .background(Palette.surface2, in: shape)
-        .overlay(shape.strokeBorder(isHolding || typing ? Palette.accLine : Palette.glassBorder, lineWidth: isHolding ? 1 : 0.5))
-    }
-
-    /// The keyboard is the field's: the big microphone steps aside into `compactMic`.
-    private var isCompact: Bool { typing && !isHolding }
-
-    /// There are words in the field to save.
-    private var hasWords: Bool { !typed.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty }
-
-    /// The button beside the field while typing, as in Messages: with words in the field it is the arrow that saves them to the Logbook
-    /// (so where to confirm is never in doubt; a microphone there read as the confirm button); with the field empty it is the microphone,
-    /// and a tap starts listening (the keyboard goes and the big one comes back, listening, with "Tap the button again to finish").
-    private var compactMic: some View {
-        Button {
-            if hasWords {
-                addTyped()
-            } else {
-                beginCapture()
-                isLocked = true
-            }
-        } label: {
-            Group {
-                if hasWords {
-                    Image(systemName: "arrow.up").cueFont(22, weight: .bold)
-                } else {
-                    CueIconView(.dictate, size: 22)
-                }
-            }
-            .foregroundStyle(Palette.accInk)
-            .contentTransition(.symbolEffect(.replace))
-            .frame(width: 56, height: 56)
-            .background(Palette.acc, in: Circle())
-            .shadow(color: Palette.acc.opacity(0.3), radius: 12)
-            .contentShape(Circle())
-        }
-        .buttonStyle(.plain)
-        .keyframeAnimator(initialValue: 1.0, trigger: hasWords) { button, scale in
-            button.scaleEffect(scale)
-        } keyframes: { _ in
-            CubicKeyframe(1.14, duration: 0.1)
-            SpringKeyframe(1.0, duration: 0.35, spring: .bouncy)
-        }
-        .animation(.snappy(duration: 0.2), value: hasWords)
-        .accessibilityLabel(hasWords ? Text("Save to Logbook") : Text("Capture an idea by voice"))
-        .accessibilityIdentifier(hasWords ? "logbook.save" : "logbook.compactMic")
     }
 
     /// "TODAY", "YESTERDAY", "MONDAY"…: a day's ideas start under it. The first one ends with Select (Done while selecting), as Scripts' first group.
@@ -388,7 +311,7 @@ struct LogbookView: View {
                     .monoFont(size: 10, weight: .semibold)
                     .textCase(.uppercase)
                     .tracking(1.2)
-                    .foregroundStyle(Palette.inkHint)
+                    .foregroundStyle(Palette.ink2)
                     .frame(minHeight: Metrics.hitTarget)
                     .padding(.vertical, -16)
                     .accessibilityIdentifier("logbook.selectButton")
@@ -423,7 +346,7 @@ struct LogbookView: View {
         }
     }
 
-    /// The empty state (E): the mark, what this is for and how to start; the capture button above is its action.
+    /// The empty state (E): the mark, what this is for and how to start, in the middle of the page; the field below is its action.
     private var emptyState: some View {
         VStack(spacing: 14) {
             EmptyStateMark(icon: .book)
@@ -434,9 +357,8 @@ struct LogbookView: View {
                 .cueFont(15).foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
         }
-        .frame(maxWidth: .infinity)
-        .padding(.top, 24)
-        .padding(.bottom, 40)
+        .padding(.horizontal, Metrics.gutter)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .accessibilityElement(children: .combine)
         .accessibilityIdentifier("logbook.empty")
     }
@@ -450,7 +372,7 @@ struct LogbookView: View {
                 .frame(width: 44, height: 44)
                 .background(entry.isSpoken ? Palette.accSoft : Palette.overlayFill, in: Circle())
             VStack(alignment: .leading, spacing: 4) {
-                Text(entry.text).cueFont(18, weight: .medium).foregroundStyle(Palette.ink).lineLimit(3)
+                Text(entry.text).cueFont(16, weight: .medium).foregroundStyle(Palette.ink).lineLimit(3)
                 HStack(spacing: 6) {
                     Text(verbatim: LogbookDays.meta(for: entry)).hudFont().interfaceTracking(0.8).foregroundStyle(Palette.ink2)
                     if let color = color(for: entry) { Circle().fill(color).frame(width: 9, height: 9) }
@@ -513,12 +435,6 @@ struct LogbookView: View {
 
     // MARK: - Capturing
 
-    /// The one line under the button, which never changes size: what it does, what it hears, or how to finish.
-    private var statusLine: String {
-        if isLocked { return String(localized: "Tap the button again to finish") }
-        return isHolding ? String(localized: "Listening…") : String(localized: "Hold to talk · tap to start")
-    }
-
     /// A finger down starts listening, unless a tap left it going: that finger is the one that ends it.
     private func press() {
         pressedAt = .now
@@ -549,8 +465,8 @@ struct LogbookView: View {
         }
     }
 
-    /// The fold and the start of listening are animation intervals (`studio.cue` / Motion): Instruments and `PerformanceDeviceUITests` count
-    /// their hitches.
+    /// The start of listening is an animation interval (`studio.cue` / Motion): Instruments and `PerformanceDeviceUITests` count its
+    /// hitches.
     private static let signposter = OSSignposter(subsystem: "studio.cue", category: "Motion")
 
     private static func markMotion(_ name: StaticString, seconds: Double) {

@@ -10,12 +10,14 @@ import XCTest
 /// smallest iPhone or doesn't grow with the text. Each screen starts from its own launch, so one that doesn't open never leaves the rest
 /// behind it; a control it couldn't find is written to `<name>-misses.txt`, never a failure. Opt-in:
 /// `TEST_RUNNER_CUE_AUDIT_DIR=<folder> TEST_RUNNER_CUE_AUDIT_NAME=se [TEST_RUNNER_CUE_AUDIT_SIZE=UICTContentSizeCategoryAccessibilityXXXL]
-/// CUE_SIMULATOR="Cue v10 iPhone SE" scripts/test.sh only "Cue StudioUITests/LayoutAuditCaptureTests"`.
+/// CUE_SIMULATOR="Cue v10 iPhone SE" scripts/test.sh only "Cue StudioUITests/LayoutAuditCaptureTests"`; `TEST_RUNNER_CUE_AUDIT_LANGUAGE=de`
+/// runs it in another of Cue's languages (the tabs are then found by their place).
 @MainActor
 final class LayoutAuditCaptureTests: XCTestCase {
     private var directory: URL!
     private var configuration = "audit"
     private var size: String?
+    private var language: String?
 
     /// Reads the folder, the name and the text size, or skips the test when no folder is given.
     private func begin() throws {
@@ -25,6 +27,7 @@ final class LayoutAuditCaptureTests: XCTestCase {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         configuration = env["CUE_AUDIT_NAME"] ?? "audit"
         size = env["CUE_AUDIT_SIZE"]
+        language = env["CUE_AUDIT_LANGUAGE"]
         continueAfterFailure = true
     }
 
@@ -39,6 +42,13 @@ final class LayoutAuditCaptureTests: XCTestCase {
         shot(app, "scripts-scrolled")
         if tap(app, "scripts.logbookButton") {
             shot(app, "logbook")
+            // Three ideas, to see the list's type.
+            let field = app.descendants(matching: .any)["logbook.field"].firstMatch
+            if field.exists(within: 5) {
+                field.tap()
+                for idea in ["Slow mornings with a film camera", "Tiny desk setups that fit a studio flat", "Packing hacks"] { field.typeText(idea + "\n") }
+                shot(app, "logbook-ideas")
+            } else { miss("logbook.field") }
             _ = tap(app, "logbook.doneButton")
         }
         if tap(app, "ideaCard.formatChip") {
@@ -95,7 +105,7 @@ final class LayoutAuditCaptureTests: XCTestCase {
             app.buttons["review.saveButton"].tap()
             if wait(app, "exportReady.notNow") {
                 shot(app, "export-ready")
-                if tap(app, "exportReady.seePro"), wait(app, "paywall.buyButton") { shot(app, "pro-calm") }
+                if tap(app, "exportReady.pro"), wait(app, "paywall.buyButton") { shot(app, "pro-calm") }
             }
         } else { miss("review.saveButton") }
     }
@@ -280,12 +290,15 @@ final class LayoutAuditCaptureTests: XCTestCase {
     // MARK: - Helpers
 
     private func launch(seeded: Bool, sampleVideo: Bool = false, extra: [String] = []) -> XCUIApplication {
-        CueApp.launch(seeded: seeded, sampleVideo: sampleVideo, contentSize: size, extraArguments: extra)
+        CueApp.launch(seeded: seeded, sampleVideo: sampleVideo, appLanguage: language, contentSize: size, extraArguments: extra)
     }
 
     /// The editor on the demo edit (music under the whole video, a voice-over at 0.5–4.5 s), at the text size asked.
     private func openEditor() -> XCUIApplication {
-        EditorApp.open(demo: true, arguments: size.map { ["-UIPreferredContentSizeCategoryName", $0] } ?? [])
+        EditorApp.open(
+            demo: true,
+            arguments: (size.map { ["-UIPreferredContentSizeCategoryName", $0] } ?? []) + (language.map { ["-uiTestAppLanguage", $0] } ?? [])
+        )
     }
 
     /// Picks track `index` of the demo edit's five (media, texts, captions, music, voice-over) 2.5 s after the playhead; on a small
@@ -316,7 +329,10 @@ final class LayoutAuditCaptureTests: XCTestCase {
     }
 
     private func openTab(_ app: XCUIApplication, _ title: String) -> Bool {
-        let tab = app.cueTabBar.buttons[title]
+        let order = ["Scripts", "Takes", "Record", "Profile", "Settings"]
+        let named = app.cueTabBar.buttons[title]
+        // In another language the tab is found by its place in the bar.
+        let tab = language == nil || named.exists ? named : app.cueTabBar.buttons.element(boundBy: order.firstIndex(of: title) ?? 0)
         guard tab.exists(within: 15) else { miss("tab \(title)"); return false }
         tab.tap()
         sleep(1)

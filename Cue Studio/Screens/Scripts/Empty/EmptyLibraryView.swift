@@ -40,7 +40,7 @@ struct EmptyLibraryView: View {
 
     private func content(showsConstellation: Bool) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            HUDLine(values: [kind == .firstUse ? String(localized: "No scripts yet") : String(localized: "No scripts right now")], tint: Palette.inkHint)
+            HUDLine(values: [kind == .firstUse ? String(localized: "No scripts yet") : String(localized: "No scripts right now")], tint: Palette.ink2)
                 .padding(.horizontal, 4)
                 .accessibilityIdentifier("scripts.summary")
             header(showsConstellation: showsConstellation && kind == .firstUse)

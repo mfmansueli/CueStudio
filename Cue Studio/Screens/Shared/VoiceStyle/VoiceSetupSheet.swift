@@ -56,8 +56,7 @@ struct VoiceSetupSheet: View {
                 VStack(alignment: .leading, spacing: 18) {
                     VStack(alignment: .leading, spacing: 6) {
                         Text(step.question)
-                            .cueFont(28, weight: .bold)
-                            .tracking(-0.56)
+                            .cueFont(.title2, weight: .bold)
                             .foregroundStyle(Palette.ink)
                             .fixedSize(horizontal: false, vertical: true)
                             .accessibilityAddTraits(.isHeader)

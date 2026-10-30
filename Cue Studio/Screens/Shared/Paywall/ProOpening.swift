@@ -8,11 +8,12 @@ import SwiftUI
 /// Plays `ProOpeningScript` over `content` and tells the content which second it is (so each block can fade up in its turn). Once; tappable from
 /// 1.4 s to skip to the end. With Reduce Motion, and in the calm Pro, there is no warp, core, ring or flash: the content fades in
 /// over 0.3 s. A skip eases the blocks to their places and fades the light out (`CueMotion.skipSettle`). Haptics: `.soft` at the ignition
-/// (1.25 s), `.success` when the planet is born (2.16 s).
+/// (1.25 s), a hum swelling as the galaxy unfurls to a firm tap as it settles (1.98–2.85 s, `HapticPatterns.proUnfurl`), and a light tick for
+/// each node of the year's ring (from 2.5 s).
 struct ProOpening<Content: View>: View {
     let plays: Bool
-    /// Where the planet that is you sits, from the top of the screen.
-    let planetY: CGFloat
+    /// Where the galaxy's core sits, from the top of the screen.
+    let coreY: CGFloat
     @ViewBuilder let content: (_ time: Double) -> Content
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -30,8 +31,8 @@ struct ProOpening<Content: View>: View {
             ZStack {
                 content(time)
                 if plays, time < ProOpeningScript.duration, frozenAt != nil || animates {
-                    // The whole screen: the focus (44% of its height) and the planet's place (`planetY`) are measured from its top edge.
-                    ProOpeningCanvas(time: time, planetY: planetY).ignoresSafeArea()
+                    // The whole screen: the focus (44% of its height) and the core's place (`coreY`) are measured from its top edge.
+                    ProOpeningCanvas(time: time, coreY: coreY).ignoresSafeArea()
                     if time >= ProOpeningScript.tappableFrom {
                         Color.clear
                             .contentShape(Rectangle())
@@ -52,11 +53,16 @@ struct ProOpening<Content: View>: View {
         guard animates else { return }
         start = .now
         isFinished = false
-        for (second, beat) in [(ProOpeningScript.ignitionBeat, false), (ProOpeningScript.landing, true)] {
+        let beats: [(Double, () -> Void)] = [
+            (ProOpeningScript.ignitionBeat, { Haptics.soft() }),
+            (ProOpeningScript.unfurlBeat, { HapticPatterns.playProUnfurl() }),
+            (ProOpeningScript.ringBeat, { HapticPatterns.playRingTicks(count: 12, every: 0.045) }),
+        ]
+        for (second, beat) in beats {
             let wait = second - Date.now.timeIntervalSince(start)
             if wait > 0 { try? await Task.sleep(for: .seconds(wait)) }
             if Task.isCancelled || isSkipped { return }
-            if beat { Haptics.success() } else { Haptics.soft() }
+            beat()
         }
         try? await Task.sleep(for: .seconds(max(0, ProOpeningScript.settled + 0.1 - Date.now.timeIntervalSince(start))))
         isFinished = true

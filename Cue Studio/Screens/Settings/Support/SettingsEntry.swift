@@ -163,7 +163,7 @@ nonisolated enum SettingsEntry: String, CaseIterable, Identifiable, Sendable {
         case .languageRegion: ["language", "locale", "translate"]
         case .notifications: ["reminders", "routine", "alerts", "tools", "news"]
         case .privacy: ["data", "ai", "delete", "permissions"]
-        case .cuePro: ["pro", "subscription", "plan", "upgrade", "trial"]
+        case .cuePro: ["pro", "subscription", "plan", "upgrade"]
         case .restorePurchases: ["purchase", "subscription"]
         case .startsWith: ["camera", "front", "back", "selfie", "lens"]
         case .resolution: ["quality", "720p", "1080p", "4k", "hd"]

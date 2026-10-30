@@ -34,6 +34,8 @@ struct SettingsView: View {
             }
         }
         .cueGroupedList()
+        // The field right under the title, where the other tabs start their first card.
+        .contentMargins(.top, 0, for: .scrollContent)
         .confirmsDataErase()
         .cueActionSheet(
             isPresented: $confirmsReset,
@@ -44,7 +46,8 @@ struct SettingsView: View {
             toast.show(String(localized: "Back to Cue's defaults"))
         }
         .navigationTitle("Settings")
-        .navigationBarTitleDisplayMode(.large)
+        // The title on the bar's own row, as high as the other tabs' (owner, 30/10/2026).
+        .toolbarTitleDisplayMode(.inlineLarge)
         .navigationDestination(for: SettingsRoute.self) { SettingsDestination(route: $0, bindings: bindings) }
     }
 

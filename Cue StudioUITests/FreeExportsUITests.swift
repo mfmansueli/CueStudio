@@ -6,7 +6,7 @@
 import XCTest
 
 /// The free exports running out (09): the line under Share counts them down, and with none left Share, Save and the share icon ask "Your video
-/// is ready" before anything else; "Not now" keeps the take ready, the trial goes to the calm Pro.
+/// is ready" before anything else; "Not now" keeps the take ready, "Export with Cue Pro" goes to the calm Pro.
 @MainActor
 final class FreeExportsUITests: XCTestCase {
     override func setUp() {
@@ -28,9 +28,9 @@ final class FreeExportsUITests: XCTestCase {
     }
 
     func testTheLineUnderShareCountsDownAndTurnsToTheLastOne() {
-        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestExportsLeft", "3"])
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestExportsLeft", "2"])
         openTake(app)
-        XCTAssertTrue(element(app, "review.exportNotice").label.contains("3 OF 5 FREE EXPORTS LEFT"))
+        XCTAssertTrue(element(app, "review.exportNotice").label.contains("2 OF 3 FREE EXPORTS LEFT"))
         XCTAssertTrue(app.buttons["review.goPro"].exists)
         app.terminate()
 
@@ -49,12 +49,11 @@ final class FreeExportsUITests: XCTestCase {
     func testWithNoneLeftSaveAsksYourVideoIsReadyAndNotNowKeepsTheTakeReady() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestExportsLeft", "0"])
         openTake(app)
-        XCTAssertTrue(element(app, "review.exportNotice").label.contains("0 OF 5 FREE EXPORTS LEFT"))
+        XCTAssertTrue(element(app, "review.exportNotice").label.contains("0 OF 3 FREE EXPORTS LEFT"))
         app.buttons["review.saveButton"].tap()
         let notNow = app.buttons["exportReady.notNow"]
         XCTAssertTrue(notNow.exists(within: 5))
-        XCTAssertTrue(app.buttons["exportReady.trial"].exists)
-        XCTAssertTrue(app.buttons["exportReady.seePro"].exists)
+        XCTAssertTrue(app.buttons["exportReady.pro"].exists)
         notNow.tap()
         // First: a toast stays 2.4 s, and the queries below each take a moment of their own.
         XCTAssertTrue(EditorApp.toastSays(app, "export with Pro anytime", timeout: 5))
@@ -62,13 +61,13 @@ final class FreeExportsUITests: XCTestCase {
         XCTAssertTrue(element(app, "review.exportNotice").label.contains("READY · EXPORT WITH PRO"))
     }
 
-    func testStartingTheTrialFromTheSheetOpensTheCalmPro() {
+    func testExportWithProFromTheSheetOpensTheCalmPro() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestExportsLeft", "0"])
         openTake(app)
         app.buttons["review.saveButton"].tap()
-        let trial = app.buttons["exportReady.trial"]
-        XCTAssertTrue(trial.exists(within: 5))
-        trial.tap()
+        let pro = app.buttons["exportReady.pro"]
+        XCTAssertTrue(pro.exists(within: 5))
+        pro.tap()
         XCTAssertTrue(app.buttons["paywall.closeButton"].exists(within: 8))
         XCTAssertTrue(app.staticTexts["YOUR VIDEO IS READY"].exists)
         XCTAssertTrue(app.staticTexts["Keep sharing your universe."].exists)
@@ -79,7 +78,7 @@ final class FreeExportsUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestExportsLeft", "0"])
         openTake(app)
         app.buttons["review.saveButton"].tap()
-        app.buttons["exportReady.seePro"].tap()
+        app.buttons["exportReady.pro"].tap()
         XCTAssertTrue(app.buttons["paywall.buyButton"].exists(within: 8))
         XCTAssertTrue(app.buttons["paywall.plan.annual"].exists && app.buttons["paywall.plan.monthly"].exists)
         XCTAssertTrue(app.buttons["Restore"].exists)

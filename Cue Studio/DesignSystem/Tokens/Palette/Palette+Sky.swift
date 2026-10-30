@@ -14,7 +14,7 @@ extension Palette {
         /// Deep space under the browse screens: darker than `bg` (`#0A0B12`), so the colours of the nebulae have more night to stand out from.
         static let interstellarBg = Color(hex: 0x030409)
         /// The night glow of Interstellar (`BgWash.interstellar`): a deep indigo light from the top left, a magenta one on the right and a teal one
-        /// at the bottom left. Strong enough to feel, light enough that `inkHint` still reads at the brightest point (`PaletteContrastTests`).
+        /// at the bottom left. Strong enough to feel, light enough that `ink2` still reads at the brightest point (`PaletteContrastTests`).
         static let interstellarWashIndigo = Color(hex: 0x4A3FD0, opacity: 0.20)
         static let interstellarWashMagenta = Color(hex: 0xB0408F, opacity: 0.12)
         static let interstellarWashTeal = Color(hex: 0x1F8FA8, opacity: 0.11)

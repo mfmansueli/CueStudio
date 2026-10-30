@@ -152,7 +152,7 @@ struct ReviewInfoPanel: View {
                         .interfaceTracking(0.6)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
-                        .foregroundStyle(isCurrent ? stage.pillTint : Palette.inkHint)
+                        .foregroundStyle(isCurrent ? stage.pillTint : Palette.ink2)
                         .frame(maxWidth: .infinity, alignment: .leading)
                 }
                 .frame(maxWidth: .infinity)

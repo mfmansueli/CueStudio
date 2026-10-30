@@ -66,9 +66,9 @@ struct TakeReviewViewModelTests {
         await scenario.viewModel.save()
         #expect(scenario.exporter.exports == [ExportOptions(aspect: .portrait)])
         #expect(scenario.photos.savedURLs.count == 1)
-        #expect(scenario.quota.exportsLeft(for: .free) == 4)
-        #expect(scenario.toast.message == "Saved to Photos · 4 of 5 free exports left")
-        #expect(scenario.viewModel.exportLabel == FreeExportLabels.Label(text: "4 OF 5 FREE EXPORTS LEFT", tone: .quiet))
+        #expect(scenario.quota.exportsLeft(for: .free) == 2)
+        #expect(scenario.toast.message == "Saved to Photos · 2 of 3 free exports left")
+        #expect(scenario.viewModel.exportLabel == FreeExportLabels.Label(text: "2 OF 3 FREE EXPORTS LEFT", tone: .quiet))
     }
 
     @Test func pastTheFreeExportsYourVideoIsReadyAsksAndNothingExports() async {
@@ -79,7 +79,7 @@ struct TakeReviewViewModelTests {
         #expect(scenario.viewModel.paywall == nil)
         #expect(scenario.exporter.exports.isEmpty)
         #expect(scenario.photos.savedURLs.isEmpty)
-        #expect(scenario.viewModel.exportLabel == FreeExportLabels.Label(text: "0 OF 5 FREE EXPORTS LEFT", tone: .exhausted))
+        #expect(scenario.viewModel.exportLabel == FreeExportLabels.Label(text: "0 OF 3 FREE EXPORTS LEFT", tone: .exhausted))
     }
 
     /// "Not now", the close button and a swipe down are the same answer: the take stays ready and says to export with Pro.
@@ -97,10 +97,10 @@ struct TakeReviewViewModelTests {
         // The next attempt asks again, with the plain label back.
         await scenario.viewModel.save()
         #expect(scenario.viewModel.showsExportReady)
-        #expect(scenario.viewModel.exportLabel.text == "0 OF 5 FREE EXPORTS LEFT")
+        #expect(scenario.viewModel.exportLabel.text == "0 OF 3 FREE EXPORTS LEFT")
     }
 
-    @Test func theTrialAndSeeWhatsInProOpenTheCalmPro() async {
+    @Test func exportWithProOpensTheCalmPro() async {
         let scenario = makeScenario(usedExports: 5)
         defer { scenario.defaults.tearDown() }
         scenario.viewModel.proDelay = .zero
@@ -120,7 +120,7 @@ struct TakeReviewViewModelTests {
         #expect(scenario.quota.exportsUsed == 5)
     }
 
-    @Test func startingTheTrialFinishesTheExport() async {
+    @Test func subscribingFinishesTheExport() async {
         let plan = Plan(.free)
         let scenario = makeScenario(plan: plan, usedExports: 5)
         defer { scenario.defaults.tearDown() }
@@ -164,7 +164,7 @@ struct TakeReviewViewModelTests {
         #expect(scenario.viewModel.activity == nil)
         #expect(!scenario.viewModel.showsShareSheet)
         // Opened is not delivered: the video is ready in Photos, nothing says it arrived.
-        #expect(scenario.toast.message == "Ready to post on Reels · 4 of 5 free exports left")
+        #expect(scenario.toast.message == "Ready to post on Reels · 2 of 3 free exports left")
         guard case .readyToTravel? = scenario.viewModel.celebration else {
             Issue.record("Expected Ready to travel, got \(String(describing: scenario.viewModel.celebration))")
             return
@@ -404,7 +404,7 @@ struct TakeReviewViewModelTests {
         #expect(scenario.toast.message == "Couldn't export · Try again")
         #expect(failures.map(\.operation) == ["export"])
         #expect(failures.first?.reason == "NSURLErrorDomain -1")
-        #expect(scenario.quota.exportsLeft(for: .free) == 5)
+        #expect(scenario.quota.exportsLeft(for: .free) == 3)
         #expect(!scenario.viewModel.photosDenied)
     }
 
@@ -413,7 +413,7 @@ struct TakeReviewViewModelTests {
         defer { scenario.defaults.tearDown() }
         scenario.photos.error = PhotoLibraryError.notAuthorized
         await scenario.viewModel.save()
-        #expect(scenario.quota.exportsLeft(for: .free) == 5)
+        #expect(scenario.quota.exportsLeft(for: .free) == 3)
     }
 
     @Test func aSponsoredVideoCarriesHashtagAdAndOthersDoNot() async {

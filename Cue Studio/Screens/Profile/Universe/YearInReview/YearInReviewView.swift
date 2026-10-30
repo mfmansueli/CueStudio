@@ -112,7 +112,7 @@ struct YearInReviewView: View {
                 .accessibilityIdentifier("yearInReview.share")
         } else {
             Text("TAP TO CONTINUE")
-                .monoFont(size: 10, weight: .semibold).interfaceTracking(1.5).foregroundStyle(Palette.inkHint)
+                .monoFont(size: 10, weight: .semibold).interfaceTracking(1.5).foregroundStyle(Palette.ink2)
                 .padding(.bottom, 24)
         }
     }

@@ -59,7 +59,7 @@ struct ScriptChapter: View {
                         .padding(.top, 20)
                     Text("It’s just practice. Nothing is recorded.")
                         .cueFont(12.5)
-                        .foregroundStyle(Palette.inkHint)
+                        .foregroundStyle(Palette.ink2)
                         .multilineTextAlignment(.center)
                         .frame(maxWidth: .infinity)
                         .padding(.horizontal, 20)

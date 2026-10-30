@@ -188,6 +188,8 @@ struct QuickEditView: View {
         // A track coming or going, or every track out or away: the video gives or takes back its room smoothly.
         .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: viewModel.timelineLanes)
         .animation(reduceMotion ? nil : .smooth(duration: 0.3), value: viewModel.tracks.isExpanded)
+        // The editor's type is one size on every iPhone, its sheets and the app's controls in it too (a slider, a chip).
+        .environment(\.typeFollowsScreenWidth, false)
     }
 
     /// The editor under the navigation bar, laid out from the height it leaves.

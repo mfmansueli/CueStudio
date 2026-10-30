@@ -5,7 +5,7 @@
 
 import StoreKit
 
-/// Cue Pro purchases (StoreKit 2): monthly and annual subscriptions, each with a 7-day free trial.
+/// Cue Pro purchases (StoreKit 2): monthly and annual subscriptions, with no free trial (trying Cue is its free exports, `UsagePolicy`).
 /// Pro changes one thing, unlimited exports; every feature is open on the free plan too.
 ///
 /// There is no backend, so entitlements rely on StoreKit's own JWS verification (`.verified`).
@@ -18,8 +18,6 @@ final class StoreManager {
     private(set) var activePlan: ProPlan?
     /// Renewal (or expiry) date of the active subscription.
     private(set) var renewalDate: Date?
-    /// Pro is the 7-day free trial, not yet paid: Ultra AI's monthly scripts start with the first paid month (owner, 29/10/2026).
-    private(set) var isInFreeTrial = false
     private(set) var isLoadingProducts = false
     private(set) var purchasingPlan: ProPlan?
     var errorMessage: String?
@@ -102,26 +100,6 @@ final class StoreManager {
         return PricingMath.savingsPercent(monthlyPrice: monthly, yearlyPrice: yearly)
     }
 
-    /// Length of the free trial in days when the creator is still eligible for it; nil otherwise.
-    func freeTrialDays(for plan: ProPlan) async -> Int? {
-        #if DEBUG
-        if showsSamplePrices, products[plan] == nil { return 7 }
-        #endif
-        guard let subscription = products[plan]?.subscription,
-              let offer = subscription.introductoryOffer,
-              offer.paymentMode == .freeTrial,
-              await subscription.isEligibleForIntroOffer
-        else { return nil }
-        let value = offer.period.value * offer.periodCount
-        switch offer.period.unit {
-        case .day: return value
-        case .week: return value * 7
-        case .month: return value * 30
-        case .year: return value * 365
-        @unknown default: return nil
-        }
-    }
-
     // MARK: - Purchasing
 
     /// Returns true when the purchase unlocked Pro.
@@ -184,7 +162,6 @@ final class StoreManager {
         var newTier = MembershipTier.free
         var plan: ProPlan?
         var renewal: Date?
-        var trial = false
         for await entitlement in Transaction.currentEntitlements {
             guard case .verified(let transaction) = entitlement,
                   transaction.revocationDate == nil,
@@ -194,7 +171,6 @@ final class StoreManager {
                 newTier = .subscriber
                 plan = owned
                 renewal = transaction.expirationDate
-                trial = transaction.offer?.type == .introductory && transaction.offer?.paymentMode == .freeTrial
             }
         }
         if newTier == .free, let grace = await gracePeriodPlan() {
@@ -205,7 +181,6 @@ final class StoreManager {
         tier = newTier
         activePlan = plan
         renewalDate = renewal
-        isInFreeTrial = trial
     }
 
     /// Apple's billing grace period: the renewal failed and is being retried, and the creator keeps Pro meanwhile. The current

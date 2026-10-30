@@ -164,8 +164,8 @@ struct AdjustPanel: View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Text(currentLabel).font(.system(.subheadline, weight: .semibold))
             Text(currentValueText)
-                .font(.system(.subheadline, weight: .bold).monospacedDigit())
-                .foregroundStyle(Palette.accText)
+                .font(.system(.subheadline, weight: .semibold).monospacedDigit())
+                .foregroundStyle(Palette.ink)
         }
         .accessibilityElement(children: .combine)
     }

@@ -18,7 +18,7 @@ struct DockWriterChip: View {
     /// `ScriptsDock.syncUltra`).
     let writer: Binding<ScriptEngine>
     let showsUltra: Bool
-    /// The menu's Ultra AI item ("Ultra AI · 3 of 5 free left").
+    /// The menu's Ultra AI item ("Ultra AI · 2 of 3 free left").
     let ultraItem: String
     /// The chip as it looks for a writer (`lit`: Ultra AI), lighting (`lights`) or never, stretched to the width it is given (`stretches`).
     let look: (_ lit: Bool, _ lights: Bool, _ stretches: Bool) -> IdeaCardChip

@@ -61,7 +61,7 @@ struct VoiceChapter: View {
                 .padding(.horizontal, 16)
             footnote
                 .cueFont(12.5)
-                .foregroundStyle(Palette.inkHint)
+                .foregroundStyle(Palette.ink2)
                 .multilineTextAlignment(.center)
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 28)

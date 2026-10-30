@@ -5,15 +5,16 @@
 
 import SwiftUI
 
-/// Every slider in Cue (v29): a 4 pt track, a 4 pt yellow fill and a 24 pt white thumb, with the value
-/// written in SF Mono. It is plain on purpose: a focus tool, not an effect. It is also precise: the
+/// Every slider in Cue (v29): a 4 pt track, a 4 pt yellow fill and a 24 pt white thumb. The name and the value are the same type
+/// (15 semibold, the value white with digits that keep their width while dragging): the yellow is the track's (the owner, 30/10/2026).
+/// It is plain on purpose: a focus tool, not an effect. It is also precise: the
 /// thumb follows the finger 1:1, sliding the finger down while holding halves and then quarters the
 /// speed ("FINE"), a double tap returns to the default and the default has a soft tick. Stepped
 /// controls snap with a spring and mark each step with a small dot. `OrbSliderMath` holds the maths.
 ///
 /// - `.full`: label and value above the track, optional end captions below.
 /// - `.row`: the label on the left, the track in the middle, the value on the right.
-/// - `.compact`: a glass pill, for over the camera or video ("SPEED  150 wpm").
+/// - `.compact`: a glass pill, for over the camera or video ("SPEED  150 wpm"), in the HUD's mono.
 /// - `.bare`: the track alone, where the value is written elsewhere (the recording bar).
 struct CueSlider: View {
     enum Style { case full, row, compact, bare }
@@ -100,7 +101,7 @@ struct CueSlider: View {
                 if let systemIcon {
                     CueIconView(systemIcon, size: 22).foregroundStyle(Palette.ink2)
                 }
-                Text(label).cueFont(.body).foregroundStyle(Palette.ink)
+                Text(label).cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
                 Spacer(minLength: 8)
                 valueLabel
             }
@@ -113,7 +114,7 @@ struct CueSlider: View {
                 }
                 .hudFont()
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                .foregroundStyle(Palette.inkHint)
+                .foregroundStyle(Palette.ink2)
                 .textCase(.uppercase)
             }
         }
@@ -124,7 +125,7 @@ struct CueSlider: View {
             if let systemIcon {
                 CueIconView(systemIcon, size: 22).foregroundStyle(Palette.ink2)
             }
-            Text(label).cueFont(.body).foregroundStyle(Palette.ink).lineLimit(2)
+            Text(label).cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink).lineLimit(2)
             track.frame(minWidth: 96, maxWidth: 130)
             Spacer(minLength: 4)
             valueLabel.frame(minWidth: 44, alignment: .trailing)
@@ -153,11 +154,20 @@ struct CueSlider: View {
             isTyping = true
         } label: {
             VStack(alignment: .trailing, spacing: 1) {
-                Text(valueText)
-                    .hudFont()
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-                    .foregroundStyle(isHeld ? Palette.ink : Palette.accText)
-                    .contentTransition(.numericText())
+                Group {
+                    if style == .compact {
+                        Text(valueText)
+                            .hudFont()
+                            .dynamicTypeSize(...DynamicTypeSize.accessibility1)
+                            .foregroundStyle(isHeld ? Palette.ink : Palette.accText)
+                    } else {
+                        Text(valueText)
+                            .cueFont(.subheadline, weight: .semibold)
+                            .monospacedDigit()
+                            .foregroundStyle(Palette.ink)
+                    }
+                }
+                .contentTransition(.numericText())
                 if let fine = precision.label {
                     Text(fine)
                         .monoFont(size: 9, weight: .bold)

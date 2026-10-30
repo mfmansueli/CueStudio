@@ -162,8 +162,8 @@ struct SkinPanel: View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Text(current.label).font(.system(.subheadline, weight: .semibold))
             Text(PanelValueFormat.plain.text(look.skinValue(current)))
-                .font(.system(.subheadline, weight: .bold).monospacedDigit())
-                .foregroundStyle(Palette.accText)
+                .font(.system(.subheadline, weight: .semibold).monospacedDigit())
+                .foregroundStyle(Palette.ink)
         }
         .accessibilityElement(children: .combine)
     }

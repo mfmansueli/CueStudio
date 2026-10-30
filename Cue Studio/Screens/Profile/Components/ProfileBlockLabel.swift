@@ -13,7 +13,7 @@ struct ProfileBlockLabel: View {
         Text(text)
             .cueFont(12.5, weight: .regular)
             .tracking(0.6)
-            .foregroundStyle(Palette.inkHint)
+            .foregroundStyle(Palette.ink2)
             .padding(EdgeInsets(top: 16, leading: 16, bottom: 6, trailing: 4))
             .accessibilityAddTraits(.isHeader)
     }

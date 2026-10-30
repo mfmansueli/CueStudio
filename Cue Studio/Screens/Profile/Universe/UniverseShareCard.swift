@@ -32,7 +32,7 @@ struct UniverseShareCard: View {
                     Text(verbatim: "@\(handle)").font(.fixed(15, weight: .semibold)).foregroundStyle(.white)
                 }
                 Text("MADE IN CUE STUDIO")
-                    .monoFont(fixedSize: 9, weight: .semibold).interfaceTracking(1.5).foregroundStyle(Palette.inkHint)
+                    .monoFont(fixedSize: 9, weight: .semibold).interfaceTracking(1.5).foregroundStyle(Palette.ink2)
                     .padding(.bottom, 26)
             }
             .padding(.horizontal, 24)

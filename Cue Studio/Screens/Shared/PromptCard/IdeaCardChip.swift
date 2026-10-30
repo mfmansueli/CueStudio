@@ -5,9 +5,10 @@
 
 import SwiftUI
 
-/// A small choice on the idea card, as the board draws it: 30 pt high, 13 pt semibold on a dark glass capsule ("● For TikTok",
-/// "Format ⌄"), and the AI's chip in violet with its ✦ ("✦ Voice 65%"). 28 pt and 12 pt when the card is the bare first-visit one. Where the
-/// dock's row is short of room a chip may be its symbol alone (Format's grid, Apple Intelligence's own symbol).
+/// A small choice on the idea card: 30 pt high, 13 pt semibold, its fill, hairline and words in the colour of what it does (the owner,
+/// 30/10/2026): the script's settings on dark glass with a white hairline ("TikTok", "Format"), the AI's in violet with its ✦
+/// ("✦ Voice 65%"). 28 pt and 12 pt when the card is the bare first-visit one. Where the dock's row is short of room a chip may be its symbol
+/// alone (Format's stack, Apple Intelligence's own symbol).
 struct IdeaCardChip: View {
     enum Style { case neutral, ai, off }
 
@@ -16,8 +17,8 @@ struct IdeaCardChip: View {
     var dotColor: Color?
     /// "✦" before the label (the AI's).
     var glyph: String?
-    /// A small mono value after the label ("65%").
-    var trailingMono: String?
+    /// A value after the label, quieter than it ("65%").
+    var trailingValue: String?
     var showsChevron = false
     /// A small mono tag before the label ("AD": a sponsored ad is picked).
     var isTag: String?
@@ -30,7 +31,7 @@ struct IdeaCardChip: View {
     var symbolBounce = 0
     /// Each change lights the ✦: half a turn with a pop, in time with the chip's ring (`UltraChipRing`).
     var glyphLight = 0
-    /// The dock's row is short of room: 2 pt less on each side.
+    /// The dock's row is short of room: 2 pt less on each side, 1 pt less between what it says.
     var isTight = false
     /// A network's logo in place of its dot (`Platform.logo`).
     var logo: Image?
@@ -43,7 +44,7 @@ struct IdeaCardChip: View {
 
     @Environment(\.dynamicTypeSize) private var typeSize
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @ScaledMetric(relativeTo: .footnote) private var logoSide = 13.0
+    @ScaledMetric(relativeTo: .footnote) private var logoSide = 15.0
 
     /// The ✦ lighting: how far it has turned and how big it is.
     private struct GlyphLight {
@@ -54,7 +55,7 @@ struct IdeaCardChip: View {
     private var height: CGFloat { isCompact ? 28 : 30 }
 
     var body: some View {
-        HStack(spacing: isCompact ? 5 : 6) {
+        HStack(spacing: isCompact || isTight ? 5 : 6) {
             if let logo {
                 logo
                     .resizable().scaledToFit()
@@ -109,12 +110,18 @@ struct IdeaCardChip: View {
             if !label.isEmpty {
                 Text(label).lineLimit(typeSize.isAccessibilitySize ? nil : 1)
             }
-            if let trailingMono {
-                Text(verbatim: trailingMono)
-                    .monoFont(size: 10)
+            if let trailingValue {
+                Text(verbatim: trailingValue)
+                    .cueFont(isCompact ? 12 : 13, weight: .medium)
                     .foregroundStyle(Palette.aiText)
             }
-            if showsChevron { Text(verbatim: "⌄").foregroundStyle(Palette.inkHint) }
+            // The system's mark for a menu, centred on the words (the "⌄" character sat under them).
+            if showsChevron {
+                Image(systemName: "chevron.up.chevron.down")
+                    .cueFont(9, weight: .semibold)
+                    .foregroundStyle(style == .ai ? Palette.aiText : Palette.ink2)
+                    .accessibilityHidden(true)
+            }
         }
         .cueFont(isCompact ? 12 : 13, weight: .semibold)
         .foregroundStyle(foreground)
@@ -126,7 +133,7 @@ struct IdeaCardChip: View {
         .padding(.vertical, typeSize.isAccessibilitySize ? 8 : 0)
         .frame(minHeight: height)
         .background(background, in: Capsule())
-        .overlay { if style == .ai && !isCompact { Capsule().strokeBorder(Palette.Scripts.heroChipAIStroke, lineWidth: 0.5) } }
+        .overlay { if !isCompact { Capsule().strokeBorder(stroke, lineWidth: 1) } }
         .frame(minHeight: hitHeight)
         .contentShape(Capsule())
     }
@@ -139,9 +146,13 @@ struct IdeaCardChip: View {
         }
     }
 
+    private var stroke: Color {
+        style == .ai ? Palette.Scripts.heroChipAIStroke : Palette.Scripts.heroChipStroke
+    }
+
     private var background: Color {
         switch style {
-        case .neutral: isCompact ? Palette.bg.opacity(0.45) : Palette.Scripts.heroChip
+        case .neutral: isCompact ? Palette.bg.opacity(0.45) : Palette.Scripts.heroChipGlass
         case .ai: isCompact ? Color(hex: 0x9D8CFF, opacity: 0.26) : Palette.Scripts.heroChipAI
         case .off: Palette.fill
         }

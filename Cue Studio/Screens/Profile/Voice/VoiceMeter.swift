@@ -54,7 +54,7 @@ struct VoiceMeter: View {
             .monoFont(size: 10.5, weight: .semibold)
             .textCase(.uppercase)
             .tracking(1)
-            .foregroundStyle(Palette.inkHint)
+            .foregroundStyle(Palette.ink2)
     }
 }
 

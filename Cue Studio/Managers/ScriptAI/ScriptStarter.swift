@@ -88,13 +88,11 @@ final class ScriptStarter {
         ideaDraft.engine = engine == .ultra && (!ultraAllowed || ultraUsedUp) ? .apple : engine
     }
 
-    /// The creator's Ultra AI scripts are used up: on the free plan Cue Pro is offered (it adds its monthly scripts); in the trial and on Pro the
-    /// toast says when more come. The next idea goes to Apple Intelligence.
+    /// The creator's Ultra AI scripts are used up: on the free plan Cue Pro is offered (it adds its monthly scripts); on Pro the toast says when
+    /// more come. The next idea goes to Apple Intelligence.
     func showUltraUsedUp() {
         ideaDraft.engine = .apple
         switch ultra?.membership {
-        case .trial:
-            toast.show(String(localized: "Your free Ultra AI scripts are used · Pro’s monthly ones start after the free week"), kind: .problem)
         case .paid:
             toast.show(String(localized: "This month’s Ultra AI scripts are used · More next month"), kind: .problem)
         case .free, nil:

@@ -9,10 +9,11 @@ import Foundation
 /// call to Google). Every other feature, Apple Intelligence included (on the device or Private Cloud Compute, at no cost to anyone), stays open
 /// to everyone; recording, editing and writing never stop.
 nonisolated enum UsagePolicy {
-    static let freeExports = 5
-    /// Ultra AI scripts everyone gets to try it, the Pro trial included (owner, 29/10/2026).
-    static let freeUltraScripts = 5
-    /// Ultra AI scripts Cue Pro adds each month, from the first paid month (the trial has the free ones only).
+    /// Trying Cue is its free exports and Ultra AI scripts: Cue Pro has no free trial (owner, 30/10/2026).
+    static let freeExports = 3
+    /// Ultra AI scripts everyone gets to try it (owner, 30/10/2026).
+    static let freeUltraScripts = 3
+    /// Ultra AI scripts Cue Pro adds each month, from the day it starts.
     static let proUltraScriptsPerMonth = 30
 
     /// Nil means unlimited.

@@ -13,7 +13,7 @@ import SwiftUI
 /// sit on, and parts of controls 3:1 (`PaletteContrastTests` measures it, with `ColorContrast`).
 /// Translucent text tokens (`ink2`, `ink3`) step up when Increase Contrast is on. `ink3` is for
 /// what needn't be read (disclosure chevrons, dashed outlines, disabled controls), never for a
-/// sentence; small hints and mono labels use `inkHint` (55% or more).
+/// sentence; small hints and mono labels are `ink2`, like any secondary text (the owner, 30/10/2026).
 ///
 /// **Color roles** (enforced in review): **violet is AI** (`aiText`, `aiFill`, the aurora of the idea
 /// card), **solid yellow is the one primary action or ✓ of a screen** (`acc`), **yellow text is a HUD
@@ -75,11 +75,6 @@ enum Palette {
     /// surface, not enough for text.
     static let ink3 = Color(normal: Color(hex: 0xE1E4F5, opacity: 0.45), increasedContrast: Color(hex: 0xE1E4F5, opacity: 0.62))
 
-    /// Small hints and mono labels (v27: 55% or more, about 5:1 on `bg`).
-    static let inkHint = Color(
-        normal: Color(hex: 0xE1E4F5, opacity: 0.55), increasedContrast: Color(hex: 0xE1E4F5, opacity: 0.72)
-    )
-
     // MARK: - Accents
 
     static let acc = Color(hex: 0xFFD60A)
@@ -92,7 +87,7 @@ enum Palette {
     static let accInk = Color.black
     /// A second, quieter line on `acc` (under the Done question's yellow answer): about 6:1 on it.
     static let accInk2 = Color.black.opacity(0.66)
-    /// Secondary text on a white (chosen-chip) fill: 5:1 or more on white, where `inkHint` would vanish.
+    /// Secondary text on a white (chosen-chip) fill: 5:1 or more on white, where `ink2` would vanish.
     static let inkOnLight = Color.black.opacity(0.62)
     static let accSoft = Color(hex: 0xFFD60A, opacity: 0.16)
     static let accLine = Color(hex: 0xFFD60A, opacity: 0.3)
