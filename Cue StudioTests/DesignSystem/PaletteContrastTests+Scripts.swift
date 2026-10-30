@@ -9,9 +9,9 @@ import UIKit
 @testable import Cue_Studio
 
 extension PaletteContrastTests {
-    /// The ✦ after a script's title on Scripts says its topic (`ScriptRow`): each world's colour is seen on the card behind it, with and
-    /// without Increase Contrast.
-    @Test func theTopicsStarShowsOnTheScriptCard() {
+    /// The bar at the start of a script's card on Scripts says its topic (`ScriptRow`): each world's colour is seen on the card behind it,
+    /// with and without Increase Contrast.
+    @Test func theTopicsBarShowsOnTheScriptCard() {
         for contrast in [UIAccessibilityContrast.normal, .high] {
             let traits = UITraitCollection(userInterfaceStyle: .dark).modifyingTraits { $0.accessibilityContrast = contrast }
             let card = Self.solid(Palette.surface, traits)

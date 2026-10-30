@@ -232,10 +232,11 @@ final class ButtonPromisesUITests: XCTestCase {
         let ready = app.buttons["takes.stage.ready"]
         XCTAssertTrue(ready.exists(within: 10))
         ready.tap()
-        app.buttons["takes.platform.shorts"].tap()
+        // YouTube's video is shared, none ready (a network with no videos has no chip).
+        app.buttons["takes.platform.youtube"].tap()
         let empty = element(app, "takes.emptyStage")
         XCTAssertTrue(empty.exists(within: 5), "A list with nothing in it said nothing")
-        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Shorts'")).count > 0, "It does not say which platform has nothing")
+        XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'YouTube'")).count > 0, "It does not say which platform has nothing")
         let showAll = app.buttons["takes.showAll"]
         if !showAll.exists(within: 5) { snap(app, "takes-empty") }
         XCTAssertTrue(showAll.exists, "An empty list is a dead end")

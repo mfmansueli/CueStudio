@@ -5,10 +5,9 @@
 
 import SwiftUI
 
-/// A script on the Scripts list (v29): the title, with a small ✦ in the colour of its topic's world after it, a mono line ("● TIKTOK",
+/// A script on the Scripts list (v29): its topic's bar in the colour of its world (grey until it has one), the title, a mono line ("● TIKTOK",
 /// `ScriptRowLine`) and the one way forward for its state: "● REC" when it is ready, a "›" for a draft, "×3 ›" (its videos, in Takes) once
-/// it has
-/// takes. A tap anywhere else on the row opens the script's page, whatever its state. While Scripts selects, the way forward gives
+/// it has takes. A tap anywhere else on the row opens the script's page, whatever its state. While Scripts selects, the way forward gives
 /// its place to nothing and the row starts with its selection mark (`ScriptSelectionMark`), inside the card.
 struct ScriptRow: View {
     let script: Script
@@ -33,13 +32,14 @@ struct ScriptRow: View {
                 ScriptSelectionMark(isSelected: isSelected)
                     .transition(.scale(scale: 0.6).combined(with: .opacity))
             }
+            ThemeRail(color: topic?.color ?? Palette.separator)
             VStack(alignment: .leading, spacing: 3) {
-                Text(titleWords)
+                Text(script.displayTitle)
                     .cueFont(15.5, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                     .lineLimit(large ? 4 : 2)
                     .fixedSize(horizontal: false, vertical: true)
-                    .accessibilityLabel(Text(script.displayTitle))
+                    // The bar is only seen: VoiceOver says the topic after the title.
                     .accessibilityValue(topic?.name ?? "")
                 HStack(spacing: 6) {
                     PlatformDot(color: script.platform.tint, isSmall: true)
@@ -56,20 +56,9 @@ struct ScriptRow: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             if showsTrailing { trailing }
         }
-        .padding(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 12))
+        .padding(EdgeInsets(top: 6, leading: 14, bottom: 6, trailing: 12))
         .frame(minHeight: 58)
         .accessibilityElement(children: .contain)
-    }
-
-    /// The title, and its topic as a ✦ in the world's colour after the last word: the owner's pick in place of the bar that started the card
-    /// (30/10/2026). It wraps with the words, so every title starts at the same edge, with a topic or without.
-    private var titleWords: AttributedString {
-        var words = AttributedString(script.displayTitle)
-        guard let topic else { return words }
-        var star = AttributedString("\u{00A0}✦")
-        star.foregroundColor = topic.color
-        words.append(star)
-        return words
     }
 
     @ViewBuilder

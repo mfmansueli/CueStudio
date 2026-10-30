@@ -4,6 +4,8 @@
 # in seconds of the film) and <folder>/test.log.
 #   CUE_DEVICE="iago Lima iphone" tools/motion/film.sh DockMotionDeviceUITests[/testName] build/captures/motion/run1
 # The iPhone stays unlocked and connected by cable. tools/motion/gaps.py <folder>/film.mov lists the frames that came late.
+# The film is for seeing the motion, not for counting frames: over the cable about one frame in five is lost (30/10/2026: 49 fps filmed
+# while the screen showed 60). For a frame rate, tools/motion/screen_frames.sh.
 set -euo pipefail
 : "${CUE_DEVICE:?Set CUE_DEVICE to the iPhone name, from xcrun devicectl list devices}"
 test_id="${1:?Give the UI test class (or Class/test)}"
