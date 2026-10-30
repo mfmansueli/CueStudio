@@ -1,0 +1,167 @@
+[
+  {
+    "callsUsed": 4,
+    "changes": [
+      "Ajustado o ritmo do texto com frases mais curtas e dinâmicas para aumentar a energia e o dinamismo do Reels.",
+      "Adicionada a expressão familiar bora lá integrada de forma natural.",
+      "Incluída uma pergunta direta ao público no final para gerar engajamento nos comentários.",
+      "Aprimorada a explicação biológica sobre a dopamina e a percepção do eu do futuro para prender a atenção.",
+      "Eliminados todos os caracteres especiais como travessões para garantir uma leitura direta."
+    ],
+    "draft": "Você já se perguntou por que resistir a uma comprinha boba é tão mais difícil do que transferir o dinheiro para a poupança? Eu já me cobrei muito por isso, achando que era só falta de foco. Mas a verdade é que o nosso cérebro odeia esperar.\n\nQuando você gasta, a recompensa é imediata. Você leva o produto, e o cérebro libera dopamina na hora. É o prazer instantâneo. Já guardar dinheiro é um esforço focado no futuro. E para a nossa biologia, o seu eu do futuro é quase um estranho. A gente não sente a mesma satisfação de ver um saldo numa tela que sente ao usar um tênis novo.\n\nEntender isso muda o jogo. Não é que você seja incapaz; é só a sua química cerebral agindo. Para vencer esse sistema, facilite o processo: automatize a sua reserva no dia do pagamento. Não dependa da força de vontade, porque ela falha.",
+    "draftPrompt": "Write the script in Portuguese (Brazil).\nPlatform: Instagram Reels.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: the creator chose 54 to 66 seconds of speech (about 135 to 165 words at a natural pace). Treat it as their intent: develop enough to fill it, without padding, and stay within it.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a teacher or explainer.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: jovens adultos começando a organizar a rotina e o dinheiro.\nRules: never write “promessas de enriquecimento rápido”.\n\nInspiration this idea came from (Find inspiration):\nSubject: Por que guardar dinheiro parece mais difícil do que gastar\n\nThe creator's request, in their exact words:\n\"\"\"\nPor que guardar dinheiro parece mais difícil do que gastar\n\"\"\"",
+    "draftSeconds": 9.873118792,
+    "draftTokens": [
+      839,
+      209,
+      1681
+    ],
+    "durationPolicy": "targeted",
+    "estimatedSeconds": 61.6,
+    "language": "pt-BR",
+    "length": "required 54–66 s",
+    "modelVersion": "gemini-3.5-flash",
+    "name": "findInspiration",
+    "reviewInstructionsCharacters": 2663,
+    "reviewSeconds": 11.672877084,
+    "reviewTokens": [
+      1241,
+      327,
+      2800
+    ],
+    "script": "Você já se perguntou por que resistir a uma comprinha boba é tão mais difícil do que poupar? Eu já me cobrei muito por isso. Achava que era pura falta de foco. Mas a verdade é que o nosso cérebro odeia esperar. Quando você gasta, a recompensa é imediata. Você compra um tênis e a dopamina sobe na hora. É o prazer instantâneo. Já guardar dinheiro é um esforço focado no futuro. E, biologicamente, o seu eu do futuro é um completo estranho para o seu cérebro. Ver um número na tela não dá o mesmo prazer de usar algo novo. Entender isso muda o jogo. Não é falta de caráter, é química cerebral. Para vencer esse sistema, bora lá facilitar: automatize sua poupança no dia em que o salário cai. Não dependa da sua força de vontade, porque ela vai falhar. Qual é o seu maior obstáculo na hora de guardar dinheiro hoje?",
+    "title": "Por que poupar é tão difícil",
+    "words": 154
+  },
+  {
+    "callsUsed": 6,
+    "changes": [
+      "Ajuste do ritmo das frases para torná-las mais curtas, dinâmicas e ideais para o formato de vídeo curto (Shorts).",
+      "Inclusão da expressão de transição natural 'Bora lá' recomendada nas preferências do criador.",
+      "Adição de uma pergunta final direcionada ao público para aumentar o engajamento e fechar o vídeo com interação."
+    ],
+    "draft": "Sabe aquela primeira coisa que quase todo mundo faz ao acordar? Esticar o braço, pegar o celular e começar a rolar a tela antes mesmo de abrir os dois olhos por completo. Eu fazia exatamente isso, e achava que era um hábito inofensivo. Mas eu percebi que, ao abrir o Instagram ou as mensagens de trabalho logo de cara, eu já começava o dia no modo reativo. Eu estava deixando as demandas dos outros e o algoritmo decidirem o que eu ia sentir e pensar nos primeiros minutos da minha manhã.\n\nPor isso, eu decidi banir o celular da minha primeira hora acordado. E a mudança prática foi imediata. \n\nEm vez de receber uma enxurrada de dopamina barata e notícias que eu não precisava saber naquele momento, meu cérebro agora tem tempo de acordar no próprio ritmo. Hoje, eu uso esse início para tomar meu café sem pressa, alongar o corpo e olhar para a minha lista de tarefas com clareza. Eu parei de correr contra o tempo porque passei a ditar o ritmo do meu dia. O resultado foi menos ansiedade, muito mais foco nas primeiras tarefas de trabalho e a sensação real de que eu sou o dono da minha rotina, e não um refém das notificações. Se você está tentando organizar o seu dia a dia, comece protegendo a sua primeira hora de vigília. O seu foco agradece.",
+    "draftPrompt": "Write the script in Portuguese (Brazil).\nPlatform: YouTube Shorts.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a teacher or explainer.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: jovens adultos começando a organizar a rotina e o dinheiro.\nRules: never write “promessas de enriquecimento rápido”.\n\nThe creator's request, in their exact words:\n\"\"\"\nPor que eu parei de olhar o celular na primeira hora do dia, e o que mudou nas minhas manhãs\n\"\"\"",
+    "draftSeconds": 6.651704875,
+    "draftTokens": [
+      805,
+      298,
+      827
+    ],
+    "durationPolicy": "informative",
+    "estimatedSeconds": 89.2,
+    "language": "pt-BR",
+    "length": "free",
+    "modelVersion": "gemini-3.5-flash",
+    "name": "length-free",
+    "reviewInstructionsCharacters": 2663,
+    "reviewSeconds": 8.472854292,
+    "reviewTokens": [
+      1296,
+      418,
+      1189
+    ],
+    "script": "Sabe a primeira coisa que quase todo mundo faz ao acordar? Esticar o braço, pegar o celular e rolar a tela com um olho ainda fechado. Eu fazia exatamente isso. E achava que era um hábito inofensivo. Só que percebi um problema grave. Abrir o Instagram ou mensagens de trabalho logo cedo me colocava direto no modo reativo. Eu deixava o algoritmo e as demandas dos outros decidirem o meu humor nas primeiras horas da manhã. Por isso, eu decidi banir o celular do meu primeiro momento acordado. Bora lá entender o que mudou? A diferença foi imediata. Sem receber aquela enxurrada de dopamina barata e notícias ruins logo cedo, meu cérebro passou a acordar no próprio ritmo. Hoje, eu uso esse tempo para tomar meu café sem pressa, me alongar e olhar para as minhas tarefas com clareza. Eu parei de correr contra o relógio porque passei a ditar o ritmo do meu dia. O resultado prático foi menos ansiedade, muito mais foco no trabalho e a sensação real de que eu sou o dono da minha própria rotina, e não um refém das notificações. Se você quer organizar sua vida e seu dia a dia, comece protegendo a sua primeira hora acordado. O seu foco agradece. E você, qual é a primeira coisa que faz quando abre os olhos de manhã?",
+    "title": "Por que banir o celular ao acordar muda tudo",
+    "words": 223
+  },
+  {
+    "callsUsed": 8,
+    "changes": [
+      "Dividi sentenças longas em frases mais curtas e dinâmicas para aumentar o ritmo e a energia",
+      "Adicionei a expressão familiar Bora lá de forma natural na transição",
+      "Reforcei a conexão com a rotina e a organização financeira voltada para jovens adultos",
+      "Incluí uma pergunta instigante ao final para interagir com o público"
+    ],
+    "draft": "Sabe aquela primeira respiração do dia, logo depois de desligar o alarme? Por muito tempo, a minha primeira reação era abrir uma rede social ou olhar os e-mails de trabalho, ainda com o olho meio fechado. Eu achava que estava me atualizando, mas a verdade é que eu estava entregando a minha atenção e a minha paz para os problemas dos outros antes mesmo de colocar os pés no chão. Eu começava o dia no modo reativo.\n\nFoi por isso que eu decidi banir o celular da minha primeira hora acordado. E o impacto disso na minha rotina foi brutal.\n\nSem o bombardeio de notificações logo cedo, a minha ansiedade despencou. Em vez de acelerar o meu cérebro com dopamina barata, eu passei a usar esses primeiros sessenta minutos para tomar um café com calma, revisar minhas prioridades do dia e olhar para o meu planejamento financeiro sem desespero. Eu reassumi o controle da minha mente.\n\nA grande lição que eu aprendi é que quase nada é tão urgente que não possa esperar uma hora. Se você quer começar a organizar sua vida, faça esse teste amanhã. Deixe o celular em outro cômodo ou longe da cama. Recupere o controle da sua manhã para conseguir governar o resto do seu dia.",
+    "draftPrompt": "Write the script in Portuguese (Brazil).\nPlatform: YouTube Shorts.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: about 90 seconds of speech (about 225 words at a natural pace), as a reference, not a limit. Do not pad to reach it, and do not cut useful development to stay under it.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a teacher or explainer.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: jovens adultos começando a organizar a rotina e o dinheiro.\nRules: never write “promessas de enriquecimento rápido”.\n\nThe creator's request, in their exact words:\n\"\"\"\nPor que eu parei de olhar o celular na primeira hora do dia, e o que mudou nas minhas manhãs\n\"\"\"",
+    "draftSeconds": 6.935009667,
+    "draftTokens": [
+      822,
+      277,
+      1104
+    ],
+    "durationPolicy": "informative",
+    "estimatedSeconds": 93.2,
+    "language": "pt-BR",
+    "length": "reference 90 s",
+    "modelVersion": "gemini-3.5-flash",
+    "name": "length-reference",
+    "reviewInstructionsCharacters": 2663,
+    "reviewSeconds": 9.559401959,
+    "reviewTokens": [
+      1292,
+      410,
+      1639
+    ],
+    "script": "Sabe aquela primeira respiração do dia, logo depois de desligar o alarme? Por muito tempo, o meu primeiro gesto era abrir uma rede social. Ou olhar e-mails de trabalho. Tudo isso ainda com o olho meio fechado. Eu achava que estava me atualizando. Mentira. Eu estava entregando a minha atenção e a minha paz para os problemas dos outros antes mesmo de colocar os pés no chão. Eu já começava o dia no modo reativo, estressado. Foi por isso que eu decidi banir o celular da minha primeira hora acordado. Bora lá entender o impacto brutal que isso causou na minha rotina. Sem aquele bombardeio de notificações logo cedo, a minha ansiedade despencou. Em vez de entupir o meu cérebro com dopamina barata, eu passei a usar esses primeiros sessenta minutos para mim. Tomo um café com calma. Reviso as minhas prioridades. Olho para o meu planejamento financeiro e para as minhas contas sem desespero. Eu reassumi o controle da minha mente e do meu bolso. A grande lição é que quase nada é tão urgente que não possa esperar uma hora. Se você quer de verdade organizar a sua vida e a sua rotina, faça esse teste amanhã. Deixe o celular em outro cômodo. Longe da cama. Recupere o controle da sua manhã para governar o resto do seu dia. Você consegue ficar a primeira hora do dia sem olhar o celular?",
+    "title": "O impacto de banir o celular de manhã",
+    "words": 233
+  },
+  {
+    "callsUsed": 10,
+    "changes": [
+      "Ajuste do ritmo para sentenças mais curtas e impactantes, aumentando a energia da entrega.",
+      "Inclusão do termo de transição natural Bora lá para conectar a explicação dos resultados.",
+      "Alinhamento sutil com o público de jovens adultos, conectando a disciplina matinal com decisões financeiras e profissionais.",
+      "Adição de uma pergunta final direcionada ao público para gerar engajamento, conforme a preferência do criador."
+    ],
+    "draft": "Eu costumava acordar e, antes mesmo de abrir os dois olhos direito, já estava rolando o feed do celular. Eu achava que estava me atualizando, mas na verdade eu estava entregando o controle do meu dia para os outros logo no primeiro minuto. \n\nDecidi cortar isso. Parei de olhar o celular na primeira hora após acordar. O motivo principal foi a ansiedade reativa. Quando você abre uma rede social ou um aplicativo de mensagens logo cedo, seu cérebro entra instantaneamente em modo de defesa, reagindo aos problemas, desejos e prioridades alheias. Você não planeja o seu dia, você apenas reage a ele.\n\nO que mudou na minha rotina foi brutal. Minhas manhãs ficaram mais lentas, no bom sentido. Agora, eu tomo meu café em paz, olho para a minha agenda e decido o que realmente importa para mim hoje. Meu nível de atenção no trabalho disparou porque eu não começo o dia exausto de tanta informação inútil. \n\nOrganizar a rotina começa na mente. Se você não domina a sua primeira hora do dia, dificilmente vai conseguir dominar as decisões mais difíceis depois. Experimente amanhã: deixe o celular longe da cama. O mundo pode esperar sessenta minutos.",
+    "draftPrompt": "Write the script in Portuguese (Brazil).\nPlatform: YouTube Shorts.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: the creator chose 60 to 90 seconds of speech (about 150 to 225 words at a natural pace). Treat it as their intent: develop enough to fill it, without padding, and stay within it.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a teacher or explainer.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: jovens adultos começando a organizar a rotina e o dinheiro.\nRules: never write “promessas de enriquecimento rápido”.\n\nThe creator's request, in their exact words:\n\"\"\"\nPor que eu parei de olhar o celular na primeira hora do dia, e o que mudou nas minhas manhãs\n\"\"\"",
+    "draftSeconds": 7.126204209,
+    "draftTokens": [
+      827,
+      272,
+      1067
+    ],
+    "durationPolicy": "informative",
+    "estimatedSeconds": 74.4,
+    "language": "pt-BR",
+    "length": "required 60–90 s",
+    "modelVersion": "gemini-3.5-flash",
+    "name": "length-required",
+    "reviewInstructionsCharacters": 2663,
+    "reviewSeconds": 15.075266375,
+    "reviewTokens": [
+      1292,
+      390,
+      1919
+    ],
+    "script": "Eu costumava acordar e, antes mesmo de abrir os dois olhos, já estava rolando o feed do celular. Eu achava que estava me atualizando. Na verdade, eu estava entregando o controle do meu dia para os outros logo no primeiro minuto. Decidi cortar isso. Parei de olhar o celular na primeira hora do dia. O motivo? Evitar a ansiedade reativa. Quando você abre uma rede social logo cedo, seu cérebro entra em modo de defesa. Você reage aos problemas, desejos e prioridades dos outros. Você não planeja o seu dia, você apenas reage a ele. Bora lá entender o que mudou. Minhas manhãs ficaram mais calmas. Agora, tomo meu café em paz, olho para a minha agenda e decido o que realmente importa. Meu foco no trabalho disparou. Eu não começo mais o dia exausto de tanta informação inútil. Organizar a rotina começa na mente. Se você não domina a sua primeira hora, dificilmente vai dominar suas decisões financeiras ou profissionais depois. Experimente amanhã: deixe o celular longe da cama. O mundo pode esperar sessenta minutos. Qual é a primeira coisa que você faz quando acorda?",
+    "title": "Como mudei minhas manhas sem celular",
+    "words": 186
+  },
+  {
+    "callsUsed": 2,
+    "changes": [
+      "Ajuste do ritmo das frases para torná-las mais curtas, dinâmicas e punchy, ideais para o ritmo acelerado do TikTok.",
+      "Inclusão da expressão de transição natural Bora lá no início para dar energia.",
+      "Inserção de uma pergunta de engajamento direcionada ao público no final do vídeo.",
+      "Preservação integral de todos os conceitos e exemplos práticos do rascunho original."
+    ],
+    "draft": "Quando eu montei minha primeira planilha de orçamento, eu achei que tinha decifrado o segredo da vida adulta. Duas semanas depois, eu já tinha abandonado tudo e estava fingindo que o aplicativo do banco não existia. Se você está tentando organizar o seu dinheiro agora e sente que nunca dá certo, deixa eu te poupar de bater a cabeça na parede com os três erros que eu mais cometia no começo.\n\nO primeiro erro era tentar ser preciso demais, quase como se eu fosse uma máquina de contabilidade. Eu queria anotar até os cinquenta centavos da bala que comprei na esquina. O que acontecia na prática? No terceiro dia, eu esquecia de marcar um café, a conta final não batia com o saldo do banco, eu ficava com raiva e desistia de tudo. A verdade é que seu primeiro orçamento não precisa de perfeição matemática, ele precisa de hábito. Agrupar seus gastos em categorias maiores, como alimentação ou transporte, funciona muito melhor no começo do que tentar rastrear cada centavo de forma isolada.\n\nO segundo erro era planejar o mês como se todos os meses do ano fossem exatamente iguais. Eu olhava para o aluguel, a internet, a feira e achava que a conta estava fechada. Aí vinha o aniversário de um amigo, a assinatura de um serviço que cobra uma vez por ano, ou uma gripe que me mandava direto para a farmácia. O orçamento desmoronava porque eu não considerava os imprevistos previsíveis. Hoje, eu sei que todo mês tem alguma surpresa, e a única forma de não quebrar o planejamento é já deixar um valor reservado para essas oscilações inevitáveis da rotina.\n\nE o terceiro erro, que é o mais comum de todos, era criar um orçamento para uma pessoa que eu não era. Eu olhava para a planilha e decidia que, a partir daquela segunda-feira, eu gastaria zero reais com delivery, zero reais com saídas no fim de semana e que meu único lazer seria ver documentários gratuitos. No papel, o plano era lindo. Na vida real, na primeira sexta-feira de cansaço extremo, eu pedia uma pizza, me sentia culpado e achava que o planejamento financeiro simplesmente não funcionava para mim. Orçamento não é um castigo ou uma camisa de força. É um mapa. Se você gosta de pedir comida no meio da semana ou de ir ao cinema, isso precisa estar na planilha com um valor realista, em vez de fingir que esses desejos não existem.\n\nSe organizar não é sobre se privar de viver ou virar um especialista em finanças do dia para a noite. É apenas aprender a olhar para o seu dinheiro com um pouco mais de honestidade e menos cobrança.",
+    "draftPrompt": "Write the script in Portuguese (Brazil).\nPlatform: TikTok.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a teacher or explainer.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: jovens adultos começando a organizar a rotina e o dinheiro.\nRules: never write “promessas de enriquecimento rápido”.\n\nThe creator's request, in their exact words:\n\"\"\"\n3 erros que eu cometia ao montar meu primeiro orçamento mensal\n\"\"\"",
+    "draftSeconds": 11.164036417,
+    "draftTokens": [
+      792,
+      582,
+      1174
+    ],
+    "durationPolicy": "informative",
+    "estimatedSeconds": 180.4,
+    "language": "pt-BR",
+    "length": "free",
+    "modelVersion": "gemini-3.5-flash",
+    "name": "scriptsDock",
+    "reviewInstructionsCharacters": 2663,
+    "reviewSeconds": 9.065647,
+    "reviewTokens": [
+      1567,
+      719,
+      1228
+    ],
+    "script": "Quando montei minha primeira planilha de orçamento, achei que tinha decifrado o segredo da vida adulta. Duas semanas depois? Eu já tinha abandonado tudo e fingia que o aplicativo do banco nem existia. Se você está tentando organizar o seu dinheiro agora e sente que nunca dá certo, calma. Deixa eu te poupar de bater a cabeça na parede. Bora lá entender os três erros que eu mais cometia no começo. O primeiro erro era tentar ser preciso demais. Eu agia como se fosse uma máquina de contabilidade. Queria anotar até os cinquenta centavos da bala na esquina. O que acontecia na prática? No terceiro dia, eu esquecia de marcar um café. A conta final não batia com o saldo do banco. Eu ficava com raiva e desistia de tudo. A verdade é que seu primeiro orçamento não precisa de perfeição matemática. Ele precisa de hábito. Agrupar seus gastos em categorias maiores, como alimentação ou transporte, funciona muito melhor no começo do que rastrear cada centavo de forma isolada. O segundo erro era planejar o mês como se todos os meses do ano fossem exatamente iguais. Eu olhava para o aluguel, a internet, a feira e achava que a conta estava fechada. Aí vinha o aniversário de um amigo. A assinatura de um serviço que cobra uma vez por ano. Ou uma gripe que me mandava direto para a farmácia. O orçamento desmoronava porque eu não considerava os imprevistos previsíveis. Hoje eu sei que todo mês tem alguma surpresa. A única forma de não quebrar o planejamento é já deixar um valor reservado para essas oscilações inevitáveis. E o terceiro erro, que é o mais comum de todos, era criar um orçamento para uma pessoa que eu não era. Eu olhava para a planilha e decidia que, a partir daquela segunda-feira, eu gastaria zero reais com delivery. Zero reais com saídas no fim de semana. Decidia que meu único lazer seria ver documentários gratuitos. No papel, o plano era lindo. Na vida real, na primeira sexta-feira de cansaço extremo, eu pedia uma pizza. Me sentia culpado e achava que o planejamento financeiro não funcionava para mim. Orçamento não é um castigo. Não é uma camisa de força. É um mapa. Se você gosta de pedir comida no meio da semana ou de ir ao cinema, isso precisa estar na planilha com um valor realista. Pare de fingir que esses desejos não existem. Se organizar não é sobre se privar de viver ou virar um especialista em finanças do dia para a noite. É apenas aprender a olhar para o seu dinheiro com um pouco mais de honestidade e menos cobrança. Qual desses três erros você mais comete na sua rotina atual?",
+    "title": "3 erros no meu primeiro orçamento",
+    "words": 451
+  }
+]

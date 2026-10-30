@@ -1,0 +1,56 @@
+[
+  {
+    "attempts": 1,
+    "caseID": "pt-BR-equipment",
+    "condition": "bare-raw",
+    "durationPolicy": "informative",
+    "expectedDirection": "developed opinion with counterpoint",
+    "hasBrief": false,
+    "idea": "Defenda que comprar outra câmera nem sempre melhora um vídeo. Desenvolva um exemplo hipotético e diga quando a troca faz sentido. Sem inventar testes ou preços.",
+    "index": 0,
+    "instructions": "",
+    "kind": "script",
+    "language": "pt-BR",
+    "model": "privateCloud",
+    "prompt": "Defenda que comprar outra câmera nem sempre melhora um vídeo. Desenvolva um exemplo hipotético e diga quando a troca faz sentido. Sem inventar testes ou preços.",
+    "requestedModel": "privateCloud",
+    "requestedReasoning": "default",
+    "requiredLiterals": [],
+    "responseCap": 4096,
+    "reviewChecks": [
+      "Explain an alternative cause of weak videos and a concrete hypothetical example.",
+      "Give a real decision criterion for an equipment change; no invented prices or past tests.",
+      "Evaluation settings (not model input): voice=none; reasoning=default; sampling=default"
+    ],
+    "run": "editorial-v6-none-equipment-r1",
+    "seconds": 2.020372834,
+    "text": "Comprar outra câmera nem sempre melhora um vídeo, pois a qualidade final depende mais da composição, da iluminação, da estabilização e da edição do que do equipamento em si. Uma câmera mais avançada pode oferecer mais recursos, mas não resolve limitações criativas ou técnicas básicas.  \n\n**Exemplo hipotético**: um criador grava entrevistas em um ambiente com luz natural instável usando uma câmera comum. O problema principal é o contraste oscilante e o áudio ruim. Trocar por um modelo mais caro não corrigiria a iluminação nem o som; o vídeo continuaria prejudicado. O investimento seria melhor aplicado em uma fonte de luz constante e um microfone.  \n\n**Quando a troca faz sentido**: quando a câmera atual impede algo essencial — por exemplo, falta de controle manual para ajustar a exposição em cenas com luz variável, ou ausência de estabilização que cause trepidação inevitável. Nesse caso, o novo equipamento amplia possibilidades que o anterior não permite."
+  },
+  {
+    "attempts": 1,
+    "caseID": "pt-BR-equipment",
+    "condition": "editorial-raw",
+    "durationPolicy": "informative",
+    "expectedDirection": "developed opinion with counterpoint",
+    "hasBrief": false,
+    "idea": "Defenda que comprar outra câmera nem sempre melhora um vídeo. Desenvolva um exemplo hipotético e diga quando a troca faz sentido. Sem inventar testes ou preços.",
+    "index": 0,
+    "instructions": "Write the complete text a creator will speak aloud in Portuguese (Brazil), in natural connected paragraphs.\nDevelop a thought, not a summary of the topic. For an opinion, make a meaningful distinction, explain why it matters, and work through\na concrete hypothetical example that demonstrates the reasoning. Let the implications lead to the ending. Each paragraph advances\nthe previous one. If an analogy is requested, use one and explain the connection; metaphors cannot replace the argument.\nFollow the genre requested: a tutorial develops distinct actions and checks; a scene shows events unfolding; a short notice simply\nstates the supplied information. The current request overrides habitual formats, narrator and endings in the profile.\nThe profile guides voice and audience. Opinions and imagined illustrations are allowed; do not invent personal experiences,\ncredentials, measurements or testimonials. Keep factual claims modest and reliable, and preserve supplied facts and exact wording.\nReturn the spoken text only. Stop when the thought is complete, without a duration quota or an automatic engagement question.\nNever use a dash (— or –) between words or sentences: use a full stop, comma, colon or parentheses. Hyphens inside words are fine.",
+    "kind": "script",
+    "language": "pt-BR",
+    "model": "privateCloud",
+    "prompt": "Platform: Instagram Reels.\n\nCurrent request:\nDefenda que comprar outra câmera nem sempre melhora um vídeo. Desenvolva um exemplo hipotético e diga quando a troca faz sentido. Sem inventar testes ou preços.",
+    "requestedModel": "privateCloud",
+    "requestedReasoning": "default",
+    "requiredLiterals": [],
+    "responseCap": 4096,
+    "reviewChecks": [
+      "Explain an alternative cause of weak videos and a concrete hypothetical example.",
+      "Give a real decision criterion for an equipment change; no invented prices or past tests.",
+      "Evaluation settings (not model input): voice=none; reasoning=default; sampling=default"
+    ],
+    "run": "editorial-v6-none-equipment-r1",
+    "seconds": 2.753445542,
+    "text": "Às vezes, trocar de câmera parece o passo óbvio para elevar um vídeo, mas o equipamento não garante o resultado. A diferença relevante não está na resolução, mas no controle da luz e do enquadramento, que dependem de quem opera. Imagine um clipe gravado com um aparelho comum em ambiente com luz natural: se o criador ajusta o ângulo e mantém o movimento estável, a imagem ganha ritmo sem nova lente. A câmera atua como um pincel em uma tela: trocar o pincel não muda o traço se a mão não altera o gesto.  \n\nA troca faz sentido apenas quando o limite técnico impede algo essencial, como captar detalhes em sombra profunda sem ruído. No exemplo, se o criador quisesse registrar um objeto brilhante em ambiente escuro e o aparelho atual não permitisse ajuste, a nova ferramenta abriria uma possibilidade antes bloqueada. Nesse caso, o ganho não é estético por si, mas funcional: o equipamento expande o que já se sabe fazer.  \n\nPortanto, a prioridade deve ser o domínio da cena, e não o acúmulo de corpos de câmera. Se o hábito de ajustar luz e plano já existe, a mudança só traz benefício quando resolve uma barreira concreta, como no cenário hipotético. Sem essa necessidade, o novo aparelho apenas repete o que já se alcança."
+  }
+]

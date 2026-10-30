@@ -23,6 +23,7 @@ struct ProPlansScreen: View {
     @Environment(StoreManager.self) private var store
     @Environment(ToastService.self) private var toast
     @Environment(AIStatus.self) private var aiStatus
+    @Environment(UltraScriptService.self) private var ultra
     @Environment(\.dismiss) private var dismiss
     @State private var selectedPlan: ProPlan = .annual
     @State private var trialDays: [ProPlan: Int] = [:]
@@ -31,7 +32,7 @@ struct ProPlansScreen: View {
     var body: some View {
         VStack(spacing: 0) {
             ScrollView {
-                ProMarketing(context: context, aiIsAvailable: aiStatus.isAvailable, time: time)
+                ProMarketing(context: context, aiIsAvailable: aiStatus.isAvailable, ultraIsOffered: ultra.isAvailable, time: time)
                     .padding(.top, max(0, 146 - barHeight))
                     .padding(.bottom, 20)
             }

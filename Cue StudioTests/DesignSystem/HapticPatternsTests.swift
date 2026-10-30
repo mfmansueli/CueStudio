@@ -31,12 +31,25 @@ struct HapticPatternsTests {
     @Test func everyPatternIsShortAndInRange() {
         let patterns = [
             HapticPatterns.sparkles, HapticPatterns.takeoff, HapticPatterns.landing, HapticPatterns.commit, HapticPatterns.finish,
-            HapticPatterns.listen,
+            HapticPatterns.listen, HapticPatterns.ultraOn, HapticPatterns.ultraIgnite, HapticPatterns.appleOn,
+            HapticPatterns.platformOn, HapticPatterns.ultraSendCharged,
         ]
         for beats in patterns {
             #expect(beats.first?.time == 0, "Starts with the touch")
             #expect(beats.map { $0.time + ($0.duration ?? 0) }.max() ?? 0 <= IdeaTransitionService.riseDuration)
             #expect(beats.allSatisfy { (0...1).contains($0.intensity) && (0...1).contains($0.sharpness) })
         }
+    }
+
+    /// Ultra AI's: the tap that lights the writer chip falls when the ✦ lands on it.
+    @Test func ultraLightsTheChipAsTheStarLands() {
+        #expect(HapticPatterns.ultraOn.contains { $0.duration == nil && abs($0.time - UltraMotion.hop) < 0.01 && $0.intensity > 0.5 })
+    }
+
+    @Test func appleIntelligenceSwellsWhileItsLightGoesRound() {
+        let hum = HapticPatterns.appleOn.first { $0.duration != nil }
+        #expect(HapticPatterns.appleOn.first?.duration == nil, "A tap as the symbol bounces")
+        #expect((hum?.endIntensity ?? 0) > (hum?.intensity ?? 1), "The hum swells")
+        #expect(HapticPatterns.appleOn.map { $0.time + ($0.duration ?? 0) }.max() ?? 0 <= DockChipLight.duration, "It ends with the light")
     }
 }

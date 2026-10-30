@@ -20,6 +20,8 @@ final class ScriptStarter {
     private let ideaDraft: IdeaDraftService
     private let transition: IdeaTransitionService
     private let writer: ScriptWriting
+    /// Ultra AI, where this build offers it; nil (tests, previews) offers none.
+    private let ultra: UltraScriptWriting?
     private let toast: ToastService
     /// Told when a script was written from an idea of Find inspiration's (what of its brief the creator's text still said): the strongest sign of
     /// what they want, which the next ideas lean to (`IdeaSuggestionService.generated(from:)`). Set by `AppServices`, so no screen has to.
@@ -31,9 +33,10 @@ final class ScriptStarter {
     init(
         library: ScriptLibraryService, rules: PlatformRulesService, profile: CreatorProfileService,
         languages: LanguageService, presentation: PresentationService, ideaDraft: IdeaDraftService,
-        transition: IdeaTransitionService, writer: ScriptWriting, toast: ToastService
+        transition: IdeaTransitionService, writer: ScriptWriting, ultra: UltraScriptWriting? = nil, toast: ToastService
     ) {
         self.writer = writer
+        self.ultra = ultra
         self.toast = toast
         self.transition = transition
         self.library = library
@@ -55,8 +58,64 @@ final class ScriptStarter {
     var platform: Platform { ideaDraft.platform ?? factory.defaultPlatform }
 
     /// Whether the dock's ideas can be drafted, told before anything is typed: in the Script Language when one is set. On Auto-detect the
-    /// language is the idea's own, known only when it is sent (`write`), so only what doesn't depend on it is told.
-    var dockDrafting: DraftingAvailability { writer.drafting(in: languages.scriptLanguage) }
+    /// language is the idea's own, known only when it is sent (`write`), so only what doesn't depend on it is told. With Ultra chosen (and
+    /// allowed) Apple Intelligence's availability doesn't matter: Gemini writes it.
+    var dockDrafting: DraftingAvailability { writesWithUltra ? .available : appleDrafting }
+
+    /// Whether Apple Intelligence itself can draft in the Script Language, whoever the dock's chip picked.
+    var appleDrafting: DraftingAvailability { writer.drafting(in: languages.scriptLanguage) }
+
+    // MARK: - Ultra
+
+    /// Ultra is offered on this iPhone (Debug, with the lab set up): the dock shows its chip.
+    var offersUltra: Bool { ultra?.isAvailable == true }
+
+    /// The creator allowed Google processing for Ultra.
+    var ultraAllowed: Bool { ultra?.isReady == true }
+
+    /// The dock's next idea goes to Ultra: the creator picked it and allowed Google processing.
+    var writesWithUltra: Bool { ideaDraft.engine == .ultra && ultraAllowed }
+
+    /// Ultra AI scripts the creator may still write; nil when nothing is counted.
+    var ultraScriptsLeft: Int? { ultra?.scriptsLeft }
+
+    /// No Ultra AI script is left to write.
+    var ultraUsedUp: Bool { ultraScriptsLeft == 0 }
+
+    /// The dock's writer chip: Ultra only once permission is there (`UltraConsentSheet` asks first) and with scripts left; Apple Intelligence any
+    /// time. The pick stays until the creator changes it (`IdeaDraftService.engine`).
+    func choose(_ engine: ScriptEngine) {
+        ideaDraft.engine = engine == .ultra && (!ultraAllowed || ultraUsedUp) ? .apple : engine
+    }
+
+    /// The creator's Ultra AI scripts are used up: on the free plan Cue Pro is offered (it adds its monthly scripts); in the trial and on Pro the
+    /// toast says when more come. The next idea goes to Apple Intelligence.
+    func showUltraUsedUp() {
+        ideaDraft.engine = .apple
+        switch ultra?.membership {
+        case .trial:
+            toast.show(String(localized: "Your free Ultra AI scripts are used · Pro’s monthly ones start after the free week"), kind: .problem)
+        case .paid:
+            toast.show(String(localized: "This month’s Ultra AI scripts are used · More next month"), kind: .problem)
+        case .free, nil:
+            presentation.paywall = .ultra
+        }
+    }
+
+    /// What Ultra would send for the dock's idea as it stands (or a placeholder for it), with the dock's choices and My Cue Voice: the disclosure's
+    /// "What Cue sends" shows the very text the calls carry.
+    /// - Parameters:
+    ///   - idea: an idea from elsewhere (Find inspiration's card), with its `brief`; nil is the dock's own.
+    func ultraPreview(idea: String? = nil, brief: IdeaBrief? = nil) -> UltraPayload {
+        let typed = (idea ?? ideaDraft.submission)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        let text = typed.isEmpty ? String(localized: "[Your idea, exactly as you type it]") : typed
+        var request = factory.request(
+            idea: text, platform: ideaDraft.platform, format: ideaDraft.format, length: ideaDraft.length, brand: ideaDraft.brand,
+            brief: brief ?? (idea == nil ? ideaDraft.brief : nil), languageText: nil, formatChoice: ideaDraft.formatChoice
+        )
+        request.engine = .ultra
+        return UltraPayload(request)
+    }
 
     /// Whether `text` (an answered comment, the dock's idea) can be drafted, before it is sent: in the language it would be drafted in when
     /// that is already known (the Script Language, or the text's own); otherwise only what doesn't depend on a language.
@@ -70,24 +129,40 @@ final class ScriptStarter {
     /// - Parameter comment: the audience comment the script answers, kept on the script.
     /// - Parameter brief: the inspiration `idea` came from (the card's own brief when the card's text is written); only what the text still
     ///   says of it reaches the model.
+    /// - Parameter engine: who writes it, when the caller asked for one (Find inspiration's "Draft with Ultra"); nil follows the dock's chip.
     /// - Parameter whenWritten: runs when the idea has become a script (not when it was cancelled or failed).
     @discardableResult
     func write(
         idea: String? = nil, length: ScriptLength? = nil, comment: ScriptComment? = nil, platform: Platform? = nil, brief: IdeaBrief? = nil,
-        from origin: CGPoint? = nil, whenWritten: ((UUID) -> Void)? = nil
+        engine: ScriptEngine? = nil, from origin: CGPoint? = nil, whenWritten: ((UUID) -> Void)? = nil
     ) -> UUID? {
         guard let text = idea ?? ideaDraft.submission, !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return nil }
-        let request = IdeaSendTimeline.measure("Idea request") {
+        var request = IdeaSendTimeline.measure("Idea request") {
             factory.request(
                 idea: text, platform: platform ?? ideaDraft.platform, format: ideaDraft.format, length: length ?? ideaDraft.length,
                 brand: ideaDraft.brand, brief: brief ?? (idea == nil ? ideaDraft.brief : nil), languageText: comment?.text,
                 formatChoice: ideaDraft.formatChoice
             )
         }
+        // Ultra only when it was picked and is still allowed: never as a silent stand-in for Apple Intelligence. An answered comment stays with
+        // Apple Intelligence (the dock's choice is for the dock's ideas and Find inspiration's).
+        if (engine ?? ideaDraft.engine) == .ultra, comment == nil {
+            guard ultraAllowed else {
+                ideaDraft.engine = .apple
+                toast.show(UltraError.consentRequired.localizedDescription, kind: .problem)
+                return nil
+            }
+            guard !ultraUsedUp else {
+                showUltraUsedUp()
+                return nil
+            }
+            request.engine = .ultra
+        }
         // What Apple Intelligence can't draft (in the request's own language) is told now, not after three seconds of star, and nothing is
         // opened: the idea stays where it was, and "Write it" makes it a draft to write by hand only when the creator asks.
         let asked = request.language.map { [$0.locale.language] } ?? []
-        if case .unavailable(let cause) = IdeaSendTimeline.measure("Language check", { writer.drafting(in: asked) }) {
+        if request.engine == .apple,
+           case .unavailable(let cause) = IdeaSendTimeline.measure("Language check", { writer.drafting(in: asked) }) {
             if let failure = writer.writingFailure(in: asked) {
                 AIFailureReport.note(failure, operation: "script", route: nil, language: request.language?.locale.identifier, seconds: 0, isFinal: true)
             }
@@ -109,10 +184,12 @@ final class ScriptStarter {
         // The star holds the app still as it was at the tap (`IdeaTransitionService.showsBackdrop`), so the page opens under it at once,
         // without a push to watch (nor its frames to pay for), and Apple Intelligence starts writing into it right away.
         transition.begin(
-            from: origin ?? .zero, idea: text, platformName: request.platform.label,
+            from: origin ?? .zero, idea: text, platformName: request.platform.label, engine: request.engine,
             abort: { [weak self] in self?.abort(scriptID, keeping: comment) },
             arrive: { [weak self] in
                 if let brief = request.brief { self?.briefWritten?(brief) }
+                // The writer stays the creator's pick for the next idea. One Apple Intelligence wrote counts towards the invitation to try Ultra.
+                if request.engine == .apple { self?.ultra?.noteAIUse() }
                 whenWritten?(scriptID)
             }
         )

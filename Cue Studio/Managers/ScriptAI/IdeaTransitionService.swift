@@ -48,6 +48,11 @@ final class IdeaTransitionService {
     static let phraseInterval: TimeInterval = 1.6
     /// The overlay darkens to cover the screen before the ring opens.
     static let coverDuration: TimeInterval = 0.3
+    /// Ultra AI's finish is longer than the cover (the owner's call, 30/10/2026): its moons and its dust spiral into the star
+    /// (`UltraWaitScene`), which flashes at `ultraFlashTime`, a wave of light runs out, and then the ring opens. 0.8 s more than Apple
+    /// Intelligence's.
+    static let ultraFinishDuration: TimeInterval = 1.1
+    static let ultraFlashTime: TimeInterval = 0.8
     static let ringDuration: TimeInterval = 0.8
     /// The star flying to the caret, and the caret blinking for a moment.
     static let landingDuration: TimeInterval = 0.9
@@ -59,6 +64,9 @@ final class IdeaTransitionService {
     /// How long the finish takes before the page may start writing: the cover, then the ring.
     static var revealLead: TimeInterval { coverDuration + ringDuration }
 
+    /// The finish before the ring opens: the cover, or Ultra AI's longer one.
+    var coverTime: TimeInterval { engine == .ultra ? Self.ultraFinishDuration : Self.coverDuration }
+
     // MARK: - State
 
     private(set) var phase: Phase = .idle {
@@ -68,6 +76,8 @@ final class IdeaTransitionService {
     private(set) var origin: CGPoint = .zero
     private(set) var idea = ""
     private(set) var platformName = ""
+    /// Who is writing: the star says "Drafting with Ultra" for Google's Gemini, never Apple Intelligence's words.
+    private(set) var engine: ScriptEngine = .apple
     /// Whether the exit is because of an error (the toast says so) and not a Cancel.
     private(set) var leftBecauseOfError = false
     /// How much of the script is written, for the percentage under the phrase; nil until the page starts writing.
@@ -80,6 +90,9 @@ final class IdeaTransitionService {
     var speed: Double = 1
 
     var isActive: Bool { phase != .idle }
+    /// Goes up with each star: one that starts while the last is still finishing (or falling) is a new run, which the overlay starts afresh
+    /// and the last one's finish never ends.
+    private(set) var run = 0
 
     /// Called once when the transition ends for any reason but success: the page and its script are taken away.
     private var onAbort: (() -> Void)?
@@ -108,11 +121,16 @@ final class IdeaTransitionService {
     // MARK: - Starting
 
     /// The arrow was tapped: the star rises. `abort` removes the script that was opened for it (Cancel or an error).
-    func begin(from origin: CGPoint, idea: String, platformName: String, abort: @escaping () -> Void, arrive: @escaping () -> Void) {
+    func begin(
+        from origin: CGPoint, idea: String, platformName: String, engine: ScriptEngine = .apple, abort: @escaping () -> Void,
+        arrive: @escaping () -> Void
+    ) {
         timer?.cancel()
+        run += 1
         self.origin = origin
         self.idea = idea
         self.platformName = platformName
+        self.engine = engine
         leftBecauseOfError = false
         progress = nil
         onAbort = abort
@@ -133,17 +151,21 @@ final class IdeaTransitionService {
     /// there is no transition (a script opened any other way).
     func contentReady() async {
         guard phase == .rising || phase == .waiting, let startedAt else { return }
+        // Each wait may see another star start (an idea sent while this one finishes): that one is never touched from here.
+        let run = run
         let remaining = Self.minimumDuration * speed - (clock() - startedAt)
         if remaining > 0 { await sleeper(remaining) }
-        guard phase == .rising || phase == .waiting else { return }
+        guard self.run == run, phase == .rising || phase == .waiting else { return }
         phase = .revealing
         onArrive?()
         onArrive = nil
         onAbort = nil
-        await sleeper(Self.coverDuration * speed)
+        await sleeper(coverTime * speed)
+        guard self.run == run else { return }
         // The cover is solid: the ring opens onto the live page, never onto the picture.
         showsBackdrop = false
         await sleeper(Self.ringDuration * speed)
+        guard self.run == run else { return }
         timer = Task { [weak self] in
             await self?.sleeper((Self.landingDuration + Self.caretHold) * (self?.speed ?? 1))
             guard !Task.isCancelled else { return }
@@ -229,6 +251,8 @@ final class IdeaTransitionService {
 
     /// Seconds after which the AI is said to be taking longer than usual (a request is given up on by itself a little later: `GenerationDeadlines`).
     static let longWait: TimeInterval = 22
+    /// The same for Ultra AI, whose three passes take 25 to 70 s (36 s usually, measured on an iPhone 15 Pro, 29/10/2026).
+    static let ultraLongWait: TimeInterval = 45
 
     /// What the star says once the wait is long.
     static var longWaitPhrase: String { String(localized: "Still drafting · taking a little longer") }

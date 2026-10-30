@@ -165,7 +165,8 @@ struct ScriptContextTests {
         let (factory, defaults) = factory { var profile = $0; profile.reach.length = .oneToThree; return profile }
         defer { defaults.tearDown() }
         #expect(factory.request(idea: "x", platform: .stories, format: nil).targetRange == TestData.preset(.stories).idealRange)
-        #expect(factory.request(idea: "x", platform: .reels, format: nil).targetRange == 60...180)
+        // Never past two minutes on Auto, whatever their usual length (the owner's call, 29/10/2026).
+        #expect(factory.request(idea: "x", platform: .reels, format: nil).targetRange == 60...120)
     }
 
     @Test func theUsualLengthIsPartOfTheVoiceSoWithTheVoiceOffItIsIgnored() {

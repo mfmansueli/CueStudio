@@ -46,6 +46,8 @@ nonisolated struct ScriptRequest: Hashable, Sendable {
     var modelRoute: AIModelRoute?
     /// Retains the dock's explicit Talking head choice, which has no `ScriptType` and must not become Auto.
     var formatChoice: FormatChoice?
+    /// Who writes it: Apple Intelligence, or Ultra when the creator chose it on the dock (`ScriptStarter`).
+    var engine: ScriptEngine = .apple
 
     var type: ScriptType? {
         if case .format(let type, _) = source { type } else { format }

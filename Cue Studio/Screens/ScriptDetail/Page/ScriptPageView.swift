@@ -85,7 +85,7 @@ struct ScriptPageView: View {
                             .padding(.top, 14)
                             .dimmedWhileTyping(isTyping)
                         if viewModel.needsFactCheck {
-                            FactCheckBanner(onChecked: viewModel.markFactChecked)
+                            FactCheckBanner(engine: script.draftedBy ?? .apple, onChecked: viewModel.markFactChecked)
                                 .disabled(viewModel.page.isWriting)
                                 .padding(.top, 12)
                                 .dimmedWhileTyping(isTyping)
@@ -286,7 +286,8 @@ struct ScriptPageView: View {
             }
             .buttonStyle(.plain)
             .accessibilityIdentifier("page.hookButton")
-            if viewModel.isLanguageModelAvailable {
+            // A script Ultra AI wrote keeps "Improve" for its Fit to time even where Apple Intelligence doesn't run.
+            if viewModel.isLanguageModelAvailable || viewModel.ultraFitsToTime {
                 Button { viewModel.sheet = .improve } label: {
                     HStack(spacing: 5) {
                         Image(systemName: "sparkles").cueFont(12, weight: .bold)
@@ -446,7 +447,9 @@ struct ScriptPageView: View {
             }
             if viewModel.page.isWriting {
                 // The percentage only while the model works: once the words arrive, they are the progress.
-                ScriptWritingPill(inMyVoice: viewModel.profile.writesInMyVoice, progress: viewModel.page.progress)
+                ScriptWritingPill(
+                    inMyVoice: viewModel.profile.writesInMyVoice, engine: viewModel.pendingRequest?.engine ?? .apple, progress: viewModel.page.progress
+                )
                     .padding(.bottom, 12)
                     .transition(.opacity.combined(with: .scale(scale: 0.96)))
             }
@@ -498,7 +501,7 @@ struct ScriptPageView: View {
                 viewModel.commitPage()
                 onRecord()
             },
-            offersShorter: viewModel.canDraft,
+            offersShorter: viewModel.canFitToTime,
             onShorter: {
                 viewModel.page.showsLengthNudge = false
                 Task { await viewModel.run(.fitToTime) }

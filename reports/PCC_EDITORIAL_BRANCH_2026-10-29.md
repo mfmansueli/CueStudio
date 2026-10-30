@@ -1,0 +1,110 @@
+# Nova branch editorial — 29/10/2026
+
+## Base e autorização
+
+Branch codex/script-editorial-quality criada de origin/main0fd19d1a, após merge PR77. Reutiliza worktree isolada pcc-offline-review; não altera checkout principal nem skin-beauty. O dono deu liberdade para mudar o fluxo e testar outras instruções com qualidade comparável às referências do assistente, e pediu explicitamente branch nova. Isso não demonstra que o objetivo já foi atingido.
+
+## Primeiro experimento: separar instruções e schema
+
+Somente código no target de testes. O caminho normal e Release permanecem iguais à main. Um caso congelado por execução, mesmo pedido, perfil sintético completo, plataforma e teto de resposta. Quatro condições, sessões novas:
+
+1. baseline: serviço real atual, com suas verificações/correções e até duas chamadas. Registrar essa diferença de custo ao comparar.
+2. stack-guided: pilha atual de ScriptPromptBuilder, PCCProseDraft, uma chamada.
+3. lean-guided: instruções editoriais enxutas, contexto de voz permitido inteiro, mesmo PCCProseDraft já existente, uma chamada.
+4. lean-raw: exatamente as mesmas instruções/prompt de lean-guided, resposta String sem schema, uma chamada.
+
+Isso NÃO repete a antiga ablação de prosa com a pilha inteira de instruções. Stack-guided versus lean-guided muda somente a pilha de instruções/prompt, mantendo schema, dados e uma chamada. Lean-guided versus lean-raw muda schema mantendo instruções/prompt. Baseline é controle de produto, com suas correções; não atribuir toda diferença dele ao schema ou às instruções. Perfil não é descartado. Não se enviam respostas de referência nem critérios de julgamento como gabarito. Não usa provedor externo, API paga ou novo treinamento. Raciocínio padrão nas quatro condições; aprofundamento pode ser uma variável posterior, isolada.
+
+Medição em ScriptQualityDeviceTests/comparesEditorialPromptAblations(), opt-in CUE_QUALITY_EDITORIAL_ABLATION=1. Cada alternativa tem prazo60s, grava texto integral sem pós-edição e tempo no mesmo formato QualityRunSample; só aceita rota privateCloud no baseline. Falha/timeout é registrado, não aprovado. Sem chamadas extra de reparação nas alternativas; literais, idioma, agência e cumprimento de instruções serão julgados explicitamente, não inferidos de texto não vazio. Não comparar custo/segurança de um protótipo cru como se já fosse produção.
+
+## Critérios editoriais
+
+Avaliar progressão do argumento, exemplo útil, explicação causal, oralidade, personalização sem contaminar assunto, aderência ao pedido, perspectiva, fidelidade factual/biográfica e latência. Não pontuar só por palavras nem alegar ganho consistente com uma amostra. Notas sérias e frases literais são controles de regressão; tutorial precisa de revisão técnica. As referências do assistente são um alvo editorial, não fonte factual nem verdade absoluta. O assistente teve contexto das críticas anteriores, portanto a comparação inicial não é um ensaio controlado entre capacidades máximas de modelos.
+
+## Estado
+
+SwiftLint estrito passou nos três arquivos novos. Dois testes de contrato aprovados em only-20261029-000654.xcresult,214s, sem warnings observados. A primeira chamada queued71669 foi cancelada apenas enquanto aguardava o lock, para completar o controle de mesma estrutura; substituída pela69682, encerrada exit0.
+
+Primeira medição real solicitada no Iago: sessão38951, device-20261029-001357.xcresult, run editorial-v1-opinion-r1, caso pt-BR-editorial-draft, quatro condições. Ainda aguardando execução; não há resultado nativo desta branch neste checkpoint. Referências da conversa preservadas separadamente em research_notes/Editorial refinement/assistant_references_2026-10-29.json, nunca enviadas como gabarito ao modelo.
+
+Instalações normais anteriores pertencem à entrega anterior. Nenhum Full solicitado/iniciado. Não declarar qualidade melhor sem ler os textos reais. A nova branch é experimental, não está pronta para merge por ter passado apenas contratos.
+
+## Primeira leitura: opinião PT, uma repetição
+
+Quatro respostas PCC preservadas em quality-run-editorial-v1-opinion-r1.json. Teste passou tecnicamente (1 teste,71s total; geração das quatro condições22s incluindo pausas). Baseline3,25s; stack-guided2,52s; lean-guided1,90s; lean-raw1,68s. Texto de instruções+pedido caiu de10720 para2915 caracteres; isso não é contagem de tokens.
+
+Não há ganho editorial demonstrado: todas continuam pouco desenvolvidas, com analogias de música/trilha. Lean-guided mistura banda e bicicleta; lean-raw usa bicicleta de olhos fechados e termina com pergunta de engajamento não solicitada, apesar da instrução de não forçar CTA. Stack-guided teve concordância ruim (“Se eu forçando”). Mais rápido/curto não significa melhor. Não promover nenhuma alternativa por esses resultados.
+
+Próximos controles no mesmo binário: equipamento e tutorial, uma execução cada, quatro condições. A referência do assistente ainda desenvolve uma distinção, consequências e exemplo com mais clareza; a medição inicial não reproduziu esse nível.
+
+## Triagem completa v1: três pedidos PT
+
+Doze solicitações (quatro condições×três casos),11 textos e1 recusa de segurança do framework. Equipamento: device-20261029-001631,1 teste aprovado tecnicamente; tutorial: device-20261029-001944,1 teste falhou porque lean-raw retornou “Streamed response may contain sensitive or unsafe content”. O erro foi preservado no quarto registro. Não contornar as guardrails nem chamar isso de sucesso.
+
+Equipamento: lean-guided trouxe relação incoerente entre compra, brilho e som e “Eu já vi” sem suporte. Lean-raw continua superficial. Baseline também diz “Eu vejo isso todo dia” sem suporte; schema atual não resolve fidelidade sozinho. Tutorial: baseline inventa distância de1–2m como regra e generaliza horário da luz; lean-guided trata celular como refletor e não explica bem os ajustes. Nenhuma alternativa aprovada para produção. Resultado negativo registrado; não vender redução de caracteres/tempo como melhoria de qualidade.
+
+## Próximas ablações delimitadas
+
+Verificar a mesma pergunta sem perfil (full versus none), depois raciocínio deep mantendo o resto, depois um preset de amostragem explícito. Amostragem criativa = randomTopP0,95/temperatura0,8/seed17, um preset conjunto; não atribuir eventual diferença isoladamente à temperatura. Default permanece nil, não foi demonstrado qual política interna o PCC usa. Nenhuma alteração em modelos/guardrails nem provedores. As configurações e o texto enviado ficam gravados. A execução só segue para uma configuração de cada vez, sem repetir a matriz inteira.
+
+Deep já foi tentado com planejamento na rodada anterior sem ganho. Testá-lo agora sem perfil, sem planejamento, sem schema e com prompt enxuto é uma configuração diferente; não esconder o resultado negativo anterior. Ainda não há ganho comprovado. Testes de configuração e contratos atualmente na sessão22394, only-20261029-002307.xcresult; fonte experimental congelada durante a compilação.
+
+## Configurações v2
+
+A primeira compilação only-20261029-002307 identificou import FoundationModels ausente no teste de propriedades de GenerationOptions. Corrigido sem mudar o produto. Reexecução only-20261029-002822:5 testes aprovados,0 falhas,102s, sem warnings observados. Novas configurações mantêm defaults v1 e rejeitam valores inválidos/duplicados; presetcriativo não pode ser aplicado ao baseline que não o suporta.
+
+Primeiro controle v2 solicitado: editorial-v2-none-default, opiniãoPT, somente lean-raw, sem perfil, amostragem/raciocínio padrão; sessão46461. Ainda sem resultado neste checkpoint. O controle deep será comparado a esse mesmo semperfil; o presetcriativo também, sem misturar fatores. A recusa do tutorial não prova que o framework errou: não temos o texto bloqueado para distinguir falso positivo de conteúdo gerado problemático.
+
+## Resultados v2 e novo controle editorial v3
+
+Três controles sem perfil concluídos, uma resposta cada: default2,34s (device-20261029-003028), deep2,34s (device-20261029-003420), presetcriativo1,79s (device-20261029-003600). Dados quality-run-editorial-v2-none-*.json. Default sem perfil teve parágrafos mais desenvolvidos que o raw com perfil, mas continua vago e mistura música/ciclismo. Deep não demonstrou ganho claro; exemplo de gravar café pode ser interpretado como hábito pessoal não fornecido. Creative voltou a um parágrafo curto e genérico. Uma repetição não demonstra causalidade estável nem teto do modelo. Não promover deep, amostragem ou retirada de voz por isso. Total desta branch até aqui:15 solicitações registradas,14 textos e1 recusa; contagem de solicitações não é contagem exata das inferências internas do baseline.
+
+V3 adiciona editorial-raw (orientação de monólogo desenvolvido, distinção/razão/exemplo/consequência, uma analogia em vez de metáforas como substituto de argumento) e editorial-demo-raw (mesma orientação mais conversa sintética de exemplo sobre caixas e organização da casa). A demonstração é texto contínuo em papéis reais de usuário/assistente no Transcript, não quatro exemplos esquemáticos anexados à pilha antiga. Não é nenhum dos três textos de referência do benchmark. Ela é guardada inteira no campo editorialExampleInstructions do sample. Nunca aplicar ao próprio pedido da demonstração.
+
+Código de apoio e testes foram agrupados em Support/EditorialExperiment e Managers/EditorialExperiment conforme arquitetura. Sete testes aprovados em only-20261029-004046,195s, sem warnings observados. Incluem papéis do transcript, preservação das instruções, inexistência de pedido idêntico na base congelada e igualdade do conteúdo do pedido quando só muda o enquadramento editorial.
+
+Primeira v3 em andamento: sessão29435, run editorial-v3-none-opinion-r1, opiniãoPT sem perfil, modos lean-raw/editorial-raw/editorial-demo-raw, raciocínio e amostragem padrão. Fonte congelada durante execução; ainda sem resultado neste checkpoint. Nenhuma alteração no writer normal/Release, nenhum provedor externo, nenhum treino, nenhuma flexibilização de guardrails.
+
+## Leitura v3: monólogo e demonstração
+
+Run editorial-v3-none-opinion-r1, device-20261029-004430,1 teste aprovado tecnicamente,131s total. Três respostas preservadas: lean-raw2,33s; editorial-raw2,90s; editorial-demo-raw2,37s. Houve mais texto na orientação editorial, mas ainda pouco raciocínio útil. O exemplo de café da manhã não demonstra bem naturalidade da leitura; volta a trilha/partitura. A demonstração introduziu a afirmação sem suporte “o ouvido percebe o cansaço antes de entender o conteúdo” e explicação frágil sobre pedras/respiração. Não promover. A conversa sintética foi aceita pelo framework, mas aceitação e extensão não aprovam qualidade. Total18 solicitações registradas na branch,17 textos e1 recusa (não contar inferências internas extras de baseline como medidas).
+
+## V4: continuações sem quota de duração
+
+Novo modo staged-raw, explicitamente limitado aos dois casos de opinião PT nesta triagem. Três chamadas independentes: abertura/distinção; conexão causal+contraste hipotético/analogia; implicação/limite+fecho. Cada chamada recebe o pedido/contexto original e tudo já escrito. Sem contagem mínima de palavras, sem duração exigida e sem plano externo separado. O teto4096 é dividido entre as três chamadas (1365 cada,4095 total), não multiplicado. Há limite externo compartilhado60s e cancelamento conferido antes de cada etapa. Não aplica isso a avisos curtos, ficção ou todos os formatos por suposição.
+
+A diferença para o antigo PCCSectionExperiment é material: aquele piloto era só tutorial de três ajustes com90–110 palavras por seção, objetivando duração, e não demonstrou precisão técnica. Este testa progressão semântica de argumento sem quota de palavras. Difere também do antigo planejamento seguido de uma redação única: aqui cada continuação é escrita separadamente e vê as anteriores. Aumento de chamadas/latência precisa ser justificado por conteúdo melhor, não por contagem de palavras.
+
+Harness agora preserva todos os prompts de cada etapa no sample, em ordem, e conta chamadas diretas no campo attempts. Baseline não recebe contagem inferida. Primeira v4 solicitada na sessão76960, device-20261029-005407.xcresult, run editorial-v4-none-staged-r1, sem perfil/defaults, modos editorial-raw/staged-raw. Fonte congelada durante execução. Ainda não há resultado neste checkpoint; não afirmar melhoria. Scripts/check-project.sh passou; diff de produção/config/projeto contra main está vazio.
+
+## V4 outcome and V5 checkpoint
+
+V4 completed: device-20261029-005407, 1 technical test passed, 52s. Single draft 3.21s/1 call; staged draft 4.77s/3 calls. The longer draft repeats rhythm/score/freedom and ignores the first stage's instruction to defer analogies. It does not justify three calls. Do not promote. Twenty recorded requests now contain nineteen texts and one refusal; a recorded request may contain several model inferences.
+
+V5 angle-search-raw compares three substantive explanations before choosing one and drafting. Two calls divide the 4096 response-token ceiling into 1536 and 2560. No duration quota. Test scope remains the two PT opinion cases. This differs from the old single-angle plan and from progressive drafting. Intermediate candidates and selection are stored in optional QualityRunSample.experimentalTrace, separate from model inputs. PCCEditorialExperimentOutput stores text/prompts/trace.
+
+Seven contracts passed in only-20261029-010057 (127s), session90060 exit0. Strict SwiftLint passed. Native V5 is active in session18389, device-20261029-010542.xcresult, run editorial-v5-none-angle-r1, modes editorial-raw/angle-search-raw, no voice/default reasoning and sampling. No result yet at this checkpoint. Production app, Release, project and configuration remain unchanged.
+
+## V5: divergent angle search, observed result
+
+Run editorial-v5-none-angle-r1 completed on Iago; device-20261029-010542.xcresult, one technical test passed. Two texts collected. Editorial one-shot took 2.33s; angle search took 5.57s across two calls. All three proposed angles stayed around breath, accents and intentions; selected breathing explanation claimed a physiological mechanism without supplied evidence. The final text repeated this claim and the trail/air metaphor instead of developing a stronger argument. No editorial improvement established; do not promote. This brings the recorded comparison to 22 requests, 21 texts and one refusal, including earlier runs. Requests are not the number of underlying model calls.
+
+Next diagnostic: bare-raw sends only the frozen original request, no application system instructions, platform, schema or profile. It is restricted to voice=none. This deliberately removes context to diagnose the model/application boundary and is not a proposed production writer. Current code is under validation; no result yet.
+
+## V6: original request without application instructions
+
+Run editorial-v6-none-bare-r1, device-20261029-041406.xcresult, passed technically with two recorded texts. The bare condition sends only the original frozen request, no profile/platform/application instructions/schema; framework guardrails remain default. Bare took 1.86s, editorial control 3.51s. Bare still repeated rhythm/music/bicycle metaphors rather than developing an argument. The editorial control again asserted without evidence that Reels audiences perceive flow before meaning. Neither meets the reference target. No quality gain established by removing application scaffolding on this case. This does not establish a universal model ceiling.
+
+The configuration unit suite passed three tests (only-20261029-041140.xcresult). Two SwiftLint formatting warnings in that build were corrected; strict lint then passed, and the subsequent device build completed without reported warnings. A second-topic V6 comparison is running. Production sources remain unchanged.
+
+V6 second topic: editorial-v6-none-equipment-r1, device-20261029-041551.xcresult, passed with two texts (editorial 2.75s; bare 2.02s). Bare was organized and included the requested example and upgrade boundary, but used headings instead of spoken delivery and overgeneralized that another camera would not fix audio/light limitations. Editorial offered a functional-limit distinction, but overstated that upgrade is worthwhile only if essential and used vague image-rhythm phrasing. This topic is stronger than the opinion about natural reading, so the negative outcome is not identical across topics. Neither establishes consistent reference-level quality.
+
+V7 now compares the same editorial instructions in English and Portuguese, no profile, same platform/current request/cap/default reasoning. Portuguese is a close translation, not a new trained model. Mode editorial-pt-raw is restricted to pt-BR cases. Native result pending. So far 26 recorded requests, 25 texts and one refusal across V1-V6.
+
+## V7 result and checkpoint
+
+Run editorial-v7-none-portuguese-r1, device-20261029-041731.xcresult, passed technically with two texts (English instructions 2.69s; Portuguese 2.89s). The translation did not solve the editorial weakness. Both centered on rhythm/partitura; Portuguese asserted that Reels audiences perceive intention before content without supporting evidence. Neither developed a sufficiently concrete, useful contrast. No production promotion, no claim of parity, no new provider. The branch now records 28 comparison requests, 27 texts and one refusal. This count includes repeated controls and is not a count of independent prompts or model inferences.
+
+Useful next decision: do not keep tuning against the same opinion alone. A future candidate needs an independent set of opinion/tutorial/story/notice cases, with full/partial/no voice and factual/literal controls, then multilingual verification. Current evidence rules out these tested configurations as a demonstrated solution; it does not prove no better PCC pipeline can exist. No new Full was run. Existing app behavior and other developers' changes remain intact.
+
+Final checkpoint validation: four configuration tests passed in only-20261029-041909.xcresult (108s), no reported warnings. Strict lint, project configuration and diff whitespace checks passed. Only pertinent tests were run; no Full or clean simulator/device/Release warning sweep is claimed for this experimental test-only branch. No own build remains active.

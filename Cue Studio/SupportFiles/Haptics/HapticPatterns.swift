@@ -116,6 +116,34 @@ enum HapticPatterns {
         Beat(time: 0.09, intensity: 0.3, sharpness: 0.95),
     ]
 
+    /// Ultra AI taken from the dock's invitation (`UltraMotion`): a glint as the ✦ leaves the line, a faint hum as it flies, a crisp tap as the
+    /// writer chip lights where it lands, and a soft settle as the ring goes out.
+    static let ultraOn: [Beat] = [
+        Beat(time: 0, intensity: 0.4, sharpness: 0.9),
+        Beat(time: 0.05, intensity: 0.06, sharpness: 0.4, duration: UltraMotion.hop - 0.08, endIntensity: 0.28),
+        Beat(time: UltraMotion.hop, intensity: 0.65, sharpness: 0.75),
+        Beat(time: UltraMotion.hop + 0.1, intensity: 0.22, sharpness: 0.25),
+    ]
+
+    /// Ultra AI picked straight on the chip, or allowed from My Cue Voice: a crisp tap as the ✦ pops, a glint for each spark it sends out
+    /// (`UltraChipSparks`), a swell while Cue's light goes round the chip (`DockChipLight`) and a soft settle as it fades.
+    static let ultraIgnite: [Beat] = [
+        Beat(time: 0, intensity: 0.65, sharpness: 0.75),
+        Beat(time: 0.06, intensity: 0.32, sharpness: 1),
+        Beat(time: 0.12, intensity: 0.24, sharpness: 1),
+        Beat(time: 0.18, intensity: 0.16, sharpness: 1),
+        Beat(time: 0.22, intensity: 0.05, sharpness: 0.3, duration: DockChipLight.duration - 0.55, endIntensity: 0.2),
+        Beat(time: DockChipLight.duration - 0.3, intensity: 0.22, sharpness: 0.25),
+    ]
+
+    /// Apple Intelligence picked back on the writer chip (`DockChipLight`): a light tap as its symbol bounces, a soft swell while its light goes
+    /// round the chip, and a faint settle as the light fades.
+    static let appleOn: [Beat] = [
+        Beat(time: 0, intensity: 0.35, sharpness: 0.5),
+        Beat(time: 0.04, intensity: 0.06, sharpness: 0.2, duration: DockChipLight.duration - 0.4, endIntensity: 0.22),
+        Beat(time: DockChipLight.duration - 0.3, intensity: 0.2, sharpness: 0.2),
+    ]
+
     // MARK: - Playing
 
     static func playSparkles() { play(sparkles, fallback: Haptics.selection) }
@@ -131,6 +159,37 @@ enum HapticPatterns {
     static func playNotificationsOn() { play(notificationsOn, fallback: Haptics.success) }
     static func playChime() { play(chime, fallback: Haptics.light) }
     static func playBestTake() { play(bestTake, fallback: Haptics.light) }
+    static func playUltraOn() { play(ultraOn, fallback: Haptics.success) }
+    static func playUltraIgnite() { play(ultraIgnite, fallback: Haptics.light) }
+    static func playAppleOn() { play(appleOn, fallback: Haptics.soft) }
+
+    /// The writer chip's ✦ landing on the send arrow, which turns Ultra AI's: a crisp tap as it lands and a short glow fading under the pop.
+    static let ultraSendCharged: [Beat] = [
+        Beat(time: 0, intensity: 0.55, sharpness: 0.8),
+        Beat(time: 0.05, intensity: 0.2, sharpness: 0.3, duration: 0.25, endIntensity: 0),
+    ]
+
+    static func playUltraSendCharged() { play(ultraSendCharged, fallback: Haptics.rigid) }
+
+    /// Ultra AI's script there (`UltraWaitScene`'s finish): a hum that swells as the moons and the dust spiral into the star, a firm tap as it
+    /// flashes, and a soft settle as the wave of light runs out.
+    static let ultraFinish: [Beat] = [
+        Beat(time: 0, intensity: 0.06, sharpness: 0.3, duration: IdeaTransitionService.ultraFlashTime - 0.02, endIntensity: 0.6),
+        Beat(time: IdeaTransitionService.ultraFlashTime, intensity: 0.85, sharpness: 0.6),
+        Beat(time: IdeaTransitionService.ultraFlashTime + 0.12, intensity: 0.28, sharpness: 0.2),
+    ]
+
+    static func playUltraFinish() { play(ultraFinish, fallback: Haptics.medium) }
+
+    /// A network picked on the platform chip (its logo flips once round, `IdeaCardChip.logoFlip`): a firm tap as it leaves, a light tick as it
+    /// turns edge-on, and a soft landing as it pops back, while the network's light goes round the chip.
+    static let platformOn: [Beat] = [
+        Beat(time: 0, intensity: 0.5, sharpness: 0.6),
+        Beat(time: 0.14, intensity: 0.18, sharpness: 0.9),
+        Beat(time: 0.42, intensity: 0.32, sharpness: 0.35),
+    ]
+
+    static func playPlatformOn() { play(platformOn, fallback: Haptics.soft) }
 
     /// Makes the engine and starts it off the main thread, ahead of the first pattern: made and started on the spot, the takeoff held the
     /// first idea's star back by ~50 ms after each launch (measured on an iPhone 15 Pro, 26/10/2026). Haptics only (no audio), so it never

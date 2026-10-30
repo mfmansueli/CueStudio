@@ -361,8 +361,10 @@ extension ScriptDetailViewModel {
         pageWritingTask = Task { [weak self] in
             guard let self else { return }
             do {
-                let generated = try await writer.generate(request, reporting: meter)
+                var generated = try await generate(request, reporting: meter)
                 guard !Task.isCancelled else { return }
+                // In paragraphs, a blank line between them: easier to read, and each one arrives as a piece short enough to draw.
+                generated.text = ScriptParagraphs.arranged(generated.text)
                 meter.finish()
                 let returnedAt = ContinuousClock.now
                 // The star opens the page (ring, crossfade) before the first word is written.
@@ -370,8 +372,14 @@ extension ScriptDetailViewModel {
                 guard !Task.isCancelled else { return }
                 page.title = generated.title
                 // What the written page shows around the words is in place before they arrive: the fact check and the voice question.
-                if generated.needsFactCheck { library.update(scriptID) { $0.factCheck = true } }
-                beginVoicePreview(for: request)
+                if generated.needsFactCheck {
+                    library.update(scriptID) { script in
+                        script.factCheck = true
+                        if generated.engine == .ultra { script.draftedBy = .ultra }
+                    }
+                }
+                // The voice question compares with Apple Intelligence's own rewrites: not on an Ultra AI script.
+                if request.engine == .apple { beginVoicePreview(for: request) }
                 // The title arrives first, word by word (`ScriptPageHeader`), then the words under it.
                 if revealPause > .zero { try? await Task.sleep(for: Self.titleLead) }
                 await reveal(generated.text)
@@ -405,9 +413,17 @@ extension ScriptDetailViewModel {
         }
     }
 
+    /// Apple Intelligence writes the page, or Ultra when the creator chose it for this idea: never one standing in for the other.
+    private func generate(_ request: ScriptRequest, reporting meter: WritingProgressMeter) async throws -> GeneratedScript {
+        guard request.engine == .ultra else { return try await writer.generate(request, reporting: meter) }
+        guard let ultra else { throw UltraError.notAvailable }
+        return try await ultra.generate(request, reporting: meter)
+    }
+
     /// What a failed write says: the reason when it is one the creator can act on (another language,
-    /// waiting), otherwise "Try again".
+    /// waiting), otherwise "Try again". Ultra's failures always say what happened (`UltraError`).
     static func failureMessage(for error: any Error) -> String {
+        if let error = error as? UltraError { return error.localizedDescription }
         if let error = error as? ScriptAIError, error.explainsItself { return error.localizedDescription }
         return String(localized: "Couldn’t draft it · Try again")
     }
@@ -442,6 +458,7 @@ extension ScriptDetailViewModel {
             script.title = generated.title
             script.text = generated.text
             script.factCheck = generated.needsFactCheck
+            if generated.engine == .ultra { script.draftedBy = .ultra }
             // The AI drafts for the creator: what it writes is a draft until they switch it to "Ready to record" (the owner's call,
             // 20/10/2026).
             script.isFinished = false
@@ -450,7 +467,9 @@ extension ScriptDetailViewModel {
         clearDraft(writtenFrom: request)
         if request?.voice != nil { voiceQuestions?.recordVoiceScript(scriptID) }
         draftLearning?.noteDraft(generated.text, for: scriptID)
-        toast.show(generated.needsFactCheck
+        toast.show(generated.engine == .ultra
+            ? String(localized: "Ultra AI draft ready · Check facts")
+            : generated.needsFactCheck
             ? String(localized: "Draft ready · Check facts")
             : String(localized: "Draft ready · Edit anything"), kind: .cue)
     }

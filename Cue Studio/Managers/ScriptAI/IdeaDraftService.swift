@@ -27,6 +27,11 @@ final class IdeaDraftService {
     }
     /// The brand brief of a sponsored ad picked on the card: the ad is written from it, and from nothing else.
     var brand: BrandBrief?
+    /// Who writes the idea: Apple Intelligence, or Ultra when the creator picked it on the dock (and allowed it). The creator's last pick stays,
+    /// across scripts and launches (the owner's call, 29/10/2026): the writer chip always shows it.
+    var engine: ScriptEngine = .apple {
+        didSet { defaults?.set(engine.rawValue, forKey: DefaultsKey.dockWriter) }
+    }
     /// "Let Cue draft it" in Start a video: the card takes the keyboard (it turns false again once it has).
     var wantsFocus = false
     /// The inspiration the text came from ("Start with it" in Find inspiration). Kept as it was given; what is sent is only what the text
@@ -34,6 +39,13 @@ final class IdeaDraftService {
     private(set) var brief: IdeaBrief?
     /// What the field held before "Start with it" replaced it: Undo puts it back.
     private(set) var replacedText: String?
+    /// Where the writer's pick is kept between launches; nil keeps it for the session only.
+    @ObservationIgnored private let defaults: UserDefaults?
+
+    init(defaults: UserDefaults? = nil) {
+        self.defaults = defaults
+        engine = defaults?.string(forKey: DefaultsKey.dockWriter).flatMap(ScriptEngine.init(rawValue:)) ?? .apple
+    }
 
     /// The text as the creator sees it. Writing it here (typing, paste, an example) ends a dictation
     /// that was still writing into it. It never goes past `IdeaPromptDraft.maxCharacters`.
@@ -98,7 +110,7 @@ final class IdeaDraftService {
 
     // MARK: - Clearing
 
-    /// The idea became a script: the next one starts empty, with the choices back to the defaults.
+    /// The idea became a script: the next one starts empty, with the choices back to the defaults. The writer stays the creator's pick.
     func clear() {
         draft = IdeaPromptDraft()
         platform = nil

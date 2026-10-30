@@ -95,6 +95,26 @@ struct IdeaTransitionServiceTests {
         await finished.value
     }
 
+    /// Ultra AI's finish is longer: its scene falls into the star and flashes before the ring opens.
+    @Test func ultraAIsFinishTakesLongerBeforeTheRingOpens() async {
+        let (service, clock, calls) = make()
+        service.begin(
+            from: CGPoint(x: 300, y: 700), idea: "3 things I stopped buying", platformName: "TikTok", engine: .ultra,
+            abort: { calls.aborted += 1 }, arrive: { calls.arrived += 1 }
+        )
+        #expect(service.coverTime == IdeaTransitionService.ultraFinishDuration)
+        await clock.advance(IdeaTransitionService.minimumDuration + 0.1)
+        let finished = ready(service)
+        await clock.advance(0.01)
+        #expect(service.phase == .revealing && service.showsBackdrop)
+        await clock.advance(IdeaTransitionService.coverDuration + 0.01)
+        #expect(service.showsBackdrop, "Apple Intelligence's cover is over; Ultra AI's finish is not")
+        await clock.advance(IdeaTransitionService.ultraFinishDuration - IdeaTransitionService.coverDuration)
+        #expect(!service.showsBackdrop)
+        await clock.advance(IdeaTransitionService.ringDuration + 0.01)
+        await finished.value
+    }
+
     @Test func aSlowAnswerIsNotHeldBack() async {
         let (service, clock, calls) = make()
         begin(service, calls)
@@ -116,6 +136,27 @@ struct IdeaTransitionServiceTests {
         #expect(service.phase == .revealing)
         await clock.advance(IdeaTransitionService.landingDuration + IdeaTransitionService.caretHold + 0.01)
         #expect(service.phase == .idle)
+    }
+
+    /// An idea sent while the last star still opens its page is a star of its own: the last one's finish neither ends it nor lets the app
+    /// behind it go live, and the overlay starts it afresh (`run`).
+    @Test func aStarSentWhileTheLastFinishesIsItsOwn() async {
+        let (service, clock, calls) = make()
+        begin(service, calls)
+        await clock.advance(5)
+        let finished = ready(service)
+        await Task.yield()
+        #expect(service.phase == .revealing)
+        let first = service.run
+        begin(service, calls)
+        #expect(service.run == first + 1 && service.phase == .rising && service.showsBackdrop)
+        await openRing(clock)
+        await finished.value
+        #expect(service.showsBackdrop, "the first star's cover doesn't let the app behind the second go live")
+        await clock.advance(IdeaTransitionService.riseDuration)
+        #expect(service.phase == .waiting, "the second star waits for its own script")
+        await clock.advance(IdeaTransitionService.landingDuration + IdeaTransitionService.caretHold + 0.01)
+        #expect(service.phase == .waiting, "the first star's finish never ends the second")
     }
 
     /// The app is a still picture behind the star from the tap until the finish's cover is solid: the ring opens onto the live page.

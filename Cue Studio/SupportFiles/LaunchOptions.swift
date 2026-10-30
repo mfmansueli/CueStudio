@@ -12,6 +12,12 @@ import Foundation
 /// - `-uiTestSeedSamples`: with the above, starts with the sample scripts and takes.
 /// - `-uiTestPro`: starts on Cue Pro (read by `StoreManager`).
 /// - `-uiTestStubAI` / `-uiTestNoAI`: instant, predictable AI, or none at all.
+/// - `-uiTestUltra`: AI Scripts Ultra with a stub instead of Gemini (`StubUltraClient`); `-uiTestUltraReviewFails` makes its polish fail,
+///   `-uiTestUltraSlow` holds each call for two seconds, `-uiTestUltraPaced` paces each call as Gemini's usually go (a think, then the words
+///   in steps: about 24 s in all, the scene round the star filmed), `-uiTestUltraPacedLong` with a check of 26 s (its comet),
+///   `-uiTestUltraAllowed` starts with Google processing already allowed,
+///   `-uiTestUltraScriptsLeft <0...5>` with that many free scripts left (5 without it), `-uiTestUltraInvite` with the AI used once before (the
+///   invitation to try Ultra AI is due).
 /// - `-uiTestPCCGeneration`: real AI with PCC preferred, only in memory. `-uiTestInformativeDuration` removes the platform length target for A/B UI tests.
 /// - `-uiTestLongTake <seconds>`: "3 morning habits" Take 3 becomes a full-size take that long, with captions (device export
 ///   measurements); `-uiTestContinuedTasks` turns iOS's continued tasks on for exports in UI tests.
@@ -55,6 +61,7 @@ import Foundation
 /// - `-uiTestUniverse <sample|newYear|newAccount>`: what "Your universe" holds (the board's APP DATA panel; see `UniverseSeed`).
 /// - `-uiTestFakeShareSheet`: a stand-in with Complete and Cancel takes the place of the system share sheet.
 /// - `-uiTestLowPower`: the editor reads Low Power Mode as on (its notice shows; the Simulator can't turn the mode on).
+/// - `-uiTestDockMotionLog`: the Scripts dock counts its lights (the writer's, the network's, the send arrow's) in `dock.motionLog`.
 /// - `-uiTestShareQueue`: a "Share to universe" queue left for the sample take (the Continue posting card).
 /// - `-uiTestStoryAt <seconds>`: the milestone and first-star stories stand still at that second.
 /// - `-uiTestFirstStar` / `-uiTestMilestone <videos>`: the review opens on the first-star (1.7) / milestone (8.3) story.
@@ -107,6 +114,12 @@ struct LaunchOptions {
     /// UI tests and previews swap in rules read from the bundle only (no cache, no download).
     var platformRules: PlatformRulesService = PlatformRulesService()
     var writer: ScriptWriting = ScriptAIService()
+    /// AI Scripts Ultra is offered (Debug, with the lab's configuration on this iPhone, or a UI test's stub). Release has none.
+    var ultraAvailable = false
+    /// Gemini's client, made only when a permitted Ultra script is first written (`UltraScriptService`).
+    var makeUltraClient: @MainActor () -> (any UltraModelClient)? = { nil }
+    /// Where the lab counts its calls: the app's standard defaults, which a UI test's throwaway suite can't reset (only the stub counts there).
+    var ultraBudgetDefaults: UserDefaults = .standard
     /// Nil is the model on this iPhone (`AppleWritingStyleReader`).
     var styleReader: (any WritingStyleReading)?
     var credentialChecker: AppleIDCredentialChecking = AppleIDCredentialChecker()
@@ -148,6 +161,8 @@ struct LaunchOptions {
     var fakesShareSheet = false
     /// UI tests: the editor reads Low Power Mode as on (`-uiTestLowPower`).
     var forcesLowPowerMode = false
+    /// UI tests: the Scripts dock counts its lights (`-uiTestDockMotionLog`).
+    var logsDockMotion = false
     /// UI tests: the welcome's opening is frozen at this second (`-uiTestWelcomeAt`).
     var welcomeFrozenTime: Double?
     /// UI tests: the Pro opening is frozen at this second (`-uiTestProAt`).
@@ -193,6 +208,23 @@ struct LaunchOptions {
     /// `-uiTestTopics fitness,custom:Daily Routine`: a profile that holds those topics and nothing else.
     /// `-uiTestScriptLanguage` and `-uiTestAIUnavailable`: the Script Language to start on, and why Apple Intelligence can't draft. Cue's own
     /// switch (`cue`) is a preference that Settings › Privacy & AI data reads from the defaults; the others are the stub writer's.
+    /// `-uiTestUltra`: Ultra AI with the stub client, its permission and call count in the test's own defaults.
+    private static func readUltra(_ arguments: [String], into options: inout LaunchOptions) {
+        guard arguments.contains("-uiTestUltra") else { return }
+        let stub = StubUltraClient(
+            reviewFails: arguments.contains("-uiTestUltraReviewFails"), delay: arguments.contains("-uiTestUltraSlow") ? .seconds(2) : .zero,
+            pace: arguments.contains("-uiTestUltraPacedLong") ? .long : (arguments.contains("-uiTestUltraPaced") ? .usual : nil)
+        )
+        options.ultraAvailable = true
+        options.makeUltraClient = { stub }
+        options.ultraBudgetDefaults = options.defaults
+        if arguments.contains("-uiTestUltraAllowed") { options.defaults.set(Date.now, forKey: UltraConsentService.key) }
+        if arguments.contains("-uiTestUltraInvite") { options.defaults.set(UltraInviteService.usesBefore, forKey: UltraInviteService.usesKey) }
+        if let index = arguments.firstIndex(of: "-uiTestUltraScriptsLeft"), arguments.indices.contains(index + 1), let left = Int(arguments[index + 1]) {
+            options.defaults.set(max(0, UsagePolicy.freeUltraScripts - left), forKey: UltraAllowanceService.freeUsedKey)
+        }
+    }
+
     private static func readGenerationExperiment(_ arguments: [String], into options: inout LaunchOptions) {
         guard arguments.contains("-uiTestPCCGeneration") else { return }
         let writer = ScriptAIService(preferredModel: .privateCloud)
@@ -229,6 +261,8 @@ struct LaunchOptions {
         #if DEBUG
         let arguments = ProcessInfo.processInfo.arguments
         options.resetsExportsOnNewInstall = !arguments.contains("-uiTestInMemory")
+        options.ultraAvailable = UltraLabConfiguration.isPresent
+        options.makeUltraClient = { FirebaseUltraClient.make() }
         if arguments.contains("-uiTestInMemory") {
             options.isInMemory = true
             options.appsAreInstalled = arguments.contains("-uiTestAppsInstalled")
@@ -311,6 +345,7 @@ struct LaunchOptions {
             }
             options.fakesShareSheet = arguments.contains("-uiTestFakeShareSheet")
             options.forcesLowPowerMode = arguments.contains("-uiTestLowPower")
+            options.logsDockMotion = arguments.contains("-uiTestDockMotionLog")
             // A "Share to universe" queue the creator left: TikTok then Reels for the sample take (`-uiTestShareQueue`).
             let habits3 = takes.first { $0.scriptID == SampleScripts.morningHabits.id && $0.number == 3 }
             if arguments.contains("-uiTestShareQueue"), let take = habits3 {
@@ -357,6 +392,7 @@ struct LaunchOptions {
             }
             let unavailable = Self.readDrafting(arguments, into: options.defaults)
             Self.readGenerationExperiment(arguments, into: &options)
+            Self.readUltra(arguments, into: &options)
             if arguments.contains("-uiTestStubAI") || arguments.contains("-uiTestNoAI") {
                 options.writer = StubScriptWriter(
                     available: !arguments.contains("-uiTestNoAI"), stalls: arguments.contains("-uiTestWriterStalls"),

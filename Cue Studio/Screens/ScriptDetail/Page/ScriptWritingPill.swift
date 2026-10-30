@@ -10,6 +10,8 @@ import SwiftUI
 /// While the page waits for the model (no star over it: a script written again from the page) it also says how much is written, "42%".
 struct ScriptWritingPill: View {
     let inMyVoice: Bool
+    /// Ultra says so ("Drafting with Ultra AI"): a script from Ultra is never shown as Apple Intelligence's.
+    var engine: ScriptEngine = .apple
     /// How much of the script is written, until the script is there; nil hides the percentage.
     var progress: WritingProgressMeter?
 
@@ -40,9 +42,13 @@ struct ScriptWritingPill: View {
         }
         .fixedSize()
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text(inMyVoice ? "Drafting in your voice" : "Drafting…"))
+        .accessibilityLabel(Text(title))
         .accessibilityValue(progressValue)
         .accessibilityIdentifier("page.writingPill")
+    }
+
+    private var title: LocalizedStringKey {
+        engine == .ultra ? "Drafting with Ultra AI" : inMyVoice ? "Drafting in your voice" : "Drafting…"
     }
 
     /// "42%" to VoiceOver while the percentage shows.
@@ -53,7 +59,7 @@ struct ScriptWritingPill: View {
 
     /// The words in `aiTextStrong` (`#E4DEFF`) with a white band (38% → 62% of a gradient 2.4× as wide as the text) sliding across.
     private func label(sweep: Double) -> some View {
-        let text = Text(inMyVoice ? "Drafting in your voice" : "Drafting…").cueFont(13, weight: .semibold)
+        let text = Text(title).cueFont(13, weight: .semibold)
         return text
             .foregroundStyle(Palette.aiTextStrong)
             .overlay {

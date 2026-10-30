@@ -108,7 +108,7 @@ final class FirstRunUITests: XCTestCase {
 
     // MARK: - Write in my voice
 
-    /// "✦ My Cue Voice · Set up" opens the four questions; "Not now" changes nothing and keeps the idea;
+    /// "✦ My Cue Voice 0%" opens the four questions; "Not now" changes nothing and keeps the idea;
     /// answered, the idea is written and the script is the preview of the voice.
     func testMyCueVoiceAsksFourQuestionsAndTheScriptIsThePreview() {
         let app = CueApp.launch(seeded: false)
@@ -119,13 +119,13 @@ final class FirstRunUITests: XCTestCase {
 
         let chip = app.buttons["ideaCard.voiceChip"]
         XCTAssertTrue(chip.exists(within: 5))
-        XCTAssertEqual(chip.value as? String, "Set up")
+        XCTAssertEqual(chip.value as? String, "0%")
         chip.tap()
         XCTAssertTrue(element(app, "voiceSetup.sheet").exists(within: 5))
-        // Not now: the chip still says Set up and the idea is kept.
+        // Not now: the chip still says 0% and the idea is kept.
         app.buttons["sheet.closeButton"].tap()
         XCTAssertTrue(chip.exists(within: 5))
-        XCTAssertEqual(chip.value as? String, "Set up")
+        XCTAssertEqual(chip.value as? String, "0%")
         XCTAssertEqual(field.value as? String, "Carnival in Salvador")
 
         // 01 · the kind of creator (Continue waits for a pick). 02 · topics. 03 · audience. 04 · tone.

@@ -1,0 +1,151 @@
+[
+  {
+    "callsUsed": 19,
+    "context": "Write the script in Portuguese (Brazil).\nPlatform: TikTok.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: free. There is no time or word target: the subject and the request decide. Do not pad, and do not cut useful development.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a teacher or explainer.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: criadores pequenos que gravam com o celular em casa, sem equipe.\nTopics: Gravar vídeos com o celular.\nRules: never write “Promessas exageradas”.\nNever swear.\n\nHow the creator speaks (apply it to the form; preferences, not a new request):\nThey sound casual and confident.\nDelivery: energy: balanced; sentences: short and punchy, with varied lengths (a rhythm preference, never a limit on how much the script develops); words: plain and everyday.\nThey film mostly: tutorials.\nOptional familiar expressions: “Simbora”. Use at most one only if natural here; omission is better than forced repetition.\n\nThe creator's request, in their exact words:\n\"\"\"\nVale a pena trocar o celular por uma câmera para gravar vídeos?\n\"\"\"\n\nDraft to polish:\n\"\"\"\n[draft]\n\"\"\"",
+    "creator": {
+      "endings": [],
+      "openings": [],
+      "phrases": [
+        "Simbora"
+      ],
+      "summary": "niches: education, tech, Gravar vídeos com o celular · sounds: casual, confident · role: educator · audience: criadores pequenos que gravam com o celular em casa, sem equipe · avoid: Promessas exageradas"
+    },
+    "durationPolicy": "informative",
+    "engines": {
+      "apple": {
+        "estimatedSeconds": 66.4,
+        "model": "privateCloud",
+        "seconds": {
+          "total": 4.301340542
+        },
+        "text": "Eu uso o celular para gravar tudo aqui. Mas será que vale a pena trocar por uma câmera?\n\nO celular já entrega bastante detalhe para quem grava em casa. Minha lente capta bem a luz do dia perto da janela. Uma câmera pode dar mais profundidade, mas exige ajuste manual. Compare um clipe gravado no celular com o mesmo ângulo na câmera. Veja se o ganho compensa o tempo de mexer nos botões.\n\nTrocar de aparelho muda o ritmo da gravação. Eu pego o celular rápido e já começo. A câmera pede tripé e bateria extra, o que atrasa o fluxo. Teste gravar um passo simples com cada opção. Note se o peso e o setup travam sua ideia.\n\nO celular já está na mão. Uma câmera exige gasto e lugar para guardar. Se o celular resolve, o dinheiro sobra para luz. Imagine montar um cenário pequeno: o celular cabe na mão, a câmera pode precisar de mesa.\n\nPara quem começa sozinho, o celular costuma vencer.",
+        "title": "Vale a pena trocar o celular por uma câmera?",
+        "words": 166,
+        "metrics": {
+          "words": 166,
+          "estimatedSeconds": 66.4,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Simbora": 0
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 9,
+          "titleIssue": "long"
+        }
+      },
+      "checked": {
+        "changes": [
+          "Ajuste do ritmo das frases para torná-las mais curtas e dinâmicas, ideal para o TikTok.",
+          "Inclusão da expressão Simbora de forma natural na transição inicial.",
+          "Divisão de blocos de texto complexos para facilitar a leitura e a entonação do criador.",
+          "Preservação exata das correções técnicas obrigatórias sobre iluminação e probabilidade de melhora."
+        ],
+        "checked": "Eu vejo muita gente que está começando a gravar conteúdo guardar cada centavo pensando que, no dia em que comprarem uma câmera profissional, os vídeos finalmente vão ficar perfeitos. Mas a verdade que quase ninguém te conta é que, para quem grava sozinho em casa, trocar o celular por uma câmera pode ser um erro que vai atrasar a sua produção.\n\nUma câmera profissional não trabalha sozinha. Quando você compra uma, você não está comprando só um aparelho, você está comprando um processo de trabalho muito mais complexo. No celular, o sistema faz todo o processamento de imagem para você de forma automática. Ele compensa a luz, ajusta o foco no seu olho e entrega um arquivo pronto para postar. Com uma câmera de lentes intercambiáveis, se você não souber configurar o tripé da exposição, que é a abertura, a velocidade e o ISO, o seu vídeo pode facilmente ficar pior, mais escuro ou mais borrado do que o do seu celular antigo.\n\nE depois tem a barreira da edição. No celular, o fluxo é imediato. Você grava, abre o aplicativo de edição no próprio aparelho, corta e posta. Com a câmera, você precisa tirar o cartão de memória, conectar no computador, descarregar arquivos que são gigantescos, editar em um programa mais pesado e só depois exportar. Para quem faz tudo sozinho, cada minuto extra nesse processo é um convite para a procrastinação. Esse trabalho a mais é o maior assassino de consistência que eu conheço.\n\nA verdade é que, se o seu vídeo hoje não está com uma imagem legal no celular, o culpado raramente é o sensor da câmera dele. Na maioria das vezes, o problema é a falta de luz. Uma câmera de cinco mil reais gravando em um ambiente mal iluminado também vai gerar uma imagem granulada e feia. Já um celular intermediário, se você gravar de frente para uma janela bem iluminada ou usar uma lâmpada comum bem posicionada, vai entregar uma imagem limpa e profissional. \n\nEu só recomendo fazer essa troca em dois casos muito específicos. O primeiro é se você já ganha dinheiro com os seus vídeos, tem o orçamento folgado e quer transformar a gravação em um estúdio fixo, onde a câmera fica sempre montada, ligada na tomada e pronta para rodar. O segundo é se o seu celular atual está limitando tecnicamente o que você precisa fazer, como gravar vídeos extremamente longos sem travar ou esquentar.\n\nSe esse não for o seu caso, o meu conselho é segurar o seu dinheiro. Use o celular que você já tem no bolso. Em vez de comprar uma câmera nova, gaste uma fração desse valor em um microfone de lapela simples e em uma fonte de luz difusa. É muito provável que a melhora na qualidade do seu conteúdo seja muito maior, e você ainda mantém a praticidade de criar de forma rápida.",
+        "corrections": [
+          "De \"Uma câmera de cinco mil reais no escuro vai gerar...\" para \"Uma câmera de cinco mil reais gravando em um ambiente mal iluminado também vai gerar...\"",
+          "De \"Eu garanto que a melhora na qualidade...\" para \"É muito provável que a melhora na qualidade...\""
+        ],
+        "draft": "Eu vejo muita gente que está começando a gravar conteúdo guardar cada centavo pensando que, no dia em que comprarem uma câmera profissional, os vídeos finalmente vão ficar perfeitos. Mas a verdade que quase ninguém te conta é que, para quem grava sozinho em casa, trocar o celular por uma câmera pode ser um erro que vai atrasar a sua produção.\n\nUma câmera profissional não trabalha sozinha. Quando você compra uma, você não está comprando só um aparelho, você está comprando um processo de trabalho muito mais complexo. No celular, o sistema faz todo o processamento de imagem para você de forma automática. Ele compensa a luz, ajusta o foco no seu olho e entrega um arquivo pronto para postar. Com uma câmera de lentes intercambiáveis, se você não souber configurar o tripé da exposição, que é a abertura, a velocidade e o ISO, o seu vídeo pode facilmente ficar pior, mais escuro ou mais borrado do que o do seu celular antigo.\n\nE depois tem a barreira da edição. No celular, o fluxo é imediato. Você grava, abre o aplicativo de edição no próprio aparelho, corta e posta. Com a câmera, você precisa tirar o cartão de memória, conectar no computador, descarregar arquivos que são gigantescos, editar em um programa mais pesado e só depois exportar. Para quem faz tudo sozinho, cada minuto extra nesse processo é um convite para a procrastinação. Esse trabalho a mais é o maior assassino de consistência que eu conheço.\n\nA verdade é que, se o seu vídeo hoje não está com uma imagem legal no celular, o culpado raramente é o sensor da câmera dele. Na maioria das vezes, o problema é a falta de luz. Uma câmera de cinco mil reais no escuro vai gerar uma imagem granulada e feia. Já um celular intermediário, se você gravar de frente para uma janela bem iluminada ou usar uma lâmpada comum bem posicionada, vai entregar uma imagem limpa e profissional. \n\nEu só recomendo fazer essa troca em dois casos muito específicos. O primeiro é se você já ganha dinheiro com os seus vídeos, tem o orçamento folgado e quer transformar a gravação em um estúdio fixo, onde a câmera fica sempre montada, ligada na tomada e pronta para rodar. O segundo é se o seu celular atual está limitando tecnicamente o que você precisa fazer, como gravar vídeos extremamente longos sem travar ou esquentar.\n\nSe esse não for o seu caso, o meu conselho é segurar o seu dinheiro. Use o celular que você já tem no bolso. Em vez de comprar uma câmera nova, gaste uma fração desse valor em um microfone de lapela simples e em uma fonte de luz difusa. Eu garanto que a melhora na qualidade do seu conteúdo vai ser muito maior e você não vai perder a praticidade de criar de forma rápida.",
+        "estimatedSeconds": 172.8,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "check": 13.521456834,
+          "draft": 10.793015709,
+          "review": 19.035554541
+        },
+        "text": "Eu vejo muita gente que grava conteúdo guardar cada centavo para comprar uma câmera profissional. Eles acham que, no dia em que comprarem essa câmera, os vídeos finalmente vão ficar perfeitos. Mas a verdade é que trocar o celular por uma câmera pode ser um erro. Principalmente para quem grava sozinho em casa. Isso pode atrasar muito a sua produção. Quer entender o porquê? Simbora. Uma câmera profissional não trabalha sozinha. Com ela, você não compra só um aparelho. Você compra um processo de trabalho muito mais complexo. No celular, o sistema faz tudo de forma automática. Ele compensa a luz, ajusta o foco no seu olho e entrega o arquivo pronto para postar. Já na câmera, se você não souber configurar a abertura, a velocidade e o ISO, o seu vídeo pode facilmente ficar pior, mais escuro ou mais borrado do que o do seu celular antigo. Depois, tem a barreira da edição. No celular, o fluxo é imediato. Você grava, abre o aplicativo no próprio aparelho, corta e posta. Com a câmera, o processo é lento. Você precisa tirar o cartão de memória, conectar no computador, descarregar arquivos gigantescos e editar em um programa pesado. Para quem faz tudo sozinho, cada minuto extra é um convite para a procrastinação. Esse trabalho a mais é o maior assassino de consistência que eu conheço. Se o seu vídeo hoje está ruim, o culpado raramente é o celular. Na maioria das vezes, o problema é a falta de luz. Uma câmera de cinco mil reais gravando em um ambiente mal iluminado também vai gerar uma imagem granulada e feia. Já um celular intermediário, gravando de frente para uma janela bem iluminada ou com uma lâmpada comum bem posicionada, entrega uma imagem limpa e profissional. Eu só recomendo trocar o celular por câmera em dois casos específicos. O primeiro é se você já ganha dinheiro com os vídeos, tem orçamento folgado e quer montar um estúdio fixo. Aquele onde a câmera fica sempre ligada na tomada e pronta para rodar. O segundo caso é se o seu celular atual está limitando você tecnicamente, como travar ou esquentar em gravações muito longas. Se esse não for o seu caso, o meu conselho é segurar o seu dinheiro. Use o celular que você já tem no bolso. Em vez de uma câmera nova, gaste uma fração desse valor em um microfone de lapela simples e em uma fonte de luz difusa. É muito provável que a melhora na qualidade do seu conteúdo seja muito maior, e você ainda mantém a praticidade de criar de forma rápida.",
+        "title": "Celular ou camera para gravar videos",
+        "tokens": {
+          "check": [
+            1353,
+            704,
+            2641
+          ],
+          "draft": [
+            808,
+            600,
+            1110
+          ],
+          "review": [
+            1678,
+            681,
+            2951
+          ]
+        },
+        "words": 432,
+        "metrics": {
+          "words": 432,
+          "estimatedSeconds": 172.8,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Simbora": 1
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 6,
+          "titleIssue": null
+        }
+      },
+      "polished": {
+        "changes": [
+          "Dividi frases longas em períodos mais curtos para criar um ritmo mais dinâmico e falado, ideal para o TikTok.",
+          "Substituí algumas expressões por termos mais coloquiais e diretos, como o buraco é mais embaixo.",
+          "Ajustei a transição de ideias para garantir que o tom de conselho de professor para criador iniciante ficasse bem natural e amigável.",
+          "Removi repetições desnecessárias para manter a energia do vídeo alta do início ao fim."
+        ],
+        "corrections": [],
+        "draft": "Sabe aquele fundo desfocado perfeito e aquela imagem super nítida que você vê nos vídeos dos grandes criadores? É normal achar que o segredo de tudo é uma câmera profissional e que você precisa trocar o seu celular por uma o quanto antes. Mas, se você grava sozinho, em casa, e não tem uma equipe para te ajudar, a resposta realista pode te surpreender. Na maioria dos casos, não vale a pena fazer essa troca agora.\n\nQuando você grava com o celular, o seu processo é direto. Você aperta o botão, grava, edita no próprio aparelho ou envia para o computador em segundos e publica. O celular faz todo o processamento de imagem de forma inteligente e automática. Ele corrige a luz, calibra as cores e garante que o seu rosto fique focado o tempo todo, mesmo que você se mexa na cadeira. \n\nCom uma câmera dedicada, a história é bem diferente. Existe uma barreira técnica que ninguém te conta. Você precisa aprender a mexer em abertura de lente, velocidade de obturador, ISO e balanço de brancos. Se você errar uma dessas configurações, a imagem da sua câmera super cara vai ficar pior do que a do seu celular de uso diário. \n\nAlém disso, o fluxo de trabalho fica muito mais lento. Você precisa tirar o cartão de memória, transferir arquivos pesados, muitas vezes converter esses formatos e só então começar a editar. E tem o fator mais crítico para quem grava sozinho: o foco. Muitas câmeras sofrem para manter o foco automático no olho ou no rosto de forma constante. Não tem nada mais frustrante do que gravar um conteúdo de dez minutos e só perceber na hora da edição que você ficou borrado a gravação inteira porque a câmera resolveu focar no guarda-roupa que estava atrás de você.\n\nA verdade é que a câmera sozinha não faz milagre. Para ter aquela imagem de cinema, você precisa de uma lente clara, que costuma custar quase o preço de outro celular, e de um sistema de áudio externo, já que o microfone embutido das câmeras geralmente é péssimo. \n\nSe você tem algum dinheiro para investir agora no seu canal ou no seu perfil, o meu conselho é esquecer a câmera por um tempo. Invista em iluminação e em áudio. Um celular intermediário gravando com uma luz bem posicionada, como um softbox de qualidade, e com um microfone de lapela bem ajustado, vai entregar um resultado infinitamente mais profissional do que uma câmera de última geração gravando na penumbra com o áudio ecoando na sala vazia.\n\nDeixe para comprar uma câmera profissional no futuro, quando o seu canal já estiver gerando receita e quando o celular for, de fato, o fator que está limitando a sua criatividade. Até lá, domine o equipamento que já está no seu bolso. O seu público quer ouvir o que você tem a dizer, e a praticidade de gravar com o celular é a sua maior aliada para manter a constância e continuar criando sem sofrer com a técnica.",
+        "estimatedSeconds": 169.6,
+        "model": "gemini-3.5-flash",
+        "seconds": {
+          "draft": 10.755153,
+          "review": 8.724448
+        },
+        "text": "Sabe aquele fundo desfocado perfeito? Aquela imagem super nítida que você vê nos grandes canais? É normal achar que o segredo é uma câmera profissional. E que você precisa trocar o seu celular por uma agora mesmo. Mas se você grava sozinho, em casa e sem equipe, a realidade é bem diferente. Na maioria dos casos, não vale a pena fazer essa troca agora. Quando você grava com o celular, o processo é direto. Você aperta o botão e grava. Edita no próprio aparelho ou passa para o computador em segundos. O celular faz tudo sozinho de forma inteligente. Ele corrige a luz, calibra as cores e garante que o seu rosto fique focado o tempo todo. Mesmo se você se mexer na cadeira. Com uma câmera dedicada, o buraco é mais embaixo. Existe uma barreira técnica que ninguém te conta. Você precisa aprender sobre abertura de lente, velocidade de obturador, ISO e balanço de brancos. Se você errar uma única configuração, a imagem da câmera super cara vai ficar pior do que a do seu celular. Além disso, o fluxo de trabalho fica muito mais lento. Tem que tirar cartão de memória, transferir arquivos gigantes, converter formatos e só depois começar a editar. E tem o pior pesadelo de quem grava sozinho: o foco. Muitas câmeras sofrem para manter o foco automático no seu rosto de forma constante. Não tem nada mais frustrante do que gravar por dez minutos e descobrir na edição que você ficou borrado porque a câmera resolveu focar no guarda-roupa atrás de você. A verdade é que a câmera sozinha não faz milagre. Para ter aquela imagem de cinema, você precisa de uma lente clara, que custa caro. E de um microfone externo, porque o áudio embutido das câmeras geralmente é péssimo. Se você tem dinheiro para investir agora, escuta o meu conselho. Esqueça a câmera por um tempo. Invista em iluminação e em áudio. Um celular intermediário com uma luz bem posicionada, como um softbox, e um microfone de lapela simples, entrega um resultado muito mais profissional do que uma câmera de última geração gravando no escuro, com áudio cheio de eco. Deixe para comprar a câmera no futuro. Quando seu conteúdo já estiver dando retorno e o celular for o gargalo da sua criatividade. Até lá, domine o equipamento que já está no seu bolso. O seu público quer ouvir o que você tem a dizer. A praticidade do celular é a sua maior aliada para manter a constância e continuar criando sem sofrer com a técnica.",
+        "title": "Celular ou câmera para gravar vídeos",
+        "tokens": {
+          "draft": [
+            808,
+            640,
+            1268
+          ],
+          "review": [
+            1614,
+            688,
+            1439
+          ]
+        },
+        "words": 424,
+        "metrics": {
+          "words": 424,
+          "estimatedSeconds": 169.6,
+          "lengthFit": null,
+          "endsWithQuestion": false,
+          "ctaInEnding": [],
+          "catchphrases": {
+            "Simbora": 0
+          },
+          "emDashes": 0,
+          "markdown": false,
+          "newNumbers": [],
+          "titleWords": 6,
+          "titleIssue": null
+        }
+      }
+    },
+    "id": "t2-camera-upgrade",
+    "idea": "Vale a pena trocar o celular por uma câmera para gravar vídeos?",
+    "kind": "technical",
+    "language": "pt-BR",
+    "lengthAsked": "free",
+    "platform": "TikTok",
+    "run": "pilot"
+  }
+]

@@ -13,10 +13,10 @@ struct ScriptRowLineTests {
         TestData.take(scriptID: script.id, isBest: best)
     }
 
-    @Test func aReadyScriptShowsItsPlatformDurationAndCues() {
+    /// The owner took the length, the cues and the topic off the list (30/10/2026): a ready script says only its platform.
+    @Test func aReadyScriptSaysOnlyItsPlatform() {
         let script = TestData.script(text: "Hook. [pause] Body. [smile] More. [pause]", platform: .tiktok)
-        let line = ScriptRowLine(script: script, state: .ready, readSeconds: 47, takes: [], hasDraft: { _ in false })
-        #expect(line.values == ["TikTok", "0:47", "3 cues"])
+        #expect(ScriptRowLine(script: script, state: .ready, takes: [], hasDraft: { _ in false }).values == ["TikTok"])
     }
 
     @Test func oneCueAndNoCuesAreSaidInTheSingular() {
@@ -26,19 +26,19 @@ struct ScriptRowLineTests {
 
     @Test func aDraftShowsWhenItWasLastEditedAndABlankOneSaysSo() {
         let draft = TestData.script(text: "Some words", platform: .shorts, isFinished: false)
-        let line = ScriptRowLine(script: draft, state: .draft, readSeconds: 5, takes: [], hasDraft: { _ in false })
+        let line = ScriptRowLine(script: draft, state: .draft, takes: [], hasDraft: { _ in false })
         #expect(line.values.count == 2 && line.values[0] == "Shorts")
         let blank = TestData.script(title: "", text: "", platform: .reels)
-        #expect(ScriptRowLine(script: blank, state: .draft, readSeconds: 0, takes: [], hasDraft: { _ in false }).values == ["Reels", "Blank"])
+        #expect(ScriptRowLine(script: blank, state: .draft, takes: [], hasDraft: { _ in false }).values == ["Reels", "Blank"])
     }
 
     @Test func aRecordedScriptShowsItsTakesAndTheStageOfItsVideo() {
         let script = TestData.script(platform: .tiktok)
-        let one = ScriptRowLine(script: script, state: .recorded, readSeconds: 30, takes: [take(script)], hasDraft: { _ in false })
+        let one = ScriptRowLine(script: script, state: .recorded, takes: [take(script)], hasDraft: { _ in false })
         #expect(one.values == ["TikTok", "1 take", "Ready"])
-        let two = ScriptRowLine(script: script, state: .recorded, readSeconds: 30, takes: [take(script), take(script)], hasDraft: { _ in false })
+        let two = ScriptRowLine(script: script, state: .recorded, takes: [take(script), take(script)], hasDraft: { _ in false })
         #expect(two.values == ["TikTok", "2 takes", "To pick"])
-        let edit = ScriptRowLine(script: script, state: .recorded, readSeconds: 30, takes: [take(script, best: true)], hasDraft: { _ in true })
+        let edit = ScriptRowLine(script: script, state: .recorded, takes: [take(script, best: true)], hasDraft: { _ in true })
         #expect(edit.values.last == "In edit")
     }
 

@@ -35,6 +35,8 @@ struct AppServices {
     /// The pause between the groups of words of a script the AI writes into the page.
     let scriptRevealPause: Duration
     let writer: ScriptWriting
+    /// AI Scripts Ultra (Google's Gemini), written only when the creator chose it and allowed it; unavailable in Release.
+    let ultra: UltraScriptService
     /// Reads what the creator imports for how they sound (Import my writing), with the model on this iPhone.
     let styleReader: any WritingStyleReading
     let textRecognizer: TextRecognitionManager
@@ -110,6 +112,7 @@ struct AppServices {
     let fakesShareSheet: Bool
     /// UI tests: the editor reads Low Power Mode as on.
     let forcesLowPowerMode: Bool
+    let logsDockMotion: Bool
 
     init(options: LaunchOptions) {
         languages = LanguageService(defaults: options.defaults, store: options.languageStore) { language in
@@ -146,6 +149,7 @@ struct AppServices {
         milestoneToShow = options.milestoneToShow
         fakesShareSheet = options.fakesShareSheet
         forcesLowPowerMode = options.forcesLowPowerMode
+        logsDockMotion = options.logsDockMotion
         profile = CreatorProfileService(defaults: options.defaults)
         session = SessionService(defaults: options.defaults, checker: options.credentialChecker)
         rules = options.platformRules
@@ -163,15 +167,25 @@ struct AppServices {
         speech = SpeechRecognitionManager()
         prompterSpeech = options.prompterSpeech ?? speech
         dictation = options.dictation ?? DictationService(audio: AudioInputManager(), speech: SpeechRecognitionManager(use: .dictation))
-        ideaDraft = IdeaDraftService()
+        ideaDraft = IdeaDraftService(defaults: options.defaults)
         let ideaTransition = IdeaTransitionService()
         // UI tests don't wait three seconds for every idea (`-uiTestStarTransition` brings the real timings back).
         if options.isInMemory, !options.keepsStarTransitionTimings { ideaTransition.speed = 0.05 }
         self.ideaTransition = ideaTransition
+        // The free scripts and Pro's monthly ones are a preview kept on this iPhone (`UltraAllowanceService`), never a protection of credits.
+        let ultra = UltraScriptService(
+            isAvailable: options.ultraAvailable, consent: UltraConsentService(defaults: options.defaults),
+            budget: UltraCallBudget(defaults: options.ultraBudgetDefaults),
+            allowance: UltraAllowanceService(defaults: options.defaults) { [store] in
+                UltraAllowance.Membership(tier: store.tier, isInFreeTrial: store.isInFreeTrial)
+            },
+            invite: UltraInviteService(defaults: options.defaults), makeClient: options.makeUltraClient
+        )
+        self.ultra = ultra
         starter = ScriptStarter(
             library: library, rules: rules, profile: profile, languages: languages,
             presentation: presentation, ideaDraft: ideaDraft, transition: ideaTransition,
-            writer: options.writer, toast: toast
+            writer: options.writer, ultra: ultra, toast: toast
         )
         writer = options.writer
         let busyWriter = options.writer
@@ -418,6 +432,7 @@ extension View {
             .environment(services.notifications)
             .environment(services.eraser)
             .environment(services.privacy)
+            .environment(services.ultra)
             .environment(services.permissionStatus)
             .environment(\.styleReader, services.styleReader)
             .environment(\.proOpeningFrozenAt, services.proFrozenTime)
@@ -426,5 +441,6 @@ extension View {
             .environment(\.storyFrozenAt, services.storyFrozenTime)
             .environment(\.fakesShareSheet, services.fakesShareSheet)
             .environment(\.forcesLowPowerMode, services.forcesLowPowerMode)
+            .environment(\.logsDockMotion, services.logsDockMotion)
     }
 }

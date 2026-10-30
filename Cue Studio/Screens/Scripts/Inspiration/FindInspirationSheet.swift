@@ -28,6 +28,7 @@ struct FindInspirationSheet: View {
     @Environment(CreatorProfileService.self) private var profile
     @Environment(ScriptLibraryService.self) private var library
     @Environment(LanguageService.self) private var languages
+    @Environment(UltraScriptService.self) private var ultra
     @Environment(\.dismiss) private var dismiss
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.dynamicTypeSize) private var typeSize
@@ -35,6 +36,14 @@ struct FindInspirationSheet: View {
     @ScaledMetric(relativeTo: .footnote) private var noteIconSize: CGFloat = 16
 
     @State private var editsTopics = false
+    /// The idea "Draft with Ultra" was tapped on before Ultra was allowed: the disclosure is open for it.
+    @State private var ultraConsentFor: ThemeIdea?
+    /// Allowed on the disclosure: written once the disclosure has gone.
+    @State private var allowedUltraIdea: ThemeIdea?
+    /// The invitation to try Ultra AI was due when the sheet opened (this visit is the AI's second use or a later one).
+    @State private var invitesUltra = false
+    /// Cue Pro, when Ultra AI's free scripts are used up (over this sheet: the app's own can't be shown while it is up).
+    @State private var paywall: PaywallContext?
     /// Where "Draft it now" is: the star leaves from there.
     @State private var writeCenter: CGPoint?
     /// "Start with it" was tapped: the composer takes the keyboard once the sheet has gone.
@@ -67,9 +76,9 @@ struct FindInspirationSheet: View {
     /// Apple Intelligence can write ideas now.
     private var hasAI: Bool { ideasDrafting.isAvailable }
 
-    /// "Draft it now" can draft: what the dock can (a Script Language the model doesn't write can't; on Auto-detect the idea's own language
-    /// is told when it is sent).
-    private var canDraft: Bool { starter.dockDrafting.isAvailable }
+    /// "Draft it now" can draft with Apple Intelligence (a Script Language the model doesn't write can't; on Auto-detect the idea's own
+    /// language is told when it is sent). Ultra has a button of its own, never this one.
+    private var canDraft: Bool { starter.appleDrafting.isAvailable }
 
     var body: some View {
         ScrollView {
@@ -84,6 +93,16 @@ struct FindInspirationSheet: View {
                 .padding(.top, 16)
                 notes
                     .padding(.horizontal, Metrics.gutter)
+                if invitesUltra, ultra.showsInvite {
+                    UltraInviteCard(placement: .inspiration) {
+                        if let idea = viewModel.idea { draftWithUltra(idea) }
+                    } onClose: {
+                        ultra.invite?.close()
+                    }
+                    .padding(.horizontal, Metrics.gutter)
+                    .padding(.top, 14)
+                    .transition(.ultraFold)
+                }
                 cardArea
                     .padding(.horizontal, Metrics.gutter)
                     .padding(.top, 18)
@@ -107,7 +126,12 @@ struct FindInspirationSheet: View {
         .cueSheetChrome()
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
-        .onAppear { viewModel.appear() }
+        .onAppear {
+            viewModel.appear()
+            // Decided before this visit is counted: the invitation comes with the second use of the AI, not the first.
+            invitesUltra = ultra.showsInvite
+            if hasAI { ultra.noteAIUse() }
+        }
         .onChange(of: profile.profile.ideaTopics) { viewModel.topicsChanged() }
         .onDisappear {
             if focusesComposer { ideaDraft.wantsFocus = true }
@@ -120,6 +144,15 @@ struct FindInspirationSheet: View {
             }
         }
         .sheet(isPresented: $editsTopics) { VoiceEditorSheet(field: .topics) }
+        .fullScreenCover(item: $paywall) { PaywallView(context: $0) }
+        .sheet(item: $ultraConsentFor, onDismiss: writeAllowedUltra) { idea in
+            UltraConsentSheet(
+                payload: starter.ultraPreview(idea: FindInspirationViewModel.writingText(of: idea), brief: idea.brief), writesNow: true
+            ) {
+                ultra.consent.grant()
+                allowedUltraIdea = idea
+            }
+        }
         .accessibilityElement(children: .contain)
         .accessibilityIdentifier("inspiration.sheet")
     }
@@ -393,6 +426,7 @@ struct FindInspirationSheet: View {
                 .fixedSize(horizontal: false, vertical: true)
                 .accessibilityIdentifier("inspiration.helper")
             writeNowButton(idea)
+            if starter.offersUltra { ultraButton(idea) }
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, Metrics.gutter)
@@ -433,6 +467,46 @@ struct FindInspirationSheet: View {
         .accessibilityIdentifier("inspiration.writeNow")
     }
 
+    /// "✦ Draft with Ultra AI" where Ultra is offered: the same idea, written by Ultra. The first time it asks first.
+    private func ultraButton(_ idea: ThemeIdea?) -> some View {
+        Button {
+            if let idea { draftWithUltra(idea) }
+        } label: {
+            HStack(spacing: 6) {
+                Text(verbatim: "✦").accessibilityHidden(true)
+                Text("Draft with Ultra AI")
+            }
+            .cueFont(.subheadline, weight: .semibold)
+            .foregroundStyle(Palette.aiText)
+            .padding(.horizontal, 12)
+            .frame(minHeight: Metrics.hitTarget)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .disabled(idea == nil || transition.isActive)
+        .opacity(idea == nil ? 0.4 : 1)
+        .accessibilityHint(Text("Ultra AI drafts it now. Change anything after."))
+        .accessibilityIdentifier("inspiration.writeUltra")
+    }
+
+    /// "Draft with Ultra AI" (or the invitation's button): Cue Pro when the scripts are used up on the free plan, the permission the first time,
+    /// otherwise the idea is written.
+    private func draftWithUltra(_ idea: ThemeIdea) {
+        if starter.ultraUsedUp {
+            if ultra.membership == .free { paywall = .ultra } else { starter.showUltraUsedUp() }
+        } else if starter.ultraAllowed {
+            writeNow(idea, engine: .ultra)
+        } else {
+            ultraConsentFor = idea
+        }
+    }
+
+    private func writeAllowedUltra() {
+        guard let idea = allowedUltraIdea else { return }
+        allowedUltraIdea = nil
+        writeNow(idea, engine: .ultra)
+    }
+
     private var writeNowHint: LocalizedStringKey {
         canDraft ? "Drafts it now. Change anything after." : "Opens a blank draft with this idea as its title."
     }
@@ -463,11 +537,12 @@ struct FindInspirationSheet: View {
     }
 
     /// Written as it is: the star rises from the button and the page opens under it. Without Apple Intelligence, a blank draft named after it.
-    private func writeNow(_ idea: ThemeIdea) {
+    /// - Parameter engine: Apple Intelligence ("Draft it now") or Ultra ("Draft with Ultra AI").
+    private func writeNow(_ idea: ThemeIdea, engine: ScriptEngine = .apple) {
         notifications.recordUse(.ideas)
         viewModel.willWrite(idea)
         dismiss()
-        guard canDraft else {
+        guard engine == .ultra || canDraft else {
             // Not `starter.writeByHand`, which empties the composer: the creator's own draft stays where it was.
             let script = library.create(
                 title: idea.title, text: "", platform: starter.platform, type: ideaDraft.format, language: languages.scriptLanguage, isFinished: false
@@ -479,7 +554,7 @@ struct FindInspirationSheet: View {
         let note = idea.logbookID
         starter.write(
             idea: FindInspirationViewModel.writingText(of: idea), length: idea.brief == nil ? idea.length : nil, brief: idea.brief,
-            from: writeCenter
+            engine: engine, from: writeCenter
         ) { [logbook] scriptID in
             if let note { logbook.markShaped(note, as: scriptID) }
         }

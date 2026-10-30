@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// "Improve script": the tools of the script's format (and "In my voice") as a list, with a tip
-/// first when the opening runs long. Everything runs on the iPhone; a tool changes the script and
-/// the toast offers Undo.
+/// first when the opening runs long. Everything runs on the iPhone, except "Fit to time" on a script
+/// Ultra AI wrote, whose row says so; a tool changes the script and the toast offers Undo.
 struct ImproveScriptSheet: View {
     let viewModel: ScriptDetailViewModel
 
@@ -79,7 +79,9 @@ struct ImproveScriptSheet: View {
 
     private func row(_ tool: ScriptTool) -> some View {
         let isRunning = viewModel.runningTool == tool
-        let dimmed = tool.needsLanguageModel && !viewModel.canDraft
+        let byUltra = tool == .fitToTime && viewModel.ultraFitsToTime
+        let dimmed = byUltra ? false : tool.needsLanguageModel && !viewModel.canDraft
+        let subtitle = tool.subtitle(idealRange: viewModel.preset.idealRange, platform: viewModel.script?.platform ?? .tiktok)
         let label = HStack(spacing: 12) {
             Group {
                 if isRunning {
@@ -96,7 +98,7 @@ struct ImproveScriptSheet: View {
                 Text(tool.label)
                     .cueFont(.body, weight: .semibold)
                     .foregroundStyle(Palette.ink)
-                Text(tool.subtitle(idealRange: viewModel.preset.idealRange, platform: viewModel.script?.platform ?? .tiktok))
+                Text(byUltra ? String(localized: "Ultra AI · \(subtitle)") : subtitle)
                     .cueFont(.footnote)
                     .foregroundStyle(Palette.ink2)
             }

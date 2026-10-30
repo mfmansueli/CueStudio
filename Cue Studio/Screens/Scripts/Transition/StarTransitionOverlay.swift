@@ -22,6 +22,15 @@ import SwiftUI
 /// What moves here is cheap to draw: glows are gradients, not shadows, and the cover's ring is a shape with a hole, not a mask, so no
 /// picture is drawn off screen each frame; the app behind is a still (`TransitionBackdrop`).
 ///
+/// An Ultra AI script (owner's call, 29/10/2026) keeps the sequence in Cue's violet and gold: the star is a ✦ (`SparkShape`) in a violet glow,
+/// its streaks are violet, the specks are small ✦, the ignition's ring is gold; the orbit is one arc per Ultra AI pass (`UltraPassOrbit`), the
+/// phrase says which pass it is ("Checking the facts"), with a light tick as each ends, and at the finish the passes' nodes run into the star.
+/// Larger than Apple Intelligence's (the owner's call, 30/10/2026: a paid script waits in something more alive): a larger ✦ that pulses with
+/// each step of the words, inside a scene of its own (`UltraWaitScene`: a small turning galaxy, a moon for each pass done, shooting stars, comets in a
+/// long wait), with the ring of passes round it at a third of the screen's width and the words under the scene. Its finish is longer
+/// (`IdeaTransitionService.ultraFinishDuration`): everything spirals into the star, it flashes, and then the ring opens. After 45 s the phrase
+/// says it is taking a little longer.
+///
 /// Reduce Motion (09 §7): no rise or ring, no stream, bloom, streaks, flash or light. The overlay fades in (0.2 s) with the text and Cancel in
 /// place, then crossfades into the page (0.3 s). The timings are the board's in every situation (`IdeaTransitionService.speed` is 1; only UI tests shorten it).
 struct StarTransitionOverlay: View {
@@ -61,10 +70,22 @@ struct StarTransitionOverlay: View {
     @State private var ignition: CGFloat = 0
     /// The light crossing the page as it opens, 0 → 1.
     @State private var sweep: CGFloat = 0
+    /// An Ultra AI script there: its passes' nodes run into the star, 0 → 1.
+    @State private var gather: CGFloat = 0
+    /// Ultra AI's scene: when it began (the star ignited) and when its finish began, in its clock (`UltraWaitScene.now`).
+    @State private var sceneBegan: TimeInterval = 0
+    @State private var sceneFinish: TimeInterval?
+    /// The Ultra AI pass the phrase says, a step behind the meter so the phrase changes in its own movement.
+    @State private var shownPass = 0
+    /// The star this overlay was started for (`IdeaTransitionService.run`): a star sent while the last one still finishes starts afresh.
+    @State private var startedRun = 0
     /// VoiceOver goes to Cancel first (09 §A).
     @AccessibilityFocusState private var cancelHasFocus: Bool
 
     private var speed: Double { transition.speed }
+    private var isUltra: Bool { transition.engine == .ultra }
+    /// The star's colour: the sky's own star, or Ultra AI's violet.
+    private var starGlow: Color { isUltra ? Palette.Scripts.ultraStarGlow : Palette.World.skyStarYou }
 
     var body: some View {
         GeometryReader { proxy in
@@ -78,27 +99,35 @@ struct StarTransitionOverlay: View {
                 let centre = CGPoint(x: size.width / 2, y: size.height * 0.38)
                 let caret = CGPoint(x: Metrics.textGutter + 6, y: proxy.safeAreaInsets.top + 150)
                 let control = CGPoint(x: (from.x + centre.x) / 2 + 40, y: min(from.y, centre.y) - 60)
+                let reach = UltraWaitScene.radius(in: size)
                 ZStack(alignment: .topLeading) {
                     coverLayer(centre: centre)
                     sweepLayer(size: size)
-                    haloLayer(centre: centre)
-                    particles(centre: centre)
-                    orbitLayer(centre: centre)
-                    ignitionLayer(centre: centre)
-                    textBlock(size: size, centre: centre)
+                    haloLayer(centre: centre, reach: reach)
+                    if isUltra {
+                        ultraScene(.back, centre: centre, reach: reach)
+                    } else {
+                        particles(centre: centre)
+                    }
+                    orbitLayer(centre: centre, reach: reach)
+                    ignitionLayer(centre: centre, reach: reach)
+                    textBlock(size: size, centre: centre, reach: reach)
                     cancelButton(size: size)
                     dustLayer(from: from, centre: centre)
                     launchLayer(from: from)
                     riseTrailLayer(from: from, control: control, centre: centre, size: size)
                     trailLayer(centre: centre, caret: caret)
                     starLayer(from: from, control: control, centre: centre, caret: caret)
+                    if isUltra { ultraScene(.front, centre: centre, reach: reach) }
                 }
                 .frame(width: size.width, height: size.height, alignment: .topLeading)
                 .opacity(overlayOpacity)
                 .onAppear { start(centre: centre) }
+                .onChange(of: transition.run) { start(centre: centre) }
                 .onChange(of: transition.phase) { _, phase in react(to: phase) }
                 .task(id: transition.phase == .waiting) { await rotatePhrases() }
                 .task(id: transition.progress.map(ObjectIdentifier.init)) { await tickQuarters() }
+                .onChange(of: transition.progress?.pass?.index) { _, index in movePass(to: index) }
             }
         }
         .allowsHitTesting(transition.isActive)
@@ -116,16 +145,18 @@ struct StarTransitionOverlay: View {
             .accessibilityHidden(true)
     }
 
-    private func haloLayer(centre: CGPoint) -> some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
+    private func haloLayer(centre: CGPoint, reach: CGFloat) -> some View {
+        // Ultra AI's spreads over its whole scene.
+        let width = isUltra ? reach * 2.4 : 170
+        return TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
             // `cstHalo`: scale .92 ↔ 1.08 and opacity .55 ↔ .9, in a 2.6 s breath.
             let phase = reduceMotion ? 0.5 : 0.5 - 0.5 * cos(context.date.timeIntervalSinceReferenceDate * 2 * .pi / 2.6)
             Circle()
                 .fill(RadialGradient(
                     colors: [Palette.Scripts.transitionHalo, Palette.Scripts.transitionHalo.opacity(0.24), .clear],
-                    center: .center, startRadius: 0, endRadius: 85
+                    center: .center, startRadius: 0, endRadius: width / 2
                 ))
-                .frame(width: 170, height: 170)
+                .frame(width: width, height: width)
                 .scaleEffect(0.92 + 0.16 * phase)
                 .opacity(halo * (0.55 + 0.35 * phase))
                 .position(centre)
@@ -135,8 +166,9 @@ struct StarTransitionOverlay: View {
 
     /// Twelve specks gathering toward the star: each starts 64–134 pt away (in the upper half of the circle) and shrinks into it.
     private func particles(centre: CGPoint) -> some View {
+        let ultra = isUltra
         // At the display's own rate: at 30 fps the fastest specks stepped 5 pt at a time on a 120 Hz screen.
-        TimelineView(.animation(paused: reduceMotion)) { context in
+        return TimelineView(.animation(paused: reduceMotion)) { context in
             Canvas { canvas, _ in
                 guard !reduceMotion else { return }
                 let time = context.date.timeIntervalSinceReferenceDate
@@ -152,11 +184,12 @@ struct StarTransitionOverlay: View {
                     )
                     let opacity = t < 0.2 ? t / 0.2 * 0.85 : 0.85 * (1 - (t - 0.2) / 0.8)
                     let size = 3 * (1 - 0.7 * pull)
-                    let colour = index % 3 == 0 ? Palette.World.skyStarYou : Palette.aiTextStrong
-                    canvas.fill(
-                        Path(ellipseIn: CGRect(x: point.x - size / 2, y: point.y - size / 2, width: size, height: size)),
-                        with: .color(colour.opacity(opacity))
-                    )
+                    let colour = index % 3 == 0 ? Palette.World.skyStarYou : (ultra && index % 3 == 1 ? Palette.aiText : Palette.aiTextStrong)
+                    // Ultra AI's are small ✦, turning as they gather.
+                    let speck = ultra
+                        ? SparkShape.path(center: point, radius: size * 1.4, turn: .degrees(90 * pull))
+                        : Path(ellipseIn: CGRect(x: point.x - size / 2, y: point.y - size / 2, width: size, height: size))
+                    canvas.fill(speck, with: .color(colour.opacity(opacity)))
                 }
             }
             .opacity(texts)
@@ -170,9 +203,9 @@ struct StarTransitionOverlay: View {
         return raw - raw.rounded(.down)
     }
 
-    private func textBlock(size: CGSize, centre: CGPoint) -> some View {
-        VStack(spacing: 8) {
-            Text("Drafting in your voice")
+    private func textBlock(size: CGSize, centre: CGPoint, reach: CGFloat) -> some View {
+        let words = VStack(spacing: 8) {
+            Text(transition.engine == .ultra ? "Drafting with Ultra AI" : "Drafting in your voice")
                 .cueFont(20, weight: .bold)
                 .tracking(-0.2)
                 .foregroundStyle(.white)
@@ -197,13 +230,29 @@ struct StarTransitionOverlay: View {
         .multilineTextAlignment(.center)
         .padding(.horizontal, 24)
         .frame(width: size.width)
-        // The percentage's line is below the board's three: the block moves down by half of it, so they stay where the board puts them.
-        .position(x: size.width / 2, y: centre.y + 104 + 36 + (8 + Self.progressHeight) / 2)
+        return Group {
+            if isUltra {
+                // Under Ultra AI's scene, from its top: a larger type grows down, never into the ring.
+                words
+                    .frame(width: size.width, height: size.height, alignment: .top)
+                    .offset(y: centre.y + reach * UltraWaitScene.ringShare + UltraWaitScene.wordsGap)
+            } else {
+                // The percentage's line is below the board's three: the block moves down by half of it, so they stay where the board puts them.
+                words.position(x: size.width / 2, y: centre.y + 104 + 36 + (8 + Self.progressHeight) / 2)
+            }
+        }
         .opacity(texts)
         .offset(y: texts == 1 ? 0 : 8)
     }
 
     private static let progressHeight: CGFloat = 16
+
+    /// What Ultra AI is doing in pass `index` of `count`: the draft, the claims checked (three passes only), the polish in the creator's voice.
+    private static func passPhrase(_ index: Int, of count: Int) -> String {
+        if index == 0 { return String(localized: "Writing the draft") }
+        if index < count - 1 { return String(localized: "Checking the facts") }
+        return String(localized: "Polishing in your voice")
+    }
 
     /// "42%" under the phrase, from the moment the page starts writing; its room is kept before that, so nothing moves when it comes.
     private var progressLine: some View {
@@ -221,6 +270,7 @@ struct StarTransitionOverlay: View {
     private var currentPhrase: String {
         if finishShown { return IdeaTransitionService.finishPhrase }
         if isTakingLong { return IdeaTransitionService.longWaitPhrase }
+        if isUltra { return Self.passPhrase(shownPass, of: transition.progress?.pass?.count ?? UltraFlow.checked.calls) }
         guard !phrases.isEmpty else { return "" }
         return phrases[phraseIndex % phrases.count]
     }
@@ -249,17 +299,29 @@ struct StarTransitionOverlay: View {
             // `cstBreath`: 1.4 ↔ 1.65 in 1.6 s while it waits.
             let breath = transition.phase == .waiting && !reduceMotion
                 ? 1.4 + 0.25 * (0.5 - 0.5 * cos(context.date.timeIntervalSinceReferenceDate * 2 * .pi / 1.6)) : starScale
+            // Ultra AI's swells a little with each step of its words.
+            let pulse = isUltra && !reduceMotion && transition.phase == .waiting ? UltraWaitScene.pulse(transition.progress, at: UltraWaitScene.now) : 0
+            let glow: CGFloat = isUltra ? 58 : 38
             ZStack {
                 ZStack {
                     Circle()
                         .fill(RadialGradient(
-                            colors: [Palette.World.skyStarYou.opacity(0.85), Palette.World.skyStarYou.opacity(0.28), .clear],
-                            center: .center, startRadius: 2, endRadius: 19
+                            colors: [starGlow.opacity(0.85), starGlow.opacity(0.28), .clear],
+                            center: .center, startRadius: 2, endRadius: glow / 2
                         ))
-                        .frame(width: 38, height: 38)
-                    Circle()
-                        .fill(.white)
-                        .frame(width: 10, height: 10)
+                        .frame(width: glow, height: glow)
+                        .scaleEffect(1 + 0.35 * pulse)
+                    if isUltra {
+                        // Ultra AI's ✦: white, warming to the sky star's gold at its foot.
+                        SparkShape()
+                            .fill(LinearGradient(colors: [.white, .white, Palette.World.skyStarYou], startPoint: .top, endPoint: .bottom))
+                            .frame(width: 22, height: 22)
+                            .scaleEffect(1 + 0.18 * pulse)
+                    } else {
+                        Circle()
+                            .fill(.white)
+                            .frame(width: 10, height: 10)
+                    }
                 }
                 // Two effects, so the birth's spring and the flight's growth each keep their own animation.
                 .scaleEffect(born)
@@ -309,7 +371,7 @@ struct StarTransitionOverlay: View {
         let trail = RiseTrail(head: path, tail: tailPath, from: from, control: control, centre: centre)
         return ZStack {
             trail.stroke(
-                LinearGradient(colors: [Palette.World.skyStarYou.opacity(0), Palette.World.skyStarYou.opacity(0.4)], startPoint: start, endPoint: end),
+                LinearGradient(colors: [starGlow.opacity(0), starGlow.opacity(0.4)], startPoint: start, endPoint: end),
                 style: StrokeStyle(lineWidth: 7, lineCap: .round, lineJoin: .round)
             )
             trail.stroke(
@@ -322,30 +384,45 @@ struct StarTransitionOverlay: View {
         .accessibilityHidden(true)
     }
 
-    /// The orbit round the star, once the page has started writing (with the words under it).
-    private func orbitLayer(centre: CGPoint) -> some View {
+    /// The orbit round the star, once the page has started writing (with the words under it); Ultra AI's in its passes, whose nodes stay
+    /// as the words go at the finish, to run into the star.
+    private func orbitLayer(centre: CGPoint, reach: CGFloat) -> some View {
         ZStack {
             if let meter = transition.progress {
-                ProgressOrbit(meter: meter)
-                    .transition(.opacity.combined(with: .scale(scale: 0.8)))
+                Group {
+                    if isUltra {
+                        UltraPassOrbit(meter: meter, gathered: gather, diameter: reach * 2 * UltraWaitScene.ringShare)
+                    } else {
+                        ProgressOrbit(meter: meter)
+                    }
+                }
+                .transition(.opacity.combined(with: .scale(scale: 0.8)))
             }
         }
         .position(centre)
-        .opacity(texts)
+        .opacity(isUltra && transition.phase == .revealing ? 1 : texts)
         .animation(.easeOut(duration: 0.6), value: transition.progress != nil)
     }
 
+    /// Ultra AI's scene round the star (`UltraWaitScene`), in its two layers: it comes up with the words, and stays for its finish.
+    private func ultraScene(_ layer: UltraWaitScene.Layer, centre: CGPoint, reach: CGFloat) -> some View {
+        UltraWaitScene(layer: layer, meter: transition.progress, centre: centre, radius: reach, began: sceneBegan, finish: sceneFinish)
+            .opacity(transition.phase == .revealing ? 1 : texts)
+    }
+
     /// The star catching where it stops: a white flash that swells and goes, and a ring of light running out from it.
-    private func ignitionLayer(centre: CGPoint) -> some View {
-        ZStack {
+    private func ignitionLayer(centre: CGPoint, reach: CGFloat) -> some View {
+        // Ultra AI's ring of light runs out past its ring of passes.
+        let ring = isUltra ? reach * 2 * UltraWaitScene.ringShare * 1.25 : 160
+        return ZStack {
             Circle()
-                .fill(RadialGradient(colors: [.white, Palette.World.skyStarYou.opacity(0.6), .clear], center: .center, startRadius: 0, endRadius: 30))
+                .fill(RadialGradient(colors: [.white, starGlow.opacity(0.6), .clear], center: .center, startRadius: 0, endRadius: 30))
                 .frame(width: 60, height: 60)
                 .modifier(LightBurst(progress: ignition, from: 0.4, to: 2, peak: 0.9))
             Circle()
-                .strokeBorder(Palette.aiTextStrong, lineWidth: 1.5)
-                .frame(width: 160, height: 160)
-                .modifier(LightBurst(progress: ignition, from: 0.125, to: 1, peak: 0.8))
+                .strokeBorder(isUltra ? Palette.World.skyStarYou : Palette.aiTextStrong, lineWidth: 1.5)
+                .frame(width: ring, height: ring)
+                .modifier(LightBurst(progress: ignition, from: 20 / ring, to: 1, peak: 0.8))
         }
         .position(centre)
         .allowsHitTesting(false)
@@ -405,7 +482,7 @@ struct StarTransitionOverlay: View {
     /// The comet's streak behind the star as it flies to the caret.
     private func trailLayer(centre: CGPoint, caret: CGPoint) -> some View {
         let trail = CometTrail(landed: landed, centre: centre, caret: caret)
-        let colours = [Palette.World.skyStarYou.opacity(0), Palette.World.skyStarYou]
+        let colours = [starGlow.opacity(0), starGlow]
         // Its glow is a wider, fainter stroke under it, not a shadow.
         return ZStack {
             trail.stroke(
@@ -438,6 +515,8 @@ struct StarTransitionOverlay: View {
     // MARK: - Moving
 
     private func start(centre: CGPoint) {
+        guard startedRun != transition.run else { return }
+        startedRun = transition.run
         path = 0
         tailPath = 0
         landed = 0
@@ -459,6 +538,10 @@ struct StarTransitionOverlay: View {
         phrases = IdeaTransitionService.phrases(platform: transition.platformName)
         ignition = 0
         sweep = 0
+        gather = 0
+        shownPass = 0
+        sceneBegan = UltraWaitScene.now + IdeaTransitionService.ignitionTime * speed
+        sceneFinish = nil
         dustStart = nil
         if reduceMotion {
             withAnimation(.easeOut(duration: 0.2 * speed)) { overlayOpacity = 1 }
@@ -519,7 +602,9 @@ struct StarTransitionOverlay: View {
     /// The AI is writing: the words come up (0.4 s, a beat late) and Cancel fades in 0.3 s after them.
     private func wait() {
         // VoiceOver hears what is happening, then each phrase (polite), and starts on Cancel.
-        AccessibilityNotification.Announcement(String(localized: "Drafting in your voice")).post()
+        AccessibilityNotification.Announcement(
+            transition.engine == .ultra ? String(localized: "Drafting with Ultra AI") : String(localized: "Drafting in your voice")
+        ).post()
         cancelHasFocus = true
         if reduceMotion { return }
         withAnimation(.easeOut(duration: 0.4 * speed).delay(0.1 * speed)) { texts = 1 }
@@ -531,16 +616,32 @@ struct StarTransitionOverlay: View {
     private func reveal() {
         finishShown = true
         phraseShown = true
-        withAnimation(.easeOut(duration: IdeaTransitionService.coverDuration * speed)) {
-            texts = 0
-            cancelOpacity = 0
-            cover = 1
-            starScale = reduceMotion ? 1.4 : 2.6
+        let lead = transition.coverTime
+        if isUltra {
+            // Ultra AI's moons and dust spiral into the star (`UltraWaitScene`) with its passes' nodes, a swelling hum under them; the star
+            // swells as they reach it, and flashes.
+            sceneFinish = UltraWaitScene.now
+            if !reduceMotion { HapticPatterns.playUltraFinish() }
+            let flash = IdeaTransitionService.ultraFlashTime
+            withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .timingCurve(0.5, 0, 0.7, 1, duration: flash * speed)) { gather = 1 }
+            withAnimation(.easeOut(duration: 0.3 * speed)) {
+                texts = 0
+                cancelOpacity = 0
+            }
+            withAnimation(.easeOut(duration: lead * speed)) { cover = 1 }
+            withAnimation(.spring(duration: 0.4 * speed, bounce: 0.3).delay((flash - 0.15) * speed)) { starScale = reduceMotion ? 1.4 : 2.6 }
+        } else {
+            withAnimation(.easeOut(duration: lead * speed)) {
+                texts = 0
+                cancelOpacity = 0
+                cover = 1
+                starScale = reduceMotion ? 1.4 : 2.6
+            }
         }
         if reduceMotion {
             HapticPatterns.playLanding()
             // A 0.3 s crossfade into the page, no ring: the cover simply goes.
-            withAnimation(.easeOut(duration: 0.3 * speed).delay(IdeaTransitionService.coverDuration * speed)) {
+            withAnimation(.easeOut(duration: 0.3 * speed).delay(lead * speed)) {
                 cover = 0
                 halo = 0
                 starOpacity = 0
@@ -548,7 +649,7 @@ struct StarTransitionOverlay: View {
             return
         }
         Task {
-            try? await Task.sleep(for: .seconds(IdeaTransitionService.coverDuration * speed))
+            try? await Task.sleep(for: .seconds(lead * speed))
             withAnimation(.timingCurve(0.4, 0, 0.2, 1, duration: IdeaTransitionService.ringDuration * speed)) {
                 ring = 1
                 halo = 0
@@ -586,7 +687,8 @@ struct StarTransitionOverlay: View {
     /// A light tick each time another quarter of the script is written (25, 50, 75%): the writing felt in the hand, never a buzz. The landing
     /// has its own.
     private func tickQuarters() async {
-        guard let meter = transition.progress else { return }
+        // Ultra AI's tick as each pass ends (`movePass`).
+        guard let meter = transition.progress, !isUltra else { return }
         var quarters = Int(meter.fraction * 4)
         while !Task.isCancelled, transition.phase == .waiting || transition.phase == .rising, !meter.isFinished {
             try? await Task.sleep(for: .milliseconds(200))
@@ -601,6 +703,18 @@ struct StarTransitionOverlay: View {
     /// A new phrase every 1.6 s: the old one goes up and out (0.3 s, 4 pt), the new one comes in from 4 pt below.
     private func rotatePhrases() async {
         guard transition.phase == .waiting else { return }
+        // Ultra AI's phrase says its pass (`movePass`), until a long wait says so.
+        if isUltra {
+            try? await Task.sleep(for: .seconds(IdeaTransitionService.ultraLongWait * speed))
+            guard !Task.isCancelled, transition.phase == .waiting else { return }
+            withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = false }
+            try? await Task.sleep(for: .seconds(0.3 * speed))
+            guard !Task.isCancelled, transition.phase == .waiting else { return }
+            isTakingLong = true
+            withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = true }
+            AccessibilityNotification.Announcement(currentPhrase).post()
+            return
+        }
         let count = phrases.count
         let clock = ContinuousClock()
         let began = clock.now
@@ -613,6 +727,21 @@ struct StarTransitionOverlay: View {
             // A request that takes long says so once and stays on it (the system gives up on it by itself, and Cancel is there).
             if began.duration(to: clock.now) >= .seconds(IdeaTransitionService.longWait * speed) { isTakingLong = true }
             phraseIndex = (phraseIndex + 1) % max(1, count)
+            withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = true }
+            AccessibilityNotification.Announcement(currentPhrase).post()
+        }
+    }
+
+    /// Ultra AI has started another pass: the node of the one that ended lights (`UltraPassOrbit`) with a light tick, and the phrase goes
+    /// up and out for the new pass's.
+    private func movePass(to index: Int?) {
+        guard isUltra, let index, index > shownPass, transition.phase == .waiting || transition.phase == .rising else { return }
+        Haptics.apply()
+        Task {
+            withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = false }
+            try? await Task.sleep(for: .seconds(0.3 * speed))
+            guard !finishShown else { return }
+            shownPass = index
             withAnimation(.easeOut(duration: 0.3 * speed)) { phraseShown = true }
             AccessibilityNotification.Announcement(currentPhrase).post()
         }

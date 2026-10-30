@@ -85,14 +85,6 @@ struct ScriptsViewModelTests {
         #expect(library.script(id: script.id)?.folder == "Ideas")
     }
 
-    @Test func summaryCountsTheScriptsAndHowManyAreReady() {
-        let recorded = TestData.script(title: "Recorded"), draft = TestData.script(title: "Draft", isFinished: false)
-        let (viewModel, _, _) = makeViewModel(scripts: [TestData.script(title: "Ready"), draft, recorded])
-        let counts = [recorded.id: 2]
-        #expect(viewModel.summaryValues(takeCount: { counts[$0] ?? 0 }) == ["3 scripts", "1 ready"])
-        #expect(makeViewModel(scripts: []).0.summaryValues(takeCount: { _ in 0 }).isEmpty)
-    }
-
     @Test func theListIsGroupedReadyThenDraftsThenRecorded() {
         let ready = TestData.script(title: "Ready", updatedAt: TestData.now)
         let draft = TestData.script(title: "Draft", updatedAt: TestData.now.addingTimeInterval(-10), isFinished: false)

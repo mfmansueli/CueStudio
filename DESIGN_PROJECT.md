@@ -49,7 +49,21 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
 ## 2. Scripts (3.1, 3.2) — o dock
 
 `Screens/Scripts/Dock/ScriptsDock.swift`: vidro limpo (sem céu dentro, `09` §2), em `.safeAreaInset(.bottom)` acima da tab bar.
-- **Linha 1:** Format ⌄ · For {Rede} ⌄ · ✦ Voz nn% · lâmpada do Find inspiration (§30). Chips de 36 pt de toque; aparecem também na primeira visita.
+- **Linha 1:** Format · a rede **com o logo dela** (`Platform.logo`, "For TikTok" ou "TikTok") · ✦ Voz nn% · lâmpada do Find inspiration (§30). Chips
+  de 36 pt de toque; aparecem também na primeira visita. Com pouco espaço, cada chip encurta (`ScriptsDock.RowWords`: "TikTok" no lugar de "For TikTok",
+  "✦ Voice", o Format só com o símbolo ⊞); a linha é escolhida pela versão **mais larga** de cada chip (`WidthSlack`), então trocar a rede ou quem escreve
+  nunca muda os outros chips nem tira a lâmpada do lugar. Onde a Ultra AI é oferecida (§57; hoje só Debug com o laboratório configurado), um chip a mais
+  (`DockWriterChip`, com uma largura só para os dois estados, `EqualWidthStack`) é um menu nativo de quem escreve o próximo roteiro: o símbolo do Apple
+  Intelligence (com espaço, o nome) ou **✦ Ultra** em violeta; o item da Ultra AI diz quantos roteiros restam, e sem nenhum ele oferece o Pro (§57). A
+  escolha fica até o criador trocar, também entre aberturas (`DefaultsKey.dockWriter`). Do segundo uso da IA em diante, enquanto a Ultra AI não foi
+  permitida, uma linha violeta sob o campo a apresenta com os 5 grátis (o convite, §57).
+- **Luzes dos chips** (`DockChipLight`, decorativas): escolher uma rede em Create for (a folha mostra o logo de cada rede no lugar do ponto) gira o logo
+  uma vez, como uma moeda, e as cores da rede dão uma volta no chip (`HapticPatterns.platformOn`); escolher o Apple Intelligence faz o símbolo dele pular
+  com a luz do Apple Intelligence; escolher a Ultra AI gira o ✦, solta seis estrelinhas violeta, lilás e amarelas (`UltraChipSparks`,
+  `HapticPatterns.ultraIgnite`) e passa a luz violeta e dourada. Com a Ultra AI escolhida, a **seta de enviar fica violeta** com a seta branca e uma borda
+  violeta e dourada girando devagar, uma volta a cada 4 s (`DockSendArrow`, `UltraSendRim`); o violeta se espalha do meio e volta para ele (nunca uma
+  mistura das duas cores, que passava pelo cinza). O ↻ de "Another idea" gira uma vez a cada toque; no fim das ideias, com mais a caminho, vira espera
+  (`DockAnotherIdeaButton`). Reduzir Movimento: só aparecem e somem.
 - **Linha 2:** o campo (2 linhas em repouso, até 5 editando, 200 caracteres: §25; a ideia sugerida enquanto vazio), ↻, microfone e a seta amarela
   (**Write it** sem Apple Intelligence ou com a Script Language num idioma que o modelo não escreve, com a nota do motivo: §8). Uma sugestão nova (↻, ou a seguinte depois de enviar) chega palavra por palavra saindo da luz violeta
   (`WordsFromLight`, 50 ms entre palavras; a que já estava quando Scripts abre só aparece); o ↻ é `arrow.triangle.2.circlepath` e gira a cada toque.
@@ -64,14 +78,20 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
   no fim não conta como subida. Lista curta (rola < 80 pt) recolhe ao passar da metade; uma que rola < 16 pt nunca recolhe. Log: `studio.cue` / `DockFold`.
 - Campo focado: a lista escurece e desfoca (0,25 s). Durante a seleção o dock sai.
 - **Busca:** lupa na barra, no mesmo vidro do Logbook e do "+" (à esquerda deles; só com a lista, não no Scripts vazio). Ela abre o `SearchField` no
-  topo da lista (entre "6 SCRIPTS · 1 READY" e os filtros, rola com ela), já com o teclado, e leva a lista ao topo; o campo some quando fica sem
+  topo da lista (logo abaixo do título grande, acima dos filtros, rola com ela), já com o teclado, e leva a lista ao topo; o campo some quando fica sem
   teclado e sem palavras (teclado fechado, ✕ ou "Clear search"); com palavras ele fica. O dock fica durante a busca e, com o teclado da busca, fica
   embaixo dele. Por que não `.searchable`: com `.searchToolbarBehavior(.minimize)` o ✕ do iOS 27 só minimizava a busca (a lista ficava filtrada e o
   dock não voltava). Dica do campo em `ink2`.
 - **Filtros** (`PlatformFilterChips`): All, as redes que têm roteiros e as pastas. Segurar o chip de uma pasta (ou a ação do VoiceOver) mostra
   **Delete folder**: a pasta sai, os roteiros ficam (em All), e "Folder deleted" tem Undo por 4 s (volta no mesmo lugar, com os seus roteiros).
+- **Uma lista leve (decisões do dono, 30/10/2026):** sob o título grande não há contagem. Os grupos se chamam **Ready to record**, **Drafts** e
+  **Recorded**, sem números, em letra normal de 15 pt, `ink2` (como **Select**, e **Logbook** no violeta dele, sem o "n waiting"). A linha mono de um
+  roteiro pronto diz só **● TIKTOK** (a duração e os cues ficam na página do roteiro); rascunho "● SHORTS · 2H AGO", gravado "● TIKTOK · 3 TAKES ·
+  READY" (`ScriptRowLine`). O card não tem mais a barra do tópico no início: o tópico é um **✦ na cor do mundo dele** logo depois da última palavra
+  do título (`ScriptRow`, `TopicTaggingService.world(of:)`; quebra junto com a palavra, então todo título começa na mesma borda; sem tópico, sem ✦;
+  o VoiceOver lê o tópico como valor do título). As cores dos mundos passam de 3:1 sobre o card (`PaletteContrastTests+Scripts`).
 - **Linhas:** um toque abre a página do roteiro em qualquer estado (rascunho já abre escrevendo); a ponta direita é a ação do estado: **● REC** grava,
-  **Continue ›** é só rótulo, **×3 ›** (com takes) é botão para Takes. Deslizar mostra **Record** (vermelho) e **More** (cinza), sem deslize longo; More abre
+  um **›** no rascunho é só sinal (o VoiceOver diz "Continue"), **×3 ›** (com takes) é botão para Takes. Deslizar mostra **Record** (vermelho) e **More** (cinza), sem deslize longo; More abre
   `ScriptActionsPopover` na linha (Record, Studio mode, Edit · Duplicate, Move to folder, Script Language, Share · Delete); o que abre outra coisa fecha
   o menu primeiro.
 - **Select** (no cabeçalho do primeiro grupo; vira **Done**): cada linha mostra a sua marca **dentro do card**, 16 pt da borda e centrada na altura
@@ -80,7 +100,7 @@ amarelo), o aviso de Pouca Energia e a dica da barra de ferramentas vestem a mes
   As ideias do Logbook no fim da lista **continuam** durante a seleção e são escolhidas como os roteiros (a marca no lugar do ✦ Write, sem
   "Open Logbook ›"); a lixeira apaga roteiros e ideias juntos, com um Undo só; pasta e Duplicate valem só para roteiros (ficam apagados com só
   ideias escolhidas). Fora da seleção, segurar uma ideia ali oferece **Delete** ("Idea deleted · Undo").
-- Abaixo da lista: **Logbook · n waiting** (`ScriptsLogbookSection`, até 2 ideias com ✦ Write e "Open Logbook ›"). Carregando: `ScriptRowSkeleton`
+- Abaixo da lista: **Logbook** (`ScriptsLogbookSection`, até 2 ideias com ✦ Write e "Open Logbook ›"). Carregando: `ScriptRowSkeleton`
   (`SkeletonShine`, 1,4 s). Vazio: §30 e §32.
 - **Folhas da linha 1:** Format, For {Rede}, ✦ Voz e a lâmpada abrem todas em tela inteira (`.large`, sem meia altura).
 - **Formatos (`09` §1):** grade de 9 (Auto · Talking head · Tutorial · Storytime · List / tips · Review · Myth vs fact · POV · Sponsored ad, com o selo
@@ -104,7 +124,8 @@ no voo, toque na ignição), um toque leve a cada 25% escrito, o pouso (baque + 
 O teclado desce quando a estrela sobe e a página não o pede de volta. A luz do dock (`AIGlow`) não dá a volta no envio (fica atrás da foto). **Cancel
 ou erro:** a estrela cai 40 pt e some (0,3 s), a foto sai e o app vivo, já em Scripts e sem o roteiro, volta escurecido e vem para a frente
 (a curva da subida) enquanto a capa some; a ideia continua no campo (erro: toast "Couldn’t draft it · Try again"). Reduzir Movimento: fade de
-0,2 s, sem nascimento, rastros, clarões nem faixa. Sem Apple Intelligence não há overlay. Idioma que o modelo não escreve: a estrela nem sai,
+0,2 s, sem nascimento, rastros, clarões nem faixa. Um roteiro da Ultra AI espera numa cena maior, com uma galáxia, luas, o espaço em volta e um final próprio (§57, "A espera
+na estrela"). Sem Apple Intelligence não há overlay. Idioma que o modelo não escreve: a estrela nem sai,
 nada abre e o toast diz por quê (§8). Scripts mostra só o céu de fundo (`skyBackground()`), nada desenha estrelas por cima.
 
 **Leve no iPhone:** o que se move por cima é barato (brilhos são gradientes, não sombras; nenhuma máscara) e o que fica atrás é uma imagem só.
@@ -214,9 +235,10 @@ não mostra número. Teste: `-uiTestWriterStalls`.
   reescrever "mais longo" não alonga). Guardrail recusando o que o criador digitou: uma tentativa só com o que o Cue oferece (`catalogOnly`).
 - **Tempo:** `GenerationDeadlines` corta o que nunca responde (`ScriptAIError.timedOut`), "Still drafting · taking a little longer" aparece depois de um
   tempo, e trabalho de fundo no mesmo modelo (`TopicTaggingService`, pré-busca de ideias: `IdeaRequestPriority`) sai da frente de um pedido do criador.
-- **Comprimento** (`PlatformRules.json` revisão ≥ 3 — `PlatformRulesService` só aceita revisão mais nova; `ScriptRequestFactory`, `ScriptLength`,
-  `preset.idealRange` como fonte única): TikTok e Reels 30–90 s, Stories 15–30 s; Auto usa o comprimento habitual do criador (nunca abaixo de 25 s,
-  `spokenFloor`). O modelo escreve menos do que se pede: pede-se 1,5× as palavras e "pelo menos N frases por bloco" (`ScriptPromptBuilder.lengthRule`),
+- **Comprimento** (`PlatformRules.json` revisão ≥ 4 — `PlatformRulesService` só aceita revisão mais nova; `ScriptRequestFactory`, `ScriptLength`,
+  `preset.idealRange` como fonte única): TikTok (com ou sem monetização), Reels, Shorts e LinkedIn 1:15–1:45 (75–105 s, 190–260 palavras no ritmo
+  natural; decisão do dono, 29/10/2026: é onde a maioria dos vídeos verticais fica), Stories 15–30 s, YouTube 4–10 min; Auto usa o comprimento habitual
+  do criador (nunca abaixo de 25 s, `spokenFloor`, nem acima de 2 min, `autoCeiling`). O modelo escreve menos do que se pede: pede-se 1,5× as palavras e "pelo menos N frases por bloco" (`ScriptPromptBuilder.lengthRule`),
   e blocos curtos são alongados um a um quando o roteiro tem < 70% do mínimo (`ScriptExpansion`, `expandingIfShort`; um roteiro num bloco só vale com
   70%, `rescued`). **Vídeo curto não é esticado:** mínimo até 200 palavras (`shortFormWords`) é pedido como é, sem regra de frases nem alongar, e nunca
   mais que 300 (`shortFormCeiling`); YouTube longo é pedido como é. Cues repetidos 3+ vezes viram um (`collapsingRepeatedCues`).
@@ -331,6 +353,14 @@ perto de onde ele está agora). Forma: a foto do protótipo animado que o dono m
 
 ## 5.2. A IA escrevendo na página (4.1)
 
+Um roteiro da Ultra AI (§57) diz isso: a estrela e a pílula dizem **"Drafting with Ultra AI"**, e o aviso de fatos, **"Ultra AI can get facts wrong · Check
+before you record"**; a pergunta "Does it sound like you?" não aparece nele (compara com reescritas do Apple Intelligence).
+
+**Em parágrafos** (`ScriptParagraphs`, pedido do dono, 29/10/2026: vinha "em blocão"): o texto de qualquer motor chega dividido, com uma linha em branco
+entre parágrafos; um parágrafo de mais de 70 palavras é cortado onde uma frase termina, em partes de ~45 (um cue logo depois da frase fica com ela, números
+como 3.5 não se cortam, japonês e chinês se cortam no 。). Cada parágrafo chega como uma peça (`ArrivingLines`): um bloco único de ~1:30 ficava alto demais
+para o brilho e o desfoque, o efeito sumia no meio e o editor aparecia com o texto inteiro no fim.
+
 Enquanto o roteiro é escrito, `ArrivingText` substitui o editor: cada palavra entra de blur 7 pt e 5 pt abaixo em 0,3 s, com brilho violeta (`Palette.Page.arrivalGlow`
 a 95%, some em 0,8 s), a cada 0,17 s (mais rápido quando chegam muitas, nunca > ~1 s atrás do modelo); cursor violeta de 2 pt pisca depois da última.
 Pílula **"✦ Drafting in your voice"** (`ScriptWritingPill`, 34 pt): brilho de borda 2,4 s e brilho branco a cada 1,6 s; sem a estrela por cima (Try again)
@@ -368,7 +398,7 @@ realce de palavras. Ficam a linha de leitura, o trilho de seções e o chip de v
 (espelho e Remote continuam). Gravar é do Selfie. Texto `PrompterTextView` em tela cheia com a linha em `guidePosition`; um toque toca ou pausa.
 **Barra** (`StudioControlPanel`, vidro noturno, alça que guarda e ⌃ que traz): (1) Voice | Steady, ‹‹ 3 linhas, play, 3 linhas ››; (2) velocidade ou linha
 de voz e estado; (3) chips **Size · Line · Margin · Mirror · Aa More** (`StudioAdjustBar`): um slider por vez (tamanho 12–56 pt, linha 10–70%, margens 8–40 pt; o slider
-só existe aberto, `showsSlider`), Mirror para rig, Aa abre o Display. Acima do texto, "0:42 LEFT" e "1:12 · IDEAL 1:00–1:30" (`StudioTimeLine`).
+só existe aberto, `showsSlider`), Mirror para rig, Aa abre o Display. Acima do texto, "0:42 LEFT" e "1:12 · IDEAL 1:15–1:45" (`StudioTimeLine`).
 **Contagem:** play do começo usa a de Settings › Prompter (Off, 3, 5, 10 s); a barra some e um toque cancela; retomar toca na hora. Voice Following ouve
 pelo medidor do microfone.
 
@@ -533,6 +563,9 @@ a exportação segue sozinha. Pro e teste: "PRO · UNLIMITED EXPORTS", sem Go Pr
   planos (Yearly com SAVE n%, Monthly; largura 1,2 : 1, 72 pt, `ProPlanRow`), "Start free trial · export now", Restore · Terms · Privacy.
 - Reduzir Movimento: fade de 0,3 s. `-uiTestProAt <s>`. **"Remote from Apple Watch, iPad & Mac sync" não aparece** (`ProBenefit.isAvailable = false`):
   não se vende o que não existe.
+- **Onde a Ultra AI existe** (§57): a lista ganha "30 Ultra AI scripts a month" em segundo, a linha sob o título passa a "Free to try · 5 exports and 5
+  Ultra AI scripts included. Then 7 days free.", e há um terceiro contexto, o **Pro calmo da Ultra AI** (`.ultra`: "ULTRA AI", "Keep writing with Ultra
+  AI.", os mensais só a partir do primeiro mês pago), aberto quando os roteiros grátis acabam.
 
 ## 13. Profile (9.1) e Edit Profile
 
@@ -761,7 +794,7 @@ sentir livre para escrever como quiser). **Sem dicas embaixo do texto** (gancho 
   ("Mark ready anyway" / "Keep writing"); página vazia: desativado. Desligar volta a rascunho. **Sair nunca muda o estado** (voltar só salva; editar um
   roteiro pronto não o rebaixa); só o interruptor muda, e gravar (leva a pronto e depois a gravado). **O roteiro que a IA escreve começa como rascunho**
   ("AI is drafting for you"). A página não tem "Done": digitando, o ✓ da barra só fecha o teclado (e a plataforma e o ••• voltam).
-- **Duração numa linha** (`ScriptLengthBar`): "113 WORDS · ~0:45" à esquerda, "IDEAL 1:00–1:30" à direita, trilho de 5 pt; amarelo abaixo do ideal,
+- **Duração numa linha** (`ScriptLengthBar`): "113 WORDS · ~0:45" à esquerda, "IDEAL 1:15–1:45" à direita, trilho de 5 pt; amarelo abaixo do ideal,
   verde dentro (com ✓, brilha uma vez e toque leve ao entrar), laranja acima ("CUT 6S", toque firme). Cresce numa mola; os toques são só do que o criador
   digita (não da IA). O título não tem contador embaixo.
   O tempo é sempre no **ritmo natural de fala** (150 palavras por minuto, o mesmo em que a IA escreve), não na velocidade de rolagem do
@@ -950,8 +983,10 @@ promessa por teste) e `ScriptToolsDeviceTests` no iPhone. **Falsos alarmes do ra
   chama o modelo.
 - Grades de proteção para texto do próprio criador (`permissiveContentTransformations`); recusa vira "Apple Intelligence won’t work on this text. Try
   rewording it, or use another tool." (`ScriptAIError.declined`).
-- `RewriteNotice` escolhe o toast pelo que aconteceu (textos em §33): "Shorter · 132 → 53 words", "Closer to 1:00–1:30 · now 0:48", "Already fits 1:00–1:30",
+- `RewriteNotice` escolhe o toast pelo que aconteceu (textos em §33): "Shorter · 132 → 53 words", "Closer to 1:15–1:45 · now 0:48", "Already fits 1:15–1:45",
   "No mistakes to fix", "n of m parts left as written", "Couldn’t draft it · Try again" (nada salvo, sem Undo). Roteiro vazio não chama o modelo.
+- **Num roteiro da Ultra AI** (`Script.draftedBy == .ultra`), com a permissão dela, *Fit to time* e o *Shorter* do aviso antes de gravar são da Ultra AI
+  (uma chamada, §57); sem a permissão, e em qualquer outro roteiro, continuam do Apple Intelligence. As outras ferramentas são sempre do Apple Intelligence.
 
 **Ideias do ↻ e do Find inspiration** (`IdeaSuggestionService`, no ambiente; detalhes do pool em §30): ideias do modelo sobre **todos** os assuntos do
 criador (`IdeaTopic`, `CreatorProfile.ideaTopics`: os do primeiro voo, os do My Cue Voice e os digitados, com subtemas); lotes de 6 pedidos quando restam
@@ -1105,6 +1140,10 @@ Sistema completo em `NOTIFICATIONS.md`. Na interface:
   `QuickEditPreviewLatencyTests` (Text effect, Text resized and turned).
 
 ## 30. Find inspiration
+
+Onde a Ultra AI é oferecida (§57), embaixo de *Draft it now* (que é sempre do Apple Intelligence) vem **✦ Draft with Ultra AI**: escreve a mesma ideia, com o
+brief, pela Ultra AI; na primeira vez abre antes a folha de permissão. Do segundo uso da IA em diante, um cartão acima da ideia convida a escrevê-la com a
+Ultra AI (o convite, §57); sem roteiros restantes, o Pro da Ultra AI abre sobre a folha.
 
 Cada inspiração é um brief (`IdeaBrief`): título, **ângulo** (instrução curta) e **frase de abertura** (sugestão para dizer, nunca afirmação sobre o criador:
 nada de história, resultado, número ou tendência inventados).
@@ -2675,3 +2714,130 @@ som, decisões técnicas e limites: `AUDIO_LIBRARY.md`.
   layout `LayoutAuditCaptureTests.testEditorSound` (conferido no SE com texto padrão e com o maior de acessibilidade e no Pro Max com o maior;
   no SE o teste não alcança a música na linha do tempo, então o Volume dela foi conferido no iPhone 17 e no Pro Max); aparelho
   `AudioMixDeviceTests` (narração entendida em cada velocidade, palavras sob cada efeito de voz, tempo para abrir e decodificar cada faixa).
+
+## 57. Ultra AI: o roteirista experimental (29 de outubro de 2026; pedido do dono)
+
+**Nome:** a função se chama **Ultra AI** em toda a interface; a marca do modelo (Gemini) nunca aparece na tela (decisão do dono, 29/10/2026). As telas de
+privacidade dizem que o pedido vai ao **Google** (a empresa que processa), como pede a App Store (5.1.2(i)). Código: `Managers/ScriptAI/Ultra/`,
+`Screens/Shared/Ultra/`, `Screens/Settings/Privacy/UltraLab/`.
+
+**Onde existe:** só em Debug, num iPhone com a configuração do laboratório (`Documents/UltraLab-GoogleService-Info.plist`, projeto `cue-script-ai-lab`, o
+bundle do app; `UltraLabConfiguration.isPresent`) ou num teste de UI (`-uiTestUltra`). Release não tem nada dela. O Apple Intelligence continua o padrão
+e nunca é trocado por ela em silêncio (nem ela por ele): cada roteiro da Ultra AI é uma escolha explícita.
+
+**Como se escolhe:** no dock, o chip de quem escreve (§2), que guarda a última escolha do criador (decisão do dono, 29/10/2026); no Find inspiration, *Draft with
+Ultra AI* (§30). Uma resposta a comentário fica com o Apple Intelligence. Com a Ultra AI escolhida, a disponibilidade do Apple Intelligence não importa
+(nem o idioma que ele não escreve).
+
+**Permissão** (`UltraConsentSheet`, `UltraConsentService`, chave `ultra.consent.v1`, separada do interruptor do Apple Intelligence): antes do primeiro envio
+diz o que vai (a ideia, rede, formato, duração e as preferências do My Cue Voice), que são **três etapas** (o rascunho volta ao Google para a checagem e para o polimento), o que nunca vai (exemplos,
+trechos importados, roteiros aprovados, outros roteiros, vídeos, áudio; só o *Fit to time* num roteiro da Ultra AI manda esse roteiro de volta, com as edições), o que o Google pode guardar (não treina sem permissão; cache de até 24 h e registro
+contra abuso; qualquer região; IP, identidade do app e token do App Check) e onde desligar. **What Cue sends** mostra o texto real das três chamadas
+(`UltraPayloadView`: 1 · Draft, 2 · Check, 3 · Polish e, só quando o criador pede, 4 · Fit to time), também no *What Cue sends* do My Cue Voice. **Allow Ultra AI** (no dock, no My Cue Voice e nos Settings: só escolhe a
+Ultra AI) ou **Allow and write with Ultra AI** (Find inspiration, que rascunha na hora) / **Keep Apple Intelligence**. Settings › Privacy & AI
+data tem o interruptor **Ultra AI** (ligar abre a folha; desligar revoga e nada mais sai, nem a próxima chamada de um roteiro em andamento) e, em Debug,
+**Ultra AI · Lab**; o Apple Intelligence passa a dizer "Cue’s default writer. Ultra AI has its own switch." e a folha de privacidade deixa de dizer "nothing
+else" onde a Ultra AI existe.
+
+**Como escreve** (`UltraScriptService`, `UltraPayload`, `UltraInstructions`): três chamadas pelo Firebase AI Logic (Agent Platform, `global`, modelo pedido
+`gemini-3.5-flash`, App Check), sem nova tentativa nem outro modelo (`UltraFlow.checked`): (1) um rascunho desenvolvido com quem o criador é e para quem
+fala, com exemplos dentro do mundo dele; (2) a **checagem das afirmações**, sem o jeito de falar: corrige o que é falso ou universal demais, mecanismo
+inventado, número, estudo, credencial ou "a ciência explica" que o pedido não deu e promessa absoluta, com a menor mudança, e mantém cenas imaginadas,
+opiniões, estrutura e fim (JSON com o roteiro e a lista do que corrigiu); (3) o polimento com o jeito de falar sobre o rascunho checado, que mantém as
+correções, revisa o texto (palavra faltando, uma só forma de tratamento) e devolve título, roteiro e mudanças em JSON. Na comparação às cegas de 29/10/2026
+(15 ideias, dois juízes de IA, `tools/ultra/compare.py`) o roteiro checado venceu os 6 pares contra o sem checagem (precisão 4,3–4,6 contra 3,2–3,5 de 5) e
+os 15 contra o Apple Intelligence; o laboratório ainda escolhe *Draft · polish* para comparar. O título volta a ter os acentos que o próprio roteiro usa
+(`UltraTitleAccents`: o modelo às vezes escreve "camera" sobre um roteiro que diz "câmera"). Só o roteiro polido vira o roteiro; uma checagem ou um
+polimento que falha é uma falha ("Ultra AI couldn’t polish the draft · Try again"), sem o rascunho no lugar. A duração Auto é informação (não corta nem enche); uma escolhida no cartão ou pedida no
+texto é intenção. O pedido do criador vai palavra por palavra e vence o costume do perfil (abertura, formato, CTA). Antes de cada chamada confere permissão,
+limite e cancelamento. O cliente do Firebase só é criado no primeiro roteiro permitido. Nada do pedido, da voz ou da resposta vai ao Analytics ou ao
+Crashlytics; o Console (`studio.cue` / `Ultra`) recebe só tipos, tempos e tokens.
+
+**O roteiro salvo** guarda `Script.draftedBy = .ultra` e o aviso de fatos; o toast diz "Ultra AI draft ready · Check facts".
+
+**Duração e Fit to time** (decisões do dono, 29/10/2026): no Auto, um vídeo vertical (TikTok, Reels, Shorts, LinkedIn, Stories) é escrito na faixa da
+rede, nunca acima de 2 min (`UltraLength.ideal`: "Length: 75 to 105 seconds… never go past 263 words"); só o YouTube longo é escrito livre, no tamanho que
+o assunto pede (`UltraLength.free`). Um roteiro vertical que volta mais de 15% acima da faixa (ou de 2 min, `overflowWords`) é encaixado nela por mais
+uma chamada (`UltraScriptService.run`); se ela falhar ou não puder sair, fica o roteiro polido. Uma duração escolhida pelo criador é a intenção dele
+(`UltraLength.required`) e não é encaixada sozinha. A Ultra AI escreve em **parágrafos curtos** (um tema cada, duas a quatro frases, linha em branco
+entre eles), pedido nas três etapas e no Fit to time. *Fit to time* num roteiro da Ultra AI é
+**uma chamada da Ultra AI, quando o criador pede** (`UltraScriptService.fit`, `UltraFitRequest`, `UltraInstructions.fitter`): o roteiro da página com as
+edições dele, a rede, a faixa ideal dela em palavras e o jeito de falar; volta só o texto (JSON `{"script"}`), mantém as ressalvas que a checagem pôs, a
+primeira frase, quem fala e o fim, e corrige as contagens ("cinco passos") do que saiu. Um roteiro já na faixa não gasta chamada. Conta no limite do
+laboratório, não nos roteiros do criador. Por que não o do Apple: no iPhone (29/10/2026, 13 roteiros da Ultra de 300–480 palavras, TikTok 60–90 s), o
+*Fit to time* do Apple Intelligence deixou 10 fora da faixa (102–122 s) e cortou nas emendas ("cinco passos" com quatro, "Terceiro" sem "Segundo"; juiz: 0
+para gravar, 10 para refazer); o da Ultra AI pôs os 13 entre 72 e 89 s em 9–30 s (juiz: 8 para gravar como estão, 5 com ajustes pequenos, 0 para refazer; precisão 4,5 de 5,
+depois de a instrução mandar manter as ressalvas, a primeira frase e quem fala: a primeira versão tirava "pode" e "aumenta o risco" e ficava em 3,9).
+Ainda escapa, às vezes, uma ressalva ("muchísimos años" → "siempre") ou um detalhe concreto que vira generalidade (`research_notes/Ultra AI/fit-q1*.json`). Deixar a versão curta sempre pronta custaria uma chamada em todo roteiro; sob demanda só custa quando é usada.
+
+
+**Limite do laboratório:** 300 chamadas neste iPhone (autorizadas pelo dono em 29/10/2026: 30, 80 e depois 300 para medir e melhorar a qualidade),
+contadas antes de sair, falhas incluídas (`UltraCallBudget`, nos defaults padrão do app). É uma trava do experimento, **não** um sistema de créditos: o de produção tem de ser do servidor (compras verificadas,
+saldo e operações idempotentes lá; uma falha sem roteiro não debita). Plano em `reports/ULTRA_AI_NATIVE_2026-10-29.md`.
+
+**Roteiros grátis e Cue Pro** (decisão do dono, 29/10/2026; **prévia em Debug**, sem cobrança): todo mundo tem **5 roteiros Ultra AI grátis**
+(`UsagePolicy.freeUltraScripts`), o teste de 7 dias do Pro incluído (o teste **não** dá roteiros a mais); o Pro pago soma **30 por mês**
+(`proUltraScriptsPerMonth`), a partir do primeiro mês pago; os grátis são gastos primeiro. Um roteiro só conta quando chega polido (falha ou Stop não
+contam). `UltraAllowance` (puro) e `UltraAllowanceService` (contagem em UserDefaults, mês de calendário): é **só a prévia** do que o criador verá, para o
+dono julgar o produto no iPhone; não protege créditos (a reinstalação zera, qualquer um edita). Onde aparece: o menu do chip de quem escreve ("Ultra AI ·
+4 of 5 free left"; Pro pago "Ultra AI · 28 left this month"), a folha de permissão sob o título ("Your first 5 scripts are free." / "4 of 5 free scripts
+left."), o cartão do plano no Profile (linha mono violeta "ULTRA AI · 4 OF 5 FREE LEFT", laranja quando acaba) e o laboratório (*Give the free scripts back*,
+*Use up the free scripts* para ver o Pro sem gastar chamadas, *Show the invitation again*; os roteiros do laboratório não contam aqui, e as chamadas de teste nunca voltam). **Sem nenhum restante:** escolher a Ultra AI
+(chip, *Draft with Ultra AI*, o convite) abre no plano grátis o **Pro calmo da Ultra AI** (`PaywallContext.ultra`: "ULTRA AI", "Keep writing with Ultra
+AI.", "Your 5 free scripts are written. Cue Pro adds 30 a month, from the first paid month."); no teste, o toast "Your free Ultra AI scripts are used · Pro’s
+monthly ones start after the free week"; no Pro pago, "This month’s Ultra AI scripts are used · More next month". A ideia vai para o Apple Intelligence.
+
+**Convite** (`UltraInviteService`, `UltraInviteCard`; pedido do dono, 29/10/2026): a partir da **segunda vez** que o criador usa a IA (conta um roteiro que o
+Apple Intelligence escreveu e uma visita ao Find inspiration com o Apple Intelligence), os lugares onde a IA escreve apresentam a Ultra AI com os 5
+grátis: no **dock**, uma linha violeta sob o campo ("✦ Meet Ultra AI · 5 free scripts", **Try it**, ×), escondida enquanto o campo está aberto; no **Find
+inspiration**, um cartão acima da ideia ("Draft this idea with Ultra AI", **Draft it with Ultra AI**, que escreve aquela ideia); no **My Cue Voice**, um cartão
+sob a voz ("Your voice, with Ultra AI", **Try Ultra AI free**; ao permitir, a próxima ideia vai para a Ultra AI e o toast diz "Ultra AI writes your next
+idea"). Todo botão do convite passa pela folha de permissão. É **um convite só**: o × em qualquer lugar fecha em todos; permitir a Ultra AI ou gastar os
+grátis também o encerra. No Find inspiration ele é decidido ao abrir, antes de contar a visita (a primeira visita não o mostra).
+
+**Movimento** (`UltraMotion`, padrão refinado do dono, 20/10/2026): na primeira vez que o convite aparece em cada lugar na sessão
+(`UltraInviteService.takesArrival`), ele **acende**: o ✦ entra pequeno e girado, passa do tamanho e volta (mola), com um brilho violeta que se apaga em
+0,9 s; o fundo sobe de 97%; as linhas saem do desfoque, 8 pt abaixo, uma depois da outra (curva da luz, 0,07 s entre elas); e uma luz curta dá **uma volta
+na borda** (1,2 s, depois de 0,18 s), sem passar sobre o texto. Depois disso ele só está lá. O × **dobra** o cartão (some e encolhe para o topo, 0,32 s) com
+um toque suave. No dock, ao permitir a Ultra AI pelo convite, quando a folha de permissão já saiu (0,35 s depois), a linha se dobra e o **✦ voa num arco
+até o chip** de quem escreve (0,46 s; cresce ao decolar e encolhe ao pousar, brilhando), e o chip acende ao recebê-lo: cresce 10% e volta, e solta **um anel
+violeta** que se abre e some (0,7 s); `HapticPatterns.ultraOn` acompanha (brilho na decolagem, zumbido fraco no voo, toque firme no pouso, assentar).
+Escolhida direto no chip (ou permitida no My Cue Voice), só o acender, com `ultraIgnite`. Os números do saldo rolam (`numericText`). Reduzir Movimento:
+só fades de 0,2 s, sem voo nem anel (os hápticos continuam).
+
+**A espera na estrela** (`UltraWaitScene`, `UltraWaitTimeline`, `UltraSceneMoment`; pedido do dono, 30/10/2026: é paga, tem de ser maior e entreter):
+a estrela da Ultra AI espera numa cena própria, maior que a do Apple Intelligence. O alcance é `UltraWaitScene.radius(in:)` (36% da largura, até 17% da
+altura e 160 pt; ~141 pt num 15 Pro), o anel das etapas (`UltraPassOrbit`) tem 62% dele (~175 pt de diâmetro, antes 66 pt), o ✦ tem 22 pt num brilho
+de 58 pt, o halo cobre a cena e o texto fica 34 pt abaixo do anel (preso pelo topo: letra maior cresce para baixo). Dentro do anel gira uma **galáxia**
+inclinada e limpa (pedido do dono, 30/10/2026: a primeira, de 60 grãos com rastros, ficou poluída): **dois braços em espiral** de luz (uma faixa suave e
+uma linha fina, mais fortes a um terço do caminho e sumindo na estrela e na ponta), que se desenrolam da estrela no começo e **giram sem parar** (uma
+volta em 26 s), e **26 estrelas nítidas** sobre eles, piscando devagar. A galáxia **carrega** com a etapa da vez (fica mais forte conforme a porcentagem
+da etapa sobe) e entrega a luz à lua quando ela nasce (desce suave em 1 s, nunca de uma vez). Cada quadro é desenhado pela data da `TimelineView`: a
+primeira ficava parada enquanto o modelo pensava e só andava quando chegavam palavras (o dono viu no iPhone). Cada etapa da Ultra é um **capítulo** que
+começa com a etapa (nunca antes de 1,2 s depois do anterior; nada espera a cena, o roteiro nunca atrasa por ela):
+- **Rascunho:** a cada 6% das palavras que chegam (`WritingProgressMeter.arrivals`, até ~16 por etapa) a estrela pulsa e solta uma faísca ✦ que **corre por
+  um braço** até acender uma estrela nova: 10 no começo, até 26 com o rascunho.
+- **Fatos:** um feixe suave varre a galáxia (uma volta a cada 2,6 s) e acende o que toca.
+- **Sua voz:** a galáxia esquenta do violeta para o dourado, de dentro para fora, conforme o polimento chega.
+
+O nó do fim de cada arco brilha na cor da sua lua enquanto a etapa anda; quando ela termina, o nó **solta uma lua** (violeta, branca, dourada) com um anel
+de luz e um toque leve. A lua é um **pequeno mundo** de ~11 pt (um degradê iluminado do lado que dá para a estrela, num brilho de 36 pt) e vai para uma
+**órbita inclinada própria, desenhada** (linha fina na cor dela, mais fraca atrás da estrela e mais forte na frente, que se desenha enquanto ela voa até lá),
+com um rastro curto, passando atrás e na frente da estrela. **Fora do anel, o espaço** (pedido do dono, 30/10/2026; recortado para nunca passar dentro do
+anel nem atrás do texto): um **campo de estrelas** fracas que gira devagar em volta da estrela, como o céu à noite, algumas com brilho ✦; uma **estrela
+cadente** a cada 6 a 10 s; uma **chuva de meteoros** a cada 11 a 16 s (cinco, em paralelo, do mesmo canto); um **cometa passando** no alto a cada 13 a
+19 s, dourado, lilás ou azul-gelo em turnos (`Palette.Scripts.ultraComets`), com cauda curva e uma cauda fina e reta que aponta para longe da estrela,
+como a de um cometa aponta para longe do sol. Um capítulo com mais de 20 s manda ainda um **cometa** dourado baixo, por cima da galáxia, que brilha
+quando ele passa. Aos 45 s a frase passa a "Still drafting
+· taking a little longer". **Final** (`IdeaTransitionService.ultraFinishDuration`, 1,1 s em vez dos 0,3 s da capa, 0,8 s a mais): as luas e a galáxia caem
+em espiral na estrela com os nós do anel, que incha, **clareia aos 0,8 s** e solta uma onda dourada no plano da galáxia; `HapticPatterns.ultraFinish` (zumbido
+crescente, toque firme no clarão, assentar); depois o anel abre a página como sempre. Medido na Ultra de verdade (15 roteiros, iPhone 15 Pro): 36 s na
+mediana (25–69 s), 10–12 s por etapa. Reduzir Movimento: nada gira, voa ou cruza; galáxia e luas paradas, e o final é um fade. Contraste do texto sobre a
+cena medido na imagem (`UltraAIUITests.testCaptureTheUltraWaitScene` + `tools/contrast/audit.py`): título 12,3:1, ideia 11,2:1, frase 4,9:1, Cancel 12,4:1.
+Para ver sem gastar chamadas: `-uiTestUltra -uiTestUltraAllowed -uiTestUltraPaced` (cerca de 24 s) ou `-uiTestUltraPacedLong` (checagem que pensa 22 s sem palavras, com cometa; a captura confere que a galáxia muda em todos os quadros).
+
+**O Pro onde a Ultra AI existe:** a lista ganha, em segundo lugar, "30 Ultra AI scripts a month" (tag AI, violeta; aparece mesmo sem o Apple
+Intelligence) e a linha sob o título passa a "Free to try · 5 exports and 5 Ultra AI scripts included. Then 7 days free." Assinando pelo Pro da Ultra AI,
+o toast diz que os mensais começam no primeiro mês pago (teste) ou "Welcome to Cue Pro · 30 Ultra AI scripts this month". O resto da lista do Pro não mudou
+(revisão das linhas adiada pelo dono).
+

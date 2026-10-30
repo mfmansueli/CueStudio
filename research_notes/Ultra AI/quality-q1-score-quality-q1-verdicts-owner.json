@@ -1,0 +1,123 @@
+{
+  "run": "q1",
+  "verdicts": "quality-q1-verdicts-owner",
+  "judged": 15,
+  "missing": [
+    "P03",
+    "P08",
+    "P09",
+    "P11",
+    "P13",
+    "P20"
+  ],
+  "unknown": [],
+  "comparisons": {
+    "apple-vs-checked": {
+      "all": {
+        "pairs": 9,
+        "tie": 0,
+        "checked": 8,
+        "apple": 1
+      },
+      "kind": {
+        "technical": {
+          "pairs": 6,
+          "tie": 0,
+          "checked": 5,
+          "apple": 1
+        },
+        "profile": {
+          "pairs": 3,
+          "tie": 0,
+          "checked": 3
+        }
+      },
+      "language": {
+        "pt-BR": {
+          "pairs": 9,
+          "tie": 0,
+          "checked": 8,
+          "apple": 1
+        }
+      }
+    },
+    "polished-vs-checked": {
+      "all": {
+        "pairs": 6,
+        "tie": 0,
+        "polished": 3,
+        "checked": 3
+      },
+      "kind": {
+        "technical": {
+          "pairs": 6,
+          "tie": 0,
+          "polished": 3,
+          "checked": 3
+        }
+      },
+      "language": {
+        "pt-BR": {
+          "pairs": 6,
+          "tie": 0,
+          "polished": 3,
+          "checked": 3
+        }
+      }
+    }
+  },
+  "scores": {},
+  "errors": {
+    "polished": [
+      {
+        "pair": "P04",
+        "id": "t6-sleep-spending",
+        "error": "Longo demais"
+      },
+      {
+        "pair": "P16",
+        "id": "t5-emergency-fund",
+        "error": "Raso"
+      }
+    ],
+    "checked": [
+      {
+        "pair": "P05",
+        "id": "t4-sound",
+        "error": "Longo demais"
+      },
+      {
+        "pair": "P06",
+        "id": "pt-BR-2",
+        "error": "Longo demais"
+      },
+      {
+        "pair": "P07",
+        "id": "t4-sound",
+        "error": "Longo demais"
+      },
+      {
+        "pair": "P18",
+        "id": "t1-window-light",
+        "error": "Raso"
+      },
+      {
+        "pair": "P18",
+        "id": "t1-window-light",
+        "error": "Curto demais"
+      },
+      {
+        "pair": "P18",
+        "id": "t1-window-light",
+        "error": "Não soa como o criador"
+      }
+    ],
+    "apple": [
+      {
+        "pair": "P21",
+        "id": "t5-emergency-fund",
+        "error": "Não soa como o criador"
+      }
+    ]
+  }
+}

@@ -75,4 +75,19 @@ struct PaywallCopyTests {
     @Test func theRegularProSaysItIsFreeToTry() {
         #expect(PaywallCopy.subtitle(for: .profile) == "Free to try · 5 exports included. Then 7 days free.")
     }
+
+    /// Where Ultra AI is offered: its monthly scripts second in the list (also without Apple Intelligence), its free scripts in the line under the
+    /// title, and its own calm Pro when they are used up, honest that the trial has the free ones only.
+    @Test func ultraAIIsListedOnlyWhereItIsOffered() {
+        let withUltra = PaywallCopy.visibleBenefits(aiIsAvailable: true, ultraIsOffered: true)
+        #expect(withUltra.count == PaywallCopy.visibleBenefits(aiIsAvailable: true).count + 1)
+        #expect(withUltra[1].text == "30 Ultra AI scripts a month")
+        #expect(PaywallCopy.visibleBenefits(aiIsAvailable: false, ultraIsOffered: true).contains { $0.text == "30 Ultra AI scripts a month" })
+        #expect(!PaywallCopy.visibleBenefits(aiIsAvailable: true).contains { $0.text.contains("Ultra") })
+        #expect(PaywallCopy.subtitle(for: .profile, ultraIsOffered: true)
+            == "Free to try · 5 exports and 5 Ultra AI scripts included. Then 7 days free.")
+        #expect(PaywallCopy.title(for: .ultra) == "Keep writing with Ultra AI.")
+        #expect(PaywallCopy.eyebrow(for: .ultra) == "ULTRA AI")
+        #expect(PaywallCopy.subtitle(for: .ultra).contains("from the first paid month"))
+    }
 }

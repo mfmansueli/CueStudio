@@ -28,6 +28,7 @@ struct ScriptDetailView: View {
             profile: services.profile,
             rules: services.rules,
             writer: services.writer,
+            ultra: services.ultra,
             toast: services.toast,
             voiceQuestions: services.voiceQuestions,
             transition: services.ideaTransition,

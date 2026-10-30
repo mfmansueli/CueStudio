@@ -19,8 +19,10 @@ nonisolated struct GeneratedScript: Hashable, Sendable {
     var usedLanguageModel: Bool
     /// The script states facts the creator should check (dates, names, numbers).
     var needsFactCheck: Bool = false
-    /// Which model wrote it; nil for the structured draft.
+    /// Which model wrote it; nil for the structured draft and for Ultra.
     var model: AIModelRoute?
+    /// Apple Intelligence, or Ultra (Google's Gemini) when the creator chose it: the page and the saved script say which.
+    var engine: ScriptEngine = .apple
     /// Where the time went, when a model wrote it.
     var timings: GenerationTimings?
     /// How many times the model wrote it: 2 when the first draft broke what the creator asked for and was written once more.

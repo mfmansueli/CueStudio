@@ -62,17 +62,22 @@ struct ScriptRequestFactory {
     }
 
     /// The least a spoken video can run and still say something (a hook, a point and a call to action, about 60 words at 150 a minute): what the creator's
-    /// usual length may bring a script down to. The platforms' own ideals start higher (`PlatformRules.json`, revision 3).
+    /// usual length may bring a script down to. The platforms' own ideals start higher (`PlatformRules.json`, revision 4).
     static let spokenFloor: TimeInterval = 25
 
+    /// The most a script runs on Auto, whatever the creator's usual length (2 minutes, 300 words at 150 a minute): the owner's call, 29/10/2026.
+    /// YouTube's long form, on a rig, keeps its own range.
+    nonisolated static let autoCeiling: TimeInterval = 120
+
     /// How long the script runs: what the creator chose, or, on Auto, how long their videos usually are (they said so in My Cue Voice; a monetization
-    /// goal left on by default shouldn't outweigh it, but nothing goes below the spoken floor), or else the platform's ideal. Long-form on a rig and
-    /// Stories (a card of a few seconds, whatever their other videos are) keep the platform's own.
+    /// goal left on by default shouldn't outweigh it, but nothing goes below the spoken floor or past `autoCeiling`), or else the platform's ideal.
+    /// Long-form on a rig and Stories (a card of a few seconds, whatever their other videos are) keep the platform's own.
     func targetRange(for length: ScriptLength, platform: Platform, preset: PlatformPreset, voice: CreatorVoice?) -> ClosedRange<TimeInterval> {
         guard length == .auto, platform != .stories, !preset.prefersStudio, let usual = voice?.reach.length?.targetRange else {
             return length.targetRange(ideal: preset.idealRange)
         }
-        return max(usual.lowerBound, Self.spokenFloor)...usual.upperBound
+        let low = max(usual.lowerBound, Self.spokenFloor)
+        return low...max(low, min(usual.upperBound, Self.autoCeiling))
     }
 
     /// The script language when one is set; otherwise the language the creator typed in; otherwise

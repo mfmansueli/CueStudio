@@ -219,6 +219,16 @@ final class HandoffCaptureTests: XCTestCase {
 
     // MARK: - 6 · Takes (6.2)
 
+    /// Scripts with one topic (Cue files every script under it with no model to ask), so the rows show its ✦.
+    func test3_1_ScriptsList() throws {
+        _ = try requireFolder()
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestTopics", "fitness"])
+        XCTAssertTrue(element(app, "scripts.group.ready").exists(within: 15))
+        try shot(app, "3.1_scripts", wait: 2)
+        app.swipeUp()
+        try shot(app, "3.1_scripts_scrolled", wait: 2)
+    }
+
     func test6_2_Takes() throws {
         _ = try requireFolder()
         let app = CueApp.launch(seeded: true, sampleVideo: true)

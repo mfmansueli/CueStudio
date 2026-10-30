@@ -6,13 +6,15 @@
 import SwiftUI
 
 /// 9.1 · the plan in one row. Free: "Free plan · 4 OF 5 EXPORTS LEFT", a thin bar and "Try Pro ›" (opens 11.4). Pro: "Cue Pro" with
-/// the plan and its renewal, and "Manage ›". Every feature is free; only exporting has a limit.
+/// the plan and its renewal, and "Manage ›". Every feature is free; only exporting has a limit, and, where Ultra AI is offered, its scripts: a
+/// violet line says how many are left ("ULTRA AI · 4 OF 5 FREE LEFT").
 struct ProfilePlanCard: View {
     let onUpgrade: () -> Void
     let onManage: () -> Void
 
     @Environment(StoreManager.self) private var store
     @Environment(UsageQuotaService.self) private var quota
+    @Environment(UltraScriptService.self) private var ultra
 
     var body: some View {
         Button(action: store.tier.isPro ? onManage : onUpgrade) {
@@ -30,6 +32,17 @@ struct ProfilePlanCard: View {
                     if !store.tier.isPro {
                         UsageMeter(fraction: Double(left) / Double(max(1, UsagePolicy.freeExports)), color: left > 0 ? Palette.ink2 : Palette.warnText)
                     }
+                    if ultra.isAvailable, let allowance = ultra.allowance?.allowance {
+                        Text(verbatim: UltraAllowanceLabels.plan(allowance))
+                            .monoFont(size: 11, weight: .semibold)
+                            .foregroundStyle(allowance.left > 0 ? Palette.aiText : Palette.warnText)
+                            // A script written while the Profile is open: the number rolls down.
+                            .contentTransition(.numericText(countsDown: true))
+                            .animation(.smooth, value: allowance.left)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                            .accessibilityIdentifier("profile.ultraAllowance")
+                    }
                 }
                 Text(store.tier.isPro ? "Manage ›" : "Try Pro ›")
                     .cueFont(14, weight: .semibold)
@@ -37,6 +50,7 @@ struct ProfilePlanCard: View {
                     .fixedSize()
             }
             .padding(EdgeInsets(top: 0, leading: 16, bottom: 0, trailing: 14))
+            .padding(.vertical, ultra.isAvailable ? 10 : 0)
             .frame(minHeight: 60)
             .profileBlock()
             .contentShape(Rectangle())

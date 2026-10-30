@@ -67,9 +67,10 @@ final class TopicTaggingService {
         return known.first { $0.label.caseInsensitiveCompare(name) == .orderedSame }
     }
 
-    /// The color of the world a script's topic is, nil when it has none.
-    func color(for script: Script) -> Color? {
+    /// The creator's topic a script is tagged with and the colour of its world (a Scripts row's ✦); nil when it has none, or when its topic
+    /// is no longer one of theirs.
+    func world(of script: Script) -> (topic: OnboardingTopic, color: Color)? {
         guard let id = script.topic, !id.isEmpty, let index = topics.firstIndex(where: { $0.id == id }) else { return nil }
-        return OnboardingTopic.color(at: index)
+        return (topics[index], OnboardingTopic.color(at: index))
     }
 }

@@ -1,0 +1,138 @@
+{
+ "P01": {
+  "winner": "A",
+  "errors": {
+   "A": [],
+   "B": []
+  },
+  "why": ""
+ },
+ "P02": {
+  "winner": "B",
+  "errors": {
+   "A": [],
+   "B": []
+  },
+  "why": ""
+ },
+ "P04": {
+  "winner": "A",
+  "errors": {
+   "A": [
+    "Longo demais"
+   ],
+   "B": []
+  },
+  "why": ""
+ },
+ "P05": {
+  "winner": "A",
+  "errors": {
+   "A": [
+    "Longo demais"
+   ],
+   "B": []
+  },
+  "why": ""
+ },
+ "P06": {
+  "winner": "A",
+  "errors": {
+   "A": [
+    "Longo demais"
+   ],
+   "B": []
+  },
+  "why": ""
+ },
+ "P07": {
+  "winner": "B",
+  "errors": {
+   "A": [],
+   "B": [
+    "Longo demais"
+   ]
+  },
+  "why": ""
+ },
+ "P10": {
+  "winner": "A",
+  "errors": {
+   "A": [],
+   "B": []
+  },
+  "why": ""
+ },
+ "P12": {
+  "winner": "B",
+  "errors": {
+   "A": [],
+   "B": []
+  },
+  "why": ""
+ },
+ "P14": {
+  "winner": "A",
+  "errors": {
+   "A": [],
+   "B": []
+  },
+  "why": ""
+ },
+ "P15": {
+  "winner": "A",
+  "errors": {
+   "A": [],
+   "B": []
+  },
+  "why": ""
+ },
+ "P16": {
+  "winner": "B",
+  "errors": {
+   "A": [],
+   "B": [
+    "Raso"
+   ]
+  },
+  "why": ""
+ },
+ "P17": {
+  "winner": "A",
+  "errors": {
+   "A": [],
+   "B": []
+  },
+  "why": ""
+ },
+ "P18": {
+  "winner": "A",
+  "errors": {
+   "A": [
+    "Raso",
+    "Curto demais",
+    "Não soa como o criador"
+   ],
+   "B": []
+  },
+  "why": ""
+ },
+ "P19": {
+  "winner": "B",
+  "errors": {
+   "A": [],
+   "B": []
+  },
+  "why": ""
+ },
+ "P21": {
+  "winner": "B",
+  "errors": {
+   "A": [],
+   "B": [
+    "Não soa como o criador"
+   ]
+  },
+  "why": ""
+ }
+}

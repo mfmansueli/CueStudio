@@ -62,6 +62,7 @@ struct MainView: View {
             .fullScreenCover(isPresented: $presentation.showsRemoteController) {
                 RemoteControllerView()
             }
+            .fullScreenCover(item: $presentation.paywall) { PaywallView(context: $0) }
             // Back from the teleprompter or the editor: a tool's introduction may fit now (one a session at most).
             .onChange(of: presentation.prompter == nil) { _, closed in
                 if closed { offerIntroduction() }
@@ -288,6 +289,11 @@ struct MainView: View {
             DestinationSheet(current: services.starter.platform) {
                 services.ideaDraft.platform = $0
                 presentation.sheet = nil
+            }
+        case .ultraConsent:
+            UltraConsentSheet(payload: services.starter.ultraPreview()) {
+                services.ultra.consent.grant()
+                services.starter.choose(.ultra)
             }
         case .featureIntro, .voiceSetup, .importWriting, .notificationInvite:
             notificationSheet(sheet)

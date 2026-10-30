@@ -5,8 +5,10 @@
 
 import SwiftUI
 
-/// On AI scripts about factual topics, until the creator confirms the facts.
+/// On AI scripts about factual topics, and on every Ultra draft, until the creator confirms the facts.
 struct FactCheckBanner: View {
+    /// Ultra's drafts say who wrote them: Google's Gemini, with nothing that checks its claims.
+    var engine: ScriptEngine = .apple
     let onChecked: () -> Void
 
     var body: some View {
@@ -16,7 +18,9 @@ struct FactCheckBanner: View {
             Image(systemName: "sparkles")
                 .foregroundStyle(Palette.warnText)
                 .accessibilityHidden(true)
-            Text("AI can get facts wrong · Check before you record")
+            Text(engine == .ultra
+                ? "Ultra AI can get facts wrong · Check before you record"
+                : "AI can get facts wrong · Check before you record")
                 .cueFont(.footnote)
                 .foregroundStyle(Palette.ink)
                 .frame(maxWidth: .infinity, alignment: .leading)

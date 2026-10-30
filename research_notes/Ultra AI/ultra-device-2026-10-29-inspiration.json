@@ -1,0 +1,36 @@
+[
+  {
+    "callsUsed": 12,
+    "changes": [
+      "Ajuste do ritmo para torná-lo mais dinâmico e adequado para o Reels.",
+      "Inclusão da expressão casual 'Bora lá' de forma natural na transição.",
+      "Substituição de termos que pudessem sugerir enriquecimento rápido por foco em consistência e resultados reais.",
+      "Adição de uma pergunta final direcionada ao público para incentivar o engajamento, conforme a preferência do criador.",
+      "Ajuste fino do tamanho do texto para garantir que fique exatamente dentro da faixa de 135 a 165 palavras (152 palavras no total)."
+    ],
+    "draft": "Guardar dinheiro não é só força de vontade. Nosso cérebro odeia perder o que tem na mão hoje por uma recompensa que só vem no futuro. Gastar é fácil porque a recompensa é imediata.\n\nPara vencer isso, você precisa de um hábito pequeno que tire a decisão da sua frente: automatizar um valor mínimo logo no dia em que você recebe.\n\nNão comece tentando guardar metade do seu salário. Esqueça isso. Comece programando uma transferência automática de trinta reais para uma conta de investimentos, bem no dia do seu pagamento.\n\nO segredo não é o valor, é o automatismo. Quando o dinheiro sai da sua conta principal antes mesmo de você pensar em gastar, seu cérebro simplesmente se adapta ao que sobra, sem sofrimento. É assim que você cria consistência real, que vale muito mais do que qualquer esforço temporário.",
+    "draftPrompt": "Write the script in Portuguese (Brazil).\nPlatform: Instagram Reels.\nFormat: not chosen. Read the genre from the request (tutorial, story, opinion, list, review, comparison, explanation…); the creator's usual formats only help when the request is vague.\nLength: the creator chose 54 to 66 seconds of speech (about 135 to 165 words at a natural pace). Treat it as their intent: develop enough to fill it, without padding, and stay within it.\n\nAbout the creator (who they are and who they speak to; not a new request):\nWrite in the creator's own voice. What follows says how they sound and who they speak to, never what the video is about.\nWho they are: a teacher or explainer.\nTheir default voice is one person (“I” and “my”). Keep this default unless the current request supplies another perspective or narrator.\nTheir audience: jovens adultos começando a organizar a rotina e o dinheiro.\nRules: never write “promessas de enriquecimento rápido”.\n\nInspiration this idea came from (Find inspiration):\nSubject: Por que guardar dinheiro parece mais difícil do que gastar\nFollow this angle all the way through: Explique um hábito pequeno que torna guardar dinheiro mais fácil.\nOpen with this line, as it is or adapted only to the creator's way of speaking: “Guardar dinheiro não é só força de vontade.” It is the hook: write no other before it.\n\nThe creator's request, in their exact words:\n\"\"\"\nPor que guardar dinheiro parece mais difícil do que gastar\nAngle: Explique um hábito pequeno que torna guardar dinheiro mais fácil.\nOpen with: “Guardar dinheiro não é só força de vontade.”\n\"\"\"",
+    "draftSeconds": 7.481042625,
+    "draftTokens": [
+      933,
+      185,
+      1592
+    ],
+    "durationPolicy": "targeted",
+    "estimatedSeconds": 60.8,
+    "language": "pt-BR",
+    "length": "required 54–66 s",
+    "modelVersion": "gemini-3.5-flash",
+    "name": "findInspiration",
+    "reviewInstructionsCharacters": 2663,
+    "reviewSeconds": 13.273607791,
+    "reviewTokens": [
+      1311,
+      368,
+      3002
+    ],
+    "script": "Guardar dinheiro não é só força de vontade. Nosso cérebro odeia perder o que tem na mão hoje por uma recompensa que só vem no futuro. Gastar dá prazer imediato, enquanto guardar parece uma punição. Bora lá mudar esse jogo com um hábito pequeno que tira a decisão da sua frente: automatizar um valor mínimo logo no dia em que você recebe. Não tente começar poupando metade do seu salário. Esqueça isso. Programe uma transferência automática de trinta reais para uma conta de investimentos, bem no dia do seu pagamento. O segredo não é o valor, é o automatismo. Quando o dinheiro sai da conta antes de você pensar em gastar, seu cérebro se adapta ao que sobrou, sem sofrimento. É essa consistência que gera resultado real, muito mais do que qualquer esforço temporário e doloroso. Qual é o valor que você vai programar para começar a guardar no mês que vem?",
+    "title": "Por que guardar dinheiro é tão difícil",
+    "words": 152
+  }
+]

@@ -1,3 +1,81 @@
+## Latest checkpoint: V7 completed, no candidate promoted
+
+2026-10-29, codex/script-editorial-quality. V5/V6/V7 results collected under Cue StudioTests/Fixtures/ScriptQuality and assessed in reports/PCC_EDITORIAL_BRANCH_2026-10-29.md. V5 angle selection, V6 bare prompt (opinion and equipment), V7 translated Portuguese instructions did not demonstrate reference-level quality. Equipment was more organized, but technical overgeneralizations persist. 28 recorded comparison requests, 27 texts, one refusal, including repeated controls; not 28 independent prompts/inferences. App production sources untouched. No PR/merge/Mansuelli or external model added. The new bare mode requires voice none; Portuguese mode is restricted to pt-BR. Strict lint passed; V6/V7 device builds passed without reported warnings. Final configuration suite passed four tests, only-20261029-041909.xcresult (108s), after explicit bare-mode validation; no warnings reported. Project check and diff whitespace check passed. No own test remains running at this checkpoint. Prior historical checkpoints follow and are superseded by this one.
+
+## Latest checkpoint 2026-10-29: V7 native-language probe running
+
+Branch codex/script-editorial-quality, production untouched. V5 and V6 collected and reviewed in PCC_EDITORIAL_BRANCH_2026-10-29.md. V5 divergent angles did not improve the opinion; V6 bare prompt did not fix that case, while equipment was more organized but still overgeneralized. No candidate promoted. V7 session30441 compares editorial-raw/editorial-pt-raw on pt-BR-editorial-draft, voice none; result path will be printed by scripts/test.sh. Poll session before source edits. All new outputs are synthetic. Native probe settings permit bare-raw only with no voice. Strict lint passes. Three configuration contracts passed before formatting-only fixes; subsequent device build passed without reported warnings. No Full rerun, PR, merge, external provider or Mansuelli tests. Resume by collecting V7 and judging actual prose, then independent controls only if a gain appears.
+
+# LATEST CHECKPOINT: V5 angle search running, nothing promoted
+
+Branch codex/script-editorial-quality; isolated worktree pcc-offline-review. Previous remote HEAD7491225a. Canonical report: reports/PCC_EDITORIAL_BRANCH_2026-10-29.md. No production/config/project changes, PR or merge.
+
+V4 finished: session76960 exit0, device-20261029-005407,52s. Fixture editorial-v4-none-staged-r1: single3.21s/1call, staged4.77s/3calls. Longer but repetitive; not promoted. V3 fixture editorial-v3-none-opinion-r1 also collected, no sufficient gain. Twenty requests total: nineteen texts and one refusal; do not confuse requests with inference count.
+
+V4/V5 sources compiled with seven contracts passing in only-20261029-010057,127s, session90060 exit0. Strict lint passed. New test-only classes: PCCEditorialAngle, PCCEditorialAngleSelection, PCCAngleSearchExperiment, PCCEditorialExperimentOutput, PCCProgressiveDraftExperiment. Optional QualityRunSample.experimentalTrace keeps intermediate outputs separate from inputs. Two-call angle search budgets1536+2560=4096, compares three explanations then writes selected one. Restricted to the two PT opinion case IDs. It may fail; no quality approval yet.
+
+ACTIVE session18389: native run editorial-v5-none-angle-r1, result device-20261029-010542.xcresult, Iago, modes editorial-raw,angle-search-raw, voice none/defaults. Read result, collect.py, inspect text and experimentalTrace. Do not change sources while active. If promising repeat with voice and independent cases before promotion. No Full, no automated Mansuelli tests, no interrupting skin-beauty.
+
+Next hypotheses are NOT implemented: explicit editorial lenses for alternative claims (distinction/mechanism/boundary), independent local selection, content-first/local voice adaptation, instruction language, omitting short-platform cue. No claim that PCC reached a definitive ceiling or GPT parity.
+
+---
+
+# CHECKPOINT MAIS RECENTE — V4 por continuações em teste, nada promovido
+
+Branch codex/script-editorial-quality; worktree pcc-offline-review. HEAD remoto7491225a. Relatório canônico reports/PCC_EDITORIAL_BRANCH_2026-10-29.md. Produto/config/Xcodeproj continuam sem diff contra main; check-project passou. Sem PR/merge.
+
+V3 terminou: sessão29435 exit0, device-20261029-004430,131s,3 respostas. Coletado quality-run-editorial-v3-none-opinion-r1.json (ainda não commitado neste checkpoint). Editorial-raw mais longo mas explicação fraca; demo introduz afirmação sobre ouvido/cansaço sem suporte. Nenhum ganho suficiente. Total18 solicitações na branch,17 textos+1 recusa. Unitários v3:7 aprovados (only-20261029-004046), lint estrito passou; sem warnings observados. Não dizer que PCC chegou ao teto nem que exemplos/deep foram promovidos.
+
+Nova fonte v4 NÃO COMMITADA ainda: Support/EditorialExperiment/PCCProgressiveDraftExperiment.swift, settings inclui staged-raw, harness ablation retorna tuple(text,prompts) e registra prompts múltiplos/call count. Modo limitado a IDs pt-BR-editorial-draft/pt-BR-equipment. Três continuações com funções distintas, sem mínimo de palavras/duração: distinção; causa+exemplo; implicação+fecho. Cada uma vê pedido original+texto anterior; sem plano separado. Cap4096 dividido3×1365, prazo externo60s, Task.checkCancellation antes de cada chamada. Ainda só teste, NÃO integrar app sem ganho real. É diferente do piloto antigo com quota90–110 palavras por seção. Novos testes unitários não rodaram após essa mudança; build nativo compilará o target todo e validará o experimento real. SwiftLint estrito passou.
+
+ATIVA sessão76960: run editorial-v4-none-staged-r1, result device-20261029-005407.xcresult, Iago, modes editorial-raw,staged-raw, voz none/defaults. Não editar fonte durante execução. Ler resultado, collect.py, avaliar progressão/repetição/fidelidade/latência contra referência e uma redação única. Se promissor, repetir e testar com voz; se ruim, registrar sem vender só comprimento como qualidade. Depois rodar contratos adequados, preservar fixtures e commit/push. Não testes automáticos Mansuelli, não Full, não interromper skin-beauty.
+
+---
+
+# CHECKPOINT MAIS RECENTE — V3 editorial/demonstração no iPhone
+
+Branch codex/script-editorial-quality, worktree pcc-offline-review. HEAD remoto anterior7c1e9b56. App normal intocado, sem PR/merge. Relatório canônico novo reports/PCC_EDITORIAL_BRANCH_2026-10-29.md.
+
+V2 concluída: raw sem perfil/default, deep e creative,1 resposta cada. Runs editorial-v2-none-default (device-20261029-003028), editorial-v2-none-deep (003420), editorial-v2-none-creative (003600). Default sem perfil um pouco mais desenvolvido, mas vago; deep não melhorou claramente; creative curto/genérico. Não promover. Total15 solicitações,14 textos+1 recusa desde início da branch; inferências do baseline podem ser mais de1. Fixtures coletadas. Nenhuma solução aprovada.
+
+V3 test-only adiciona modos editorial-raw e editorial-demo-raw. Prompt editorial é monólogo com progressão/uma distinção/razão/exemplo/consequência, sem quota. Demo é conversa sintética completa sobre caixas/organização da casa, com papéis reais no Transcript; NÃO é resposta do caso avaliado nem texto de referência. Sample registra demo integral em editorialExampleInstructions. Helpers agora em Support/EditorialExperiment; testes puros em Managers/EditorialExperiment; um tipo por arquivo, headers e lint estrito. Sete testes passaram em only-20261029-004046,195s, sessão10450 exit0.
+
+ATIVA sessão29435: primeira v3 no Iago, build necessário para novo código, run editorial-v3-none-opinion-r1, caso pt-BR-editorial-draft, voice none, modes lean-raw,editorial-raw,editorial-demo-raw. Default reasoning/sampling. Não editar fonte enquanto ativa. Ler resultado e coletar com tools/quality/collect.py; comparar texto integral sem melhorar redação. Se promissor, repetir e testar com voz completa e casos independentes/fidelidade antes de promover. Se falhar, registrar e buscar outra hipótese; não chamar isso de teto definitivo.
+
+Apoio futuro, NÃO implementado: separar conteúdo e adaptação de voz (talvez PCC para conteúdo + reescrita local inMyVoice com exemplos privados locais), ou retirar enquadramento implícito de plataforma curta. Só explorar se dados justificarem. Preservar privacidade e não colocar referências do mesmo caso no prompt. Não rodar Full, não testar automaticamente no Mansuelli, não interromper skin-beauty. Nenhum novo app normal instalado com essas alternativas.
+
+---
+
+# CHECKPOINT ATUAL — nova branch editorial, controle sem perfil na fila
+
+Branch codex/script-editorial-quality (base main0fd19d1a/PR77), worktree isolado pcc-offline-review. Primeiro commit0e41c9d4 enviado; app normal intocado, sem PR/merge nesta branch. Relatório canônico novo: reports/PCC_EDITORIAL_BRANCH_2026-10-29.md.
+
+V1 concluída:12 solicitações PCC em três casos PT e quatro condições.11 textos e1 recusa de segurança (tutorial lean-raw). Nenhuma alternativa aprovada editorialmente. Dados quality-run-editorial-v1-*.json, referências do assistente separadas e nunca enviadas como gabarito. Texto não vazio/teste aprovado não é aprovação de qualidade.
+
+V2:5 testes de contratos/configuração passaram em only-20261029-002822,102s, sessão74810 exit0. Falha de compilação anterior22394 era import FoundationModels ausente no teste, corrigido. SwiftLint estrito passou. Settings permite voice full/half/none, reasoning default/light/moderate/deep, sampling default/creative (topP0.95,temp0.8,seed17), modes baseline/stack-guided/lean-guided/lean-raw; rejeita erros, duplicados e sampler criativo em baseline que não o aplica. Config gravada no sample. Defaults preservam V1.
+
+ATIVA sessão46461: primeira nova execução com build para aparelho, run editorial-v2-none-default, caso pt-BR-editorial-draft, voice none, apenas lean-raw, defaults de geração. Resultado device-20261029-003028.xcresult. Aguardando lock da sessão skin-beauty; não editar fonte enquanto executa. Ler resultado, coletar tools/quality/collect.py e avaliar. Depois mesmo caso/sem perfil com deep, e depois sampling creative com reasoning default, uma variável por vez; podem --no-build após primeiro build aprovado. Não misturar configurações no mesmo run nem comparar caracteres como tokens.
+
+Não testar automaticamente no Mansuelli. Não interromper outros builds nem usar xcodebuild direto. Nenhum Full novo. Nenhuma mudança de guardrails/provedor/treinamento. Só promover fluxo após ganho consistente; mais exemplos opcionais ainda não implementados nos checkpoints abaixo. Perfil fora da geração é uma ablação, não proposta de remover My Cue Voice do app.
+
+---
+
+# NOVA BRANCH EDITORIAL —29/10, não confundir com entrega anterior encerrada
+
+Usuário autorizou mudar fluxo/prompts para buscar nível editorial das referências do assistente e pediu branch separada. Branch atual codex/script-editorial-quality, criada de main0fd19d1a (PR77). Mesmo worktree isolado pcc-offline-review; não usar checkout principal/skin-beauty. Primeiro commit0e41c9d4 já enviado à nova branch remota, upstream correto. Sem PR ou merge. Nenhuma mudança no app normal: somente testes experimentais, referências e relatório reports/PCC_EDITORIAL_BRANCH_2026-10-29.md.
+
+Primeira matriz: baseline serviço real; stack-guided instruções atuais+PCCProseDraft direto; lean-guided mesmaschema+prompt enxuto; lean-raw mesmoenxuto+String. Três casos PT (opinião/equipamento/tutorial),12 solicitações:11 textos e1 recusa de segurança em tutorialleanraw. Nenhuma alternativa mostrou ganho consistente; não promover. Dados quality-run-editorial-v1-opinion-r1.json, quality-run-editorial-v1-pt-BR-equipment-r1.json, quality-run-editorial-v1-pt-BR-tutorial-r1.json. Todas sintéticas, sem texto privado real. Referências do assistente salvas em research_notes/Editorial refinement/assistant_references_2026-10-29.json, nunca enviadas como gabarito. Comparação com assistente não é cega (teve contexto anterior); reconhecerlimite.
+
+Validação: dois testes de contrato passaram only-20261029-000654,214s. Opinião device-20261029-001357,1teste passou71s; equipamento device-20261029-001631,1teste passou27s; tutorial device-20261029-001944 falhou porque leanrawrecusou conteúdo (erro preservado). Não alterar guardrails para contornar. Sessões38951/11997 encerradas. Contratospassados não aprovamqualidade.
+
+ATIVA sessão22394: scripts/test.sh only PCCEditorialExperimentSettingsTests e PCCEditorialExperimentPromptTests; resultado only-20261029-002307.xcresult. Aguardando skin-beauty (dois UI de reset filtro/pele, only-20261029-002139; não Fullinteiro). Fonte congelada. Novos arquivos ainda não commitados: PCCEditorialExperimentSettings.swift, PCCEditorialExperimentSettingsTests.swift; harness +EditorialAblation agora aceita CUE_QUALITY_ABLATION_VOICE=full|half|none, CUE_QUALITY_REASONING=default|light|moderate|deep, CUE_QUALITY_ABLATION_SAMPLING=default|creative, CUE_QUALITY_ABLATION_MODES=baseline,stack-guided,lean-guided,lean-raw. Creative preset topP0.95,temp0.8,seed17 só para chamadas diretas; rejeita baseline para não fingir parâmetro que serviço não aplica. Guarda inválidos/duplicados. Config gravada em reviewChecks, raciocínio em requestedReasoning. SwiftLint estrito passou. Nenhum resultado desses novos controles ainda.
+
+Próximo: ler22394; sepassar, medir raw semperfil/default; depois mesmo semperfil/deep; depois mesmo semperfil/presetcriativo (uma variável por vez). Umcaso opiniãoPT porinvocação, só modo lean-raw. Primeira execução devecompilar aparelho (não --no-build após mudança); seguintes podemreusar. CUE_DEVICE='iago Lima iphone' TEST_RUNNER_CUE_QUALITY_RUN=<nome> TEST_RUNNER_CUE_QUALITY_EDITORIAL_ABLATION=1 TEST_RUNNER_CUE_QUALITY_INTENT_CASE=pt-BR-editorial-draft TEST_RUNNER_CUE_QUALITY_ABLATION_VOICE=none TEST_RUNNER_CUE_QUALITY_ABLATION_MODES=lean-raw scripts/test.sh device 'ScriptQualityDeviceTests/comparesEditorialPromptAblations()'. Coletar tools/quality/collect.py <run> <xcresult>. Não testar no Mansuelli automaticamente. Prior deep+planning antigo negativo não prova resultado desta configuração semperfil/semplanejamento.
+
+Só depois dos resultados escolher próximo experimento. Ideias ainda não implementadas: retirar enquadramento implícito de vídeo curto/plataforma; orientar como monólogo editorial em vez de resposta resumida; demonstração integral do assistente em assunto diferente do caso avaliado (não gabarito do mesmo caso). Não alegar tentado/teto atingido. Nenhum modelo externo/treinamento adicionado. Não enfileirar Full; medir somente o que pertence ao experimento. Atualizar relatório, salvarfixtures e commit/push ao fechar checkpoint.
+
+---
+
 # ENTREGA ENCERRADA — correções validadas, push e instalações concluídos
 
 Fonte final enviada em f7c90f57 na branch codex/pcc-offline-review. Relatório canônico: reports/PCC_FINAL_VALIDATION_2026-10-28.md. 4 casos corrigidos×3=12 execuções aprovadas; última rodada pertinente only-20261028-232531:56 aprovados/0 falhas/0 pulados. Pico do brilho35% renderizado >=4,5:1 normal/aumentado; captura atual23 textos mínimo6,52:1. Check-warnings27453 exit0 nas três compilações limpas (simulador/SDK iPhone/Release), zero warnings. Não repetir Full: dono pediu somente testes pertinentes; Full anterior permanece com falhas documentadas.
