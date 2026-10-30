@@ -255,15 +255,12 @@ struct ScriptsView: View {
         let groups = viewModel.groups(takeCount: { takes.count(for: $0) })
         return ScrollViewReader { proxy in
             List {
-                // The count under the large title ("8 SCRIPTS · 3 READY"), the search (once the magnifier opened it), then the platform filters:
-                // free blocks.
-                blockRow(top: 0) {
-                    HUDLine(values: viewModel.summaryValues(takeCount: { takes.count(for: $0) }))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.horizontal, 4)
-                        .accessibilityIdentifier("scripts.summary")
-                }
-                .id(Self.listTop)
+                // The search (once the magnifier opened it), then the platform filters: free blocks under the large title. Nothing counts
+                // the scripts there (the owner took "8 SCRIPTS · 3 READY" off, 30/10/2026); a row of no height marks the top the search
+                // scrolls back to.
+                blockRow(top: 0) { Color.clear.frame(height: 0) }
+                    .accessibilityHidden(true)
+                    .id(Self.listTop)
                 if showsSearch {
                     blockRow(top: 14) {
                         SearchField(text: $viewModel.query, prompt: "Search scripts", isFocused: $isSearchFocused)
@@ -376,7 +373,7 @@ struct ScriptsView: View {
     private func row(for script: Script, state: ScriptState) -> some View {
         let rowView = ScriptRow(
             script: script, state: state, line: line(of: script, state: state), takeCount: takes.count(for: script.id),
-            topicColor: tagging.color(for: script), showsTrailing: !viewModel.isSelecting,
+            topic: tagging.world(of: script).map { ($0.topic.label, $0.color) }, showsTrailing: !viewModel.isSelecting,
             isSelected: viewModel.isSelecting ? viewModel.selection.contains(script.id) : nil,
             onRecord: { actions.record(script) },
             onTakes: { presentation.selectedTab = .takes }
@@ -440,13 +437,12 @@ struct ScriptsView: View {
     }
 
     /// "READY TO RECORD · 3" in green, "DRAFTS · 4 — IN PROGRESS" and "RECORDED · 2" quiet (mono 10, wide tracking); Select ends the first one.
+    /// "Ready to record", "Drafts", "Recorded" and Select: plain words in grey, no counts (the owner wanted the list lighter, 30/10/2026).
     private func groupHeader(_ group: ScriptGroup, showsSelect: Bool) -> some View {
         HStack(alignment: .center, spacing: 10) {
             Text(groupTitle(group))
-                .monoFont(size: 10, weight: .semibold)
-                .textCase(.uppercase)
-                .tracking(1.2)
-                .foregroundStyle(group.state == .ready ? Palette.successText : Palette.inkHint)
+                .cueFont(15, weight: .semibold)
+                .foregroundStyle(Palette.ink2)
                 .accessibilityAddTraits(.isHeader)
                 .accessibilityIdentifier("scripts.group.\(group.state.rawValue)")
             Spacer()
@@ -454,10 +450,8 @@ struct ScriptsView: View {
                 Button(viewModel.isSelecting ? "Done" : "Select") {
                     viewModel.toggleSelecting()
                 }
-                .monoFont(size: 10, weight: .semibold)
-                .textCase(.uppercase)
-                .tracking(1.2)
-                .foregroundStyle(Palette.inkHint)
+                .cueFont(15, weight: .semibold)
+                .foregroundStyle(Palette.ink2)
                 .frame(minHeight: Metrics.hitTarget)
                 .padding(.vertical, -16)
                 .accessibilityIdentifier("scripts.selectButton")
@@ -470,9 +464,9 @@ struct ScriptsView: View {
 
     private func groupTitle(_ group: ScriptGroup) -> String {
         switch group.state {
-        case .ready: String(localized: "Ready to record · \(group.count)")
-        case .draft: String(localized: "Drafts · \(group.count) · In progress")
-        case .recorded: String(localized: "Recorded · \(group.count)")
+        case .ready: String(inInterfaceLanguage: LocalizedStringResource("scripts.group.ready", defaultValue: "Ready to record"))
+        case .draft: String(localized: "Drafts")
+        case .recorded: String(inInterfaceLanguage: LocalizedStringResource("scripts.group.recorded", defaultValue: "Recorded"))
         }
     }
 
@@ -537,7 +531,7 @@ struct ScriptsView: View {
 
     private func line(of script: Script, state: ScriptState) -> ScriptRowLine {
         ScriptRowLine(
-            script: script, state: state, readSeconds: readSeconds(script), takes: takes.takes(for: script.id)
+            script: script, state: state, takes: takes.takes(for: script.id)
         ) { [drafts] in drafts?.hasDraft(for: $0) ?? false }
     }
 

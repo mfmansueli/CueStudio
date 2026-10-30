@@ -27,10 +27,9 @@ struct ScriptsLogbookSection: View {
         let waiting = logbook.waiting
         if !waiting.isEmpty {
             VStack(alignment: .leading, spacing: 8) {
-                Text("Logbook · \(waiting.count) waiting")
-                    .monoFont(size: 10, weight: .semibold)
-                    .textCase(.uppercase)
-                    .tracking(1.2)
+                // As plain as the groups' titles above it (`ScriptsView.groupHeader`), in the Logbook's violet.
+                Text("Logbook")
+                    .cueFont(15, weight: .semibold)
                     .foregroundStyle(Palette.aiText)
                     .padding(.horizontal, 12)
                     .accessibilityAddTraits(.isHeader)

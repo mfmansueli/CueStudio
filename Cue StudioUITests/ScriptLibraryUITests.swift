@@ -18,9 +18,8 @@ final class ScriptLibraryUITests: XCTestCase {
 
     func testTheListShowsEachScriptAtItsState() {
         let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(element(app, "scripts.summary").exists(within: 15))
         // READY TO RECORD first, then DRAFTS, then RECORDED; each has its way forward.
-        XCTAssertTrue(element(app, "scripts.group.ready").exists)
+        XCTAssertTrue(element(app, "scripts.group.ready").exists(within: 15))
         XCTAssertTrue(app.buttons["row.recordButton"].firstMatch.exists)
         for _ in 0..<4 where !element(app, "scripts.group.recorded").exists { app.swipeUp() }
         XCTAssertTrue(element(app, "scripts.group.draft").exists)
@@ -378,7 +377,7 @@ final class ScriptLibraryUITests: XCTestCase {
         app.buttons["page.menuButton"].tap()
         let details = app.buttons["Script details"]
         XCTAssertTrue(details.exists(within: 5), "No Script details in the menu")
-        details.tap()
+        details.tapMenuItem()
         let format = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS '4:5 · 1080p30'")).firstMatch
         XCTAssertTrue(format.exists(within: 10), "The details don't show LinkedIn's format")
     }
@@ -397,7 +396,7 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertFalse(app.buttons["Improve with Cue"].exists)
         // The old full editor is gone: the page is where the words are written.
         XCTAssertFalse(app.buttons["Versions & options"].exists)
-        app.buttons["Script details"].tap()
+        app.buttons["Script details"].tapMenuItem()
         let type = app.buttons["details.type"]
         XCTAssertTrue(type.exists(within: 5))
         type.tap()

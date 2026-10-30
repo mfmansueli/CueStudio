@@ -38,6 +38,14 @@ extension XCUIElement {
         } while Date() < deadline
     }
 
+    /// A menu's item: tapped once it stops moving, and again if the menu took the first tap while it was still opening (the menu
+    /// stays open then, and the item with it).
+    func tapMenuItem() {
+        waitUntilStill()
+        tap()
+        if !isGone(within: 2) { tap() }
+    }
+
     /// Every 0.1 s until `condition` holds or `timeout` runs out.
     private func poll(_ timeout: TimeInterval, until condition: () -> Bool) -> Bool {
         let deadline = Date().addingTimeInterval(timeout)

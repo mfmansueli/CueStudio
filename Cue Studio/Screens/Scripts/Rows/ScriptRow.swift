@@ -5,8 +5,9 @@
 
 import SwiftUI
 
-/// A script on the Scripts list (v29): the topic's bar, the title, a mono line ("● TIKTOK · 0:47 · 4 CUES") and the one
-/// way forward for its state: "● REC" when it is ready, "Continue ›" for a draft, "×3 ›" (its videos, in Takes) once it has
+/// A script on the Scripts list (v29): the title, with a small ✦ in the colour of its topic's world after it, a mono line ("● TIKTOK",
+/// `ScriptRowLine`) and the one way forward for its state: "● REC" when it is ready, a "›" for a draft, "×3 ›" (its videos, in Takes) once
+/// it has
 /// takes. A tap anywhere else on the row opens the script's page, whatever its state. While Scripts selects, the way forward gives
 /// its place to nothing and the row starts with its selection mark (`ScriptSelectionMark`), inside the card.
 struct ScriptRow: View {
@@ -14,8 +15,8 @@ struct ScriptRow: View {
     let state: ScriptState
     let line: ScriptRowLine
     let takeCount: Int
-    /// The world color of the script's topic; nil until it has one.
-    let topicColor: Color?
+    /// The name of the script's topic and the colour of its world; nil until it has one.
+    let topic: (name: String, color: Color)?
     let showsTrailing: Bool
     /// Whether the script is picked while Scripts selects; nil when it doesn't.
     var isSelected: Bool?
@@ -32,13 +33,14 @@ struct ScriptRow: View {
                 ScriptSelectionMark(isSelected: isSelected)
                     .transition(.scale(scale: 0.6).combined(with: .opacity))
             }
-            ThemeRail(color: topicColor ?? Palette.separator)
             VStack(alignment: .leading, spacing: 3) {
-                Text(script.displayTitle)
+                Text(titleWords)
                     .cueFont(15.5, weight: .semibold)
                     .foregroundStyle(Palette.ink)
                     .lineLimit(large ? 4 : 2)
                     .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityLabel(Text(script.displayTitle))
+                    .accessibilityValue(topic?.name ?? "")
                 HStack(spacing: 6) {
                     PlatformDot(color: script.platform.tint, isSmall: true)
                     Text(line.values.joined(separator: " · "))
@@ -54,9 +56,20 @@ struct ScriptRow: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             if showsTrailing { trailing }
         }
-        .padding(EdgeInsets(top: 6, leading: 14, bottom: 6, trailing: 12))
+        .padding(EdgeInsets(top: 6, leading: 16, bottom: 6, trailing: 12))
         .frame(minHeight: 58)
         .accessibilityElement(children: .contain)
+    }
+
+    /// The title, and its topic as a ✦ in the world's colour after the last word: the owner's pick in place of the bar that started the card
+    /// (30/10/2026). It wraps with the words, so every title starts at the same edge, with a topic or without.
+    private var titleWords: AttributedString {
+        var words = AttributedString(script.displayTitle)
+        guard let topic else { return words }
+        var star = AttributedString("\u{00A0}✦")
+        star.foregroundColor = topic.color
+        words.append(star)
+        return words
     }
 
     @ViewBuilder
@@ -65,11 +78,11 @@ struct ScriptRow: View {
         case .ready:
             RecPill(action: onRecord, accessibilityIdentifier: "row.recordButton")
         case .draft:
-            Text("Continue ›")
-                .cueFont(13.5, weight: .semibold)
+            // Only the arrow: the whole row opens the draft (the owner took "Continue" off, 30/10/2026).
+            Image(systemName: "chevron.right")
+                .cueFont(14, weight: .semibold)
                 .foregroundStyle(Palette.ink2)
-                .lineLimit(1)
-                .fixedSize()
+                .accessibilityLabel(Text("Continue"))
                 .accessibilityIdentifier("row.continue")
         case .recorded:
             Button(action: onTakes) {
@@ -96,9 +109,9 @@ struct ScriptRow: View {
         ScriptRow(
             script: SampleScripts.lampReview, state: .ready,
             line: ScriptRowLine(
-                script: SampleScripts.lampReview, state: .ready, readSeconds: 28, takes: [], hasDraft: { _ in false }
+                script: SampleScripts.lampReview, state: .ready, takes: [], hasDraft: { _ in false }
             ),
-            takeCount: 0, topicColor: Palette.World.pink, showsTrailing: true, onRecord: {}, onTakes: {}
+            takeCount: 0, topic: ("Tech", Palette.World.sky), showsTrailing: true, onRecord: {}, onTakes: {}
         )
     }
     .previewEnvironment()

@@ -219,3 +219,45 @@ Still slipping, at times: a hedge ("muchísimos años" → "siempre"), a safety 
 - **For the owner's judgement:** the catchphrase and closing question in every script (the synthetic creator's preferences); whether the check's
   hedging reads too soft; whether Ultra's Fit to time keeps enough (try it on a long script: the length bar, then Fit to time).
 
+
+## 30 October, night — vertical lengths, the dock, Ultra AI's wait, a lighter Scripts list
+
+Decided by the owner on the phone (29–30/10); built, installed on both iPhones and approved before the night's tests:
+
+- **Vertical scripts aim for 1:15–1:45 and never pass 2 minutes** (TikTok, Reels, Shorts, LinkedIn); only YouTube writes freely. This replaces
+  "writes freely" above for the vertical networks. `PlatformRules.json` revision 4 (75–105 s), `UltraLength.ideal`, Auto's ceiling 120 s
+  (`ScriptRequestFactory`). On Auto, a polish more than 15% past its range is fitted once (one more call, `UltraScriptService`); a length the
+  creator chose and YouTube's long form are left as they came.
+- **AI text in short paragraphs** (`ScriptParagraphs`, Apple Intelligence and Ultra AI): a one-block ~1:30 script vanished mid-reveal, as on 20/10.
+- **The Scripts dock:** each network's logo on the platform chip and in Create for; the writer chip keeps the creator's last pick across scripts
+  and launches (`DefaultsKey.dockWriter`); a chip picked lights up (Cue's light round it, sparks for Ultra AI) in time with Core Haptics; the
+  send arrow turns violet while Ultra AI writes the next idea. My Cue Voice's chip always shows its percentage, 0% before any answer.
+- **Ultra AI's wait:** a galaxy round the star, one chapter per call (draft, check, polish), a lit moon born with each chapter on a drawn orbit;
+  outside the ring, space goes on (shooting stars, meteor showers, passing comets); the finish falls into the star with a flash and a haptic swell
+  (`UltraWaitScene`, `UltraWaitTimeline`, `UltraSceneMoment`, `HapticPatterns.ultraFinish`). The progress follows the passes, never 100% early.
+- **A lighter Scripts list:** no "N SCRIPTS · N READY"; group titles in plain grey words without counts ("Ready to record", "Drafts",
+  "Recorded"); the cards say only the network (time and cues out), a draft ends in "›", and the topic is a ✦ in its world's colour after the title
+  (the colour bar and the topic's name came off; a network icon beside the dot was tried and dropped by the owner).
+
+### Tests (night of 30/10)
+
+- `scripts/check-warnings.sh`: no warnings (simulator, device, Release). `scripts/check-project.sh`: OK.
+- **Full plan:** unit 4,701 passed, 0 failed (109 skipped, 1 expected failure) in 10 min; UI 415 passed, **2 failed**, 106 skipped in 72 min:
+  - `FirstRunUITests/testMyCueVoiceAsksFourQuestionsAndTheScriptIsThePreview` still expected "Set up" on the voice chip, which says 0% since the
+    owner's call of 29/10. The test was out of date, not the app; updated, it passes.
+  - `ScriptLibraryUITests/testImproveIsOnThePageAndTheMenuLeadsToDetails` also failed on 28/10 on another branch (`PCC_HANDOFF_2026-10-28.md`),
+    cause then unknown, and failed again here when repeated. A hierarchy dump at the failure showed the ••• menu still open: it took the tap on
+    "Script details" while it was still opening. New helper `tapMenuItem()` (`XCUIElement+Waiting`: waits for the item to stop, taps again if
+    the menu stayed open), used by this test and by LinkedIn's details test (same pattern, flaked earlier this week): both passed 5 of 5
+    repetitions, where before it failed on the first or second.
+  - The whole UI plan was not run again after these two test-only fixes.
+- **Contrast:** the topic's ✦ on the script card: warm 11.2:1, mint 11.1:1, pink 9.1:1, sky 8.8:1 (a part that informs: 3:1;
+  `PaletteContrastTests.theTopicsStarShowsOnTheScriptCard`); Ultra AI's white send arrow on #6F5CFF 4.5:1 (`ultraAIsSendArrowShowsOnItsViolet`).
+  The group titles use `ink2`, a measured text token. List captures: `HandoffCaptureTests.test3_1_ScriptsList`.
+- **Strings:** three new keys in the 20 languages (`scripts.group.ready`, `Drafts`, `scripts.group.recorded`, taken from the old count strings);
+  16 entries no code used any more removed; `scripts/strings.py missing` reports none.
+- **Not measured: the wait's frame rate on the iPhone.** `DockMotionDeviceUITests/testFilmingUltraAIsWait` (the stub paced as Gemini's, with a
+  long check) is ready for `tools/motion/film.sh`, but twice the iPhone 15 Pro didn't let the UI test runner in ("Timed out while enabling
+  automation mode": iOS asks the owner on the phone). Run it with the phone in hand:
+  `CUE_DEVICE="iago Lima iphone" tools/motion/film.sh DockMotionDeviceUITests/testFilmingUltraAIsWait build/captures/motion/ultra-wait`, then
+  `python3 tools/motion/gaps.py build/captures/motion/ultra-wait/film.mov`. No real Ultra AI call was made tonight.

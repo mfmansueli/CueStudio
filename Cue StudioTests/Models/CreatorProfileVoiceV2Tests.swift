@@ -159,6 +159,27 @@ struct CreatorProfileVoiceV2Tests {
         #expect(tagging.topics == [.niche(.tech), .custom("Chess")])
     }
 
+    /// A Scripts row's ✦ (`ScriptRow`): one of the creator's topics, in its world's colour; never "no topic" nor one they no longer have.
+    @MainActor
+    @Test func aScriptsWorldIsOneOfTheCreatorsTopics() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        let profile = CreatorProfileService(defaults: defaults.defaults)
+        profile.profile = CreatorProfile(niches: [.tech], customTopics: ["Chess"])
+        let tagging = TopicTaggingService(
+            library: ScriptLibraryService(repository: FakeScriptRepository(), now: { .now }), profile: profile,
+            personalization: PersonalizationService(defaults: defaults.defaults), writer: FakeScriptWriter()
+        )
+        var script = TestData.script()
+        script.topic = OnboardingTopic.custom("Chess").id
+        #expect(tagging.world(of: script)?.topic == .custom("Chess"))
+        #expect(tagging.world(of: script)?.color == OnboardingTopic.color(at: 1))
+        for topic in [nil, "", OnboardingTopic.niche(.food).id] {
+            script.topic = topic
+            #expect(tagging.world(of: script) == nil)
+        }
+    }
+
     @Test func aTopicOnlyTheVoiceOffersIsAnAnswer() {
         var profile = CreatorProfile(role: .business, sounds: [.casual], confirmedVoiceSteps: [.audience, .tone])
         #expect(!profile.hasAnswered(.niche))
