@@ -51,21 +51,6 @@ final class CreationSheetsUITests: XCTestCase {
         XCTAssertTrue(app.pageBackButton.exists(within: 10) || app.textFields["page.titleField"].exists(within: 10))
     }
 
-    func testTheCardsFormatSheetHasAutoAndSetsTheChip() throws {
-        let app = CueApp.launch(seeded: true)
-        app.buttons["ideaCard.formatChip"].tap()
-        let sheet = element(app, "format.sheet")
-        XCTAssertTrue(sheet.exists(within: 5))
-        XCTAssertTrue(element(app, "format.auto").exists)
-        // Full height, like the dock's other sheets (the platform, My Cue Voice, Find inspiration): no half-height stop.
-        XCTAssertLessThan(sheet.frame.minY, app.windows.firstMatch.frame.height * 0.2, "The format sheet opens at full height")
-        try capture(app, "F_format_card")
-        element(app, "format.review").tap()
-        element(app, "format.confirm").tap()
-        XCTAssertTrue(app.buttons["ideaCard.formatChip"].exists(within: 5))
-        XCTAssertEqual(app.buttons["ideaCard.formatChip"].label, "Format, Review")
-    }
-
     func testTheBrandBriefNeedsABrandAndAProduct() throws {
         let app = CueApp.launch(seeded: true)
         app.buttons["ideaCard.formatChip"].tap()
@@ -145,8 +130,7 @@ final class CreationSheetsUITests: XCTestCase {
         let entry = element(app, "logbook.entry")
         XCTAssertTrue(entry.exists(within: 5))
         // The keyboard stays up for the next idea, and the one just saved comes into view above it.
-        let visible = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: entry)
-        XCTAssertEqual(XCTWaiter.wait(for: [visible], timeout: 5), .completed, "The saved idea is under the keyboard")
+        XCTAssertTrue(entry.matches(NSPredicate(format: "hittable == true"), within: 5), "The saved idea is under the keyboard")
         entry.swipeLeft()
         let delete = app.buttons["Delete"]
         XCTAssertTrue(delete.exists(within: 5))

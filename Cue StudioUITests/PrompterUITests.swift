@@ -22,8 +22,7 @@ final class PrompterUITests: XCTestCase {
         play.tap()
         // From the top it counts down first (3 s by default), then plays.
         let playing = NSPredicate(format: "label == 'Pause'")
-        expectation(for: playing, evaluatedWith: play)
-        waitForExpectations(timeout: 10)
+        XCTAssertTrue(play.matches(playing, within: 10))
         play.tap()
 
         // The first play folds the adjustments into the bar; the chevron brings Aa back.
@@ -55,15 +54,14 @@ final class PrompterUITests: XCTestCase {
         play.tap()
         // From the top it counts down first (a tap then would cancel it); the first play folds the voice line into the bar, and the chevron
         // brings it back.
-        let playing = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label == 'Pause'"), object: play)
-        XCTAssertEqual(XCTWaiter.wait(for: [playing], timeout: 10), .completed)
+        XCTAssertTrue(play.matches(NSPredicate(format: "label == 'Pause'"), within: 10))
         bringStudioBarOut(app)
         // The Simulator can't run speech recognition: there the text scrolls at the set speed while
         // you talk, and says so, speed included. It never claims to follow the words.
         let status = element(app, "prompter.voiceStatus")
         XCTAssertTrue(status.exists(within: 5))
         let honest = NSPredicate(format: "label CONTAINS 'while you talk' AND label CONTAINS %@", speedLabel)
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: honest, evaluatedWith: status)], timeout: 10), .completed)
+        XCTAssertTrue(status.matches(honest, within: 10))
         XCTAssertNotEqual(status.label, "Follows your words")
         play.tap()
         app.buttons["prompter.closeButton"].tap()
@@ -91,30 +89,13 @@ final class PrompterUITests: XCTestCase {
         // Getting ready, then (the Simulator can't recognize speech) scrolling while you talk:
         // never "Listening" to the words while paused, and never stuck getting ready.
         let settled = NSPredicate(format: "value == 'Paused'")
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation(for: settled, evaluatedWith: indicator)], timeout: 10), .completed)
+        XCTAssertTrue(indicator.matches(settled, within: 10))
 
         app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Steady"].tap()
         XCTAssertFalse(element(app, "prompter.voiceIndicator").exists(within: 2))
         XCTAssertTrue(speed.exists)
         app.buttons["prompter.closeButton"].tap()
         XCTAssertTrue(record.exists(within: 5))
-    }
-
-    /// Aa opens the Prompter page of Settings (09 §11) over the recording, without the preview (the real text window is right behind the
-    /// sheet, `DESIGN_PROJECT.md` §22).
-    func testAaOpensThePrompterPageOverTheRecorder() {
-        let app = CueApp.launch(seeded: true)
-        let record = app.buttons["row.recordButton"].firstMatch
-        XCTAssertTrue(record.exists(within: 15))
-        record.tap()
-
-        XCTAssertTrue(element(app, "prompter.text").exists(within: 5))
-        app.buttons["prompter.displayButton"].tap()
-        XCTAssertTrue(app.buttons["display.doneButton"].exists(within: 5))
-        XCTAssertFalse(element(app, "settings.prompterPreview").exists)
-        XCTAssertTrue(element(app, "settings.followVoice").exists)
-        XCTAssertTrue(element(app, "settings.speed").exists)
-        app.buttons["display.doneButton"].tap()
     }
 
     func testReadingLineMovesFromThePrompterPageAndResetsToRecommended() {
@@ -170,10 +151,12 @@ final class PrompterUITests: XCTestCase {
         handle.doubleTap()
         XCTAssertEqual(handle.value as? String, original, "a double-tap puts the original size back")
 
-        // Nothing resizes while a sheet is open.
+        // Nothing resizes while a sheet is open. Aa's Prompter page has no preview: the real text window is right behind the sheet
+        // (`DESIGN_PROJECT.md` §22).
         app.buttons["prompter.displayButton"].tap()
         XCTAssertTrue(app.buttons["display.doneButton"].exists(within: 5))
         XCTAssertFalse(handle.exists)
+        XCTAssertFalse(element(app, "settings.prompterPreview").exists, "Aa's Prompter page shows a preview over the real text")
         app.buttons["display.doneButton"].tap()
     }
 
@@ -373,16 +356,13 @@ final class PrompterUITests: XCTestCase {
     private func bringStudioBarOut(_ app: XCUIApplication) {
         let handle = element(app, "prompter.sheetHandle")
         XCTAssertTrue(handle.exists(within: 5))
-        let folded = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'Hidden'"), object: handle)
-        XCTAssertEqual(XCTWaiter.wait(for: [folded], timeout: 5), .completed, "The bar didn't fold for the first play")
+        XCTAssertTrue(handle.matches(NSPredicate(format: "value == 'Hidden'"), within: 5), "The bar didn't fold for the first play")
         handle.tap()
-        let out = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'Shown'"), object: handle)
-        XCTAssertEqual(XCTWaiter.wait(for: [out], timeout: 5), .completed, "The chevron didn't bring the bar back")
+        XCTAssertTrue(handle.matches(NSPredicate(format: "value == 'Shown'"), within: 5), "The chevron didn't bring the bar back")
     }
 
     private func waitUntilHittable(_ element: XCUIElement, file: StaticString = #filePath, line: UInt = #line) {
-        let hittable = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: element)
-        XCTAssertEqual(XCTWaiter.wait(for: [hittable], timeout: 5), .completed, "\(element) can't be tapped", file: file, line: line)
+        XCTAssertTrue(element.matches(NSPredicate(format: "hittable == true"), within: 5), "\(element) can't be tapped", file: file, line: line)
     }
 
     private func element(_ app: XCUIApplication, _ identifier: String) -> XCUIElement {

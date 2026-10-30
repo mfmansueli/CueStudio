@@ -44,8 +44,7 @@ final class UltraAIUITests: XCTestCase {
         allow.tap()
         let chip = app.buttons["ideaCard.writerChip"]
         XCTAssertTrue(chip.exists(within: 5))
-        expectation(for: NSPredicate(format: "label CONTAINS %@", "Ultra AI"), evaluatedWith: chip)
-        waitForExpectations(timeout: 5)
+        XCTAssertTrue(chip.matches(NSPredicate(format: "label CONTAINS %@", "Ultra AI"), within: 5))
         let field = element(app, "ideaCard.field")
         field.tap()
         field.typeText("Why I stopped buying bottled water")
@@ -55,8 +54,7 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertTrue(text(app, containing: "Ultra AI can get facts wrong").exists(within: 5), "No Ultra AI fact-check reminder")
         // The words reach the editor as they are revealed: its value has them once the page has settled.
         let editor = element(app, "page.editor")
-        expectation(for: NSPredicate(format: "value CONTAINS %@", "Ultra polished opening"), evaluatedWith: editor)
-        waitForExpectations(timeout: 10)
+        XCTAssertTrue(editor.matches(NSPredicate(format: "value CONTAINS %@", "Ultra polished opening"), within: 10))
         XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
     }
 
@@ -71,8 +69,7 @@ final class UltraAIUITests: XCTestCase {
         app.buttons["ideaCard.submit"].tap()
         let editor = element(app, "page.editor")
         XCTAssertTrue(editor.exists(within: 20), "No page written by Ultra AI")
-        expectation(for: NSPredicate(format: "value CONTAINS %@", "Ultra polished opening"), evaluatedWith: editor)
-        waitForExpectations(timeout: 10)
+        XCTAssertTrue(editor.matches(NSPredicate(format: "value CONTAINS %@", "Ultra polished opening"), within: 10))
         let improve = app.buttons["page.improveButton"]
         XCTAssertTrue(improve.exists(within: 5), "No Improve on a script Ultra AI wrote")
         improve.tap()
@@ -80,8 +77,7 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertTrue(fit.exists(within: 5), "Improve has no Fit to time")
         XCTAssertTrue(fit.label.contains("Ultra AI"), "Fit to time doesn't say Ultra AI fits this script: \(fit.label)")
         fit.tap()
-        expectation(for: NSPredicate(format: "value CONTAINS %@", "Ultra fitted script"), evaluatedWith: editor)
-        waitForExpectations(timeout: 15)
+        XCTAssertTrue(editor.matches(NSPredicate(format: "value CONTAINS %@", "Ultra fitted script"), within: 15))
         XCTAssertFalse(text(app, containing: "Gemini").exists, "The brand of the model is on screen")
     }
 
@@ -98,9 +94,8 @@ final class UltraAIUITests: XCTestCase {
         app.scroll(to: allow)
         allow.tap()
         let chip = app.buttons["ideaCard.writerChip"]
-        expectation(for: NSPredicate(format: "label CONTAINS %@", "Ultra AI"), evaluatedWith: chip)
-        waitForExpectations(timeout: 5)
-        XCTAssertTrue(element(app, "ultra.invite").waitForNonExistence(timeout: 5), "The invitation stayed once Ultra AI was allowed")
+        XCTAssertTrue(chip.matches(NSPredicate(format: "label CONTAINS %@", "Ultra AI"), within: 5))
+        XCTAssertTrue(element(app, "ultra.invite").isGone(within: 5), "The invitation stayed once Ultra AI was allowed")
     }
 
     /// Closed on the dock, the invitation is gone from Find inspiration too.
@@ -108,7 +103,7 @@ final class UltraAIUITests: XCTestCase {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraInvite", "-uiTestTopics", "food"])
         XCTAssertTrue(element(app, "ultra.invite").exists(within: 15))
         app.buttons["ultra.invite.close"].tap()
-        XCTAssertTrue(element(app, "ultra.invite").waitForNonExistence(timeout: 5), "The invitation didn't close")
+        XCTAssertTrue(element(app, "ultra.invite").isGone(within: 5), "The invitation didn't close")
         app.buttons["ideaCard.inspirationButton"].tap()
         XCTAssertTrue(element(app, "inspiration.card.title").exists(within: 10))
         XCTAssertFalse(element(app, "ultra.invite").exists, "Closed on the dock, the invitation is still in Find inspiration")

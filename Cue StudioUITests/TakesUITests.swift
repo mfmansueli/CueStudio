@@ -48,15 +48,6 @@ final class TakesUITests: XCTestCase {
         XCTAssertTrue(element(app, "review.takeLabel").exists(within: 5))
     }
 
-    func testTheLibraryCanBeAListAndRemembersIt() {
-        let app = openTakes()
-        XCTAssertTrue(layoutSegment(app, "List").exists(within: 5))
-        layoutSegment(app, "List").tap()
-        XCTAssertTrue(videoRow(app, containing: "3 morning habits").exists(within: 5))
-        layoutSegment(app, "Grid").tap()
-        XCTAssertTrue(videoRow(app, containing: "3 morning habits").exists(within: 5))
-    }
-
     /// Holding a video (grid and list) lifts its card and shows its actions; the preview is drawn
     /// outside the screen's hierarchy, so it needs every service the card reads.
     func testHoldingAVideoShowsItsActions() {

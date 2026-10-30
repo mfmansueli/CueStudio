@@ -53,8 +53,11 @@ final class GenerateScriptUITests: XCTestCase {
         let chip = app.buttons["ideaCard.formatChip"]
         XCTAssertTrue(chip.exists(within: 15))
         chip.tap()
-        XCTAssertTrue(element(app, "format.sheet").exists(within: 5))
+        let sheet = element(app, "format.sheet")
+        XCTAssertTrue(sheet.exists(within: 5))
         XCTAssertTrue(app.buttons["format.auto"].exists)
+        // Full height, like the dock's other sheets (the platform, My Cue Voice, Find inspiration): no half-height stop.
+        XCTAssertLessThan(sheet.frame.minY, app.windows.firstMatch.frame.height * 0.2, "The format sheet opens at full height")
         for type in ["talking", "ad", "review", "tutorial", "list", "story", "opinion", "launch", "apology", "mythFact", "pov"] {
             XCTAssertTrue(app.buttons["format.\(type)"].exists, type)
         }
@@ -63,7 +66,7 @@ final class GenerateScriptUITests: XCTestCase {
         // Picking only selects; Done puts it on the card.
         app.buttons["format.confirm"].tap()
         XCTAssertTrue(app.buttons["ideaCard.formatChip"].exists(within: 5))
-        XCTAssertTrue(app.buttons["ideaCard.formatChip"].label.contains("Review"))
+        XCTAssertEqual(app.buttons["ideaCard.formatChip"].label, "Format, Review")
         XCTAssertFalse(app.buttons["paywall.closeButton"].exists(within: 2))
     }
 

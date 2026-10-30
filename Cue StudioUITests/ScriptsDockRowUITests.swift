@@ -38,8 +38,7 @@ final class ScriptsDockRowUITests: XCTestCase {
         XCTAssertTrue(option.exists(within: 5))
         option.tap()
         let chip = app.buttons["ideaCard.writerChip"]
-        expectation(for: NSPredicate(format: "label CONTAINS %@", "Ultra AI"), evaluatedWith: chip)
-        waitForExpectations(timeout: 5)
+        XCTAssertTrue(chip.matches(NSPredicate(format: "label CONTAINS %@", "Ultra AI"), within: 5))
         expectWholeRow("Ultra AI")
     }
 

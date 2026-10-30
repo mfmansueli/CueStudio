@@ -18,8 +18,7 @@ final class LogbookSelectionUITests: XCTestCase {
     }
 
     private func wait(for count: Int, of query: XCUIElementQuery, _ message: String) {
-        let counted = XCTNSPredicateExpectation(predicate: NSPredicate(format: "count == %d", count), object: query)
-        XCTAssertEqual(XCTWaiter.wait(for: [counted], timeout: 5), .completed, message)
+        XCTAssertTrue(query.matches(NSPredicate(format: "count == %d", count), within: 5), message)
     }
 
     /// Opens the Logbook and saves `ideas` by typing them (Return saves each; the keyboard stays for the next).
@@ -40,8 +39,7 @@ final class LogbookSelectionUITests: XCTestCase {
         XCTAssertTrue(select.exists(within: 5), "No Select beside the first day")
         select.tap()
         // The capture steps aside for the bar, and the sheet's Done leaves room for the one that ends the selection.
-        let gone = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: element(app, "logbook.field"))
-        XCTAssertEqual(XCTWaiter.wait(for: [gone], timeout: 3), .completed, "The field stayed while selecting")
+        XCTAssertTrue(element(app, "logbook.field").matches(NSPredicate(format: "exists == false"), within: 3), "The field stayed while selecting")
         XCTAssertFalse(app.navigationBars.buttons["logbook.doneButton"].exists)
         XCTAssertTrue(app.staticTexts["Select ideas"].exists(within: 5))
         entries.element(boundBy: 0).tap()

@@ -65,7 +65,7 @@ final class DockLightsUITests: XCTestCase {
             let row = app.buttons["destination.\(platform)"]
             XCTAssertTrue(row.exists(within: 5), platform)
             row.tap()
-            XCTAssertTrue(row.waitForNonExistence(timeout: 5))
+            XCTAssertTrue(row.isGone(within: 5))
             let asItGoes = lights(app)
             sleep(3)
             let after = lights(app)
@@ -151,7 +151,7 @@ final class DockLightsUITests: XCTestCase {
         app.buttons["ideaCard.submit"].tap()
         let star = app.buttons["transition.cancel"]
         XCTAssertTrue(star.exists(within: 4), "No star for “\(idea)”")
-        XCTAssertTrue(star.waitForNonExistence(timeout: 30), "The star stayed for “\(idea)”")
+        XCTAssertTrue(star.isGone(within: 30), "The star stayed for “\(idea)”")
         XCTAssertTrue(app.pageBackButton.exists(within: 5))
         app.pageBackButton.tap()
         XCTAssertTrue(app.buttons["ideaCard.submit"].exists(within: 5))

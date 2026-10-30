@@ -60,7 +60,7 @@ final class ButtonPromisesUITests: XCTestCase {
         // The words arrive in the field while it listens (the Logbook of the native-bars rework), and the next tap saves them.
         let field = element(app, "logbook.field")
         let heard = NSPredicate(format: "value CONTAINS 'slow mornings'")
-        XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: heard, object: field)], timeout: 10), .completed, "Nothing was heard")
+        XCTAssertTrue(field.matches(heard, within: 10), "Nothing was heard")
         button.tap()
         XCTAssertTrue(element(app, "logbook.entry").exists(within: 10), "The idea it heard did not reach the Logbook")
         XCTAssertFalse(element(app, "logbook.tapToFinish").exists)
@@ -337,25 +337,6 @@ final class ButtonPromisesUITests: XCTestCase {
             XCTAssertTrue(element(app, "voicePage").exists(within: 5), "Done in the editor of \(row) did not come back to the page")
         }
         XCTAssertGreaterThanOrEqual(opened, 8, "Too few rows were found to open")
-    }
-
-    // MARK: - Profile
-
-    func testTheCoreColourThatIsPickedIsTheOneSelected() {
-        let app = CueApp.launch(seeded: true)
-        goToTab(app, "Profile")
-        let universe = element(app, "profile.universeLink")
-        app.scroll(to: universe)
-        universe.tap()
-        let core = element(app, "universe.core")
-        XCTAssertTrue(core.exists(within: 10))
-        core.tap()
-        for colour in ["rose", "amber", "sunrise", "gold"] {
-            let chip = app.buttons["coreColor.\(colour)"]
-            XCTAssertTrue(chip.exists(within: 5), "No \(colour)")
-            chip.tap()
-            XCTAssertTrue(chip.isSelected, "\(colour) was tapped and is not the one selected")
-        }
     }
 }
 

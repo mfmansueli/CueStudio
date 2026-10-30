@@ -122,23 +122,6 @@ final class ProfileUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Profile updated"].exists(within: 5))
     }
 
-    /// Pictures of the Profile, empty (a new install) and with a year in it (`CUE_SCREENSHOT_DIR`); without the folder it only checks the cards.
-    func testTheProfileEmptyAndFull() throws {
-        for (name, arguments) in [("profile_empty", [String]()), ("profile_full", ["-uiTestUniverse", "sample"])] {
-            let app = CueApp.launch(seeded: !arguments.isEmpty, extraArguments: arguments)
-            let tab = app.cueTabBar.buttons["Profile"]
-            XCTAssertTrue(tab.exists(within: 15))
-            tab.tap()
-            XCTAssertTrue(app.descendants(matching: .any)["profile.creatorCard"].firstMatch.exists(within: 5))
-            XCTAssertTrue(app.descendants(matching: .any)["profile.universeLink"].firstMatch.exists)
-            if let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] {
-                sleep(2)
-                try app.screenshot().pngRepresentation.write(to: URL(fileURLWithPath: folder).appending(path: "\(name).png"))
-            }
-            app.terminate()
-        }
-    }
-
     /// The mini universe moves as soon as the Profile opens (owner's report, 21/10/2026: it stood still until the universe screen had been
     /// opened and left): two pictures of its card, 1.5 s apart, differ.
     func testTheMiniUniverseMovesAsSoonAsTheProfileOpens() {
@@ -160,8 +143,7 @@ final class ProfileUITests: XCTestCase {
         XCTAssertTrue(badge.exists(within: 5))
         badge.tap()
         // The library is another process: the sheet under it stops being the one in front, so its Done can no longer be reached.
-        let covered = XCTNSPredicateExpectation(predicate: NSPredicate(format: "isHittable == false"), object: app.buttons["editProfile.doneButton"])
-        XCTAssertEqual(XCTWaiter.wait(for: [covered], timeout: 8), .completed, "the photo library didn't open")
+        XCTAssertTrue(app.buttons["editProfile.doneButton"].matches(NSPredicate(format: "isHittable == false"), within: 8), "the photo library didn't open")
         if let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] {
             sleep(2)
             try XCUIScreen.main.screenshot().pngRepresentation.write(to: URL(fileURLWithPath: folder).appending(path: "edit_profile_picker.png"))

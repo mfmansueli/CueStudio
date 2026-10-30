@@ -168,8 +168,7 @@ final class VoiceV29UITests: XCTestCase {
         element(app, "voice.more").tap()
         // The next question replaces it.
         let old = app.staticTexts["Where do you post most?"]
-        expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: old)
-        waitForExpectations(timeout: 5)
+        XCTAssertTrue(old.matches(NSPredicate(format: "exists == false"), within: 5))
         XCTAssertTrue(app.buttons["sheet.closeButton"].exists)
     }
 

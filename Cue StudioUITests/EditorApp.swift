@@ -63,25 +63,32 @@ enum EditorApp {
         }
         let button = app.buttons["edit.toolbar.\(id)"]
         XCTAssertTrue(button.exists(within: 5), id)
-        let screen = app.windows.firstMatch.frame
-        // A tool scrolled under the pinned Delete is on the screen but covered: a tap there would hit Delete.
-        let delete = app.buttons["edit.toolbar.delete"]
-        func reachable() -> Bool {
-            screen.contains(button.frame) && (id == "delete" || !(delete.exists && delete.frame.intersects(button.frame.insetBy(dx: 4, dy: 0))))
-        }
+        let bar = app.descendants(matching: .any)["edit.toolbar"].frame
+        let reach = toolReach(app, for: id, in: bar)
+        var frame = button.frame
         var drags = 0
-        while !reachable(), drags < 20 {
-            // The tools run on past the screen's trailing edge (the right, and the left in Arabic): the bar is dragged toward the
-            // tool slowly, by half the way and at most 120 pt. The Simulator lets the bar glide on after a drag held still at its
-            // end (up to as far again at 600 pt/s), so a drag of the whole way overshot the tool and the next one came back.
-            let toolbar = app.descendants(matching: .any)["edit.toolbar"]
-            let away = button.frame.midX - screen.midX
-            let distance = (away < 0 ? -1 : 1) * min(120, max(40, abs(away) / 2))
-            let start = toolbar.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.3))
-            start.press(forDuration: 0.05, thenDragTo: start.withOffset(CGVector(dx: -distance, dy: 0)), withVelocity: 200, thenHoldForDuration: 0.2)
+        while frame.minX < reach.minX || frame.maxX > reach.maxX, drags < 8 {
+            // The tools run on past the screen's trailing edge (the right, and the left in Arabic): the tool is brought to the middle
+            // of the reach, at most the reach's width at a time. At 300 pt a second the bar stops where the drag ends (30/10/2026:
+            // 320 of 330 pt, the rest is the touch's slop); at 600 it glides on past the tool.
+            let distance = max(-reach.width + 40, min(reach.width - 40, reach.midX - frame.midX))
+            let start = app.coordinate(withNormalizedOffset: .zero).withOffset(CGVector(dx: reach.midX - distance / 2, dy: bar.midY))
+            start.press(forDuration: 0.05, thenDragTo: start.withOffset(CGVector(dx: distance, dy: 0)), withVelocity: 300, thenHoldForDuration: 0.1)
             drags += 1
+            frame = button.frame
         }
         button.tap()
+    }
+
+    /// The part of the toolbar a tool can be touched in: inside the screen, after the ‹ back and before the pinned Delete (a tool
+    /// scrolled under Delete is on the screen but covered: a tap there would hit Delete).
+    static func toolReach(_ app: XCUIApplication, for id: String, in bar: CGRect) -> CGRect {
+        var reach = bar.intersection(app.windows.firstMatch.frame)
+        let back = app.buttons["edit.toolbar.back"]
+        if back.exists, id != "back" { reach = reach.divided(atDistance: max(0, back.frame.maxX - reach.minX), from: .minXEdge).remainder }
+        let delete = app.buttons["edit.toolbar.delete"]
+        if delete.exists, id != "delete" { reach.size.width = max(0, delete.frame.minX - reach.minX) }
+        return reach
     }
 
     /// Moves the playhead forward by dragging the timeline's content to the left, about

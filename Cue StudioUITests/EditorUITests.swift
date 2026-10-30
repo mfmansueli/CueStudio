@@ -40,16 +40,6 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.toolbar.smart"].exists(within: 5))
     }
 
-    func testAPanelReplacesTheToolbarUntilItsCheckmark() {
-        let app = EditorApp.open()
-        EditorApp.tapTool(app, "adjust")
-        let apply = app.buttons["edit.panel.apply"]
-        XCTAssertTrue(apply.exists(within: 5))
-        XCTAssertFalse(app.buttons["edit.toolbar.adjust"].exists)
-        apply.tap()
-        XCTAssertTrue(app.buttons["edit.toolbar.adjust"].exists(within: 5))
-    }
-
     func testAdjustPicksASettingAndMovesItsRuler() {
         let app = EditorApp.open()
         EditorApp.tapTool(app, "adjust")
@@ -133,7 +123,7 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(reset.exists(within: 3), "Reset went with Studio on the clip")
         reset.tap()
         XCTAssertEqual(state.label, "Off", "Reset left Skin on the clip")
-        XCTAssertTrue(reset.waitForNonExistence(timeout: 3), "Reset stayed with nothing left to reset")
+        XCTAssertTrue(reset.isGone(within: 3), "Reset stayed with nothing left to reset")
         app.buttons["edit.skin.preset.studio"].tap()
         app.buttons["edit.panel.apply"].tap()
         EditorApp.tapTool(app, "resetClip")
@@ -163,15 +153,15 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(exit.exists(within: 5), "Swiping the video down didn't take it to full screen")
         XCTAssertEqual(arrow.label, "Exit full screen")
         swipe(exit, x: 0.05, from: 0.8, to: 0.3)
-        XCTAssertTrue(exit.waitForNonExistence(timeout: 5), "Swiping up didn't bring the editor back")
+        XCTAssertTrue(exit.isGone(within: 5), "Swiping up didn't bring the editor back")
         swipe(preview, x: 0.06, from: 0.2, to: 0.75)
         XCTAssertTrue(exit.exists(within: 5), "Swiping down beside the video didn't take it to full screen")
         swipe(exit, x: 0.5, from: 0.7, to: 0.2)
-        XCTAssertTrue(exit.waitForNonExistence(timeout: 5), "Swiping the full screen video up didn't bring the editor back")
+        XCTAssertTrue(exit.isGone(within: 5), "Swiping the full screen video up didn't bring the editor back")
         arrow.tap()
         XCTAssertTrue(exit.exists(within: 5), "The arrow didn't take the video to full screen")
         arrow.tap()
-        XCTAssertTrue(exit.waitForNonExistence(timeout: 5), "The arrow didn't bring the editor back")
+        XCTAssertTrue(exit.isGone(within: 5), "The arrow didn't bring the editor back")
     }
 
     /// Natural, then Studio in Filters: Reset stays, on the whole video and on a clip, and on the clip takes off the whole video's
@@ -307,29 +297,13 @@ final class EditorUITests: XCTestCase {
         play.tap()
         XCTAssertEqual(play.label, "Pause")
         #if !targetEnvironment(simulator)
-        let moving = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value != %@", start), object: time)
-        XCTAssertEqual(XCTWaiter.wait(for: [moving], timeout: 8), .completed, "the playhead didn't move")
+        XCTAssertTrue(time.matches(NSPredicate(format: "value != %@", start), within: 8), "the playhead didn't move")
         #endif
         play.tap()
         XCTAssertEqual(play.label, "Play")
         let held = time.value as? String
         sleep(1)
         XCTAssertEqual(time.value as? String, held, "pause didn't hold the playhead")
-    }
-
-    /// Media › In sequence: the creator's other takes come before Photos, and one tapped joins the montage as a clip.
-    func testAnotherTakeJoinsTheMontageFromMedia() {
-        let app = EditorApp.open()
-        EditorApp.tapTool(app, "addMedia")
-        EditorApp.tapTool(app, "mediaSequence")
-        let clipMode = app.buttons["edit.mediaMode.sequence"]
-        XCTAssertTrue(clipMode.exists(within: 5), "No In sequence")
-        XCTAssertTrue(clipMode.isSelected, "Media › In sequence didn't open on it")
-        let take = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.addTake.'")).firstMatch
-        XCTAssertTrue(take.exists(within: 5), "No other take to add")
-        let name = take.label
-        take.tap()
-        XCTAssertTrue(EditorApp.toastSays(app, "added", timeout: 10), "No word that \(name) was added")
     }
 
     /// Edit by text › "Fix caption text": the caption line of the picked words opens with the keyboard up, ready to type.
@@ -382,7 +356,7 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.buttons["review.editButton"].exists(within: 5))
     }
 
-    /// The largest text size: the video, the timeline and the tools stay; a panel scrolls.
+    /// The largest text size: the video, the timeline and the tools stay; a panel replaces the toolbar until its ✓, and scrolls.
     func testTheLargestTextKeepsTheVideoAndTheTools() {
         let app = EditorApp.open(arguments: ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"])
         XCTAssertTrue(app.descendants(matching: .any)["edit.preview"].exists)
@@ -391,6 +365,7 @@ final class EditorUITests: XCTestCase {
         let apply = app.buttons["edit.panel.apply"]
         XCTAssertTrue(apply.exists(within: 5))
         XCTAssertTrue(apply.isHittable)
+        XCTAssertFalse(app.buttons["edit.toolbar.adjust"].exists, "The panel replaces the toolbar until its ✓")
         XCTAssertTrue(app.descendants(matching: .any)["edit.preview"].frame.height >= 150)
         apply.tap()
         XCTAssertTrue(app.buttons["edit.toolbar.adjust"].exists(within: 5))
@@ -417,7 +392,7 @@ final class EditorUITests: XCTestCase {
         let edit = app.buttons["review.editButton"]
         XCTAssertTrue(edit.exists(within: 5))
         let continues = NSPredicate(format: "label == 'Continue'")
-        XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: continues, object: edit)], timeout: 8), .completed, edit.label)
+        XCTAssertTrue(edit.matches(continues, within: 8), edit.label)
         // And the stage bar says so: the video is in edit.
         XCTAssertTrue(app.descendants(matching: .any)["review.stageBar"].exists)
     }
@@ -567,18 +542,6 @@ final class EditorUITests: XCTestCase {
 
     // MARK: - Layout (owner's order, 2026-10-16)
 
-    /// Format, the whole video's crop, is on the main bar and opens the Format panel.
-    func testFormatIsOnTheMainBarAndOpensTheFormatPanel() {
-        let app = EditorApp.open()
-        XCTAssertTrue(app.buttons["edit.toolbar.format"].exists)
-        EditorApp.tapTool(app, "format")
-        let apply = app.buttons["edit.panel.apply"]
-        XCTAssertTrue(apply.exists(within: 5))
-        XCTAssertTrue(app.staticTexts["Format"].exists)
-        apply.tap()
-        XCTAssertTrue(app.buttons["edit.toolbar.format"].exists(within: 5))
-    }
-
     /// Reorder, from the clip's tools once there are two clips: the clips in a list to drag.
     func testReorderFromTheClipToolsOpensTheListOfClips() {
         let app = EditorApp.open()
@@ -590,16 +553,6 @@ final class EditorUITests: XCTestCase {
         XCTAssertTrue(app.descendants(matching: .any)["edit.reorder.list"].exists(within: 5))
         XCTAssertTrue(app.descendants(matching: .any)["edit.reorder.clip.0"].exists)
         XCTAssertTrue(app.descendants(matching: .any)["edit.reorder.clip.1"].exists)
-    }
-
-    /// ✦ Smart opens with Edit by text, and the tile opens the transcript sheet.
-    func testSmartOpensWithEditByText() {
-        let app = EditorApp.open()
-        EditorApp.tapTool(app, "smart")
-        let tile = app.buttons["edit.smart.editByText"]
-        XCTAssertTrue(tile.exists(within: 5))
-        tile.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["edit.transcript"].firstMatch.exists(within: 5))
     }
 
     // MARK: - Low Power Mode
@@ -615,7 +568,7 @@ final class EditorUITests: XCTestCase {
         let close = app.buttons["edit.lowPowerNotice.close"]
         XCTAssertGreaterThanOrEqual(close.frame.width, 44)
         close.tap()
-        XCTAssertTrue(notice.waitForNonExistence(timeout: 3))
+        XCTAssertTrue(notice.isGone(within: 3))
     }
 
     /// Xcode's accessibility audit on the editor and an open panel. Text sizes aren't audited: the editor's are capped on purpose

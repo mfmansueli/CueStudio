@@ -20,6 +20,9 @@ final class CreateScriptUITests: XCTestCase {
 
         XCTAssertTrue(app.staticTexts["Read from a script"].exists(within: 5))
         XCTAssertTrue(app.buttons["startRecording.newScript"].exists)
+        // Record opens the sheet without becoming the selected tab.
+        XCTAssertFalse(recordTab.isSelected)
+        XCTAssertTrue(app.cueTabBar.buttons["Scripts"].isSelected, "The tab under the sheet changed")
         app.buttons["startRecording.skip"].tap()
         XCTAssertTrue(app.buttons["prompter.addScriptButton"].exists(within: 5))
         app.buttons["prompter.closeButton"].tap()

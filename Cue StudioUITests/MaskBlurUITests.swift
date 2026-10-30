@@ -47,7 +47,8 @@ final class MaskBlurUITests: XCTestCase {
     @MainActor
     func testAMaskGoesOnTheVideoInAWindow() throws {
         let app = EditorApp.open(demo: true)
-        EditorApp.scrub(app)
+        // To about 6.8 s, inside the B-roll's window (4.2–8 s): slowly, so a loaded Simulator doesn't glide on past it.
+        EditorApp.scrub(app, velocity: 250)
         let window = app.buttons["edit.mediaHandle"]
         XCTAssertTrue(window.exists(within: 5), "No video in a window at the playhead")
         window.tap()
@@ -80,7 +81,8 @@ final class MaskBlurUITests: XCTestCase {
     @MainActor
     func testASmallMaskKeepsItsHandlesAFingerApart() throws {
         let app = EditorApp.open(demo: true)
-        EditorApp.scrub(app)
+        // To about 6.8 s, inside the B-roll's window (4.2–8 s): slowly, so a loaded Simulator doesn't glide on past it.
+        EditorApp.scrub(app, velocity: 250)
         let window = app.buttons["edit.mediaHandle"]
         XCTAssertTrue(window.exists(within: 5), "No video in a window at the playhead")
         window.tap()

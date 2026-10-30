@@ -5,12 +5,15 @@
 
 import XCTest
 
-/// v27 screens: Pick your best take, Settings › Personalize and Prompter, the teleprompter's rail, the export's
-/// "Ready to travel" and the send-off. They also check that each opens. Pictures are saved when
-/// `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` is set.
+/// Pictures of the v27 screens: Pick your best take, Settings › Personalize and Prompter, the teleprompter's rail, the export's
+/// "Ready to travel" and the send-off. Only with `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>`: what they check is checked by
+/// `FreePlanUITests`, `PersonalizeUITests`, `SettingsUITests`, `StudioUITests` and `ShareToUITests`.
 @MainActor
 final class CueUniverseScreenshotTests: XCTestCase {
-    override func setUp() {
+    override func setUpWithError() throws {
+        guard ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] != nil else {
+            throw XCTSkip("Set TEST_RUNNER_CUE_SCREENSHOT_DIR to capture the v27 screens")
+        }
         continueAfterFailure = false
     }
 

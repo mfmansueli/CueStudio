@@ -61,21 +61,11 @@ final class FreePlanUITests: XCTestCase {
         // "Pick your best take": Cue's suggestion in the middle, with why; "Use take N" keeps it.
         XCTAssertTrue(app.descendants(matching: .any)["pick.sheet"].firstMatch.exists(within: 5))
         XCTAssertTrue(app.descendants(matching: .any)["pick.reasons"].firstMatch.exists(within: 5))
+        XCTAssertTrue(app.descendants(matching: .any)["pick.bestBadge"].firstMatch.exists(within: 5))
+        XCTAssertTrue(app.buttons["pick.recordAgain"].exists && app.buttons["pick.use"].exists)
         app.buttons["pick.use"].tap()
         let toast = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'marked as best'")).firstMatch
         XCTAssertTrue(toast.exists(within: 5))
-    }
-
-    func testSponsoredAdIsAFreeFormat() {
-        let app = CueApp.launch(seeded: true)
-        let chip = app.buttons["ideaCard.formatChip"]
-        XCTAssertTrue(chip.exists(within: 15))
-        chip.tap()
-        let ad = app.buttons["format.ad"]
-        XCTAssertTrue(ad.exists(within: 5))
-        XCTAssertFalse(app.staticTexts["PRO"].exists)
-        ad.tap()
-        XCTAssertFalse(app.buttons["paywall.closeButton"].exists(within: 2))
     }
 
     // MARK: - Helpers

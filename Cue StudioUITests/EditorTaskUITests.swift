@@ -76,7 +76,7 @@ final class EditorTaskUITests: XCTestCase {
         card.coordinate(withNormalizedOffset: CGVector(dx: 0.3, dy: 0.25)).tap()
         let apply = app.buttons["edit.pauses.apply"]
         let three = NSPredicate(format: "label == %@", "Remove 3 pauses")
-        XCTAssertEqual(XCTWaiter().wait(for: [XCTNSPredicateExpectation(predicate: three, object: apply)], timeout: 5), .completed, apply.label)
+        XCTAssertTrue(apply.matches(three, within: 5), apply.label)
         apply.tap()
         XCTAssertEqual(EditorApp.length(app), "00:18.4")
     }

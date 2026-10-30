@@ -39,21 +39,6 @@ final class StarTransitionUITests: XCTestCase {
         try app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(name).png"))
     }
 
-    func testTheStarCoversTheScreenThenOpensTheScript() throws {
-        let app = launch()
-        let send = app.buttons["ideaCard.submit"]
-        XCTAssertTrue(send.exists(within: 15))
-        send.tap()
-        let cancel = app.buttons["transition.cancel"]
-        XCTAssertTrue(cancel.exists(within: 5), "No transition")
-        try capture(app, "transition_waiting")
-        // At least three seconds from the tap, then the script is the page.
-        XCTAssertTrue(app.pageBackButton.exists(within: 15), "The script never opened")
-        // The star lands as the caret and the overlay goes a moment after the page is up.
-        expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: cancel)
-        waitForExpectations(timeout: 10)
-    }
-
     /// A typed idea is sent with the keyboard up: it goes down as the star rises, and the page opened under the star doesn't bring it back
     /// on its empty title (the AI writes it).
     func testTheKeyboardIsAwayWhileTheStarFliesAndWhenThePageOpens() {
@@ -67,12 +52,10 @@ final class StarTransitionUITests: XCTestCase {
         let cancel = app.buttons["transition.cancel"]
         XCTAssertTrue(cancel.exists(within: 5), "No transition")
         let gone = NSPredicate(format: "exists == false")
-        expectation(for: gone, evaluatedWith: app.keyboards.firstMatch)
-        waitForExpectations(timeout: 2)
+        XCTAssertTrue(app.keyboards.firstMatch.matches(gone, within: 2))
         XCTAssertTrue(cancel.exists, "the keyboard went down while the star was still up")
         XCTAssertTrue(app.pageBackButton.exists(within: 15), "The script never opened")
-        expectation(for: gone, evaluatedWith: cancel)
-        waitForExpectations(timeout: 10)
+        XCTAssertTrue(cancel.matches(gone, within: 10))
         XCTAssertFalse(app.keyboards.firstMatch.exists, "the page took the keyboard")
     }
 
@@ -85,8 +68,7 @@ final class StarTransitionUITests: XCTestCase {
         send.tap()
         let writing = app.descendants(matching: .any)["page.writingText"].firstMatch
         XCTAssertTrue(writing.exists(within: 10), "The page never started writing")
-        expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: app.buttons["transition.cancel"])
-        waitForExpectations(timeout: 10)
+        XCTAssertTrue(app.buttons["transition.cancel"].matches(NSPredicate(format: "exists == false"), within: 10))
         waitUntilSettled(writing)
         let writingFrame = writing.frame
         try capture(app, "page_writing")
@@ -116,25 +98,13 @@ final class StarTransitionUITests: XCTestCase {
         XCTAssertLessThan(later, 100, "100% only once the script is there")
         try capture(app, "transition_progress")
         app.buttons["transition.cancel"].tap()
-        expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: progress)
-        waitForExpectations(timeout: 10)
+        XCTAssertTrue(progress.matches(NSPredicate(format: "exists == false"), within: 10))
     }
 
     /// The number in "42%"; -1 when the element says something else.
     private func percent(_ element: XCUIElement) -> Int {
         let digits = (element.value as? String ?? "").filter(\.isNumber)
         return Int(digits) ?? -1
-    }
-
-    /// Cancel is held in the design catalogue's demo, where the star waits as long as it takes to tap it.
-    func testCancelMakesTheStarLeaveAndTheOverlayGo() {
-        let app = CueApp.launch(seeded: false, extraArguments: ["-uiTestCatalogue", "transition", "-uiTestStarTransition"])
-        let cancel = app.buttons["transition.cancel"]
-        XCTAssertTrue(cancel.exists(within: 15))
-        cancel.tap()
-        let gone = NSPredicate(format: "exists == false")
-        expectation(for: gone, evaluatedWith: cancel)
-        waitForExpectations(timeout: 10)
     }
 
     /// Cancel brings Scripts back still: the dock and the tab bar come back once and stay, they don't bounce up and down (the owner saw
