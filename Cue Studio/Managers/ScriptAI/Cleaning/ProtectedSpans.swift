@@ -31,17 +31,4 @@ nonisolated enum ProtectedSpans {
         }
         return mask
     }
-
-    /// Where a span that is still arriving begins at the end of `text` (a cue whose bracket isn't closed, a link still being written), as a
-    /// `Character` offset; nil when the text doesn't end inside one. Shown half written, it could be taken for words to rewrite.
-    static func unfinishedStart(in text: String) -> Int? {
-        var starts: [Int] = []
-        if let open = text.lastIndex(of: "["), !text[open...].contains("]"), !text[open...].contains("\n"), text.distance(from: open, to: text.endIndex) <= 41 {
-            starts.append(text.distance(from: text.startIndex, to: open))
-        }
-        for match in text.matches(of: /https?:\/\/\S*|www\.\S*|[@#][\w.]*/) where match.range.upperBound == text.endIndex {
-            starts.append(text.distance(from: text.startIndex, to: match.range.lowerBound))
-        }
-        return starts.min()
-    }
 }

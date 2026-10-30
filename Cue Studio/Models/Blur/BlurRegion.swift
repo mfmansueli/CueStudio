@@ -72,11 +72,6 @@ nonisolated struct BlurRegion: Codable, Hashable, Identifiable, Sendable {
     /// Whether anything moves it.
     var moves: Bool { !keyframes.isEmpty }
 
-    /// Whether it shows at `time` of its footage (an area on a photo always does).
-    func covers(_ time: TimeInterval, onPhoto: Bool = false) -> Bool {
-        onPhoto || span.contains(time)
-    }
-
     // MARK: - Checked or not
 
     /// What's left unchecked inside its span, joined, without the stretches too short to matter.

@@ -12,9 +12,4 @@ extension EditorPart {
     func clipName(at index: Int) -> String {
         edit.timeline.segments.count > 1 ? String(localized: "Clip \(index + 1)") : String(localized: "The clip")
     }
-
-    /// The playhead's place, as the toasts say it ("0:07").
-    var playheadPlace: String {
-        DurationText.editor(player.currentTime)
-    }
 }

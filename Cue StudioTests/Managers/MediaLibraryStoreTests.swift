@@ -121,7 +121,6 @@ struct MediaLibraryStoreTests {
         await store.checkStatus(of: broken)
         #expect(store.status(of: gone) == .missing)
         #expect(store.status(of: broken) == .unreadable)
-        #expect(Set(store.brokenAssets.map(\.id)) == [gone.id, broken.id])
         #expect(throws: EditMediaImportError.self) { try store.media(for: gone) }
     }
 

@@ -58,7 +58,8 @@ struct VoiceQuestionSchedulerTests {
         let rig = make(essentials: false)
         defer { rig.defaults.tearDown() }
         #expect(Array(rig.scheduler.remaining.prefix(5)) == [.role, .topics, .audience, .tone, .endings])
-        let order = rig.scheduler.remaining.filter { $0.layer == .personality }
+        let essentialsAndProof: Set<VoiceQuestion> = [.role, .topics, .audience, .tone, .example]
+        let order = rig.scheduler.remaining.filter { !essentialsAndProof.contains($0) }
         #expect(order == [.endings, .openings, .formats, .length, .humor, .platforms, .energy, .sentences, .words, .swearing, .phrases, .avoid])
     }
 
@@ -212,7 +213,6 @@ struct VoiceQuestionSchedulerTests {
         #expect(!rig.scheduler.completionToastIsDue())
         rig.profile.profile = Self.fullProfile()
         #expect(tip(rig) == nil)
-        #expect(rig.scheduler.isFinished)
         #expect(rig.scheduler.completionToastIsDue())
         rig.scheduler.completionToastShown()
         #expect(!rig.scheduler.completionToastIsDue())

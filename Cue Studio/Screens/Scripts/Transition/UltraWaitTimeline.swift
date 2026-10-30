@@ -12,10 +12,6 @@ import Foundation
 /// crosses the sky every 6 to 10 s, a meteor shower every 11 to 16 s and a comet every 13 to 19 s; a chapter that runs past `cometEvery`
 /// sends a comet of its own low over the galaxy, which flares under it.
 nonisolated struct UltraWaitTimeline: Equatable, Sendable {
-    enum Kind: Equatable, Sendable {
-        case draft, check, voice
-    }
-
     /// When each chapter starts, in the meter's seconds.
     let starts: [TimeInterval]
     /// How many passes the run has (two without the check).
@@ -42,11 +38,6 @@ nonisolated struct UltraWaitTimeline: Equatable, Sendable {
         }
         self.starts = starts
         self.count = count
-    }
-
-    func kind(of index: Int) -> Kind {
-        if index == 0 { return .draft }
-        return index < count - 1 ? .check : .voice
     }
 
     /// The chapter shown at `time`; nil before the draft began.

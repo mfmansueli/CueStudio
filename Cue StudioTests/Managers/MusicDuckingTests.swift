@@ -75,7 +75,7 @@ struct MusicDuckingTests {
         // The first way: a quarter, straight ramps of a quarter second, only the moments where something changes.
         #expect(abs(volume(at: 5, in: points) - 0.8 * MusicClip.duckedLevel) < 0.001)
         #expect(points.count <= 8)
-        #expect(MusicEnvelope.duckSpans(speech) == [TimeSpan(start: 4, end: 7)])
+        #expect(MusicEnvelope.duckSpans(speech, timing: .legacy) == [TimeSpan(start: 4, end: 7)])
         #expect(MusicEnvelope.Timing.of(nil) == .legacy)
     }
 

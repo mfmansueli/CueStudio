@@ -71,12 +71,6 @@ final class MediaLibraryStore {
         case added(LibraryAsset)
         /// The same bytes were already in the library.
         case alreadyThere(LibraryAsset)
-
-        var asset: LibraryAsset {
-            switch self {
-            case .added(let asset), .alreadyThere(let asset): asset
-            }
-        }
     }
 
     /// Keeps the file at `source` (one Cue has: an import, a video's media), named `name` (or after its kind and today), as a
@@ -154,11 +148,6 @@ final class MediaLibraryStore {
 
     func status(of asset: LibraryAsset) -> LibraryFileReader.Status {
         statuses[asset.id] ?? .ready
-    }
-
-    /// The assets whose file is gone or unreadable, found so far this session.
-    var brokenAssets: [LibraryAsset] {
-        assets.filter { (statuses[$0.id] ?? .ready) != .ready }
     }
 
     /// "Delete my Cue data".

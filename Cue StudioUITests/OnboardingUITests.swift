@@ -35,8 +35,7 @@ final class OnboardingUITests: XCTestCase {
     private func useScript(_ app: XCUIApplication) {
         let use = app.buttons["onboarding.useScript"]
         XCTAssertTrue(use.exists(within: 10))
-        expectation(for: NSPredicate(format: "isEnabled == true"), evaluatedWith: use)
-        waitForExpectations(timeout: 10)
+        XCTAssertTrue(use.matches(NSPredicate(format: "isEnabled == true"), within: 10))
         use.tap()
     }
 
@@ -55,17 +54,20 @@ final class OnboardingUITests: XCTestCase {
         try? app.screenshot().pngRepresentation.write(to: directory.appending(path: "onboarding-\(name).png"))
     }
 
-    /// Welcome → topics → platform → script → permissions → practice → the studio.
+    /// Welcome → topics → platform → script → permissions → practice → the studio. The flight can't be skipped: 1.1 has only Get
+    /// started, and no chapter has a Skip.
     func testTheFirstFlightWalksFromTheWelcomeToTheStudio() {
         let app = launch()
         let start = app.buttons["onboarding.getStarted"]
         XCTAssertTrue(start.exists(within: 15))
+        XCTAssertFalse(app.buttons["onboarding.returning"].exists, "1.1 has only Get started")
         shot(app, "1-welcome")
         start.tap()
 
         // 1 · the universe: Continue waits for a topic.
         let next = app.buttons["onboarding.continue"]
         XCTAssertTrue(next.exists(within: 5))
+        XCTAssertFalse(app.buttons["onboarding.skip"].exists, "The flight has no Skip")
         XCTAssertFalse(next.isEnabled)
         app.buttons["onboarding.topic.niche.food"].tap()
         XCTAssertTrue(next.isEnabled)
@@ -76,9 +78,8 @@ final class OnboardingUITests: XCTestCase {
         // 2 · the voyage: a platform and its format line.
         XCTAssertTrue(app.buttons["onboarding.platform.reels"].exists(within: 5))
         app.buttons["onboarding.platform.reels"].tap()
-        expectation(for: NSPredicate(format: "label CONTAINS %@", "REELS"), evaluatedWith: element(app, "onboarding.formatLine"))
-        expectation(for: NSPredicate(format: "label CONTAINS %@", "9:16"), evaluatedWith: element(app, "onboarding.formatHint"))
-        waitForExpectations(timeout: 5)
+        XCTAssertTrue(element(app, "onboarding.formatLine").matches(NSPredicate(format: "label CONTAINS %@", "REELS"), within: 5))
+        XCTAssertTrue(element(app, "onboarding.formatHint").matches(NSPredicate(format: "label CONTAINS %@", "9:16"), within: 5))
         shot(app, "3-voyage")
         XCTAssertTrue(app.buttons["onboarding.continue"].label.contains("Reels"))
         app.buttons["onboarding.continue"].tap()
@@ -87,8 +88,7 @@ final class OnboardingUITests: XCTestCase {
         let use = app.buttons["onboarding.useScript"]
         XCTAssertTrue(use.exists(within: 10))
         // Try the teleprompter is enabled once the practice script is there.
-        expectation(for: NSPredicate(format: "isEnabled == true"), evaluatedWith: use)
-        waitForExpectations(timeout: 10)
+        XCTAssertTrue(use.matches(NSPredicate(format: "isEnabled == true"), within: 10))
         shot(app, "4-script")
         use.tap()
 
@@ -140,8 +140,7 @@ final class OnboardingUITests: XCTestCase {
     private func expectVoiceStatus(_ app: XCUIApplication, _ text: String) {
         let status = element(app, "practice.voiceStatus")
         XCTAssertTrue(status.exists(within: 10))
-        expectation(for: NSPredicate(format: "value == %@", text), evaluatedWith: status)
-        waitForExpectations(timeout: 10)
+        XCTAssertTrue(status.matches(NSPredicate(format: "value == %@", text), within: 10))
     }
 
     /// With the microphone and recognition ready, the practice starts with Voice Following on and says so.
@@ -181,20 +180,6 @@ final class OnboardingUITests: XCTestCase {
         shot(app, "6f-practice-microphone-off")
     }
 
-    /// A refusal never blocks the flight: it goes on to the practice.
-    func testRefusingThePermissionsStillReachesThePractice() {
-        let app = launch(permissions: "denied")
-        startFlight(app)
-        pick(app, "onboarding.topic.niche.food")
-        app.buttons["onboarding.continue"].tap()
-        pick(app, "onboarding.platform.tiktok")
-        app.buttons["onboarding.continue"].tap()
-        useScript(app)
-        XCTAssertTrue(element(app, "onboarding.permission.microphone").exists(within: 8))
-        app.buttons["onboarding.continue"].tap()
-        XCTAssertTrue(element(app, "practice.chip").exists(within: 10))
-    }
-
     /// Each permission row is a button: tapping it asks for that permission, and a refusal is said gently.
     func testThePermissionRowsAreButtons() {
         let app = launch()
@@ -209,8 +194,7 @@ final class OnboardingUITests: XCTestCase {
         microphone.tap()
         let allowed = NSPredicate(format: "label CONTAINS 'Allowed'")
         XCTAssertTrue(element(app, "onboarding.permission.microphone").exists(within: 5))
-        expectation(for: allowed, evaluatedWith: element(app, "onboarding.permission.microphone"))
-        waitForExpectations(timeout: 5)
+        XCTAssertTrue(element(app, "onboarding.permission.microphone").matches(allowed, within: 5))
         XCTAssertFalse(app.buttons["onboarding.permission.microphone"].exists, "answered: it is no longer a button")
         let camera = app.buttons["onboarding.permission.camera"]
         XCTAssertTrue(camera.exists)
@@ -235,35 +219,6 @@ final class OnboardingUITests: XCTestCase {
         XCTAssertTrue(element(app, "onboarding.permission.deniedNote").exists(within: 5))
         app.buttons["onboarding.continue"].tap()
         XCTAssertTrue(element(app, "practice.chip").exists(within: 10))
-    }
-
-    /// The practice has play over the camera and the way out; "Record my first video" waits for the tap on play.
-    func testThePracticeHasPlayAndTheWayOutAndRecordWaitsForPlay() {
-        let app = launch()
-        startFlight(app)
-        pick(app, "onboarding.topic.niche.food")
-        app.buttons["onboarding.continue"].tap()
-        pick(app, "onboarding.platform.tiktok")
-        app.buttons["onboarding.continue"].tap()
-        useScript(app)
-        XCTAssertTrue(element(app, "onboarding.permission.microphone").exists(within: 8))
-        app.buttons["onboarding.continue"].tap()
-        XCTAssertTrue(element(app, "practice.chip").exists(within: 10))
-        // The practice is the board's 1.6: the text, play, and the way out (no Voice | Steady switch: that is the recorder's).
-        XCTAssertTrue(app.buttons["practice.play"].exists(within: 5))
-        XCTAssertTrue(app.buttons["practice.notNow"].isHittable)
-        XCTAssertFalse(app.buttons["practice.recordForReal"].exists)
-        shot(app, "6b-practice-controls")
-    }
-
-    /// The flight can't be skipped: no Skip on any chapter, and 1.1 has only Get started.
-    func testTheFlightHasNoWayToSkipIt() {
-        let app = launch()
-        XCTAssertTrue(app.buttons["onboarding.getStarted"].exists(within: 10))
-        XCTAssertFalse(app.buttons["onboarding.returning"].exists)
-        startFlight(app)
-        XCTAssertTrue(app.buttons["onboarding.continue"].exists(within: 5))
-        XCTAssertFalse(app.buttons["onboarding.skip"].exists)
     }
 
     /// "+ Your own" adds a topic of their own.

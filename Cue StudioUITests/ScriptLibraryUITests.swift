@@ -5,8 +5,8 @@
 
 import XCTest
 
-/// Browsing, filtering and opening scripts: the Recent list with each script at its stage, and the
-/// script page (Draft | Shaped).
+/// Browsing, filtering and opening scripts, and the script page (Draft | Shaped). The list's groups and the search are
+/// `ScriptsV29UITests`'.
 @MainActor
 final class ScriptLibraryUITests: XCTestCase {
     private static let habits = "3 morning habits that changed my life"
@@ -14,19 +14,6 @@ final class ScriptLibraryUITests: XCTestCase {
 
     override func setUp() {
         continueAfterFailure = false
-    }
-
-    func testTheListShowsEachScriptAtItsState() {
-        let app = CueApp.launch(seeded: true)
-        // READY TO RECORD first, then DRAFTS, then RECORDED; each has its way forward.
-        XCTAssertTrue(element(app, "scripts.group.ready").exists(within: 15))
-        XCTAssertTrue(app.buttons["row.recordButton"].firstMatch.exists)
-        for _ in 0..<4 where !element(app, "scripts.group.recorded").exists { app.swipeUp() }
-        XCTAssertTrue(element(app, "scripts.group.draft").exists)
-        XCTAssertTrue(element(app, "scripts.group.recorded").exists)
-        XCTAssertTrue(element(app, "row.takes").exists)
-        // A recorded script's line carries its takes and the stage of its video.
-        XCTAssertTrue(app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS '3 takes'")).firstMatch.exists)
     }
 
     func testFilteringByDestination() {
@@ -168,14 +155,6 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertFalse(app.pageBackButton.exists)
     }
 
-    func testSearch() {
-        let app = CueApp.launch(seeded: true)
-        let search = app.openScriptsSearch()
-        search.typeText("Q&A")
-        XCTAssertTrue(app.staticTexts["Weekly Q&A · episode 12"].exists(within: 5))
-        XCTAssertFalse(app.staticTexts[Self.lamp].exists)
-    }
-
     // MARK: - Navigation
 
     func testSavingAnExistingScriptAndReopeningItStillNeedsOnlyOneBackTap() {
@@ -275,12 +254,15 @@ final class ScriptLibraryUITests: XCTestCase {
         let app = CueApp.launch(seeded: true)
         openScript(app, "Oat & Co. · sponsored read")
         XCTAssertTrue(element(app, "page.strip").exists(within: 5))
+        // A ready script has its switch on ("On" as the page says it, or "1" as a toggle reports it).
+        XCTAssertTrue(["On", "1"].contains(app.pageReadyToggle.value as? String ?? ""), "a ready script has its switch on")
         XCTAssertTrue(element(app, "page.lengthBar").exists)
         XCTAssertTrue((element(app, "page.lengthBar").value as? String)?.localizedCaseInsensitiveContains("words") == true)
         XCTAssertTrue(element(app, "page.editor").exists)
         // The Draft | Shaped switch is gone; Record is the page's only one.
         XCTAssertFalse(app.buttons["page.mode.draft"].exists || app.buttons["page.mode.shaped"].exists)
         XCTAssertEqual(app.buttons.matching(identifier: "detail.recordButton").count, 1)
+        XCTAssertEqual(app.buttons["detail.recordButton"].label, "Record")
         // Record stays at hand while the title is being typed (only the words' keyboard brings the cues in its place).
         element(app, "page.titleField").tap()
         XCTAssertTrue(app.buttons["detail.recordButton"].exists(within: 5))
@@ -374,12 +356,13 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts["Create for LinkedIn"].exists(within: 10), "Picking LinkedIn didn't set the page for it")
         XCTAssertEqual(app.buttons["page.platformChip"].value as? String, "LinkedIn")
         // The details show the format the destination sets.
-        app.buttons["page.menuButton"].tap()
+        XCTAssertTrue(linkedIn.isGone(within: 5), "The platforms stayed")
+        let menu = app.buttons["page.menuButton"]
+        menu.tap()
         let details = app.buttons["Script details"]
         XCTAssertTrue(details.exists(within: 5), "No Script details in the menu")
-        details.tapMenuItem()
         let format = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS '4:5 · 1080p30'")).firstMatch
-        XCTAssertTrue(format.exists(within: 10), "The details don't show LinkedIn's format")
+        details.tapMenuItem(opening: format, reopening: menu)
     }
 
     func testImproveIsOnThePageAndTheMenuLeadsToDetails() {
@@ -390,15 +373,16 @@ final class ScriptLibraryUITests: XCTestCase {
         app.buttons["page.improveButton"].tap()
         XCTAssertTrue(app.buttons["improve.tool.inMyVoice"].exists(within: 5))
         app.buttons["sheet.closeButton"].tap()
+        XCTAssertTrue(app.buttons["improve.tool.inMyVoice"].isGone(within: 5), "Improve stayed")
 
-        app.buttons["page.menuButton"].tap()
+        let menu = app.buttons["page.menuButton"]
+        menu.tap()
         XCTAssertTrue(app.buttons["Script details"].exists(within: 5))
         XCTAssertFalse(app.buttons["Improve with Cue"].exists)
         // The old full editor is gone: the page is where the words are written.
         XCTAssertFalse(app.buttons["Versions & options"].exists)
-        app.buttons["Script details"].tapMenuItem()
         let type = app.buttons["details.type"]
-        XCTAssertTrue(type.exists(within: 5))
+        app.buttons["Script details"].tapMenuItem(opening: type, reopening: menu)
         type.tap()
         let tutorial = app.buttons["scriptType.tutorial"]
         XCTAssertTrue(tutorial.exists(within: 5))

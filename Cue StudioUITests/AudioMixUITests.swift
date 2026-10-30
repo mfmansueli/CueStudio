@@ -54,7 +54,7 @@ final class AudioMixUITests: XCTestCase {
         let lowers = app.descendants(matching: .any)["edit.musicDucks"]
         XCTAssertEqual(lowers.value as? String, "On")
         lowers.tap()
-        XCTAssertTrue(depth.waitForNonExistence(timeout: 3))
+        XCTAssertTrue(depth.isGone(within: 3))
         lowers.tap()
         XCTAssertTrue(depth.exists(within: 3))
         XCTAssertEqual(depth.value as? String, "30 dB")
@@ -80,7 +80,7 @@ final class AudioMixUITests: XCTestCase {
         let none = app.buttons["edit.voiceEffect.none"]
         XCTAssertTrue(none.isHittable, "None is off screen")
         none.tap()
-        XCTAssertTrue(amount.waitForNonExistence(timeout: 3), "None kept the effect")
+        XCTAssertTrue(amount.isGone(within: 3), "None kept the effect")
     }
 
     func testTheLibraryFindsHearsAndReplacesTheMusicWithATrack() {
@@ -103,10 +103,9 @@ final class AudioMixUITests: XCTestCase {
         play.tap()
         // Made the first time, then playing: the row says Stop.
         let playing = NSPredicate(format: "label BEGINSWITH 'Stop'")
-        expectation(for: playing, evaluatedWith: play)
-        waitForExpectations(timeout: 60)
+        XCTAssertTrue(play.matches(playing, within: 60))
         app.buttons["edit.library.add.quietHours"].tap()
-        XCTAssertTrue(play.waitForNonExistence(timeout: 60), "Adding didn't close the sheet")
+        XCTAssertTrue(play.isGone(within: 60), "Adding didn't close the sheet")
         XCTAssertTrue(EditorApp.toastSays(app, "Music replaced", timeout: 5))
     }
 
@@ -123,7 +122,7 @@ final class AudioMixUITests: XCTestCase {
         app.buttons["edit.effect.play.tada"].tap()
         EditorApp.capture(app, "audio-effects")
         app.buttons["edit.effect.add.tada"].tap()
-        XCTAssertTrue(app.buttons["edit.effect.add.tada"].waitForNonExistence(timeout: 5), "Adding an effect didn't close the sheet")
+        XCTAssertTrue(app.buttons["edit.effect.add.tada"].isGone(within: 5), "Adding an effect didn't close the sheet")
     }
 
     func testTextIsSpokenIntoAVoiceOverAtThePlayhead() {
@@ -139,7 +138,7 @@ final class AudioMixUITests: XCTestCase {
         XCTAssertTrue(add.isEnabled, "Add stays off with text and a voice")
         EditorApp.capture(app, "audio-text-to-speech")
         add.tap()
-        XCTAssertTrue(text.waitForNonExistence(timeout: 60), "The voice-over wasn't made")
+        XCTAssertTrue(text.isGone(within: 60), "The voice-over wasn't made")
         XCTAssertTrue(EditorApp.toastSays(app, "Voice-over added", timeout: 5))
         XCTAssertTrue(app.buttons["edit.toolbar.editSpoken"].exists(within: 5), "The new voice-over isn't picked with Edit text")
     }

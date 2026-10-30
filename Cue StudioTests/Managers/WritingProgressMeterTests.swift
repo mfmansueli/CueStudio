@@ -70,6 +70,6 @@ struct WritingProgressMeterTests {
         #expect(meter.arrivals.last == WritingArrival(pass: 1, fraction: 0.06, time: 14), "a new pass counts its own steps")
         time = 20
         meter.begin(pass: 2, of: 3)
-        #expect(meter.passStarts == [10, 14, 20] && meter.now == 20)
+        #expect(meter.passStarts == [10, 14, 20])
     }
 }

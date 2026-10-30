@@ -6,7 +6,8 @@
 import XCTest
 
 /// Every way to record opens the same prompter: the one the camera button of the tab bar opens (Selfie: the front camera behind the text window, the
-/// aspect button, the play button and the display button). Studio mode is the one other prompter, and only its own menu entry opens it.
+/// aspect button, the play button and the display button). Studio mode is the one other prompter, and only its own menu entry opens it
+/// (`StudioUITests`).
 @MainActor
 final class PrompterEntryPointsUITests: XCTestCase {
     private static let ready = "Oat & Co. · sponsored read"
@@ -68,12 +69,5 @@ final class PrompterEntryPointsUITests: XCTestCase {
         let record = app.buttons.matching(identifier: "Record").allElementsBoundByIndex.first { !$0.frame.intersects(tabBar.frame) }
         try XCTUnwrap(record).tap()
         assertSelfiePrompter(app, "script row › Record")
-    }
-
-    func testOnlyStudioModeOpensTheStudioPrompter() throws {
-        let app = CueApp.launch(seeded: true)
-        app.openStudio(titled: Self.ready)
-        XCTAssertTrue(element(app, "prompter.remoteButton").exists(within: 15))
-        XCTAssertFalse(element(app, "prompter.aspectButton").exists, "Studio has no camera frame")
     }
 }

@@ -34,6 +34,9 @@ final class StudioUITests: XCTestCase {
 
     func testStudioHasNoCameraAndNothingToRecord() throws {
         let app = launchStudio()
+        XCTAssertTrue(element(app, "prompter.sectionRail").exists(within: 5), "Studio has no camera: the text's rail shows")
+        XCTAssertTrue(element(app, "prompter.remoteButton").exists(within: 5), "Studio is the prompter a remote drives")
+        XCTAssertFalse(element(app, "prompter.aspectButton").exists, "Studio has no camera frame")
         XCTAssertFalse(app.buttons["prompter.recordButton"].exists)
         XCTAssertFalse(element(app, "prompter.studioPreview").exists)
         XCTAssertFalse(app.buttons["prompter.cameraSettingsButton"].exists)
@@ -66,8 +69,7 @@ final class StudioUITests: XCTestCase {
 
         app.buttons["studio.adjust.line"].tap()
         let gone = NSPredicate(format: "exists == false")
-        expectation(for: gone, evaluatedWith: element(app, "studio.slider.line"))
-        waitForExpectations(timeout: 3)
+        XCTAssertTrue(element(app, "studio.slider.line").matches(gone, within: 3))
     }
 
     func testMirrorFlipsTheTextForTheGlass() {
@@ -104,17 +106,14 @@ final class StudioUITests: XCTestCase {
         XCTAssertTrue(element(app, "prompter.countdown").exists(within: 3))
         try capture(app, "studio_countdown")
         let playing = NSPredicate(format: "label == 'Pause'")
-        expectation(for: playing, evaluatedWith: play)
-        waitForExpectations(timeout: 10)
+        XCTAssertTrue(play.matches(playing, within: 10))
         // The first play folds the bar, and the transport moves with it: tap once it has settled.
-        let folded = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == 'Hidden'"), object: element(app, "prompter.sheetHandle"))
-        XCTAssertEqual(XCTWaiter.wait(for: [folded], timeout: 5), .completed)
+        XCTAssertTrue(element(app, "prompter.sheetHandle").matches(NSPredicate(format: "value == 'Hidden'"), within: 5))
         sleep(1)
         // Folded, the sheet's tap area once took the play button in (VoiceOver's ring and the tap on Voice | Steady): it keeps its own size.
         XCTAssertLessThan(play.frame.width, 80, "The play button is \(play.frame)")
         play.tap()
         // Under load (two simulators) the label can take a moment to turn.
-        let paused = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label == 'Play'"), object: play)
-        XCTAssertEqual(XCTWaiter.wait(for: [paused], timeout: 3), .completed, play.label)
+        XCTAssertTrue(play.matches(NSPredicate(format: "label == 'Play'"), within: 3), play.label)
     }
 }

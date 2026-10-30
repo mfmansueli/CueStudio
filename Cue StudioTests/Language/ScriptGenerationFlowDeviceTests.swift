@@ -42,7 +42,7 @@ struct ScriptGenerationFlowDeviceTests {
         let defaults = TestDefaults()
         let library = ScriptLibraryService(repository: FakeScriptRepository(), now: { .now })
         let profile = CreatorProfileService(defaults: defaults.defaults)
-        profile.addPhrase("Hey fam")
+        profile.profile.phrases.append("Hey fam")
         profile.saveVoiceSetup(niches: [.lifestyle], vocabulary: .simple, sounds: [.casual, .confident])
         _ = profile.setWritesInMyVoice(writesInMyVoice)
         let rules = TestData.rulesService()

@@ -56,7 +56,7 @@ struct MediaPartStrip: View {
             .frame(height: Self.height)
             .clipShape(RoundedRectangle(cornerRadius: Metrics.editorStripRadius, style: .continuous))
             .contentShape(Rectangle())
-            .gesture(dragGesture(width: width, scale: scale))
+            .gesture(dragGesture(scale: scale))
         }
         .frame(height: Self.height)
         .environment(\.layoutDirection, .leftToRight)
@@ -75,7 +75,7 @@ struct MediaPartStrip: View {
         Capsule().fill(Palette.acc).frame(width: 5, height: 22).padding(.horizontal, 2)
     }
 
-    private func dragGesture(width: CGFloat, scale: CGFloat) -> some Gesture {
+    private func dragGesture(scale: CGFloat) -> some Gesture {
         DragGesture(minimumDistance: 2)
             .onChanged { value in
                 let moved = TimeInterval(value.translation.width / max(0.001, scale))

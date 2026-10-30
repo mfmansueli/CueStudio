@@ -16,7 +16,6 @@ struct UltraWaitTimelineTests {
         let timeline = UltraWaitTimeline(passStarts: [10, 22, 35], count: 3)
         #expect(timeline.starts == [10, 22, 35])
         #expect(timeline.chapter(at: 9) == nil && timeline.chapter(at: 10) == 0 && timeline.chapter(at: 30) == 1 && timeline.chapter(at: 40) == 2)
-        #expect(timeline.kind(of: 0) == .draft && timeline.kind(of: 1) == .check && timeline.kind(of: 2) == .voice)
         #expect(timeline.moonBirth(of: 0) == 22 && timeline.moonBirth(of: 1) == 35)
         #expect(timeline.moonBirth(of: 2) == nil, "the last moon is born in the finish")
         #expect(timeline.entry(of: 1, at: 22.5) == 0.5 && timeline.entry(of: 1, at: 30) == 1)
@@ -30,8 +29,6 @@ struct UltraWaitTimelineTests {
     }
 
     @Test func withoutTheCheckTheSecondChapterIsTheVoice() {
-        let timeline = UltraWaitTimeline(passStarts: [0, 8], count: 2)
-        #expect(timeline.kind(of: 1) == .voice)
         let moment = UltraSceneMoment(time: 9, finish: nil, passStarts: [0, 8], count: 2, arrivals: [], pass: 1, passShown: 0.5)
         #expect(moment.beam == 0, "no check, no beam")
         #expect(moment.warmth == 0.5, "the polish warms the disk as it comes")

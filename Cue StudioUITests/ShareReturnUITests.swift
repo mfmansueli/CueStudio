@@ -54,7 +54,6 @@ final class ShareReturnUITests: XCTestCase {
 private extension XCUIElement {
     /// Waits for the element to exist and be hittable (so a frozen app fails here instead of passing).
     func waitForHittable(timeout: TimeInterval) -> Bool {
-        let hittable = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == true AND hittable == true"), object: self)
-        return XCTWaiter.wait(for: [hittable], timeout: timeout) == .completed
+        return matches(NSPredicate(format: "exists == true AND hittable == true"), within: timeout)
     }
 }

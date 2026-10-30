@@ -122,8 +122,8 @@ struct StarTransitionOverlay: View {
                 }
                 .frame(width: size.width, height: size.height, alignment: .topLeading)
                 .opacity(overlayOpacity)
-                .onAppear { start(centre: centre) }
-                .onChange(of: transition.run) { start(centre: centre) }
+                .onAppear { start() }
+                .onChange(of: transition.run) { start() }
                 .onChange(of: transition.phase) { _, phase in react(to: phase) }
                 .task(id: transition.phase == .waiting) { await rotatePhrases() }
                 .task(id: transition.progress.map(ObjectIdentifier.init)) { await tickQuarters() }
@@ -514,7 +514,7 @@ struct StarTransitionOverlay: View {
 
     // MARK: - Moving
 
-    private func start(centre: CGPoint) {
+    private func start() {
         guard startedRun != transition.run else { return }
         startedRun = transition.run
         path = 0

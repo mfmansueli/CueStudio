@@ -247,20 +247,20 @@ struct QuickEditAutoLookTests {
         let viewModel = scenario.viewModel
         viewModel.perform(.open(.adjust))
         // Nothing to compare with yet.
-        viewModel.look.togglePictureComparison()
+        viewModel.look.holdPictureComparison(true)
         #expect(!viewModel.look.comparesPicture)
         viewModel.look.setAdjustment(.exposure, 30)
-        viewModel.look.togglePictureComparison()
+        viewModel.look.holdPictureComparison(true)
         #expect(viewModel.look.comparesPicture)
         #expect(scenario.player.shown.last?.exposure == 0)
         // What is saved never loses the look.
         #expect(viewModel.edit.exposure == 30)
-        viewModel.look.togglePictureComparison()
+        viewModel.look.holdPictureComparison(false)
         #expect(!viewModel.look.comparesPicture && scenario.player.shown.last?.exposure == 30)
-        viewModel.look.togglePictureComparison()
+        viewModel.look.holdPictureComparison(true)
         viewModel.look.setAdjustment(.contrast, 10)
         #expect(!viewModel.look.comparesPicture)
-        viewModel.look.togglePictureComparison()
+        viewModel.look.holdPictureComparison(true)
         viewModel.panel = nil
         #expect(!viewModel.look.comparesPicture)
     }

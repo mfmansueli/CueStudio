@@ -39,16 +39,6 @@ final class ScriptPageUITests: XCTestCase {
         element(app, "page.strip.info").label
     }
 
-    func testAReadyScriptShowsReadyAndOneYellowRecord() throws {
-        let app = CueApp.launch(seeded: true)
-        app.openScriptPage(titled: Self.ready)
-        XCTAssertTrue(element(app, "page.strip").exists(within: 5))
-        XCTAssertTrue(isOn(app.pageReadyToggle), "a ready script has its switch on")
-        XCTAssertEqual(app.buttons.matching(identifier: "detail.recordButton").count, 1)
-        XCTAssertEqual(app.buttons["detail.recordButton"].label, "Record")
-        try capture(app, "4.1_ready")
-    }
-
     func testADraftBecomesReadyWithItsSwitchAndBack() throws {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.draft)

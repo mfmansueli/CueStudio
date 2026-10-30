@@ -74,7 +74,7 @@ final class TimelineTracksUITests: XCTestCase {
         caption.tap()
         XCTAssertTrue(app.buttons["edit.toolbar.editCaption"].exists(within: 5))
         letGo(timeline)
-        XCTAssertTrue(app.buttons["edit.toolbar.editCaption"].waitForNonExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["edit.toolbar.editCaption"].isGone(within: 5))
         // Under the video, just after the playhead, the caption it was on (the playhead sits at its start).
         trackUnderVideo(timeline, x: timeline.frame.width / 2 + 40).tap()
         XCTAssertTrue(app.buttons["edit.toolbar.editCaption"].exists(within: 5))

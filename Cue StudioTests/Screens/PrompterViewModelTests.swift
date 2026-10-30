@@ -26,7 +26,7 @@ struct PrompterViewModelTests {
 
     private func makeScenario(
         script: Script? = TestData.script(), mode: PrompterMode = .selfie,
-        monetization: Bool = true, prompter: PrompterSettings = PrompterSettings()
+        monetization: Bool = true, prompter: PrompterSettings = PrompterSettings(), appLanguage: String? = nil
     ) -> Scenario {
         let defaults = TestDefaults()
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: script.map { [$0] } ?? []))
@@ -45,7 +45,7 @@ struct PrompterViewModelTests {
         let microphones = FakeMicrophones()
         let remote = FakeRemoteTransport()
         let toast = ToastService()
-        let languages = TestData.languages(defaults: defaults.defaults)
+        let languages = TestData.languages(defaults: defaults.defaults, appLanguage: appLanguage)
         let viewModel = PrompterViewModel(
             launch: PrompterLaunch(scriptID: script?.id, mode: mode),
             library: library, takes: takes, preferences: preferences, profile: profile, rules: TestData.rulesService(),
@@ -398,9 +398,10 @@ struct PrompterViewModelTests {
     // MARK: - Voice Following language
 
     @Test func voiceFollowingListensInTheChosenLanguage() async {
-        let scenario = makeScenario(script: TestData.script(text: "Esses são três hábitos que mudaram as minhas manhãs."), mode: .studio)
+        let scenario = makeScenario(
+            script: TestData.script(text: "Esses são três hábitos que mudaram as minhas manhãs."), mode: .studio, appLanguage: "en"
+        )
         defer { scenario.defaults.tearDown() }
-        scenario.languages.setAppLanguage(.english)
         scenario.languages.voiceFollowingLanguage = .portugueseBrazil
         scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
@@ -412,9 +413,8 @@ struct PrompterViewModelTests {
 
     @Test func sameAsScriptListensInTheScriptsLanguage() async {
         let script = TestData.script(text: "Here are three habits.", language: .portugueseBrazil)
-        let scenario = makeScenario(script: script, mode: .studio)
+        let scenario = makeScenario(script: script, mode: .studio, appLanguage: "ja")
         defer { scenario.defaults.tearDown() }
-        scenario.languages.setAppLanguage(.japanese)
         scenario.viewModel.session.prompter.scrollMode = .voice
         scenario.viewModel.scrollModeChanged()
         await Wait.until { scenario.viewModel.followsSpeech }
@@ -452,9 +452,8 @@ struct PrompterViewModelTests {
         let arabic = makeScenario(script: TestData.script(text: "هذه ثلاث عادات غيرت صباحي.", language: .arabic))
         defer { arabic.defaults.tearDown() }
         #expect(arabic.viewModel.readsRightToLeft)
-        let english = makeScenario(script: TestData.script(text: "Here are three habits."))
+        let english = makeScenario(script: TestData.script(text: "Here are three habits."), appLanguage: "ar")
         defer { english.defaults.tearDown() }
-        english.languages.setAppLanguage(.arabic)
         #expect(!english.viewModel.readsRightToLeft)
     }
 

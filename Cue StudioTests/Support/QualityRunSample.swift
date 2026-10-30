@@ -6,7 +6,7 @@
 import Foundation
 
 /// One thing written on a device for the script-quality measurement (`ScriptQualityDeviceTests`): a script, with what was sent, what it cost the
-/// model's window and how long it took, or a batch of Find inspiration ideas. Kept whole (the texts too) so the metrics (`ScriptQualityMetrics`) can
+/// model's window and how long it took, or a batch of Find inspiration ideas. Kept whole (the texts too) so the metrics (`tools/quality/report.py`) can
 /// be run again on an older run after they change, and so people can read what was written.
 nonisolated struct QualityRunSample: Codable, Hashable, Sendable {
     /// One idea of a batch, as the card shows it.

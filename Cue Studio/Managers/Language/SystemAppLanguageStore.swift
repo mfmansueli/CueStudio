@@ -5,13 +5,12 @@
 
 import Foundation
 
-/// Keeps the interface language in the app's `AppleLanguages`, the list Settings › Cue › Language
-/// edits too. The system reads it at launch, so every later launch is natively in that language:
-/// permission prompts, system sheets, formats and right to left included. `LanguageService` switches
-/// the running interface on its own.
+/// Reads the interface language from the app's `AppleLanguages`, the list Settings › Cue › Language
+/// edits. The system reads it at launch, so every launch is natively in that language: permission
+/// prompts, system sheets, formats and right to left included.
 ///
-/// The list is written as the chosen language followed by the iPhone's languages. While it is set
-/// the iPhone's list can't be read any other way, and Voice Following needs it.
+/// The list holds the chosen language followed by the iPhone's languages. While it is set the
+/// iPhone's list can't be read any other way, and Voice Following needs it.
 final class SystemAppLanguageStore: AppLanguageStoring {
     private static let key = "AppleLanguages"
 
@@ -30,18 +29,8 @@ final class SystemAppLanguageStore: AppLanguageStoring {
     }
 
     var chosenLocalization: String? {
-        get {
-            guard let first = override?.first else { return nil }
-            return Bundle.preferredLocalizations(from: bundle.localizations, forPreferences: [first]).first
-        }
-        set {
-            let system = systemLanguages
-            if let newValue {
-                defaults.set([newValue] + system.filter { $0 != newValue }, forKey: Self.key)
-            } else {
-                defaults.removeObject(forKey: Self.key)
-            }
-        }
+        guard let first = override?.first else { return nil }
+        return Bundle.preferredLocalizations(from: bundle.localizations, forPreferences: [first]).first
     }
 
     var systemLocalization: String {

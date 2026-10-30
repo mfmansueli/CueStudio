@@ -41,11 +41,6 @@ final class UltraAllowanceService {
 
     var left: Int { allowance.left }
 
-    /// The first day of next month, when a paid month's scripts come back.
-    var renewal: Date {
-        Calendar.current.dateInterval(of: .month, for: now())?.end ?? now()
-    }
-
     /// One script was written.
     func spend() {
         let current = allowance

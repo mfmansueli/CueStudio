@@ -20,17 +20,15 @@ struct PrivacyPreferencesServiceTests {
         #expect(writer.isLanguageModelAvailable)
     }
 
-    @Test func turningAIOffMakesTheWriterUnavailableWithTheReason() {
+    @Test func turningAIOffMakesTheWriterUnavailable() {
         let store = TestDefaults()
         defer { store.tearDown() }
         let writer = FakeScriptWriter()
         let privacy = PrivacyPreferencesService(defaults: store.defaults, writer: writer)
         privacy.usesOnDeviceAI = false
         #expect(!writer.isLanguageModelAvailable)
-        #expect(writer.writingUnavailableReason == AIAvailability.turnedOffReason)
         privacy.usesOnDeviceAI = true
         #expect(writer.isLanguageModelAvailable)
-        #expect(writer.writingUnavailableReason == nil)
     }
 
     @Test func theChoicesAreRememberedAndAppliedToTheNextWriter() {

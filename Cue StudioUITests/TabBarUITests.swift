@@ -5,8 +5,8 @@
 
 import XCTest
 
-/// The tab bar is the system's (Liquid Glass): each tab becomes the selected one, Record opens "Start recording"
-/// without becoming selected, the tab's content runs under the bar, and the bar never draws back while a list scrolls.
+/// The tab bar is the system's (Liquid Glass): each tab becomes the selected one, the tab's content runs under the bar, and the bar
+/// never draws back while a list scrolls. Record opens "Start recording" without becoming selected (`CreateScriptUITests`).
 /// `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>`
 /// saves a picture of each tab.
 @MainActor
@@ -52,13 +52,5 @@ final class TabBarUITests: XCTestCase {
         for name in tabs + ["Record"] {
             XCTAssertTrue(app.tabBars.buttons[name].isHittable, "\(name) is out of reach after scrolling")
         }
-    }
-
-    func testRecordOpensTheStartSheetWithoutBecomingTheSelectedTab() {
-        let app = CueApp.launch(seeded: true)
-        XCTAssertTrue(app.tabBars.buttons["Scripts"].exists(within: 15))
-        app.tabBars.buttons["Record"].tap()
-        XCTAssertFalse(app.tabBars.buttons["Record"].isSelected)
-        XCTAssertTrue(app.tabBars.buttons["Scripts"].isSelected, "The tab under the sheet changed")
     }
 }

@@ -113,6 +113,7 @@ final class MediaSheetLayoutUITests: XCTestCase {
     func testSeveralPicksKeepContinueInViewAndCounted() {
         openSheet()
         librarySource.tap()
+        XCTAssertTrue(app.staticTexts["edit.mediaPickHint"].exists(within: 3), "No hint on how to pick")
         let first = app.buttons["edit.library.asset.Studio wall"]
         let second = app.buttons["edit.library.asset.Desk"]
         XCTAssertTrue(first.exists(within: 5))

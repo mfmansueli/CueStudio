@@ -20,6 +20,4 @@ nonisolated struct TextEffectPieceState: Hashable, Sendable {
     var lift: CGFloat = 0
 
     static let rest = TextEffectPieceState()
-
-    var isRest: Bool { self == .rest }
 }

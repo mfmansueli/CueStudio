@@ -5,16 +5,14 @@
 
 import AVFoundation
 import Foundation
-import os
 @testable import Cue_Studio
 
 /// The library's files without the bundle's music: a second of silence written once per track in a folder of its own, after
-/// `delay` (cancellable), or `failure` thrown. Counts what was asked.
+/// `delay` (cancellable), or `failure` thrown.
 nonisolated final class FakeMusicLibraryFiles: MusicLibraryFiles {
     private let delay: Duration
     private let failure: (any Error)?
     private let folder: URL
-    private let asked = OSAllocatedUnfairLock(initialState: [CueTrack]())
 
     init(delay: Duration = .zero, failure: (any Error)? = nil) {
         self.delay = delay
@@ -22,10 +20,7 @@ nonisolated final class FakeMusicLibraryFiles: MusicLibraryFiles {
         folder = FileManager.default.temporaryDirectory.appending(path: "FakeMusicLibrary-\(UUID().uuidString)", directoryHint: .isDirectory)
     }
 
-    var requests: [CueTrack] { asked.withLock { $0 } }
-
     func file(for track: CueTrack) async throws -> URL {
-        asked.withLock { $0.append(track) }
         if delay > .zero { try await Task.sleep(for: delay) }
         try Task.checkCancellation()
         if let failure { throw failure }

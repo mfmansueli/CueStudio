@@ -52,17 +52,6 @@ nonisolated struct LookSettings: Hashable, Sendable {
         version = edit.lookVersion
     }
 
-    /// Nothing is changed: the frame is drawn as recorded.
-    var isNeutral: Bool {
-        var neutral = self
-        neutral.version = LookSettings.currentVersion
-        neutral.filterAmount = 1
-        neutral.autoAmount = 1
-        // Skin that draws nothing (a smoothing at 0 on the first engine, one from a newer Cue) is no change.
-        if !skin.isOn { neutral.skin = SkinLook() }
-        return neutral == LookSettings()
-    }
-
     /// These settings with what `override` sets on top; whatever it leaves alone is these.
     func overridden(by override: ClipLook?) -> LookSettings {
         guard let override else { return self }

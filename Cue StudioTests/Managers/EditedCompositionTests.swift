@@ -10,6 +10,12 @@ import Testing
 
 @Suite("EditedComposition")
 struct EditedCompositionTests {
+    /// A short dip in the sound at each seam where something was removed, so joining two waveforms mid-cycle never clicks
+    /// (the ramps of `levels`, with every clip at full volume). Cuts that removed nothing play straight through.
+    static func fades(for timeline: EditTimeline) -> [EditedComposition.Fade] {
+        EditedComposition.levels(for: timeline) { _ in true }.filter { $0.duration > 0 }
+    }
+
     @Test func soundDipsOnlyWhereSomethingWasRemoved() {
         var timeline = EditTimeline(sourceDuration: 60)
         timeline.split(atEdited: 10)
@@ -17,7 +23,7 @@ struct EditedCompositionTests {
         timeline.split(atEdited: 30)
         // Pieces [0,10] [10,20] [20,30] [30,60]; removing [10,20] leaves one real seam at edited 10.
         timeline.removeSegment(id: timeline.segments[1].id)
-        let fades = EditedComposition.fades(for: timeline)
+        let fades = Self.fades(for: timeline)
         let length = EditedComposition.cutFade
         #expect(fades == [
             EditedComposition.Fade(start: 10 - length, duration: length, fromVolume: 1, toVolume: 0),
@@ -26,7 +32,7 @@ struct EditedCompositionTests {
     }
 
     @Test func anUncutTakeHasNoFades() {
-        #expect(EditedComposition.fades(for: EditTimeline(sourceDuration: 30)).isEmpty)
+        #expect(Self.fades(for: EditTimeline(sourceDuration: 30)).isEmpty)
     }
 
     @Test func fadesFitInsideTinyPieces() {
@@ -35,7 +41,7 @@ struct EditedCompositionTests {
         timeline.split(atEdited: 0.315)
         timeline.split(atEdited: 0.6)
         timeline.remove([TimeSpan(start: 0.4, end: 0.5)])
-        for fade in EditedComposition.fades(for: timeline) {
+        for fade in Self.fades(for: timeline) {
             #expect(fade.duration <= EditedComposition.cutFade)
             #expect(fade.start >= 0)
         }
@@ -97,7 +103,7 @@ struct EditedCompositionTests {
         timeline.setTransition(.fade, atJoin: 1)
         let half = EditTransition.fade.duration / 2
         // A cut that removed nothing has no click to hide: only the fade's own ramp.
-        #expect(EditedComposition.fades(for: timeline) == [
+        #expect(Self.fades(for: timeline) == [
             EditedComposition.Fade(start: 10 - half, duration: half, fromVolume: 1, toVolume: 0),
             EditedComposition.Fade(start: 10, duration: half, fromVolume: 0, toVolume: 1),
         ])
@@ -110,7 +116,7 @@ struct EditedCompositionTests {
         timeline.removeSegment(id: timeline.segments[1].id)
         timeline.setTransition(.dissolve, atJoin: 1)
         let length = EditedComposition.cutFade
-        #expect(EditedComposition.fades(for: timeline) == [
+        #expect(Self.fades(for: timeline) == [
             EditedComposition.Fade(start: 10 - length, duration: length, fromVolume: 1, toVolume: 0),
             EditedComposition.Fade(start: 10, duration: length, fromVolume: 0, toVolume: 1),
         ])
@@ -124,8 +130,9 @@ struct EditedCompositionTests {
         timeline.setTransition(.dissolve, atJoin: 3)
         let dissolves = TransitionWindow.windows(in: timeline).filter { $0.transition == .dissolve }
         let duration = CMTime(seconds: 60, preferredTimescale: 600)
-        let ranges = EditedComposition.instructionRanges(for: dissolves, duration: duration)
+        let ranges = EditedComposition.stretches(for: dissolves, media: [], duration: duration)
         #expect(ranges.map { $0.dissolve?.join } == [nil, 1, nil, 3, nil])
+        #expect(ranges.allSatisfy { !$0.showsMedia })
         #expect(ranges.first?.range.start == .zero)
         #expect(ranges.last?.range.end == duration)
         for (earlier, later) in zip(ranges, ranges.dropFirst()) {
@@ -136,7 +143,7 @@ struct EditedCompositionTests {
 
     @Test func withoutDissolvesOneStretchCoversTheEdit() {
         let duration = CMTime(seconds: 12, preferredTimescale: 600)
-        let ranges = EditedComposition.instructionRanges(for: [], duration: duration)
+        let ranges = EditedComposition.stretches(for: [], media: [], duration: duration)
         #expect(ranges.count == 1)
         #expect(ranges[0].range == CMTimeRange(start: .zero, duration: duration))
         #expect(ranges[0].dissolve == nil)

@@ -21,12 +21,4 @@ nonisolated enum VoiceField: String, CaseIterable, Identifiable, Sendable {
         case .examples: 20
         }
     }
-
-    var layer: VoiceLayer {
-        switch self {
-        case .role, .topics, .audience, .tone: .essentials
-        case .examples: .proof
-        default: .personality
-        }
-    }
 }

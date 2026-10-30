@@ -5,13 +5,6 @@
 
 import Foundation
 
-nonisolated extension VoiceField {
-    /// The fields of a layer, in the order the page lists them.
-    static func fields(of layer: VoiceLayer) -> [VoiceField] {
-        allCases.filter { $0.layer == layer }
-    }
-}
-
 nonisolated extension CreatorProfile {
     /// What the creator gave Cue for `field`, as readable values ("Calm · Short · Plain"); empty when nothing yet.
     func value(for field: VoiceField) -> String {

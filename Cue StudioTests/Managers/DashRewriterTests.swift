@@ -7,8 +7,7 @@ import Foundation
 import Testing
 @testable import Cue_Studio
 
-/// No dashes in anything the model writes, in any language: each one becomes the punctuation the sentence needs, nothing else changes, and a
-/// draft shown as it arrives never takes a word back.
+/// No dashes in anything the model writes, in any language: each one becomes the punctuation the sentence needs, and nothing else changes.
 @Suite("DashRewriter")
 struct DashRewriterTests {
     private static func language(_ code: String) -> Locale.Language { Locale.Language(identifier: code) }
@@ -176,52 +175,5 @@ struct DashRewriterTests {
     @Test func sentencesWithDashesAreTheCreatorsToKeep() {
         let text = "Not a to-do list — one thing. Then I move.\nNo dash — here? Yes."
         #expect(DashRewriter.sentencesWithDashes(in: text) == ["Not a to-do list — one thing.", "No dash — here?"])
-    }
-
-    // MARK: - Progressive generation
-
-    private static let drafts: [(text: String, code: String)] = [
-        (samples[0], "en"), (samples[1], "en"), (samples[2], "en"), (samples[3], "en"), (samples[4], "es"), (samples[5], "en"), (samples[6], "en"),
-        ("这个方法——真的很简单。我试了很多种办法——但是只有一个有用。\n", "zh-Hans"),
-        ("気温は －5℃ でした。「待って——」と言った。\n", "ja"),
-        ("Klau dir mein System – es ist einfacher, als du denkst. Und dann – bis ich nachsah.\n", "de"),
-        ("मैंने सब आज़माया — ये टिके रहे। फिर — मैंने छोड़ दिया।\n", "hi"),
-        ("جرّبت كل شيء — وهذا ما نجح. ثم — توقفت.\n", "ar"),
-        ("Regardez ça — c’est simple. Film 9:00–10:30, pas plus.\n", "fr"),
-    ]
-
-    /// Every snapshot of a draft, cut at every character, shows only the start of the finished text: no word is ever taken back.
-    @Test(arguments: drafts.indices)
-    func aDraftShownAsItArrivesNeverTakesAWordBack(index: Int) {
-        let (text, code) = Self.drafts[index]
-        let finished = rewrite(text, code)
-        let characters = Array(text)
-        for count in 0...characters.count {
-            let shown = DashRewriter.displayable(String(characters.prefix(count)), language: Self.language(code))
-            #expect(finished.hasPrefix(shown), "\(count): “\(shown)” is not the start of “\(finished)”")
-            #expect(!DashRewriter.containsDash(shown))
-        }
-        #expect(DashRewriter.displayable(text, language: Self.language(code)) == finished, "a draft that ended is shown whole")
-    }
-
-    @Test(arguments: ["Steal my system —", "Steal my system — ", "Steal my system —i", "Steal my system - ", "Steal my system -"])
-    func aSnapshotEndingAtADashShowsNothingFromTheDashOn(snapshot: String) {
-        #expect(DashRewriter.displayable(snapshot, language: Self.language("en")) == "Steal my system")
-    }
-
-    @Test func aRangeStillArrivingShowsItsFirstNumber() {
-        #expect(DashRewriter.displayable("Try 3–", language: Self.language("en")) == "Try 3")
-        #expect(DashRewriter.displayable("Try 3–4", language: Self.language("en")) == "Try 3")
-    }
-
-    @Test func anUnfinishedCueOrLinkIsNotShown() {
-        #expect(DashRewriter.displayable("Okay. [look at cam", language: Self.language("en")) == "Okay.")
-        #expect(DashRewriter.displayable("Okay. Go to https://cue.stu", language: Self.language("en")) == "Okay. Go to")
-    }
-
-    @Test func aListMarkIsDroppedAsSoonAsItsWordsShow() {
-        #expect(DashRewriter.displayable("- ", language: Self.language("en")).isEmpty)
-        #expect(DashRewriter.displayable("- No ph", language: Self.language("en")) == "No ph")
-        #expect(DashRewriter.displayable("—Ho", language: Self.language("es")) == "Ho")
     }
 }

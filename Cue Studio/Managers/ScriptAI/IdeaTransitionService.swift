@@ -61,9 +61,6 @@ final class IdeaTransitionService {
     static let fallDuration: TimeInterval = 0.3
     static let leaveFadeDuration: TimeInterval = 0.22
 
-    /// How long the finish takes before the page may start writing: the cover, then the ring.
-    static var revealLead: TimeInterval { coverDuration + ringDuration }
-
     /// The finish before the ring opens: the cover, or Ultra AI's longer one.
     var coverTime: TimeInterval { engine == .ultra ? Self.ultraFinishDuration : Self.coverDuration }
 

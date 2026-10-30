@@ -68,8 +68,7 @@ final class PersonalizeUITests: XCTestCase {
         adrift.tap()
         XCTAssertTrue(adrift.isSelected)
         XCTAssertFalse(app.buttons["settings.starrySky.serene"].isSelected)
-        let changed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "label CONTAINS 'Adrift'"), object: hero)
-        XCTAssertEqual(XCTWaiter.wait(for: [changed], timeout: 4), .completed)
+        XCTAssertTrue(hero.matches(NSPredicate(format: "label CONTAINS 'Adrift'"), within: 4))
         try capture(app, "personalize_2_adrift")
 
         app.swipeUp()

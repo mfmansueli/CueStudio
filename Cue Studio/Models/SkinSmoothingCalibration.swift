@@ -31,9 +31,6 @@ nonisolated enum SkinSmoothingCalibration {
         pow(share(value), 1.25) * maximumStrength
     }
 
-    /// Whether the dial changes the picture at all.
-    static func isOn(_ value: Double) -> Bool { clamped(value) > 0 }
-
     // MARK: - Scale
 
     /// The blur that separates the skin's tone from its texture, in pixels: 0.6% of the face's width, up to 1.1% at the end of the dial (about 2.5 to

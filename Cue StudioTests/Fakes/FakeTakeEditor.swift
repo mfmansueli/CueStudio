@@ -57,7 +57,6 @@ final class FakeTakeEditor: TakeEditing {
     /// Runs while Auto measures (the call is suspended): what the creator does meanwhile.
     var whileMeasuring: (() -> Void)?
     private(set) var autoRequests = 0
-    private(set) var autoVideo: URL?
     private(set) var autoSpans: [TimeSpan] = []
 
     /// A correction that brightens the shadows and lifts the colors a little.
@@ -72,7 +71,6 @@ final class FakeTakeEditor: TakeEditing {
 
     func autoCorrection(forVideoAt url: URL, spans: [TimeSpan]) async throws -> AutoCorrection? {
         autoRequests += 1
-        autoVideo = url
         autoSpans = spans
         if let autoDelay { try await Task.sleep(for: autoDelay) }
         if let whileMeasuring {

@@ -100,14 +100,6 @@ struct EditTimelineSpeedTests {
         #expect(timeline.editedSpan(forSource: TimeSpan(start: 22, end: 28)) == nil)
     }
 
-    @Test func framesSnapAtTheSectionsSpeed() {
-        var timeline = EditTimeline(sourceDuration: 60)
-        timeline.setSpeed(2, forSegmentAt: 0)
-        let grid = FrameGrid(rate: 30)
-        // 0.51 s of the edit is 1.02 s of the recording: the nearest frame is 1.0333 s (0.5167 s edited).
-        #expect(near(grid.snapped(edited: 0.51, in: timeline), 31.0 / 30 / 2))
-    }
-
     @Test func piecesSavedBeforeSpeedPlayAtOne() throws {
         let json = #"{"id":"6B1F2C3D-1111-2222-3333-444455556666","sourceStart":1,"sourceEnd":5}"#
         let segment = try JSONDecoder().decode(EditSegment.self, from: Data(json.utf8))

@@ -32,7 +32,7 @@ struct SplitAreaLayer: View {
                 ForEach(SplitArea.allCases) { area in
                     areaView(area, rect: areas.rect(of: area), support: support, isPicked: isPicked)
                 }
-                if isPicked { seamGrip(areas: areas) }
+                if isPicked { seamGrip }
             }
             .frame(width: size.width, height: size.height, alignment: .topLeading)
         }
@@ -167,7 +167,7 @@ struct SplitAreaLayer: View {
 
     // MARK: - The seam
 
-    private func seamGrip(areas: SplitPlacement.Areas) -> some View {
+    private var seamGrip: some View {
         let layout = overlays.splitLayout
         let stacked = layout.arrangement == .stacked
         let share = layout.firstShare

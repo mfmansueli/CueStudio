@@ -23,10 +23,6 @@ enum RecordingOnset {
         span(in: samples, sampleRate: sampleRate).start
     }
 
-    static func seconds(in file: AVAudioFile) -> TimeInterval {
-        span(in: file).start
-    }
-
     /// Where the voice begins and where it stops (the same rule read from the end).
     static func span(in file: AVAudioFile) -> (start: TimeInterval, end: TimeInterval) {
         file.framePosition = 0

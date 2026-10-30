@@ -29,8 +29,6 @@ final class FakeScriptWriter: ScriptWriting {
     /// The topic the model files a script under; nil is "none fits".
     var topicToPick: String?
     private(set) var topicsAsked = 0
-    /// The voice the last request for ideas carried.
-    private(set) var lastThemeVoice: CreatorVoice?
     /// What the writer tells the page's meter before it answers.
     var eventsToReport: [ScriptWritingEvent] = []
     /// The meter the last script was written with.
@@ -107,7 +105,6 @@ final class FakeScriptWriter: ScriptWriting {
     }
 
     func themeIdeas(for niches: [Niche], language: CueLanguage?, voice: CreatorVoice?) async throws -> [ThemeIdea] {
-        lastThemeVoice = voice
         if let error { throw error }
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         return ideas
@@ -133,7 +130,6 @@ final class FakeScriptWriter: ScriptWriting {
             cancelledSuggestions += 1
             throw error
         }
-        lastThemeVoice = voice
         if let error { throw error }
         guard availability.isAvailable else { throw ScriptAIError.modelUnavailable(availability.reason ?? "") }
         guard !suggestionBatches.isEmpty else { return ideas }

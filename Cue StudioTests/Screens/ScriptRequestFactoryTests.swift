@@ -15,7 +15,7 @@ struct ScriptRequestFactoryTests {
         scriptLanguage: CueLanguage? = nil, voiceSetUp: Bool = true, defaults: TestDefaults
     ) -> (ScriptRequestFactory, CreatorProfileService) {
         let profile = CreatorProfileService(defaults: defaults.defaults)
-        profile.addPhrase("Hey fam")
+        profile.profile.phrases.append("Hey fam")
         if voiceSetUp { profile.saveVoiceSetup(niches: [.tech], vocabulary: .simple, sounds: [.casual]) }
         let factory = ScriptRequestFactory(
             rules: TestData.rulesService(), profile: profile, scriptLanguage: scriptLanguage, interfaceLanguage: .english

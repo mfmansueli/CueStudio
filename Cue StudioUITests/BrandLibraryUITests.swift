@@ -43,24 +43,6 @@ final class BrandLibraryUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.redoButton"].isEnabled)
     }
 
-    /// The owner's report (25/10): a photo picked for the split screen got its "1" but never went in, because Continue was under
-    /// the grid, off screen. Continue now stays over the bottom of the sheet from the first pick.
-    func testAPickedPhotoGoesOnFromABarAlwaysInView() {
-        let app = EditorApp.open(demo: true, arguments: ["-uiTestSeedLibrary"])
-        openLibrary(app)
-        XCTAssertTrue(app.staticTexts["edit.mediaPickHint"].exists(within: 3), "No hint on how to pick")
-        let photo = app.buttons["edit.library.asset.Studio wall"]
-        XCTAssertTrue(photo.exists(within: 5))
-        photo.tap()
-        let next = app.buttons["edit.mediaContinue"]
-        XCTAssertTrue(next.exists(within: 3), "No Continue after a pick")
-        XCTAssertTrue(next.isHittable, "Continue is off screen")
-        XCTAssertTrue(app.windows.firstMatch.frame.contains(next.frame), "Continue isn't on the screen")
-        EditorApp.capture(app, "library-picked")
-        next.tap()
-        XCTAssertTrue(EditorApp.toastSays(app, "split screen", timeout: 5), "The photo never went in")
-    }
-
     func testAKitFromThisVideoIsSavedAndPutOnInOneStep() {
         let root = "kits-\(UUID().uuidString)"
         var app = EditorApp.open(demo: true, arguments: ["-uiTestSeedLibrary", "-uiTestAssetRoot", root])

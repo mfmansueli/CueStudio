@@ -36,9 +36,10 @@ struct StoreManagerTests {
     }
 
     /// StoreKit's test store settles a purchase, an expiry or a renewal on its own time: `refreshEntitlements` until the tier is
-    /// `tier` (at most 5 s), the way the app hears of it through `Transaction.updates`.
+    /// `tier` (at most 15 s: in a Full on a loaded Mac an expiry took more than 5, 30/10/2026), the way the app hears of it through
+    /// `Transaction.updates`.
     private func refresh(_ store: StoreManager, until tier: MembershipTier) async {
-        for _ in 0..<50 {
+        for _ in 0..<150 {
             await store.refreshEntitlements()
             if store.tier == tier { return }
             try? await Task.sleep(for: .milliseconds(100))

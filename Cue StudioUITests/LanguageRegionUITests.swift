@@ -15,15 +15,8 @@ final class LanguageRegionUITests: XCTestCase {
         continueAfterFailure = false
     }
 
-    /// The app language row points at the iPhone's Settings; the other two are menus that start on "Same as script" and "Auto-detect".
-    func testThePageHasThreeLanguagesAndTheAppOneIsTheIPhones() {
-        let app = CueApp.launch(seeded: true)
-        openLanguageRegion(app)
-        XCTAssertTrue(row(app, "settings.appLanguage").label.contains("iPhone Language"))
-        XCTAssertTrue(row(app, "settings.voiceFollowingLanguage").label.contains("Same as script"))
-        XCTAssertTrue(row(app, "settings.scriptLanguage").label.contains("Auto-detect"))
-    }
-
+    /// The app language row points at the iPhone's Settings; the other two are menus that start on "Same as script" and "Auto-detect"
+    /// (this test and the next), and picking one leaves the others as they were.
     func testVoiceFollowingLanguageChangesNothingElse() {
         let app = CueApp.launch(seeded: true)
         openLanguageRegion(app)

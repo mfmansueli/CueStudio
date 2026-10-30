@@ -50,14 +50,12 @@ final class RecorderV29UITests: XCTestCase {
         XCTAssertTrue(element(app, "prompter.showControlsArea").exists(within: 5), "the controls gather into one row")
         // Folded away with the reading controls: out of sight and out of reach.
         let voice = app.descendants(matching: .any)["prompter.scrollMode"].firstMatch.buttons["Voice"]
-        let folded = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false OR hittable == false"), object: voice)
-        XCTAssertEqual(XCTWaiter.wait(for: [folded], timeout: 3), .completed, "the mode switch goes with the reading controls")
+        XCTAssertTrue(voice.matches(NSPredicate(format: "exists == false OR hittable == false"), within: 3), "the mode switch goes with the reading controls")
         try capture(app, "5.2_recording_row")
 
         // A tap on the screen brings the whole bar back for a few seconds; then it is one row again.
         element(app, "prompter.showControlsArea").tap()
-        let back = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == true AND hittable == true"), object: voice)
-        XCTAssertEqual(XCTWaiter.wait(for: [back], timeout: 3), .completed, "the tap didn't bring the controls back")
+        XCTAssertTrue(voice.matches(NSPredicate(format: "exists == true AND hittable == true"), within: 3), "the tap didn't bring the controls back")
         try capture(app, "5.2_recording_peek")
         XCTAssertTrue(element(app, "prompter.showControlsArea").exists(within: 8))
 

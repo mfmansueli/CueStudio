@@ -217,7 +217,7 @@ struct QuickEditCaptionStyleCopyTests {
         viewModel.panel = .captionStyle
         #expect(viewModel.captions.captionTheme == nil)
         #expect(viewModel.captions.currentCaptionCard?.name == "This video")
-        #expect(viewModel.captions.captionFace == .dmSerif)
+        #expect(viewModel.captions.captionAdjustSettings?.face == .dmSerif)
         #expect(viewModel.captions.changedCaptionLookCount > 0)
         viewModel.captions.adjustCaptions { $0.textColor = .cyan }
         #expect(viewModel.edit.captionCollection?.adjustments?.textColor == .cyan)
@@ -244,7 +244,7 @@ struct QuickEditCaptionStyleCopyTests {
         #expect(viewModel.edit.textLook == textLook)
         // One step back is the copied look again.
         viewModel.undo()
-        #expect(viewModel.captions.captionFace == .dmSerif)
+        #expect(viewModel.captions.captionAdjustSettings?.face == .dmSerif)
     }
 
     @Test func captionsFromBeforeTheCollectionTakeTheLookAsTheirs() async {
@@ -267,7 +267,6 @@ struct QuickEditCaptionStyleCopyTests {
         #expect(viewModel.edit.captionLook?.sizeScale == 1.2)
         #expect(viewModel.edit.captionPreset == nil)
         #expect(viewModel.edit.captionAnimation == .fade)
-        #expect(viewModel.captions.captionCustomLookName == "Custom")
     }
 
     // MARK: - Kept

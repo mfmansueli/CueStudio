@@ -241,7 +241,6 @@ nonisolated enum TextEffectChoreography {
     static func easeOutCubic(_ value: Double) -> Double { 1 - pow(1 - clamp(value), 3) }
     static func easeInCubic(_ value: Double) -> Double { pow(clamp(value), 3) }
     static func easeOutQuart(_ value: Double) -> Double { 1 - pow(1 - clamp(value), 4) }
-    static func easeInQuart(_ value: Double) -> Double { pow(clamp(value), 4) }
     static func easeOutExpo(_ value: Double) -> Double {
         let part = clamp(value)
         return part >= 1 ? 1 : 1 - pow(2, -10 * part)

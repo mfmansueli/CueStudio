@@ -23,19 +23,4 @@ nonisolated struct MyCaptionStyle: Codable, Hashable, Sendable {
         self.settings = settings
         animation = edit.captionAnimation
     }
-
-    /// `snapshot`'s captions in this style, keeping their own safe margins.
-    func apply(to snapshot: inout EditSnapshot) {
-        var mine = settings
-        if let margins = snapshot.captionCollection?.safeMargins { mine.safeMargins = margins }
-        snapshot.captionCollection = mine
-        snapshot.captionAnimation = animation
-    }
-
-    /// Whether `edit`'s captions look like this now.
-    func isWorn(by edit: TakeEdit) -> Bool {
-        guard var current = edit.captionCollection else { return false }
-        current.safeMargins = settings.safeMargins
-        return current == settings && edit.captionAnimation == animation
-    }
 }

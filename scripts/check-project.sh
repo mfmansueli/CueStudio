@@ -1,7 +1,8 @@
 #!/bin/bash
 # Checks the project's own files in about a second, before a build of minutes finds out the hard way: project.pbxproj
 # parses and holds no build settings (they live in Config/*.xcconfig), every xcconfig it points at exists, the shared
-# scheme is well-formed XML, the test plans are valid JSON, and xcodebuild can read the project and its schemes.
+# scheme is well-formed XML, the test plans are valid JSON and name tests that exist, and xcodebuild can read the project and
+# its schemes.
 # scripts/check-warnings.sh runs it first.
 
 source "$(dirname "$0")/_xcode.sh"
@@ -33,6 +34,34 @@ done
 for plan in "$REPO_ROOT"/TestPlans/*.xctestplan; do
     python3 -c 'import json, sys; json.load(open(sys.argv[1]))' "$plan" 2> /dev/null || fail "$(basename "$plan") isn't valid JSON"
 done
+
+# A plan that names a test that was renamed or removed runs without it and says nothing (UISmoke had lost four flows).
+missing="$(python3 - "$REPO_ROOT" <<'EOF'
+import glob, json, os, re, sys
+root = sys.argv[1]
+declared = {}
+for plan in sorted(glob.glob(os.path.join(root, "TestPlans", "*.xctestplan"))):
+    for entry in json.load(open(plan)).get("testTargets", []):
+        target = entry.get("target", {}).get("name", "")
+        if target not in declared:
+            types, funcs = set(), set()
+            for path in glob.glob(os.path.join(root, target, "**", "*.swift"), recursive=True):
+                text = open(path, encoding="utf-8").read()
+                types.update(re.findall(r"\b(?:class|struct|enum|actor)\s+(\w+)", text))
+                funcs.update(re.findall(r"\bfunc\s+(\w+)\s*\(", text))
+            declared[target] = (types, funcs)
+        types, funcs = declared[target]
+        for test in entry.get("selectedTests", []) + entry.get("skippedTests", []):
+            suite, _, function = test.partition("/")
+            function = function.split("(")[0]
+            if suite not in types or (function and function not in funcs):
+                print(f"{os.path.basename(plan)}: {target}/{test}")
+EOF
+)"
+if [ -n "$missing" ]; then
+    fail "test plans name tests that don't exist:"
+    printf '%s\n' "$missing" | sed 's/^/    /'
+fi
 
 xcodebuild -list -project "$PROJECT" > /dev/null 2>&1 || fail "xcodebuild can't read the project (xcodebuild -list)"
 

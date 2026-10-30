@@ -155,9 +155,8 @@ none, Thai spaces). Never touched: hyphens in words, `5 - 3`, −, ー, 〜, lin
 model had to repeat (`ScriptRequest.preservedPhrases`: catchphrases, a brand's must-say line, link and code, the idea's opening
 line; in a rewrite, every sentence of the creator's that holds a dash, so one the model kept word for word keeps it). Parts a
 rewrite leaves as written never pass through it; a translation is cleaned in full. Drafts are not shown while they are
-written (the page replays the finished, cleaned text); a screen that someday shows words as they arrive uses
-`DashRewriter.displayable`, which holds back the sentence after a dash until it ends, so a dash never appears even for a
-moment. Ideas saved by older versions are cleaned when restored; Logbook notes are the creator's and stay.
+written (the page replays the finished, cleaned text). Ideas saved by older versions are cleaned when restored; Logbook
+notes are the creator's and stay.
 
 **Regional variants.** Only the 20 languages above have a translated interface; no variant gets one of its
 own. Every interface localization is the language alone (`es`, `fr`, `pt`…), except the two Chinese scripts:

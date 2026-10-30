@@ -24,9 +24,6 @@ nonisolated struct PoseTrack: Sendable {
         defaultCurve = curve
     }
 
-    /// The time of the last keyframe.
-    var duration: Double { keyframes.last?.time ?? 0 }
-
     func pose(at time: Double) -> Pose {
         guard let first = keyframes.first, let last = keyframes.last else { return Pose() }
         if time <= first.time { return first.pose }

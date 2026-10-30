@@ -66,8 +66,7 @@ final class NotificationsUITests: XCTestCase {
         openNotificationSettings(app)
         flip(app.switches["notifications.permission"])
         for group in ["finish", "routine", "news"] {
-            let lit = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == '1'"), object: app.switches["notifications.group.\(group)"])
-            XCTAssertEqual(XCTWaiter.wait(for: [lit], timeout: 5), .completed, "\(group) lights with the yes")
+            XCTAssertTrue(app.switches["notifications.group.\(group)"].matches(NSPredicate(format: "value == '1'"), within: 5), "\(group) lights with the yes")
         }
         XCTAssertTrue(element(app, "notifications.routine.day.2").exists(within: 3), "The routine opens on its usual days")
         XCTAssertTrue(isOn(app.switches["notifications.permission"]))

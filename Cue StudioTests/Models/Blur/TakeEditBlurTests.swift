@@ -71,7 +71,6 @@ struct TakeEditBlurTests {
         #expect(abs((edit.footageTime(of: region.target, at: 7.5, in: edit.timeline) ?? 0) - 2.5) < 0.001)
         let shown = BlurResolver.shown(edit.blurRegions, onRecording: source.id, at: 7.5, sources: edit.sources)
         #expect(shown.count == 1)
-        #expect(abs((edit.editedTime(ofFootage: 2.2, of: region, in: edit.timeline) ?? 0) - 7.8) < 0.01)
     }
 
     @Test func aFrozenFrameOfACoveredMomentIsCoveredToo() {

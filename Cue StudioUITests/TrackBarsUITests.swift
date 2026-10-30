@@ -36,7 +36,7 @@ final class TrackBarsUITests: XCTestCase {
         XCTAssertTrue(caption.exists(within: 5), "No caption on the preview")
         show.tap()
         XCTAssertFalse(isOn(show), "Show didn't turn off")
-        XCTAssertTrue(caption.waitForNonExistence(timeout: 5), "Show off didn't hide the lines")
+        XCTAssertTrue(caption.isGone(within: 5), "Show off didn't hide the lines")
         show.tap()
         XCTAssertTrue(isOn(show), "Show didn't turn on")
         XCTAssertTrue(caption.exists(within: 5), "Show on didn't bring the lines back")
@@ -56,6 +56,6 @@ final class TrackBarsUITests: XCTestCase {
         XCTAssertTrue(effect.exists(within: 5), "Sound effects didn't open the effects")
         XCTAssertFalse(app.buttons["edit.addMusicButton"].exists, "Sound effects shows the music from Files too")
         effect.tap()
-        XCTAssertTrue(effect.waitForNonExistence(timeout: 5), "Adding an effect didn't close the sheet")
+        XCTAssertTrue(effect.isGone(within: 5), "Adding an effect didn't close the sheet")
     }
 }

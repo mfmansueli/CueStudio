@@ -160,6 +160,5 @@ struct QuickEditReplaceClipTests {
         let id = middleClip(scenario)
         viewModel.perform(.replaceClip)
         #expect(viewModel.photoRequest?.purpose == .replaceClip(id))
-        #expect(viewModel.photoRequest?.offersVideos == true)
     }
 }

@@ -29,6 +29,4 @@ nonisolated enum NotificationIdentifier {
     static func exportReady(takeID: UUID) -> String { operationPrefix + "export." + takeID.uuidString }
 
     static func isAutomatic(_ identifier: String) -> Bool { identifier.hasPrefix(automaticPrefix) }
-
-    static func isReminder(_ identifier: String) -> Bool { identifier.hasPrefix(reminderPrefix) }
 }

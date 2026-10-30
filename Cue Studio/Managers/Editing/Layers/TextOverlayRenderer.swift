@@ -340,7 +340,7 @@ nonisolated enum TextOverlayRenderer {
         case .box: CGSize(width: 12 * unit, height: 6 * unit)
         case .pill: CGSize(width: 16 * unit, height: 7 * unit)
         }
-        let maxWidth = lineLength(for: text, frameWidth: frameWidth, widthFraction: widthFraction) ?? (frameWidth * widthFraction - padding.width * 2)
+        let maxWidth = lineLength(for: text, frameWidth: frameWidth) ?? (frameWidth * widthFraction - padding.width * 2)
         let bounds = string.boundingRect(
             with: CGSize(width: max(1, maxWidth), height: .greatestFiniteMagnitude),
             options: [.usesLineFragmentOrigin, .usesFontLeading], context: nil
@@ -398,7 +398,7 @@ nonisolated enum TextOverlayRenderer {
 
     /// The longest a line of `text` can be, in pixels on a frame `frameWidth` wide, when it has a block of its own
     /// (`TextBlock`); nil: as wide as the frame allows.
-    static func lineLength(for text: TextOverlay, frameWidth: CGFloat, widthFraction: CGFloat) -> CGFloat? {
+    static func lineLength(for text: TextOverlay, frameWidth: CGFloat) -> CGFloat? {
         guard let block = text.block else { return nil }
         return CGFloat(block.width * block.scale(at: text.size)) * frameWidth / referenceWidth
     }

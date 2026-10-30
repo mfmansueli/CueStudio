@@ -7,9 +7,8 @@ import XCTest
 
 /// Find inspiration and the empty Scripts: the three ways in on a first use and their lighter returning state, the dock's lightbulb once there
 /// are scripts, the topic filters (several topics, only typed ones, none), "Another idea", "Start with it" into the composer with Undo, the
-/// direct "Draft it now", and the screen at the biggest text sizes. Each test keeps a picture (an attachment); with
-/// `TEST_RUNNER_CUE_INSPIRATION_DIR=<folder>` the pictures and their accessibility hierarchies are also written there, for
-/// `tools/contrast/audit.py`.
+/// direct "Draft it now", and the screen at the biggest text sizes. With `TEST_RUNNER_CUE_INSPIRATION_DIR=<folder>` each test keeps
+/// pictures (attachments), also written there with their accessibility hierarchies, for `tools/contrast/audit.py`.
 @MainActor
 final class FindInspirationUITests: XCTestCase {
     override func setUp() {
@@ -29,6 +28,10 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertFalse(app.buttons["empty.inspirationButton"].exists, "Find inspiration is the dock's lightbulb, not a card")
         XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists, "The lightbulb is in the dock from the first visit")
         XCTAssertTrue(app.buttons["ideaCard.submit"].exists, "The dock stays the place to type an idea")
+        XCTAssertTrue(element(app, "empty.promptCard").exists, "No dock on the empty Scripts")
+        // The Logbook is in the bar and Format on the card from the first visit on, not only after the first script.
+        XCTAssertTrue(app.buttons["scripts.logbookButton"].exists, "No Logbook on the empty Scripts")
+        XCTAssertTrue(app.buttons["ideaCard.formatChip"].exists, "No Format on the empty Scripts' card")
         try shoot(app, "01-first-use")
 
         writeFirstScript(app, titled: "My first script")
@@ -51,7 +54,7 @@ final class FindInspirationUITests: XCTestCase {
         for id in ["empty.writeButton", "empty.importButton", "ideaCard.inspirationButton"] {
             XCTAssertTrue(app.buttons[id].exists, "No \(id) in the returning state")
         }
-        sleep(5) // The Undo toast goes before the picture.
+        if capturing { sleep(5) } // The Undo toast goes before the picture.
         try shoot(app, "05-returning")
         app.buttons["ideaCard.inspirationButton"].tap()
         XCTAssertTrue(element(app, "inspiration.sheet").exists(within: 5))
@@ -144,7 +147,7 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertTrue(element(app, "inspiration.card.title").exists(within: 10))
         app.buttons["inspiration.use"].tap()
         XCTAssertTrue(app.keyboards.firstMatch.exists(within: 5), "The composer takes the keyboard to adapt the idea")
-        sleep(5) // The Undo toast goes before the picture.
+        if capturing { sleep(5) } // The Undo toast goes before the picture.
         try shoot(app, "04-composer-after-use")
         let before = field.value as? String ?? ""
         field.typeText(" for students")
@@ -234,8 +237,7 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertTrue(sawWait, "The wait for the next ideas was never shown")
         XCTAssertTrue(title.exists, "The card went while the next ideas were on their way")
         try shoot(app, "11-finding-more")
-        let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "enabled == true AND NOT (label CONTAINS 'Finding')"), object: another)
-        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 30), .completed, "The next ideas never came")
+        XCTAssertTrue(another.matches(NSPredicate(format: "enabled == true AND NOT (label CONTAINS 'Finding')"), within: 30), "The next ideas never came")
         another.tap()
         XCTAssertNotEqual(title.label, first)
     }
@@ -321,15 +323,18 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertTrue(app.staticTexts[title].exists(within: 5))
     }
 
-    /// A picture of the screen, kept with the result, and in `TEST_RUNNER_CUE_INSPIRATION_DIR` with its hierarchy when that is set.
+    /// Pictures are taken only when `TEST_RUNNER_CUE_INSPIRATION_DIR` is set: the waits they need stay out of the normal runs.
+    private var capturing: Bool { ProcessInfo.processInfo.environment["CUE_INSPIRATION_DIR"] != nil }
+
+    /// A picture of the screen, kept with the result and in `TEST_RUNNER_CUE_INSPIRATION_DIR` with its hierarchy; nothing when it isn't set.
     private func shoot(_ app: XCUIApplication, _ name: String) throws {
+        guard let path = ProcessInfo.processInfo.environment["CUE_INSPIRATION_DIR"] else { return }
         sleep(1)
         let screenshot = app.screenshot()
         let attachment = XCTAttachment(screenshot: screenshot)
         attachment.name = name
         attachment.lifetime = .keepAlways
         add(attachment)
-        guard let path = ProcessInfo.processInfo.environment["CUE_INSPIRATION_DIR"] else { return }
         let folder = URL(fileURLWithPath: path, isDirectory: true)
         try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
         let device = ProcessInfo.processInfo.environment["SIMULATOR_DEVICE_NAME"].map { "-" + $0.replacingOccurrences(of: " ", with: "_") } ?? ""

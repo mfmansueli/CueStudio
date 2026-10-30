@@ -36,24 +36,12 @@ struct QuickCreatorCompositionTests {
         #expect(stretches.map(\.showsMedia) == [false, true, true, false, false])
     }
 
-    @Test func withoutMediaTheStretchesAreTheSame() {
-        var timeline = EditTimeline(sourceDuration: 60)
-        for cut in [10.0, 20] { timeline.split(atEdited: cut) }
-        timeline.setTransition(.dissolve, atJoin: 1)
-        let dissolves = TransitionWindow.windows(in: timeline)
-        let duration = CMTime(seconds: 60, preferredTimescale: 600)
-        let old = EditedComposition.instructionRanges(for: dissolves, duration: duration)
-        let new = EditedComposition.stretches(for: dissolves, media: [], duration: duration)
-        #expect(old.map(\.range) == new.map(\.range))
-        #expect(new.allSatisfy { !$0.showsMedia })
-    }
-
     @Test func speedChangesDipTheSoundAtTheirSeam() {
         var timeline = EditTimeline(sourceDuration: 20)
         timeline.split(atEdited: 10)
-        #expect(EditedComposition.fades(for: timeline).isEmpty)
+        #expect(EditedCompositionTests.fades(for: timeline).isEmpty)
         timeline.setSpeed(2, forSegmentAt: 1)
-        #expect(EditedComposition.fades(for: timeline).count == 2)
+        #expect(EditedCompositionTests.fades(for: timeline).count == 2)
     }
 
     @MainActor

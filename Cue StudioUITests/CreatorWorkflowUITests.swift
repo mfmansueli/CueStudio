@@ -58,8 +58,8 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(app.keyboards.firstMatch.exists(within: 5), "No keyboard for the caption")
         flow.replaceText(of: field, with: "e caldo de cana do lado.")
         // Each key re-times the line, so the last keys can still be landing when typing returns: wait for them, never for less.
-        let typed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", "e caldo de cana do lado."), object: field)
-        XCTAssertEqual(XCTWaiter.wait(for: [typed], timeout: 5), .completed, "The field has “\(field.value as? String ?? "")”")
+        let typed = NSPredicate(format: "value == %@", "e caldo de cana do lado.")
+        XCTAssertTrue(field.matches(typed, within: 5), "The field has “\(field.value as? String ?? "")”")
         flow.tap(app.buttons["edit.panel.apply"], "✓ on Captions")
         flow.backToMainTools()
         // A check, not a creator's tap: the fix stayed once the panel closed.
@@ -395,6 +395,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         flow.tool("mediaSequence")
         let note = flow.element("edit.mediaInsertionNote")
         XCTAssertTrue(flow.waits(for: note, "where the clip goes"))
+        XCTAssertTrue(app.buttons["edit.mediaMode.sequence"].isSelected, "Media › In sequence didn't open on it")
         // The playhead is at the start: the take goes in before the first clip.
         XCTAssertEqual(note.label, "Goes in at 00:00.0, before clip 1", "The sheet doesn't say where the clip goes")
         let take = app.buttons.matching(NSPredicate(format: "identifier BEGINSWITH 'edit.addTake.'")).firstMatch

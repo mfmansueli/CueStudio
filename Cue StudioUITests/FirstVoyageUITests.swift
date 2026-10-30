@@ -28,8 +28,7 @@ final class FirstVoyageUITests: XCTestCase {
     }
 
     private func waitForGone(_ element: XCUIElement, timeout: TimeInterval = 5) -> Bool {
-        let gone = XCTNSPredicateExpectation(predicate: NSPredicate(format: "exists == false"), object: element)
-        return XCTWaiter.wait(for: [gone], timeout: timeout) == .completed
+        return element.matches(NSPredicate(format: "exists == false"), within: timeout)
     }
 
     // MARK: - An empty library
@@ -75,8 +74,7 @@ final class FirstVoyageUITests: XCTestCase {
         XCTAssertEqual(toggle.value as? String, "1")
         for expected in ["0", "1"] {
             toggle.coordinate(withNormalizedOffset: CGVector(dx: 0.93, dy: 0.5)).tap()
-            let changed = XCTNSPredicateExpectation(predicate: NSPredicate(format: "value == %@", expected), object: toggle)
-            XCTAssertEqual(XCTWaiter.wait(for: [changed], timeout: 4), .completed)
+            XCTAssertTrue(toggle.matches(NSPredicate(format: "value == %@", expected), within: 4))
         }
         goToTab(app, "Scripts")
         XCTAssertTrue(element(app, "voyage.tip.1").exists(within: 8), "Settings brought the guide back, its tip too")

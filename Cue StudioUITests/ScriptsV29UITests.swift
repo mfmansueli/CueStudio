@@ -5,8 +5,9 @@
 
 import XCTest
 
-/// Scripts (v29 · 3.1 and 3.2): the groups READY TO RECORD · DRAFTS · RECORDED, the LET'S CUE! card with its chips, the
-/// first visit's ideas, the filter with no results, and the card without Apple Intelligence.
+/// Scripts (v29 · 3.1 and 3.2): the groups READY TO RECORD · DRAFTS · RECORDED, the LET'S CUE! card with its chips, the search
+/// and the filter with no results, the first visit's ideas, and the card without Apple Intelligence. The first visit's ways in are
+/// `FindInspirationUITests`'.
 /// `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` saves a picture of each state.
 @MainActor
 final class ScriptsV29UITests: XCTestCase {
@@ -39,6 +40,10 @@ final class ScriptsV29UITests: XCTestCase {
         XCTAssertTrue(app.buttons["ideaCard.voiceChip"].exists)
         XCTAssertTrue(element(app, "ideaCard.anotherIdea").exists)
         try capture(app, "3.2_scripts")
+        // A recorded script's line carries its takes and the stage of its video.
+        let takes = app.descendants(matching: .any).matching(NSPredicate(format: "label CONTAINS '3 takes'")).firstMatch
+        for _ in 0..<4 where !takes.exists { app.swipeUp() }
+        XCTAssertTrue(takes.exists, "No recorded script's line with its takes")
     }
 
     func testASearchWithNoResultShowsTheEmptyStateAndTheWayOut() throws {
@@ -77,18 +82,6 @@ final class ScriptsV29UITests: XCTestCase {
         // Without words, the field goes with the keyboard (a scroll sends the keyboard away).
         app.swipeDown()
         XCTAssertTrue(field.isGone(within: 5), "the empty search stayed after the keyboard went")
-    }
-
-    func testTheFirstVisitOffersItsWaysIn() throws {
-        let app = CueApp.launch(seeded: false)
-        XCTAssertTrue(element(app, "empty.promptCard").exists(within: 15))
-        XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists, "Find inspiration is the dock's lightbulb")
-        XCTAssertTrue(element(app, "empty.writeButton").exists)
-        XCTAssertTrue(element(app, "empty.importButton").exists)
-        // The Logbook is in the bar and Format on the card from the first visit on, not only after the first script.
-        XCTAssertTrue(app.buttons["scripts.logbookButton"].exists, "No Logbook on the empty Scripts")
-        XCTAssertTrue(app.buttons["ideaCard.formatChip"].exists, "No Format on the empty Scripts' card")
-        try capture(app, "3.1_first_visit")
     }
 
     func testWithoutAppleIntelligenceTheCardSaysWriteItAndOpensADraft() throws {

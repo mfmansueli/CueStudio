@@ -90,7 +90,7 @@ struct IdeaTransitionServiceTests {
         await clock.advance(0.31)
         #expect(service.phase == .revealing)
         #expect(calls.arrived == 1 && calls.aborted == 0)
-        // The page may start writing once the cover and the ring are done (`revealLead`).
+        // The page may start writing once the cover and the ring are done.
         await openRing(clock)
         await finished.value
     }

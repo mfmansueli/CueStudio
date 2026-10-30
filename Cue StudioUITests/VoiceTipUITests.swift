@@ -60,8 +60,7 @@ final class VoiceTipUITests: XCTestCase {
         XCTAssertTrue(tip.exists(within: 15))
         app.buttons["Close tip"].tap()
         let gone = NSPredicate(format: "exists == false")
-        expectation(for: gone, evaluatedWith: tip)
-        waitForExpectations(timeout: 5)
+        XCTAssertTrue(tip.matches(gone, within: 5))
     }
 
     func testAMultipleAnswerQuestionHasSaveAndNoneOfThese() {

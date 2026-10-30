@@ -19,7 +19,9 @@ extension RealExports {
     struct CoverMatchesVideoFrameTests {
         /// How far the cover picked at `time` (edited seconds) is from the video's frame there.
         private func difference(_ edit: TakeEdit, take: URL, at time: TimeInterval, name: String) async throws -> Double {
-            let composition = try await EditedComposition.build(source: take, edit: edit, options: .init(burnsInCaptions: false, shortSide: nil))
+            let composition = try await EditedComposition.build(
+                source: take, plan: RenderPlan(edit, options: .init(burnsInCaptions: false, shortSide: nil))
+            )
             let video = try await RenderParity.frame(composition.asset, composition: composition.videoComposition, at: time)
             let source = CoverSource.clipFrame(edit.coverFrame(atEdited: time))
             let cover = try #require(await CoverRenderer.picture(for: source, videoURL: take, edit: edit)?.cgImage)

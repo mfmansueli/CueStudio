@@ -52,7 +52,7 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
     `full` no fim. Testes de aparelho: `CUE_DEVICE=<iPhone>
     scripts/test.sh device <Suite>` (um conjunto por vez; liga a variável `TEST_RUNNER_CUE_…` certa).
   - `scripts/check-warnings.sh`: a conferência de zero warnings (abaixo).
-  - `scripts/check-project.sh`: em segundos, confere `project.pbxproj`, os `.xcconfig`, o scheme e os planos de teste.
+  - `scripts/check-project.sh`: em segundos, confere `project.pbxproj`, os `.xcconfig`, o scheme e os planos de teste (e se cada teste que eles citam existe).
   - `scripts/strings.py`: o String Catalog sem editar o JSON à mão (`add` com os 20 idiomas, `missing`, `stale --remove`).
 - **Zero warnings.** Todo build termina sem nenhum warning (compilador, SwiftLint, ferramentas do
   Xcode): se um build mostrar um warning, corrija na mesma entrega, mesmo que não tenha vindo da sua

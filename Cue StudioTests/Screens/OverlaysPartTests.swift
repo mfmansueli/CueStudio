@@ -19,7 +19,7 @@ struct OverlaysPartTests {
     init() {
         host = FakeEditorHost(edit: TakeEdit(sourceDuration: 20, aspect: .portrait))
         part = OverlaysViewModel(
-            session: host.session, importer: FakeMediaImporter(), styles: FakeTextStyleStore(),
+            session: host.session, styles: FakeTextStyleStore(),
             library: ScriptLibraryService(repository: FakeScriptRepository(scripts: [])), tracker: ObjectTracker()
         )
     }

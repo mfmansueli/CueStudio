@@ -5,8 +5,8 @@
 
 import XCTest
 
-/// v29 · phase 7: Your universe (the animated core, the empty state), the paywall and the export screens. Pictures are
-/// saved when `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` is set.
+/// v29 · phase 7: Your universe (the animated core and its colours, the empty state) on a new install. The paywall is `ProfileUITests`'.
+/// Pictures are saved when `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` is set.
 @MainActor
 final class ShareUniverseProV29UITests: XCTestCase {
     override func setUp() {
@@ -29,6 +29,7 @@ final class ShareUniverseProV29UITests: XCTestCase {
         let tab = app.cueTabBar.buttons["Profile"]
         XCTAssertTrue(tab.exists(within: 15))
         tab.tap()
+        XCTAssertTrue(element(app, "profile.creatorCard").exists(within: 5), "A new install's Profile has no creator card")
         let card = element(app, "profile.universeLink")
         var swipes = 0
         while !card.isHittable, swipes < 5 {
@@ -48,7 +49,7 @@ final class ShareUniverseProV29UITests: XCTestCase {
         capture(app, "9.2_universe_empty")
     }
 
-    /// 9.2: tapping the core opens its sheet; choosing a colour there marks it (the same choice lives in Settings › Personalize).
+    /// 9.2: tapping the core opens its sheet; each colour chosen there is the one marked (the same choice lives in Settings › Personalize).
     func testTappingTheCoreOpensItsSheetWithTheFourColours() {
         let app = CueApp.launch(seeded: false)
         openUniverse(app)
@@ -63,22 +64,10 @@ final class ShareUniverseProV29UITests: XCTestCase {
         XCTAssertTrue(app.buttons["coreColor.rose"].isSelected)
         XCTAssertFalse(app.buttons["coreColor.gold"].isSelected)
         capture(app, "9.2_core_sheet")
-    }
-
-    /// 11.4 from the Profile: the plans, the trial button and Restore are all there.
-    func testThePaywallShowsPlansTheTrialAndRestore() {
-        let app = CueApp.launch(seeded: false)
-        let tab = app.cueTabBar.buttons["Profile"]
-        XCTAssertTrue(tab.exists(within: 15))
-        tab.tap()
-        let upgrade = element(app, "profile.upgradeButton")
-        var swipes = 0
-        while !upgrade.isHittable, swipes < 6 {
-            app.swipeUp()
-            swipes += 1
+        for color in ["amber", "sunrise", "gold"] {
+            let chip = app.buttons["coreColor.\(color)"]
+            chip.tap()
+            XCTAssertTrue(chip.isSelected, "\(color) was tapped and is not the one selected")
         }
-        upgrade.tap()
-        XCTAssertTrue(app.descendants(matching: .any)["paywall.benefits"].firstMatch.exists(within: 10))
-        capture(app, "11.4_pro")
     }
 }

@@ -12,8 +12,6 @@ import CoreImage
 nonisolated struct SkinSmoothingPass {
     let faces: [SkinFace]
 
-    static let none = SkinSmoothingPass(faces: [])
-
     /// `image` with `skin` on every face, in this order: the shine comes down on the skin as it was, the smoothing evens it (by the engine its
     /// numbers were made for: the first one's `SkinSmoothingFilter`, today's `SkinBeautyFilter`), then the face is lit. `image` itself with nothing on.
     func apply(_ skin: SkinLook, to image: CIImage) -> CIImage {

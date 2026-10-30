@@ -40,7 +40,7 @@ nonisolated struct CaptionSettings: Codable, Hashable, Sendable {
     /// How wide a line may run and how its lines align (Caption style › Format); nil: the style's own.
     var width: CaptionWidth?
     var alignment: LineAlignment?
-    /// The saved style these captions were put in (`SavedCaptionStyle`), to name it on the card. Only a name: the look is this
+    /// The saved style these captions were put in (`SavedStyle`), to name it on the card. Only a name: the look is this
     /// video's own copy, so changing or deleting the saved style never touches it.
     var savedStyleID: UUID?
 

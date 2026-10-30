@@ -24,10 +24,6 @@ nonisolated enum OutputLanguageCheck {
     /// Languages close enough that the recognizer swaps them on short texts; any of them passes for the others.
     private static let families: [Set<String>] = [["da", "nb", "nn", "no"], ["id", "ms"]]
 
-    static func isPlausible(_ text: String, in expected: CueLanguage) -> Bool {
-        isPlausible(text, in: expected.locale.language)
-    }
-
     static func isPlausible(_ text: String, in expected: Locale.Language) -> Bool {
         let spoken = CueParser.stripCues(text)
         guard WordSegmenter.roughWordCount(of: spoken) >= minimumWords, let code = expected.languageCode?.identifier else { return true }

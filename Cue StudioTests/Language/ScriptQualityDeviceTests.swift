@@ -16,7 +16,7 @@ import UIKit
 /// service and the request factory the app uses, and two batches of Find inspiration ideas. Each script is kept with what was sent (instructions,
 /// prompt), what it cost the window (tokens of the instructions, the prompt and the answer's structure, `tokenCount(for:)`), the draft that was
 /// not kept when there were two, and the seconds; each batch with its briefs. The metrics are computed later from the kept texts
-/// (`ScriptQualityReportTests`), so a run can be compared with another after the metrics change.
+/// (`tools/quality/report.py`), so a run can be compared with another after the metrics change.
 ///
 /// Opt-in and on a device with Apple Intelligence on, unlocked and awake:
 /// `CUE_DEVICE=<iPhone> TEST_RUNNER_CUE_QUALITY_RUN=baseline scripts/test.sh device ScriptQualityDeviceTests`. `TEST_RUNNER_CUE_QUALITY_LANGUAGES=pt-BR,es-ES`

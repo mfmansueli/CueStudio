@@ -189,7 +189,7 @@ struct TextStylePanel: View {
 
     /// The size and the turn, in Custom › Font: Turn is always the picked text's.
     @ViewBuilder
-    private func sizeAndTurn(_ text: TextOverlay) -> some View {
+    private func sizeAndTurn() -> some View {
         PanelSlider(
             label: String(localized: "Size"), value: viewModel.overlays.pickedTextPointSize, range: CueSliderSpec.textPoints.range,
             step: CueSliderSpec.textPoints.step ?? 2, defaultValue: CueSliderSpec.textPoints.defaultValue, format: .points, identifier: "edit.textSize"
@@ -299,7 +299,7 @@ struct TextStylePanel: View {
     /// Size and Turn first, one row each and always in sight; then the fonts, an imported one, and the weight.
     @ViewBuilder
     private func font(_ text: TextOverlay) -> some View {
-        sizeAndTurn(text)
+        sizeAndTurn()
         PanelChips(
             options: TextOverlayFont.pickerFonts(including: text.font).map { PanelOption($0, $0.label) }, selection: text.font,
             font: { CueStudioFont.chip($0, size: $1) }, identifier: "edit.textFont",

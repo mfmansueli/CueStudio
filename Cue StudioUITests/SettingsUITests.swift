@@ -103,19 +103,6 @@ final class SettingsUITests: XCTestCase {
         XCTAssertTrue(recording.label.contains("4K"), recording.label)
     }
 
-    /// The Prompter page's switches are the ones the prompter reads.
-    func testPrompterPageHasItsRowsAndRigs() {
-        let app = CueApp.launch(seeded: true)
-        tab(app, label: "Settings").tap()
-        row(app, "settings.prompter").tap()
-        XCTAssertTrue(row(app, "settings.followVoice").exists(within: 5))
-        XCTAssertTrue(row(app, "settings.prompterPreview").exists)
-        capture(app, name: "Settings · Prompter")
-        let mirror = row(app, "settings.mirrorText")
-        app.scroll(to: mirror)
-        XCTAssertTrue(row(app, "settings.flipVertically").exists)
-    }
-
     /// Speed goes from 0.2× to 2×, and Text size is a slider in points from 12 to 56 (owner's decision, 20/10/2026). The ends are reached
     /// on the same rows opened by Aa in the recorder: in the Settings tab the synthesized drag of `adjust(toNormalizedSliderPosition:)`
     /// doesn't move the sliders of this page (any of them, line spacing included).
@@ -124,6 +111,8 @@ final class SettingsUITests: XCTestCase {
         tab(app, label: "Settings").tap()
         row(app, "settings.prompter").tap()
         XCTAssertTrue(row(app, "settings.followVoice").exists(within: 5))
+        XCTAssertTrue(row(app, "settings.prompterPreview").exists, "The Prompter page opens on its preview")
+        capture(app, name: "Settings · Prompter")
         // A Settings slider answers to its row's identifier (`PrompterEntryRow` names the whole row, slider included).
         let speed = app.sliders["settings.speed"]
         app.scroll(to: speed)

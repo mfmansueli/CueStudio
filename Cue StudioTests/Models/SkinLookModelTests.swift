@@ -37,11 +37,11 @@ struct SkinLookModelTests {
     // MARK: - Off by default
 
     @Test func everythingStartsOffOnTodaysEngine() {
-        #expect(edit().skin == .off)
+        #expect(edit().skin == SkinLook())
         #expect(!edit().skin.isOn && edit().skin.preset == nil)
         #expect(edit().skin.smoothing.engine == ReadingVersion.skin.current && ReadingVersion.skin.current == 2)
         #expect(edit().skin.smoothing.texture == SkinBeautyCalibration.defaultTexture)
-        #expect(LookSettings().skin == .off && LookSettings(edit()).skin == .off)
+        #expect(LookSettings().skin == SkinLook() && LookSettings(edit()).skin == SkinLook())
         #expect(ClipLook().skin == nil)
         #expect(!edit().hasPictureLook && !edit().hasSkin)
         #expect(LookSettings().isNeutral)
@@ -115,16 +115,16 @@ struct SkinLookModelTests {
 
     @Test func anEditWhoseOldDialWasOffGetsTodaysEngine() throws {
         let decoded = try decode(TakeEdit.self, savedByTheFirstSmoothing(edit(), dial: 0))
-        #expect(decoded.skin == .off)
+        #expect(decoded.skin == SkinLook())
         #expect(!decoded.skin.smoothing.usesFirstEngine)
         let older = try object(edit()).filter { $0.key != "skin" }
-        #expect(try decode(TakeEdit.self, older).skin == .off, "saved before Skin Smoothing existed")
+        #expect(try decode(TakeEdit.self, older).skin == SkinLook(), "saved before Skin Smoothing existed")
     }
 
     @Test func aDamagedOldDialCountsAsOffAndOneOutOfRangeIsBroughtIn() throws {
-        #expect(try decode(TakeEdit.self, savedByTheFirstSmoothing(edit(), dial: "a lot")).skin == .off)
+        #expect(try decode(TakeEdit.self, savedByTheFirstSmoothing(edit(), dial: "a lot")).skin == SkinLook())
         #expect(try decode(TakeEdit.self, savedByTheFirstSmoothing(edit(), dial: 900)).skin.smoothing == SkinSmoothing(amount: 100, engine: 1))
-        #expect(try decode(TakeEdit.self, savedByTheFirstSmoothing(edit(), dial: -40)).skin == .off)
+        #expect(try decode(TakeEdit.self, savedByTheFirstSmoothing(edit(), dial: -40)).skin == SkinLook())
     }
 
     @Test func aDamagedPartOfSkinIsOffAndTheOthersStay() throws {
@@ -286,7 +286,7 @@ struct SkinLookModelTests {
         clip.look = override
         take.timeline.replaceSegment(clip)
         let plain = take.withoutPictureLook()
-        #expect(plain.skin == .off && plain.timeline.segments[0].look?.skin == nil)
+        #expect(plain.skin == SkinLook() && plain.timeline.segments[0].look?.skin == nil)
         #expect(LookSettings(plain).isNeutral)
         #expect(take.skin == studio, "Compare never changes what is saved")
     }
@@ -304,7 +304,7 @@ struct SkinLookModelTests {
         clip.look = override
         take.timeline.replaceSegment(clip)
         let plain = take.withoutSkin()
-        #expect(plain.skin == .off && !plain.hasSkin)
+        #expect(plain.skin == SkinLook() && !plain.hasSkin)
         #expect(plain.exposure == 15 && plain.filter == .studio)
         let look = plain.timeline.segments[0].look
         #expect(look?.skin == nil && look?.contrast == 8 && look?.background == override.background)

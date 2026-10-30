@@ -34,14 +34,12 @@ final class LanguageService {
 
     private let defaults: UserDefaults
     private let store: AppLanguageStoring
-    private let apply: (CueLanguage) -> Void
 
     /// - Parameter apply: makes `interfaceLanguage` the running app's (see `AppServices`). Unit
     ///   tests leave it out, so they never change the language other tests read strings in.
-    init(defaults: UserDefaults = .standard, store: AppLanguageStoring, apply: @escaping (CueLanguage) -> Void = { _ in }) {
+    init(defaults: UserDefaults = .standard, store: AppLanguageStoring, apply: (CueLanguage) -> Void = { _ in }) {
         self.defaults = defaults
         self.store = store
-        self.apply = apply
         let chosen = store.chosenLocalization.flatMap(CueLanguage.matching(interfaceLocalization:))
         let interface = Self.interfaceLanguage(chosen: chosen, store: store)
         appLanguage = chosen
@@ -55,22 +53,6 @@ final class LanguageService {
 
     /// The locale SwiftUI and `String(localized:)` resolve the interface in.
     var interfaceLocale: Locale { Locale(identifier: interfaceLanguage.interfaceLocalization) }
-
-    /// Switches the interface now and at every later launch. Nothing else changes.
-    func setAppLanguage(_ language: CueLanguage?) {
-        guard language != appLanguage else { return }
-        store.chosenLocalization = language?.interfaceLocalization
-        appLanguage = language
-        let interface = Self.interfaceLanguage(chosen: language, store: store)
-        guard interface != interfaceLanguage else { return }
-        interfaceLanguage = interface
-        apply(interface)
-    }
-
-    /// What "iPhone Language" shows in: the iPhone's language when Cue has it, else English.
-    var systemInterfaceLanguage: CueLanguage {
-        CueLanguage.matching(interfaceLocalization: store.systemLocalization) ?? .english
-    }
 
     /// The iPhone's own languages, most preferred first (never the interface's): where the creator's
     /// regional variants come from. The device's country is never read for content.

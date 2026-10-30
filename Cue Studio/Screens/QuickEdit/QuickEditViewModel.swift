@@ -193,7 +193,7 @@ final class QuickEditViewModel: EditorHost, EditorPart {
         look = LookViewModel(session: session, editing: editing, motion: motion)
         clips = ClipsViewModel(session: session, editing: editing, takes: takes, library: library, speechLanguage: speechLanguage)
         overlays = OverlaysViewModel(
-            session: session, importer: mediaImporter, styles: styles, library: library, tracker: tracker, faces: faceFinder
+            session: session, styles: styles, library: library, tracker: tracker, faces: faceFinder
         )
         blur = BlurViewModel(session: session, tracker: tracker, faces: faceFinder)
         audio = AudioViewModel(

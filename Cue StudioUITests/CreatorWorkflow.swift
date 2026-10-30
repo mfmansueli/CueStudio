@@ -49,10 +49,9 @@ final class CreatorWorkflow {
     /// in a sideways row) not hittable: then the tap goes to its middle, and what the tap does is checked by the caller.
     func tap(_ element: XCUIElement, _ what: String, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertTrue(waits(for: element, what), "\(what) isn't there", file: file, line: line)
-        if !element.isHittable {
-            // An animation still settling (a sheet, a panel): one more look.
-            Thread.sleep(forTimeInterval: 1)
-        }
+        // An animation still settling (a sheet, a panel): a second at most, looking every 0.1 s.
+        let deadline = Date().addingTimeInterval(1)
+        while !element.isHittable, Date() < deadline { Thread.sleep(forTimeInterval: 0.1) }
         if element.isHittable {
             element.tap()
         } else {
@@ -79,7 +78,7 @@ final class CreatorWorkflow {
         XCTAssertTrue(waits(for: button, "the \(id) tool"), "No \(id) tool in the toolbar", file: file, line: line)
         let bar = element("edit.toolbar")
         for _ in 0..<6 {
-            let reach = reachableBar(for: id, in: bar.frame)
+            let reach = EditorApp.toolReach(app, for: id, in: bar.frame)
             let frame = button.frame
             if frame.minX >= reach.minX, frame.maxX <= reach.maxX { break }
             // Bring the tool to the middle of what can be reached, at most a bar's width at a time.
@@ -89,17 +88,6 @@ final class CreatorWorkflow {
             drags += 1
         }
         tap(button, "the \(id) tool", file: file, line: line)
-    }
-
-    /// The part of the toolbar a tool can be touched in: inside the screen, right of the ‹ back and left of the pinned Delete.
-    private func reachableBar(for id: String, in bar: CGRect) -> CGRect {
-        let screen = app.windows.firstMatch.frame
-        var reach = bar.intersection(screen)
-        let back = app.buttons["edit.toolbar.back"]
-        if back.exists, id != "back" { reach = reach.divided(atDistance: max(0, back.frame.maxX - reach.minX), from: .minXEdge).remainder }
-        let delete = app.buttons["edit.toolbar.delete"]
-        if delete.exists, id != "delete" { reach.size.width = max(0, delete.frame.minX - reach.minX) }
-        return reach
     }
 
     /// Moves the playhead forward by dragging the timeline (`EditorApp.scrub`).

@@ -10,9 +10,6 @@ import Foundation
 /// and mirrored, fitted in the frame with the box over it (`showingWholePicture`, `ClipCropLayer`); the box keeps a shape
 /// (9:16, 4:5, 1:1, 16:9) or none (Free), and Original takes it away. Each change is an undo step; a drag of the box is one.
 extension ClipsViewModel {
-    /// The shapes Crop offers, Free (nil) first.
-    static let cropRatios: [AspectRatio?] = [nil, .portrait, .vertical, .square, .landscape]
-
     /// The picked clip's picture turned and mirrored, before the crop, for a recording `size` big.
     func turnedPictureSize(ofRecording size: CGSize) -> CGSize {
         ClipOrientation(quarterTurns: targetClip?.quarterTurns ?? 0).turnedSize(of: size)

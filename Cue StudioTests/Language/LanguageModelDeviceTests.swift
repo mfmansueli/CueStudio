@@ -164,7 +164,7 @@ struct LanguageModelDeviceTests {
         try await Task.sleep(for: .seconds(20))
         let defaults = UserDefaults(suiteName: "ai-voice-\(UUID())") ?? .standard
         let profile = CreatorProfileService(defaults: defaults)
-        profile.addPhrase("Hey fam")
+        profile.profile.phrases.append("Hey fam")
         profile.saveVoiceSetup(niches: [.lifestyle], vocabulary: .simple, sounds: [.casual, .confident])
         let factory = ScriptRequestFactory(
             rules: PlatformRulesService(), profile: profile, scriptLanguage: nil, interfaceLanguage: .english,

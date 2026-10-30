@@ -39,18 +39,4 @@ nonisolated enum UltraError: LocalizedError, Equatable, Sendable {
         case .fitFailed: String(localized: "Ultra AI couldn’t fit it to the time · Try again")
         }
     }
-
-    /// The failure without the draft, for the Console.
-    var logName: String {
-        switch self {
-        case .notAvailable: "notAvailable"
-        case .consentRequired: "consentRequired"
-        case .consentRevoked: "consentRevoked"
-        case .budgetExhausted: "budgetExhausted"
-        case .noScriptsLeft: "noScriptsLeft"
-        case .draftFailed(let failure): "draftFailed.\(failure.rawValue)"
-        case .reviewFailed(let failure, _): "reviewFailed.\(failure.rawValue)"
-        case .fitFailed(let failure): "fitFailed.\(failure.rawValue)"
-        }
-    }
 }

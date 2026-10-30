@@ -24,14 +24,6 @@ nonisolated final class TextEffectSprites: @unchecked Sendable {
         self.artwork = artwork
     }
 
-    /// Lays out and paints `request`; nil when there is nothing to draw.
-    static func make(_ request: TextEffectRequest) -> TextEffectSprites? {
-        guard let layout = TextEffectLayout.make(
-            request.string, maxWidth: request.maxWidth, padding: request.padding, room: request.room, byWords: request.byWords
-        ) else { return nil }
-        return make(request, layout: layout)
-    }
-
     /// Paints `request` as `layout` laid it out.
     static func make(_ request: TextEffectRequest, layout: TextEffectLayout) -> TextEffectSprites? {
         TextEffectSprites(request: request, layout: layout, artwork: TextEffectPainter.artwork(layout, request))

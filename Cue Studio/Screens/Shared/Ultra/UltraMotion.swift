@@ -20,8 +20,6 @@ nonisolated enum UltraMotion {
     static let lapDuration = 1.2
     /// The ✦'s flight from the invitation to the writer chip; the chip lights as it lands.
     static let hop = 0.46
-    /// The writer chip lighting (and going back to Apple Intelligence).
-    static let chipLight = Animation.spring(response: 0.36, dampingFraction: 0.62)
     /// The ring the chip sends out as it lights.
     static let ring = 0.7
     /// An invitation folding away (closed, or taken).

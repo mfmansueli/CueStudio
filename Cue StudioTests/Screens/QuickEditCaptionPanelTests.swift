@@ -155,15 +155,15 @@ struct QuickEditCaptionPanelTests {
         let viewModel = scenario.viewModel
         viewModel.captions.pickCaptionTheme(.impact)
         viewModel.captions.setCaptionFace(.tiktokSans)
-        #expect(viewModel.captions.captionFace == .tiktokSans)
+        #expect(viewModel.captions.captionAdjustSettings?.face == .tiktokSans)
         // The style stays; the family is a change over it.
         #expect(viewModel.edit.captionCollection?.theme == .impact && viewModel.captions.changedCaptionLookCount == 1)
         viewModel.undo()
-        #expect(viewModel.captions.captionFace == nil)
+        #expect(viewModel.captions.captionAdjustSettings?.face == nil)
         viewModel.redo()
-        #expect(viewModel.captions.captionFace == .tiktokSans)
+        #expect(viewModel.captions.captionAdjustSettings?.face == .tiktokSans)
         viewModel.captions.pickCaptionTheme(.pop)
-        #expect(viewModel.captions.captionFace == nil)
+        #expect(viewModel.captions.captionAdjustSettings?.face == nil)
     }
 
     @Test func positionAndSizeChangeEveryLine() async {

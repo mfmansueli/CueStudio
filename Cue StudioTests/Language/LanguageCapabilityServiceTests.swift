@@ -33,14 +33,11 @@ struct LanguageCapabilityServiceTests {
         checker.set(.notInstalled, for: .dictation, .thai)
         checker.set(.unavailable(.deviceNotSupported), for: .captions, .thai)
         let service = makeService(checker)
-        let capabilities = await service.capabilities(of: .thai)
-        #expect(capabilities[.interface] == .supported)
-        #expect(capabilities[.aiWriting] == .unavailable(.languageNotSupported))
-        #expect(capabilities[.voiceFollowing] == .supported)
-        #expect(capabilities[.dictation] == .notInstalled)
-        #expect(capabilities[.captions] == .unavailable(.deviceNotSupported))
-        let unavailable: [LanguageFeature] = capabilities.unavailable.map(\.feature).sorted { $0.rawValue < $1.rawValue }
-        #expect(unavailable == [.aiWriting, .captions])
+        #expect(await service.support(.interface, for: .thai) == .supported)
+        #expect(await service.support(.aiWriting, for: .thai) == .unavailable(.languageNotSupported))
+        #expect(await service.support(.voiceFollowing, for: .thai) == .supported)
+        #expect(await service.support(.dictation, for: .thai) == .notInstalled)
+        #expect(await service.support(.captions, for: .thai) == .unavailable(.deviceNotSupported))
     }
 
     @Test func supportedNotInstalledAndUnavailableAreThreeDifferentAnswers() {
@@ -70,8 +67,6 @@ struct LanguageCapabilityServiceTests {
         _ = await service.support(.voiceFollowing, for: .arabic)
         _ = await service.support(.voiceFollowing, for: .arabic)
         #expect(checker.asked == 1)
-        #expect(service.known(.voiceFollowing, for: .arabic) == .supported)
-        #expect(service.known(.voiceFollowing, for: .thai) == nil)
     }
 
     @Test func twoScreensAskingAtOnceShareOneQuestion() async {
@@ -117,15 +112,6 @@ struct LanguageCapabilityServiceTests {
         surroundings.system = "27.1|en-US"
         checker.set(.supported, for: .aiWriting, .thai)
         #expect(await service.support(.aiWriting, for: .thai) == .supported)
-        #expect(checker.asked == 2)
-    }
-
-    @Test func invalidatingAsksAgain() async {
-        let checker = FakeLanguageCapabilityChecker()
-        let service = makeService(checker)
-        _ = await service.support(.dictation, for: .french)
-        service.invalidate()
-        _ = await service.support(.dictation, for: .french)
         #expect(checker.asked == 2)
     }
 
