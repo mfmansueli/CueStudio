@@ -20,7 +20,9 @@ struct UltraLabView: View {
     @Environment(PresentationService.self) private var presentation
 
     var body: some View {
-        Group {
+        ZStack {
+            // Never empty: an empty view never appears, so the lab was never made and the screen stayed black (the owner saw it, 29/10/2026).
+            Color.clear
             if let model { lab(model) }
         }
         .navigationTitle(Text(verbatim: "Ultra AI · Lab"))

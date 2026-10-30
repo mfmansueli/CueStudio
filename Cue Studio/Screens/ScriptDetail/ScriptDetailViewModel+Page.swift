@@ -361,8 +361,10 @@ extension ScriptDetailViewModel {
         pageWritingTask = Task { [weak self] in
             guard let self else { return }
             do {
-                let generated = try await generate(request, reporting: meter)
+                var generated = try await generate(request, reporting: meter)
                 guard !Task.isCancelled else { return }
+                // In paragraphs, a blank line between them: easier to read, and each one arrives as a piece short enough to draw.
+                generated.text = ScriptParagraphs.arranged(generated.text)
                 meter.finish()
                 let returnedAt = ContinuousClock.now
                 // The star opens the page (ring, crossfade) before the first word is written.

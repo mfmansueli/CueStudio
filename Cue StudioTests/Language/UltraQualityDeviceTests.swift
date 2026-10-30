@@ -319,6 +319,7 @@ struct UltraQualityDeviceTests {
             case .free: "free"
             case .reference(let seconds): "reference \(Int(seconds)) s"
             case .required(let range): "required \(Int(range.lowerBound))–\(Int(range.upperBound)) s"
+            case .ideal(let range): "ideal \(Int(range.lowerBound))–\(Int(range.upperBound)) s"
             }
             creator = Creator(item.creator)
         }

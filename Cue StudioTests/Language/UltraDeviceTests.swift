@@ -108,6 +108,7 @@ struct UltraDeviceTests {
         case .free: "free"
         case .reference(let seconds): "reference \(Int(seconds)) s"
         case .required(let range): "required \(Int(range.lowerBound))–\(Int(range.upperBound)) s"
+        case .ideal(let range): "ideal \(Int(range.lowerBound))–\(Int(range.upperBound)) s"
         }
         let sample = Sample(
             name: name, language: request.language?.rawValue ?? "auto", durationPolicy: "\(request.durationPolicy)", length: lengthName,

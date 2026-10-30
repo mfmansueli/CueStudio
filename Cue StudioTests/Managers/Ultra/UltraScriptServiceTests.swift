@@ -167,7 +167,10 @@ struct UltraScriptServiceTests {
         var automatic = request
         automatic.durationPolicy = .informative
         _ = try await scenario.service.run(automatic)
-        #expect(scenario.client.requests[0].prompt.contains("Length: free."))
+        #expect(scenario.client.requests[0].prompt.contains("Length: 60 to 90 seconds of speech"))
+        automatic.platform = .youtube
+        _ = try await scenario.service.run(automatic)
+        #expect(scenario.client.requests.last { $0.stage == .draft }?.prompt.contains("Length: free.") == true)
         _ = try await scenario.service.run(request, length: .required(60...90))
         #expect(scenario.client.requests.last { $0.stage == .draft }?.prompt.contains("the creator chose 60 to 90 seconds") == true)
     }
@@ -260,6 +263,28 @@ struct UltraScriptServiceTests {
         let prompt = scenario.client.requests[0].prompt
         #expect(prompt.contains("between 150 and 225 words") && prompt.contains("The script has 300 words now."))
         #expect(prompt.contains("Script to fit:\n\"\"\"\nLight from the side"))
+    }
+
+    /// On Auto a vertical video polished past its range (more than 15% over it) is fitted into it, one more call; a length the creator chose
+    /// and YouTube's long form are left as they came.
+    @Test func aPolishPastItsPlatformsRangeIsFittedOnce() async throws {
+        let scenario = makeScenario()
+        defer { scenario.defaults.tearDown() }
+        // 330 words, no sentence said twice (a repeated one would be taken out as a loop).
+        let long = (1...30).map { "Light from window number \($0) shapes the face and the eyes." }.joined(separator: " ")
+        let reply = try JSONSerialization.data(withJSONObject: ["title": "Long", "script": long, "changes": [String]()])
+        scenario.client.review = .success(UltraModelReply(text: try #require(String(bytes: reply, encoding: .utf8)), finishedNormally: true))
+        var automatic = request
+        automatic.durationPolicy = .informative
+        let run = try await scenario.service.run(automatic)
+        #expect(scenario.client.requests.map(\.stage) == [.draft, .check, .review, .fit])
+        #expect(run.script.text == "The fitted script.")
+        #expect(scenario.budget.used == 4)
+        let chosen = try await scenario.service.run(request)
+        #expect(chosen.script.text == long && scenario.budget.used == 7)
+        automatic.platform = .youtube
+        let youTube = try await scenario.service.run(automatic)
+        #expect(youTube.script.text == long && scenario.budget.used == 10)
     }
 
     @Test func aScriptAlreadyInTheRangeCostsNoCall() async throws {

@@ -75,12 +75,27 @@ struct UltraPayloadTests {
         #expect(prompt.contains("Saving isn’t just about willpower."))
     }
 
-    @Test func automaticLengthIsInformationAndAChosenOneIsIntent() {
+    /// On Auto a vertical video is written to its platform's range and YouTube's long form freely (the owner's call, 29/10/2026); a length the
+    /// creator chose is their intent.
+    @Test func automaticLengthIsThePlatformsRangeFreeOnYouTubeAndAChosenOneIsIntent() {
         var automatic = request("A night routine")
         automatic.durationPolicy = .informative
+        let vertical = UltraPayload(automatic).draft.prompt
+        #expect(vertical.contains("Length: 60 to 90 seconds of speech (about 150 to 225 words at a natural pace)"))
+        #expect(vertical.contains("never go past 225 words"))
+        automatic.platform = .youtube
         #expect(UltraPayload(automatic).draft.prompt.contains("Length: free."))
         #expect(UltraPayload(request("A night routine")).draft.prompt.contains("the creator chose 60 to 90 seconds"))
         #expect(UltraPayload(automatic, length: .reference(90)).draft.prompt.contains("about 90 seconds"))
+    }
+
+    /// A vertical video comes back a little over its range at most, and never past two minutes (300 words); only Auto's range is fitted by itself.
+    @Test func onlyThePlatformsRangeHasAnOverflowAndItNeverPassesTwoMinutes() {
+        #expect(UltraLength.ideal(60...90).overflowWords == 259)
+        #expect(UltraLength.ideal(75...105).overflowWords == 300)
+        #expect(UltraLength.ideal(15...30).overflowWords == 86)
+        #expect(UltraLength.required(60...90).overflowWords == nil)
+        #expect(UltraLength.free.overflowWords == nil)
     }
 
     @Test func theDraftKnowsWhoTheyAreAndOnlyThePolishHowTheySpeak() {

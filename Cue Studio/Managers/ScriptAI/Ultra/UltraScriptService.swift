@@ -100,8 +100,12 @@ final class UltraScriptService: UltraScriptWriting {
         let payload = UltraPayload(request, length: length)
 
         meter?.record(.drafting)
+        meter?.begin(pass: 0, of: flow.calls)
         let draftStart = clock.now
-        let draftReply = try await call(client, payload.draft) { meter?.record(.wrote(words: $0)) }
+        let draftReply = try await call(client, payload.draft) { words in
+            meter?.record(.wrote(words: words))
+            meter?.advance(pass: Double(words) / Double(meter?.expectedWords ?? 1))
+        }
         let draftSeconds = Self.seconds(draftStart.duration(to: clock.now))
         let draft = draftReply.text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard draftReply.finishedNormally, !draft.isEmpty else {
@@ -119,11 +123,13 @@ final class UltraScriptService: UltraScriptWriting {
         try mayContinue(started: true)
         let before = total - draftWords
         meter?.record(.lengthening(done: before, of: total))
+        meter?.begin(pass: flow.calls - 1, of: flow.calls)
         let reviewStart = clock.now
         let reviewReply: UltraModelReply
         do {
             reviewReply = try await call(client, payload.review(of: check?.reply.script ?? draft, corrections: check?.reply.corrections)) {
                 meter?.record(.lengthening(done: before + min($0, draftWords), of: total))
+                meter?.advance(pass: Double($0) / Double(draftWords))
             }
         } catch UltraError.draftFailed(let failure) {
             throw UltraError.reviewFailed(failure, draft: draft)
@@ -137,8 +143,16 @@ final class UltraScriptService: UltraScriptWriting {
         // What arrived after a Stop or a revoked permission is not handed over.
         try mayContinue(started: true)
 
-        let script = finished(reply, request: request)
+        var script = finished(reply, request: request)
         guard !script.text.isEmpty else { throw UltraError.reviewFailed(.incomplete, draft: draft) }
+        // A vertical video that came back past its range (a little over it, never past two minutes) is fitted into it, one more call. A fit
+        // that fails or may not go out leaves the polished script.
+        if case .ideal(let range) = payload.length, let limit = payload.length.overflowWords, ReadTime.wordCount(in: script.text) > limit,
+           let fitted = try? await fit(UltraFitRequest(
+               script: script.text, platform: request.platform, range: range, voice: request.voice, language: request.language?.locale.language
+           )), !fitted.isEmpty {
+            script.text = fitted
+        }
         return UltraRun(
             script: script, draft: draft, changes: reply.changes, draftSeconds: draftSeconds, reviewSeconds: reviewSeconds,
             draftReply: draftReply, reviewReply: reviewReply, flow: flow, checked: check?.reply.script, corrections: check?.reply.corrections ?? [],
@@ -152,10 +166,14 @@ final class UltraScriptService: UltraScriptWriting {
     ) async throws -> (reply: UltraCheckReply, seconds: Double, call: UltraModelReply) {
         try mayContinue(started: true)
         meter?.record(.lengthening(done: 0, of: total))
+        meter?.begin(pass: 1, of: UltraFlow.checked.calls)
         let start = clock.now
         let answer: UltraModelReply
         do {
-            answer = try await call(client, payload.check(of: draft)) { meter?.record(.lengthening(done: min($0, words), of: total)) }
+            answer = try await call(client, payload.check(of: draft)) {
+                meter?.record(.lengthening(done: min($0, words), of: total))
+                meter?.advance(pass: Double($0) / Double(words))
+            }
         } catch UltraError.draftFailed(let failure) {
             throw UltraError.reviewFailed(failure, draft: draft)
         }
@@ -191,7 +209,9 @@ final class UltraScriptService: UltraScriptWriting {
         }
         note("fit", reply: reply, seconds: seconds)
         try mayContinue(started: true)
-        return ScriptPromptBuilder.collapsingRepeatedSentences(ScriptPromptBuilder.clean(fitted.script, language: request.language))
+        return ScriptParagraphs.arranged(
+            ScriptPromptBuilder.collapsingRepeatedSentences(ScriptPromptBuilder.clean(fitted.script, language: request.language))
+        )
     }
 
     // MARK: - Steps
