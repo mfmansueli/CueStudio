@@ -26,6 +26,26 @@ extension Palette {
             Color(hex: 0xB4A7FF), Color(hex: 0x7B6CFF), Color(hex: 0xFF8FD0), Color(hex: 0xFFD60A), Color(hex: 0x8FD3FF), Color(hex: 0xB4A7FF),
         ]
 
+        /// Ultra AI's light round the writer chip as it is picked (`DockChipLight`): Cue's violets with its yellow, the star's colours. Its
+        /// sparks are the violet, the lilac and the yellow (`UltraChipSparks`). Decorative.
+        static let ultraGlow: [Color] = [
+            Color(hex: 0x9D8CFF), Color(hex: 0xE4DEFF), Color(hex: 0xFFD60A), Color(hex: 0xB4A7FF), Color(hex: 0x7B6CFF), Color(hex: 0x9D8CFF),
+        ]
+        /// The send arrow while Ultra AI writes the next idea: Cue's violet, with a white arrow (4.5:1; the button 3.9:1 on the dock).
+        static let ultraSend = Color(hex: 0x6F5CFF)
+        static let ultraSendInk = Color.white
+        /// An Ultra AI script's star in the transition: the violet of its glow, its streaks and its comet (`StarTransitionOverlay`); its
+        /// gold is the sky's own star (`Palette.World.skyStarYou`). Decorative.
+        static let ultraStarGlow = Color(hex: 0xA493FF)
+        /// The scene round that star while Ultra AI writes (`UltraWaitScene`): the galaxy's arms and stars in Cue's violets and lilac (warming to the
+        /// sky star's gold as the polish comes), its three moons (the draft's violet, the check's white, the voice's gold) and the check's beam.
+        /// Decorative.
+        static let ultraDust: [Color] = [Color(hex: 0x9D8CFF), Color(hex: 0xE4DEFF), Color(hex: 0x7B6CFF), Color(hex: 0xB4A7FF)]
+        static let ultraMoons: [Color] = [Color(hex: 0x9D8CFF), Color(hex: 0xF4F2FF), Color(hex: 0xFFD60A)]
+        static let ultraBeam = Color(hex: 0xEDEAFF)
+        /// The comets passing outside the ring while Ultra AI writes: the star's gold, a lilac and an icy blue. Decorative.
+        static let ultraComets: [Color] = [Color(hex: 0xFFE680), Color(hex: 0xCFC6FF), Color(hex: 0x8FD3FF)]
+
         /// The My Cue Voice tip's ✦ and the circle behind it (09 §3).
         static let tipGlyph = Color(hex: 0xC4B8FF)
         static let tipGlyphFill = Color(hex: 0x9D8CFF, opacity: 0.22)

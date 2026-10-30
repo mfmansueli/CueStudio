@@ -114,14 +114,26 @@ struct ScriptStarterUltraTests {
         #expect(scenario.presentation.scriptsPath.first?.writing?.engine == .apple)
     }
 
-    @Test func onceWrittenTheNextIdeaIsAppleIntelligencesAgain() async throws {
+    @Test func theWritersPickStaysForTheNextIdea() async throws {
         let scenario = makeScenario()
         defer { scenario.defaults.tearDown() }
         scenario.starter.choose(.ultra)
         scenario.ideaDraft.text = "Carnival in Salvador"
         _ = try #require(scenario.starter.write(from: CGPoint(x: 300, y: 700)))
         await scenario.transition.contentReady()
-        #expect(scenario.ideaDraft.engine == .apple)
+        #expect(scenario.ideaDraft.engine == .ultra && scenario.starter.writesWithUltra)
+    }
+
+    @Test func theWritersPickIsKeptBetweenLaunches() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        #expect(IdeaDraftService(defaults: defaults.defaults).engine == .apple, "Apple Intelligence until the creator picks")
+        IdeaDraftService(defaults: defaults.defaults).engine = .ultra
+        #expect(IdeaDraftService(defaults: defaults.defaults).engine == .ultra)
+        let draft = IdeaDraftService(defaults: defaults.defaults)
+        draft.engine = .apple
+        draft.clear()
+        #expect(IdeaDraftService(defaults: defaults.defaults).engine == .apple)
     }
 
     @Test func withNoFreeScriptsLeftCueProIsOfferedAndNothingIsWritten() {

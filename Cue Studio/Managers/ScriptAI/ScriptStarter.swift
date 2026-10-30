@@ -83,7 +83,7 @@ final class ScriptStarter {
     var ultraUsedUp: Bool { ultraScriptsLeft == 0 }
 
     /// The dock's writer chip: Ultra only once permission is there (`UltraConsentSheet` asks first) and with scripts left; Apple Intelligence any
-    /// time.
+    /// time. The pick stays until the creator changes it (`IdeaDraftService.engine`).
     func choose(_ engine: ScriptEngine) {
         ideaDraft.engine = engine == .ultra && (!ultraAllowed || ultraUsedUp) ? .apple : engine
     }
@@ -188,9 +188,8 @@ final class ScriptStarter {
             abort: { [weak self] in self?.abort(scriptID, keeping: comment) },
             arrive: { [weak self] in
                 if let brief = request.brief { self?.briefWritten?(brief) }
-                // An Ultra script was written: the next idea goes back to Apple Intelligence unless Ultra is picked again. One Apple
-                // Intelligence wrote counts towards the invitation to try Ultra.
-                if request.engine == .ultra { self?.ideaDraft.engine = .apple } else { self?.ultra?.noteAIUse() }
+                // The writer stays the creator's pick for the next idea. One Apple Intelligence wrote counts towards the invitation to try Ultra.
+                if request.engine == .apple { self?.ultra?.noteAIUse() }
                 whenWritten?(scriptID)
             }
         )

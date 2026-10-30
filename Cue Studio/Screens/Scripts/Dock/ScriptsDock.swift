@@ -43,6 +43,7 @@ struct ScriptsDock: View {
     @Environment(IdeaTransitionService.self) private var transition
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.logsDockMotion) private var logsDockMotion
     @FocusState private var isFocused: Bool
     @State private var selection: TextSelection?
     @State private var scrollPosition = ScrollPosition(edge: .bottom)
@@ -52,8 +53,6 @@ struct ScriptsDock: View {
     @State private var voiceSetup: VoiceSetupSheet.Mode?
     /// Where the arrow is on the screen: the star leaves from there.
     @State private var sendCenter = CGPoint.zero
-    /// Goes up with each "↻": its arrows turn once.
-    @State private var anotherTurn = 0
     /// What the dock shows of Ultra AI, a step behind the service so it moves where it is seen (`syncUltra`): the writer chip lit, and the
     /// invitation's line.
     @State private var showsUltraLit = false
@@ -61,9 +60,28 @@ struct ScriptsDock: View {
     /// Go up to fly the ✦ from the invitation to the chip, and to send the chip's ring out.
     @State private var ultraHop = 0
     @State private var ultraRing = 0
-    /// Where the ✦ leaves from (the invitation's) and lands (the chip's), in the dock's own space.
+    /// Ultra AI lighting the writer chip, a moment after the ring once the ✦ is drawn: the ✦ turns and pops, sends its sparks
+    /// (`UltraChipSparks`) and Cue's light goes round the chip (`DockChipLight`).
+    @State private var ultraGlyph = 0
+    /// Apple Intelligence picked back on the writer chip: the symbol's bounce and Apple Intelligence's light round it (`DockChipLight`).
+    @State private var appleLight = 0
+    /// The network the platform chip shows: the picked one, once the "Create for" sheet is out of the way.
+    @State private var shownPlatform: Platform?
+    /// A network picked: the platform chip's logo flips and the network's light goes round it.
+    @State private var platformFlip = 0
+    /// The send arrow is Ultra AI's (violet, with its rim going round): a step behind the chip, once the ✦ has flown to it.
+    @State private var sendIsUltra = false
+    /// The writer chip between its old words and its new (`turnChip`).
+    @State private var hidesWriter = false
+    /// Go up to fly the ✦ from the writer chip to the send arrow, and to pop the arrow as it lands.
+    @State private var sendHop = 0
+    @State private var sendCharge = 0
+    /// Where the ✦ leaves from (the invitation's, the chip's) and lands (the chip's, the arrow's), in the dock's own space.
     @State private var inviteStar: CGPoint?
-    @State private var chipStar: CGPoint?
+    /// The writer chip's frame, and how wide its Ultra AI look is: the ✦ sits 15 pt into that look, in the middle of the chip.
+    @State private var writerFrame: CGRect?
+    @State private var ultraLookWidth: CGFloat = 0
+    @State private var sendStar: CGPoint?
     nonisolated private static let ultraSpace = "ultraDock"
     /// The height of a line of the field's text, which grows with Dynamic Type.
     @ScaledMetric(relativeTo: .body) private var lineHeight = 21.0
@@ -141,13 +159,19 @@ struct ScriptsDock: View {
             }
         }
         .padding(EdgeInsets(top: 16, leading: 12, bottom: 12, trailing: 12))
-        // Ultra AI allowed from the invitation: its ✦ flies to the writer chip.
+        // Ultra AI allowed from the invitation: its ✦ flies to the writer chip; lit, the chip's ✦ flies on to the send arrow.
         .overlay {
             if let inviteStar, let chipStar {
                 UltraStarHop(from: inviteStar, to: chipStar, trigger: ultraHop)
             }
         }
+        .overlay {
+            if let chipStar, let sendStar {
+                UltraStarHop(from: chipStar, to: sendStar, trigger: sendHop)
+            }
+        }
         .coordinateSpace(.named(Self.ultraSpace))
+        .overlay(alignment: .topLeading) { motionLog }
         .dockSurface()
         .overlay {
             AIGlow(
@@ -158,16 +182,23 @@ struct ScriptsDock: View {
         .animation(.smooth(duration: 0.2), value: dictation.notice)
         .onAppear {
             showsUltraLit = starter.writesWithUltra
+            sendIsUltra = starter.writesWithUltra
             showsUltraInvite = ultra.showsInvite
+            shownPlatform = starter.platform
         }
         .onChange(of: starter.writesWithUltra) { syncUltra() }
+        .onChange(of: starter.platform) { syncPlatform() }
         .onChange(of: ultra.showsInvite) { syncUltra() }
         // The permission's sheet going: the ✦ waits for it to be out of the way.
         .onChange(of: presentation.sheet == nil) { _, gone in
-            guard gone else { return }
+            guard gone else {
+                settleWriter()
+                return
+            }
             Task {
                 try? await Task.sleep(for: .seconds(UltraMotion.afterSheet))
                 syncUltra()
+                syncPlatform()
             }
         }
         .animation(reduceMotion ? nil : .smooth(duration: 0.25), value: isExpanded)
@@ -247,95 +278,102 @@ struct ScriptsDock: View {
 
     // MARK: - Row 1
 
-    /// The choices for the idea, left to right as the board has them: the format, the platform and the voice. While it listens the
-    /// row says so instead (the dock keeps its height when the dictation starts and stops). Without Apple Intelligence there is no
-    /// voice chip: nothing in the dock is violet.
+    /// How much the first row says, from the most words to the fewest: the whole row is seen without scrolling (the owner's call,
+    /// 29/10/2026). Only the biggest text sizes still scroll.
+    private enum RowWords: Int, Comparable {
+        /// "Format ⌄", "For TikTok", "✦ My Cue Voice", "Apple Intelligence ⌄" (an iPad).
+        case full
+        /// "TikTok" for "For TikTok": room for the lightbulb.
+        case shortPlatform
+        /// Format as its symbol while it is Auto, "✦ Voice", and the writer as Apple Intelligence's symbol or "✦ Ultra".
+        case short
+        /// Format as its symbol even with a format picked (its name is in the sheet and VoiceOver's label).
+        case fewest
+        /// The same, 4 pt between the chips instead of 6 (an iPhone SE with Ultra AI and the voice's percentage).
+        case tightest
+
+        static func < (lhs: Self, rhs: Self) -> Bool { lhs.rawValue < rhs.rawValue }
+    }
+
+    /// The choices for the idea, left to right as the board has them: the format, the platform, the voice and, where Ultra is offered, who
+    /// writes; then the lightbulb to Find inspiration. While it listens the row says so instead (the dock keeps its height when the dictation
+    /// starts and stops). Without Apple Intelligence there is no voice chip: nothing in the dock is violet.
     @ViewBuilder
     private var topRow: some View {
         if dictation.isActive {
             DictationStatusRow(state: dictation.state, level: dictation.level)
                 .frame(maxWidth: .infinity, alignment: .leading)
-        } else if showsInspiration {
-            // The lightbulb sits right after the voice chip while the row fits. When it doesn't, the platform chip says only the
-            // platform ("TikTok" for "For TikTok"); when that isn't enough either (a narrow iPhone, big text), the chips scroll and the
-            // lightbulb stays at the end, in reach, instead of any chip being squeezed.
+        } else {
+            // When even the fewest words don't fit (a narrow iPhone, big text), the chips scroll and the lightbulb stays at the end, in
+            // reach, instead of any chip being squeezed.
             ViewThatFits(in: .horizontal) {
-                HStack(spacing: 6) {
-                    choiceChips(shortPlatform: false)
-                    InspirationDockButton { presentation.present(.ideas) }
-                }
-                .fixedSize()
-                HStack(spacing: 6) {
-                    choiceChips(shortPlatform: true)
-                    InspirationDockButton { presentation.present(.ideas) }
-                }
-                .fixedSize()
+                fittedRow(.full)
+                fittedRow(.shortPlatform)
+                fittedRow(.short)
+                fittedRow(.fewest)
+                fittedRow(.tightest)
                 HStack(spacing: 6) {
                     ScrollView(.horizontal) {
-                        HStack(spacing: 6) { choiceChips(shortPlatform: false) }
+                        HStack(spacing: 6) { choiceChips(.tightest) }
                     }
                     .scrollIndicators(.hidden)
-                    InspirationDockButton { presentation.present(.ideas) }
+                    if showsInspiration { InspirationDockButton { presentation.present(.ideas) } }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-        } else {
-            ScrollView(.horizontal) {
-                HStack(spacing: 6) { choiceChips(shortPlatform: false) }
-            }
-            .scrollIndicators(.hidden)
-            .scrollClipDisabled()
         }
     }
 
-    /// `shortPlatform`: the platform chip says only the platform, to make room for the lightbulb.
+    private func fittedRow(_ words: RowWords) -> some View {
+        HStack(spacing: words == .tightest ? 4 : 6) {
+            choiceChips(words)
+            rowSlack(words)
+            if showsInspiration { InspirationDockButton { presentation.present(.ideas) } }
+        }
+        .fixedSize()
+    }
+
+    /// Room for the network's widest name (`WidthSlack`): the row is laid out for it, so another network changes only its own chip (the
+    /// writer chip keeps one width of its own, `EqualWidthStack`).
+    private func rowSlack(_ words: RowWords) -> some View {
+        let short = words >= .shortPlatform
+        let tight = words >= .short
+        return WidthSlack {
+            platformLook(shownPlatform ?? starter.platform, short: short, tight: tight, flips: false)
+            ForEach(Platform.allCases) { platformLook($0, short: short, tight: tight, flips: false) }
+        }
+        .hidden()
+        .accessibilityHidden(true)
+    }
+
     @ViewBuilder
-    private func choiceChips(shortPlatform: Bool) -> some View {
-        if showsFormat { formatChip }
-        platformChip(short: shortPlatform)
-        if hasAI { MyCueVoiceChip(setup: $voiceSetup, hitHeight: Self.topRowHeight) }
-        if starter.offersUltra { writerChip }
+    private func choiceChips(_ words: RowWords) -> some View {
+        if showsFormat { formatChip(words) }
+        platformChip(short: words >= .shortPlatform, tight: words >= .short)
+        if hasAI { MyCueVoiceChip(setup: $voiceSetup, hitHeight: Self.topRowHeight, isShort: words >= .short) }
+        if starter.offersUltra { writerChip(compact: words >= .short) }
     }
 
-    /// Who writes the next idea, where Ultra is offered (Debug, with the lab set up): Apple Intelligence, or "✦ Ultra AI" in violet once
-    /// picked. The menu says how many Ultra AI scripts are left. Picking Ultra the first time asks first (`UltraConsentSheet`); with none left
-    /// it offers Cue Pro instead; after a script it is back on Apple Intelligence.
-    private var writerChip: some View {
+    /// Who writes the next idea, where Ultra is offered (Debug, with the lab set up): `DockWriterChip`; `compact`, Apple Intelligence's symbol
+    /// alone or "✦ Ultra". Picking Ultra the first time asks first (`UltraConsentSheet`); with none left it offers Cue Pro instead. The pick
+    /// stays until the creator changes it. Picking Ultra lights the chip in Cue's way (the ✦ turns and pops, the ring goes out); picking Apple
+    /// Intelligence back, in Apple's (the symbol bounces and Apple Intelligence's light goes once round it).
+    private func writerChip(compact: Bool) -> some View {
         let writesWithUltra = starter.writesWithUltra
-        let lit = showsUltraLit
-        let ultraItem = ultra.allowance.map { UltraAllowanceLabels.menu($0.allowance) } ?? String(localized: "Ultra AI")
-        return Menu {
-            Picker(selection: Binding(get: { writesWithUltra ? ScriptEngine.ultra : .apple }, set: chooseWriter)) {
-                Text("Apple Intelligence").tag(ScriptEngine.apple)
-                Text(verbatim: ultraItem).tag(ScriptEngine.ultra)
-            } label: {
-                Text("Writes the next script")
-            }
-        } label: {
-            IdeaCardChip(
-                label: lit ? String(localized: "Ultra AI") : String(localized: "Apple Intelligence"),
-                style: lit ? .ai : .neutral, glyph: lit ? "✦" : nil, showsChevron: true, hitHeight: Self.topRowHeight
-            )
-            // Lighting: the chip swells a little as the ✦ lands and sends its ring out.
-            .keyframeAnimator(initialValue: 1.0, trigger: ultraRing) { chip, scale in
-                chip.scaleEffect(scale)
-            } keyframes: { _ in
-                SpringKeyframe(1.1, duration: 0.12, spring: .snappy)
-                SpringKeyframe(1, duration: 0.4, spring: .bouncy)
-            }
-            .overlay { UltraChipRing(trigger: ultraRing) }
-            .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.ultraSpace)) } action: {
-                chipStar = CGPoint(x: $0.minX + 15, y: $0.midY)
-            }
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text("Writer, \(writesWithUltra ? ultraItem : String(localized: "Apple Intelligence"))"))
-        .accessibilityIdentifier("ideaCard.writerChip")
+        return DockWriterChip(
+            writer: Binding(get: { writesWithUltra ? ScriptEngine.ultra : .apple }, set: chooseWriter), showsUltra: showsUltraLit,
+            ultraItem: ultra.allowance.map { UltraAllowanceLabels.menu($0.allowance) } ?? String(localized: "Ultra AI"),
+            look: { lit, lights, stretches in writerLook(lit: lit, compact: compact, lights: lights, stretches: stretches) },
+            ultraRing: ultraRing, ultraLight: ultraGlyph, appleLight: appleLight, rowHeight: Self.topRowHeight, space: Self.ultraSpace,
+            onFrame: { writerFrame = $0 }, onUltraLookWidth: { ultraLookWidth = $0 }
+        )
     }
 
     /// Brings what the dock shows of Ultra AI up to the service, where it is seen (never under a sheet). Allowed from the invitation, the
-    /// invitation folds as its ✦ leaves for the writer chip, which lights as it lands (`UltraMotion`, `HapticPatterns.ultraOn`); picked on the chip,
-    /// the chip lights where it is. Under Reduce Motion it only fades.
+    /// invitation folds as its ✦ leaves for the writer chip, which lights as it lands (`UltraMotion`, `HapticPatterns.ultraOn`). Picked on the
+    /// chip, nothing changes until its menu has closed (`UltraMotion.afterMenu`); then what the chip says turns (its width stays) and it
+    /// lights: Cue's way for Ultra AI (its ✦ flies on to the send arrow, which turns violet), Apple's for Apple Intelligence (the arrow
+    /// turns yellow again). Under Reduce Motion it only fades.
     private func syncUltra() {
         guard presentation.sheet == nil else { return }
         let lit = starter.writesWithUltra
@@ -347,21 +385,135 @@ struct ScriptsDock: View {
             ultraHop += 1
             withAnimation(UltraMotion.fold) { showsUltraInvite = invited }
             Task {
-                try? await Task.sleep(for: .seconds(UltraMotion.hop))
-                withAnimation(UltraMotion.chipLight) { showsUltraLit = starter.writesWithUltra }
-                ultraRing += 1
+                // The chip turns as the ✦ flies, so its new words come in as it lands.
+                try? await Task.sleep(for: .seconds(UltraMotion.hop - UltraMotion.chipTurnLead))
+                await turnChip(lit: starter.writesWithUltra)
+                lightUltra()
             }
             return
         }
-        if lights {
-            HapticPatterns.playUltraIgnite()
-            if !reduceMotion { ultraRing += 1 }
+        withAnimation(reduceMotion ? .easeInOut(duration: 0.2) : UltraMotion.fold) { showsUltraInvite = invited }
+        guard lit != showsUltraLit else { return }
+        if reduceMotion {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                showsUltraLit = lit
+                sendIsUltra = lit
+            }
+            if lit { HapticPatterns.playUltraIgnite() }
+            return
         }
-        var animation = lit != showsUltraLit ? UltraMotion.chipLight : UltraMotion.fold
-        if reduceMotion { animation = .easeInOut(duration: 0.2) }
-        withAnimation(animation) {
+        // Picked on the chip's menu: nothing on the chip changes until the menu has closed back into it. The system's closing follows the
+        // chip's frame, and a chip changing its size under it broke both (29/10/2026).
+        Task {
+            try? await Task.sleep(for: .seconds(UltraMotion.afterMenu))
+            let lit = starter.writesWithUltra
+            guard presentation.sheet == nil, lit != showsUltraLit else { return }
+            await turnChip(lit: lit)
+            guard presentation.sheet == nil, starter.writesWithUltra == lit else { return }
+            if lit {
+                lightUltra()
+            } else {
+                lightApple()
+                withAnimation(UltraMotion.sendTurn) { sendIsUltra = false }
+            }
+        }
+    }
+
+    /// The writer chip turns to who writes, in three beats so the old words and the new never cross (`UltraMotion.chipEmpty`): what it says
+    /// goes, its capsule takes the other writer's colour (never its size: the chip keeps one width, `EqualWidthStack`), and the new words come
+    /// in with a little spring. Returns as they come in, for the chip to light.
+    private func turnChip(lit: Bool) async {
+        withAnimation(.easeIn(duration: UltraMotion.chipEmpty)) { hidesWriter = true }
+        try? await Task.sleep(for: .seconds(UltraMotion.chipEmpty))
+        withAnimation(UltraMotion.chipTurn) { showsUltraLit = lit }
+        try? await Task.sleep(for: .seconds(UltraMotion.chipRefill))
+        withAnimation(UltraMotion.chipFill) { hidesWriter = false }
+    }
+
+    /// A sheet rising over the dock before a writer picked on the chip has shown (its menu had just closed): the chip and the arrow take it at
+    /// once, under the sheet, so nothing lights later on its own as the sheet goes (the owner saw Ultra AI light up with a network picked,
+    /// 29/10/2026). Ultra AI allowed on its own sheet still lights as that sheet goes: until then it doesn't write.
+    private func settleWriter() {
+        let lit = starter.writesWithUltra
+        guard lit != showsUltraLit || hidesWriter else { return }
+        var instant = Transaction()
+        instant.disablesAnimations = true
+        withTransaction(instant) {
             showsUltraLit = lit
-            showsUltraInvite = invited
+            sendIsUltra = lit
+            hidesWriter = false
+        }
+    }
+
+    /// The writer chip lights on Ultra AI, a frame after it shows the ✦ (an animation set on a view as it is drawn doesn't run): the ✦
+    /// turns, pops and sends its sparks, Cue's light goes round the chip and its ring goes out (`HapticPatterns.ultraIgnite`). Then the ✦
+    /// flies on to the send arrow.
+    private func lightUltra() {
+        Task {
+            try? await Task.sleep(for: .seconds(0.03))
+            guard starter.writesWithUltra else { return }
+            HapticPatterns.playUltraIgnite()
+            ultraRing += 1
+            ultraGlyph += 1
+            chargeSend()
+        }
+    }
+
+    /// The ✦ leaves the lit chip for the send arrow (`UltraMotion.toSend`, `UltraStarHop`) and, as it lands, the arrow pops and turns Ultra
+    /// AI's (`HapticPatterns.ultraSendCharged`). Without the arrow to fly to (Apple Intelligence can't write here), it only turns.
+    private func chargeSend() {
+        guard chipStar != nil, sendStar != nil, hasAI else {
+            withAnimation(UltraMotion.sendTurn) { sendIsUltra = starter.writesWithUltra }
+            return
+        }
+        Task {
+            try? await Task.sleep(for: .seconds(UltraMotion.toSend))
+            guard starter.writesWithUltra else { return }
+            sendHop += 1
+            try? await Task.sleep(for: .seconds(UltraMotion.hop))
+            guard starter.writesWithUltra else { return }
+            HapticPatterns.playUltraSendCharged()
+            withAnimation(UltraMotion.sendTurn) { sendIsUltra = true }
+            sendCharge += 1
+        }
+    }
+
+    /// UI tests: how many times each light has gone and what the chip and the arrow show.
+    @ViewBuilder
+    private var motionLog: some View {
+        if logsDockMotion {
+            DockMotionLog(text: "ultra=\(ultraGlyph) apple=\(appleLight) platform=\(platformFlip) send=\(sendCharge) "
+                + "chip=\(showsUltraLit ? "ultra" : "apple") arrow=\(sendIsUltra ? "ultra" : "apple")")
+        }
+    }
+
+    /// Where the writer chip's ✦ sits, for its flights (from the invitation, to the send arrow).
+    private var chipStar: CGPoint? {
+        writerFrame.map { CGPoint(x: $0.midX - ultraLookWidth / 2 + 15, y: $0.midY) }
+    }
+
+    /// A light once round a chip of the row, the height of the chip it lights.
+    private func chipLight(_ trigger: Int, _ colors: [Color]) -> some View {
+        DockChipLight(trigger: trigger, colors: colors).padding(.vertical, (Self.topRowHeight - 30) / 2)
+    }
+
+    /// Brings the platform chip up to the network picked, where it is seen (never under the "Create for" sheet), flipping its logo.
+    private func syncPlatform() {
+        guard presentation.sheet == nil, shownPlatform != starter.platform else { return }
+        let picked = shownPlatform != nil
+        withAnimation(reduceMotion ? .easeInOut(duration: 0.2) : .snappy(duration: 0.3)) { shownPlatform = starter.platform }
+        guard picked else { return }
+        HapticPatterns.playPlatformOn()
+        platformFlip += 1
+    }
+
+    /// The writer chip back on Apple Intelligence, a frame after it shows its symbol: the symbol bounces and Apple Intelligence's light goes
+    /// once round it, with a soft swell on the Taptic Engine (`HapticPatterns.appleOn`), while the send arrow turns yellow again (`syncUltra`).
+    private func lightApple() {
+        Task {
+            try? await Task.sleep(for: .seconds(0.03))
+            HapticPatterns.playAppleOn()
+            appleLight += 1
         }
     }
 
@@ -380,29 +532,64 @@ struct ScriptsDock: View {
         }
     }
 
-    private func platformChip(short: Bool) -> some View {
-        Button { presentation.present(.createFor) } label: {
-            IdeaCardChip(
-                label: short ? starter.platform.label : String(localized: "For \(starter.platform.label)"), dotColor: starter.platform.tint,
-                hitHeight: Self.topRowHeight
-            )
+    /// The writer chip as it looks: Apple Intelligence's symbol (with its name, given room) or "✦ Ultra AI" ("✦ Ultra", `compact`); `stretches`,
+    /// as wide as it is given.
+    private func writerLook(lit: Bool, compact: Bool, lights: Bool = true, stretches: Bool = false) -> IdeaCardChip {
+        IdeaCardChip(
+            label: lit
+                ? (compact ? String(localized: "Ultra") : String(localized: "Ultra AI"))
+                : (compact ? "" : String(localized: "Apple Intelligence")),
+            style: lit ? .ai : .neutral, glyph: lit ? "✦" : nil, showsChevron: true, hitHeight: Self.topRowHeight,
+            symbol: lit ? nil : DockWriterChip.appleIntelligenceSymbol, symbolBounce: lights ? appleLight : 0,
+            glyphLight: lights ? ultraGlyph : 0,
+            isTight: compact, hidesContent: lights && hidesWriter, stretches: stretches
+        )
+    }
+
+    /// The platform chip as it looks for `platform`: its logo and name ("For TikTok", or "TikTok" `short`).
+    private func platformLook(_ platform: Platform, short: Bool, tight: Bool, flips: Bool = true) -> IdeaCardChip {
+        IdeaCardChip(
+            label: short ? platform.label : String(localized: "For \(platform.label)"), hitHeight: Self.topRowHeight, isTight: tight,
+            logo: platform.logo, logoFlip: flips ? platformFlip : 0
+        )
+    }
+
+    /// The network the next script is for, with its logo ("TikTok", or "For TikTok" with room). A network picked in "Create for" shows once the
+    /// sheet is gone: its logo flips once round, the network's light goes round the chip, with `HapticPatterns.platformOn`.
+    private func platformChip(short: Bool, tight: Bool) -> some View {
+        let platform = shownPlatform ?? starter.platform
+        return Button { presentation.present(.createFor) } label: {
+            platformLook(platform, short: short, tight: tight)
+                .contentTransition(.interpolate)
         }
+        .overlay { chipLight(platformFlip, platform.glow) }
         .buttonStyle(.plain)
-        .accessibilityLabel(Text("Platform, \(starter.platform.label)"))
+        .accessibilityLabel(Text("Platform, \(platform.label)"))
         .accessibilityIdentifier("ideaCard.platformChip")
     }
 
-    private var formatChip: some View {
-        Button { presentation.present(.format) } label: {
+    /// Format ⌄, or the picked format's name; short of room, its symbol alone (with "AD" for a sponsored ad).
+    private func formatChip(_ words: RowWords) -> some View {
+        let isAuto = ideaDraft.formatChoice == .auto
+        let symbolOnly = words >= .fewest || (words == .short && isAuto)
+        return Button { presentation.present(.format) } label: {
             IdeaCardChip(
-                label: ideaDraft.formatChoice == .auto ? FormatChoice.formatLabel : ideaDraft.formatChoice.title,
-                showsChevron: true, isTag: ideaDraft.formatChoice == .type(.ad) ? "AD" : nil, hitHeight: Self.topRowHeight
+                label: symbolOnly ? "" : (isAuto ? FormatChoice.formatLabel : ideaDraft.formatChoice.title),
+                showsChevron: !symbolOnly, isTag: ideaDraft.formatChoice == .type(.ad) ? "AD" : nil, hitHeight: Self.topRowHeight,
+                symbol: symbolOnly ? Self.formatSymbol : nil, isTight: words >= .short
             )
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(Text("Format, \(ideaDraft.formatChoice == .auto ? String(localized: "Auto") : ideaDraft.formatChoice.title)"))
+        .accessibilityLabel(Text("Format, \(isAuto ? String(localized: "Auto") : ideaDraft.formatChoice.title)"))
+        .accessibilityShowsLargeContentViewer {
+            Image(systemName: Self.formatSymbol)
+            Text(isAuto ? FormatChoice.formatLabel : ideaDraft.formatChoice.title)
+        }
         .accessibilityIdentifier("ideaCard.formatChip")
     }
+
+    /// Format's symbol where the row is short of room: the formats laid out to pick from.
+    private static let formatSymbol = "square.grid.2x2"
 
     // MARK: - Row 2
 
@@ -416,7 +603,7 @@ struct ScriptsDock: View {
             .padding(.leading, 14)
             // At the bottom, by the last line, as the field grows (5 pt up: centred, as they were, while it is two lines).
             HStack(spacing: 6) {
-                if suggestion != nil { anotherIdeaButton }
+                if suggestion != nil { DockAnotherIdeaButton(isWaiting: suggestions.isWaiting) { suggestions.another() } }
                 DictationButton(state: dictation.state, style: .plain, action: toggleDictation)
                 sendButton
             }
@@ -520,43 +707,15 @@ struct ScriptsDock: View {
         return Text(hasAI ? "Say it or type your idea…" : "Type or say a title…").foregroundStyle(Palette.inkHint)
     }
 
-    private var anotherIdeaButton: some View {
-        Button {
-            Haptics.selection()
-            anotherTurn += 1
-            suggestions.another()
-        } label: {
-            // At the end of the ideas, with more on their way: the arrow turns into a wait instead of going quiet.
-            Group {
-                if suggestions.isWaiting {
-                    ProgressView().controlSize(.small).tint(Palette.aiTextStrong)
-                } else {
-                    Image(systemName: "arrow.triangle.2.circlepath")
-                        .cueFont(15, weight: .semibold)
-                        .foregroundStyle(Palette.aiText)
-                        .symbolEffect(.rotate.clockwise.byLayer, options: .speed(1.6), value: anotherTurn)
-                }
-            }
-            .frame(width: 32, height: Metrics.hitTarget)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text("Another idea"))
-        .accessibilityIdentifier("ideaCard.anotherIdea")
-    }
-
-    /// The yellow arrow that sends the idea (40 pt); "Write it" when Apple Intelligence can't write.
+    /// The arrow that sends the idea (`DockSendArrow`: yellow, or violet while Ultra AI writes the next idea); "Write it" when Apple
+    /// Intelligence can't write.
     @ViewBuilder
     private var sendButton: some View {
         if hasAI {
             Button(action: submit) {
-                Image(systemName: "arrow.up")
-                    .font(.fixed(17, weight: .bold))
-                    .foregroundStyle(Palette.accInk)
-                    .frame(width: 40, height: 40)
-                    .background(Palette.acc.opacity(canSend ? 1 : 0.35), in: Circle())
-                    .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
-                    .contentShape(Circle())
+                DockSendArrow(isUltra: sendIsUltra, isEnabled: canSend, isRunning: !isCovered && !transition.isActive, charge: sendCharge)
+                .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
+                .contentShape(Circle())
             }
             .buttonStyle(.plain)
             .disabled(!canSend)
@@ -564,6 +723,9 @@ struct ScriptsDock: View {
                 let frame = proxy.frame(in: .global)
                 return CGPoint(x: frame.midX, y: frame.midY)
             } action: { sendCenter = $0 }
+            .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.ultraSpace)) } action: {
+                sendStar = CGPoint(x: $0.midX, y: $0.midY)
+            }
             .accessibilityLabel(Text("Write it"))
             .accessibilityIdentifier("ideaCard.submit")
         } else {

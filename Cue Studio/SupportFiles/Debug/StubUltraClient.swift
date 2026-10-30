@@ -8,17 +8,34 @@ import Foundation
 
 /// Ultra for UI tests (`-uiTestUltra`): no Firebase, no network, a predictable draft and polish. `-uiTestUltraReviewFails` makes the polish fail
 /// (the draft is never passed off as the script) and `-uiTestUltraSlow` holds each call for two seconds (Stop and Cancel between the calls).
+/// `-uiTestUltraPaced` paces each call as Gemini's usually go, a think and then its words in steps (Ultra AI's scene round the star, filmed:
+/// `UltraWaitScene`); `-uiTestUltraPacedLong` thinks 20 s more on the check (a long chapter's comet).
 @MainActor
 final class StubUltraClient: UltraModelClient {
+    /// How a paced call goes: how long it thinks, then its words in `steps`, a quarter of a second apart.
+    enum Pace {
+        case usual, long
+
+        func thinking(_ stage: UltraStageRequest.Stage) -> Duration {
+            if stage == .check { return self == .long ? .seconds(22) : .seconds(3) }
+            return .seconds(2.5)
+        }
+    }
+
     let reviewFails: Bool
     let delay: Duration
+    let pace: Pace?
     /// What was asked, in order: what the tests read back.
     private(set) var requests: [UltraStageRequest] = []
 
-    init(reviewFails: Bool = false, delay: Duration = .zero) {
+    init(reviewFails: Bool = false, delay: Duration = .zero, pace: Pace? = nil) {
         self.reviewFails = reviewFails
         self.delay = delay
+        self.pace = pace
     }
+
+    /// The words a paced call reports in steps: the draft as long as a vertical script (220 words), the others the draft's.
+    static let pacedDraftWords = 220
 
     static let draftText = "Ultra draft paragraph one, with a reason and an example.\n\nUltra draft paragraph two, with the consequence."
     static let scriptText = "Ultra polished opening, with a reason and an example.\n\nUltra polished closing, with the consequence that follows."
@@ -28,6 +45,15 @@ final class StubUltraClient: UltraModelClient {
     func generate(_ request: UltraStageRequest, progress: @escaping @MainActor (Int) -> Void) async throws -> UltraModelReply {
         requests.append(request)
         if delay > .zero { try await Task.sleep(for: delay) }
+        if let pace {
+            try await Task.sleep(for: pace.thinking(request.stage))
+            let words = request.stage == .draft ? Self.pacedDraftWords : ReadTime.wordCount(in: Self.draftText)
+            let steps = 20
+            for step in 1...steps {
+                try await Task.sleep(for: .milliseconds(250))
+                progress(words * step / steps)
+            }
+        }
         switch request.stage {
         case .draft:
             progress(ReadTime.wordCount(in: Self.draftText))

@@ -18,6 +18,8 @@ nonisolated enum DefaultsKey {
     /// The Selfie reading line's first-time tip was dismissed. The tip is gone; removed at launch.
     static let legacyReadingLineTipSeen = "readingLineTipSeen"
     static let creatorProfile = "creatorProfile"
+    /// Who writes the Scripts dock's next idea (`ScriptEngine` raw value): the creator's last pick on the writer chip; absent = Apple Intelligence.
+    static let dockWriter = "dockWriter"
     /// The card's suggested ideas written by the model and not yet shown, and the titles of the ones that were (`IdeaSuggestionService`).
     static let ideaSuggestions = "ideaSuggestions"
     /// The library has held a script at least once (`LibraryHistory`): an empty Scripts is then the returning state, not the first-use one.

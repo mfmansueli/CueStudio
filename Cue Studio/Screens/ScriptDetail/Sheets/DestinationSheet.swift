@@ -12,6 +12,8 @@ struct DestinationSheet: View {
 
     @Environment(CreatorProfileService.self) private var profile
     @Environment(PlatformRulesService.self) private var rules
+    /// Each network's logo beside its name (`Platform.logo`).
+    @ScaledMetric(relativeTo: .body) private var logoSide = 20.0
 
     var body: some View {
         @Bindable var profile = profile
@@ -55,7 +57,10 @@ struct DestinationSheet: View {
     private func row(_ platform: Platform) -> some View {
         Button { onPick(platform) } label: {
             HStack(spacing: 12) {
-                ColorDot(color: platform.tint, size: 10)
+                platform.logo
+                    .resizable().scaledToFit()
+                    .frame(width: logoSide, height: logoSide)
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     Text(platform.destinationName).cueFont(.body, weight: .semibold)
                     Text(rules.preset(for: platform, monetizationGoals: profile.profile.monetizationGoals).summary)

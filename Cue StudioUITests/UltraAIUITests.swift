@@ -212,6 +212,54 @@ final class UltraAIUITests: XCTestCase {
         try shot(app, "ultra_08_settings-privacy")
     }
 
+    /// Settings › Privacy › Ultra AI · Lab opens on its counts, and gives the free scripts back (it was a black screen until 29/10/2026: the
+    /// lab was made when an empty view appeared, which never happens).
+    func testTheLabOpensAndGivesTheFreeScriptsBack() {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed", "-uiTestUltraScriptsLeft", "0"])
+        let settings = app.cueTabBar.buttons["Settings"]
+        XCTAssertTrue(settings.exists(within: 10))
+        settings.tap()
+        let privacy = element(app, "settings.privacy")
+        app.scroll(to: privacy)
+        privacy.tap()
+        let lab = element(app, "privacy.ultraLab")
+        app.scroll(to: lab)
+        lab.tap()
+        let giveBack = element(app, "ultraLab.resetAllowance")
+        app.scroll(to: giveBack)
+        XCTAssertTrue(app.staticTexts["Ultra AI · 0 of 5 free left"].exists(within: 5))
+        giveBack.tap()
+        XCTAssertTrue(app.staticTexts["Ultra AI · 5 of 5 free left"].exists(within: 5))
+    }
+
+    /// Ultra AI's scene round the star, in pictures through a whole run (`TEST_RUNNER_CUE_FIDELITY_DIR=<folder>`): the stub paced as Gemini's
+    /// go with a long check (`-uiTestUltraPacedLong`: 22 s of thinking with no words, when the galaxy must keep turning, and a comet), real
+    /// animations, a picture every 1.2 s until the page is there; the words under the scene for `tools/contrast/audit.py`.
+    func testCaptureTheUltraWaitScene() throws {
+        guard let path = ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"] else { throw XCTSkip("Set TEST_RUNNER_CUE_FIDELITY_DIR to capture") }
+        let folder = URL(fileURLWithPath: path, isDirectory: true)
+        try FileManager.default.createDirectory(at: folder, withIntermediateDirectories: true)
+        let app = CueApp.launch(
+            seeded: true, animations: true, extraArguments: ["-uiTestUltra", "-uiTestUltraAllowed", "-uiTestStarTransition", "-uiTestUltraPacedLong"]
+        )
+        pickUltra(app)
+        let field = element(app, "ideaCard.field")
+        XCTAssertTrue(field.exists(within: 5))
+        field.tap()
+        field.typeText("Why I stopped buying bottled water")
+        app.buttons["ideaCard.submit"].tap()
+        XCTAssertTrue(text(app, containing: "Drafting with Ultra AI").exists(within: 5))
+        try app.debugDescription.write(to: folder.appending(path: "ultra_wait.txt"), atomically: true, encoding: .utf8)
+        let started = Date()
+        var shot = 0
+        while Date().timeIntervalSince(started) < 60, !element(app, "page.editor").exists {
+            try app.screenshot().pngRepresentation.write(to: folder.appending(path: String(format: "ultra_wait_%02d.png", shot)))
+            shot += 1
+            Thread.sleep(forTimeInterval: 1.2)
+        }
+        XCTAssertTrue(element(app, "page.editor").exists(within: 10), "No page after the scene")
+    }
+
     /// The invitation and what follows the free scripts, for the same audit: the dock's line, Find inspiration's card, the Profile's plan card
     /// with Ultra AI's line, My Cue Voice's card, the regular Pro with Ultra AI's line, and the calm Pro once the free scripts are used up.
     func testCaptureUltraAIInvitationForTheContrastAudit() throws {

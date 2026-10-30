@@ -24,12 +24,17 @@ struct UltraStarHop: View {
         let violet = Palette.aiText
         let from = from
         let to = to
+        // Its glow is a gradient behind it: an animated shadow is drawn off screen each frame.
         return Text(verbatim: "✦")
             .font(.fixed(14, weight: .bold))
             .foregroundStyle(Palette.aiTextStrong)
             .keyframeAnimator(initialValue: Flight(), trigger: trigger) { star, flight in
                 star
-                    .shadow(color: violet.opacity(flight.glow), radius: 9 * flight.glow)
+                    .background {
+                        Circle()
+                            .fill(RadialGradient(colors: [violet.opacity(0.6 * flight.glow), .clear], center: .center, startRadius: 0, endRadius: 18))
+                            .frame(width: 36, height: 36)
+                    }
                     .scaleEffect(flight.scale)
                     .opacity(flight.opacity)
                     .position(Self.point(from: from, to: to, at: flight.progress))
