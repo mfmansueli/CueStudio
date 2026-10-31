@@ -2947,8 +2947,9 @@ as 15 ideias da comparação de 29/10 escritas pelas quatro versões no iPhone; 
 **USD 0,055** por roteiro e 30 s, médio 0,055 (não economiza), **baixo 0,025** (−55%, 20 s), misto 0,037 (−33%, 18 s); a checagem com raciocínio
 baixo achou 0,8 correção por roteiro contra 2,4. Dois juízes de IA às cegas (30 pares cada, sementes 29 e 31): hoje contra baixo 6–9 e 7–8, hoje
 contra misto 9–6 e 9–6, notas praticamente iguais (precisão 3,7 a 3,9 de 5 nos três). **O dono, às cegas, nos 9 roteiros em português
-(`quality-c1-verdicts-owner.json`), escolheu a versão de hoje em 6** (5 dos 6 assuntos técnicos), a baixa em 2 (uma delas onde a de hoje veio com
-os acentos estragados) e a mista em 1: os juízes de IA não viram a perda que o dono viu, e o padrão continua `.model`. Na mesma rodada, 19 chamadas voltaram recusadas pelo Google (429, sem
+(`quality-c1-verdicts-owner.json`; 1 a 5 na página de avaliação, 6 a 9 no chat):** a de hoje em 3, a **mista em 3**, a baixa em 1 (onde a de
+hoje veio com os acentos estragados) e 2 empates (num deles, a de hoje foi a que menos agradou: "um pouco engessado"); a baixa "refinaria".
+A mista empata com a de hoje para o dono, a 33% menos e 40% mais rápida; o padrão continua `.model` até o dono decidir. Na mesma rodada, 19 chamadas voltaram recusadas pelo Google (429, sem
 capacidade no momento; repetidas, passaram) e o polimento devolveu duas vezes o português estragado (sem acentos, ou "D%a" no lugar de "Dá"),
 uma delas na versão de hoje.
 
