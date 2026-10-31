@@ -2186,7 +2186,9 @@ muda, Desfazer ao excluir, estilo padrão, nem "voltar ao estilo"; nenhum mostra
   aa, com o idioma da linha: turco "İ" e "ı"), Text color e, com a palavra dita acesa, Highlight color ao lado (também em Animation; um aviso quando é a
   cor das outras palavras e o destaque não apareceria), Background (None, Box, Lines, Band, Pill, com cor e opacidade de 30 a 100%), Outline (None,
   Thin, Thick, com cor), Shadow (None, Soft, Halo, Glow); Emphasis color e Emphasis size quando há palavra marcada (senão, onde marcar); Advanced: Letter
-  spacing. Cada cor volta à do estilo por "Style's". **Back to <estilo>'s look** desfaz todas as mudanças de uma vez.
+  spacing. Cada cor volta à do estilo por "Style's". **Back to <estilo>'s look** (em Adjust e em Animation) põe o estilo de volta inteiro, como o
+  cartão dele mostra, num Desfazer: fonte, mudanças, cor do destaque e movimento; tamanho, posição, largura, alinhamento e formato ficam. Mudar a cor do
+  destaque ou o movimento conta como mudança do look ("This video" no lugar do cartão), como mudar a fonte.
 - **Ênfase por palavra** (`CaptionCue.emphasis`, os índices das palavras; gravado só quando há): Caption › More › **Emphasis** (as palavras em chips, um
   toque marca, um Desfazer cada; mais de duas na linha, uma nota) e Select › Emphasis (todas as palavras das linhas escolhidas). Fica na cor e no tamanho
   de ênfase do estilo (1 · 1,15 · 1,3) enquanto a linha aparece, ao contrário da palavra dita; entra na medição e no corte das linhas

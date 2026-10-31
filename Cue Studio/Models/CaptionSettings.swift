@@ -77,9 +77,15 @@ nonisolated struct CaptionSettings: Codable, Hashable, Sendable {
         min(max(sizeScale.isFinite ? sizeScale : 1, Self.sizeRange.lowerBound), Self.sizeRange.upperBound)
     }
 
-    /// How many parts of the look the creator changed over the style (the family, the highlight color and Adjust's).
+    /// How many parts of the look the creator changed over the style: the family, the highlight color, how it moves and
+    /// Adjust's. Zero: the style as its card shows it.
     var changedLookCount: Int {
-        (face == nil ? 0 : 1) + (adjustments?.changedCount ?? 0)
+        (face == nil ? 0 : 1) + (accent == nil ? 0 : 1) + (movesItsOwnWay ? 1 : 0) + (adjustments?.changedCount ?? 0)
+    }
+
+    /// Moves otherwise than its style (Caption style › Animation). An edit from before motion (nil) plays as it always did.
+    var movesItsOwnWay: Bool {
+        motion.map { $0 != styleSpec.motion } ?? false
     }
 
     /// The same captions shown whole, never word by word (a translation's words aren't timed to the voice): they still come

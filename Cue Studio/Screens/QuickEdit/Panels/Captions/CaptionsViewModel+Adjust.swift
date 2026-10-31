@@ -8,7 +8,8 @@ import Foundation
 /// Caption style › Adjust: the same controls over any look (one of Cue's styles, a saved one, a text's look copied onto the
 /// captions): family, weight, case, text color, background, outline, shadow, letter spacing and how the marked words stand
 /// out. Each change is one undo step (a slider's drag is one), kept over the style until another style is picked or "Back to
-/// the style's look". A look copied by an earlier version turns into changes over its style at the first one.
+/// the style's look" brings the style back whole (with its highlight color and motion). A look copied by an earlier version
+/// turns into changes over its style at the first one.
 extension CaptionsViewModel {
     /// What Adjust shows: the look the captions draw with now (copied looks read as their changes).
     var captionAdjustSettings: CaptionSettings? {
@@ -53,8 +54,9 @@ extension CaptionsViewModel {
         checkCaptionContrast()
     }
 
-    /// "Back to <style>'s look": the family and every change over the style go (one undo step); how it moves, where it sits
-    /// and the highlight color stay.
+    /// "Back to <style>'s look" (Adjust and Animation): the style whole again, as its card shows it, in one undo step. The
+    /// family, every change over it, the highlight color and how it moves go; where it sits, how big, how wide and how it is
+    /// cut stay (Format).
     func resetCaptionLook() {
         guard isReady, changedCaptionLookCount > 0 else { return }
         let aspect = edit.aspect
@@ -63,9 +65,17 @@ extension CaptionsViewModel {
             var next = before.withoutCopiedLook
             next.face = nil
             next.adjustments = nil
+            next.accent = nil
+            if next.movesItsOwnWay {
+                let style = next.styleSpec
+                next.motion = style.motion
+                next.followsWords = style.motion?.followsWords ?? style.animation.followsWords
+                snapshot.captionAnimation = style.motion?.nearestAnimation ?? style.animation
+            }
             snapshot.captionCollection = next
             Self.refit(&snapshot, from: before, aspect: aspect)
         }
+        previewCurrentCaptionLine()
         checkCaptionContrast()
     }
 

@@ -6,8 +6,8 @@
 import SwiftUI
 
 /// Caption style › Animation, three choices apart: how the captions come in and go out, whether they show whole or word by
-/// word, and how the word being said stands out (with its color). Tapping one plays the current line with it. Captions from
-/// before the collection keep the one list of reveals they had.
+/// word, and how the word being said stands out (with its color). Tapping one plays the current line with it; "Back to
+/// <style>'s look" brings the style back whole. Captions from before the collection keep the one list of reveals they had.
 struct CaptionAnimationTab: View {
     @Bindable var viewModel: QuickEditViewModel
 
@@ -55,6 +55,13 @@ struct CaptionAnimationTab: View {
                 PanelNote(text: String(localized: "\(captions.linesWithoutWordTiming) lines follow the voice approximately."))
             }
             PanelNote(text: String(localized: "Tap a choice to preview it on the current line."))
+            // The way back to the style whole is here too: a motion changed here makes the captions this video's own look.
+            if captions.changedCaptionLookCount > 0, let theme = viewModel.edit.captionCollection?.theme {
+                PanelButton(
+                    label: String(localized: "Back to \(theme.label)'s look"), systemImage: "arrow.uturn.backward",
+                    identifier: "edit.captionAnimation.reset", action: captions.resetCaptionLook
+                )
+            }
         } else {
             PanelTiles(
                 options: [
