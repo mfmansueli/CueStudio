@@ -157,6 +157,31 @@ final class SettingsUITests: XCTestCase {
         app.buttons["display.doneButton"].tap()
     }
 
+    /// The speed keeps the width of its widest value, so "0,2×" and "2×" leave its title and second line exactly where they were (a
+    /// "1.1×" squeezed them on the owner's 18 Pro Max, 30/10/2026). Portuguese at the largest text size, where the second line has the
+    /// least room.
+    func testSpeedValueNeverSqueezesItsTitle() {
+        let app = CueApp.launch(seeded: true, appLanguage: "pt", contentSize: "UICTContentSizeCategoryXXXL")
+        let record = app.buttons["row.recordButton"].firstMatch
+        XCTAssertTrue(record.exists(within: 10))
+        record.tap()
+        let display = app.buttons["prompter.displayButton"]
+        XCTAssertTrue(display.exists(within: 10))
+        display.tap()
+        let speed = app.sliders["settings.speed"]
+        XCTAssertTrue(speed.exists(within: 5))
+        let title = app.staticTexts["Velocidade"].firstMatch
+        let detail = app.staticTexts["Usada quando o Cue não está acompanhando você"].firstMatch
+        XCTAssertTrue(detail.exists)
+        speed.adjust(toNormalizedSliderPosition: 1)
+        XCTAssertEqual(speed.value as? String, "2×")
+        let frames = [title.frame, detail.frame]
+        speed.adjust(toNormalizedSliderPosition: 0)
+        XCTAssertEqual(speed.value as? String, "0,2×")
+        XCTAssertEqual([title.frame, detail.frame], frames)
+        capture(app, name: "Settings · Speed · pt · XXXL")
+    }
+
     func testLongTranslationsKeepAllFiveTabsVisible() {
         let locales = [
             ("de", ["Skripte", "Takes", "Aufnehmen", "Profil", "Einstellungen"]),

@@ -10,6 +10,8 @@ import SwiftUI
 struct LabeledSlider: View {
     let label: String
     let valueText: String
+    /// The values whose width differs ("1×", "1.1×"): the value keeps the widest one's width (`SteadyValueText`).
+    var valueSamples: [String] = []
     var spokenValue: String?
     @Binding var value: Double
     let range: ClosedRange<Double>
@@ -24,7 +26,7 @@ struct LabeledSlider: View {
                     .textCase(.uppercase)
                     .foregroundStyle(Palette.ink2)
                 Spacer(minLength: 8)
-                Text(valueText)
+                SteadyValueText(text: valueText, samples: valueSamples)
                     .monospacedDigit()
                     .foregroundStyle(Palette.ink)
             }

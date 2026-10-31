@@ -64,6 +64,7 @@ struct DisplaySettingsControls: View {
                 ValueSlider(
                     title: String(localized: "Background opacity"),
                     valueText: settings.backgroundOpacity.formatted(.percent.precision(.fractionLength(0)).locale(.interface)),
+                    valueSamples: [PrompterSettings.backgroundOpacityRange.upperBound.formatted(.percent.precision(.fractionLength(0)).locale(.interface))],
                     value: $settings.backgroundOpacity,
                     range: PrompterSettings.backgroundOpacityRange, step: 0.05,
                     identifier: "display.backgroundOpacity"
@@ -72,6 +73,7 @@ struct DisplaySettingsControls: View {
                 ValueSlider(
                     title: String(localized: "Camera blur"),
                     valueText: settings.cameraBlurLabel,
+                    valueSamples: CameraBlurLevel.allCases.map(\.label),
                     value: $settings.cameraBlur,
                     range: PrompterSettings.cameraBlurRange
                 )
@@ -143,6 +145,7 @@ struct DisplaySettingsControls: View {
             ValueSlider(
                 title: String(localized: "Side margins"),
                 valueText: String(localized: "\(Int(settings.margin)) pt"),
+                valueSamples: [String(localized: "\(Int(PrompterSettings.marginRange.upperBound)) pt")],
                 value: $settings.margin,
                 range: PrompterSettings.marginRange, step: 2
             )

@@ -139,7 +139,8 @@ struct RemoteControllerView: View {
             HStack(spacing: 16) {
                 commandButton(.slower, systemImage: "minus", variant: .surface, diameter: 56)
                 VStack(spacing: 2) {
-                    Text(status?.speedLabel ?? "…")
+                    // As wide as its widest stop, so − and + never move under the thumb while the speed changes.
+                    SteadyValueText(text: status?.speedLabel ?? "…", samples: SpeedScale.stops.map(SpeedScale.label(forMultiple:)), alignment: .center)
                         .cueFont(.title2, weight: .bold).monospacedDigit()
                     Text("Speed")
                         .cueFont(.caption)

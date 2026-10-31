@@ -30,6 +30,8 @@ struct CueSlider: View {
     let label: String
     /// The value, always written ("140 wpm", "Large", "64 pt").
     let valueText: String
+    /// The values whose width differs ("5%", "200%"): the value keeps the widest one's width while dragging (`SteadyValueText`).
+    var valueSamples: [String] = []
     /// What VoiceOver says for the value, when it differs ("140 words per minute").
     var spokenValue: String?
     var systemIcon: CueIcon?
@@ -156,12 +158,12 @@ struct CueSlider: View {
             VStack(alignment: .trailing, spacing: 1) {
                 Group {
                     if style == .compact {
-                        Text(valueText)
+                        SteadyValueText(text: valueText, samples: valueSamples)
                             .hudFont()
                             .dynamicTypeSize(...DynamicTypeSize.accessibility1)
                             .foregroundStyle(isHeld ? Palette.ink : Palette.accText)
                     } else {
-                        Text(valueText)
+                        SteadyValueText(text: valueText, samples: valueSamples)
                             .cueFont(.subheadline, weight: .semibold)
                             .monospacedDigit()
                             .foregroundStyle(Palette.ink)
