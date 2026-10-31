@@ -8,8 +8,8 @@ import UIKit
 
 /// 9.2 · Your universe, one per year: the live year grows with every video shared, the years before it are sealed. The core in the middle, the
 /// platforms as planets that grow with the videos, a dot for every video, the themes, the next milestone (or the year's card), "Your {year} in review"
-/// and one yellow button, under the system's large title. The year selector is in the bar; a swipe on the map changes year too. Built from
-/// what is on this iPhone.
+/// and one yellow button, under the system's large title. The year selector (‹ year ›) is in the bar; the map has no swipe of its own, so the
+/// back swipe works from anywhere. Built from what is on this iPhone.
 struct YourUniverseView: View {
     @Environment(MilestoneService.self) private var milestones
     @Environment(TakeLibraryService.self) private var takes
@@ -128,7 +128,6 @@ struct YourUniverseView: View {
         )
         .id(content.selectedYear)
         .frame(maxWidth: .infinity)
-        .simultaneousGesture(DragGesture(minimumDistance: 40).onEnded { value in swipe(value.translation, content) })
         .transition(.opacity)
     }
 
@@ -219,14 +218,6 @@ struct YourUniverseView: View {
     private func openTake(_ id: UUID) {
         guard let take = takes.takes.first(where: { $0.id == id }) else { return }
         presentation.openReview(of: take)
-    }
-
-    /// A swipe on the map goes to the year after or before.
-    private func swipe(_ translation: CGSize, _ content: UniverseContent) {
-        guard abs(translation.width) > abs(translation.height) * 1.5, let index = content.years.firstIndex(of: content.selectedYear) else { return }
-        let target = translation.width < 0 ? index + 1 : index - 1
-        guard content.years.indices.contains(target) else { return }
-        withAnimation(.easeInOut(duration: 0.25)) { chosenYear = content.years[target] }
     }
 
     /// The planets grow from what they had when this was last open; a detail they win gets a soft tap.

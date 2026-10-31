@@ -189,7 +189,6 @@ final class HandoffCaptureTests: XCTestCase {
             XCTAssertTrue(element(app, "universe.screen").exists(within: 5))
             return app
         }
-        let year = Calendar.current.component(.year, from: .now)
         let live = open("sample")
         try shot(live, "9.2_live", wait: 2)
         element(live, "universe.planet.tiktok").tap()
@@ -198,9 +197,9 @@ final class HandoffCaptureTests: XCTestCase {
         // The first tap only closes the popover.
         live.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
         sleep(1)
-        element(live, "universe.year.\(year - 1)").tap()
+        element(live, "universe.year.previous").tap()
         try shot(live, "9.2_sealed", wait: 2)
-        element(live, "universe.year.\(year)").tap()
+        element(live, "universe.year.next").tap()
         element(live, "universe.share").tap()
         XCTAssertTrue(element(live, "universeShare.kind").exists(within: 5))
         try shot(live, "9.2_share-sheet", wait: 3)

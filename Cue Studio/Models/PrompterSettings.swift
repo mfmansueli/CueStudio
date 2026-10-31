@@ -61,6 +61,9 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     /// Voice Following unless the creator picked Steady (the owner, 30/10/2026: it is what Cue is for). A session that can't follow the voice
     /// (no microphone, a language this iPhone can't recognize) reads Steady for itself and keeps this as it is (`PrompterViewModel`).
     var scrollMode: ScrollMode = .voice
+    /// Which rule saved `scrollMode`. Settings saved before Voice Following became everyone's default (no revision) open on Voice Following
+    /// once, even if they said Steady (the owner, 31/10/2026); written again, they carry today's revision, so a Steady picked from now on stays.
+    private(set) var scrollModeRevision: Int = PrompterSettings.voiceForEveryoneRevision
     var studioBackground: StudioBackground = .black
     /// AI Coach: performance cues like PAUSE or SMILE in the prompter. Off until the creator turns
     /// it on.
@@ -136,6 +139,9 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
     /// What 1.0× read before the calibration was saved with the settings.
     private static let legacyWordsPerMinute: Double = 150
 
+    /// The `scrollModeRevision` from which a saved Steady is the creator's choice.
+    static let voiceForEveryoneRevision = 1
+
     /// Every field is optional so settings saved by older builds keep what they can: a new field
     /// never resets the creator's font, size or speed.
     init(from decoder: Decoder) throws {
@@ -161,7 +167,9 @@ nonisolated struct PrompterSettings: Codable, Hashable, Sendable {
         isMirrored = try container.decodeIfPresent(Bool.self, forKey: .isMirrored) ?? defaults.isMirrored
         isFlippedVertically = try container.decodeIfPresent(Bool.self, forKey: .isFlippedVertically) ?? defaults.isFlippedVertically
         safeZoneKey = try container.decodeIfPresent(String.self, forKey: .safeZoneKey)
-        scrollMode = (try? container.decodeIfPresent(ScrollMode.self, forKey: .scrollMode)) ?? defaults.scrollMode
+        let savedMode = (try? container.decodeIfPresent(ScrollMode.self, forKey: .scrollMode)) ?? defaults.scrollMode
+        let savedRevision = (try? container.decodeIfPresent(Int.self, forKey: .scrollModeRevision)) ?? 0
+        scrollMode = savedRevision < Self.voiceForEveryoneRevision ? defaults.scrollMode : savedMode
         studioBackground = (try? container.decodeIfPresent(StudioBackground.self, forKey: .studioBackground)) ?? defaults.studioBackground
         showsCues = try container.decodeIfPresent(Bool.self, forKey: .showsCues) ?? defaults.showsCues
         customSafeZone = (try? container.decodeIfPresent(SafeZoneMargins.self, forKey: .customSafeZone)) ?? defaults.customSafeZone
