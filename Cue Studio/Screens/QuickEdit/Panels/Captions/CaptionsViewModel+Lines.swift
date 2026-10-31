@@ -495,7 +495,8 @@ extension CaptionsViewModel {
         let before = Set(edit.captions.map(\.id))
         splitCaption(id, beforeWord: index)
         if let second = edit.captions.first(where: { !before.contains($0.id) }) { selection = .caption(second.id) }
-        sayUndoable(String(localized: "Line split"))
+        // The preview and the list show it: no toast (the player bar's Undo takes it back).
+        announce(String(localized: "Line split"))
     }
 
     /// Caption line › Word timing: where word `index` ends and the next one starts (seconds of the recording), never closer than
@@ -546,7 +547,7 @@ extension CaptionsViewModel {
             broken.keepsBlock = true
             return broken
         }
-        sayUndoable(String(localized: "Line break added"))
+        announce(String(localized: "Line break added"))
     }
 
     /// Caption › Join next.
@@ -556,7 +557,7 @@ extension CaptionsViewModel {
             return
         }
         mergeCaptionWithNext(id)
-        sayUndoable(String(localized: "Joined with next line"))
+        announce(String(localized: "Joined with next line"))
     }
 
     /// Caption › Delete.

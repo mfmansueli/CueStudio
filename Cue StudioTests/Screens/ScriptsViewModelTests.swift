@@ -52,6 +52,24 @@ struct ScriptsViewModelTests {
         #expect(viewModel.selection.isEmpty, "Done lets every script go")
     }
 
+    /// Select all beside Delete picks every script the chip shows (not the others), and a second tap lets them all go.
+    @Test func selectAllPicksWhatIsShownAndASecondTapLetsItGo() {
+        let a = TestData.script(title: "A", platform: .tiktok), b = TestData.script(title: "B", platform: .tiktok)
+        let reel = TestData.script(title: "C", platform: .reels)
+        let (viewModel, _, _) = makeViewModel(scripts: [a, b, reel])
+        viewModel.toggleSelecting()
+        viewModel.filter = .platform(.tiktok)
+        #expect(!viewModel.selectsAllShown)
+        viewModel.toggleSelectAll()
+        #expect(viewModel.selection == [a.id, b.id])
+        #expect(viewModel.selectsAllShown)
+        viewModel.toggleSelectAll()
+        #expect(viewModel.selection.isEmpty)
+        viewModel.toggleSelection(of: a.id)
+        viewModel.toggleSelectAll()
+        #expect(viewModel.selection == [a.id, b.id], "one already picked: the rest are added")
+    }
+
     @Test func newFolderWithScriptsMovesThem() {
         let script = TestData.script()
         let (viewModel, library, toast) = makeViewModel(scripts: [script])

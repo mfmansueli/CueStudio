@@ -6,14 +6,18 @@
 import Foundation
 
 /// The first flight: where the creator is in it, what they picked and whether it is over. It is shown
-/// once, on a fresh install; a creator who already has scripts, takes or a profile never sees it.
+/// once, on a fresh install; a creator who already has scripts, takes or a profile never sees it. From the moment 1.4 keeps its script
+/// (the flight's first content), the chapter is kept: a flight left there (the app closed at the permissions or the practice) comes back
+/// where it was, never skipped for the content it made itself (owner, 30/10/2026). It has no Skip.
 @MainActor
 @Observable
 final class OnboardingService {
     private(set) var isCompleted: Bool
     /// The library has been looked at: until then nothing shows (an upgrading creator would see a flash).
     private(set) var isResolved = false
-    var step: OnboardingStep = .welcome
+    var step: OnboardingStep = .welcome {
+        didSet { keepStep() }
+    }
     private(set) var topics: [OnboardingTopic] = []
     var platform: Platform = .tiktok
     /// The first take played its "first star": it is told once.
@@ -26,17 +30,32 @@ final class OnboardingService {
     init(defaults: UserDefaults = .standard, isEnabled: Bool = true, startStep: OnboardingStep? = nil) {
         self.defaults = defaults
         self.isEnabled = isEnabled
-        step = startStep ?? .welcome
         isCompleted = !isEnabled || defaults.bool(forKey: DefaultsKey.onboardingCompleted)
         firstStarShown = defaults.bool(forKey: DefaultsKey.firstStarShown)
+        step = startStep ?? Self.keptStep(in: defaults) ?? .welcome
+    }
+
+    /// The chapter a flight was left on, once it had made its script.
+    private static func keptStep(in defaults: UserDefaults) -> OnboardingStep? {
+        guard defaults.object(forKey: DefaultsKey.onboardingStep) != nil else { return nil }
+        return OnboardingStep(rawValue: defaults.integer(forKey: DefaultsKey.onboardingStep))
+    }
+
+    /// The flight is under way past 1.4: its script and choices are already in the app.
+    var isMidFlight: Bool { !isCompleted && step.rawValue > OnboardingStep.script.rawValue }
+
+    private func keepStep() {
+        guard isEnabled, !isCompleted, step.rawValue > OnboardingStep.script.rawValue else { return }
+        defaults.set(step.rawValue, forKey: DefaultsKey.onboardingStep)
     }
 
     /// The flight is on screen: a fresh install, after the library was read.
     var isActive: Bool { isResolved && !isCompleted }
 
-    /// Called once the library is loaded: a creator who already uses Cue skips the story.
+    /// Called once the library is loaded: a creator who already uses Cue skips the story; a flight left after 1.4 goes on (what is in the
+    /// library is its own).
     func resolve(hasExistingContent: Bool) {
-        if isEnabled, !isCompleted, hasExistingContent {
+        if isEnabled, !isCompleted, !isMidFlight, hasExistingContent {
             markCompleted()
             markFirstStarShown()
         }
@@ -96,5 +115,6 @@ final class OnboardingService {
     private func markCompleted() {
         isCompleted = true
         defaults.set(true, forKey: DefaultsKey.onboardingCompleted)
+        defaults.removeObject(forKey: DefaultsKey.onboardingStep)
     }
 }

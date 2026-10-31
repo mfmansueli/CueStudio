@@ -6,9 +6,10 @@
 import Foundation
 
 /// Introducing tools in the app: after a discovery notification is opened, for a notification that arrived while the creator was busy, or
-/// (with "Discover tools and ideas" on) once after a session at the teleprompter. One a session at most, never on a My Cue Voice tip's day,
-/// one a week across notifications and the app, a tool at most twice in 90 days and 30 days apart, never again once used or declined.
-/// "Try it" opens the tool; nothing runs until the creator uses it there.
+/// once after a session at the teleprompter. The introductions in the app don't depend on the "Tools and news" notifications (owner,
+/// 30/10/2026): that switch is about what arrives outside Cue. One a session at most, never on a My Cue Voice tip's day, one a week across
+/// notifications and the app, a tool at most twice in 90 days and 30 days apart, never again once used. "Don't suggest this" hides the
+/// tool until Settings › Personalize › Hidden suggestions brings it back. "Try it" opens the tool; nothing runs until the creator uses it.
 extension NotificationService {
     /// A tool was put in front of the creator today (a discovery notification whose time passed, or an introduction in the app): the My Cue
     /// Voice tip waits for another day.
@@ -32,17 +33,21 @@ extension NotificationService {
     /// The introduction for a quiet moment, or nil. `afterSession`: the creator just left the teleprompter (the moment a tool for the next
     /// video fits, and the only one Remote Control is introduced at).
     func inAppIntro(afterSession: Bool) async -> FeatureIntroRequest? {
-        guard isOn(.discovery), introsThisSession == 0, !isForegroundBusy() else { return nil }
+        guard introsThisSession == 0, !isForegroundBusy() else { return nil }
         let moment = now()
         let calendar = calendar()
         guard !tipDays().contains(where: { calendar.isDate($0, inSameDayAs: moment) }) else { return nil }
         let deferred = state.deferredIntro
-        guard deferred != nil || afterSession else { return nil }
+        guard deferred != nil || (afterSession && sessionIntrosEnabled) else { return nil }
         let facts = await factsSource.facts(now: moment, events: usedFeatures, capabilities: true)
         let offers = DiscoveryRules.offers(facts: facts, state: state, channel: .inApp).offers
         if let deferred {
-            mutate { $0.deferredIntro = nil }
-            guard let offer = offers.first(where: { $0.intro.feature == deferred }) else { return nil }
+            // Kept until it is on screen (`introShown`): a sheet in the way only puts it off to the next quiet moment. One that no longer
+            // fits (used, declined, its project gone) goes.
+            guard let offer = offers.first(where: { $0.intro.feature == deferred }) else {
+                mutate { $0.deferredIntro = nil }
+                return nil
+            }
             return FeatureIntroRequest(
                 feature: deferred, destination: offer.destination, projectKey: offer.projectKey,
                 source: .notification(campaign: "discover.\(deferred.rawValue)")
@@ -67,6 +72,7 @@ extension NotificationService {
     /// It is on screen. An in-app one counts as the tool's exposure (a notification's counted when its time passed).
     func introShown(_ request: FeatureIntroRequest) {
         introsThisSession += 1
+        if state.deferredIntro == request.feature { mutate { $0.deferredIntro = nil } }
         guard request.source == .inApp else { return }
         mutate { $0.exposures.append(FeatureExposure(feature: request.feature, date: now(), kind: .inApp)) }
         measure(.eligible, campaign: request.campaignName, category: .discovery)
@@ -90,12 +96,26 @@ extension NotificationService {
         setNeedsReconcile()
     }
 
-    /// "Don't suggest this": never again.
+    /// "Don't suggest this": hidden, until Settings › Personalize brings it back (`suggestAgain`).
     func introDeclined(_ request: FeatureIntroRequest) {
         mutate { state in
             if !state.notInterested.contains(request.feature.rawValue) { state.notInterested.append(request.feature.rawValue) }
         }
         measure(.optedOut, campaign: request.campaignName, category: .discovery)
+        setNeedsReconcile()
+    }
+
+    // MARK: - Hidden suggestions
+
+    /// The tools hidden with "Don't suggest this", in the order they were hidden (Settings › Personalize lists them).
+    var hiddenFeatures: [FeatureID] { state.notInterested.compactMap(FeatureID.init(rawValue:)) }
+
+    /// "Show again" in Settings › Personalize: the tool may be introduced again (its own limits still apply).
+    func suggestAgain(_ feature: FeatureID) {
+        mutate { state in
+            state.notInterested.removeAll { $0 == feature.rawValue }
+            state.snoozedFeatures[feature.rawValue] = nil
+        }
         setNeedsReconcile()
     }
 }

@@ -31,6 +31,9 @@ final class VoiceQuestionScheduler {
     /// Debug: every gate but the queue is open (`-uiTestVoiceTip`).
     private let skipsGates: Bool
     private(set) var state: VoiceQuestionState
+    /// Goes up with each "Delete my Cue data", and is part of every tip's id: TipKit's own store outlives the erase, and a tip it had
+    /// invalidated would come back invisible yet still use up the day (D1).
+    private(set) var tipGeneration: Int
     /// A tool was introduced today (a discovery notification or the app's introduction): the tip waits for another day, so the creator never
     /// gets both on one day (`NotificationService.introducedToday`).
     @ObservationIgnored var otherIntroductionToday: () -> Bool = { false }
@@ -52,6 +55,7 @@ final class VoiceQuestionScheduler {
         } else {
             state = VoiceQuestionState()
         }
+        tipGeneration = defaults.integer(forKey: DefaultsKey.voiceTipGeneration)
     }
 
     // MARK: - The queue
@@ -134,7 +138,18 @@ final class VoiceQuestionScheduler {
         save()
     }
 
-    /// A tip went on screen: it counts toward the day and the week.
+    /// The id of `question`'s next tip: this erase's generation and the question's round, so a tip TipKit already spent is never reused.
+    func tipID(for question: VoiceQuestion) -> String {
+        "vq.tip.\(tipGeneration).\(question.rawValue).\(state.tipRounds[question.rawValue, default: 0])"
+    }
+
+    /// TipKit spent `question`'s tip (it was opened or closed): its next one is a new tip.
+    func tipSpent(_ question: VoiceQuestion) {
+        state.tipRounds[question.rawValue, default: 0] += 1
+        save()
+    }
+
+    /// A tip is visible (TipKit says `.available`): only then does it count toward the day and the week.
     func tipShown() {
         let moment = now()
         state.shownDates = state.shownDates.filter { moment.timeIntervalSince($0) < 7 * 24 * 3600 } + [moment]
@@ -184,6 +199,9 @@ final class VoiceQuestionScheduler {
     func reset() {
         state = VoiceQuestionState()
         defaults.removeObject(forKey: DefaultsKey.voiceQuestionState)
+        // TipKit's store keeps the tips it invalidated: the next ones get new ids.
+        tipGeneration += 1
+        defaults.set(tipGeneration, forKey: DefaultsKey.voiceTipGeneration)
     }
 
     // MARK: - Storage

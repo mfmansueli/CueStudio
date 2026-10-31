@@ -478,8 +478,9 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(flow.waits(for: phrase, "the formats"), "No Format in Caption style")
         XCTAssertFalse(phrase.isSelected, "An edit from before formats shows one picked")
         flow.tap(phrase, "Short phrase")
-        XCTAssertTrue(flow.toastSays("Captions format: Short phrase"), "No word that the lines were cut again")
+        // The preview shows the lines cut again: no toast (only VoiceOver hears it), and the player bar's Undo takes it back.
         XCTAssertTrue(phrase.isSelected)
+        XCTAssertFalse(flow.toastSays("Captions format", timeout: 1), "A toast that only restates the preview")
         flow.capture("format-picked")
         flow.tap(app.buttons["edit.panel.apply"], "✓ on Caption style")
 
@@ -493,7 +494,7 @@ final class CreatorWorkflowUITests: XCTestCase {
         XCTAssertTrue(flow.element("edit.captionWordTiming").exists, "No word timing in More")
         flow.capture("line-more")
         flow.tap(breakChip, "Line break")
-        XCTAssertTrue(flow.toastSays("Line break added"), "No word of the line break")
+        XCTAssertFalse(flow.toastSays("Line break added", timeout: 1), "A toast that only restates the preview")
         let field = app.descendants(matching: .any).matching(identifier: "edit.captionField").firstMatch
         XCTAssertTrue((field.value as? String)?.contains("\n") == true, "The line has no break: \(field.value ?? "")")
         flow.report()

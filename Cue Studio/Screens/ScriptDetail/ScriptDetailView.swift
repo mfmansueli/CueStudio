@@ -59,6 +59,9 @@ struct ScriptDetailView: View {
         // and the bar jumped as it did (the owner saw it on Back and on the star's Cancel, 20/10/2026).
         .toolbarVisibility(.hidden, for: .tabBar)
         .task { viewModel.beginWritingIfNeeded() }
+        // A tool's result that arrives once the page is gone names the script it was for (`sayResult`).
+        .onAppear { viewModel.isOnScreen = true }
+        .onDisappear { viewModel.isOnScreen = false }
         .onDisappear(perform: offerReminderInvite)
         .alert("Couldn't draft the script", isPresented: Binding(
             get: { viewModel.page.writingError != nil },
@@ -101,14 +104,28 @@ struct ScriptDetailView: View {
     }
 
     /// Leaving a finished script without recording it: the second invitation to allow notifications (only after a "Not now", 14 days on).
+    /// Only when the creator leaves the page itself (Back, the swipe): switching tabs, the teleprompter or a sheet keep it under them, and
+    /// never bring the invitation over another screen. Looked at again just before it shows: the script still there, still finished,
+    /// still without a take, and Scripts' list in front.
     private func offerReminderInvite() {
-        guard let script = viewModel.script, script.isFinished, takes.takes(for: script.id).isEmpty else { return }
+        guard let script = viewModel.script, isReadyWithoutTake(script.id), leftThePage(script.id) else { return }
+        let scriptID = script.id
         let (notifications, presentation, hasRecorded) = (notifications, presentation, !takes.takes.isEmpty)
         Task {
             guard let reason = await notifications.invite(.readyScript, hasRecorded: hasRecorded),
-                  presentation.sheet == nil, presentation.prompter == nil else { return }
-            presentation.present(.notificationInvite(reason))
+                  presentation.sheet == nil, presentation.prompter == nil, isReadyWithoutTake(scriptID), leftThePage(scriptID) else { return }
+            presentation.present(.notificationInvite(reason, scriptID: scriptID))
         }
+    }
+
+    private func isReadyWithoutTake(_ scriptID: UUID) -> Bool {
+        guard let script = library.script(id: scriptID) else { return false }
+        return script.isFinished && takes.takes(for: scriptID).isEmpty
+    }
+
+    /// The page was popped: Scripts is in front and the page is no longer on its stack.
+    private func leftThePage(_ scriptID: UUID) -> Bool {
+        presentation.selectedTab == .scripts && !presentation.scriptsPath.contains { $0.scriptID == scriptID }
     }
 
     private var actions: ScriptActions {

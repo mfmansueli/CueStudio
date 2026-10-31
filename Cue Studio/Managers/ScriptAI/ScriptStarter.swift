@@ -100,16 +100,14 @@ final class ScriptStarter {
         }
     }
 
-    /// What Ultra would send for the dock's idea as it stands (or a placeholder for it), with the dock's choices and My Cue Voice: the disclosure's
-    /// "What Cue sends" shows the very text the calls carry.
-    /// - Parameters:
-    ///   - idea: an idea from elsewhere (Find inspiration's card), with its `brief`; nil is the dock's own.
-    func ultraPreview(idea: String? = nil, brief: IdeaBrief? = nil) -> UltraPayload {
-        let typed = (idea ?? ideaDraft.submission)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+    /// What Ultra would send for the dock's idea as it stands (or a placeholder for it), with the dock's choices and My Cue Voice: My Cue
+    /// Voice's "What Cue sends" shows the very text the calls carry.
+    func ultraPreview() -> UltraPayload {
+        let typed = ideaDraft.submission?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         let text = typed.isEmpty ? String(localized: "[Your idea, exactly as you type it]") : typed
         var request = factory.request(
             idea: text, platform: ideaDraft.platform, format: ideaDraft.format, length: ideaDraft.length, brand: ideaDraft.brand,
-            brief: brief ?? (idea == nil ? ideaDraft.brief : nil), languageText: nil, formatChoice: ideaDraft.formatChoice
+            brief: ideaDraft.brief, languageText: nil, formatChoice: ideaDraft.formatChoice
         )
         request.engine = .ultra
         return UltraPayload(request)
@@ -183,7 +181,14 @@ final class ScriptStarter {
         // without a push to watch (nor its frames to pay for), and Apple Intelligence starts writing into it right away.
         transition.begin(
             from: origin ?? .zero, idea: text, platformName: request.platform.label, engine: request.engine,
-            abort: { [weak self] in self?.abort(scriptID, keeping: comment) },
+            abort: { [weak self] in
+                self?.abort(scriptID, keeping: comment) { [weak self] in
+                    // The same idea (the field's own when it came from the dock: it is still there), the same choices, a new star.
+                    self?.write(
+                        idea: idea, length: length, comment: comment, platform: platform, brief: brief, engine: engine, whenWritten: whenWritten
+                    )
+                }
+            },
             arrive: { [weak self] in
                 if let brief = request.brief { self?.briefWritten?(brief) }
                 // The writer stays the creator's pick for the next idea. One Apple Intelligence wrote counts towards the invitation to try Ultra.
@@ -195,13 +200,18 @@ final class ScriptStarter {
         return scriptID
     }
 
-    /// Cancel, or an error while the star is on screen: no script is created, and the idea is still in the field. After an error, an
-    /// answered comment (whose sheet is gone) is kept in the Logbook.
-    private func abort(_ scriptID: UUID, keeping comment: ScriptComment?) {
+    /// Cancel, or an error while the star is on screen: no script is created, and the idea is still in the field. After an error, the toast
+    /// says why, with "Try again" (`again`) when asking again may work; an answered comment (whose sheet is gone) is kept in the Logbook
+    /// instead, where it is written from again.
+    private func abort(_ scriptID: UUID, keeping comment: ScriptComment?, again: @escaping @MainActor () -> Void) {
         // Under the cover: the live app comes back already on Scripts.
         presentation.showScriptsList(animated: false)
         library.delete([scriptID])
-        if transition.leftBecauseOfError, let comment { keepsComment?(comment) }
+        guard transition.leftBecauseOfError else { return }
+        if let comment { keepsComment?(comment) }
+        guard let failure = transition.failure else { return }
+        let retry = failure.canRetry && comment == nil
+        toast.showResult(failure.reason, kind: .problem, action: retry ? ToastAction(title: String(localized: "Try again"), perform: again) : nil)
     }
 
     /// With no Apple Intelligence, "Write it": the idea becomes the title of a blank draft, opened to write in (04 · F2).

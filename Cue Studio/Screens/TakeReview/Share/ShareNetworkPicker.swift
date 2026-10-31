@@ -28,14 +28,13 @@ struct ShareNetworkPicker: View {
                             .accessibilityIdentifier("shareFlow.options")
                     }
                 header
-                if voyage.showsTip(for: .share) {
-                    // The first voyage's last step.
+                // The first voyage's last step.
+                VoyageInPlaceTip(step: .share, place: .share, isAllowed: true) { isDone in
                     VoyageTipCard(
-                        step: .share, symbol: VoyageStep.share.symbol, title: VoyageStep.share.tipTitle(network: take.platform?.label),
-                        message: VoyageStep.share.tipMessage(network: take.platform?.label),
+                        step: .share, title: VoyageStep.share.tipTitle(network: take.platform?.label),
+                        message: VoyageStep.share.tipMessage(network: take.platform?.label), isDone: isDone,
                         onClose: { withAnimation(.smooth(duration: 0.25)) { voyage.closeTip(.share, at: .share) } }
                     )
-                    .onAppear { voyage.tipShown(.share, at: .share) }
                 }
                 GroupedCard(background: Palette.surface2, radius: 22) {
                     ForEach(Array(ShareNetworkLine.networks.enumerated()), id: \.element) { index, network in

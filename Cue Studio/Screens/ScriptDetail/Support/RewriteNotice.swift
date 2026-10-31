@@ -66,9 +66,9 @@ nonisolated struct RewriteNotice: Equatable, Sendable {
             return (String(localized: "No mistakes to fix"), .done)
         case .fitToTime where fits(words: words, idealRange: idealRange):
             let range = DurationText.range(idealRange)
-            return (String(localized: "Already fits \(range)"), .done)
+            return (String(localized: "Already within the target length · \(range)"), .done)
         default:
-            return (String(localized: "Couldn’t draft it · Try again"), .problem)
+            return (String(localized: "Couldn’t draft it"), .problem)
         }
     }
 }

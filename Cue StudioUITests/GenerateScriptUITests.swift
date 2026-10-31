@@ -25,7 +25,10 @@ final class GenerateScriptUITests: XCTestCase {
         XCTAssertTrue(element(app, "page.editor").exists(within: 10))
         let checked = app.buttons["detail.factCheckedButton"]
         XCTAssertTrue(checked.exists(within: 10))
+        // Decision 9: it says the creator reviewed the claims, and records it.
+        XCTAssertEqual(checked.label, "I reviewed the claims")
         checked.tap()
+        XCTAssertTrue(app.staticTexts["Claims reviewed for this version"].exists(within: 5))
         XCTAssertFalse(checked.exists(within: 2))
     }
 

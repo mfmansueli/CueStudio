@@ -53,7 +53,7 @@ struct ToastServiceTests {
         let work = toast.showWorking("Drafting the Reels version…")
         #expect(toast.kind == .working && toast.message == "Drafting the Reels version…" && toast.pill == work)
         // What came of it takes the ring's place: the same pill, a new icon and new words.
-        toast.show("Reels version saved", kind: .cue)
+        toast.show("Reels version saved", kind: .cue, ending: work)
         #expect(toast.pill == work && toast.kind == .cue && toast.message == "Reels version saved")
         // Ending the work afterwards leaves its result alone.
         toast.endWorking(work)
@@ -91,5 +91,49 @@ struct ToastServiceTests {
         toast.sheetHostDisappeared()
         toast.sheetHostDisappeared()
         #expect(toast.sheetHosts == 0)
+    }
+
+    /// A working toast ends only with its own result: another operation's toast comes in its own pill, without the success tap's place.
+    @Test func aToastFromAnotherOperationNeverEndsTheWork() {
+        let toast = ToastService()
+        let work = toast.showWorking("Freezing the frame…")
+        toast.show("Duplicated")
+        #expect(toast.pill != work && toast.kind == .done)
+        let other = toast.showWorking("Extracting the sound…")
+        toast.show("Sound extracted", ending: work)
+        #expect(toast.pill != other, "An older work's result never takes a newer ring's place")
+    }
+
+    /// What came of work that took a while never takes the place of a toast with a button (its Undo may be the only way back): it waits for
+    /// that toast to go, and only the newest waits.
+    @Test func aResultWaitsForAToastWithAButton() {
+        let toast = ToastService()
+        var undone = false
+        toast.show("Script deleted", action: ToastAction(title: "Undo") { undone = true })
+        toast.showResult("Spanish version saved", kind: .cue)
+        toast.showResult("Reels version saved", kind: .cue)
+        #expect(toast.message == "Script deleted" && toast.waitingResult == "Reels version saved")
+        toast.action?.perform()
+        #expect(undone)
+        toast.dismiss()
+        #expect(toast.message == "Reels version saved" && toast.kind == .cue && toast.waitingResult == nil)
+        // Without a button up, a result comes in at once.
+        toast.showResult("Saved")
+        #expect(toast.message == "Saved")
+    }
+
+    /// Whoever waits on a toast hears when it leaves: its time, a dismiss, or another toast in its place; at once when it is already gone.
+    @Test func leavingIsTold() {
+        let toast = ToastService()
+        var left: [String] = []
+        toast.show("Take deleted", action: ToastAction(title: "Undo") {})
+        toast.onLeave(of: toast.pill) { left.append("first") }
+        toast.show("Duplicated")
+        #expect(left == ["first"])
+        toast.onLeave(of: toast.pill) { left.append("second") }
+        toast.dismiss()
+        #expect(left == ["first", "second"])
+        toast.onLeave(of: UUID()) { left.append("gone") }
+        #expect(left.last == "gone")
     }
 }

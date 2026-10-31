@@ -55,16 +55,15 @@ struct PrivacySheet: View {
                     Text("Removes your scripts, takes, edits and My Cue Voice from this iPhone. Videos saved to Photos stay there.")
                 }
             }
-            .alert("Delete all your Cue data?", isPresented: $confirmsErase) {
-                Button("Delete everything", role: .destructive) {
-                    eraser.eraseEverything()
-                    toast.show(String(localized: "Your Cue data is deleted"))
-                    dismiss()
-                }
-                .accessibilityIdentifier("privacy.confirmDelete")
-                Button("Cancel", role: .cancel) {}
-            } message: {
-                Text("Your scripts, takes, edits and My Cue Voice are removed from this iPhone. This can't be undone.")
+            // The one confirmation for erasing everything, the same as Settings' (`confirmsDataErase`): the action sheet at the bottom.
+            .cueActionSheet(
+                isPresented: $confirmsErase,
+                message: "Deletes your scripts, takes, edits and My Cue Voice from this iPhone. This can't be undone.",
+                actionTitle: "Delete my Cue data", actionIdentifier: "privacy.confirmDelete"
+            ) {
+                eraser.eraseEverything()
+                toast.show(String(localized: "Your Cue data is deleted"))
+                dismiss()
             }
             .navigationTitle("Privacy & AI data")
             .navigationBarTitleDisplayMode(.inline)

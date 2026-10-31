@@ -39,6 +39,7 @@ struct ScriptsDock: View {
     @Environment(LanguageService.self) private var languages
     @Environment(PresentationService.self) private var presentation
     @Environment(UltraScriptService.self) private var ultra
+    @Environment(GuidanceGate.self) private var guidance
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @Environment(IdeaTransitionService.self) private var transition
     @Environment(\.scenePhase) private var scenePhase
@@ -150,7 +151,10 @@ struct ScriptsDock: View {
                 }
                 // From the second time the AI was used: Ultra AI and its free scripts, until it is tried or closed (here or elsewhere).
                 if showsUltraInvite, !isExpanded, !transition.isActive {
-                    UltraInviteCard(placement: .dock) { chooseWriter(.ultra) } onClose: { ultra.invite?.close() }
+                    UltraInviteCard(placement: .dock) { chooseWriter(.ultra) } onClose: {
+                        guidance.left(.ultraInvite, at: .scripts, closed: true)
+                        ultra.invite?.close()
+                    }
                         .onGeometryChange(for: CGRect.self) { $0.frame(in: .named(Self.ultraSpace)) } action: {
                             inviteStar = CGPoint(x: $0.minX + 20, y: $0.midY)
                         }
@@ -183,12 +187,18 @@ struct ScriptsDock: View {
         .onAppear {
             showsUltraLit = starter.writesWithUltra
             sendIsUltra = starter.writesWithUltra
-            showsUltraInvite = ultra.showsInvite
+            showsUltraInvite = invitesUltra
             shownPlatform = starter.platform
         }
+        // One suggestion on Scripts at a time (`GuidanceGate`): the line folds while a tip has something to say, and stays away for the
+        // session once something there was closed.
+        .onChange(of: invitesUltra) { syncUltra() }
+        .onChange(of: showsUltraInvite, initial: true) { _, shows in
+            if shows { guidance.shown(.ultraInvite, at: .scripts) } else { guidance.left(.ultraInvite, at: .scripts) }
+        }
+        .onDisappear { if showsUltraInvite { guidance.left(.ultraInvite, at: .scripts) } }
         .onChange(of: starter.writesWithUltra) { syncUltra() }
         .onChange(of: starter.platform) { syncPlatform() }
-        .onChange(of: ultra.showsInvite) { syncUltra() }
         // The permission's sheet going: the ✦ waits for it to be out of the way.
         .onChange(of: presentation.sheet == nil) { _, gone in
             guard gone else {
@@ -360,10 +370,13 @@ struct ScriptsDock: View {
     /// chip, nothing changes until its menu has closed (`UltraMotion.afterMenu`); then what the chip says turns (its width stays) and it
     /// lights: Cue's way for Ultra AI (its ✦ flies on to the send arrow, which turns violet), Apple's for Apple Intelligence (the arrow
     /// turns yellow again). Under Reduce Motion it only fades.
+    /// Ultra AI's line is due (`UltraScriptService.showsInvite`) and nothing else has Scripts' place.
+    private var invitesUltra: Bool { ultra.showsInvite && guidance.mayShow(.ultraInvite, at: .scripts) }
+
     private func syncUltra() {
         guard presentation.sheet == nil else { return }
         let lit = starter.writesWithUltra
-        let invited = ultra.showsInvite
+        let invited = invitesUltra
         guard lit != showsUltraLit || invited != showsUltraInvite else { return }
         let lights = lit && !showsUltraLit
         if lights, showsUltraInvite, !reduceMotion, inviteStar != nil, chipStar != nil {

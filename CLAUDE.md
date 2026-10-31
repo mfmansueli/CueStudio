@@ -79,7 +79,7 @@ Toda tela, componente ou cor nova **precisa passar** no contraste antes de ser e
   - Estado: `-uiTestInMemory`, `-uiTestSeedSamples`, `-uiTestPro`, `-uiTestSampleVideo`, `-uiTestAppLanguage <lproj>`, `-uiTestExportsLeft <0…3>`,
     `-uiTestUniverse sample|newYear|newAccount`, `-uiTestTopics …`, `-uiTestSky off|serene|adrift|interstellar` (off nos testes).
   - Fluxos: `-uiTestOnboarding` (+ `-uiTestOnboardingStep <capítulo>`, `-uiTestPermissions granted|denied`), `-uiTestVoyage` (sem ele nenhum teste vê
-    as dicas da primeira viagem), `-uiTestVoiceTip`, `-uiTestNotificationInvite`, `-uiTestNotificationAuth <estado>`, `-uiTestNotificationTap <destino>`
+    as dicas da primeira viagem), `-uiTestVoiceTip`, `-uiTestNotificationInvite`, `-uiTestFeatureIntro`, `-uiTestNotificationAuth <estado>`, `-uiTestNotificationTap <destino>`
     (`NOTIFICATIONS.md`), `-uiTestShareQueue`, `-uiTestFakeShareSheet`, `-uiTestAppsInstalled` (`SHARING.md`), `-uiTestRemoteConnects`.
   - IA de teste: `-uiTestStubAI`, `-uiTestSlowWriting`, `-uiTestWriterStalls`, `-uiTestIdeasSlow`, `-uiTestIdeasFail`; Ultra AI sem rede:
     `-uiTestUltra` (+ `-uiTestUltraAllowed`, `-uiTestUltraReviewFails`, `-uiTestUltraSlow`, `-uiTestUltraScriptsLeft <0…3>`,

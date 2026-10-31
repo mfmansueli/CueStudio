@@ -78,6 +78,8 @@ nonisolated enum DefaultsKey {
     static let autoTagTopics = "autoTagTopics"
     /// The first flight (onboarding) is over, and its "first star" has been told.
     static let onboardingCompleted = "onboardingCompleted"
+    /// The chapter a first flight was left on after 1.4 kept its script (`OnboardingService`): it resumes there.
+    static let onboardingStep = "onboardingStep"
     static let firstStarShown = "firstStarShown"
     /// The first voyage's own marks (`VoyageMarks`, JSON): its stage, the practice, a skipped Polish, tips closed, segments lit.
     static let firstVoyage = "firstVoyage"
@@ -99,8 +101,12 @@ nonisolated enum DefaultsKey {
     static let skyMemoryAdded = "skyMemoryAdded"
     /// What the My Cue Voice tip remembers (`VoiceQuestionState`, JSON): days opened, tips shown, snoozes, skips.
     static let voiceQuestionState = "vq.state"
+    /// The My Cue Voice tips' generation, raised by "Delete my Cue data" (`VoiceQuestionScheduler.tipGeneration`); never erased.
+    static let voiceTipGeneration = "vq.tipGeneration"
     /// The Logbook's ideas (JSON).
     static let logbook = "logbook"
+    /// How many times each teaching note of the editor was shown (`PanelNoteMemory`), by a digest of its words.
+    static let panelNotesRead = "panelNotesRead"
     /// Settings › Privacy & AI data: Apple Intelligence on or off (absent = on) and the anonymous usage switch (absent = off).
     static let onDeviceAI = "onDeviceAI"
     static let helpImproveCue = "helpImproveCue"

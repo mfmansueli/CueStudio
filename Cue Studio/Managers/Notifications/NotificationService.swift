@@ -47,6 +47,9 @@ final class NotificationService {
     @ObservationIgnored var introsThisSession = 0
     /// Cue may invite the creator to allow notifications (off in UI tests unless `-uiTestNotificationInvite`).
     @ObservationIgnored var invitesEnabled = true
+    /// A tool may be introduced after a session at the teleprompter (off in UI tests unless `-uiTestFeatureIntro`; one a notification
+    /// asked for still comes).
+    @ObservationIgnored var sessionIntrosEnabled = true
     @ObservationIgnored var reconcileTask: Task<Void, Never>?
 
     init(

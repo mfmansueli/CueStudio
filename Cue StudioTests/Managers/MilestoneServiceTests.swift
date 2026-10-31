@@ -128,25 +128,35 @@ struct MilestoneServiceTests {
         #expect(records == [ShareRecord(takeID: take, date: nil, platforms: [.reels], topic: "niche.food")])
     }
 
-    @Test func theMilestonesAreCountedInTheLiveYear() {
-        let (service, defaults) = make()
-        defer { defaults.tearDown() }
-        let lastYear = Calendar.current.date(byAdding: .year, value: -1, to: .now)!
-        (0..<12).forEach { _ in service.recordShare(of: UUID(), at: lastYear) }
-        #expect(service.shares == 12 && service.yearShares == 0)
-        #expect(service.nextMilestone == 1, "a new year starts its road again")
-        service.recordShare(of: UUID())
-        #expect(service.yearShares == 1 && service.nextMilestone == 10)
-    }
-
-    @Test func anIconWonInAnEarlierYearIsNotCelebratedAgain() {
+    @Test func theMilestonesAreCountedOverTheCreatorsLifeNotTheYear() {
         let (service, defaults) = make()
         defer { defaults.tearDown() }
         let lastYear = Calendar.current.date(byAdding: .year, value: -1, to: .now)!
         var reached: [Int] = []
-        (0..<12).forEach { _ in if let step = service.recordShare(of: UUID(), at: lastYear) { reached.append(step) } }
-        #expect(reached == [1, 10])
-        #expect(service.recordShare(of: UUID()) == nil, "the first share of the new year reaches 1 again, but Aurora is already theirs")
+        (0..<5).forEach { _ in if let step = service.recordShare(of: UUID(), at: lastYear) { reached.append(step) } }
+        (0..<5).forEach { _ in if let step = service.recordShare(of: UUID()) { reached.append(step) } }
+        #expect(reached == [1, 10], "5 last year and 5 this year reach 10, with its story")
+        #expect(service.shares == 10 && service.yearShares == 5, "the year stays as the universe's look back")
+        #expect(service.nextMilestone == 25)
         #expect(service.isUnlocked(.firstLight))
+    }
+
+    @Test func theNextMilestoneNeverPromisesAnIconAlreadyUnlocked() throws {
+        let (service, defaults) = make()
+        defer { defaults.tearDown() }
+        let lastYear = Calendar.current.date(byAdding: .year, value: -1, to: .now)!
+        (0..<12).forEach { _ in service.recordShare(of: UUID(), at: lastYear) }
+        let next = try #require(service.nextMilestone)
+        let icon = try #require(AppIconChoice(milestone: next))
+        #expect(next == 25 && !service.isUnlocked(icon), "a new year doesn't start the road again")
+        #expect(service.recordShare(of: UUID()) == nil, "the first share of the year reaches no milestone of the life")
+    }
+
+    @Test func aMilestoneCelebratedWhileTheyWereCountedPerYearStaysCelebrated() {
+        let defaults = TestDefaults()
+        defer { defaults.tearDown() }
+        defaults.defaults.set([2026 * 1000 + 1, 2026 * 1000 + 10], forKey: DefaultsKey.celebratedMilestones)
+        let service = MilestoneService(defaults: defaults.defaults)
+        #expect(service.celebrated == [1, 10])
     }
 }

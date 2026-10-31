@@ -27,6 +27,16 @@ final class FirstVoyageUITests: XCTestCase {
         tab.tap()
     }
 
+    /// With `TEST_RUNNER_CUE_SCREENSHOT_DIR`, the picture and its hierarchy (for `tools/contrast/audit.py`).
+    private func capture(_ app: XCUIApplication, _ name: String) {
+        guard let folder = ProcessInfo.processInfo.environment["CUE_SCREENSHOT_DIR"] else { return }
+        let directory = URL(fileURLWithPath: folder, isDirectory: true)
+        try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        sleep(1)
+        try? app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(name).png"))
+        try? app.debugDescription.write(to: directory.appending(path: "\(name).txt"), atomically: true, encoding: .utf8)
+    }
+
     private func waitForGone(_ element: XCUIElement, timeout: TimeInterval = 5) -> Bool {
         return element.matches(NSPredicate(format: "exists == false"), within: timeout)
     }
@@ -41,6 +51,7 @@ final class FirstVoyageUITests: XCTestCase {
         XCTAssertLessThanOrEqual(tip.frame.maxY, dock.frame.minY + 1, "the tip sits above the dock, not over it")
         XCTAssertTrue(app.buttons["empty.writeButton"].exists, "the ways in are still there")
         XCTAssertTrue(tip.label.contains("Your idea, Cue's draft.") || app.staticTexts["Your idea, Cue's draft."].exists)
+        capture(app, "voyage_tip")
 
         // "Get an idea" opens Find inspiration.
         app.buttons["voyage.tip.primary"].tap()

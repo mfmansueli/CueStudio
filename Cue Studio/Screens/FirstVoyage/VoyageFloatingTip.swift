@@ -6,8 +6,10 @@
 import SwiftUI
 
 /// The first voyage's next step on Scripts (10 pt above the dock) and Takes (above the tab bar): it waits 1.2 s after the screen settles
-/// and shows only when nothing else is going on (`isQuiet`), like the My Cue Voice tip, which waits while this one has something to say.
-/// Its button goes straight to where the step happens (`VoyageNavigator`); ✕ puts it away until the next session. It enters in 0.40 s
+/// and shows only when nothing else is going on (`isQuiet`) and nothing else has the place (`GuidanceGate`: the creator's queue left
+/// waiting goes first; a My Cue Voice question and the Ultra AI line wait while it has something to say). A step already seen in its own
+/// place this session doesn't float (`FirstVoyageService.floatingStep`). VoiceOver hears it arrive. Its button goes straight to where the
+/// step happens (`VoyageNavigator`); ✕ puts it away until the next session, and nothing else comes in its place. It enters in 0.40 s
 /// (opacity, 10 pt up) and leaves in 0.20 s; with Reduce Motion it only fades.
 struct VoyageFloatingTip: View {
     let place: VoyageTipPlace
@@ -18,8 +20,13 @@ struct VoyageFloatingTip: View {
     @Environment(PresentationService.self) private var presentation
     @Environment(ScriptLibraryService.self) private var library
     @Environment(TakeLibraryService.self) private var takes
+    @Environment(GuidanceGate.self) private var guidance
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var shown: VoyageStep?
+
+    private var gatePlace: GuidancePlace { place.guidancePlace ?? .scripts }
+
+    private var mayShow: Bool { guidance.mayShow(.voyageTip, at: gatePlace) }
 
     var body: some View {
         // A zero-height view always lives here: the task needs something to hang on while no tip is showing.
@@ -31,41 +38,62 @@ struct VoyageFloatingTip: View {
                         insertion: .opacity.combined(with: .offset(y: 10)).combined(with: .scale(scale: 0.97)),
                         removal: .opacity
                     ))
-                    .onAppear { voyage.tipShown(step, at: place) }
+                    .onAppear { arrived(step) }
             }
         }
         .animation(shown == nil ? .easeOut(duration: 0.2) : (reduceMotion ? .easeOut(duration: 0.2) : CueMotion.tipEnter), value: shown)
-        .task(id: Key(isQuiet: isQuiet, step: voyage.floatingStep)) { await evaluate() }
+        .task(id: Key(isQuiet: isQuiet, mayShow: mayShow, step: voyage.floatingStep)) { await evaluate() }
+        // Due: what comes after it on this screen waits.
+        .onChange(of: voyage.floatingStep, initial: true) { _, step in
+            guidance.setWaiting(.voyageTip, at: gatePlace, step != nil)
+        }
+        .onDisappear { guidance.setWaiting(.voyageTip, at: gatePlace, false) }
     }
 
     private struct Key: Hashable {
         let isQuiet: Bool
+        let mayShow: Bool
         let step: VoyageStep?
     }
 
     /// The step changed or was closed: the tip goes at once. A new one waits 1.2 s of quiet; one already up stays (a toast or a sheet
-    /// passing over doesn't send it away).
+    /// passing over doesn't send it away), unless the creator's own queue takes the place.
     private func evaluate() async {
-        guard let step = voyage.floatingStep else {
-            shown = nil
+        guard let step = voyage.floatingStep, mayShow else {
+            leave()
             return
         }
         guard shown != step else { return }
-        shown = nil
+        leave()
         guard isQuiet else { return }
         try? await Task.sleep(for: .milliseconds(1200))
-        guard !Task.isCancelled, isQuiet, voyage.floatingStep == step else { return }
+        guard !Task.isCancelled, isQuiet, mayShow, voyage.floatingStep == step else { return }
         shown = step
+        guidance.shown(.voyageTip, at: gatePlace)
+    }
+
+    private func leave(closed: Bool = false) {
+        guard shown != nil else { return }
+        shown = nil
+        guidance.left(.voyageTip, at: gatePlace, closed: closed)
+    }
+
+    private func arrived(_ step: VoyageStep) {
+        voyage.tipShown(step, at: place)
+        let title = step.tipTitle(network: navigator.videoTake?.platform?.label)
+        AccessibilityNotification.Announcement(String(localized: "Tip: \(title)")).post()
     }
 
     private func tip(_ step: VoyageStep) -> some View {
         VoyageTipCard(
-            step: step, symbol: step.symbol, title: step.tipTitle(network: navigator.videoTake?.platform?.label),
+            step: step, title: step.tipTitle(network: navigator.videoTake?.platform?.label),
             message: step.tipMessage(duration: duration(for: step), network: navigator.videoTake?.platform?.label),
             primary: (step.tipAction(canCompare: navigator.canCompare), { act(step) }),
-            onClose: { voyage.closeTip(step, at: place) }
+            onClose: {
+                voyage.closeTip(step, at: place)
+                leave(closed: true)
+            }
         )
-        .cardDepth(RoundedRectangle(cornerRadius: 20, style: .continuous), edge: nil)
     }
 
     private var navigator: VoyageNavigator {

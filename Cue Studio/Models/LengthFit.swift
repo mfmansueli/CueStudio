@@ -28,10 +28,11 @@ nonisolated struct LengthFit: Equatable, Sendable {
         DurationText.range(ideal)
     }
 
-    /// "✓ Fits 1:00 to 1:30", "12s under 1:00 to 1:30", "8s over 1:00 to 1:30".
+    /// "Within the target length · 1:00 to 1:30", "12s under 1:00 to 1:30", "8s over 1:00 to 1:30". The range is the platform's
+    /// recommended one, not a limit it enforces: never "fits" (decision 8, 30/10/2026).
     var label: String {
         switch verdict {
-        case .fits: String(localized: "✓ Fits \(rangeLabel)")
+        case .fits: String(localized: "Within the target length · \(rangeLabel)")
         case .under(let gap): String(localized: "\(DurationText.remaining(gap)) under \(rangeLabel)")
         case .over(let gap): String(localized: "\(DurationText.remaining(gap)) over \(rangeLabel)")
         }

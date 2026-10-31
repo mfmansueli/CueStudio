@@ -77,6 +77,13 @@ final class IdeaTransitionService {
     private(set) var engine: ScriptEngine = .apple
     /// Whether the exit is because of an error (the toast says so) and not a Cancel.
     private(set) var leftBecauseOfError = false
+    /// Why the last star left on an error, for its abort to say (`fail(saying:canRetry:)`).
+    private(set) var failure: Failure?
+
+    struct Failure: Equatable {
+        let reason: String
+        let canRetry: Bool
+    }
     /// How much of the script is written, for the percentage under the phrase; nil until the page starts writing.
     private(set) var progress: WritingProgressMeter?
     /// The app behind the star is held still as it was at the tap (`TransitionBackdrop`): from the tap until the cover is solid on the
@@ -129,6 +136,7 @@ final class IdeaTransitionService {
         self.platformName = platformName
         self.engine = engine
         leftBecauseOfError = false
+        failure = nil
         progress = nil
         onAbort = abort
         onArrive = arrive
@@ -184,8 +192,10 @@ final class IdeaTransitionService {
         leave(becauseOfError: false)
     }
 
-    /// The AI failed: the same exit as Cancel; the caller says why in a toast.
-    func fail() {
+    /// The AI failed: the same exit as Cancel. Whoever sent the idea (`ScriptStarter`, in its abort) says why in a toast, with "Try again" when
+    /// asking again may work (`failure`).
+    func fail(saying reason: String = String(localized: "Couldn’t draft it"), canRetry: Bool = false) {
+        failure = Failure(reason: reason, canRetry: canRetry)
         leave(becauseOfError: true)
     }
 

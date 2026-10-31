@@ -16,7 +16,7 @@ struct BrandKitsSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             if brand.kits.kits.isEmpty {
-                PanelNote(text: String(localized: "A brand kit keeps your colors, fonts, logo and styles together, to put on any video in one step."))
+                PanelNote(text: String(localized: "A brand kit keeps your colors, fonts, logo and styles together, to put on any video in one step."), teaches: true)
             }
             ForEach(brand.kits.kits) { kit in card(kit) }
             PanelButton(label: String(localized: "New kit from this video"), systemImage: "plus", identifier: "edit.brand.newKit") {

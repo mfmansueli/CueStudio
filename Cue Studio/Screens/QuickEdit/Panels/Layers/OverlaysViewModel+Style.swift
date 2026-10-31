@@ -47,11 +47,15 @@ extension OverlaysViewModel {
     /// What the creator did by hand to place a text, which a style never undoes.
     private static var placing: Set<TextLookField> { [.position, .size] }
 
-    /// "Gold on this text"; when a style that moves took a text's Motion off (`wearing`), it says so with Undo: nothing the
-    /// creator chose goes away without a word.
+    /// "Gold on every text" (texts out of sight changed too); on the one text the preview shows, only VoiceOver hears it. When a style that
+    /// moves took a text's Motion off (`wearing`), it says so with Undo: nothing the creator chose goes away without a word.
     private func sayApplied(_ name: String, on texts: [TextOverlay], every: Bool, effect: TextEffect?) {
         guard effect?.isAnimated == true, texts.contains(where: { $0.animation != nil }) else {
-            toast.show(every ? String(localized: "\(name) on every text") : String(localized: "\(name) on this text"))
+            if every {
+                toast.show(String(localized: "\(name) on every text"))
+            } else {
+                announce(String(localized: "\(name) on this text"))
+            }
             return
         }
         sayUndoable(every

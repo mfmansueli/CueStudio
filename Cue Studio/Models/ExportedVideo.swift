@@ -15,6 +15,8 @@ nonisolated struct ExportedVideo: Equatable, Sendable {
     /// "1080P · 9:16".
     let formatLabel: String
     let hasCaptions: Bool
+    /// Why the video has no captions although they were asked for ("Couldn’t listen to this take…"): the cover says so.
+    var missingCaptions: String?
     /// Free exports left, nil for subscribers.
     let exportsLeft: Int?
     /// Where the creator is likely to post it: the take's platform.

@@ -33,8 +33,8 @@ struct NotificationServiceTests {
     @Test func turnOnAsksOnceAndADeniedIsNeverAskedAgain() async {
         let harness = NotificationServiceHarness(status: .notDetermined)
         harness.center.allowsWhenAsked = false
-        #expect(await harness.service.allowEverything() == .denied)
-        #expect(await harness.service.allowEverything() == .denied)
+        #expect(await harness.service.allow(turningOn: nil) == .denied)
+        #expect(await harness.service.allow(turningOn: .news) == .denied)
         #expect(harness.center.requestCount == 1)
         #expect(!harness.service.isOn(.discovery), "A no from iOS turns nothing on")
     }
@@ -195,20 +195,51 @@ struct NotificationServiceTests {
         #expect(harness.service.state.routine == CreationRoutine())
     }
 
-    /// The card names everything Turn on allows, so iOS's yes turns on tools and news too, and the routine on its usual days.
-    @Test func turnOnWithAYesTurnsEverythingOn() async {
-        let harness = NotificationServiceHarness(status: .notDetermined)
-        #expect(await harness.service.allowEverything().canSchedule)
-        #expect(NotificationCategory.allCases.allSatisfy { harness.service.isOn($0) })
-        #expect(harness.service.state.routine != nil)
+    /// Owner, 30/10/2026: iOS's yes turns on only the switch that was touched; the permission alone turns nothing else on, and the routine is
+    /// never switched on by itself.
+    @Test func aYesTurnsOnOnlyWhatWasTouched() async {
+        let permission = NotificationServiceHarness(status: .notDetermined)
+        #expect(await permission.service.allow(turningOn: nil).canSchedule)
+        #expect(!permission.service.isOn(.discovery) && !permission.service.isOn(.whatsNew))
+        #expect(permission.service.state.routine == nil && !permission.service.isGroupOn(.routine), "the routine waits for its own switch")
+
+        let news = NotificationServiceHarness(status: .notDetermined)
+        #expect(await news.service.allow(turningOn: .news).canSchedule)
+        #expect(news.service.isGroupOn(.news))
+        #expect(news.service.state.routine == nil)
+
+        let routine = NotificationServiceHarness(status: .notDetermined)
+        #expect(await routine.service.allow(turningOn: .routine).canSchedule)
+        #expect(routine.service.state.routine == CreationRoutine(), "on its days, which its switch showed")
+        #expect(!routine.service.isOn(.discovery))
     }
 
-    @Test func turnOnWithANoChangesNothing() async {
+    @Test func aNoChangesNothing() async {
         let harness = NotificationServiceHarness(status: .notDetermined)
         harness.center.allowsWhenAsked = false
-        #expect(await harness.service.allowEverything() == .denied)
+        #expect(await harness.service.allow(turningOn: .news) == .denied)
         #expect(!harness.service.isOn(.discovery) && !harness.service.isOn(.whatsNew))
         #expect(harness.service.state.routine == nil)
+    }
+
+    @Test func undoBringsARemovedReminderBack() async throws {
+        let harness = NotificationServiceHarness()
+        let service = harness.service
+        let later = try #require(ReminderChoice.tomorrow.time(now: service.now(), calendar: service.calendar()))
+        _ = await service.setReminder(.script(UUID()), title: "Lamp", at: later)
+        let reminder = try #require(service.state.reminders.first)
+        service.cancelReminder(reminder.id)
+        #expect(service.state.reminders.isEmpty)
+        await service.restoreReminder(reminder)
+        #expect(service.state.reminders.map(\.id) == [reminder.id])
+        #expect(service.state.reminders.first?.isScheduled == true, "scheduled again")
+    }
+
+    @Test func theRoutineSummaryShowsItsDaysAndTime() {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.firstWeekday = 1
+        let text = RoutineSummary.text(for: CreationRoutine(), calendar: calendar, locale: Locale(identifier: "en_US"))
+        #expect(text.contains("Mon") && text.contains("Wed") && text.contains("Fri") && text.contains("6:00"))
     }
 
     @Test func anUnchangedPlanIsNotHandedToTheSystemAgainButANewLanguageIs() async {

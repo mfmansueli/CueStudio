@@ -56,7 +56,7 @@ nonisolated struct LengthZone: Equatable, Sendable {
         return String(localized: "In the ideal range")
     }
 
-    /// "1:00 · monetizes"
+    /// "1:00 · Creator Rewards"
     var minimumLabel: String? {
         guard let minimum = preset.minimum, let goal = preset.goal else { return nil }
         return DurationText.clock(minimum) + " · " + goal.meterLabel

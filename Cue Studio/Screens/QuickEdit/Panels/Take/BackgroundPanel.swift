@@ -25,7 +25,7 @@ struct BackgroundPanel: View {
             if let note = viewModel.look.backgroundScopeNote { scopeNote(note) }
             background(effect)
             cutout(effect)
-            PanelNote(text: String(localized: "Changes show in the preview and are saved as you make them. ✓ closes the panel."))
+            PanelNote(text: String(localized: "Changes show in the preview and are saved as you make them. ✓ closes the panel."), teaches: true)
                 .accessibilityIdentifier("edit.backgroundSaveNote")
         }
         .task { await viewModel.look.checkBackgroundSupport() }
@@ -75,7 +75,7 @@ struct BackgroundPanel: View {
             }
             switch effect.style {
             case .original:
-                PanelNote(text: String(localized: "Your video as you recorded it. Pick Blur, Color or Image to change what's behind you."))
+                PanelNote(text: String(localized: "Your video as you recorded it. Pick Blur, Color or Image to change what's behind you."), teaches: true)
             case .blur:
                 slider(String(localized: "Blur strength"), value: effect.blur, range: BackgroundEffect.blurRange, identifier: "edit.backgroundBlur") { value in
                     viewModel.look.updateBackground { $0.blur = value }
@@ -115,13 +115,13 @@ struct BackgroundPanel: View {
             ) { cutout in viewModel.look.setBackgroundCutout(cutout) }
             switch effect.cutout {
             case .person:
-                PanelNote(text: String(localized: "Cue finds you in every frame, on this iPhone, and changes everything around you."))
+                PanelNote(text: String(localized: "Cue finds you in every frame, on this iPhone, and changes everything around you."), teaches: true)
                 if effect.style != .original, viewModel.look.canFindPeople == false {
                     PanelNote(text: String(localized: "Can't find people here · Use a green or blue screen"), tint: Palette.warnText)
                         .accessibilityIdentifier("edit.backgroundUnavailable")
                 }
             case .colorKey:
-                PanelNote(text: String(localized: "For a video recorded in front of a green or blue screen: only the screen's color is replaced."))
+                PanelNote(text: String(localized: "For a video recorded in front of a green or blue screen: only the screen's color is replaced."), teaches: true)
                 screenColor(effect.key)
                 PanelAdvancedButton(
                     isOpen: viewModel.showsAdvanced, title: String(localized: "Fine-tune the cutout"),

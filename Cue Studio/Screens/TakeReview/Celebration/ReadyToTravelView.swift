@@ -35,6 +35,17 @@ struct ReadyToTravelView: View {
                 .foregroundStyle(Palette.ink2)
                 .padding(.top, 8)
             Spacer(minLength: 12)
+            if let reason = video.missingCaptions {
+                missingCaptions(reason).padding(.horizontal, 16).padding(.bottom, 10)
+            }
+            // An export from here failed (Save, the queue's file): the card with Try again stays on this cover, where it was asked for.
+            if let failure = review.exportFailure {
+                ExportFailedCard(
+                    failure: failure, onRetry: { Task { await review.retryFailedExport() } }, onClose: review.dismissExportFailure
+                )
+                .padding(.horizontal, 16)
+                .padding(.bottom, 10)
+            }
             exportsCard(left: review.exportsLeft).padding(.horizontal, 16)
             buttons
                 .padding(.horizontal, 16)
@@ -100,6 +111,32 @@ struct ReadyToTravelView: View {
             .accessibilityHidden(true)
     }
 
+    /// Captions were asked for and the video has none: said here, on the cover, with why (the toast that said it hid under this cover).
+    private func missingCaptions(_ reason: String) -> some View {
+        let shape = RoundedRectangle(cornerRadius: Metrics.noticeRadius, style: .continuous)
+        return HStack(spacing: 12) {
+            Image(systemName: "captions.bubble")
+                .cueFont(17, weight: .semibold)
+                .foregroundStyle(Palette.warnText)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("No captions on this video")
+                    .cueFont(.subheadline, weight: .semibold)
+                    .foregroundStyle(Palette.ink)
+                Text(reason)
+                    .cueFont(.footnote)
+                    .foregroundStyle(Palette.ink2)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .padding(14)
+        .background(Palette.surface, in: shape)
+        .overlay(shape.strokeBorder(Palette.glassBorder, lineWidth: 0.5))
+        .accessibilityElement(children: .combine)
+        .accessibilityIdentifier("ready.noCaptions")
+    }
+
     /// 8.1: the free exports left as a label ("2 OF 5 LEFT", "LAST FREE EXPORT" in yellow, "0 OF 5 LEFT · EXPORT WITH PRO" in orange) and the
     /// five bars; on Pro, "PRO · UNLIMITED EXPORTS".
     private func exportsCard(left: Int?) -> some View {
@@ -152,7 +189,12 @@ struct ReadyToTravelView: View {
             .buttonStyle(.cuePrimary(.large))
             .accessibilityIdentifier("ready.shareButton")
             if review.isSaved(video) {
-                Button {} label: { Label("Saved to Photos", systemImage: "checkmark") }
+                Button {} label: {
+                    Label(
+                        review.savedCover(video) ? String(localized: "Video and cover saved") : String(localized: "Saved to Photos"),
+                        systemImage: "checkmark"
+                    )
+                }
                     .buttonStyle(.cueSecondary(.large))
                     .disabled(true)
                     .accessibilityIdentifier("ready.savedButton")

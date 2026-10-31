@@ -10,8 +10,6 @@ import SwiftUI
 struct MilestoneView: View {
     let milestone: Int
     let icon: AppIconChoice
-    /// The year the milestone is told in (the sentence says how many videos in it).
-    var year = UniverseYears.current()
     /// Whether the icon is free for this creator (Aurora) or comes with Pro.
     let isAvailable: Bool
     let onUse: () -> Void
@@ -90,16 +88,16 @@ struct MilestoneView: View {
         .accessibilityIdentifier("milestone.sheet")
     }
 
-    /// "MILESTONE · 25 VIDEOS IN 2026"
+    /// "MILESTONE · 25 VIDEOS SHARED": counted over the creator's life, like the icon.
     private var eyebrow: String {
-        if milestone == 1 { return String(localized: "MILESTONE · FIRST VIDEO IN \(String(year))") }
-        return String(localized: "MILESTONE · \(milestone) VIDEOS IN \(String(year))")
+        if milestone == 1 { return String(localized: "MILESTONE · YOUR FIRST VIDEO") }
+        return String(localized: "MILESTONE · \(milestone) VIDEOS SHARED")
     }
 
-    /// "25 videos in 2026 · Deep Space icon unlocked"
+    /// "25 videos shared · Deep Space icon unlocked"
     private var message: String {
-        if milestone == 1 { return String(localized: "1 video in \(String(year)) · \(icon.title) icon unlocked") }
-        return String(localized: "\(milestone) videos in \(String(year)) · \(icon.title) icon unlocked")
+        if milestone == 1 { return String(localized: "Your first video shared · \(icon.title) icon unlocked") }
+        return String(localized: "\(milestone) videos shared · \(icon.title) icon unlocked")
     }
 
     // MARK: - Parts

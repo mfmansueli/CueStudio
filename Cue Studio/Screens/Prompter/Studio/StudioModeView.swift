@@ -43,7 +43,8 @@ struct StudioModeView: View {
                     .frame(height: proxy.size.height, alignment: .top)
                 }
                 .padding(.top, 5)
-                if !audio.isMicrophoneAllowed, settings.scrollMode == .voice {
+                // Voice Following needs the microphone: asked for it, or fallen back to Steady without it.
+                if !audio.isMicrophoneAllowed, settings.scrollMode == .voice || viewModel.sessionChoseScrollMode {
                     MicrophoneNeededCard()
                         .padding(.horizontal, 18)
                         .padding(.bottom, 12)

@@ -8,8 +8,8 @@ import Testing
 @testable import Cue_Studio
 
 /// The first voyage's service: who sees it, what it keeps, one tip at a time (the next step's), ✕ for the session, the first draft's
-/// tip once, the notices said once and the first share ending it, hiding and bringing it back, what is measured, and "Delete my Cue
-/// data".
+/// tip once, the steps done counted once (nothing said) and the first share ending it, the tips seen in place not floating again,
+/// hiding and bringing it back, what is measured, and "Delete my Cue data".
 @MainActor
 @Suite("FirstVoyageService")
 struct FirstVoyageServiceTests {
@@ -113,34 +113,71 @@ struct FirstVoyageServiceTests {
         #expect(!recorded.showsDraftTip(isCueDraft: true), "after the first take it's late for it")
     }
 
-    @Test func eachStepIsSaidOnceAndOnlyWhenItsNextIsTrue() {
+    @Test func eachStepDoneIsCountedOnceAndNothingIsSaid() {
         let script = TestData.script()
-        let defaults = UserDefaults(suiteName: "voyage-\(UUID().uuidString)")!
-        let before = makeScenario(scripts: [script], defaults: defaults).service
-        #expect(before.stepsToAnnounce == [.write])
-        #expect(before.takeNotice(hasCaptions: false) == nil, "writing passes quietly")
-        #expect(before.stepsToAnnounce.isEmpty)
-        before.markPracticed()
-        #expect(before.takeNotice(hasCaptions: false) == "Rehearsed · Next: record")
-        #expect(before.takeNotice(hasCaptions: false) == nil, "said once")
-        // Two takes, one starred: recording and picking at once; "Next: pick a take" would be wrong, so nothing is said.
-        let after = makeScenario(
-            scripts: [script], takes: [TestData.take(scriptID: script.id, isBest: true), TestData.take(scriptID: script.id, number: 2)],
-            defaults: defaults
-        ).service
-        #expect(after.stepsToAnnounce == [.record, .pick])
-        #expect(after.takeNotice(hasCaptions: false) == nil)
+        let service = makeScenario(scripts: [script]).service
+        #expect(service.stepsToAnnounce == [.write])
+        service.noteStepsDone()
+        #expect(service.stepsToAnnounce.isEmpty)
+        service.markPracticed()
+        #expect(service.stepsToAnnounce == [.practice])
+        service.noteStepsDone()
+        #expect(service.stepsToAnnounce.isEmpty && service.marks.announced == [.write, .practice])
     }
 
-    @Test func theFirstShareIsSaidAndEndsTheVoyage() {
+    @Test func theFirstShareEndsTheVoyage() {
         let scenario = makeScenario()
         scenario.milestones.recordShare(of: UUID())
         #expect(scenario.service.progress.current == nil)
-        #expect(scenario.service.takeNotice(hasCaptions: false) == "Your first star is out there")
+        scenario.service.noteStepsDone()
         #expect(scenario.service.marks.stage == .finished)
         #expect(!scenario.service.canBeTurnedOn)
         scenario.service.setOn(true)
         #expect(!scenario.service.isActive)
+    }
+
+    @Test func aStepSeenInItsPlaceDoesNotFloatAgainThisSession() {
+        let script = TestData.script()
+        let defaults = UserDefaults(suiteName: "voyage-\(UUID().uuidString)")!
+        let service = makeScenario(scripts: [script], defaults: defaults).service
+        #expect(service.floatingStep == .practice)
+        service.tipShown(.practice, at: .page)
+        #expect(service.floatingStep == nil, "the page already said it")
+        #expect(service.showsTip(for: .practice), "it still shows in its place")
+        #expect(makeScenario(scripts: [script], defaults: defaults).service.floatingStep == .practice, "the next session it may float again")
+    }
+
+    @Test func aSingleTakeIsPickedByItselfAndTwoNeedTheCreator() {
+        let script = TestData.script()
+        let one = makeScenario(scripts: [script], takes: [TestData.take(scriptID: script.id)]).service
+        #expect(one.progress.done.contains(.pick), "nothing to choose between")
+        #expect(one.progress.current == .polish)
+        let two = makeScenario(scripts: [script], takes: [TestData.take(scriptID: script.id), TestData.take(scriptID: script.id, number: 2)]).service
+        #expect(two.progress.current == .pick)
+        #expect(!VoyageStep.pick.tipMessage().contains("other"), "the tip never talks of takes that aren't there")
+    }
+
+    @Test func aVideoImportedFromPhotosIsNotAScriptAPracticeOrARecording() {
+        var imported = TestData.take(scriptID: nil)
+        imported.origin = .imported
+        let service = makeScenario(takes: [imported]).service
+        let done = service.progress.done
+        #expect(!done.contains(.write) && !done.contains(.practice) && !done.contains(.record))
+        #expect(service.progress.current == .write)
+    }
+
+    @Test func captionsAnExportMadeForItselfAreNotPickOrPolish() {
+        let script = TestData.script()
+        var take = TestData.take(scriptID: script.id)
+        var edit = TakeEdit(sourceDuration: take.duration, aspect: take.aspect)
+        edit.captions = [CaptionCue(text: "Hello", start: 0, end: 1)]
+        take.edit = edit
+        let first = TestData.take(scriptID: script.id, number: 2)
+        let service = makeScenario(scripts: [script], takes: [take, first]).service
+        #expect(!service.progress.done.contains(.pick), "an edit is not a pick")
+        #expect(!service.progress.done.contains(.polish), "captions only cached by an export are shown off")
+        edit.showsCaptions = true
+        #expect(VoyageProgress.isPolished(edit), "turned on, they are the creator's polish")
     }
 
     @Test func hidingPutsItAwayUntilSettingsBringsItBackWithItsTips() {
@@ -149,7 +186,8 @@ struct FirstVoyageServiceTests {
         service.setOn(false)
         #expect(service.floatingStep == nil)
         #expect(service.canBeTurnedOn)
-        #expect(service.takeNotice(hasCaptions: false) == nil, "a hidden guide says nothing")
+        service.noteStepsDone()
+        #expect(service.marks.announced.isEmpty, "a hidden guide counts nothing")
         service.setOn(true)
         #expect(service.floatingStep == .write, "turning it on brings the closed tip back too")
     }
@@ -176,7 +214,7 @@ struct FirstVoyageServiceTests {
         ])
         events = []
         service.markPracticed()
-        _ = service.takeNotice(hasCaptions: false)
+        service.noteStepsDone()
         #expect(events.map(\.parameters) == [
             ["tip": "write", "outcome": "stepDone"], ["tip": "practice", "outcome": "stepDone"],
         ])
@@ -199,5 +237,11 @@ struct FirstVoyageServiceTests {
         scenario.service.reset()
         #expect(scenario.service.floatingStep == .write)
         #expect(!scenario.service.marks.practiced)
+    }
+
+    @Test func aPracticeIsFiveSecondsOfTextMovingOn() {
+        #expect(!PracticeEvidence.counts(playedFor: 1, advanced: 200), "Play and Stop again")
+        #expect(!PracticeEvidence.counts(playedFor: 30, advanced: 0), "the text never moved")
+        #expect(PracticeEvidence.counts(playedFor: 5, advanced: 24))
     }
 }

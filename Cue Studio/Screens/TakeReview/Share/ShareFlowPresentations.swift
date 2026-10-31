@@ -18,6 +18,8 @@ struct ShareFlowPresentations: ViewModifier {
             .sheet(isPresented: Binding(get: { flow.step != nil }, set: { if !$0 { leave() } })) {
                 sheetContent
                     .cueSheetChrome()
+                    // A step's own words (a reminder set, a network left for later) show in front of the sheet, not under it.
+                    .toastHost(inSheet: true)
                     .presentationDetents(detents)
                     .presentationBackground(Palette.sheetNight)
                     .presentationDragIndicator(.visible)

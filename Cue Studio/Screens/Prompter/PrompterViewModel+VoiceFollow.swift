@@ -13,6 +13,23 @@ extension PrompterViewModel {
         updateVoiceMonitoring()
     }
 
+    /// A session opens in Voice Following (the default): without the microphone nothing can hear the creator, so it reads Steady for this
+    /// session, never saved (the recorder's microphone card says why and opens Settings). The practice picks its own (`preparePractice`).
+    func prepareScrollMode() {
+        guard !isPractice, session.prompter.scrollMode == .voice, microphone.isDenied() else { return }
+        readSteadyForThisSession()
+    }
+
+    /// Voice Following can't run here: the text scrolls Steady in this session, and the creator's saved mode stays as it is. Nothing
+    /// pretends to follow the voice.
+    func readSteadyForThisSession() {
+        guard session.prompter.scrollMode != .steady else { return }
+        session.prompter.scrollMode = .steady
+        sessionChoseScrollMode = true
+        updateVoiceMonitoring()
+        publishRemoteStatus()
+    }
+
     /// What the voice indicator and Studio's line say.
     var voiceFollowStatus: VoiceFollowStatus {
         VoiceFollowStatus(followsSpeech: followsSpeech, preparation: speechPreparation)
@@ -82,6 +99,14 @@ extension PrompterViewModel {
             listeningLanguage = route.language
             speechUnavailable = nil
         case .unavailable(let reason):
+            guard isPractice else {
+                // A session reads Steady and says why ("Can't follow Thai · Scrolling"), each time it falls back: a creator who picks
+                // Voice again is told again.
+                toast.show(reason.message, kind: .problem)
+                readSteadyForThisSession()
+                return
+            }
+            // The practice's text moves while the creator talks, and the line under its box says so (`PracticeVoice`).
             speechUnavailable = reason
             if noticedSpeechUnavailable != reason {
                 noticedSpeechUnavailable = reason

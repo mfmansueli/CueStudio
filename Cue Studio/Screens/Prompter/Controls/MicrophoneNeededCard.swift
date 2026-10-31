@@ -5,32 +5,11 @@
 
 import SwiftUI
 
-/// Without the microphone's permission recording is off (04 · F3): "Cue needs the microphone", and the way to Settings. The
-/// prompter keeps working; only Record waits.
+/// Without the microphone's permission recording is off (04 · F3): the one permission notice, with the way to Settings. The prompter keeps
+/// working; only Record waits. Opaque, so it reads over any picture from the camera.
 struct MicrophoneNeededCard: View {
-    @Environment(\.openURL) private var openURL
-
     var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: "mic.slash.fill")
-                .cueFont(.body, weight: .semibold)
-                .foregroundStyle(Palette.warnText)
-                .frame(width: 36, height: 36)
-                .background(Palette.warn.opacity(0.18), in: Circle())
-            Text("Cue needs the microphone")
-                .cueFont(.subheadline, weight: .semibold)
-                .frame(maxWidth: .infinity, alignment: .leading)
-            Button("Open Settings") {
-                openURL.openAppSettings()
-            }
-            .buttonStyle(.cueGlass(.compact, expands: false))
-            .accessibilityIdentifier("prompter.openSettingsButton")
-        }
-        .padding(14)
-        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
-        .background(Palette.warningCard, in: RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: Metrics.cardRadius, style: .continuous).strokeBorder(Palette.glassBorder, lineWidth: 0.5))
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("prompter.microphoneCard")
+        PermissionNoticeCard(notice: .microphone, settingsIdentifier: "prompter.openSettingsButton")
+            .accessibilityIdentifier("prompter.microphoneCard")
     }
 }

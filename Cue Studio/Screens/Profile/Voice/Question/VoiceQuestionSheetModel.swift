@@ -22,20 +22,30 @@ final class VoiceQuestionSheetModel {
     /// "Saved · voice 65%": an answer was just given and the sheet offers one more.
     private(set) var savedStrength: Int?
     private(set) var answersInARow = 0
-    var typed = ""
+    var typed = "" {
+        didSet { if !typed.isEmpty { engaged = true } }
+    }
     var feedback: Feedback?
-    var showsSomethingElse = false
+    var showsSomethingElse = false {
+        didSet { if showsSomethingElse { engaged = true } }
+    }
 
     private let profile: CreatorProfileService
     private let scheduler: VoiceQuestionScheduler
     private let toast: ToastService
     private var answeredCurrent = false
+    /// The profile as it was when this question came: a change (an example pasted or imported, an answer picked) is an answer.
+    private var startingProfile: CreatorProfile
+    /// The creator worked on the question (opened "+ Something else", typed, picked and unpicked): closing then is neither an answer nor
+    /// a dismissal.
+    private var engaged = false
 
     init(question: VoiceQuestion, profile: CreatorProfileService, scheduler: VoiceQuestionScheduler, toast: ToastService) {
         self.question = question
         self.profile = profile
         self.scheduler = scheduler
         self.toast = toast
+        startingProfile = profile.profile
         // The tip asks only what is missing: an audience chosen in the setup lacks its level.
         asksAudienceLevel = question == .audience && profile.profile.isChosen(.audience) && profile.profile.audienceLevel == nil
     }
@@ -78,6 +88,7 @@ final class VoiceQuestionSheetModel {
     /// A tap on an answer.
     func choose(_ option: VoiceOption) {
         feedback = nil
+        engaged = true
         if asksAudienceLevel {
             if let level = AudienceLevel(rawValue: option.id) { profile.answerAudienceLevel(level) }
             finishQuestion()
@@ -153,14 +164,22 @@ final class VoiceQuestionSheetModel {
         typed = ""
         feedback = nil
         showsSomethingElse = false
+        startingProfile = profile.profile
+        engaged = false
     }
 
     // MARK: - Dismissing
 
-    /// The sheet closes with no answer (close, a swipe down or a tap on the backdrop): the tip's question waits three days. A sheet
-    /// that already gave an answer is not a dismissal.
+    /// The sheet closes (close, a swipe down or a tap on the backdrop). Only a real "not now" is a dismissal (the question waits three days;
+    /// three in a row pause the tips): the sheet closed untouched. A changed profile (an example pasted or imported, an answer kept without
+    /// Save) is an answer; working on it and leaving it as it was ("+ Something else" without Add, an option on and off again) is neither.
     func dismissedWithoutAnswer() {
-        guard answersInARow == 0, !answeredCurrent else { return }
+        guard answersInARow == 0 else { return }
+        if profile.profile != startingProfile {
+            scheduler.answered(question)
+            return
+        }
+        guard !answeredCurrent, !engaged else { return }
         scheduler.dismissed(question)
     }
 

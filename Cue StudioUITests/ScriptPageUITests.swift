@@ -5,8 +5,8 @@
 
 import XCTest
 
-/// The script page (v29 · 4.1–4.4): the state strip in each state, Done, leaving with edits, "✦ Shape", the AI bar on a selection
-/// and the page without Apple Intelligence. `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` saves a picture of each state.
+/// The script page (v29 · 4.1–4.4): the state strip in each state, Done, leaving with edits, "✦ Shape" in the tools row, the AI bar
+/// on a selection and the page without Apple Intelligence. `TEST_RUNNER_CUE_SCREENSHOT_DIR=<folder>` saves a picture of each state.
 @MainActor
 final class ScriptPageUITests: XCTestCase {
     private static let ready = "Oat & Co. · sponsored read"
@@ -44,17 +44,19 @@ final class ScriptPageUITests: XCTestCase {
         app.openScriptPage(titled: Self.draft)
         XCTAssertTrue(element(app, "page.strip").exists(within: 5))
         try capture(app, "4.2_draft")
-        // The strip says Draft beside the switch; switching it on makes the script ready and the words stay.
+        // The switch, off, is the draft: nothing beside it says so again, and Shape is in the tools row (owner, 31/10/2026), so the
+        // switch has the row to itself. Switching it on makes the script ready and the words stay.
         let ready = app.pageReadyToggle
         XCTAssertTrue(ready.exists(within: 5))
         XCTAssertFalse(isOn(ready))
-        XCTAssertTrue(strip(app).hasPrefix("Draft"))
+        XCTAssertFalse(element(app, "page.strip.info").exists, "the strip has no line of details beside the switch")
+        XCTAssertFalse(element(app, "page.strip").buttons["page.shapeButton"].exists, "Shape is in the tools row, not the strip")
         ready.tap()
         // A storytime has four sections and this one has a single line: the switch asks first.
         XCTAssertTrue(app.alerts.firstMatch.exists(within: 5))
         app.alerts.buttons["Mark ready anyway"].tap()
         XCTAssertTrue(isOn(ready))
-        XCTAssertFalse(strip(app).hasPrefix("Draft"))
+        XCTAssertFalse(element(app, "page.strip.info").exists)
         // And back to a draft with one more tap.
         ready.tap()
         XCTAssertFalse(isOn(ready))
@@ -131,11 +133,18 @@ final class ScriptPageUITests: XCTestCase {
         try capture(app, "4.1_recorded_changed")
     }
 
-    func testShapeAddsCuesToAScriptWithNone() throws {
+    /// Shape sits in the tools row beside Improve (owner, 31/10/2026), at its own width, and the row scrolls rather than squeeze it.
+    func testShapeInTheToolsRowAddsCuesToAScriptWithNone() throws {
         let app = CueApp.launch(seeded: true)
         app.openScriptPage(titled: Self.draft)
         let shape = app.buttons["page.shapeButton"]
         XCTAssertTrue(shape.exists(within: 5))
+        let improve = app.buttons["page.improveButton"]
+        XCTAssertEqual(shape.frame.midY, improve.frame.midY, accuracy: 2, "Shape is on the tools row")
+        XCTAssertGreaterThan(shape.frame.minX, improve.frame.maxX, "Shape follows Improve")
+        XCTAssertEqual(shape.frame.midY, app.buttons["page.textSizeButton"].frame.midY, accuracy: 2)
+        XCTAssertFalse(element(app, "page.strip").buttons["page.shapeButton"].exists)
+        try capture(app, "4.2_tools_row")
         shape.tap()
         XCTAssertTrue(app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'cue'")).firstMatch.exists(within: 5))
         XCTAssertFalse(shape.exists(within: 2), "Shape is for scripts with no cues")

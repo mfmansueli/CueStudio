@@ -6,61 +6,16 @@
 import SwiftUI
 import TipKit
 
-/// The look of the tip (09 §3): simulated glass in a 22 pt corner, a ✦ in a 30 pt violet circle, the title in 15 pt semibold, the message
-/// in 13 pt at 70%, and the system's xmark at the end (44 pt to touch).
+/// The look of the My Cue Voice tip: Cue's one tip form (`TipCard`), compact, with the ✦ disc (the subject is AI), the question as the title
+/// and one line under it, and the system's xmark at the end (44 pt to touch).
 struct VoiceTipViewStyle: TipViewStyle {
     /// A tap on the tip (not on its ✕) opens the question.
     let onOpen: () -> Void
 
     func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: 0) {
-            Button(action: onOpen) {
-                content(configuration)
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityElement(children: .combine)
-            .accessibilityIdentifier("voice.tip.open")
-            closeButton(configuration)
-        }
-        .padding(.leading, 14)
-        .padding(.trailing, 2)
-        .padding(.vertical, 6)
-        .glassEffect(.regular, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
-    }
-
-    private func content(_ configuration: Configuration) -> some View {
-        HStack(spacing: 12) {
-            Text(verbatim: "✦")
-                .cueFont(15, weight: .semibold)
-                .foregroundStyle(Palette.Scripts.tipGlyph)
-                .frame(width: 30, height: 30)
-                .background(Palette.Scripts.tipGlyphFill, in: Circle())
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                configuration.title
-                    .cueFont(15, weight: .semibold)
-                    .foregroundStyle(Palette.ink)
-                configuration.message?
-                    .cueFont(13)
-                    .foregroundStyle(Palette.inkSoft)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-    }
-
-    private func closeButton(_ configuration: Configuration) -> some View {
-        Button {
-            configuration.tip.invalidate(reason: .tipClosed)
-        } label: {
-            Image(systemName: "xmark")
-                .font(.fixed(12, weight: .bold))
-                .foregroundStyle(Palette.ink2)
-                .frame(width: Metrics.hitTarget, height: Metrics.hitTarget)
-                .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text("Close tip"))
-        .accessibilityIdentifier("voice.tip.close")
+        TipCard(
+            sign: .ai, title: configuration.title ?? Text(verbatim: ""), message: configuration.message, onOpen: onOpen,
+            identifierPrefix: "voice.tip", onClose: { configuration.tip.invalidate(reason: .tipClosed) }
+        )
     }
 }

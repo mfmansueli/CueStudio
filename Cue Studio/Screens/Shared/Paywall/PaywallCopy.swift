@@ -36,13 +36,13 @@ nonisolated enum PaywallCopy {
         }
     }
 
-    /// The rest of what Pro offers, under its two highlights (the exports and Ultra AI's scripts, `ProHighlightCard`), in plain lines.
+    /// The rest of what Pro offers, under its two highlights (the exports, and Ultra AI's scripts where Ultra AI is offered, `ProHighlightCard`),
+    /// in plain lines. Only what Pro really adds today (decision 12, 30/10/2026): My Cue Voice, ad drafts, hook and platform versions, covers,
+    /// series tags and "Text behind me" are free for everyone, and nothing free is locked to fill this list. The watermark line says that
+    /// exported videos never carry one: only a screen recording or mirroring of Cue does, on the free plan (`CaptureWatermark`).
     static let benefits: [ProBenefit] = [
-        ProBenefit(text: String(localized: "Full My Cue Voice and ad drafts"), needsAppleIntelligence: true),
-        ProBenefit(text: String(localized: "Hook and platform versions"), needsAppleIntelligence: true),
-        ProBenefit(text: String(localized: "Covers, series tags and “Text behind me”")),
-        ProBenefit(text: String(localized: "Remote from Apple Watch, iPad & Mac sync"), isAvailable: false),
-        ProBenefit(text: String(localized: "Every milestone app icon")),
+        ProBenefit(text: String(localized: "The milestone app icons from 10 videos on")),
+        ProBenefit(text: String(localized: "No Cue mark on screen recordings · exported videos never have one")),
     ]
 
     /// The lines for this iPhone: the ones about Apple Intelligence stay out where it can't run, and the ones for what the app cannot do yet stay out

@@ -31,7 +31,7 @@ final class YourUniverseUITests: XCTestCase {
         return app
     }
 
-    func testTheLiveYearShowsItsCountPlanetsAndMilestone() {
+    func testTheLiveYearShowsItsCountAndPlanets() {
         let app = openUniverse("sample")
         XCTAssertEqual(element(app, "universe.headline").label, "23 VIDEOS SHARED IN \(year)")
         XCTAssertTrue(element(app, "universe.yearPicker").exists)
@@ -39,7 +39,8 @@ final class YourUniverseUITests: XCTestCase {
         XCTAssertTrue(element(app, "universe.planet.reels").exists)
         XCTAssertTrue(element(app, "universe.planet.shorts").exists)
         XCTAssertFalse(element(app, "universe.sealedBadge").exists)
-        XCTAssertTrue(element(app, "universe.nextMilestone").exists)
+        // The milestones are the creator's life (64 shared over two years): every icon is won, so no card promises one.
+        XCTAssertFalse(element(app, "universe.nextMilestone").exists)
         XCTAssertTrue(element(app, "universe.share").exists)
         XCTAssertTrue(element(app, "universe.theme.0").exists, "the themes sit under the map")
     }

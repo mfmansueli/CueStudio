@@ -24,6 +24,8 @@ final class TakeLibraryService {
     private let logger = Logger(subsystem: "studio.cue", category: "TakeLibrary")
     /// False when the library on disk couldn't be read: writing would replace it with what's in memory.
     @ObservationIgnored private var canSave = true
+    /// Takes deleted whose Undo may still be on screen: their videos wait here (`awaitPurge`) until it is out of reach.
+    @ObservationIgnored private var awaiting: [UUID: RemovedTake] = [:]
     /// The last write failed (the iPhone full): what changed is only in memory until a save works, the next change's or
     /// `saveAgainIfFailed` when Cue comes back to the front. The app says so (`RootView`).
     private(set) var saveFailed = false
@@ -237,7 +239,28 @@ final class TakeLibraryService {
         persist()
     }
 
-    /// The 4 seconds are over: the video and what Quick edit added go for good (unless the take came back).
+    /// A deleted take's video waits for its Undo to be out of reach (`purgeAwaiting`).
+    func awaitPurge(_ removed: RemovedTake) {
+        awaiting[removed.take.id] = removed
+    }
+
+    /// The Undo of the deleted take `id` is gone (its toast left): its video goes, unless the take came back.
+    func purgeAwaiting(_ id: UUID) {
+        guard let removed = awaiting.removeValue(forKey: id) else { return }
+        purge(removed)
+    }
+
+    /// Cue is going to the background, where it may be ended unnoticed: every deleted take still waiting goes now (a video left behind
+    /// would stay on the iPhone for good: nothing sweeps orphans, §37). True when one was waiting, so its Undo can be taken away too.
+    @discardableResult
+    func purgeAwaiting() -> Bool {
+        let waiting = awaiting.values
+        awaiting = [:]
+        for removed in waiting { purge(removed) }
+        return !waiting.isEmpty
+    }
+
+    /// The Undo is out of reach: the video and what Quick edit added go for good (unless the take came back).
     func purge(_ removed: RemovedTake) {
         guard !takes.contains(where: { $0.id == removed.take.id }) else { return }
         do {

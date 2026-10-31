@@ -26,6 +26,11 @@ struct ShareQueueStep: View {
         VStack(spacing: 14) {
             header
             ShareQueueBar(items: queue.items, current: network).padding(.horizontal, Metrics.gutter)
+            if flow.photosAreOff {
+                PermissionNoticeCard(notice: .photos, settingsIdentifier: "shareFlow.photosOff.settings", onClose: flow.closePhotosNotice)
+                    .accessibilityIdentifier("shareFlow.photosOff")
+                    .padding(.horizontal, Metrics.gutter)
+            }
             checklist
             reminder
             VStack(spacing: 4) {

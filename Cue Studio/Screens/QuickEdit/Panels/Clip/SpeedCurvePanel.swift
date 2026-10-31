@@ -30,7 +30,7 @@ struct SpeedCurvePanel: View {
         .scrollIndicators(.hidden)
         if let curve {
             SpeedCurveEditor(viewModel: viewModel, curve: curve)
-            PanelNote(text: String(localized: "Drag a point up to speed up, down to slow down."))
+            PanelNote(text: String(localized: "Drag a point up to speed up, down to slow down."), teaches: true)
         }
     }
 

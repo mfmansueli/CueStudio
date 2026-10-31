@@ -68,7 +68,8 @@ final class FindInspirationUITests: XCTestCase {
         XCTAssertTrue(bulb.exists(within: 15))
         XCTAssertTrue(bulb.isHittable)
         XCTAssertEqual(bulb.label, "Find inspiration")
-        XCTAssertGreaterThanOrEqual(bulb.frame.width, 44)
+        // 44 pt, give or take the layout's rounding (43.99999…).
+        XCTAssertGreaterThanOrEqual(bulb.frame.width, 44 - 0.01)
         // Right after the voice chip, on the same row.
         let voice = app.buttons["ideaCard.voiceChip"]
         XCTAssertGreaterThan(bulb.frame.minX, voice.frame.minX)
