@@ -5,14 +5,16 @@
 
 import SwiftUI
 
-/// "A bit long for TikTok": asked once, when Record is tapped on a script past the platform's range. Make it shorter with Cue
-/// (Apple Intelligence only), or record anyway.
+/// "A bit long for TikTok": asked once, when Record is tapped on a script past the platform's range. Make it shorter (Apple Intelligence, or
+/// Ultra AI on a script it wrote, which the button says: it sends the script to Google), or record anyway.
 struct LengthNudgeSheet: View {
     let platform: Platform
     let seconds: TimeInterval
     let idealUpper: TimeInterval
     let onRecordAnyway: () -> Void
     let offersShorter: Bool
+    /// Ultra AI shortens it (a script it wrote): the button says so.
+    var shorterByUltra = false
     let onShorter: () -> Void
 
     var body: some View {
@@ -36,7 +38,7 @@ struct LengthNudgeSheet: View {
                 Button(action: onShorter) {
                     HStack(spacing: 6) {
                         Image(systemName: "sparkles")
-                        Text("Make it shorter")
+                        Text(shorterByUltra ? "Make it shorter with Ultra AI" : "Make it shorter")
                     }
                 }
                 .buttonStyle(.cueAI())
@@ -45,6 +47,8 @@ struct LengthNudgeSheet: View {
         }
         .padding(EdgeInsets(top: 24, leading: Metrics.gutter, bottom: 12, trailing: Metrics.gutter))
         .frame(maxWidth: .infinity, alignment: .leading)
+        // A container, so its buttons keep their own identifiers.
+        .accessibilityElement(children: .contain)
         .accessibilityIdentifier("page.nudge")
     }
 }

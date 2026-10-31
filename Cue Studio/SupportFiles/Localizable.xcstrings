@@ -2752,6 +2752,125 @@
         }
       }
     },
+    "A check from Google (Firebase App Check) confirms each request comes from Cue." : {
+      "comment" : "What Ultra AI sends › What Google does with it: a row",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يؤكد تحقق من Google (Firebase App Check) أن كل طلب يأتي من Cue."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Et tjek fra Google (Firebase App Check) bekræfter, at hver forespørgsel kommer fra Cue."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Eine Prüfung von Google (Firebase App Check) bestätigt, dass jede Anfrage von Cue kommt."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Una verificación de Google (Firebase App Check) confirma que cada solicitud viene de Cue."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Une vérification de Google (Firebase App Check) confirme que chaque requête vient de Cue."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google की एक जाँच (Firebase App Check) पुष्टि करती है कि हर अनुरोध Cue से आता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pemeriksaan dari Google (Firebase App Check) memastikan setiap permintaan berasal dari Cue."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Un controllo di Google (Firebase App Check) conferma che ogni richiesta arriva da Cue."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Googleのチェック（Firebase App Check）で、各リクエストがCueから送られたものか確認します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google의 확인(Firebase App Check)으로 각 요청이 Cue에서 온 것인지 확인해요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En sjekk fra Google (Firebase App Check) bekrefter at hver forespørsel kommer fra Cue."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Een controle van Google (Firebase App Check) bevestigt dat elk verzoek van Cue komt."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Uma verificação do Google (Firebase App Check) confirma que cada pedido vem do Cue."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "En kontroll från Google (Firebase App Check) bekräftar att varje förfrågan kommer från Cue."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การตรวจสอบจาก Google (Firebase App Check) ยืนยันว่าทุกคำขอมาจาก Cue"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google’ın bir kontrolü (Firebase App Check) her isteğin Cue’dan geldiğini doğrular."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Một bước kiểm tra của Google (Firebase App Check) xác nhận mỗi yêu cầu đến từ Cue."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google 的验证（Firebase App Check）会确认每个请求都来自 Cue。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google 的驗證（Firebase App Check）會確認每個請求都來自 Cue。"
+          }
+        }
+      }
+    },
     "Allow it to record your voice." : {
       "comment" : "Line of the notice when the microphone is off for Cue in Settings.",
       "localizations" : {
@@ -6746,6 +6865,244 @@
         }
       }
     },
+    "Fit with Ultra AI" : {
+      "comment" : "Script page, under the length bar past the ideal: the button on a script Ultra AI wrote (one request to Google)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الملاءمة مع Ultra AI"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilpas med Ultra AI"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Ultra AI anpassen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustar con Ultra AI"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajuster avec Ultra AI"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI से फ़िट करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesuaikan dengan Ultra AI"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adatta con Ultra AI"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AIで合わせる"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI로 맞추기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilpass med Ultra AI"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aanpassen met Ultra AI"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustar com o Ultra AI"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anpassa med Ultra AI"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ปรับด้วย Ultra AI"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI ile sığdır"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chỉnh vừa bằng Ultra AI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 Ultra AI 适配"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 Ultra AI 配合"
+          }
+        }
+      }
+    },
+    "Fit to time by Ultra AI · the rest on your iPhone" : {
+      "comment" : "Improve script sheet: subtitle on a script Ultra AI wrote (its Fit to time goes to Google; the other tools run on the iPhone)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ملاءمة المدة بواسطة Ultra AI · والباقي على الـ iPhone"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilpas længden med Ultra AI · resten på din iPhone"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Auf Länge bringen mit Ultra AI · der Rest auf deinem iPhone"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustar a la duración con Ultra AI · el resto en tu iPhone"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajuster à la durée par Ultra AI · le reste sur votre iPhone"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "समय में फ़िट करें Ultra AI से · बाकी आपके iPhone पर"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sesuaikan durasi oleh Ultra AI · sisanya di iPhone-mu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adatta alla durata con Ultra AI · il resto sul tuo iPhone"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "時間に合わせるはUltra AI · ほかはiPhone上で"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "시간에 맞추기는 Ultra AI · 나머지는 iPhone에서"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tilpass til tid med Ultra AI · resten på iPhonen din"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Op lengte brengen door Ultra AI · de rest op je iPhone"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ajustar ao tempo pelo Ultra AI · o resto no seu iPhone"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anpassa till tid med Ultra AI · resten på din iPhone"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ปรับให้พอดีเวลาโดย Ultra AI · ที่เหลือทำบน iPhone ของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Süreye sığdır Ultra AI ile · gerisi iPhone’unda"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vừa thời lượng bằng Ultra AI · phần còn lại trên iPhone của bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "适配时长由 Ultra AI 完成 · 其余在你的 iPhone 上"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "配合時長由 Ultra AI 完成 · 其餘在你的 iPhone 上"
+          }
+        }
+      }
+    },
     "Free fonts for Japanese, Chinese, Korean, Arabic, Hindi and Thai, downloaded the first time a video uses one." : {
       "comment" : "Acknowledgements footer under the downloadable fonts row",
       "localizations" : {
@@ -7337,6 +7694,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "免費試用 · 含 %lld 次匯出。"
+          }
+        }
+      }
+    },
+    "Google Cloud’s data terms" : {
+      "comment" : "What Ultra AI sends: link to Google Cloud's generative AI data governance page",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "شروط البيانات في Google Cloud"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Clouds datavilkår"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Datenbedingungen von Google Cloud"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Términos de datos de Google Cloud"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Conditions de données de Google Cloud"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Cloud की डेटा शर्तें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ketentuan data Google Cloud"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termini sui dati di Google Cloud"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Cloudのデータ規約"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Cloud 데이터 약관"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Clouds datavilkår"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gegevensvoorwaarden van Google Cloud"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Termos de dados do Google Cloud"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Clouds datavillkor"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ข้อกำหนดข้อมูลของ Google Cloud"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Cloud veri koşulları"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Điều khoản dữ liệu của Google Cloud"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Cloud 数据条款"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Cloud 資料條款"
+          }
+        }
+      }
+    },
+    "Google runs its AI model to write, check, polish or fit the script, and sends the text back." : {
+      "comment" : "What Ultra AI sends › What Google does with it: a row",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تشغّل Google نموذج الذكاء الاصطناعي الخاص بها لكتابة النص أو تدقيقه أو تحسينه أو ملاءمته، ثم تعيد النص."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google kører sin AI-model for at skrive, tjekke, finpudse eller tilpasse manuskriptet og sender teksten tilbage."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google lässt sein KI-Modell das Skript schreiben, prüfen, verfeinern oder anpassen und schickt den Text zurück."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google ejecuta su modelo de IA para escribir, revisar, pulir o ajustar el guion, y devuelve el texto."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google exécute son modèle d’IA pour rédiger, vérifier, peaufiner ou ajuster le script, puis renvoie le texte."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google अपने AI मॉडल से स्क्रिप्ट लिखता, जाँचता, निखारता या फ़िट करता है, और टेक्स्ट वापस भेजता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google menjalankan model AI-nya untuk menulis, mengecek, memoles, atau menyesuaikan naskah, lalu mengirim teksnya kembali."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google usa il suo modello di IA per scrivere, controllare, rifinire o adattare il copione e rimanda il testo."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Googleは自社のAIモデルで台本を書き、チェックし、仕上げ、または時間に合わせ、テキストを返します。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google은 자사 AI 모델로 대본을 쓰고, 검토하고, 다듬거나 시간에 맞춘 뒤 텍스트를 돌려줘요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google kjører KI-modellen sin for å skrive, sjekke, finpusse eller tilpasse manuset, og sender teksten tilbake."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google laat zijn AI-model het script schrijven, controleren, afwerken of op lengte brengen en stuurt de tekst terug."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O Google roda o modelo de IA dele para escrever, checar, polir ou ajustar o roteiro e devolve o texto."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google kör sin AI-modell för att skriva, kontrollera, putsa eller anpassa manuset och skickar tillbaka texten."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google ใช้โมเดล AI ของตนเขียน ตรวจ ขัดเกลา หรือปรับสคริปต์ให้พอดี แล้วส่งข้อความกลับมา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google metni yazmak, kontrol etmek, cilalamak ya da süreye sığdırmak için kendi yapay zekâ modelini çalıştırır ve metni geri gönderir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google chạy mô hình AI của mình để viết, kiểm tra, trau chuốt hoặc chỉnh vừa kịch bản, rồi gửi văn bản lại."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google 用它的 AI 模型撰写、核查、润色或适配脚本，并把文本发回。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google 用它的 AI 模型撰寫、核查、潤飾或配合腳本，並把文字傳回。"
           }
         }
       }
@@ -8769,6 +9364,125 @@
         }
       }
     },
+    "Make it shorter with Ultra AI" : {
+      "comment" : "\"A bit long for TikTok\" sheet: the button on a script Ultra AI wrote (Ultra AI shortens it)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اجعله أقصر مع Ultra AI"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gør det kortere med Ultra AI"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit Ultra AI kürzen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hazlo más corto con Ultra AI"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Raccourcir avec Ultra AI"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI से छोटा करें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Buat lebih singkat dengan Ultra AI"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Accorcialo con Ultra AI"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AIで短くする"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI로 더 짧게"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gjør det kortere med Ultra AI"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Maak het korter met Ultra AI"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deixar mais curto com o Ultra AI"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gör det kortare med Ultra AI"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ทำให้สั้นลงด้วย Ultra AI"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI ile kısalt"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rút ngắn bằng Ultra AI"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 Ultra AI 改短"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "用 Ultra AI 改短"
+          }
+        }
+      }
+    },
     "Meet Ultra AI" : {
       "comment" : "Title of Ultra AI's permission sheet, an invitation to try it",
       "localizations" : {
@@ -9427,6 +10141,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "里程碑 · 你的第一部影片"
+          }
+        }
+      }
+    },
+    "Never sent" : {
+      "comment" : "What Ultra AI sends: section header",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "لا يُرسل أبدًا"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sendes aldrig"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nie gesendet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nunca se envía"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Jamais envoyé"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "कभी नहीं भेजा जाता"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tidak pernah dikirim"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mai inviato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "送信しないもの"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "보내지 않는 것"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sendes aldri"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nooit verstuurd"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nunca enviado"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skickas aldrig"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไม่ส่งเลย"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Asla gönderilmez"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Không bao giờ gửi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "从不发送"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "從不傳送"
           }
         }
       }
@@ -10141,6 +10974,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "僅在你要求時，針對 Ultra AI 寫的腳本：含你修改的該腳本、平台時長，以及你的說話方式。"
+          }
+        }
+      }
+    },
+    "Past the %@ ideal" : {
+      "comment" : "Script page, under the length bar when the script runs past the platform's ideal length; %@ is the platform (TikTok, Reels…)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تجاوز المدة المثالية لـ %@"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Over det ideelle for %@"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Über dem Ideal für %@"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supera lo ideal para %@"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dépasse l’idéal pour %@"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ के आदर्श से ज़्यादा"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Melebihi durasi ideal %@"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Oltre l’ideale per %@"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@の理想を超えています"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ 권장 길이 초과"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Over det ideelle for %@"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Langer dan ideaal voor %@"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Passou do ideal do %@"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Över idealet för %@"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เกินความยาวที่เหมาะกับ %@"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ için idealin üstünde"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vượt mức lý tưởng của %@"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超出 %@ 的理想时长"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "超出 %@ 的理想時長"
+          }
+        }
+      }
+    },
+    "Only when you pick Ultra AI: up to 3 requests for a script (draft, check and polish) and 1 for Fit to time. Nothing is sent in the background." : {
+      "comment" : "What Ultra AI sends › Sent to Google: footer",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فقط عندما تختار Ultra AI: حتى 3 طلبات لكل نص (مسودة وتدقيق وتحسين) وطلب واحد لـ«ملاءمة المدة». لا يُرسل أي شيء في الخلفية."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kun når du vælger Ultra AI: op til 3 forespørgsler pr. manuskript (udkast, tjek og finpudsning) og 1 til Tilpas længden. Intet sendes i baggrunden."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nur wenn du Ultra AI wählst: bis zu 3 Anfragen pro Skript (Entwurf, Prüfung und Feinschliff) und 1 für „Auf Länge bringen“. Im Hintergrund wird nichts gesendet."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo cuando eliges Ultra AI: hasta 3 solicitudes por guion (borrador, revisión y pulido) y 1 para Ajustar a la duración. No se envía nada en segundo plano."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seulement quand vous choisissez Ultra AI : jusqu’à 3 requêtes par script (brouillon, vérification et finition) et 1 pour Ajuster à la durée. Rien n’est envoyé en arrière-plan."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "सिर्फ़ जब आप Ultra AI चुनते हैं: एक स्क्रिप्ट के लिए ज़्यादा से ज़्यादा 3 अनुरोध (ड्राफ़्ट, जाँच और निखार) और “समय में फ़िट करें” के लिए 1। बैकग्राउंड में कुछ नहीं भेजा जाता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hanya saat kamu memilih Ultra AI: hingga 3 permintaan per naskah (draf, pengecekan, dan pemolesan) dan 1 untuk Sesuaikan durasi. Tidak ada yang dikirim di latar belakang."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solo quando scegli Ultra AI: fino a 3 richieste per copione (bozza, controllo e rifinitura) e 1 per Adatta alla durata. Non viene inviato nulla in background."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AIを選んだときだけ：1本の台本につき最大3回のリクエスト（下書き、チェック、仕上げ）と、「時間に合わせる」で1回。バックグラウンドでは何も送られません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI를 선택할 때만: 대본 하나에 최대 3번의 요청(초안, 검토, 다듬기)과 시간에 맞추기 1번. 백그라운드에서는 아무것도 보내지 않아요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bare når du velger Ultra AI: opptil 3 forespørsler per manus (utkast, sjekk og finpuss) og 1 for Tilpass til tid. Ingenting sendes i bakgrunnen."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alleen als je Ultra AI kiest: tot 3 verzoeken per script (concept, controle en afwerking) en 1 voor Op lengte brengen. Er wordt niets op de achtergrond verstuurd."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Só quando você escolhe o Ultra AI: até 3 pedidos por roteiro (rascunho, checagem e polimento) e 1 para Ajustar ao tempo. Nada é enviado em segundo plano."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bara när du väljer Ultra AI: upp till 3 förfrågningar per manus (utkast, kontroll och putsning) och 1 för Anpassa till tid. Inget skickas i bakgrunden."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เฉพาะเมื่อคุณเลือก Ultra AI: สูงสุด 3 คำขอต่อสคริปต์ (ร่าง ตรวจ และขัดเกลา) และ 1 คำขอสำหรับ “ปรับให้พอดีเวลา” ไม่มีการส่งอะไรในเบื้องหลัง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yalnızca Ultra AI’ı seçtiğinde: bir metin için en fazla 3 istek (taslak, kontrol ve cila) ve Süreye sığdır için 1. Arka planda hiçbir şey gönderilmez."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Chỉ khi bạn chọn Ultra AI: tối đa 3 yêu cầu cho một kịch bản (nháp, kiểm tra và trau chuốt) và 1 cho Vừa thời lượng. Không có gì được gửi ở chế độ nền."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "仅在你选择 Ultra AI 时：每个脚本最多 3 次请求（草稿、核查和润色），“适配时长”1 次。不会在后台发送任何内容。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "僅在你選擇 Ultra AI 時：每個腳本最多 3 次請求（草稿、核查和潤飾），「配合時長」1 次。不會在背景傳送任何內容。"
           }
         }
       }
@@ -11097,6 +12168,125 @@
         }
       }
     },
+    "Requests to Google" : {
+      "comment" : "What Ultra AI sends › the page with the requests word for word: title",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الطلبات إلى Google"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forespørgsler til Google"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anfragen an Google"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Solicitudes a Google"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Requêtes à Google"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google को अनुरोध"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Permintaan ke Google"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Richieste a Google"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Googleへのリクエスト"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google로 보내는 요청"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Forespørsler til Google"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Verzoeken aan Google"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pedidos ao Google"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Förfrågningar till Google"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "คำขอที่ส่งไปยัง Google"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google’a istekler"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yêu cầu gửi đến Google"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发给 Google 的请求"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳給 Google 的請求"
+          }
+        }
+      }
+    },
     "Script lengths aim at %@’s length goal for earning" : {
       "comment" : "Line under the Monetization goals toggle when it is on: the platform's name. Says only the length its earning program asks for, never that a video earns.",
       "localizations" : {
@@ -11823,6 +13013,125 @@
         }
       }
     },
+    "See the requests, word for word" : {
+      "comment" : "What Ultra AI sends: row that opens the requests exactly as they go out",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عرض الطلبات كلمة بكلمة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se forespørgslerne ord for ord"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Anfragen Wort für Wort ansehen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver las solicitudes, palabra por palabra"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Voir les requêtes, mot pour mot"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "अनुरोध शब्दशः देखें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Lihat permintaannya, kata demi kata"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vedi le richieste, parola per parola"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "リクエストを一字一句見る"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "요청을 글자 그대로 보기"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se forespørslene ord for ord"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bekijk de verzoeken woord voor woord"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ver os pedidos, palavra por palavra"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se förfrågningarna ord för ord"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ดูคำขอแบบคำต่อคำ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "İstekleri kelimesi kelimesine gör"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Xem nguyên văn các yêu cầu"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逐字查看请求"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "逐字查看請求"
+          }
+        }
+      }
+    },
     "Sent only for the scripts you pick Ultra AI for. Writing examples, imported excerpts and approved scripts are never part of it." : {
       "comment" : "My Cue Voice › What Cue sends: note when Ultra AI is allowed",
       "localizations" : {
@@ -11938,6 +13247,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "僅在你為腳本選擇 Ultra AI 時傳送。寫作範例、輸入的摘錄和你認可的腳本絕不包含在內。"
+          }
+        }
+      }
+    },
+    "Sent to Google" : {
+      "comment" : "What Ultra AI sends: section header",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "يُرسل إلى Google"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sendes til Google"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "An Google gesendet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Se envía a Google"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Envoyé à Google"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google को भेजा जाता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dikirim ke Google"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inviato a Google"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Googleに送信"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google로 전송"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sendes til Google"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Naar Google verstuurd"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enviado ao Google"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Skickas till Google"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ส่งไปยัง Google"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google’a gönderilir"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gửi đến Google"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "发送给 Google"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "傳送給 Google"
           }
         }
       }
@@ -12771,6 +14199,363 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "泰文字體"
+          }
+        }
+      }
+    },
+    "The draft between steps, for the check and the polish" : {
+      "comment" : "What Ultra AI sends › Sent to Google: a row",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "المسودة بين الخطوات، للتدقيق والتحسين"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Udkastet mellem trinene, til tjekket og finpudsningen"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Der Entwurf zwischen den Schritten, für die Prüfung und den Feinschliff"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El borrador entre pasos, para la revisión y el pulido"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le brouillon entre les étapes, pour la vérification et la finition"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चरणों के बीच का ड्राफ़्ट, जाँच और निखार के लिए"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Draf di antara langkah, untuk pengecekan dan pemolesan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La bozza tra i passaggi, per il controllo e la rifinitura"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ステップ間の下書き（チェックと仕上げのため）"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "단계 사이의 초안(검토와 다듬기용)"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utkastet mellom stegene, til sjekken og finpussen"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Het concept tussen de stappen, voor de controle en de afwerking"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O rascunho entre as etapas, para a checagem e o polimento"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Utkastet mellan stegen, för kontrollen och putsningen"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ฉบับร่างระหว่างขั้นตอน สำหรับการตรวจและขัดเกลา"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adımlar arasındaki taslak, kontrol ve cila için"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bản nháp giữa các bước, để kiểm tra và trau chuốt"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "步骤之间的草稿，用于核查和润色"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "步驟之間的草稿，用於核查和潤飾"
+          }
+        }
+      }
+    },
+    "The inspiration the idea came from, a sponsored script’s brand details and words you ask it to say" : {
+      "comment" : "What Ultra AI sends › Sent to Google: a row",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "الإلهام الذي جاءت منه الفكرة، وتفاصيل العلامة التجارية لنص مدعوم، والكلمات التي تطلب قولها"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inspirationen, idéen kom fra, brandoplysninger i et sponsoreret manuskript og ord, du beder om at få sagt"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Die Inspiration, aus der die Idee kam, die Markenangaben eines gesponserten Skripts und Worte, die es sagen soll"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La inspiración de la que salió la idea, los datos de la marca de un guion patrocinado y las palabras que pides que diga"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’inspiration d’où vient l’idée, les infos de la marque d’un script sponsorisé et les mots que vous lui demandez de dire"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "वह प्रेरणा जिससे आइडिया आया, किसी स्पॉन्सर्ड स्क्रिप्ट के ब्रांड की जानकारी और वे शब्द जो आप कहलवाना चाहते हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inspirasi asal ide, detail merek naskah bersponsor, dan kata-kata yang kamu minta untuk diucapkan"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "L’ispirazione da cui è nata l’idea, i dati del brand di un copione sponsorizzato e le parole che chiedi di dire"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "アイデアの元になったインスピレーション、スポンサー台本のブランド情報、入れてほしい言葉"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "아이디어의 출처가 된 영감, 스폰서 대본의 브랜드 정보, 넣어 달라고 한 말"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inspirasjonen ideen kom fra, merkeopplysninger i et sponset manus og ord du ber om å få sagt"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De inspiratie waar het idee vandaan kwam, de merkgegevens van een gesponsord script en woorden die je erin wilt"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A inspiração de onde a ideia veio, os dados da marca de um roteiro patrocinado e as palavras que você pede para dizer"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Inspirationen idén kom från, varumärkesuppgifter i ett sponsrat manus och ord du vill att det säger"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "แรงบันดาลใจที่มาของไอเดีย รายละเอียดแบรนด์ของสคริปต์ที่มีสปอนเซอร์ และคำที่คุณขอให้พูด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fikrin çıktığı ilham, sponsorlu bir metnin marka bilgileri ve söylemesini istediğin sözler"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nguồn cảm hứng của ý tưởng, thông tin thương hiệu của kịch bản được tài trợ và những từ bạn muốn nói"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "想法来源的灵感、赞助脚本的品牌信息，以及你要求说出的话"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "想法來源的靈感、贊助腳本的品牌資訊，以及你要求說出的話"
+          }
+        }
+      }
+    },
+    "The language, platform, format and length" : {
+      "comment" : "What Ultra AI sends › Sent to Google: a row",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اللغة والمنصة والقالب والمدة"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprog, platform, format og længde"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sprache, Plattform, Format und Länge"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "El idioma, la plataforma, el formato y la duración"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La langue, la plateforme, le format et la durée"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "भाषा, प्लेटफ़ॉर्म, फ़ॉर्मेट और लंबाई"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bahasa, platform, format, dan durasi"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La lingua, la piattaforma, il formato e la durata"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "言語、プラットフォーム、フォーマット、長さ"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "언어, 플랫폼, 형식, 길이"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Språk, plattform, format og lengde"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "De taal, het platform, het format en de lengte"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O idioma, a plataforma, o formato e a duração"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Språk, plattform, format och längd"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ภาษา แพลตฟอร์ม รูปแบบ และความยาว"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dil, platform, format ve uzunluk"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ngôn ngữ, nền tảng, định dạng và thời lượng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "语言、平台、格式和时长"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "語言、平台、格式和時長"
           }
         }
       }
@@ -13846,6 +15631,125 @@
         }
       }
     },
+    "Turn Ultra AI off in Privacy & AI data and nothing more goes to Google. Scripts it already wrote stay on this iPhone. Apple Intelligence doesn’t change." : {
+      "comment" : "What Ultra AI sends: footer, how to stop it",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "أوقف Ultra AI من «الخصوصية وبيانات الذكاء الاصطناعي» ولن يُرسل أي شيء آخر إلى Google. النصوص التي كتبها تبقى على هذا الـ iPhone. لا يتغير Apple Intelligence."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slå Ultra AI fra i Anonymitet og AI-data, så sendes der ikke mere til Google. Manuskripter, den allerede har skrevet, bliver på denne iPhone. Apple Intelligence ændres ikke."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Schalte Ultra AI in Datenschutz & KI-Daten aus, dann geht nichts mehr an Google. Bereits geschriebene Skripte bleiben auf diesem iPhone. Apple Intelligence ändert sich nicht."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desactiva Ultra AI en Privacidad y datos de IA y no se enviará nada más a Google. Los guiones que ya escribió se quedan en este iPhone. Apple Intelligence no cambia."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Désactivez Ultra AI dans Confidentialité et données d’IA et plus rien n’est envoyé à Google. Les scripts déjà écrits restent sur cet iPhone. Apple Intelligence ne change pas."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "“गोपनीयता और AI डेटा” में Ultra AI बंद करें, फिर Google को कुछ और नहीं जाता। जो स्क्रिप्ट वह लिख चुका है, वे इसी iPhone पर रहती हैं। Apple Intelligence नहीं बदलता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Matikan Ultra AI di Privasi & data AI, dan tidak ada lagi yang dikirim ke Google. Naskah yang sudah ditulisnya tetap di iPhone ini. Apple Intelligence tidak berubah."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disattiva Ultra AI in Privacy e dati IA e non va più nulla a Google. I copioni già scritti restano su questo iPhone. Apple Intelligence non cambia."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "「プライバシーとAIデータ」でUltra AIをオフにすると、それ以上Googleには何も送られません。すでに書かれた台本はこのiPhoneに残ります。Apple Intelligenceは変わりません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "개인정보 보호 및 AI 데이터에서 Ultra AI를 끄면 더 이상 Google로 아무것도 보내지 않아요. 이미 쓴 대본은 이 iPhone에 남아요. Apple Intelligence는 바뀌지 않아요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Slå av Ultra AI i Personvern og KI-data, så sendes ingenting mer til Google. Manus det allerede har skrevet, blir på denne iPhonen. Apple Intelligence endres ikke."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Zet Ultra AI uit in Privacy en AI-gegevens en er gaat niets meer naar Google. Scripts die het al schreef, blijven op deze iPhone. Apple Intelligence verandert niet."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Desligue o Ultra AI em Privacidade e dados de IA e nada mais vai para o Google. Os roteiros que ele já escreveu ficam neste iPhone. O Apple Intelligence não muda."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Stäng av Ultra AI i Integritet och AI-data så skickas inget mer till Google. Manus som det redan har skrivit stannar på den här iPhonen. Apple Intelligence ändras inte."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ปิด Ultra AI ใน “ความเป็นส่วนตัวและข้อมูล AI” แล้วจะไม่มีอะไรส่งไปยัง Google อีก สคริปต์ที่เขียนไปแล้วยังอยู่ใน iPhone เครื่องนี้ Apple Intelligence ไม่เปลี่ยน"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Gizlilik ve yapay zekâ verileri’nden Ultra AI’ı kapatırsan Google’a başka hiçbir şey gitmez. Yazdığı metinler bu iPhone’da kalır. Apple Intelligence değişmez."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tắt Ultra AI trong Quyền riêng tư & dữ liệu AI thì không gửi thêm gì đến Google nữa. Các kịch bản nó đã viết vẫn ở trên iPhone này. Apple Intelligence không thay đổi."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在“隐私与 AI 数据”中关闭 Ultra AI 后，不会再向 Google 发送任何内容。它已写好的脚本会留在这台 iPhone 上。Apple Intelligence 不受影响。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "在「隱私權與 AI 資料」中關閉 Ultra AI 後，不會再向 Google 傳送任何內容。它已寫好的腳本會留在這部 iPhone 上。Apple Intelligence 不受影響。"
+          }
+        }
+      }
+    },
     "Type, or hold the mic to talk" : {
       "comment" : "Logbook composer's placeholder: type an idea, or hold the microphone button to dictate it",
       "localizations" : {
@@ -14675,6 +16579,125 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ultra AI"
+          }
+        }
+      }
+    },
+    "Ultra AI · Check facts before recording" : {
+      "comment" : "Improve script sheet: footer on a script Ultra AI wrote that hasn't been fact-checked",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · تحقق من المعلومات قبل التسجيل"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Tjek fakta før optagelse"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Fakten vor der Aufnahme prüfen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Revisa los datos antes de grabar"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Vérifiez les faits avant de filmer"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · रिकॉर्ड करने से पहले तथ्य जाँचें"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Cek fakta sebelum merekam"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Controlla i fatti prima di registrare"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · 録画前に事実を確認"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · 녹화 전에 사실을 확인하세요"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Sjekk fakta før opptak"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Check de feiten voor het opnemen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Confira os fatos antes de gravar"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Kolla fakta före inspelning"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · ตรวจข้อเท็จจริงก่อนอัด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Kayıttan önce bilgileri kontrol et"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · Kiểm tra thông tin trước khi quay"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · 录制前请核对事实"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI · 錄影前請核對事實"
           }
         }
       }
@@ -16836,6 +18859,125 @@
         }
       }
     },
+    "Under Google Cloud’s terms, Google doesn’t use it to train its models. It may keep it for up to 24 hours to answer faster, and may log requests to detect abuse." : {
+      "comment" : "What Ultra AI sends › What Google does with it: a row (from Google Cloud's generative AI data governance terms)",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "بموجب شروط Google Cloud، لا تستخدمه Google لتدريب نماذجها. قد تحتفظ به لمدة تصل إلى 24 ساعة للرد بسرعة أكبر، وقد تسجّل الطلبات لاكتشاف إساءة الاستخدام."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ifølge Google Clouds vilkår bruger Google det ikke til at træne sine modeller. Google kan gemme det i op til 24 timer for at svare hurtigere og kan logge forespørgsler for at opdage misbrug."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Laut den Bedingungen von Google Cloud nutzt Google es nicht, um seine Modelle zu trainieren. Google kann es bis zu 24 Stunden speichern, um schneller zu antworten, und Anfragen protokollieren, um Missbrauch zu erkennen."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Según los términos de Google Cloud, Google no lo usa para entrenar sus modelos. Puede guardarlo hasta 24 horas para responder más rápido y puede registrar solicitudes para detectar abusos."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Selon les conditions de Google Cloud, Google ne l’utilise pas pour entraîner ses modèles. Il peut le conserver jusqu’à 24 heures pour répondre plus vite et peut journaliser des requêtes pour détecter les abus."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Cloud की शर्तों के तहत Google इसे अपने मॉडल ट्रेन करने में इस्तेमाल नहीं करता। तेज़ जवाब देने के लिए वह इसे 24 घंटे तक रख सकता है, और दुरुपयोग पकड़ने के लिए अनुरोध लॉग कर सकता है।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Berdasarkan ketentuan Google Cloud, Google tidak menggunakannya untuk melatih modelnya. Google dapat menyimpannya hingga 24 jam agar menjawab lebih cepat, dan dapat mencatat permintaan untuk mendeteksi penyalahgunaan."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Secondo i termini di Google Cloud, Google non lo usa per addestrare i suoi modelli. Può conservarlo fino a 24 ore per rispondere più in fretta e può registrare le richieste per individuare abusi."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Cloudの規約により、Googleはこれをモデルのトレーニングに使いません。応答を速くするために最大24時間保持することがあり、不正利用を検出するためにリクエストを記録することがあります。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Cloud 약관에 따라 Google은 이를 모델 학습에 사용하지 않아요. 더 빨리 답하기 위해 최대 24시간 보관할 수 있고, 남용을 감지하려고 요청을 기록할 수 있어요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Etter Google Clouds vilkår bruker ikke Google det til å trene modellene sine. Google kan lagre det i opptil 24 timer for å svare raskere, og kan logge forespørsler for å oppdage misbruk."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Volgens de voorwaarden van Google Cloud gebruikt Google het niet om zijn modellen te trainen. Google kan het tot 24 uur bewaren om sneller te antwoorden, en kan verzoeken loggen om misbruik op te sporen."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pelos termos do Google Cloud, o Google não usa isso para treinar os modelos dele. Pode guardar por até 24 horas para responder mais rápido e pode registrar pedidos para detectar abusos."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Enligt Google Clouds villkor använder Google det inte för att träna sina modeller. Google kan spara det i upp till 24 timmar för att svara snabbare och kan logga förfrågningar för att upptäcka missbruk."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ตามข้อกำหนดของ Google Cloud นั้น Google ไม่นำไปใช้ฝึกโมเดล อาจเก็บไว้นานสูงสุด 24 ชั่วโมงเพื่อตอบได้เร็วขึ้น และอาจบันทึกคำขอเพื่อตรวจจับการใช้งานในทางที่ผิด"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google Cloud koşullarına göre Google bunu modellerini eğitmek için kullanmaz. Daha hızlı yanıt vermek için 24 saate kadar saklayabilir ve kötüye kullanımı tespit etmek için istekleri kaydedebilir."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Theo điều khoản của Google Cloud, Google không dùng dữ liệu này để huấn luyện mô hình. Google có thể lưu tối đa 24 giờ để trả lời nhanh hơn và có thể ghi lại yêu cầu để phát hiện lạm dụng."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "根据 Google Cloud 的条款，Google 不会用它来训练模型。为了更快回应，Google 可能会保留最多 24 小时，也可能记录请求以检测滥用。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "根據 Google Cloud 的條款，Google 不會用它來訓練模型。為了更快回應，Google 可能會保留最多 24 小時，也可能記錄請求以偵測濫用。"
+          }
+        }
+      }
+    },
     "up to 4K" : {
       "comment" : "Cue Pro's exports highlight, small line under “Unlimited”",
       "localizations" : {
@@ -17617,121 +19759,478 @@
         }
       }
     },
-    "When it’s on and you pick Ultra AI, your request and voice preferences go to Google, which runs its model, and the draft goes back for the polish. Writing examples, imported excerpts, scripts, videos and audio stay on this iPhone. Turning it off doesn’t change Apple Intelligence." : {
-      "comment" : "Settings › Privacy & AI data: footer under the Ultra AI switch",
+    "What Google does with it" : {
+      "comment" : "What Ultra AI sends: section header",
       "localizations" : {
         "ar" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "عندما يكون مفعّلًا وتختار Ultra AI، يُرسَل طلبك وتفضيلات أسلوبك إلى Google، التي تشغّل نموذجها، ثم تُرسَل المسودة إليها مرة أخرى للتنقيح. تبقى أمثلة الكتابة والمقتطفات المستوردة والنصوص والفيديوهات والصوت على هذا الـ iPhone. إيقافه لا يغيّر Apple Intelligence."
+            "value" : "ما تفعله Google به"
           }
         },
         "da" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Når det er slået til, og du vælger Ultra AI, sendes din anmodning og dine stilpræferencer til Google, som kører sin model, og udkastet sendes dertil igen til finpudsningen. Skriveeksempler, importerede uddrag, manuskripter, videoer og lyd bliver på denne iPhone. At slå det fra ændrer ikke Apple Intelligence."
+            "value" : "Hvad Google gør med det"
           }
         },
         "de" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Wenn es an ist und du Ultra AI wählst, gehen deine Anfrage und Stilpräferenzen an Google, das sein Modell betreibt, und der Entwurf geht für den Feinschliff noch einmal dorthin. Schreibbeispiele, importierte Auszüge, Skripte, Videos und Audios bleiben auf diesem iPhone. Ausschalten ändert nichts an Apple Intelligence."
+            "value" : "Was Google damit macht"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Si está activado y eliges Ultra AI, tu solicitud y tus preferencias de estilo van a Google, que ejecuta su modelo, y el borrador vuelve allí para pulirlo. Los ejemplos de escritura, los fragmentos importados, los guiones, los videos y los audios se quedan en este iPhone. Desactivarlo no cambia Apple Intelligence."
+            "value" : "Qué hace Google con ello"
           }
         },
         "fr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quand il est activé et que vous choisissez Ultra AI, votre demande et vos préférences de style vont à Google, qui exécute son modèle, puis le brouillon y retourne pour la finition. Les exemples de textes, les extraits importés, les scripts, les vidéos et l’audio restent sur cet iPhone. Le désactiver ne change rien à Apple Intelligence."
+            "value" : "Ce que Google en fait"
           }
         },
         "hi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "चालू होने पर, जब आप Ultra AI चुनते हैं, तो आपका अनुरोध और शैली संबंधी प्राथमिकताएँ Google को जाती हैं, जो उसका मॉडल चलाता है, और निखार के लिए ड्राफ़्ट फिर से वहाँ जाता है। लेखन के उदाहरण, आयात किए गए अंश, स्क्रिप्ट, वीडियो और ऑडियो इसी iPhone पर रहते हैं। इसे बंद करने से Apple Intelligence नहीं बदलता।"
+            "value" : "Google इसके साथ क्या करता है"
           }
         },
         "id" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Saat aktif dan kamu memilih Ultra AI, permintaan dan preferensi gayamu dikirim ke Google, yang menjalankan modelnya, lalu draf dikirim lagi ke sana untuk dipoles. Contoh tulisan, kutipan yang diimpor, naskah, video, dan audio tetap di iPhone ini. Mematikannya tidak mengubah Apple Intelligence."
+            "value" : "Yang dilakukan Google dengannya"
           }
         },
         "it" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quando è attivo e scegli Ultra AI, la tua richiesta e le preferenze di stile vanno a Google, che esegue il suo modello, e la bozza ci torna per la rifinitura. Gli esempi di scrittura, gli estratti importati, i copioni, i video e l’audio restano su questo iPhone. Disattivarlo non cambia Apple Intelligence."
+            "value" : "Cosa ne fa Google"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "オンにしてUltra AIを選ぶと、リクエストと文体の設定が、モデルを動かすGoogleに送られ、仕上げのために下書きももう一度送られます。文章のサンプル、読み込んだ抜粋、台本、動画、オーディオはこのiPhoneに残ります。オフにしてもApple Intelligenceは変わりません。"
+            "value" : "Googleによる扱い"
           }
         },
         "ko" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "켜져 있을 때 Ultra AI를 선택하면 요청과 문체 설정이 모델을 실행하는 Google로 전송되고, 다듬기를 위해 초안이 다시 전송돼요. 글쓰기 예시, 가져온 발췌문, 대본, 영상, 오디오는 이 iPhone에 남아요. 꺼도 Apple Intelligence는 바뀌지 않아요."
+            "value" : "Google이 하는 일"
           }
         },
         "nb" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Når det er på og du velger Ultra AI, sendes forespørselen og stilpreferansene dine til Google, som kjører modellen sin, og utkastet sendes dit igjen for finpuss. Skriveeksempler, importerte utdrag, manus, videoer og lyd blir på denne iPhonen. Å slå det av endrer ikke Apple Intelligence."
+            "value" : "Hva Google gjør med det"
           }
         },
         "nl" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Als het aan staat en je kiest Ultra AI, gaan je verzoek en stijlvoorkeuren naar Google, dat zijn model draait, en gaat het concept daar nog een keer heen om te verfijnen. Schrijfvoorbeelden, geïmporteerde fragmenten, scripts, video’s en audio blijven op deze iPhone. Uitzetten verandert niets aan Apple Intelligence."
+            "value" : "Wat Google ermee doet"
           }
         },
         "pt" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Quando está ativado e você escolhe o Ultra AI, seu pedido e suas preferências de estilo vão para o Google, que roda o modelo, e o rascunho volta para lá para o refinamento. Exemplos de escrita, trechos importados, roteiros, vídeos e áudios ficam neste iPhone. Desativar não muda o Apple Intelligence."
+            "value" : "O que o Google faz com isso"
           }
         },
         "sv" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "När det är på och du väljer Ultra AI skickas din begäran och dina stilpreferenser till Google, som kör sin modell, och utkastet skickas dit igen för finputsen. Skrivexempel, importerade utdrag, manus, videor och ljud stannar på den här iPhonen. Att stänga av det ändrar inget i Apple Intelligence."
+            "value" : "Vad Google gör med det"
           }
         },
         "th" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "เมื่อเปิดไว้และคุณเลือก Ultra AI คำขอและการตั้งค่าสไตล์ของคุณจะส่งไปยัง Google ซึ่งรันโมเดลของตัวเอง และฉบับร่างจะถูกส่งกลับไปอีกครั้งเพื่อเกลา ตัวอย่างงานเขียน ข้อความที่นำเข้า สคริปต์ วิดีโอ และเสียงจะอยู่บน iPhone เครื่องนี้ การปิดไม่ส่งผลต่อ Apple Intelligence"
+            "value" : "Google ทำอะไรกับข้อมูลนี้"
           }
         },
         "tr" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Açıkken ve Ultra AI seçiliyken, isteğin ve üslup tercihlerin modelini çalıştıran Google’a gider; son rötuş için taslak da tekrar oraya gönderilir. Yazı örnekleri, içe aktarılan alıntılar, senaryolar, videolar ve ses bu iPhone’da kalır. Kapatmak Apple Intelligence üzerinde bir şey değiştirmez."
+            "value" : "Google bununla ne yapar"
           }
         },
         "vi" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Khi bật và bạn chọn Ultra AI, yêu cầu và tùy chọn phong cách của bạn được gửi đến Google, nơi chạy mô hình của họ, rồi bản nháp được gửi lại đó để trau chuốt. Ví dụ bài viết, đoạn trích đã nhập, kịch bản, video và âm thanh vẫn ở trên iPhone này. Tắt nó không làm thay đổi Apple Intelligence."
+            "value" : "Google làm gì với dữ liệu này"
           }
         },
         "zh-Hans" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "开启后，当你选择 Ultra AI 时，你的请求和文风偏好会发送给运行其模型的 Google，草稿也会再次发送过去进行润色。写作示例、导入的摘录、脚本、视频和音频会保留在此 iPhone 上。关闭它不会影响 Apple Intelligence。"
+            "value" : "Google 如何处理"
           }
         },
         "zh-Hant" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "開啟後，當你選擇 Ultra AI 時，你的要求和文風偏好會傳送給執行其模型的 Google，草稿也會再次傳送過去進行潤飾。寫作範例、輸入的摘錄、腳本、影片和音訊會保留在此 iPhone 上。關閉它不會影響 Apple Intelligence。"
+            "value" : "Google 如何處理"
+          }
+        }
+      }
+    },
+    "When it’s on and you pick Ultra AI, your idea, your choices and your My Cue Voice preferences go to Google, which writes the script. Off, nothing more is sent. Turning it off doesn’t change Apple Intelligence." : {
+      "comment" : "Settings › Privacy & AI data: footer of the Ultra AI switch",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "عند تشغيله واختيارك Ultra AI، تُرسل فكرتك واختياراتك وتفضيلاتك في My Cue Voice إلى Google، التي تكتب النص. عند إيقافه، لا يُرسل أي شيء آخر. إيقافه لا يغيّر Apple Intelligence."
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Når det er slået til, og du vælger Ultra AI, sendes din idé, dine valg og dine præferencer i My Cue Voice til Google, som skriver manuskriptet. Slået fra sendes der ikke mere. At slå det fra ændrer ikke Apple Intelligence."
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wenn es an ist und du Ultra AI wählst, gehen deine Idee, deine Auswahl und deine Einstellungen in My Cue Voice an Google, das das Skript schreibt. Aus wird nichts mehr gesendet. Ausschalten ändert nichts an Apple Intelligence."
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cuando está activado y eliges Ultra AI, tu idea, tus elecciones y tus preferencias de My Cue Voice se envían a Google, que escribe el guion. Desactivado, no se envía nada más. Desactivarlo no cambia Apple Intelligence."
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quand il est activé et que vous choisissez Ultra AI, votre idée, vos choix et vos préférences My Cue Voice sont envoyés à Google, qui rédige le script. Désactivé, plus rien n’est envoyé. Le désactiver ne change pas Apple Intelligence."
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "चालू होने पर, जब आप Ultra AI चुनते हैं, तो आपका आइडिया, आपकी पसंद और आपकी My Cue Voice प्राथमिकताएँ Google को जाती हैं, जो स्क्रिप्ट लिखता है। बंद होने पर इसके बाद कुछ नहीं भेजा जाता। इसे बंद करने से Apple Intelligence नहीं बदलता।"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Saat aktif dan kamu memilih Ultra AI, idemu, pilihanmu, dan preferensimu di My Cue Voice dikirim ke Google, yang menulis naskahnya. Saat nonaktif, tidak ada lagi yang dikirim. Mematikannya tidak mengubah Apple Intelligence."
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando è attivo e scegli Ultra AI, la tua idea, le tue scelte e le tue preferenze di My Cue Voice vanno a Google, che scrive il copione. Disattivato, non viene inviato più nulla. Disattivarlo non cambia Apple Intelligence."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "オンにしてUltra AIを選ぶと、アイデア、選んだ内容、My Cue Voiceの設定がGoogleに送られ、Googleが台本を書きます。オフにすると、それ以上は何も送られません。オフにしてもApple Intelligenceは変わりません。"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "켜 두고 Ultra AI를 선택하면 아이디어, 선택한 내용, My Cue Voice 설정이 Google로 보내지고 Google이 대본을 써요. 끄면 더 이상 아무것도 보내지 않아요. 꺼도 Apple Intelligence는 바뀌지 않아요."
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Når det er på og du velger Ultra AI, sendes ideen din, valgene dine og preferansene dine i My Cue Voice til Google, som skriver manuset. Av sendes ingenting mer. Å slå det av endrer ikke Apple Intelligence."
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Als het aan staat en je kiest Ultra AI, gaan je idee, je keuzes en je voorkeuren uit My Cue Voice naar Google, dat het script schrijft. Uit wordt er niets meer verstuurd. Uitzetten verandert niets aan Apple Intelligence."
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Quando está ligado e você escolhe o Ultra AI, sua ideia, suas escolhas e suas preferências do My Cue Voice vão para o Google, que escreve o roteiro. Desligado, nada mais é enviado. Desligar não muda o Apple Intelligence."
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "När det är på och du väljer Ultra AI skickas din idé, dina val och dina inställningar i My Cue Voice till Google, som skriver manuset. Avstängt skickas inget mer. Att stänga av det ändrar inte Apple Intelligence."
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เมื่อเปิดไว้และคุณเลือก Ultra AI ไอเดีย ตัวเลือก และการตั้งค่า My Cue Voice ของคุณจะถูกส่งไปยัง Google ซึ่งเป็นผู้เขียนสคริปต์ เมื่อปิด จะไม่มีการส่งอะไรเพิ่มอีก การปิดไม่เปลี่ยน Apple Intelligence"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Açıkken Ultra AI’ı seçtiğinde fikrin, seçimlerin ve My Cue Voice tercihlerin metni yazan Google’a gider. Kapalıyken başka hiçbir şey gönderilmez. Kapatmak Apple Intelligence’ı değiştirmez."
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Khi bật và bạn chọn Ultra AI, ý tưởng, lựa chọn và tùy chọn My Cue Voice của bạn được gửi đến Google để viết kịch bản. Khi tắt, không gửi thêm gì nữa. Tắt đi không thay đổi Apple Intelligence."
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "开启后，当你选择 Ultra AI 时，你的想法、你的选择和你的 My Cue Voice 偏好会发送给 Google，由它来写脚本。关闭后，不会再发送任何内容。关闭它不会影响 Apple Intelligence。"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "開啟後，當你選擇 Ultra AI 時，你的想法、你的選擇和你的 My Cue Voice 偏好會傳送給 Google，由它來寫腳本。關閉後，不會再傳送任何內容。關閉它不會影響 Apple Intelligence。"
+          }
+        }
+      }
+    },
+    "What Ultra AI sends" : {
+      "comment" : "Settings › Privacy & AI data: the row and title of the page with everything Ultra AI sends to Google",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ما يرسله Ultra AI"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hvad Ultra AI sender"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Was Ultra AI sendet"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Qué envía Ultra AI"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ce qu’envoie Ultra AI"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI क्या भेजता है"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yang dikirim Ultra AI"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cosa invia Ultra AI"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AIが送る内容"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI가 보내는 내용"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Hva Ultra AI sender"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Wat Ultra AI verstuurt"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "O que o Ultra AI envia"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vad Ultra AI skickar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "สิ่งที่ Ultra AI ส่ง"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI’ın gönderdikleri"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Những gì Ultra AI gửi"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI 发送的内容"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI 傳送的內容"
+          }
+        }
+      }
+    },
+    "With Fit to time, on a script Ultra AI wrote: that script with your edits" : {
+      "comment" : "What Ultra AI sends › Sent to Google: a row",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "مع «ملاءمة المدة» على نص كتبه Ultra AI: ذلك النص مع تعديلاتك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Med Tilpas længden på et manuskript, Ultra AI skrev: det manuskript med dine ændringer"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mit „Auf Länge bringen“ bei einem Skript von Ultra AI: dieses Skript mit deinen Änderungen"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con Ajustar a la duración, en un guion que escribió Ultra AI: ese guion con tus cambios"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Avec Ajuster à la durée, sur un script écrit par Ultra AI : ce script avec vos modifications"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI की लिखी स्क्रिप्ट पर “समय में फ़िट करें” से: आपके बदलावों के साथ वही स्क्रिप्ट"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dengan Sesuaikan durasi, pada naskah yang ditulis Ultra AI: naskah itu beserta suntinganmu"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Con Adatta alla durata, su un copione scritto da Ultra AI: quel copione con le tue modifiche"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AIが書いた台本で「時間に合わせる」を使うと：あなたの編集を含むその台本"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI가 쓴 대본에서 시간에 맞추기를 쓰면: 내가 고친 내용을 포함한 그 대본"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Med Tilpass til tid, på et manus Ultra AI skrev: det manuset med endringene dine"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Met Op lengte brengen, bij een script van Ultra AI: dat script met je aanpassingen"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Com Ajustar ao tempo, num roteiro que o Ultra AI escreveu: esse roteiro com as suas edições"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Med Anpassa till tid, på ett manus Ultra AI skrev: det manuset med dina ändringar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "เมื่อใช้ “ปรับให้พอดีเวลา” กับสคริปต์ที่ Ultra AI เขียน: สคริปต์นั้นพร้อมการแก้ไขของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ultra AI’ın yazdığı bir metinde Süreye sığdır ile: düzenlemelerinle birlikte o metin"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Với Vừa thời lượng, trên kịch bản Ultra AI đã viết: kịch bản đó cùng các chỉnh sửa của bạn"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "对 Ultra AI 写的脚本使用“适配时长”时：包含你修改的该脚本"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "對 Ultra AI 寫的腳本使用「配合時長」時：包含你修改的該腳本"
           }
         }
       }
@@ -18807,6 +21306,125 @@
         }
       }
     },
+    "Your idea, exactly as you type it, or a format’s answers" : {
+      "comment" : "What Ultra AI sends › Sent to Google: a row",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "فكرتك كما تكتبها تمامًا، أو إجابات أحد القوالب"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din idé, præcis som du skriver den, eller svarene i et format"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Idee, genau so, wie du sie tippst, oder die Antworten eines Formats"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu idea, tal como la escribes, o las respuestas de un formato"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre idée, telle que vous la tapez, ou les réponses d’un format"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका आइडिया, ठीक वैसा ही जैसा आप टाइप करते हैं, या किसी फ़ॉर्मेट के जवाब"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Idemu, persis seperti yang kamu ketik, atau jawaban sebuah format"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "La tua idea, esattamente come la scrivi, o le risposte di un formato"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "入力したとおりのアイデア、またはフォーマットへの回答"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "입력한 그대로의 아이디어 또는 형식에 대한 답변"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ideen din, akkurat slik du skriver den, eller svarene i et format"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je idee, precies zoals je het typt, of de antwoorden van een format"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sua ideia, exatamente como você digita, ou as respostas de um formato"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Din idé, precis som du skriver den, eller svaren i ett format"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ไอเดียของคุณตามที่พิมพ์ทุกคำ หรือคำตอบของรูปแบบ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fikrin, tam yazdığın gibi, ya da bir formatın yanıtları"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ý tưởng của bạn, đúng như bạn gõ, hoặc các câu trả lời của một định dạng"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你输入的原样想法，或某个格式的回答"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你輸入的原樣想法，或某個格式的回答"
+          }
+        }
+      }
+    },
     "Your idea, your choices and your My Cue Voice preferences go to Google, which writes it. Turn it off any time in Settings." : {
       "comment" : "Ultra AI's permission sheet: the one line over the buttons that says what is sent and to whom (keep 'Google' and 'My Cue Voice')",
       "localizations" : {
@@ -18922,6 +21540,244 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "你的想法、你的選擇和你的 My Cue Voice 偏好會傳送給 Google，由它來寫。你隨時可以在設定中關閉。"
+          }
+        }
+      }
+    },
+    "Your name and @handle, writing examples, imported excerpts, other scripts, videos, audio and photos" : {
+      "comment" : "What Ultra AI sends › Never sent: the row",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "اسمك و@اسم المستخدم، وأمثلة الكتابة، والمقتطفات المستوردة، والنصوص الأخرى، والفيديوهات، والصوت، والصور"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dit navn og @brugernavn, skriveeksempler, importerede uddrag, andre manuskripter, videoer, lyd og fotos"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dein Name und @Handle, Schreibbeispiele, importierte Auszüge, andere Skripte, Videos, Audio und Fotos"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tu nombre y @usuario, ejemplos de escritura, fragmentos importados, otros guiones, videos, audio y fotos"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Votre nom et votre @pseudo, vos exemples d’écriture, les extraits importés, vos autres scripts, vidéos, sons et photos"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपका नाम और @हैंडल, लेखन के उदाहरण, इंपोर्ट किए अंश, दूसरी स्क्रिप्ट, वीडियो, ऑडियो और फ़ोटो"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Nama dan @handle-mu, contoh tulisan, kutipan yang diimpor, naskah lain, video, audio, dan foto"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Il tuo nome e @handle, esempi di scrittura, estratti importati, altri copioni, video, audio e foto"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "名前と@ハンドル、文章の例、読み込んだ抜粋、ほかの台本、ビデオ、オーディオ、写真"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "이름과 @핸들, 글쓰기 예시, 가져온 발췌문, 다른 대본, 동영상, 오디오, 사진"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Navnet ditt og @brukernavn, skriveeksempler, importerte utdrag, andre manus, videoer, lyd og bilder"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je naam en @handle, schrijfvoorbeelden, geïmporteerde fragmenten, andere scripts, video’s, audio en foto’s"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Seu nome e @usuário, exemplos de escrita, trechos importados, outros roteiros, vídeos, áudio e fotos"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ditt namn och @handtag, skrivexempel, importerade utdrag, andra manus, videor, ljud och bilder"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ชื่อและ @แฮนเดิลของคุณ ตัวอย่างงานเขียน ข้อความที่นำเข้า สคริปต์อื่น วิดีโอ เสียง และรูปภาพ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adın ve @kullanıcı adın, yazı örnekleri, içe aktarılan alıntılar, diğer metinler, videolar, ses ve fotoğraflar"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tên và @tên người dùng của bạn, ví dụ bài viết, đoạn trích đã nhập, các kịch bản khác, video, âm thanh và ảnh"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的名字和 @用户名、写作示例、导入的摘录、其他脚本、视频、音频和照片"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的名字和 @使用者名稱、寫作範例、匯入的摘錄、其他腳本、影片、音訊和照片"
+          }
+        }
+      }
+    },
+    "Your My Cue Voice preferences: who you are, your audience and how you speak" : {
+      "comment" : "What Ultra AI sends › Sent to Google: a row",
+      "localizations" : {
+        "ar" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "تفضيلاتك في My Cue Voice: من أنت، وجمهورك، وطريقة كلامك"
+          }
+        },
+        "da" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dine præferencer i My Cue Voice: hvem du er, dit publikum og hvordan du taler"
+          }
+        },
+        "de" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Deine Einstellungen in My Cue Voice: wer du bist, dein Publikum und wie du sprichst"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tus preferencias de My Cue Voice: quién eres, tu público y cómo hablas"
+          }
+        },
+        "fr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vos préférences My Cue Voice : qui vous êtes, votre public et votre façon de parler"
+          }
+        },
+        "hi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "आपकी My Cue Voice प्राथमिकताएँ: आप कौन हैं, आपके दर्शक और आप कैसे बोलते हैं"
+          }
+        },
+        "id" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferensimu di My Cue Voice: siapa kamu, penontonmu, dan cara kamu bicara"
+          }
+        },
+        "it" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Le tue preferenze di My Cue Voice: chi sei, il tuo pubblico e come parli"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voiceの設定：あなたについて、視聴者、話し方"
+          }
+        },
+        "ko" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voice 설정: 나에 대한 정보, 시청자, 말하는 방식"
+          }
+        },
+        "nb" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Preferansene dine i My Cue Voice: hvem du er, publikummet ditt og hvordan du snakker"
+          }
+        },
+        "nl" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Je voorkeuren uit My Cue Voice: wie je bent, je publiek en hoe je praat"
+          }
+        },
+        "pt" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Suas preferências do My Cue Voice: quem você é, seu público e como você fala"
+          }
+        },
+        "sv" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dina inställningar i My Cue Voice: vem du är, din publik och hur du pratar"
+          }
+        },
+        "th" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "การตั้งค่า My Cue Voice ของคุณ: คุณเป็นใคร ผู้ชมของคุณ และวิธีพูดของคุณ"
+          }
+        },
+        "tr" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "My Cue Voice tercihlerin: kim olduğun, kitlen ve nasıl konuştuğun"
+          }
+        },
+        "vi" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tùy chọn My Cue Voice của bạn: bạn là ai, khán giả của bạn và cách bạn nói"
+          }
+        },
+        "zh-Hans" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的 My Cue Voice 偏好：你是谁、你的受众以及你的说话方式"
+          }
+        },
+        "zh-Hant" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "你的 My Cue Voice 偏好：你是誰、你的觀眾以及你的說話方式"
           }
         }
       }

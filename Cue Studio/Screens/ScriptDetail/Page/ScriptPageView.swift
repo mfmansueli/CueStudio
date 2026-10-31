@@ -82,7 +82,10 @@ struct ScriptPageView: View {
                             .padding(.top, 12)
                             .dimmedWhileTyping(isTyping)
                         }
-                        ScriptLengthBar(zone: viewModel.zone, feelsChanges: !viewModel.page.isWriting)
+                        ScriptLengthBar(
+                            zone: viewModel.zone, feelsChanges: !viewModel.page.isWriting, platform: script.platform, onFit: fitToTime,
+                            fitsWithUltra: viewModel.ultraFitsToTime, isFitting: viewModel.runningTool == .fitToTime
+                        )
                             .padding(.top, 14)
                             .dimmedWhileTyping(isTyping)
                         if viewModel.needsFactCheck {
@@ -252,6 +255,12 @@ struct ScriptPageView: View {
 
     // MARK: - Pieces
 
+    /// The length bar's fit, past the ideal: none while the AI writes, while another tool runs, or where nothing can fit it.
+    private var fitToTime: (() -> Void)? {
+        guard viewModel.canFitToTime, !viewModel.page.isWriting, viewModel.runningTool == nil || viewModel.runningTool == .fitToTime else { return nil }
+        return { Task { await viewModel.run(.fitToTime) } }
+    }
+
     /// Stop, while the AI writes.
     private var stop: (() -> Void)? {
         guard viewModel.page.isWriting else { return nil }
@@ -417,6 +426,7 @@ struct ScriptPageView: View {
                 onRecord()
             },
             offersShorter: viewModel.canFitToTime,
+            shorterByUltra: viewModel.ultraFitsToTime,
             onShorter: {
                 viewModel.page.showsLengthNudge = false
                 Task { await viewModel.run(.fitToTime) }

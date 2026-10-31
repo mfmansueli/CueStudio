@@ -15,4 +15,6 @@ enum AppLinks {
     /// Newer copies of `PlatformRules.json` (a static file, e.g. on GitHub Pages). While nil, the
     /// app uses the rules it shipped with.
     static let platformRules: URL? = nil
+    /// How Google treats what Ultra AI sends (no training on it, the 24-hour cache, abuse logs): Settings › Privacy & AI data › What Ultra AI sends.
+    static let googleCloudDataTerms = URL(string: "https://cloud.google.com/vertex-ai/generative-ai/docs/data-governance")
 }

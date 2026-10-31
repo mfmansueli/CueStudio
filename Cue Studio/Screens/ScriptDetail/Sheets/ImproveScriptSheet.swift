@@ -7,7 +7,7 @@ import SwiftUI
 
 /// "Improve script": the tools of the script's format (and "In my voice") as a list, with a tip
 /// first when the opening runs long. Everything runs on the iPhone, except "Fit to time" on a script
-/// Ultra AI wrote, whose row says so; a tool changes the script and the toast offers Undo.
+/// Ultra AI wrote, which the header and its row say; a tool changes the script and the toast offers Undo.
 struct ImproveScriptSheet: View {
     let viewModel: ScriptDetailViewModel
 
@@ -15,11 +15,7 @@ struct ImproveScriptSheet: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 14) {
                 // A script in a language Apple Intelligence can't draft in: the subtitle says so, and the tools that need it are dimmed.
-                SheetHeader(
-                    title: String(localized: "Improve script"),
-                    subtitle: viewModel.drafting.cause?.isLanguage == true
-                        ? viewModel.drafting.reason : String(localized: "Apple Intelligence · runs on your iPhone")
-                )
+                SheetHeader(title: String(localized: "Improve script"), subtitle: subtitle)
                 if let overrun = viewModel.hookOverrun {
                     hookTip(overrun)
                 }
@@ -29,7 +25,8 @@ struct ImproveScriptSheet: View {
                     }
                 }
                 if viewModel.needsFactCheck {
-                    Text("Apple Intelligence · Check facts before recording")
+                    Text(viewModel.script?.draftedBy == .ultra
+                        ? "Ultra AI · Check facts before recording" : "Apple Intelligence · Check facts before recording")
                         .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)
                         .frame(maxWidth: .infinity)
@@ -40,6 +37,13 @@ struct ImproveScriptSheet: View {
         }
         .cueSheetChrome()
         .presentationDetents([.medium, .large])
+    }
+
+    /// Who does the work. On a script Ultra AI wrote its Fit to time goes to Google, so the header doesn't say Apple Intelligence runs it all.
+    private var subtitle: String? {
+        if viewModel.drafting.cause?.isLanguage == true { return viewModel.drafting.reason }
+        return viewModel.ultraFitsToTime
+            ? String(localized: "Fit to time by Ultra AI · the rest on your iPhone") : String(localized: "Apple Intelligence · runs on your iPhone")
     }
 
     /// "Your hook runs ~12s" with what to aim for: opens the hook options.
