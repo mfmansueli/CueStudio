@@ -74,14 +74,14 @@ nonisolated enum ScriptTypeMap {
         return character == .rounded && weight.value < 700 ? ["HiraMaruProN-W4", gothic] : [gothic]
     }
 
-    /// Apple SD Gothic Neo, which has every weight.
+    /// Apple SD Gothic Neo at the weight. Its heaviest cut on the iPhone is Bold: the Mac's Heavy isn't there (measured on an
+    /// iPhone 15 Pro, `ScriptFontDeviceTests`), so a heavy style draws Korean in Bold rather than falling to a lighter face.
     private static func korean(_ weight: TextOverlayWeight) -> String {
         switch weight {
         case .regular: "AppleSDGothicNeo-Regular"
         case .medium: "AppleSDGothicNeo-Medium"
         case .semibold: "AppleSDGothicNeo-SemiBold"
-        case .bold: "AppleSDGothicNeo-Bold"
-        case .heavy: "AppleSDGothicNeo-Heavy"
+        case .bold, .heavy: "AppleSDGothicNeo-Bold"
         }
     }
 

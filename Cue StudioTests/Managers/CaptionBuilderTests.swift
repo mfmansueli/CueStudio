@@ -148,6 +148,31 @@ struct CaptionBuilderTests {
         #expect(CaptionBuilder.group(run + after).map(\.text) == ["one two three four five six", "and then more"])
     }
 
+    /// Japanese and Chinese recognition hears "。" as a word of its own (measured on an iPhone): it joins the word before, in
+    /// that word's time, so a line never lights it alone; an opening mark joins the word after.
+    @Test func punctuationHeardAloneJoinsItsWord() {
+        let heard = [
+            CaptionWord(text: "紹介", start: 0, end: 0.4), CaptionWord(text: "します", start: 0.4, end: 0.9),
+            CaptionWord(text: "。", start: 0.9, end: 0.9), CaptionWord(text: "「", start: 1.2, end: 1.2),
+            CaptionWord(text: "朝", start: 1.2, end: 1.5), CaptionWord(text: "」", start: 1.5, end: 1.5),
+        ]
+        let words = CaptionBuilder.attachingMarks(heard)
+        #expect(words.map(\.text) == ["紹介", "します。", "「朝」"])
+        #expect(words[1].end == 0.9)
+        #expect(words[2].start == 1.2)
+        let lines = CaptionBuilder.captions(heard: heard, script: "")
+        #expect(lines.map(\.text) == ["紹介します。", "「朝」"])
+        // The script's "。" already ends the word: the recognizer's "，" after it goes.
+        let spelled = [CaptionWord(text: "米。", start: 0, end: 0.3), CaptionWord(text: "，", start: 0.3, end: 0.4)]
+        #expect(CaptionBuilder.attachingMarks(spelled).map(\.text) == ["米。"])
+        // A closing quote after a full stop stays.
+        #expect(CaptionBuilder.attachingMarks([CaptionWord(text: "朝。", start: 0, end: 0.3), CaptionWord(text: "」", start: 0.3, end: 0.3)])
+            .map(\.text) == ["朝。」"])
+        // Latin punctuation the recognizer keeps on its word is left as it is.
+        let english = [CaptionWord(text: "Hello,", start: 0, end: 0.3), CaptionWord(text: "world.", start: 0.3, end: 0.6)]
+        #expect(CaptionBuilder.attachingMarks(english) == english)
+    }
+
     @Test func nothingHeardMakesNoLines() {
         #expect(CaptionBuilder.captions(heard: [], script: "A whole script that was never said.").isEmpty)
     }

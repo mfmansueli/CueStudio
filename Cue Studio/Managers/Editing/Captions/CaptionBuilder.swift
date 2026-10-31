@@ -26,7 +26,61 @@ nonisolated enum CaptionBuilder {
     /// Lines from `heard`, with the script's spelling where it reliably matches.
     /// - Parameter language: what was heard, so the script is cut into words the same way.
     static func captions(heard: [CaptionWord], script: String, language: CueLanguage? = nil) -> [CaptionCue] {
-        group(aligned(heard: withoutContinuations(heard), script: script, language: language))
+        group(attachingMarks(aligned(heard: withoutContinuations(heard), script: script, language: language)))
+    }
+
+    /// `heard` with the punctuation the recognizer hears as a word of its own in Japanese and Chinese ("します" "。") joined to
+    /// the word it belongs to, in that word's time: a line never lights a lone "。", and no space goes before it. An opening
+    /// mark ("「", "“") joins the word after it. A pause mark heard after a word that already ends in one (the script's "。"
+    /// then the recognizer's "，") goes: the script's punctuation stands. Measured on an iPhone (`ScriptFontDeviceTests`).
+    static func attachingMarks(_ heard: [CaptionWord]) -> [CaptionWord] {
+        var words: [CaptionWord] = []
+        var opening = ""
+        for var word in heard {
+            let text = word.text.trimmingCharacters(in: .whitespaces)
+            if isMark(text), text.unicodeScalars.allSatisfy(opens) {
+                opening += text
+                continue
+            }
+            if isMark(text), var last = words.popLast() {
+                let pauses = text.unicodeScalars.allSatisfy(isPause) && last.text.unicodeScalars.last.map(isPause) == true
+                last.text += pauses ? opening : opening + text
+                opening = ""
+                words.append(last)
+                continue
+            }
+            word.text = opening + word.text
+            opening = ""
+            words.append(word)
+        }
+        if !opening.isEmpty, var last = words.popLast() {
+            last.text += opening
+            words.append(last)
+        }
+        return words
+    }
+
+    /// Only marks written against a word: CJK and full-width punctuation, and curly quotes.
+    private static func isMark(_ text: String) -> Bool {
+        !text.isEmpty && text.unicodeScalars.allSatisfy { scalar in
+            let punctuation: [Unicode.GeneralCategory] = [
+                .openPunctuation, .closePunctuation, .initialPunctuation, .finalPunctuation, .otherPunctuation,
+            ]
+            guard punctuation.contains(scalar.properties.generalCategory) else { return false }
+            switch scalar.value {
+            case 0x3001...0x303F, 0xFF01...0xFF65, 0x2018...0x201F: return true
+            default: return false
+            }
+        }
+    }
+
+    /// A mark that ends a sentence or a clause: "。", "，", "、", "！", "？", "；", "：", or "." "," and their kin.
+    private static func isPause(_ scalar: Unicode.Scalar) -> Bool {
+        "。，、！？；：．.,!?;:".unicodeScalars.contains(scalar)
+    }
+
+    private static func opens(_ scalar: Unicode.Scalar) -> Bool {
+        [.openPunctuation, .initialPunctuation].contains(scalar.properties.generalCategory)
     }
 
     /// `heard` without the ellipses the recognizer puts where speech goes on in the next stretch:

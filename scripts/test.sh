@@ -124,6 +124,7 @@ case "$mode" in
             UltraQualityDeviceTests*) export TEST_RUNNER_CUE_ULTRA_QUALITY=1 ;;
             # Text to speech heard by this iPhone's recognizer at each speed, voice effects' words and time, library tracks' decoding time.
             AudioMixDeviceTests*) export TEST_RUNNER_CUE_AUDIO_E2E=1 ;;
+            ScriptFontDeviceTests*) export TEST_RUNNER_CUE_FONT_E2E=1 ;;
             # Real exports that only an iPhone can run (an HLG take: the Simulator's VideoToolbox can't convert it), with no flag.
             RealExports/*) ;;
             *) usage ;;

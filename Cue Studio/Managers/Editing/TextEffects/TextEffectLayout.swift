@@ -6,6 +6,7 @@
 import CoreGraphics
 import CoreText
 import Foundation
+import NaturalLanguage
 
 /// A text laid out once by Core Text for an effect, cut into the pieces its motion moves: one per letter as the reader sees
 /// it (a grapheme: "á" written with a combining accent, a flag, a family emoji are one), or one per word where letters join
@@ -243,8 +244,11 @@ nonisolated struct TextEffectLayout: @unchecked Sendable {
         return starts
     }
 
-    /// For each UTF-16 position, the word it belongs to (counted from 0, spaces apart); -1 for spaces.
+    /// For each UTF-16 position, the word it belongs to (counted from 0, spaces apart); -1 for spaces. Japanese, Chinese and
+    /// Thai put no space between words: there the language's own word breaks cut them (`wordBreaks`), so a word moves as a word
+    /// there too, never the whole line as one.
     private static func wordIndices(of text: NSString) -> [Int] {
+        let breaks = writesWithoutSpaces(text) ? wordBreaks(in: text) : []
         var indices = [Int](repeating: -1, count: text.length)
         var word = -1
         var inWord = false
@@ -253,12 +257,33 @@ nonisolated struct TextEffectLayout: @unchecked Sendable {
                 inWord = false
                 continue
             }
-            if !inWord {
+            if !inWord || breaks.contains(index) {
                 word += 1
                 inWord = true
             }
             indices[index] = word
         }
         return indices
+    }
+
+    /// The text holds Chinese characters, kana or Thai: scripts written without spaces between words.
+    private static func writesWithoutSpaces(_ text: NSString) -> Bool {
+        (text as String).unicodeScalars.contains { scalar in
+            WritingScript.japanese.contains(scalar) || WritingScript.thai.contains(scalar)
+        }
+    }
+
+    /// Where a word starts inside a run of letters, as the language's tokenizer cuts it ("朝の習慣を" → 朝 · の · 習慣 · を).
+    /// Punctuation outside a word stays with the word before it.
+    private static func wordBreaks(in text: NSString) -> Set<Int> {
+        let string = text as String
+        let tokenizer = NLTokenizer(unit: .word)
+        tokenizer.string = string
+        var starts = Set<Int>()
+        tokenizer.enumerateTokens(in: string.startIndex..<string.endIndex) { range, _ in
+            starts.insert(NSRange(range, in: string).location)
+            return true
+        }
+        return starts
     }
 }

@@ -2907,7 +2907,14 @@ escolher, baixadas só quando usadas.
   a pede (abaixo). As faces do sistema por caráter (Mincho para serifada, Thonburi Bold para Anton…) valem nas linhas que misturam latim. Uma família da biblioteca escolhida como fonte desenha na face do sistema da escrita
   até chegar. Prévia, exportação, capa e efeitos de texto pedem a mesma fonte; os caches mudam de chave quando um arquivo chega
   (`FontPackRegistry.generation`), e a prévia e a capa são desenhadas de novo. Efeitos: japonês e chinês letra a letra, árabe, hindi e tailandês
-  por palavra, como antes.
+  por palavra; um efeito que anda por palavra (Editorial reveal) corta japonês, chinês e tailandês nas palavras do idioma (`NLTokenizer`), já
+  que essas escritas não põem espaço entre elas, e nunca move a linha inteira como uma peça. Coreano pesado sai na Apple SD Gothic Neo Bold, a
+  mais pesada do iPhone (a Heavy só existe no Mac). O TextKit deixa uma palavra na linha enquanto tudo menos a última marca cabe e
+  depois não desenha essa marca (o ponto de "हैं" no fim de uma linha cheia sumia no Bold): a legenda ganha espaço para ela, um décimo do
+  tamanho da letra por vez, menos que qualquer palavra, então nenhuma palavra muda de linha (`CaptionCollectionRenderer.pinsAMark`).
+- **Legendas ouvidas:** o reconhecimento de fala ouve a pontuação do japonês e do chinês ("。", "，", "「") como palavra própria; ela se junta à
+  palavra a que pertence, no tempo dela (`CaptionBuilder.attachingMarks`), então nenhuma linha acende um "。" sozinho nem põe espaço antes dele,
+  e uma pausa ouvida depois da pontuação do roteiro ("米。" e "，") some.
 - **Biblioteca** (`SupportFiles/FontPacks.json`, 58 famílias do Google Fonts, todas SIL OFL 1.1; gerado por `tools/fonts/make_manifest.py` de
   `tools/fonts/packs.py`, presos a um commit de google/fonts, com SHA-256 e tamanho de cada arquivo): japonês 10, chinês simplificado 7, chinês
   tradicional 5, coreano 8, árabe 10, hindi 9, tailandês 9. O app leva só o manifesto (55 KB), nunca as fontes.
@@ -2928,3 +2935,11 @@ escolher, baixadas só quando usadas.
 - **Créditos:** Settings › Acknowledgements › Fonts for other scripts (cada família por escrita, com o texto da OFL).
 - **Medido:** contraste dos chips e notas com os tokens de `Palette` já medidos (`ink`, `inkSoft`, `warnText`). Folhas de contato:
   `ScriptFontSheetCaptureTests` (`TEST_RUNNER_CUE_SCRIPT_FONT_SHEET=<pasta>`, `TEST_RUNNER_CUE_SCRIPT_FONT_PACKS=<arquivos baixados>`).
+- **No aparelho** (`ScriptFontDeviceTests`, `CUE_DEVICE=<iPhone> scripts/test.sh device ScriptFontDeviceTests`, sem ninguém no iPhone; iPhone 15
+  Pro, 31/10/2026): as 27 faces do sistema que o mapa nomeia existem e desenham sua escrita; todos os arquivos que um peso pede, das 58 famílias,
+  baixados da internet, conferidos, registrados e desenhando (japonês 73 MB em 6 s, chinês tradicional 66 MB em 2,5 s, árabe 3 MB em 3 s); a
+  exportação esperou 0,4 s pelo arquivo chinês maior (17 MB), nunca mais que os 15 s; oito arquivos CJK desenhados (42 MB no disco) fizeram a
+  memória crescer menos de 2 MB. Legendas como o criador as tem: em japonês, chinês simplificado e tradicional, coreano, árabe, hindi, tailandês
+  e vietnamita, uma voz do sistema e uma pessoa lendo (FLEURS) são legendadas pelo reconhecimento do iPhone, e a linha ouvida é desenhada nos 20
+  estilos de legenda (três momentos da fala), nas 15 famílias de texto e nos 6 efeitos (três momentos da entrada), com as famílias baixadas antes:
+  toda letra tem face, e a da escrita sai na face da biblioteca ou na do estilo. As folhas ficam em Documents/ScriptFontSheets do app.

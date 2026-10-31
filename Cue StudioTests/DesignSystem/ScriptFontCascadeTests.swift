@@ -156,6 +156,31 @@ struct ScriptFontCascadeTests {
         return try #require(TextEffectCache.shared.layout(for: request))
     }
 
+    /// A text with `preset`'s effect, laid out for its motion.
+    private func effectLayout(_ words: String, preset: TypePreset, face: TextOverlayFont = .montserrat) throws -> TextEffectLayout {
+        var text = TextOverlay(role: .title, look: preset.look(for: .title), preset: preset, span: TimeSpan(start: 0, end: 4))
+        text.text = words
+        text.font = face
+        let request = try #require(TextOverlayRenderer.effectRequest(for: text, frameWidth: 1080, widthFraction: TextOverlayRenderer.maxWidthFraction))
+        return try #require(TextEffectCache.shared.layout(for: request))
+    }
+
+    /// Japanese, Chinese and Thai write no space between words: an effect that moves words moves the language's words, as it
+    /// does in English, never the whole line as one piece (measured on an iPhone, `ScriptFontDeviceTests`).
+    @Test func wordsWithoutSpacesStillMoveOneByOne() throws {
+        let japanese = try effectLayout("朝の習慣を三つ紹介します", preset: .headline)
+        #expect(japanese.piecesAreWords)
+        #expect(japanese.pieces.count >= 4, "\(japanese.pieces.count) pieces")
+        let chinese = try effectLayout("这是改变我早晨的三个习惯", preset: .headline)
+        #expect(chinese.pieces.count >= 4, "\(chinese.pieces.count) pieces")
+        let thai = try effectLayout("วันแรกของการเดินทาง", preset: .wave)
+        #expect(thai.piecesAreWords)
+        #expect(thai.pieces.count >= 3, "\(thai.pieces.count) pieces")
+        // Spaced writing keeps its words as they were.
+        #expect(try effectLayout("Day one of my trip", preset: .headline).pieces.count == 5)
+        #expect(try effectLayout("여행 첫날 아침", preset: .headline).pieces.count == 3)
+    }
+
     @Test func effectsMoveJoinedWritingByWordAndChineseCharactersOneByOne() throws {
         // Arabic, Hindi and Thai in a family that lacks them: their face comes from the cascade, and they still move by word.
         for words in ["مرحبا بكم", "नमस्ते दोस्तों", "สวัสดี ทุกคน"] {

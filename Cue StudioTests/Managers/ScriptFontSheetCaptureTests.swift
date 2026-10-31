@@ -14,7 +14,7 @@ import UIKit
 /// `TEST_RUNNER_CUE_SCRIPT_FONT_SHEET=<folder on the Mac>`. With `TEST_RUNNER_CUE_SCRIPT_FONT_PACKS=<folder>` (the files
 /// `tools/fonts/make_manifest.py` downloaded, named "<family>__<file>"), the library's files go through the store (checked,
 /// registered) first: `captions-system.png` is before them, `captions-library.png`, `texts.png`, `covers.png` and
-/// `library.png` after.
+/// `library.png` after. `ScriptFontDeviceTests` draws the same sheets on an iPhone, with the files really downloaded.
 @MainActor
 @Suite("Script font sheets capture", .enabled(if: ProcessInfo.processInfo.environment["CUE_SCRIPT_FONT_SHEET"] != nil))
 struct ScriptFontSheetCaptureTests {
@@ -75,7 +75,7 @@ struct ScriptFontSheetCaptureTests {
 
     // MARK: - Sheets
 
-    private func captionSheet(_ themes: [CaptionTheme]) -> UIImage {
+    func captionSheet(_ themes: [CaptionTheme]) -> UIImage {
         sheet(rows: themes.map(\.label), cells: themes.map { theme in
             Self.languages.map { language in
                 FontPackRegistry.shared.hanReading = language.han
@@ -84,7 +84,7 @@ struct ScriptFontSheetCaptureTests {
         })
     }
 
-    private func textSheet() -> UIImage {
+    func textSheet() -> UIImage {
         let faces = TextOverlayFont.editorFonts
         return sheet(rows: faces.map(\.label), cells: faces.map { face in
             Self.languages.map { language in
@@ -153,7 +153,7 @@ struct ScriptFontSheetCaptureTests {
         return CaptionCollectionRenderer.image(lazy.text.text, settings: collection, frame: frame, emphasis: lazy.emphasis, markup: lazy.markup)
     }
 
-    private func sheet(rows: [String], cells: [[UIImage?]], tile: CGSize? = nil, columns: [String]? = nil) -> UIImage {
+    func sheet(rows: [String], cells: [[UIImage?]], tile: CGSize? = nil, columns: [String]? = nil) -> UIImage {
         let tile = tile ?? self.tile
         let header: [String] = columns ?? Self.languages.map(\.code)
         let gutter: CGFloat = 230, top: CGFloat = 50, gap: CGFloat = 6
@@ -183,7 +183,7 @@ struct ScriptFontSheetCaptureTests {
         }
     }
 
-    private func save(_ image: UIImage, to url: URL) throws {
+    func save(_ image: UIImage, to url: URL) throws {
         try #require(image.pngData()).write(to: url)
     }
 }
