@@ -1,0 +1,118 @@
+{
+  "run": "c1",
+  "judge": "owner",
+  "date": "2026-10-31",
+  "note": "ideas 1-5 from the review page, 6-9 from the chat",
+  "picks": {
+    "t1-window-light": {
+      "source": "page",
+      "best": "B",
+      "engine": "checked",
+      "verdicts": {
+        "checkedMixed": "edit"
+      },
+      "note": "",
+      "key": {
+        "A": "checkedLow",
+        "B": "checked",
+        "C": "checkedMixed"
+      }
+    },
+    "t2-camera-upgrade": {
+      "source": "page",
+      "best": "tie",
+      "engine": "tie",
+      "verdicts": {},
+      "note": "",
+      "key": {
+        "A": "checkedMixed",
+        "B": "checkedLow",
+        "C": "checked"
+      }
+    },
+    "t3-teleprompter": {
+      "source": "page",
+      "best": "A",
+      "engine": "checkedMixed",
+      "verdicts": {
+        "checked": "edit"
+      },
+      "note": "",
+      "key": {
+        "A": "checkedMixed",
+        "B": "checked",
+        "C": "checkedLow"
+      }
+    },
+    "t4-sound": {
+      "source": "page",
+      "best": "tie",
+      "engine": "tie",
+      "verdicts": {},
+      "note": "O A achei um pouco engessado e o resto gostei muito.",
+      "key": {
+        "A": "checked",
+        "B": "checkedMixed",
+        "C": "checkedLow"
+      }
+    },
+    "t5-emergency-fund": {
+      "source": "page",
+      "best": "B",
+      "engine": "checkedMixed",
+      "verdicts": {},
+      "note": "É q C refinaria. Mas todos estão bem legais em geral.",
+      "key": {
+        "A": "checked",
+        "B": "checkedMixed",
+        "C": "checkedLow"
+      }
+    },
+    "t6-sleep-spending": {
+      "source": "chat",
+      "best": "A",
+      "engine": "checked",
+      "key": {
+        "A": "checked",
+        "B": "checkedMixed",
+        "C": "checkedLow"
+      }
+    },
+    "pt-BR-0": {
+      "source": "chat",
+      "best": "A",
+      "engine": "checkedMixed",
+      "key": {
+        "A": "checkedMixed",
+        "B": "checkedLow",
+        "C": "checked"
+      }
+    },
+    "pt-BR-1": {
+      "source": "chat",
+      "best": "C",
+      "engine": "checked",
+      "key": {
+        "A": "checkedLow",
+        "B": "checkedMixed",
+        "C": "checked"
+      }
+    },
+    "pt-BR-2": {
+      "source": "chat",
+      "best": "A",
+      "engine": "checkedLow",
+      "key": {
+        "A": "checkedLow",
+        "B": "checkedMixed",
+        "C": "checked"
+      }
+    }
+  },
+  "tally": {
+    "checked": 3,
+    "tie": 2,
+    "checkedMixed": 3,
+    "checkedLow": 1
+  }
+}

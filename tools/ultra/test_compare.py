@@ -116,14 +116,16 @@ class CollectTests(unittest.TestCase):
                 json.dump(manifest, handle)
             self.assertEqual([i["id"] for i in compare.read_export(folder, "t")], ["x"])
 
-    def test_a_later_bundle_replaces_the_same_id(self):
-        bundles = {"one": [idea("b", apple=engine("Primeira versão.")), idea("a")], "two": [idea("b", apple=engine("Segunda versão."))]}
+    def test_a_later_bundle_replaces_the_engines_it_wrote(self):
+        bundles = {"one": [idea("b", apple=engine("Primeira versão."), checked=engine("Mantida.")), idea("a")],
+                   "two": [idea("b", apple=engine("Segunda versão."))]}
         with tempfile.TemporaryDirectory() as folder:
             with contextlib.redirect_stdout(io.StringIO()):
                 ideas = compare.collect("t", ["one", "two"], folder=folder, read=lambda result, run: iter(bundles[result]))
             self.assertEqual([i["id"] for i in ideas], ["a", "b"])
             self.assertEqual(ideas[1]["engines"]["apple"]["text"], "Segunda versão.")
             self.assertEqual(ideas[1]["engines"]["apple"]["metrics"]["words"], 2)
+            self.assertEqual(ideas[1]["engines"]["checked"]["text"], "Mantida.")
             self.assertTrue(os.path.exists(os.path.join(folder, "quality-t.json")))
 
 
@@ -142,6 +144,25 @@ class PairTests(unittest.TestCase):
         made = sorted((k["id"], k["comparison"]) for k in key.values())
         self.assertEqual(made, [("p1", "apple-vs-checked"), ("t1", "apple-vs-checked"), ("t1", "polished-vs-checked"),
                                 ("t3", "apple-vs-checked"), ("t3", "polished-vs-checked")])
+
+    def test_each_variant_is_paired_with_the_apps_flow(self):
+        ideas = [idea("t1", checked=engine("Luz três."), checkedMedium=engine("Luz média."), checkedLow=engine("Luz baixa.")),
+                 idea("p1", kind="profile", checked=engine("Perfil."), checkedLow={"title": None, "text": None, "failure": "x"})]
+        _, key = compare.build_pairs(ideas)
+        made = sorted((k["id"], k["comparison"]) for k in key.values())
+        self.assertEqual(made, [("t1", "checked-vs-checkedLow"), ("t1", "checked-vs-checkedMedium")])
+        _, key = compare.build_pairs(ideas, without=["checkedMedium"])
+        self.assertEqual([k["comparison"] for k in key.values()], ["checked-vs-checkedLow"])
+
+    def test_what_each_engine_cost(self):
+        ideas = [idea("t1", checked={**engine("Um."), "tokens": {"draft": [1000, 300, 1500], "check": [1100, 300, 2500],
+                                                                   "review": [1500, 400, 2000]}}),
+                 idea("t2", checked={**engine("Dois."), "tokens": {"draft": [1000, 0, 0]}}, apple=engine("Sem tokens."))]
+        self.assertAlmostEqual(compare.dollars(ideas[0]["engines"]["checked"], (1.5, 9.0)), (3600 * 1.5 + 7000 * 9.0) / 1e6)
+        spent = compare.costs(ideas, (1.5, 9.0))
+        self.assertEqual(list(spent), ["checked"])
+        self.assertEqual(spent["checked"]["scripts"], 2)
+        self.assertEqual(spent["checked"]["least"], 0.0015)
 
     def test_the_seed_decides_order_and_sides(self):
         first = compare.build_pairs(self.ideas(), seed=7)

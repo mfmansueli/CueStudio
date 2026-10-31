@@ -54,7 +54,7 @@ final class FirebaseUltraClient: UltraModelClient {
     func generate(_ request: UltraStageRequest, progress: @escaping @MainActor (Int) -> Void) async throws -> UltraModelReply {
         let timeout = request.stage == .ideas ? Self.ideasTimeout : Self.timeout
         let model = ai.generativeModel(
-            modelName: Self.modelName, generationConfig: Self.configuration(for: request.stage),
+            modelName: Self.modelName, generationConfig: Self.configuration(for: request.stage, thinking: request.thinking),
             systemInstruction: ModelContent(role: "system", parts: request.instructions), requestOptions: RequestOptions(timeout: timeout)
         )
         var reply = UltraModelReply(text: "", finishedNormally: false)
@@ -87,18 +87,32 @@ final class FirebaseUltraClient: UltraModelClient {
 
     // MARK: - Configuration
 
-    private static func configuration(for stage: UltraStageRequest.Stage) -> GenerationConfig {
-        switch stage {
+    private static func configuration(for stage: UltraStageRequest.Stage, thinking: UltraThinking) -> GenerationConfig {
+        let tokens = UltraStageRequest.responseTokens
+        let thinkingConfig = config(for: thinking.level(for: stage))
+        return switch stage {
         case .draft:
-            GenerationConfig(maxOutputTokens: UltraStageRequest.responseTokens)
+            GenerationConfig(maxOutputTokens: tokens, thinkingConfig: thinkingConfig)
         case .check:
-            GenerationConfig(maxOutputTokens: UltraStageRequest.responseTokens, responseMIMEType: "application/json", responseSchema: checkSchema)
+            GenerationConfig(maxOutputTokens: tokens, responseMIMEType: "application/json", responseSchema: checkSchema, thinkingConfig: thinkingConfig)
         case .review:
-            GenerationConfig(maxOutputTokens: UltraStageRequest.responseTokens, responseMIMEType: "application/json", responseSchema: reviewSchema)
+            GenerationConfig(maxOutputTokens: tokens, responseMIMEType: "application/json", responseSchema: reviewSchema, thinkingConfig: thinkingConfig)
         case .fit:
-            GenerationConfig(maxOutputTokens: UltraStageRequest.responseTokens, responseMIMEType: "application/json", responseSchema: fitSchema)
+            GenerationConfig(maxOutputTokens: tokens, responseMIMEType: "application/json", responseSchema: fitSchema, thinkingConfig: thinkingConfig)
         case .ideas:
-            GenerationConfig(maxOutputTokens: UltraStageRequest.ideaResponseTokens, responseMIMEType: "application/json", responseSchema: ideasSchema)
+            GenerationConfig(
+                maxOutputTokens: UltraStageRequest.ideaResponseTokens, responseMIMEType: "application/json", responseSchema: ideasSchema,
+                thinkingConfig: thinkingConfig
+            )
+        }
+    }
+
+    /// Nothing for the model's own choice, so today's requests stay exactly as they were.
+    private static func config(for level: UltraThinking.Level?) -> ThinkingConfig? {
+        switch level {
+        case nil: nil
+        case .medium: ThinkingConfig(thinkingLevel: .medium)
+        case .low: ThinkingConfig(thinkingLevel: .low)
         }
     }
 

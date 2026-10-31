@@ -33,7 +33,7 @@ struct UltraCallBudgetTests {
         #expect(lab.used == 3 && defaults.defaults.integer(forKey: UltraCallBudget.key) == 3)
     }
 
-    @Test func theOwnersLimitIsThirty() {
-        #expect(UltraCallBudget.labLimit == 300)
+    @Test func theOwnersLimitIsAThousand() {
+        #expect(UltraCallBudget.labLimit == 1_000)
     }
 }
