@@ -8,8 +8,8 @@ import SwiftUI
 /// Caption style › Adjust: the same controls over any style (one of Cue's, a saved one, a text's look copied onto the
 /// captions). Font (family, its weights, case), color, background (with its color and how solid), outline, shadow, and the
 /// words marked for emphasis (once a word is marked); letter spacing under Advanced. A control shows only where it does
-/// something. "Back to <style>'s look" undoes every change at once, and a note warns when the look would be hard to read on
-/// bright scenes.
+/// something. "Back to <style>'s look" undoes every change at once (Animation's too: the style comes back as its card shows
+/// it), and a note warns when the look would be hard to read on bright scenes.
 struct CaptionAdjustTab: View {
     @Bindable var viewModel: QuickEditViewModel
     @State private var showsAdvanced = false

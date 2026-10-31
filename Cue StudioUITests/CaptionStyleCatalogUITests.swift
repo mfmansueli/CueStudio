@@ -142,7 +142,8 @@ final class CaptionStyleCatalogUITests: XCTestCase {
         XCTAssertTrue(app.buttons["edit.captionSize.1"].isSelected, "The style's own size didn't come back")
     }
 
-    /// Animation's three choices; Adjust changes the background over the style and "Back to its look" takes it away.
+    /// Animation's three choices; Adjust changes the background over the style and "Back to its look" takes it away, with the
+    /// motion and highlight color picked in Animation: the style comes back whole.
     func testAnimationAndAdjustChangeTheLookOverTheStyle() {
         let app = EditorApp.open(demo: true)
         openCaptionStyle(app)
@@ -167,6 +168,11 @@ final class CaptionStyleCatalogUITests: XCTestCase {
         XCTAssertTrue(reset.isGone(within: 3))
         reveal(app, app.buttons["edit.captionBackground.none"])
         XCTAssertTrue(app.buttons["edit.captionBackground.none"].isSelected)
+        tab(app, "animation")
+        XCTAssertTrue(app.buttons["edit.captionEntry.rise"].exists(within: 5))
+        XCTAssertFalse(app.buttons["edit.captionEntry.rise"].isSelected, "The style's own way in didn't come back")
+        XCTAssertFalse(app.buttons["edit.captionSpoken.glide"].isSelected, "The style's own word being said didn't come back")
+        XCTAssertFalse(app.buttons["edit.captionAnimation.reset"].exists)
     }
 
     /// A line's More › Emphasis: a word marked stays marked, and Adjust then shows the emphasis color.

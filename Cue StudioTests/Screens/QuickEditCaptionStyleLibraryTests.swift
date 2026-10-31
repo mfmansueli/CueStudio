@@ -62,6 +62,35 @@ struct QuickEditCaptionStyleLibraryTests {
         #expect(second.edit.captionCollection?.theme == .cue)
     }
 
+    /// A style comes back whole: "Back to its look" takes away Adjust's changes, the highlight color and the motion picked
+    /// in Animation, in one undo step, and its card is the one marked again; the size the creator gave stays.
+    @Test func backToTheStylesLookBringsItBackAsItsCardShowsIt() async throws {
+        let viewModel = await makeViewModel()
+        line(viewModel)
+        let captions = viewModel.captions
+        captions.pickCaptionTheme(.glide)
+        captions.setCaptionPointSize(24)
+        let size = captions.captionPointSize
+        captions.setCaptionEntry(.rise)
+        captions.setCaptionSpokenHighlight(.pop)
+        captions.setCaptionAccent(.red)
+        #expect(captions.changedCaptionLookCount == 2, "the highlight color and the motion")
+        #expect(captions.currentCaptionCard != nil, "a changed motion is this video's own look")
+
+        captions.resetCaptionLook()
+        let settings = try #require(viewModel.edit.captionCollection)
+        #expect(settings.look == CaptionSettings(theme: .glide).look)
+        #expect(captions.changedCaptionLookCount == 0)
+        #expect(captions.currentCaptionCard == nil)
+        #expect(captions.captionCardSections(.all).flatMap(\.cards).first { $0.isSelected }?.kind == .builtIn(.glide))
+        #expect(captions.captionPointSize == size, "the size stays")
+        #expect(viewModel.edit.captionAnimation == CaptionSettings(theme: .glide).motion?.nearestAnimation)
+
+        viewModel.undo()
+        #expect(viewModel.edit.captionCollection?.motion?.spoken == .pop)
+        #expect(viewModel.edit.captionCollection?.accent == .red)
+    }
+
     @Test func editingOrDeletingASavedStyleNeverChangesAVideoThatWearsIt() async throws {
         let styles = FakeTextStyleStore()
         let viewModel = await makeViewModel(styles: styles)
