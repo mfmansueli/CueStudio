@@ -12,4 +12,16 @@ nonisolated enum VoyageTipPlace: String, Sendable {
     /// The script page: Cue's first draft, and Practice over Record.
     case page
     case review, editor, share
+
+    /// The place the step happens (not a tip floating on Scripts or Takes).
+    var isInPlace: Bool { self != .scripts && self != .takes }
+
+    /// Where the gatekeeper keeps its one suggestion (`GuidanceGate`), for the floating places.
+    var guidancePlace: GuidancePlace? {
+        switch self {
+        case .scripts: .scripts
+        case .takes: .takes
+        default: nil
+        }
+    }
 }

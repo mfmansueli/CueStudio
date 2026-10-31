@@ -32,8 +32,9 @@ enum AppSheet: Identifiable, Hashable {
     case voiceSetup
     /// Import my writing, opened from a notification.
     case importWriting
-    /// Cue's invitation to allow notifications, before the system's question.
-    case notificationInvite(NotificationInviteReason)
+    /// Cue's invitation to allow notifications, before the system's question; for a script left without a take, that script (its
+    /// "Remind me tomorrow" sets the reminder).
+    case notificationInvite(NotificationInviteReason, scriptID: UUID?)
     /// AI Scripts Ultra's disclosure, before anything goes to Google: from the dock's writer chip.
     case ultraConsent
 
@@ -52,7 +53,7 @@ enum AppSheet: Identifiable, Hashable {
         case .featureIntro(let request): "featureIntro.\(request.id)"
         case .voiceSetup: "voiceSetup"
         case .importWriting: "importWriting"
-        case .notificationInvite(let reason): "notificationInvite.\(reason.rawValue)"
+        case .notificationInvite(let reason, _): "notificationInvite.\(reason.rawValue)"
         case .ultraConsent: "ultraConsent"
         }
     }

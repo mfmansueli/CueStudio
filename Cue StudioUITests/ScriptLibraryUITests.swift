@@ -417,6 +417,23 @@ final class ScriptLibraryUITests: XCTestCase {
         XCTAssertFalse(app.staticTexts[Self.lamp].exists)
     }
 
+    /// Select all beside the trash picks every script, and a second tap lets them all go.
+    func testSelectAllPicksEveryScriptAndASecondTapLetsThemGo() {
+        let app = CueApp.launch(seeded: true)
+        let select = app.buttons["scripts.selectButton"]
+        XCTAssertTrue(select.exists(within: 15))
+        select.tap()
+        let all = app.buttons["scripts.selectAllButton"]
+        XCTAssertTrue(all.exists(within: 5), "No Select all beside the trash")
+        XCTAssertEqual(all.label, "Select all")
+        all.tap()
+        XCTAssertTrue(app.staticTexts.containing(NSPredicate(format: "label ENDSWITH ' selected'")).firstMatch.exists(within: 3))
+        XCTAssertEqual(all.label, "Deselect all")
+        XCTAssertTrue(app.buttons["scripts.deleteSelectionButton"].isEnabled)
+        all.tap()
+        XCTAssertTrue(app.staticTexts["Select scripts"].exists(within: 3), "A second tap didn't let them go")
+    }
+
     // MARK: - Helpers
 
     private func openScript(_ app: XCUIApplication, _ title: String) {

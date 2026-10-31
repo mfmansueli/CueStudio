@@ -96,7 +96,7 @@ final class DataEraserService {
         library.delete(Set(library.scripts.map(\.id)))
         library.deleteFoldersAndKeptCopies()
         ideas?.forgetEverything()
-        for entry in logbook.entries { logbook.delete(entry.id) }
+        logbook.eraseAll()
         for brand in brands.brands { brands.remove(brand.id) }
         profile.profile = CreatorProfile()
         preferences.resetCreatorSetup()

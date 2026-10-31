@@ -42,6 +42,9 @@ final class ScriptDetailViewModel {
     private(set) var isLoadingHooks = false
     /// The platform a "Make a version for…" copy is being written for.
     private(set) var versionInProgress: Platform?
+    /// The page is on screen (it is made for the page that opens, and its view says when it leaves): a result that arrives after the creator
+    /// left it names the script it was for (`sayResult`).
+    var isOnScreen = true
 
     let library: ScriptLibraryService
     let takes: TakeLibraryService
@@ -232,10 +235,15 @@ final class ScriptDetailViewModel {
 
     // MARK: - Fact check
 
+    /// "I checked": the creator reviewed the claims of this version (recorded with the date, `FactReview`). An AI rewrite that changes the
+    /// words brings the reminder back.
     func markFactChecked() {
         library.markFactChecked(scriptID)
-        toast.show(String(localized: "Marked as fact-checked"))
+        toast.show(String(localized: "Claims reviewed for this version"))
     }
+
+    /// A copy the AI made of a script whose claims need (or needed) checking needs checking too.
+    private var copiesNeedFactCheck: Bool { script.map { $0.factCheck || $0.factReview != nil } ?? false }
 
     // MARK: - Tools
 
@@ -264,7 +272,7 @@ final class ScriptDetailViewModel {
 
     /// What a tool wrote becomes the script's words, saved at once (a new version when takes were made
     /// from the old ones). The toast says what happened (Cue's ★ for its own writing), and its Undo puts the old words back.
-    private func adopt(_ text: String, message: String, kind: ToastKind = .cue) {
+    private func adopt(_ text: String, message: String, kind: ToastKind = .cue, about title: String? = nil) {
         guard let script else { return }
         let before = (text: script.text, version: script.version)
         let bumpsVersion = !scriptTakes.isEmpty
@@ -274,19 +282,26 @@ final class ScriptDetailViewModel {
         }
         syncPage()
         sheet = nil
-        toast.show(message, kind: kind, duration: .seconds(4), action: ToastAction(title: String(localized: "Undo")) { [weak self] in
+        let undo = ToastAction(title: String(localized: "Undo")) { [weak self] in
             guard let self else { return }
             library.update(scriptID) { script in
                 script.text = before.text
                 script.version = before.version
             }
+            library.clearFactCheckIfReviewed(scriptID)
             syncPage()
             toast.show(String(localized: "Undone"))
-        })
+        }
+        // A tool's rewrite took a while: it never takes an Undo's place, and names the script once the page is gone.
+        if let title {
+            sayResult(message, kind: kind, action: undo, about: title)
+        } else {
+            toast.show(message, kind: kind, duration: .seconds(4), action: undo)
+        }
     }
 
     private func rewrite(with tool: ScriptTool) async {
-        guard script != nil else { return }
+        guard let title = script?.displayTitle else { return }
         // A script Ultra AI wrote is fitted by Ultra, one call and only when asked: on the iPhone, Apple Intelligence's Fit to time left 10 of 13
         // of them outside the platform's range, cut at the seams (DESIGN_PROJECT §57). Without Ultra's permission it stays Apple Intelligence's.
         let ultraFits = tool == .fitToTime && ultraFitsToTime
@@ -314,18 +329,21 @@ final class ScriptDetailViewModel {
             }
             let notice = RewriteNotice.after(tool, before: before, result: result, done: doneMessage(for: tool), idealRange: preset.idealRange)
             if notice.changesScript {
-                adopt(result.text, message: notice.message)
+                // What the AI wrote changes the claims: whatever was checked before is to be checked again (decision 9).
+                adopt(result.text, message: notice.message, about: title)
+                library.flagForFactCheckAfterRewrite(scriptID)
             } else {
                 sheet = nil
-                toast.show(notice.message, kind: notice.kind)
+                sayResult(notice.message, kind: notice.kind, action: notice.kind == .problem ? retry { await $0.run(tool) } : nil, about: title)
             }
         } catch {
-            showFailure(error)
+            sayFailure(error, about: title) { await $0.run(tool) }
         }
     }
 
     private func translate(into language: CueLanguage) async {
         guard let script else { return }
+        let title = script.displayTitle
         // Apple Intelligence itself is told here; a language of the pair it can't take is named by the translation (both languages).
         if let reason = writer.drafting(in: []).reason {
             toast.show(reason, kind: .problem)
@@ -342,23 +360,23 @@ final class ScriptDetailViewModel {
             context.language = language
             let result = try await writer.rewriteReported(workingText, with: .translate, context: context)
             guard !result.isUntouched else {
-                toast.show(String(localized: "Couldn’t draft it · Try again"), kind: .problem)
+                sayResult(String(localized: "Couldn’t draft it"), kind: .problem, action: retry { await $0.run(.translate, language: language) }, about: title)
                 return
             }
             // A translation is a new script in the new language; the original stays as written.
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(language.localizedName))"),
                 text: result.text, platform: script.platform, type: script.type, folder: script.folder,
-                language: language
+                factCheck: copiesNeedFactCheck, language: language
             )
             sheet = nil
             var message = String(localized: "\(language.localizedName) version saved")
             if result.leftAsWritten > 0 {
                 message += " · " + String(localized: "\(result.leftAsWritten) of \(result.parts) parts left as written")
             }
-            toast.show(message, kind: .cue)
+            sayResult(message, kind: .cue, about: title, away: Self.versionSaved(language.localizedName, of: title))
         } catch {
-            showFailure(error)
+            sayFailure(error, about: title) { await $0.run(.translate, language: language) }
         }
     }
 
@@ -373,6 +391,7 @@ final class ScriptDetailViewModel {
             return
         }
         versionInProgress = platform
+        let title = script.displayTitle
         // The ring turns while the version is written; what came of it takes its place, and a stop lets it go.
         let work = toast.showWorking(String(localized: "Drafting the \(platform.label) version…"))
         defer {
@@ -388,23 +407,17 @@ final class ScriptDetailViewModel {
             library.create(
                 title: String(localized: "\(script.displayTitle) (\(platform.label))"),
                 text: result.text, platform: platform, type: script.type, folder: script.folder,
-                language: script.language
+                factCheck: copiesNeedFactCheck, language: script.language
             )
             var message = String(localized: "\(platform.label) version saved")
             // The version is the script as the platform's length asks it, or says how far it got.
             if let length = RewriteNotice.lengthNote(words: ReadTime.wordCount(in: result.text), idealRange: range) {
                 message += " · " + length
             }
-            toast.show(message, kind: .cue)
+            sayResult(message, kind: .cue, ending: work, about: title, away: Self.versionSaved(platform.label, of: title))
         } catch {
-            showFailure(error)
+            sayFailure(error, ending: work, about: title) { await $0.makeVersion(for: platform) }
         }
-    }
-
-    /// An AI tool failed: the reason in Cue's words. Stopping it is not a failure and says nothing.
-    private func showFailure(_ error: any Error) {
-        guard !(error is CancellationError) else { return }
-        toast.show(error.localizedDescription, kind: .problem)
     }
 
     private func doneMessage(for tool: ScriptTool) -> String {

@@ -164,7 +164,7 @@ struct CaptionAdjustTab: View {
                 selection: CaptionEmphasisSize.nearest(to: spec.emphasisScale), height: 38, identifier: "edit.captionEmphasisSize"
             ) { size in captions.adjustCaptions { $0.emphasisSize = size } }
         } else {
-            PanelNote(text: String(localized: "To emphasize a word, open its line in Captions › More › Emphasis."))
+            PanelNote(text: String(localized: "To emphasize a word, open its line in Captions › More › Emphasis."), teaches: true)
         }
     }
 }

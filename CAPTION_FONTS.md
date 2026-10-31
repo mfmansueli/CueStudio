@@ -50,7 +50,7 @@ Space Grotesk registra o nome PostScript `SpaceGrotesk-Light`; `CaptionFont` sel
 
 ## Cobertura e outras escritas
 
-Toda fonte de legenda passa pela cascata de `ScriptFontCascade` (DESIGN_PROJECT §58): a família do estilo continua
+Toda fonte de legenda passa pela cascata de `ScriptFontCascade` (DESIGN_PROJECT §59): a família do estilo continua
 a primeira, e as letras que ela não tem (japonês, chinês, coreano, árabe, hindi, tailandês) saem numa face daquela
 escrita com o caráter do estilo — a da biblioteca baixada, se já está no iPhone, senão a do sistema (Hiragino, PingFang,
 Apple SD Gothic Neo, SF Arabic, Kohinoor Devanagari, Thonburi). O latim da mesma linha fica na família do estilo;

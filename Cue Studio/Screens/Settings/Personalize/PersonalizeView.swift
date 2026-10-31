@@ -8,14 +8,15 @@ import SwiftUI
 /// Settings › Personalize (owner's redesign, 21/10/2026): "your Cue" on top as the creator has made it, live (`PersonalizeHero`), then
 /// what makes it: the app icon (a collection to complete, `AppIconPicker`), the starry sky (each shown live, `SkyPicker`), the light at the
 /// centre of their universe (the swatches of Profile's core sheet), how the app feels (celebrations and haptics, each answering when
-/// switched on), their topics in their colours, and, until the first video is shared, the first video guide. Everything here stays on this
-/// iPhone.
+/// switched on), their topics in their colours, the tools they asked Cue not to suggest (while there is one), and, until the first video is
+/// shared, the first video guide. Everything here stays on this iPhone.
 struct PersonalizeView: View {
     let bindings: SettingsBindings
 
     @Environment(PersonalizationService.self) private var personalization
     @Environment(AppIconService.self) private var appIcon
     @Environment(FirstVoyageService.self) private var voyage
+    @Environment(NotificationService.self) private var notifications
 
     var body: some View {
         @Bindable var personalization = personalization
@@ -40,6 +41,11 @@ struct PersonalizeView: View {
                 }
                 section("Your topics", footer: "Each topic keeps its colour in Scripts and in your universe.") {
                     PersonalizeTopics()
+                }
+                if !notifications.hiddenFeatures.isEmpty {
+                    section("Hidden suggestions", footer: "Cue won’t suggest these tools. Show again lets it, some day.") {
+                        PersonalizeHiddenSuggestions()
+                    }
                 }
                 if voyage.canBeTurnedOn {
                     section("Getting started") {

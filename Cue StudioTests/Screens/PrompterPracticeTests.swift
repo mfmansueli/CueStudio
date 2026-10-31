@@ -37,6 +37,8 @@ struct PrompterPracticeTests {
         let library = ScriptLibraryService(repository: FakeScriptRepository(scripts: [script]))
         library.load()
         let preferences = PreferencesService(defaults: defaults.defaults)
+        // A creator who picked Steady: the practice still reads with Voice Following, and leaves their pick as it was.
+        preferences.prompter.scrollMode = .steady
         let camera = FakeCamera()
         let speech = FakeSpeechTranscriber()
         prepare(speech)

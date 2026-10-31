@@ -9,12 +9,14 @@ import SwiftUI
 struct NotificationGroupRow: View {
     let group: NotificationGroup
     @Binding var isOn: Bool
+    /// The line under the title, when it isn't the group's own (the routine's days and time).
+    var detail: String?
 
     var body: some View {
         Toggle(isOn: $isOn) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(group.title).foregroundStyle(Palette.ink)
-                if let detail = group.detail {
+                if let detail = detail ?? group.detail {
                     Text(detail)
                         .cueFont(.subheadline)
                         .foregroundStyle(Palette.ink2)

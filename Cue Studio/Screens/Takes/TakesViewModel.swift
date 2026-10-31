@@ -71,7 +71,7 @@ final class TakesViewModel {
         } catch is CancellationError {
             // Stopped: nothing to say.
         } catch {
-            toast.show(String(localized: "Can't import this video"), kind: .problem)
+            toast.showResult(String(localized: "Can't import this video"), kind: .problem, ending: work)
         }
     }
 

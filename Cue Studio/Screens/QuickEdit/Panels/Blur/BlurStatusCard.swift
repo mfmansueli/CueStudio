@@ -65,7 +65,8 @@ struct BlurStatusCard: View {
                     .accessibilityIdentifier("edit.blur.progress")
                 ProgressView(value: progress).tint(Palette.acc)
             }
-            Button(String(localized: "Cancel"), action: viewModel.blur.cancelFollowing)
+            // "Stop", not "Cancel": what was tracked stays (decision 8).
+            Button(String(localized: "Stop"), action: viewModel.blur.cancelFollowing)
                 .font(.system(.subheadline, weight: .semibold))
                 .foregroundStyle(Palette.ink)
                 .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)

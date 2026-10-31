@@ -55,6 +55,8 @@ struct EditProfileSheet: View {
             }
         }
         .tint(Palette.ink)
+        // Signing in or out is said in front of the sheet, not under it.
+        .toastHost(inSheet: true)
         .presentationDetents([.large])
         .presentationBackground(Palette.sheetNight)
         .interactiveDismissDisabled(isEdited)

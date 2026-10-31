@@ -30,6 +30,8 @@ final class VoiceTipUITests: XCTestCase {
         try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
         sleep(1)
         try app.screenshot().pngRepresentation.write(to: directory.appending(path: "\(name).png"))
+        // The hierarchy beside it, for `tools/contrast/audit.py`.
+        try app.debugDescription.write(to: directory.appending(path: "\(name).txt"), atomically: true, encoding: .utf8)
     }
 
     func testTheTipAsksOneQuestionAndOffersOneMore() throws {

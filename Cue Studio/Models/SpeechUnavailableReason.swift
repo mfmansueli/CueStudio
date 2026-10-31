@@ -6,7 +6,8 @@
 import Foundation
 
 /// Why Voice Following can't follow the words in a language here. It never listens in another
-/// language instead: the text keeps scrolling with the voice level, and the creator is told why.
+/// language instead: the creator is told why, and the session reads Steady (the practice's text
+/// moves with the voice level).
 nonisolated enum SpeechUnavailableReason: Error, Equatable, Sendable {
     /// This device has no speech recognition for the language.
     case unsupported(CueLanguage)

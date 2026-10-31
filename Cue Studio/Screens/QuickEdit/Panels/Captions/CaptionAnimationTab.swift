@@ -54,7 +54,7 @@ struct CaptionAnimationTab: View {
             if motion.followsWords, captions.linesWithoutWordTiming > 0 {
                 PanelNote(text: String(localized: "\(captions.linesWithoutWordTiming) lines follow the voice approximately."))
             }
-            PanelNote(text: String(localized: "Tap a choice to preview it on the current line."))
+            PanelNote(text: String(localized: "Tap a choice to preview it on the current line."), teaches: true)
         } else {
             PanelTiles(
                 options: [
@@ -66,7 +66,7 @@ struct CaptionAnimationTab: View {
                 ],
                 selection: captions.captionReveal, identifier: "edit.captionReveal"
             ) { captions.pickCaptionReveal($0) }
-            PanelNote(text: String(localized: "Tap a style to preview it on the current line."))
+            PanelNote(text: String(localized: "Tap a style to preview it on the current line."), teaches: true)
         }
     }
 

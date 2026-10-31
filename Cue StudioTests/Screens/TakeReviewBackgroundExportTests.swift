@@ -100,7 +100,7 @@ struct TakeReviewBackgroundExportTests {
         scenario.exporter.beforeFinishing = { scheduler.task?.expire() }
         await scenario.viewModel.save()
         #expect(scenario.viewModel.phase == .failed)
-        #expect(scenario.toast.message == "iOS stopped the export · Try again")
+        #expect(scenario.viewModel.exportFailure?.line == "iOS stopped the export before it finished.")
         #expect(scenario.photos.savedURLs.isEmpty)
         #expect(scheduler.task?.finished == false)
         #expect(scenario.preferences.exportsInFlight.isEmpty)
@@ -112,6 +112,6 @@ struct TakeReviewBackgroundExportTests {
         let scenario = makeScenario(take: TestData.take(scriptID: script.id), defaults: defaults, freeSpace: 20_000_000)
         await scenario.viewModel.save()
         #expect(scenario.exporter.exports.isEmpty)
-        #expect(scenario.toast.message?.hasPrefix("Not enough space on this iPhone. Free about ") == true)
+        #expect(scenario.viewModel.exportFailure?.line.hasPrefix("Not enough space on this iPhone. Free about ") == true)
     }
 }

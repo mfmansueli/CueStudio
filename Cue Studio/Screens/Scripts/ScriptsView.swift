@@ -78,7 +78,7 @@ struct ScriptsView: View {
                     VStack(spacing: 10) {
                         // The first voyage's next step, 10 pt above the dock; the My Cue Voice question waits while it has one.
                         VoyageFloatingTip(place: .scripts, isQuiet: isQuiet)
-                        VoiceQuestionTipHost(isQuiet: isQuiet && voyage.floatingStep == nil)
+                        VoiceQuestionTipHost(place: .scripts, isQuiet: isQuiet && voyage.floatingStep == nil)
                         ScriptsDock(
                             showsFormat: true, isFolded: isDockFolded, isEditing: $isDockEditing,
                             unavailableReason: writerUnavailableReason
@@ -334,6 +334,8 @@ struct ScriptsView: View {
                         onMove: { viewModel.moveSelection(to: $0) },
                         onNewFolder: { viewModel.startNewFolder(moving: viewModel.selectedScripts) },
                         onDuplicate: viewModel.duplicateSelection,
+                        allSelected: viewModel.selectsAllShown,
+                        onSelectAll: viewModel.toggleSelectAll,
                         onDelete: viewModel.deleteSelection
                     )
                     .transition(.move(edge: .bottom).combined(with: .opacity))

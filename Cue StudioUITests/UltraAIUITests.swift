@@ -98,7 +98,7 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertTrue(element(app, "ultra.invite").isGone(within: 5), "The invitation stayed once Ultra AI was allowed")
     }
 
-    /// Closed on the dock, the invitation is gone from Find inspiration too.
+    /// Closed on the dock, the invitation is gone from Find inspiration too: its "Draft with Ultra AI" no longer says the scripts are free.
     func testClosingTheInvitationClosesItEverywhere() {
         let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraInvite", "-uiTestTopics", "food"])
         XCTAssertTrue(element(app, "ultra.invite").exists(within: 15))
@@ -106,7 +106,33 @@ final class UltraAIUITests: XCTestCase {
         XCTAssertTrue(element(app, "ultra.invite").isGone(within: 5), "The invitation didn't close")
         app.buttons["ideaCard.inspirationButton"].tap()
         XCTAssertTrue(element(app, "inspiration.card.title").exists(within: 10))
-        XCTAssertFalse(element(app, "ultra.invite").exists, "Closed on the dock, the invitation is still in Find inspiration")
+        let ultra = app.buttons["inspiration.writeUltra"]
+        XCTAssertTrue(ultra.exists(within: 5))
+        XCTAssertFalse(ultra.label.contains("free"), "Closed on the dock, the invitation is still in Find inspiration: \(ultra.label)")
+    }
+
+    /// In Find inspiration the invitation is no card above the idea (it pushed the idea under the actions): the sheet's own "Draft with
+    /// Ultra AI" says "· 3 free", the idea stays whole above the actions, and the button asks first like every invitation.
+    func testFindInspirationCarriesTheInvitationOnItsUltraButton() {
+        let app = CueApp.launch(seeded: true, extraArguments: ["-uiTestUltra", "-uiTestUltraInvite", "-uiTestTopics", "food"])
+        XCTAssertTrue(app.buttons["ideaCard.inspirationButton"].exists(within: 15))
+        app.buttons["ideaCard.inspirationButton"].tap()
+        let title = element(app, "inspiration.card.title")
+        XCTAssertTrue(title.exists(within: 10))
+        // The dock's own line stays under the sheet; the sheet has no card of its own.
+        let sheet = element(app, "inspiration.sheet")
+        XCTAssertFalse(sheet.descendants(matching: .any)["ultra.invite"].exists, "The invitation's card is back in Find inspiration")
+        let ultra = app.buttons["inspiration.writeUltra"]
+        XCTAssertTrue(ultra.exists(within: 5))
+        XCTAssertTrue(ultra.label.contains("3 free"), "The Ultra AI action doesn't say the first scripts are free: \(ultra.label)")
+        // The idea ends above "Start with it", whatever the invitation.
+        let card = element(app, "inspiration.card")
+        let use = app.buttons["inspiration.use"]
+        XCTAssertTrue(card.exists)
+        XCTAssertLessThanOrEqual(card.frame.maxY, use.frame.minY, "The idea runs under the actions")
+        XCTAssertLessThanOrEqual(title.frame.maxY, use.frame.minY, "The idea's title is under the actions")
+        ultra.tap()
+        XCTAssertTrue(element(app, "ultra.consent").exists(within: 5), "Ultra AI was tried without asking")
     }
 
     /// With the free scripts used up, picking Ultra AI offers Cue Pro (its own calm Pro), and the chip stays on Apple
@@ -162,7 +188,7 @@ final class UltraAIUITests: XCTestCase {
     // MARK: - Pictures for the contrast audit
 
     /// The pictures and hierarchies `tools/contrast/audit.py` measures (`TEST_RUNNER_CUE_FIDELITY_DIR=<folder>`): the dock's chip on Ultra AI,
-    /// the permission sheet (top and buttons), the star, the written page with its reminder, Find inspiration's button and Settings.
+    /// the permission sheet, the star, the written page with its reminder, Find inspiration's button and Settings.
     func testCaptureUltraAIScreensForTheContrastAudit() throws {
         guard let path = ProcessInfo.processInfo.environment["CUE_FIDELITY_DIR"] else { throw XCTSkip("Set TEST_RUNNER_CUE_FIDELITY_DIR to capture") }
         let folder = URL(fileURLWithPath: path, isDirectory: true)
@@ -176,13 +202,7 @@ final class UltraAIUITests: XCTestCase {
         pickUltra(app)
         XCTAssertTrue(element(app, "ultra.consent").exists(within: 5))
         try shot(app, "ultra_01_consent")
-        element(app, "ultra.consent").swipeUp()
-        try shot(app, "ultra_02_consent-buttons")
-        element(app, "ultra.consent.sends").tap()
-        try shot(app, "ultra_03_consent-sends")
-        let allow = app.buttons["ultra.consent.allow"]
-        app.scroll(to: allow)
-        allow.tap()
+        app.buttons["ultra.consent.allow"].tap()
         try shot(app, "ultra_04_dock-chip")
         app.buttons["ideaCard.submit"].tap()
         XCTAssertTrue(text(app, containing: "Drafting with Ultra AI").exists(within: 5))
@@ -271,7 +291,7 @@ final class UltraAIUITests: XCTestCase {
         try shot(app, "ultra_09_dock-invite")
         app.buttons["ideaCard.inspirationButton"].tap()
         XCTAssertTrue(element(app, "inspiration.card.title").exists(within: 10))
-        XCTAssertTrue(element(app, "ultra.invite").exists(within: 5))
+        XCTAssertTrue(app.buttons["inspiration.writeUltra"].matches(NSPredicate(format: "label CONTAINS %@", "3 free"), within: 5))
         try shot(app, "ultra_10_inspiration-invite")
         app.swipeDown(velocity: .fast)
         let profile = app.cueTabBar.buttons["Profile"]

@@ -66,6 +66,12 @@ struct AdjustPanel: View {
         adjustment.isBipolar ? .signed : .plain
     }
 
+    /// The widest values a dial or Auto can show: the ends of a −100…+100 dial and Auto's 100%.
+    static let valueSamples = [
+        PanelValueFormat.signed.text(TakeEdit.adjustmentRange.lowerBound), PanelValueFormat.signed.text(TakeEdit.adjustmentRange.upperBound),
+        PanelValueFormat.percent.text(100),
+    ]
+
     // MARK: - Pieces
 
     private var dials: some View {
@@ -163,7 +169,8 @@ struct AdjustPanel: View {
     private var nameAndValue: some View {
         HStack(alignment: .firstTextBaseline, spacing: 10) {
             Text(currentLabel).font(.system(.subheadline, weight: .semibold))
-            Text(currentValueText)
+            // As wide as "−100" or "100%" from the start, so Reset and the note beside it stay put while the dial turns.
+            SteadyValueText(text: currentValueText, samples: Self.valueSamples, alignment: .leading)
                 .font(.system(.subheadline, weight: .semibold).monospacedDigit())
                 .foregroundStyle(Palette.ink)
         }

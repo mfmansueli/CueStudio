@@ -28,7 +28,7 @@ struct BlurPanel: View {
         } else {
             // A photo or video picked while it's open: the way to hide something on it.
             PanelFrame(viewModel: viewModel, panel: .blur) {
-                PanelNote(text: String(localized: "Hides a face, a plate or a name"))
+                PanelNote(text: String(localized: "Hides a face, a plate or a name"), teaches: true)
                 PanelButton(label: String(localized: "Blur area"), systemImage: "eye.slash", isPrimary: true, identifier: "edit.blur.start") {
                     blur.startAdding()
                 }
@@ -67,7 +67,7 @@ struct BlurPanel: View {
             label: String(localized: "Draw an area"), systemImage: "rectangle.dashed", isPrimary: !picking.isSearching && picking.faces.isEmpty,
             identifier: "edit.blur.draw"
         ) { blur.drawArea() }
-        PanelNote(text: String(localized: "For text, plates and screens, Solid hides completely."))
+        PanelNote(text: String(localized: "For text, plates and screens, Solid hides completely."), teaches: true)
     }
 
     // MARK: - The picked area
@@ -112,7 +112,7 @@ struct BlurPanel: View {
                 onIncrease: { blur.resizeBar(region.id, instance: first, edge: .end, to: first.end + 0.1) }
             )
         }
-        PanelNote(text: String(localized: "Drag the box in the video to move it, pull a corner to resize it. Where it slipped, drag it back at that moment: that spot is yours, and tracking again keeps it."))
+        PanelNote(text: String(localized: "Drag the box in the video to move it, pull a corner to resize it. Where it slipped, drag it back at that moment: that spot is yours, and tracking again keeps it."), teaches: true)
     }
 
     private static func note(for style: BlurStyle) -> String {

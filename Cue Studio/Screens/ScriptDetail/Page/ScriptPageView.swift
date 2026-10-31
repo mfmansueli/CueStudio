@@ -6,10 +6,11 @@
 import SwiftUI
 
 /// The script page (v30 · 4.1 and 4.2): one page, no Draft | Shaped switch. The navigation bar has back, the platform and •••; the title
-/// and its meter; the **state strip** (READY, DRAFT or RECORDED, the format, the cues and the next step); the words, always
-/// editable, with cues as tags; and one Record button pinned at the bottom, a Liquid Glass capsule over the words that scroll
-/// under it. Selecting words brings the AI bar (Apple Intelligence only); the keyboard brings the cues, in a glass bar that rides
-/// on it, in Record's place. "✦ Shape" is a tool: it adds cues.
+/// and its meter; the **state strip** (the "Ready to record" switch, or RECORDED and whether the words changed since the take); the
+/// length; the **tools row** (Hook, Improve, "✦ Shape", Cues and the text size, scrolling sideways); the words, always editable, with
+/// cues as tags; and one Record button pinned at the bottom, a Liquid Glass capsule over the words that scroll under it. Selecting
+/// words brings the AI bar (Apple Intelligence only); the keyboard brings the cues, in a glass bar that rides on it, in Record's place.
+/// "✦ Shape" is a tool: it adds cues.
 struct ScriptPageView: View {
     let viewModel: ScriptDetailViewModel
     let script: Script
@@ -67,7 +68,7 @@ struct ScriptPageView: View {
                         if let strip = viewModel.strip {
                             ScriptStateStrip(
                                 strip: strip, canBeReady: !viewModel.page.text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-                                onShape: viewModel.shape, onReady: { viewModel.setReady($0) }, onStop: stop
+                                onReady: { viewModel.setReady($0) }, onStop: stop
                             )
                             .padding(.top, 10)
                             .dimmedWhileTyping(isTyping)
@@ -90,9 +91,19 @@ struct ScriptPageView: View {
                                 .padding(.top, 12)
                                 .dimmedWhileTyping(isTyping)
                         }
-                        tools
-                            .padding(.top, 12)
-                            .dimmedWhileTyping(isTyping)
+                        ScriptToolsRow(
+                            // A script Ultra AI wrote keeps "Improve" for its Fit to time even where Apple Intelligence doesn't run.
+                            offersImprove: viewModel.isLanguageModelAvailable || viewModel.ultraFitsToTime,
+                            // While the AI writes, Stop is the strip's and Shape waits for the words.
+                            offersShape: viewModel.strip?.canShape == true && !viewModel.page.isWriting,
+                            showsCues: $viewModel.showsCues,
+                            onHook: { Task { await viewModel.openHooks() } },
+                            onImprove: { viewModel.sheet = .improve },
+                            onShape: viewModel.shape,
+                            onTextSize: viewModel.cycleTextSize
+                        )
+                        .padding(.top, 12)
+                        .dimmedWhileTyping(isTyping)
                         editor
                             .padding(.top, 8)
                         Color.clear.frame(height: 1).id(Self.writingEnd)
@@ -253,103 +264,6 @@ struct ScriptPageView: View {
         return String(localized: "\(zone.words) words · ~\(DurationText.clock(zone.seconds))")
     }
 
-    /// Hook and Improve: the two ways into the sheets of 4.3 and 4.4 (Improve is the AI's: it goes without Apple Intelligence); then
-    /// Cues, which turns the cues on or off in the teleprompter.
-    /// On one line; when the words don't fit it (a narrow iPhone, a large text size) the row scrolls sideways instead of breaking a word.
-    private var tools: some View {
-        ViewThatFits(in: .horizontal) {
-            toolRow(spacer: true)
-            ScrollView(.horizontal) {
-                toolRow(spacer: false)
-            }
-            .scrollIndicators(.hidden)
-            .scrollClipDisabled()
-        }
-    }
-
-    private func toolRow(spacer: Bool) -> some View {
-        HStack(spacing: 8) {
-            Button { Task { await viewModel.openHooks() } } label: {
-                HStack(spacing: 5) {
-                    Image(systemName: "text.quote").cueFont(12, weight: .bold)
-                    Text("Hook")
-                }
-                .cueFont(14, weight: .semibold)
-                .foregroundStyle(Palette.ink)
-                .lineLimit(1)
-                .padding(.horizontal, 14)
-                .padding(.vertical, 6)
-                .frame(minHeight: 34)
-                .background(Palette.fill, in: Capsule())
-                .frame(minHeight: Metrics.hitTarget)
-                .contentShape(Capsule())
-            }
-            .buttonStyle(.plain)
-            .accessibilityIdentifier("page.hookButton")
-            // A script Ultra AI wrote keeps "Improve" for its Fit to time even where Apple Intelligence doesn't run.
-            if viewModel.isLanguageModelAvailable || viewModel.ultraFitsToTime {
-                Button { viewModel.sheet = .improve } label: {
-                    HStack(spacing: 5) {
-                        Image(systemName: "sparkles").cueFont(12, weight: .bold)
-                        Text("Improve")
-                    }
-                    .cueFont(14, weight: .semibold)
-                    .foregroundStyle(Palette.aiTextStrong)
-                    .lineLimit(1)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 6)
-                    .frame(minHeight: 34)
-                    .background(Palette.aiFill, in: Capsule())
-                    .frame(minHeight: Metrics.hitTarget)
-                    .contentShape(Capsule())
-                }
-                .buttonStyle(.plain)
-                .accessibilityIdentifier("page.improveButton")
-            }
-            cuesToggle
-            if spacer { Spacer(minLength: 0) }
-            // Text size, as round as the tools beside it are long (it was a loose "Aa" in the corner).
-            Button { viewModel.cycleTextSize() } label: {
-                Image(systemName: "textformat.size")
-                    .font(.fixed(14, weight: .semibold))
-                    .foregroundStyle(Palette.ink)
-                    .frame(width: 34, height: 34)
-                    .background(Palette.fill, in: Circle())
-                    .frame(minWidth: Metrics.hitTarget, minHeight: Metrics.hitTarget)
-                    .contentShape(Circle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(Text("Text size"))
-            .accessibilityIdentifier("page.textSizeButton")
-        }
-    }
-
-    /// "Cues": on (yellow, like the tags), the page draws the cue tags; off, it shows only the words. The cues stay in the script
-    /// either way.
-    private var cuesToggle: some View {
-        @Bindable var viewModel = viewModel
-        let isOn = viewModel.showsCues
-        return Toggle(isOn: $viewModel.showsCues) {
-            HStack(spacing: 5) {
-                Image(systemName: isOn ? "eye" : "eye.slash").cueFont(12, weight: .bold).symbolSwap(value: isOn)
-                Text("Cues")
-            }
-            .cueFont(14, weight: .semibold)
-            .foregroundStyle(isOn ? Palette.accText : Palette.ink2)
-            .lineLimit(1)
-            .padding(.horizontal, 14)
-            .padding(.vertical, 6)
-            .frame(minHeight: 34)
-            .background(isOn ? Palette.accSoft : Palette.fill, in: Capsule())
-            .frame(minHeight: Metrics.hitTarget)
-            .contentShape(Capsule())
-        }
-        .toggleStyle(.button)
-        .buttonStyle(.plain)
-        .accessibilityLabel(Text("Show cues"))
-        .accessibilityIdentifier("page.cuesToggle")
-    }
-
     /// Every few lines of the AI's words: the page follows them when it changes.
     private var writingStep: Int {
         guard viewModel.page.isWriting, let revealed = viewModel.page.revealed else { return 0 }
@@ -472,13 +386,14 @@ struct ScriptPageView: View {
                         draftTip
                             .padding(.bottom, 10)
                             .transition(.opacity.combined(with: .move(edge: .bottom)))
-                    } else if voyage.showsTip(for: .practice) {
-                        practiceTip
-                            .padding(.bottom, 10)
-                            .transition(.opacity.combined(with: .move(edge: .bottom)))
+                    } else {
+                        VoyageInPlaceTip(step: .practice, place: .page, isAllowed: true) { isDone in
+                            practiceTip(isDone: isDone)
+                                .padding(.bottom, 10)
+                        }
                     }
                 }
-                ScriptRecordButton(title: strip.recordsAgain ? "Retake" : "Record", isPrimary: strip.recordIsPrimary, action: record)
+                ScriptRecordButton(title: strip.recordsAgain ? "Retake" : "Record", action: record)
                     .disabled(viewModel.page.isWriting)
             }
         }
@@ -518,7 +433,7 @@ struct ScriptPageView: View {
     /// Over Record, once, after Cue's first draft: it is a starting point, the creator's to change, and Cue learns from what they keep.
     private var draftTip: some View {
         VoyageTipCard(
-            step: voyage.progress.current ?? .practice, symbol: "pencil.line", title: String(localized: "A first draft. Yours to change."),
+            step: voyage.progress.current ?? .practice, title: String(localized: "A first draft. Yours to change."),
             message: String(localized: "Rewrite freely. Tap Sounds like me and Cue learns from it."),
             primary: (String(localized: "Edit"), {
                 withAnimation(.smooth(duration: 0.25)) { voyage.finishDraftTip(acted: true) }
@@ -531,9 +446,9 @@ struct ScriptPageView: View {
     }
 
     /// The first voyage's second step, over Record: read it out loud once in Studio (nothing is recorded).
-    private var practiceTip: some View {
+    private func practiceTip(isDone: Bool) -> some View {
         VoyageTipCard(
-            step: .practice, symbol: VoyageStep.practice.symbol, title: VoyageStep.practice.tipTitle(),
+            step: .practice, title: VoyageStep.practice.tipTitle(),
             message: VoyageStep.practice.tipMessage(duration: script.isEmpty ? nil : DurationText.clock(ReadTime.seconds(for: viewModel.page.text))),
             primary: (VoyageStep.practice.tipAction(), {
                 voyage.tipActed(.practice, at: .page)
@@ -541,9 +456,9 @@ struct ScriptPageView: View {
                 viewModel.commitPage()
                 actions.studio(script)
             }),
+            isDone: isDone,
             onClose: { withAnimation(.smooth(duration: 0.25)) { voyage.closeTip(.practice, at: .page) } }
         )
-        .onAppear { voyage.tipShown(.practice, at: .page) }
     }
 }
 

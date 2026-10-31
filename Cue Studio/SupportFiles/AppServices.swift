@@ -20,6 +20,8 @@ struct AppServices {
     let store: StoreManager
     let presentation: PresentationService
     let toast: ToastService
+    /// The editor's teaching notes already read (`PanelNote(teaches:)`).
+    let panelNotes: PanelNoteMemory
     let camera: CameraManager
     /// What the recorder films with: the camera, or a stand-in under UI tests.
     let recorderCamera: any CameraControlling
@@ -68,6 +70,8 @@ struct AppServices {
     let milestones: MilestoneService
     /// The guide from the first script to the first video shared.
     let voyage: FirstVoyageService
+    /// What Cue suggests on its own, one at a time (`GuidanceGate`).
+    let guidance: GuidanceGate
     /// Cue's drafts, and what the creator made of them once recorded.
     let draftLearning: DraftLearningService
     let shareQueue: ShareQueueService
@@ -132,6 +136,7 @@ struct AppServices {
             library: library, takes: takes, milestones: milestones, defaults: options.defaults,
             isEnabled: !options.isInMemory || options.showsVoyage
         )
+        guidance = GuidanceGate()
         shareQueue = ShareQueueService(defaults: options.defaults)
         defaults = options.defaults
         let iconSwitcher: any AppIconSwitching = options.isInMemory ? InMemoryAppIcon() : SystemAppIcon()
@@ -162,6 +167,7 @@ struct AppServices {
         ledger = ExportLedgerService(store: options.exportLedger, quota: quota)
         presentation = PresentationService()
         toast = ToastService()
+        panelNotes = PanelNoteMemory(defaults: options.defaults)
         let realCamera = CameraManager()
         camera = realCamera
         recorderCamera = options.recorderCamera ?? realCamera
@@ -383,6 +389,7 @@ extension AppServices {
             center: options.notificationCenter ?? SystemNotificationCenter(), store: NotificationStateStore(defaults: options.defaults), facts: facts
         )
         notifications.invitesEnabled = options.notificationInvites
+        notifications.sessionIntrosEnabled = options.sessionIntros
         let (languages, privacy, voiceQuestions) = (wiring.languages, wiring.privacy, wiring.voiceQuestions)
         let (presentation, remote, transition) = (wiring.presentation, wiring.remote, wiring.transition)
         notifications.interfaceLanguage = { languages.interfaceLanguage.rawValue }
@@ -391,7 +398,8 @@ extension AppServices {
         notifications.isForegroundBusy = {
             presentation.prompter != nil || presentation.showsRemoteController || remote.state.isConnected || transition.phase != .idle
         }
-        voiceQuestions.otherIntroductionToday = { notifications.introducedToday }
+        // Both ways: a tool introduced or the invitation shown today puts the tip off, and a tip's day puts them off (`tipDays`).
+        voiceQuestions.otherIntroductionToday = { notifications.introducedToday || notifications.invitedToday }
         voiceQuestions.onTipShown = { notifications.setNeedsReconcile() }
         return notifications
     }
@@ -409,6 +417,7 @@ extension View {
             .environment(services.store)
             .environment(services.presentation)
             .environment(services.toast)
+            .environment(services.panelNotes)
             .environment(services.camera)
             .environment(services.audio)
             .environment(services.speech)
@@ -431,6 +440,7 @@ extension View {
             .environment(services.onboarding)
             .environment(services.milestones)
             .environment(services.voyage)
+            .environment(services.guidance)
             .environment(services.draftLearning)
             .environment(services.shareQueue)
             .environment(services.appIcon)

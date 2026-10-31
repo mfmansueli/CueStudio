@@ -5,12 +5,11 @@
 
 import SwiftUI
 
-/// Asked before Ultra sends anything: that Google's Gemini writes the script (through Firebase), what goes (the request, the voice preferences, the
-/// draft for the polish, technical data), what never goes, what Google may keep, and where to turn it off. "What Cue sends" shows the calls'
-/// real text (`UltraPayload`). Allowing it is separate from the Apple Intelligence switch, and saying no changes nothing else in Cue.
+/// Asked before Ultra sends anything, as an invitation (owner, 31/10/2026: short, inviting, the free scripts first): Ultra AI's ✦ in its galaxy
+/// (`UltraConsentHero`), the free scripts it may write, three lines on what it does, and one line that says the request goes to Google and where
+/// to turn it off (Settings › Privacy & AI data has the rest). Allowing it is separate from the Apple Intelligence switch, and saying no
+/// changes nothing else in Cue.
 struct UltraConsentSheet: View {
-    /// What the calls would carry now (the dock's idea and choices, or a placeholder for the idea).
-    let payload: UltraPayload
     /// Allowing it writes the script at once (Find inspiration's idea), and the button says so; elsewhere it only picks Ultra AI.
     var writesNow = false
     /// The permission is given by the caller (`UltraConsentService.grant`), which then goes on.
@@ -18,56 +17,19 @@ struct UltraConsentSheet: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(UltraScriptService.self) private var ultra
-    @State private var showsPayload = false
 
     var body: some View {
-        NavigationStack {
+        VStack(spacing: 0) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
+                VStack(spacing: 24) {
+                    UltraConsentHero()
                     header
-                    point(
-                        title: "Your request goes to Google",
-                        detail: "Ultra AI sends your idea, the platform, format and length you picked, and your My Cue Voice preferences (who you are, who you speak to, how you sound) to Google, which runs the model behind it.",
-                        systemImage: "paperplane"
-                    )
-                    point(
-                        title: "Three steps",
-                        detail: "Ultra AI writes a draft, checks its claims, then polishes it in your voice: the draft goes back to Google for each step. It can still get facts wrong, so check them before you record.",
-                        systemImage: "arrow.triangle.2.circlepath"
-                    )
-                    point(
-                        title: "What stays on this iPhone",
-                        detail: "Your writing examples, imported excerpts, approved scripts, other scripts, videos and audio are never sent. Fit to time on a script Ultra AI wrote sends that script back, with your edits.",
-                        systemImage: "iphone"
-                    )
-                    point(
-                        title: "What Google may keep",
-                        detail: "Google doesn’t train its models on it without permission, but may cache it for up to 24 hours and keep it to watch for abuse. It can be processed in any region. Your IP address, this app’s identity and an App Check token go with each request.",
-                        systemImage: "building.columns"
-                    )
-                    point(
-                        title: "Turn it off any time",
-                        detail: "Settings › Privacy & AI data. Apple Intelligence keeps working either way.",
-                        systemImage: "switch.2"
-                    )
-                    DisclosureGroup(isExpanded: $showsPayload) {
-                        UltraPayloadView(payload: payload).padding(.top, 10)
-                    } label: {
-                        Text("What Cue sends").cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
-                    }
-                    .tint(Palette.ink2)
-                    .accessibilityIdentifier("ultra.consent.sends")
-                    buttons
+                    benefits
                 }
-                .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 32, trailing: Metrics.gutter))
+                .padding(EdgeInsets(top: 28, leading: Metrics.gutter, bottom: 16, trailing: Metrics.gutter))
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Not now") { dismiss() }
-                        .accessibilityIdentifier("ultra.consent.close")
-                }
-            }
+            .scrollBounceBehavior(.basedOnSize)
+            footer
         }
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
@@ -77,66 +39,85 @@ struct UltraConsentSheet: View {
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text("Ultra AI · Experiment")
-                .textCase(.uppercase)
-                .monoFont(size: 10.5, weight: .bold)
-                .interfaceTracking(1)
-                .foregroundStyle(Palette.aiText)
-            Text("Write with Ultra AI?")
-                .cueFont(.title2, weight: .bold)
+        VStack(spacing: 8) {
+            Text("Meet Ultra AI")
+                .cueFont(.title, weight: .bold)
                 .foregroundStyle(Palette.ink)
-                .fixedSize(horizontal: false, vertical: true)
                 .accessibilityAddTraits(.isHeader)
             // The scripts it may write: the free ones to try it, or this month's with Cue Pro.
             if let allowance = ultra.allowance?.allowance {
                 Text(verbatim: UltraAllowanceLabels.consent(allowance))
-                    .cueFont(.subheadline, weight: .semibold)
+                    .cueFont(.title3, weight: .semibold)
                     .foregroundStyle(Palette.aiText)
-                    .fixedSize(horizontal: false, vertical: true)
                     .contentTransition(.numericText(countsDown: true))
                     .accessibilityIdentifier("ultra.consent.allowance")
             }
         }
+        .multilineTextAlignment(.center)
+        .fixedSize(horizontal: false, vertical: true)
     }
 
-    private var buttons: some View {
-        VStack(spacing: 10) {
+    private var benefits: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            benefit("Goes further with every idea", systemImage: "sparkles")
+            benefit("Checks its claims as it writes", systemImage: "checkmark.seal")
+            benefit("Polished in your voice", systemImage: "waveform")
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func benefit(_ title: LocalizedStringKey, systemImage: String) -> some View {
+        HStack(spacing: 14) {
+            Image(systemName: systemImage)
+                .cueFont(.body, weight: .semibold)
+                .foregroundStyle(Palette.aiText)
+                .frame(width: 28)
+                .accessibilityHidden(true)
+            Text(title)
+                .cueFont(.body, weight: .medium)
+                .foregroundStyle(Palette.ink)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    /// What goes, in one line, over the two buttons.
+    private var footer: some View {
+        VStack(spacing: 12) {
+            Text("Your idea, your choices and your My Cue Voice preferences go to Google, which writes it. Turn it off any time in Settings.")
+                .cueFont(.footnote)
+                .foregroundStyle(Palette.ink2)
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityIdentifier("ultra.consent.disclosure")
             Button {
                 onAllow()
                 dismiss()
             } label: { Text(allowTitle) }
                 .buttonStyle(.cuePrimary(.large))
                 .accessibilityIdentifier("ultra.consent.allow")
-            Button { dismiss() } label: { Text("Keep Apple Intelligence") }
+            Button { dismiss() } label: { Text("Not now") }
                 .buttonStyle(.cueSecondary(.large))
                 .accessibilityIdentifier("ultra.consent.decline")
         }
-        .padding(.top, 4)
+        .padding(EdgeInsets(top: 8, leading: Metrics.gutter, bottom: 12, trailing: Metrics.gutter))
     }
 
-    private var allowTitle: LocalizedStringKey { writesNow ? "Allow and write with Ultra AI" : "Allow Ultra AI" }
-
-    private func point(title: LocalizedStringKey, detail: LocalizedStringKey, systemImage: String) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 12) {
-            Image(systemName: systemImage)
-                .cueFont(.subheadline, weight: .semibold)
-                .foregroundStyle(Palette.aiText)
-                .frame(width: 22)
-                .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 4) {
-                Text(title).cueFont(.subheadline, weight: .semibold).foregroundStyle(Palette.ink)
-                Text(detail).cueFont(.footnote).foregroundStyle(Palette.ink2).fixedSize(horizontal: false, vertical: true)
-            }
+    /// The free scripts lead: "Try it free" while the first ones are still there.
+    private var allowTitle: LocalizedStringKey {
+        let free = (ultra.allowance?.allowance).map { $0.membership != .paid && $0.freeLeft > 0 } ?? false
+        switch (free, writesNow) {
+        case (true, true): return "Write it free with Ultra AI"
+        case (true, false): return "Try it free"
+        case (false, true): return "Allow and write with Ultra AI"
+        case (false, false): return "Allow Ultra AI"
         }
-        .accessibilityElement(children: .combine)
     }
 }
 
 #if DEBUG
 #Preview {
     Color.black.sheet(isPresented: .constant(true)) {
-        UltraConsentSheet(payload: AppServices.preview.starter.ultraPreview(), onAllow: {})
+        UltraConsentSheet(onAllow: {})
     }
     .previewEnvironment()
 }

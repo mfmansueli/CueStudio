@@ -30,20 +30,19 @@ struct PaywallCopyTests {
         #expect(PaywallCopy.savingsBadge(percent: nil) == nil)
     }
 
-    /// Under the two highlights (exports, Ultra AI), the rest in plain lines, in the canvas's order.
-    @Test func theRestIsListedInOrder() {
+    /// Under the two highlights (exports, Ultra AI where it is offered), only what Pro really adds (decision 12): nothing free is sold as Pro.
+    @Test func theRestIsOnlyWhatProReallyAdds() {
         #expect(PaywallCopy.visibleBenefits(aiIsAvailable: true).map(\.text) == [
-            "Full My Cue Voice and ad drafts", "Hook and platform versions", "Covers, series tags and “Text behind me”", "Every milestone app icon",
+            "The milestone app icons from 10 videos on", "No Cue mark on screen recordings · exported videos never have one",
         ])
         #expect(ProPlan.allCases == [.annual, .monthly])
     }
 
-    /// The paywall never sells what the app can't do: the Apple Watch and Mac remote stays out until it exists.
-    @Test func aLineForSomethingThatIsNotThereIsNotShown() {
+    /// The paywall never sells what the app can't do, nor what is free: no Apple Watch remote, no My Cue Voice, no covers.
+    @Test func noLineSellsWhatIsNotThereOrIsFree() {
         let shown = PaywallCopy.visibleBenefits(aiIsAvailable: true).map(\.text).joined(separator: " ")
-        #expect(!shown.contains("Apple Watch"))
-        #expect(!shown.contains("watermark"))
-        #expect(PaywallCopy.visibleBenefits(aiIsAvailable: true).count == PaywallCopy.benefits.count - 1)
+        for free in ["Apple Watch", "My Cue Voice", "Covers", "Hook", "Text behind me"] { #expect(!shown.contains(free), "\(free)") }
+        #expect(PaywallCopy.visibleBenefits(aiIsAvailable: true).count == PaywallCopy.benefits.count)
     }
 
     @Test func titlesByContext() {
@@ -61,15 +60,14 @@ struct PaywallCopyTests {
         #expect(PaywallCopy.welcome(for: .ultra) == "Welcome to Cue Pro · 30 Ultra AI scripts this month")
     }
 
-    @Test func theLinesAboutAIStayOutWhereItCannotRun() {
-        let withAI = PaywallCopy.visibleBenefits(aiIsAvailable: true)
-        let without = PaywallCopy.visibleBenefits(aiIsAvailable: false)
-        #expect(without.count == withAI.count - 2)
-        #expect(without.allSatisfy { !$0.needsAppleIntelligence })
+    /// None of what Pro adds needs Apple Intelligence, so every iPhone reads the same list.
+    @Test func everyIPhoneReadsTheSameList() {
+        #expect(PaywallCopy.visibleBenefits(aiIsAvailable: false).map(\.text) == PaywallCopy.visibleBenefits(aiIsAvailable: true).map(\.text))
     }
 
-    @Test func theMilestoneIconsAreListedAsWhatProChanges() {
-        #expect(PaywallCopy.visibleBenefits(aiIsAvailable: false).last?.text == "Every milestone app icon")
+    /// The watermark line says exported videos never carry one: Pro removes it from screen recordings only.
+    @Test func theWatermarkLineIsAboutScreenRecordings() {
+        #expect(PaywallCopy.visibleBenefits(aiIsAvailable: false).last?.text.contains("screen recordings") == true)
     }
 
     @Test func theRegularProSaysItIsFreeToTry() {

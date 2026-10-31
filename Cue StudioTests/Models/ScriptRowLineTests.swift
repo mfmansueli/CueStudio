@@ -19,11 +19,6 @@ struct ScriptRowLineTests {
         #expect(ScriptRowLine(script: script, state: .ready, takes: [], hasDraft: { _ in false }).values == ["TikTok"])
     }
 
-    @Test func oneCueAndNoCuesAreSaidInTheSingular() {
-        #expect(ScriptRowLine.cues(1) == "1 cue")
-        #expect(ScriptRowLine.cues(0) == "No cues")
-    }
-
     @Test func aDraftShowsWhenItWasLastEditedAndABlankOneSaysSo() {
         let draft = TestData.script(text: "Some words", platform: .shorts, isFinished: false)
         let line = ScriptRowLine(script: draft, state: .draft, takes: [], hasDraft: { _ in false })

@@ -64,7 +64,7 @@ struct ToastView: View {
     VStack(spacing: 12) {
         ToastView(message: "Duplicated")
         ToastView(message: "Fitted to 1:00 to 1:30", kind: .cue, action: ToastAction(title: "Undo") {})
-        ToastView(message: "Couldn’t draft it · Try again", kind: .problem)
+        ToastView(message: "Couldn’t draft it", kind: .problem)
         ToastView(message: "Drafting the TikTok version…", kind: .working)
     }
     .padding()

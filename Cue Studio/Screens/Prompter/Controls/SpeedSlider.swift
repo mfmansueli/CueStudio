@@ -18,6 +18,7 @@ struct SpeedSlider: View {
         LabeledSlider(
             label: String(localized: "Speed"),
             valueText: SpeedScale.label(forMultiple: stops[current]),
+            valueSamples: stops.map(SpeedScale.label(forMultiple:)),
             value: Binding(
                 get: { Double(current) },
                 set: { newValue in

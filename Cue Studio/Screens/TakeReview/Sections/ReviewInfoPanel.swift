@@ -113,7 +113,7 @@ struct ReviewInfoPanel: View {
     /// How the length does against the network: it fits, or how far off it is.
     static func fitText(_ fit: LengthFit, platform: String) -> String {
         switch fit.verdict {
-        case .fits: String(localized: "Fits \(platform)")
+        case .fits: String(localized: "Within \(platform)’s target length")
         case .under(let gap): String(localized: "\(DurationText.remaining(gap)) shorter than \(platform)’s sweet spot")
         case .over(let gap): String(localized: "\(DurationText.remaining(gap)) longer than \(platform)’s sweet spot")
         }

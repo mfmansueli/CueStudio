@@ -111,9 +111,18 @@ struct PrompterView: View {
         .onChange(of: viewModel.session.camera) {
             Task { await viewModel.cameraSettingsChanged() }
         }
-        // Reading a script on the teleprompter, in Studio, Selfie or the first flight's practice, is the first voyage's practice.
-        .onChange(of: viewModel.isPlaying) { _, playing in
-            if playing, viewModel.hasScript { voyage.markPracticed() }
+        // Reading a script on the teleprompter, in Studio, Selfie or the first flight's practice, is the first voyage's practice, once it
+        // really happened: five seconds playing with the text moving on (`PracticeEvidence`).
+        .task(id: viewModel.isPlaying) {
+            guard viewModel.isPlaying, viewModel.hasScript, !voyage.progress.done.contains(.practice) else { return }
+            let start = (offset: viewModel.engine.offset, at: Date.now)
+            while !Task.isCancelled, viewModel.isPlaying {
+                try? await Task.sleep(for: .seconds(1))
+                if PracticeEvidence.counts(playedFor: Date.now.timeIntervalSince(start.at), advanced: viewModel.engine.offset - start.offset) {
+                    voyage.markPracticed()
+                    return
+                }
+            }
         }
         .onChange(of: viewModel.session.prompter.scrollMode) {
             viewModel.scrollModeChanged()

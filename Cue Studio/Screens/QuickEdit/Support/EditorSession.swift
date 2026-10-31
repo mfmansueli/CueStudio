@@ -147,6 +147,11 @@ final class EditorSession {
         toast.show(message, action: undoAction)
     }
 
+    /// A change the preview already shows (a line split, a format, a swap): no toast, only VoiceOver hears it. Its Undo is the player bar's.
+    func announce(_ message: String) {
+        AccessibilityNotification.Announcement(message).post()
+    }
+
     /// Plays `range` (edited seconds) once, then puts the playhead back where it was (or at `back`).
     func previewPart(_ range: ClosedRange<TimeInterval>, back: TimeInterval? = nil) {
         let back = back ?? player.currentTime

@@ -27,7 +27,9 @@ struct ToastHost: ViewModifier {
                     // Work under way that ends keeps its pill (`ToastService.pill`): only a new toast comes in anew.
                     .id(toast.pill)
                     .transition(.toast(reduceMotion: reduceMotion))
-                    .onTapGesture { toast.dismiss() }
+                    // A tap on the words lets a plain toast go; one with a button keeps it until its time is up, so a tap meant
+                    // for the screen beneath never throws an Undo away.
+                    .onTapGesture { if toast.action == nil { toast.dismiss() } }
                 }
             }
             .animation(.spring(duration: 0.3), value: toast.message)

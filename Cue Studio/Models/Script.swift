@@ -19,8 +19,10 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
     var createdAt: Date = .now
     var updatedAt: Date = .now
     /// Written by AI about a factual topic: the read view asks for a fact check until the creator
-    /// taps "Checked".
+    /// taps "I checked" (which records `factReview`).
     var factCheck: Bool = false
+    /// The creator's review of the claims of one version of the text, with its date; nil when they never said so.
+    var factReview: FactReview?
     /// The language the script is written in; nil detects it from the text. Voice Following,
     /// captions and the prompter's direction follow it. Never changes the text: a script is never
     /// translated in place.
@@ -73,6 +75,7 @@ nonisolated struct Script: Codable, Identifiable, Hashable, Sendable {
         createdAt = try container.decodeIfPresent(Date.self, forKey: .createdAt) ?? .now
         updatedAt = try container.decodeIfPresent(Date.self, forKey: .updatedAt) ?? createdAt
         factCheck = try container.decodeIfPresent(Bool.self, forKey: .factCheck) ?? false
+        factReview = try? container.decodeIfPresent(FactReview.self, forKey: .factReview)
         // A language this build doesn't know (saved by a newer one) reads as auto-detect.
         language = (try? container.decodeIfPresent(CueLanguage.self, forKey: .language)) ?? nil
         topic = try container.decodeIfPresent(String.self, forKey: .topic)

@@ -48,11 +48,7 @@ final class LogbookService {
         persist()
     }
 
-    func delete(_ id: UUID) {
-        delete([id])
-    }
-
-    /// Takes these ideas away and returns them as they were, for an Undo (`restore`).
+    /// Takes these ideas away for good and returns them as they were, for the toast's Undo (`restore`).
     @discardableResult
     func delete(_ ids: Set<UUID>) -> [LogbookEntry] {
         let removed = entries.filter { ids.contains($0.id) }
@@ -67,6 +63,12 @@ final class LogbookService {
         let missing = restored.filter { entry in !entries.contains { $0.id == entry.id } }
         guard !missing.isEmpty else { return }
         entries = (entries + missing).sorted { $0.createdAt > $1.createdAt }
+        persist()
+    }
+
+    /// "Delete my Cue data": every idea, for good.
+    func eraseAll() {
+        entries = []
         persist()
     }
 

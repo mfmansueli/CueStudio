@@ -28,4 +28,25 @@ nonisolated struct VoiceQuestionState: Codable, Equatable, Sendable {
     var voiceScriptIDs: [String] = []
     /// How many times a script written in their voice was edited afterwards (the second pulls a question forward).
     var generatedEdits = 0
+    /// How many tips of each question TipKit has already spent (opened or closed): TipKit never shows an invalidated tip again, so the
+    /// next one of that question is a tip of its own.
+    var tipRounds: [String: Int] = [:]
+
+    init() {}
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        firstEligibleDays = try container.decodeIfPresent([String].self, forKey: .firstEligibleDays) ?? []
+        shownDates = try container.decodeIfPresent([Date].self, forKey: .shownDates) ?? []
+        snoozedUntil = try container.decodeIfPresent([String: Date].self, forKey: .snoozedUntil) ?? [:]
+        dismissCount = try container.decodeIfPresent([String: Int].self, forKey: .dismissCount) ?? [:]
+        consecutiveDismissals = try container.decodeIfPresent(Int.self, forKey: .consecutiveDismissals) ?? 0
+        pausedUntil = try container.decodeIfPresent(Date.self, forKey: .pausedUntil)
+        skipped = try container.decodeIfPresent(Set<String>.self, forKey: .skipped) ?? []
+        pulledForward = try container.decodeIfPresent([String].self, forKey: .pulledForward) ?? []
+        completeToastShown = try container.decodeIfPresent(Bool.self, forKey: .completeToastShown) ?? false
+        voiceScriptIDs = try container.decodeIfPresent([String].self, forKey: .voiceScriptIDs) ?? []
+        generatedEdits = try container.decodeIfPresent(Int.self, forKey: .generatedEdits) ?? 0
+        tipRounds = try container.decodeIfPresent([String: Int].self, forKey: .tipRounds) ?? [:]
+    }
 }

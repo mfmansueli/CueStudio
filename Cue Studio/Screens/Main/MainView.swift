@@ -17,6 +17,7 @@ struct MainView: View {
     @Environment(LanguageService.self) private var languages
     @Environment(VoiceQuestionScheduler.self) private var voiceQuestions
     @Environment(IdeaTransitionService.self) private var ideaTransition
+    @Environment(GuidanceGate.self) private var guidance
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
     /// The app as it was when an idea was sent, held still behind its star (`TransitionBackdrop`); the live app is hidden meanwhile.
@@ -26,12 +27,12 @@ struct MainView: View {
 
     var body: some View {
         @Bindable var presentation = presentation
-        let recedes = !reduceMotion
         let forward = comingForward
         tabs
-            // Back from behind the star (Cancel, an error): from where the still was, forward again with the rise's curve (09 §8).
+            // Back from behind the star (Cancel, an error): from as dark as the still was, the light comes back with the rise's curve
+            // (09 §8). At its full size: shrunk, the screen showed square corners on black until it grew back (owner, 30/10/2026).
             .keyframeAnimator(initialValue: 0.0, trigger: liveAppReturns) { content, amount in
-                content.modifier(TransitionDim(amount: amount, recedes: recedes))
+                content.modifier(TransitionDim(amount: amount, recedes: false))
             } keyframes: { _ in
                 MoveKeyframe(1.0)
                 LinearKeyframe(0.0, duration: forward.duration, timingCurve: forward.curve)
@@ -51,8 +52,14 @@ struct MainView: View {
                 }
             }
             .overlay(alignment: .bottom) { continuePostingCard }
-            // "Recorded · Next: pick a take" (a ✓ toast): the first voyage says each step done.
-            .background { VoyageAnnouncer() }
+            // The creator's queue left waiting has Scripts and Takes first: the tips wait while it is there (`GuidanceGate`).
+            .onChange(of: services.shareQueue.pending?.takeID, initial: true) { _, takeID in
+                for place in GuidancePlace.allCases {
+                    if takeID != nil { guidance.shown(.continuePosting, at: place) } else { guidance.left(.continuePosting, at: place) }
+                }
+            }
+            // The first voyage counts each step done (said in place, never as a toast).
+            .background { VoyageProgressWatcher() }
             .sheet(item: $presentation.sheet) { sheet in
                 sheetContent(sheet)
             }
@@ -72,7 +79,13 @@ struct MainView: View {
             // The patterns' engine is made off the main thread now, not by the first one played (the first idea's takeoff).
             .task { HapticPatterns.prewarm() }
             .onChange(of: scenePhase) { _, phase in
-                if phase == .active { voiceQuestions.registerAppOpen() }
+                switch phase {
+                case .active:
+                    guidance.appBecameActive()
+                    voiceQuestions.registerAppOpen()
+                case .background: guidance.appLeftScreen()
+                default: break
+                }
             }
     }
 
@@ -96,6 +109,9 @@ struct MainView: View {
     }
 
     private func leaveForLater(_ queue: ShareQueue) {
+        // Closed by the creator: nothing else takes its place on this screen this session.
+        let place: GuidancePlace = presentation.selectedTab == .takes ? .takes : .scripts
+        guidance.left(.continuePosting, at: place, closed: true)
         services.shareQueue.moveRestToLater(takeID: queue.takeID)
         toast.show(String(localized: "Saved · post when you’re ready"))
     }
@@ -291,7 +307,7 @@ struct MainView: View {
                 presentation.sheet = nil
             }
         case .ultraConsent:
-            UltraConsentSheet(payload: services.starter.ultraPreview()) {
+            UltraConsentSheet {
                 services.ultra.consent.grant()
                 services.starter.choose(.ultra)
             }
@@ -307,7 +323,7 @@ struct MainView: View {
         case .featureIntro(let request): featureIntro(request)
         case .voiceSetup: VoiceSetupSheet(mode: .missing, profile: profile.profile)
         case .importWriting: WritingImportSheet()
-        case .notificationInvite(let reason): notificationInvite(reason)
+        case .notificationInvite(let reason, let scriptID): notificationInvite(reason, scriptID: scriptID)
         default: EmptyView()
         }
     }
@@ -330,40 +346,58 @@ struct MainView: View {
             onDecline: {
                 notifications.introDeclined(request)
                 presentation.sheet = nil
-            }
+            },
+            // Swiped away: the same as "Not now".
+            onDismissed: { notifications.introSnoozed(request) }
         )
         .onAppear { notifications.introShown(request) }
     }
 
-    /// One thing at a quiet moment after a session at the camera or the editor: the invitation to allow notifications (the first time there
-    /// is a recording to finish), else a tool's introduction.
+    /// One thing at a quiet moment after a session at the camera or the editor (`GuidanceGate`): never after a celebration in this session.
+    /// The invitation to allow notifications comes only in a session after the first recording's, while a video is still to finish (owner,
+    /// 30/10/2026); else a tool's introduction. Each is looked at again just before it shows.
     private func offerIntroduction() {
         Task {
             let notifications = services.notifications
-            if let reason = await notifications.invite(.firstRecording, hasRecorded: !services.takes.takes.isEmpty) {
-                guard presentation.sheet == nil, presentation.prompter == nil else { return }
-                presentation.present(.notificationInvite(reason))
+            let takes = services.takes.takes
+            let firstTake = takes.map(\.recordedAt).min()
+            let shared = services.milestones.sharedTakeIDs
+            let unfinished = takes.contains { !shared.contains($0.id) }
+            if guidance.mayAsk(firstTakeAt: firstTake),
+               let reason = await notifications.invite(.firstRecording, hasRecorded: unfinished) {
+                guard presentation.sheet == nil, presentation.prompter == nil, guidance.mayAsk(firstTakeAt: firstTake) else { return }
+                presentation.present(.notificationInvite(reason, scriptID: nil))
                 return
             }
-            guard let request = await notifications.inAppIntro(afterSession: true),
-                  presentation.sheet == nil, presentation.prompter == nil else { return }
+            guard guidance.mayAsk(firstTakeAt: nil), let request = await notifications.inAppIntro(afterSession: true),
+                  presentation.sheet == nil, presentation.prompter == nil, guidance.mayAsk(firstTakeAt: nil) else { return }
             presentation.present(.featureIntro(request))
         }
     }
 
-    /// "Allow notifications" brings up the system's question; "Not now" keeps it for later.
-    private func notificationInvite(_ reason: NotificationInviteReason) -> some View {
+    /// "Allow notifications" brings up the system's question; "Not now" keeps it for later. For a script left without a take, the button
+    /// says what it does ("Remind me tomorrow"): the system's question, then the reminder for that script.
+    private func notificationInvite(_ reason: NotificationInviteReason, scriptID: UUID?) -> some View {
         let notifications = services.notifications
+        let (toast, library) = (toast, library)
         return NotificationInviteSheet(
             reason: reason,
             onAllow: {
                 presentation.sheet = nil
-                Task { await notifications.inviteAccepted(reason) }
+                Task {
+                    await notifications.inviteAccepted(reason)
+                    guard reason == .readyScript, let scriptID, let script = library.script(id: scriptID),
+                          let time = ReminderChoice.tomorrow.time(now: .now, calendar: .current) else { return }
+                    // Kept in Cue even if iOS said no; the toast says which.
+                    let result = await notifications.setReminder(.script(scriptID), title: script.displayTitle, at: time)
+                    ReminderFeedback.show(result, toast: toast)
+                }
             },
             onNotNow: {
                 notifications.inviteDeclined(reason)
                 presentation.sheet = nil
-            }
+            },
+            onDismissed: { notifications.inviteDeclined(reason) }
         )
         .onAppear { notifications.inviteShown(reason) }
     }

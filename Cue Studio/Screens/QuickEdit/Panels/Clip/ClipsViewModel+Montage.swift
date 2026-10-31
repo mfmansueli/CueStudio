@@ -215,7 +215,7 @@ extension ClipsViewModel {
             return
         } catch {
             noteFailure(error, "freezeFrame")
-            toast.show(String(localized: "Can't freeze this frame"), kind: .problem)
+            toast.show(String(localized: "Can't freeze this frame"), kind: .problem, ending: work)
             return
         }
         guard !isClosed else {
@@ -225,7 +225,7 @@ extension ClipsViewModel {
         // The frame took a moment (about 2 s in 4K): if the cuts changed meanwhile, the place it was for may be gone.
         guard edit.timeline == timeline else {
             EditMediaFiles.remove([name])
-            toast.show(String(localized: "The video changed meanwhile · Freeze the frame again"), kind: .problem)
+            toast.show(String(localized: "The video changed meanwhile · Freeze the frame again"), kind: .problem, ending: work)
             return
         }
         importedFiles.insert(name)
@@ -262,7 +262,7 @@ extension ClipsViewModel {
         player.seek(to: next.timeline.editedStart(ofSegmentAt: inserted))
         toast.show(
             String(localized: "Frame frozen for \(Int(Self.freezeLength)) seconds · drag its end to hold longer"),
-            action: undoAction
+            action: undoAction, ending: work
         )
     }
 

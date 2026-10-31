@@ -78,6 +78,8 @@ struct BrandBriefSheet: View {
         }
         .scrollDismissesKeyboard(.interactively)
         .cueSheetChrome()
+        // What the sheet says ("Add brand and product") shows in front of it, not under it.
+        .toastHost(inSheet: true)
         .presentationDetents([.large])
         .presentationDragIndicator(.visible)
         .accessibilityIdentifier("brandBrief.sheet")

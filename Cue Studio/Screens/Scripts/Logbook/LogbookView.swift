@@ -13,7 +13,7 @@ import SwiftUI
 /// "✦ Write", which turns it into a script on the script page (Shape is only for adding cues). Without Apple Intelligence the card says
 /// "Write it" and opens a blank draft titled with the idea. Speaking is on-device recognition: only the words are kept, never the sound.
 /// Swipe an idea to delete it (or hold it), or Select (beside the first day, as on Scripts) to pick several and delete them together; a
-/// deletion has Undo for 4 s, shown in the sheet.
+/// deletion has Undo for 4 s, shown in the sheet, and is then for good.
 struct LogbookView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(LogbookService.self) private var logbook
@@ -108,8 +108,10 @@ struct LogbookView: View {
             .safeAreaInset(edge: .bottom, spacing: 0) {
                 if isSelecting {
                     SelectionBar(
-                        count: selection.count, prompt: String(localized: "Select ideas"), onDelete: deleteSelection,
-                        deleteIdentifier: "logbook.deleteSelectionButton"
+                        count: selection.count, prompt: String(localized: "Select ideas"),
+                        allSelected: !logbook.waiting.isEmpty && logbook.waiting.allSatisfy { selection.contains($0.id) },
+                        onSelectAll: toggleSelectAll, onDelete: deleteSelection,
+                        deleteIdentifier: "logbook.deleteSelectionButton", selectAllIdentifier: "logbook.selectAllButton"
                     )
                     .transition(.move(edge: .bottom).combined(with: .opacity))
                 } else {
@@ -483,7 +485,7 @@ struct LogbookView: View {
     private func beginCapture() {
         guard !isHolding, dictation.state == .idle else { return }
         isHolding = true
-        typing = false
+        // The keyboard stays while the finger holds: put away now, it would carry the mic down from under the finger (owner, 30/10/2026).
         typedBeforeHold = typed.trimmingCharacters(in: .whitespacesAndNewlines)
         heldSince = .now
         HapticPatterns.playListen()
@@ -509,6 +511,7 @@ struct LogbookView: View {
     private func endCapture() {
         guard isHolding else { return }
         isHolding = false
+        typing = false
         Haptics.soft()
         dictation.stop()
         // A hold that never reached the microphone ends here; otherwise the state change finishes it.
@@ -543,6 +546,12 @@ struct LogbookView: View {
     /// Swiped or held away: the card shrinks out and the list closes over it, with Undo for 4 s.
     private func delete(_ entry: LogbookEntry) {
         remove([entry.id], message: String(localized: "Idea deleted"))
+    }
+
+    /// Select all beside the trash: picks every idea, or lets them all go once they are.
+    private func toggleSelectAll() {
+        let all = logbook.waiting.map(\.id)
+        if !all.isEmpty, all.allSatisfy(selection.contains) { selection.removeAll() } else { selection.formUnion(all) }
     }
 
     /// The bar's trash: what is picked goes together, with one Undo.

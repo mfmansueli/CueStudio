@@ -6,16 +6,18 @@
 import SwiftUI
 
 /// Settings › Notifications (owner's redesign, 22/10/2026: short and direct). On top, whether iOS lets Cue speak, as a switch
-/// (`NotificationPermissionRow`); switched on the first time, everything turns on together: the bell rings and takes a ✓, and the switches
-/// below light one after another with a tick each. Then **From Cue** (two switches,
-/// `NotificationGroup`), **Creation routine** (its switch opens the days and the time) and **Your reminders** (they always arrive; edit with
-/// a tap, remove with a swipe). Quiet hours (9 PM to 9 AM), the caps and the titles kept out of notifications are Cue's, not choices. A Debug
-/// build adds what is scheduled and counted.
+/// (`NotificationPermissionRow`). A switch touched before iOS was asked (or while it says no, through iOS Settings and back) asks it, and
+/// with a yes turns on only what was touched (owner, 30/10/2026): the bell rings and takes a ✓, and the switches below light one after
+/// another, each showing its own state. Then **From Cue** (two switches, `NotificationGroup`), **Creation routine** (off, its line shows the
+/// days and time it would start with; on, they open under it) and **Your reminders** (they always arrive; edit with a tap, remove with a
+/// swipe, with Undo). Quiet hours (9 PM to 9 AM), the caps and the titles kept out of notifications are Cue's, not choices. A Debug build
+/// adds what is scheduled and counted.
 struct NotificationsSettingsView: View {
     @Environment(NotificationService.self) private var notifications
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.openURL) private var openURL
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(ToastService.self) private var toast
 
     @State private var editing: Reminder?
     /// iOS is being asked: the switches hold still until it answers.
@@ -23,6 +25,8 @@ struct NotificationsSettingsView: View {
     @State private var rangAt: Date?
     /// How many switches show their state: during the cascade they light one by one.
     @State private var lit = NotificationGroup.allCases.count
+    /// The switch that sent the creator to iOS Settings (Cue was refused there): turned on when they come back allowed.
+    @State private var awaitingSettings: NotificationGroup?
 
     private var canSchedule: Bool { notifications.authorization.canSchedule && !isAsking }
 
@@ -41,7 +45,7 @@ struct NotificationsSettingsView: View {
         Binding(
             get: { isAsking || notifications.authorization.canSchedule },
             set: { wants in
-                if wants, notifications.authorization == .notDetermined { turnOn() } else { openSettings() }
+                if wants, notifications.authorization == .notDetermined { turnOn(nil) } else { openSettings(for: nil) }
             }
         )
     }
@@ -70,10 +74,12 @@ struct NotificationsSettingsView: View {
             if phase == .active { Task { await notifications.refreshAuthorization() } }
         }
         .onChange(of: notifications.authorization) { old, new in
-            // Allowed in iOS Settings after a no: as the first time, everything turns on.
+            // Allowed in iOS Settings after a no: as the first time, only the switch that sent the creator there turns on.
             guard old == .denied, new.canSchedule else { return }
+            let group = awaitingSettings
+            awaitingSettings = nil
             lit = 0
-            notifications.turnEverythingOn()
+            if let group { Task { await notifications.setGroup(group, isOn: true) } }
             celebrate()
         }
         .sheet(item: $editing) { reminder in
@@ -106,7 +112,8 @@ struct NotificationsSettingsView: View {
         let opens = isLit(.routine) && notifications.isOn(.routine)
         return Section {
             VStack(spacing: 0) {
-                NotificationGroupRow(group: .routine, isOn: binding(for: .routine))
+                // Off, its line says the days and time it would start with: switching it on is that choice, seen.
+                NotificationGroupRow(group: .routine, isOn: binding(for: .routine), detail: opens ? nil : RoutineSummary.text(for: CreationRoutine()))
                 if opens, let routine = notifications.state.routine {
                     NotificationRoutineEditor(routine: routine) { routine in
                         Task { await notifications.setRoutine(routine) }
@@ -133,9 +140,9 @@ struct NotificationsSettingsView: View {
             set: { isOn in
                 switch notifications.authorization {
                 case .notDetermined:
-                    turnOn()
+                    if isOn { turnOn(group) }
                 case .denied:
-                    openSettings()
+                    openSettings(for: isOn ? group : nil)
                 case .authorized, .provisional, .ephemeral:
                     if isOn { HapticPatterns.playChime() } else { Haptics.selection() }
                     Task {
@@ -148,13 +155,14 @@ struct NotificationsSettingsView: View {
 
     // MARK: - Allowing
 
-    /// The switch on top (or one below) while iOS was never asked: iOS asks once; its yes turns everything on, and the page celebrates it.
-    private func turnOn() {
+    /// A switch while iOS was never asked: iOS asks once; its yes turns on only `group` (nil: the switch on top, iOS's permission alone), and
+    /// the page celebrates it.
+    private func turnOn(_ group: NotificationGroup?) {
         guard !isAsking else { return }
         isAsking = true
         lit = 0
         Task {
-            let answer = await notifications.allowEverything()
+            let answer = await notifications.allow(turningOn: group)
             if answer.canSchedule {
                 celebrate()
             } else {
@@ -187,7 +195,9 @@ struct NotificationsSettingsView: View {
         }
     }
 
-    private func openSettings() {
+    /// iOS Settings, the only place that can allow Cue again; `group` is the switch that sent the creator there.
+    private func openSettings(for group: NotificationGroup?) {
+        awaitingSettings = group
         if let url = URL(string: UIApplication.openNotificationSettingsURLString) { openURL(url) }
     }
 
@@ -210,7 +220,7 @@ struct NotificationsSettingsView: View {
                     .buttonStyle(.plain)
                     .cardRowBackground(position: CardRowPosition(index: index, count: list.count))
                     .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                        Button(role: .destructive) { notifications.cancelReminder(reminder.id) } label: {
+                        Button(role: .destructive) { remove(reminder) } label: {
                             Label("Remove", systemImage: "trash")
                         }
                     }
@@ -218,6 +228,15 @@ struct NotificationsSettingsView: View {
         } header: {
             CueSectionHeader(verbatim: String(localized: "Your reminders"))
         }
+    }
+
+    /// Removed at once, with Undo in the toast (VoiceOver hears it): Undo brings it back as it was.
+    private func remove(_ reminder: Reminder) {
+        notifications.cancelReminder(reminder.id)
+        let notifications = notifications
+        toast.show(String(localized: "Reminder removed"), action: ToastAction(title: String(localized: "Undo")) {
+            Task { await notifications.restoreReminder(reminder) }
+        })
     }
 }
 

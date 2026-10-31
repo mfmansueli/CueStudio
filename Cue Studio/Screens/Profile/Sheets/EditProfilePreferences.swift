@@ -39,7 +39,7 @@ struct EditProfilePreferences: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text("Monetization goals").foregroundStyle(Palette.ink)
                     Text(draft.monetizationGoals
-                         ? String(localized: "Script lengths aim at what earns on \(draft.defaultPlatform.label)")
+                         ? String(localized: "Script lengths aim at \(draft.defaultPlatform.label)’s length goal for earning")
                          : String(localized: "Script lengths aim at what holds attention"))
                         .cueFont(.footnote)
                         .foregroundStyle(Palette.ink2)

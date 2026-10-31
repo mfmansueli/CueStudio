@@ -5,25 +5,25 @@
 
 import Foundation
 
-/// What the state strip on the script page says: the "Ready to record" switch (a draft or ready script) or RECORDED, then the format
-/// and how many cues ("Draft · List · 4 cues"), and "✦ Shape" when there are none. Leaving the page never changes the state: only the
-/// switch does (and recording). Pure, so every state is tested.
+/// What the state strip on the script page says: the "Ready to record" switch (a draft or ready script) or RECORDED, and "Changed since
+/// take 3" beside RECORDED once the words have moved on from the take; and whether the tools row offers "✦ Shape" (no cues yet).
+/// No line of details beside the switch (owner, 31/10/2026: "Draft · Your script · No cues" cut "Ready to record" short, and said
+/// what the switch, the words and the Cues pill already say). Leaving the page never changes the state: only the switch does (and
+/// recording). Pure, so every state is tested.
 nonisolated struct ScriptStrip: Equatable, Sendable {
     let state: ScriptState
-    /// The script's format; nil says "Your script".
-    let formatLabel: String?
     let cueCount: Int
     /// The number of the latest take, when the words changed after it ("CHANGED SINCE TAKE 3").
     let changedSinceTake: Int?
     /// The words were edited this visit (a recorded script has moved on from its take).
     let isEdited: Bool
+    /// The tools row offers "✦ Shape": there are words, none of them cues yet, and Apple Intelligence runs.
     let canShape: Bool
 
     init(
         script: Script, takes: [Take], hasAI: Bool, isEdited: Bool
     ) {
         state = script.state(takeCount: takes.count)
-        formatLabel = script.type?.structure.label
         cueCount = CueParser.count(in: script.text)
         let latest = takes.max { $0.number < $1.number }
         // Editing a recorded script moves it on from its take even before the new version is saved.
@@ -33,17 +33,12 @@ nonisolated struct ScriptStrip: Equatable, Sendable {
         canShape = hasAI && cueCount == 0 && !script.isEmpty
     }
 
-    /// The line beside the switch: "Draft · List · 4 cues", "List · 4 cues" once ready, "Changed since take 3" after a take.
-    var info: [String] {
-        if state == .recorded, let take = changedSinceTake {
-            return [String(localized: "Changed since take \(take)")]
-        }
-        let details = [formatLabel ?? String(localized: "Your script"), ScriptRowLine.cues(cueCount)]
-        return state == .draft ? [String(localized: "Draft")] + details : details
+    /// The one thing the strip says in words, in yellow beside RECORDED: "Changed since take 3", when the script has moved on from
+    /// its take (what was recorded is no longer what is written). Nil otherwise: the switch says draft or ready by itself.
+    var signal: String? {
+        guard state == .recorded, let take = changedSinceTake else { return nil }
+        return String(localized: "Changed since take \(take)")
     }
-
-    /// The line is a signal (yellow) when the script has moved on from its take.
-    var isSignal: Bool { state == .recorded && changedSinceTake != nil }
 
     /// A draft or ready script has the "Ready to record" switch; a recorded one says RECORDED (recording moved it there).
     var showsReadySwitch: Bool { state != .recorded }
@@ -53,7 +48,4 @@ nonisolated struct ScriptStrip: Equatable, Sendable {
 
     /// Retake once there is a take; Record before.
     var recordsAgain: Bool { state == .recorded }
-
-    /// The record button is the screen's yellow fill, except on a recorded script that hasn't changed since its take.
-    var recordIsPrimary: Bool { state != .recorded || changedSinceTake != nil }
 }

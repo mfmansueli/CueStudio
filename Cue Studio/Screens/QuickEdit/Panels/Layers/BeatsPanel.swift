@@ -33,7 +33,7 @@ struct BeatsPanel: View {
                 label: String(localized: "Cut the video on the beats"), systemImage: "scissors", isEnabled: ready,
                 identifier: "edit.beats.cut", action: viewModel.audio.cutOnBeats
             )
-            PanelNote(text: String(localized: "Found on your iPhone in the music you added from Files."))
+            PanelNote(text: String(localized: "Found on your iPhone in the music you added from Files."), teaches: true)
         }
     }
 }

@@ -5,40 +5,26 @@
 
 import SwiftUI
 
-/// Cue's invitation to allow notifications, before the system's question: what the creator gets, a promise of restraint, **Allow
-/// notifications** (only this brings up iOS's question) and **Not now** (the question is kept for later).
+/// Cue's invitation to allow notifications, before the system's question, in the invitations' one form (`InviteSheet`): what the creator
+/// gets, a promise of restraint, what it uses, and a button that keeps its word. **Allow notifications** brings up iOS's question; for a
+/// script left without a take, **Remind me tomorrow** asks iOS and sets that script's reminder (10 AM tomorrow). **Not now** (or the ✕)
+/// keeps the question for later.
 struct NotificationInviteSheet: View {
     let reason: NotificationInviteReason
     let onAllow: () -> Void
     let onNotNow: () -> Void
+    /// Closed with the ✕ or a swipe: counted as "Not now".
+    var onDismissed: () -> Void = {}
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            HStack(alignment: .top, spacing: 14) {
-                Image(systemName: "bell.badge")
-                    .font(.fixed(22, weight: .semibold))
-                    .foregroundStyle(Palette.aiText)
-                    .frame(width: 48, height: 48)
-                    .background(Palette.surface2, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    .accessibilityHidden(true)
-                SheetHeader(
-                    title: reason.title,
-                    subtitle: String(localized: "One notification when something is waiting, at most one a day. You can change it in Settings.")
-                )
-            }
-            VStack(spacing: 8) {
-                Button(action: onAllow) { Text("Allow notifications").frame(maxWidth: .infinity) }
-                    .buttonStyle(.cuePrimary(.large))
-                    .accessibilityIdentifier("notificationInvite.allow")
-                Button(action: onNotNow) { Text("Not now").frame(maxWidth: .infinity) }
-                    .buttonStyle(.cueSecondary(.large))
-                    .accessibilityIdentifier("notificationInvite.notNow")
-            }
-        }
-        .padding(EdgeInsets(top: 4, leading: Metrics.gutter, bottom: 16, trailing: Metrics.gutter))
-        .fittedSheet()
-        .accessibilityElement(children: .contain)
-        .accessibilityIdentifier("notificationInvite.sheet")
+        InviteSheet(
+            title: reason.title,
+            line: String(localized: "One notification when something is waiting, at most one a day."),
+            uses: String(localized: "Uses notifications · change it anytime in Settings"),
+            primaryTitle: reason == .readyScript ? String(localized: "Remind me tomorrow") : String(localized: "Allow notifications"),
+            onPrimary: onAllow, onNotNow: onNotNow, onDismissed: onDismissed,
+            identifier: "notificationInvite", primaryIdentifier: "notificationInvite.allow", notNowIdentifier: "notificationInvite.notNow"
+        )
     }
 }
 

@@ -56,7 +56,7 @@ struct PrivacyView: View {
         .navigationBarTitleDisplayMode(.inline)
         .contentMargins(.top, 0, for: .scrollContent)
         .sheet(isPresented: $showsPolicy) { PrivacySheet() }
-        .sheet(isPresented: $asksUltra) { UltraConsentSheet(payload: starter.ultraPreview()) { ultra.consent.grant() } }
+        .sheet(isPresented: $asksUltra) { UltraConsentSheet { ultra.consent.grant() } }
     }
 
     /// Ultra AI, where it is offered: its own permission (turning it on shows the disclosure first; off, nothing more is sent) and, in

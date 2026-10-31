@@ -59,6 +59,8 @@ struct UniverseShareSheet: View {
         .padding(.horizontal, Metrics.gutter)
         .padding(.bottom, 16)
         .fittedSheet()
+        // "Saved to Photos" shows on this short sheet, not under it.
+        .toastHost(inSheet: true)
         .sheet(item: $viewModel.sharedFile) { file in ActivityView(items: [file.url]).presentationDetents([.medium, .large]) }
         .onChange(of: viewModel.phase) { _, phase in
             if phase == .saved { toast.show(String(localized: "Saved to Photos")) }

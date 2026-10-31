@@ -263,14 +263,28 @@ extension ScriptDetailViewModel {
             let result = try await writer.rewriteReported(selected, with: tool, context: rewriteContext)
             // The tool couldn't do what it says to these words: they stay, and the creator is told, instead of a "change" that changes nothing.
             guard !result.isUntouched, result.text != selected else {
-                toast.show(String(localized: "Couldn’t draft it · Try again"), kind: .problem)
+                sayResult(
+                    String(localized: "Couldn’t draft it"), kind: .problem, action: retrySelection(action, range: range),
+                    about: script?.displayTitle ?? ""
+                )
                 return
             }
             replace(range, with: result.text, action: action, original: selected)
         } catch is CancellationError {
             return
         } catch {
-            toast.show(Self.failureMessage(for: error), kind: .problem)
+            let again = ScriptFailureNotice.isWorthRetrying(error) ? retrySelection(action, range: range) : nil
+            sayResult(Self.failureMessage(for: error), kind: .problem, action: again, about: script?.displayTitle ?? "")
+        }
+    }
+
+    /// "Try again" after a selection's rewrite failed: the same words, picked again, and the same change asked of them, while the page is
+    /// still there and its words still reach that far.
+    private func retrySelection(_ action: SelectionAction, range: Range<Int>) -> ToastAction? {
+        retry { viewModel in
+            guard range.upperBound <= viewModel.page.text.count else { return }
+            viewModel.page.selection = range
+            await viewModel.rewriteSelection(action)
         }
     }
 
@@ -306,10 +320,12 @@ extension ScriptDetailViewModel {
         })
     }
 
-    /// ✓ Keep, or a tap outside: the new words are the creator's.
+    /// ✓ Keep, or a tap outside: the new words are the creator's. The AI changed them, so claims reviewed before are to be checked again.
     func keepPassage() {
+        let kept = page.passage != nil
         page.passage = nil
         commitPage()
+        if kept { library.flagForFactCheckAfterRewrite(scriptID) }
     }
 
     /// ↺ Undo: the old words come back.
@@ -402,8 +418,8 @@ extension ScriptDetailViewModel {
                     // The star leaves the way Cancel does: no page, the idea kept, and a toast says why.
                     page.isWriting = false
                     page.revealed = nil
-                    transition.fail()
-                    toast.show(Self.failureMessage(for: error), kind: .problem)
+                    // "Try again" (`ScriptStarter`) sends the same idea again, with a new star: this page is gone with it.
+                    transition.fail(saying: Self.failureMessage(for: error), canRetry: ScriptFailureNotice.isWorthRetrying(error))
                     return
                 }
                 page.isWriting = false
@@ -421,11 +437,9 @@ extension ScriptDetailViewModel {
     }
 
     /// What a failed write says: the reason when it is one the creator can act on (another language,
-    /// waiting), otherwise "Try again". Ultra's failures always say what happened (`UltraError`).
+    /// waiting), otherwise that it couldn't (its toast carries "Try again"). Ultra's failures always say what happened (`UltraError`).
     static func failureMessage(for error: any Error) -> String {
-        if let error = error as? UltraError { return error.localizedDescription }
-        if let error = error as? ScriptAIError, error.explainsItself { return error.localizedDescription }
-        return String(localized: "Couldn’t draft it · Try again")
+        ScriptFailureNotice.message(for: error)
     }
 
     /// "Try again" after an error: the same idea, once more.

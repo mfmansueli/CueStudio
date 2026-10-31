@@ -305,11 +305,10 @@ struct QuickEditView: View {
                 .clipped()
                 .overlay(alignment: .bottom) {
                     // The first voyage's Polish step, over the timeline's lower part and right above the tools it talks about.
-                    if layout.toolbar > 0, showsPolishTip {
-                        polishTip
+                    VoyageInPlaceTip(step: .polish, place: .editor, isAllowed: layout.toolbar > 0 && showsPolishTip) { isDone in
+                        polishTip(isDone: isDone)
                             .padding(.horizontal, 16)
                             .padding(.bottom, 8)
-                            .transition(.opacity.combined(with: .move(edge: .bottom)))
                     }
                 }
             if layout.toolbar > 0 {
@@ -330,20 +329,20 @@ struct QuickEditView: View {
     // MARK: - The first voyage
 
     private var showsPolishTip: Bool {
-        services.voyage.showsTip(for: .polish) && viewModel.panel == nil && viewModel.toolMenu == nil && !viewModel.isFullScreen
+        viewModel.panel == nil && viewModel.toolMenu == nil && !viewModel.isFullScreen
     }
 
-    private var polishTip: some View {
+    private func polishTip(isDone: Bool) -> some View {
         VoyageTipCard(
-            step: .polish, symbol: VoyageStep.polish.symbol, title: VoyageStep.polish.tipTitle(), message: VoyageStep.polish.tipMessage(),
+            step: .polish, title: VoyageStep.polish.tipTitle(), message: VoyageStep.polish.tipMessage(),
             primary: (VoyageStep.polish.tipAction(), {
                 services.voyage.tipActed(.polish, at: .editor)
                 viewModel.openCaptions()
             }),
             secondary: (String(localized: "Skip"), { withAnimation(.smooth(duration: 0.25)) { services.voyage.skipPolish(at: .editor) } }),
+            isDone: isDone,
             onClose: { withAnimation(.smooth(duration: 0.25)) { services.voyage.closeTip(.polish, at: .editor) } }
         )
-        .onAppear { services.voyage.tipShown(.polish, at: .editor) }
     }
 
     @ViewBuilder

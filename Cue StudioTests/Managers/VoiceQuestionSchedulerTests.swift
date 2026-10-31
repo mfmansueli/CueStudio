@@ -266,4 +266,20 @@ struct VoiceQuestionSchedulerTests {
         profile.examples = (1...3).map { VoiceExample(text: "Example \($0)") }
         return profile
     }
+
+    // MARK: - TipKit ids (D1, D2)
+
+    @Test func eachTipOfAQuestionHasItsOwnIdAndDeletingTheDataStartsANewGeneration() {
+        let rig = make()
+        defer { rig.defaults.tearDown() }
+        let first = rig.scheduler.tipID(for: .openings)
+        rig.scheduler.tipSpent(.openings)
+        let second = rig.scheduler.tipID(for: .openings)
+        #expect(first != second, "TipKit never shows a spent tip again: an opened or closed one comes back as a new tip")
+        rig.scheduler.reset()
+        let afterErase = rig.scheduler.tipID(for: .openings)
+        #expect(afterErase != first, "TipKit's store outlives the erase: the ids it invalidated aren't used again")
+        let relaunched = VoiceQuestionScheduler(profile: rig.profile, defaults: rig.defaults.defaults)
+        #expect(relaunched.tipGeneration == 1 && relaunched.tipID(for: .openings) == afterErase)
+    }
 }
