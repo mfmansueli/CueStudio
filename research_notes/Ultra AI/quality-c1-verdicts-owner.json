@@ -1,0 +1,93 @@
+{
+  "run": "c1",
+  "judge": "owner",
+  "date": "2026-10-31",
+  "picks": {
+    "t1-window-light": {
+      "best": "A",
+      "engine": "checkedLow",
+      "key": {
+        "A": "checkedLow",
+        "B": "checked",
+        "C": "checkedMixed"
+      }
+    },
+    "t2-camera-upgrade": {
+      "best": "C",
+      "engine": "checked",
+      "key": {
+        "A": "checkedMixed",
+        "B": "checkedLow",
+        "C": "checked"
+      }
+    },
+    "t3-teleprompter": {
+      "best": "B",
+      "engine": "checked",
+      "key": {
+        "A": "checkedMixed",
+        "B": "checked",
+        "C": "checkedLow"
+      }
+    },
+    "t4-sound": {
+      "best": "A",
+      "engine": "checked",
+      "key": {
+        "A": "checked",
+        "B": "checkedMixed",
+        "C": "checkedLow"
+      }
+    },
+    "t5-emergency-fund": {
+      "best": "A",
+      "engine": "checked",
+      "key": {
+        "A": "checked",
+        "B": "checkedMixed",
+        "C": "checkedLow"
+      }
+    },
+    "t6-sleep-spending": {
+      "best": "A",
+      "engine": "checked",
+      "key": {
+        "A": "checked",
+        "B": "checkedMixed",
+        "C": "checkedLow"
+      }
+    },
+    "pt-BR-0": {
+      "best": "A",
+      "engine": "checkedMixed",
+      "key": {
+        "A": "checkedMixed",
+        "B": "checkedLow",
+        "C": "checked"
+      }
+    },
+    "pt-BR-1": {
+      "best": "C",
+      "engine": "checked",
+      "key": {
+        "A": "checkedLow",
+        "B": "checkedMixed",
+        "C": "checked"
+      }
+    },
+    "pt-BR-2": {
+      "best": "A",
+      "engine": "checkedLow",
+      "key": {
+        "A": "checkedLow",
+        "B": "checkedMixed",
+        "C": "checked"
+      }
+    }
+  },
+  "tally": {
+    "checkedLow": 2,
+    "checked": 6,
+    "checkedMixed": 1
+  }
+}
